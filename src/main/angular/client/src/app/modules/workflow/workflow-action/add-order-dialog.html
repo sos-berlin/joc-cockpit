@@ -177,6 +177,7 @@
         <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
       </div>
       <div cdkDropList (cdkDropListDropped)="drop($event)">
+
         <div class="form-group row m-b-0 m-l-12" *ngFor="let argument of arguments; let i=index" cdkDrag>
           <div class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 3px;cursor: move" cdkDragHandle>
             <i class="fa fa-bars" aria-hidden="true"></i>
@@ -188,7 +189,7 @@
                    [(ngModel)]="argument.name" placeholder="{{'common.placeholder.name' | translate}}">
           </div>
           <div class="col-sm-4 m-b-sm" *ngIf="!argument.isTextField">
-            <nz-select nzShowSearch name="name{{i}}" [nzDisabled]="argument.isRequired" [(ngModel)]="argument.name"
+            <nz-select nzShowSearch name="argu_name{{i}}{{argument.name}}" [nzDisabled]="argument.isRequired" [(ngModel)]="argument.name"
                        (ngModelChange)="checkVariableType(argument)">
               <nz-option *ngFor="let list of variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name"
                          [nzValue]="list.name"></nz-option>
@@ -201,7 +202,7 @@
                      [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                   <nz-input-number [required]="argument.isRequired" #value="ngModel"
                                    nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
-                                   [nzMin]="0" [nzStep]="1" name="value{{i}}" [(ngModel)]="argument.value"
+                                   [nzMin]="0" [nzStep]="1" name="value{{i}}{{argument.name}}" [(ngModel)]="argument.value"
                                    (keydown)="onKeyPress($event)"></nz-input-number>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                        class="text-danger help-block">
@@ -215,7 +216,7 @@
                 <div class="col-md-6 col-lg-6 m-b-sm"
                      [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                   <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                             #value="ngModel" [required]="argument.isRequired" name="value{{i}}"
+                             #value="ngModel" [required]="argument.isRequired" name="value{{i}}{{argument.name}}"
                              [(ngModel)]="argument.value">
                     <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                     <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
@@ -234,7 +235,7 @@
                   <input [facetValidation]="argument.facet" #value="ngModel"
                          [required]="argument.isRequired || argument.facet" autocomplete="off" type="text"
                          class="form-control"
-                         name="value{{i}}" (keydown)="onKeyPress($event)"
+                         name="value{{i}}{{argument.name}}" (keydown)="onKeyPress($event)"
                          [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
                   <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)"
                      style="right: 13px;top:1px;"></i>
@@ -254,7 +255,7 @@
           <div class="col-md-6 col-lg-6 m-b-sm" *ngIf="argument.list"
                [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}">
             <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                       #list="ngModel" [required]="argument.isRequired" name="list{{i}}" [(ngModel)]="argument.value">
+                       #list="ngModel" [required]="argument.isRequired" name="list{{i}}{{argument.name}}" [(ngModel)]="argument.value">
               <ng-container *ngFor="let option of argument.list">
                 <nz-option nzCustomContent [nzValue]="option.name" [nzLabel]="option.name">
                   <div>

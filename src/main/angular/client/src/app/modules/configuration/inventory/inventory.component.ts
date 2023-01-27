@@ -410,11 +410,11 @@ export class DeployComponent implements OnInit {
     }
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
     if (this.isRemove && (!this.data.type || !this.data.object)) {
-      console.log('folders');
       this.loading = false;
       this.nodes.push({
         name: this.data.object ? this.path : this.data.name,
-        path: this.path
+        path: this.path,
+        isLeaf: true
       })
       this.ref.detectChanges();
     } else {
@@ -4246,7 +4246,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
           }
           obj.cancelOrdersDateFrom = result.cancelOrdersDateFrom;
           obj.auditLog = result.auditLog;
-          console.log(obj,'obj')
           if (!object.type && !object.object && !object.controller && !object.dailyPlan) {
             this.deleteObject(path, object, node, obj.auditLog, result.cancelOrdersDateFrom);
           } else {
