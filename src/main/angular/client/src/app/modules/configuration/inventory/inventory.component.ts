@@ -250,17 +250,19 @@ export class SingleDeployComponent implements OnInit {
       controllerIds: this.selectedSchedulerIds,
       auditLog: {}
     };
-    if (!this.isRevoke) {
-      if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
-        obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-      } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
-        obj.addOrdersDateFrom = 'now';
-      }
-    } else if (this.isRevoke) {
-      if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
-        obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-      } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
-        obj.cancelOrdersDateFrom = 'now';
+    if((this.data.objectType == 'WORKFLOW' || this.releasable || this.isRemoved) && this.deployablesObject.length > 0) {
+      if (!this.isRevoke) {
+        if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
+          obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+        } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
+          obj.addOrdersDateFrom = 'now';
+        }
+      } else if (this.isRevoke) {
+        if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
+          obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+        } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
+          obj.cancelOrdersDateFrom = 'now';
+        }
       }
     }
     if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
@@ -824,18 +826,23 @@ export class DeployComponent implements OnInit {
         }
       }
     }
+
     if (this.operation !== 'recall') {
-      if (!this.isRevoke) {
-        if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
-          obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-        } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
-          obj.addOrdersDateFrom = 'now';
-        }
-      } else if (this.isRevoke) {
-        if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
-          obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-        } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
-          obj.cancelOrdersDateFrom = 'now';
+      if (((!this.data.controller && !this.data.dailyPlan && !this.data.object && !this.data.objectType) ||
+        ((this.data.object && (this.data.object == 'WORKFLOW' || this.data.object == 'SCHEDULE' || this.data.object.match('CALENDAR'))) ||
+          (this.data.objectType && (this.data.objectType == 'WORKFLOW' || this.data.objectType == 'SCHEDULE' || this.data.objectType.match('CALENDAR'))) || this.data.controller || this.data.dailyPlan))) {
+        if (!this.isRevoke) {
+          if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
+            obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+          } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
+            obj.addOrdersDateFrom = 'now';
+          }
+        } else if (this.isRevoke) {
+          if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
+            obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+          } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
+            obj.cancelOrdersDateFrom = 'now';
+          }
         }
       }
     }
