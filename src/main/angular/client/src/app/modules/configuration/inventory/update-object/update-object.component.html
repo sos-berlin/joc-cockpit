@@ -12,17 +12,17 @@
     <div class="row">
       <div class="col-md-12" *ngIf="step === 1">
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label"
+          <label class="col-md-4 form-control-label"
                  translate>workflow.label.title</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-8">
             <input type="text" class="form-control" name="title" placeholder="{{'common.placeholder.title' | translate}}"
                    [(ngModel)]="object.title" autocomplete="off"/>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'inventory.label.documentation' | translate}}"
+          <label class="col-md-4 form-control-label" title="{{'inventory.label.documentation' | translate}}"
                  translate>inventory.label.documentation</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-8">
             <app-select-document [documentationTree]="documentationTree" [data]="object"></app-select-document>
           </div>
         </div>
@@ -114,9 +114,9 @@
         </ng-container>
         <ng-container *ngIf="type === 'WORKFLOW'">
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label"
+            <label class="col-md-4 form-control-label"
                    translate>workflow.label.jobResourceNames</label>
-            <div class="col-md-8 col-lg-9">
+            <div class="col-md-8">
               <nz-select
                 name="jobResource"
                 [(ngModel)]="object.jobResourceNames"
@@ -144,8 +144,8 @@
             </div>
           </div>
           <div class="form-group row">
-            <div class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.timeZone</div>
-            <div class="col-md-8 col-lg-9">
+            <div class="col-md-4 form-control-label" translate>workflow.label.timeZone</div>
+            <div class="col-md-8">
               <nz-select nzAllowClear nzShowSearch name="timeZone" [(ngModel)]="object.timeZone">
                 <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
               </nz-select>
@@ -154,8 +154,8 @@
         </ng-container>
         <ng-container *ngIf="type === 'FILEORDERSOURCE'">
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.workflowName</label>
-            <div class="col-md-8 col-lg-9 select-input-both">
+            <label class="col-md-4 form-control-label" translate>inventory.label.workflowName</label>
+            <div class="col-md-8 select-input-both">
               <input autocomplete="off" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.workflowName' | translate}}"
                    name="workflowName" [(ngModel)]="object.workflowName">
@@ -187,47 +187,47 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
-            <div class="col-md-8 col-lg-9">
+            <label class="col-md-4 form-control-label" translate>workflow.label.agent</label>
+            <div class="col-md-8">
               <app-agent-selection [skipSubagents]="true" [preferences]="preferences" [agents]="agentList"
                                    [data]="object"></app-agent-selection>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.directory</label>
-            <div class="col-md-8 col-lg-9">
+            <label class="col-md-4 form-control-label" translate>inventory.label.directory</label>
+            <div class="col-md-8">
               <input type="text" class="form-control" autocomplete="off"
                      placeholder="{{'inventory.placeholder.directory' | translate}}"
                      name="directory" [(ngModel)]="object.directoryExpr">
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.pattern</label>
-            <div class="col-md-8 col-lg-9">
+            <label class="col-md-4 form-control-label" translate>inventory.label.pattern</label>
+            <div class="col-md-8">
               <input type="text" class="form-control" autocomplete="off"
                      placeholder="{{'inventory.placeholder.pattern' | translate}}"
                      name="pattern" [(ngModel)]="object.pattern">
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.timeZone</label>
-            <div class="col-md-8 col-lg-9">
+            <label class="col-md-4 form-control-label" translate>common.label.timeZone</label>
+            <div class="col-md-8">
               <nz-select nzShowSearch name="timeZone" nzAllowClear [(ngModel)]="object.timeZone">
                 <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
               </nz-select>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
-            <div class="col-md-8 col-lg-9">
+            <label class="col-md-4 form-control-label" translate>workflow.label.delay</label>
+            <div class="col-md-8">
               <nz-input-number [nzMin]="1" [nzStep]="1" name="delay" [(ngModel)]="object.delay"></nz-input-number>
             </div>
           </div>
         </ng-container>
         <ng-container *ngIf="type === 'NOTICEBOARD'">
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.toNotice</label>
-            <div class="col-md-8 col-lg-9">
+            <label class="col-md-4 form-control-label" translate>inventory.label.toNotice</label>
+            <div class="col-md-8">
               <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
                 <input autocomplete="off" nz-input type="text" name="toNotice"
                        placeholder="{{'inventory.placeholder.toNotice' | translate}}"
@@ -242,8 +242,8 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.readingOrderToNoticeId</label>
-            <div class="col-md-8 col-lg-9">
+            <label class="col-md-4 form-control-label" translate>inventory.label.readingOrderToNoticeId</label>
+            <div class="col-md-8">
               <nz-input-group [nzAddOnAfter]="addOnAfterTemplate3">
                 <input autocomplete="off" nz-input type="text" name="readingOrderToNoticeId"
                        placeholder="{{'inventory.placeholder.readingOrderToNoticeId' | translate}}"
@@ -258,8 +258,8 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.endOfLife</label>
-            <div class="col-md-8 col-lg-9">
+            <label class="col-md-4 form-control-label" translate>inventory.label.endOfLife</label>
+            <div class="col-md-8">
               <nz-input-group [nzAddOnAfter]="addOnAfterTemplate2">
                 <input timevalidator validTimeReqex maxlength="8" [hidden]="object.units !== 'HH:MM:SS'" nz-input autocomplete="off" type="text" name="endOfLife"
                        placeholder="{{'inventory.placeholder.endOfLife' | translate}}"
@@ -282,9 +282,9 @@
         </ng-container>
         <ng-container *ngIf="type === 'LOCK'">
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label"
+            <label class="col-md-4 form-control-label"
                    translate>inventory.label.limit</label>
-            <div class="col-md-8 col-lg-9">
+            <div class="col-md-8">
               <nz-input-number [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate"
                                name="limit" [(ngModel)]="object.limit"></nz-input-number>
             </div>
@@ -292,8 +292,8 @@
         </ng-container>
         <ng-container *ngIf="type === 'SCHEDULE'">
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.workflowNames</label>
-            <div class="col-md-8 col-lg-9">
+            <label class="col-md-4 form-control-label" translate>inventory.label.workflowNames</label>
+            <div class="col-md-8">
               <nz-tree-select
                 name="workflowName"
                 nzNoAnimation
@@ -321,14 +321,14 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 block-ellipsis-job" translate>inventory.label.planOrderAutomatically</label>
-            <div class="col-md-8 col-lg-9">
+            <label class="col-md-4 block-ellipsis-job" translate>inventory.label.planOrderAutomatically</label>
+            <div class="col-md-8">
               <label nz-checkbox [(ngModel)]="object.planOrderAutomatically" name="planOrderAutomatically"></label>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 block-ellipsis-job" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
-            <div class="col-md-8 col-lg-9">
+            <label class="col-md-4 block-ellipsis-job" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
+            <div class="col-md-8">
               <label nz-checkbox [(ngModel)]="object.submitOrderToControllerWhenPlanned" name="submitOrderToControllerWhenPlanned"></label>
             </div>
           </div>
@@ -337,7 +337,7 @@
           </div>
           <div *ngFor="let variableSet of object.orderParameterisations; let j = index" [ngClass]="{'b-t p-t' : j != 0}">
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" translate>order.label.orderName</label>
+              <label class="col-md-4 form-control-label" translate>order.label.orderName</label>
               <div class="col-md-8" [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}">
                 <input type="text" identifierValidation maxlength="30" class="form-control" autocomplete="off" placeholder="{{'inventory.placeholder.orderName' | translate}}"
                        name="orderName{{j}}" #orderName="ngModel" [(ngModel)]="variableSet.orderName" (keydown)="onKeyPress($event, null)" (blur)="isOrderNameValid(variableSet, orderName, object.orderParameterisations)">
@@ -350,14 +350,14 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" translate>order.label.startNode</label>
+              <label class="col-md-4 form-control-label" translate>order.label.startNode</label>
               <div class="col-md-8">
                 <app-node-position [obj]="variableSet.positions" [index]="j" [type]="'START'"
                                    [workflow]="workflow" [positions]="positions"></app-node-position>
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" translate>order.label.endNode</label>
+              <label class="col-md-4 form-control-label" translate>order.label.endNode</label>
               <div class="col-md-8">
                 <app-node-position [obj]="variableSet.positions" [index]="j" [type]="'END'"
                                    [position]="variableSet.positions.startPosition" [workflow]="workflow" [positions]="positions"></app-node-position>
@@ -533,8 +533,8 @@
         </ng-container>
         <ng-container *ngIf="type === 'CALENDAR'">
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.type</label>
-            <div class="col-md-8 col-lg-9">
+            <label class="col-md-4 form-control-label" translate>common.label.type</label>
+            <div class="col-md-8">
               <nz-select [(ngModel)]="object.type" name="cType">
                 <nz-option nzValue="WORKINGDAYSCALENDAR" [nzLabel]="'runtime.label.workingDay' | translate"></nz-option>
                 <nz-option nzValue="NONWORKINGDAYSCALENDAR" [nzLabel]="'runtime.label.nonWorkingDay' | translate"></nz-option>
@@ -542,14 +542,14 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-3 col-md-4 col-lg-3 form-control-label" translate>runtime.label.validFrom</label>
-            <div class="col-md-3 col-lg-3 col-xl-3 col-xxl-2">
+            <label class="col-md-3 col-md-4 form-control-label" translate>runtime.label.validFrom</label>
+            <div class="col-md-3 col-xl-3 col-xxl-2">
               <nz-date-picker name="from"
                               [(ngModel)]="object.from" [nzFormat]="dateFormat"
                               [nzPlaceHolder]="'common.placeholder.setStartDate' | translate"></nz-date-picker>
             </div>
-            <label class="col-md-3 col-lg-3 col-xl-2 col-xxl-2 form-control-label date-center" translate>runtime.label.validTo</label>
-            <div class="col-md-3 col-lg-3 col-xl-3 col-xxl-2 date-right">
+            <label class="col-md-3 col-xl-2 col-xxl-2 form-control-label date-center" translate>runtime.label.validTo</label>
+            <div class="col-md-3 col-xl-3 col-xxl-2 date-right">
               <nz-date-picker id="to" name="to"
                               [(ngModel)]="object.to" [nzFormat]="dateFormat"
                               [nzPlaceHolder]="'common.placeholder.setEndDate' | translate"></nz-date-picker>
@@ -558,11 +558,11 @@
         </ng-container>
         <ng-container *ngIf="type === 'INCLUDESCRIPT'">
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.script' | translate) : ''"
+            <label class="col-md-4 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.script' | translate) : ''"
                    [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.script
               <sup class="text-danger text-sm">*</sup>
             </label>
-            <div class="col-md-8 col-lg-9">
+            <div class="col-md-8">
               <div class="b-a">
                 <ngx-codemirror #codeMirror #cm="ngModel" name="cm"
                                 [(ngModel)]="object.script" [options]="cmOption"></ngx-codemirror>
