@@ -118,14 +118,14 @@
                        [(ngModel)]="item.name" placeholder="{{'common.placeholder.name' | translate}}">
               </div>
               <div class="col-md-5 col-sm-6 m-b-sm" *ngIf="!item.isTextField">
-                <nz-select nzShowSearch name="name{{i}}" [nzDisabled]="variable" [(ngModel)]="item.name" (ngModelChange)="checkVariableType(item)">
+                <nz-select nzShowSearch name="name{{i}}{{item.name}}" [nzDisabled]="variable" [(ngModel)]="item.name" (ngModelChange)="checkVariableType(item)">
                   <nz-option *ngFor="let list of variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name" [nzValue]="list.name"></nz-option>
                 </nz-select>
               </div>
               <ng-container [ngSwitch]="item.type">
                 <ng-container *ngSwitchCase="'Number'">
                   <div class="col-md-6 col-sm-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                    <nz-input-number [required]="item.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1" name="value{{i}}"
+                    <nz-input-number [required]="item.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1" name="value{{i}}{{item.name}}"
                                      [(ngModel)]="item.value"></nz-input-number>
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                          class="text-danger help-block">
@@ -138,7 +138,7 @@
                 <ng-container *ngSwitchCase="'Boolean'">
                   <div class="col-md-6 col-sm-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                               #value="ngModel" [required]="item.isRequired" name="value{{i}}" [(ngModel)]="item.value">
+                               #value="ngModel" [required]="item.isRequired" name="value{{i}}{{item.name}}" [(ngModel)]="item.value">
                       <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                       <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                     </nz-select>
@@ -153,7 +153,7 @@
                 <ng-container *ngSwitchDefault>
                   <div class="col-md-6 col-sm-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <input [facetValidation]="item.facet" #value="ngModel" [required]="item.isRequired" autocomplete="off" type="text" class="form-control"
-                           name="value{{i}}" (keydown)="onKeyPress($event)"
+                           name="value{{i}}{{item.name}}" (keydown)="onKeyPress($event)"
                            [(ngModel)]="item.value" placeholder="{{'common.placeholder.value' | translate}}">
                     <i class="pos-abt cursor fa fa-info-circle" *ngIf="item.message" [nz-tooltip]="item.message" style="right: -10px;top:8px;"></i>
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
