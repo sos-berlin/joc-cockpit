@@ -3,9 +3,9 @@
   "bomFormat": "CycloneDX",
   "specVersion": "1.4",
   "version": 1,
-  "serialNumber": "urn:uuid:d202925e-bb98-4ad7-bbb9-fd4fa2a33428",
+  "serialNumber": "urn:uuid:0b6dfd29-9bdb-4f8c-bb53-f3a8d5145568",
   "metadata": {
-    "timestamp": "2023-01-03T13:07:14.070Z",
+    "timestamp": "2023-02-01T10:33:56.703Z",
     "tools": [
       {
         "vendor": "@cyclonedx",
@@ -942,8 +942,8 @@
         {
           "type": "library",
           "name": "ws",
-          "version": "8.11.0",
-          "bom-ref": "webpack-dev-server@4.11.0|ws@8.11.0",
+          "version": "8.12.0",
+          "bom-ref": "webpack-dev-server@4.11.0|ws@8.12.0",
           "author": "Einar Otto Stangvik <einaros@gmail.com> (http://2x.io)",
           "description": "Simple to use, blazing fast and thoroughly tested websocket client and server for Node.js",
           "licenses": [
@@ -953,7 +953,7 @@
               }
             }
           ],
-          "purl": "pkg:npm/ws@8.11.0",
+          "purl": "pkg:npm/ws@8.12.0",
           "externalReferences": [
             {
               "url": "websockets/ws",
@@ -971,7 +971,7 @@
               "comment": "as detected from PackageJson property \"bugs\""
             },
             {
-              "url": "https://registry.npmjs.org/ws/-/ws-8.11.0.tgz",
+              "url": "https://registry.npmjs.org/ws/-/ws-8.12.0.tgz",
               "type": "distribution",
               "comment": "as detected from npm-ls property \"resolved\""
             }
@@ -2248,8 +2248,8 @@
       "type": "library",
       "name": "compat-data",
       "group": "@babel",
-      "version": "7.20.10",
-      "bom-ref": "@babel/compat-data@7.20.10",
+      "version": "7.20.14",
+      "bom-ref": "@babel/compat-data@7.20.14",
       "author": "The Babel Team (https://babel.dev/team)",
       "licenses": [
         {
@@ -2258,7 +2258,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40babel/compat-data@7.20.10?vcs_url=https://github.com/babel/babel.git#packages/babel-compat-data",
+      "purl": "pkg:npm/%40babel/compat-data@7.20.14?vcs_url=https://github.com/babel/babel.git#packages/babel-compat-data",
       "externalReferences": [
         {
           "url": "https://github.com/babel/babel.git#packages/babel-compat-data",
@@ -2306,8 +2306,8 @@
     {
       "type": "library",
       "name": "browserslist",
-      "version": "4.21.4",
-      "bom-ref": "browserslist@4.21.4",
+      "version": "4.21.5",
+      "bom-ref": "browserslist@4.21.5",
       "author": "Andrey Sitnik <andrey@sitnik.ru>",
       "description": "Share target browsers between different front-end tools, like Autoprefixer, Stylelint and babel-env-preset",
       "licenses": [
@@ -2317,7 +2317,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/browserslist@4.21.4?vcs_url=browserslist/browserslist",
+      "purl": "pkg:npm/browserslist@4.21.5?vcs_url=browserslist/browserslist",
       "externalReferences": [
         {
           "url": "browserslist/browserslist",
@@ -2680,8 +2680,8 @@
       "type": "library",
       "name": "parser",
       "group": "@babel",
-      "version": "7.20.7",
-      "bom-ref": "@babel/parser@7.20.7",
+      "version": "7.20.13",
+      "bom-ref": "@babel/parser@7.20.13",
       "author": "The Babel Team (https://babel.dev/team)",
       "description": "A JavaScript parser",
       "licenses": [
@@ -2691,7 +2691,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40babel/parser@7.20.7?vcs_url=https://github.com/babel/babel.git#packages/babel-parser",
+      "purl": "pkg:npm/%40babel/parser@7.20.13?vcs_url=https://github.com/babel/babel.git#packages/babel-parser",
       "externalReferences": [
         {
           "url": "https://github.com/babel/babel.git#packages/babel-parser",
@@ -2720,8 +2720,8 @@
       "type": "library",
       "name": "traverse",
       "group": "@babel",
-      "version": "7.20.10",
-      "bom-ref": "@babel/traverse@7.20.10",
+      "version": "7.20.13",
+      "bom-ref": "@babel/traverse@7.20.13",
       "author": "The Babel Team (https://babel.dev/team)",
       "description": "The Babel Traverse module maintains the overall tree state, and is responsible for replacing, removing, and adding nodes",
       "licenses": [
@@ -2731,7 +2731,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40babel/traverse@7.20.10?vcs_url=https://github.com/babel/babel.git#packages/babel-traverse",
+      "purl": "pkg:npm/%40babel/traverse@7.20.13?vcs_url=https://github.com/babel/babel.git#packages/babel-traverse",
       "externalReferences": [
         {
           "url": "https://github.com/babel/babel.git#packages/babel-traverse",
@@ -2760,8 +2760,8 @@
           "type": "library",
           "name": "generator",
           "group": "@babel",
-          "version": "7.20.7",
-          "bom-ref": "@babel/traverse@7.20.10|@babel/generator@7.20.7",
+          "version": "7.20.14",
+          "bom-ref": "@babel/traverse@7.20.13|@babel/generator@7.20.14",
           "author": "The Babel Team (https://babel.dev/team)",
           "description": "Turns an AST into code.",
           "licenses": [
@@ -2771,7 +2771,7 @@
               }
             }
           ],
-          "purl": "pkg:npm/%40babel/generator@7.20.7#packages/babel-generator",
+          "purl": "pkg:npm/%40babel/generator@7.20.14#packages/babel-generator",
           "externalReferences": [
             {
               "url": "https://github.com/babel/babel.git#packages/babel-generator",
@@ -2789,7 +2789,7 @@
               "comment": "as detected from PackageJson property \"bugs\""
             },
             {
-              "url": "https://registry.npmjs.org/@babel/generator/-/generator-7.20.7.tgz",
+              "url": "https://registry.npmjs.org/@babel/generator/-/generator-7.20.14.tgz",
               "type": "distribution",
               "comment": "as detected from npm-ls property \"resolved\""
             }
@@ -2806,7 +2806,7 @@
           "name": "gen-mapping",
           "group": "@jridgewell",
           "version": "0.3.2",
-          "bom-ref": "@babel/traverse@7.20.10|@jridgewell/gen-mapping@0.3.2",
+          "bom-ref": "@babel/traverse@7.20.13|@jridgewell/gen-mapping@0.3.2",
           "author": "Justin Ridgewell <justin@ridgewell.name>",
           "description": "Generate source maps",
           "licenses": [
@@ -2842,8 +2842,8 @@
       "type": "library",
       "name": "helpers",
       "group": "@babel",
-      "version": "7.20.7",
-      "bom-ref": "@babel/helpers@7.20.7",
+      "version": "7.20.13",
+      "bom-ref": "@babel/helpers@7.20.13",
       "author": "The Babel Team (https://babel.dev/team)",
       "description": "Collection of helper functions used by Babel transforms.",
       "licenses": [
@@ -2853,7 +2853,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40babel/helpers@7.20.7#packages/babel-helpers",
+      "purl": "pkg:npm/%40babel/helpers@7.20.13#packages/babel-helpers",
       "externalReferences": [
         {
           "url": "https://github.com/babel/babel.git#packages/babel-helpers",
@@ -2866,7 +2866,7 @@
           "comment": "as detected from PackageJson property \"homepage\""
         },
         {
-          "url": "https://registry.npmjs.org/@babel/helpers/-/helpers-7.20.7.tgz",
+          "url": "https://registry.npmjs.org/@babel/helpers/-/helpers-7.20.13.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -2883,7 +2883,7 @@
           "name": "template",
           "group": "@babel",
           "version": "7.20.7",
-          "bom-ref": "@babel/helpers@7.20.7|@babel/template@7.20.7",
+          "bom-ref": "@babel/helpers@7.20.13|@babel/template@7.20.7",
           "author": "The Babel Team (https://babel.dev/team)",
           "description": "Generate an AST from a string template.",
           "licenses": [
@@ -3928,8 +3928,8 @@
     {
       "type": "library",
       "name": "core-js-compat",
-      "version": "3.27.1",
-      "bom-ref": "core-js-compat@3.27.1",
+      "version": "3.27.2",
+      "bom-ref": "core-js-compat@3.27.2",
       "author": "Denis Pushkarev",
       "description": "core-js compat",
       "licenses": [
@@ -3939,7 +3939,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/core-js-compat@3.27.1?vcs_url=https://github.com/zloirock/core-js.git#packages/core-js-compat",
+      "purl": "pkg:npm/core-js-compat@3.27.2?vcs_url=https://github.com/zloirock/core-js.git#packages/core-js-compat",
       "externalReferences": [
         {
           "url": "https://github.com/zloirock/core-js.git#packages/core-js-compat",
@@ -4261,8 +4261,8 @@
       "type": "library",
       "name": "helper-create-class-features-plugin",
       "group": "@babel",
-      "version": "7.20.7",
-      "bom-ref": "@babel/helper-create-class-features-plugin@7.20.7",
+      "version": "7.20.12",
+      "bom-ref": "@babel/helper-create-class-features-plugin@7.20.12",
       "author": "The Babel Team (https://babel.dev/team)",
       "description": "Compile class public and private fields, private methods and decorators to ES6",
       "licenses": [
@@ -4272,7 +4272,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40babel/helper-create-class-features-plugin@7.20.7#packages/babel-helper-create-class-features-plugin",
+      "purl": "pkg:npm/%40babel/helper-create-class-features-plugin@7.20.12#packages/babel-helper-create-class-features-plugin",
       "externalReferences": [
         {
           "url": "https://github.com/babel/babel.git#packages/babel-helper-create-class-features-plugin",
@@ -4280,7 +4280,7 @@
           "comment": "as detected from PackageJson property \"repository.url\" and \"repository.directory\""
         },
         {
-          "url": "https://registry.npmjs.org/@babel/helper-create-class-features-plugin/-/helper-create-class-features-plugin-7.20.7.tgz",
+          "url": "https://registry.npmjs.org/@babel/helper-create-class-features-plugin/-/helper-create-class-features-plugin-7.20.12.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -5960,8 +5960,8 @@
       "type": "library",
       "name": "plugin-transform-block-scoping",
       "group": "@babel",
-      "version": "7.20.11",
-      "bom-ref": "@babel/plugin-transform-block-scoping@7.20.11",
+      "version": "7.20.14",
+      "bom-ref": "@babel/plugin-transform-block-scoping@7.20.14",
       "author": "The Babel Team (https://babel.dev/team)",
       "description": "Compile ES2015 block scoping (const and let) to ES5",
       "licenses": [
@@ -5971,7 +5971,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40babel/plugin-transform-block-scoping@7.20.11#packages/babel-plugin-transform-block-scoping",
+      "purl": "pkg:npm/%40babel/plugin-transform-block-scoping@7.20.14#packages/babel-plugin-transform-block-scoping",
       "externalReferences": [
         {
           "url": "https://github.com/babel/babel.git#packages/babel-plugin-transform-block-scoping",
@@ -5984,7 +5984,7 @@
           "comment": "as detected from PackageJson property \"homepage\""
         },
         {
-          "url": "https://registry.npmjs.org/@babel/plugin-transform-block-scoping/-/plugin-transform-block-scoping-7.20.11.tgz",
+          "url": "https://registry.npmjs.org/@babel/plugin-transform-block-scoping/-/plugin-transform-block-scoping-7.20.14.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -9156,8 +9156,8 @@
     {
       "type": "library",
       "name": "caniuse-lite",
-      "version": "1.0.30001441",
-      "bom-ref": "caniuse-lite@1.0.30001441",
+      "version": "1.0.30001450",
+      "bom-ref": "caniuse-lite@1.0.30001450",
       "author": "Ben Briggs",
       "description": "A smaller version of caniuse-db, with only the essentials!",
       "licenses": [
@@ -9167,7 +9167,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/caniuse-lite@1.0.30001441",
+      "purl": "pkg:npm/caniuse-lite@1.0.30001450",
       "externalReferences": [
         {
           "url": "browserslist/caniuse-lite",
@@ -9175,7 +9175,7 @@
           "comment": "as detected from PackageJson property \"repository\""
         },
         {
-          "url": "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001441.tgz",
+          "url": "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001450.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -9224,8 +9224,8 @@
     {
       "type": "library",
       "name": "node-releases",
-      "version": "2.0.8",
-      "bom-ref": "node-releases@2.0.8",
+      "version": "2.0.9",
+      "bom-ref": "node-releases@2.0.9",
       "author": "Sergey Rubanov <chi187@gmail.com>",
       "description": "Node.js releases data",
       "licenses": [
@@ -9235,7 +9235,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/node-releases@2.0.8",
+      "purl": "pkg:npm/node-releases@2.0.9",
       "externalReferences": [
         {
           "url": "chicoxyzzy/node-releases",
@@ -9243,7 +9243,7 @@
           "comment": "as detected from PackageJson property \"repository\""
         },
         {
-          "url": "https://registry.npmjs.org/node-releases/-/node-releases-2.0.8.tgz",
+          "url": "https://registry.npmjs.org/node-releases/-/node-releases-2.0.9.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -10336,8 +10336,8 @@
         {
           "type": "library",
           "name": "minipass",
-          "version": "4.0.0",
-          "bom-ref": "tar@6.1.13|minipass@4.0.0",
+          "version": "4.0.1",
+          "bom-ref": "tar@6.1.13|minipass@4.0.1",
           "author": "Isaac Z. Schlueter <i@izs.me> (http://blog.izs.me/)",
           "description": "minimal implementation of a PassThrough stream",
           "licenses": [
@@ -10347,7 +10347,7 @@
               }
             }
           ],
-          "purl": "pkg:npm/minipass@4.0.0",
+          "purl": "pkg:npm/minipass@4.0.1",
           "externalReferences": [
             {
               "url": "git+https://github.com/isaacs/minipass.git",
@@ -10355,7 +10355,7 @@
               "comment": "as detected from PackageJson property \"repository.url\""
             },
             {
-              "url": "https://registry.npmjs.org/minipass/-/minipass-4.0.0.tgz",
+              "url": "https://registry.npmjs.org/minipass/-/minipass-4.0.1.tgz",
               "type": "distribution",
               "comment": "as detected from npm-ls property \"resolved\""
             }
@@ -10381,12 +10381,17 @@
               }
             }
           ],
-          "purl": "pkg:npm/yallist@4.0.0?vcs_url=git+https://github.com/isaacs/yallist.git",
+          "purl": "pkg:npm/yallist@4.0.0",
           "externalReferences": [
             {
               "url": "git+https://github.com/isaacs/yallist.git",
               "type": "vcs",
               "comment": "as detected from PackageJson property \"repository.url\""
+            },
+            {
+              "url": "https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz",
+              "type": "distribution",
+              "comment": "as detected from npm-ls property \"resolved\""
             }
           ],
           "properties": [
@@ -11515,8 +11520,8 @@
     {
       "type": "library",
       "name": "serialize-javascript",
-      "version": "6.0.0",
-      "bom-ref": "serialize-javascript@6.0.0",
+      "version": "6.0.1",
+      "bom-ref": "serialize-javascript@6.0.1",
       "author": "Eric Ferraiuolo <edf@ericf.me>",
       "description": "Serialize JavaScript to a superset of JSON that includes regular expressions and functions.",
       "licenses": [
@@ -11526,7 +11531,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/serialize-javascript@6.0.0",
+      "purl": "pkg:npm/serialize-javascript@6.0.1",
       "externalReferences": [
         {
           "url": "git+https://github.com/yahoo/serialize-javascript.git",
@@ -11544,7 +11549,7 @@
           "comment": "as detected from PackageJson property \"bugs.url\""
         },
         {
-          "url": "https://registry.npmjs.org/serialize-javascript/-/serialize-javascript-6.0.0.tgz",
+          "url": "https://registry.npmjs.org/serialize-javascript/-/serialize-javascript-6.0.1.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -15049,8 +15054,8 @@
     {
       "type": "library",
       "name": "klona",
-      "version": "2.0.5",
-      "bom-ref": "klona@2.0.5",
+      "version": "2.0.6",
+      "bom-ref": "klona@2.0.6",
       "author": "Luke Edwards",
       "description": "A tiny (240B to 501B) and fast utility to \"deep clone\" Objects, Arrays, Dates, RegExps, and more!",
       "licenses": [
@@ -15060,7 +15065,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/klona@2.0.5",
+      "purl": "pkg:npm/klona@2.0.6",
       "externalReferences": [
         {
           "url": "lukeed/klona",
@@ -15068,7 +15073,7 @@
           "comment": "as detected from PackageJson property \"repository\""
         },
         {
-          "url": "https://registry.npmjs.org/klona/-/klona-2.0.5.tgz",
+          "url": "https://registry.npmjs.org/klona/-/klona-2.0.6.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -15759,8 +15764,8 @@
     {
       "type": "library",
       "name": "tslib",
-      "version": "2.4.1",
-      "bom-ref": "tslib@2.4.1",
+      "version": "2.5.0",
+      "bom-ref": "tslib@2.5.0",
       "author": "Microsoft Corp.",
       "description": "Runtime library for TypeScript helper functions",
       "licenses": [
@@ -15770,7 +15775,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/tslib@2.4.1?vcs_url=https://github.com/Microsoft/tslib.git",
+      "purl": "pkg:npm/tslib@2.5.0?vcs_url=https://github.com/Microsoft/tslib.git",
       "externalReferences": [
         {
           "url": "https://github.com/Microsoft/tslib.git",
@@ -17868,8 +17873,8 @@
       "type": "library",
       "name": "selector-specificity",
       "group": "@csstools",
-      "version": "2.0.2",
-      "bom-ref": "@csstools/selector-specificity@2.0.2",
+      "version": "2.1.1",
+      "bom-ref": "@csstools/selector-specificity@2.1.1",
       "description": "Determine selector specificity with postcss-selector-parser",
       "licenses": [
         {
@@ -17878,7 +17883,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40csstools/selector-specificity@2.0.2#packages/selector-specificity",
+      "purl": "pkg:npm/%40csstools/selector-specificity@2.1.1#packages/selector-specificity",
       "externalReferences": [
         {
           "url": "https://github.com/csstools/postcss-plugins.git#packages/selector-specificity",
@@ -17896,7 +17901,7 @@
           "comment": "as detected from PackageJson property \"bugs\""
         },
         {
-          "url": "https://registry.npmjs.org/@csstools/selector-specificity/-/selector-specificity-2.0.2.tgz",
+          "url": "https://registry.npmjs.org/@csstools/selector-specificity/-/selector-specificity-2.1.1.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -18710,8 +18715,8 @@
     {
       "type": "library",
       "name": "cssdb",
-      "version": "7.2.0",
-      "bom-ref": "cssdb@7.2.0",
+      "version": "7.4.1",
+      "bom-ref": "cssdb@7.4.1",
       "author": "Jonathan Neal <jonathantneal@hotmail.com>",
       "description": "A comprehensive list of CSS features and their positions in the process of becoming implemented web standards",
       "licenses": [
@@ -18721,7 +18726,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/cssdb@7.2.0",
+      "purl": "pkg:npm/cssdb@7.4.1",
       "externalReferences": [
         {
           "url": "csstools/cssdb",
@@ -18739,7 +18744,7 @@
           "comment": "as detected from PackageJson property \"bugs\""
         },
         {
-          "url": "https://registry.npmjs.org/cssdb/-/cssdb-7.2.0.tgz",
+          "url": "https://registry.npmjs.org/cssdb/-/cssdb-7.4.1.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -20362,8 +20367,8 @@
     {
       "type": "library",
       "name": "immutable",
-      "version": "4.2.1",
-      "bom-ref": "immutable@4.2.1",
+      "version": "4.2.2",
+      "bom-ref": "immutable@4.2.2",
       "author": "Lee Byron",
       "description": "Immutable Data Collections",
       "licenses": [
@@ -20373,7 +20378,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/immutable@4.2.1",
+      "purl": "pkg:npm/immutable@4.2.2",
       "externalReferences": [
         {
           "url": "git://github.com/immutable-js/immutable-js.git",
@@ -20391,7 +20396,7 @@
           "comment": "as detected from PackageJson property \"bugs.url\""
         },
         {
-          "url": "https://registry.npmjs.org/immutable/-/immutable-4.2.1.tgz",
+          "url": "https://registry.npmjs.org/immutable/-/immutable-4.2.2.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -20765,8 +20770,8 @@
       "type": "library",
       "name": "css-tools",
       "group": "@adobe",
-      "version": "4.0.1",
-      "bom-ref": "@adobe/css-tools@4.0.1",
+      "version": "4.1.0",
+      "bom-ref": "@adobe/css-tools@4.1.0",
       "author": "TJ Holowaychuk <tj@vision-media.ca>",
       "description": "CSS parser / stringifier",
       "licenses": [
@@ -20776,7 +20781,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40adobe/css-tools@4.0.1",
+      "purl": "pkg:npm/%40adobe/css-tools@4.1.0",
       "externalReferences": [
         {
           "url": "https://github.com/adobe/css-tools.git",
@@ -20784,7 +20789,7 @@
           "comment": "as detected from PackageJson property \"repository.url\""
         },
         {
-          "url": "https://registry.npmjs.org/@adobe/css-tools/-/css-tools-4.0.1.tgz",
+          "url": "https://registry.npmjs.org/@adobe/css-tools/-/css-tools-4.1.0.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -20946,8 +20951,8 @@
     {
       "type": "library",
       "name": "acorn",
-      "version": "8.8.1",
-      "bom-ref": "acorn@8.8.1",
+      "version": "8.8.2",
+      "bom-ref": "acorn@8.8.2",
       "description": "ECMAScript parser",
       "licenses": [
         {
@@ -20956,7 +20961,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/acorn@8.8.1",
+      "purl": "pkg:npm/acorn@8.8.2",
       "externalReferences": [
         {
           "url": "https://github.com/acornjs/acorn.git",
@@ -20969,7 +20974,7 @@
           "comment": "as detected from PackageJson property \"homepage\""
         },
         {
-          "url": "https://registry.npmjs.org/acorn/-/acorn-8.8.1.tgz",
+          "url": "https://registry.npmjs.org/acorn/-/acorn-8.8.2.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -21186,8 +21191,8 @@
     {
       "type": "library",
       "name": "memfs",
-      "version": "3.4.12",
-      "bom-ref": "memfs@3.4.12",
+      "version": "3.4.13",
+      "bom-ref": "memfs@3.4.13",
       "description": "In-memory file-system with Node's fs API.",
       "licenses": [
         {
@@ -21196,7 +21201,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/memfs@3.4.12",
+      "purl": "pkg:npm/memfs@3.4.13",
       "externalReferences": [
         {
           "url": "https://github.com/streamich/memfs.git",
@@ -21204,7 +21209,7 @@
           "comment": "as detected from PackageJson property \"repository.url\""
         },
         {
-          "url": "https://registry.npmjs.org/memfs/-/memfs-3.4.12.tgz",
+          "url": "https://registry.npmjs.org/memfs/-/memfs-3.4.13.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -21460,8 +21465,8 @@
       "type": "library",
       "name": "express-serve-static-core",
       "group": "@types",
-      "version": "4.17.32",
-      "bom-ref": "@types/express-serve-static-core@4.17.32",
+      "version": "4.17.33",
+      "bom-ref": "@types/express-serve-static-core@4.17.33",
       "description": "TypeScript definitions for Express",
       "licenses": [
         {
@@ -21470,7 +21475,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40types/express-serve-static-core@4.17.32#types/express-serve-static-core",
+      "purl": "pkg:npm/%40types/express-serve-static-core@4.17.33#types/express-serve-static-core",
       "externalReferences": [
         {
           "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git#types/express-serve-static-core",
@@ -21483,7 +21488,7 @@
           "comment": "as detected from PackageJson property \"homepage\""
         },
         {
-          "url": "https://registry.npmjs.org/@types/express-serve-static-core/-/express-serve-static-core-4.17.32.tgz",
+          "url": "https://registry.npmjs.org/@types/express-serve-static-core/-/express-serve-static-core-4.17.33.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -21572,8 +21577,8 @@
       "type": "library",
       "name": "express",
       "group": "@types",
-      "version": "4.17.15",
-      "bom-ref": "@types/express@4.17.15",
+      "version": "4.17.16",
+      "bom-ref": "@types/express@4.17.16",
       "description": "TypeScript definitions for Express",
       "licenses": [
         {
@@ -21582,7 +21587,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40types/express@4.17.15#types/express",
+      "purl": "pkg:npm/%40types/express@4.17.16#types/express",
       "externalReferences": [
         {
           "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git#types/express",
@@ -21595,7 +21600,7 @@
           "comment": "as detected from PackageJson property \"homepage\""
         },
         {
-          "url": "https://registry.npmjs.org/@types/express/-/express-4.17.15.tgz",
+          "url": "https://registry.npmjs.org/@types/express/-/express-4.17.16.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -21922,8 +21927,8 @@
     {
       "type": "library",
       "name": "bonjour-service",
-      "version": "1.0.14",
-      "bom-ref": "bonjour-service@1.0.14",
+      "version": "1.1.0",
+      "bom-ref": "bonjour-service@1.1.0",
       "author": "ON LX Lited <team@onlx.ltd> (https://labs.onlx.ltd)",
       "description": "A Bonjour/Zeroconf implementation in TypeScript",
       "licenses": [
@@ -21933,7 +21938,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/bonjour-service@1.0.14",
+      "purl": "pkg:npm/bonjour-service@1.1.0",
       "externalReferences": [
         {
           "url": "https://github.com/onlxltd/bonjour-service.git",
@@ -21951,7 +21956,7 @@
           "comment": "as detected from PackageJson property \"bugs.url\""
         },
         {
-          "url": "https://registry.npmjs.org/bonjour-service/-/bonjour-service-1.0.14.tgz",
+          "url": "https://registry.npmjs.org/bonjour-service/-/bonjour-service-1.1.0.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -23293,8 +23298,8 @@
     {
       "type": "library",
       "name": "content-type",
-      "version": "1.0.4",
-      "bom-ref": "content-type@1.0.4",
+      "version": "1.0.5",
+      "bom-ref": "content-type@1.0.5",
       "author": "Douglas Christopher Wilson <doug@somethingdoug.com>",
       "description": "Create and parse HTTP Content-Type header",
       "licenses": [
@@ -23304,7 +23309,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/content-type@1.0.4?vcs_url=jshttp/content-type",
+      "purl": "pkg:npm/content-type@1.0.5?vcs_url=jshttp/content-type",
       "externalReferences": [
         {
           "url": "jshttp/content-type",
@@ -29842,8 +29847,8 @@
     {
       "type": "library",
       "name": "http-cache-semantics",
-      "version": "4.1.0",
-      "bom-ref": "http-cache-semantics@4.1.0",
+      "version": "4.1.1",
+      "bom-ref": "http-cache-semantics@4.1.1",
       "author": "Kornel Lesiński <kornel@geekhood.net> (https://kornel.ski/)",
       "description": "Parses Cache-Control and other headers. Helps building correct HTTP caches and proxies",
       "licenses": [
@@ -29853,7 +29858,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/http-cache-semantics@4.1.0",
+      "purl": "pkg:npm/http-cache-semantics@4.1.1",
       "externalReferences": [
         {
           "url": "https://github.com/kornelski/http-cache-semantics.git",
@@ -29861,7 +29866,7 @@
           "comment": "as detected from PackageJson property \"repository\""
         },
         {
-          "url": "https://registry.npmjs.org/http-cache-semantics/-/http-cache-semantics-4.1.0.tgz",
+          "url": "https://registry.npmjs.org/http-cache-semantics/-/http-cache-semantics-4.1.1.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -31858,8 +31863,8 @@
       "type": "library",
       "name": "codemirror",
       "group": "@types",
-      "version": "5.60.6",
-      "bom-ref": "@types/codemirror@5.60.6",
+      "version": "5.60.7",
+      "bom-ref": "@types/codemirror@5.60.7",
       "description": "TypeScript definitions for codemirror",
       "licenses": [
         {
@@ -31868,7 +31873,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40types/codemirror@5.60.6#types/codemirror",
+      "purl": "pkg:npm/%40types/codemirror@5.60.7#types/codemirror",
       "externalReferences": [
         {
           "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git#types/codemirror",
@@ -31881,7 +31886,7 @@
           "comment": "as detected from PackageJson property \"homepage\""
         },
         {
-          "url": "https://registry.npmjs.org/@types/codemirror/-/codemirror-5.60.6.tgz",
+          "url": "https://registry.npmjs.org/@types/codemirror/-/codemirror-5.60.7.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -32020,8 +32025,8 @@
       "type": "library",
       "name": "cyclonedx-library",
       "group": "@cyclonedx",
-      "version": "1.9.2",
-      "bom-ref": "@cyclonedx/cyclonedx-library@1.9.2",
+      "version": "1.10.0",
+      "bom-ref": "@cyclonedx/cyclonedx-library@1.10.0",
       "author": "Jan Kowalleck",
       "description": "Core functionality of CycloneDX for JavaScript (Node.js or WebBrowser).",
       "licenses": [
@@ -32031,7 +32036,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40cyclonedx/cyclonedx-library@1.9.2",
+      "purl": "pkg:npm/%40cyclonedx/cyclonedx-library@1.10.0",
       "externalReferences": [
         {
           "url": "git+https://github.com/CycloneDX/cyclonedx-javascript-library.git",
@@ -32049,7 +32054,7 @@
           "comment": "as detected from PackageJson property \"bugs.url\""
         },
         {
-          "url": "https://registry.npmjs.org/@cyclonedx/cyclonedx-library/-/cyclonedx-library-1.9.2.tgz",
+          "url": "https://registry.npmjs.org/@cyclonedx/cyclonedx-library/-/cyclonedx-library-1.10.0.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -32188,8 +32193,8 @@
     {
       "type": "library",
       "name": "commander",
-      "version": "9.4.1",
-      "bom-ref": "commander@9.4.1",
+      "version": "9.5.0",
+      "bom-ref": "commander@9.5.0",
       "author": "TJ Holowaychuk <tj@vision-media.ca>",
       "description": "the complete solution for node.js command-line programs",
       "licenses": [
@@ -32199,7 +32204,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/commander@9.4.1",
+      "purl": "pkg:npm/commander@9.5.0",
       "externalReferences": [
         {
           "url": "https://github.com/tj/commander.js.git",
@@ -32207,7 +32212,7 @@
           "comment": "as detected from PackageJson property \"repository.url\""
         },
         {
-          "url": "https://registry.npmjs.org/commander/-/commander-9.4.1.tgz",
+          "url": "https://registry.npmjs.org/commander/-/commander-9.5.0.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -32805,8 +32810,8 @@
     {
       "type": "library",
       "name": "angular-gridster2",
-      "version": "14.1.2",
-      "bom-ref": "angular-gridster2@14.1.2",
+      "version": "14.1.4",
+      "bom-ref": "angular-gridster2@14.1.4",
       "description": "Angular gridster 2",
       "licenses": [
         {
@@ -32815,7 +32820,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/angular-gridster2@14.1.2",
+      "purl": "pkg:npm/angular-gridster2@14.1.4",
       "externalReferences": [
         {
           "url": "https://github.com/tiberiuzuld/angular-gridster2.git",
@@ -32833,7 +32838,7 @@
           "comment": "as detected from PackageJson property \"bugs.url\""
         },
         {
-          "url": "https://registry.npmjs.org/angular-gridster2/-/angular-gridster2-14.1.2.tgz",
+          "url": "https://registry.npmjs.org/angular-gridster2/-/angular-gridster2-14.1.4.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -33119,8 +33124,8 @@
     {
       "type": "library",
       "name": "d3-array",
-      "version": "3.2.1",
-      "bom-ref": "d3-array@3.2.1",
+      "version": "3.2.2",
+      "bom-ref": "d3-array@3.2.2",
       "author": "Mike Bostock",
       "description": "Array manipulation, ordering, searching, summarizing, etc.",
       "licenses": [
@@ -33130,7 +33135,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/d3-array@3.2.1",
+      "purl": "pkg:npm/d3-array@3.2.2",
       "externalReferences": [
         {
           "url": "https://github.com/d3/d3-array.git",
@@ -33143,7 +33148,7 @@
           "comment": "as detected from PackageJson property \"homepage\""
         },
         {
-          "url": "https://registry.npmjs.org/d3-array/-/d3-array-3.2.1.tgz",
+          "url": "https://registry.npmjs.org/d3-array/-/d3-array-3.2.2.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -33767,8 +33772,8 @@
     {
       "type": "library",
       "name": "date-holidays",
-      "version": "3.16.13",
-      "bom-ref": "date-holidays@3.16.13",
+      "version": "3.16.15",
+      "bom-ref": "date-holidays@3.16.15",
       "author": "commenthol <commenthol@gmail.com>",
       "description": "worldwide holidays",
       "licenses": [
@@ -33776,7 +33781,7 @@
           "expression": "(ISC AND CC-BY-3.0)"
         }
       ],
-      "purl": "pkg:npm/date-holidays@3.16.13",
+      "purl": "pkg:npm/date-holidays@3.16.15",
       "externalReferences": [
         {
           "url": "git+https://github.com/commenthol/date-holidays.git",
@@ -33794,7 +33799,7 @@
           "comment": "as detected from PackageJson property \"bugs.url\""
         },
         {
-          "url": "https://registry.npmjs.org/date-holidays/-/date-holidays-3.16.13.tgz",
+          "url": "https://registry.npmjs.org/date-holidays/-/date-holidays-3.16.15.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -33810,7 +33815,7 @@
           "type": "library",
           "name": "js-yaml",
           "version": "4.1.0",
-          "bom-ref": "date-holidays@3.16.13|js-yaml@4.1.0",
+          "bom-ref": "date-holidays@3.16.15|js-yaml@4.1.0",
           "author": "Vladimir Zapparov <dervus.grim@gmail.com>",
           "description": "YAML 1.2 parser and serializer",
           "licenses": [
@@ -33844,7 +33849,7 @@
           "type": "library",
           "name": "argparse",
           "version": "2.0.1",
-          "bom-ref": "date-holidays@3.16.13|argparse@2.0.1",
+          "bom-ref": "date-holidays@3.16.15|argparse@2.0.1",
           "description": "CLI arguments parser. Native port of python's argparse.",
           "licenses": [
             {
@@ -34181,8 +34186,8 @@
     {
       "type": "library",
       "name": "deepmerge",
-      "version": "4.2.2",
-      "bom-ref": "deepmerge@4.2.2",
+      "version": "4.3.0",
+      "bom-ref": "deepmerge@4.3.0",
       "description": "A library for deep (recursive) merging of Javascript objects",
       "licenses": [
         {
@@ -34191,7 +34196,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/deepmerge@4.2.2",
+      "purl": "pkg:npm/deepmerge@4.3.0",
       "externalReferences": [
         {
           "url": "git://github.com/TehShrike/deepmerge.git",
@@ -34204,7 +34209,7 @@
           "comment": "as detected from PackageJson property \"homepage\""
         },
         {
-          "url": "https://registry.npmjs.org/deepmerge/-/deepmerge-4.2.2.tgz",
+          "url": "https://registry.npmjs.org/deepmerge/-/deepmerge-4.3.0.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -34597,8 +34602,8 @@
     {
       "type": "library",
       "name": "ace-builds",
-      "version": "1.14.0",
-      "bom-ref": "ace-builds@1.14.0",
+      "version": "1.15.0",
+      "bom-ref": "ace-builds@1.15.0",
       "description": "Ace (Ajax.org Cloud9 Editor)",
       "licenses": [
         {
@@ -34607,7 +34612,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/ace-builds@1.14.0",
+      "purl": "pkg:npm/ace-builds@1.15.0",
       "externalReferences": [
         {
           "url": "https://github.com/ajaxorg/ace-builds.git",
@@ -34625,7 +34630,7 @@
           "comment": "as detected from PackageJson property \"bugs.url\""
         },
         {
-          "url": "https://registry.npmjs.org/ace-builds/-/ace-builds-1.14.0.tgz",
+          "url": "https://registry.npmjs.org/ace-builds/-/ace-builds-1.15.0.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -34640,8 +34645,8 @@
     {
       "type": "library",
       "name": "punycode",
-      "version": "2.1.1",
-      "bom-ref": "punycode@2.1.1",
+      "version": "2.3.0",
+      "bom-ref": "punycode@2.3.0",
       "author": "Mathias Bynens",
       "description": "A robust Punycode converter that fully complies to RFC 3492 and RFC 5891, and works on nearly all JavaScript platforms.",
       "licenses": [
@@ -34651,10 +34656,10 @@
           }
         }
       ],
-      "purl": "pkg:npm/punycode@2.1.1",
+      "purl": "pkg:npm/punycode@2.3.0",
       "externalReferences": [
         {
-          "url": "https://github.com/bestiejs/punycode.js.git",
+          "url": "https://github.com/mathiasbynens/punycode.js.git",
           "type": "vcs",
           "comment": "as detected from PackageJson property \"repository.url\""
         },
@@ -34664,12 +34669,12 @@
           "comment": "as detected from PackageJson property \"homepage\""
         },
         {
-          "url": "https://github.com/bestiejs/punycode.js/issues",
+          "url": "https://github.com/mathiasbynens/punycode.js/issues",
           "type": "issue-tracker",
           "comment": "as detected from PackageJson property \"bugs\""
         },
         {
-          "url": "https://registry.npmjs.org/punycode/-/punycode-2.1.1.tgz",
+          "url": "https://registry.npmjs.org/punycode/-/punycode-2.3.0.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -35892,8 +35897,8 @@
     {
       "type": "library",
       "name": "get-intrinsic",
-      "version": "1.1.3",
-      "bom-ref": "get-intrinsic@1.1.3",
+      "version": "1.2.0",
+      "bom-ref": "get-intrinsic@1.2.0",
       "author": "Jordan Harband <ljharb@gmail.com>",
       "description": "Get and robustly cache all JS language-level intrinsics at first require time",
       "licenses": [
@@ -35903,7 +35908,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/get-intrinsic@1.1.3?vcs_url=git+https://github.com/ljharb/get-intrinsic.git",
+      "purl": "pkg:npm/get-intrinsic@1.2.0?vcs_url=git+https://github.com/ljharb/get-intrinsic.git",
       "externalReferences": [
         {
           "url": "git+https://github.com/ljharb/get-intrinsic.git",
@@ -35975,8 +35980,8 @@
     {
       "type": "library",
       "name": "object-inspect",
-      "version": "1.12.2",
-      "bom-ref": "object-inspect@1.12.2",
+      "version": "1.12.3",
+      "bom-ref": "object-inspect@1.12.3",
       "author": "James Halliday",
       "description": "string representations of objects in node and the browser",
       "licenses": [
@@ -35986,7 +35991,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/object-inspect@1.12.2",
+      "purl": "pkg:npm/object-inspect@1.12.3",
       "externalReferences": [
         {
           "url": "git://github.com/inspect-js/object-inspect.git",
@@ -35999,7 +36004,7 @@
           "comment": "as detected from PackageJson property \"homepage\""
         },
         {
-          "url": "https://registry.npmjs.org/object-inspect/-/object-inspect-1.12.2.tgz",
+          "url": "https://registry.npmjs.org/object-inspect/-/object-inspect-1.12.3.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -37556,8 +37561,8 @@
     {
       "type": "library",
       "name": "engine.io-parser",
-      "version": "5.0.4",
-      "bom-ref": "engine.io-parser@5.0.4",
+      "version": "5.0.6",
+      "bom-ref": "engine.io-parser@5.0.6",
       "description": "Parser for the client for the realtime Engine",
       "licenses": [
         {
@@ -37566,7 +37571,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/engine.io-parser@5.0.4",
+      "purl": "pkg:npm/engine.io-parser@5.0.6",
       "externalReferences": [
         {
           "url": "git@github.com:socketio/engine.io-parser.git",
@@ -37579,7 +37584,7 @@
           "comment": "as detected from PackageJson property \"homepage\""
         },
         {
-          "url": "https://registry.npmjs.org/engine.io-parser/-/engine.io-parser-5.0.4.tgz",
+          "url": "https://registry.npmjs.org/engine.io-parser/-/engine.io-parser-5.0.6.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -37671,8 +37676,8 @@
     {
       "type": "library",
       "name": "socket.io-parser",
-      "version": "4.2.1",
-      "bom-ref": "socket.io-parser@4.2.1",
+      "version": "4.2.2",
+      "bom-ref": "socket.io-parser@4.2.2",
       "description": "socket.io protocol parser",
       "licenses": [
         {
@@ -37681,7 +37686,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/socket.io-parser@4.2.1",
+      "purl": "pkg:npm/socket.io-parser@4.2.2",
       "externalReferences": [
         {
           "url": "https://github.com/socketio/socket.io-parser.git",
@@ -37689,7 +37694,7 @@
           "comment": "as detected from PackageJson property \"repository.url\""
         },
         {
-          "url": "https://registry.npmjs.org/socket.io-parser/-/socket.io-parser-4.2.1.tgz",
+          "url": "https://registry.npmjs.org/socket.io-parser/-/socket.io-parser-4.2.2.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -37738,8 +37743,8 @@
     {
       "type": "library",
       "name": "ua-parser-js",
-      "version": "0.7.32",
-      "bom-ref": "ua-parser-js@0.7.32",
+      "version": "0.7.33",
+      "bom-ref": "ua-parser-js@0.7.33",
       "author": "Faisal Salman <f@faisalman.com> (http://faisalman.com)",
       "description": "Detect Browser, Engine, OS, CPU, and Device type/model from User-Agent data. Supports browser & node.js environment",
       "licenses": [
@@ -37749,7 +37754,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/ua-parser-js@0.7.32",
+      "purl": "pkg:npm/ua-parser-js@0.7.33",
       "externalReferences": [
         {
           "url": "https://github.com/faisalman/ua-parser-js.git",
@@ -37767,7 +37772,7 @@
           "comment": "as detected from PackageJson property \"bugs\""
         },
         {
-          "url": "https://registry.npmjs.org/ua-parser-js/-/ua-parser-js-0.7.32.tgz",
+          "url": "https://registry.npmjs.org/ua-parser-js/-/ua-parser-js-0.7.33.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -38347,8 +38352,8 @@
     {
       "type": "library",
       "name": "ngx-toastr",
-      "version": "16.0.1",
-      "bom-ref": "ngx-toastr@16.0.1",
+      "version": "16.0.2",
+      "bom-ref": "ngx-toastr@16.0.2",
       "description": "Toastr for Angular",
       "licenses": [
         {
@@ -38357,7 +38362,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/ngx-toastr@16.0.1",
+      "purl": "pkg:npm/ngx-toastr@16.0.2",
       "externalReferences": [
         {
           "url": "scttcper/ngx-toastr",
@@ -38370,7 +38375,7 @@
           "comment": "as detected from PackageJson property \"homepage\""
         },
         {
-          "url": "https://registry.npmjs.org/ngx-toastr/-/ngx-toastr-16.0.1.tgz",
+          "url": "https://registry.npmjs.org/ngx-toastr/-/ngx-toastr-16.0.2.tgz",
           "type": "distribution",
           "comment": "as detected from npm-ls property \"resolved\""
         }
@@ -39735,20 +39740,20 @@
         "@types/underscore@1.11.4",
         "@xmldom/xmldom@0.8.6",
         "ang-jsoneditor@1.10.5",
-        "angular-gridster2@14.1.2",
+        "angular-gridster2@14.1.4",
         "chart.js@3.9.1",
         "chartjs-plugin-datalabels@2.2.0",
         "codemirror@5.65.11",
         "cross-env@7.0.3",
         "crypto-js@4.1.1",
-        "d3-array@3.2.1",
+        "d3-array@3.2.2",
         "d3-brush@3.0.0",
         "d3-color@3.1.0",
         "d3-format@3.1.0",
         "d3-scale@4.0.2",
         "d3-selection@3.0.0",
         "d3-shape@3.2.0",
-        "date-holidays@3.16.13",
+        "date-holidays@3.16.15",
         "file-saver@2.0.5",
         "font-awesome@4.7.0",
         "jasmine-core@4.0.1",
@@ -39764,7 +39769,7 @@
         "ng2-charts@3.1.2",
         "ng2-file-upload@1.4.0",
         "ngx-clipboard@15.1.0",
-        "ngx-toastr@16.0.1",
+        "ngx-toastr@16.0.2",
         "perfect-scrollbar@1.5.5",
         "replace-in-file@6.3.5",
         "resize-observer-polyfill@1.5.1",
@@ -39772,7 +39777,7 @@
         "save-svg-as-png@1.4.17",
         "stream@0.0.2",
         "svg-gauge@1.0.7",
-        "tslib@2.4.1",
+        "tslib@2.5.0",
         "typescript@4.6.4",
         "underscore@1.13.6",
         "xlsx@0.17.5",
@@ -39807,7 +39812,7 @@
         "ansi-colors@4.1.3",
         "babel-loader@8.2.5",
         "babel-plugin-istanbul@6.1.1",
-        "browserslist@4.21.4",
+        "browserslist@4.21.5",
         "cacache@16.1.2",
         "copy-webpack-plugin@11.0.0",
         "critters@0.0.16",
@@ -39957,13 +39962,13 @@
       "dependsOn": [
         "@types/bonjour@3.5.10",
         "@types/connect-history-api-fallback@1.3.5",
-        "@types/express@4.17.15",
+        "@types/express@4.17.16",
         "@types/serve-index@1.9.1",
         "@types/serve-static@1.15.0",
         "@types/sockjs@0.3.33",
         "@types/ws@8.5.4",
         "ansi-html-community@0.0.8",
-        "bonjour-service@1.0.14",
+        "bonjour-service@1.1.0",
         "chokidar@3.5.3",
         "colorette@2.0.19",
         "compression@1.7.4",
@@ -39984,7 +39989,7 @@
         "spdy@4.0.2",
         "webpack-dev-middleware@5.3.3",
         "webpack@5.74.0",
-        "webpack-dev-server@4.11.0|ws@8.11.0"
+        "webpack-dev-server@4.11.0|ws@8.12.0"
       ]
     },
     {
@@ -39997,7 +40002,7 @@
       ]
     },
     {
-      "ref": "webpack-dev-server@4.11.0|ws@8.11.0"
+      "ref": "webpack-dev-server@4.11.0|ws@8.12.0"
     },
     {
       "ref": "webpack@5.74.0",
@@ -40008,8 +40013,8 @@
         "@webassemblyjs/wasm-edit@1.11.1",
         "@webassemblyjs/wasm-parser@1.11.1",
         "acorn-import-assertions@1.8.0",
-        "acorn@8.8.1",
-        "browserslist@4.21.4",
+        "acorn@8.8.2",
+        "browserslist@4.21.5",
         "chrome-trace-event@1.0.3",
         "enhanced-resolve@5.12.0",
         "es-module-lexer@0.9.3",
@@ -40084,7 +40089,7 @@
     {
       "ref": "uri-js@4.4.1",
       "dependsOn": [
-        "punycode@2.1.1"
+        "punycode@2.3.0"
       ]
     },
     {
@@ -40117,7 +40122,7 @@
         "reflect-metadata@0.1.13",
         "semver@7.3.7",
         "sourcemap-codec@1.4.8",
-        "tslib@2.4.1",
+        "tslib@2.5.0",
         "typescript@4.6.4",
         "yargs@17.5.1"
       ]
@@ -40130,10 +40135,10 @@
         "@babel/generator@7.18.12",
         "@babel/helper-compilation-targets@7.20.7",
         "@babel/helper-module-transforms@7.20.11",
-        "@babel/helpers@7.20.7",
-        "@babel/parser@7.20.7",
+        "@babel/helpers@7.20.13",
+        "@babel/parser@7.20.13",
         "@babel/template@7.18.10",
-        "@babel/traverse@7.20.10",
+        "@babel/traverse@7.20.13",
         "@babel/types@7.20.7",
         "convert-source-map@1.9.0",
         "debug@4.3.4",
@@ -40219,10 +40224,10 @@
     {
       "ref": "@babel/helper-compilation-targets@7.20.7",
       "dependsOn": [
-        "@babel/compat-data@7.20.10",
+        "@babel/compat-data@7.20.14",
         "@babel/core@7.18.10",
         "@babel/helper-validator-option@7.18.6",
-        "browserslist@4.21.4",
+        "browserslist@4.21.5",
         "lru-cache@5.1.1",
         "@babel/helper-compilation-targets@7.20.7|semver@6.3.0"
       ]
@@ -40231,17 +40236,17 @@
       "ref": "@babel/helper-compilation-targets@7.20.7|semver@6.3.0"
     },
     {
-      "ref": "@babel/compat-data@7.20.10"
+      "ref": "@babel/compat-data@7.20.14"
     },
     {
       "ref": "@babel/helper-validator-option@7.18.6"
     },
     {
-      "ref": "browserslist@4.21.4",
+      "ref": "browserslist@4.21.5",
       "dependsOn": [
-        "caniuse-lite@1.0.30001441",
+        "caniuse-lite@1.0.30001450",
         "electron-to-chromium@1.4.284",
-        "node-releases@2.0.8",
+        "node-releases@2.0.9",
         "update-browserslist-db@1.0.10"
       ]
     },
@@ -40263,7 +40268,7 @@
         "@babel/helper-split-export-declaration@7.18.6",
         "@babel/helper-validator-identifier@7.19.1",
         "@babel/helper-module-transforms@7.20.11|@babel/template@7.20.7",
-        "@babel/traverse@7.20.10",
+        "@babel/traverse@7.20.13",
         "@babel/types@7.20.7"
       ]
     },
@@ -40271,7 +40276,7 @@
       "ref": "@babel/helper-module-transforms@7.20.11|@babel/template@7.20.7",
       "dependsOn": [
         "@babel/code-frame@7.18.6",
-        "@babel/parser@7.20.7",
+        "@babel/parser@7.20.13",
         "@babel/types@7.20.7"
       ]
     },
@@ -40305,33 +40310,33 @@
       ]
     },
     {
-      "ref": "@babel/parser@7.20.7"
+      "ref": "@babel/parser@7.20.13"
     },
     {
-      "ref": "@babel/traverse@7.20.10",
+      "ref": "@babel/traverse@7.20.13",
       "dependsOn": [
         "@babel/code-frame@7.18.6",
-        "@babel/traverse@7.20.10|@babel/generator@7.20.7",
+        "@babel/traverse@7.20.13|@babel/generator@7.20.14",
         "@babel/helper-environment-visitor@7.18.9",
         "@babel/helper-function-name@7.19.0",
         "@babel/helper-hoist-variables@7.18.6",
         "@babel/helper-split-export-declaration@7.18.6",
-        "@babel/parser@7.20.7",
+        "@babel/parser@7.20.13",
         "@babel/types@7.20.7",
         "debug@4.3.4",
         "globals@11.12.0"
       ]
     },
     {
-      "ref": "@babel/traverse@7.20.10|@babel/generator@7.20.7",
+      "ref": "@babel/traverse@7.20.13|@babel/generator@7.20.14",
       "dependsOn": [
         "@babel/types@7.20.7",
-        "@babel/traverse@7.20.10|@jridgewell/gen-mapping@0.3.2",
+        "@babel/traverse@7.20.13|@jridgewell/gen-mapping@0.3.2",
         "jsesc@2.5.2"
       ]
     },
     {
-      "ref": "@babel/traverse@7.20.10|@jridgewell/gen-mapping@0.3.2",
+      "ref": "@babel/traverse@7.20.13|@jridgewell/gen-mapping@0.3.2",
       "dependsOn": [
         "@jridgewell/set-array@1.1.2",
         "@jridgewell/sourcemap-codec@1.4.14",
@@ -40339,18 +40344,18 @@
       ]
     },
     {
-      "ref": "@babel/helpers@7.20.7",
+      "ref": "@babel/helpers@7.20.13",
       "dependsOn": [
-        "@babel/helpers@7.20.7|@babel/template@7.20.7",
-        "@babel/traverse@7.20.10",
+        "@babel/helpers@7.20.13|@babel/template@7.20.7",
+        "@babel/traverse@7.20.13",
         "@babel/types@7.20.7"
       ]
     },
     {
-      "ref": "@babel/helpers@7.20.7|@babel/template@7.20.7",
+      "ref": "@babel/helpers@7.20.13|@babel/template@7.20.7",
       "dependsOn": [
         "@babel/code-frame@7.18.6",
-        "@babel/parser@7.20.7",
+        "@babel/parser@7.20.13",
         "@babel/types@7.20.7"
       ]
     },
@@ -40358,7 +40363,7 @@
       "ref": "@babel/template@7.18.10",
       "dependsOn": [
         "@babel/code-frame@7.18.6",
-        "@babel/parser@7.20.7",
+        "@babel/parser@7.20.13",
         "@babel/types@7.20.7"
       ]
     },
@@ -40436,7 +40441,7 @@
       "dependsOn": [
         "@babel/helper-function-name@7.19.0",
         "@babel/template@7.18.10",
-        "@babel/traverse@7.20.10",
+        "@babel/traverse@7.20.13",
         "@babel/types@7.20.7"
       ]
     },
@@ -40474,7 +40479,7 @@
     {
       "ref": "babel-plugin-polyfill-corejs2@0.3.3",
       "dependsOn": [
-        "@babel/compat-data@7.20.10",
+        "@babel/compat-data@7.20.14",
         "@babel/core@7.18.10",
         "@babel/helper-define-polyfill-provider@0.3.3",
         "babel-plugin-polyfill-corejs2@0.3.3|semver@6.3.0"
@@ -40514,13 +40519,13 @@
       "dependsOn": [
         "@babel/core@7.18.10",
         "@babel/helper-define-polyfill-provider@0.3.3",
-        "core-js-compat@3.27.1"
+        "core-js-compat@3.27.2"
       ]
     },
     {
-      "ref": "core-js-compat@3.27.1",
+      "ref": "core-js-compat@3.27.2",
       "dependsOn": [
-        "browserslist@4.21.4"
+        "browserslist@4.21.5"
       ]
     },
     {
@@ -40533,7 +40538,7 @@
     {
       "ref": "@babel/preset-env@7.18.10",
       "dependsOn": [
-        "@babel/compat-data@7.20.10",
+        "@babel/compat-data@7.20.14",
         "@babel/core@7.18.10",
         "@babel/helper-compilation-targets@7.20.7",
         "@babel/helper-plugin-utils@7.20.2",
@@ -40573,7 +40578,7 @@
         "@babel/plugin-transform-arrow-functions@7.20.7",
         "@babel/plugin-transform-async-to-generator@7.18.6",
         "@babel/plugin-transform-block-scoped-functions@7.18.6",
-        "@babel/plugin-transform-block-scoping@7.20.11",
+        "@babel/plugin-transform-block-scoping@7.20.14",
         "@babel/plugin-transform-classes@7.20.7",
         "@babel/plugin-transform-computed-properties@7.20.7",
         "@babel/plugin-transform-destructuring@7.20.7",
@@ -40607,7 +40612,7 @@
         "babel-plugin-polyfill-corejs2@0.3.3",
         "babel-plugin-polyfill-corejs3@0.5.3",
         "babel-plugin-polyfill-regenerator@0.4.1",
-        "core-js-compat@3.27.1",
+        "core-js-compat@3.27.2",
         "@babel/preset-env@7.18.10|semver@6.3.0"
       ]
     },
@@ -40649,12 +40654,12 @@
       "ref": "@babel/plugin-proposal-class-properties@7.18.6",
       "dependsOn": [
         "@babel/core@7.18.10",
-        "@babel/helper-create-class-features-plugin@7.20.7",
+        "@babel/helper-create-class-features-plugin@7.20.12",
         "@babel/helper-plugin-utils@7.20.2"
       ]
     },
     {
-      "ref": "@babel/helper-create-class-features-plugin@7.20.7",
+      "ref": "@babel/helper-create-class-features-plugin@7.20.12",
       "dependsOn": [
         "@babel/core@7.18.10",
         "@babel/helper-annotate-as-pure@7.18.6",
@@ -40663,6 +40668,7 @@
         "@babel/helper-member-expression-to-functions@7.20.7",
         "@babel/helper-optimise-call-expression@7.18.6",
         "@babel/helper-replace-supers@7.20.7",
+        "@babel/helper-skip-transparent-expression-wrappers@7.20.0",
         "@babel/helper-split-export-declaration@7.18.6"
       ]
     },
@@ -40685,7 +40691,7 @@
         "@babel/helper-member-expression-to-functions@7.20.7",
         "@babel/helper-optimise-call-expression@7.18.6",
         "@babel/helper-replace-supers@7.20.7|@babel/template@7.20.7",
-        "@babel/traverse@7.20.10",
+        "@babel/traverse@7.20.13",
         "@babel/types@7.20.7"
       ]
     },
@@ -40693,7 +40699,7 @@
       "ref": "@babel/helper-replace-supers@7.20.7|@babel/template@7.20.7",
       "dependsOn": [
         "@babel/code-frame@7.18.6",
-        "@babel/parser@7.20.7",
+        "@babel/parser@7.20.13",
         "@babel/types@7.20.7"
       ]
     },
@@ -40701,7 +40707,7 @@
       "ref": "@babel/plugin-proposal-class-static-block@7.20.7",
       "dependsOn": [
         "@babel/core@7.18.10",
-        "@babel/helper-create-class-features-plugin@7.20.7",
+        "@babel/helper-create-class-features-plugin@7.20.12",
         "@babel/helper-plugin-utils@7.20.2",
         "@babel/plugin-syntax-class-static-block@7.14.5"
       ]
@@ -40806,7 +40812,7 @@
     {
       "ref": "@babel/plugin-proposal-object-rest-spread@7.20.7",
       "dependsOn": [
-        "@babel/compat-data@7.20.10",
+        "@babel/compat-data@7.20.14",
         "@babel/core@7.18.10",
         "@babel/helper-compilation-targets@7.20.7",
         "@babel/helper-plugin-utils@7.20.2",
@@ -40854,7 +40860,7 @@
       "ref": "@babel/plugin-proposal-private-methods@7.18.6",
       "dependsOn": [
         "@babel/core@7.18.10",
-        "@babel/helper-create-class-features-plugin@7.20.7",
+        "@babel/helper-create-class-features-plugin@7.20.12",
         "@babel/helper-plugin-utils@7.20.2"
       ]
     },
@@ -40863,7 +40869,7 @@
       "dependsOn": [
         "@babel/core@7.18.10",
         "@babel/helper-annotate-as-pure@7.18.6",
-        "@babel/helper-create-class-features-plugin@7.20.7",
+        "@babel/helper-create-class-features-plugin@7.20.12",
         "@babel/helper-plugin-utils@7.20.2",
         "@babel/plugin-syntax-private-property-in-object@7.14.5"
       ]
@@ -40975,7 +40981,7 @@
       ]
     },
     {
-      "ref": "@babel/plugin-transform-block-scoping@7.20.11",
+      "ref": "@babel/plugin-transform-block-scoping@7.20.14",
       "dependsOn": [
         "@babel/core@7.18.10",
         "@babel/helper-plugin-utils@7.20.2"
@@ -41008,7 +41014,7 @@
       "ref": "@babel/plugin-transform-computed-properties@7.20.7|@babel/template@7.20.7",
       "dependsOn": [
         "@babel/code-frame@7.18.6",
-        "@babel/parser@7.20.7",
+        "@babel/parser@7.20.13",
         "@babel/types@7.20.7"
       ]
     },
@@ -41428,7 +41434,7 @@
       "ref": "istanbul-lib-instrument@5.2.1",
       "dependsOn": [
         "@babel/core@7.18.10",
-        "@babel/parser@7.20.7",
+        "@babel/parser@7.20.13",
         "@istanbuljs/schema@0.1.3",
         "istanbul-lib-coverage@3.2.0",
         "istanbul-lib-instrument@5.2.1|semver@6.3.0"
@@ -41501,18 +41507,18 @@
       "ref": "concat-map@0.0.1"
     },
     {
-      "ref": "caniuse-lite@1.0.30001441"
+      "ref": "caniuse-lite@1.0.30001450"
     },
     {
       "ref": "electron-to-chromium@1.4.284"
     },
     {
-      "ref": "node-releases@2.0.8"
+      "ref": "node-releases@2.0.9"
     },
     {
       "ref": "update-browserslist-db@1.0.10",
       "dependsOn": [
-        "browserslist@4.21.4",
+        "browserslist@4.21.5",
         "escalade@3.1.1",
         "picocolors@1.0.0"
       ]
@@ -41696,17 +41702,14 @@
       "dependsOn": [
         "chownr@2.0.0",
         "fs-minipass@2.1.0",
-        "tar@6.1.13|minipass@4.0.0",
+        "tar@6.1.13|minipass@4.0.1",
         "minizlib@2.1.2",
         "mkdirp@1.0.4",
         "tar@6.1.13|yallist@4.0.0"
       ]
     },
     {
-      "ref": "tar@6.1.13|minipass@4.0.0",
-      "dependsOn": [
-        "tar@6.1.13|yallist@4.0.0"
-      ]
+      "ref": "tar@6.1.13|minipass@4.0.1"
     },
     {
       "ref": "tar@6.1.13|yallist@4.0.0"
@@ -41744,7 +41747,7 @@
         "globby@13.1.3",
         "normalize-path@3.0.0",
         "copy-webpack-plugin@11.0.0|schema-utils@4.0.0",
-        "serialize-javascript@6.0.0",
+        "serialize-javascript@6.0.1",
         "webpack@5.74.0"
       ]
     },
@@ -41875,7 +41878,7 @@
       ]
     },
     {
-      "ref": "serialize-javascript@6.0.0",
+      "ref": "serialize-javascript@6.0.1",
       "dependsOn": [
         "randombytes@2.1.0"
       ]
@@ -42277,7 +42280,7 @@
     {
       "ref": "rxjs@7.5.7",
       "dependsOn": [
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -42370,7 +42373,7 @@
         "socket.io@4.5.4",
         "karma@6.3.20|source-map@0.6.1",
         "karma@6.3.20|tmp@0.2.1",
-        "ua-parser-js@0.7.32",
+        "ua-parser-js@0.7.33",
         "karma@6.3.20|yargs@16.2.0"
       ]
     },
@@ -42431,13 +42434,13 @@
     {
       "ref": "less-loader@11.0.0",
       "dependsOn": [
-        "klona@2.0.5",
+        "klona@2.0.6",
         "less@4.1.3",
         "webpack@5.74.0"
       ]
     },
     {
-      "ref": "klona@2.0.5"
+      "ref": "klona@2.0.6"
     },
     {
       "ref": "less@4.1.3",
@@ -42451,7 +42454,7 @@
         "needle@3.2.0",
         "parse-node-version@1.0.1",
         "less@4.1.3|source-map@0.6.1",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -42530,7 +42533,7 @@
       "ref": "parse-node-version@1.0.1"
     },
     {
-      "ref": "tslib@2.4.1"
+      "ref": "tslib@2.5.0"
     },
     {
       "ref": "license-webpack-plugin@4.0.2",
@@ -42746,7 +42749,7 @@
       "ref": "postcss-loader@7.0.1",
       "dependsOn": [
         "cosmiconfig@7.1.0",
-        "klona@2.0.5",
+        "klona@2.0.6",
         "postcss@8.4.16",
         "semver@7.3.7",
         "webpack@5.74.0"
@@ -42829,11 +42832,11 @@
         "@csstools/postcss-trigonometric-functions@1.0.2",
         "@csstools/postcss-unset-value@1.0.2",
         "autoprefixer@10.4.13",
-        "browserslist@4.21.4",
+        "browserslist@4.21.5",
         "css-blank-pseudo@3.0.3",
         "css-has-pseudo@3.0.4",
         "css-prefers-color-scheme@6.0.3",
-        "cssdb@7.2.0",
+        "cssdb@7.4.1",
         "postcss-attribute-case-insensitive@5.0.2",
         "postcss-clamp@4.1.0",
         "postcss-color-functional-notation@4.2.4",
@@ -42869,13 +42872,13 @@
     {
       "ref": "@csstools/postcss-cascade-layers@1.1.1",
       "dependsOn": [
-        "@csstools/selector-specificity@2.0.2",
+        "@csstools/selector-specificity@2.1.1",
         "postcss-selector-parser@6.0.11",
         "postcss@8.4.16"
       ]
     },
     {
-      "ref": "@csstools/selector-specificity@2.0.2",
+      "ref": "@csstools/selector-specificity@2.1.1",
       "dependsOn": [
         "postcss-selector-parser@6.0.11",
         "postcss@8.4.16"
@@ -42921,7 +42924,7 @@
     {
       "ref": "@csstools/postcss-is-pseudo-class@2.0.7",
       "dependsOn": [
-        "@csstools/selector-specificity@2.0.2",
+        "@csstools/selector-specificity@2.1.1",
         "postcss-selector-parser@6.0.11",
         "postcss@8.4.16"
       ]
@@ -42978,8 +42981,8 @@
     {
       "ref": "autoprefixer@10.4.13",
       "dependsOn": [
-        "browserslist@4.21.4",
-        "caniuse-lite@1.0.30001441",
+        "browserslist@4.21.5",
+        "caniuse-lite@1.0.30001450",
         "fraction.js@4.2.0",
         "normalize-range@0.1.2",
         "picocolors@1.0.0",
@@ -43014,7 +43017,7 @@
       ]
     },
     {
-      "ref": "cssdb@7.2.0"
+      "ref": "cssdb@7.4.1"
     },
     {
       "ref": "postcss-attribute-case-insensitive@5.0.2",
@@ -43156,7 +43159,7 @@
     {
       "ref": "postcss-nesting@10.2.0",
       "dependsOn": [
-        "@csstools/selector-specificity@2.0.2",
+        "@csstools/selector-specificity@2.1.1",
         "postcss-selector-parser@6.0.11",
         "postcss@8.4.16"
       ]
@@ -43255,7 +43258,7 @@
     {
       "ref": "sass-loader@13.0.2",
       "dependsOn": [
-        "klona@2.0.5",
+        "klona@2.0.6",
         "neo-async@2.6.2",
         "sass@1.54.4",
         "webpack@5.74.0"
@@ -43268,12 +43271,12 @@
       "ref": "sass@1.54.4",
       "dependsOn": [
         "chokidar@3.5.3",
-        "immutable@4.2.1",
+        "immutable@4.2.2",
         "source-map-js@1.0.2"
       ]
     },
     {
-      "ref": "immutable@4.2.1"
+      "ref": "immutable@4.2.2"
     },
     {
       "ref": "source-map-loader@4.0.0",
@@ -43300,7 +43303,7 @@
       "ref": "stylus-loader@7.0.0",
       "dependsOn": [
         "fast-glob@3.2.12",
-        "klona@2.0.5",
+        "klona@2.0.6",
         "normalize-path@3.0.0",
         "stylus@0.59.0",
         "webpack@5.74.0"
@@ -43309,7 +43312,7 @@
     {
       "ref": "stylus@0.59.0",
       "dependsOn": [
-        "@adobe/css-tools@4.0.1",
+        "@adobe/css-tools@4.1.0",
         "debug@4.3.4",
         "stylus@0.59.0|glob@7.2.3",
         "sax@1.2.4",
@@ -43341,13 +43344,13 @@
       ]
     },
     {
-      "ref": "@adobe/css-tools@4.0.1"
+      "ref": "@adobe/css-tools@4.1.0"
     },
     {
       "ref": "terser@5.14.2",
       "dependsOn": [
         "@jridgewell/source-map@0.3.2",
-        "acorn@8.8.1",
+        "acorn@8.8.2",
         "terser@5.14.2|commander@2.20.3",
         "source-map-support@0.5.21"
       ]
@@ -43371,7 +43374,7 @@
       ]
     },
     {
-      "ref": "acorn@8.8.1"
+      "ref": "acorn@8.8.2"
     },
     {
       "ref": "text-table@0.2.0"
@@ -43383,7 +43386,7 @@
       "ref": "webpack-dev-middleware@5.3.3",
       "dependsOn": [
         "colorette@2.0.19",
-        "memfs@3.4.12",
+        "memfs@3.4.13",
         "mime-types@2.1.35",
         "range-parser@1.2.1",
         "webpack-dev-middleware@5.3.3|schema-utils@4.0.0",
@@ -43403,7 +43406,7 @@
       "ref": "colorette@2.0.19"
     },
     {
-      "ref": "memfs@3.4.12",
+      "ref": "memfs@3.4.13",
       "dependsOn": [
         "fs-monkey@1.0.3"
       ]
@@ -43435,12 +43438,12 @@
     {
       "ref": "@types/connect-history-api-fallback@1.3.5",
       "dependsOn": [
-        "@types/express-serve-static-core@4.17.32",
+        "@types/express-serve-static-core@4.17.33",
         "@types/node@12.20.55"
       ]
     },
     {
-      "ref": "@types/express-serve-static-core@4.17.32",
+      "ref": "@types/express-serve-static-core@4.17.33",
       "dependsOn": [
         "@types/node@12.20.55",
         "@types/qs@6.9.7",
@@ -43454,10 +43457,10 @@
       "ref": "@types/range-parser@1.2.4"
     },
     {
-      "ref": "@types/express@4.17.15",
+      "ref": "@types/express@4.17.16",
       "dependsOn": [
         "@types/body-parser@1.19.2",
-        "@types/express-serve-static-core@4.17.32",
+        "@types/express-serve-static-core@4.17.33",
         "@types/qs@6.9.7",
         "@types/serve-static@1.15.0"
       ]
@@ -43485,7 +43488,7 @@
     {
       "ref": "@types/serve-index@1.9.1",
       "dependsOn": [
-        "@types/express@4.17.15"
+        "@types/express@4.17.16"
       ]
     },
     {
@@ -43507,7 +43510,7 @@
       "ref": "ansi-html-community@0.0.8"
     },
     {
-      "ref": "bonjour-service@1.0.14",
+      "ref": "bonjour-service@1.1.0",
       "dependsOn": [
         "array-flatten@2.1.2",
         "dns-equal@1.0.0",
@@ -43648,7 +43651,7 @@
         "express@4.18.2|array-flatten@1.1.1",
         "body-parser@1.20.1",
         "content-disposition@0.5.4",
-        "content-type@1.0.4",
+        "content-type@1.0.5",
         "cookie-signature@1.0.6",
         "express@4.18.2|cookie@0.5.0",
         "express@4.18.2|debug@2.6.9",
@@ -43711,7 +43714,7 @@
       "ref": "body-parser@1.20.1",
       "dependsOn": [
         "bytes@3.1.2",
-        "content-type@1.0.4",
+        "content-type@1.0.5",
         "body-parser@1.20.1|debug@2.6.9",
         "depd@2.0.0",
         "destroy@1.2.0",
@@ -43740,7 +43743,7 @@
       ]
     },
     {
-      "ref": "content-type@1.0.4"
+      "ref": "content-type@1.0.5"
     },
     {
       "ref": "cookie-signature@1.0.6"
@@ -43880,7 +43883,7 @@
     {
       "ref": "http-proxy-middleware@2.0.6",
       "dependsOn": [
-        "@types/express@4.17.15",
+        "@types/express@4.17.16",
         "@types/http-proxy@1.17.9",
         "http-proxy@1.18.1",
         "is-glob@4.0.3",
@@ -44263,7 +44266,7 @@
     {
       "ref": "acorn-import-assertions@1.8.0",
       "dependsOn": [
-        "acorn@8.8.1"
+        "acorn@8.8.2"
       ]
     },
     {
@@ -44316,7 +44319,7 @@
         "@jridgewell/trace-mapping@0.3.17",
         "jest-worker@27.5.1",
         "terser-webpack-plugin@5.3.6|schema-utils@3.1.1",
-        "serialize-javascript@6.0.0",
+        "serialize-javascript@6.0.1",
         "terser@5.14.2",
         "webpack@5.74.0"
       ]
@@ -44375,14 +44378,14 @@
       "ref": "@angular/animations@14.2.12",
       "dependsOn": [
         "@angular/core@14.2.12",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
       "ref": "@angular/core@14.2.12",
       "dependsOn": [
         "rxjs@7.5.7",
-        "tslib@2.4.1",
+        "tslib@2.5.0",
         "zone.js@0.11.8"
       ]
     },
@@ -44636,7 +44639,7 @@
       "dependsOn": [
         "agentkeepalive@4.2.1",
         "cacache@16.1.2",
-        "http-cache-semantics@4.1.0",
+        "http-cache-semantics@4.1.1",
         "http-proxy-agent@5.0.0",
         "https-proxy-agent@5.0.1",
         "is-lambda@1.0.1",
@@ -44778,7 +44781,7 @@
       ]
     },
     {
-      "ref": "http-cache-semantics@4.1.0"
+      "ref": "http-cache-semantics@4.1.1"
     },
     {
       "ref": "http-proxy-agent@5.0.0",
@@ -44970,14 +44973,14 @@
       "dependsOn": [
         "@angular/core@14.2.12",
         "rxjs@7.5.7",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
       "ref": "@angular/compiler@14.2.12",
       "dependsOn": [
         "@angular/core@14.2.12",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -45017,7 +45020,7 @@
     {
       "ref": "zone.js@0.11.8",
       "dependsOn": [
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -45027,7 +45030,7 @@
         "@angular/core@14.2.12",
         "@angular/platform-browser@14.2.12",
         "rxjs@7.5.7",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -45036,7 +45039,7 @@
         "@angular/animations@14.2.12",
         "@angular/common@14.2.12",
         "@angular/core@14.2.12",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -45046,7 +45049,7 @@
         "@angular/compiler@14.2.12",
         "@angular/core@14.2.12",
         "@angular/platform-browser@14.2.12",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -45056,7 +45059,7 @@
         "@angular/core@14.2.12",
         "@angular/platform-browser@14.2.12",
         "rxjs@7.5.7",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -45064,13 +45067,13 @@
       "dependsOn": [
         "@angular/core@14.2.12",
         "@angular/forms@14.2.12",
-        "@types/codemirror@5.60.6",
+        "@types/codemirror@5.60.7",
         "codemirror@5.65.11",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
-      "ref": "@types/codemirror@5.60.6",
+      "ref": "@types/codemirror@5.60.7",
       "dependsOn": [
         "@types/tern@0.23.4"
       ]
@@ -45087,13 +45090,13 @@
     {
       "ref": "@cyclonedx/cyclonedx-npm@1.7.2",
       "dependsOn": [
-        "@cyclonedx/cyclonedx-library@1.9.2",
-        "commander@9.4.1",
+        "@cyclonedx/cyclonedx-library@1.10.0",
+        "commander@9.5.0",
         "xmlbuilder2@3.0.2"
       ]
     },
     {
-      "ref": "@cyclonedx/cyclonedx-library@1.9.2",
+      "ref": "@cyclonedx/cyclonedx-library@1.10.0",
       "dependsOn": [
         "packageurl-js@1.0.0",
         "xmlbuilder2@3.0.2"
@@ -45120,7 +45123,7 @@
       ]
     },
     {
-      "ref": "commander@9.4.1"
+      "ref": "commander@9.5.0"
     },
     {
       "ref": "@oozcitak/dom@1.15.10",
@@ -45154,7 +45157,7 @@
       "dependsOn": [
         "@angular/core@14.2.12",
         "rxjs@7.5.7",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -45163,7 +45166,7 @@
         "@angular/common@14.2.12",
         "@ngx-translate/core@14.0.0",
         "rxjs@7.5.7",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -45181,13 +45184,13 @@
         "@angular/common@14.2.12",
         "@angular/core@14.2.12",
         "jsoneditor@9.9.2",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
       "ref": "jsoneditor@9.9.2",
       "dependsOn": [
-        "ace-builds@1.14.0",
+        "ace-builds@1.15.0",
         "jsoneditor@9.9.2|ajv@6.12.6",
         "javascript-natural-sort@0.7.1",
         "jmespath@0.16.0",
@@ -45211,12 +45214,12 @@
       "ref": "jsoneditor@9.9.2|json-schema-traverse@0.4.1"
     },
     {
-      "ref": "angular-gridster2@14.1.2",
+      "ref": "angular-gridster2@14.1.4",
       "dependsOn": [
         "@angular/common@14.2.12",
         "@angular/core@14.2.12",
         "rxjs@7.5.7",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -45250,7 +45253,7 @@
       "ref": "crypto-js@4.1.1"
     },
     {
-      "ref": "d3-array@3.2.1",
+      "ref": "d3-array@3.2.2",
       "dependsOn": [
         "internmap@2.0.3"
       ]
@@ -45313,7 +45316,7 @@
     {
       "ref": "d3-scale@4.0.2",
       "dependsOn": [
-        "d3-array@3.2.1",
+        "d3-array@3.2.2",
         "d3-format@3.1.0",
         "d3-interpolate@3.0.1",
         "d3-time-format@4.1.0",
@@ -45329,7 +45332,7 @@
     {
       "ref": "d3-time@3.1.0",
       "dependsOn": [
-        "d3-array@3.2.1"
+        "d3-array@3.2.2"
       ]
     },
     {
@@ -45342,23 +45345,23 @@
       "ref": "d3-path@3.1.0"
     },
     {
-      "ref": "date-holidays@3.16.13",
+      "ref": "date-holidays@3.16.15",
       "dependsOn": [
         "date-holidays-parser@3.4.3",
-        "date-holidays@3.16.13|js-yaml@4.1.0",
+        "date-holidays@3.16.15|js-yaml@4.1.0",
         "lodash.omit@4.5.0",
         "lodash.pick@4.4.0",
         "prepin@1.0.3"
       ]
     },
     {
-      "ref": "date-holidays@3.16.13|js-yaml@4.1.0",
+      "ref": "date-holidays@3.16.15|js-yaml@4.1.0",
       "dependsOn": [
-        "date-holidays@3.16.13|argparse@2.0.1"
+        "date-holidays@3.16.15|argparse@2.0.1"
       ]
     },
     {
-      "ref": "date-holidays@3.16.13|argparse@2.0.1"
+      "ref": "date-holidays@3.16.15|argparse@2.0.1"
     },
     {
       "ref": "date-holidays-parser@3.4.3",
@@ -45368,7 +45371,7 @@
         "date-bengali-revised@2.0.2",
         "date-chinese@2.1.4",
         "date-easter@1.0.2",
-        "deepmerge@4.2.2",
+        "deepmerge@4.3.0",
         "jalaali-js@1.2.6",
         "moment-timezone@0.5.40"
       ]
@@ -45401,7 +45404,7 @@
       "ref": "date-easter@1.0.2"
     },
     {
-      "ref": "deepmerge@4.2.2"
+      "ref": "deepmerge@4.3.0"
     },
     {
       "ref": "jalaali-js@1.2.6"
@@ -45434,10 +45437,10 @@
       "ref": "colors@1.4.0"
     },
     {
-      "ref": "ace-builds@1.14.0"
+      "ref": "ace-builds@1.15.0"
     },
     {
-      "ref": "punycode@2.1.1"
+      "ref": "punycode@2.3.0"
     },
     {
       "ref": "javascript-natural-sort@0.7.1"
@@ -45586,19 +45589,19 @@
       "ref": "side-channel@1.0.4",
       "dependsOn": [
         "call-bind@1.0.2",
-        "get-intrinsic@1.1.3",
-        "object-inspect@1.12.2"
+        "get-intrinsic@1.2.0",
+        "object-inspect@1.12.3"
       ]
     },
     {
       "ref": "call-bind@1.0.2",
       "dependsOn": [
         "function-bind@1.1.1",
-        "get-intrinsic@1.1.3"
+        "get-intrinsic@1.2.0"
       ]
     },
     {
-      "ref": "get-intrinsic@1.1.3",
+      "ref": "get-intrinsic@1.2.0",
       "dependsOn": [
         "function-bind@1.1.1",
         "has-symbols@1.0.3",
@@ -45609,7 +45612,7 @@
       "ref": "has-symbols@1.0.3"
     },
     {
-      "ref": "object-inspect@1.12.2"
+      "ref": "object-inspect@1.12.3"
     },
     {
       "ref": "raw-body@2.5.1",
@@ -45780,7 +45783,7 @@
         "debug@4.3.4",
         "engine.io@6.2.1",
         "socket.io-adapter@2.4.0",
-        "socket.io-parser@4.2.1"
+        "socket.io-parser@4.2.2"
       ]
     },
     {
@@ -45797,7 +45800,7 @@
         "cookie@0.4.2",
         "cors@2.8.5",
         "debug@4.3.4",
-        "engine.io-parser@5.0.4",
+        "engine.io-parser@5.0.6",
         "ws@8.2.3"
       ]
     },
@@ -45824,7 +45827,7 @@
       "ref": "object-assign@4.1.1"
     },
     {
-      "ref": "engine.io-parser@5.0.4"
+      "ref": "engine.io-parser@5.0.6"
     },
     {
       "ref": "ws@8.2.3"
@@ -45833,7 +45836,7 @@
       "ref": "socket.io-adapter@2.4.0"
     },
     {
-      "ref": "socket.io-parser@4.2.1",
+      "ref": "socket.io-parser@4.2.2",
       "dependsOn": [
         "@socket.io/component-emitter@3.1.0",
         "debug@4.3.4"
@@ -45843,7 +45846,7 @@
       "ref": "@socket.io/component-emitter@3.1.0"
     },
     {
-      "ref": "ua-parser-js@0.7.32"
+      "ref": "ua-parser-js@0.7.33"
     },
     {
       "ref": "moment@2.29.4"
@@ -45860,7 +45863,7 @@
         "@angular/router@14.2.12",
         "@ant-design/icons-angular@14.1.0",
         "date-fns@2.29.3",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -45870,7 +45873,7 @@
         "@angular/core@14.2.12",
         "@angular/cdk@14.2.7|parse5@5.1.1",
         "rxjs@7.5.7",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -45884,7 +45887,7 @@
         "@angular/platform-browser@14.2.12",
         "@ant-design/colors@5.1.1",
         "rxjs@7.5.7",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -45907,7 +45910,7 @@
         "chart.js@3.9.1",
         "lodash-es@4.17.21",
         "rxjs@7.5.7",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -45930,7 +45933,7 @@
         "@angular/common@14.2.12",
         "@angular/core@14.2.12",
         "ngx-window-token@6.0.0",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
@@ -45938,16 +45941,16 @@
       "dependsOn": [
         "@angular/common@14.2.12",
         "@angular/core@14.2.12",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {
-      "ref": "ngx-toastr@16.0.1",
+      "ref": "ngx-toastr@16.0.2",
       "dependsOn": [
         "@angular/common@14.2.12",
         "@angular/core@14.2.12",
         "@angular/platform-browser@14.2.12",
-        "tslib@2.4.1"
+        "tslib@2.5.0"
       ]
     },
     {

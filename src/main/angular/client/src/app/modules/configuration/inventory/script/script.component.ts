@@ -51,7 +51,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
 
   @ViewChild('codeMirror', { static: false }) cm: any;
 
-  constructor(private coreService: CoreService, private translate: TranslateService, private dataService: DataService,
+  constructor(public coreService: CoreService, private translate: TranslateService, private dataService: DataService,
      private ref: ChangeDetectorRef, private modal: NzModalService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {

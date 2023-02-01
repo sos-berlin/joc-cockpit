@@ -304,6 +304,32 @@ export class DurationRegexValidator implements Validator {
 }
 
 @Directive({
+  selector: '[validateRangeRegex]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => TimeRangeRegexValidator), multi: true}
+  ]
+})
+export class TimeRangeRegexValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      if (v == '') {
+        return null;
+      }
+      if (/^-?[0-9]+(\.\.-?[0-9]+)?(, *-?[0-9]+(\.\.-?[0-9]+)?)*$/i.test(v) ||  /^\s*(\d+)\s*$/i.test(v)) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+    return {
+      invalidRange: true
+    };
+  }
+}
+
+
+@Directive({
   selector: '[identifierValidation]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => IdentifierValidator), multi: true}

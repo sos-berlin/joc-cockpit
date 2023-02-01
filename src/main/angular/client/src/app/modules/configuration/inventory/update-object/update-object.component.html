@@ -14,16 +14,22 @@
         <div class="form-group row">
           <label class="col-md-4 form-control-label"
                  translate>workflow.label.title</label>
-          <div class="col-md-8">
+          <div class="col-md-6">
             <input type="text" class="form-control" name="title" placeholder="{{'common.placeholder.title' | translate}}"
                    [(ngModel)]="object.title" autocomplete="off"/>
+          </div>
+          <div class="col-md-1">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.title" name="ctitle"></label>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 form-control-label" title="{{'inventory.label.documentation' | translate}}"
                  translate>inventory.label.documentation</label>
-          <div class="col-md-8">
+          <div class="col-md-6">
             <app-select-document [documentationTree]="documentationTree" [data]="object"></app-select-document>
+          </div>
+          <div class="col-md-1">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.documentation" name="cdocumentation"></label>
           </div>
         </div>
         <ng-container *ngIf="type === 'JOBRESOURCE'">
@@ -116,7 +122,7 @@
           <div class="form-group row">
             <label class="col-md-4 form-control-label"
                    translate>workflow.label.jobResourceNames</label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <nz-select
                 name="jobResource"
                 [(ngModel)]="object.jobResourceNames"
@@ -142,20 +148,26 @@
                 </nz-option-group>
               </nz-select>
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.jobResourceNames" name="cjobResourceNames"></label>
+            </div>
           </div>
           <div class="form-group row">
             <div class="col-md-4 form-control-label" translate>workflow.label.timeZone</div>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <nz-select nzAllowClear nzShowSearch name="timeZone" [(ngModel)]="object.timeZone">
                 <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
               </nz-select>
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.timeZone" name="ctimeZone"></label>
             </div>
           </div>
         </ng-container>
         <ng-container *ngIf="type === 'FILEORDERSOURCE'">
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>inventory.label.workflowName</label>
-            <div class="col-md-8 select-input-both">
+            <div class="col-md-6 select-input-both">
               <input autocomplete="off" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.workflowName' | translate}}"
                    name="workflowName" [(ngModel)]="object.workflowName">
@@ -185,49 +197,67 @@
               <i class="tree-search-clear ant-select-clear" (click)="object.workflowName = '';object.workflowName1='';"
                *ngIf="object.workflowName" nz-icon nzType="close-circle" nzTheme="fill"></i>
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.workflowName" name="cworkflowName"></label>
+            </div>
           </div>
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>workflow.label.agent</label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <app-agent-selection [skipSubagents]="true" [preferences]="preferences" [agents]="agentList"
                                    [data]="object"></app-agent-selection>
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.agent" name="cagent"></label>
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>inventory.label.directory</label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <input type="text" class="form-control" autocomplete="off"
                      placeholder="{{'inventory.placeholder.directory' | translate}}"
                      name="directory" [(ngModel)]="object.directoryExpr">
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.directoryExpr" name="cdirectoryExpr"></label>
+            </div>
           </div>
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>inventory.label.pattern</label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <input type="text" class="form-control" autocomplete="off"
                      placeholder="{{'inventory.placeholder.pattern' | translate}}"
                      name="pattern" [(ngModel)]="object.pattern">
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.pattern" name="cpattern"></label>
+            </div>
           </div>
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>common.label.timeZone</label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <nz-select nzShowSearch name="timeZone" nzAllowClear [(ngModel)]="object.timeZone">
                 <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
               </nz-select>
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.timeZone" name="ctimeZone"></label>
+            </div>
           </div>
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>workflow.label.delay</label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <nz-input-number [nzMin]="1" [nzStep]="1" name="delay" [(ngModel)]="object.delay"></nz-input-number>
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.delay" name="cdelay"></label>
             </div>
           </div>
         </ng-container>
         <ng-container *ngIf="type === 'NOTICEBOARD'">
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>inventory.label.toNotice</label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
                 <input autocomplete="off" nz-input type="text" name="toNotice"
                        placeholder="{{'inventory.placeholder.toNotice' | translate}}"
@@ -240,10 +270,13 @@
                 </nz-select>
               </ng-template>
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.toNotice" name="ctoNotice"></label>
+            </div>
           </div>
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>inventory.label.readingOrderToNoticeId</label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <nz-input-group [nzAddOnAfter]="addOnAfterTemplate3">
                 <input autocomplete="off" nz-input type="text" name="readingOrderToNoticeId"
                        placeholder="{{'inventory.placeholder.readingOrderToNoticeId' | translate}}"
@@ -256,10 +289,13 @@
                 </nz-select>
               </ng-template>
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.readingOrderToNoticeId" name="creadingOrderToNoticeId"></label>
+            </div>
           </div>
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>inventory.label.endOfLife</label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <nz-input-group [nzAddOnAfter]="addOnAfterTemplate2">
                 <input timevalidator validTimeReqex maxlength="8" [hidden]="object.units !== 'HH:MM:SS'" nz-input autocomplete="off" type="text" name="endOfLife"
                        placeholder="{{'inventory.placeholder.endOfLife' | translate}}"
@@ -278,22 +314,28 @@
                 </nz-select>
               </ng-template>
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.endOfLife" name="cendOfLife"></label>
+            </div>
           </div>
         </ng-container>
         <ng-container *ngIf="type === 'LOCK'">
           <div class="form-group row">
             <label class="col-md-4 form-control-label"
                    translate>inventory.label.limit</label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <nz-input-number [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate"
                                name="limit" [(ngModel)]="object.limit"></nz-input-number>
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.limit" name="climit"></label>
             </div>
           </div>
         </ng-container>
         <ng-container *ngIf="type === 'SCHEDULE'">
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>inventory.label.workflowNames</label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <nz-tree-select
                 name="workflowName"
                 nzNoAnimation
@@ -319,17 +361,26 @@
                 </ng-template>
               </nz-tree-select>
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.workflowNames" name="cworkflowNames"></label>
+            </div>
           </div>
           <div class="form-group row">
             <label class="col-md-4 block-ellipsis-job" translate>inventory.label.planOrderAutomatically</label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <label nz-checkbox [(ngModel)]="object.planOrderAutomatically" name="planOrderAutomatically"></label>
+            </div>
+            <div class="col-md-1">
+              <label nz-checkbox [(ngModel)]="checkboxObjects.planOrderAutomatically" name="cplanOrderAutomatically"></label>
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-4 block-ellipsis-job" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <label nz-checkbox [(ngModel)]="object.submitOrderToControllerWhenPlanned" name="submitOrderToControllerWhenPlanned"></label>
+            </div>
+            <div class="col-md-1">
+              <label nz-checkbox [(ngModel)]="checkboxObjects.submitOrderToControllerWhenPlanned" name="csubmitOrderToControllerWhenPlanned"></label>
             </div>
           </div>
           <div class="form-group row" *ngIf="(object.workflowNames && object.workflowNames.length ==1) || (object.orderParameterisations && object.orderParameterisations.length)">
@@ -338,7 +389,7 @@
           <div *ngFor="let variableSet of object.orderParameterisations; let j = index" [ngClass]="{'b-t p-t' : j != 0}">
             <div class="form-group row">
               <label class="col-md-4 form-control-label" translate>order.label.orderName</label>
-              <div class="col-md-8" [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}">
+              <div class="col-md-6" [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}">
                 <input type="text" identifierValidation maxlength="30" class="form-control" autocomplete="off" placeholder="{{'inventory.placeholder.orderName' | translate}}"
                        name="orderName{{j}}" #orderName="ngModel" [(ngModel)]="variableSet.orderName" (keydown)="onKeyPress($event, null)" (blur)="isOrderNameValid(variableSet, orderName, object.orderParameterisations)">
                 <div *ngIf="orderName.invalid && (orderName.dirty || orderName.touched)" class="text-danger help-block">
@@ -348,19 +399,28 @@
                   <a><i (click)="removeVariableSet(j)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                 </div>
               </div>
+              <div class="col-md-1">
+                <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.orderName" name="corderName"></label>
+              </div>
             </div>
             <div class="form-group row">
               <label class="col-md-4 form-control-label" translate>order.label.startNode</label>
-              <div class="col-md-8">
+              <div class="col-md-6">
                 <app-node-position [obj]="variableSet.positions" [index]="j" [type]="'START'"
                                    [workflow]="workflow" [positions]="positions"></app-node-position>
+              </div>
+              <div class="col-md-1">
+                <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.startNode" name="cstartNode"></label>
               </div>
             </div>
             <div class="form-group row">
               <label class="col-md-4 form-control-label" translate>order.label.endNode</label>
-              <div class="col-md-8">
+              <div class="col-md-6">
                 <app-node-position [obj]="variableSet.positions" [index]="j" [type]="'END'"
                                    [position]="variableSet.positions.startPosition" [workflow]="workflow" [positions]="positions"></app-node-position>
+              </div>
+              <div class="col-md-1">
+                <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.endNode" name="cendNode"></label>
               </div>
             </div>
             <div *ngIf="variableSet.forkListVariables && variableSet.forkListVariables.length > 0">
@@ -534,11 +594,14 @@
         <ng-container *ngIf="type === 'CALENDAR'">
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>common.label.type</label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <nz-select [(ngModel)]="object.type" name="cType">
                 <nz-option nzValue="WORKINGDAYSCALENDAR" [nzLabel]="'runtime.label.workingDay' | translate"></nz-option>
                 <nz-option nzValue="NONWORKINGDAYSCALENDAR" [nzLabel]="'runtime.label.nonWorkingDay' | translate"></nz-option>
               </nz-select>
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.type" name="cctype"></label>
             </div>
           </div>
           <div class="form-group row">
@@ -554,6 +617,9 @@
                               [(ngModel)]="object.to" [nzFormat]="dateFormat"
                               [nzPlaceHolder]="'common.placeholder.setEndDate' | translate"></nz-date-picker>
             </div>
+            <div class="col-md-1">
+              <label nz-checkbox [(ngModel)]="checkboxObjects.validFrom" name="cvalidFrom"></label>
+            </div>
           </div>
         </ng-container>
         <ng-container *ngIf="type === 'INCLUDESCRIPT'">
@@ -562,11 +628,13 @@
                    [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.script
               <sup class="text-danger text-sm">*</sup>
             </label>
-            <div class="col-md-8">
+            <div class="col-md-6">
               <div class="b-a">
-                <ngx-codemirror #codeMirror #cm="ngModel" name="cm"
-                                [(ngModel)]="object.script" [options]="cmOption"></ngx-codemirror>
+                <ngx-codemirror name="cm" [(ngModel)]="object.script" [options]="cmOption"></ngx-codemirror>
               </div>
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.script" name="cscript"></label>
             </div>
           </div>
         </ng-container>
@@ -588,7 +656,7 @@
           <label class="col-md-3 form-control-label">
             <label translate>inventory.label.controllers</label>
           </label>
-          <div class="col-md-8">
+          <div class="col-md-6">
             <nz-select
               nzMode="multiple"
               nzShowSearch
@@ -598,6 +666,9 @@
                 <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
               </ng-container>
             </nz-select>
+          </div>
+          <div class="col-md-1">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.selectedSchedulerIds" name="cselectedSchedulerIds"></label>
           </div>
         </div>
       </div>

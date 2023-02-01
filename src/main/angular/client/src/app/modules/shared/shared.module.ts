@@ -19,7 +19,6 @@ import {CommentModalComponent} from '../../components/comment-modal/comment.comp
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {
   DurationPipe,
-  ByteToSizePipe,
   DurationFromCurrentPipe,
   ConvertTimePipe,
   StringDateFormatePipe,
@@ -62,7 +61,7 @@ const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, TreeModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
   ModifyStartTimeModalComponent];
-const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
+const PIPES = [DurationPipe, StringDateFormatePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, RelativeDateValidator, RelativeDateRegexValidator,
   ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, FacetValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,

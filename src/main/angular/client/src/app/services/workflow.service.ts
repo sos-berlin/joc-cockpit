@@ -569,22 +569,16 @@ export class WorkflowService {
         }
 
         if (obj.executable.returnCodeMeaning.success == 0 || obj.executable.returnCodeMeaning.success == '0') {
-          obj.executable.returnCodeMeaning.success = [0];
           delete obj.executable.returnCodeMeaning.failure;
         }
         if (obj.executable.returnCodeMeaning.failure == 0 || obj.executable.returnCodeMeaning.failure == '0') {
-          obj.executable.returnCodeMeaning.failure = [0];
           delete obj.executable.returnCodeMeaning.success;
         }
 
         if (typeof obj.executable.returnCodeMeaning.success == 'string') {
           delete obj.executable.returnCodeMeaning.failure;
-          obj.executable.returnCodeMeaning.success = obj.executable.returnCodeMeaning.success.split(',').map(Number);
-          obj.executable.returnCodeMeaning.success = obj.executable.returnCodeMeaning.success.filter(num => !isNaN(num));
         } else if (typeof obj.executable.returnCodeMeaning.failure == 'string') {
           delete obj.executable.returnCodeMeaning.success;
-          obj.executable.returnCodeMeaning.failure = obj.executable.returnCodeMeaning.failure.split(',').map(Number);
-          obj.executable.returnCodeMeaning.failure = obj.executable.returnCodeMeaning.failure.filter(num => !isNaN(num));
         }
       } else {
         delete obj.executable.returnCodeMeaning.success;
@@ -593,18 +587,7 @@ export class WorkflowService {
       if (obj.executable.returnCodeMeaning.warning === '') {
         delete obj.executable.returnCodeMeaning.warning;
       }
-      if (obj.executable.returnCodeMeaning.warning == 0 || obj.executable.returnCodeMeaning.warning == '0') {
-        obj.executable.returnCodeMeaning.warning = [0];
-      }
-      if (typeof obj.executable.returnCodeMeaning.warning == 'string') {
-        obj.executable.returnCodeMeaning.warning = obj.executable.returnCodeMeaning.warning.split(',').map(Number);
-        obj.executable.returnCodeMeaning.warning = obj.executable.returnCodeMeaning.warning.filter(num => !isNaN(num));
-      }
 
-      if (obj.executable.returnCodeMeaning.success && obj.executable.returnCodeMeaning.success.length === 1
-        && obj.executable.returnCodeMeaning.success[0] == '0' && !obj.executable.returnCodeMeaning.warning) {
-        delete obj.executable.returnCodeMeaning;
-      }
     }
     if (obj.executable) {
       if (isEmpty(obj.executable.returnCodeMeaning)) {
@@ -2020,7 +2003,6 @@ export class WorkflowService {
             str = str + ': ' + boards;
           }
         }
-
         return str;
       }
     }

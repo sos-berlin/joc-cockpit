@@ -39,6 +39,7 @@ export class UpdateObjectComponent implements OnInit {
   forkListVariables = [];
   variableList = [];
   object: any = {};
+  checkboxObjects: any = {};
   workflow: any = {};
   required = false;
   cmOption: any = {

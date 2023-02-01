@@ -406,10 +406,8 @@ export class UpdateJobComponent implements OnInit {
 
     if (job.executable.returnCodeMeaning && !isEmpty(job.executable.returnCodeMeaning)) {
       if (job.executable.returnCodeMeaning.success && typeof job.executable.returnCodeMeaning.success == 'string') {
-        job.executable.returnCodeMeaning.success = job.executable.returnCodeMeaning.success.split(',').map(Number);
         delete job.executable.returnCodeMeaning.failure;
       } else if (job.executable.returnCodeMeaning.failure && typeof job.executable.returnCodeMeaning.failure == 'string') {
-        job.executable.returnCodeMeaning.failure = job.executable.returnCodeMeaning.failure.split(',').map(Number);
         delete job.executable.returnCodeMeaning.success;
       }
       if (job.executable.returnCodeMeaning.failure === '') {

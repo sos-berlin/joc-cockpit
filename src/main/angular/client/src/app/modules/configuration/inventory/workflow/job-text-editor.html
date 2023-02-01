@@ -97,7 +97,7 @@
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.title' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.title</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <label class="w-full">
               <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" type="text"
                      autocomplete="off" [maxLength]="255" class="form-control" [(ngModel)]="selectedNode.job.title"
@@ -105,23 +105,29 @@
                      placeholder="{{'common.placeholder.title' | translate}}" name="title">
             </label>
           </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.title" name="ctitle"></label>
+          </div>
         </div>
         <div class="form-group row doc-in-workflow" [hidden]="fullScreen" *ngIf="coreService.expertMode">
           <label class="col-md-4 col-lg-3 form-control-label" title="{{'inventory.label.documentation' | translate}}"
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>inventory.label.documentation</label>
-          <div class="col-md-8 col-lg-9"
-               [ngClass]="{'disable-link' : (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name)}">
+          <div class="col-md-6 col-lg-8"
+               [ngClass]="{'disable-link' : (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name), 'col-md-8 col-lg-9': !isModal}">
             <app-select-document [documentationTree]="documentationTree" [data]="selectedNode.job"
                                  (funcCall)="saveToHistory()"></app-select-document>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.documentation" name="cdocumentation"></label>
           </div>
         </div>
         <div class="form-group row" *ngIf="hasLicense && coreService.expertMode"
              [hidden]="fullScreen">
           <div class="col-md-4 col-lg-3" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agentAssignment' | translate) : ''"
                [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.agentAssignment</div>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <nz-radio-group [(ngModel)]="selectedNode.radio" (ngModelChange)="changeAgentSelection($event)">
               <label nz-radio nzValue="agent"><span
                 translate>workflow.label.agentOrSubagentSelectFromList</span></label>
@@ -143,15 +149,18 @@
             <span translate>workflow.label.agentCluster</span>
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
-          <div class="col-md-8 col-lg-9" *ngIf="selectedNode.radio == 'agent'">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}" *ngIf="selectedNode.radio == 'agent'">
             <app-agent-selection [obj]="obj" [preferences]="preferences" [agents]="agents"
                                  (selectSubagentCluster)="selectSubagentCluster($event)"
                                  [data]="selectedNode.job"></app-agent-selection>
           </div>
-          <div class="col-md-8 col-lg-9" *ngIf="selectedNode.radio == 'expression'">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}" *ngIf="selectedNode.radio == 'expression'">
             <app-agent-selection [obj]="obj" [preferences]="preferences" [agents]="agents"
                                  [skipSubagents]="true" [skipStandaloneAgent]="true"
                                  [data]="selectedNode.job"></app-agent-selection>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.radio" name="cradio"></label>
           </div>
         </div>
         <div class="form-group row" [hidden]="fullScreen" *ngIf="selectedNode.radio == 'expression'">
@@ -161,10 +170,13 @@
                  translate>workflow.label.subagentClusterIdExpr
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
               <textarea class="form-control" name="subagentClusterIdExpr"
                         [attr.placeholder]="'workflow.placeholder.enterSubagentClusterIdExpr' | translate"
                         [(ngModel)]="selectedNode.job.subagentClusterIdExpr"></textarea>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.subagentClusterIdExpr" name="csubagentClusterIdExpr"></label>
           </div>
         </div>
         <div class="form-group row" [hidden]="fullScreen">
@@ -172,7 +184,7 @@
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.jobResourceNames</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <nz-select
               [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
               name="jobResource"
@@ -201,6 +213,9 @@
               </nz-option-group>
             </nz-select>
           </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.jobResourceNames" name="cjobResourceNames"></label>
+          </div>
         </div>
         <div class="form-group row"
              *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'"
@@ -209,7 +224,7 @@
                [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''"
                [nzTooltipMouseEnterDelay]="0.5">workflow.label.returnCode
           </div>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <nz-radio-group [(ngModel)]="returnCodes.on" (ngModelChange)="saveToHistory();"
                             [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name">
               <label nz-radio nzValue="success"
@@ -225,19 +240,22 @@
              *ngIf="(returnCodes.on === 'success' || returnCodes.on === 'failure') && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'"
              [hidden]="fullScreen">
           <label class="col-md-4 col-lg-3 form-control-label"></label>
-          <div class="col-md-8 col-lg-9"
-               [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid)}">
+          <div class="col-md-6 col-lg-8"
+               [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid), 'col-md-8 col-lg-9': !isModal}">
             <label class="w-full">
               <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
-                     type="text" class="form-control" validateNumberArrayReqex (blur)="saveToHistory();"
+                     type="text" class="form-control" validateRangeRegex (blur)="saveToHistory();"
                      placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
                      name="success" #success="ngModel"
                      [(ngModel)]="selectedNode.job.executable.returnCodeMeaning[returnCodes.on]">
             </label>
             <div *ngIf="success.invalid && (success.dirty || success.touched)"
                  class="text-danger help-block">
-              <div *ngIf="success.errors.validateNumberArrayRegex" translate>common.message.invalid</div>
+              <div *ngIf="success.errors.invalidRange" translate>common.message.invalid</div>
             </div>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.returnCode" name="creturnCode"></label>
           </div>
         </div>
 
@@ -248,19 +266,22 @@
                  [nzTooltipMouseEnterDelay]="0.5">
             workflow.label.onWarning
           </label>
-          <div class="col-md-8 col-lg-9"
-               [ngClass]="{'has-error' : ((warning.dirty || warning.touched) && warning.invalid)}">
+          <div class="col-md-6 col-lg-8"
+               [ngClass]="{'has-error' : ((warning.dirty || warning.touched) && warning.invalid), 'col-md-8 col-lg-9': !isModal}">
             <label class="w-full">
               <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
-                     type="text" class="form-control" validateNumberArrayReqex (blur)="saveToHistory();"
+                     type="text" class="form-control" validateRangeRegex (blur)="saveToHistory();"
                      placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
                      #warning="ngModel" name="warning"
                      [(ngModel)]="selectedNode.job.executable.returnCodeMeaning.warning">
             </label>
             <div *ngIf="warning.invalid && (warning.dirty || warning.touched)"
                  class="text-danger help-block">
-              <div *ngIf="warning.errors.validateNumberArrayRegex" translate>common.message.invalid</div>
+              <div *ngIf="warning.errors.invalidRange" translate>common.message.invalid</div>
             </div>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.warningReturnCode" name="cwarningReturnCode"></label>
           </div>
         </div>
         <div class="form-group row" *ngIf="selectedNode.job.executable" [hidden]="fullScreen">
@@ -268,7 +289,7 @@
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.jobClass' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.jobClass</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <nz-select [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
                        name="executableType" [(ngModel)]="selectedNode.job.executable.TYPE"
                        (ngModelChange)="changeType()">
@@ -287,7 +308,7 @@
                   <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
                 </ng-template>
                 <div class="row" *ngIf="isDisplay">
-                  <div class="col-md-12 role">
+                  <div class="col-md-11 role" [ngClass]="{'col-md-12': !isModal}">
                     <div class="select-script-input bg-box" *ngIf="scriptObj.show">
                       <nz-tree-select
                         name="scriptName"
@@ -336,6 +357,9 @@
                       </div>
                     </div>
                   </div>
+                  <div class="col-md-1" *ngIf="isModal">
+                    <label nz-checkbox [(ngModel)]="checkboxObjects.script" name="cscript"></label>
+                  </div>
                 </div>
               </nz-tab>
               <nz-tab [nzTitle]="titleTemplate"
@@ -345,8 +369,8 @@
                   <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
                 </ng-template>
                 <div class="row">
-                  <div class="col-md-12"
-                       [ngClass]="{'has-error': obj.className || (className.invalid && (className.dirty && className.touched))}">
+                  <div class="col-md-11"
+                       [ngClass]="{'has-error': obj.className || (className.invalid && (className.dirty && className.touched)), 'col-md-12': !isModal}">
                     <label class="w-full">
                       <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
                              autocomplete="off" type="text" class="form-control" name="className" required
@@ -360,6 +384,9 @@
                         <div translate>common.message.requiredError</div>
                       </div>
                     </div>
+                  </div>
+                  <div class="col-md-1" *ngIf="isModal">
+                    <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.className" name="cclassName"></label>
                   </div>
                 </div>
               </nz-tab>
@@ -759,8 +786,8 @@
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.parallelism' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.parallelism</label>
-          <div class="col-md-8 col-lg-9"
-               [ngClass]="{'has-error' : ((parallelism.dirty || parallelism.touched) && parallelism.invalid)}">
+          <div class="col-md-6 col-lg-8"
+               [ngClass]="{'has-error' : ((parallelism.dirty || parallelism.touched) && parallelism.invalid), 'col-md-8 col-lg-9': !isModal}">
             <nz-input-number [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
                              [nzMin]="0" [appAutofocus]="true" [nzStep]="1" required name="parallelism"
                              #parallelism="ngModel" [(ngModel)]="selectedNode.job.parallelism"></nz-input-number>
@@ -771,14 +798,17 @@
               </div>
             </div>
           </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.parallelism" name="cparallelism"></label>
+          </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.timeout' | translate}}"
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.timeout' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.timeout</label>
-          <div class="col-md-8 col-lg-9"
-               [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
+          <div class="col-md-6 col-lg-8"
+               [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid), 'col-md-8 col-lg-9': !isModal}">
             <label class="w-full">
               <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
                      #timeout="ngModel" type="text" class="form-control" name="timeout"
@@ -786,14 +816,17 @@
                      validateDurtionReqex [(ngModel)]="selectedNode.job.timeout1">
             </label>
           </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.timeout1" name="ctimeout1"></label>
+          </div>
         </div>
         <div class="form-group row" *ngIf="coreService.expertMode">
           <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.graceTimeout' | translate}}"
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.graceTimeout' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.graceTimeout</label>
-          <div class="col-md-8 col-lg-9"
-               [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid)}">
+          <div class="col-md-6 col-lg-8"
+               [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid), 'col-md-8 col-lg-9': !isModal}">
             <label class="w-full">
               <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
                      #graceTimeout="ngModel" type="text" class="form-control" name="graceTimeout"
@@ -801,14 +834,17 @@
                      validateDurtionReqex [(ngModel)]="selectedNode.job.graceTimeout1">
             </label>
           </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.graceTimeout1" name="cgraceTimeout1"></label>
+          </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.warnIfShorter' | translate}}"
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfShorter' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.warnIfShorter</label>
-          <div class="col-md-8 col-lg-9"
-               [ngClass]="{'has-error' : ((warnIfShorter.dirty || warnIfShorter.touched) && warnIfShorter.invalid)}">
+          <div class="col-md-6 col-lg-8"
+               [ngClass]="{'has-error' : ((warnIfShorter.dirty || warnIfShorter.touched) && warnIfShorter.invalid), 'col-md-8 col-lg-9': !isModal}">
             <label class="w-full">
               <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
                      #warnIfShorter="ngModel" type="text" class="form-control" name="warnIfShorter"
@@ -816,20 +852,26 @@
                      validateDurtionWithPercentageReqex [(ngModel)]="selectedNode.job.warnIfShorter">
             </label>
           </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.warnIfShorter" name="cwarnIfShorter"></label>
+          </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.warnIfLonger' | translate}}"
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfLonger' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.warnIfLonger</label>
-          <div class="col-md-8 col-lg-9"
-               [ngClass]="{'has-error' : ((warnIfLonger.dirty || warnIfLonger.touched) && warnIfLonger.invalid)}">
+          <div class="col-md-6 col-lg-8"
+               [ngClass]="{'has-error' : ((warnIfLonger.dirty || warnIfLonger.touched) && warnIfLonger.invalid), 'col-md-8 col-lg-9': !isModal}">
             <label class="w-full">
               <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
                      #warnIfLonger="ngModel" type="text" class="form-control" name="warnIfLonger"
                      placeholder="{{'workflow.placeholder.durationWithPercentage' | translate}}"
                      validateDurtionWithPercentageReqex [(ngModel)]="selectedNode.job.warnIfLonger">
             </label>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.warnIfLonger" name="cwarnIfLonger"></label>
           </div>
         </div>
         <div class="form-group row"
@@ -838,12 +880,15 @@
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.compatibleMode</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <nz-select [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
                        name="v1Compatible" nzAllowClear [(ngModel)]="selectedNode.job.executable.v1Compatible"
                        (ngModelChange)="saveToHistory();">
               <nz-option [nzLabel]="'workflow.label.branch1.x' | translate" [nzValue]="true"></nz-option>
             </nz-select>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.v1Compatible" name="cv1Compatible"></label>
           </div>
         </div>
         <div class="form-group row">
@@ -851,7 +896,7 @@
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.criticality' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.criticality</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <nz-select [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
                        name="criticality" nzAllowClear class="w-full"
                        [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
@@ -859,6 +904,9 @@
               <nz-option [nzValue]="'NORMAL'" [nzLabel]="'common.label.normal' | translate"></nz-option>
               <nz-option [nzValue]="'CRITICAL'" [nzLabel]="'common.label.critical' | translate"></nz-option>
             </nz-select>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.criticality" name="ccriticality"></label>
           </div>
         </div>
         <div class="form-group row"
@@ -869,8 +917,8 @@
                  translate>workflow.label.credentialKey
             <sup *ngIf="selectedNode.job.executable.login.withUserProfile" class="text-danger text-sm">*</sup>
           </label>
-          <div class="col-md-8 col-lg-9"
-               [ngClass]="{'has-error' : ((credentialKey.dirty || credentialKey.touched) && credentialKey.invalid)}">
+          <div class="col-md-6 col-lg-8"
+               [ngClass]="{'has-error' : ((credentialKey.dirty || credentialKey.touched) && credentialKey.invalid), 'col-md-8 col-lg-9': !isModal}">
             <label class="w-full">
               <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
                      #credentialKey="ngModel" autocomplete="off"
@@ -879,6 +927,9 @@
                      [(ngModel)]="selectedNode.job.executable.login.credentialKey">
             </label>
           </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.credentialKey" name="ccredentialKey"></label>
+          </div>
         </div>
         <div class="form-group row"
              *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && coreService.expertMode">
@@ -886,9 +937,12 @@
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.loadUserProfile' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.loadUserProfile</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <label [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" nz-checkbox
                    [(ngModel)]="selectedNode.job.executable.login.withUserProfile" name="loadUserProfile"></label>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.withUserProfile" name="cwithUserProfile"></label>
           </div>
         </div>
         <div class="form-group row">
@@ -896,10 +950,13 @@
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.failOnOutputErr</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <label
               [nzDisabled]="(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) || selectedNode.job.warnOnErrWritten"
               nz-checkbox [(ngModel)]="selectedNode.job.failOnErrWritten" name="failOnErrWritten"></label>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label nz-checkbox [(ngModel)]="checkboxObjects.failOnErrWritten" name="cfailOnErrWritten"></label>
           </div>
         </div>
         <div class="form-group row">
@@ -907,10 +964,13 @@
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnOnOutputErr' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.warnOnOutputErr</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <label
               [nzDisabled]="(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) || selectedNode.job.failOnErrWritten"
               nz-checkbox [(ngModel)]="selectedNode.job.warnOnErrWritten" name="warnOnErrWritten"></label>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label nz-checkbox [(ngModel)]="checkboxObjects.warnOnErrWritten" name="cwarnOnErrWritten"></label>
           </div>
         </div>
         <div class="form-group row">
@@ -919,9 +979,12 @@
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDay' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.skipIfNoAdmissionForOrderDay</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <label nz-checkbox [(ngModel)]="selectedNode.job.skipIfNoAdmissionForOrderDay"
                    name="skipIfNoAdmissionForOrderDay"></label>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label nz-checkbox [(ngModel)]="checkboxObjects.skipIfNoAdmissionForOrderDay" name="cskipIfNoAdmissionForOrderDay"></label>
           </div>
         </div>
         <div class="form-group row">
@@ -1033,7 +1096,7 @@
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.mailOn</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <nz-select class="w-full" nzMode="multiple" name="types"
                        [nzPlaceHolder]="'workflow.placeholder.mailOn' | translate"
                        [(ngModel)]="selectedNode.job.notification.types">
@@ -1042,18 +1105,24 @@
               <nz-option [nzValue]="'SUCCESS'" [nzLabel]="'SUCCESS'"></nz-option>
             </nz-select>
           </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.types" name="ctypes"></label>
+          </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.mailTo' | translate}}"
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailTo' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.mailTo</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <label class="w-full">
               <input type="text" (blur)="checkLength()" class="form-control" name="mailTo"
                      placeholder="{{'workflow.placeholder.mailTo' | translate}}"
                      [(ngModel)]="selectedNode.job.notification.mail.to">
             </label>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.mailTo" name="cmailTo"></label>
           </div>
         </div>
         <div class="form-group row">
@@ -1061,12 +1130,15 @@
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailCC' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.mailCC</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <label class="w-full">
               <input type="text" (blur)="checkLength()" class="form-control" name="mailCC"
                      placeholder="{{'workflow.placeholder.mailCC' | translate}}"
                      [(ngModel)]="selectedNode.job.notification.mail.cc">
             </label>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.mailCC" name="cmailCC"></label>
           </div>
         </div>
         <div class="form-group row">
@@ -1074,7 +1146,7 @@
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailBcc' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.mailBcc</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
             <label class="w-full">
               <input type="text" (blur)="checkLength()" class="form-control" name="mailBcc"
                      placeholder="{{'workflow.placeholder.mailBcc' | translate}}"
@@ -1083,6 +1155,9 @@
             <div *ngIf="isLengthExceed" class="text-danger help-block">
               <div translate>workflow.message.mailLengthExceed</div>
             </div>
+          </div>
+          <div class="col-md-1" *ngIf="isModal">
+            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.mailBcc" name="cmailBcc"></label>
           </div>
         </div>
       </div>
