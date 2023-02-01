@@ -221,21 +221,6 @@ export class DecodeSpacePipe implements PipeTransform {
   }
 }
 
-@Pipe({
-  name: 'byteToSize'
-})
-export class ByteToSizePipe implements PipeTransform {
-  transform(e: any): string {
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    e = parseInt(e, 10);
-    if (e == 0) {
-      return '0 Byte';
-    }
-    const i: number = Math.floor(Math.log(e) / Math.log(1024));
-    return parseFloat((e / Math.pow(1024, i)).toString()).toFixed(2) + ' ' + sizes[i];
-  }
-}
-
 @Pipe({name: 'groupBy'})
 export class GroupByPipe implements PipeTransform {
   transform(value: Array<any>, field: string): Array<any> {
