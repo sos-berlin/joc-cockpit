@@ -270,16 +270,16 @@
                 } else if (year === new Date().getFullYear()) {
                     date = "+0y";
                 } else {
-                    date = "+" + (year - new Date().getFullYear()) + "y";
+                    date = (year - new Date().getFullYear()) + "y";
                 }
             }
             if (vm.viewCalObj.calendarView === 'month') {
-                if (year <= new Date().getFullYear() && month < new Date().getMonth()) {
+                if (year < new Date().getFullYear() && month < new Date().getMonth()) {
                     return;
                 } else if (year === new Date().getFullYear() && month === new Date().getMonth()) {
-                    date = "+" + (month - new Date().getMonth()) + "M";
+                    date = (month - new Date().getMonth()) + "M";
                 } else {
-                    date = "+" + (month - (new Date().getMonth() - (12 * (year - new Date().getFullYear())))) + "M";
+                    date = (month - (new Date().getMonth() - (12 * (year - new Date().getFullYear())))) + "M";
                 }
             }
             vm.isCalendarLoading = true;
@@ -5873,6 +5873,7 @@
             isPress = true;
             $('#period-editor').modal('show');
         };
+
         var promise4 = $timeout(function () {
             $rootScope.$broadcast('restrictionModalTemplateLoaded');
         }, 100);
@@ -9659,7 +9660,10 @@
 
         var firstDay, lastDay;
         vm.getPlan = function (newYear, newMonth, isReload) {
-            let year = newYear || new Date().getFullYear(), month =  newMonth || new Date().getMonth();
+            let year = newYear || new Date().getFullYear(), month = newMonth;
+            if (!newMonth && newMonth != 0) {
+                month = new Date().getMonth()
+            }
             if (!isReload) {
                 $('#year-calendar').data('calendar').setYearView({view: vm.viewCalObj.calendarView, year: year});
                 month = $('#year-calendar').data('calendar').getMonth();
@@ -9676,7 +9680,7 @@
                 }
             }
             if (vm.viewCalObj.calendarView == 'month') {
-                if (year <= new Date().getFullYear() && month < new Date().getMonth()) {
+                if (year < new Date().getFullYear() && month < new Date().getMonth()) {
                     return;
                 } else if (year == new Date().getFullYear() && month == new Date().getMonth()) {
                     firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
