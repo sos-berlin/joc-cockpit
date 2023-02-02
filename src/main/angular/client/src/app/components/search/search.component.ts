@@ -299,7 +299,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           if (this.results.length > 0 && this.results[0].controllerId) {
             this.isControllerId = true;
           }
-          this.isJobSearch = !!(obj.returnType === this.ENUM.WORKFLOW && obj.advanced && obj.advanced.jobName);
+          this.isJobSearch = (obj.returnType === this.ENUM.WORKFLOW);
         }
         this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory',
           { panel: this.panel.active, request: this.searchObj, result: this.results });

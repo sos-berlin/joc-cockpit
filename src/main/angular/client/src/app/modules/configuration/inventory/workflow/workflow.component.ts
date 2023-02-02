@@ -1089,7 +1089,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isModal: boolean;
   @Input() exactMatch: boolean;
   @Input() timeZone;
-  checkboxObjects: any = {};
+  @Input() checkboxObjects: any = {};
 
   history = [];
   list: Array<string> = [];

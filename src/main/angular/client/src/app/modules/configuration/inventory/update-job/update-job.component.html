@@ -29,7 +29,7 @@
         </div>
       </div>
       <div class="col-md-12" *ngIf="step === 2">
-        <app-job-content [selectedNode]="selectedNode" [isModal]="true" [exactMatch]="data.exactMatch" [preferences]="preferences" [isTooltipVisible]="!preferences.showTooltipInfo" [agents]="agents.agentList"
+        <app-job-content [checkboxObjects]="checkboxObjects" [selectedNode]="selectedNode" [isModal]="true" [exactMatch]="data.exactMatch" [preferences]="preferences" [isTooltipVisible]="!preferences.showTooltipInfo" [agents]="agents.agentList"
                          [jobResourcesTree]="jobResourcesTree" [documentationTree]="documentationTree" [schedulerId]="controllerId"></app-job-content>
       </div>
       <div class="col-md-12 min-ht-400" *ngIf="step === 3">
