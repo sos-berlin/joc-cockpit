@@ -323,7 +323,7 @@
         <button class="btn btn-grey btn-sm" [ngClass]="{'m-l-12' : searchObj.advanced.jobNameExactMatch}" translate
           type="button" (click)="updateJob()">inventory.search.button.updateJob</button>
         <span class="p-l-sm" translate
-          [translateParams]="{jobName: searchObj.advanced.jobName,workflowsCount: object.mapOfCheckedId.size}">inventory.search.message.updateJobForSelectedWorkflows</span>
+          [translateParams]="{jobName: searchObj.advanced.jobName || '*',workflowsCount: object.mapOfCheckedId.size}">inventory.search.message.updateJobForSelectedWorkflows</span>
       </div>
       <div class="col-sm-12">
         <span class="text-muted" translate>inventory.search.label.searchResult</span>:

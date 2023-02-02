@@ -152,8 +152,24 @@
                 </div>
               </ng-template>
             </td>
-            <td><span [innerHtml]="notify.message | highlight : filters.filter.searchText"></span></td>
-            <td><span [innerHtml]="notify.exception | highlight : filters.filter.searchText"></span></td>
+            <td>
+              <ng-template #htmlContent>
+                <div style="padding: 3px;" [innerHTML]="notify.message | highlight : filters.filter.searchText | safeHtml"></div>
+              </ng-template>
+              <span *ngIf="notify.message && notify.message.length < 100" [innerHtml]="notify.message | highlight : filters.filter.searchText"></span>
+              <span *ngIf="notify.message && notify.message.length >= 100" [nz-tooltip]="htmlContent">{{notify.message.substring(0, 99)}}...</span>
+              <div *ngIf="notify.acknowledgement">
+                <b translate>monitor.notification.label.comment</b> :
+                <span>{{notify.acknowledgement.comment}}</span>
+              </div>
+            </td>
+            <td>
+              <ng-template #htmlContent>
+                <div style="padding: 3px;" [innerHTML]="notify.exception | highlight : filters.filter.searchText"></div>
+              </ng-template>
+              <span *ngIf="notify.exception && notify.exception.length < 100" [innerHtml]="notify.exception | highlight : filters.filter.searchText"></span>
+              <span *ngIf="notify.exception && notify.exception.length >= 100" [nz-tooltip]="htmlContent">{{notify.exception.substring(0, 99)}}...</span>
+            </td>
             <td><span [innerHtml]="notify.created | stringToDate | highlight : filters.filter.searchText"></span></td>
           </tr>
           <ng-container *ngIf="notify.show">

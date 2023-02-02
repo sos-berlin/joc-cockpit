@@ -19,7 +19,7 @@
 
           </div>
           <div class="inline" *ngIf="monitorFilters.tabIndex == 2 && monitorFilters.orderNotification.mapOfCheckedId.size ===0">
-            <div class="btn-group m-l-12 hidden-btn-group">
+            <div class="btn-group m-l-12">
               <button class="btn btn-grey btn-sm" (click)="changeTypes('SUCCESS')"
                       [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.types.includes('SUCCESS')}" translate>monitor.notification.button.success
               </button>
@@ -93,7 +93,7 @@
             </div>
           </div>
           <div class="inline" *ngIf="monitorFilters.tabIndex == 3 && monitorFilters.systemNotification.mapOfCheckedId.size ===0">
-            <div class="btn-group m-l-12 hidden-btn-group">
+            <div class="btn-group m-l-12">
               <button class="btn btn-grey btn-sm" (click)="changeSystemType('ERROR')"
                       [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.types.includes('ERROR')}" translate>monitor.notification.button.error
               </button>
