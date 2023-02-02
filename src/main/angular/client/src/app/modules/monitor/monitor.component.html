@@ -13,43 +13,44 @@
             <label *ngIf="monitorFilters.tabIndex == 1" nz-checkbox [(ngModel)]="monitorFilters.agent.current" name="current" (nzCheckedChange)="controllerChange()">
               {{'common.label.currentController' | translate}}
             </label>
-            <label *ngIf="monitorFilters.tabIndex == 2 && monitorFilters.notification.mapOfCheckedId.size ===0" nz-checkbox [(ngModel)]="monitorFilters.notification.current" name="current" (nzCheckedChange)="controllerChange()">
+            <label *ngIf="monitorFilters.tabIndex == 2 && monitorFilters.orderNotification.mapOfCheckedId.size ===0" nz-checkbox [(ngModel)]="monitorFilters.orderNotification.current" name="current" (nzCheckedChange)="controllerChange()">
               {{'common.label.currentController' | translate}}
             </label>
+
           </div>
-          <div class="inline" *ngIf="monitorFilters.tabIndex == 2 && monitorFilters.notification.mapOfCheckedId.size ===0">
+          <div class="inline" *ngIf="monitorFilters.tabIndex == 2 && monitorFilters.orderNotification.mapOfCheckedId.size ===0">
             <div class="btn-group m-l-12 hidden-btn-group">
               <button class="btn btn-grey btn-sm" (click)="changeTypes('SUCCESS')"
-                      [ngClass]="{'btn-primary': monitorFilters.notification.filter.types.includes('SUCCESS')}" translate>monitor.notification.button.success
+                      [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.types.includes('SUCCESS')}" translate>monitor.notification.button.success
               </button>
               <button class="btn btn-grey btn-sm" (click)="changeTypes('ERROR')"
-                      [ngClass]="{'btn-primary': monitorFilters.notification.filter.types.includes('ERROR')}" translate>monitor.notification.button.error
+                      [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.types.includes('ERROR')}" translate>monitor.notification.button.error
               </button>
               <button class="btn btn-grey btn-sm" (click)="changeTypes('WARNING')"
-                      [ngClass]="{'btn-primary': monitorFilters.notification.filter.types.includes('WARNING')}" translate>monitor.notification.button.warning
+                      [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.types.includes('WARNING')}" translate>monitor.notification.button.warning
               </button>
               <button class="btn btn-grey btn-sm" (click)="changeTypes('RECOVERED')"
-                      [ngClass]="{'btn-primary': monitorFilters.notification.filter.types.includes('RECOVERED')}" translate>monitor.notification.button.recovered
+                      [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.types.includes('RECOVERED')}" translate>monitor.notification.button.recovered
               </button>
               <button class="btn btn-grey btn-sm" (click)="changeTypes('ACKNOWLEDGED')"
-                      [ngClass]="{'btn-primary': monitorFilters.notification.filter.types.includes('ACKNOWLEDGED')}" translate>monitor.notification.button.acknowledge
+                      [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.types.includes('ACKNOWLEDGED')}" translate>monitor.notification.button.acknowledge
               </button>
             </div>
             <div class="btn-group m-l-12 hidden-btn-group">
               <button class="btn btn-grey btn-sm" (click)="changeDate('ALL')"
-                      [ngClass]="{'btn-primary': monitorFilters.notification.filter.date=='ALL'}" translate>filters.button.all
+                      [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.date=='ALL'}" translate>filters.button.all
               </button>
               <button class="btn btn-grey btn-sm" (click)="changeDate('0d')"
-                      [ngClass]="{'btn-primary': monitorFilters.notification.filter.date=='0d'}" translate>filters.button.today
+                      [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.date=='0d'}" translate>filters.button.today
               </button>
               <button class="btn btn-grey btn-sm" (click)="changeDate('-1h')"
-                      [ngClass]="{'btn-primary': monitorFilters.notification.filter.date=='-1h'}" translate>filters.button.last1
+                      [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.date=='-1h'}" translate>filters.button.last1
               </button>
               <button class="btn btn-grey btn-sm" (click)="changeDate('-6h')"
-                      [ngClass]="{'btn-primary': monitorFilters.notification.filter.date=='-6h'}" translate>filters.button.last6
+                      [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.date=='-6h'}" translate>filters.button.last6
               </button>
               <button class="btn btn-grey btn-sm" (click)="changeDate('-12h')"
-                      [ngClass]="{'btn-primary': monitorFilters.notification.filter.date=='-12h'}" translate>filters.button.last12
+                      [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.date=='-12h'}" translate>filters.button.last12
               </button>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
@@ -59,26 +60,97 @@
               </button>
               <nz-dropdown-menu #menu="nzDropdownMenu" >
                 <ul nz-menu>
-                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.notification.filter.date=='ALL'}">
+                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.orderNotification.filter.date=='ALL'}">
                     <a (click)="changeDate('ALL')" translate>filters.button.all</a>
                   </li>
-                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.notification.filter.date=='0d'}">
+                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.orderNotification.filter.date=='0d'}">
                     <a (click)="changeDate('0d')" translate>filters.button.today</a>
                   </li>
-                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.notification.filter.date=='-1h'}">
+                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.orderNotification.filter.date=='-1h'}">
                     <a (click)="changeDate('-1h')" translate>filters.button.last1</a>
                   </li>
-                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.notification.filter.date=='-6h'}">
+                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.orderNotification.filter.date=='-6h'}">
                     <a (click)="changeDate('-6h')" translate>filters.button.last6</a>
                   </li>
-                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.notification.filter.date=='-12h'}">
+                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.orderNotification.filter.date=='-12h'}">
                     <a (click)="changeDate('-12h')" translate>filters.button.last12</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
             </div>
           </div>
-          <div class="inline" *ngIf="monitorFilters.tabIndex == 2 && monitorFilters.notification.mapOfCheckedId.size > 0">
+          <div class="inline" *ngIf="monitorFilters.tabIndex == 3 && monitorFilters.systemNotification.mapOfCheckedId.size ===0">
+            <div class="btn-group m-l-12">
+              <button class="btn btn-grey btn-sm" (click)="changeCategories('ALL')"
+                      [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.categories == 'ALL'}" translate>monitor.notification.button.all
+              </button>
+              <button class="btn btn-grey btn-sm" (click)="changeCategories('JOC')"
+                      [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.categories == 'JOC'}" translate>monitor.notification.button.joc
+              </button>
+              <button class="btn btn-grey btn-sm" (click)="changeCategories('SYSTEM')"
+                      [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.categories == 'SYSTEM'}" translate>monitor.notification.button.system
+              </button>
+            </div>
+          </div>
+          <div class="inline" *ngIf="monitorFilters.tabIndex == 3 && monitorFilters.systemNotification.mapOfCheckedId.size ===0">
+            <div class="btn-group m-l-12 hidden-btn-group">
+              <button class="btn btn-grey btn-sm" (click)="changeSystemType('ERROR')"
+                      [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.types.includes('ERROR')}" translate>monitor.notification.button.error
+              </button>
+              <button class="btn btn-grey btn-sm" (click)="changeSystemType('WARNING')"
+                      [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.types.includes('WARNING')}" translate>monitor.notification.button.warning
+              </button>
+              <button class="btn btn-grey btn-sm" (click)="changeSystemType('ACKNOWLEDGED')"
+                      [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.types.includes('ACKNOWLEDGED')}" translate>monitor.notification.button.acknowledge
+              </button>
+            </div>
+            <div class="btn-group m-l-12 hidden-btn-group">
+              <button class="btn btn-grey btn-sm" (click)="changeDate('ALL')"
+                      [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.date=='ALL'}" translate>filters.button.all
+              </button>
+              <button class="btn btn-grey btn-sm" (click)="changeDate('0d')"
+                      [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.date=='0d'}" translate>filters.button.today
+              </button>
+              <button class="btn btn-grey btn-sm" (click)="changeDate('-1h')"
+                      [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.date=='-1h'}" translate>filters.button.last1
+              </button>
+              <button class="btn btn-grey btn-sm" (click)="changeDate('-6h')"
+                      [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.date=='-6h'}" translate>filters.button.last6
+              </button>
+              <button class="btn btn-grey btn-sm" (click)="changeDate('-12h')"
+                      [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.date=='-12h'}" translate>filters.button.last12
+              </button>
+            </div>
+            <div class="btn-group dropdown hidden-dropdown">
+              <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" type="button" translate>
+                common.label.anyDate
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-dropdown-menu #menu="nzDropdownMenu" >
+                <ul nz-menu>
+                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.systemNotification.filter.date=='ALL'}">
+                    <a (click)="changeDate('ALL')" translate>filters.button.all</a>
+                  </li>
+                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.systemNotification.filter.date=='0d'}">
+                    <a (click)="changeDate('0d')" translate>filters.button.today</a>
+                  </li>
+                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.systemNotification.filter.date=='-1h'}">
+                    <a (click)="changeDate('-1h')" translate>filters.button.last1</a>
+                  </li>
+                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.systemNotification.filter.date=='-6h'}">
+                    <a (click)="changeDate('-6h')" translate>filters.button.last6</a>
+                  </li>
+                  <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.systemNotification.filter.date=='-12h'}">
+                    <a (click)="changeDate('-12h')" translate>filters.button.last12</a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </div>
+          <div class="inline" *ngIf="monitorFilters.tabIndex == 2 && monitorFilters.orderNotification.mapOfCheckedId.size > 0">
+            <button class="btn btn-grey btn-sm" (click)="acknowledge()" translate>monitor.notification.menu.bulkAcknowledge</button>
+          </div>
+          <div class="inline" *ngIf="monitorFilters.tabIndex == 3 && monitorFilters.systemNotification.mapOfCheckedId.size > 0">
             <button class="btn btn-grey btn-sm" (click)="acknowledge()" translate>monitor.notification.menu.bulkAcknowledge</button>
           </div>
         </div>
@@ -101,11 +173,17 @@
                              [schedulerIds]="schedulerIds" [filters]="monitorFilters.agent"></app-agent-monitor>
         </div>
       </nz-tab>
-      <nz-tab [nzTitle]="'monitor.label.notification' | translate" *ngIf="permission && permission.currentController && permission.currentController.orders.view">
+      <nz-tab [nzTitle]="'monitor.label.orderNotification' | translate" *ngIf="permission && permission.currentController && permission.currentController.orders.view">
         <div *ngIf="index === 2 || (!permission.currentController.view && permission.currentController.agents.view && index === 1) || (!permission.currentController.agents.view && permission.currentController.view && index === 1) ||
          (!permission.currentController.view && !permission.currentController.agents.view && index === 0)">
-          <app-notification-monitor [permission]="permission" [preferences]="preferences"
-                             [schedulerIds]="schedulerIds" [filters]="monitorFilters.notification"></app-notification-monitor>
+          <app-order-notification [permission]="permission" [preferences]="preferences"
+                             [schedulerIds]="schedulerIds" [filters]="monitorFilters.orderNotification"></app-order-notification>
+        </div>
+      </nz-tab>
+      <nz-tab [nzTitle]="'monitor.label.systemNotification' | translate" *ngIf="permission && permission.currentController && permission.currentController.orders.view">
+        <div *ngIf="index === 3 || (!permission.currentController.view && permission.currentController.agents.view && index === 1) || (!permission.currentController.agents.view && permission.currentController.view && index === 1) ||
+         (!permission.currentController.view && !permission.currentController.agents.view && index === 0)">
+          <app-system-notification [permission]="permission" [preferences]="preferences" [filters]="monitorFilters.systemNotification"></app-system-notification>
         </div>
       </nz-tab>
     </nz-tabset>

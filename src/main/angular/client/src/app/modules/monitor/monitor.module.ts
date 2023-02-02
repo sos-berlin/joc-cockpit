@@ -8,7 +8,9 @@ import {MonitorRoutingModule} from './monitor-routing.module';
 import {ControllerMonitorComponent} from './controller-monitor/controller-monitor.component';
 import {AgentMonitorComponent} from './agent-monitor/agent-monitor.component';
 import {GanttChartComponent} from './gantt-chart/gantt-chart.component';
-import {AcknowledgeModalComponent, NotificationMonitorComponent} from './notification-monitor/notification-monitor.component';
+import {OrderNotificationComponent} from './order-notification/order-notification.component';
+import {SystemNotificationComponent} from "./system-notification/system-notification.component";
+import {AcknowledgeModalComponent} from "./acknowledge-notification/acknowledge.component";
 import {GroupByPipe} from '../../pipes/core.pipe';
 
 @NgModule({
@@ -24,7 +26,8 @@ import {GroupByPipe} from '../../pipes/core.pipe';
     ControllerMonitorComponent,
     GanttChartComponent,
     AgentMonitorComponent,
-    NotificationMonitorComponent,
+    OrderNotificationComponent,
+    SystemNotificationComponent,
     AcknowledgeModalComponent
   ],
   providers: [GroupByPipe]

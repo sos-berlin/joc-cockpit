@@ -195,9 +195,19 @@ export class CoreService {
         endDate: new Date().setHours(0, 0, 0, 0),
       }
     };
-    this.tabs._monitor.notification = {
+    this.tabs._monitor.orderNotification = {
       filter: {
         types: ['ERROR', 'WARNING', 'RECOVERED'],
+        date: '0d',
+        sortBy: 'created',
+        reverse: true,
+        currentPage: '1'
+      }
+    };
+    this.tabs._monitor.systemNotification = {
+      filter: {
+        categories: ['ALL'],
+        types: ['ERROR', 'WARNING'],
         date: '0d',
         sortBy: 'created',
         reverse: true,
@@ -1749,7 +1759,6 @@ export class CoreService {
       if(item.name1){
         item.position += '.'+item.name1
       }
-     
       let data: any = {
         title: '',
         key: item.orderId + item.logEvent + item.position,

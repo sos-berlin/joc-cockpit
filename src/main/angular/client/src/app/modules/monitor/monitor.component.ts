@@ -42,8 +42,11 @@ export class MonitorComponent implements OnInit, OnDestroy {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.monitorFilters = this.coreService.getMonitorTab();
-    if (!this.monitorFilters.notification.mapOfCheckedId) {
-      this.monitorFilters.notification.mapOfCheckedId = new Set();
+    if (!this.monitorFilters.orderNotification.mapOfCheckedId) {
+      this.monitorFilters.orderNotification.mapOfCheckedId = new Set();
+    }
+    if (!this.monitorFilters.systemNotification.mapOfCheckedId) {
+      this.monitorFilters.systemNotification.mapOfCheckedId = new Set();
     }
     if (!(this.monitorFilters.controller.current || this.monitorFilters.controller.current === false)) {
       this.monitorFilters.controller.current = this.preferences.currentController;
@@ -51,8 +54,8 @@ export class MonitorComponent implements OnInit, OnDestroy {
     if (!(this.monitorFilters.agent.current || this.monitorFilters.agent.current === false)) {
       this.monitorFilters.agent.current = this.preferences.currentController;
     }
-    if (!(this.monitorFilters.notification.current || this.monitorFilters.notification.current === false)) {
-      this.monitorFilters.notification.current = this.preferences.currentController;
+    if (!(this.monitorFilters.orderNotification.current || this.monitorFilters.orderNotification.current === false)) {
+      this.monitorFilters.orderNotification.current = this.preferences.currentController;
     }
     this.index = this.monitorFilters.tabIndex;
   }
@@ -62,8 +65,13 @@ export class MonitorComponent implements OnInit, OnDestroy {
   }
 
   changeDate(date): void {
-    this.monitorFilters.notification.filter.date = date;
-    this.dataService.announceFunction(this.monitorFilters.notification);
+    if (this.monitorFilters.tabIndex == 2) {
+      this.monitorFilters.orderNotification.filter.date = date;
+      this.dataService.announceFunction(this.monitorFilters.orderNotification);
+    } else {
+      this.monitorFilters.systemNotification.filter.date = date;
+      this.dataService.announceFunction(this.monitorFilters.systemNotification);
+    }
   }
 
   controllerChange(): void {
@@ -71,13 +79,28 @@ export class MonitorComponent implements OnInit, OnDestroy {
   }
 
   changeTypes(type): void {
-    const index = this.monitorFilters.notification.filter.types.indexOf(type);
+    const index = this.monitorFilters.orderNotification.filter.types.indexOf(type);
     if (index === -1) {
-      this.monitorFilters.notification.filter.types.push(type);
+      this.monitorFilters.orderNotification.filter.types.push(type);
     } else {
-      this.monitorFilters.notification.filter.types.splice(index, 1);
+      this.monitorFilters.orderNotification.filter.types.splice(index, 1);
     }
-    this.dataService.announceFunction(this.monitorFilters.notification);
+    this.dataService.announceFunction(this.monitorFilters.orderNotification);
+  }
+
+  changeCategories(category): void {
+    this.monitorFilters.systemNotification.filter.categories = category;
+    this.dataService.announceFunction(this.monitorFilters.systemNotification);
+  }
+
+  changeSystemType(type): void {
+    const index = this.monitorFilters.systemNotification.filter.types.indexOf(type);
+    if (index === -1) {
+      this.monitorFilters.systemNotification.filter.types.push(type);
+    } else {
+      this.monitorFilters.systemNotification.filter.types.splice(index, 1);
+    }
+    this.dataService.announceFunction(this.monitorFilters.systemNotification);
   }
 
   acknowledge(): void {

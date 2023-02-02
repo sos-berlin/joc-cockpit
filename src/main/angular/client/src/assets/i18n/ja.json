@@ -2077,7 +2077,8 @@
     "label": {
       "agentAvailability": "エージェントモニター",
       "controllerAvailability": "コントローラーモニター",
-      "notification": "通知",
+      "orderNotification": "Order Notifications",
+      "systemNotification": "System Notifications",
       "overview": "概要",
       "statistics": "統計情報",
       "runningTime": "実行時間",
@@ -2107,10 +2108,17 @@
         "configuration": "コンフィグレーション",
         "errorText": "エラーテキスト",
         "jobReturnCode": "ジョブリターンコード",
+        "category": "Category",
+        "section": "Section",
+        "notifier": "Notifier",
+        "exception": "Exception",
         "notificationsFound": "通知があります",
         "notificationFound": "通知があります"
       },
       "button": {
+        "all": "All",
+        "joc": "JOC",
+        "system": "System",
         "success": "成功",
         "error": "エラー",
         "warning": "警告",
