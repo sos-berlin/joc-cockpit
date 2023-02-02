@@ -2077,7 +2077,8 @@
     "label": {
       "agentAvailability": "Verfügbarkeit Agenten",
       "controllerAvailability": "Verfügbarkeit Controller",
-      "notification": "Benachrichtigungen",
+      "orderNotification": "Order Notifications",
+      "systemNotification": "System Notifications",
       "overview": "Übersicht",
       "statistics": "Statistik",
       "runningTime": "Laufzeit",
@@ -2107,10 +2108,17 @@
         "configuration": "Konfiguration",
         "errorText": "Fehlermeldung",
         "jobReturnCode": "Rückgabewert",
+        "category": "Category",
+        "section": "Section",
+        "notifier": "Notifier",
+        "exception": "Exception",
         "notificationsFound": "Benachrichtigungen gefunden",
         "notificationFound": "Benachrichtigung gefunden"
       },
       "button": {
+        "all": "All",
+        "joc": "JOC",
+        "system": "System",
         "success": "Erfolgreich",
         "error": "Fehlgeschlagen",
         "warning": "Warnung",

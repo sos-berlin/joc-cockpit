@@ -2077,7 +2077,8 @@
     "label": {
       "agentAvailability": "Moniteur Agent",
       "controllerAvailability": "Moniteur Contrôleur",
-      "notification": "Notification",
+      "orderNotification": "Order Notifications",
+      "systemNotification": "System Notifications",
       "overview": "Aperçu",
       "statistics": "Statistiques",
       "runningTime": "Temps d'exécution",
@@ -2107,10 +2108,17 @@
         "configuration": "Configuration",
         "errorText": "Message d'erreur",
         "jobReturnCode": "Code de retour",
+        "category": "Category",
+        "section": "Section",
+        "notifier": "Notifier",
+        "exception": "Exception",
         "notificationsFound": "Entrées de Notification trouvées",
         "notificationFound": "Entrée de Notification trouvée"
       },
       "button": {
+        "all": "All",
+        "joc": "JOC",
+        "system": "System",
         "success": "Succès",
         "error": "Erreur",
         "warning": "Avertissement",

@@ -2,54 +2,18 @@ import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {AcknowledgeModalComponent} from "../acknowledge-notification/acknowledge.component";
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 
 @Component({
-  selector: 'app-acknowledge-modal',
-  templateUrl: './acknowledge.dialog.html'
+  selector: 'app-order-notification',
+  templateUrl: './order-notification.component.html'
 })
-export class AcknowledgeModalComponent implements OnInit {
-  @Input() data: any;
-  submitted = false;
-  comment: string;
-  display = false;
-  required = false;
-  comments: any = {};
-
-  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
-  }
-
-  ngOnInit(): void {
-    this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
-      this.required = true;
-      this.display = true;
-    }
-  }
-
-  onSubmit(): void {
-    this.submitted = true;
-    const auditLog: any = {};
-    this.coreService.getAuditLogObj(this.comments, auditLog);
-    this.coreService.post('monitoring/notification/acknowledge', {
-      ...this.data, ...{comment: this.comment, auditLog}
-    }).subscribe({
-      next: res => {
-        this.activeModal.close(res);
-      }, error: () => this.submitted = false
-    });
-  }
-}
-
-@Component({
-  selector: 'app-notification-monitor',
-  templateUrl: './notification-monitor.component.html'
-})
-export class NotificationMonitorComponent implements OnInit, OnDestroy {
+export class OrderNotificationComponent implements OnInit, OnDestroy {
   @Input() permission: any;
   @Input() preferences: any = {};
   @Input() schedulerIds: any = {};
@@ -65,7 +29,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
   };
   reloadState = 'no';
 
-  searchableProperties = ['controllerId', 'type', 'job', 'job', 'exitCode', 'message', 'orderId', 'workflow', 'created'];
+  searchableProperties = ['controllerId', 'type', 'job', 'exitCode', 'message', 'orderId', 'workflow', 'created'];
 
   subscription1: Subscription;
   subscription2: Subscription;
