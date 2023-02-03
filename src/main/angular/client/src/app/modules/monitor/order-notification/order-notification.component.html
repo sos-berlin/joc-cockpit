@@ -84,7 +84,7 @@
             <i *ngIf="filters.filter.sortBy == 'type' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('job.exitCode')"><a><span class="p-r-xs" translate>monitor.notification.label.jobReturnCode</span>
+          <th nowrap (click)="sort('job.exitCode')"><a><span class="p-r-xs" translate>monitor.notification.label.jobReturnCode</span>
             <i *ngIf="filters.filter.sortBy == 'job.exitCode' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'job.exitCode' && filters.filter.reverse"

@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 import {ScriptModalComponent} from '../../modules/workflow/script-modal/script-modal.component';
+import {AuthService} from "../guard";
 
 @Component({
   selector: 'app-workflow-tree-structure',
@@ -19,8 +20,10 @@ export class WorkflowTreeStructureComponent implements OnChanges {
   @Input() disabledDrag: boolean;
   @Output() onDrop: EventEmitter<any> = new EventEmitter();
   position: '';
+  permission: any = {};
 
-  constructor(public coreService: CoreService, private modal: NzModalService) {
+  constructor(public coreService: CoreService, private modal: NzModalService, private authService: AuthService) {
+    this.permission = JSON.parse(this.authService.permission) || {};
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -149,7 +149,7 @@
         <span class="cursor inst-text" *ngIf="instruction.TYPE === 'Job'"
           (click)="showConfiguration(instruction)">{{instruction.jobName}}</span>
         <span class="inst-text" *ngIf="instruction.TYPE !== 'Job'"
-          [nz-tooltip]="instruction.question || instruction.message">
+          [nz-tooltip]="(instruction.question || instruction.message)">
           {{instruction.TYPE | translate}}
           <span *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices')">: </span>
           <span class="text-muted"
