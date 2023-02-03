@@ -846,16 +846,17 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     this.orderCountMap = new Map();
     let workflows = new Map();
     const graph = this.graph;
+    let isCall = true;
     function createWorkflowNode(workflow, cell, type): void {
       if (!self.workflowObjects) {
         if (workflow.path !== self.workFlowJson.path) {
           const node = doc.createElement('Workflow');
           node.setAttribute('workflowName', workflow.path.substring(workflow.path.lastIndexOf('/') + 1));
           node.setAttribute('data', JSON.stringify(workflow));
-          node.setAttribute('type', type);
+          node.setAttribute('type', type == 'addOrder' ? 'expect' : type);
           let w1;
           if (!workflows.has(workflow.path)) {
-            w1 = graph.insertVertex(cell.parent, null, node, 0, 0, 128, 36, type);
+            w1 = graph.insertVertex(cell.parent, null, node, 0, 0, 128, 36, type == 'addOrder' ? 'expect' : type);
             workflows.set(workflow.path, w1)
           } else {
             w1 = workflows.get(workflow.path);
@@ -863,8 +864,18 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
               return;
             }
           }
-          if (type === 'expect') {
+
+          if (type === 'expect' || type == 'addOrder') {
             graph.insertEdge(cell.parent, null, doc.createElement('Connection'), w1, cell);
+            if(isCall) {
+              isCall = false;
+              setTimeout(() => {
+                let outLen = graph.getIncomingEdges(w1);
+                if (outLen?.length > 0) {
+                  WorkflowService.executeLayout(self.graph);
+                }
+              }, 5)
+            }
           } else {
             graph.insertEdge(cell.parent, null, doc.createElement('Connection'), cell, w1);
           }
@@ -1127,7 +1138,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       let remove = false;
       mainJson.addOrderFromWorkflows.forEach((workflow) => {
         if (workflow.path !== self.workFlowJson.path) {
-          createWorkflowNode(workflow, cell, 'expect');
+          createWorkflowNode(workflow, cell, 'addOrder');
           remove = true;
         }
       });
