@@ -229,7 +229,8 @@ export class UpdateJobComponent implements OnInit {
     if (this.checkboxObjects.documentation) {
       obj.documentationName = job.documentationName;
     }
-    if(this.checkboxObjects.agentName) {
+    if(this.checkboxObjects.radio) {
+      obj.withSubagentClusterIdExpr = this.selectedNode.radio == 'expression';
       if (job.agentName1) {
         obj.subagentClusterId = job.agentName;
         job.agentName = job.agentName1;
@@ -238,26 +239,29 @@ export class UpdateJobComponent implements OnInit {
         delete obj.subagentClusterId;
       }
     }
+    if(this.checkboxObjects.subagentClusterIdExpr) {
+      obj.subagentClusterIdExpr = job.subagentClusterIdExpr;
+    }
 
-    if (job.jobResourceNames) {
+    if (this.checkboxObjects.jobResourceNames) {
       obj.jobResourceNames = job.jobResourceNames;
     }
-    if (job.timeout || job.timeout > -1) {
+    if (this.checkboxObjects.timeout1) {
       obj.timeout = job.timeout;
     }
-    if (job.graceTimeout || job.graceTimeout > -1) {
+    if (this.checkboxObjects.graceTimeout1) {
       obj.graceTimeout = job.graceTimeout;
     }
-    if (job.warnIfShorter || job.warnIfShorter > -1) {
+    if (this.checkboxObjects.warnIfShorter) {
       obj.warnIfShorter = job.warnIfShorter;
     }
-    if (job.warnIfLonge || job.warnIfLonger > -1) {
+    if (this.checkboxObjects.warnIfLonger) {
       obj.warnIfLonger = job.warnIfLonger;
     }
     if (job.defaultArguments) {
       obj.defaultArguments = job.defaultArguments;
     }
-    if (job.criticality) {
+    if (this.checkboxObjects.criticality) {
       obj.criticality = job.criticality;
     }
 
@@ -268,19 +272,28 @@ export class UpdateJobComponent implements OnInit {
       if (job.executable.TYPE !== obj.executable.TYPE) {
         obj.executable.TYPE = job.executable.TYPE;
       }
-      if (job.executable.className) {
+      if (this.checkboxObjects.className) {
         obj.executable.className = job.executable.className;
       }
-      if (job.executable.script) {
+      if (this.checkboxObjects.script) {
         obj.executable.script = job.executable.script;
       }
-      if (job.executable.login) {
-        obj.executable.login = job.executable.login;
+      if (this.checkboxObjects.credentialKey) {
+        if(!obj.executable.login){
+          obj.executable.login = {};
+        }
+        obj.executable.login.credentialKey = job.executable.login?.credentialKey;
       }
-      if (job.executable.v1Compatible || job.executable.v1Compatible === false) {
+      if (this.checkboxObjects.withUserProfile) {
+        if(!obj.executable.login){
+          obj.executable.login = {};
+        }
+        obj.executable.login.withUserProfile = job.executable.login?.withUserProfile;
+      }
+      if (this.checkboxObjects.v1Compatible) {
         obj.executable.v1Compatible = job.executable.v1Compatible;
       }
-      if (job.executable.returnCodeMeaning) {
+      if (this.checkboxObjects.returnCode) {
         obj.executable.returnCodeMeaning = job.executable.returnCodeMeaning;
       }
       if (job.executable.env) {
@@ -298,11 +311,17 @@ export class UpdateJobComponent implements OnInit {
         delete obj.executable.arguments;
       }
     }
-    if (job.failOnErrWritten || job.failOnErrWritten === false) {
+    if (this.checkboxObjects.failOnErrWritten) {
       obj.failOnErrWritten = job.failOnErrWritten;
     }
-    if (job.warnOnErrWritten || job.warnOnErrWritten === false) {
+    if (this.checkboxObjects.warnOnErrWritten) {
       obj.warnOnErrWritten = job.warnOnErrWritten;
+    }
+    if (this.checkboxObjects.parallelism) {
+      obj.parallelism = job.parallelism;
+    }
+    if (this.checkboxObjects.skipIfNoAdmissionForOrderDay) {
+      obj.skipIfNoAdmissionForOrderDay = job.skipIfNoAdmissionForOrderDay;
     }
     return obj;
   }
@@ -312,6 +331,17 @@ export class UpdateJobComponent implements OnInit {
     if (isEmpty(job.executable.login)) {
       delete job.executable.login;
     }
+
+    if (this.selectedNode.radio === 'agent') {
+      delete job.subagentClusterIdExpr;
+    } else {
+      delete this.selectedNode.job.agentName1;
+      if (job.subagentClusterIdExpr) {
+        this.coreService.addSlashToString(job, 'subagentClusterIdExpr');
+      }
+    }
+    job.withSubagentClusterIdExpr = this.selectedNode.radio == 'expression';
+    delete this.selectedNode.radio;
     if (job.agentName1) {
       job.subagentClusterId = job.agentName;
       job.agentName = job.agentName1;
