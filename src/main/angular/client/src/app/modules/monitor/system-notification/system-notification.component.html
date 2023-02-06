@@ -60,10 +60,10 @@
             <i *ngIf="filters.filter.sortBy == 'category' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('section')"><a><span class="p-r-xs" translate>monitor.notification.label.section</span>
-            <i *ngIf="filters.filter.sortBy == 'section' && !filters.filter.reverse"
+          <th (click)="sort('source')"><a><span class="p-r-xs" translate>monitor.notification.label.source</span>
+            <i *ngIf="filters.filter.sortBy == 'source' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'section' && filters.filter.reverse"
+            <i *ngIf="filters.filter.sortBy == 'source' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
           <th (click)="sort('notifier')"><a><span class="p-r-xs" translate>monitor.notification.label.notifier</span>
@@ -128,7 +128,7 @@
               <span [innerHtml]="notify.category | highlight : filters.filter.searchText"></span>
             </td>
             <td  (click)="$event.stopPropagation()">
-               <span [innerHtml]="notify.section | highlight : filters.filter.searchText"></span>
+               <span [innerHtml]="notify.source | highlight : filters.filter.searchText"></span>
             </td>
             <td>
               <span [innerHtml]="notify.notifier | highlight : filters.filter.searchText"></span>

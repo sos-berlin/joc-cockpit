@@ -681,24 +681,24 @@ export class UpdateObjectComponent implements OnInit {
   }
 
   private updateProperties(obj, object): any {
-    if (object.title) {
+    if (this.checkboxObjects.title) {
       obj.title = object.title;
     }
-    if (object.documentationName) {
+    if (this.checkboxObjects.documentation) {
       obj.documentationName = object.documentationName;
     }
-    if (object.workflowName) {
+    if (this.checkboxObjects.workflowName) {
       if (this.type === InventoryObject.SCHEDULE || this.type === InventoryObject.FILEORDERSOURCE) {
         obj.workflowName = object.workflowName;
       }
     }
-    if (object.timeZone) {
+    if (this.checkboxObjects.timeZone) {
       if (this.type === InventoryObject.WORKFLOW || this.type === InventoryObject.FILEORDERSOURCE) {
         obj.timeZone = object.timeZone;
       }
     }
     if (this.type === InventoryObject.WORKFLOW) {
-      if (object.jobResourceNames) {
+      if (this.checkboxObjects.jobResourceNames) {
         obj.jobResourceNames = object.jobResourceNames;
       }
     } else if (this.type === InventoryObject.JOBRESOURCE) {
@@ -717,38 +717,38 @@ export class UpdateObjectComponent implements OnInit {
         this.coreService.convertArrayToObject(obj, 'arguments', true);
       }
     } else if (this.type === InventoryObject.FILEORDERSOURCE) {
-      if (object.agentName) {
+      if (this.checkboxObjects.agent) {
         obj.agentName = object.agentName;
       }
-      if (object.directoryExpr) {
+      if (this.checkboxObjects.directoryExpr) {
         obj.directoryExpr = object.directoryExpr;
         this.coreService.addSlashToString(obj, 'directoryExpr');
       }
-      if (object.pattern) {
+      if (this.checkboxObjects.pattern) {
         obj.pattern = object.pattern;
       }
-      if (object.delay) {
+      if (this.checkboxObjects.delay) {
         obj.delay = object.delay;
       }
     } else if (this.type === InventoryObject.NOTICEBOARD) {
-      if (object.endOfLife) {
+      if (this.checkboxObjects.endOfLife) {
         obj.endOfLife = object.endOfLifeMsg + this.getConvertedValue(object.endOfLife);
       }
-      if (object.postOrderToNoticeId) {
+      if (this.checkboxObjects.postOrderToNoticeId) {
         obj.postOrderToNoticeId = object.postOrderToNoticeId;
       }
-      if (object.expectOrderToNoticeId) {
+      if (this.checkboxObjects.expectOrderToNoticeId) {
         obj.expectOrderToNoticeId = object.expectOrderToNoticeId;
       }
     } else if (this.type === InventoryObject.LOCK) {
-      if (object.limit || object.limit === 0) {
+      if (this.checkboxObjects.limit) {
         obj.limit = object.limit;
       }
     } else if (this.type === InventoryObject.SCHEDULE) {
-      if (object.planOrderAutomatically || object.planOrderAutomatically === false) {
+      if (this.checkboxObjects.planOrderAutomatically) {
         obj.planOrderAutomatically = object.planOrderAutomatically;
       }
-      if (object.submitOrderToControllerWhenPlanned || object.submitOrderToControllerWhenPlanned === false) {
+      if (this.checkboxObjects.submitOrderToControllerWhenPlanned ) {
         obj.submitOrderToControllerWhenPlanned = object.submitOrderToControllerWhenPlanned;
       }
       if (object.workflowName) {
@@ -757,47 +757,56 @@ export class UpdateObjectComponent implements OnInit {
       if (object.orderParameterisations && object.orderParameterisations.length > 0) {
         obj.orderParameterisations = this.coreService.clone(object.orderParameterisations);
         let isEmptyExist = false;
-        obj.orderParameterisations = obj.orderParameterisations.filter(variableSet => {
-          if (variableSet.orderName === '' || !variableSet.orderName) {
+
+        obj.orderParameterisations = obj.orderParameterisations.filter(parameter => {
+          if (parameter.orderName === '' || !parameter.orderName) {
             if (isEmptyExist) {
               return false;
             }
             isEmptyExist = true;
           }
-          if (variableSet.variables && isArray(variableSet.variables)) {
-            variableSet.variables = variableSet.variables.filter((variable) => {
+          if (parameter.variables) {
+            parameter.variables = parameter.variables.filter((variable) => {
               return !!variable.name;
             });
-            variableSet.variables = variableSet.variables.map(variable => ({
-              name: variable.name,
-              value: variable.value
-            }));
-            variableSet.variables = this.coreService.keyValuePair(variableSet.variables);
+            parameter.variables = parameter.variables.map(variable => ({name: variable.name, value: variable.value}));
+            parameter.variables = this.coreService.keyValuePair(parameter.variables);
           }
-          if (variableSet.forkListVariables) {
-            variableSet.forkListVariables.forEach((item) => {
-              variableSet.variables[item.name] = [];
+          if (parameter.forkListVariables) {
+            parameter.forkListVariables.forEach((item) => {
+              parameter.variables[item.name] = [];
               if (item.actualList) {
                 for (const i in item.actualList) {
                   const listObj = {};
                   item.actualList[i].forEach((data) => {
-                    if (data.value) {
+                    if (!data.value && data.value != 0 && data.value != false) {
+
+                    } else {
                       listObj[data.name] = data.value;
                     }
                   });
                   if (!isEmpty(listObj)) {
-                    variableSet.variables[item.name].push(listObj);
+                    parameter.variables[item.name].push(listObj);
                   }
                 }
               }
             });
           }
+          if (parameter.positions) {
+            if (parameter.positions.startPosition && this.positions && this.positions.has(parameter.positions.startPosition)) {
+              parameter.positions.startPosition = JSON.parse(this.positions.get(parameter.positions.startPosition))
+            }
+            if (parameter.positions.endPositions) {
+              parameter.positions.endPositions = parameter.positions.endPositions.map((item) => {
+                if (this.positions.has(item)) {
+                  return JSON.parse(this.positions.get(item))
+                }
+              })
+            }
+          }
           return true;
         });
 
-        obj.orderParameterisations = obj.orderParameterisations.map(variableSet => {
-          return {orderName: variableSet.orderName, variables: variableSet.variables, positions: variableSet.variables};
-        });
       }
 
       if (object.configuration) {
@@ -828,17 +837,15 @@ export class UpdateObjectComponent implements OnInit {
         }
       }
     } else if (this.type === 'CALENDAR') {
-      if (object.type) {
+      if (this.checkboxObjects.type) {
         obj.type = object.type;
       }
-      if (object.from) {
+      if (this.checkboxObjects.validFrom) {
         obj.from = object.from;
-      }
-      if (object.to) {
         obj.to = object.to;
       }
     } else if (this.type === InventoryObject.INCLUDESCRIPT) {
-      if (object.script) {
+      if (this.checkboxObjects.script) {
         obj.script = object.script;
       }
     }

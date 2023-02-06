@@ -84,11 +84,14 @@
               <button class="btn btn-grey btn-sm" (click)="changeCategories('ALL')"
                       [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.categories == 'ALL'}" translate>monitor.notification.button.all
               </button>
+              <button class="btn btn-grey btn-sm" (click)="changeCategories('SYSTEM')"
+                      [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.categories == 'SYSTEM'}" translate>monitor.notification.button.system
+              </button>
               <button class="btn btn-grey btn-sm" (click)="changeCategories('JOC')"
                       [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.categories == 'JOC'}" translate>monitor.notification.button.joc
               </button>
-              <button class="btn btn-grey btn-sm" (click)="changeCategories('SYSTEM')"
-                      [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.categories == 'SYSTEM'}" translate>monitor.notification.button.system
+              <button class="btn btn-grey btn-sm" (click)="changeCategories('CONTROLLER')"
+                      [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.categories == 'CONTROLLER'}" translate>monitor.notification.button.controller
               </button>
             </div>
           </div>
@@ -153,6 +156,9 @@
           <div class="inline" *ngIf="monitorFilters.tabIndex == 3 && monitorFilters.systemNotification.mapOfCheckedId.size > 0">
             <button class="btn btn-grey btn-sm" (click)="acknowledge()" translate>monitor.notification.menu.bulkAcknowledge</button>
           </div>
+          <button class="btn btn-grey btn-sm m-l-12" *ngIf="monitorFilters.tabIndex == 2 || monitorFilters.tabIndex == 3"
+                  [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
+                  (click)="exportToExcel()"><i class="fa fa fa-share-square-o"></i></button>
         </div>
       </div>
     </div>

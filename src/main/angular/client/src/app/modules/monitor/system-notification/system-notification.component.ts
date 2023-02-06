@@ -2,12 +2,14 @@ import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
+import {TranslateService} from "@ngx-translate/core";
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {AcknowledgeModalComponent} from "../acknowledge-notification/acknowledge.component";
+import {ExcelService} from "../../../services/excel.service";
 
 @Component({
   selector: 'app-system-notification',
@@ -35,7 +37,8 @@ export class SystemNotificationComponent implements OnInit, OnDestroy {
   private pendingHTTPRequests$ = new Subject<void>();
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private orderPipe: OrderPipe,
-              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe) {
+              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe,
+              private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -47,8 +50,10 @@ export class SystemNotificationComponent implements OnInit, OnDestroy {
         if (res.filter) {
           this.isLoaded = false;
           this.getData();
-        } else if (res.action) {
+        } else if (res === 'ACKNOWLEDGE') {
           this.acknowledge(null);
+        } else if(res == 'EXPORT'){
+          this.exportXLS();
         }
       }
     });
@@ -275,6 +280,47 @@ export class SystemNotificationComponent implements OnInit, OnDestroy {
         this.getData();
       }
     });
+  }
+
+  exportXLS(): void {
+    let category = '', source = '', notifier = '', type = '',
+      message = '', exception = '', created = '';
+    this.translate.get('monitor.notification.label.category').subscribe(translatedValue => {
+      category = translatedValue;
+    });
+    this.translate.get('monitor.notification.label.source').subscribe(translatedValue => {
+      source = translatedValue;
+    });
+    this.translate.get('monitor.notification.label.notifier').subscribe(translatedValue => {
+      notifier = translatedValue;
+    });
+    this.translate.get('monitor.notification.label.type').subscribe(translatedValue => {
+      type = translatedValue;
+    });
+    this.translate.get('monitor.notification.label.message').subscribe(translatedValue => {
+      message = translatedValue;
+    });
+    this.translate.get('monitor.notification.label.exception').subscribe(translatedValue => {
+      exception = translatedValue;
+    });
+    this.translate.get('monitor.notification.label.created').subscribe(translatedValue => {
+      created = translatedValue;
+    });
+
+    const data = [];
+    for (let i = 0; i < this.notifications.length; i++) {
+      const obj: any = {};
+      obj[category] = this.notifications[i].category;
+      obj[source] = this.notifications[i].source;
+      obj[notifier] = this.notifications[i].notifier;
+      obj[type] = this.notifications[i].type;
+      obj[message] = this.notifications[i].message;
+      obj[exception] = this.notifications[i].exception;
+      obj[created] = this.coreService.stringToDate(this.preferences, this.notifications[i].created);
+      data.push(obj);
+    }
+    this.excelService.exportAsExcelFile(data, 'JS7-system-notification');
+
   }
 
   reload(): void {
