@@ -104,7 +104,10 @@ export class MonitorComponent implements OnInit, OnDestroy {
   }
 
   acknowledge(): void {
-    const obj: any = {action: 'acknowledge'};
-    this.dataService.announceFunction(obj);
+    this.dataService.announceFunction('ACKNOWLEDGE');
+  }
+
+  exportToExcel(){
+    this.dataService.announceFunction('EXPORT');
   }
 }

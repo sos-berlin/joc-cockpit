@@ -3,11 +3,13 @@ import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {NzModalService} from 'ng-zorro-antd/modal';
+import {TranslateService} from "@ngx-translate/core";
 import {AcknowledgeModalComponent} from "../acknowledge-notification/acknowledge.component";
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
+import {ExcelService} from "../../../services/excel.service";
 
 @Component({
   selector: 'app-order-notification',
@@ -36,7 +38,8 @@ export class OrderNotificationComponent implements OnInit, OnDestroy {
   private pendingHTTPRequests$ = new Subject<void>();
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private orderPipe: OrderPipe,
-              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe) {
+              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe,
+              private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -48,8 +51,10 @@ export class OrderNotificationComponent implements OnInit, OnDestroy {
         if (res.filter) {
           this.isLoaded = false;
           this.getData();
-        } else if (res.action) {
+        } else if (res === 'ACKNOWLEDGE') {
           this.acknowledge(null);
+        } else if(res == 'EXPORT'){
+          this.exportXLS();
         }
       }
     });
@@ -296,6 +301,53 @@ export class OrderNotificationComponent implements OnInit, OnDestroy {
         this.getData();
       }
     });
+  }
+
+  exportXLS(): void {
+    let workflow = '', orderId = '', job = '', jobReturnCode = '', type = '',
+      message = '', controllerId = '', created = '';
+    this.translate.get('monitor.notification.label.workflow').subscribe(translatedValue => {
+      workflow = translatedValue;
+    });
+    this.translate.get('monitor.notification.label.orderId').subscribe(translatedValue => {
+      orderId = translatedValue;
+    });
+    this.translate.get('monitor.notification.label.job').subscribe(translatedValue => {
+      job = translatedValue;
+    });
+    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
+      controllerId = translatedValue;
+    });
+    this.translate.get('monitor.notification.label.type').subscribe(translatedValue => {
+      type = translatedValue;
+    });
+    this.translate.get('monitor.notification.label.message').subscribe(translatedValue => {
+      message = translatedValue;
+    });
+    this.translate.get('monitor.notification.label.jobReturnCode').subscribe(translatedValue => {
+      jobReturnCode = translatedValue;
+    });
+    this.translate.get('monitor.notification.label.created').subscribe(translatedValue => {
+      created = translatedValue;
+    });
+
+    const data = [];
+    for (let i = 0; i < this.notifications.length; i++) {
+      const obj: any = {};
+      if (!this.filters.current) {
+        obj[controllerId] = this.notifications[i].controllerId;
+      }
+      obj[workflow] = this.notifications[i].workflow;
+      obj[orderId] = this.notifications[i].orderId;
+      obj[job] = this.notifications[i].job?.job;
+      obj[type] = this.notifications[i].type;
+      obj[jobReturnCode] = this.notifications[i].job?.exitCode;
+      obj[message] = this.notifications[i].message;
+      obj[created] = this.coreService.stringToDate(this.preferences, this.notifications[i].created);
+      data.push(obj);
+    }
+    this.excelService.exportAsExcelFile(data, 'JS7-order-notification');
+
   }
 
   reload(): void {

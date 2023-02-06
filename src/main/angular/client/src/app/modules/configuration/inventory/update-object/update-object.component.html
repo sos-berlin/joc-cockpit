@@ -271,7 +271,7 @@
               </ng-template>
             </div>
             <div class="col-md-1">
-              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.toNotice" name="ctoNotice"></label>
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.postOrderToNoticeId" name="ctoNotice"></label>
             </div>
           </div>
           <div class="form-group row">
@@ -290,7 +290,7 @@
               </ng-template>
             </div>
             <div class="col-md-1">
-              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.readingOrderToNoticeId" name="creadingOrderToNoticeId"></label>
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.expectOrderToNoticeId" name="creadingOrderToNoticeId"></label>
             </div>
           </div>
           <div class="form-group row">
@@ -618,7 +618,7 @@
                               [nzPlaceHolder]="'common.placeholder.setEndDate' | translate"></nz-date-picker>
             </div>
             <div class="col-md-1">
-              <label nz-checkbox [(ngModel)]="checkboxObjects.validFrom" name="cvalidFrom"></label>
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.validFrom" name="cvalidFrom"></label>
             </div>
           </div>
         </ng-container>
