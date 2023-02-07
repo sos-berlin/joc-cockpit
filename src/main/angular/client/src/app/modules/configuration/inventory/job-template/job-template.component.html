@@ -141,13 +141,13 @@
           <div class="col-lg-9 col-xl-8 col-xxl-6"
                [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid)}">
             <label class="w-full">
-              <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex (blur)="saveJSON();"
+              <input autocomplete="off" type="text" class="form-control" validateRangeRegex (blur)="validateReturnCode(job.configuration.executable.returnCodeMeaning, success);saveJSON();"
                      placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
                      name="success" #success="ngModel" [(ngModel)]="job.configuration.executable.returnCodeMeaning[returnCodes.on]">
             </label>
             <div *ngIf="success.invalid && (success.dirty || success.touched)"
                  class="text-danger help-block">
-              <div *ngIf="success.errors.validateNumberArrayRegex" translate>common.message.invalid</div>
+              <div *ngIf="success.errors.invalidRange" translate>common.message.invalid</div>
             </div>
           </div>
         </div>
@@ -159,13 +159,13 @@
           <div class="col-lg-9 col-xl-8 col-xxl-6"
                [ngClass]="{'has-error' : ((warning.dirty || warning.touched) && warning.invalid)}">
             <label class="w-full">
-              <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex (blur)="saveJSON();"
+              <input autocomplete="off" type="text" class="form-control" validateRangeRegex (blur)="validateReturnCode(job.configuration.executable.returnCodeMeaning, warning);saveJSON();"
                      placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
                      #warning="ngModel" name="warning" [(ngModel)]="job.configuration.executable.returnCodeMeaning.warning">
             </label>
             <div *ngIf="warning.invalid && (warning.dirty || warning.touched)"
                  class="text-danger help-block">
-              <div *ngIf="warning.errors.validateNumberArrayRegex" translate>common.message.invalid</div>
+              <div *ngIf="warning.errors.invalidRange" translate>common.message.invalid</div>
             </div>
           </div>
         </div>

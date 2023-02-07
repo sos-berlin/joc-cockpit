@@ -3165,7 +3165,7 @@
     "message.classNameIsMissing": "Name der Klasse ist erforderlich",
     "message.duplicateLabel": "Identische Kennzeichnung in mehreren Jobs gefunden",
     "message.predicateIsMissing": "Prädikat ist erforderlich",
-    "message.scheduleIsMissing": "Schedule is missing, but is required",
+    "message.runtimeIsMissing": "In Cycle Instruction, runtime is missing, but is required",
     "message.lockNameIsMissing": "Name der Ressourcen-Sperre erforderlich",
     "message.childrenIsMissing": "ForkList-Anweisung darf nicht leer sein",
     "message.invalidIfInstruction": "If-Anweisung darf nicht leer sein",

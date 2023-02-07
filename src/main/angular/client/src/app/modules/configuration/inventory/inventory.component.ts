@@ -4216,6 +4216,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           obj.cancelOrdersDateFrom = result.cancelOrdersDateFrom;
           obj.auditLog = result.auditLog;
           this.coreService.post('inventory/remove', obj).subscribe(() => {
+            this.clearCopyObject(object);
             if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
               this.clearSelection();
             }
@@ -4257,6 +4258,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             this.deleteObject(path, object, node, obj.auditLog, result.cancelOrdersDateFrom);
           } else {
             this.coreService.post('inventory/remove', obj).subscribe(() => {
+              this.clearCopyObject(object);
               if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
                 this.clearSelection();
               }
@@ -4749,6 +4751,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 ticketLink: result.ticketLink
               };
               this.coreService.post('inventory/remove', obj).subscribe(() => {
+                this.clearCopyObject(object);
                 if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
                   this.clearSelection();
                 }
@@ -4778,6 +4781,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
               this.deleteObject(path, object, node, undefined);
             } else {
               this.coreService.post('inventory/remove', obj).subscribe(() => {
+                this.clearCopyObject(object);
                 if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
                   this.clearSelection();
                 }
@@ -5509,6 +5513,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           return child.path !== path;
         });
       }
+      this.clearCopyObject(object);
       if (this.selectedObj && path === this.selectedObj.path) {
         this.clearSelection();
       }
