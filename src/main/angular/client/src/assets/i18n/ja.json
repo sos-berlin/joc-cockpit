@@ -3165,7 +3165,7 @@
     "message.classNameIsMissing": "クラス名がありません",
     "message.duplicateLabel": "他のジョブで同じラベルがあります",
     "message.predicateIsMissing": "述部が必要です",
-    "message.scheduleIsMissing": "スケジュールが必要です",
+    "message.runtimeIsMissing": "In Cycle Instruction, runtime is missing, but is required",
     "message.lockNameIsMissing": "必要なロック名がありません",
     "message.childrenIsMissing": "ForkListオーダー変数がありません",
     "message.invalidIfInstruction": "If命令が必要です",

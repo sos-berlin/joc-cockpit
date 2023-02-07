@@ -1857,6 +1857,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  validateReturnCode(value, form): void {
+    if (form.control['status'] === 'INVALID') {
+      value[form.name] = '0';
+    }
+  }
+
   saveToHistory(): void {
     let flag1 = false;
     let flag2 = false;
@@ -4158,6 +4164,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           for (let i = 0; i < this.selectedNode.obj.arguments.length; i++) {
             if (this.selectedNode.obj.arguments[i].name === k) {
               this.selectedNode.obj.arguments[i].type = val.type;
+              this.selectedNode.obj.arguments[i].isExist = true;
               if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
                 this.selectedNode.obj.arguments[i].isRequired = true;
               }
@@ -4167,7 +4174,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
           if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
             if (!val.final) {
-              this.selectedNode.obj.arguments.push({ name: k, type: val.type, isRequired: true });
+              this.selectedNode.obj.arguments.push({ name: k, type: val.type, isRequired: true, isExist: true });
             }
           }
         }
@@ -4183,10 +4190,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.selectedNode.obj.arguments = this.selectedNode.obj.arguments.filter(item => {
           if (isArray(item.value)) {
             this.setForkListVariables(item, this.selectedNode.obj.forkListArguments);
-            return false;
           } else {
-            return true;
+            if (item.isExist) {
+              delete item.isExist;
+              return true;
+            }
           }
+          return false;
         });
       }
     }
@@ -6242,8 +6252,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
         function checkParentRecursively(parentCell, selectedCell): void {
           if (parentCell && parentCell.cell) {
-            if (parentCell.cell.getParent().id !== selectedCell.getParent().id) {
-              parentCell.cell = parentCell.cell.getParent();
+            const parent = parentCell.cell.getParent();
+            if (parent && parent.id !== selectedCell.getParent().id) {
+              parentCell.cell = parent;
               checkParentRecursively(parentCell, selectedCell);
             }
           }
@@ -7780,7 +7791,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   argu.arguments.forEach((item) => {
                     self.coreService.addSlashToString(item, 'value');
                   });
-                  self.coreService.convertArrayToObject(argu, 'arguments', true);
+                  self.coreService.convertArrayToObject(argu, 'arguments', false);
                 } else {
                   argu.arguments = {};
                 }
@@ -10382,7 +10393,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 || (json.instructions[x].schedule.schemes.length === 0)) {
                 flag = false;
                 checkErr = true;
-                self.invalidMsg = 'workflow.message.scheduleIsMissing';
+                self.invalidMsg = 'workflow.message.runtimeIsMissing';
                 if (isOpen) {
                   self.openSideBar(json.instructions[x].id);
                 }

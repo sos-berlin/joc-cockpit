@@ -244,7 +244,7 @@
                [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid), 'col-md-8 col-lg-9': !isModal}">
             <label class="w-full">
               <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
-                     type="text" class="form-control" validateRangeRegex (blur)="saveToHistory();"
+                     type="text" class="form-control" validateRangeRegex (blur)="validateReturnCode(selectedNode.job.executable.returnCodeMeaning, success);saveToHistory();"
                      placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
                      name="success" #success="ngModel"
                      [(ngModel)]="selectedNode.job.executable.returnCodeMeaning[returnCodes.on]">
@@ -270,7 +270,7 @@
                [ngClass]="{'has-error' : ((warning.dirty || warning.touched) && warning.invalid), 'col-md-8 col-lg-9': !isModal}">
             <label class="w-full">
               <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
-                     type="text" class="form-control" validateRangeRegex (blur)="saveToHistory();"
+                     type="text" class="form-control" validateRangeRegex (blur)="validateReturnCode(selectedNode.job.executable.returnCodeMeaning, warning);saveToHistory();"
                      placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
                      #warning="ngModel" name="warning"
                      [(ngModel)]="selectedNode.job.executable.returnCodeMeaning.warning">

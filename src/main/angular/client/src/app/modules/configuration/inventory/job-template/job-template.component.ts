@@ -924,7 +924,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       this.object.indeterminate2 = false;
       this.object.setOfCheckedArgu.clear();
       this.object.setOfCheckedJobArgu.clear();
-    } 
+    }
     let list = this.getList(type);
     const arr = list.filter(item => {
       if (type === 'arguments') {
@@ -1149,7 +1149,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
           if (count > 1) {
             form.control.setErrors({incorrect: true});
             break;
-          } 
+          }
         }
       }
       if (count < 2) {
@@ -1209,6 +1209,12 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
 
   onChangeJobResource(value): void {
     this.saveJSON();
+  }
+
+  validateReturnCode(value, form): void {
+    if (form.control['status'] === 'INVALID') {
+      value[form.name] = '0';
+    }
   }
 
   saveJSON(flag = false): void {

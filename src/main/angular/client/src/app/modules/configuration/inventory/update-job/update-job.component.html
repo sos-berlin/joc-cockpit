@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span class="drag-text" translate>inventory.updateJob.label.updateJob</span>:
-    {{data.jobName}}
+    {{data.jobName || '*'}}
   </h4>
   <button type="button" class="close" aria-label="Close"
           (click)="step === 3 ? activeModal.close('Close') : activeModal.destroy()">
