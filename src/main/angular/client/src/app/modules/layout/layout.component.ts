@@ -295,7 +295,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.coreService.post('controller/switch', {controllerId: this.schedulerIds.selected}).subscribe(() => {
       this.coreService.post('controller/ids', {}).subscribe((res) => {
         if (res) {
-          document.title = 'JS7:' + this.schedulerIds.selected;
           let previousData = this.tabsMap.get(controller);
           if (previousData) {
             previousData = JSON.parse(previousData);
@@ -557,9 +556,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
     this.count = this.sessionTimeout / 1000;
     this.calculateTime();
-    if (this.schedulerIds && this.schedulerIds.selected) {
-      document.title = 'JS7:' + this.schedulerIds.selected;
-    }
     this.nzConfigService.set('empty', {nzDefaultEmptyContent: this.customTpl});
     setTimeout(() => {
       LayoutComponent.calculateHeight();

@@ -401,7 +401,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
           }
         }
         if (this.showPanelObj) {
-          if ((args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' || args.eventSnapshots[j].eventType === 'HistoryOrderStarted') && this.selectedIndex === 0) {
+          if ((args.eventSnapshots[j].eventType && (args.eventSnapshots[j].eventType.match('HistoryOrder') || args.eventSnapshots[j].eventType.match('HistoryChildOrder'))) && this.selectedIndex === 0) {
             if (args.eventSnapshots[j].workflow && args.eventSnapshots[j].workflow.path === this.showPanelObj.workflowId.path) {
               flag1 = true;
             }

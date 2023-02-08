@@ -3076,14 +3076,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if ((args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' || args.eventSnapshots[j].eventType === 'HistoryOrderStarted') && this.isLoading && this.historyFilters.type === 'ORDER') {
+        if ((args.eventSnapshots[j].eventType && (args.eventSnapshots[j].eventType.match('HistoryOrder') || args.eventSnapshots[j].eventType.match('HistoryChildOrder'))) && this.isLoading && this.historyFilters.type === 'ORDER') {
           if (!isEmpty(this.orderSearch)) {
             this.search(this.orderSearch, false);
           } else {
             this.init(true);
           }
           break;
-        } else if ((args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' || args.eventSnapshots[j].eventType === 'HistoryTaskStarted') && this.isLoading && this.historyFilters.type === 'TASK') {
+        } else if ((args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' || args.eventSnapshots[j].eventType === 'HistoryTaskStarted' || args.eventSnapshots[j].eventType === 'HistoryTaskUpdated') && this.isLoading && this.historyFilters.type === 'TASK') {
           if (!isEmpty(this.jobSearch)) {
             this.search(this.jobSearch, false);
           } else {
