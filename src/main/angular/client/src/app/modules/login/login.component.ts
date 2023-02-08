@@ -4,6 +4,7 @@ import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 import { CoreService } from '../../services/core.service';
 import { AuthService, OIDCAuthService } from '../../components/guard';
+ declare const $:any;
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ export class LoginComponent implements OnInit {
   rememberMe = false;
   errorMsg = false;
   returnUrl = '';
+  defaultSetting: any = {};
   identityServiceItems = [];
 
   constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService,
@@ -25,6 +27,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProviders();
+    this.getDefaultConfiguration();
     if (localStorage.$SOS$REMEMBER === 'true' || localStorage.$SOS$REMEMBER === true) {
       if (localStorage.$SOS$FOO) {
         const urs = AES.decrypt(localStorage.$SOS$FOO.toString(), '$SOSJS7');
@@ -43,6 +46,34 @@ export class LoginComponent implements OnInit {
     if (this.authService.accessTokenId) {
       this.router.navigate(['/dashboard']).then();
     }
+  }
+
+  private getDefaultConfiguration() {
+    this.coreService.post('configuration/login', {}).subscribe({
+      next: (res) => {
+        this.defaultSetting = res;
+        if (!res.enableRememberMe) {
+          localStorage.removeItem('$SOS$FOO');
+          localStorage.removeItem('$SOS$BOO');
+          localStorage.removeItem('$SOS$REMEMBER');
+          this.rememberMe = false;
+          this.user = {};
+        }
+        if (res.title) {
+          document.title = 'JS7:' + res.title;
+        }
+        if (res.customLogo && res.customLogo.name) {
+          let imgUrl = '../ext/images/' + res.customLogo.name;
+          if (res.customLogo.position && res.customLogo.position !== 'BOTTOM') {
+            $('#logo-top').append("<img style='height: " + res.customLogo.height + "' src='" + imgUrl + "'>")
+          } else {
+            $('#logo-bottom').append("<img style='height: " + res.customLogo.height + "' src='" + imgUrl + "'>")
+          }
+        }
+      }, error(err) {
+        console.error(err)
+      },
+    })
   }
 
   private loadProviders(): void {

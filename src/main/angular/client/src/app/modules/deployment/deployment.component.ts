@@ -925,6 +925,23 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
   }
 
+  expandAll(flag = true): void {
+    this.obj.isDescriptorExpanded = flag;
+    this.obj.isLicenseExpanded = flag;
+    this.obj.isCertificateExpanded = flag;
+    this.obj.isAgentExpanded = flag;
+    this.obj.isJOCExpanded = flag;
+    this.obj.isControllerExpanded = flag;
+  }
+
+  collapseAll(): void {
+    this.expandAll(false);
+  }
+
+  toggleNode(type, flag = true): void {
+
+  }
+
   undo(): void {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];

@@ -6904,7 +6904,23 @@ aside.sidebar-hover-effect {
 }
 
 .pl-20 {
-  padding-left: 20px;
+  padding-left: 20px !important;
+}
+
+.pl-28 {
+  padding-left: 28px !important;
+}
+
+.pl-36 {
+  padding-left: 36px !important;
+}
+
+.pr-6 {
+  padding-right: 6px !important;
+}
+
+.pr-9 {
+  padding-right: 9px !important;
 }
 
 .label-top {
@@ -8427,9 +8443,7 @@ div.jsoneditor-navigation-bar {
 .login-box {
   display: flex;
   align-items: center;
-  position: relative;
-  height: calc(100vh - 56px);
-  margin-top: -15px;
+  height: 100vh;
 }
 
 div.ace_tooltip {
@@ -8963,14 +8977,17 @@ cdk-virtual-scroll-viewport {
   max-height: 290px !important;
 }
 
-.hover-trash-icon {
-  i.fa-trash, i.fa-times {
+#logo-bottom, #logo-top {
+  text-align: center
+}
+
+.hover-icon {
+  i.fa-icon{
     opacity: 0;
   }
   &:hover{
-    i.fa-trash, i.fa-times {
+    i.fa-icon {
       opacity: 1;
     }
   }
 }
-
