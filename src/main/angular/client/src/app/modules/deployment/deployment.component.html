@@ -134,7 +134,7 @@
                   </div>
                   <div class="col-md-6 col-lg-4 pl-36"
                        [ngClass]="{'has-error' : ((descriptorId.dirty || descriptorId.touched) && descriptorId.invalid)}">
-                    <input autocomplete="off" type="text" class="form-control" #descriptorId="ngModel" required
+                    <input id="descriptorId" autocomplete="off" type="text" class="form-control" #descriptorId="ngModel" required
                            name="descriptorId" identifierValidation maxlength="100"
                            placeholder="{{'deploymentService.descriptor.placeholder.descriptorId' | translate}}"
                            [(ngModel)]="data.descriptor.descriptorId" (blur)="convertJSON()">
@@ -227,7 +227,7 @@
                   </div>
                   <div class="col-md-6 col-lg-4 pl-36"
                        [ngClass]="{'has-error' : ((licenseKeyFile.dirty || licenseKeyFile.touched) && licenseKeyFile.invalid)}">
-                    <input autocomplete="off" type="text" class="form-control"
+                    <input id="licenseKeyFile" autocomplete="off" type="text" class="form-control"
                            #licenseKeyFile="ngModel" required name="licenseKeyFile" (blur)="convertJSON()"
                            placeholder="{{'deploymentService.license.placeholder.licenseKeyFile' | translate}}"
                            [(ngModel)]="data.license.licenseKeyFile">
@@ -249,7 +249,7 @@
                   </div>
                   <div class="col-md-6 col-lg-4 pl-36"
                        [ngClass]="{'has-error' : ((licenseBinFile.dirty || licenseBinFile.touched) && licenseBinFile.invalid)}">
-                    <input autocomplete="off" type="text" class="form-control"
+                    <input id="licenseBinFile" autocomplete="off" type="text" class="form-control"
                            #licenseBinFile="ngModel" required name="licenseBinFile" (blur)="convertJSON()"
                            placeholder="{{'deploymentService.license.placeholder.licenseBinFile' | translate}}"
                            [(ngModel)]="data.license.licenseBinFile">
@@ -269,6 +269,12 @@
                 <i class="fa fa-caret-down p-l-xs text-hover-primary"
                    (click)="obj.isCertificateExpanded = !obj.isCertificateExpanded"
                    [ngClass]="{'fa-caret-up': obj.isCertificateExpanded}"></i>
+                <a class="m-l-sm fa-icon" (click)="toggleNode('certificates');" [nz-tooltip]="'common.tooltip.expandAll' | translate">
+                  <i class="fa fa-angle-double-down"></i>
+                </a>
+                <a class="m-l-xs fa-icon" (click)="toggleNode('certificates', false);" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
+                  <i class="fa fa-angle-double-up"></i>
+                </a>
                 <i class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm text-16 cursor"
                    (click)="data.certificates = undefined"></i>
               </h5>
@@ -278,9 +284,9 @@
                 <h6 class="m-t-12" translate>deploymentService.label.controller
                   <i class="fa fa-caret-down p-l-xs text-hover-primary"
                      (click)="data.certificates.isControllerExpanded = !data.certificates.isControllerExpanded"
-                     [ngClass]="{'fa-caret-up': !data.certificates.isControllerExpanded}"></i>
+                     [ngClass]="{'fa-caret-up': data.certificates.isControllerExpanded}"></i>
                 </h6>
-                <div class="p-a b-a hide" [ngClass]="{'fade-in show': !data.certificates.isControllerExpanded}">
+                <div class="p-a b-a hide" [ngClass]="{'fade-in show': data.certificates.isControllerExpanded}">
                   <div class="row ">
                     <div class="col-md-4 col-lg-3 form-control-label">
                       <label translate>deploymentService.certificate.label.primaryControllerCert
@@ -290,7 +296,7 @@
                     </div>
                     <div class="col-md-6 col-lg-4 pl-28 pr-9"
                          [ngClass]="{'has-error' : ((primaryControllerCert.dirty || primaryControllerCert.touched) && primaryControllerCert.invalid)}">
-                      <input autocomplete="off" type="text" class="form-control" #primaryControllerCert="ngModel"
+                      <input id="primaryControllerCert" autocomplete="off" type="text" class="form-control" #primaryControllerCert="ngModel"
                              required name="primaryControllerCert" (blur)="convertJSON()"
                              placeholder="{{'deploymentService.certificate.placeholder.primaryControllerCert' | translate}}"
                              [(ngModel)]="data.certificates.controller.primaryControllerCert">
@@ -313,7 +319,7 @@
                     </div>
                     <div class="col-md-6 col-lg-4 pl-28 pr-9"
                          [ngClass]="{'has-error' : ((secondaryControllerCert.dirty || secondaryControllerCert.touched) && secondaryControllerCert.invalid)}">
-                      <input autocomplete="off" type="text" class="form-control"
+                      <input id="secondaryControllerCert" autocomplete="off" type="text" class="form-control"
                              #secondaryControllerCert="ngModel" required name="secondaryControllerCert"
                              (blur)="convertJSON()" placeholder="{{'deploymentService.certificate.placeholder.secondaryControllerCert' | translate}}"
                              [(ngModel)]="data.certificates.controller.secondaryControllerCert">
@@ -330,9 +336,9 @@
                 <h6 class="m-t-12" translate>deploymentService.label.joc
                   <i class="fa fa-caret-down p-l-xs text-hover-primary"
                      (click)="data.certificates.isJocExpanded = !data.certificates.isJocExpanded"
-                     [ngClass]="{'fa-caret-up': !data.certificates.isJocExpanded}"></i>
+                     [ngClass]="{'fa-caret-up': data.certificates.isJocExpanded}"></i>
                 </h6>
-                <div class="p-a b-a hide" [ngClass]="{'fade-in show': !data.certificates.isJocExpanded}">
+                <div class="p-a b-a hide" [ngClass]="{'fade-in show': data.certificates.isJocExpanded}">
 
                   <div class="row">
                     <div class="col-md-4 col-lg-3 form-control-label">
@@ -343,7 +349,7 @@
                     </div>
                     <div class="col-md-6 col-lg-4 pl-28 pr-9"
                          [ngClass]="{'has-error' : ((primaryJocCert.dirty || primaryJocCert.touched) && primaryJocCert.invalid)}">
-                      <input autocomplete="off" type="text" class="form-control" #primaryJocCert="ngModel"
+                      <input id="primaryJocCert" autocomplete="off" type="text" class="form-control" #primaryJocCert="ngModel"
                              required name="primaryJocCert" (blur)="convertJSON()"
                              placeholder="{{'deploymentService.certificate.placeholder.primaryJocCert' | translate}}"
                              [(ngModel)]="data.certificates.joc.primaryJocCert">
@@ -364,7 +370,7 @@
                     </div>
                     <div class="col-md-6 col-lg-4 pl-28 pr-9"
                          [ngClass]="{'has-error' : ((secondaryJocCert.dirty || secondaryJocCert.touched) && secondaryJocCert.invalid)}">
-                      <input autocomplete="off" type="text" class="form-control" #secondaryJocCert="ngModel"
+                      <input id="secondaryJocCert" autocomplete="off" type="text" class="form-control" #secondaryJocCert="ngModel"
                              required name="secondaryJocCert" (blur)="convertJSON()"
                              placeholder="{{'deploymentService.certificate.placeholder.secondaryJocCert' | translate}}"
                              [(ngModel)]="data.certificates.joc.secondaryJocCert">
@@ -386,6 +392,12 @@
                 <i class="fa fa-caret-down p-l-xs text-hover-primary"
                    (click)="obj.isAgentExpanded = !obj.isAgentExpanded"
                    [ngClass]="{'fa-caret-up': obj.isAgentExpanded}"></i>
+                <a class="m-l-sm fa-icon" (click)="toggleNode('agents');" [nz-tooltip]="'common.tooltip.expandAll' | translate">
+                  <i class="fa fa-angle-double-down"></i>
+                </a>
+                <a class="m-l-xs fa-icon" (click)="toggleNode('agents', false);" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
+                  <i class="fa fa-angle-double-up"></i>
+                </a>
                 <i class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm text-16 cursor"
                    (click)="removeAgent()"></i>
               </h5>
@@ -397,12 +409,12 @@
                     <span>{{item.agentId || 'Agent_ID_' + (i + 1)}}</span>
                     <i class="fa fa-caret-down p-l-xs text-hover-primary"
                        (click)="item.isAgentPropertiesExpanded = !item.isAgentPropertiesExpanded"
-                       [ngClass]="{'fa-caret-up': !item.isAgentPropertiesExpanded}"></i>
+                       [ngClass]="{'fa-caret-up': item.isAgentPropertiesExpanded}"></i>
                     <i *ngIf="i != 0" class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm font14 cursor"
                        (click)="removeAgent(i)" nz-tooltip="{{'deploymentService.agent.button.removeAgent' | translate}}"></i>
                   </h6>
 
-                  <div class="p-a b-a hide" [ngClass]="{'fade-in show': !item.isAgentPropertiesExpanded}">
+                  <div class="p-a b-a hide" [ngClass]="{'fade-in show': item.isAgentPropertiesExpanded}">
                     <div class="row">
                       <div class="col-md-4 col-lg-3 form-control-label">
                         <label translate>deploymentService.agent.label.agentId
@@ -412,7 +424,7 @@
                       </div>
                       <div class="col-md-6 col-lg-4 pl-28"
                            [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}">
-                        <input autocomplete="off" type="text" class="form-control" #agentId="ngModel" required
+                        <input id="agentId{{i}}" autocomplete="off" type="text" class="form-control" #agentId="ngModel" required
                                name="agentId{{i}}" (blur)="convertJSON()"
                                placeholder="{{'deploymentService.agent.placeholder.agentId' | translate}}"
                                [(ngModel)]="item.agentId">
@@ -436,7 +448,7 @@
                           </div>
                           <div class="col-md-6 col-lg-4 pr-6"
                                [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}">
-                            <input autocomplete="off" type="text" class="form-control" #host="ngModel" required
+                            <input id="ahost{{i}}" autocomplete="off" type="text" class="form-control" #host="ngModel" required
                                    name="ahost{{i}}" (blur)="convertJSON()"
                                    placeholder="{{'deploymentService.agent.placeholder.host' | translate}}"
                                    [(ngModel)]="item.target.connection.host">
@@ -474,7 +486,7 @@
                           <div class="col-md-6 col-lg-4 pr-6"
                                [ngClass]="{'has-error' : ((method.dirty || method.touched) && method.invalid)}">
                             <nz-select nzPlaceHolder="{{'deploymentService.agent.placeholder.method' | translate}}" (ngModelChange)="convertJSON()"
-                                       name="amethod{{i}}" #method="ngModel" [(ngModel)]="item.target.authentication.method">
+                                       id="amethod{{i}}" name="amethod{{i}}" #method="ngModel" required [(ngModel)]="item.target.authentication.method">
                               <nz-option *ngFor="let option of methods" [nzLabel]="option"
                                          [nzValue]="option"></nz-option>
                             </nz-select>
@@ -495,7 +507,7 @@
                           </div>
                           <div class="col-md-6 col-lg-4 pr-6"
                                [ngClass]="{'has-error' : ((user.dirty || user.touched) && user.invalid)}">
-                            <input autocomplete="off" type="text" class="form-control" #user="ngModel" required
+                            <input id="auser{{i}}" autocomplete="off" type="text" class="form-control" #user="ngModel" required
                                    name="auser{{i}}" (blur)="convertJSON()"
                                    placeholder="{{'deploymentService.agent.placeholder.user' | translate}}"
                                    [(ngModel)]="item.target.authentication.user">
@@ -529,7 +541,7 @@
                         </div>
                         <div class="col-md-6 col-lg-4 pl-20 pr-9"
                              [ngClass]="{'has-error' : ((packageLocation.dirty || packageLocation.touched) && packageLocation.invalid)}">
-                          <input autocomplete="off" type="text" class="form-control" #packageLocation="ngModel"
+                          <input id="apackageLocation{{i}}" autocomplete="off" type="text" class="form-control" #packageLocation="ngModel"
                                  required name="apackageLocation{{i}}" (blur)="convertJSON()"
                                  placeholder="{{'deploymentService.agent.placeholder.packageLocation' | translate}}"
                                  [(ngModel)]="item.target.packageLocation">
@@ -589,7 +601,7 @@
                         </div>
                         <div class="col-md-6 col-lg-4 pl-20 pr-9"
                              [ngClass]="{'has-error' : ((release.dirty || release.touched) && release.invalid)}">
-                          <input autocomplete="off" type="text" class="form-control" #release="ngModel" required
+                          <input id="arelease{{i}}" autocomplete="off" type="text" class="form-control" #release="ngModel" required
                                  name="arelease{{i}}" (blur)="convertJSON()"
                                  placeholder="{{'deploymentService.agent.placeholder.release' | translate}}"
                                  [(ngModel)]="item.media.release">
@@ -610,7 +622,7 @@
                         </div>
                         <div class="col-md-6 col-lg-4 pl-20 pr-9"
                              [ngClass]="{'has-error' : ((tarball.dirty || tarball.touched) && tarball.invalid)}">
-                          <input autocomplete="off" type="text" class="form-control" #tarball="ngModel" required
+                          <input id="atarball{{i}}" autocomplete="off" type="text" class="form-control" #tarball="ngModel" required
                                  name="atarball{{i}}" (blur)="convertJSON()"
                                  placeholder="{{'deploymentService.agent.placeholder.tarball' | translate}}"
                                  [(ngModel)]="item.media.tarball">
@@ -636,9 +648,8 @@
                         </div>
                         <div class="col-md-6 col-lg-4 pl-20 pr-9"
                              [ngClass]="{'has-error' : ((home.dirty || home.touched) && home.invalid)}">
-                          <input autocomplete="off" type="text" class="form-control" #home="ngModel" required
-                                 name="ahome{{i}}"
-                                 placeholder="{{'deploymentService.agent.placeholder.home' | translate}}"
+                          <input id="ahome{{i}}" autocomplete="off" type="text" class="form-control" #home="ngModel" required
+                                 name="ahome{{i}}" placeholder="{{'deploymentService.agent.placeholder.home' | translate}}"
                                  [(ngModel)]="item.installation.home" (blur)="convertJSON()">
                           <div *ngIf="home.invalid && (home.dirty || home.touched)" class="text-danger help-block">
                             <div *ngIf="home.errors.required" translate>
@@ -655,13 +666,12 @@
                                       [nz-tooltip]="'deploymentService.agent.tooltip.data' | translate"></i>
                         </div>
                         <div class="col-md-6 col-lg-4 pl-20 pr-9"
-                             [ngClass]="{'has-error' : ((jocData.dirty || jocData.touched) && jocData.invalid)}">
-                          <input autocomplete="off" type="text" class="form-control" #jocData="ngModel" required
-                                 name="adata{{i}}"
-                                 placeholder="{{'deploymentService.agent.placeholder.data' | translate}}"
+                             [ngClass]="{'has-error' : ((aData.dirty || aData.touched) && aData.invalid)}">
+                          <input id="adata{{i}}" autocomplete="off" type="text" class="form-control" #aData="ngModel" required
+                                 name="adata{{i}}" placeholder="{{'deploymentService.agent.placeholder.data' | translate}}"
                                  [(ngModel)]="item.installation.data" (blur)="convertJSON()">
-                          <div *ngIf="jocData.invalid && (jocData.dirty || jocData.touched)" class="text-danger help-block">
-                            <div *ngIf="jocData.errors.required" translate>
+                          <div *ngIf="aData.invalid && (aData.dirty || aData.touched)" class="text-danger help-block">
+                            <div *ngIf="aData.errors.required" translate>
                               common.message.requiredError
                             </div>
                           </div>
@@ -721,7 +731,7 @@
                         </div>
                         <div class="col-md-6 col-lg-4 pl-20 pr-9"
                              [ngClass]="{'has-error' : ((httpPort.dirty || httpPort.touched) && httpPort.invalid)}">
-                          <input autocomplete="off" type="text" class="form-control" #httpPort="ngModel" [required]="!item.installation.httpsPort"
+                          <input id="ahttpPort{{i}}" autocomplete="off" type="text" class="form-control" #httpPort="ngModel" [required]="!item.installation.httpsPort"
                                  name="ahttpPort{{i}}" (blur)="convertJSON()"
                                  placeholder="{{'deploymentService.agent.placeholder.httpPort' | translate}}"
                                  [(ngModel)]="item.installation.httpPort">
@@ -743,7 +753,7 @@
                         </div>
                         <div class="col-md-6 col-lg-4 pl-20 pr-9"
                              [ngClass]="{'has-error' : ((httpsPort.dirty || httpsPort.touched) && httpsPort.invalid)}">
-                          <input autocomplete="off" type="text" class="form-control" #httpsPort="ngModel"
+                          <input id="ahttpsPort{{i}}" autocomplete="off" type="text" class="form-control" #httpsPort="ngModel"
                                  [required]="!item.installation.httpPort" name="ahttpsPort{{i}}" (blur)="convertJSON()"
                                  placeholder="{{'deploymentService.agent.placeholder.httpsPort' | translate}}"
                                  [(ngModel)]="item.installation.httpsPort">
@@ -795,8 +805,9 @@
                           </div>
                           <div class="col-md-6 col-lg-4 pl-20 pr-9"
                                [ngClass]="{'has-error' : ((controllerId.dirty || controllerId.touched) && controllerId.invalid)}">
-                            <nz-select nzPlaceHolder="{{'deploymentService.controller.placeholder.controllerId' | translate}}"
-                                       name="acontrollerId{{i}}" (ngModelChange)="convertJSON()" #controllerId="ngModel" [(ngModel)]="item.configuration.controller.controllerId">
+                            <nz-select required nzPlaceHolder="{{'deploymentService.controller.placeholder.controllerId' | translate}}"
+                                       id="acontrollerId{{i}}" name="acontrollerId{{i}}" (ngModelChange)="convertJSON()" #controllerId="ngModel"
+                                       [(ngModel)]="item.configuration.controller.controllerId">
                               <nz-option *ngFor="let option of data.controllers" [nzLabel]="option.controllerId"
                                          [nzValue]="option.controllerId"></nz-option>
                             </nz-select>
@@ -820,7 +831,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-6"
                                  [ngClass]="{'has-error' : ((keyStore.dirty || keyStore.touched) && keyStore.invalid)}">
-                              <input autocomplete="off" type="text" #keyStore="ngModel" required
+                              <input id="akeyStore{{i}}" autocomplete="off" type="text" #keyStore="ngModel" required
                                      class="form-control" (blur)="convertJSON()"
                                      name="akeyStore{{i}}" placeholder="{{'deploymentService.agent.placeholder.keyStore' | translate}}"
                                      [(ngModel)]="item.configuration.certificates.keyStore">
@@ -841,10 +852,9 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-6"
                                  [ngClass]="{'has-error' : ((keyStorePassword.dirty || keyStorePassword.touched) && keyStorePassword.invalid)}">
-                              <input autocomplete="off" type="text" #keyStorePassword="ngModel" required
+                              <input id="akeyStorePassword{{i}}" autocomplete="off" type="text" #keyStorePassword="ngModel" required
                                      class="form-control" (blur)="convertJSON()"
-                                     name="akeyStorePassword{{i}}"
-                                     placeholder="{{'deploymentService.agent.placeholder.keyStorePassword' | translate}}"
+                                     name="akeyStorePassword{{i}}" placeholder="{{'deploymentService.agent.placeholder.keyStorePassword' | translate}}"
                                      [(ngModel)]="item.configuration.certificates.keyStorePassword">
                               <div
                                 *ngIf="keyStorePassword.invalid && (keyStorePassword.dirty || keyStorePassword.touched)"
@@ -864,10 +874,9 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-6"
                                  [ngClass]="{'has-error' : ((keyPassword.dirty || keyPassword.touched) && keyPassword.invalid)}">
-                              <input autocomplete="off" type="text" #keyPassword="ngModel" required
+                              <input id="akeyPassword{{i}}" autocomplete="off" type="text" #keyPassword="ngModel" required
                                      class="form-control" (blur)="convertJSON()"
-                                     name="akeyPassword{{i}}"
-                                     placeholder="{{'deploymentService.agent.placeholder.keyPassword' | translate}}"
+                                     name="akeyPassword{{i}}" placeholder="{{'deploymentService.agent.placeholder.keyPassword' | translate}}"
                                      [(ngModel)]="item.configuration.certificates.keyPassword">
                               <div *ngIf="keyPassword.invalid && (keyPassword.dirty || keyPassword.touched)"
                                    class="text-danger help-block">
@@ -900,7 +909,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-6"
                                  [ngClass]="{'has-error' : ((trustStore.dirty || trustStore.touched) && trustStore.invalid)}">
-                              <input autocomplete="off" type="text" #trustStore="ngModel" required
+                              <input id="atrustStore{{i}}" autocomplete="off" type="text" #trustStore="ngModel" required
                                      class="form-control" (blur)="convertJSON()"
                                      name="atrustStore{{i}}" placeholder="{{'deploymentService.agent.placeholder.trustStore' | translate}}"
                                      [(ngModel)]="item.configuration.certificates.trustStore">
@@ -921,7 +930,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-6"
                                  [ngClass]="{'has-error' : ((trustStorePassword.dirty || trustStorePassword.touched) && trustStorePassword.invalid)}">
-                              <input autocomplete="off" type="text" #trustStorePassword="ngModel" required
+                              <input id="atrustStorePassword{{i}}" autocomplete="off" type="text" #trustStorePassword="ngModel" required
                                      class="form-control" (blur)="convertJSON()"
                                      name="atrustStorePassword{{i}}" placeholder="{{'deploymentService.agent.placeholder.trustStorePassword' | translate}}"
                                      [(ngModel)]="item.configuration.certificates.trustStorePassword">
@@ -978,6 +987,12 @@
                 <i class="fa fa-caret-down p-l-xs text-hover-primary"
                    (click)="obj.isControllerExpanded = !obj.isControllerExpanded"
                    [ngClass]="{'fa-caret-up': obj.isControllerExpanded}"></i>
+                <a class="m-l-sm fa-icon" (click)="toggleNode('controllers');" [nz-tooltip]="'common.tooltip.expandAll' | translate">
+                  <i class="fa fa-angle-double-down"></i>
+                </a>
+                <a class="m-l-xs fa-icon" (click)="toggleNode('controllers', false);" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
+                  <i class="fa fa-angle-double-up"></i>
+                </a>
                 <i class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm text-16 cursor"
                    (click)="removeController()"></i>
               </h5>
@@ -1003,7 +1018,7 @@
                       </div>
                       <div class="col-md-6 col-lg-4 pl-28"
                            [ngClass]="{'has-error' : ((controllerId.dirty || controllerId.touched) && controllerId.invalid)}">
-                        <input autocomplete="off" type="text" class="form-control" #controllerId="ngModel" required
+                        <input id="ccontrollerId{{i}}" autocomplete="off" type="text" class="form-control" #controllerId="ngModel" required
                                name="ccontrollerId{{i}}"
                                placeholder="{{'deploymentService.controller.placeholder.controllerId' | translate}}"
                                [(ngModel)]="controller.controllerId" (blur)="convertJSON()">
@@ -1022,11 +1037,11 @@
                         <span *ngIf="j != 0">SECONDARY</span>
                         <i class="fa fa-caret-down p-l-xs text-hover-primary"
                            (click)="item.isControllerPropertiesExpanded = !item.isControllerPropertiesExpanded"
-                           [ngClass]="{'fa-caret-up': !item.isControllerPropertiesExpanded}"></i>
+                           [ngClass]="{'fa-caret-up': item.isControllerPropertiesExpanded}"></i>
                         <i *ngIf="j != 0" class="fa fa-times fa-icon pull-right text-hover-color p-r-sm font14 cursor"
                            (click)="removeSecondaryObj(controller)" nz-tooltip="{{'deploymentService.joc.button.removeSecondaryController' | translate}}"></i>
                       </h6>
-                      <div class="p-a b-a hide" [ngClass]="{'fade-in show': !item.isControllerPropertiesExpanded}">
+                      <div class="p-a b-a hide" [ngClass]="{'fade-in show': item.isControllerPropertiesExpanded}">
                         <h6 translate>deploymentService.label.target </h6>
                         <div class="p-a b-a">
                           <h6 translate>deploymentService.label.connection </h6>
@@ -1040,7 +1055,7 @@
                               </div>
                               <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                    [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}">
-                                <input autocomplete="off" type="text" class="form-control" #host="ngModel" required
+                                <input id="chost{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #host="ngModel" required
                                        name="chost{{i}}{{j}}" (blur)="convertJSON()"
                                        placeholder="{{'deploymentService.controller.placeholder.host' | translate}}"
                                        [(ngModel)]="item.target.connection.host">
@@ -1078,7 +1093,7 @@
                               </div>
                               <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                    [ngClass]="{'has-error' : ((method.dirty || method.touched) && method.invalid)}">
-                                <input autocomplete="off" type="text" class="form-control" #method="ngModel" required
+                                <input id="cmethod{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #method="ngModel" required
                                        name="cmethod{{i}}{{j}}" (blur)="convertJSON()"
                                        placeholder="{{'deploymentService.controller.placeholder.method' | translate}}"
                                        [(ngModel)]="item.target.authentication.method">
@@ -1099,7 +1114,7 @@
                               </div>
                               <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                    [ngClass]="{'has-error' : ((user.dirty || user.touched) && user.invalid)}">
-                                <input autocomplete="off" type="text" class="form-control" #user="ngModel" required
+                                <input id="cuser{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #user="ngModel" required
                                        name="cuser{{i}}{{j}}" (blur)="convertJSON()"
                                        placeholder="{{'deploymentService.controller.placeholder.user' | translate}}"
                                        [(ngModel)]="item.target.authentication.user">
@@ -1133,7 +1148,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
                                  [ngClass]="{'has-error' : ((packageLocation.dirty || packageLocation.touched) && packageLocation.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #packageLocation="ngModel"
+                              <input id="cpackageLocation{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #packageLocation="ngModel"
                                      required name="cpackageLocation{{i}}{{j}}" (blur)="convertJSON()"
                                      placeholder="{{'deploymentService.controller.placeholder.packageLocation' | translate}}"
                                      [(ngModel)]="item.target.packageLocation">
@@ -1193,7 +1208,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
                                  [ngClass]="{'has-error' : ((release.dirty || release.touched) && release.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #release="ngModel" required
+                              <input id="crelease{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #release="ngModel" required
                                      name="crelease{{i}}{{j}}" (blur)="convertJSON()"
                                      placeholder="{{'deploymentService.controller.placeholder.release' | translate}}"
                                      [(ngModel)]="item.media.release">
@@ -1214,7 +1229,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
                                  [ngClass]="{'has-error' : ((tarball.dirty || tarball.touched) && tarball.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #tarball="ngModel" required
+                              <input id="ctarball{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #tarball="ngModel" required
                                      name="ctarball{{i}}{{j}}" (blur)="convertJSON()"
                                      placeholder="{{'deploymentService.controller.placeholder.tarball' | translate}}"
                                      [(ngModel)]="item.media.tarball">
@@ -1240,7 +1255,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
                                  [ngClass]="{'has-error' : ((home.dirty || home.touched) && home.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #home="ngModel" required
+                              <input id="chome{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #home="ngModel" required
                                      name="chome{{i}}{{j}}"
                                      placeholder="{{'deploymentService.controller.placeholder.home' | translate}}"
                                      [(ngModel)]="item.installation.home" (blur)="convertJSON()">
@@ -1259,13 +1274,13 @@
                                           [nz-tooltip]="'deploymentService.controller.tooltip.data' | translate"></i>
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
-                                 [ngClass]="{'has-error' : ((jocData.dirty || jocData.touched) && jocData.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #jocData="ngModel" required
+                                 [ngClass]="{'has-error' : ((cData.dirty || cData.touched) && cData.invalid)}">
+                              <input id="cdata{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #cData="ngModel" required
                                      name="cdata{{i}}{{j}}"
                                      placeholder="{{'deploymentService.controller.placeholder.data' | translate}}"
                                      [(ngModel)]="item.installation.data" (blur)="convertJSON()">
-                              <div *ngIf="jocData.invalid && (jocData.dirty || jocData.touched)" class="text-danger help-block">
-                                <div *ngIf="jocData.errors.required" translate>
+                              <div *ngIf="cData.invalid && (cData.dirty || cData.touched)" class="text-danger help-block">
+                                <div *ngIf="cData.errors.required" translate>
                                   common.message.requiredError
                                 </div>
                               </div>
@@ -1325,7 +1340,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
                                  [ngClass]="{'has-error' : ((httpPort.dirty || httpPort.touched) && httpPort.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #httpPort="ngModel" [required]="!item.installation.httpsPort"
+                              <input id="chttpPort{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #httpPort="ngModel" [required]="!item.installation.httpsPort"
                                      name="chttpPort{{i}}{{j}}" (blur)="convertJSON()"
                                      placeholder="{{'deploymentService.controller.placeholder.httpPort' | translate}}"
                                      [(ngModel)]="item.installation.httpPort">
@@ -1346,7 +1361,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
                                  [ngClass]="{'has-error' : ((httpsPort.dirty || httpsPort.touched) && httpsPort.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #httpsPort="ngModel"
+                              <input id="chttpsPort{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #httpsPort="ngModel"
                                      [required]="!item.installation.httpPort" name="chttpsPort{{i}}{{j}}" (blur)="convertJSON()"
                                      placeholder="{{'deploymentService.controller.placeholder.httpsPort' | translate}}"
                                      [(ngModel)]="item.installation.httpsPort">
@@ -1400,7 +1415,7 @@
                                 </div>
                                 <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                      [ngClass]="{'has-error' : ((keyStore.dirty || keyStore.touched) && keyStore.invalid)}">
-                                  <input autocomplete="off" type="text" #keyStore="ngModel" required
+                                  <input id="ckeyStore{{i}}{{j}}" autocomplete="off" type="text" #keyStore="ngModel" required
                                          class="form-control" (blur)="convertJSON()"
                                          name="ckeyStore{{i}}{{j}}"
                                          placeholder="{{'deploymentService.controller.placeholder.keyStore' | translate}}"
@@ -1422,7 +1437,7 @@
                                 </div>
                                 <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                      [ngClass]="{'has-error' : ((keyStorePassword.dirty || keyStorePassword.touched) && keyStorePassword.invalid)}">
-                                  <input autocomplete="off" type="text" #keyStorePassword="ngModel" required
+                                  <input id="ckeyStorePassword{{i}}{{j}}" autocomplete="off" type="text" #keyStorePassword="ngModel" required
                                          class="form-control" (blur)="convertJSON()"
                                          name="ckeyStorePassword{{i}}{{j}}"
                                          placeholder="{{'deploymentService.controller.placeholder.keyStorePassword' | translate}}"
@@ -1445,7 +1460,7 @@
                                 </div>
                                 <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                      [ngClass]="{'has-error' : ((keyPassword.dirty || keyPassword.touched) && keyPassword.invalid)}">
-                                  <input autocomplete="off" type="text" #keyPassword="ngModel" required
+                                  <input id="ckeyPassword{{i}}{{j}}" autocomplete="off" type="text" #keyPassword="ngModel" required
                                          class="form-control" (blur)="convertJSON()"
                                          name="ckeyPassword{{i}}{{j}}"
                                          placeholder="{{'deploymentService.controller.placeholder.keyPassword' | translate}}"
@@ -1481,7 +1496,7 @@
                                 </div>
                                 <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                      [ngClass]="{'has-error' : ((trustStore.dirty || trustStore.touched) && trustStore.invalid)}">
-                                  <input autocomplete="off" type="text" #trustStore="ngModel" required
+                                  <input id="ctrustStore{{i}}{{j}}" autocomplete="off" type="text" #trustStore="ngModel" required
                                          class="form-control" (blur)="convertJSON()"
                                          name="ctrustStore{{i}}{{j}}"
                                          placeholder="{{'deploymentService.controller.placeholder.trustStore' | translate}}"
@@ -1503,7 +1518,7 @@
                                 </div>
                                 <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                      [ngClass]="{'has-error' : ((trustStorePassword.dirty || trustStorePassword.touched) && trustStorePassword.invalid)}">
-                                  <input autocomplete="off" type="text" #trustStorePassword="ngModel" required
+                                  <input id="ctrustStorePassword{{i}}{{j}}" autocomplete="off" type="text" #trustStorePassword="ngModel" required
                                          class="form-control" (blur)="convertJSON()"
                                          name="ctrustStorePassword{{i}}{{j}}"
                                          placeholder="{{'deploymentService.controller.placeholder.trustStorePassword' | translate}}"
@@ -1568,6 +1583,12 @@
               <h5 class="p-l-sm" translate>deploymentService.label.joc
                 <i class="fa fa-caret-down p-l-xs text-hover-primary" (click)="obj.isJOCExpanded = !obj.isJOCExpanded"
                    [ngClass]="{'fa-caret-up': obj.isJOCExpanded}"></i>
+                <a class="m-l-sm fa-icon" (click)="toggleNode('joc');" [nz-tooltip]="'common.tooltip.expandAll' | translate">
+                  <i class="fa fa-angle-double-down"></i>
+                </a>
+                <a class="m-l-xs fa-icon" (click)="toggleNode('joc', false);" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
+                  <i class="fa fa-angle-double-up"></i>
+                </a>
                 <i class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm text-16 cursor"
                    (click)="removeJOC()"></i>
               </h5>
@@ -1582,8 +1603,10 @@
                        [ngClass]="{'fa-caret-up': jobC.isJOCExpanded}"></i>
                     <i *ngIf="i > 0" class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm font14 cursor"
                        (click)="removeJOC(i)" nz-tooltip="{{'deploymentService.joc.button.removeJOC' | translate}}"></i>
-<!--                    <i class="fa fa-copy pull-right text-primary-hover p-r-sm font14 cursor"-->
-<!--                       (click)="copyJOC(i)" nz-tooltip="{{'deploymentService.joc.button.copyJOC' | translate}}"></i>-->
+                    <i class="fa fa-paste fa-icon pull-right text-primary-hover p-r-sm font14 cursor"
+                       (click)="paste('joc', i)" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                    <i class="fa fa-copy fa-icon pull-right text-primary-hover p-r-sm font14 cursor"
+                       (click)="copy('joc', i, null)" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                   </h6>
                   <div class="p-a b-a hide" [ngClass]="{'fade-in show': jobC.isJOCExpanded}">
                     <div class="row">
@@ -1595,7 +1618,7 @@
                       </div>
                       <div class="col-md-6 col-lg-4 pl-28"
                            [ngClass]="{'has-error' : ((jocClusterId.dirty || jocClusterId.touched) && jocClusterId.invalid)}">
-                        <input autocomplete="off" type="text" class="form-control" #jocClusterId="ngModel" required
+                        <input id="jocClusterId{{i}}" autocomplete="off" type="text" class="form-control" #jocClusterId="ngModel" required
                                name="jocClusterId{{i}}"
                                placeholder="{{'deploymentService.joc.placeholder.jocClusterId' | translate}}"
                                [(ngModel)]="jobC.jocClusterId" (blur)="convertJSON()">
@@ -1612,11 +1635,11 @@
                         <span>{{item.ordering || (j+1)}}</span>
                         <i class="fa fa-caret-down p-l-xs text-hover-primary"
                            (click)="item.isJOCPropertiesExpanded = !item.isJOCPropertiesExpanded"
-                           [ngClass]="{'fa-caret-up': !item.isJOCPropertiesExpanded}"></i>
+                           [ngClass]="{'fa-caret-up': item.isJOCPropertiesExpanded}"></i>
                         <i *ngIf="j != 0" class="fa fa-times fa-icon pull-right text-hover-color p-r-sm font14 cursor"
                            (click)="removeSecondaryObj(jobC)" nz-tooltip="{{'deploymentService.joc.button.removeSecondaryJOC' | translate}}"></i>
                       </h6>
-                      <div class="p-a b-a hide" [ngClass]="{'fade-in show': !item.isJOCPropertiesExpanded}">
+                      <div class="p-a b-a hide" [ngClass]="{'fade-in show': item.isJOCPropertiesExpanded}">
                         <div class="row">
                           <div class="col-md-4 col-lg-3 form-control-label">
                             <label translate>deploymentService.joc.label.jocInstanceId
@@ -1625,7 +1648,7 @@
                                         [nz-tooltip]="'deploymentService.joc.tooltip.jocInstanceId' | translate"></i>
                           </div>
                           <div class="col-md-6 col-lg-4 pl-20" [ngClass]="{'has-error' : ((ordering.dirty || ordering.touched) && ordering.invalid)}">
-                            <nz-input-number nzPlaceHolder="{{'deploymentService.joc.placeholder.jocInstanceId' | translate}}" #ordering="ngModel" required
+                            <nz-input-number id="ordering{{i}}{{j}}" nzPlaceHolder="{{'deploymentService.joc.placeholder.jocInstanceId' | translate}}" #ordering="ngModel" required
                                              [nzMin]="1" [nzMax]="99" [nzStep]="1" name="ordering{{i}}{{j}}"
                                              [(ngModel)]="item.ordering" (nzBlur)="convertJSON()"></nz-input-number>
                             <div *ngIf="ordering.invalid && (ordering.dirty || ordering.touched)"
@@ -1649,7 +1672,7 @@
                               </div>
                               <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                    [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}">
-                                <input autocomplete="off" type="text" class="form-control" #host="ngModel" required
+                                <input id="host{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #host="ngModel" required
                                        name="host{{i}}{{j}}" (blur)="convertJSON()"
                                        placeholder="{{'deploymentService.joc.placeholder.host' | translate}}"
                                        [(ngModel)]="item.target.connection.host">
@@ -1686,7 +1709,7 @@
                               </div>
                               <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                    [ngClass]="{'has-error' : ((method.dirty || method.touched) && method.invalid)}">
-                                <input autocomplete="off" type="text" class="form-control" #method="ngModel" required
+                                <input id="method{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #method="ngModel" required
                                        name="method{{i}}{{j}}" (blur)="convertJSON()"
                                        placeholder="{{'deploymentService.joc.placeholder.method' | translate}}"
                                        [(ngModel)]="item.target.authentication.method">
@@ -1707,7 +1730,7 @@
                               </div>
                               <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                    [ngClass]="{'has-error' : ((user.dirty || user.touched) && user.invalid)}">
-                                <input autocomplete="off" type="text" class="form-control" #user="ngModel" required
+                                <input id="user{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #user="ngModel" required
                                        name="user{{i}}{{j}}" (blur)="convertJSON()"
                                        placeholder="{{'deploymentService.joc.placeholder.user' | translate}}"
                                        [(ngModel)]="item.target.authentication.user">
@@ -1741,7 +1764,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
                                  [ngClass]="{'has-error' : ((packageLocation.dirty || packageLocation.touched) && packageLocation.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #packageLocation="ngModel"
+                              <input id="packageLocation{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #packageLocation="ngModel"
                                      required name="packageLocation{{i}}{{j}}" (blur)="convertJSON()"
                                      placeholder="{{'deploymentService.joc.placeholder.packageLocation' | translate}}"
                                      [(ngModel)]="item.target.packageLocation">
@@ -1801,7 +1824,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
                                  [ngClass]="{'has-error' : ((release.dirty || release.touched) && release.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #release="ngModel" required
+                              <input id="release{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #release="ngModel" required
                                      name="release{{i}}{{j}}" (blur)="convertJSON()"
                                      placeholder="{{'deploymentService.joc.placeholder.release' | translate}}"
                                      [(ngModel)]="item.media.release">
@@ -1822,7 +1845,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
                                  [ngClass]="{'has-error' : ((tarball.dirty || tarball.touched) && tarball.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #tarball="ngModel" required
+                              <input id="tarball{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #tarball="ngModel" required
                                      name="tarball{{i}}{{j}}" (blur)="convertJSON()"
                                      placeholder="{{'deploymentService.joc.placeholder.tarball' | translate}}"
                                      [(ngModel)]="item.media.tarball">
@@ -1847,7 +1870,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
                                  [ngClass]="{'has-error' : ((setupDir.dirty || setupDir.touched) && setupDir.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #setupDir="ngModel" required
+                              <input id="setupDir{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #setupDir="ngModel" required
                                      name="setupDir{{i}}{{j}}" (blur)="convertJSON()"
                                      placeholder="{{'deploymentService.joc.placeholder.setupDir' | translate}}"
                                      [(ngModel)]="item.installation.setupDir">
@@ -1868,7 +1891,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
                                  [ngClass]="{'has-error' : ((home.dirty || home.touched) && home.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #home="ngModel" required
+                              <input id="home{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #home="ngModel" required
                                      name="home{{i}}{{j}}"
                                      placeholder="{{'deploymentService.joc.placeholder.home' | translate}}"
                                      [(ngModel)]="item.installation.home" (blur)="convertJSON()">
@@ -1888,7 +1911,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
                                  [ngClass]="{'has-error' : ((jocData.dirty || jocData.touched) && jocData.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #jocData="ngModel" required
+                              <input id="data{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #jocData="ngModel" required
                                      name="data{{i}}{{j}}"
                                      placeholder="{{'deploymentService.joc.placeholder.data' | translate}}"
                                      [(ngModel)]="item.installation.data" (blur)="convertJSON()">
@@ -2023,7 +2046,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
                                  [ngClass]="{'has-error' : ((httpPort.dirty || httpPort.touched) && httpPort.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #httpPort="ngModel"
+                              <input id="httpPort{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #httpPort="ngModel"
                                      [required]="!item.installation.httpsPort"
                                      name="httpPort{{i}}{{j}}" (blur)="convertJSON()"
                                      placeholder="{{'deploymentService.joc.placeholder.httpPort' | translate}}"
@@ -2046,7 +2069,7 @@
                             </div>
                             <div class="col-md-6 col-lg-4 pr-9"
                                  [ngClass]="{'has-error' : ((httpsPort.dirty || httpsPort.touched) && httpsPort.invalid)}">
-                              <input autocomplete="off" type="text" class="form-control" #httpsPort="ngModel"
+                              <input id="httpsPort{{i}}{{j}}" autocomplete="off" type="text" class="form-control" #httpsPort="ngModel"
                                      [required]="!item.installation.httpPort" name="httpsPort{{i}}{{j}}" (blur)="convertJSON()"
                                      placeholder="{{'deploymentService.joc.placeholder.httpsPort' | translate}}"
                                      [(ngModel)]="item.installation.httpsPort">
@@ -2135,7 +2158,7 @@
                                 </div>
                                 <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                      [ngClass]="{'has-error' : ((keyStore.dirty || keyStore.touched) && keyStore.invalid)}">
-                                  <input autocomplete="off" type="text" #keyStore="ngModel" required
+                                  <input id="keyStore{{i}}{{j}}" autocomplete="off" type="text" #keyStore="ngModel" required
                                          class="form-control" (blur)="convertJSON()"
                                          name="keyStore{{i}}{{j}}"
                                          placeholder="{{'deploymentService.joc.placeholder.keyStore' | translate}}"
@@ -2157,7 +2180,7 @@
                                 </div>
                                 <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                      [ngClass]="{'has-error' : ((keyStorePassword.dirty || keyStorePassword.touched) && keyStorePassword.invalid)}">
-                                  <input autocomplete="off" type="text" #keyStorePassword="ngModel" required
+                                  <input id="keyStorePassword{{i}}{{j}}" autocomplete="off" type="text" #keyStorePassword="ngModel" required
                                          class="form-control" (blur)="convertJSON()"
                                          name="keyStorePassword{{i}}{{j}}"
                                          placeholder="{{'deploymentService.joc.placeholder.keyStorePassword' | translate}}"
@@ -2180,7 +2203,7 @@
                                 </div>
                                 <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                      [ngClass]="{'has-error' : ((keyPassword.dirty || keyPassword.touched) && keyPassword.invalid)}">
-                                  <input autocomplete="off" type="text" #keyPassword="ngModel" required
+                                  <input id="keyPassword{{i}}{{j}}" autocomplete="off" type="text" #keyPassword="ngModel" required
                                          class="form-control" (blur)="convertJSON()"
                                          name="keyPassword{{i}}{{j}}"
                                          placeholder="{{'deploymentService.joc.placeholder.keyPassword' | translate}}"
@@ -2216,7 +2239,7 @@
                                 </div>
                                 <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                      [ngClass]="{'has-error' : ((trustStore.dirty || trustStore.touched) && trustStore.invalid)}">
-                                  <input autocomplete="off" type="text" #trustStore="ngModel" required
+                                  <input id="trustStore{{i}}{{j}}" autocomplete="off" type="text" #trustStore="ngModel" required
                                          class="form-control" (blur)="convertJSON()"
                                          name="trustStore{{i}}{{j}}"
                                          placeholder="{{'deploymentService.joc.placeholder.trustStore' | translate}}"
@@ -2238,7 +2261,7 @@
                                 </div>
                                 <div class="col-md-6 col-lg-4 p-l-3 pr-6"
                                      [ngClass]="{'has-error' : ((trustStorePassword.dirty || trustStorePassword.touched) && trustStorePassword.invalid)}">
-                                  <input autocomplete="off" type="text" #trustStorePassword="ngModel" required
+                                  <input id="trustStorePassword{{i}}{{j}}" autocomplete="off" type="text" #trustStorePassword="ngModel" required
                                          class="form-control" (blur)="convertJSON()"
                                          name="trustStorePassword{{i}}{{j}}"
                                          placeholder="{{'deploymentService.joc.placeholder.trustStorePassword' | translate}}"

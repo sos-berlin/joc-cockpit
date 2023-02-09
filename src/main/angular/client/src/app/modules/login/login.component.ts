@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component, OnInit, Renderer2} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
-import { CoreService } from '../../services/core.service';
-import { AuthService, OIDCAuthService } from '../../components/guard';
- declare const $:any;
+import {CoreService} from '../../services/core.service';
+import {AuthService, OIDCAuthService} from '../../components/guard';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +21,7 @@ export class LoginComponent implements OnInit {
   identityServiceItems = [];
 
   constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService,
-    private authService: AuthService, private oAuthService: OIDCAuthService) {
+              private authService: AuthService, private oAuthService: OIDCAuthService, private renderer: Renderer2) {
   }
 
   ngOnInit(): void {
@@ -64,15 +63,14 @@ export class LoginComponent implements OnInit {
         }
         if (res.customLogo && res.customLogo.name) {
           let imgUrl = '../ext/images/' + res.customLogo.name;
-          if (res.customLogo.position && res.customLogo.position !== 'BOTTOM') {
-            $('#logo-top').append("<img style='height: " + res.customLogo.height + "' src='" + imgUrl + "'>")
-          } else {
-            $('#logo-bottom').append("<img style='height: " + res.customLogo.height + "' src='" + imgUrl + "'>")
-          }
+          const imgContainer = this.renderer.createElement('img');
+          // Set the id of the div
+          this.renderer.setProperty(imgContainer, 'src', imgUrl);
+          this.renderer.setProperty(imgContainer, 'style', 'height: ' + res.customLogo.height || '140px');
+          // Append the created div to the body element
+          this.renderer.appendChild(document.getElementById(res.customLogo.position && res.customLogo.position.match('top') ? 'logo-top' : 'logo-bottom'), imgContainer);
         }
-      }, error(err) {
-        console.error(err)
-      },
+      }
     })
   }
 
@@ -140,7 +138,7 @@ export class LoginComponent implements OnInit {
 
   private getIdAndSecret(identityServiceName): void {
 
-    this.coreService.post('iam/identityclient', { identityServiceName }).subscribe({
+    this.coreService.post('iam/identityclient', {identityServiceName}).subscribe({
       next: (data) => {
         this.oAuthService.clientId = data.iamOidcClientId;
         this.oAuthService.clientSecret = data.iamOidcClientSecret;

@@ -823,7 +823,9 @@
       "hideMoreOption": "Hide Options",
       "validate": "Validate",
       "editJSON": "Edit JSON",
-      "bulkUpdate": "Bulk Update"
+      "bulkUpdate": "Bulk Update",
+      "copy": "Copy",
+      "paste": "Paste"
     },
     "message": {
       "invalidFile": "Not a valid descriptor file"
