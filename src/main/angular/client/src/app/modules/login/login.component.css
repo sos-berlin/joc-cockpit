@@ -14,21 +14,20 @@
 .m-t-72{
   margin-top: 72px
 }
-.horz_line_text {
+.horz-line-text {
   display: flex;
   flex-direction: row;
-  margin: 4px;
-  margin-bottom: 12px;
+  margin: 4px 4px 12px;
 }
-.horz_line_text:before, .horz_line_text:after{
+.horz-line-text:before, .horz-line-text:after{
   content: "";
   flex: 1 1;
   border-bottom: 1px solid;
   margin: auto;
 }
-.horz_line_text:before {
+.horz-line-text:before {
   margin-right: 10px
 }
-.horz_line_text:after {
+.horz-line-text:after {
   margin-left: 10px
 }

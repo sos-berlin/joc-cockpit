@@ -823,7 +823,9 @@
       "hideMoreOption": "Weniger Optionen",
       "validate": "Validieren",
       "editJSON": "JSON editieren",
-      "bulkUpdate": "Massenaktualisierung"
+      "bulkUpdate": "Massenaktualisierung",
+      "copy": "Copy",
+      "paste": "Paste"
     },
     "message": {
       "invalidFile": "Keine gültige Deskriptor Datei"

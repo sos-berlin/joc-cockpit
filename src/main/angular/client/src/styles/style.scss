@@ -8443,7 +8443,7 @@ div.jsoneditor-navigation-bar {
 .login-box {
   display: flex;
   align-items: center;
-  height: 100vh;
+  height: 100%;
 }
 
 div.ace_tooltip {
@@ -8982,11 +8982,11 @@ cdk-virtual-scroll-viewport {
 }
 
 .hover-icon {
-  i.fa-icon{
+  .fa-icon{
     opacity: 0;
   }
   &:hover{
-    i.fa-icon {
+    .fa-icon {
       opacity: 1;
     }
   }
