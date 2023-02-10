@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 import {ValueEditorComponent} from '../value-editor/value.component';
+import {isArray, isEmpty} from "underscore";
 
 @Component({
   selector: 'app-resume-order',
@@ -22,6 +23,7 @@ export class ResumeOrderModalComponent implements OnInit {
   position: any;
   positions: any;
   variables: any = [];
+  variableList = [];
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
               private modal: NzModalService) {
@@ -84,8 +86,49 @@ export class ResumeOrderModalComponent implements OnInit {
       this.workflow.jobs = res.workflow.jobs;
       this.workflow.configuration = {instructions: res.workflow.instructions};
       this.checkPositions();
+      this.updateVariableList(res);
     });
   }
+
+  private updateVariableList(res): void {
+    if (res.workflow.orderPreparation && res.workflow.orderPreparation.parameters && !isEmpty(res.workflow.orderPreparation.parameters)) {
+      this.variableList = Object.entries(res.workflow.orderPreparation.parameters).map(([k, v]) => {
+        const val: any = v;
+        if (val.type !== 'List') {
+          if (!val.final) {
+            if (!val.default && val.default !== false && val.default !== 0) {
+            } else if (val.default) {
+              if (val.type === 'String') {
+                this.coreService.removeSlashToString(val, 'default');
+              } else if (val.type === 'Boolean') {
+                val.default = (val.default === 'true' || val.default === true);
+              }
+            }
+          }
+        } else {
+          if (val.listParameters) {
+            if (isArray(val.listParameters)) {
+
+            } else {
+              val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
+                const val1: any = v1;
+                return {name: k1, value: val1};
+              });
+            }
+          }
+        }
+        return {name: k, value: val};
+      });
+      this.variableList = this.variableList.filter((item) => {
+        if (item.value.type === 'List') {
+          return false;
+        }
+        return !item.value.final;
+      });
+    }
+
+  }
+
 
   private checkPositions(): void {
     if (this.positions) {

@@ -19,6 +19,57 @@
     </div>
     <div *ngIf="isParametrized && workflow">
       <div class="form-group row m-b-0" *ngIf="variables.length > 0">
+        <div class="col-md-12 m-b-sm" translate>order.label.listOfConstants</div>
+        <div class="col-md-12 m-b-sm" *ngIf="variableList.length == 0"><span><</span>empty></div>
+      </div>
+      <div class="form-group row m-b-0" *ngIf="variableList.length > 0">
+        <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
+        <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
+      </div>
+      <div class="row" *ngFor="let argument of variableList; let i=index">
+        <div class="col-sm-4 m-b-sm">
+          <input readonly type="text" class="form-control"
+                 name="name_{{i}}" [(ngModel)]="argument.name">
+        </div>
+        <ng-container *ngIf="!argument.list">
+          <ng-container [ngSwitch]="argument.type">
+            <ng-container *ngSwitchCase="'Number'">
+              <div class="col-md-6 col-lg-6 m-b-sm">
+                <nz-input-number readonly name="wvalue{{i}}" [(ngModel)]="argument.value.default"></nz-input-number>
+              </div>
+            </ng-container>
+            <ng-container *ngSwitchCase="'Boolean'">
+              <div class="col-md-6 col-lg-6 m-b-sm">
+                <nz-select readonly name="wvalue{{i}}" [(ngModel)]="argument.value.default">
+                  <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                  <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                </nz-select>
+              </div>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <div class="col-md-6 col-lg-6 m-b-sm">
+                <input readonly type="text" class="form-control" name="wvalue{{i}}" [(ngModel)]="argument.value.default" >
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <div class="col-md-6 col-lg-6 m-b-sm" *ngIf="argument.list">
+          <nz-select readonly name="wlist{{i}}" [(ngModel)]="argument.value.default">
+            <ng-container *ngFor="let option of argument.list">
+              <nz-option nzCustomContent [nzValue]="option.name" [nzLabel]="option.name">
+                <div>{{option.name}} <i *ngIf="option.default">- </i>
+                  <span class="label label-default" *ngIf="option.default" translate>default</span>
+                </div>
+              </nz-option>
+            </ng-container>
+          </nz-select>
+        </div>
+      </div>
+      <div class="form-group row m-b-0 m-t-12">
+        <div class="col-md-12 m-b-sm" translate>order.label.listOfDynamicallyVariables</div>
+        <div class="col-md-12 m-b-sm" *ngIf="variableList.length == 0"><span><</span>empty></div>
+      </div>
+      <div class="form-group row m-b-0" *ngIf="variables.length > 0">
         <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
         <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
       </div>

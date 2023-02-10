@@ -296,12 +296,13 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     this.obj.isLicenseExpanded = true;
   }
 
-  addAgent(): void {
+  addAgent(flag = false): void {
     if (!this.data.agents) {
       this.data.agents = [];
     }
     this.obj.isAgentExpanded = true;
     this.data.agents.push({
+      isAgentPropertiesExpanded: flag,
       target: {
         connection: {},
         authentication: {},
@@ -363,14 +364,48 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
   }
 
-  copy(type, index, objectType): void {
-    console.log(this.data.joc[index]);
-    this.copyObject = this.data.joc[index];
-    this.coreService.showCopyMessage(this.message);
+  copy(type, objectType, index1, index2): void {
+    this.copyObject = {
+      type,
+      objectType,
+      data: this.data[type][index1]
+    };
+    if (objectType !== 'cluster' && objectType !== 'instance') {
+      this.copyObject.data = this.data[type][index1][objectType];
+    }
+    if (index2 || index2 === 0) {
+      if (objectType !== 'cluster' && objectType !== 'instance') {
+        this.copyObject.data = this.data[type][index1].cluster[index2][objectType];
+      } else {
+        this.copyObject.data = this.data[type][index1].cluster[index2];
+      }
+    }
+    console.log(this.copyObject)
+    if (this.copyObject.data) {
+      this.coreService.showCopyMessage(this.message);
+    } else {
+      this.copyObject = undefined;
+      this.coreService.showCopyMessage(this.message, 'cannotCopyEmptyObject', 'info');
+    }
   }
 
-  paste(type, index): void {
-    console.log(this.data.joc[index]);
+  paste(type, objectType, index1, index2): void {
+    console.log(this.copyObject);
+    if (this.copyObject && type == this.copyObject.type) {
+      if ((index2 || index2 === 0) && this.data[type][index1].cluster) {
+        if (objectType !== 'cluster' && objectType !== 'instance') {
+          this.data[type][index1].cluster[index2][objectType] = this.copyObject.data;
+        } else {
+          this.data[type][index1].cluster[index2] = this.copyObject.data;
+        }
+      } else {
+        if (objectType !== 'cluster' && objectType !== 'instance') {
+          this.data[type][index1][objectType] = this.copyObject.data;
+        } else {
+          this.data[type][index1] = this.copyObject.data;
+        }
+      }
+    }
   }
 
   addCertificates(): void {
@@ -387,6 +422,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
     cluster.push({
       ordering: cluster.length + 1,
+      isJOCPropertiesExpanded: true,
       target: {
         connection: {},
         authentication: {},
@@ -451,6 +487,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       this.data.license = {};
     }
     cluster.push({
+      isControllerPropertiesExpanded: true,
       target: {
         connection: {},
         authentication: {},
@@ -466,7 +503,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   addAnotherAgent(): void {
-    this.addAgent();
+    this.addAgent(true);
   }
 
   addTemplates(list): void {
@@ -534,7 +571,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         obj.target.authentication = {};
       }
       if (!source.target.authentication.method || !source.target.authentication.user) {
-        let id = '';
+        let id;
         if (!source.target.authentication.method) {
           id = 'method';
         } else {
@@ -548,7 +585,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
     if (source.media && !isEmpty(source.media)) {
       if (!source.media.release || !source.media.tarball) {
-        let id = '';
+        let id;
         if (!source.media.release) {
           id = 'release';
         } else {
@@ -565,7 +602,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
     if (source.installation && !isEmpty(source.installation)) {
       if ((type == 'joc' && !source.installation.setupDir) || !source.installation.home || !source.installation.data) {
-        let id = '';
+        let id;
         if (!source.installation.home) {
           id = 'home';
         } else if (!source.installation.data) {
@@ -613,7 +650,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           obj.configuration.certificates = source.configuration.certificates;
           if (!source.configuration.certificates.keyStore || !source.configuration.certificates.keyStorePassword || !source.configuration.certificates.keyPassword
             || !source.configuration.certificates.trustStore || !source.configuration.certificates.trustStorePassword) {
-            let id = '';
+            let id;
             if (!source.configuration.certificates.keyStore) {
               id = 'keyStore';
             } else if (!source.configuration.certificates.keyStorePassword) {
