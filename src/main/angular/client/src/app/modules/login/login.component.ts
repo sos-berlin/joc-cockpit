@@ -67,6 +67,15 @@ export class LoginComponent implements OnInit {
           // Set the id of the div
           this.renderer.setProperty(imgContainer, 'src', imgUrl);
           this.renderer.setProperty(imgContainer, 'style', 'height: ' + res.customLogo.height || '140px');
+          const elem: any = document.getElementsByClassName('login-box');
+          if (elem.length > 0) {
+            let logHt = (res.customLogo.height || '140px').replace(/^\D+/g, '');
+            let ht = (window.innerHeight - document.getElementById('center-block').clientHeight);
+            console.log(parseInt(logHt), ht, (parseInt(logHt) - ht))
+            if (ht < parseInt(logHt)) {
+              elem[0].style.height = 'calc(100% + ' + (parseInt(logHt)) + 'px)';
+            }
+          }
           // Append the created div to the body element
           this.renderer.appendChild(document.getElementById(res.customLogo.position && res.customLogo.position.match('top') ? 'logo-top' : 'logo-bottom'), imgContainer);
         }

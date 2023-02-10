@@ -8982,12 +8982,15 @@ cdk-virtual-scroll-viewport {
 }
 
 .hover-icon {
-  .fa-icon{
+  .fa-icon {
     opacity: 0;
   }
-  &:hover{
-    .fa-icon {
+  &:hover {
+    >.fa-icon {
       opacity: 1;
+    }
+    >.fa-icon.disable-link {
+      opacity: 0.7;
     }
   }
 }

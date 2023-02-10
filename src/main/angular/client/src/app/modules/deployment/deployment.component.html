@@ -117,7 +117,7 @@
               </ul>
             </div>
             <div class="p-l-sm">
-              <h5 class="p-l-sm hover-icon" translate>deploymentService.label.descriptor
+              <h5 class="p-l-sm" translate>deploymentService.label.descriptor
                 <i class="fa fa-caret-down p-l-xs text-hover-primary"
                    (click)="obj.isDescriptorExpanded = !obj.isDescriptorExpanded"
                    [ngClass]="{'fa-caret-up': obj.isDescriptorExpanded}"></i>
@@ -206,9 +206,9 @@
               </div>
               <hr>
             </div>
-            <div class="p-l-sm hover-icon" *ngIf="data.license">
+            <div class="p-l-sm " *ngIf="data.license">
 
-              <h5 class="p-l-sm" translate>deploymentService.label.license
+              <h5 class="p-l-sm hover-icon" translate>deploymentService.label.license
                 <i class="fa fa-caret-down p-l-xs text-hover-primary"
                    (click)="obj.isLicenseExpanded = !obj.isLicenseExpanded"
                    [ngClass]="{'fa-caret-up': obj.isLicenseExpanded}"></i>
@@ -264,7 +264,7 @@
               </div>
               <hr>
             </div>
-            <div class="p-l-sm hover-icon" *ngIf="data.certificates">
+            <div class="p-l-sm" *ngIf="data.certificates">
               <h5 class="p-l-sm hover-icon" translate>deploymentService.label.certificates
                 <i class="fa fa-caret-down p-l-xs text-hover-primary"
                    (click)="obj.isCertificateExpanded = !obj.isCertificateExpanded"
@@ -386,9 +386,9 @@
               </div>
               <hr>
             </div>
-            <div class="p-l-sm hover-icon" *ngIf="data.agents && data.agents.length > 0">
+            <div class="p-l-sm " *ngIf="data.agents && data.agents.length > 0">
 
-              <h5 class="p-l-sm" translate>deploymentService.label.agents
+              <h5 class="p-l-sm hover-icon" translate>deploymentService.label.agents
                 <i class="fa fa-caret-down p-l-xs text-hover-primary"
                    (click)="obj.isAgentExpanded = !obj.isAgentExpanded"
                    [ngClass]="{'fa-caret-up': obj.isAgentExpanded}"></i>
@@ -403,7 +403,7 @@
               </h5>
               <div class="m-l-md hide" [ngClass]="{'fade-in show': obj.isAgentExpanded}">
                 <div *ngFor="let item of data.agents; let i = index" [ngClass]="{'b-t m-t': i != 0}">
-                  <h6 class="m-t-12">
+                  <h6 class="m-t-12 hover-icon">
                     <label class="m-r-sm" *ngIf="item.agentId" nz-checkbox [nzChecked]="object.setOfCheckedId.has(item.agentId + '__AGENT')"
                            (nzCheckedChange)="onItemChecked(item.agentId, $event, '__AGENT')"></label>
                     <span>{{item.agentId || 'Agent_ID_' + (i + 1)}}</span>
@@ -412,6 +412,10 @@
                        [ngClass]="{'fa-caret-up': item.isAgentPropertiesExpanded}"></i>
                     <i *ngIf="i != 0" class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm font14 cursor"
                        (click)="removeAgent(i)" nz-tooltip="{{'deploymentService.agent.button.removeAgent' | translate}}"></i>
+                    <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject || (copyObject && copyObject.objectType !== 'instance' )}"
+                       (click)="paste('agents', 'instance', i, '')" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                    <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                       (click)="copy('agents', 'instance', i, '')" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                   </h6>
 
                   <div class="p-a b-a hide" [ngClass]="{'fade-in show': item.isAgentPropertiesExpanded}">
@@ -435,7 +439,12 @@
                         </div>
                       </div>
                     </div>
-                    <h6 class="m-t-sm" translate>deploymentService.label.target </h6>
+                    <h6 class="m-t-sm hover-icon" translate>deploymentService.label.target
+                      <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject || (copyObject && copyObject.objectType !== 'target' )}"
+                         (click)="paste('agents', 'target', i, '')" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                      <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                         (click)="copy('agents', 'target', i, '')" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
+                    </h6>
                     <div class="p-a b-a">
                       <h6 translate>deploymentService.label.connection </h6>
                       <div class="p-a b-a">
@@ -590,7 +599,13 @@
                         </div>
                       </div>
                     </div>
-                    <h6 class="m-t-12" translate>deploymentService.label.media </h6>
+                    <h6 class="m-t-12 hover-icon" translate>
+                      deploymentService.label.media
+                      <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject || (copyObject && copyObject.objectType !== 'media' )}"
+                         (click)="paste('agents', 'media', i, '')" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                      <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                         (click)="copy('agents', 'media', i, '')" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
+                    </h6>
                     <div class="p-a b-a">
                       <div class="row">
                         <div class="col-md-4 col-lg-3 form-control-label">
@@ -636,7 +651,12 @@
                       </div>
 
                     </div>
-                    <h6 class="m-t-12" translate>deploymentService.label.installation </h6>
+                    <h6 class="m-t-12 hover-icon" translate>deploymentService.label.installation
+                      <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject || (copyObject && copyObject.objectType !== 'installation' )}"
+                         (click)="paste('agents', 'installation', i, '')" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                      <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                         (click)="copy('agents', 'installation', i, '')" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
+                    </h6>
                     <div class="p-a b-a">
 
                       <div class="row">
@@ -794,7 +814,12 @@
                       </div>
                     </div>
                     <ng-container *ngIf="item.isMoreKeyFileDetail">
-                      <h6 class="m-t-12" translate>deploymentService.label.configuration </h6>
+                      <h6 class="m-t-12 hover-icon" translate>deploymentService.label.configuration
+                        <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject || (copyObject && copyObject.objectType !== 'configuration' )}"
+                           (click)="paste('agents', 'configuration', i, '')" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                        <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                           (click)="copy('agents', 'configuration', i, '')" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
+                      </h6>
                       <div class="p-a b-a">
                         <div class="row">
                           <div class="col-md-4 col-lg-3 form-control-label">
@@ -982,8 +1007,8 @@
               </div>
               <hr>
             </div>
-            <div class="p-l-sm hover-icon" *ngIf="data.controllers && data.controllers.length > 0">
-              <h5 class="p-l-sm" translate>deploymentService.label.controllers
+            <div class="p-l-sm " *ngIf="data.controllers && data.controllers.length > 0">
+              <h5 class="p-l-sm hover-icon" translate>deploymentService.label.controllers
                 <i class="fa fa-caret-down p-l-xs text-hover-primary"
                    (click)="obj.isControllerExpanded = !obj.isControllerExpanded"
                    [ngClass]="{'fa-caret-up': obj.isControllerExpanded}"></i>
@@ -1042,7 +1067,12 @@
                            (click)="removeSecondaryObj(controller)" nz-tooltip="{{'deploymentService.joc.button.removeSecondaryController' | translate}}"></i>
                       </h6>
                       <div class="p-a b-a hide" [ngClass]="{'fade-in show': item.isControllerPropertiesExpanded}">
-                        <h6 translate>deploymentService.label.target </h6>
+                        <h6 class="hover-icon" translate>deploymentService.label.target
+                          <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject || (copyObject && copyObject.objectType !== 'target' )}"
+                             (click)="paste('controllers', 'target', i, j)" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                          <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                             (click)="copy('controllers', 'target', i, j)" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
+                        </h6>
                         <div class="p-a b-a">
                           <h6 translate>deploymentService.label.connection </h6>
                           <div class="p-a b-a">
@@ -1197,7 +1227,13 @@
                             </div>
                           </div>
                         </div>
-                        <h6 class="m-t-12" translate>deploymentService.label.media </h6>
+                        <h6 class="m-t-12 hover-icon" translate>
+                          deploymentService.label.media
+                          <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject || (copyObject && copyObject.objectType !== 'media' )}"
+                             (click)="paste('controllers', 'media', i, j)" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                          <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                             (click)="copy('controllers', 'media', i, j)" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
+                        </h6>
                         <div class="p-a b-a">
                           <div class="row">
                             <div class="col-md-4 col-lg-3 form-control-label">
@@ -1243,9 +1279,14 @@
                           </div>
 
                         </div>
-                        <h6 class="m-t-12" translate>deploymentService.label.installation </h6>
-                        <div class="p-a b-a">
 
+                        <h6 class="m-t-12 hover-icon" translate>deploymentService.label.installation
+                          <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject || (copyObject && copyObject.objectType !== 'installation' )}"
+                             (click)="paste('controllers', 'installation', i, j)" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                          <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                             (click)="copy('controllers', 'installation', i, j)" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
+                        </h6>
+                        <div class="p-a b-a">
                           <div class="row">
                             <div class="col-md-4 col-lg-3 form-control-label">
                               <label translate>deploymentService.controller.label.home
@@ -1402,7 +1443,12 @@
                           </div>
                         </div>
                         <ng-container *ngIf="item.isMoreKeyFileDetail">
-                          <h6 class="m-t-12" translate>deploymentService.label.configuration </h6>
+                          <h6 class="m-t-12 hover-icon" translate>deploymentService.label.configuration
+                            <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject || (copyObject && copyObject.objectType !== 'configuration' )}"
+                               (click)="paste('controllers', 'configuration', i, j)" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                            <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                               (click)="copy('controllers', 'configuration', i, j)" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
+                          </h6>
                           <div class="p-a b-a">
                             <h6 translate>deploymentService.label.certificates </h6>
                             <div class="p-a b-a">
@@ -1579,8 +1625,8 @@
               </div>
               <hr>
             </div>
-            <div class="p-l-sm hover-icon" *ngIf="data.joc && data.joc.length > 0">
-              <h5 class="p-l-sm" translate>deploymentService.label.joc
+            <div class="p-l-sm " *ngIf="data.joc && data.joc.length > 0">
+              <h5 class="p-l-sm hover-icon" translate>deploymentService.label.joc
                 <i class="fa fa-caret-down p-l-xs text-hover-primary" (click)="obj.isJOCExpanded = !obj.isJOCExpanded"
                    [ngClass]="{'fa-caret-up': obj.isJOCExpanded}"></i>
                 <a class="m-l-sm fa-icon" (click)="toggleNode('joc');" [nz-tooltip]="'common.tooltip.expandAll' | translate">
@@ -1594,7 +1640,7 @@
               </h5>
               <div class="m-l-md hide" [ngClass]="{'fade-in show': obj.isJOCExpanded}">
                 <div *ngFor="let jobC of data.joc; let i = index" [ngClass]="{'b-t m-t': i != 0}">
-                  <h6 class="m-t-12">
+                  <h6 class="m-t-12 hover-icon">
                     <label class="m-r-sm" *ngIf="jobC.jocClusterId" nz-checkbox [nzChecked]="object.setOfCheckedId.has(jobC.jocClusterId+ '__JOC')"
                            (nzCheckedChange)="onItemChecked(jobC.jocClusterId, $event, '__JOC')"></label>
 
@@ -1603,10 +1649,10 @@
                        [ngClass]="{'fa-caret-up': jobC.isJOCExpanded}"></i>
                     <i *ngIf="i > 0" class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm font14 cursor"
                        (click)="removeJOC(i)" nz-tooltip="{{'deploymentService.joc.button.removeJOC' | translate}}"></i>
-                    <i class="fa fa-paste fa-icon pull-right text-primary-hover p-r-sm font14 cursor"
-                       (click)="paste('joc', i)" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
-                    <i class="fa fa-copy fa-icon pull-right text-primary-hover p-r-sm font14 cursor"
-                       (click)="copy('joc', i, null)" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
+                    <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject}"
+                       (click)="paste('joc', 'cluster', i, '')" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                    <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                       (click)="copy('joc', 'cluster', i, '')" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                   </h6>
                   <div class="p-a b-a hide" [ngClass]="{'fade-in show': jobC.isJOCExpanded}">
                     <div class="row">
@@ -1638,6 +1684,10 @@
                            [ngClass]="{'fa-caret-up': item.isJOCPropertiesExpanded}"></i>
                         <i *ngIf="j != 0" class="fa fa-times fa-icon pull-right text-hover-color p-r-sm font14 cursor"
                            (click)="removeSecondaryObj(jobC)" nz-tooltip="{{'deploymentService.joc.button.removeSecondaryJOC' | translate}}"></i>
+                        <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject}"
+                           (click)="paste('joc', 'instance', i, j)" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                        <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                           (click)="copy('joc', 'instance', i, j )" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                       </h6>
                       <div class="p-a b-a hide" [ngClass]="{'fade-in show': item.isJOCPropertiesExpanded}">
                         <div class="row">
@@ -1659,7 +1709,12 @@
                             </div>
                           </div>
                         </div>
-                        <h6 class="m-t-12" translate>deploymentService.label.target </h6>
+                        <h6 class="m-t-12 hover-icon" translate>deploymentService.label.target
+                          <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject || (copyObject && copyObject.objectType !== 'target' )}"
+                             (click)="paste('joc', 'target', i, j)" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                          <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                             (click)="copy('joc', 'target', i, j)" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
+                        </h6>
                         <div class="p-a b-a">
                           <h6 translate>deploymentService.label.connection </h6>
                           <div class="p-a b-a">
@@ -1813,7 +1868,13 @@
                             </div>
                           </div>
                         </div>
-                        <h6 class="m-t-12" translate>deploymentService.label.media </h6>
+                        <h6 class="m-t-12 hover-icon" translate>
+                          deploymentService.label.media
+                          <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject || (copyObject && copyObject.objectType !== 'media' )}"
+                             (click)="paste('joc', 'media', i, j)" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                          <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                             (click)="copy('joc', 'media', i, j)" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
+                        </h6>
                         <div class="p-a b-a">
                           <div class="row">
                             <div class="col-md-4 col-lg-3 form-control-label">
@@ -1859,7 +1920,12 @@
                           </div>
 
                         </div>
-                        <h6 class="m-t-12" translate>deploymentService.label.installation </h6>
+                        <h6 class="m-t-12 hover-icon" translate>deploymentService.label.installation
+                          <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject || (copyObject && copyObject.objectType !== 'installation' )}"
+                             (click)="paste('joc', 'installation', i, j)" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                          <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                             (click)="copy('joc', 'installation', i, j)" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
+                        </h6>
                         <div class="p-a b-a">
                           <div class="row">
                             <div class="col-md-4 col-lg-3 form-control-label">
@@ -2132,7 +2198,12 @@
                           </div>
                         </div>
                         <ng-container *ngIf="item.isMoreKeyFileDetail">
-                          <h6 class="m-t-12" translate>deploymentService.label.configuration </h6>
+                          <h6 class="m-t-12 hover-icon" translate>deploymentService.label.configuration
+                            <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor" [ngClass]="{'disable-link' : !copyObject || (copyObject && copyObject.objectType !== 'configuration' )}"
+                               (click)="paste('joc', 'configuration', i, j)" nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
+                            <i class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
+                               (click)="copy('joc', 'configuration', i, j)" nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
+                          </h6>
                           <div class="p-a b-a">
                             <div class="row">
                               <div class="col-md-4 col-lg-3 form-control-label">

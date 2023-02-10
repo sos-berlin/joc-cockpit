@@ -608,12 +608,20 @@ export class CoreService {
     }
   }
 
-  showCopyMessage(message: any, type = 'copied'): void {
+  showCopyMessage(message: any, type = 'copied', messageType = 'success'): void {
     let msg = '';
     this.translate.get('common.message.' + type).subscribe(translatedValue => {
       msg = translatedValue;
     });
-    message.success(msg);
+    if(messageType == 'error') {
+      message.error(msg);
+    } else if(messageType == 'warn') {
+      message.warn(msg);
+    } else if(messageType == 'info') {
+      message.info(msg);
+    } else {
+      message.success(msg);
+    }
   }
 
   getDateFormat(dateFormat: string): string {
