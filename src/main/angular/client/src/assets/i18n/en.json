@@ -15,6 +15,7 @@
   "ClusterFailedOver": "FailedOver",
   "ClusterSwitchedOver": "SwitchedOver",
   "ClusterEmpty": "Empty",
+  "ClusterActiveNodeIsNotReady": "ActiveNodeIsNotReady",
   "healthy": "healthy",
   "ACTIVE": "active",
   "DEAD": "dead",
@@ -2323,7 +2324,8 @@
       "label.downloadLog": "download log",
       "label.jocCockpit": "JOC Cockpit",
       "label.suspendResume": "suspend and resume",
-      "label.controller": "Controller"
+      "label.controller": "Controller",
+      "label.managePositions": "manage positions"
     },
     "keyManagement": {
       "label.keysAndCertificates": "Keys and Certificates",
