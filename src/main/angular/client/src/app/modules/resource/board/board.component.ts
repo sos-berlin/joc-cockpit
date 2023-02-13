@@ -262,6 +262,9 @@ export class BoardComponent implements OnInit, OnDestroy {
   searchableProperties = ['name', 'path', 'postOrderToNoticeId', 'expectOrderToNoticeId', 'endOfLife', 'title', 'state', '_text', 'versionDate'];
   reloadState = 'no';
   isSearchVisible = false;
+  object = {
+    mapOfCheckedId: new Set()
+  };
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -361,6 +364,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   pageIndexChange($event): void {
     this.boardsFilters.currentPage = $event;
+    this.reset();
   }
 
   pageSizeChange($event): void {
@@ -376,6 +380,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.boardsFilters.reverse = !this.boardsFilters.reverse;
     this.boardsFilters.filter.sortBy = key;
     this.data = this.orderPipe.transform(this.data, this.boardsFilters.filter.sortBy, this.boardsFilters.reverse);
+    this.reset();
   }
 
   receiveMessage($event): void {
@@ -471,6 +476,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     const boards = [];
     this.coreService.post('notice/boards', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
+        this.reset();
         this.loading = false;
         if (res.noticeBoards && res.noticeBoards.length === 0) {
           this.boardsFilters.currentPage = 1;
@@ -500,6 +506,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   searchInResult(): void {
     this.data = this.boardsFilters.searchText ? this.searchPipe.transform(this.boards, this.boardsFilters.searchText, this.searchableProperties) : this.boards;
     this.data = [...this.data];
+    this.reset();
   }
 
   search(): void {
@@ -620,6 +627,43 @@ export class BoardComponent implements OnInit, OnDestroy {
     });
   }
 
+  private reset(): void {
+    this.object.mapOfCheckedId.clear();
+    this.data.forEach((item) => {
+      delete item.checked;
+      delete item.indeterminate;
+    });
+  }
+
+  checkAll(value: boolean, board): void {
+    if (value && board.notices.length > 0) {
+      board.notices.forEach(item => {
+        this.object.mapOfCheckedId.add(item.id + '__' + board.path);
+      });
+    } else {
+      board.notices.forEach(item => {
+        this.object.mapOfCheckedId.delete(item.id + '__' + board.path);
+      });
+    }
+    board.indeterminate = false;
+  }
+
+  onItemChecked(board: any, notice: any, checked: boolean): void {
+    if (checked) {
+      this.object.mapOfCheckedId.add(notice.id + '__' + board.path);
+    } else {
+      this.object.mapOfCheckedId.delete(notice.id + '__' + board.path);
+    }
+    let count = 0;
+    board.notices.forEach(item => {
+      if (this.object.mapOfCheckedId.has(item.id + '__' + board.path)) {
+        ++count;
+      }
+    });
+    board.checked = count === board.notices.length;
+    board.indeterminate = count > 0 && !board.checked;
+  }
+
   post(board, notice = null): void {
     this.modal.create({
       nzTitle: null,
@@ -638,13 +682,17 @@ export class BoardComponent implements OnInit, OnDestroy {
     });
   }
 
+  deleteAllNotices(): void {
+    this.delete(null, null);
+  }
+
   delete(board, notice): void {
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
         type: 'Notice Board',
         operation: 'Delete',
-        name: notice.id
+        name: notice?.id
       };
       const modal = this.modal.create({
         nzTitle: null,
@@ -668,8 +716,8 @@ export class BoardComponent implements OnInit, OnDestroy {
         nzComponentParams: {
           type: 'Delete',
           title: 'delete',
-          message: 'deleteNotice',
-          objectName: notice.id
+          message: notice ? 'deleteNotice' : 'deleteSelectedNotice',
+          objectName: notice?.id
         },
         nzFooter: null,
         nzClosable: false,
@@ -684,20 +732,78 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   private _delete(board, notice, comments): void {
-    this.coreService.post('notice/delete', {
-      controllerId: this.schedulerIds.selected,
-      noticeBoardPath: board.path,
-      noticeId: notice.id,
-      auditLog: comments
-    }).subscribe(() => {
-      for (let i = 0; i < board.notices.length; i++) {
-        if (board.notices[i].id === notice.id) {
-          board.notices.splice(i, 1);
-          break;
+    if (notice) {
+      this.coreService.post('notice/delete', {
+        controllerId: this.schedulerIds.selected,
+        noticeBoardPath: board.path,
+        noticeId: notice.id,
+        auditLog: comments
+      }).subscribe(() => {
+        for (let i = 0; i < board.notices.length; i++) {
+          if (board.notices[i].id === notice.id) {
+            board.notices.splice(i, 1);
+            break;
+          }
         }
+        board.notices = [...board.notices];
+      });
+    } else {
+      this.deleteAll(board, comments);
+    }
+  }
+
+  private deleteAll(board, comments): void {
+    if (board) {
+      if (!board.notices) {
+        this.getNoticeBoards({
+          noticeBoardPaths: [board.path],
+          controllerId: this.schedulerIds.selected
+        }, (data) => {
+          if (data && data.length > 0) {
+            board.notices = data[0].notices;
+            this._deleteAll(board, comments);
+          }
+        });
+      } else {
+        this._deleteAll(board, comments);
       }
-      board.notices = [...board.notices];
-    });
+    } else {
+      let arr = Array.from(this.object.mapOfCheckedId);
+      let obj: any = {};
+      arr.forEach((item: string) => {
+        let path = item.substring(item.lastIndexOf('__') + 2, item.length);
+        let id = item.substring(0, item.lastIndexOf('__'));
+        console.log(path, 'path', id);
+        if (!obj[path]) {
+          obj[path] = [];
+        }
+        obj[path].push(id);
+      });
+      for (let i in obj) {
+        console.log(obj[i], i);
+        this.coreService.post('notices/delete', {
+          controllerId: this.schedulerIds.selected,
+          noticeBoardPath: i,
+          noticeIds: obj[i],
+          auditLog: comments
+        }).subscribe();
+      }
+      this.reset();
+    }
+  }
+
+  private _deleteAll(board, comments): void {
+    if (board.notices) {
+      this.coreService.post('notices/delete', {
+        controllerId: this.schedulerIds.selected,
+        noticeBoardPath: board.path,
+        noticeIds: board.notices.map(item => item.id),
+        auditLog: comments
+      }).subscribe(() => {
+        board.notices = [];
+        board.notices = [...board.notices];
+      });
+    }
   }
 
   reload(): void {

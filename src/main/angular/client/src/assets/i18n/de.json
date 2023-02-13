@@ -593,7 +593,8 @@
     "message.deleteDocument": "Sind Sie sicher, dass Sie diese Dokumentation löschen wollen?",
     "message.deleteDocumentFolder": "Sind Sie sicher, dass Sie diesen Ordner löschen wollen?",
     "message.deleteAllDocument": "Sind Sie sicher, dass Sie alle Dokumentationen löschen wollen?",
-    "message.deleteNotice": "Sind Sie sicher, dass Sie die ausgewählten Notizen löschen wollen?",
+    "message.deleteNotice": "Are you sure you want to delete this notice?",
+    "message.deleteSelectedNotice": "Are you sure you want to delete the selected notices?",
     "message.resetAgentConfirmation": "Sie sind im Begriff, einen Agenten zu übernehmen, der ggf. nicht dem derzeitigen Controllur zugeordnet ist. Sind Sie sicher, dass Sie fortfahren wollen??",
     "message.cannotCopyEmptyObject": "Copied object is empty!",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
@@ -2540,6 +2541,7 @@
       "label.expectingOrders": "Wartende Aufträge",
       "button.post": "Notiz senden",
       "button.delete": "Notiz löschen",
+      "button.deleteAll": "Delete All Notices",
       "placeholder.enterNoticeId": "Notizkennung angeben"
     },
     "calendar": {

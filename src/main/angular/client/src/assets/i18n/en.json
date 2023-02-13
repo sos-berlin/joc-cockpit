@@ -593,7 +593,8 @@
     "message.deleteDocument": "Are you sure you want to delete this Document?",
     "message.deleteDocumentFolder": "Are you sure you want to delete this folder?",
     "message.deleteAllDocument": "Are you sure you want to delete all Documentations?",
-    "message.deleteNotice": "Are you sure you want to delete the selected notice?",
+    "message.deleteNotice": "Are you sure you want to delete this notice?",
+    "message.deleteSelectedNotice": "Are you sure you want to delete the selected notices?",
     "message.resetAgentConfirmation": "You are about to take over an Agent that possibly is not dedicated to the current Controller. Are you sure you want to continue?",
     "message.cannotCopyEmptyObject": "Copied object is empty!",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
@@ -2540,6 +2541,7 @@
       "label.expectingOrders": "Expecting Orders",
       "button.post": "Post Notice",
       "button.delete": "Delete Notice",
+      "button.deleteAll": "Delete All Notices",
       "placeholder.enterNoticeId": "Enter Notice ID"
     },
     "calendar": {

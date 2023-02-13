@@ -7,34 +7,37 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <div class="btn-group dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
-                <span translate>common.label.sortBy</span>
-                <span class="text-primary">
-                  <span *ngIf="boardsFilters.filter.sortBy =='name'">
-                    {{'resource.board.label.name' | translate}}
-                    <i *ngIf="!boardsFilters.reverse" class="fa fa-caret-up"></i>
-                    <i *ngIf="boardsFilters.reverse" class="fa fa-caret-down"></i>
+            <button *ngIf="object.mapOfCheckedId.size>0 && permission.currentController.noticeBoards.delete" class="btn btn-grey btn-sm m-l-12" (click)="deleteAllNotices()"><i class="fa fa-trash"></i>&nbsp; {{'resource.board.button.deleteAll' | translate}}</button>
+            <div class="inline" [ngClass]="{'hide':object.mapOfCheckedId.size>0}">
+              <div class="btn-group dropdown">
+                <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
+                  <span translate>common.label.sortBy</span>
+                  <span class="text-primary">
+                    <span *ngIf="boardsFilters.filter.sortBy =='name'">
+                      {{'resource.board.label.name' | translate}}
+                      <i *ngIf="!boardsFilters.reverse" class="fa fa-caret-up"></i>
+                      <i *ngIf="boardsFilters.reverse" class="fa fa-caret-down"></i>
+                    </span>
+                    <span *ngIf="boardsFilters.filter.sortBy =='path1'">
+                      {{'common.label.path' | translate}}
+                      <i *ngIf="!boardsFilters.reverse" class="fa fa-caret-up"></i>
+                      <i *ngIf="boardsFilters.reverse" class="fa fa-caret-down"></i>
+                    </span>
                   </span>
-                  <span *ngIf="boardsFilters.filter.sortBy =='path1'">
-                    {{'common.label.path' | translate}}
-                    <i *ngIf="!boardsFilters.reverse" class="fa fa-caret-up"></i>
-                    <i *ngIf="boardsFilters.reverse" class="fa fa-caret-down"></i>
-                  </span>
-                </span>
-              </button>
-              <nz-dropdown-menu #sortBy="nzDropdownMenu" >
-                <ul nz-menu>
-                  <li nz-menu-item (click)="sort('name')">
-                    <a translate>resource.board.label.name</a>
-                  </li>
-                  <li nz-menu-item (click)="sort('path1')">
-                    <a translate>common.label.path</a>
-                  </li>
-                </ul>
-              </nz-dropdown-menu>
+                </button>
+                <nz-dropdown-menu #sortBy="nzDropdownMenu" >
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="sort('name')">
+                      <a translate>resource.board.label.name</a>
+                    </li>
+                    <li nz-menu-item (click)="sort('path1')">
+                      <a translate>common.label.path</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+              <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
             </div>
-            <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
         </div>
       </div>
@@ -104,6 +107,9 @@
                           <ul nz-menu>
                             <li nz-menu-item (click)="post(board)" *ngIf="permission.currentController && permission.currentController.noticeBoards.post">
                               <a translate>resource.board.button.post</a>
+                            </li>
+                            <li nz-menu-item (click)="delete(board, null)" *ngIf="permission.currentController.noticeBoards.delete && board.numOfNotices > 0">
+                              <a translate>resource.board.button.deleteAll</a>
                             </li>
                             <li nz-menu-item (click)="coreService.copyLink('board',board.name)">
                               <a translate>common.button.copyLinkToObject</a>
@@ -223,6 +229,9 @@
                               <li nz-menu-item (click)="post(board)" *ngIf="permission.currentController && permission.currentController.noticeBoards.post">
                                 <a translate>resource.board.button.post</a>
                               </li>
+                              <li nz-menu-item (click)="delete(board, null)" *ngIf="permission.currentController.noticeBoards.delete && board.numOfNotices > 0">
+                                <a translate>resource.board.button.deleteAll</a>
+                              </li>
                               <li nz-menu-item (click)="coreService.copyLink('board',board.name)">
                                 <a translate>common.button.copyLinkToObject</a>
                               </li>
@@ -295,6 +304,12 @@
                                     [nzData]="board.notices" [nzLoading]="board.loading" [nzShowPagination]="false">
                             <thead>
                             <tr>
+                              <th *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" class="chk"
+                                  [nzShowCheckbox]="true"
+                                  [(nzChecked)]="board.checked"
+                                  [nzIndeterminate]="board.indeterminate"
+                                  (nzCheckedChange)="checkAll($event, board)"
+                              ></th>
                               <th *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)" nzWidth="55px"><span translate>common.label.action</span></th>
                               <th><span translate>resource.board.label.id</span></th>
                               <th><span translate>resource.board.label.endOfLife</span></th>
@@ -306,6 +321,7 @@
                               <ng-template ngFor let-notice
                                            [ngForOf]="nestedTable.data">
                                 <tr>
+                                  <td  *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(notice.id +'__' + board.path)" (nzCheckedChange)="onItemChecked(board, notice, $event)"></td>
                                   <td *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)">
                                     <div class="btn-group dropdown">
                                       <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
