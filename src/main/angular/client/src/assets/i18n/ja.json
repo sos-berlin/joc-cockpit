@@ -15,6 +15,7 @@
   "ClusterFailedOver": "フェイルオーバー",
   "ClusterSwitchedOver": "切戻し",
   "ClusterEmpty": "空き",
+  "ClusterActiveNodeIsNotReady": "ActiveNodeIsNotReady",
   "healthy": "正常",
   "ACTIVE": "アクティブ",
   "DEAD": "停止",
@@ -2323,7 +2324,8 @@
       "label.downloadLog": "ログダウンロード",
       "label.jocCockpit": "JOCコックピット",
       "label.suspendResume": "一時停止と回復",
-      "label.controller": "コントローラー"
+      "label.controller": "コントローラー",
+      "label.managePositions": "manage positions"
     },
     "keyManagement": {
       "label.keysAndCertificates": "鍵と証明書",

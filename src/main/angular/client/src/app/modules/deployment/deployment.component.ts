@@ -380,7 +380,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         this.copyObject.data = this.data[type][index1].cluster[index2];
       }
     }
-    console.log(this.copyObject)
     if (this.copyObject.data) {
       this.coreService.showCopyMessage(this.message);
     } else {
@@ -390,7 +389,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   paste(type, objectType, index1, index2): void {
-    console.log(this.copyObject);
     if (this.copyObject && type == this.copyObject.type) {
       if ((index2 || index2 === 0) && this.data[type][index1].cluster) {
         if (objectType !== 'cluster' && objectType !== 'instance') {

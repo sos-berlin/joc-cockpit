@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
           if (elem.length > 0) {
             let logHt = (res.customLogo.height || '140px').replace(/^\D+/g, '');
             let ht = (window.innerHeight - document.getElementById('center-block').clientHeight);
-            console.log(parseInt(logHt), ht, (parseInt(logHt) - ht))
+           
             if (ht < parseInt(logHt)) {
               elem[0].style.height = 'calc(100% + ' + (parseInt(logHt)) + 'px)';
             }

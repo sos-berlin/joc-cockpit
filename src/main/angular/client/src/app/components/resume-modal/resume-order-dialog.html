@@ -29,7 +29,7 @@
       <div class="row" *ngFor="let argument of variableList; let i=index">
         <div class="col-sm-4 m-b-sm">
           <input readonly type="text" class="form-control"
-                 name="name_{{i}}" [(ngModel)]="argument.name">
+                 name="wname_{{i}}" [(ngModel)]="argument.name">
         </div>
         <ng-container *ngIf="!argument.list">
           <ng-container [ngSwitch]="argument.type">
