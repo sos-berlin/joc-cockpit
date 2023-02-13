@@ -593,7 +593,8 @@
     "message.deleteDocument": "Êtes-vous sûr de vouloir supprimer ce document ?",
     "message.deleteDocumentFolder": "Êtes-vous sûr de vouloir supprimer ce dossier ?",
     "message.deleteAllDocument": "Êtes-vous sûr de vouloir supprimer toutes les documentations ?",
-    "message.deleteNotice": "Êtes-vous sûr de vouloir supprimer toutes les Conditions de tableaux ?",
+    "message.deleteNotice": "Are you sure you want to delete this notice?",
+    "message.deleteSelectedNotice": "Are you sure you want to delete the selected notices?",
     "message.resetAgentConfirmation": "Vous êtes sur le point de prendre en charge un agent qui pourrait ne pas être dédié au Contrôleur actuel. Etes-vous sûr de vouloir continuer ?",
     "message.cannotCopyEmptyObject": "Copied object is empty!",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
@@ -2540,6 +2541,7 @@
       "label.expectingOrders": "Ordres en attente",
       "button.post": "Afficher une Annonce",
       "button.delete": "Supprimer l'Annonce",
+      "button.deleteAll": "Delete All Notices",
       "placeholder.enterNoticeId": "Entrer L'ID Annonce"
     },
     "calendar": {
