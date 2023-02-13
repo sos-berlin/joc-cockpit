@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sos-berlin</groupId>
   <artifactId>joc-gui</artifactId>
-  <version>1.13.18-SNAPSHOT</version>
+  <version>1.13.18</version>
   <packaging>war</packaging>
   <name>JOC Web GUI</name>
   <description>The Web GUI for the Jobscheduler</description>
@@ -11,7 +11,7 @@
     <connection>scm:git:git@github.com:sos-berlin/joc-cockpit.git</connection>
     <developerConnection>scm:git:git@github.com:sos-berlin/joc-cockpit.git</developerConnection>
     <url>https://github.com/sos-berlin/joc-cockpit</url>
-    <tag>HEAD</tag>
+    <tag>v1.13.18</tag>
   </scm>
   
     <properties>
