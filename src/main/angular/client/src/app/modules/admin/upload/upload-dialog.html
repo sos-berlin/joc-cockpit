@@ -44,7 +44,7 @@
               <td><strong>{{item.file.name }}</strong></td>
               <td nowrap>{{ item.file.size / 1024 / 1024 | number:'.2' }} MB</td>
               <td nowrap>
-                <div class="progress m-b-0">
+                <div class="progress upload-progress m-b-0">
                   <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
                 </div>
               </td>

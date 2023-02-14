@@ -2440,10 +2440,13 @@ export class ImportWorkflowModalComponent implements OnInit {
     };
 
     this.uploader.onErrorItem = (fileItem, response: any) => {
-      const res = typeof response === 'string' ? JSON.parse(response) : response;
-      if (res.error) {
-        this.toasterService.error(res.error.message, res.error.code);
-      }
+      try {
+        const res = typeof response === 'string' ? JSON.parse(response) : response;
+        if (res.error) {
+          this.toasterService.error(res.error.message, res.error.code);
+        }
+      } catch (e) { }
+      this.uploader.isUploading = false;
     };
   }
 

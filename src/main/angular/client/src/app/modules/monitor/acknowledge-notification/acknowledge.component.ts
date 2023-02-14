@@ -19,7 +19,6 @@ export class AcknowledgeModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.data)
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;

@@ -69,11 +69,11 @@
       <nz-auto-optgroup *ngFor="let group of [agentList[1]]" [nzLabel]="groupTitle">
         <ng-template #groupTitle>
           <span class="_600 cursor"  (click)="expandCollapse($event, group);">
-            {{ 'agent.label.' + group.title | translate }}
-            <i class="fa p-r-xs text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'"></i>
+            {{ 'agent.label.' + group?.title | translate }}
+            <i class="fa p-r-xs text-16"  [ngClass]="group?.hide ? 'fa-caret-down' : 'fa-caret-up'"></i>
           </span>
         </ng-template>
-        <nz-auto-option (click)="selectAgent(null)" [hidden]="group.hide" *ngFor="let agent of group?.children" [nzLabel]="agent.title" [nzValue]="agent.title">
+        <nz-auto-option (click)="selectAgent(null)" [hidden]="group?.hide" *ngFor="let agent of group?.children" [nzLabel]="agent.title" [nzValue]="agent.title">
           <div class="fav-icon-on-hover">
             {{ agent.title }}
           </div>

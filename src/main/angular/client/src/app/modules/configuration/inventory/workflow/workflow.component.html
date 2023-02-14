@@ -925,7 +925,7 @@
                      name="remainWhenTerminated"></label>
             </div>
           </div>
-          <div class="form-group row" *ngIf="selectedNode.obj.workflow">
+          <div class="form-group row" *ngIf="(selectedNode.obj.arguments && selectedNode.obj.arguments.length > 0) || (selectedNode.obj.forkListArguments && selectedNode.obj.forkListArguments.length > 0)">
             <div class="col-md-12">
               <div class="form-group row">
                 <div class="col-md-12">
