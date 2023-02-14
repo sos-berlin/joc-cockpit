@@ -1157,6 +1157,10 @@ export class WorkflowService {
           } else if (json.instructions[x].TYPE === 'Lock') {
             _node.setAttribute('label', 'lock');
 
+            if (typeof json.instructions[x].demands == 'string') {
+              json.instructions[x].demands = JSON.parse(json.instructions[x].demands);
+            }
+
             if (json.instructions[x].demands !== undefined) {
               _node.setAttribute('demands', isArray(json.instructions[x].demands) ? JSON.stringify(json.instructions[x].demands) : '[]');
             }

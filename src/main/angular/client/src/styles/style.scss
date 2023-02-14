@@ -5854,6 +5854,14 @@ General CSS
   margin-top: 5px;
 }
 
+.upload-progress{
+  border-radius: 0.5rem;
+  .progress-bar {
+    height: 11px;
+    margin-top: 0;
+  }
+}
+
 .search-box-field, .search-filed-w {
   width: 180px;
   display: inline-table

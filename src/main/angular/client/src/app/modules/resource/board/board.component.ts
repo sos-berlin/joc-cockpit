@@ -1,16 +1,16 @@
-import {Component, OnInit, OnDestroy, ViewChild, Input} from '@angular/core';
-import {Subject, Subscription} from 'rxjs';
-import {ActivatedRoute} from '@angular/router';
-import {takeUntil} from 'rxjs/operators';
-import {differenceInCalendarDays} from 'date-fns';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {CoreService} from '../../../services/core.service';
-import {AuthService} from '../../../components/guard';
-import {DataService} from '../../../services/data.service';
-import {TreeComponent} from '../../../components/tree-navigation/tree.component';
-import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
-import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
+import { Component, OnInit, OnDestroy, ViewChild, Input } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { differenceInCalendarDays } from 'date-fns';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { CoreService } from '../../../services/core.service';
+import { AuthService } from '../../../components/guard';
+import { DataService } from '../../../services/data.service';
+import { TreeComponent } from '../../../components/tree-navigation/tree.component';
+import { SearchPipe, OrderPipe } from '../../../pipes/core.pipe';
+import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
+import { CommentModalComponent } from "../../../components/comment-modal/comment.component";
 
 declare const $: any;
 
@@ -105,7 +105,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService,
-              private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
+    private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -263,17 +263,20 @@ export class BoardComponent implements OnInit, OnDestroy {
   reloadState = 'no';
   isSearchVisible = false;
   object = {
-    mapOfCheckedId: new Set()
+    setOfCheckedId: new Set(),
+    mapOfCheckedId: new Set(),
+    checked: false,
+    indeterminate: false
   };
 
   subscription1: Subscription;
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
 
-  @ViewChild(TreeComponent, {static: false}) child;
+  @ViewChild(TreeComponent, { static: false }) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
-              private searchPipe: SearchPipe, private dataService: DataService, private orderPipe: OrderPipe) {
+    private searchPipe: SearchPipe, private dataService: DataService, private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -340,7 +343,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       paths = this.boardsFilters.selectedkeys;
     }
     for (let x = 0; x < paths.length; x++) {
-      obj.folders.push({folder: paths[x], recursive: false});
+      obj.folders.push({ folder: paths[x], recursive: false });
     }
     this.getBoardsList(obj);
   }
@@ -354,7 +357,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     data.isSelected = true;
     this.loading = true;
     const obj = {
-      folders: [{folder: data.path, recursive}],
+      folders: [{ folder: data.path, recursive }],
       controllerId: this.schedulerIds.selected
     };
     this.getBoardsList(obj);
@@ -544,7 +547,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.boardsFilters.expandedObjects = [data.path];
     const obj = {
       controllerId: this.schedulerIds.selected,
-      folders: [{folder: PATH, recursive: false}]
+      folders: [{ folder: PATH, recursive: false }]
     };
     this.boards = [];
     this.loading = true;
@@ -629,39 +632,139 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   private reset(): void {
     this.object.mapOfCheckedId.clear();
+    this.object.setOfCheckedId.clear();
+    this.object.indeterminate = false;
+    this.object.checked = false;
     this.data.forEach((item) => {
       delete item.checked;
       delete item.indeterminate;
     });
   }
 
-  checkAll(value: boolean, board): void {
-    if (value && board.notices.length > 0) {
+  private checkChild(value: boolean, board): void {
+    if (value && board.notices && board.notices.length > 0) {
       board.notices.forEach(item => {
-        this.object.mapOfCheckedId.add(item.id + '__' + board.path);
+        if (item.state && item.state._text !== 'EXPECTED') {
+          this.object.mapOfCheckedId.add(item.id + '__' + board.path);
+        }
       });
-    } else {
+    } else if (board.notices && board.notices.length > 0) {
       board.notices.forEach(item => {
-        this.object.mapOfCheckedId.delete(item.id + '__' + board.path);
+        if (this.object.mapOfCheckedId.has(item.id + '__' + board.path)) {
+          this.object.mapOfCheckedId.delete(item.id + '__' + board.path);
+        }
       });
     }
     board.indeterminate = false;
   }
 
+  checkAll(value: boolean, board): void {
+    if (board) {
+      this.checkChild(value, board);
+    }
+    let boards = [];
+    if (this.boards.length > 0) {
+      boards = this.getCurrentData(this.data, this.boardsFilters);
+      boards.forEach(item => {
+        if (value) {
+          if (item.numOfNotices !== item.numOfExpectingOrders) {
+            this.object.setOfCheckedId.add(item.path);
+          }
+        }
+        if (!board) {
+          item.checked = value;
+          this.checkChild(value, item);
+        }
+      });
+    }
+    if (!value && !board) {
+      this.object.setOfCheckedId.clear();
+    } else if (board) {
+      if (this.object.mapOfCheckedId.size == 0) {
+        this.object.setOfCheckedId.clear();
+      }
+    }
+    if (board) {
+      this.object.checked = boards.length == this.object.setOfCheckedId.size;
+    }
+    this.object.indeterminate = this.object.setOfCheckedId.size > 0 && !this.object.checked;
+  }
+
   onItemChecked(board: any, notice: any, checked: boolean): void {
     if (checked) {
-      this.object.mapOfCheckedId.add(notice.id + '__' + board.path);
-    } else {
-      this.object.mapOfCheckedId.delete(notice.id + '__' + board.path);
-    }
-    let count = 0;
-    board.notices.forEach(item => {
-      if (this.object.mapOfCheckedId.has(item.id + '__' + board.path)) {
-        ++count;
+      if (notice) {
+        if (notice.state && notice.state._text !== 'EXPECTED') {
+          this.object.mapOfCheckedId.add(notice.id + '__' + board.path);
+        }
+      } else {
+        this.object.setOfCheckedId.add(board.path);
       }
-    });
-    board.checked = count === board.notices.length;
-    board.indeterminate = count > 0 && !board.checked;
+    } else {
+      if (notice) {
+        this.object.mapOfCheckedId.delete(notice.id + '__' + board.path);
+      } else {
+        this.object.setOfCheckedId.delete(board.path);
+      }
+    }
+    const boards = this.getCurrentData(this.data, this.boardsFilters);
+    if (notice) {
+      let count = 0;
+      if (board.notices) {
+        board.notices.forEach(item => {
+          if (this.object.mapOfCheckedId.has(item.id + '__' + board.path)) {
+            if (item.state && item.state._text !== 'EXPECTED') {
+              ++count;
+            }
+          }
+        });
+        board.checked = count === board.notices.length;
+        board.indeterminate = count > 0 && !board.checked;
+      }
+      this.checkParent(boards, checked);
+    } else {
+      this.checkParent(boards, checked, true);
+    }
+    this.object.checked = this.object.setOfCheckedId.size === boards.length;
+    this.object.indeterminate = this.object.setOfCheckedId.size > 0 && !this.object.checked;
+  }
+
+  private checkParent(boards, isChecked, isParent = false): void {
+    if (boards) {
+      boards.forEach(item => {
+        if (isChecked && (item.checked || item.indeterminate)) {
+          if (item.numOfNotices !== item.numOfExpectingOrders) {
+            this.object.setOfCheckedId.add(item.path);
+          }
+        }
+
+        let count = 0;
+        if (item.notices) {
+          item.notices.forEach(val => {
+            if (val.state && val.state._text !== 'EXPECTED') {
+              if (isChecked) {
+                ++count;
+                if (isParent) {
+                  this.object.mapOfCheckedId.add(val.id + '__' + item.path);
+                }
+              } else {
+                if (isParent) {
+                  this.object.mapOfCheckedId.delete(val.id + '__' + item.path);
+                }
+              }
+            }
+          });
+          if (!isParent) {
+            if (count == 0) {
+              this.object.setOfCheckedId.delete(item.path);
+            }
+          } else {
+            item.checked = count === item.notices.length;
+            item.indeterminate = count > 0 && !item.checked;
+          }
+        }
+
+      });
+    }
   }
 
   post(board, notice = null): void {
@@ -768,19 +871,21 @@ export class BoardComponent implements OnInit, OnDestroy {
         this._deleteAll(board, comments);
       }
     } else {
+
       let arr = Array.from(this.object.mapOfCheckedId);
       let obj: any = {};
       arr.forEach((item: string) => {
         let path = item.substring(item.lastIndexOf('__') + 2, item.length);
+        if (path) {
+          this.object.setOfCheckedId.delete(path);
+        }
         let id = item.substring(0, item.lastIndexOf('__'));
-        console.log(path, 'path', id);
         if (!obj[path]) {
           obj[path] = [];
         }
         obj[path].push(id);
       });
       for (let i in obj) {
-        console.log(obj[i], i);
         this.coreService.post('notices/delete', {
           controllerId: this.schedulerIds.selected,
           noticeBoardPath: i,
@@ -788,19 +893,44 @@ export class BoardComponent implements OnInit, OnDestroy {
           auditLog: comments
         }).subscribe();
       }
+      const arr2 = Array.from(this.object.setOfCheckedId);
+      this.getPathAndDelete(arr2, comments);
       this.reset();
     }
   }
 
+  private getPathAndDelete(paths, comments): void {
+    this.getNoticeBoards({
+      noticeBoardPaths: paths,
+      controllerId: this.schedulerIds.selected
+    }, (data) => {
+      if (data && data.length > 0) {
+        data.forEach(board => {
+          this._deleteAll(board, comments);
+        })
+      }
+    });
+  }
+
   private _deleteAll(board, comments): void {
+    let ids = [];
     if (board.notices) {
+      board.notices.forEach(item => {
+        if (item.state && item.state._text !== 'EXPECTED') {
+          ids.push(item.id);
+        }
+      });
+    }
+    if (ids.length > 0) {
       this.coreService.post('notices/delete', {
         controllerId: this.schedulerIds.selected,
         noticeBoardPath: board.path,
-        noticeIds: board.notices.map(item => item.id),
+        noticeIds: ids,
         auditLog: comments
       }).subscribe(() => {
-        board.notices = [];
+        board.notices = board.notices.filter(item => {
+          return (item.state && item.state._text === 'EXPECTED');
+        });
         board.notices = [...board.notices];
       });
     }

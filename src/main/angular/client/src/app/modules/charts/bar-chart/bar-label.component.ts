@@ -50,7 +50,6 @@ export class BarLabelComponent implements OnChanges {
 
   constructor(element: ElementRef) {
     this.element = element.nativeElement;
-    console.log('rdjhrhfdj uerg uerhgu4')
   }
 
   ngOnChanges(changes: SimpleChanges): void {
