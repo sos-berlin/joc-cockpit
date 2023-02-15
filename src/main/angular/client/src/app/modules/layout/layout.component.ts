@@ -43,6 +43,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   isPropertiesLoaded = false;
   isPopupOpen = false;
   isChangePasswordPopupOpen = false;
+  isGlobalSettingCall = false;
   count = 0;
   count2 = 0;
   currentDate = new Date();
@@ -158,20 +159,31 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   checkLicenseExpireDate() {
     if (sessionStorage.getItem('licenseValidUntil')) {
-      this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe({
-        next: (res) => {
-          let flag = false;
-          if (res.configurations[0] && res.configurations[0].configurationItem) {
-            const configuration = JSON.parse(res.configurations[0].configurationItem);
-            if (configuration && configuration.joc) {
-              flag = configuration.joc.disable_warning_on_license_expiration;
+      if (!this.isGlobalSettingCall) {
+        this.isGlobalSettingCall = true;
+        this.coreService.post('configurations', { configurationType: 'GLOBALS' }).subscribe({
+          next: (res) => {
+            this.isGlobalSettingCall = false;
+            let flag = false;
+            let timeZone = '';
+            if (res.configurations[0] && res.configurations[0].configurationItem) {
+              const configuration = JSON.parse(res.configurations[0].configurationItem);
+              timeZone = configuration?.dailyplan.time_zone?.value;
+              if (configuration?.joc) {
+                flag = configuration.joc.disable_warning_on_license_expiration;
+              }
+            } 
+            if(!timeZone) {
+              timeZone = res.defaultGlobals?.dailyplan?.time_zone?.default;
             }
+            sessionStorage.setItem('$SOS$DAILYPLANTIMEZONE', timeZone);
+            this._checkLicenseExpireDate(flag);
+          }, error: () => {
+            this.isGlobalSettingCall = false;
+            this._checkLicenseExpireDate();
           }
-          this._checkLicenseExpireDate(flag);
-        }, error: () => {
-          this._checkLicenseExpireDate();
-        }
-      });
+        });
+      }
     } else if (this.preferences.licenseReminderDate) {
       this.preferences.licenseReminderDate = null;
       this.preferences.licenseExpirationWarning = false;

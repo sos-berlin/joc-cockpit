@@ -24,9 +24,10 @@
         </div>
         <div class="notification">
           <div *ngFor="let log of jocMonitor | orderBy: 'timestamp' : true">
-            <span>{{log.timestamp}}
+            <span>
+              <span class="inline w-182">{{log.timestamp}}</span>
               <span class="inline w-64">[{{log.level}}]</span>
-              {{log.request || log.subCategory}} {{log.message}}
+              {{log.workflowName}} {{log.orderId}} {{log.jobName}} {{log.message}}
              </span>
           </div>
           <div *ngIf="jocMonitor.length === 0">
@@ -40,9 +41,11 @@
         </div>
         <div class="notification">
           <div *ngFor="let log of systemMonitor | orderBy: 'timestamp' : true">
-            <span>{{log.timestamp}}
+            <span>
+              <span class="inline w-182">{{log.timestamp}}</span>
               <span class="inline w-64">[{{log.level}}]</span>
-              {{log.subCategory}} {{log.message}}
+              {{log.category}}
+              {{log.source}} {{log.message}}
             </span>
           </div>
           <div *ngIf="systemMonitor.length === 0">

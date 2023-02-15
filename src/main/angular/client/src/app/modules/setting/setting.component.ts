@@ -200,11 +200,14 @@ export class SettingComponent implements OnInit {
       });
       this.toasterService.error(msg);
       return;
-    } else if (value && value.value && value.value.type === 'TIME') {
+    } else if (value?.value && value.value.type === 'TIME') {
       value.value.value = SettingComponent.checkTime(value.value.value);
     }
-    if (value && value.name === 'force_comments_for_audit_log') {
+    if (value?.name === 'force_comments_for_audit_log') {
       sessionStorage.$SOS$FORCELOGING = value.value.value;
+    }
+    if (value?.name === 'time_zone') {
+      sessionStorage.setItem('$SOS$DAILYPLANTIMEZONE', value.value.value);
     }
     this.savePreferences(SettingComponent.generateStoreObject(tempSetting), isJoc);
   }
@@ -233,6 +236,9 @@ export class SettingComponent implements OnInit {
   removeValue(val, isJoc): void {
     val.value.edit = false;
     val.value.value = undefined;
+    if (val?.name === 'time_zone') {
+      sessionStorage.setItem('$SOS$DAILYPLANTIMEZONE', val.value.default);
+    }
     this.changeConfiguration(null, null, isJoc);
   }
 
