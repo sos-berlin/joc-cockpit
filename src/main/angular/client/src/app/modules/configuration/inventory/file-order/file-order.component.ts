@@ -160,7 +160,13 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       this.fileOrder.name = this.data.name;
       this.fileOrder.actual = JSON.stringify(res.configuration);
       if (!this.fileOrder.configuration.timeZone) {
-        this.fileOrder.configuration.timeZone = this.preferences.zone;
+        // Daily plan time zone
+        let timeZone = sessionStorage.getItem('$SOS$DAILYPLANTIMEZONE');
+        if (!timeZone || timeZone ==  'undefined' || timeZone ==  'null') {
+          this.getDailyPlanTimeZone();
+        } else {
+          this.fileOrder.configuration.timeZone = timeZone;
+        }
       }
       this.agentList = this.coreService.clone(this.inventoryService.agentList);
       this.getWorkflows();
@@ -180,6 +186,23 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       }
       this.history.push(JSON.stringify(this.fileOrder.configuration));
       this.ref.detectChanges();
+    });
+  }
+
+  private getDailyPlanTimeZone(): void {
+    this.coreService.post('configurations', { configurationType: 'GLOBALS' }).subscribe({
+      next: (res) => {
+        let timeZone = '';
+        if (res.configurations[0] && res.configurations[0].configurationItem) {
+          const configuration = JSON.parse(res.configurations[0].configurationItem);
+          timeZone = configuration?.dailyplan.time_zone?.value;
+        } 
+        if(!timeZone) {
+          timeZone = res.defaultGlobals?.dailyplan?.time_zone?.default;
+        }
+        sessionStorage.setItem('$SOS$DAILYPLANTIMEZONE', timeZone);
+        this.fileOrder.configuration.timeZone = timeZone;
+      }
     });
   }
 

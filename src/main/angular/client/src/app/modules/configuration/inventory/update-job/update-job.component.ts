@@ -222,7 +222,6 @@ export class UpdateJobComponent implements OnInit {
 
 
   private updateProperties(obj, job): any {
-    console.log(this.checkboxObjects);
     if (this.checkboxObjects.title) {
       obj.title = job.title;
     }

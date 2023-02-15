@@ -238,19 +238,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
               }
             }
 
-            for (let j = 0; j < res.eventsFromMonitoring.length; j++) {
-              if (res.eventsFromMonitoring[j].category && res.eventsFromMonitoring[j].category.toLowerCase() === 'joc') {
-                this.colorOfJOCEvent = res.eventsFromMonitoring[j].level === 'ERROR' ? 2 : this.colorOfJOCEvent == 2 ? 2 : 1;
-                this.jocMonitor.push(res.eventsFromMonitoring[j]);
-                if (this.jocMonitor.length > 10) {
-                  this.jocMonitor.shift();
-                }
-              } else {
-                this.colorOfSystemEvent = res.eventsFromMonitoring[j].level === 'ERROR' ? 2 : this.colorOfSystemEvent == 2 ? 2 : 1;
-                this.systemMonitor.push(res.eventsFromMonitoring[j]);
-                if (this.systemMonitor.length > 10) {
-                  this.systemMonitor.shift();
-                }
+            for (let j = 0; j < res.eventsFromOrderMonitoring.length; j++) {
+              this.colorOfJOCEvent = res.eventsFromOrderMonitoring[j].level === 'ERROR' ? 2 : this.colorOfJOCEvent == 2 ? 2 : 1;
+              this.jocMonitor.push(res.eventsFromOrderMonitoring[j]);
+              if (this.jocMonitor.length > 10) {
+                this.jocMonitor.shift();
+              }
+            }
+            for (let j = 0; j < res.eventsFromSystemMonitoring.length; j++) {
+              this.colorOfSystemEvent = res.eventsFromSystemMonitoring[j].level === 'ERROR' ? 2 : this.colorOfSystemEvent == 2 ? 2 : 1;
+              this.systemMonitor.push(res.eventsFromSystemMonitoring[j]);
+              if (this.systemMonitor.length > 10) {
+                this.systemMonitor.shift();
               }
             }
             if (this.jocMonitor.length > 0) {

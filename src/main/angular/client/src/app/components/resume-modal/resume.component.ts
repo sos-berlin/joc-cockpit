@@ -120,10 +120,14 @@ export class ResumeOrderModalComponent implements OnInit {
         return {name: k, value: val};
       });
       this.variableList = this.variableList.filter((item) => {
-        if (item.value.type === 'List') {
-          return false;
+        let flag = true;
+        for (let i in this.variables) {
+          if (this.variables[i].name == item.name) {
+            flag = false;
+            break;
+          }
         }
-        return !item.value.final;
+        return flag;
       });
     }
 
@@ -161,7 +165,7 @@ export class ResumeOrderModalComponent implements OnInit {
               let positions = [];
               if (!parent.join) {
                 parent.join = {};
-              } else{
+              } else {
                 positions = self.coreService.clone(parent.join.positionStrings);
               }
               if (self.order.positionString && self.order.positionString == json.instructions[x].positionString) {
