@@ -10,7 +10,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {ToastrService} from "ngx-toastr";
 import {CoreService} from '../../services/core.service';
 
-declare const $:any;
+declare const $: any;
 
 @Component({
   selector: 'app-upload-json',
@@ -240,11 +240,12 @@ export class ShowJsonModalComponent implements OnInit {
   templateUrl: './deployment.component.html'
 })
 export class DeploymentComponent implements OnInit, OnDestroy {
+  nodes: any = [];
   data: any = {
     descriptor: {},
-    joc: [],
     agents: [],
-    controllers: [],
+    controllers: {},
+    joc: {}
   };
 
   obj: any = {
@@ -253,8 +254,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     isJOCExpanded: false,
     isAgentExpanded: false,
     isControllerExpanded: false,
-    isLicenseExpanded: false,
-    isCertificateExpanded: false
+    isLicenseExpanded: false
   };
 
   mainObj: any = {};
@@ -277,6 +277,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.getTree();
     if (sessionStorage.descriptorObj) {
       let obj = JSON.parse(sessionStorage.descriptorObj);
       if (!isEmpty(obj)) {
@@ -291,6 +292,20 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
   }
 
+  private getTree(): void {
+    this.coreService.post('tree', {
+      forInventory: true,
+      types: ['DEPLOYMENTDESCRIPTOR']
+    }).subscribe((res: any) => {
+      if (res.folders.length === 0) {
+        res.folders.push({name: '', path: '/'});
+      }
+      this.nodes = this.coreService.prepareTree(res, true);
+      console.log(this.nodes)
+    });
+  }
+
+  /** Actions */
   addLicense(): void {
     this.data.license = {};
     this.obj.isLicenseExpanded = true;
@@ -329,58 +344,72 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
   addJOC(): void {
     if (!this.data.joc) {
-      this.data.joc = [];
+      this.data.joc = {
+        members: {
+          instances: []
+        }
+      };
+    } else if (!this.data.joc.members) {
+      this.data.joc.members = {
+        instances: []
+      };
+    }
+    if (!this.data.joc.members.instances) {
+      this.data.joc.members.instances = [];
     }
     this.obj.isJOCExpanded = true;
-    this.data.joc.push({
-      isJOCExpanded: true,
-      jocClusterId: '',
-      cluster: [{
-        ordering: 1,
-        target: {
-          connection: {},
-          authentication: {},
-          makeService: false
-        },
-        media: {},
-        installation: {
-          isUser: true,
-          isPreserveEnv: true
-        },
-        configuration: {
-          certificates: {},
-          templates: [{name: ''}],
-          startFiles: {}
-        }
-      }]
+    this.data.joc.members.instances.push({
+      ordering: 1,
+      target: {
+        connection: {},
+        authentication: {},
+        makeService: false
+      },
+      media: {},
+      installation: {
+        isUser: true,
+        isPreserveEnv: true
+      },
+      configuration: {
+        certificates: {},
+        templates: [{name: ''}],
+        startFiles: {}
+      }
     });
+
   }
 
-  removeJOC(index = -1): void {
-    if (index > -1) {
-      this.data.joc.splice(index, 1);
-    } else {
-      this.data.joc = [];
-    }
+  removeJOC(): void {
+    this.data.joc = {};
   }
 
-  copy(type, objectType, index1, index2): void {
+  copy(type, objectType, index1): void {
     this.copyObject = {
       type,
       objectType,
-      data: this.data[type][index1]
+      data: this.data[type]
     };
-    if (objectType !== 'cluster' && objectType !== 'instance') {
-      this.copyObject.data = this.data[type][index1][objectType];
-    }
-    if (index2 || index2 === 0) {
-      if (objectType !== 'cluster' && objectType !== 'instance') {
-        this.copyObject.data = this.data[type][index1].cluster[index2][objectType];
+    if (type == 'joc') {
+      if (objectType !== 'instance') {
+        this.copyObject.data = this.data[type].members.instances[index1][objectType];
       } else {
-        this.copyObject.data = this.data[type][index1].cluster[index2];
+        this.copyObject.data = this.data[type].members.instances[index1];
+      }
+    } else if (type === 'controllers') {
+      if (objectType !== 'instance') {
+        this.copyObject.data = this.data[type].cluster[index1][objectType];
+      } else {
+        this.copyObject.data = this.data[type].cluster[index1];
+      }
+    } else {
+      if (objectType !== 'instance') {
+        this.copyObject.data = this.data[type][index1][objectType];
+      } else {
+        this.copyObject.data = this.data[type][index1];
       }
     }
     if (this.copyObject.data) {
+      console.log(this.copyObject)
       this.coreService.showCopyMessage(this.message);
     } else {
       this.copyObject = undefined;
@@ -388,16 +417,22 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
   }
 
-  paste(type, objectType, index1, index2): void {
+  paste(type, objectType, index1): void {
     if (this.copyObject && type == this.copyObject.type) {
-      if ((index2 || index2 === 0) && this.data[type][index1].cluster) {
-        if (objectType !== 'cluster' && objectType !== 'instance') {
-          this.data[type][index1].cluster[index2][objectType] = this.copyObject.data;
+      if (type == 'joc') {
+        if (objectType !== 'instance') {
+          this.data[type].members.instances[index1][objectType] = this.copyObject.data;
         } else {
-          this.data[type][index1].cluster[index2] = this.copyObject.data;
+          this.data[type].members.instances[index1] = this.copyObject.data;
+        }
+      } else if (type === 'controllers') {
+        if (objectType !== 'instance') {
+          this.data[type].cluster[index1][objectType] = this.copyObject.data;
+        } else {
+          this.copyObject.data = this.data[type].cluster[index1];
         }
       } else {
-        if (objectType !== 'cluster' && objectType !== 'instance') {
+        if (objectType !== 'instance') {
           this.data[type][index1][objectType] = this.copyObject.data;
         } else {
           this.data[type][index1] = this.copyObject.data;
@@ -406,20 +441,9 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
   }
 
-  addCertificates(): void {
-    this.data.certificates = {
-      controller: {},
-      joc: {}
-    };
-    this.obj.isCertificateExpanded = true;
-  }
-
-  addAnotherJOCInstance(cluster): void {
-    if (!this.data.license) {
-      this.data.license = {};
-    }
-    cluster.push({
-      ordering: cluster.length + 1,
+  addAnotherJOCInstance(members): void {
+    members.instances.push({
+      ordering: members.instances.length + 1,
       isJOCPropertiesExpanded: true,
       target: {
         connection: {},
@@ -439,51 +463,41 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     });
   }
 
-  addAnotherJOCCluster(): void {
-    this.addJOC();
-  }
-
-  removeSecondaryObj(data): void {
-    data.cluster.splice(1, 1);
+  removeSecondaryObj(list, index): void {
+    list.splice(index, 1);
   }
 
   addController(): void {
     if (!this.data.controllers) {
-      this.data.controllers = [];
+      this.data.controllers = {
+        cluster: []
+      };
+    }
+    if (!this.data.controllers.cluster) {
+      this.data.controllers.cluster = [];
     }
     this.obj.isControllerExpanded = true;
-    this.data.controllers.push(
-      {
-        isControllerExpanded: true,
-        controllerId: '',
-        cluster: [{
-          target: {
-            connection: {},
-            authentication: {},
-            makeService: false
-          },
-          media: {},
-          installation: {},
-          configuration: {
-            certificates: {},
-            templates: [{name: ''}]
-          }
-        }]
-      });
+    this.data.controllers.cluster.push({
+        target: {
+          connection: {},
+          authentication: {},
+          makeService: false
+        },
+        media: {},
+        installation: {},
+        configuration: {
+          certificates: {},
+          templates: [{name: ''}]
+        }
+      }
+    );
   }
 
-  removeController(index = -1): void {
-    if (index > -1) {
-      this.data.controllers.splice(index, 1);
-    } else {
-      this.data.controllers = [];
-    }
+  removeController(): void {
+    this.data.controllers = {};
   }
 
   addSecondaryController(cluster): void {
-    if (!this.data.license) {
-      this.data.license = {};
-    }
     cluster.push({
       isControllerPropertiesExpanded: true,
       target: {
@@ -528,21 +542,27 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     this.indexOfNextAdd = this.history.length - 1;
   }
 
-  private checkAndUpdateObj(obj, type, source, index1, index2): void {
-    if(type == 'joc'){
-      this.data.joc[index1].isJOCExpanded = true;
-      this.data.joc[index1].cluster[index2].isJOCPropertiesExpanded = true
-    } else if(type == 'agents'){
-      this.data.agents[index1].isAgentPropertiesExpanded = true;
-    } else if(type == 'controllers'){
-      this.data.controllers[index1].isControllerExpanded = true;
-      this.data.controllers[index1].cluster[index2].isControllerPropertiesExpanded = true
+  private checkAndUpdateObj(obj, type, source, index): void {
+    if (type == 'joc') {
+      this.data.joc.members.instances[index].isJOCPropertiesExpanded = true;
+    } else if (type == 'agents') {
+      this.data.agents[index].isAgentPropertiesExpanded = true;
+    } else if (type == 'controllers') {
+      this.data.controllers.cluster[index].isControllerPropertiesExpanded = true;
     }
-    if (type === 'joc' && !source.ordering) {
-      this.navToField('ordering' + index1 + index2, type);
-      this.errorMessages.push('JOC instance ID is required');
-    } else {
-      obj.ordering = source.ordering;
+    if (type === 'joc') {
+      if (!source.ordering) {
+        this.navToField('ordering' + index, type);
+        this.errorMessages.push('JOC ordering is required');
+      } else {
+        obj.ordering = source.ordering;
+      }
+      if (!source.instanceId) {
+        this.navToField('jocInstanceId' + index, type);
+        this.errorMessages.push('JOC instance ID is required');
+      } else {
+        obj.instanceId = source.instanceId;
+      }
     }
 
     if (!isEmpty(source.target.connection) || !isEmpty(source.target.authentication)
@@ -559,7 +579,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         obj.target.connection = {};
       }
       if (!source.target.connection.host) {
-        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + 'host' + index1 + index2, type);
+        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + 'host' + index, type);
         this.errorMessages.push('Connection host is required');
       }
       obj.target.connection = source.target.connection;
@@ -575,7 +595,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         } else {
           id = 'user';
         }
-        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, type);
+        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index, type);
         this.errorMessages.push(!source.target.authentication.method ? 'Authentication method is required' : 'Authentication user is required');
       }
       obj.target.authentication = source.target.authentication;
@@ -589,7 +609,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         } else {
           id = 'tarball';
         }
-        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, type);
+        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index, type);
         this.errorMessages.push(!source.media.release ? 'Media release is required' : 'Media tarball is required');
       }
       obj.media = source.media;
@@ -608,11 +628,11 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         } else {
           id = 'setupDir';
         }
-        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, type);
+        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index, type);
         this.errorMessages.push((type == 'joc' && !source.installation.setupDir) ? 'Installation setupDir is required' : !source.installation.home ? 'Installation home is required' : 'Installation data is required');
       }
       if (!source.installation.httpPort && !source.installation.httpsPort) {
-        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + 'httpPort' + index1 + index2, type);
+        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + 'httpPort' + index, type);
         this.errorMessages.push('Installation http or https port is required');
       }
       obj.installation = source.installation;
@@ -622,8 +642,14 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
 
     if (source.configuration && !isEmpty((source.configuration))) {
-      if (source.configuration.responseDir || !isEmpty(source.configuration.certificates) || !isEmpty(source.configuration.startFiles) || source.configuration.templates.length > 0) {
+      if (source.configuration.jocCert || source.configuration.controllerCert || source.configuration.responseDir || !isEmpty(source.configuration.certificates) || !isEmpty(source.configuration.startFiles) || source.configuration.templates.length > 0) {
         obj.configuration = {};
+        if (source.configuration.jocCert) {
+          obj.configuration.jocCert = source.configuration.jocCert;
+        }
+        if (source.configuration.controllerCert) {
+          obj.configuration.controllerCert = source.configuration.controllerCert;
+        }
         if (source.configuration.responseDir) {
           obj.configuration.responseDir = source.configuration.responseDir;
         }
@@ -641,8 +667,8 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         if (source.configuration.startFiles && !isEmpty(source.configuration.startFiles)) {
           obj.configuration.startFiles = source.configuration.startFiles;
         }
-        if (source.configuration.controller && !isEmpty(source.configuration.controller)) {
-          obj.configuration.controller = source.configuration.controller;
+        if (source.configuration.controllerRef) {
+          obj.configuration.controllerRef = source.configuration.controllerRef;
         }
         if (!isEmpty(source.configuration.certificates)) {
           obj.configuration.certificates = source.configuration.certificates;
@@ -660,7 +686,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
             } else {
               id = 'trustStorePassword';
             }
-            this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, type);
+            this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index, type);
             this.errorMessages.push(!source.configuration.certificates.keyStore ? 'Key store certificate is required' : !source.configuration.certificates.keyStorePassword ? 'Key store password certificate is required' :
               !source.configuration.certificates.keyPassword ? 'Key password certificate is required' : !source.configuration.certificates.trustStore ? 'Trust store certificate is required' : 'Trust store password certificate is required');
           }
@@ -684,8 +710,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         this.obj.isAgentExpanded = true;
       } else if (type == 'controllers') {
         this.obj.isControllerExpanded = true;
-      } else if (type == 'certificate') {
-        this.obj.isCertificateExpanded = true;
       }
       this.isValid = false;
       setTimeout(() => {
@@ -716,7 +740,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       this.navToField('descriptorId', 'descriptor');
       this.errorMessages.push('Descriptor Id is required');
     }
-    if (this.data.joc.length == 0 && this.data.agents.length == 0 && this.data.controllers.length == 0) {
+    if (this.data.joc?.members.length == 0 && this.data.agents.length == 0 && this.data.controllers?.cluster.length == 0) {
       this.isValid = false;
       this.errorMessages.push('Minimum one of JOC, Controllers or Agents is required');
     }
@@ -732,26 +756,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         this.errorMessages.push('License is required for cluster');
       }
     }
-    if (this.data.certificates && !isEmpty(this.data.certificates)) {
-      if (isEmpty(this.data.certificates.controller) && isEmpty(this.data.certificates.joc)) {
-
-      } else {
-        this.mainObj['certificates'] = this.data.certificates;
-        if (isEmpty(this.data.certificates.controller)) {
-          this.data.certificates.isJocExpanded = true;
-          if (!this.data.certificates.joc.primaryJocCert || !this.data.certificates.joc.secondaryJocCert) {
-            this.navToField(!this.data.joc.primaryJocCert ? 'primaryJocCert' : 'secondaryJocCert', 'certificates');
-            this.errorMessages.push(this.data.joc.primaryJocCert ? 'Primary JOC certificate is required' : 'Secondary JOC certificate is required');
-          }
-        } else {
-          this.data.certificates.isControllerExpanded = true;
-          if (!this.data.certificates.controller.primaryControllerCert || !this.data.certificates.controller.secondaryControllerCert) {
-            this.navToField(!this.data.controller.primaryControllerCert ? 'primaryControllerCert' : 'secondaryControllerCert', 'certificates');
-            this.errorMessages.push(this.data.controller.primaryControllerCert ? 'Primary Controller certificate is required' : 'Secondary Controller certificate is required');
-          }
-        }
-      }
-    }
 
     if (this.data.agents && this.data.agents.length > 0) {
       this.mainObj['agents'] = [];
@@ -760,56 +764,55 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           this.navToField('agentId' + i, 'agents');
           this.errorMessages.push('Agent Id is required');
         } else {
-          let obj = {};
-          if (!obj[agent.agentId]) {
-            obj[agent.agentId] = {};
-          }
-          this.checkAndUpdateObj(obj[agent.agentId], 'agents', agent, i, '');
+          let obj = {
+            agentId: agent.agentId
+          };
+          this.checkAndUpdateObj(obj, 'agents', agent, i);
           this.mainObj.agents.push(obj);
         }
       });
     }
-    if (this.data.controllers && this.data.controllers.length > 0) {
-      this.mainObj['controllers'] = [];
-      this.data.controllers.forEach((controller, i) => {
-        if (!controller.controllerId) {
-          this.isValid = false;
-          this.errorMessages.push('Controller Id is required');
+
+    if (this.data.controllers?.cluster.length > 0) {
+      this.mainObj['controllers'] = {};
+      if (!this.data.controllers.controllerId) {
+        this.isValid = false;
+        this.errorMessages.push('Controller Id is required');
+      } else {
+        this.mainObj['controllers'].controllerId = this.data.controllers.controllerId;
+      }
+      if (!this.data.controllers.jocRef) {
+        this.isValid = false;
+        this.errorMessages.push('jocRef is required');
+      } else {
+        this.mainObj['controllers'].jocRef = this.data.controllers.jocRef;
+      }
+      this.data.controllers.cluster.forEach((element, i) => {
+        if (i == 0) {
+          this.mainObj['controllers'].primary = {};
+          this.checkAndUpdateObj(this.mainObj['controllers'].primary, 'controllers', element, i);
         } else {
-          let obj = {};
-          controller.cluster.forEach((element, j) => {
-            if (!obj[controller.controllerId]) {
-              obj[controller.controllerId] = {};
-            }
-            if (j == 0) {
-              obj[controller.controllerId].primary = {};
-              this.checkAndUpdateObj(obj[controller.controllerId].primary, 'controllers', element, i, j);
-            } else {
-              obj[controller.controllerId].secondary = {};
-              this.checkAndUpdateObj(obj[controller.controllerId].secondary, 'controllers', element, i, j);
-            }
-          });
-          this.mainObj.controllers.push(obj);
+          this.mainObj['controllers'].secondary = {};
+          this.checkAndUpdateObj(this.mainObj['controllers'].secondary, 'controllers', element, i);
         }
       });
     }
-    if (this.data.joc && this.data.joc.length > 0) {
-      this.data.joc.forEach((joc, i) => {
-        if (!joc.jocClusterId) {
-          this.navToField('jocClusterId' + i, 'joc');
-          this.errorMessages.push('Joc cluster Id is required');
-        } else {
-          if (!this.mainObj['joc']) {
-            this.mainObj['joc'] = [];
-          }
-          let obj = {};
-          obj[joc.jocClusterId] = {};
-          joc.cluster.forEach((element, j) => {
-            obj[joc.jocClusterId][element.ordering] = {};
-            this.checkAndUpdateObj(obj[joc.jocClusterId][element.ordering], 'joc', element, i, j);
-          });
-          this.mainObj.joc.push(obj);
+    if (this.data.joc?.members?.instances.length > 0) {
+      this.mainObj['joc'] = {
+        members: {
+          instances: []
         }
+      };
+      if (!this.data.joc.members.clusterId) {
+        this.navToField('clusterId', 'joc');
+        this.errorMessages.push('JOC Cluster Id is required');
+      } else {
+        this.mainObj.joc.members.clusterId = this.data.joc.members.clusterId;
+      }
+      this.data.joc.members.instances.forEach((joc, i) => {
+        let obj = {};
+        this.checkAndUpdateObj(obj, 'joc', joc, i);
+        this.mainObj.joc.members.instances.push(obj);
       });
     }
   }
@@ -1034,10 +1037,8 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           data.configuration.startFiles.sslIni = obj.configuration.startFiles.sslIni;
         }
       }
-      if ((obj.configuration.controller)) {
-        if (obj.configuration.controller.controllerId) {
-          data.configuration.controller.controllerId = obj.configuration.controller.controllerId;
-        }
+      if ((obj.configuration.controllerRef)) {
+        data.configuration.controllerRef = obj.configuration.controllerRef;
       }
       if (obj.configuration.templates && obj.configuration.templates.length > 0) {
         data.configuration.templates = obj.configuration.templates;
@@ -1059,37 +1060,25 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   toggleNode(type, flag = true): void {
-    if (type == 'certificates') {
-      this.obj.isCertificateExpanded = flag;
-      if(this.data[type]) {
-        this.data[type].isJocExpanded = flag;
-        this.data[type].isControllerExpanded = flag;
-      }
-    } else if (type == 'joc') {
+    if (type == 'joc') {
       this.obj.isJOCExpanded = flag;
-      if(this.data[type]) {
-        this.data[type].forEach(item => {
-          item.isJOCExpanded = flag;
-          item.cluster.forEach((joc) => {
-            joc.isJOCPropertiesExpanded = flag;
-          })
+      if (this.data[type]?.members?.instances) {
+        this.data[type]?.members?.instances.forEach(item => {
+          item.isJOCPropertiesExpanded = flag;
         });
       }
     } else if (type == 'agents') {
       this.obj.isAgentExpanded = flag;
-      if(this.data[type]) {
+      if (this.data[type]) {
         this.data[type].forEach(item => {
           item.isAgentPropertiesExpanded = flag;
         });
       }
     } else if (type == 'controllers') {
       this.obj.isControllerExpanded = flag;
-      if(this.data[type]) {
-        this.data[type].forEach(item => {
-          item.isControllerExpanded = flag;
-          item.cluster.forEach((controller) => {
-            controller.isControllerPropertiesExpanded = flag;
-          })
+      if (this.data[type]?.cluster) {
+        this.data[type].cluster.forEach(item => {
+          item.isControllerPropertiesExpanded = flag;
         });
       }
     }
@@ -1135,6 +1124,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.mainObj = result;
+        console.log(this.mainObj)
         this.updateJSONObject();
       }
     });
@@ -1143,61 +1133,36 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   private updateJSONObject(): void {
     this.data.descriptor = this.mainObj.descriptor;
     this.data.license = this.mainObj.license;
-    this.data.certificates = this.mainObj.certificates;
-    if (this.mainObj.joc && this.mainObj.joc.length > 0) {
-      this.data.joc = [];
-      this.mainObj.joc.forEach((config) => {
-        const obj: any = {
-          isJOCExpanded: true,
-          jocClusterId: '',
-          cluster: []
-        };
-        for (let i in config) {
-          obj.jocClusterId = i;
-          for (let j in config[i]) {
-            this.updateMissingObjects(config[i][j], 'JOC');
-            obj.cluster.push(config[i][j])
-          }
-        }
-        this.data.joc.push(obj);
+    if (this.mainObj.joc && !isEmpty(this.mainObj.joc)) {
+      this.mainObj.joc.members?.instances.forEach((config) => {
+        this.updateMissingObjects(config, 'JOC');
       });
+      this.data.joc = this.mainObj.joc;
     }
     if (this.mainObj.agents && this.mainObj.agents.length > 0) {
-      this.data.agents = [];
       this.mainObj.agents.forEach((config) => {
-        let obj: any = {};
-        for (let i in config) {
-          obj = config[i];
-          obj.agentId = i;
-        }
-        this.updateMissingObjects(obj, 'AGENT');
-        this.data.agents.push(obj);
+        this.updateMissingObjects(config, 'AGENT');
       });
+      this.data.agents = this.mainObj.agents;
     }
-    if (this.mainObj.controllers && this.mainObj.controllers.length > 0) {
-      this.data.controllers = [];
-      this.mainObj.controllers.forEach((config) => {
-        const obj: any = {
-          isControllerExpanded: true,
-          controllerId: '',
-          cluster: []
-        };
-        for (let i in config) {
-          obj.controllerId = i;
-          if (config[i].primary) {
-            this.updateMissingObjects(config[i].primary, 'CONTROLLER');
-            obj.cluster.push(config[i].primary)
-          }
-          if (config[i].secondary) {
-            this.updateMissingObjects(config[i].secondary, 'CONTROLLER');
-            obj.cluster.push(config[i].secondary)
-          }
-        }
-
-        this.data.controllers.push(obj);
-      });
+    if (this.mainObj.controllers && !isEmpty(this.mainObj.controllers)) {
+      const obj = {
+        jocRef: this.mainObj.controllers.jocRef,
+        controllerId: this.mainObj.controllers.controllerId,
+        cluster: []
+      };
+      if (this.mainObj.controllers.primary) {
+        this.updateMissingObjects(this.mainObj.controllers.primary, 'CONTROLLER');
+        obj.cluster.push(this.mainObj.controllers.primary);
+      }
+      if (this.mainObj.controllers.secondary) {
+        this.updateMissingObjects(this.mainObj.controllers.secondary, 'CONTROLLER');
+        obj.cluster.push(this.mainObj.controllers.secondary);
+      }
+      this.data.controllers = obj;
     }
     this.convertJSON();
+    console.log(this.data)
   }
 
   private updateMissingObjects(obj, type): void {

@@ -3788,11 +3788,25 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (this.selectedNode) {
       this.initEditorConf(this.editor, false, true);
       setTimeout(() => {
-        this.dataService.reloadTree.next({ deploy: this.workflow });
-      }, 100);
+        if (this.isStore) {
+          this._reload();
+        } else {
+          this.dataService.reloadTree.next({deploy: this.workflow});
+        }
+      }, 500);
     } else {
-      this.dataService.reloadTree.next({ deploy: this.workflow });
+      this.dataService.reloadTree.next({deploy: this.workflow});
     }
+  }
+
+  private _reload(): void {
+    setTimeout(() => {
+      if (this.isStore) {
+        this._reload();
+      } else {
+        this.dataService.reloadTree.next({deploy: this.workflow});
+      }
+    }, 100);
   }
 
   backToListView(): void {
@@ -4820,19 +4834,19 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (!isEmpty(this.workflow.configuration)) {
       if (noConversion) {
         this.workflowService.checkEmptyObjects(this.workflow.configuration, () => {
-          this.updateWorkflow(graph);
+          this.updateWorkflow(graph, null);
         });
       } else {
-        this.workflowService.convertTryToRetry(this.workflow.configuration, () => {
-          this.updateWorkflow(graph);
-        }, {}, { count: 0 });
+        this.workflowService.convertTryToRetry(this.workflow.configuration, (jobMap) => {
+          this.updateWorkflow(graph, jobMap);
+        }, {}, {count: 0});
       }
     } else {
       this.reloadDummyXml(graph);
     }
   }
 
-  private updateWorkflow(graph): void {
+  private updateWorkflow(graph, jobMap): void {
     const scrollValue: any = {};
     const element = document.getElementById('graph');
     if (element) {
@@ -4843,7 +4857,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     graph.getModel().beginUpdate();
     try {
       graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
-      const mapObj = { nodeMap: this.nodeMap };
+      const mapObj = {nodeMap: this.nodeMap, jobMap};
       this.workflowService.createWorkflow(this.workflow.configuration, this.editor, mapObj);
       this.nodeMap = mapObj.nodeMap;
     } finally {
@@ -4980,9 +4994,20 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     const jsonObject = {
       instructions: []
     };
+    let jobMap = new Map();
+    let arrOfJobs = [];
 
     function findFirstNode(data): void {
       for (const prop in node.cells) {
+        if (node.cells[prop]?.value?.tagName === 'Job') {
+          let name = node.cells[prop].getAttribute('jobName');
+          let count = 1;
+          if (jobMap.has(name)) {
+            count = 2;
+          }
+          arrOfJobs.push(node.cells[prop])
+          jobMap.set(name, count);
+        }
         if (node.cells[prop].value && node.cells[prop].value.tagName && !node.cells[prop].value.tagName.match(/Connector/)
           && !node.cells[prop].value.tagName.match(/Connection/) && !node.cells[prop].value.tagName.match(/Process/)) {
           const incomingEdge = graph.getIncomingEdges(node.cells[prop]);
@@ -5347,6 +5372,22 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
 
     findFirstNode(jsonObject);
+
+
+    const jobs = Array.from(jobMap.keys());
+    arrOfJobs.forEach((cell) => {
+      const jobName = cell.getAttribute('jobName');
+      if (jobName && jobMap.get(jobName) == 2) {
+        let colorCode = this.workflowService.calculateShades('90C7F5')[jobs.indexOf(jobName)];
+        graph.setCellStyles(mxConstants.STYLE_FILLCOLOR, colorCode, [cell]);
+        graph.setCellStyles(mxConstants.STYLE_STROKECOLOR, colorCode, [cell]);
+      } else {
+        graph.setCellStyles(mxConstants.STYLE_FILLCOLOR, '#90C7F5', [cell]);
+        graph.setCellStyles(mxConstants.STYLE_STROKECOLOR, '#90C7F5', [cell]);
+      }
+    });
+
+
     if (jsonObject.instructions.length > 0) {
       this.workflow.configuration = this.coreService.clone(jsonObject);
     } else {
