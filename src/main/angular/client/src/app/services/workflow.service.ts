@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {isEmpty, isArray, clone, isNaN, sortBy} from 'underscore';
-import {TranslateService} from '@ngx-translate/core';
-import {CoreService} from './core.service';
-import {StringDatePipe} from '../pipes/core.pipe';
+import { Injectable } from '@angular/core';
+import { isEmpty, isArray, clone, isNaN, sortBy } from 'underscore';
+import { TranslateService } from '@ngx-translate/core';
+import { CoreService } from './core.service';
+import { StringDatePipe } from '../pipes/core.pipe';
 
 declare const mxHierarchicalLayout: any;
 declare const mxTooltipHandler: any;
@@ -20,7 +20,7 @@ export class WorkflowService {
   private jobPath = '';
 
   constructor(public translate: TranslateService, public coreService: CoreService,
-              private stringDatePipe: StringDatePipe) {
+    private stringDatePipe: StringDatePipe) {
     mxHierarchicalLayout.prototype.interRankCellSpacing = 45;
     mxTooltipHandler.prototype.delay = 0;
     if (sessionStorage.preferences) {
@@ -99,8 +99,8 @@ export class WorkflowService {
         '<path d="M22.4554 25.192C22.455 25.0808 22.4967 24.9736 22.5722 24.892C22.6476 24.8103 22.7511 24.7601 22.8619 24.7516C22.9258 24.7389 22.9917 24.7405 23.0549 24.7563C23.118 24.7721 23.1769 24.8018 23.2273 24.8431C23.2776 24.8844 23.3182 24.9363 23.346 24.9952C23.3738 25.0541 23.3883 25.1184 23.3883 25.1835C23.3883 25.2487 23.3738 25.313 23.346 25.3718C23.3182 25.4307 23.2776 25.4827 23.2273 25.524C23.1769 25.5653 23.118 25.5949 23.0549 25.6108C22.9917 25.6266 22.9258 25.6282 22.8619 25.6155C22.7539 25.6072 22.6528 25.5595 22.5778 25.4814C22.5028 25.4032 22.4592 25.3002 22.4554 25.192V25.192Z" fill="' + color + '"/>\n' +
         '<defs>\n' +
         '<linearGradient id="paint0_linear_19_258" x1="25.2513" y1="0.251263" x2="25.2513" y2="49.7487" gradientUnits="userSpaceOnUse">\n' +
-        '<stop stop-color="'+fillColor+'"/>\n' +
-        '<stop offset="1" stop-color="'+color2+'"/>\n' +
+        '<stop stop-color="' + fillColor + '"/>\n' +
+        '<stop offset="1" stop-color="' + color2 + '"/>\n' +
         '</linearGradient>\n' +
         '</defs>\n' +
         '</svg>\n';
@@ -114,8 +114,8 @@ export class WorkflowService {
         '<path d="M23.4875 26C22.5351 26 21.5728 26 20.6203 26C20.4914 26 20.3624 25.9804 20.2533 25.9216C20.0747 25.8431 19.9755 25.6275 20.0052 25.4314C20.035 25.2353 20.1838 25.0588 20.3922 25.0196C20.4616 25 20.541 25 20.6104 25C22.545 25 24.4697 25 26.4043 25C26.4737 25 26.5531 25 26.6226 25.0196C26.8507 25.0686 27.0095 25.2843 26.9996 25.5196C26.9896 25.7451 26.821 25.9412 26.5928 25.9804C26.5134 25.9902 26.4341 25.9902 26.3547 25.9902C25.3924 26 24.4399 26 23.4875 26Z" fill="' + color + '"/>\n' +
         '<defs>\n' +
         '<linearGradient id="paint0_linear_18_245" x1="25.2513" y1="0.251263" x2="25.2513" y2="49.7487" gradientUnits="userSpaceOnUse">\n' +
-        '<stop stop-color="'+fillColor+'"/>\n' +
-        '<stop offset="1" stop-color="'+color2+'"/>\n' +
+        '<stop stop-color="' + fillColor + '"/>\n' +
+        '<stop offset="1" stop-color="' + color2 + '"/>\n' +
         '</linearGradient>\n' +
         '</defs>\n' +
         '</svg>\n';
@@ -244,6 +244,79 @@ export class WorkflowService {
       return image;
     } else {
       return WorkflowService.svgToImageURL(svg);
+    }
+  }
+
+  // given a color value, return an array of ten tints in 10% increments
+  calculateShades(colorValue) {
+    if (this.theme !== 'dark') {
+      return this.calculate(colorValue, this.rgbShade).concat("000000");
+    } else {
+      return this.calculate(colorValue, this.rgbTint).concat("ffffff");
+    }
+  }
+
+  // take a hex color string and produce a list of 10 tints or shades of that color
+  // shadeOrTint should be either `rgbShade` or `rgbTint`, as defined above
+  // this allows us to use `calculate` for both shade and tint
+  private calculate(colorValue, shadeOrTint) {
+    let color = this.hexToRGB(colorValue);
+    let shadeValues = [];
+    for (let i = 1; i < 9; i++) {
+      shadeValues[i - 1] = '#' + this.rgbToHex(shadeOrTint(color, i));
+    }
+    return shadeValues;
+  }
+
+  // convert a hex string into an object with red, green, blue numeric properties
+  // '501214' => { red: 80, green: 18, blue: 20 }
+  private hexToRGB(colorValue) {
+    return {
+      red: parseInt(colorValue.substr(0, 2), 16),
+      green: parseInt(colorValue.substr(2, 2), 16),
+      blue: parseInt(colorValue.substr(4, 2), 16)
+    }
+  }
+
+  // convert one of our rgb color objects to a full hex color string
+  // { red: 80, green: 18, blue: 20 } => '501214'
+  private rgbToHex(rgb) {
+    return this.intToHex(rgb.red) + this.intToHex(rgb.green) + this.intToHex(rgb.blue);
+  }
+
+  // convert an integer to a 2-char hex string
+  // for sanity, round it and ensure it is between 0 and 255
+  // 43 => '2b'
+  private intToHex(rgbint) {
+    return this.pad(Math.min(Math.max(Math.round(rgbint), 0), 255).toString(16), 2);
+  }
+
+  // pad a hexadecimal string with zeros if it needs it
+  private pad(number, length) {
+    let str = '' + number;
+    while (str.length < length) {
+      str = '0' + str;
+    }
+    return str;
+  }
+
+  // shade one of our rgb color objects to a distance of i*10%
+  // ({ red: 80, green: 18, blue: 20 }, 1) => { red: 72, green: 16, blue: 18 }
+  private rgbShade(rgb, i) {
+    return {
+      red: rgb.red * (1 - 0.1 * i),
+      green: rgb.green * (1 - 0.1 * i),
+      blue: rgb.blue * (1 - 0.1 * i)
+    }
+  }
+
+  // tint one of our rgb color objects to a distance of i*10%
+  // ({ red: 80, green: 18, blue: 20 }, 1) => { red: 98, green: 42, blue: 44 }
+  private rgbTint(rgb, i) {
+    return {
+      red: rgb.red + (255 - rgb.red) * i * 0.1,
+      green: rgb.green + (255 - rgb.green) * i * 0.1,
+      blue: rgb.blue + (255 - rgb.blue) * i * 0.1
     }
   }
 
@@ -646,7 +719,7 @@ export class WorkflowService {
 
   convertTryToRetry(mainJson: any, cb: any, jobs = {}, countObj): void {
     const self = this;
-
+    const jobMap = new Map();
     function recursive(json: any, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -669,6 +742,11 @@ export class WorkflowService {
             }
           }
           if (json.instructions[x].TYPE === 'Execute.Named') {
+            if (jobMap.has(json.instructions[x].jobName)) {
+              jobMap.set(json.instructions[x].jobName, 2)
+            } else {
+              jobMap.set(json.instructions[x].jobName, 1)
+            }
             json.instructions[x].TYPE = 'Job';
             if (!isEmpty(jobs) && !json.instructions[x].documentationName) {
               const job = jobs[json.instructions[x].jobName];
@@ -697,7 +775,7 @@ export class WorkflowService {
                   json.instructions[x].catch.instructions = [];
                 }
               } else {
-                json.instructions[x].catch = {instructions: []};
+                json.instructions[x].catch = { instructions: [] };
               }
             }
           }
@@ -780,7 +858,7 @@ export class WorkflowService {
           }
           if (json.instructions[x].branches) {
             json.instructions[x].branches = json.instructions[x].branches.filter((branch: any) => {
-              if(branch.workflow) {
+              if (branch.workflow) {
                 branch.instructions = branch.workflow.instructions;
                 branch.result = branch.workflow.result;
                 delete branch.workflow;
@@ -799,7 +877,7 @@ export class WorkflowService {
 
     recursive(mainJson);
     if (cb) {
-      cb();
+      cb(jobMap);
     }
   }
 
@@ -833,7 +911,8 @@ export class WorkflowService {
     const defaultParent = graph.getDefaultParent();
 
     let isFound = false;
-
+    let jobMap = mapObj.jobMap;
+    const arrayOfJobs = jobMap ? Array.from(jobMap.keys()) : [];
     function connectWithDummyNodes(json: any): void {
       if (json.instructions && json.instructions.length > 0) {
         const _node = doc.createElement('Process');
@@ -924,7 +1003,12 @@ export class WorkflowService {
             if (json.instructions[x].defaultArguments && typeof json.instructions[x].defaultArguments === 'object') {
               _node.setAttribute('defaultArguments', JSON.stringify(json.instructions[x].defaultArguments));
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 180, 40, isGraphView ? WorkflowService.setStyleToVertex('job', colorCode, self.theme) : 'job');
+            if (jobMap && jobMap.get(json.instructions[x].jobName) == '2') {
+              let _colorCode = self.calculateShades('90C7F5')[arrayOfJobs.indexOf(json.instructions[x].jobName)];
+              v1 = graph.insertVertex(parent, null, _node, 0, 0, 180, 40, WorkflowService.setStyleToVertex('job', _colorCode, self.theme));
+            } else {
+              v1 = graph.insertVertex(parent, null, _node, 0, 0, 180, 40, isGraphView ? WorkflowService.setStyleToVertex('job', colorCode, self.theme) : 'job');
+            }
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -943,7 +1027,7 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Fail') {
             _node.setAttribute('label', 'fail');
-            const outcome = json.instructions[x].outcome || {returnCode: 0};
+            const outcome = json.instructions[x].outcome || { returnCode: 0 };
             _node.setAttribute('outcome', JSON.stringify(outcome));
             if (json.instructions[x].message !== undefined) {
               _node.setAttribute('message', json.instructions[x].message);
@@ -2059,7 +2143,7 @@ export class WorkflowService {
 
   convertStringToDuration(str: string, isDuration = false): number {
     function durationSeconds(timeExpr) {
-      const units = {h: 3600, m: 60, s: 1};
+      const units = { h: 3600, m: 60, s: 1 };
       const regex = /(\d+)([hms])/g;
       let seconds = 0;
       let match;

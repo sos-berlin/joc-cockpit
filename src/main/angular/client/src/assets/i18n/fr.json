@@ -873,29 +873,6 @@
         "licenseBinFile": "License Binary File"
       }
     },
-    "certificate": {
-      "label": {
-        "primaryControllerCert": "Primary Controller Certificate",
-        "secondaryControllerCert": "Secondary Controller Certificate",
-        "primaryJocCert": "Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Secondary JOC Cockpit Certificate"
-      },
-      "button": {
-        "addCertificates": "Add Certificates"
-      },
-      "placeholder": {
-        "primaryControllerCert": "Enter Primary Controller Certificate",
-        "secondaryControllerCert": "Enter Secondary Controller Certificate",
-        "primaryJocCert": "Enter Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Enter Secondary JOC Cockpit Certificate"
-      },
-      "tooltip": {
-        "primaryControllerCert": "Primary Controller Certificate",
-        "secondaryControllerCert": "Secondary Controller Certificate",
-        "primaryJocCert": "Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Secondary JOC Cockpit Certificate"
-      }
-    },
     "agent": {
       "label": {
         "agentId": "Agent ID",
@@ -1017,6 +994,7 @@
         "httpsPort": "HTTPS Port",
         "javaHome": "Java Home",
         "javaOptions": "Java Options",
+        "jocRef": "JOC Ref",
         "controllerId": "Controller ID",
         "keyStore": "Keystore",
         "keyStorePassword": "Keystore Password",
@@ -1024,6 +1002,7 @@
         "keyAlias": "Key Alias",
         "trustStore": "Truststore",
         "trustStorePassword": "Truststore Password",
+        "controllerCert": "Controller Certificate",
         "templates": "Templates"
       },
       "button": {
@@ -1053,6 +1032,7 @@
         "httpsPort": "Enter HTTPS Port",
         "javaHome": "Enter Java Home",
         "javaOptions": "Enter Java Options",
+        "jocRef": "Select JOC Ref",
         "controllerId": "Enter Controller ID",
         "keyStore": "Enter Keystore",
         "keyStorePassword": "Enter Keystore Password",
@@ -1060,6 +1040,7 @@
         "keyAlias": "Enter Key Alias",
         "trustStore": "Enter Truststore",
         "trustStorePassword": "Enter Truststore Password",
+        "controllerCert": "Enter Controller Certificate",
         "templates": "Enter Templates"
       },
       "tooltip": {
@@ -1083,6 +1064,7 @@
         "httpsPort": "HTTPS Port",
         "javaHome": "Java Home",
         "javaOptions": "Java Options",
+        "jocRef": "JOC Ref",
         "controllerId": "Controller ID",
         "keyStore": "Keystore",
         "keyStorePassword": "Keystore Password",
@@ -1090,6 +1072,7 @@
         "keyAlias": "Key Alias",
         "trustStore": "Truststore",
         "trustStorePassword": "Truststore Password",
+        "controllerCert": "Controller Certificate",
         "templates": "Templates"
       }
     },
@@ -1097,6 +1080,7 @@
       "label": {
         "jocInstanceId": "JOC Cockpit ID Instance",
         "jocClusterId": "JOC Cockpit ID Cluster",
+        "ordering": "Ordering",
         "host": "Host",
         "port": "Port",
         "method": "Authentication Method",
@@ -1133,6 +1117,7 @@
         "trustStore": "Truststore",
         "trustStorePassword": "Truststore Password",
         "templates": "Templates",
+        "jocCert": "JOC Certificate",
         "httpIni": "Jetty HTTP Configuration File (http.ini)",
         "httpsIni": "Jetty HTTPS Configuration File (https.ini)",
         "sslIni": "Jetty SSL Configuration File (ssl.ini)"
@@ -1147,6 +1132,7 @@
       "placeholder": {
         "jocInstanceId": "Enter JOC Cockpit Instance ID",
         "jocClusterId": "Enter JOC Cockpit Cluster ID",
+        "ordering": "Enter Ordering",
         "host": "Enter Host",
         "port": "Enter Port Number",
         "method": "Enter Authentication Method",
@@ -1178,6 +1164,7 @@
         "trustStore": "Enter Truststore",
         "trustStorePassword": "Enter Truststore Password",
         "templates": "Enter Templates",
+        "jocCert": "Enter JOC Certificate",
         "httpIni": "Enter Jetty HTTP Configuration File (http.ini)",
         "httpsIni": "Enter Jetty HTTPS Configuration File (https.ini)",
         "sslIni": "Enter Jetty HTTP Configuration File (ssl.ini)"
@@ -1185,6 +1172,7 @@
       "tooltip": {
         "jocInstanceId": "JOC Cockpit Instance ID",
         "jocClusterId": "JOC Cockpit Cluster ID",
+        "ordering": "Ordering",
         "host": "Host",
         "port": "Port",
         "method": "Authentication Method",
@@ -1221,6 +1209,7 @@
         "trustStore": "Truststore",
         "trustStorePassword": "Truststore Password",
         "templates": "Templates",
+        "jocCert": "JOC Certificate",
         "httpIni": "Jetty HTTP Configuration File (http.ini)",
         "httpsIni": "Jetty HTTPS Configuration File (https.ini)",
         "sslIni": "Jetty SSL Configuration File (ssl.ini)"

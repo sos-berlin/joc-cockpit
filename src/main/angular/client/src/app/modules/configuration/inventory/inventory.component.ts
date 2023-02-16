@@ -250,7 +250,7 @@ export class SingleDeployComponent implements OnInit {
       controllerIds: this.selectedSchedulerIds,
       auditLog: {}
     };
-    if((this.data.objectType == 'WORKFLOW' || this.releasable || this.isRemoved) && this.deployablesObject.length > 0) {
+    if ((this.data.objectType == 'WORKFLOW' || this.releasable || this.isRemoved) && this.deployablesObject.length > 0) {
       if (!this.isRevoke) {
         if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
           obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
@@ -2445,7 +2445,8 @@ export class ImportWorkflowModalComponent implements OnInit {
         if (res.error) {
           this.toasterService.error(res.error.message, res.error.code);
         }
-      } catch (e) { }
+      } catch (e) {
+      }
       this.uploader.isUploading = false;
     };
   }
