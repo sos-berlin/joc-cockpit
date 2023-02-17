@@ -146,13 +146,13 @@
             </ul>
           </nz-dropdown-menu>
         </div>
-        <span class="cursor inst-text" *ngIf="instruction.TYPE === 'Job'"
+        <span class="cursor inst-text" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}" *ngIf="instruction.TYPE === 'Job'"
           (click)="showConfiguration(instruction)">{{instruction.jobName}}</span>
-        <span class="inst-text" *ngIf="instruction.TYPE !== 'Job'"
+        <span class="inst-text" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}" *ngIf="instruction.TYPE !== 'Job'"
           [nz-tooltip]="(instruction.question || instruction.message)">
           {{instruction.TYPE | translate}}
           <span *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices')">: </span>
-          <span class="text-muted"
+          <span class="text-muted" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}"
             *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices') && instruction.noticeBoardNames">
             {{instruction.noticeBoardNames}}
           </span>
@@ -172,9 +172,8 @@
       </div>
       <div id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'ForkListEnd'" class="m-l-n-40"
         [ngClass]="{'drop-area': instruction.enabled}">
-        <span class="inst-text">
-          <span class="_600" *ngIf="instruction.TYPE === 'ForkListEnd'">{{'workflow.label.forkListEnd' |
-            translate}}</span>
+        <span class="inst-text _600" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}" *ngIf="instruction.TYPE === 'ForkListEnd'">{{'workflow.label.forkListEnd' |
+            translate}}
         </span>
         <span class="m-l-md" *ngIf="instruction.order">
           <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
@@ -195,7 +194,7 @@
           <div class="p-l-md">
             <a class="m-l" (click)="collapse(branch)">
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (branch.show)}"></i>
-              <i class="_600 inst-text">{{branch.id}}</i>
+              <i class="_600 inst-text" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}">{{branch.id}}</i>
             </a>
             <span class="m-l-md" *ngIf="branch.order">
               <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
@@ -225,7 +224,7 @@
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.else" (click)="collapse(instruction.else)">
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.else.show)}"></i>
-              <span class="_600 inst-text">Else</span>
+              <span class="_600 inst-text" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}">Else</span>
             </a>
             <span class="m-l-md" *ngIf="instruction.else && (instruction.else.order)">
               <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
@@ -256,7 +255,7 @@
         <div class="p-l-md" *ngIf="instruction.catch && instruction.catch.instructions">
           <a class="m-l" (click)="collapse(instruction.catch)">
             <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.catch.show)}"></i>
-            <span class="_600 inst-text" translate>workflow.label.catch</span>
+            <span class="_600 inst-text" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}" translate>workflow.label.catch</span>
           </a>
           <span class="m-l-md" *ngIf="(instruction.catch.order)">
             <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
@@ -289,8 +288,8 @@
       </div>
       <div id="{{instruction.join.unique}}" *ngIf="instruction.join"
         [ngClass]="{'drop-area': instruction.join.enabled}">
-        <span class="inst-text">
-          <span class="_600">{{'workflow.label.join' | translate}}</span>
+        <span class="_600 inst-text" id="{{instruction.join.unique}}$" [ngClass]="{'drop-area-text' : instruction.enabled}">
+          {{'workflow.label.join' | translate}}
         </span>
         <span class="m-l-md" *ngIf="instruction.join.order">
           <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">

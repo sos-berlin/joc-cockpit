@@ -51,6 +51,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
   @Input() view: any;
   @Input() workflowFilters: any = {};
 
+  jobMap = new Map();
   workFlowJson: any = {};
   pageView = 'grid';
   isExpandAll: boolean = false;
@@ -125,7 +126,9 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
     }).subscribe((res) => {
       this.workflow = res.workflow;
       this.workFlowJson = this.coreService.clone(this.workflow);
-      this.workflowService.convertTryToRetry(this.workFlowJson, null, this.workflow.jobs, {count: 0});
+      this.workflowService.convertTryToRetry(this.workFlowJson, (jobMap)=>{
+        this.jobMap = jobMap;
+      }, this.workflow.jobs, {count: 0});
       this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
       this.workFlowJson.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
       this.workFlowJson.consumeNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'consumeNoticeBoards');
@@ -208,6 +211,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   @Input() isModal: boolean = false;
   @Input() reload: boolean;
   @Input() recursiveCals: any;
+  @Input() jobMap: any;
   @Input() workflowObjects: any;
 
   loading: boolean = false;
@@ -1309,7 +1313,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         nodeMap: this.nodeMap,
         vertixMap: this.vertixMap,
         graphView: !!this.workflowObjects,
-        addOrderdMap: this.addOrderdMap
+        addOrderdMap: this.addOrderdMap,
+        jobMap: this.jobMap
       };
       if (mapObj.graphView) {
         mapObj.colorCode = this.colors[0];

@@ -11089,7 +11089,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         request.auditLog = {comment: translatedValue};
       });
     }
-    console.log('????????????????????111', this.isStore)
+
     this.coreService.post('inventory/store', request).subscribe({
       next: (res: any) => {
         this.isStore = false;

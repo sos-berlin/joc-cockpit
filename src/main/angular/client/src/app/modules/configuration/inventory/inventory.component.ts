@@ -4177,11 +4177,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  deployObject(node, releasable, operation?, isRemoved = false): void {
+  deployObject(node, releasable, operation?, isRemoved = false, skip = true): void {
     const origin = this.coreService.clone(node.origin ? node.origin : node);
     if (this.selectedObj && this.selectedObj.id &&
-      this.selectedObj.type === InventoryObject.WORKFLOW) {
+      this.selectedObj.type === InventoryObject.WORKFLOW && skip) {
       this.dataService.reloadTree.next({saveObject: origin});
+      setTimeout(() => {
+        this.deployObject(node, releasable, operation, isRemoved, false);
+      }, 750)
+      return;
     }
     let flag = false;
     if (releasable && origin.objectType) {

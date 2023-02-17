@@ -34,7 +34,8 @@ export class CoreService {
     calendar: {width: 270, show: true},
     documentation: {width: 270, show: true},
     inventory: {width: 300, show: true},
-    xml: {width: 500, show: true}
+    xml: {width: 500, show: true},
+    deployment: {width: 270, show: true}
   };
 
   searchResults = {};
@@ -357,6 +358,11 @@ export class CoreService {
     this.tabs._agentCluster.filter.sortBy = 'ordering';
     this.tabs._agentCluster.reverse = false;
     this.tabs._agentCluster.currentPage = '1';
+
+    this.tabs._deployment = {};
+    this.tabs._deployment.expandedKeys = ['/'];
+    this.tabs._deployment.selectedkeys = ['/'];
+    this.tabs._deployment.isCompact = true;
   }
 
   setSearchResult(type, result): void {
@@ -433,6 +439,10 @@ export class CoreService {
 
   getYadeTab(): any {
     return this.tabs._yade;
+  }
+
+  getDeploymentTab(): any {
+    return this.tabs._deployment;
   }
 
   setLocales(locale: any): void {

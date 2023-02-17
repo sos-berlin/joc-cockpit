@@ -1,8 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {CoreService} from '../../services/core.service';
-import {ValueEditorComponent} from '../value-editor/value.component';
-import {isArray, isEmpty} from "underscore";
+import { Component, Input, OnInit } from '@angular/core';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { CoreService } from '../../services/core.service';
+import { ValueEditorComponent } from '../value-editor/value.component';
+import { isArray, isEmpty } from "underscore";
 
 @Component({
   selector: 'app-resume-order',
@@ -23,10 +23,10 @@ export class ResumeOrderModalComponent implements OnInit {
   position: any;
   positions: any;
   variables: any = [];
-  variableList = [];
+  constants = [];
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
-              private modal: NzModalService) {
+    private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -71,6 +71,26 @@ export class ResumeOrderModalComponent implements OnInit {
           } else {
             this.variables = this.coreService.convertObjectToArray(res, 'variables');
           }
+          this.constants = this.coreService.convertObjectToArray(res, 'constants');
+          this.constants.forEach((item) =>{
+            if(!isArray(item.value)) {
+              this.coreService.removeSlashToString(item, 'value');
+              const startChar = item.value.substring(0, 1);
+              const endChar = item.value.substring(item.value.length - 1);
+              if ((startChar === '"' && endChar === '"') || (startChar === "'" && endChar === "'")) {
+                item.value = item.value.substring(1, item.value.length - 1);
+              }
+            } else {
+              item.type = 'list';
+              item.value.forEach((val) => {
+                if(isEmpty(val)){
+                  val = '';
+                } else {
+                  this.coreService.removeSlashToString(val, 'value');
+                }
+              })
+            }
+          });
           this.positions = res.positions.map((pos) => pos.positionString);
         }
       }, error: () => this.positions = []
@@ -80,58 +100,15 @@ export class ResumeOrderModalComponent implements OnInit {
   private getWorkflow(): void {
     this.coreService.post('workflow', {
       controllerId: this.schedulerId,
-      workflowId: this.order.workflowId ? this.order.workflowId : {path: this.order.workflowPath}
+      workflowId: this.order.workflowId ? this.order.workflowId : { path: this.order.workflowPath }
     }).subscribe((res: any) => {
       this.workflow = {};
       this.workflow.jobs = res.workflow.jobs;
-      this.workflow.configuration = {instructions: res.workflow.instructions};
+      this.workflow.configuration = { instructions: res.workflow.instructions };
       this.checkPositions();
-      this.updateVariableList(res);
     });
   }
 
-  private updateVariableList(res): void {
-    if (res.workflow.orderPreparation && res.workflow.orderPreparation.parameters && !isEmpty(res.workflow.orderPreparation.parameters)) {
-      this.variableList = Object.entries(res.workflow.orderPreparation.parameters).map(([k, v]) => {
-        const val: any = v;
-        if (val.type !== 'List') {
-          if (!val.final) {
-            if (!val.default && val.default !== false && val.default !== 0) {
-            } else if (val.default) {
-              if (val.type === 'String') {
-                this.coreService.removeSlashToString(val, 'default');
-              } else if (val.type === 'Boolean') {
-                val.default = (val.default === 'true' || val.default === true);
-              }
-            }
-          }
-        } else {
-          if (val.listParameters) {
-            if (isArray(val.listParameters)) {
-
-            } else {
-              val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
-                const val1: any = v1;
-                return {name: k1, value: val1};
-              });
-            }
-          }
-        }
-        return {name: k, value: val};
-      });
-      this.variableList = this.variableList.filter((item) => {
-        let flag = true;
-        for (let i in this.variables) {
-          if (this.variables[i].name == item.name) {
-            flag = false;
-            break;
-          }
-        }
-        return flag;
-      });
-    }
-
-  }
 
 
   private checkPositions(): void {
@@ -218,7 +195,7 @@ export class ResumeOrderModalComponent implements OnInit {
                   json.instructions[x].catch.instructions = [];
                 }
               } else {
-                json.instructions[x].catch = {instructions: []};
+                json.instructions[x].catch = { instructions: [] };
               }
             }
           }

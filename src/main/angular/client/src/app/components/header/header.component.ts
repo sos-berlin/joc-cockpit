@@ -103,12 +103,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  clearJocEvent(): void{
+  clearJocEvent(): void {
     this.jocMonitor = [];
     sessionStorage.removeItem('$SOS$JOCMONITOR')
   }
 
-  clearSystemEvent(): void{
+  clearSystemEvent(): void {
     this.systemMonitor = [];
     sessionStorage.removeItem('$SOS$SYSTEMMONITOR')
   }
