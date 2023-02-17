@@ -9,6 +9,7 @@ import {FileUploader} from "ng2-file-upload";
 import {TranslateService} from "@ngx-translate/core";
 import {ToastrService} from "ngx-toastr";
 import {CoreService} from '../../services/core.service';
+import {AuthService} from "../../components/guard";
 
 declare const $: any;
 
@@ -240,7 +241,10 @@ export class ShowJsonModalComponent implements OnInit {
   templateUrl: './deployment.component.html'
 })
 export class DeploymentComponent implements OnInit, OnDestroy {
-  nodes: any = [];
+  isLoading = false;
+  tree: any = [];
+  sideView: any = {};
+  deploymentFilters: any = {};
   data: any = {
     descriptor: {},
     agents: [],
@@ -272,18 +276,19 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     setOfCheckedId: new Set()
   };
 
-  constructor(private coreService: CoreService, private modal: NzModalService, private message: NzMessageService) {
+  objectType = 'DEPLOYMENTDESCRIPTOR';
+  preferences: any = {};
+  schedulerIds: any = {};
+  permission: any = {};
 
+  constructor(private coreService: CoreService, private modal: NzModalService, private message: NzMessageService,
+              private authService: AuthService) {
   }
 
   ngOnInit(): void {
-    this.getTree();
-    if (sessionStorage.descriptorObj) {
-      let obj = JSON.parse(sessionStorage.descriptorObj);
-      if (!isEmpty(obj)) {
-        this.data = obj;
-      }
-    }
+    this.deploymentFilters = this.coreService.getDeploymentTab();
+    this.sideView = this.coreService.getSideView();
+    this.init();
   }
 
   ngOnDestroy(): void {
@@ -292,20 +297,35 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getTree(): void {
+  private init(): void {
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.initTree();
+  }
+
+  private initTree(): void {
     this.coreService.post('tree', {
       forInventory: true,
-      types: ['DEPLOYMENTDESCRIPTOR']
-    }).subscribe((res: any) => {
-      if (res.folders.length === 0) {
-        res.folders.push({name: '', path: '/'});
-      }
-      this.nodes = this.coreService.prepareTree(res, true);
-      console.log(this.nodes)
+      types: [this.objectType]
+    }).subscribe({
+      next: res => {
+        if (res.folders.length === 0) {
+          res.folders.push({name: '', path: '/'});
+        }
+        this.tree = this.coreService.prepareTree(res, true);
+        this.isLoading = true;
+      }, error: () => this.isLoading = true
     });
   }
 
   /** Actions */
+
+  receiveAction($event): void {
+    console.log($event)
+    // this.getWorkflows($event, $event.action !== 'NODE');
+  }
+
   addLicense(): void {
     this.data.license = {};
     this.obj.isLicenseExpanded = true;
@@ -334,7 +354,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   removeAgent(index = -1): void {
-
     if (index > -1) {
       this.data.agents.splice(index, 1);
     } else {
@@ -409,7 +428,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       }
     }
     if (this.copyObject.data) {
-      console.log(this.copyObject)
       this.coreService.showCopyMessage(this.message);
     } else {
       this.copyObject = undefined;
@@ -1124,7 +1142,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.mainObj = result;
-        console.log(this.mainObj)
         this.updateJSONObject();
       }
     });
@@ -1162,7 +1179,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       this.data.controllers = obj;
     }
     this.convertJSON();
-    console.log(this.data)
   }
 
   private updateMissingObjects(obj, type): void {

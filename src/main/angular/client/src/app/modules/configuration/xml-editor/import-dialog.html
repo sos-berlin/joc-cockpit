@@ -43,7 +43,11 @@
               <td nowrap>{{ item.file.size / 1024 / 1024 | number:'.2' }} MB</td>
               <td nowrap>
                 <div class="progress upload-progress m-b-0">
-                  <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+                  <div *ngIf="item.progress == 100 || item.isError" class="text-center" [ngStyle]="{'background': !item.isError ? 'rgba(0, 128, 0, 0.2)' : 'rgba(244,68,85, 0.2)'}">
+                    <span *ngIf="uploader.isUploading && !item.isError">Processing...</span>
+                    <span *ngIf="item.isError">Failed</span>
+                  </div>
+                  <div *ngIf="item.progress !== 100" class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
                 </div>
               </td>
               <td>

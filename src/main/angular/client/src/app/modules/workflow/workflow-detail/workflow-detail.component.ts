@@ -35,6 +35,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   path: string;
   versionId: string;
   workFlowJson: any = {};
+  jobMap = new Map();
   recursiveCals: any = [];
   orderPreparation: any = {};
   loading: boolean;
@@ -415,7 +416,9 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           this.workflowObjects = new Map();
           this.countObj = {count: 0};
           this.workFlowJson = res.workflow;
-          this.workflowService.convertTryToRetry(res.workflow, null, res.workflow.jobs, this.countObj);
+          this.workflowService.convertTryToRetry(res.workflow, (jobMap)=>{
+            this.jobMap = jobMap;
+          }, res.workflow.jobs, this.countObj);
           this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
           if (res.workflow.hasExpectedNoticeBoards || res.workflow.hasConsumeNoticeBoards || res.workflow.hasPostNoticeBoards || res.workflow.hasAddOrderDependencies) {
             this.showDependency(res.workflow, flag);
@@ -423,7 +426,9 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             this.getOrders(res.workflow, flag);
           }
         } else {
-          this.workflowService.convertTryToRetry(res.workflow, null, {}, {count: 0});
+          this.workflowService.convertTryToRetry(res.workflow, (jobMap)=>{
+            this.jobMap = jobMap;
+          }, {}, {count: 0});
           this.workflowService.compareAndMergeInstructions(this.workFlowJson.instructions, res.workflow.instructions);
           setTimeout(() => {
             this.isReload = true;

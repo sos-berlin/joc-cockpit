@@ -174,7 +174,11 @@ export class WorkflowTreeStructureComponent implements OnChanges {
     }
     let data = event.target.getAttribute('class');
     if (data && data.match('drop-area')) {
-      this.position = event.target.getAttribute('id');
+      let position = event.target.getAttribute('id');
+      if(data.match('drop-area-text')){
+        position = position.substring(0, position.length - 1);
+      }
+      this.position = position;
       const classList = document.getElementById(this.position).classList;
       classList.add('drop-hover');
     }

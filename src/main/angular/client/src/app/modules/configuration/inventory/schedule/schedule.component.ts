@@ -303,9 +303,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (node.key && !node.key.match('/')) {
         if (this.schedule.configuration.workflowNames.indexOf(node.key) === -1) {
           this.schedule.configuration.workflowNames.push(node.key);
-          if (this.schedule.configuration.workflowNames.length === 1) {
             this.getWorkflowInfo(node.key, true, null);
-          }
         }
       }
     }

@@ -1,8 +1,7 @@
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {WorkflowService} from 'src/app/services/workflow.service';
+import {WorkflowService} from '../../services/workflow.service';
 import {CoreService} from '../../services/core.service';
-import {clone} from "underscore";
 
 declare const mxUtils: any;
 declare const mxEvent: any;
@@ -26,8 +25,7 @@ export class GraphicalViewModalComponent implements OnInit {
   @Input() operation: string;
   @Input() startNode: string;
   @Input() data: any;
-  isModal: boolean = true;
-  disabledDrag = false;
+  isLoading = true;
   position: any;
   preferences: any = {};
   graph: any;
@@ -38,6 +36,7 @@ export class GraphicalViewModalComponent implements OnInit {
 
   constructor(public coreService: CoreService, private modal: NzModalService, private activeModal: NzModalRef,
               private workflowService: WorkflowService) {
+
   }
 
   static changeCellStyle(graph): void {
@@ -94,8 +93,7 @@ export class GraphicalViewModalComponent implements OnInit {
 
   convertTryToRetry(mainJson: any): void {
     const self = this;
-    let count = 1;
-    const map = new Map();
+    let count = 1
     let isChecked = false;
 
     function recursive(json: any, parent = null) {
@@ -122,7 +120,7 @@ export class GraphicalViewModalComponent implements OnInit {
               if (!parent.join) {
                 parent.join = {};
               } else {
-                positions = clone(parent.join.positionStrings);
+                positions = self.coreService.clone(parent.join.positionStrings);
               }
               positions.push(json.instructions[x].position);
               parent.join.positionStrings = positions;
@@ -259,7 +257,9 @@ export class GraphicalViewModalComponent implements OnInit {
         this.graph = new mxGraph(this.graphContainer.nativeElement);
         this.workflowService.init(!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme) ? 'dark' : 'light', this.graph);
         new mxOutline(this.graph, this.outlineContainer.nativeElement);
-        this.createWorkflowGraph();
+        setTimeout(() => {
+          this.createWorkflowGraph();
+        },0);
       }
     } catch (e) {
       mxUtils.alert('Cannot start application: ' + e.message);
@@ -271,6 +271,7 @@ export class GraphicalViewModalComponent implements OnInit {
     this.initEditorConf();
     this.updateWorkflow();
     setTimeout(() => {
+      this.isLoading = false;
       this.actual();
     }, 10);
   }
@@ -378,7 +379,7 @@ export class GraphicalViewModalComponent implements OnInit {
   private updateWorkflow(): void {
     this.graph.getModel().beginUpdate();
     try {
-      this.graph.removeCells(this.graph.getChildCells(this.graph.getDefaultParent()), true);
+     // this.graph.removeCells(this.graph.getChildCells(this.graph.getDefaultParent()), true);
       const mapObj = {nodeMap: new Map(), graphView: true, vertixMap: new Map(), useString: true};
       this.workflowService.createWorkflow(this.workFlowJson, {graph: this.graph}, mapObj);
 

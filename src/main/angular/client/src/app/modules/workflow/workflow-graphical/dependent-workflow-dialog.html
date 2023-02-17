@@ -21,12 +21,12 @@
       </button>
     </div>
     <div *ngIf="pageView === 'grid'">
-      <app-workflow-graphical [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [permission]="permission" [preferences]="preferences" [jobs]="workflow.jobs" [isModal]="true"
+      <app-workflow-graphical [jobMap]="jobMap" [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [permission]="permission" [preferences]="preferences" [jobs]="workflow.jobs" [isModal]="true"
                               [controllerId]="controllerId" [orders]="workflow.orders" [orderPreparation]="workflow.orderPreparation"></app-workflow-graphical>
     </div>
     <div *ngIf="pageView === 'list'">
       <div class="hover" >
-        <a class="text-primary" translate >workflow.label.start</a>
+        <a class="text-primary noExl" translate >workflow.label.start</a>
         <span class="expand-collapse-btn">
           <i class="cursor fa fa-lg fa-angle-double-down" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="expandAll()"></i>
           <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll()"></i>

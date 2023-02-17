@@ -128,7 +128,7 @@
         <div class="form-group row" *ngIf="(schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) || schedule.configuration.orderParameterisations.length">
           <label class="col-md-12 _600" translate>inventory.label.orderParameterisations</label>
         </div>
-        <div *ngIf="workflow.orderPreparation">
+        <div *ngIf="workflow">
           <div *ngFor="let variableSet of schedule.configuration.orderParameterisations; let j = index" [ngClass]="{'b-t p-t' : j != 0}">
             <div class="form-group row">
               <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.orderName</label>
