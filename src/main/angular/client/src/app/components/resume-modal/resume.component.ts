@@ -81,14 +81,17 @@ export class ResumeOrderModalComponent implements OnInit {
                 item.value = item.value.substring(1, item.value.length - 1);
               }
             } else {
+
               item.type = 'list';
+              item.value.forEach((val, index) => {
+                item.value[index] = Object.entries(item.value[index]).map(([k1, v1]) => {
+                  return {name: k1, value: v1};
+                });
+              });
               item.value.forEach((val) => {
-                if(isEmpty(val)){
-                  val = '';
-                } else {
-                  this.coreService.removeSlashToString(val, 'value');
-                }
-              })
+                this.coreService.removeSlashToString(val, 'value');
+              });
+
             }
           });
           this.positions = res.positions.map((pos) => pos.positionString);

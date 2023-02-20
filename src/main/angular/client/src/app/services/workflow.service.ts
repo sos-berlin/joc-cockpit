@@ -2847,7 +2847,17 @@ export class WorkflowService {
     if (job.executable && (!job.executable.env || typeof job.executable.env === 'string' || job.executable.env.length === 0)) {
       delete job.executable.env;
     }
-
+    if (job.executable?.returnCodeMeaning) {
+      if (job.executable.returnCodeMeaning.success == '0' || job.executable.returnCodeMeaning.success == 0) {
+        delete job.executable.returnCodeMeaning.success;
+      }
+      if (job.executable.returnCodeMeaning.warning === '') {
+        delete job.executable.returnCodeMeaning.warning;
+      }
+    }
+    if (job.executable?.returnCodeMeaning && isEmpty(job.executable.returnCodeMeaning)) {
+      delete job.executable.returnCodeMeaning;
+    }
     return job;
   }
 }
