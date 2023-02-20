@@ -194,7 +194,10 @@ export class ImportModalComponent implements OnInit {
   // CALLBACKS
   onFileSelected(event: any): void {
     const item = event['0'];
-    const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
+    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
+    if(fileExt){
+      fileExt = fileExt.toLowerCase();
+    }
     if (fileExt === 'zip' || fileExt.match(/tar/) || fileExt.match(/gz/)){
       if(fileExt === 'zip'){
         this.requestObj.format = 'ZIP';

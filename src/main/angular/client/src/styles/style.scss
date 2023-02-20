@@ -6876,7 +6876,7 @@ tr.tr-border td {
   }
 }
 
-.workflow.sidebar-hover-effect {
+.workflow.sidebar-hover-effect, deployment.sidebar-hover-effect {
   padding-top: 24px;
 }
 
@@ -6904,8 +6904,18 @@ aside.sidebar-hover-effect {
   top: 57px;
 }
 
-.workflow .a-2 {
+.workflow .a-2, .deployment .a-2 {
   top: 22px;
+}
+
+.deployment{
+  top: 155px !important;
+  .tree-block{
+    margin-top: 0;
+  }
+  .a-1, a-2{
+    z-index: 999;
+  }
 }
 
 .a-3 {
@@ -7465,7 +7475,8 @@ tr.tr-border td:first-child {
   }
 
   .CodeMirror {
-    min-height: calc(100vh - 252px);
+    width: auto !important;
+    max-height: 100%;
   }
 
   .CodeMirror-scroll {

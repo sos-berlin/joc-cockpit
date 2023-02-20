@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { CoreService } from '../../services/core.service';
-import { ValueEditorComponent } from '../value-editor/value.component';
-import { isArray, isEmpty } from "underscore";
+import {Component, Input, OnInit} from '@angular/core';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {CoreService} from '../../services/core.service';
+import {ValueEditorComponent} from '../value-editor/value.component';
+import {isArray, isEmpty} from "underscore";
 
 @Component({
   selector: 'app-resume-order',
@@ -24,9 +24,10 @@ export class ResumeOrderModalComponent implements OnInit {
   positions: any;
   variables: any = [];
   constants = [];
+  allowVariable = true;
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
-    private modal: NzModalService) {
+              private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -67,13 +68,22 @@ export class ResumeOrderModalComponent implements OnInit {
       next: (res: any) => {
         if (res) {
           if (res.variablesNotSettable) {
-            this.isParametrized = false;
+            this.allowVariable = false;
           } else {
             this.variables = this.coreService.convertObjectToArray(res, 'variables');
+            this.variables.forEach((val) => {
+              if (val.value && isArray(val.value)) {
+                val.isArray = true;
+                val.value = val.value.map(item => {
+                  return {value: item}
+                })
+              }
+            });
+            console.log(this.variables)
           }
           this.constants = this.coreService.convertObjectToArray(res, 'constants');
-          this.constants.forEach((item) =>{
-            if(!isArray(item.value)) {
+          this.constants.forEach((item) => {
+            if (!isArray(item.value)) {
               this.coreService.removeSlashToString(item, 'value');
               const startChar = item.value.substring(0, 1);
               const endChar = item.value.substring(item.value.length - 1);
@@ -91,7 +101,6 @@ export class ResumeOrderModalComponent implements OnInit {
               item.value.forEach((val) => {
                 this.coreService.removeSlashToString(val, 'value');
               });
-
             }
           });
           this.positions = res.positions.map((pos) => pos.positionString);
@@ -103,15 +112,14 @@ export class ResumeOrderModalComponent implements OnInit {
   private getWorkflow(): void {
     this.coreService.post('workflow', {
       controllerId: this.schedulerId,
-      workflowId: this.order.workflowId ? this.order.workflowId : { path: this.order.workflowPath }
+      workflowId: this.order.workflowId ? this.order.workflowId : {path: this.order.workflowPath}
     }).subscribe((res: any) => {
       this.workflow = {};
       this.workflow.jobs = res.workflow.jobs;
-      this.workflow.configuration = { instructions: res.workflow.instructions };
+      this.workflow.configuration = {instructions: res.workflow.instructions};
       this.checkPositions();
     });
   }
-
 
 
   private checkPositions(): void {
@@ -198,7 +206,7 @@ export class ResumeOrderModalComponent implements OnInit {
                   json.instructions[x].catch.instructions = [];
                 }
               } else {
-                json.instructions[x].catch = { instructions: [] };
+                json.instructions[x].catch = {instructions: []};
               }
             }
           }
@@ -304,15 +312,21 @@ export class ResumeOrderModalComponent implements OnInit {
     } else if (this.order.position) {
       obj.position = this.order.position;
     }
-    if (this.isParametrized && this.variables.length > 0) {
+    if (this.isParametrized && this.allowVariable && this.variables.length > 0) {
       let argu = this.variables.filter((item) => item.name);
       if (argu.length > 0) {
         obj.variables = this.coreService.keyValuePair(argu);
+        for (let i in obj.variables) {
+          if (isArray(obj.variables[i])) {
+            obj.variables[i] = obj.variables[i].map(val => val.value)
+          }
+        }
       }
     }
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-
+    console.log(obj)
+    this.submitted = false;
     this.coreService.post('orders/resume', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
@@ -378,6 +392,14 @@ export class ResumeOrderModalComponent implements OnInit {
 
   removeArgument(index): void {
     this.variables.splice(index, 1);
+  }
+
+  addArgumentVal(list): void {
+    list.push({value: ''});
+  }
+
+  removeArgumentVal(list, index): void {
+    list.splice(index, 1);
   }
 
   onKeyPress($event): void {

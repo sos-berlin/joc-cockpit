@@ -626,8 +626,6 @@ export class MaximumDirective {
     const width = modalElem.width() - 52;
     let height = modalElem.height() - 204;
     if (this.isMax) {
-      $('.rg-bottom').hide();
-      $('.rg-right').hide();
       const dom: any = document.getElementsByClassName('script-editor')[0] ||
         document.getElementsByClassName('script-editor2')[0];
       if (dom && dom.style['transform']) {
@@ -635,8 +633,6 @@ export class MaximumDirective {
       }
     } else {
       height = this.height;
-      $('.rg-bottom').show();
-      $('.rg-right').show();
     }
     this.cm.codeMirror.setSize((width), (height));
     $('#resizable').css({'width': 'auto', 'height': 'auto'});
