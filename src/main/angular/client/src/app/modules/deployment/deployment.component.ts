@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {isEmpty, isArray} from 'underscore';
+import {isEmpty, isArray, clone, sortBy} from 'underscore';
 import {saveAs} from 'file-saver';
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
@@ -10,6 +10,10 @@ import {TranslateService} from "@ngx-translate/core";
 import {ToastrService} from "ngx-toastr";
 import {CoreService} from '../../services/core.service';
 import {AuthService} from "../../components/guard";
+import {takeUntil} from "rxjs/operators";
+import {Subject} from "rxjs";
+import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
+import {InventoryObject} from "../../models/enums";
 
 declare const $: any;
 
@@ -241,7 +245,8 @@ export class ShowJsonModalComponent implements OnInit {
   templateUrl: './deployment.component.html'
 })
 export class DeploymentComponent implements OnInit, OnDestroy {
-  isLoading = false;
+  isLoading = true;
+  loading: boolean;
   tree: any = [];
   sideView: any = {};
   deploymentFilters: any = {};
@@ -280,6 +285,9 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   preferences: any = {};
   schedulerIds: any = {};
   permission: any = {};
+  selectedObj: any = {};
+  copyObj: any;
+  private pendingHTTPRequests$ = new Subject<void>();
 
   constructor(private coreService: CoreService, private modal: NzModalService, private message: NzMessageService,
               private authService: AuthService) {
@@ -292,9 +300,10 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (!isEmpty(this.data)) {
-      sessionStorage.descriptorObj = JSON.stringify(this.data);
-    }
+    this.coreService.setSideView(this.sideView);
+    this.pendingHTTPRequests$.next();
+    this.pendingHTTPRequests$.complete();
+    $('.scroll-y').remove();
   }
 
   private init(): void {
@@ -314,16 +323,103 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           res.folders.push({name: '', path: '/'});
         }
         this.tree = this.coreService.prepareTree(res, true);
-        this.isLoading = true;
-      }, error: () => this.isLoading = true
+        this.isLoading = false;
+        this.updateObjects({path: '/'});
+      }, error: () => this.isLoading = false
+    });
+    this.updateObjects({path: '/'});
+  }
+
+  updateObjects(data, cb = null): void {
+    const obj: any = {
+      path: data.path,
+      objectTypes: [this.objectType]
+    };
+
+    const URL = 'inventory/read/folder';
+    this.coreService.post(URL, obj).subscribe({
+      next: (res: any) => {
+        console.log(res)
+      }, error: () => {
+      }
     });
   }
 
+
+  openFolder(node: NzTreeNode): void {
+    if (node instanceof NzTreeNode) {
+      node.isExpanded = !node.isExpanded;
+      if (node.isExpanded && !node.origin.controller && !node.origin.dailyPlan && !node.origin.type && !node.origin.object) {
+        this.expandFolder(node);
+      }
+    }
+  }
+
+  selectNode(node: NzTreeNode | NzFormatEmitEvent): void {
+    if (node instanceof NzTreeNode) {
+      if ((!node.origin.object && !node.origin.type)) {
+        if (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan) {
+          node.isExpanded = !node.isExpanded;
+          if (node.isExpanded) {
+            this.expandFolder(node);
+          }
+        } else if (node.origin.controller || node.origin.dailyPlan) {
+          node.isExpanded = !node.isExpanded;
+        }
+        return;
+      }
+      if (this.preferences.expandOption === 'both' && !node.origin.type) {
+        node.isExpanded = !node.isExpanded;
+      }
+
+      // this.selectedData = node.origin;
+      // this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, node.origin.objectType ? '$ID' : undefined);
+    }
+  }
+
+  private expandFolder(node): void {
+    const data = node.origin.children;
+
+  }
+
+
   /** Actions */
 
-  receiveAction($event): void {
-    console.log($event)
-    // this.getWorkflows($event, $event.action !== 'NODE');
+  hidePanel(): void {
+    this.sideView.deployment.show = false;
+    this.coreService.hidePanel();
+  }
+
+  showPanel(): void {
+    this.sideView.deployment.show = true;
+    this.coreService.showLeftPanel();
+  }
+
+  private getObject($event): void {
+    const URL = 'inventory/read/configuration';
+    const obj: any = {
+      path: $event.path,
+      objectType: this.objectType,
+    };
+    this.coreService.post(URL, obj).subscribe((res: any) => {
+      //this.lastModified = res.configurationDate;
+      this.history = [];
+      this.indexOfNextAdd = 0;
+      if (res.configuration) {
+        delete res.configuration.TYPE;
+        delete res.configuration.path;
+        delete res.configuration.version;
+        delete res.configuration.versionId;
+      } else {
+        res.configuration = {};
+      }
+      console.log(res)
+      // this.lock = res;
+      // this.lock.path1 = this.data.path;
+      // this.lock.name = this.data.name;
+      // this.lock.actual = JSON.stringify(res.configuration);
+      // this.history.push(JSON.stringify(this.lock.configuration));
+    });
   }
 
   addLicense(): void {
@@ -758,7 +854,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       this.navToField('descriptorId', 'descriptor');
       this.errorMessages.push('Descriptor Id is required');
     }
-    if (this.data.joc?.members.length == 0 && this.data.agents.length == 0 && this.data.controllers?.cluster.length == 0) {
+    if (this.data.joc?.members?.length == 0 && this.data.agents?.length == 0 && this.data.controllers?.cluster?.length == 0) {
       this.isValid = false;
       this.errorMessages.push('Minimum one of JOC, Controllers or Agents is required');
     }
@@ -775,7 +871,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (this.data.agents && this.data.agents.length > 0) {
+    if (this.data.agents?.length > 0) {
       this.mainObj['agents'] = [];
       this.data.agents.forEach((agent, i) => {
         if (!agent.agentId) {
@@ -791,7 +887,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       });
     }
 
-    if (this.data.controllers?.cluster.length > 0) {
+    if (this.data.controllers?.cluster?.length > 0) {
       this.mainObj['controllers'] = {};
       if (!this.data.controllers.controllerId) {
         this.isValid = false;
@@ -815,7 +911,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         }
       });
     }
-    if (this.data.joc?.members?.instances.length > 0) {
+    if (this.data.joc?.members?.instances?.length > 0) {
       this.mainObj['joc'] = {
         members: {
           instances: []
@@ -833,7 +929,19 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         this.mainObj.joc.members.instances.push(obj);
       });
     }
+
+    this.validateByURL();
   }
+
+  private validateByURL(): void {
+    this.coreService.post('inventory/' + this.objectType + '/validate', this.mainObj).subscribe((res: any) => {
+      if (res.invalidMsg) {
+        this.errorMessages = [res.invalidMsg];
+      }
+      this.isValid = res.valid;
+    });
+  }
+
 
   editJSON(): void {
     this.validate();
