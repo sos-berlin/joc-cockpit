@@ -19,7 +19,7 @@
     </div>
     <div *ngIf="isParametrized && workflow">
       <div class="form-group row m-b-0">
-        <div class="col-md-12 m-b-sm" translate>order.label.listOfConstants</div>
+        <div class="col-md-12 m-b-sm _600" translate>order.label.listOfConstants</div>
         <div class="col-md-12 m-b-sm" *ngIf="constants.length == 0"><span><</span>empty></div>
       </div>
       <div class="form-group row m-b-0" *ngIf="constants.length > 0">
@@ -27,27 +27,28 @@
         <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
       </div>
       <div class="row" *ngFor="let argument of constants; let i=index">
-        <div class="col-sm-4 m-b-sm">
+        <div class="col-sm-4 m-b-sm" [ngClass]="{'col-sm-10' : argument.type == 'list'}">
           <input readonly type="text" class="form-control"
                  name="wname_{{i}}" [(ngModel)]="argument.name">
         </div>
-        <div class="col-md-6 col-lg-6 m-b-sm">
-          <input *ngIf="argument.type != 'list'" readonly type="text" class="form-control" name="wvalue{{i}}" [(ngModel)]="argument.value" >
-          <input *ngIf="argument.type == 'list'" readonly type="text" class="form-control" name="wvalue{{i}}"  >
+        <div class="col-md-6 col-lg-6 m-b-sm" *ngIf="argument.type != 'list'">
+          <input readonly type="text" class="form-control" name="wvalue{{i}}" [(ngModel)]="argument.value" >
         </div>
-        <div class="col-md-12 m-b-sm" *ngIf="argument.type == 'list'">
-          <div class="row" *ngFor="let val of argument.value;">
-            <div class="col-md-4 m-b-sm" >
-              {{val.name}}
-            </div>
-            <div class="col-md-6 m-b-sm">
-              {{val.value}}
+        <ng-container class="m-b-sm" *ngIf="argument.type == 'list'">
+          <div class="col-md-12" *ngFor="let val of argument.value; let j = index" [ngClass]="{'b-t p-t-sm': j > 0}">
+            <div class="row" *ngFor="let item of val;let k = index">
+              <div class="col-md-4 p-l-md m-b-sm" >
+                <input readonly type="text" class="form-control" name="wlname{{i}}{{j}}{{k}}" [(ngModel)]="item.name" >
+              </div>
+              <div class="col-md-6 m-b-sm">
+                <input readonly type="text" class="form-control" name="wlvalue{{i}}{{j}}{{k}}" [(ngModel)]="item.value" >
+              </div>
             </div>
           </div>
-        </div>
+        </ng-container>
       </div>
-      <div class="form-group row m-b-0 m-t">
-        <div class="col-md-12 m-b-sm" translate>order.label.listOfDynamicallyVariables</div>
+      <div class="form-group row m-b-0 m-t-sm">
+        <div class="col-md-12 m-b-sm _600" translate>order.label.listOfDynamicallyVariables</div>
         <div class="col-md-12 m-b-sm" *ngIf="variables.length == 0"><span><</span>empty></div>
       </div>
       <div class="form-group row m-b-0" *ngIf="variables.length > 0">
