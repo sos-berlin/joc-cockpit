@@ -67,8 +67,8 @@
       </div>
     </div>
   </div>
-  <div class="modal-footer text-left" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || uploader.isUploading || (required && !comments.comment)">
+  <div class="modal-footer" *ngIf="uploader.queue.length>0">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || uploader.isUploading || uploader.queue[0].isError || (required && !comments.comment)">
       <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="uploader.isUploading"></i>
        <span translate>common.button.import</span>
     </button>

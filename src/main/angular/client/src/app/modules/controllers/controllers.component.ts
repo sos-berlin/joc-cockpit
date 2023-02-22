@@ -169,7 +169,7 @@ export class ImportModalComponent implements OnInit {
       obj.format = this.requestObj.format;
       obj.overwrite = this.requestObj.overwrite;
       obj.controllerId = this.controller.controllerId;
-      item.file.name = encodeURIComponent(item.file.name);
+      //item.file.name = encodeURIComponent(item.file.name);
       this.uploader.options.additionalParameter = obj;
     };
 

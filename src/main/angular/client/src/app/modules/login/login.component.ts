@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
           this.user = {};
         }
         if (res.title) {
-          document.title = 'JS7:' + res.title;
+          document.title = 'JS7: ' + res.title;
         }
         if (res.customLogo && res.customLogo.name) {
           let imgUrl = '../ext/images/' + res.customLogo.name;

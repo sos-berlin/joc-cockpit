@@ -933,7 +933,7 @@ export class CronImportModalComponent implements OnInit {
         obj.subagentClusterId = this.requestObj.agentName;
         obj.agentName = this.requestObj.agentName1;
       }
-      item.file.name = encodeURIComponent(item.file.name);
+      //item.file.name = encodeURIComponent(item.file.name);
       this.uploader.options.additionalParameter = obj;
     };
 
@@ -2429,7 +2429,7 @@ export class ImportWorkflowModalComponent implements OnInit {
         }
       }
       obj.format = this.requestObj.format;
-      item.file.name = encodeURIComponent(item.file.name);
+      //item.file.name = encodeURIComponent(item.file.name);
       this.uploader.options.additionalParameter = obj;
     };
 
@@ -5517,8 +5517,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private deleteObject(path, object, node, auditLog, cancelOrdersDateFrom = undefined): void {
+    object.expanded = false;
+    object.deleted = true;
+    object.loading = true;
     this.coreService.post('inventory/remove/folder', {path, auditLog, cancelOrdersDateFrom}).subscribe(() => {
-      object.deleted = true;
+      object.loading = false;
       if (node && node.parentNode && node.parentNode.origin) {
         node.parentNode.origin.children = node.parentNode.origin.children.filter((child) => {
           return child.path !== path;
@@ -5529,6 +5532,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
         this.clearSelection();
       }
       this.updateTree(false);
+    }, () => {
+      object.loading = false;
+      object.deleted = false;
     });
   }
 

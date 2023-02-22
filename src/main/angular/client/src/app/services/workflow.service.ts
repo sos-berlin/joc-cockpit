@@ -2759,22 +2759,7 @@ export class WorkflowService {
     if (job.executable.env) {
       if (job.executable.TYPE === 'ShellScriptExecutable') {
         if (job.executable.env && isArray(job.executable.env)) {
-          job.executable.env = job.executable.env.filter((env) => {
-            if (env.value) {
-              if (!(/[$+]/.test(env.value))) {
-                const startChar = env.value.substring(0, 1);
-                const endChar = env.value.substring(env.value.length - 1);
-                if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
-
-                } else {
-                  env.value = JSON.stringify(env.value);
-                  env.value = '\'' + env.value.substring(1, env.value.length - 1) + '\'';
-                }
-              }
-              return true;
-            }
-            return false;
-          });
+          this.coreService.addSlashToStringForEvn(job.executable);
           this.coreService.convertArrayToObject(job.executable, 'env', true);
         }
       } else {
