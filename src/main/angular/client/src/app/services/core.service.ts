@@ -1458,6 +1458,32 @@ export class CoreService {
     }
   }
 
+  addSlashToStringForEvn(obj: any): void {
+    obj.env = obj.env.filter((env) => {
+      if (env.value) {
+        if (!(/[$+]/.test(env.value)) || (/\s/g.test(env.value) && !/[+]/.test(env.value))) {
+          const startChar = env.value.substring(0, 1);
+          const endChar = env.value.substring(env.value.length - 1);
+          if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
+
+          } else if (env.value === 'true' || env.value === 'false') {
+          } else if (/^\d+$/.test(env.value)) {
+
+          } else {
+            let x = env.value.replace(/\\([\s\S])|(")/g, '\\$1$2').trim();
+            if (x.match(/\\/)) {
+              env.value = JSON.stringify(env.value);
+            } else {
+              env.value = endChar === "$" ? env.value : '"' + env.value + '"';
+            }
+          }
+        }
+        return true;
+      }
+      return false;
+    });
+  }
+
   addSlashToString(data: any, type: string): void {
     if (data[type]) {
       if (data[type] === 'true' || data[type] === 'false') {

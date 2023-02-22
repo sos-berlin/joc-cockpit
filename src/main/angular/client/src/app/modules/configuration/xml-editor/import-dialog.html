@@ -80,8 +80,8 @@
       </div>
     </div>
   </div>
-  <div class="modal-footer text-left" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" *ngIf="!importXsd" [disabled]="!uploadData || (importObj && !importObj.assignXsd)">
+  <div class="modal-footer" *ngIf="uploader.queue.length>0">
+    <button type="submit" class="btn btn-primary btn-sm" *ngIf="!importXsd" [disabled]="!uploadData || uploader.isUploading || (importObj && !importObj.assignXsd)">
       <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="uploader.isUploading"></i>
       {{'xml.button.import' | translate}}
     </button>

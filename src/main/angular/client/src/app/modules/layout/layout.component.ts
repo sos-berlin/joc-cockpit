@@ -398,6 +398,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
           if (result.licenseValidFrom) {
             sessionStorage.licenseValidFrom = result.licenseValidFrom;
           }
+          if (result.title) {
+            document.title = 'JS7: ' + result.title;
+          }
           if (result.licenseValidUntil) {
             sessionStorage.licenseValidUntil = result.licenseValidUntil;
             setTimeout(() => {

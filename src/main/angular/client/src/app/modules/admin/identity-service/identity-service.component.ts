@@ -163,7 +163,7 @@ export class SettingModalComponent implements OnInit {
         identityServiceName: this.data.identityServiceName
       };
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-      item.file.name = encodeURIComponent(item.file.name);
+      //item.file.name = encodeURIComponent(item.file.name);
       this.imageUploader.options.additionalParameter = obj;
     };
     this.imageUploader.onErrorItem = (fileItem, response: any) => {

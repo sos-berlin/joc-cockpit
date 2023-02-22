@@ -10875,22 +10875,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     for (const prop in data.jobs) {
       if (data.jobs[prop] && data.jobs[prop].executable) {
         if (data.jobs[prop].executable.env && isArray(data.jobs[prop].executable.env)) {
-          data.jobs[prop].executable.env = data.jobs[prop].executable.env.filter((env) => {
-            if (env.value) {
-              if (!(/[$+]/.test(env.value))) {
-                const startChar = env.value.substring(0, 1);
-                const endChar = env.value.substring(env.value.length - 1);
-                if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
-
-                } else {
-                  env.value = JSON.stringify(env.value);
-                  env.value = '\'' + env.value.substring(1, env.value.length - 1) + '\'';
-                }
-              }
-              return true;
-            }
-            return false;
-          });
+          this.coreService.addSlashToStringForEvn(data.jobs[prop].executable);
           if (data.jobs[prop].executable.env && data.jobs[prop].executable.env.length > 0) {
             this.coreService.convertArrayToObject(data.jobs[prop].executable, 'env', true);
           } else {

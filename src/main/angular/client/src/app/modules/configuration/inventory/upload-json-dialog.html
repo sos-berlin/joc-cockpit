@@ -65,8 +65,8 @@
     </div>
   </div>
   <div class="modal-footer" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="submitted">
-      <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="submitted"></i>
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="submitted || uploader.isUploading || uploader.queue[0].isError">
+      <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="uploader.isUploading"></i>
       <span translate>inventory.button.upload</span>
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
