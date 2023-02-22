@@ -59,6 +59,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
   treeStructure = [];
   isChildren: boolean;
   nodes = [];
+  count = 0;
 
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
@@ -245,6 +246,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
   }
 
   loadOrderLog(): void {
+    this.count = 0;
     this.workflow = this.dataObject.workflow;
     this.treeStructure = [];
     const order: any = {
@@ -254,13 +256,8 @@ export class LogViewComponent implements OnInit, OnDestroy {
     this.orderCanceller = this.coreService.post('order/log', order).subscribe({
       next: (res: any) => {
         if (res) {
-          this.jsonToString(res);
-          this.showHideTask(res.logEvents);
-          if (!res.complete && !this.isCancel) {
-            this.runningOrderLog({historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId});
-          } else {
-            this.finished = true;
-          }
+          this.loading = false;
+          this.checkDom(res, order);
         } else {
           this.loading = false;
           this.finished = true;
@@ -281,6 +278,25 @@ export class LogViewComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       }
     });
+  }
+
+  private checkDom(res, order): void {
+    if (!(POPOUT_MODALS['windowInstance']?.document.getElementById('logs'))) {
+      ++this.count;
+      if(this.count < 10) {
+        setTimeout(() => {
+          this.checkDom(res, order);
+        }, 100);
+      }
+    } else {
+      this.jsonToString(res);
+      this.showHideTask(res.logEvents);
+      if (!res.complete && !this.isCancel) {
+        this.runningOrderLog({historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId});
+      } else {
+        this.finished = true;
+      }
+    }
   }
 
   showHideTask(logs): void {
@@ -788,7 +804,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
       if (POPOUT_MODALS['windowInstance']?.document.getElementById('logs')) {
         POPOUT_MODALS['windowInstance']?.document.getElementById('logs').appendChild(div);
       }
-
     }
     if (this.taskCount > 1) {
       this.isExpandCollapse = true;
@@ -938,8 +953,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
       if (level.match('^debug') && !this.object.checkBoxs.debug) {
         div.className += ' hide-block';
       }
-      const text = match.replace(/^\r?\n/, '');
-      div.textContent = text.trim();
+      div.textContent = match.replace(/^\r?\n/, '');
       if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Success\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Success\])/)) {
         div.className += ' log_success';
         lastClass = 'log_success';

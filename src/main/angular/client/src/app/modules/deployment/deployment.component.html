@@ -32,7 +32,7 @@
               <i class="fa fa-edit"></i>
               {{'deploymentService.button.editJSON' | translate}}
             </button>
-            <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="bulkUpdate();">
+            <button *ngIf="data.joc?.length > 0 || data.agents?.controllerRefs?.length > 0 || data.controllers?.length > 0" type="button" class="btn btn-sm btn-grey m-l-12" (click)="bulkUpdate();">
               <i class="fa fa-pencil"></i>
               {{'deploymentService.button.bulkUpdate' | translate}}
             </button>
@@ -1002,7 +1002,7 @@
                             </label> <i class="p-l-sm fa fa-info-circle"
                                         [nz-tooltip]="'deploymentService.controller.tooltip.controllerId' | translate"></i>
                           </div>
-                          <div class="col-md-6 col-lg-4 members"
+                          <div class="col-md-6 col-lg-4 pl-36"
                                [ngClass]="{'has-error' : ((controllerId.dirty || controllerId.touched) && controllerId.invalid)}">
                             <input id="ccontrollerId{{i}}" autocomplete="off" type="text" class="form-control"
                                    #controllerId="ngModel" required name="ccontrollerId{{i}}"
@@ -1023,7 +1023,7 @@
                             </label> <i class="p-l-sm fa fa-info-circle"
                                         [nz-tooltip]="'deploymentService.controller.tooltip.jocRef' | translate"></i>
                           </div>
-                          <div class="col-md-6 col-lg-4 members"
+                          <div class="col-md-6 col-lg-4 pl-36"
                                [ngClass]="{'has-error' : ((jocRef.dirty || jocRef.touched) && jocRef.invalid)}">
                             <nz-select required
                                        nzPlaceHolder="{{'deploymentService.controller.placeholder.jocRef' | translate}}"

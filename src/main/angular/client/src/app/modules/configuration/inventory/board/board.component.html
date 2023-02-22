@@ -80,7 +80,8 @@
             <ng-template #addOnAfterTemplate>
               <nz-select [nzAllowClear]="true" nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" (ngModelChange)="changeExp($event, 'toNotice')" name="toNoticeMsg" [(ngModel)]="boardObj.toNoticeMsg" style="width: 220px">
                 <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDate' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$', '$1')"></nz-option>
-                <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDateAndOrderName' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-(.*)$', '$1$2')"></nz-option>
+                <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDateAndOrderName' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2$3')"></nz-option>
+                <nz-option [nzLabel]="'inventory.label.matchingOrderName' | translate" nzValue="replaceAll($js7OrderId, '^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2')"></nz-option>
               </nz-select>
             </ng-template>
             <div *ngIf="toNotice.invalid && (toNotice.dirty || toNotice.touched)" class="text-danger help-block">
@@ -105,7 +106,8 @@
             <ng-template #addOnAfterTemplate3>
               <nz-select [nzAllowClear]="true" nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" (ngModelChange)="changeExp($event, 'NoticeId')" name="readingOrderToNoticeIdMsg" [(ngModel)]="boardObj.readingOrderToNoticeIdMsg" style="width: 220px">
                 <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDate' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$', '$1')"></nz-option>
-                <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDateAndOrderName' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-(.*)$', '$1$2')"></nz-option>
+                <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDateAndOrderName' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2$3')"></nz-option>
+                <nz-option [nzLabel]="'inventory.label.matchingOrderName' | translate" nzValue="replaceAll($js7OrderId, '^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2')"></nz-option>
               </nz-select>
             </ng-template>
             <div *ngIf="readingOrderToNoticeId.invalid && (readingOrderToNoticeId.dirty || readingOrderToNoticeId.touched)" class="text-danger help-block">

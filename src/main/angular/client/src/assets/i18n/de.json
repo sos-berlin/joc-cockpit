@@ -1568,6 +1568,7 @@
     "label.readingOrderToNoticeId": "Notizkennung des notifizierten Auftrags",
     "label.matchingDailyPlanDate": "Passendes Datum des Tagesplans",
     "label.matchingDailyPlanDateAndOrderName": "Passendes Datum des Tagesplans und Auftragsnamens",
+    "label.matchingOrderName": "Matching Order Name",
     "label.milliseconds": "Millisekunden",
     "label.seconds": "Sekunden",
     "label.minutes": "Minuten",

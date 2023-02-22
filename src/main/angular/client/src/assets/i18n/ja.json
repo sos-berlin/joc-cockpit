@@ -1568,6 +1568,7 @@
     "label.readingOrderToNoticeId": "通知ID(読取順)",
     "label.matchingDailyPlanDate": "実行計画日合致",
     "label.matchingDailyPlanDateAndOrderName": "実行計画日・オーダー名一致",
+    "label.matchingOrderName": "Matching Order Name",
     "label.milliseconds": "ミリ秒",
     "label.seconds": "秒",
     "label.minutes": "分",
