@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {isEmpty, isArray, clone, sortBy} from 'underscore';
+import {isEmpty, isArray, isEqual} from 'underscore';
 import {saveAs} from 'file-saver';
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
@@ -8,12 +8,12 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {FileUploader} from "ng2-file-upload";
 import {TranslateService} from "@ngx-translate/core";
 import {ToastrService} from "ngx-toastr";
-import {CoreService} from '../../services/core.service';
-import {AuthService} from "../../components/guard";
 import {Subject} from "rxjs";
 import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {NzContextMenuService, NzDropdownMenuComponent} from "ng-zorro-antd/dropdown";
 import {CreateFolderModalComponent, CreateObjectModalComponent} from "../configuration/inventory/inventory.component";
+import {CoreService} from '../../services/core.service';
+import {AuthService} from "../../components/guard";
 
 declare const $: any;
 
@@ -247,6 +247,7 @@ export class ShowJsonModalComponent implements OnInit {
 export class DeploymentComponent implements OnInit, OnDestroy {
   isLoading = true;
   loading: boolean;
+  isTrash = false;
   tree: any = [];
   sideView: any = {};
   deploymentFilters: any = {};
@@ -257,6 +258,8 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     joc: []
   };
 
+  deploymentData: any = {};
+
   obj: any = {
     isDescriptorExpanded: true,
     isMoreDescriptorDetail: false,
@@ -266,7 +269,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     isLicenseExpanded: false
   };
 
-  mainObj: any = {};
   securityLevel: Array<string> = ['low', 'medium', 'high'];
   dbmsInit: Array<string> = ['byInstaller', 'byJoc', 'off'];
   methods: Array<string> = ['publickey'];
@@ -295,7 +297,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(private coreService: CoreService, private modal: NzModalService, private message: NzMessageService,
-              private authService: AuthService, private nzContextMenuService: NzContextMenuService,) {
+              private authService: AuthService, private nzContextMenuService: NzContextMenuService, private translate: TranslateService) {
   }
 
   ngOnInit(): void {
@@ -423,11 +425,14 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         res.configuration = {};
       }
       console.log(res)
-      // this.lock = res;
-      // this.lock.path1 = this.data.path;
-      // this.lock.name = this.data.name;
-      // this.lock.actual = JSON.stringify(res.configuration);
-      // this.history.push(JSON.stringify(this.lock.configuration));
+      this.deploymentData = {
+        name: res.name,
+        path: res.path,
+        data: JSON.stringify(res.configuration)
+      };
+      this.deploymentData.mainObj = res.configuration;
+      this.updateJSONObject();
+      this.history.push(this.deploymentData.data);
     });
   }
 
@@ -668,14 +673,51 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   convertJSON(): void {
-    if (this.history.length === 20) {
-      this.history.shift();
-    }
-    this.history.push(JSON.stringify(this.data));
-    this.indexOfNextAdd = this.history.length - 1;
+    this.validate(true);
+    this.saveJSON();
   }
 
-  private checkAndUpdateObj(obj, type, source, index1, index2): void {
+  private saveJSON(flag = false): void {
+    console.log('saveJSON', this.permission.joc)
+    if (this.isTrash || !this.permission.joc.inventory.manage) {
+      return;
+    }
+    console.log('store')
+    if (!isEqual(this.deploymentData.data, JSON.stringify(this.data))) {
+      if (!flag) {
+        if (this.history.length === 20) {
+          this.history.shift();
+        }
+        this.history.push(JSON.stringify(this.data));
+        this.indexOfNextAdd = this.history.length - 1;
+      }
+
+      const request: any = {
+        configuration: this.deploymentData.mainObj,
+        path: this.deploymentData.path || '/',
+        objectType: this.objectType
+      };
+
+      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+        this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+          request.auditLog = {comment: translatedValue};
+        });
+      }
+
+      this.coreService.post('inventory/store', request).subscribe({
+        next: (res: any) => {
+          if (res.path === this.deploymentData.path) {
+            //   this.lastModified = res.configurationDate;
+            this.deploymentData.data = JSON.stringify(this.data);
+            this.deploymentData.valid = res.valid;
+
+          }
+        }
+      });
+    }
+  }
+
+  private checkAndUpdateObj(obj, type, source, index1, index2, isSkip): void {
 
     if (type == 'joc') {
       this.data.joc[index1].isJOCExpanded = true;
@@ -687,7 +729,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       this.data.controllers[index1].cluster[index2].isControllerPropertiesExpanded = true;
     }
     if (type === 'joc') {
-      if (!source.instanceId) {
+      if (!source.instanceId && !isSkip) {
         this.navToField('jocInstanceId' + index1 + index2, type);
         this.errorMessages.push('JOC instance ID is required');
       } else {
@@ -708,7 +750,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       if (!obj.target.connection) {
         obj.target.connection = {};
       }
-      if (!source.target.connection.host) {
+      if (!source.target.connection.host && !isSkip) {
         this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + 'host' + index1 + index2, type);
         this.errorMessages.push('Connection host is required');
       }
@@ -718,7 +760,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       if (!obj.target.authentication) {
         obj.target.authentication = {};
       }
-      if (!source.target.authentication.method || !source.target.authentication.user) {
+      if ((!isSkip && !source.target.authentication.method || !source.target.authentication.user)) {
         let id;
         if (!source.target.authentication.method) {
           id = 'method';
@@ -732,7 +774,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
 
     if (source.media && !isEmpty(source.media)) {
-      if (!source.media.release || !source.media.tarball) {
+      if (!isSkip && (!source.media.release || !source.media.tarball)) {
         let id;
         if (!source.media.release) {
           id = 'release';
@@ -743,13 +785,13 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         this.errorMessages.push(!source.media.release ? 'Media release is required' : 'Media tarball is required');
       }
       obj.media = source.media;
-    } else {
+    } else if (!isSkip) {
       this.isValid = false;
       this.errorMessages.push('Media is required');
     }
 
     if (source.installation && !isEmpty(source.installation)) {
-      if ((type == 'joc' && !source.installation.setupDir) || !source.installation.home || !source.installation.data) {
+      if (!isSkip && ((type == 'joc' && !source.installation.setupDir) || !source.installation.home || !source.installation.data)) {
         let id;
         if (!source.installation.home) {
           id = 'home';
@@ -761,12 +803,12 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, type);
         this.errorMessages.push((type == 'joc' && !source.installation.setupDir) ? 'Installation setupDir is required' : !source.installation.home ? 'Installation home is required' : 'Installation data is required');
       }
-      if (!source.installation.httpPort && !source.installation.httpsPort) {
+      if (!isSkip && !source.installation.httpPort && !source.installation.httpsPort) {
         this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + 'httpPort' + index1 + index2, type);
         this.errorMessages.push('Installation http or https port is required');
       }
       obj.installation = source.installation;
-    } else {
+    } else if (!isSkip) {
       this.isValid = false;
       this.errorMessages.push('Installation is required');
     }
@@ -800,8 +842,8 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
         if (!isEmpty(source.configuration.certificates)) {
           obj.configuration.certificates = source.configuration.certificates;
-          if (!source.configuration.certificates.keyStore || !source.configuration.certificates.keyStorePassword || !source.configuration.certificates.keyPassword
-            || !source.configuration.certificates.trustStore || !source.configuration.certificates.trustStorePassword) {
+          if (!isSkip && (!source.configuration.certificates.keyStore || !source.configuration.certificates.keyStorePassword || !source.configuration.certificates.keyPassword
+            || !source.configuration.certificates.trustStore || !source.configuration.certificates.trustStorePassword)) {
             let id;
             if (!source.configuration.certificates.keyStore) {
               id = 'keyStore';
@@ -840,7 +882,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       } else if (type == 'controllers') {
         this.obj.isControllerExpanded = true;
       }
-      
+
 
       setTimeout(() => {
         this.isNavigate = false;
@@ -861,39 +903,41 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
   }
 
-  validate(): void {
-    this.isValid = true;
-    this.errorMessages = [];
-    this.mainObj = {
+  validate(isSkip = false): void {
+    if (!isSkip) {
+      this.isValid = true;
+      this.errorMessages = [];
+    }
+    this.deploymentData.mainObj = {
       descriptor: this.data.descriptor
     };
-    if (!this.data.descriptor.descriptorId) {
+    if (!this.data.descriptor.descriptorId && !isSkip) {
       this.navToField('descriptorId', 'descriptor');
       this.errorMessages.push('Descriptor Id is required');
     }
-    if (this.data.joc?.length == 0 && this.data.agents?.controllerRefs?.length == 0 && this.data.controllers?.length == 0) {
+    if (!isSkip && this.data.joc?.length == 0 && this.data.agents?.controllerRefs?.length == 0 && this.data.controllers?.length == 0) {
       this.isValid = false;
       this.errorMessages.push('Minimum one of JOC, Controllers or Agents is required');
     }
     if (this.data.license) {
       if (!isEmpty(this.data.license)) {
-        this.mainObj['license'] = this.data.license;
-        if (!this.data.license.licenseKeyFile || !this.data.license.licenseBinFile) {
+        this.deploymentData.mainObj['license'] = this.data.license;
+        if (!isSkip && (!this.data.license.licenseKeyFile || !this.data.license.licenseBinFile)) {
           this.navToField(!this.data.license.licenseKeyFile ? 'licenseKeyFile' : 'licenseBinFile', 'license');
           this.errorMessages.push(this.data.license.licenseKeyFile ? 'License bin file is required' : 'License key file is required');
         }
-      } else {
+      } else if (!isSkip) {
         this.isValid = false;
         this.errorMessages.push('License is required for cluster');
       }
     }
 
     if (this.data.agents?.controllerRefs?.length > 0) {
-      this.mainObj['agents'] = {
+      this.deploymentData.mainObj['agents'] = {
         controllerRefs: []
       };
       this.data.agents.controllerRefs.forEach((agent, i) => {
-        if (!agent.controllerId) {
+        if (!agent.controllerId && !isSkip) {
           this.navToField('controllerId' + i, 'agents');
           this.errorMessages.push('Controller Refs is required');
         }
@@ -902,28 +946,28 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           members: []
         };
         agent.members.forEach((element, j) => {
-          if (!element.agentId) {
+          if (!element.agentId && !isSkip) {
             this.navToField('agentId' + i + j, 'agents');
             this.errorMessages.push('Agent Id is required');
           }
           let _obj = {
             agentId: element.agentId
           };
-          this.checkAndUpdateObj(_obj, 'agents', element, i, j);
+          this.checkAndUpdateObj(_obj, 'agents', element, i, j, isSkip);
           obj.members.push(_obj);
         });
-        this.mainObj.agents.controllerRefs.push(obj);
+        this.deploymentData.mainObj.agents.controllerRefs.push(obj);
       });
     }
 
     if (this.data.controllers?.length > 0) {
-      this.mainObj['controllers'] = [];
+      this.deploymentData.mainObj['controllers'] = [];
       this.data.controllers.forEach((controller, i) => {
-        if (!controller.controllerId) {
+        if (!controller.controllerId && !isSkip) {
           this.navToField('controllerId' + i, 'controllers');
           this.errorMessages.push('Controller Id is required');
         }
-        if (!controller.jocRef) {
+        if (!controller.jocRef && !isSkip) {
           this.navToField('jocRef' + i, 'controllers');
           this.errorMessages.push('JOC Reference is required');
         }
@@ -935,45 +979,47 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           controller.cluster.forEach((element, j) => {
             if (j == 0) {
               obj.primary = {};
-              this.checkAndUpdateObj(obj.primary, 'controllers', element, i, j);
+              this.checkAndUpdateObj(obj.primary, 'controllers', element, i, j, isSkip);
             } else {
               obj.secondary = {};
-              this.checkAndUpdateObj(obj.secondary, 'controllers', element, i, j);
+              this.checkAndUpdateObj(obj.secondary, 'controllers', element, i, j, isSkip);
             }
           });
-          this.mainObj.controllers.push(obj);
+          this.deploymentData.mainObj.controllers.push(obj);
         }
       });
     }
     if (this.data.joc?.length > 0) {
-      this.mainObj['joc'] = [];
+      this.deploymentData.mainObj['joc'] = [];
       this.data.joc.forEach((joc, i) => {
-        if (!this.mainObj.joc[i]) {
-          this.mainObj.joc[i] = {
+        if (!this.deploymentData.mainObj.joc[i]) {
+          this.deploymentData.mainObj.joc[i] = {
             members: {
               clusterId: joc.members.clusterId,
               instances: []
             }
           }
         }
-        if (!joc.members.clusterId) {
+        if (!joc.members.clusterId && !isSkip) {
           this.navToField('clusterId' + i, 'joc');
           this.errorMessages.push('Joc cluster Id is required');
         }
         joc.members.instances.forEach((element, j) => {
-          if (!this.mainObj.joc[i].members.instances[j]) {
-            this.mainObj.joc[i].members.instances[j] = {};
+          if (!this.deploymentData.mainObj.joc[i].members.instances[j]) {
+            this.deploymentData.mainObj.joc[i].members.instances[j] = {};
           }
-          this.checkAndUpdateObj(this.mainObj.joc[i].members.instances[j], 'joc', element, i, j);
+          this.checkAndUpdateObj(this.deploymentData.mainObj.joc[i].members.instances[j], 'joc', element, i, j, isSkip);
         });
       });
     }
 
-    this.validateByURL();
+    if (!isSkip && this.isValid) {
+      this.validateByURL();
+    }
   }
 
   private validateByURL(): void {
-    this.coreService.post('inventory/' + this.objectType + '/validate', this.mainObj).subscribe((res: any) => {
+    this.coreService.post('inventory/' + this.objectType + '/validate', this.deploymentData.mainObj).subscribe((res: any) => {
       if (res.invalidMsg) {
         this.errorMessages = [res.invalidMsg];
       }
@@ -990,14 +1036,14 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzClassName: 'lg',
       nzComponentParams: {
-        object: this.mainObj
+        object: this.deploymentData.mainObj
       },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
       if (result) {
-        this.mainObj = result;
+        this.deploymentData.mainObj = result;
         this.updateJSONObject();
       }
     });
@@ -1026,7 +1072,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           } else if (result.operationType == 'CONTROLLER') {
             this._bulkUpdate(result.data, this.data.controllers, result.checkValues);
           } else if (result.operationType == 'AGENT') {
-            this._bulkUpdate(result.data, this.data.agents.controllerRefs, result.checkValues);
+            this._bulkUpdate(result.data, this.data.agents?.controllerRefs, result.checkValues);
           } else {
             this._bulkUpdate(result.data, this.data.joc, result.checkValues);
             this._bulkUpdate(result.data, this.data.controllers, result.checkValues);
@@ -1067,12 +1113,18 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
   private _bulkUpdate(obj, list, checkValues): void {
     list.forEach((item) => {
-      if (item.cluster) {
+      if (item.members?.instances) {
+        item.members.instances.forEach((instance) => {
+          this.updateIndividualData(obj, instance, checkValues);
+        });
+      } else if (item.members) {
+        item.members.forEach((member) => {
+          this.updateIndividualData(obj, member, checkValues);
+        });
+      } else if (item.cluster) {
         item.cluster.forEach((cluster) => {
           this.updateIndividualData(obj, cluster, checkValues);
         });
-      } else {
-        this.updateIndividualData(obj, item, checkValues);
       }
     });
   }
@@ -1280,7 +1332,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     this.validate();
     const name = this.data.descriptor.descriptorId + '-descriptor' + '.json';
     const fileType = 'application/octet-stream';
-    const data = JSON.stringify(this.mainObj, undefined, 2);
+    const data = JSON.stringify(this.deploymentData.mainObj, undefined, 2);
     const blob = new Blob([data], {type: fileType});
     saveAs(blob, name);
   }
@@ -1297,36 +1349,36 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.mainObj = result;
+        this.deploymentData.mainObj = result;
         this.updateJSONObject();
       }
     });
   }
 
   private updateJSONObject(): void {
-    this.data.descriptor = this.mainObj.descriptor;
-    this.data.license = this.mainObj.license;
-    if (this.mainObj.joc && this.mainObj.joc.length > 0) {
-      this.mainObj.joc.forEach((joc) => {
+    this.data.descriptor = this.deploymentData.mainObj.descriptor;
+    this.data.license = this.deploymentData.mainObj.license;
+    if (this.deploymentData.mainObj.joc && this.deploymentData.mainObj.joc.length > 0) {
+      this.deploymentData.mainObj.joc.forEach((joc) => {
         joc.members?.instances?.forEach((config) => {
           this.updateMissingObjects(config, 'JOC');
         });
       });
-      this.data.joc = this.mainObj.joc;
+      this.data.joc = this.deploymentData.mainObj.joc;
     }
 
-    if (this.mainObj.agents?.controllerRefs?.length > 0) {
-      this.mainObj.agents.controllerRefs.forEach((agent) => {
+    if (this.deploymentData.mainObj.agents?.controllerRefs?.length > 0) {
+      this.deploymentData.mainObj.agents.controllerRefs.forEach((agent) => {
         agent.members.forEach((config) => {
           this.updateMissingObjects(config, 'AGENT');
         });
       });
-      this.data.agents = this.mainObj.agents;
+      this.data.agents = this.deploymentData.mainObj.agents;
     }
-   
-    if (this.mainObj.controllers && this.mainObj.controllers.length > 0) {
+
+    if (this.deploymentData.mainObj.controllers && this.deploymentData.mainObj.controllers.length > 0) {
       this.data.controllers = [];
-      this.mainObj.controllers.forEach((controller) => {
+      this.deploymentData.mainObj.controllers.forEach((controller) => {
         const obj = {
           jocRef: controller.jocRef,
           controllerId: controller.controllerId,
@@ -1395,6 +1447,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         display: this.preferences.auditLog,
         schedulerId: this.schedulerIds.selected,
+        type: 'DESCRIPTORFOLDER',
         origin: this.node?.origin
       },
       nzFooter: null,
@@ -1403,7 +1456,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(path => {
       if (path) {
-        // this.initTree(node.origin.path, null);
+         this.initTree();
       }
     });
   }

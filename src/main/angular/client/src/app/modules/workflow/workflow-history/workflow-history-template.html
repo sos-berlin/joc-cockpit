@@ -4,7 +4,7 @@
               [nzData]="history.states" [nzShowPagination]="false">
       <thead>
       <tr>
-        <th><span [ngStyle]="{'padding-left': 6 + (8 * history.level) + 'px'}" translate>history.label.state</span></th>
+        <th><span [ngStyle]="{'padding-left': 6 + (6 * (history.level > 10 ? 11 : history.level)) + 'px'}" translate>history.label.state</span></th>
         <th><span translate>history.label.stateTime</span></th>
         <th><span translate>history.label.stateText</span></th>
       </tr>
@@ -12,7 +12,7 @@
       <tbody>
       <tr *ngFor="let state of innerChildTable.data">
         <td>
-          <span [ngStyle]="{'padding-left': 6 + (8 * history.level) + 'px'}">
+          <span [ngStyle]="{'padding-left': 6 + (6 * (history.level > 10 ? 11 : history.level)) + 'px'}">
             <span class="label" [ngClass]="coreService.getColor(state.state.severity,'bg')"
                   [innerHtml]="state.state._text | translate"></span>
             </span>
@@ -32,7 +32,7 @@
                 [nzData]="[child.task]" [nzShowPagination]="false">
         <thead *ngIf="(i > 0 && !history.children[i-1].task) || i==0">
         <tr>
-          <th><span [ngStyle]="{'padding-left': 6 + (8 * history.level) + 'px'}" translate>history.label.job</span></th>
+          <th><span [ngStyle]="{'padding-left': 6 + (6 * (history.level > 10 ? 11 : history.level)) + 'px'}" translate>history.label.job</span></th>
           <th><span translate>history.label.position</span></th>
           <th><span translate>history.label.status</span></th>
           <th><span translate>history.label.startTime</span></th>
@@ -45,7 +45,7 @@
         <tbody>
         <tr *ngFor="let ch of innerChildTaskTable.data">
           <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null)">
-            <span [ngStyle]="{'padding-left': 6 + (8 * history.level) + 'px'}">{{ch.job}}</span>
+            <span class="show-in-single-line w-full" [ngStyle]="{'padding-left': 6 + (6 * (history.level > 10 ? 11 : history.level)) + 'px'}">{{ch.job}}</span>
           </td>
           <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null)">{{ch.position}}</td>
           <td (click)="coreService.showLogWindow(null,ch,null,ch.controllerId,null)">
@@ -69,7 +69,7 @@
     <td colspan="8" class="p-a-b-b-0">
         <tr class="tr-border cursor" [ngClass]="{'light-bg':child.order.show}">
           <td>
-            <span class="show-in-single-line w-full" [ngStyle]="{'padding-left': 8 * history.level + 'px'}"
+            <span class="show-in-single-line w-full" [ngStyle]="{'padding-left': (6 * (history.level > 10 ? 11 : history.level)) + 'px'}"
                   (click)="coreService.showLogWindow(child.order,null,null,child.order.controllerId,null)">
               <i class="cursor fa fa-caret-down fa-lg  p-l-xs p-r-xs"
                  *ngIf="!child.order.show"
@@ -83,7 +83,7 @@
             </span>
           </td>
           <td (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null)">
-            <span [innerHtml]="child.order.position"></span>
+            <span class="show-in-single-line w-full" [innerHtml]="child.order.position"></span>
           </td>
           <td (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null)">
             <span *ngIf="child.order.state" class="label" [ngClass]="coreService.getColor(child.order.state.severity,'bg')"

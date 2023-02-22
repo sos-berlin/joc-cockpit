@@ -937,8 +937,7 @@ export class LogComponent implements OnInit {
       if (level.match('^debug') && !this.object.checkBoxs.debug) {
         div.className += ' hide-block';
       }
-      const text = match.replace(/^\r?\n/, '');
-      div.textContent = text.trim();
+      div.textContent = match.replace(/^\r?\n/, '');
       if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Success\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Success\])/)) {
         div.className += ' log_success';
         lastClass = 'log_success';

@@ -1568,6 +1568,7 @@
     "label.readingOrderToNoticeId": "ID Condition pour l'ordre attendu",
     "label.matchingDailyPlanDate": "Date du Plan Quotidien correspondant",
     "label.matchingDailyPlanDateAndOrderName": "Date du Plan Quotidien et Nom de l'Ordre correspondants",
+    "label.matchingOrderName": "Matching Order Name",
     "label.milliseconds": "Millisecondes",
     "label.seconds": "Secondes",
     "label.minutes": "Minutes",

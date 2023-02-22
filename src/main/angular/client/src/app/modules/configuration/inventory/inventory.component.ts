@@ -2876,6 +2876,7 @@ export class CreateObjectModalComponent implements OnInit {
 export class CreateFolderModalComponent implements OnInit {
   @Input() schedulerId: any;
   @Input() origin: any;
+  @Input() type: any;
   @Input() deepRename: any;
   @Input() rename: any;
   @Input() oldName: any;
@@ -2916,7 +2917,7 @@ export class CreateFolderModalComponent implements OnInit {
     if (!this.rename) {
       const PATH = this.origin.path + (this.origin.path === '/' ? '' : '/') + this.folder.name;
       const obj: any = {
-        objectType: 'FOLDER',
+        objectType: this.type || 'FOLDER',
         path: PATH,
         configuration: {}
       };
