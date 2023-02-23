@@ -463,7 +463,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     });
   }
 
-  resumeOrder(isParametrized = false): void {
+  resumeOrder(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ResumeOrderModalComponent,
@@ -471,7 +471,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       nzComponentParams: {
         preferences: this.preferences,
         schedulerId: this.controllerId,
-        isParametrized,
         order: this.coreService.clone(this.order)
       },
       nzFooter: null,

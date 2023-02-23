@@ -5,7 +5,7 @@
   </ui>
   <Array as="templates">
     <add as="connector">
-      <Connector label="" type="">
+      <Connector displayLabel="" type="">
         <mxCell edge="1">
           <mxGeometry as="geometry" relative="1"/>
         </mxCell>
@@ -19,119 +19,112 @@
       </Job>
     </add>
     <add as="If">
-      <If label="if" predicate="$returnCode > 0">
+      <If displayLabel="if" predicate="$returnCode > 0">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
       </If>
     </add>
     <add as="AddOrder">
-      <AddOrder label="addOrder">
+      <AddOrder displayLabel="addOrder">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </AddOrder>
     </add>
     <add as="Fork">
-      <Fork label="fork">
+      <Fork displayLabel="fork">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </Fork>
     </add>
     <add as="ForkList">
-      <ForkList label="forkList">
+      <ForkList displayLabel="forkList">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </ForkList>
     </add>
     <add as="Lock">
-      <Lock label="lock">
+      <Lock displayLabel="lock">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </Lock>
     </add>
     <add as="Cycle">
-      <Cycle label="cycle">
+      <Cycle displayLabel="cycle">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
       </Cycle>
     </add>
     <add as="Retry">
-      <Retry label="retry" maxTries="10" retryDelays="0">
+      <Retry displayLabel="retry" maxTries="10" retryDelays="0">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
       </Retry>
     </add>
     <add as="Try">
-      <Try label="try">
+      <Try displayLabel="try">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
       </Try>
     </add>
     <add as="Fail">
-      <Fail label="fail">
+      <Fail displayLabel="fail">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </Fail>
     </add>
     <add as="Finish">
-      <Finish label="finish">
+      <Finish displayLabel="finish">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </Finish>
     </add>
     <add as="ExpectNotices">
-      <ExpectNotices label="expectNotices">
+      <ExpectNotices displayLabel="expectNotices">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </ExpectNotices>
     </add>
     <add as="PostNotices">
-      <PostNotices label="postNotices">
+      <PostNotices displayLabel="postNotices">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </PostNotices>
     </add>
     <add as="ConsumeNotices">
-      <ConsumeNotices label="consumeNotices">
+      <ConsumeNotices displayLabel="consumeNotices">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </ConsumeNotices>
     </add>
     <add as="StickySubagent">
-      <StickySubagent label="stickySubagent">
+      <StickySubagent displayLabel="stickySubagent">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </StickySubagent>
     </add>
     <add as="Prompt">
-      <Prompt label="prompt">
+      <Prompt displayLabel="prompt">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </Prompt>
     </add>
-    <add as="FileWatcher">
-      <FileWatcher label="fileWatcher" regex=".*">
-        <mxCell vertex="1">
-          <mxGeometry as="geometry" width="110" height="40"/>
-        </mxCell>
-      </FileWatcher>
-    </add>
     <add as="symbol">
-      <Symbol label="Instruction">
+      <Symbol displayLabel="Instruction">
         <mxCell vertex="1" style="symbol;image=images/symbols/event.png">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>

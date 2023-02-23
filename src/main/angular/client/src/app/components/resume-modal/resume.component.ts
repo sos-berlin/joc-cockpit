@@ -13,7 +13,6 @@ export class ResumeOrderModalComponent implements OnInit {
   @Input() preferences: any;
   @Input() order: any;
   @Input() orders: any;
-  @Input() isParametrized: any;
   workflow: any;
   display: any;
   submitted = false;
@@ -312,7 +311,7 @@ export class ResumeOrderModalComponent implements OnInit {
     } else if (this.order.position) {
       obj.position = this.order.position;
     }
-    if (this.isParametrized && this.allowVariable && this.variables.length > 0) {
+    if (this.allowVariable && this.variables.length > 0) {
       let argu = this.variables.filter((item) => item.name);
       if (argu.length > 0) {
         obj.variables = this.coreService.keyValuePair(argu);

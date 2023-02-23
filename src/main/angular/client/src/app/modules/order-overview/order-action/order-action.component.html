@@ -21,9 +21,6 @@
       <li (click)="resumeOrder()" nz-menu-item *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.suspendResume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')">
         <a>{{'order.button.resume' | translate}} ..</a>
       </li>
-      <li (click)="resumeOrder(true)" nz-menu-item *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.suspendResume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')">
-        <a>{{'order.button.resumeParametrized' | translate}} ..</a>
-      </li>
       <li (click)="modifyOrder(order)" nz-menu-item *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')">
         <a>{{'dailyPlan.button.setStartTime' | translate}} ..</a>
       </li>
