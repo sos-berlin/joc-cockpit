@@ -28,7 +28,7 @@ export class OrderActionComponent {
     this.isVisible = value;
   }
 
-  resumeOrder(isParametrized = false): void {
+  resumeOrder(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ResumeOrderModalComponent,
@@ -36,7 +36,6 @@ export class OrderActionComponent {
       nzComponentParams: {
         preferences: this.preferences,
         schedulerId: this.schedulerId,
-        isParametrized,
         order: this.coreService.clone(this.order)
       },
       nzFooter: null,

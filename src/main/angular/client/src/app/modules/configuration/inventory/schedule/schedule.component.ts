@@ -763,12 +763,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  selectStartNode(value, positions): void {
-    if (value) {
-      positions.endPositions = [];
-    }
-  }
-
   updateEndNode(positions): void {
     positions.endPositions = [...positions.endPositions];
     this.saveJSON();

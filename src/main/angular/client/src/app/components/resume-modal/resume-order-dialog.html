@@ -17,7 +17,7 @@
     <div class="hide" [ngClass]="{'show': display}">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div *ngIf="workflow && isParametrized">
+    <div *ngIf="workflow">
       <div class="form-group row m-b-0">
         <div class="col-md-12 m-b-sm _600" translate>order.label.listOfConstants</div>
         <div class="col-md-12 m-b-sm" *ngIf="constants.length == 0"><span><</span>empty></div>
