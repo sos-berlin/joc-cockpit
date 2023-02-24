@@ -2218,7 +2218,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!isArray(this.selectedNode.job.defaultArguments)) {
         this.selectedNode.job.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.job, 'defaultArguments');
-        this.selectedNode.job.defaultArguments.filter((argu) => {
+        this.selectedNode.job.defaultArguments.forEach((argu) => {
           this.coreService.removeSlashToString(argu, 'value');
         });
       }
@@ -2228,7 +2228,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!isArray(this.selectedNode.job.executable.arguments)) {
         this.selectedNode.job.executable.arguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'arguments');
-        this.selectedNode.job.executable.arguments.filter((argu) => {
+        this.selectedNode.job.executable.arguments.forEach((argu) => {
           this.coreService.removeSlashToString(argu, 'value');
         });
       }
@@ -2239,7 +2239,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!isArray(this.selectedNode.job.executable.jobArguments)) {
         this.selectedNode.job.executable.jobArguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'jobArguments');
-        this.selectedNode.job.executable.jobArguments.filter((argu) => {
+        this.selectedNode.job.executable.jobArguments.forEach((argu) => {
           this.coreService.removeSlashToString(argu, 'value');
         });
       }
@@ -2250,7 +2250,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!isArray(this.selectedNode.job.executable.env)) {
         this.selectedNode.job.executable.env = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'env');
-        this.selectedNode.job.executable.env.filter((env) => {
+        this.selectedNode.job.executable.env.forEach((env) => {
           this.coreService.removeSlashToString(env, 'value');
         });
       }
@@ -8351,7 +8351,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           } else {
             argument = JSON.parse(argument);
             argument = self.coreService.convertObjectToArray({argument}, 'argument');
-            argument.filter((arg) => {
+            argument.forEach((arg) => {
               if (isArray(arg.value)) {
                 arg.value.forEach((item, index) => {
                   for (const prop in arg.value[index]) {
@@ -8425,7 +8425,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (resultObj) {
             resultObj = JSON.parse(resultObj);
             resultObj = self.coreService.convertObjectToArray({result: resultObj}, 'result');
-            resultObj.filter((arg) => {
+            resultObj.forEach((arg) => {
               self.coreService.removeSlashToString(arg, 'value');
             });
           } else {
@@ -8505,7 +8505,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               if (resultObj) {
                 resultObj = JSON.parse(resultObj);
                 resultObj = self.coreService.convertObjectToArray({result: resultObj}, 'result');
-                resultObj.filter((arg) => {
+                resultObj.forEach((arg) => {
                   self.coreService.removeSlashToString(arg, 'value');
                 });
               } else {

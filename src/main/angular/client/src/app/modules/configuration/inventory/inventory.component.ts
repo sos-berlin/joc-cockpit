@@ -335,23 +335,28 @@ export class SingleDeployComponent implements OnInit {
   }
 
   private getSingleObject(obj): void {
-    this.coreService.post((this.releasable ? 'inventory/releasable' : 'inventory/deployable'), obj).subscribe({
-      next: (res: any) => {
-        const result = res.deployable || res.releasable;
-        if (result.deployablesVersions && result.deployablesVersions.length > 0 && !result.deleted) {
-          result.deployId = '';
-          if (result.deployablesVersions[0].versions && result.deployablesVersions[0].versions.length > 0) {
-            result.deployId = result.deployablesVersions[0].deploymentId;
-          } else if (!result.deployablesVersions[0].deploymentId) {
-            result.deployablesVersions[0].deploymentId = '';
+    if(this.isRemoved){
+      this.loading = false;
+     // this.deployablesObject.push(this.data);
+    } else {
+      this.coreService.post((this.releasable ? 'inventory/releasable' : 'inventory/deployable'), obj).subscribe({
+        next: (res: any) => {
+          const result = res.deployable || res.releasable;
+          if (result.deployablesVersions && result.deployablesVersions.length > 0 && !result.deleted) {
+            result.deployId = '';
+            if (result.deployablesVersions[0].versions && result.deployablesVersions[0].versions.length > 0) {
+              result.deployId = result.deployablesVersions[0].deploymentId;
+            } else if (!result.deployablesVersions[0].deploymentId) {
+              result.deployablesVersions[0].deploymentId = '';
+            }
+          } else {
+            result.deployablesVersions = [];
           }
-        } else {
-          result.deployablesVersions = [];
-        }
-        this.loading = false;
-        this.deployablesObject = [result];
-      }, error: () => this.loading = false
-    });
+          this.loading = false;
+          this.deployablesObject = [result];
+        }, error: () => this.loading = false
+      });
+    }
   }
 
 }
@@ -2925,7 +2930,10 @@ export class CreateFolderModalComponent implements OnInit {
         obj.auditLog = {};
         this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       }
-      this.coreService.post('inventory/store', obj).subscribe({
+      if (this.type) {
+        delete obj.configuration;
+      }
+      this.coreService.post(this.type ? 'descriptor/store' : 'inventory/store', obj).subscribe({
         next: (res) => {
           this.activeModal.close({
             name: this.folder.name,
@@ -3095,7 +3103,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         } else if (res.paste) {
           this.paste(res.paste);
         } else if (res.deploy) {
-          this.deployObject(res.deploy, false);
+          this.deployObject(res.deploy, false, null, res.remove || false);
         } else if (res.revoke) {
           this.revoke(res.revoke);
         } else if (res.release) {
@@ -4223,7 +4231,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzMaskClosable: false
       }).afterClose.subscribe(result => {
         if (result) {
-          const object = node.origin;
+          const object = node.origin ? node.origin : node;
           const obj = this.getObjectArr(object, false);
           obj.cancelOrdersDateFrom = result.cancelOrdersDateFrom;
           obj.auditLog = result.auditLog;
@@ -4728,7 +4736,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       object.object === InventoryObject.NOTICEBOARD) || (object.type === InventoryObject.INCLUDESCRIPT || object.type === InventoryObject.FILEORDERSOURCE ||
       object.type === InventoryObject.LOCK || object.type === InventoryObject.JOBRESOURCE || object.type === InventoryObject.JOBTEMPLATE ||
       object.type === InventoryObject.NOTICEBOARD)) {
-
       const obj = this.getObjectArr(object, false);
       if (this.preferences.auditLog) {
         let comments = {
@@ -4762,10 +4769,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 timeSpent: result.timeSpent,
                 ticketLink: result.ticketLink
               };
-              this.coreService.post('inventory/remove', obj).subscribe(() => {
-                this.clearCopyObject(object);
-                if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
-                  this.clearSelection();
+              object.deleted = true;
+              object.loading = true;
+              this.coreService.post('inventory/remove', obj).subscribe({
+                next: () => {
+                  this.clearCopyObject(object);
+                  if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
+                    this.clearSelection();
+                  }
+                }, error: () => {
+                  object.deleted = false;
+                  object.loading = false;
                 }
               });
             }
@@ -4792,10 +4806,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
             if (!object.type && !object.object && !object.controller && !object.dailyPlan) {
               this.deleteObject(path, object, node, undefined);
             } else {
-              this.coreService.post('inventory/remove', obj).subscribe(() => {
-                this.clearCopyObject(object);
-                if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
-                  this.clearSelection();
+              object.deleted = true;
+              object.loading = true;
+              this.coreService.post('inventory/remove', obj).subscribe({
+                next: () => {
+                  this.clearCopyObject(object);
+                  if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
+                    this.clearSelection();
+                  }
+                }, error: () => {
+                  object.deleted = false;
+                  object.loading = false;
                 }
               });
             }

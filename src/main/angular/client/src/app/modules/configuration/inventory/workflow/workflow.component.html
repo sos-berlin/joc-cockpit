@@ -183,7 +183,7 @@
         </div>
 
         <div class="box-body">
-          <div class="form-group row">
+          <div class="form-group row" *ngIf="selectedNode.type !== 'Job'">
             <label class="col-md-4 col-lg-3 form-control-label"
                    [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
                    [nzTooltipMouseEnterDelay]="0.5"
@@ -946,14 +946,20 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" translate>order.label.startNode</label>
+              <label class="col-md-4 col-lg-3 form-control-label"
+                     title="{{'workflow.label.startPosition' | translate}}"
+                     [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.startPosition' | translate) : ''"
+                     [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.startPosition</label>
               <div class="col-md-8 col-lg-9" *ngIf="positions">
                 <app-node-position [obj]="selectedNode.obj" [type]="'START'"
                                    [workflow]="selectedNode.obj.workflow" [positions]="positions"></app-node-position>
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" translate>order.label.endNode</label>
+              <label class="col-md-4 col-lg-3 form-control-label"
+                     title="{{'workflow.label.endPositions' | translate}}"
+                     [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.endPositions' | translate) : ''"
+                     [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.endPositions</label>
               <div class="col-md-8 col-lg-9" *ngIf="positions">
                 <app-node-position [obj]="selectedNode.obj" [type]="'END'" (onBlur)="updateEndNode(selectedNode.obj)"
                                    [position]="selectedNode.obj.startPosition" [workflow]="selectedNode.obj.workflow" [positions]="positions"></app-node-position>

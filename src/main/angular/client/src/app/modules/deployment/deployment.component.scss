@@ -1,0 +1,48 @@
+
+.tree-block {
+  margin-top: 0;
+}
+
+.a-3 {
+  top: 20px;
+}
+
+.trash, .rollback {
+  padding: 4px 6px;
+  border-radius: 50%;
+  background: var(--menu-hover);
+  display: none;
+  position: absolute;
+  cursor: pointer;
+  right: 48px;
+  top: -2px;
+  z-index: 99;
+
+  &:hover {
+    color: var(--primary);
+  }
+
+  i {
+    color: var(--text-color);
+  }
+}
+
+.rollback {
+  top: 16px;
+  display: block;
+  background: var(--background-color);
+}
+
+.deployment {
+  &:hover {
+    .trash {
+      display: block;
+    }
+  }
+}
+
+.sidebar-hover-effect {
+  .trash {
+    top: 16px;
+  }
+}

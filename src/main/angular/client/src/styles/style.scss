@@ -6887,6 +6887,18 @@ tr.tr-border td {
   -webkit-transition: all .25s
 }
 
+.deployment.sidebar-hover-effect {
+  padding-top: 20px !important;
+}
+
+.deployment.sidebar-hover-effect, .deployment.bg-white {
+  top: 134px !important;
+}
+
+.deployment.sidebar-hover-effect.deployment.bg-white {
+  padding-top: 4px !important;
+}
+
 #xmlLeftSidePanel.sidebar-hover-effect:hover {
   width: 30% !important
 }

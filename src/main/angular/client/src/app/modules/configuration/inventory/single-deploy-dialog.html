@@ -5,16 +5,16 @@
     <span *ngIf="isRevoke" translate>inventory.label.revoke</span>
     <span *ngIf="isRemoved" translate>inventory.label.remove</span>
     <span *ngIf="isRemoved">
-        {{data.path}}
-      </span>
+      {{data.path}} <span *ngIf="data.name">{{data.path == '/' ? '' : '/'}}</span>{{data.name}}
+    </span>
   </h4>
   <button type="button" class="close" (click)="cancel()" aria-label="Close">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="deploy()" spellcheck="false">
-  <div class="modal-body p-a min-ht-150">
-    <div *ngIf="deployablesObject.length > 0 && !loading">
+  <div class="modal-body p-a max-ht-120">
+    <div *ngIf="(deployablesObject.length > 0 || isRemoved) && !loading">
       <div class="hide" [ngClass]="{'show': display}">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
       </div>
@@ -34,7 +34,7 @@
           </nz-select>
         </div>
       </div>
-      <div class="form-group row" *ngIf="(data.objectType == 'WORKFLOW' || releasable || isRemoved) && deployablesObject.length > 0">
+      <div class="form-group row" *ngIf="((data.objectType == 'WORKFLOW' || releasable) && deployablesObject.length > 0) || isRemoved">
         <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
         <div class="col-md-9">
           <nz-radio-group name="addOrdersDateFrom" [(ngModel)]="dailyPlanDate.addOrdersDateFrom">
@@ -66,7 +66,6 @@
                  nzTheme="outline"></i>
               <span class="p-l-sm">{{data.path}}</span>
             </div>
-
             <div class="m-l-md node-wrapper" style="width: 90%" *ngFor="let child of deployablesObject">
               <div>
                 <span  class="fa fa-check-circle-o orange text-xs"
@@ -108,8 +107,20 @@
             </div>
         </div>
       </div>
+      <div class="row" *ngIf="data.list?.length > 0">
+        <div class="col-md-12" *ngFor="let item of data.list">
+          <span class="fa fa-check-circle-o orange text-xs p-l-xs"
+                [ngClass]="{'fa-circle-o': !item.valid, 'fa-circle dark-blue' :item.deployed || item.released, 'opacity7': item.syncState && (item.syncState._text === 'SUSPENDED' || item.syncState._text === 'SUSPENDING')}" style="margin-top: 4px"></span>
+          <span *ngIf="item.syncState" class="p-l-xxs">
+            <i *ngIf="item.syncState._text === 'IN_SYNC' || item.syncState._text === 'SUSPENDED' || item.syncState._text === 'SUSPENDING'" class="fa fa-refresh font11 p-l-xxs"></i>
+            <i *ngIf="item.syncState._text === 'UNKNOWN'" class="fa fa-exclamation-triangle font11 p-l-xxs"></i>
+            <i *ngIf="item.syncState._text === 'NOT_IN_SYNC'" class="icon3-reload-error font11 pos-rel t-1 p-l-xxs"></i>
+          </span>
+          <span class="p-l-sm">{{item.name }}</span>
+        </div>
+      </div>
     </div>
-    <div class="m-t-md" *ngIf="deployablesObject.length===0 && !loading">
+    <div class="m-t-md" *ngIf="deployablesObject.length===0 && !loading && !isRemoved">
       <app-empty-data></app-empty-data>
     </div>
     <div class="text-center m-t-md" *ngIf="loading">

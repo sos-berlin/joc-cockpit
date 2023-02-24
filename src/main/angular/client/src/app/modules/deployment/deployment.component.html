@@ -68,6 +68,7 @@
       <div class="row m-t-sm">
         <div class="col-md-12">
           <div appResizable [sideView]="sideView.deployment" id="leftPanel" class="sticky leftPanel deployment"
+               [ngClass]="{'bg-white' : isTrash}"
                [ngStyle]="{'width': sideView.deployment ? sideView.deployment.width +'px' : 'auto'}">
               <div class="pl-20 editor-tree">
                 <a class="text resize-cursor a-1 pos-abt r-28 z-index-99">
@@ -76,17 +77,23 @@
                 <a class="text resize-cursor a-3 pos-abt r-18 z-index-99">
                   <i class="fa fa-angle-double-right fa-lg" (click)="showPanel()"></i>
                 </a>
+                <a class="trash notify" *ngIf="!isTrash" (click)="switchToTrash()">
+                  <i nz-icon [nzType]="'delete'" nzTheme="outline"></i>
+                </a>
+                <a class="rollback" *ngIf="isTrash" (click)="switchToTrash()">
+                  <i nz-icon [nzType]="'rollback'" nzTheme="outline"></i>
+                </a>
                 <perfect-scrollbar class="tree-block">
-                  <div class="fade-in">
+                  <div class="fade-in" [ngClass]="{'m-t': isTrash}">
                     <nz-tree
                       #treeCtrl
                       nzNoAnimation
                       [nzShowExpand]="false"
-                      [nzData]="tree"
+                      [nzData]="isTrash ? trashTree : tree"
                       [nzTreeTemplate]="nzTreeTemplate"
                     ></nz-tree>
                     <ng-template #nzTreeTemplate let-node>
-                      <div [ngClass]="{'disable-link': node.origin.deleted}" class="node-wrapper">
+                      <div class="node-wrapper" [ngClass]="{'disable-link': node.origin.deleted && !isTrash}">
                          <span (click)="openFolder(node)"
                            *ngIf="node.origin.loading || node.origin.isArrow || (node.origin.children && node.origin.children.length > 0)"
                            [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
@@ -100,7 +107,7 @@
                            <i *ngIf="node.origin.loading"><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
                         </span>
 
-                        <span *ngIf="(!node.children || node.children.length === 0)">
+                        <span *ngIf="(!node.origin.children || node.children.length === 0)">
                           <span class="p-r-xs"></span>
                         </span>
                         <button (click)="openMenu(node, $event)" class="btn-drop more-option-h" type="button">
@@ -110,8 +117,8 @@
                          && copyObj.path === node.origin.path), 'node-content-wrapper-active' : (node.origin.name === selectedObj.name) &&
                             (node.origin.path === selectedObj.path)}"
                              class="node-content-wrapper">
-                            <i *ngIf="node.children" [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
-                          <span *ngIf="!node.children" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' : node.origin.deployed}"
+                            <i *ngIf="!node.origin.objectType" [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
+                          <span *ngIf="node.origin.objectType" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' : node.origin.released}"
                                 class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"></span>
                           <span class="p-l-xs">
                             <span>{{node.origin.name}}</span>
@@ -120,15 +127,15 @@
                       </div>
                     </ng-template>
                   </div>
-                  <div class="m-t-lg" *ngIf="tree.length === 0">
+                  <div class="m-t-lg" *ngIf="isTrash && isTreeLoaded && tree.length === 0">
                     <app-empty-data></app-empty-data>
                   </div>
                 </perfect-scrollbar>
-                <div class="rg-right"><span></span></div>
+                <div class="rg-right" [ngClass]="{'bg-white' : isTrash}"><span></span></div>
               </div>
           </div>
-          <div id="rightPanel">
-            <div class="box p-a">
+          <div id="rightPanel" [ngStyle]="{'margin-left': sideView.deployment ? (sideView.deployment.width) + 'px' : 'auto'}">
+            <div class="box p-a" *ngIf="deploymentData?.data">
               <form #myForm="ngForm">
                 <div class="pos-abt r-15 t-10" *ngIf="object.setOfCheckedId.size==0">
                   <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
@@ -2553,7 +2560,7 @@
   </div>
 </div>
 <nz-dropdown-menu #menu="nzDropdownMenu">
-  <ul nz-menu *ngIf="node?.origin">
+  <ul nz-menu *ngIf="!isTrash && node?.origin && permission?.joc">
     <li nz-menu-item *ngIf="!node.origin.children"
         (click)="addObject();">
       <a translate>inventory.button.new</a>
@@ -2566,7 +2573,7 @@
         </li>
         <li nz-menu-divider></li>
         <li nz-menu-item (click)="addObject()">
-          <a translate>Deployment Descriptor</a>
+          <a translate>deploymentService.button.newDescriptor</a>
         </li>
       </ul>
     </li>

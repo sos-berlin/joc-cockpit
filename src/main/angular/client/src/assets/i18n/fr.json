@@ -819,7 +819,8 @@
       "installation": "Installation",
       "configuration": "Configuration",
       "certificates": "Certificates",
-      "startFiles": "Start Files"
+      "startFiles": "Start Files",
+      "createDescriptor": "Create Descriptor"
     },
     "button": {
       "showMoreOption": "Plus d'Options",
@@ -828,7 +829,8 @@
       "editJSON": "Edit JSON",
       "bulkUpdate": "Bulk Update",
       "copy": "Copy",
-      "paste": "Paste"
+      "paste": "Paste",
+      "newDescriptor": "New Descriptor"
     },
     "message": {
       "invalidFile": "Not a valid descriptor file"
@@ -1903,7 +1905,9 @@
         "addOrder": {
           "workflowName": "L'instruction Ajouter un Ordre permet d'ajouter un ordre indépendant au workflow spécifié.",
           "arguments": "Des arguments doivent être ajoutés à l'ordre si le workflow cible l'exige. Les arguments facultatifs peuvent être omis.",
-          "remainWhenTerminated": "Après la fin des exécutions des tâches, l'ordre reste dans le workflow. Pour cela, il faut effectuer manuellement l'opération 'Quitter le Workflow 'qui est disponible dans la vue WORKFLOW"
+          "remainWhenTerminated": "Après la fin des exécutions des tâches, l'ordre reste dans le workflow. Pour cela, il faut effectuer manuellement l'opération 'Quitter le Workflow 'qui est disponible dans la vue WORKFLOW",
+          "startPosition": "Start Position",
+          "endPositions": "End Positions"
         },
         "lock": {
           "name": "Les noms des Verrous de Ressources sont uniques dans l'inventaire. Les sections des workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressources.",
@@ -3077,6 +3081,8 @@
     "label.addOrder": "Ajouter un Ordre",
     "label.workflowPath": "Chemin du Workflow",
     "label.remainWhenTerminated": "Validation requise pour sortir",
+    "label.startPosition": "Start Position before Instruction",
+    "label.endPositions": "End Positions before Instructions",
     "label.joinIfFailed": "Join en Échec",
     "label.skipIfNoAdmissionForOrderDay": "Ignorée si la période d'admission ne correspond pas à la date de l'ordre",
     "label.listOfSchemes": "Liste des Cycles",
