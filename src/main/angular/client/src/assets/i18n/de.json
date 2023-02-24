@@ -819,7 +819,8 @@
       "installation": "Installation",
       "configuration": "Konfiguration",
       "certificates": "Zertifikate",
-      "startFiles": "Start-Dateien"
+      "startFiles": "Start-Dateien",
+      "createDescriptor": "Create Descriptor"
     },
     "button": {
       "showMoreOption": "Mehr Optionen",
@@ -828,7 +829,8 @@
       "editJSON": "JSON editieren",
       "bulkUpdate": "Massenaktualisierung",
       "copy": "Copy",
-      "paste": "Paste"
+      "paste": "Paste",
+      "newDescriptor": "New Descriptor"
     },
     "message": {
       "invalidFile": "Keine gültige Deskriptor Datei"
@@ -1903,7 +1905,9 @@
         "addOrder": {
           "workflowName": "Die AddOrder-Anweisung erlaubt es einem anderen Arbeitsablauf einen unabhängigen Auftrag hinzuzufügen.",
           "arguments": "Argumente müssen dem Auftrag hinzugefügt werden sofern diese vom Arbeisablauf verlangt werden. Optionale Argumente können entfallen.",
-          "remainWhenTerminated": "Nach Terminierung soll der Auftrag im Arbeitsablauf verbleiben. Dies erfordert die manuelle Ausführung der Funktion 'Arbeitsablauf verlassen', die z.B. in der Sicht ARBEITSABLAUF verfügbar ist."
+          "remainWhenTerminated": "Nach Terminierung soll der Auftrag im Arbeitsablauf verbleiben. Dies erfordert die manuelle Ausführung der Funktion 'Arbeitsablauf verlassen', die z.B. in der Sicht ARBEITSABLAUF verfügbar ist.",
+          "startPosition": "Start Position",
+          "endPositions": "End Positions"
         },
         "lock": {
           "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in Arbeitsabläufen können durch Ressourcen-Sperren für die parallele Ausführung limitiert werden.",
@@ -3077,6 +3081,8 @@
     "label.addOrder": "Auftrag hinzufügen",
     "label.workflowPath": "Name des Arbeitsablaufs",
     "label.remainWhenTerminated": "Nach Terminierung im Arbeitsablauf verbleiben",
+    "label.startPosition": "Start Position before Instruction",
+    "label.endPositions": "End Positions before Instructions",
     "label.joinIfFailed": "Kindauftrag im Fehlerfall beenden",
     "label.skipIfNoAdmissionForOrderDay": "Job überspringen bei fehlender Zutrittszeit für Auftragsdatum",
     "label.listOfSchemes": "Liste der Zyklen",

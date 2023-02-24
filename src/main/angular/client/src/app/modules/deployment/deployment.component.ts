@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {isEmpty, isArray, isEqual} from 'underscore';
+import {isEmpty, isArray, isEqual, clone} from 'underscore';
 import {saveAs} from 'file-saver';
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
@@ -8,12 +8,13 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {FileUploader} from "ng2-file-upload";
 import {TranslateService} from "@ngx-translate/core";
 import {ToastrService} from "ngx-toastr";
-import {Subject} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {NzContextMenuService, NzDropdownMenuComponent} from "ng-zorro-antd/dropdown";
 import {CreateFolderModalComponent, CreateObjectModalComponent} from "../configuration/inventory/inventory.component";
 import {CoreService} from '../../services/core.service';
 import {AuthService} from "../../components/guard";
+import {DataService} from "../../services/data.service";
 
 declare const $: any;
 
@@ -242,13 +243,16 @@ export class ShowJsonModalComponent implements OnInit {
 
 @Component({
   selector: 'app-deployment',
-  templateUrl: './deployment.component.html'
+  templateUrl: './deployment.component.html',
+  styleUrls: ['./deployment.component.scss']
 })
 export class DeploymentComponent implements OnInit, OnDestroy {
   isLoading = true;
   loading: boolean;
   isTrash = false;
+  isTreeLoaded = false;
   tree: any = [];
+  trashTree: any = [];
   sideView: any = {};
   deploymentFilters: any = {};
   data: any = {
@@ -259,6 +263,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   };
 
   deploymentData: any = {};
+  tempObjSelection: any = {};
 
   obj: any = {
     isDescriptorExpanded: true,
@@ -272,7 +277,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   securityLevel: Array<string> = ['low', 'medium', 'high'];
   dbmsInit: Array<string> = ['byInstaller', 'byJoc', 'off'];
   methods: Array<string> = ['publickey'];
-
+  lastModified: string;
   isValid = false;
   isNavigate = false;
   errorMessages: Array<string> = [];
@@ -291,13 +296,20 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   selectedObj: any = {};
   copyObj: any;
   node: any;
-  private pendingHTTPRequests$ = new Subject<void>();
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
-  constructor(private coreService: CoreService, private modal: NzModalService, private message: NzMessageService,
+  constructor(private coreService: CoreService, private modal: NzModalService, private message: NzMessageService, private dataService: DataService,
               private authService: AuthService, private nzContextMenuService: NzContextMenuService, private translate: TranslateService) {
+    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
+    });
+    this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
+      this.init();
+    });
   }
 
   ngOnInit(): void {
@@ -308,46 +320,344 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.coreService.setSideView(this.sideView);
-    this.pendingHTTPRequests$.next();
-    this.pendingHTTPRequests$.complete();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
     $('.scroll-y').remove();
+  }
+
+
+  private refresh(args): void {
+    let loadTree = false;
+    let _isTrash = false;
+    let paths = [];
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].path) {
+          if (args.eventSnapshots[j].eventType.match(/Inventory/)) {
+            const isTrash = args.eventSnapshots[j].eventType.match(/Trash/);
+            if (!this.isTrash && isTrash) {
+            } else {
+              if (args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryTrashTreeUpdated/)) {
+                paths.push(args.eventSnapshots[j].path);
+                loadTree = true;
+                if (!_isTrash && this.isTrash) {
+                  _isTrash = isTrash;
+                }
+              } else if (args.eventSnapshots[j].eventType.match(/InventoryUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryTrashUpdated/)) {
+                paths = paths.filter((path) => {
+                  return path !== args.eventSnapshots[j].path;
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+    if (loadTree) {
+      console.log('>>', paths)
+    }
   }
 
   private init(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    this.initTree();
+    this.initTree(null, null);
   }
 
-  private initTree(): void {
+  private initTree(path, mainPath, redirect = false): void {
+    if (!path) {
+      this.isLoading = true;
+    }
     this.coreService.post('tree', {
-      forInventory: true,
+      forDescriptors: true,
       types: [this.objectType]
     }).subscribe({
       next: res => {
         if (res.folders.length === 0) {
           res.folders.push({name: '', path: '/'});
         }
-        this.tree = this.coreService.prepareTree(res, true);
-        this.isLoading = false;
-        this.updateObjects({path: '/'});
+        const tree = this.coreService.prepareTree(res, false);
+        if (path) {
+          this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
+          this.updateFolders(path, false, (response) => {
+            this.updateTree(false);
+            if (redirect) {
+              if (response) {
+                response.expanded = true;
+              }
+              // this.clearSelection();
+            }
+          }, redirect);
+          if (mainPath && path !== mainPath) {
+            this.updateFolders(mainPath, false, () => {
+              this.updateTree(false);
+            });
+          }
+        } else {
+          this.tree = tree;
+          this.updateObjects(this.tree[0], false, (children) => {
+            this.isLoading = false;
+            if (this.tree[0].children > 0) {
+              this.tree[0].expanded = true;
+            }
+            this.updateTree(false);
+          });
+        }
       }, error: () => this.isLoading = false
     });
-    this.updateObjects({path: '/'});
   }
 
-  updateObjects(data, cb = null): void {
-    const obj: any = {
-      path: data.path,
-      objectTypes: [this.objectType]
-    };
+  initTrashTree(path): void {
+    this.coreService.post('tree', {
+      forDescriptorsTrash: true,
+      types: [this.objectType]
+    }).subscribe({
+      next: (res: any) => {
+        if (res.folders.length > 0) {
+          const tree = this.coreService.prepareTree(res, false);
+          if (path) {
+            this.trashTree = this.recursiveTreeUpdate(tree, this.trashTree, true);
+          } else {
+            this.trashTree = tree;
+            if (this.trashTree.length > 0) {
+              this.trashTree[0].expanded = true;
+              this.updateObjects(this.trashTree[0], true, () => {
+                this.isTreeLoaded = false;
+                this.updateTree(true);
+              });
+            }
+          }
+        }
+      }, error: () => this.isTreeLoaded = false
+    });
+  }
 
-    const URL = 'inventory/read/folder';
+  recursivelyExpandTree(): void {
+    if (this.selectedObj.type) {
+      this.coreService.post('descriptor/read', {
+        path: this.selectedObj.name
+      }).subscribe({
+        next: (res) => {
+          this.findObjectByPath(res.path);
+        }, error: () => {
+          this.updateObjects(this.tree[0], this.isTrash, () => {
+            this.isLoading = false;
+            if (this.tree[0].length > 0) {
+              this.tree[0].expanded = true;
+            }
+            this.updateTree(this.isTrash);
+          });
+        }
+      });
+    }
+  }
+
+  private findObjectByPath(path): void {
+    this.deploymentData.path = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
+    const pathArr = [];
+    const arr = this.deploymentData.path.split('/');
+    const len = arr.length;
+    if (len > 1) {
+      for (let i = 0; i < len; i++) {
+        if (arr[i]) {
+          if (i > 0 && pathArr[i - 1]) {
+            pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+          } else {
+            pathArr.push('/' + arr[i]);
+          }
+        } else {
+          pathArr.push('/');
+        }
+      }
+    }
+
+    const self = this;
+    if (this.tree.length > 0) {
+      function traverseTree(data) {
+        let flag = false;
+        for (let i = 0; i < pathArr.length; i++) {
+          if (pathArr[i] === data.path) {
+            data.expanded = true;
+            flag = true;
+            pathArr.splice(i, 1);
+            break;
+          }
+        }
+
+        if (flag) {
+          if (!data.controller && !data.dailyPlan) {
+            self.updateObjects(data, self.isTrash, (children) => {
+              if (children.length > 0) {
+                const parentNode = children[0];
+                if (self.selectedObj.path === parentNode.path) {
+                  parentNode.expanded = true;
+
+                  for (let k = 0; k < parentNode.children.length; k++) {
+                    if (parentNode.children[k].name === self.selectedObj.name) {
+                      self.deploymentData = parentNode.children[k];
+                      break;
+                    }
+                  }
+
+                  self.isLoading = false;
+                  self.updateTree(self.isTrash);
+                }
+              }
+            });
+          }
+        }
+        if (data.children && pathArr.length > 0) {
+          for (let i = 0; i < data.children.length; i++) {
+            traverseTree(data.children[i]);
+          }
+        }
+      }
+
+      traverseTree(this.tree[0]);
+    }
+  }
+
+  private updateFolders(path, isTrash, cb, redirect = false): void {
+    const self = this;
+    let matchData: any;
+    if ((!isTrash && this.tree.length > 0) || (isTrash && this.trashTree.length > 0)) {
+      function traverseTree(data) {
+        if (path && data.path && (path === data.path)) {
+          self.updateObjects(data, isTrash, (children) => {
+            if (children.length > 0) {
+              let folders = data.children;
+              data.children = children;
+              if (folders.length > 0) {
+                data.children = data.children.concat(folders);
+              }
+            }
+            self.updateTree(isTrash);
+          });
+          matchData = data;
+          if (redirect) {
+            cb(matchData);
+          }
+        }
+
+        if (data.children) {
+          let flag = false;
+          for (let i = 0; i < data.children.length; i++) {
+            if (data.children[i].controller || data.children[i].dailyPlan) {
+              for (let j = 0; j < data.children[i].children.length; j++) {
+                const x = data.children[i].children[j];
+                if (self.selectedObj.type && (x.object === self.selectedObj.type || (x.object.match('CALENDAR') && self.selectedObj.type.match('CALENDAR'))) &&
+                  x.path === self.selectedObj.path && cb) {
+                  flag = true;
+                  let isMatch = false;
+                  for (let k = 0; k < x.children.length; k++) {
+                    if (x.children[k].name === self.selectedObj.name) {
+                      isMatch = true;
+                      cb({data: x.children[k], parentNode: data.children[i]});
+                      break;
+                    }
+                  }
+                  if (!isMatch) {
+                    cb({data: x, parentNode: data.children[i]});
+                  }
+                  break;
+                }
+              }
+            }
+            if (!matchData) {
+              traverseTree(data.children[i]);
+            }
+            if (flag) {
+              break;
+            }
+          }
+        }
+      }
+
+      traverseTree(isTrash ? this.trashTree[0] : this.tree[0]);
+    }
+    console.log(matchData, cb)
+    if (!matchData && cb) {
+      cb();
+    }
+  }
+
+  private updateTree(isTrash): void {
+    if (isTrash) {
+      this.trashTree = [...this.trashTree];
+    } else {
+      this.tree = [...this.tree];
+    }
+  }
+
+
+  private recursiveTreeUpdate(scr, dest, isTrash): any {
+    const self = this;
+    let isFound = false;
+
+    function recursive(scrTree, destTree) {
+      if (scrTree && destTree) {
+        for (let j = 0; j < scrTree.length; j++) {
+          if (isTrash === self.isTrash && self.deploymentData.data) {
+            if (scrTree[j].path === self.deploymentData.path) {
+              isFound = true;
+            }
+          }
+          for (let i = 0; i < destTree.length; i++) {
+            if (destTree[i].path && scrTree[j].path && (destTree[i].path === scrTree[j].path)) {
+              if (scrTree[j].object && destTree[i].object) {
+                if (scrTree[j].object === destTree[i].object) {
+                  scrTree[j].expanded = destTree[i].expanded;
+                }
+              } else if (scrTree[j].name === destTree[i].name && scrTree[j].path === destTree[i].path) {
+                scrTree[j].expanded = destTree[i].expanded;
+              }
+              if (destTree[i].children && destTree[i].children.length > 0 && !destTree[i].object) {
+                const arr = [];
+                for (let x = 0; x < destTree[i].children.length; x++) {
+                  if (destTree[i].children[x].controller) {
+                    arr.push(destTree[i].children[x]);
+                  }
+                  if (destTree[i].children[x].dailyPlan) {
+                    arr.push(destTree[i].children[x]);
+                  }
+                }
+                if (arr.length > 0) {
+                  scrTree[j].children = arr.concat(scrTree[j].children || []);
+                }
+              }
+              if (scrTree[j].children && destTree[i].children && !destTree[i].object) {
+                recursive(scrTree[j].children, destTree[i].children);
+              }
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    recursive(scr, dest);
+    if (!isFound && this.deploymentData.data && isTrash === self.isTrash) {
+      this.deploymentData = {};
+    }
+    return scr;
+  }
+
+  updateObjects(data, isTrash, cb = null): void {
+    if (!data.permitted) {
+      cb([]);
+      return;
+    }
+    const obj: any = {
+      path: data.path
+    };
+    const URL = isTrash ? 'descriptor/trash/read/folder' : 'descriptor/read/folder';
     this.coreService.post(URL, obj).subscribe({
       next: (res: any) => {
-        console.log(res)
+        data.children = res.deploymentDescriptors.concat(data.children)
+        cb();
       }, error: () => {
+        cb();
       }
     });
   }
@@ -383,8 +693,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         node.isExpanded = !node.isExpanded;
       }
 
-      // this.selectedData = node.origin;
-      // this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, node.origin.objectType ? '$ID' : undefined);
+      this.getObject(node.origin);
     }
   }
 
@@ -396,6 +705,23 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
   /** Actions */
 
+  switchToTrash(): void {
+    this.trashTree = [];
+    this.isTrash = !this.isTrash;
+    if (this.isTrash) {
+      this.isTreeLoaded = false;
+      this.initTrashTree(null);
+      if (this.deploymentData?.data) {
+        this.tempObjSelection = this.coreService.clone(this.deploymentData);
+      }
+    } else {
+      if (this.tempObjSelection?.data) {
+        this.deploymentData = this.coreService.clone(this.tempObjSelection);
+        this.tempObjSelection = {};
+      }
+    }
+  }
+
   hidePanel(): void {
     this.sideView.deployment.show = false;
     this.coreService.hidePanel();
@@ -406,14 +732,13 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     this.coreService.showLeftPanel();
   }
 
-  private getObject($event): void {
-    const URL = 'inventory/read/configuration';
+  private getObject(object): void {
+    const URL = 'descriptor/read';
     const obj: any = {
-      path: $event.path,
-      objectType: this.objectType,
+      path: object.path
     };
     this.coreService.post(URL, obj).subscribe((res: any) => {
-      //this.lastModified = res.configurationDate;
+      this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;
       if (res.configuration) {
@@ -424,7 +749,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       } else {
         res.configuration = {};
       }
-      console.log(res)
+      this.data = {};
       this.deploymentData = {
         name: res.name,
         path: res.path,
@@ -704,13 +1029,12 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         });
       }
 
-      this.coreService.post('inventory/store', request).subscribe({
+      this.coreService.post('descriptor/store', request).subscribe({
         next: (res: any) => {
           if (res.path === this.deploymentData.path) {
-            //   this.lastModified = res.configurationDate;
+            this.lastModified = res.configurationDate;
             this.deploymentData.data = JSON.stringify(this.data);
-            this.deploymentData.valid = res.valid;
-
+            this.isValid = res.valid;
           }
         }
       });
@@ -1026,7 +1350,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       this.isValid = res.valid;
     });
   }
-
 
   editJSON(): void {
     this.validate();
@@ -1356,7 +1679,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   private updateJSONObject(): void {
-    this.data.descriptor = this.deploymentData.mainObj.descriptor;
+    this.data.descriptor = this.deploymentData.mainObj.descriptor || {};
     this.data.license = this.deploymentData.mainObj.license;
     if (this.deploymentData.mainObj.joc && this.deploymentData.mainObj.joc.length > 0) {
       this.deploymentData.mainObj.joc.forEach((joc) => {
@@ -1456,22 +1779,22 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(path => {
       if (path) {
-         this.initTree();
+        this.initTree(path, null);
       }
     });
   }
 
   addObject(): void {
-    console.log(this.node)
+    this.node.isExpanded = true;
+    const object = this.node.origin;
+    console.log(object, 'object')
+    this.createObject(object);
   }
 
-  newObject(list, path): void {
-    if (!path) {
-      return;
-    }
+  createObject(object): void {
     const obj: any = {
       type: this.objectType,
-      path
+      path: object.path
     };
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -1488,11 +1811,37 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe((res: any) => {
       if (res) {
-        let configuration = {};
         obj.name = res.name;
-        // this.storeObject(obj, list, configuration, res.comments);
+        this.storeObject(obj, object.children, res.comments);
       }
     });
+  }
+
+  private storeObject(obj, list, comments: any = {}): void {
+    const PATH = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
+    if (PATH && obj.type && obj.name) {
+      const request: any = {
+        objectType: obj.type,
+        path: PATH
+      };
+
+      if (comments.comment) {
+        request.auditLog = {
+          comment: comments.comment,
+          timeSpent: comments.timeSpent,
+          ticketLink: comments.ticketLink
+        }
+      }
+
+      this.coreService.post('descriptor/store', request).subscribe(() => {
+        obj.valid = false;
+        obj.objectType = obj.type;
+        obj.path = PATH;
+        list.push(obj);
+        this.deploymentData = obj;
+        this.updateTree(false);
+      });
+    }
   }
 
   cutObject(): void {

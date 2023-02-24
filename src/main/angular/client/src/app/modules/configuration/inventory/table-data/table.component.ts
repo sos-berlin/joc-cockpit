@@ -13,7 +13,7 @@ import {NzModalService} from 'ng-zorro-antd/modal';
 import {isEmpty} from 'underscore';
 import {Subscription} from 'rxjs';
 import {ConfirmModalComponent} from '../../../../components/comfirm-modal/confirm.component';
-import {CreateObjectModalComponent} from '../inventory.component';
+import {CreateObjectModalComponent, SingleDeployComponent} from '../inventory.component';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
@@ -40,16 +40,21 @@ export class TableComponent implements OnChanges, OnDestroy {
   checked = false;
   indeterminate = false;
 
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   constructor(public coreService: CoreService, private dataService: DataService, public inventoryService: InventoryService,
               private modal: NzModalService, private ref: ChangeDetectorRef, private searchPipe: SearchPipe, private orderPipe: OrderPipe) {
-    this.subscription = dataService.reloadTree.subscribe(res => {
+    this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if ((res.reloadTree && this.dataObj && this.dataObj.children) || res.reloadFolder) {
+          this.searchInResult();
           this.ref.detectChanges();
         }
       }
+    });
+    this.subscription2 = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
     });
   }
 
@@ -58,7 +63,20 @@ export class TableComponent implements OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+  }
+
+  private refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType.match(/Inventory/)) {
+          this.searchInResult();
+          this.ref.detectChanges();
+          break;
+        }
+      }
+    }
   }
 
   add(): void {
@@ -87,11 +105,11 @@ export class TableComponent implements OnChanges, OnDestroy {
         let configuration = {};
         obj.name = res.name;
         if (obj.type === InventoryObject.SCHEDULE) {
-          configuration = { controllerId: this.schedulerId };
+          configuration = {controllerId: this.schedulerId};
         } else if (obj.type === 'LOCK') {
-          configuration = { limit: 1, id: res.name };
+          configuration = {limit: 1, id: res.name};
         } else if (obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR') {
-          configuration = { type: obj.type };
+          configuration = {type: obj.type};
         }
         const path = this.dataObj.path + (this.dataObj.path === '/' ? '' : '/') + res.name;
         this.store(obj, path, configuration, res.comments);
@@ -139,7 +157,11 @@ export class TableComponent implements OnChanges, OnDestroy {
     if (checked) {
       this.mapOfCheckedId.set(item.name, {
         objectType: item.objectType || item.type,
-        path: item.path + (item.path === '/' ? '' : '/') + item.name
+        path: item.path + (item.path === '/' ? '' : '/') + item.name,
+        name: item.name,
+        valid: item.valid,
+        deployed: item.deployed,
+        syncState: item.syncState
       });
     } else {
       this.mapOfCheckedId.delete(item.name);
@@ -149,11 +171,15 @@ export class TableComponent implements OnChanges, OnDestroy {
     this.indeterminate = this.mapOfCheckedId.size > 0 && !this.checked;
   }
 
-  selectAll(): void{
+  selectAll(): void {
     this.data.forEach(item => {
       this.mapOfCheckedId.set(item.name, {
         objectType: item.objectType || item.type,
-        path: item.path + (item.path === '/' ? '' : '/') + item.name
+        path: item.path + (item.path === '/' ? '' : '/') + item.name,
+        name: item.name,
+        valid: item.valid,
+        deployed: item.deployed,
+        syncState: item.syncState
       });
     });
     this.indeterminate = this.mapOfCheckedId.size > 0 && !this.checked;
@@ -165,7 +191,11 @@ export class TableComponent implements OnChanges, OnDestroy {
       data.forEach(item => {
         this.mapOfCheckedId.set(item.name, {
           objectType: item.objectType || item.type,
-          path: item.path + (item.path === '/' ? '' : '/') + item.name
+          path: item.path + (item.path === '/' ? '' : '/') + item.name,
+          name: item.name,
+          valid: item.valid,
+          deployed: item.deployed,
+          syncState: item.syncState
         });
       });
     } else {
@@ -224,58 +254,94 @@ export class TableComponent implements OnChanges, OnDestroy {
   }
 
   removeObject(object): void {
-    if (this.preferences.auditLog) {
-      const comments = {
-        radio: 'predefined',
-        type: this.objectType,
-        operation: 'Remove',
-        name: object ? object.name : ''
-      };
-      const modal = this.modal.create({
-        nzTitle: null,
-        nzContent: CommentModalComponent,
-        nzClassName: 'lg',
-        nzComponentParams: {
-          comments,
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          this.removeApiCall(object, {
-            comment: result.comment,
-            timeSpent: result.timeSpent,
-            ticketLink: result.ticketLink
-          });
+    console.log(this.mapOfCheckedId)
+    if (this.objectType !== 'WORKFLOW') {
+      if (this.preferences.auditLog) {
+        const comments = {
+          radio: 'predefined',
+          type: this.objectType,
+          operation: 'Remove',
+          name: object ? object.name : ''
+        };
+        const modal = this.modal.create({
+          nzTitle: null,
+          nzContent: CommentModalComponent,
+          nzClassName: 'lg',
+          nzComponentParams: {
+            comments,
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            this.removeApiCall(object, {
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+            });
+          }
+        });
+      } else {
+        const _path = object ? object.path + (object.path === '/' ? '' : '/') + object.name : '';
+        const param: any = {
+          title: 'remove',
+          message: object ? 'removeObject' : '',
+          type: 'Remove',
+          objectName: _path
+        };
+        if (this.mapOfCheckedId.size > 0) {
+          param.countMessage = 'removeAllObject';
+          param.count = this.mapOfCheckedId.size;
         }
-      });
-    } else {
-      const _path = object ? object.path + (object.path === '/' ? '' : '/') + object.name : '';
-      const param: any = {
-        title: 'remove',
-        message: object ? 'removeObject' : '',
-        type: 'Remove',
-        objectName: _path
-      };
-      if (this.mapOfCheckedId.size > 0) {
-        param.countMessage = 'removeAllObject';
-        param.count = this.mapOfCheckedId.size;
+        const modal = this.modal.create({
+          nzTitle: null,
+          nzContent: ConfirmModalComponent,
+          nzComponentParams: param,
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            this.removeApiCall(object, undefined);
+          }
+        });
       }
-      const modal = this.modal.create({
-        nzTitle: null,
-        nzContent: ConfirmModalComponent,
-        nzComponentParams: param,
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          this.removeApiCall(object, undefined);
-        }
-      });
+    } else {
+      if (object) {
+        this.dataService.reloadTree.next({deploy: object, remove: true});
+      } else {
+        this.modal.create({
+          nzTitle: undefined,
+          nzContent: SingleDeployComponent,
+          nzComponentParams: {
+            schedulerIds: [],
+            display: this.preferences.auditLog,
+            data: {
+              path: this.dataObj.path,
+              list: Array.from(this.mapOfCheckedId.values())
+            },
+            releasable: false,
+            isRemoved: true,
+            isChecked: this.inventoryService.checkDeploymentStatus.isChecked
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        }).afterClose.subscribe(result => {
+          if (result) {
+            console.log(result)
+            this.removeApiCall(object, {
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+            });
+          }
+
+        });
+      }
     }
   }
 
@@ -356,6 +422,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       auditLog,
       objects: []
     };
+
     if (object) {
       request.objects.push({
         objectType: object.objectType || object.type,

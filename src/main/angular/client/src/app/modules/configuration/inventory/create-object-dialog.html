@@ -2,7 +2,7 @@
   <h4 class="modal-title" *ngIf="!copy && !restore">
     <span *ngIf="obj.type === 'WORKFLOW'" translate>inventory.label.createWorkflow</span>
     <span *ngIf="obj.type === 'FILEORDERSOURCE'" translate>inventory.label.createFileOrderSource</span>
-    <!--<span *ngIf="obj.type === 'JOBCLASS'" translate>inventory.label.createJobClass</span>-->
+    <span *ngIf="obj.type === 'DEPLOYMENTDESCRIPTOR'" translate>deploymentService.label.createDescriptor</span>
     <span *ngIf="obj.type === 'JOBRESOURCE'" translate>inventory.label.createJobResource</span>
     <span *ngIf="obj.type === 'JOBTEMPLATE'" translate>inventory.label.createJobTemplate</span>
     <span *ngIf="obj.type === 'NOTICEBOARD'" translate>inventory.label.createBoard</span>

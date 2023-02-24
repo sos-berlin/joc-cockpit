@@ -3,9 +3,8 @@
     <span *ngIf="(type === 'Delete' || type === 'Remove') && !resetProfiles">
       <span>{{'common.label.' + title | translate}}</span>
       <span *ngIf="objectName">:
-        {{objectName}}
+        {{objectName}} ?
       </span>
-      ?
     </span>
     <span *ngIf="updateFromJobTemplate">{{'inventory.button.updateFromJobTemplate' | translate}}
       :

@@ -828,7 +828,8 @@
       "editJSON": "Edit JSON",
       "bulkUpdate": "Bulk Update",
       "copy": "Copy",
-      "paste": "Paste"
+      "paste": "Paste",
+      "newDescriptor": "New Descriptor"
     },
     "message": {
       "invalidFile": "Not a valid descriptor file"
@@ -839,7 +840,8 @@
         "title": "Title",
         "account": "Account",
         "scheduled": "Scheduled",
-        "created": "Created"
+        "created": "Created",
+        "createDescriptor": "Create Descriptor"
       },
       "placeholder": {
         "descriptorId": "Enter Descriptor ID",
@@ -1903,7 +1905,9 @@
         "addOrder": {
           "workflowName": "ワークフロー名",
           "arguments": "引数",
-          "remainWhenTerminated": "終了時は留まる"
+          "remainWhenTerminated": "終了時は留まる",
+          "startPosition": "Start Position",
+          "endPositions": "End Positions"
         },
         "lock": {
           "name": "リソースロック名前はインベントリー内で一意です。リソースロックを使用することで、ワークフローのセクションの並列処理を制限できます。",
@@ -3077,6 +3081,8 @@
     "label.addOrder": "オーダー追加",
     "label.workflowPath": "ワークフローパス",
     "label.remainWhenTerminated": "終了時は留まる",
+    "label.startPosition": "Start Position before Instruction",
+    "label.endPositions": "End Positions before Instructions",
     "label.joinIfFailed": "失敗時Join",
     "label.skipIfNoAdmissionForOrderDay": "許可時間ではないときスキップ",
     "label.listOfSchemes": "スキーマリスト",

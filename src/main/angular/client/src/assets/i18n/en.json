@@ -819,7 +819,8 @@
       "installation": "Installation",
       "configuration": "Configuration",
       "certificates": "Certificates",
-      "startFiles": "Start Files"
+      "startFiles": "Start Files",
+      "createDescriptor": "Create Descriptor"
     },
     "button": {
       "showMoreOption": "Show Options",
@@ -828,7 +829,8 @@
       "editJSON": "Edit JSON",
       "bulkUpdate": "Bulk Update",
       "copy": "Copy",
-      "paste": "Paste"
+      "paste": "Paste",
+      "newDescriptor": "New Descriptor"
     },
     "message": {
       "invalidFile": "Not a valid descriptor file"
@@ -1903,10 +1905,12 @@
         "addOrder": {
           "workflowName": "The AddOrder Instruction allows to add an independent order to the specified workflow.",
           "arguments": "Arguments have to be added to the Order if required by the target workflow. Optional arguments can be omitted.",
-          "remainWhenTerminated": "After termination the Order remains with the workflow. This requires to manually perform the operation 'Leave Workflow' that is available from the WORKFLOWS view."
+          "remainWhenTerminated": "After termination the Order remains with the workflow. This requires to manually perform the operation 'Leave Workflow' that is available from the WORKFLOWS view.",
+          "startPosition": "Start Position",
+          "endPositions": "End Positions"
         },
         "lock": {
-          "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parllelism by using Resource Locks.",
+          "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parallelism by using Resource Locks.",
           "count": "The Weight for use of a Resource Lock is calculated towards its capacity. If the capacity is exceeded then the order has to wait until a capacity is available that matches or exceeds the current weight."
         },
         "prompt": {
@@ -3077,6 +3081,8 @@
     "label.addOrder": "Add Order",
     "label.workflowPath": "Workflow Path",
     "label.remainWhenTerminated": "Remain When Terminated",
+    "label.startPosition": "Start Position before Instruction",
+    "label.endPositions": "End Positions before Instructions",
     "label.joinIfFailed": "Join If Failed",
     "label.skipIfNoAdmissionForOrderDay": "Skip Job if no admission for Order's date",
     "label.listOfSchemes": "List of Cycles",
