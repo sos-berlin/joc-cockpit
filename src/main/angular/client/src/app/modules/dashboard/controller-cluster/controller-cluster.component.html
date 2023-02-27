@@ -73,6 +73,9 @@
                 *ngIf="permission.currentController && permission.currentController.switchOver && cluster">
               <a>{{'dashboard.button.switchOver' | translate}}</a>
             </li>
+            <li nz-menu-item (click)="confirmLossNode()" [nzDisabled]="!clusterStatusData?.clusterState?.lossNode" *ngIf="controller && controller.clusterNodeState && controller.clusterNodeState._text === 'active' && permission.currentController" >
+              <a translate>dashboard.button.confirmNodeLoss</a>
+            </li>
             <li nz-menu-item (click)="restartService('cluster')" *ngIf="joc && joc.current && joc.clusterNodeState && joc.clusterNodeState._text == 'active' && permission.joc.cluster.manage" >
               <a translate>dashboard.button.restartCluster</a>
             </li>

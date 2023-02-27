@@ -8,6 +8,7 @@ import {CommentModalComponent} from '../action/action.component';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
+import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 
 declare const mxEditor: any;
 declare const mxUtils: any;
@@ -799,5 +800,25 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
 
   private postCall(url, obj): void {
     this.coreService.post(url, obj).subscribe();
+  }
+
+  confirmLossNode(): void{
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        lossNode: this.clusterStatusData?.clusterState?.lossNode
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.coreService.post('controller/cluster/confirm_node_loss', {
+          controllerId: this.schedulerIds.selected,
+        }).subscribe();
+      }
+    });
   }
 }

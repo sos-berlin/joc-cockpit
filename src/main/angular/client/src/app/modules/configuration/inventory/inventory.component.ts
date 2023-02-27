@@ -5542,21 +5542,23 @@ export class InventoryComponent implements OnInit, OnDestroy {
     object.expanded = false;
     object.deleted = true;
     object.loading = true;
-    this.coreService.post('inventory/remove/folder', {path, auditLog, cancelOrdersDateFrom}).subscribe(() => {
-      object.loading = false;
-      if (node && node.parentNode && node.parentNode.origin) {
-        node.parentNode.origin.children = node.parentNode.origin.children.filter((child) => {
-          return child.path !== path;
-        });
+    this.coreService.post('inventory/remove/folder', {path, auditLog, cancelOrdersDateFrom}).subscribe({
+      next: () => {
+        object.loading = false;
+        if (node && node.parentNode && node.parentNode.origin) {
+          node.parentNode.origin.children = node.parentNode.origin.children.filter((child) => {
+            return child.path !== path;
+          });
+        }
+        this.clearCopyObject(object);
+        if (this.selectedObj && path === this.selectedObj.path) {
+          this.clearSelection();
+        }
+        this.updateTree(false);
+      }, error: () => {
+        object.loading = false;
+        object.deleted = false;
       }
-      this.clearCopyObject(object);
-      if (this.selectedObj && path === this.selectedObj.path) {
-        this.clearSelection();
-      }
-      this.updateTree(false);
-    }, () => {
-      object.loading = false;
-      object.deleted = false;
     });
   }
 

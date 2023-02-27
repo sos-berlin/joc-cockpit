@@ -6,7 +6,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="show-inline">
+          <div class="show-inline" *ngIf="deploymentData?.data">
             <div class="inline" *ngIf="object.setOfCheckedId.size==0">
               <ng-template #titleTemplate>
                 <div *ngFor="let err of errorMessages">
