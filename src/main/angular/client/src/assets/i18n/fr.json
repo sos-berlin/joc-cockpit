@@ -1111,7 +1111,7 @@
         "isPreserveEnv": "L'installation en utilisant 'sudo' préserve les variables d'environnement",
         "javaHome": "Répertoire d'Installation Java",
         "javaOptions": "Options Java",
-        "responseDir": "Répertoire des Réponses",
+        "responseDir": "Répertoire de Réponses",
         "keyStore": "Magasin de Clés",
         "keyStorePassword": "Mot de passe du Magasin de Clés",
         "keyPassword": "Mot de passe Clé",
@@ -1120,9 +1120,9 @@
         "trustStorePassword": "Mot de passe du Magasin de Certificats",
         "templates": "Modèles",
         "jocCert": "JOC Cockpit Fichier Certificat",
-        "httpIni": "Jetty HTTP Fichier Configuration (http.ini)",
-        "httpsIni": "Jetty HTTPS Fichier Configuration (https.ini)",
-        "sslIni": "Jetty SSL Fichier Configuration (ssl.ini)"
+        "httpIni": "Jetty HTTP Configuration (http.ini)",
+        "httpsIni": "Jetty HTTPS Configuration (https.ini)",
+        "sslIni": "Jetty SSL Configuration (ssl.ini)"
       },
       "button": {
         "addJOC": "Ajouter JOC Cockpit",
@@ -1188,8 +1188,8 @@
         "release": "La version du logiciel du JOC Cockpit.",
         "tarball": "L'archive Tarball de l'installation du logiciel du JOC Cockpit. Pour Unix, il s'agit d'une archive .tar.gz, pour Windows d'une archive .zip.",
         "setupDir": "Setup Directory",
-        "home": "Le répertoire d'installation du JOC Cockpit contient des fichiers binaires et des fichiers exécutables. Sous Unix, le répertoire /opt/sos-berlin.com/js7/controller est souvent utilisé. Sous Windows, le répertoire C:/Program Files/sos-berlin.com/js7/controller est souvent utilisé.",
-        "data": "Le répertoire de données du JOC Cockpit contient, entre autres, des fichiers de configuration et des fichiers journaux dans les sous-répertoires 'config' et 'logs'. Sous Unix, le répertoire /var/sos-berlin.com/js7/controller est souvent utilisé. Sous Windows, le répertoire C:/ProgramData/sos-berlin.com/js7/controller est souvent utilisé.",
+        "home": "Le répertoire d'installation du JOC Cockpit contient des fichiers binaires et des fichiers exécutables. Sous Unix, le répertoire /opt/sos-berlin.com/js7/joc est souvent utilisé. Sous Windows, le répertoire C:/Program Files/sos-berlin.com/js7/joc est souvent utilisé.",
+        "data": "Le répertoire de données du JOC Cockpit contient, entre autres, des fichiers de configuration et des fichiers journaux dans les sous-répertoires 'config' et 'logs'. Sous Unix, le répertoire /var/sos-berlin.com/js7/joc est souvent utilisé. Sous Windows, le répertoire C:/ProgramData/sos-berlin.com/js7/joc est souvent utilisé.",
         "homeOwner": "Le compte d'utilisateur qui possède le répertoire d'installation du JOC Cockpit.",
         "dataOwner": "Le compte d'utilisateur qui possède le répertoire de données du JOC Cockpit.",
         "runUser": "Le compte utilisateur qui est utilisé pour le service du JOC Cockpit.",
@@ -1778,7 +1778,7 @@
         "title": "Le Titre de la Condition peut être spécifié à volonté.",
         "toNotice": "Entrer la Condition",
         "endOfLife": "Le délai d'expiration de la Condition détermine sa durée de vie au format hh:mm:ss, par exemple 01:30:00 pour une heure et demie.",
-        "readingOrderToNoticeId": "Entrer la règle pour créer l'ID Annonce pour 'Ordre attendu"
+        "readingOrderToNoticeId": "Entrer la règle pour créer l'ID Annonce pour l'Ordre attendu."
       },
       "lock": {
         "name": "Les verrous de ressources sont utilisés pour implémenter l'exclusion mutuelle pour une séquence de tâche. Ils peuvent être utilisés dans le même workflow et dans tous les workflows pour limiter le parallélisme des tâches. Le nom d'un Verrou est unique dans l'inventaire. Pour le nom du verrou de ressource, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
@@ -2276,7 +2276,7 @@
       "button.addFavorite":"Ajouter Favorite",
       "button.sharedWithMe":"Partagé avec moi",
       "tab.agents":"Agents",
-      "tab.facets":"Facets",
+      "tab.facets":"Contrôle des Entrées",
       "tooltip.sharedByMe":"Partagé par moi",
       "tooltip.sharedWithMe":"Partagé avec moi"
     },
@@ -2370,14 +2370,14 @@
     },
     "gitManagement": {
       "label.manageGitCredentials": "Gérer les Identifiants Git",
-      "label.gitAccount": "Git Compte",
-      "label.gitServer": "Git Server",
+      "label.gitAccount": "Compte Git",
+      "label.gitServer": "Serveur Git",
       "label.userName": "Nom d'utilisateur",
       "label.emailAddress": "Adresse E-Mail",
-      "label.gitPassword": "Git Mot de Passe",
+      "label.gitPassword": "Mot de Passe Git",
       "label.keyfilePath": "Chemin d'accès à la clé privée",
-      "label.gitAccessToken": "Git Jeton d'accès",
-      "label.authenticationType": "Type d'authentification",
+      "label.gitAccessToken": "Jeton d'accès Git",
+      "label.authenticationType": "Méthode d'authentification",
       "label.password": "Mot de passe",
       "label.key": "Clé privée",
       "label.accessToken": "Jeton d'accès",
