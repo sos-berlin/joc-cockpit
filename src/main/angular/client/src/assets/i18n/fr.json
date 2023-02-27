@@ -706,7 +706,7 @@
     "button.restartServiceName": "Redémarrer le Service",
     "button.removeFromInventory": "supprimer de l'inventaire",
     "button.viewAllAgentsDetails": "Voir tous les détails de l'Agent",
-    "button.confirmNodeLoss": "Confirm node loss",
+    "button.confirmNodeLoss": "Confirmer la perte d'une Instance de Contrôleur",
     "message.noWidgetFound": "Aucun widget à ajouter",
     "message.agentStatus": "Le widget graphique circulaire identifie l'état actuel des Agents.",
     "message.agentClusterStatus": "Le widget graphique circulaire identifie l'état actuel des Clusters d'Agents.",
@@ -720,7 +720,7 @@
     "message.fileTransferSummary": "Ce widget affiche l'historique des transferts de fichier.",
     "message.dailyPlanOverview": "Ce widget affiche un aperçu  du plan quotidien.",
     "message.fileTransferHistorySummary": "Ce widget affiche l'historique des transferts de fichier.",
-    "message.confirmNodeLoss": " Confirm that the Controller instance {{lossNode}} is really down."
+    "message.confirmNodeLoss": "Pouvez-vous confirmer que l'Instance du Contrôleur {{lossNode}} ne tourne pas ?"
   },
   "dailyPlan": {
     "label.createPlan": "Créer le plan quotidien",
