@@ -360,9 +360,6 @@ export class CoreService {
     this.tabs._agentCluster.currentPage = '1';
 
     this.tabs._deployment = {};
-    this.tabs._deployment.expandedKeys = ['/'];
-    this.tabs._deployment.selectedkeys = ['/'];
-    this.tabs._deployment.isCompact = true;
   }
 
   setSearchResult(type, result): void {

@@ -15,6 +15,8 @@ import {CreateFolderModalComponent, CreateObjectModalComponent} from "../configu
 import {CoreService} from '../../services/core.service';
 import {AuthService} from "../../components/guard";
 import {DataService} from "../../services/data.service";
+import {CommentModalComponent} from "../../components/comment-modal/comment.component";
+import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.component";
 
 declare const $: any;
 
@@ -254,7 +256,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   tree: any = [];
   trashTree: any = [];
   sideView: any = {};
-  deploymentFilters: any = {};
+  deploymentConfig: any = {};
   data: any = {
     descriptor: {},
     agents: [],
@@ -313,7 +315,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.deploymentFilters = this.coreService.getDeploymentTab();
+    this.deploymentConfig = this.coreService.getDeploymentTab();
     this.sideView = this.coreService.getSideView();
     this.init();
   }
@@ -395,14 +397,43 @@ export class DeploymentComponent implements OnInit, OnDestroy {
             });
           }
         } else {
-          this.tree = tree;
-          this.updateObjects(this.tree[0], false, (children) => {
-            this.isLoading = false;
-            if (this.tree[0].children > 0) {
-              this.tree[0].expanded = true;
+          if (!isEmpty(this.deploymentConfig.expand_to)) {
+            this.tree = this.mergeTree(tree, this.deploymentConfig.expand_to);
+            this.deploymentConfig.expand_to = undefined;
+            this.selectedObj = this.deploymentConfig.selectedObj || {};
+            this.copyObj = this.deploymentConfig.copyObj;
+            if (this.deploymentConfig.selectedObj && this.deploymentConfig.selectedObj.path) {
+              this.updateFolders(this.deploymentConfig.selectedObj.path, false, (response) => {
+                this.isLoading = false;
+                // this.type = this.deploymentConfig.selectedObj.type;
+                // if (response) {
+                //   this.selectedData = response.data;
+                // }
+                console.log(response)
+                this.updateTree(false);
+              });
+            } else {
+              this.isLoading = false;
             }
-            this.updateTree(false);
-          });
+          } else if (!isEmpty(this.deploymentConfig.selectedObj)) {
+            this.tree = tree;
+            this.selectedObj = this.deploymentConfig.selectedObj;
+
+            this.recursivelyExpandTree();
+          } else {
+            this.tree = tree;
+            if (this.tree.length > 0) {
+              this.updateObjects(this.tree[0], false, (children) => {
+                this.isLoading = false;
+
+                this.tree[0].expanded = true;
+                this.updateTree(false);
+              });
+            }
+            if (this.deploymentConfig.selectedObj) {
+              this.deploymentConfig.selectedObj.path = this.tree[0].path;
+            }
+          }
         }
       }, error: () => this.isLoading = false
     });
@@ -590,6 +621,31 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
   }
 
+  private getExpandPaths(): Array<any> {
+    const arr = [];
+    if (this.tree.length > 0) {
+      function traverseTree(data) {
+        if (data.children && data.children.length > 0) {
+          const obj: any = {name: data.name, path: data.path};
+          if (data.children[0].controller) {
+            obj.child1 = data.children[0];
+            obj.child2 = data.children[1];
+            obj.expanded = data.expanded;
+          }
+          arr.push(obj);
+          for (let i = 0; i < data.children.length; i++) {
+            if (!data.children[i].controller && !data.children[i].dailyPlan) {
+              traverseTree(data.children[i]);
+            }
+          }
+        }
+      }
+
+      traverseTree(this.tree[0]);
+    }
+    return arr;
+  }
+
 
   private recursiveTreeUpdate(scr, dest, isTrash): any {
     const self = this;
@@ -721,6 +777,33 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  mergeTree(scr, dest): any {
+    function checkPath(obj) {
+      for (let i = 0; i < dest.length; i++) {
+        if (dest[i].name === obj.name && dest[i].path === obj.path) {
+          obj.expanded = dest[i].expanded;
+          dest.splice(i, 1);
+          break;
+        }
+      }
+    }
+
+    function recursive(scrTree) {
+      if (scrTree) {
+        for (let j = 0; j < scrTree.length; j++) {
+          checkPath(scrTree[j]);
+          if (scrTree[j].children) {
+            recursive(scrTree[j].children);
+          }
+        }
+      }
+    }
+
+    recursive(scr);
+    return scr;
+  }
+
 
   hidePanel(): void {
     this.sideView.deployment.show = false;
@@ -1719,7 +1802,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       });
     }
 
-    this.convertJSON();
+    this.validate(true);
   }
 
   private updateMissingObjects(obj, type): void {
@@ -1861,8 +1944,98 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   removeObject(): void {
-
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: this.node.origin.type || 'Folder',
+        operation: 'Remove',
+        name: this.node.origin.name || this.node.origin.path
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          if (!this.node.origin.type) {
+            this.deleteFolder({
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+            });
+          } else {
+            // obj.auditLog = {
+            //   comment: result.comment,
+            //   timeSpent: result.timeSpent,
+            //   ticketLink: result.ticketLink
+            // };
+          }
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'remove',
+          message: 'removeObject',
+          type: 'Remove',
+          objectName: this.deploymentData.path,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          if (this.node.origin.children) {
+            this.deleteFolder(null);
+          } else {
+            this.node.origin.deleted = true;
+            this.node.origin.loading = true;
+            this.coreService.post('descriptor/remove', {
+              path: this.node.origin.path
+            }).subscribe({
+              next: () => {
+                if (this.deploymentData.name === this.node.origin.name && this.deploymentData.path === this.node.origin.path) {
+                  this.deploymentData = {};
+                }
+              }, error: () => {
+                this.node.origin.deleted = false;
+                this.node.origin.loading = false;
+              }
+            });
+          }
+        }
+      });
+    }
   }
+
+  private deleteFolder(auditLog): void {
+    this.node.origin.expanded = false;
+    this.node.origin.deleted = true;
+    this.node.origin.loading = true;
+    this.coreService.post('descriptor/remove/folder', {path: this.node.origin.path, auditLog}).subscribe({
+      next: () => {
+        this.node.origin.loading = false;
+        if (this.selectedObj && this.node.origin.path === this.selectedObj.path) {
+         // this.clearSelection();
+        }
+        this.updateTree(false);
+      }, error: () => {
+        this.node.origin.loading = false;
+        this.node.origin.deleted = false;
+      }
+    });
+  }
+
 
   editJson(isEdit): void {
 

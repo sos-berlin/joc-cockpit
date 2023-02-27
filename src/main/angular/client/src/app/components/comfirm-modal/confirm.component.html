@@ -10,7 +10,7 @@
       :
       {{updateFromJobTemplate}}
     </span>
-    <span *ngIf="(type !== 'Delete' && type !== 'Remove') || resetProfiles">
+    <span *ngIf="type && (type !== 'Delete' && type !== 'Remove') || resetProfiles">
       <span *ngIf="title">{{'common.label.' + title | translate}}</span>
       <span *ngIf="resetProfiles">?</span>
       <span *ngIf="title2">{{'workflow.button.' + title2 | translate}}</span>
@@ -18,6 +18,7 @@
         {{objectName}}
       </span>
     </span>
+    <span *ngIf="lossNode">{{'common.label.confirm' | translate}}</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -26,6 +27,10 @@
 <div class="modal-body p-a">
   <div class="row text-center">
     <div class="col-sm-12 m-t m-b">
+      <span *ngIf="lossNode" class="text">
+        <span [translateParams]="{lossNode: lossNode}" class="text"
+              translate>dashboard.message.confirmNodeLoss</span>
+      </span>
       <span *ngIf="updateFromJobTemplate" class="text" translate>inventory.message.updateFromJobTemplate</span>
       <span *ngIf="question" class="text">{{question}}</span>
       <span *ngIf="message2" class="text">

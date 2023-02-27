@@ -16,6 +16,7 @@
   "ClusterSwitchedOver": "SwitchedOver",
   "ClusterEmpty": "Empty",
   "ClusterActiveNodeIsNotReady": "ActiveNodeIsNotReady",
+  "ClusterNodeLossToBeConfirmed": "NodeLossToBeConfirmed",
   "healthy": "healthy",
   "ACTIVE": "active",
   "DEAD": "dead",
@@ -705,6 +706,7 @@
     "button.restartServiceName": "Restart Service",
     "button.removeFromInventory": "Remove from Inventory",
     "button.viewAllAgentsDetails": "View all Agent details",
+    "button.confirmNodeLoss": "Confirm node loss",
     "message.noWidgetFound": "No widget found to add",
     "message.agentStatus": "The Pie Chart widget identifies the current component status of Agents",
     "message.agentClusterStatus": "The Pie Chart widget identifies the current status of Agent Clusters",
@@ -717,7 +719,8 @@
     "message.fileTransferOverview": "This widget displays the summary of current File Transfers",
     "message.fileTransferSummary": "This widget displays the history of past File Transfers",
     "message.dailyPlanOverview": "This widget displays the summary of the Daily Plan",
-    "message.fileTransferHistorySummary": "This widget displays the summary of past File Transfers"
+    "message.fileTransferHistorySummary": "This widget displays the summary of past File Transfers",
+    "message.confirmNodeLoss": " Confirm that the Controller instance {{lossNode}} is really down."
   },
   "dailyPlan": {
     "label.createPlan": "Create Daily Plan",

@@ -16,6 +16,7 @@
   "ClusterSwitchedOver": "SwitchedOver",
   "ClusterEmpty": "Empty",
   "ClusterActiveNodeIsNotReady": "ActiveNodeIsNotReady",
+  "ClusterNodeLossToBeConfirmed": "NodeLossToBeConfirmed",
   "healthy": "betriebsfähig",
   "ACTIVE": "aktiv",
   "DEAD": "tot",
@@ -705,6 +706,7 @@
     "button.restartServiceName": "Neustartdienst",
     "button.removeFromInventory": "Aus dem Inventar entfernen",
     "button.viewAllAgentsDetails": "Details aller Agenten",
+    "button.confirmNodeLoss": "Confirm node loss",
     "message.noWidgetFound": "Keine Darstellungskomponente zum Hinzufügen gefunden",
     "message.agentStatus": "Tortendiagramm zur Anzeige des aktuellen Komponentenstatus der Agenten",
     "message.agentClusterStatus": "Tortendiagramm zur Anzeige des aktuellen Cluster Status der Agenten",
@@ -717,7 +719,8 @@
     "message.fileTransferOverview": "Das Steuerelement zeigt die Übersicht der aktuellen Dateiübertragungen",
     "message.fileTransferSummary": "Das Steuerelement zeigt die Historie der Dateiübertragungen",
     "message.dailyPlanOverview": "Das Steuerelement zeigt die Übersicht des Tagesplans",
-    "message.fileTransferHistorySummary": "Das Steuerelement zeigt die Historie der Dateiübertragungen"
+    "message.fileTransferHistorySummary": "Das Steuerelement zeigt die Historie der Dateiübertragungen",
+    "message.confirmNodeLoss": " Confirm that the Controller instance {{lossNode}} is really down."
   },
   "dailyPlan": {
     "label.createPlan": "Tagesplan anlegen",

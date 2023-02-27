@@ -20,6 +20,7 @@ export class ConfirmModalComponent {
   @Input() resetProfiles: any;
   @Input() question: string;
   @Input() updateFromJobTemplate: string;
+  @Input() lossNode: string;
 
   constructor(public activeModal: NzModalRef) {
   }

@@ -15,7 +15,8 @@
   "ClusterFailedOver": "フェイルオーバー",
   "ClusterSwitchedOver": "切戻し",
   "ClusterEmpty": "空き",
-  "ClusterActiveNodeIsNotReady": "アクティブノードは準備できていません",
+    "ClusterActiveNodeIsNotReady": "アクティブノードは準備できていません",
+  "ClusterNodeLossToBeConfirmed": "NodeLossToBeConfirmed",
   "healthy": "正常",
   "ACTIVE": "アクティブ",
   "DEAD": "停止",
@@ -705,6 +706,7 @@
     "button.restartServiceName": "サービス再起動",
     "button.removeFromInventory": " インベントリーから削除",
     "button.viewAllAgentsDetails": "エージェント詳細表示",
+    "button.confirmNodeLoss": "Confirm node loss",
     "message.noWidgetFound": "追加できるウィジェットはありません",
     "message.agentStatus": "パイチャートウィジェットはエージェントのステータスを表示します",
     "message.agentClusterStatus": "パイチャートウィジェットはエージェントクラスターのステータスを表示します",
@@ -717,7 +719,8 @@
     "message.fileTransferOverview": "ファイル転送ステータス表示ウィジェット",
     "message.fileTransferSummary": "ファイル転送実行履歴表示ウィジェット",
     "message.dailyPlanOverview": "実行計画表示ウィジェット",
-    "message.fileTransferHistorySummary": "ファイル転送履歴を表示"
+    "message.fileTransferHistorySummary": "ファイル転送履歴を表示",
+    "message.confirmNodeLoss": " Confirm that the Controller instance {{lossNode}} is really down."
   },
   "dailyPlan": {
     "label.createPlan": "実行計画作成",
