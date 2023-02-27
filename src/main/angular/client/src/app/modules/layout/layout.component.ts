@@ -117,7 +117,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if ((args.eventSnapshots[j].eventType === 'ProblemEvent' || args.eventSnapshots[j].eventType === 'ProblemAsHintEvent') && args.eventSnapshots[j].message) {
-          if (args.eventSnapshots[j].accessToken === this.authService.accessTokenId) {
+          if ((args.eventSnapshots[j].accessToken === this.authService.accessTokenId) || !args.eventSnapshots[j].accessToken) {
             if (args.eventSnapshots[j].eventType === 'ProblemEvent') {
               this.toasterService.error(args.eventSnapshots[j].message);
             } else {
@@ -172,7 +172,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
               if (configuration?.joc) {
                 flag = configuration.joc.disable_warning_on_license_expiration;
               }
-            } 
+            }
             if(!timeZone) {
               timeZone = res.defaultGlobals?.dailyplan?.time_zone?.default;
             }
