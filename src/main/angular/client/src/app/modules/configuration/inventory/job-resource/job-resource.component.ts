@@ -561,8 +561,9 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       this.setErrorMessage(res);
       if (this.jobResource.configuration.env) {
         this.jobResource.configuration.env = this.coreService.convertObjectToArray(this.jobResource.configuration, 'env');
-        this.jobResource.configuration.env.filter((env) => {
-          this.coreService.removeSlashToString(env, 'value');
+        this.jobResource.configuration.env = this.jobResource.configuration.env.filter((argu) => {
+          this.coreService.removeSlashToString(argu, 'value');
+          return argu.name && (argu.value || argu.value == false || argu.value == 0)
         });
       } else {
         this.jobResource.configuration.env = [];
@@ -570,8 +571,9 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       }
       if (this.jobResource.configuration.arguments) {
         this.jobResource.configuration.arguments = this.coreService.convertObjectToArray(this.jobResource.configuration, 'arguments');
-        this.jobResource.configuration.arguments.filter((argu) => {
+        this.jobResource.configuration.arguments = this.jobResource.configuration.arguments.filter((argu) => {
           this.coreService.removeSlashToString(argu, 'value');
+          return argu.name && (argu.value || argu.value == false || argu.value == 0)
         });
       } else {
         this.jobResource.configuration.arguments = [];

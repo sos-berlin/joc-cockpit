@@ -2100,6 +2100,7 @@
       "label": {
         "workflow": "Workflow",
         "orderId": "ID Ordre",
+        "jocId": "JOC ID",
         "job": "Tâche",
         "message": "Message",
         "comment": "Commentaire",
@@ -3153,6 +3154,7 @@
     "button.unskip": "Inclure",
     "button.stop": "Arrêter",
     "button.unstop": "Débloquer",
+    "button.transitionOrders": "Transition Orders",
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",

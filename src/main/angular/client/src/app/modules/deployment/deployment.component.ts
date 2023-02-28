@@ -373,7 +373,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('tree', {
       forDescriptors: true,
-      types: [this.objectType]
+      types: ['DESCRIPTORFOLDER']
     }).subscribe({
       next: res => {
         if (res.folders.length === 0) {
@@ -442,7 +442,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   initTrashTree(path): void {
     this.coreService.post('tree', {
       forDescriptorsTrash: true,
-      types: [this.objectType]
+      types: ['DESCRIPTORFOLDER']
     }).subscribe({
       next: (res: any) => {
         if (res.folders.length > 0) {
@@ -574,7 +574,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
       traverseTree(isTrash ? this.trashTree[0] : this.tree[0]);
     }
-    console.log(matchData, cb)
+    
     if (!matchData && cb) {
       cb();
     }
@@ -1881,7 +1881,13 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         obj.valid = false;
         obj.objectType = obj.type;
         obj.path = PATH;
-        list.push(obj);
+
+        for(let i in list){
+          if(list[i].children){
+            list.splice(i, 0, obj);
+            break;
+          }
+        }
         this.deploymentData = obj;
         this.updateTree(false);
       });

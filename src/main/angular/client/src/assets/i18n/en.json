@@ -2100,6 +2100,7 @@
       "label": {
         "workflow": "Workflow",
         "orderId": "Order ID",
+        "jocId": "JOC ID",
         "job": "Job",
         "message": "Message",
         "comment": "Comment",
@@ -3153,6 +3154,7 @@
     "button.unskip": "Unskip",
     "button.stop": "Stop",
     "button.unstop": "Unstop",
+    "button.transitionOrders": "Transition Orders",
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",

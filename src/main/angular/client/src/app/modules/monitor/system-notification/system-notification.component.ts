@@ -30,7 +30,7 @@ export class SystemNotificationComponent implements OnInit, OnDestroy {
   };
   reloadState = 'no';
 
-  searchableProperties = ['category', 'type', 'section', 'notifier', 'exception', 'message', 'created'];
+  searchableProperties = ['category', 'jocId', 'type', 'section', 'notifier', 'exception', 'message', 'created'];
 
   subscription1: Subscription;
   subscription2: Subscription;

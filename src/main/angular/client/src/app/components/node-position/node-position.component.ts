@@ -58,6 +58,7 @@ export class NodePositionComponent implements OnChanges {
               obj.children.push({
                 title: json.instructions[x].jobName || (json.instructions[x].TYPE !== 'ImplicitEnd' ? json.instructions[x].TYPE : parent ? 'Join' : '--- end ---'),
                 key: json.instructions[x].positionString,
+                label: json.instructions[x].label,
                 disabled: !isEnable,
                 isLeaf: true
               });
@@ -69,6 +70,7 @@ export class NodePositionComponent implements OnChanges {
                   title: json.instructions[x].TYPE,
                   disabled: !isEnable,
                   key: json.instructions[x].positionString,
+                  label: json.instructions[x].label,
                   children: []
                 };
                 if (flag && !skip) {
@@ -79,6 +81,7 @@ export class NodePositionComponent implements OnChanges {
                     let obj1 = {
                       title: json.instructions[x].branches[i].id,
                       disabled: true,
+                      label: json.instructions[x].label,
                       key: json.instructions[x].positionString + json.instructions[x].branches[i].id,
                       children: []
                     };
@@ -104,6 +107,7 @@ export class NodePositionComponent implements OnChanges {
               let _obj = {
                 title: isRetry ? 'Retry' : json.instructions[x].TYPE,
                 key: json.instructions[x].positionString,
+                label: json.instructions[x].label,
                 disabled: !isEnable,
                 children: []
               };
@@ -119,6 +123,7 @@ export class NodePositionComponent implements OnChanges {
                 let obj1 = {
                   title: "catch",
                   disabled: !isEnable,
+                  label: json.instructions[x].label,
                   key: json.instructions[x].positionString + "catch",
                   children: []
                 };
@@ -130,6 +135,7 @@ export class NodePositionComponent implements OnChanges {
               let _obj = {
                 title: json.instructions[x].TYPE,
                 disabled: !isEnable,
+                label: json.instructions[x].label,
                 key: json.instructions[x].positionString,
                 children: []
               };
@@ -143,6 +149,7 @@ export class NodePositionComponent implements OnChanges {
                 let obj1 = {
                   title: "Else",
                   disabled: true,
+                  label: json.instructions[x].label,
                   key: json.instructions[x].positionString,
                   children: []
                 };
@@ -157,6 +164,7 @@ export class NodePositionComponent implements OnChanges {
                 let _obj = {
                   title: json.instructions[x].TYPE,
                   disabled: !isEnable,
+                  label: json.instructions[x].label,
                   key: json.instructions[x].positionString,
                   children: []
                 };
@@ -171,6 +179,7 @@ export class NodePositionComponent implements OnChanges {
                 let _obj = {
                   title: json.instructions[x].TYPE,
                   disabled: !isEnable,
+                  label: json.instructions[x].label,
                   key: json.instructions[x].positionString,
                   children: []
                 };
@@ -185,6 +194,7 @@ export class NodePositionComponent implements OnChanges {
                 let _obj = {
                   title: json.instructions[x].TYPE,
                   disabled: !isEnable,
+                  label: json.instructions[x].label,
                   key: json.instructions[x].positionString,
                   children: []
                 };

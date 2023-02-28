@@ -456,7 +456,7 @@
                           </div>
                           <div class="col-md-6 col-lg-6 m-b-sm">
                             <label class="w-full">
-                              <input autocomplete="off" type="text" class="form-control" name="value{{i}}"
+                              <input [required]="argument.name && argument.name.length > 0" autocomplete="off" type="text" class="form-control" name="value{{i}}"
                                      (keydown)="onKeyPress($event, 'default')"
                                      [(ngModel)]="argument.value"
                                      placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
@@ -555,7 +555,7 @@
                                         [nzNotFoundContent]="'common.message.noDataAvailable' | translate"
                                         [nzValueWith]="valueWith" [nzPrefix]="['$']">
                               <label class="w-full">
-                                <input nz-input nzMentionTrigger autocomplete="off" class="form-control"
+                                <input [required]="env.name && env.name.length > 0" nz-input nzMentionTrigger autocomplete="off" class="form-control"
                                        [(ngModel)]="env.value" name="value{{i}}"
                                        placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
                                        (ngModelChange)="checkValue(env)"/>
@@ -654,7 +654,7 @@
                           </div>
                           <div class="col-md-6 col-lg-6 m-b-sm">
                             <label class="w-full">
-                              <input type="text" class="form-control" [(ngModel)]="argu.value" name="value{{i}}"
+                              <input [required]="argu.name && argu.name.length > 0" type="text" class="form-control" [(ngModel)]="argu.value" name="value{{i}}"
                                      (keydown)="onKeyPress($event, 'argument')"
                                      placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
                             </label>
@@ -745,7 +745,7 @@
                           </div>
                           <div class="col-md-6 col-lg-6 m-b-sm">
                             <label class="w-full">
-                              <input autocomplete="off" type="text" class="form-control" name="value{{i}}"
+                              <input [required]="argument.name && argument.name.length > 0" autocomplete="off" type="text" class="form-control" name="value{{i}}"
                                      (blur)="checkString(argument, 'value')"
                                      (keydown)="onKeyPress($event, 'jobArgument')"
                                      [(ngModel)]="argument.value"
@@ -1058,7 +1058,7 @@
                               [nzNotFoundContent]="'common.message.noDataAvailable' | translate"
                               [nzValueWith]="valueWith" [nzPrefix]="['$']">
                     <label class="w-full">
-                      <input nz-input nzMentionTrigger autocomplete="off" class="form-control"
+                      <input [required]="argument.name && argument.name.length > 0" nz-input nzMentionTrigger autocomplete="off" class="form-control"
                              [(ngModel)]="argument.value" name="value{{i}}"
                              (ngModelChange)="checkValue(argument)" (keydown)="onKeyPress($event, 'node')"
                              placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>

@@ -130,6 +130,7 @@
         <span class="_600">
           <span *ngIf="instruction.TYPE !== 'If' && instruction.TYPE !== 'Cycle'">{{instruction.TYPE}}</span>
           <a class="cursor" (click)="showConfiguration(instruction);" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'">{{instruction.TYPE}}</a><span *ngIf="instruction.TYPE === 'Lock'">:</span>
+         <i class="p-l-xs p-r-xs text-muted" *ngIf="instruction.label">({{instruction.label}})</i>
           <span class="text-muted" *ngIf="instruction.TYPE === 'Lock'">
             <span class="text-muted" *ngFor="let item of instruction.demands">
               <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(item.lockName, 'LOCK');$event.stopPropagation();"
@@ -234,6 +235,7 @@
         </span>
         <span (click)="openWorkflowDependency(instruction);" [ngClass]="{'cursor' : (instruction.TYPE === 'PostNotices' || instruction.TYPE === 'AddOrder')}" *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
           {{instruction.TYPE | translate}}
+          <i class="p-l-xs p-r-xs text-muted" *ngIf="instruction.label">({{instruction.label}})</i>
           <span *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices' || instruction.TYPE === 'AddOrder')">: </span>
           <span *ngIf="instruction.TYPE === 'PostNotices' && instruction.noticeBoardNames">
             <span class="text-muted" *ngFor="let board of instruction.noticeBoardNames">
@@ -250,6 +252,7 @@
             <a class="text-hover-primary" (click)="coreService.showWorkflow(instruction.workflowName);$event.stopPropagation();" >{{instruction.workflowName}}</a>
           </span>
         </span>
+        <i class="p-l-xxs p-r-xs text-muted" *ngIf="instruction.label">({{instruction.label}})</i>
         <i class="p-l-xxs p-r-xs" *ngIf="instruction.state && instruction.state._text">-</i>
         <span *ngIf="instruction.state && instruction.state._text" class="label" [ngClass]="coreService.getColor(instruction.state.severity, 'bg')">{{instruction.state._text | translate}}</span>
         <span class="m-l-md" *ngIf="instruction.orders && instruction.orders.length> 0">

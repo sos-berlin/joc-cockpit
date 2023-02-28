@@ -251,9 +251,9 @@
                     placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
                 </div>
 
-                <div class="col-sm-5 m-b-sm p-r-0">
-                  <input type="text" autocomplete="off" class="form-control" name="value{{i}}"
-                    (keydown)="onKeyPress($event);" [(ngModel)]="param.newValue"
+                <div class="col-sm-5 m-b-sm p-r-0" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                  <input [required]="param.name && param.name.length > 0" type="text" autocomplete="off" class="form-control" name="value{{i}}"
+                    (keydown)="onKeyPress($event);" [(ngModel)]="param.newValue" #value="ngModel"
                     placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
                 </div>
                 <div class="col-sm-1">
@@ -273,7 +273,7 @@
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-primary btn-sm"
-      [disabled]="(!job.javaClass && !job.name) || (job && job.hasRequiredArguments && wizard.step === 1 && node)"
+      [disabled]="!myForm.form.valid || (!job.javaClass && !job.name) || (job && job.hasRequiredArguments && wizard.step === 1 && node)"
       translate>common.button.submit
     </button>
     <button type="button" class="btn btn-secondary btn-sm" *ngIf="wizard.step === 1 && node"

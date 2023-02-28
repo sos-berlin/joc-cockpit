@@ -10,6 +10,14 @@
     (ngModelChange)="selectStartNode($event)"
     [nzShowSearch]="true"
   >
+    <ng-template #nzTreeTemplate let-node>
+      <div class="node-wrapper w-93">
+        <div class="node-content-wrapper">
+          {{node.origin.title}}
+          <i *ngIf="node.origin.label" class="text-muted p-l-xs" translate>({{node.origin.label}})</i>
+        </div>
+      </div>
+    </ng-template>
   </nz-tree-select>
 </ng-container>
 <ng-container *ngIf="type === 'END'">
@@ -25,6 +33,14 @@
     (ngModelChange)="onBlur.emit()"
     [nzShowSearch]="true"
   >
+    <ng-template #nzTreeTemplate let-node>
+      <div class="node-wrapper w-93">
+        <div class="node-content-wrapper">
+          {{node.origin.title}}
+          <i *ngIf="node.origin.label" class="text-muted p-l-xs" translate>({{node.origin.label}})</i>
+        </div>
+      </div>
+    </ng-template>
   </nz-tree-select>
 </ng-container>
 <i class="fa fa-sitemap mt-2 cursor primary-text-hover-color pos-abt m-l-sm" aria-hidden="true"

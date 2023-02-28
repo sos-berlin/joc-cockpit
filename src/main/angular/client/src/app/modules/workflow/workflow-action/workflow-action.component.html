@@ -24,6 +24,9 @@
       <li nz-menu-item *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies" (click)="showDependency(workflow);" >
         <a>{{'workflow.button.showDependency' | translate}} ..</a>
       </li>
+      <li nz-menu-item [nzDisabled]="workflow.state._text === 'NOT_IN_SYNC'" *ngIf="!workflow.isCurrentVersion" (click)="transitionOrders(workflow);" >
+        <a>{{'workflow.button.transitionOrders' | translate}}</a>
+      </li>
       <li nz-menu-item (click)="coreService.copyLink('workflow',workflow.name)" >
         <a translate>common.button.copyLinkToObject</a>
       </li>

@@ -2100,6 +2100,7 @@
       "label": {
         "workflow": "Arbeitsablauf",
         "orderId": "Auftragskennung",
+        "jocId": "JOC ID",
         "job": "Job",
         "message": "Nachricht",
         "comment": "Kommentar",
@@ -3153,6 +3154,7 @@
     "button.unskip": "Einbeziehen",
     "button.stop": "Stoppen",
     "button.unstop": "Entstoppen",
+    "button.transitionOrders": "Transition Orders",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",
