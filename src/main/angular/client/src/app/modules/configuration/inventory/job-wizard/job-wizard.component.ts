@@ -282,10 +282,12 @@ export class JobWizardComponent implements OnInit {
             obj.executable.arguments.push({name: this.job.paramList[i].name, value: this.job.paramList[i].newValue});
           } else if (this.node) {
             if (!this.checkAlreadyExistArgu(this.job.paramList[i])) {
-              this.node.defaultArguments.push({
-                name: this.job.paramList[i].name,
-                value: this.job.paramList[i].newValue + ''
-              });
+              if(this.job.paramList[i].newValue) {
+                this.node.defaultArguments.push({
+                  name: this.job.paramList[i].name,
+                  value: this.job.paramList[i].newValue + ''
+                });
+              }
             }
           }
         }

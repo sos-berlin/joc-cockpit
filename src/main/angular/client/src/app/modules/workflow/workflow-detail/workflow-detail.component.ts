@@ -337,6 +337,57 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.suspendResumeOperation('Suspend');
   }
 
+  transitionOrders(): void {
+    let obj: any = {
+      controllerId: this.schedulerIds.selected,
+      workflowId:{
+        path: this.workFlowJson.path,
+        versionId: this.workFlowJson.versionId
+      }
+    };
+    if (this.preferences.auditLog) {
+      let comments: any = {
+        radio: 'predefined',
+        type: 'Workflow',
+        operation: 'Transition Orders',
+        name: this.workFlowJson.path
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {
+            comment: comments.comment,
+            ticketLink: comments.ticketLink,
+            timeSpent: comments.timeSpent,
+          };
+          this.isProcessing = true;
+          this.coreService.post('workflow/transition', obj).subscribe({
+            next: () => {
+              this.resetAction();
+            }, error: () => this.isProcessing = false
+          });
+        }
+      });
+    } else {
+      this.isProcessing = true;
+      this.coreService.post('workflow/transition', obj).subscribe({
+        next: () => {
+          this.resetAction();
+        }, error: () => this.isProcessing = false
+      });
+    }
+  }
+
   resume(): void {
     this.suspendResumeOperation('Resume');
   }

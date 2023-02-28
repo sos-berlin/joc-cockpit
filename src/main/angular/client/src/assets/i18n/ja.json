@@ -2102,6 +2102,7 @@
       "label": {
         "workflow": "ワークフロー",
         "orderId": "オーダーID",
+        "jocId": "JOC ID",
         "job": "ジョブ",
         "message": "メッセージ",
         "comment": "コメント",
@@ -3155,6 +3156,7 @@
     "button.unskip": "スキップ解除",
     "button.stop": "停止",
     "button.unstop": "停止解除",
+    "button.transitionOrders": "Transition Orders",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",

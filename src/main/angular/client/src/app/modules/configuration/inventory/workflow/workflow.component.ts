@@ -2218,8 +2218,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!isArray(this.selectedNode.job.defaultArguments)) {
         this.selectedNode.job.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.job, 'defaultArguments');
-        this.selectedNode.job.defaultArguments.forEach((argu) => {
+        this.selectedNode.job.defaultArguments = this.selectedNode.job.defaultArguments.filter((argu) => {
           this.coreService.removeSlashToString(argu, 'value');
+          return argu.name && (argu.value || argu.value == false || argu.value == 0)
         });
       }
     }
@@ -2228,8 +2229,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!isArray(this.selectedNode.job.executable.arguments)) {
         this.selectedNode.job.executable.arguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'arguments');
-        this.selectedNode.job.executable.arguments.forEach((argu) => {
+        this.selectedNode.job.executable.arguments = this.selectedNode.job.executable.arguments.filter((argu) => {
           this.coreService.removeSlashToString(argu, 'value');
+          return argu.name && (argu.value || argu.value == false || argu.value == 0)
         });
       }
     }
@@ -2239,8 +2241,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!isArray(this.selectedNode.job.executable.jobArguments)) {
         this.selectedNode.job.executable.jobArguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'jobArguments');
-        this.selectedNode.job.executable.jobArguments.forEach((argu) => {
+        this.selectedNode.job.executable.jobArguments = this.selectedNode.job.executable.jobArguments.filter((argu) => {
           this.coreService.removeSlashToString(argu, 'value');
+          return argu.name && (argu.value || argu.value == false || argu.value == 0)
         });
       }
     }
@@ -2250,8 +2253,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!isArray(this.selectedNode.job.executable.env)) {
         this.selectedNode.job.executable.env = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'env');
-        this.selectedNode.job.executable.env.forEach((env) => {
+        this.selectedNode.job.executable.env = this.selectedNode.job.executable.env.filter((env) => {
           this.coreService.removeSlashToString(env, 'value');
+          return env.name && (env.value || env.value == false || env.value == 0)
         });
       }
     }

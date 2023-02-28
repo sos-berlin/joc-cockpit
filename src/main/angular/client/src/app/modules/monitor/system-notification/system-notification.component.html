@@ -53,6 +53,13 @@
           ></th>
           <th *ngIf="permission.currentController && permission.currentController.orders.modify" class="menu"><span translate>common.label.action</span></th>
           <th nzWidth="35px"><span translate>#</span></th>
+          <th (click)="sort('jocId')">
+            <a><span class="p-r-xs" translate>monitor.notification.label.jocId</span>
+              <i *ngIf="filters.filter.sortBy == 'jocId' && !filters.filter.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="filters.filter.sortBy == 'jocId' && filters.filter.reverse"
+                 class="fa fa-caret-down "></i></a>
+          </th>
           <th (click)="sort('category')">
             <a><span class="p-r-xs" translate>monitor.notification.label.category</span>
             <i *ngIf="filters.filter.sortBy == 'category' && !filters.filter.reverse"
@@ -125,6 +132,9 @@
                  (click)="showDetail(notify);$event.stopPropagation()"></i>
               <i class="cursor fa fa-caret-up fa-lg" *ngIf="notify.show && notify.hasMonitors"
                  (click)="notify.show = false;$event.stopPropagation()"></i>&nbsp;
+              <span [innerHtml]="notify.jocId | highlight : filters.filter.searchText"></span>
+            </td>
+            <td  (click)="$event.stopPropagation()">
               <span [innerHtml]="notify.category | highlight : filters.filter.searchText"></span>
             </td>
             <td  (click)="$event.stopPropagation()">
@@ -174,13 +184,13 @@
           </tr>
           <ng-container *ngIf="notify.show">
             <tr *ngIf="!notify.isLoaded">
-              <td colspan="10" class="text-center">
+              <td colspan="11" class="text-center">
                 <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
               </td>
             </tr>
             <tr *ngIf="notify.monitors && notify.monitors.length> 0">
               <td></td>
-              <td colspan="9" style="padding:0 !important;">
+              <td colspan="10" style="padding:0 !important;">
                 <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
                           [nzData]="notify.monitors" [nzShowPagination]="false" [nzFrontPagination]="false">
                   <thead>

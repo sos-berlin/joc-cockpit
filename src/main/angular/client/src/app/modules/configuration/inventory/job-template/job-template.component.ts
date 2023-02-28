@@ -551,8 +551,9 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
     } else {
       if (!isArray(this.job.configuration.executable.jobArguments)) {
         this.job.configuration.executable.jobArguments = this.coreService.convertObjectToArray(this.job.configuration.executable, 'jobArguments');
-        this.job.configuration.executable.jobArguments.filter((argu) => {
+        this.job.configuration.executable.jobArguments = this.job.configuration.executable.jobArguments.filter((argu) => {
           this.coreService.removeSlashToString(argu, 'value');
+          return argu.name && (argu.value || argu.value == false || argu.value == 0)
         });
       }
     }
@@ -562,8 +563,9 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
     } else {
       if (!isArray(this.job.configuration.executable.env)) {
         this.job.configuration.executable.env = this.coreService.convertObjectToArray(this.job.configuration.executable, 'env');
-        this.job.configuration.executable.env.filter((env) => {
+        this.job.configuration.executable.env = this.job.configuration.executable.env.filter((env) => {
           this.coreService.removeSlashToString(env, 'value');
+          return env.name && (env.value || env.value == false || env.value == 0)
         });
       }
     }

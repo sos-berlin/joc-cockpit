@@ -373,7 +373,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('tree', {
       forDescriptors: true,
-      types: [this.objectType]
+      types: ['DESCRIPTORFOLDER']
     }).subscribe({
       next: res => {
         if (res.folders.length === 0) {
@@ -442,7 +442,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   initTrashTree(path): void {
     this.coreService.post('tree', {
       forDescriptorsTrash: true,
-      types: [this.objectType]
+      types: ['DESCRIPTORFOLDER']
     }).subscribe({
       next: (res: any) => {
         if (res.folders.length > 0) {
@@ -521,19 +521,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
             self.updateObjects(data, self.isTrash, (children) => {
               if (children.length > 0) {
                 const parentNode = children[0];
-                if (self.selectedObj.path === parentNode.path) {
-                  parentNode.expanded = true;
 
-                  for (let k = 0; k < parentNode.children.length; k++) {
-                    if (parentNode.children[k].name === self.selectedObj.name) {
-                      self.deploymentData = parentNode.children[k];
-                      break;
-                    }
-                  }
-
-                  self.isLoading = false;
-                  self.updateTree(self.isTrash);
-                }
               }
             });
           }
@@ -556,7 +544,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       function traverseTree(data) {
         if (path && data.path && (path === data.path)) {
           self.updateObjects(data, isTrash, (children) => {
-            if (children.length > 0) {
+            if (children?.length > 0) {
               let folders = data.children;
               data.children = children;
               if (folders.length > 0) {
@@ -574,27 +562,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         if (data.children) {
           let flag = false;
           for (let i = 0; i < data.children.length; i++) {
-            if (data.children[i].controller || data.children[i].dailyPlan) {
-              for (let j = 0; j < data.children[i].children.length; j++) {
-                const x = data.children[i].children[j];
-                if (self.selectedObj.type && (x.object === self.selectedObj.type || (x.object.match('CALENDAR') && self.selectedObj.type.match('CALENDAR'))) &&
-                  x.path === self.selectedObj.path && cb) {
-                  flag = true;
-                  let isMatch = false;
-                  for (let k = 0; k < x.children.length; k++) {
-                    if (x.children[k].name === self.selectedObj.name) {
-                      isMatch = true;
-                      cb({data: x.children[k], parentNode: data.children[i]});
-                      break;
-                    }
-                  }
-                  if (!isMatch) {
-                    cb({data: x, parentNode: data.children[i]});
-                  }
-                  break;
-                }
-              }
-            }
             if (!matchData) {
               traverseTree(data.children[i]);
             }
@@ -607,7 +574,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
       traverseTree(isTrash ? this.trashTree[0] : this.tree[0]);
     }
-    console.log(matchData, cb)
+    
     if (!matchData && cb) {
       cb();
     }
@@ -661,28 +628,23 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           }
           for (let i = 0; i < destTree.length; i++) {
             if (destTree[i].path && scrTree[j].path && (destTree[i].path === scrTree[j].path)) {
-              if (scrTree[j].object && destTree[i].object) {
-                if (scrTree[j].object === destTree[i].object) {
-                  scrTree[j].expanded = destTree[i].expanded;
-                }
-              } else if (scrTree[j].name === destTree[i].name && scrTree[j].path === destTree[i].path) {
+              if (scrTree[j].name === destTree[i].name && scrTree[j].path === destTree[i].path) {
                 scrTree[j].expanded = destTree[i].expanded;
               }
-              if (destTree[i].children && destTree[i].children.length > 0 && !destTree[i].object) {
+              if (destTree[i].children && destTree[i].children.length > 0) {
                 const arr = [];
                 for (let x = 0; x < destTree[i].children.length; x++) {
-                  if (destTree[i].children[x].controller) {
-                    arr.push(destTree[i].children[x]);
-                  }
-                  if (destTree[i].children[x].dailyPlan) {
+                  if (destTree[i].children[x].objectType) {
                     arr.push(destTree[i].children[x]);
                   }
                 }
+                console.log('arr', arr)
+                console.log(scrTree[j])
                 if (arr.length > 0) {
                   scrTree[j].children = arr.concat(scrTree[j].children || []);
                 }
               }
-              if (scrTree[j].children && destTree[i].children && !destTree[i].object) {
+              if (scrTree[j].children && destTree[i].children) {
                 recursive(scrTree[j].children, destTree[i].children);
               }
               break;
@@ -1860,9 +1822,9 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       nzClosable: false,
       nzMaskClosable: false
     });
-    modal.afterClose.subscribe(path => {
-      if (path) {
-        this.initTree(path, null);
+    modal.afterClose.subscribe(res => {
+      if (res) {
+        this.initTree(this.node.origin.path, null);
       }
     });
   }
@@ -1870,7 +1832,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   addObject(): void {
     this.node.isExpanded = true;
     const object = this.node.origin;
-    console.log(object, 'object')
     this.createObject(object);
   }
 
@@ -1920,7 +1881,13 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         obj.valid = false;
         obj.objectType = obj.type;
         obj.path = PATH;
-        list.push(obj);
+
+        for(let i in list){
+          if(list[i].children){
+            list.splice(i, 0, obj);
+            break;
+          }
+        }
         this.deploymentData = obj;
         this.updateTree(false);
       });
@@ -1964,18 +1931,18 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          if (!this.node.origin.type) {
+          if (!this.node.origin.objectType) {
             this.deleteFolder({
               comment: result.comment,
               timeSpent: result.timeSpent,
               ticketLink: result.ticketLink
             });
           } else {
-            // obj.auditLog = {
-            //   comment: result.comment,
-            //   timeSpent: result.timeSpent,
-            //   ticketLink: result.ticketLink
-            // };
+            this.deleteObject({
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+            });
           }
         }
       });
@@ -1998,24 +1965,32 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           if (this.node.origin.children) {
             this.deleteFolder(null);
           } else {
-            this.node.origin.deleted = true;
-            this.node.origin.loading = true;
-            this.coreService.post('descriptor/remove', {
-              path: this.node.origin.path
-            }).subscribe({
-              next: () => {
-                if (this.deploymentData.name === this.node.origin.name && this.deploymentData.path === this.node.origin.path) {
-                  this.deploymentData = {};
-                }
-              }, error: () => {
-                this.node.origin.deleted = false;
-                this.node.origin.loading = false;
-              }
-            });
+            this.deleteObject(null);
           }
         }
       });
     }
+  }
+
+  private deleteObject(auditLog): void {
+    this.node.origin.expanded = false;
+    this.node.origin.deleted = true;
+    this.node.origin.loading = true;
+    this.coreService.post('descriptor/remove', {
+      paths: [{path: this.node.origin.path, objectType: this.objectType}],
+      auditLog
+    }).subscribe({
+      next: () => {
+        this.node.origin.loading = false;
+        if (this.selectedObj && this.node.origin.path === this.selectedObj.path) {
+          this.selectedObj = {};
+        }
+        this.updateTree(false);
+      }, error: () => {
+        this.node.origin.loading = false;
+        this.node.origin.deleted = false;
+      }
+    });
   }
 
   private deleteFolder(auditLog): void {
@@ -2025,9 +2000,9 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     this.coreService.post('descriptor/remove/folder', {path: this.node.origin.path, auditLog}).subscribe({
       next: () => {
         this.node.origin.loading = false;
-        if (this.selectedObj && this.node.origin.path === this.selectedObj.path) {
-         // this.clearSelection();
-        }
+        // if (this.selectedObj && this.node.origin.path === this.selectedObj.path) {
+        //   // this.clearSelection();
+        // }
         this.updateTree(false);
       }, error: () => {
         this.node.origin.loading = false;

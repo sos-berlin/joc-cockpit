@@ -73,6 +73,10 @@
               class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
                                                            translate>order.button.resume</span>
             </button>
+            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="transitionOrders()" [disabled]="workflow?.state?._text === 'NOT_IN_SYNC'"
+                    *ngIf="!workflow.isCurrentVersion"><i class="fa fa-exchange"></i>
+              &nbsp;<span class="hidden-sm-down" translate>workflow.button.transitionOrders</span>
+            </button>
             <div class="btn-group m-l-12">
               <button class="btn btn-grey btn-sm" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies"
                       [ngClass]="{'btn-primary': pageView=='graph'}" (click)="setView('graph')"><i class="fa fa-codepen"></i>

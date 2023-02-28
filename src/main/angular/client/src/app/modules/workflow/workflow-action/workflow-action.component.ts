@@ -562,6 +562,57 @@ export class WorkflowActionComponent {
     this.router.navigate(['/workflows/workflow_detail', this.workflow.path, this.workflow.versionId]).then();
   }
 
+  transitionOrders(workflow): void{
+    let obj: any = {
+      controllerId: this.schedulerId,
+      workflowId:{
+        path: workflow.path,
+        versionId: workflow.versionId
+      }
+    };
+    if (this.preferences.auditLog) {
+      let comments: any = {
+        radio: 'predefined',
+        type: 'Workflow',
+        operation: 'Transition Orders',
+        name: workflow.path
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {
+            comment: comments.comment,
+            ticketLink: comments.ticketLink,
+            timeSpent: comments.timeSpent,
+          };
+          this.isChanged.emit({flag: true});
+          this.coreService.post('workflow/transition', obj).subscribe({
+            next: () => {
+              this.resetAction();
+            }, error: () => this.isChanged.emit({flag: false})
+          });
+        }
+      });
+    } else {
+      this.isChanged.emit({flag: true});
+      this.coreService.post('workflow/transition', obj).subscribe({
+        next: () => {
+          this.resetAction();
+        }, error: () => this.isChanged.emit({flag: false})
+      });
+    }
+  }
+
   suspend(workflow, paths?, cb?): void {
     this.suspendResumeOperation('Suspend', workflow, paths, cb);
   }
