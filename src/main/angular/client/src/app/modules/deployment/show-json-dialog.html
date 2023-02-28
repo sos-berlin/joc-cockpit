@@ -1,6 +1,8 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>inventory.label.editJson</span>
+    <span *ngIf="isEdit" translate>inventory.label.editJson</span>
+    <span *ngIf="!isEdit" translate>inventory.label.showJson</span>:
+    <span class="text-muted">{{name}}</span>
   </h4>
   <a class="max-btn" appMaximum>
     <i class="fa fa-window-maximize"></i>
@@ -12,7 +14,7 @@
 <form (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="row">
-      <div class="col-md-12" [ngClass]="{'error-input': isError}">
+      <div class="col-md-12" [ngClass]="{'error-input': isError, 'json-editor-readonly': !isEdit}">
         <json-editor [options]="options" [data]="data" #editor></json-editor>
       </div>
       <div class="col-md-12" *ngIf="isError">
@@ -23,7 +25,7 @@
     </div>
   </div>
   <div class="modal-footer">
-   <button type="submit" [disabled]="submitted || isError" class="btn btn-primary btn-sm">
+    <button type="submit" *ngIf="isEdit" [disabled]="submitted || isError" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
@@ -31,7 +33,8 @@
             (click)="copyToClipboard()" translate>log.button.copyToClipboard
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()">
-      <span translate>common.button.cancel</span>
+      <span *ngIf="isEdit" translate>common.button.cancel</span>
+      <span *ngIf="!isEdit" translate>common.button.close</span>
     </button>
   </div>
 </form>

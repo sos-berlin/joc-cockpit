@@ -95,7 +95,7 @@
                     <ng-template #nzTreeTemplate let-node>
                       <div class="node-wrapper" [ngClass]="{'disable-link': node.origin.deleted && !isTrash}">
                          <span (click)="openFolder(node)"
-                           *ngIf="node.origin.loading || node.origin.isArrow || (node.origin.children && node.origin.children.length > 0)"
+                           *ngIf="node.origin.loading || (node.origin.children && node.origin.children.length > 0)"
                            [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
                            [class.toggle-children-wrapper-expanded]="node.isExpanded"
                            [ngClass]="{'m-l-0': node.origin.path === '/'}"
@@ -107,7 +107,7 @@
                            <i *ngIf="node.origin.loading"><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
                         </span>
 
-                        <span *ngIf="(!node.origin.children || node.children.length === 0)">
+                        <span *ngIf="!node.origin.loading && (!node.origin.children || node.children.length === 0)">
                           <span class="p-r"></span>
                         </span>
                         <button (click)="openMenu(node, $event)" class="btn-drop more-option-h" type="button">
@@ -2614,6 +2614,13 @@
     <li nz-menu-item (click)="importJSON()"
         *ngIf="!node.origin.children">
       <a translate>inventory.button.uploadJSON</a>
+    </li>
+  </ul>
+  <ul nz-menu *ngIf="isTrash && node?.origin && permission.joc">
+    <li nz-menu-item (click)="deletePermanently(node);" *ngIf="permission.joc.inventory.manage" class="bg-hover-color">
+      <a translate>inventory.button.delete</a></li>
+    <li nz-menu-item (click)="restoreObject(node);">
+      <a translate>inventory.button.restore</a>
     </li>
   </ul>
 </nz-dropdown-menu>
