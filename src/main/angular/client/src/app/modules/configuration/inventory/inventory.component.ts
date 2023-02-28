@@ -2476,7 +2476,7 @@ export class ImportWorkflowModalComponent implements OnInit {
   onFileSelected(event: any): void {
     const item = event['0'];
     let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
-    if(fileExt){
+    if (fileExt) {
       fileExt = fileExt.toLowerCase();
     }
     if (fileExt && (fileExt === 'zip' || fileExt.match(/tar/) || fileExt.match(/gz/))) {
@@ -2727,6 +2727,7 @@ export class CreateObjectModalComponent implements OnInit {
   @Input() copy: any;
   @Input() restore: boolean;
   @Input() allowPath: boolean;
+  @Input() type: string;
   isValid = true;
   submitted = false;
   settings: any = {};
@@ -2835,12 +2836,13 @@ export class CreateObjectModalComponent implements OnInit {
       suffix: data.suffix,
       prefix: data.prefix
     };
+
     if (this.obj.objectType) {
-      request.newPath = obj.path + (obj.path === '/' ? '' : '/') + (data.newName ? data.newName : obj.name);
-      request.path = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
+      request.newPath = this.type ? (obj.path.substring(0, obj.path.lastIndexOf('/') + 1) + (data.newName ? data.newName : obj.name)) : (obj.path + (obj.path === '/' ? '' : '/') + (data.newName ? data.newName : obj.name));
+      request.path = this.type ? obj.path : (obj.path + (obj.path === '/' ? '' : '/') + obj.name);
       request.objectType = this.obj.objectType;
     } else {
-      request.objectType = 'FOLDER';
+      request.objectType = this.type ? 'DESCRIPTORFOLDER' : 'FOLDER';
       const tempPath = obj.path.substring(0, obj.path.lastIndexOf('/'));
       request.newPath = data.newName ? (tempPath + (tempPath === '/' ? '' : '/') + data.newName) : obj.path;
       request.path = obj.path;
@@ -2848,7 +2850,7 @@ export class CreateObjectModalComponent implements OnInit {
 
     request.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, request.auditLog);
-    this.coreService.post('inventory/trash/restore', request).subscribe({
+    this.coreService.post(this.type ? 'descriptor/trash/restore' : 'inventory/trash/restore', request).subscribe({
       next: (res) => {
         this.activeModal.close(res);
       }, error: () => {

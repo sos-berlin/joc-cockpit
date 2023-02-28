@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {isEmpty, isArray, isEqual, clone} from 'underscore';
+import {isEmpty, isArray, isEqual} from 'underscore';
 import {saveAs} from 'file-saver';
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
@@ -8,15 +8,15 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {FileUploader} from "ng2-file-upload";
 import {TranslateService} from "@ngx-translate/core";
 import {ToastrService} from "ngx-toastr";
-import {Subject, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {NzContextMenuService, NzDropdownMenuComponent} from "ng-zorro-antd/dropdown";
 import {CreateFolderModalComponent, CreateObjectModalComponent} from "../configuration/inventory/inventory.component";
+import {CommentModalComponent} from "../../components/comment-modal/comment.component";
+import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.component";
 import {CoreService} from '../../services/core.service';
 import {AuthService} from "../../components/guard";
 import {DataService} from "../../services/data.service";
-import {CommentModalComponent} from "../../components/comment-modal/comment.component";
-import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.component";
 
 declare const $: any;
 
@@ -194,7 +194,8 @@ export class BulkUpdateModalComponent implements OnInit {
 })
 export class ShowJsonModalComponent implements OnInit {
   @Input() object: any;
-  @Input() schedulerId: any;
+  @Input() name: string;
+  @Input() isEdit: any;
   submitted = false;
   isError = false;
   data: any;
@@ -206,6 +207,9 @@ export class ShowJsonModalComponent implements OnInit {
   constructor(public coreService: CoreService, private clipboardService: ClipboardService, public activeModal: NzModalRef,
               private message: NzMessageService) {
     this.options.mode = 'code';
+    this.options.onEditable = () => {
+      return this.isEdit;
+    };
     this.options.onChange = () => {
       try {
         this.isError = false;
@@ -382,6 +386,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         const tree = this.coreService.prepareTree(res, false);
         if (path) {
           this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
+          console.log(JSON.stringify(this.tree));
           this.updateFolders(path, false, (response) => {
             this.updateTree(false);
             if (redirect) {
@@ -1404,7 +1409,9 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzClassName: 'lg',
       nzComponentParams: {
-        object: this.deploymentData.mainObj
+        object: this.deploymentData.mainObj,
+        name: this.deploymentData.path,
+        isEdit: true
       },
       nzFooter: null,
       nzClosable: false,
@@ -1824,7 +1831,8 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(res => {
       if (res) {
-        this.initTree(this.node.origin.path, null);
+        this.node?.origin.children.push(res);
+        this.updateTree(false);
       }
     });
   }
@@ -1881,12 +1889,16 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         obj.valid = false;
         obj.objectType = obj.type;
         obj.path = PATH;
-
-        for(let i in list){
-          if(list[i].children){
+        let flag = true;
+        for (let i in list) {
+          if (list[i].children) {
             list.splice(i, 0, obj);
+            flag = false;
             break;
           }
+        }
+        if (flag) {
+          list.push(obj);
         }
         this.deploymentData = obj;
         this.updateTree(false);
@@ -1982,10 +1994,16 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: () => {
         this.node.origin.loading = false;
-        if (this.selectedObj && this.node.origin.path === this.selectedObj.path) {
-          this.selectedObj = {};
+        if (this.deploymentData && this.node.origin.path === this.deploymentData.path) {
+          this.deploymentData = {};
         }
-        this.updateTree(false);
+        setTimeout(() => {
+          this.node.parentNode.origin.children = this.node.parentNode.origin.children.filter(item => {
+            return item.name != this.node.origin.name;
+          });
+          this.updateTree(false);
+        }, 500)
+        // this.updateTree(false);
       }, error: () => {
         this.node.origin.loading = false;
         this.node.origin.deleted = false;
@@ -2000,10 +2018,16 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     this.coreService.post('descriptor/remove/folder', {path: this.node.origin.path, auditLog}).subscribe({
       next: () => {
         this.node.origin.loading = false;
-        // if (this.selectedObj && this.node.origin.path === this.selectedObj.path) {
-        //   // this.clearSelection();
-        // }
-        this.updateTree(false);
+        if (this.deploymentData && this.node.origin.path === this.deploymentData.path) {
+          this.deploymentData = {};
+        }
+        setTimeout(() => {
+          this.node.parentNode.origin.children = this.node.parentNode.origin.children.filter(item => {
+            return item.name != this.node.origin.name;
+          });
+          this.updateTree(false);
+        }, 500)
+        //this.updateTree(false);
       }, error: () => {
         this.node.origin.loading = false;
         this.node.origin.deleted = false;
@@ -2011,16 +2035,158 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     });
   }
 
-
-  editJson(isEdit): void {
-
+  deletePermanently(node: any): void {
+    let object = node;
+    if (node instanceof NzTreeNode) {
+      object = node.origin;
+    }
+    let obj: any = {paths: []};
+    if (!object.objectType) {
+      obj = {path: object.path};
+    } else {
+      obj.paths.push({
+        objectType: object.objectType,
+        path: object.path
+      });
+    }
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: object.objectType || 'Folder',
+        operation: 'Delete',
+        name: object.name || object.path
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          const URL = object.objectType ? 'descriptor/trash/delete' : 'descriptor/trash/delete/folder';
+          this.coreService.post(URL, obj).subscribe();
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteObject',
+          type: 'Delete',
+          objectName: object.path
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          const URL = object.objectType ? 'descriptor/trash/delete' : 'descriptor/trash/delete/folder';
+          this.coreService.post(URL, obj).subscribe();
+        }
+      });
+    }
   }
 
-  exportJSON(): void {
+  restoreObject(node: any): void {
+    let object = node;
+    if (node instanceof NzTreeNode) {
+      object = node.origin;
+    }
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateObjectModalComponent,
+      nzAutofocus: null,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        preferences: this.preferences,
+        obj: object,
+        type: this.objectType,
+        restore: true
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
 
+  editJson(isEdit): void {
+    this.coreService.post('descriptor/read', {
+      path: this.node.origin.path,
+    }).subscribe((res: any) => {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: ShowJsonModalComponent,
+        nzAutofocus: null,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          object: res.configuration,
+          name: this.node.origin.path,
+          isEdit
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this.storeData(this.node.origin, result);
+        }
+      });
+    });
   }
 
   importJSON(): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: UploadModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {},
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.storeData(this.node.origin, result);
+      }
+    });
+  }
 
+  exportJSON(): void {
+    this.coreService.post('descriptor/read', {
+      path: this.node.origin.path,
+    }).subscribe((res: any) => {
+      const name = res.configuration.descriptor.descriptorId + '-descriptor' + '.json';
+      const fileType = 'application/octet-stream';
+      const data = JSON.stringify(res.configuration, undefined, 2);
+      const blob = new Blob([data], {type: fileType});
+      saveAs(blob, name);
+    });
+  }
+
+  private storeData(data, conf): void{
+    const request: any = {
+      objectType: data.objectType,
+      path: data.path,
+      configuration: conf
+    };
+
+    this.coreService.post('descriptor/store', request).subscribe(() => {
+      data.valid = false;
+    });
   }
 }
