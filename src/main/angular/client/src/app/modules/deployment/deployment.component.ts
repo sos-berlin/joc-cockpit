@@ -326,9 +326,34 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.coreService.setSideView(this.sideView);
+    this.deploymentConfig.expand_to = [];
+    this.deploymentConfig.selectedObj = this.selectedObj;
+    this.navFullTree();
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     $('.scroll-y').remove();
+  }
+
+  private traverseTree(data): void {
+    data.children.forEach((item) => {
+      if (item.expanded) {
+        this.deploymentConfig.expand_to.push(item.key);
+      }
+      if (item.children) {
+        this.traverseTree(item);
+      }
+    });
+  }
+
+  private navFullTree(): void {
+    this.tree.forEach((item) => {
+      if (item.expanded) {
+        this.deploymentConfig.expand_to.push(item.key);
+      }
+      if (item.children) {
+        this.traverseTree(item);
+      }
+    });
   }
 
 
@@ -353,6 +378,9 @@ export class DeploymentComponent implements OnInit, OnDestroy {
                 paths = paths.filter((path) => {
                   return path !== args.eventSnapshots[j].path;
                 });
+                this.updateFolders(args.eventSnapshots[j].path, isTrash, () => {
+                  this.updateTree(isTrash);
+                });
               }
             }
           }
@@ -360,7 +388,16 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       }
     }
     if (loadTree) {
-      console.log('>>', paths)
+      this.reloadTree(_isTrash);
+      if (paths.length > 0) {
+        paths.forEach((path, index) => {
+          this.updateFolders(path, _isTrash, () => {
+            if (index == paths.length - 1) {
+              this.updateTree(_isTrash);
+            }
+          });
+        });
+      }
     }
   }
 
@@ -386,15 +423,9 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         const tree = this.coreService.prepareTree(res, false);
         if (path) {
           this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
-          console.log(JSON.stringify(this.tree));
           this.updateFolders(path, false, (response) => {
             this.updateTree(false);
-            if (redirect) {
-              if (response) {
-                response.expanded = true;
-              }
-              // this.clearSelection();
-            }
+            console.log(response)
           }, redirect);
           if (mainPath && path !== mainPath) {
             this.updateFolders(mainPath, false, () => {
@@ -402,41 +433,20 @@ export class DeploymentComponent implements OnInit, OnDestroy {
             });
           }
         } else {
+          this.selectedObj = this.deploymentConfig.selectedObj || {};
           if (!isEmpty(this.deploymentConfig.expand_to)) {
             this.tree = this.mergeTree(tree, this.deploymentConfig.expand_to);
             this.deploymentConfig.expand_to = undefined;
-            this.selectedObj = this.deploymentConfig.selectedObj || {};
             this.copyObj = this.deploymentConfig.copyObj;
-            if (this.deploymentConfig.selectedObj && this.deploymentConfig.selectedObj.path) {
-              this.updateFolders(this.deploymentConfig.selectedObj.path, false, (response) => {
-                this.isLoading = false;
-                // this.type = this.deploymentConfig.selectedObj.type;
-                // if (response) {
-                //   this.selectedData = response.data;
-                // }
-                console.log(response)
-                this.updateTree(false);
-              });
-            } else {
-              this.isLoading = false;
-            }
-          } else if (!isEmpty(this.deploymentConfig.selectedObj)) {
-            this.tree = tree;
-            this.selectedObj = this.deploymentConfig.selectedObj;
-
-            this.recursivelyExpandTree();
+            this.isLoading = false;
           } else {
             this.tree = tree;
             if (this.tree.length > 0) {
-              this.updateObjects(this.tree[0], false, (children) => {
+              this.updateObjects(this.tree[0], false, () => {
                 this.isLoading = false;
-
                 this.tree[0].expanded = true;
                 this.updateTree(false);
               });
-            }
-            if (this.deploymentConfig.selectedObj) {
-              this.deploymentConfig.selectedObj.path = this.tree[0].path;
             }
           }
         }
@@ -444,7 +454,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     });
   }
 
-  initTrashTree(path): void {
+  private initTrashTree(path): void {
     this.coreService.post('tree', {
       forDescriptorsTrash: true,
       types: ['DESCRIPTORFOLDER']
@@ -469,93 +479,37 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     });
   }
 
-  recursivelyExpandTree(): void {
-    if (this.selectedObj.type) {
-      this.coreService.post('descriptor/read', {
-        path: this.selectedObj.name
-      }).subscribe({
-        next: (res) => {
-          this.findObjectByPath(res.path);
-        }, error: () => {
-          this.updateObjects(this.tree[0], this.isTrash, () => {
-            this.isLoading = false;
-            if (this.tree[0].length > 0) {
-              this.tree[0].expanded = true;
-            }
-            this.updateTree(this.isTrash);
-          });
-        }
-      });
+  private reloadTree(isTrash): void {
+    const obj: any = {
+      types: ['DESCRIPTORFOLDER']
+    };
+    if (isTrash) {
+      obj.forDescriptorsTrash = true;
+    } else {
+      obj.forDescriptors = true;
     }
-  }
-
-  private findObjectByPath(path): void {
-    this.deploymentData.path = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
-    const pathArr = [];
-    const arr = this.deploymentData.path.split('/');
-    const len = arr.length;
-    if (len > 1) {
-      for (let i = 0; i < len; i++) {
-        if (arr[i]) {
-          if (i > 0 && pathArr[i - 1]) {
-            pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
-          } else {
-            pathArr.push('/' + arr[i]);
-          }
+    this.coreService.post('tree', obj).subscribe({
+      next: (res: any) => {
+        const tree = this.coreService.prepareTree(res, false);
+        if (isTrash) {
+          this.trashTree = this.recursiveTreeUpdate(tree, this.trashTree, true);
         } else {
-          pathArr.push('/');
+          this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
         }
       }
-    }
-
-    const self = this;
-    if (this.tree.length > 0) {
-      function traverseTree(data) {
-        let flag = false;
-        for (let i = 0; i < pathArr.length; i++) {
-          if (pathArr[i] === data.path) {
-            data.expanded = true;
-            flag = true;
-            pathArr.splice(i, 1);
-            break;
-          }
-        }
-
-        if (flag) {
-          if (!data.controller && !data.dailyPlan) {
-            self.updateObjects(data, self.isTrash, (children) => {
-              if (children.length > 0) {
-                const parentNode = children[0];
-
-              }
-            });
-          }
-        }
-        if (data.children && pathArr.length > 0) {
-          for (let i = 0; i < data.children.length; i++) {
-            traverseTree(data.children[i]);
-          }
-        }
-      }
-
-      traverseTree(this.tree[0]);
-    }
+    });
   }
 
   private updateFolders(path, isTrash, cb, redirect = false): void {
     const self = this;
     let matchData: any;
     if ((!isTrash && this.tree.length > 0) || (isTrash && this.trashTree.length > 0)) {
+      console.log(path, ' path');
+
       function traverseTree(data) {
+        console.log(data.path, '>>>>>>>>>>')
         if (path && data.path && (path === data.path)) {
-          self.updateObjects(data, isTrash, (children) => {
-            if (children?.length > 0) {
-              let folders = data.children;
-              data.children = children;
-              if (folders.length > 0) {
-                data.children = data.children.concat(folders);
-              }
-            }
+          self.updateObjects(data, isTrash, () => {
             self.updateTree(isTrash);
           });
           matchData = data;
@@ -579,7 +533,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
       traverseTree(isTrash ? this.trashTree[0] : this.tree[0]);
     }
-    
+    console.log(matchData)
     if (!matchData && cb) {
       cb();
     }
@@ -591,31 +545,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     } else {
       this.tree = [...this.tree];
     }
-  }
-
-  private getExpandPaths(): Array<any> {
-    const arr = [];
-    if (this.tree.length > 0) {
-      function traverseTree(data) {
-        if (data.children && data.children.length > 0) {
-          const obj: any = {name: data.name, path: data.path};
-          if (data.children[0].controller) {
-            obj.child1 = data.children[0];
-            obj.child2 = data.children[1];
-            obj.expanded = data.expanded;
-          }
-          arr.push(obj);
-          for (let i = 0; i < data.children.length; i++) {
-            if (!data.children[i].controller && !data.children[i].dailyPlan) {
-              traverseTree(data.children[i]);
-            }
-          }
-        }
-      }
-
-      traverseTree(this.tree[0]);
-    }
-    return arr;
   }
 
 
@@ -668,7 +597,9 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
   updateObjects(data, isTrash, cb = null): void {
     if (!data.permitted) {
-      cb([]);
+      if (cb) {
+        cb();
+      }
       return;
     }
     const obj: any = {
@@ -677,7 +608,20 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     const URL = isTrash ? 'descriptor/trash/read/folder' : 'descriptor/read/folder';
     this.coreService.post(URL, obj).subscribe({
       next: (res: any) => {
-        data.children = res.deploymentDescriptors.concat(data.children)
+        data.children = data.children.filter(item => {
+          return !item.objectType;
+        });
+        if (!this.deploymentData?.path && this.selectedObj.path) {
+          for (let i in res.deploymentDescriptors) {
+            if(res.deploymentDescriptors[i].path == this.selectedObj.path){
+              this.selectedObj = res.deploymentDescriptors[i];
+              this.deploymentData.path = this.selectedObj.path;
+              this.getObject(res.deploymentDescriptors[i]);
+              break;
+            }
+          }
+        }
+        data.children = res.deploymentDescriptors.concat(data.children);
         cb();
       }, error: () => {
         cb();
@@ -696,6 +640,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
   openFolder(node: NzTreeNode): void {
     if (node instanceof NzTreeNode) {
+      console.log('openFolder');
       node.isExpanded = !node.isExpanded;
       if (node.isExpanded && node.origin.children) {
         this.expandFolder(node);
@@ -715,14 +660,15 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       if (this.preferences.expandOption === 'both' && node.origin.children) {
         node.isExpanded = !node.isExpanded;
       }
-
+      this.selectedObj = node.origin;
       this.getObject(node.origin);
     }
   }
 
   private expandFolder(node): void {
-    const data = node.origin.children;
-
+    this.updateObjects(node.origin, this.isTrash, () => {
+      this.updateTree(this.isTrash);
+    });
   }
 
 
@@ -745,21 +691,24 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
   }
 
-  mergeTree(scr, dest): any {
-    function checkPath(obj) {
-      for (let i = 0; i < dest.length; i++) {
-        if (dest[i].name === obj.name && dest[i].path === obj.path) {
-          obj.expanded = dest[i].expanded;
-          dest.splice(i, 1);
-          break;
-        }
-      }
-    }
+  mergeTree(scr, arr): any {
+    const self = this;
 
     function recursive(scrTree) {
       if (scrTree) {
         for (let j = 0; j < scrTree.length; j++) {
-          checkPath(scrTree[j]);
+          if (!scrTree[j].objectType && arr.indexOf(scrTree[j].key) > -1) {
+            scrTree[j].loading = true;
+            scrTree[j].expanded = true;
+            self.updateObjects(scrTree[j], self.isTrash, () => {
+              scrTree[j].loading = false;
+              self.updateTree(self.isTrash);
+              if (self.selectedObj.path) {
+                console.log(self.selectedObj.path, 'self.selectedObj.path');
+                console.log(scrTree[j], 'scrTree[j]');
+              }
+            })
+          }
           if (scrTree[j].children) {
             recursive(scrTree[j].children);
           }
@@ -1053,11 +1002,9 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   private saveJSON(flag = false): void {
-    console.log('saveJSON', this.permission.joc)
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
-    console.log('store')
     if (!isEqual(this.deploymentData.data, JSON.stringify(this.data))) {
       if (!flag) {
         if (this.history.length === 20) {
@@ -1822,7 +1769,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         display: this.preferences.auditLog,
         schedulerId: this.schedulerIds.selected,
-        type: 'DESCRIPTORFOLDER',
+        type: this.objectType,
         origin: this.node?.origin
       },
       nzFooter: null,
@@ -1907,19 +1854,128 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   cutObject(): void {
-
+    this.copyObj = this.node.origin;
+    this.copyObj.operation = 'CUT';
   }
 
   copyObject(): void {
-
+    this.copyObj = this.node.origin;
+    this.copyObj.operation = 'COPY';
+    this.coreService.showCopyMessage(this.message);
   }
 
   pasteObject(): void {
-
+    let object = this.node;
+    if (this.node instanceof NzTreeNode) {
+      object = this.node.origin;
+    }
+    if (this.copyObj) {
+      if (this.copyObj.operation === 'COPY') {
+        this.openObjectNameModal(object, (res) => {
+          console.log(res);
+        });
+      } else if (this.copyObj.operation === 'CUT') {
+        if (this.preferences.auditLog) {
+          let comments = {
+            radio: 'predefined',
+            type: object.type || object.object || 'Folder',
+            operation: 'Paste',
+            name: object.name || object.path
+          };
+          const modal = this.modal.create({
+            nzTitle: undefined,
+            nzContent: CommentModalComponent,
+            nzClassName: 'lg',
+            nzComponentParams: {
+              comments,
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+          modal.afterClose.subscribe(result => {
+            if (result) {
+              this.cutPaste(object, result);
+            }
+          });
+        } else {
+          this.cutPaste(object);
+        }
+      }
+    }
   }
 
-  renameObject(): void {
+  private openObjectNameModal(obj: any, cb: any): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateObjectModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        preferences: this.preferences,
+        type: this.objectType,
+        obj,
+        copy: this.copyObj
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(data => {
+      if (data) {
+        cb(data);
+      }
+    });
+  }
 
+  private cutPaste(object, comments: any = {}): void {
+    const request: any = {newPath: object.path, path: this.copyObj.path};
+    if (this.copyObj.objectType || this.copyObj.type) {
+      request.objectType = this.copyObj.objectType || this.copyObj.type;
+    } else {
+      request.objectType = 'DESCRIPTORFOLDER';
+    }
+    request.newPath = request.newPath + (request.newPath === '/' ? '' : '/') + this.copyObj.name;
+    if (this.copyObj.path === request.newPath) {
+      this.copyObj = undefined;
+      return;
+    }
+    if (comments.comment) {
+      request.auditLog = {};
+      this.coreService.getAuditLogObj(comments, request.auditLog);
+    }
+
+    this.coreService.post('descriptor/rename', request).subscribe((res) => {
+      let obj: any = this.coreService.clone(this.copyObj);
+      this.updateFolders(this.copyObj.path, false, () => {
+        this.updateTree(false);
+        obj.path = res.path.substring(0, res.path.lastIndexOf('/')) || '/';
+        obj.name = res.path.substring(res.path.lastIndexOf('/') + 1);
+        console.log(obj)
+      });
+      this.copyObj = undefined;
+    });
+  }
+
+
+  renameObject(): void {
+    if (this.permission && this.permission.joc && this.permission.joc.inventory.manage) {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: CreateFolderModalComponent,
+        nzAutofocus: null,
+        nzComponentParams: {
+          display: this.preferences.auditLog,
+          schedulerId: this.schedulerIds.selected,
+          origin: this.node.origin,
+          type: this.objectType,
+          rename: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    }
   }
 
   removeObject(): void {
@@ -1994,16 +2050,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: () => {
         this.node.origin.loading = false;
-        if (this.deploymentData && this.node.origin.path === this.deploymentData.path) {
-          this.deploymentData = {};
-        }
-        setTimeout(() => {
-          this.node.parentNode.origin.children = this.node.parentNode.origin.children.filter(item => {
-            return item.name != this.node.origin.name;
-          });
-          this.updateTree(false);
-        }, 500)
-        // this.updateTree(false);
+        this.clearSection();
       }, error: () => {
         this.node.origin.loading = false;
         this.node.origin.deleted = false;
@@ -2018,16 +2065,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     this.coreService.post('descriptor/remove/folder', {path: this.node.origin.path, auditLog}).subscribe({
       next: () => {
         this.node.origin.loading = false;
-        if (this.deploymentData && this.node.origin.path === this.deploymentData.path) {
-          this.deploymentData = {};
-        }
-        setTimeout(() => {
-          this.node.parentNode.origin.children = this.node.parentNode.origin.children.filter(item => {
-            return item.name != this.node.origin.name;
-          });
-          this.updateTree(false);
-        }, 500)
-        //this.updateTree(false);
+        this.clearSection();
       }, error: () => {
         this.node.origin.loading = false;
         this.node.origin.deleted = false;
@@ -2074,8 +2112,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
           };
-          const URL = object.objectType ? 'descriptor/trash/delete' : 'descriptor/trash/delete/folder';
-          this.coreService.post(URL, obj).subscribe();
+          this._permanentDelete(object, obj);
         }
       });
     } else {
@@ -2094,11 +2131,26 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          const URL = object.objectType ? 'descriptor/trash/delete' : 'descriptor/trash/delete/folder';
-          this.coreService.post(URL, obj).subscribe();
+          this._permanentDelete(object, obj);
         }
       });
     }
+  }
+
+  private _permanentDelete(object, obj){
+    this.node.origin.expanded = false;
+    this.node.origin.deleted = true;
+    this.node.origin.loading = true;
+    const URL = object.objectType ? 'descriptor/trash/delete' : 'descriptor/trash/delete/folder';
+    this.coreService.post(URL, obj).subscribe({
+      next: () => {
+        this.node.origin.loading = false;
+        this.clearSection();
+      }, error: () => {
+        this.node.origin.loading = false;
+        this.node.origin.deleted = false;
+      }
+    });
   }
 
   restoreObject(node: any): void {
@@ -2121,7 +2173,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    });
+    })
   }
 
   editJson(isEdit): void {
@@ -2178,15 +2230,25 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     });
   }
 
-  private storeData(data, conf): void{
+  private storeData(data, conf): void {
     const request: any = {
       objectType: data.objectType,
       path: data.path,
       configuration: conf
     };
 
-    this.coreService.post('descriptor/store', request).subscribe(() => {
-      data.valid = false;
+    this.coreService.post('descriptor/store', request).subscribe((res) => {
+      data.valid = res.valid;
+      if (this.selectedObj?.path == data.path) {
+        this.getObject(data);
+      }
     });
+  }
+
+  private clearSection(){
+    if (this.deploymentData && this.node.origin.path === this.deploymentData.path) {
+      this.deploymentData = {};
+      this.selectedObj = {};
+    }
   }
 }

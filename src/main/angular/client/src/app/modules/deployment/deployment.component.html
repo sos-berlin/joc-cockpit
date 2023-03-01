@@ -136,49 +136,61 @@
           </div>
           <div id="rightPanel" [ngStyle]="{'margin-left': sideView.deployment ? (sideView.deployment.width) + 'px' : 'auto'}">
             <div class="box p-a" *ngIf="deploymentData?.data">
-              <form #myForm="ngForm">
-                <div class="pos-abt r-15 t-10" *ngIf="object.setOfCheckedId.size==0">
-                  <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
-                    <li class="nav-item">
-                      <a class="nav-link" [nz-tooltip]="'common.button.expandDetails' | translate" (click)="expandAll()">
-                        <span class="nav-text"> <i nz-icon nzType="plus" nzTheme="outline"></i></span>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" [nz-tooltip]="'common.button.collapseDetails' | translate"
-                         (click)="collapseAll()">
-                        <span class="nav-text"> <i nz-icon nzType="minus" nzTheme="outline"></i></span>
-                      </a>
-                    </li>
-                    <li class="nav-item dropdown-separator">
-                      <span class="separator"></span>
-                    </li>
-                    <li class="nav-item" [nz-tooltip]="'workflow.button.undo' | translate">
-                      <a class="nav-link" [ngClass]="{'disable-link': indexOfNextAdd == 0}" (click)="undo()">
-                        <span class="nav-text"> <i nz-icon nzType="undo" nzTheme="outline"></i></span>
-                      </a>
-                    </li>
-                    <li class="nav-item" [nz-tooltip]="'workflow.button.redo' | translate">
-                      <a class="nav-link" [ngClass]="(indexOfNextAdd < history.length) ? '' : 'disable-link'"
-                         (click)="redo()">
-                        <span class="nav-text"> <i nz-icon nzType="redo" nzTheme="outline"></i></span>
-                      </a>
-                    </li>
-                    <li class="nav-item dropdown-separator">
-                      <span class="separator"></span>
-                    </li>
-                    <li class="nav-item" [nz-tooltip]="'inventory.button.download' | translate">
-                      <a class="nav-link" (click)="download()">
-                        <span class="nav-text"> <i nz-icon nzType="download" nzTheme="outline"></i></span>
-                      </a>
-                    </li>
-                    <li class="nav-item" [nz-tooltip]="'inventory.button.upload' | translate">
-                      <a class="nav-link" (click)="upload()">
-                        <span class="nav-text"> <i nz-icon nzType="upload" nzTheme="outline"></i></span>
-                      </a>
-                    </li>
-                  </ul>
+              <div class="b-b p-b m-b">
+                <span class="text-left">
+                  <span class="_600">{{deploymentData.path}}</span>
+                  <span class="text-dark text-sm _400" *ngIf="lastModified"> -
+                    <b translate>inventory.label.lastModified</b>
+                    <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
+                  </span>
+                </span>
+                <div class="inline pull-right" *ngIf="!isTrash">
+                  <div class="" *ngIf="object.setOfCheckedId.size==0">
+                    <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 " style="margin-top:-10px">
+                      <li class="nav-item">
+                        <a class="nav-link" [nz-tooltip]="'common.button.expandDetails' | translate" (click)="expandAll()">
+                          <span class="nav-text"> <i nz-icon nzType="plus" nzTheme="outline"></i></span>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" [nz-tooltip]="'common.button.collapseDetails' | translate"
+                           (click)="collapseAll()">
+                          <span class="nav-text"> <i nz-icon nzType="minus" nzTheme="outline"></i></span>
+                        </a>
+                      </li>
+                      <li class="nav-item dropdown-separator">
+                        <span class="separator"></span>
+                      </li>
+                      <li class="nav-item" [nz-tooltip]="'workflow.button.undo' | translate">
+                        <a class="nav-link" [ngClass]="{'disable-link': indexOfNextAdd == 0}" (click)="undo()">
+                          <span class="nav-text"> <i nz-icon nzType="undo" nzTheme="outline"></i></span>
+                        </a>
+                      </li>
+                      <li class="nav-item" [nz-tooltip]="'workflow.button.redo' | translate">
+                        <a class="nav-link" [ngClass]="(indexOfNextAdd < history.length) ? '' : 'disable-link'"
+                           (click)="redo()">
+                          <span class="nav-text"> <i nz-icon nzType="redo" nzTheme="outline"></i></span>
+                        </a>
+                      </li>
+                      <li class="nav-item dropdown-separator">
+                        <span class="separator"></span>
+                      </li>
+                      <li class="nav-item" [nz-tooltip]="'inventory.button.download' | translate">
+                        <a class="nav-link" (click)="download()">
+                          <span class="nav-text"> <i nz-icon nzType="download" nzTheme="outline"></i></span>
+                        </a>
+                      </li>
+                      <li class="nav-item" [nz-tooltip]="'inventory.button.upload' | translate">
+                        <a class="nav-link" (click)="upload()">
+                          <span class="nav-text"> <i nz-icon nzType="upload" nzTheme="outline"></i></span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
+              </div>
+              <form>
+
                 <div class="p-l-sm">
                   <h5 class="p-l-sm" translate>deploymentService.label.descriptor
                     <i class="fa fa-caret-down p-l-xs text-hover-primary"
