@@ -2814,14 +2814,18 @@ export class CreateObjectModalComponent implements OnInit {
       request.objectType = this.copy.objectType;
       request.path = this.copy.path + (this.copy.path === '/' ? '' : '/') + this.copy.name;
     } else {
-      request.objectType = 'FOLDER';
+      request.objectType = this.type == 'DEPLOYMENTDESCRIPTOR' ? 'DESCRIPTORFOLDER': 'FOLDER';
       request.path = this.copy.path;
       request.newPath = (obj.path || '/') + (data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.copy.name);
     }
 
+    if(this.type == 'DEPLOYMENTDESCRIPTOR'){
+      request.path = this.copy.path;
+      delete request.shallowCopy;
+    }
     request.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, request.auditLog);
-    this.coreService.post('inventory/copy', request).subscribe({
+    this.coreService.post(this.type == 'DEPLOYMENTDESCRIPTOR' ? 'descriptor/copy' : 'inventory/copy', request).subscribe({
       next: (res) => {
         this.activeModal.close(res);
       }, error: () => {
@@ -2838,11 +2842,11 @@ export class CreateObjectModalComponent implements OnInit {
     };
 
     if (this.obj.objectType) {
-      request.newPath = this.type ? (obj.path.substring(0, obj.path.lastIndexOf('/') + 1) + (data.newName ? data.newName : obj.name)) : (obj.path + (obj.path === '/' ? '' : '/') + (data.newName ? data.newName : obj.name));
-      request.path = this.type ? obj.path : (obj.path + (obj.path === '/' ? '' : '/') + obj.name);
+      request.newPath = this.type == 'DEPLOYMENTDESCRIPTOR' ? (obj.path.substring(0, obj.path.lastIndexOf('/') + 1) + (data.newName ? data.newName : obj.name)) : (obj.path + (obj.path === '/' ? '' : '/') + (data.newName ? data.newName : obj.name));
+      request.path = this.type == 'DEPLOYMENTDESCRIPTOR' ? obj.path : (obj.path + (obj.path === '/' ? '' : '/') + obj.name);
       request.objectType = this.obj.objectType;
     } else {
-      request.objectType = this.type ? 'DESCRIPTORFOLDER' : 'FOLDER';
+      request.objectType = this.type == 'DEPLOYMENTDESCRIPTOR' ? 'DESCRIPTORFOLDER' : 'FOLDER';
       const tempPath = obj.path.substring(0, obj.path.lastIndexOf('/'));
       request.newPath = data.newName ? (tempPath + (tempPath === '/' ? '' : '/') + data.newName) : obj.path;
       request.path = obj.path;
@@ -2924,7 +2928,7 @@ export class CreateFolderModalComponent implements OnInit {
     if (!this.rename) {
       const PATH = this.origin.path + (this.origin.path === '/' ? '' : '/') + this.folder.name;
       const obj: any = {
-        objectType: this.type || 'FOLDER',
+        objectType: this.type == 'DEPLOYMENTDESCRIPTOR' ? 'DESCRIPTORFOLDER' : 'FOLDER',
         path: PATH,
         configuration: {}
       };
@@ -2935,7 +2939,7 @@ export class CreateFolderModalComponent implements OnInit {
       if (this.type) {
         delete obj.configuration;
       }
-      this.coreService.post(this.type ? 'descriptor/store' : 'inventory/store', obj).subscribe({
+      this.coreService.post(this.type == 'DEPLOYMENTDESCRIPTOR' ? 'descriptor/store' : 'inventory/store', obj).subscribe({
         next: (res) => {
           this.activeModal.close({
             name: this.folder.name,
@@ -2961,11 +2965,15 @@ export class CreateFolderModalComponent implements OnInit {
         obj.objectType = this.origin.objectType;
         obj.path = this.origin.path + (this.origin.path === '/' ? '' : '/') + this.origin.name;
       } else {
-        obj.objectType = 'FOLDER';
+        obj.objectType = this.type == 'DEPLOYMENTDESCRIPTOR' ? 'DESCRIPTORFOLDER' : 'FOLDER';
         obj.path = this.origin.path;
       }
 
       let URL = this.folder.deepRename === 'replace' ? 'inventory/replace' : 'inventory/rename';
+      if(this.type == 'DEPLOYMENTDESCRIPTOR'){
+        URL = 'descriptor/rename'
+        obj.path = this.origin.path;
+      }
       if (this.folder.deepRename === 'replace') {
         if (this.origin.object || this.origin.controller || this.origin.dailyPlan) {
           obj = this.getObjectArr(this.origin);
