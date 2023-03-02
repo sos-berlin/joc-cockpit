@@ -720,7 +720,7 @@
     "message.fileTransferSummary": "Ce widget affiche l'historique des transferts de fichier.",
     "message.dailyPlanOverview": "Ce widget affiche un aperçu  du plan quotidien.",
     "message.fileTransferHistorySummary": "Ce widget affiche l'historique des transferts de fichier.",
-    "message.confirmNodeLoss": "Pouvez-vous confirmer que l'Instance du Contrôleur {{lossNode}} ne tourne pas ?"
+    "message.confirmNodeLoss": "Pouvez-vous confirmer que l'Instance du Contrôleur '{{lossNode}}' ne tourne pas ?"
   },
   "dailyPlan": {
     "label.createPlan": "Créer le plan quotidien",
@@ -2100,7 +2100,7 @@
       "label": {
         "workflow": "Workflow",
         "orderId": "ID Ordre",
-        "jocId": "JOC ID",
+        "jocId": "JOC Cockpit ID",
         "job": "Tâche",
         "message": "Message",
         "comment": "Commentaire",
@@ -3154,7 +3154,7 @@
     "button.unskip": "Inclure",
     "button.stop": "Arrêter",
     "button.unstop": "Débloquer",
-    "button.transitionOrders": "Transition Orders",
+    "button.transitionOrders": "Transférer Ordres vers la dernière version",
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",

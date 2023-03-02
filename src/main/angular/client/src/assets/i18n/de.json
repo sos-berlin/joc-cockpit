@@ -720,7 +720,7 @@
     "message.fileTransferSummary": "Das Steuerelement zeigt die Historie der Dateiübertragungen",
     "message.dailyPlanOverview": "Das Steuerelement zeigt die Übersicht des Tagesplans",
     "message.fileTransferHistorySummary": "Das Steuerelement zeigt die Historie der Dateiübertragungen",
-    "message.confirmNodeLoss": "Bestätigen Sie, dass die Controller Instanz {{lossNode}} nicht gestartet ist?"
+    "message.confirmNodeLoss": "Bestätigen Sie, dass die Controller Instanz '{{lossNode}}' nicht gestartet ist?"
   },
   "dailyPlan": {
     "label.createPlan": "Tagesplan anlegen",
@@ -2100,7 +2100,7 @@
       "label": {
         "workflow": "Arbeitsablauf",
         "orderId": "Auftragskennung",
-        "jocId": "JOC ID",
+        "jocId": "JOC Cockpit ID",
         "job": "Job",
         "message": "Nachricht",
         "comment": "Kommentar",
@@ -3154,7 +3154,7 @@
     "button.unskip": "Einbeziehen",
     "button.stop": "Stoppen",
     "button.unstop": "Entstoppen",
-    "button.transitionOrders": "Transition Orders",
+    "button.transitionOrders": "Aufträge in neue Version übertragen",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",

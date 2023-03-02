@@ -720,7 +720,7 @@
     "message.fileTransferSummary": "This widget displays the history of past File Transfers",
     "message.dailyPlanOverview": "This widget displays the summary of the Daily Plan",
     "message.fileTransferHistorySummary": "This widget displays the summary of past File Transfers",
-    "message.confirmNodeLoss": "Can you confirm that the Controller instance {{lossNode}} is not running?"
+    "message.confirmNodeLoss": "Can you confirm that the Controller instance '{{lossNode}}' is not running?"
   },
   "dailyPlan": {
     "label.createPlan": "Create Daily Plan",
@@ -2100,7 +2100,7 @@
       "label": {
         "workflow": "Workflow",
         "orderId": "Order ID",
-        "jocId": "JOC ID",
+        "jocId": "JOC Cockpit ID",
         "job": "Job",
         "message": "Message",
         "comment": "Comment",
@@ -3154,7 +3154,7 @@
     "button.unskip": "Unskip",
     "button.stop": "Stop",
     "button.unstop": "Unstop",
-    "button.transitionOrders": "Transition Orders",
+    "button.transitionOrders": "Transfer Orders to latest Version",
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",
