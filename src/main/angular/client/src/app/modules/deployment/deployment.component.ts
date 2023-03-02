@@ -290,6 +290,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   history = [];
   indexOfNextAdd = 0;
   copiedObject: any;
+  isStore = false;
 
   object = {
     setOfCheckedId: new Set()
@@ -1013,6 +1014,18 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
   }
 
+  compareFun = (o1: any | string, o2: any): boolean => {
+    if (o1) {
+      if (o2.members) {
+        return typeof o1 === 'string' ? o1 === o2.members.clusterId : o1.members.clusterId === o2.members.clusterId;
+      } else {
+        return typeof o1 === 'string' ? o1 === o2.jocRef : o1.jocRef === o2.jocRef;
+      }
+    } else {
+      return false;
+    }
+  };
+
   convertJSON(): void {
     this.validate(true);
     this.saveJSON();
@@ -1042,26 +1055,29 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           request.auditLog = {comment: translatedValue};
         });
       }
-
-      this.coreService.post('descriptor/store', request).subscribe({
-        next: (res: any) => {
-          if (res.path === this.deploymentData.path) {
-            this.lastModified = res.configurationDate;
-            this.deploymentData.data = JSON.stringify(this.data);
-            this.isValid = res.valid;
-          }
-        }
-      });
+      if (!this.isStore) {
+        this.isStore = true;
+        this.coreService.post('descriptor/store', request).subscribe({
+          next: (res: any) => {
+            this.isStore = false;
+            if (res.path === this.deploymentData.path) {
+              this.lastModified = res.configurationDate;
+              this.deploymentData.data = JSON.stringify(this.data);
+              this.isValid = res.valid;
+            }
+          }, error: () => this.isStore = false
+        });
+      }
     }
   }
 
   private checkAndUpdateObj(obj, type, source, index1, index2, isSkip): void {
-
     if (type == 'joc') {
       this.data.joc[index1].isJOCExpanded = true;
       this.data.joc[index1].members.instances[index2].isJOCPropertiesExpanded = true;
     } else if (type == 'agents') {
-      this.data.agents.controllerRefs[index1].isAgentPropertiesExpanded = true;
+      this.data.agents.controllerRefs[index1].isAgentExpanded = true;
+      this.data.agents.controllerRefs[index1].members[index2].isAgentPropertiesExpanded = true;
     } else if (type == 'controllers') {
       this.data.controllers[index1].isControllerExpanded = true;
       this.data.controllers[index1].cluster[index2].isControllerPropertiesExpanded = true;
@@ -1098,7 +1114,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       if (!obj.target.authentication) {
         obj.target.authentication = {};
       }
-      if ((!isSkip && !source.target.authentication.method || !source.target.authentication.user)) {
+      if (!isSkip && (!source.target.authentication.method || !source.target.authentication.user)) {
         let id;
         if (!source.target.authentication.method) {
           id = 'method';
@@ -1131,12 +1147,12 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     if (source.installation && !isEmpty(source.installation)) {
       if (!isSkip && ((type == 'joc' && !source.installation.setupDir) || !source.installation.home || !source.installation.data)) {
         let id;
-        if (!source.installation.home) {
+        if ((type == 'joc' && !source.installation.setupDir)) {
+          id = 'setupDir';
+        } else if (!source.installation.home) {
           id = 'home';
         } else if (!source.installation.data) {
           id = 'data';
-        } else {
-          id = 'setupDir';
         }
         this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, type);
         this.errorMessages.push((type == 'joc' && !source.installation.setupDir) ? 'Installation setupDir is required' : !source.installation.home ? 'Installation home is required' : 'Installation data is required');
@@ -1745,6 +1761,13 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         authentication: {},
         makeService: false
       };
+    } else {
+      if (!obj.target.connection) {
+        obj.target.connection = {};
+      }
+      if (!obj.target.authentication) {
+        obj.target.authentication = {};
+      }
     }
     if (!obj.media) {
       obj.media = {};
@@ -1962,14 +1985,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       this.coreService.getAuditLogObj(comments, request.auditLog);
     }
 
-    this.coreService.post('descriptor/rename', request).subscribe((res) => {
-      let obj: any = this.coreService.clone(this.copyObj);
-      this.updateFolders(this.copyObj.path, false, () => {
-        this.updateTree(false);
-        obj.path = res.path.substring(0, res.path.lastIndexOf('/')) || '/';
-        obj.name = res.path.substring(res.path.lastIndexOf('/') + 1);
-        console.log(obj)
-      });
+    this.coreService.post('descriptor/rename', request).subscribe(() => {
       this.copyObj = undefined;
     });
   }
@@ -2057,7 +2073,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
   }
 
-  private deleteObject(auditLog?): void {
+  private deleteObject(auditLog?: { timeSpent: any; comment: any; ticketLink: any }): void {
     this.node.origin.expanded = false;
     this.node.origin.deleted = true;
     this.node.origin.loading = true;
@@ -2075,7 +2091,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     });
   }
 
-  private deleteFolder(auditLog?): void {
+  private deleteFolder(auditLog?: { timeSpent: any; comment: any; ticketLink: any }): void {
     this.node.origin.expanded = false;
     this.node.origin.deleted = true;
     this.node.origin.loading = true;
@@ -2154,7 +2170,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _permanentDelete(object, obj){
+  private _permanentDelete(object, obj) {
     this.node.origin.expanded = false;
     this.node.origin.deleted = true;
     this.node.origin.loading = true;
@@ -2262,7 +2278,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     });
   }
 
-  private clearSection(){
+  private clearSection() {
     if (this.deploymentData && this.node?.origin?.path === this.deploymentData.path) {
       this.deploymentData = {};
       this.selectedObj = {};

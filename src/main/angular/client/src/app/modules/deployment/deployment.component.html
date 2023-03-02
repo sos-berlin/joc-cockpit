@@ -367,14 +367,14 @@
                           </div>
                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-36 p-r-xs"
                                [ngClass]="{'has-error' : ((controllerId.dirty || controllerId.touched) && controllerId.invalid)}">
-                            <nz-select required [nzDisabled]="isTrash"
-                                       nzPlaceHolder="{{'deploymentService.agent.placeholder.controllerId' | translate}}"
-                                       id="acontrollerId{{i}}" name="acontrollerId{{i}}" (ngModelChange)="convertJSON()"
-                                       #controllerId="ngModel" [(ngModel)]="agent.controllerId">
-                              <nz-option *ngFor="let option of data.controllers" [nzLabel]="option.controllerId"
-                                         [nzValue]="option.controllerId"></nz-option>
-                            </nz-select>
-
+                            <input type="text" [readOnly]="isTrash" placeholder="{{'deploymentService.agent.placeholder.controllerId' | translate}}"
+                                   class="form-control" id="acontrollerId{{i}}" required
+                                   name="acontrollerId{{i}}" #controllerId="ngModel" (blur)="convertJSON()" [(ngModel)]="agent.controllerId" [nzAutocomplete]="auto" />
+                            <nz-autocomplete #auto [compareWith]="compareFun">
+                              <nz-auto-option *ngFor="let option of data.controllers" [nzValue]="option" [nzLabel]="option.controllerId">
+                                {{ option.controllerId }}
+                              </nz-auto-option>
+                            </nz-autocomplete>
                             <div *ngIf="controllerId.invalid && (controllerId.dirty || controllerId.touched)"
                                  class="text-danger help-block">
                               <div *ngIf="controllerId.errors.required" translate>
@@ -1044,13 +1044,14 @@
                           </div>
                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-36"
                                [ngClass]="{'has-error' : ((jocRef.dirty || jocRef.touched) && jocRef.invalid)}">
-                            <nz-select required [nzDisabled]="isTrash"
-                                       nzPlaceHolder="{{'deploymentService.controller.placeholder.jocRef' | translate}}"
-                                       id="cjocRef{{i}}" name="cjocRef{{i}}" (ngModelChange)="convertJSON()"
-                                       #jocRef="ngModel" [(ngModel)]="controller.jocRef">
-                              <nz-option *ngFor="let option of data.joc" [nzLabel]="option.members.clusterId"
-                                         [nzValue]="option.members.clusterId"></nz-option>
-                            </nz-select>
+                            <input type="text" [readOnly]="isTrash" placeholder="{{'deploymentService.controller.placeholder.jocRef' | translate}}"
+                                   class="form-control" id="cjocRef{{i}}" required
+                                   name="cjocRef{{i}}" #jocRef="ngModel" (blur)="convertJSON()" [(ngModel)]="controller.jocRef" [nzAutocomplete]="auto" />
+                            <nz-autocomplete #auto [compareWith]="compareFun">
+                              <nz-auto-option *ngFor="let option of data.joc" [nzValue]="option" [nzLabel]="option.members.clusterId">
+                                {{ option.members.clusterId }}
+                              </nz-auto-option>
+                            </nz-autocomplete>
                             <div *ngIf="jocRef.invalid && (jocRef.dirty || jocRef.touched)"
                                  class="text-danger help-block">
                               <div *ngIf="jocRef.errors.required" translate>
@@ -1140,10 +1141,13 @@
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0"
                                        [ngClass]="{'has-error' : ((method.dirty || method.touched) && method.invalid)}">
-                                    <input [readOnly]="isTrash" id="cmethod{{i}}{{j}}" autocomplete="off" type="text" class="form-control"
-                                           #method="ngModel" required name="cmethod{{i}}{{j}}" (blur)="convertJSON()"
-                                           placeholder="{{'deploymentService.controller.placeholder.method' | translate}}"
-                                           [(ngModel)]="item.target.authentication.method">
+                                    <nz-select [nzDisabled]="isTrash" nzPlaceHolder="{{'deploymentService.controller.placeholder.method' | translate}}"
+                                               (ngModelChange)="convertJSON()" id="cmethod{{i}}{{j}}" name="cmethod{{i}}{{j}}"
+                                               #method="ngModel"
+                                               required [(ngModel)]="item.target.authentication.method">
+                                      <nz-option *ngFor="let option of methods" [nzLabel]="option"
+                                                 [nzValue]="option"></nz-option>
+                                    </nz-select>
                                     <div *ngIf="method.invalid && (method.dirty || method.touched)"
                                          class="text-danger help-block">
                                       <div *ngIf="method.errors.required" translate>
@@ -1233,7 +1237,7 @@
                                   </label> <i class="p-l-sm fa fa-info-circle"
                                               [nz-tooltip]="'deploymentService.controller.tooltip.execPost' | translate"></i>
                                 </div>
-                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
+                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                   <input [readOnly]="isTrash" autocomplete="off" type="text" class="form-control" (blur)="convertJSON()"
                                          name="cexecPost{{i}}{{j}}"
                                          placeholder="{{'deploymentService.controller.placeholder.execPost' | translate}}"
@@ -1635,7 +1639,7 @@
                                     </label> <i class="p-l-sm fa fa-info-circle"
                                                 [nz-tooltip]="'deploymentService.controller.tooltip.controllerCert' | translate"></i>
                                   </div>
-                                  <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
+                                  <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                     <input [readOnly]="isTrash" id="controllerCert{{i}}{{j}}" autocomplete="off" type="text"
                                            class="form-control"
                                            name="controllerCert{{i}}{{j}}"
@@ -1771,11 +1775,10 @@
                               </div>
                               <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-28"
                                    [ngClass]="{'has-error' : ((jocInstanceId.dirty || jocInstanceId.touched) && jocInstanceId.invalid)}">
-                                <input [readOnly]="isTrash" id="jocInstanceId{{i}}{{j}}" autocomplete="off" type="text" class="form-control"
-                                       #jocInstanceId="ngModel"
-                                       required name="jocInstanceId{{i}}{{j}}"
-                                       placeholder="{{'deploymentService.joc.placeholder.jocInstanceId' | translate}}"
-                                       [(ngModel)]="item.instanceId" (blur)="convertJSON()">
+                                <nz-input-number required [nzReadOnly]="isTrash" #jocInstanceId="ngModel" id="jocInstanceId{{i}}{{j}}"
+                                                 nzPlaceHolder="{{'deploymentService.joc.placeholder.jocInstanceId' | translate}}"
+                                                 [nzMin]="1" [nzMax]="99" [nzStep]="1" name="jocInstanceId{{i}}{{j}}" (nzBlur)="convertJSON()"
+                                                 [(ngModel)]="item.instanceId"></nz-input-number>
                                 <div *ngIf="jocInstanceId.invalid && (jocInstanceId.dirty || jocInstanceId.touched)"
                                      class="text-danger help-block">
                                   <div *ngIf="jocInstanceId.errors.required" translate>
@@ -1845,10 +1848,13 @@
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0"
                                        [ngClass]="{'has-error' : ((method.dirty || method.touched) && method.invalid)}">
-                                    <input [readOnly]="isTrash" id="method{{i}}{{j}}" autocomplete="off" type="text" class="form-control"
-                                           #method="ngModel" required name="method{{i}}{{j}}" (blur)="convertJSON()"
-                                           placeholder="{{'deploymentService.joc.placeholder.method' | translate}}"
-                                           [(ngModel)]="item.target.authentication.method">
+                                    <nz-select [nzDisabled]="isTrash" nzPlaceHolder="{{'deploymentService.joc.placeholder.method' | translate}}"
+                                               (ngModelChange)="convertJSON()" id="method{{i}}{{j}}" name="method{{i}}{{j}}"
+                                               #method="ngModel"
+                                               required [(ngModel)]="item.target.authentication.method">
+                                      <nz-option *ngFor="let option of methods" [nzLabel]="option"
+                                                 [nzValue]="option"></nz-option>
+                                    </nz-select>
                                     <div *ngIf="method.invalid && (method.dirty || method.touched)"
                                          class="text-danger help-block">
                                       <div *ngIf="method.errors.required" translate>
