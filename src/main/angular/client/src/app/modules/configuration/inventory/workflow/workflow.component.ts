@@ -8237,6 +8237,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         self.dataService.reloadWorkflowError.next({error: self.error});
         self.selectedNode.newObj = self.coreService.clone(self.selectedNode.obj);
         if (self.selectedNode && self.selectedNode.type === 'Job') {
+          self.selectedNode.newObj.defaultArguments = self.selectedNode.newObj.defaultArguments.filter((argu) => {
+            return argu.name && (argu.value || argu.value == false || argu.value == 0)
+          });
           self.coreService.convertArrayToObject(self.selectedNode.newObj, 'defaultArguments', false);
         }
         if (self.selectedNode.type === 'If') {
