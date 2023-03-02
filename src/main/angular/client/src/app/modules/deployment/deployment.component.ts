@@ -504,10 +504,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     const self = this;
     let matchData: any;
     if ((!isTrash && this.tree.length > 0) || (isTrash && this.trashTree.length > 0)) {
-      console.log(path, ' path');
-
       function traverseTree(data) {
-        console.log(data.path, '>>>>>>>>>>')
         if (path && data.path && (path === data.path)) {
           self.updateObjects(data, isTrash, () => {
             self.updateTree(isTrash);
@@ -680,12 +677,20 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     if (this.isTrash) {
       this.isTreeLoaded = false;
       this.initTrashTree(null);
-      if (this.deploymentData?.data) {
-        this.tempObjSelection = this.coreService.clone(this.deploymentData);
+      if (this.selectedObj?.path) {
+        this.tempObjSelection = {
+          selectedData: this.coreService.clone(this.deploymentData),
+          selectedObj: this.coreService.clone(this.selectedObj)
+        };
       }
+      this.deploymentData = {};
+      this.selectedObj = {};
     } else {
-      if (this.tempObjSelection?.data) {
-        this.deploymentData = this.coreService.clone(this.tempObjSelection);
+      this.deploymentData = {};
+      this.selectedObj = {};
+      if (this.tempObjSelection?.selectedData) {
+        this.deploymentData = this.coreService.clone(this.tempObjSelection.selectedData);
+        this.selectedObj = this.coreService.clone(this.tempObjSelection.selectedObj);
         this.tempObjSelection = {};
       }
     }
@@ -732,7 +737,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   private getObject(object): void {
-    const URL = 'descriptor/read';
+    const URL = this.isTrash ? 'descriptor/trash/read' : 'descriptor/read';
     const obj: any = {
       path: object.path
     };
@@ -754,6 +759,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         path: res.path,
         data: JSON.stringify(res.configuration)
       };
+      this.isValid = res.valid;
       this.deploymentData.mainObj = res.configuration;
       this.updateJSONObject();
       this.history.push(this.deploymentData.data);
@@ -793,6 +799,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         }
       }]
     });
+    this.convertJSON();
   }
 
   removeAgent(index = -1): void {
@@ -801,6 +808,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     } else {
       this.data.agents.controllerRefs = [];
     }
+    this.convertJSON();
   }
 
   addJOC(): void {
@@ -830,6 +838,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         }]
       }
     });
+    this.convertJSON();
   }
 
   removeJOC(index = -1): void {
@@ -838,6 +847,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     } else {
       this.data.joc = [];
     }
+    this.convertJSON();
   }
 
   copy(type, objectType, index1, index2): void {
@@ -895,6 +905,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         }
       }
     }
+    this.convertJSON();
   }
 
   addAnotherJOCInstance(members): void {
@@ -916,6 +927,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         startFiles: {}
       }
     });
+    this.convertJSON();
   }
 
   addAnotherJOCCluster(): void {
@@ -924,6 +936,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
   removeSecondaryObj(list, index): void {
     list.splice(index, 1);
+    this.convertJSON();
   }
 
   addController(): void {
@@ -948,6 +961,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         }
       }]
     });
+    this.convertJSON();
   }
 
   removeController(index = -1): void {
@@ -956,6 +970,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     } else {
       this.data.controllers = [];
     }
+    this.convertJSON();
   }
 
 
@@ -974,6 +989,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         templates: [{name: ''}]
       }
     });
+    this.convertJSON();
   }
 
   addAnotherAgent(): void {
@@ -986,6 +1002,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
   removeTemplates(list, index): void {
     list.splice(index, 1);
+    this.convertJSON();
   }
 
   onItemChecked(id: any, checked: boolean, type: string): void {
@@ -2031,16 +2048,16 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           if (this.node.origin.children) {
-            this.deleteFolder(null);
+            this.deleteFolder();
           } else {
-            this.deleteObject(null);
+            this.deleteObject();
           }
         }
       });
     }
   }
 
-  private deleteObject(auditLog): void {
+  private deleteObject(auditLog?): void {
     this.node.origin.expanded = false;
     this.node.origin.deleted = true;
     this.node.origin.loading = true;
@@ -2058,7 +2075,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     });
   }
 
-  private deleteFolder(auditLog): void {
+  private deleteFolder(auditLog?): void {
     this.node.origin.expanded = false;
     this.node.origin.deleted = true;
     this.node.origin.loading = true;
@@ -2246,7 +2263,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   private clearSection(){
-    if (this.deploymentData && this.node.origin.path === this.deploymentData.path) {
+    if (this.deploymentData && this.node?.origin?.path === this.deploymentData.path) {
       this.deploymentData = {};
       this.selectedObj = {};
     }
