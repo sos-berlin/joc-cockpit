@@ -912,8 +912,10 @@
       },
       "button": {
         "addAgent": "Ajouter Agent",
+        "addSecondaryAgent": "Add Agent Instance",
+        "addAnotherAgent": "Ajouter autre Agent",
         "removeAgent": "Supprimer Agent",
-        "addAnotherAgent": "Ajouter autre Agent"
+        "removeSecondaryAgent": "Remove Agent Instance"
       },
       "placeholder": {
         "agentId": "Entrer ID Agent",
@@ -1430,6 +1432,7 @@
     "label.openSourceLicense": "Licence Open Source",
     "label.jocMonitorEvent": "Avertissements et Erreurs d'Ordre",
     "label.systemMonitorEvent": "Avertissements et Erreurs du Système",
+    "label.notification": "Notification",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
     "button.aboutJS7": "À propos de JS7",
     "button.js7Download": "JS7 Télécharger",

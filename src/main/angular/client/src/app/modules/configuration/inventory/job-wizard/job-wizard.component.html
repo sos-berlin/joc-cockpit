@@ -138,7 +138,7 @@
           <div class="col-md-12">
             <div class="form-group row m-b-0" *ngFor="let param of job.params; let i = index">
               <div class="col-sm-1 m-b-sm text-center">
-                <label nz-checkbox style="position: relative;top:5px"
+                <label nz-checkbox style="position: relative;top:5px" [nzDisabled]="!(param.newValue || param.newValue == 0 || param.newValue == false)"
                   [nzChecked]="wizard.setOfCheckedValue.has(param.name)"
                   (nzCheckedChange)="onItemChecked(param, $event)"></label>
               </div>
@@ -244,15 +244,14 @@
             <ng-container *ngIf="node">
               <div class="form-group row m-b-0" *ngFor="let param of job.paramList; let i = index">
                 <div class="col-sm-1 m-b-sm text-center">
-                  <label nz-checkbox style="position: relative;top:5px" [nzDisabled]="true" [nzChecked]="(param.name && param.name.length > 0)"></label>
+                  <label nz-checkbox style="position: relative;top:5px" [nzDisabled]="true" [(nzChecked)]="!!param.name"></label>
                 </div>
                 <div class="col-sm-5 m-b-sm p-l-0">
                   <input type="text" autocomplete="off" class="form-control" name="name{{i}}" [(ngModel)]="param.name"
                     placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
                 </div>
-
                 <div class="col-sm-5 m-b-sm p-r-0" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                  <input [required]="param.name && param.name.length > 0" type="text" autocomplete="off" class="form-control" name="value{{i}}"
+                  <input [required]="!!param.name" type="text" autocomplete="off" class="form-control" name="value{{i}}"
                     (keydown)="onKeyPress($event);" [(ngModel)]="param.newValue" #value="ngModel"
                     placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
                 </div>

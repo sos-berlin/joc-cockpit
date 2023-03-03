@@ -18,6 +18,16 @@
     <!-- / brand -->
     <!-- navbar right -->
     <ul class="nav navbar-nav pull-right ">
+      <ng-template #problemEventTemp>
+        <div class="pos-abt" style="top:16px;right: 16px">
+          <a class="primary-text-hover-color cursor" (click)="problemEvent = {}" translate>common.button.clear</a>
+        </div>
+        <div class="notification">
+          <div>
+            {{problemEvent?.path}} - {{problemEvent?.message}}
+          </div>
+        </div>
+      </ng-template>
       <ng-template #jocMonitorEvent>
         <div *ngIf="jocMonitor.length > 0" class="pos-abt" style="top:16px;right: 16px">
           <a class="primary-text-hover-color cursor" (click)="clearJocEvent()" translate>common.button.clear</a>
@@ -53,6 +63,15 @@
           </div>
         </div>
       </ng-template>
+      <li class="nav-item">
+        <a class="nav-link pointer text-danger" style="top: 3px" *ngIf="problemEvent?.message">
+          <span class="p-l-xs cursor" nz-popover
+                nzPopoverTitle="{{'info.label.notification' | translate}}" nzPopoverTrigger="click" [nzPopoverContent]="problemEventTemp"
+                nzPopoverPlacement="bottomRight">
+            <i class="fa fa-bell bell text-18" style="line-height: 0"></i>
+          </span>
+        </a>
+      </li>
       <li class="nav-item">
         <a class="nav-link pointer" style="top: 3px" [ngClass]="{'text-white': colorOfJOCEvent == 0, 'text-warning': colorOfJOCEvent == 1, 'text-danger': colorOfJOCEvent == 2}">
           <span (click)="resetJOCEvent()" class="p-l-xs cursor" nz-popover [nz-tooltip]="'info.tooltip.jocMonitorEvent' | translate" nzTooltipPlacement="bottom"

@@ -912,8 +912,10 @@
       },
       "button": {
         "addAgent": "エージェント追加",
+        "addSecondaryAgent": "Add Agent Instance",
+        "addAnotherAgent": "エージェント新規追加",
         "removeAgent": "エージェント削除",
-        "addAnotherAgent": "エージェント新規追加"
+        "removeSecondaryAgent": "Remove Agent Instance"
       },
       "placeholder": {
         "agentId": "エージェントID入力",
@@ -1432,6 +1434,7 @@
     "label.openSourceLicense": "Open Source License",
     "label.jocMonitorEvent": "JOC Monitor Event",
     "label.systemMonitorEvent": "System Monitor Event",
+    "label.notification": "Notification",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
     "button.aboutJS7": "JS7について",
     "button.js7Download": "JS7ダウンロード",

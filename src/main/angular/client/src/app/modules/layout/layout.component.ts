@@ -116,9 +116,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
   refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if ((args.eventSnapshots[j].eventType === 'ProblemEvent' || args.eventSnapshots[j].eventType === 'ProblemAsHintEvent') && args.eventSnapshots[j].message) {
+        if ((args.eventSnapshots[j].eventType === 'ProblemEvent' || args.eventSnapshots[j].eventType === 'ProblemAsHintEvent' || args.eventSnapshots[j].eventType === 'NodeLossProblemEvent') && args.eventSnapshots[j].message) {
           if ((args.eventSnapshots[j].accessToken === this.authService.accessTokenId) || !args.eventSnapshots[j].accessToken) {
-            if (args.eventSnapshots[j].eventType === 'ProblemEvent') {
+            if (args.eventSnapshots[j].eventType === 'ProblemEvent' || args.eventSnapshots[j].eventType === 'NodeLossProblemEvent') {
               this.toasterService.error(args.eventSnapshots[j].message);
             } else {
               this.toasterService.warning(args.eventSnapshots[j].message);

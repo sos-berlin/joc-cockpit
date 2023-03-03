@@ -483,3 +483,9 @@ $trans: cubic-bezier(0.3, 0, 0.7, 1);
     clip-path: inset(0 0 0 0);
   }
 }
+
+.bell {
+  -webkit-animation: ring 2s ease infinite;
+  -moz-animation: ring 2s ease infinite;
+  animation: ring 2s ease infinite;
+}

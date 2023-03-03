@@ -353,8 +353,7 @@
                         {{agent.controllerId || 'Controller_ID_' + (i+1)}}
                         <i class="fa fa-caret-down p-l-xs text-hover-primary" (click)="agent.isAgentExpanded = !agent.isAgentExpanded"
                            [ngClass]="{'fa-caret-up': agent.isAgentExpanded}"></i>
-                        <i *ngIf="i > 0"
-                           class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm font14 cursor"
+                        <i class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm font14 cursor"
                            (click)="removeAgent(i)" nz-tooltip="{{'deploymentService.agent.button.removeAgent' | translate}}"></i>
                       </h6>
                       <div class="p-a b-a hide" [ngClass]="{'fade-in show': agent.isAgentExpanded}">
@@ -392,9 +391,9 @@
                             <i class="fa fa-caret-down p-l-xs text-hover-primary"
                                (click)="item.isAgentPropertiesExpanded = !item.isAgentPropertiesExpanded"
                                [ngClass]="{'fa-caret-up': item.isAgentPropertiesExpanded}"></i>
-                            <i *ngIf="j != 0" class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm font14 cursor"
+                            <i class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm font14 cursor"
                                (click)="removeSecondaryObj(agent.members, j)"
-                               nz-tooltip="{{'deploymentService.agent.button.removeAgent' | translate}}"></i>
+                               nz-tooltip="{{'deploymentService.agent.button.removeSecondaryAgent' | translate}}"></i>
                             <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
                                [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'instance' )}"
                                (click)="paste('agents', 'instance', i, j)"
@@ -976,11 +975,15 @@
                             </div>
                           </div>
                         </div>
+                        <div class="m-t-12">
+                          <a class="text-primary text-hover-primary" (click)="addAnotherAgentInstance(agent)"
+                             translate>deploymentService.agent.button.addSecondaryAgent</a>
+                        </div>
                       </div>
                     </div>
                     <div class="m-t">
                       <a class="text-primary text-hover-primary" (click)="addAnotherAgent()"
-                         translate>deploymentService.agent.button.addAnotherAgent</a>
+                         translate>deploymentService.agent.button.addAgentAgent</a>
                     </div>
                   </div>
                   <hr>
@@ -1009,8 +1012,7 @@
                         {{controller.controllerId || 'Controller_ID_' + (i+1)}}
                         <i class="fa fa-caret-down p-l-xs text-hover-primary" (click)="controller.isControllerExpanded = !controller.isControllerExpanded"
                            [ngClass]="{'fa-caret-up': controller.isControllerExpanded}"></i>
-                        <i *ngIf="i > 0"
-                           class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm font14 cursor"
+                        <i class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm font14 cursor"
                            (click)="removeController(i)" nz-tooltip="{{'deploymentService.controller.button.removeController' | translate}}"></i>
                       </h6>
                       <div class="p-a b-a hide" [ngClass]="{'fade-in show': controller.isControllerExpanded}">
@@ -1718,8 +1720,7 @@
                         {{jocC.members.clusterId || 'Cluster_ID_' + (i+1)}}
                         <i class="fa fa-caret-down p-l-xs text-hover-primary" (click)="jocC.isJOCExpanded = !jocC.isJOCExpanded"
                            [ngClass]="{'fa-caret-up': jocC.isJOCExpanded}"></i>
-                        <i *ngIf="i > 0"
-                           class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm font14 cursor"
+                        <i class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm font14 cursor"
                            (click)="removeJOC(i)" nz-tooltip="{{'deploymentService.joc.button.removeJoc' | translate}}"></i>
                       </h6>
                       <div class="p-a b-a hide" [ngClass]="{'fade-in show': jocC.isJOCExpanded}">
@@ -1755,7 +1756,7 @@
                             <i class="fa fa-caret-down p-l-xs text-hover-primary"
                                (click)="item.isJOCPropertiesExpanded = !item.isJOCPropertiesExpanded"
                                [ngClass]="{'fa-caret-up': item.isJOCPropertiesExpanded}"></i>
-                            <i *ngIf="j != 0" class="fa fa-times fa-icon pull-right text-hover-color p-r-sm font14 cursor"
+                            <i class="fa fa-times fa-icon pull-right text-hover-color p-r-sm font14 cursor"
                                (click)="removeSecondaryObj(jocC.members.instances, j)"
                                nz-tooltip="{{'deploymentService.joc.button.removeSecondaryJOC' | translate}}"></i>
                             <i class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
@@ -2576,23 +2577,18 @@
 </div>
 <nz-dropdown-menu #menu="nzDropdownMenu">
   <ul nz-menu *ngIf="!isTrash && node?.origin && permission?.joc">
-    <li nz-menu-item *ngIf="!node.origin.children"
-        (click)="addObject();">
-      <a translate>inventory.button.new</a>
-    </li>
     <li nz-submenu [nzTitle]="'inventory.button.new' | translate"
         *ngIf="node.origin.children">
       <ul>
         <li nz-menu-item (click)="createFolder();">
           <a translate>inventory.button.newFolder</a>
         </li>
-        <li nz-menu-divider></li>
         <li nz-menu-item (click)="addObject()">
           <a translate>deploymentService.button.newDescriptor</a>
         </li>
       </ul>
     </li>
-    <li nz-menu-divider></li>
+    <li nz-menu-divider *ngIf="node.origin.children"></li>
     <li nz-menu-item [nzDisabled]="node.origin.children && node.origin.path === '/'" (click)="cutObject()">
       <a translate>inventory.button.cut</a>
     </li>
@@ -2639,7 +2635,7 @@
     </li>
   </ul>
 </nz-dropdown-menu>
-<div class="spinner" *ngIf="isLoading">
+<div class="spinner" *ngIf="isLoading || loading">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
