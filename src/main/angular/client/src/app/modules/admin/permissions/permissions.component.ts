@@ -233,9 +233,9 @@ export class FolderModalComponent implements OnInit {
 
   private getFolderTree(): void {
     this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected,
+      forDescriptors: true,
       forInventory: true,
-      types: ['FOLDER']
+      types: ["DESCRIPTORFOLDER", "FOLDER"]
     }).subscribe(res => {
       this.nodes = this.coreService.prepareTree(res, true);
       if (this.nodes.length > 0) {

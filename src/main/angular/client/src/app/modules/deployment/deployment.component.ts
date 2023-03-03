@@ -742,28 +742,34 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     const obj: any = {
       path: object.path
     };
-    this.coreService.post(URL, obj).subscribe((res: any) => {
-      this.lastModified = res.configurationDate;
-      this.history = [];
-      this.indexOfNextAdd = 0;
-      if (res.configuration) {
-        delete res.configuration.TYPE;
-        delete res.configuration.path;
-        delete res.configuration.version;
-        delete res.configuration.versionId;
-      } else {
-        res.configuration = {};
+    this.loading = true;
+    this.coreService.post(URL, obj).subscribe({
+      next: (res: any) => {
+        this.lastModified = res.configurationDate;
+        this.history = [];
+        this.indexOfNextAdd = 0;
+        if (res.configuration) {
+          delete res.configuration.TYPE;
+          delete res.configuration.path;
+          delete res.configuration.version;
+          delete res.configuration.versionId;
+        } else {
+          res.configuration = {};
+        }
+        this.data = {};
+        this.deploymentData = {
+          name: res.name,
+          path: res.path,
+          data: JSON.stringify(res.configuration)
+        };
+        this.isValid = res.valid;
+        this.deploymentData.mainObj = res.configuration;
+        this.loading = false;
+        this.updateJSONObject();
+        this.history.push(this.deploymentData.data);
+      }, error: () => {
+        this.loading = false;
       }
-      this.data = {};
-      this.deploymentData = {
-        name: res.name,
-        path: res.path,
-        data: JSON.stringify(res.configuration)
-      };
-      this.isValid = res.valid;
-      this.deploymentData.mainObj = res.configuration;
-      this.updateJSONObject();
-      this.history.push(this.deploymentData.data);
     });
   }
 
@@ -997,6 +1003,25 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     this.addAgent(true);
   }
 
+  addAnotherAgentInstance(agent): void {
+    agent.members.push({
+      isAgentPropertiesExpanded: true,
+      target: {
+        connection: {},
+        authentication: {},
+        makeService: false
+      },
+      media: {},
+      installation: {},
+      configuration: {
+        controller: {},
+        certificates: {},
+        templates: [{name: ''}]
+      }
+    });
+    this.convertJSON();
+  }
+
   addTemplates(list): void {
     list.push({name: ''});
   }
@@ -1060,7 +1085,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         this.coreService.post('descriptor/store', request).subscribe({
           next: (res: any) => {
             this.isStore = false;
-            if (res.path === this.deploymentData.path) {
+            if (res.path === this.selectedObj?.path) {
               this.lastModified = res.configurationDate;
               this.deploymentData.data = JSON.stringify(this.data);
               this.isValid = res.valid;
@@ -1072,19 +1097,9 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   private checkAndUpdateObj(obj, type, source, index1, index2, isSkip): void {
-    if (type == 'joc') {
-      this.data.joc[index1].isJOCExpanded = true;
-      this.data.joc[index1].members.instances[index2].isJOCPropertiesExpanded = true;
-    } else if (type == 'agents') {
-      this.data.agents.controllerRefs[index1].isAgentExpanded = true;
-      this.data.agents.controllerRefs[index1].members[index2].isAgentPropertiesExpanded = true;
-    } else if (type == 'controllers') {
-      this.data.controllers[index1].isControllerExpanded = true;
-      this.data.controllers[index1].cluster[index2].isControllerPropertiesExpanded = true;
-    }
     if (type === 'joc') {
       if (!source.instanceId && !isSkip) {
-        this.navToField('jocInstanceId' + index1 + index2, type);
+        this.navToField('jocInstanceId' + index1 + index2, index1, index2, type);
         this.errorMessages.push('JOC instance ID is required');
       } else {
         obj.instanceId = source.instanceId;
@@ -1105,7 +1120,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         obj.target.connection = {};
       }
       if (!source.target.connection.host && !isSkip) {
-        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + 'host' + index1 + index2, type);
+        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + 'host' + index1 + index2, index1, index2, type);
         this.errorMessages.push('Connection host is required');
       }
       obj.target.connection = source.target.connection;
@@ -1121,7 +1136,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         } else {
           id = 'user';
         }
-        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, type);
+        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, index1, index2, type);
         this.errorMessages.push(!source.target.authentication.method ? 'Authentication method is required' : 'Authentication user is required');
       }
       obj.target.authentication = source.target.authentication;
@@ -1135,7 +1150,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         } else {
           id = 'tarball';
         }
-        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, type);
+        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, index1, index2, type);
         this.errorMessages.push(!source.media.release ? 'Media release is required' : 'Media tarball is required');
       }
       obj.media = source.media;
@@ -1154,11 +1169,11 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         } else if (!source.installation.data) {
           id = 'data';
         }
-        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, type);
+        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, index1, index2, type);
         this.errorMessages.push((type == 'joc' && !source.installation.setupDir) ? 'Installation setupDir is required' : !source.installation.home ? 'Installation home is required' : 'Installation data is required');
       }
       if (!isSkip && !source.installation.httpPort && !source.installation.httpsPort) {
-        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + 'httpPort' + index1 + index2, type);
+        this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + 'httpPort' + index1 + index2, index1, index2, type);
         this.errorMessages.push('Installation http or https port is required');
       }
       obj.installation = source.installation;
@@ -1210,7 +1225,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
             } else {
               id = 'trustStorePassword';
             }
-            this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, type);
+            this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, index1, index2, type);
             this.errorMessages.push(!source.configuration.certificates.keyStore ? 'Key store certificate is required' : !source.configuration.certificates.keyStorePassword ? 'Key store password certificate is required' :
               !source.configuration.certificates.keyPassword ? 'Key password certificate is required' : !source.configuration.certificates.trustStore ? 'Trust store certificate is required' : 'Trust store password certificate is required');
           }
@@ -1224,7 +1239,18 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
 
-  private navToField(id, type): void {
+  private navToField(id, index1, index2, type): void {
+    if (type == 'joc') {
+      this.data.joc[index1].isJOCExpanded = true;
+      this.data.joc[index1].members.instances[index2].isJOCPropertiesExpanded = true;
+    } else if (type == 'agents') {
+      this.data.agents.controllerRefs[index1].isAgentExpanded = true;
+      this.data.agents.controllerRefs[index1].members[index2].isAgentPropertiesExpanded = true;
+    } else if (type == 'controllers') {
+      this.data.controllers[index1].isControllerExpanded = true;
+      this.data.controllers[index1].cluster[index2].isControllerPropertiesExpanded = true;
+    }
+
     if (!this.isNavigate) {
       this.isNavigate = true;
       if (type == 'descriptor') {
@@ -1236,7 +1262,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       } else if (type == 'controllers') {
         this.obj.isControllerExpanded = true;
       }
-
 
       setTimeout(() => {
         this.isNavigate = false;
@@ -1266,7 +1291,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       descriptor: this.data.descriptor
     };
     if (!this.data.descriptor.descriptorId && !isSkip) {
-      this.navToField('descriptorId', 'descriptor');
+      this.navToField('descriptorId', 0, 0, 'descriptor');
       this.errorMessages.push('Descriptor Id is required');
     }
     if (!isSkip && this.data.joc?.length == 0 && this.data.agents?.controllerRefs?.length == 0 && this.data.controllers?.length == 0) {
@@ -1277,7 +1302,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       if (!isEmpty(this.data.license)) {
         this.deploymentData.mainObj['license'] = this.data.license;
         if (!isSkip && (!this.data.license.licenseKeyFile || !this.data.license.licenseBinFile)) {
-          this.navToField(!this.data.license.licenseKeyFile ? 'licenseKeyFile' : 'licenseBinFile', 'license');
+          this.navToField(!this.data.license.licenseKeyFile ? 'licenseKeyFile' : 'licenseBinFile', 0, 0, 'license');
           this.errorMessages.push(this.data.license.licenseKeyFile ? 'License bin file is required' : 'License key file is required');
         }
       } else if (!isSkip) {
@@ -1292,7 +1317,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       };
       this.data.agents.controllerRefs.forEach((agent, i) => {
         if (!agent.controllerId && !isSkip) {
-          this.navToField('controllerId' + i, 'agents');
+          this.navToField('controllerId' + i, i, -1, 'agents');
           this.errorMessages.push('Controller Refs is required');
         }
         let obj = {
@@ -1301,7 +1326,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         };
         agent.members.forEach((element, j) => {
           if (!element.agentId && !isSkip) {
-            this.navToField('agentId' + i + j, 'agents');
+            this.navToField('agentId' + i + j, i, j, 'agents');
             this.errorMessages.push('Agent Id is required');
           }
           let _obj = {
@@ -1318,11 +1343,11 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       this.deploymentData.mainObj['controllers'] = [];
       this.data.controllers.forEach((controller, i) => {
         if (!controller.controllerId && !isSkip) {
-          this.navToField('controllerId' + i, 'controllers');
+          this.navToField('controllerId' + i, i, i, 'controllers');
           this.errorMessages.push('Controller Id is required');
         }
         if (!controller.jocRef && !isSkip) {
-          this.navToField('jocRef' + i, 'controllers');
+          this.navToField('jocRef' + i, i, i, 'controllers');
           this.errorMessages.push('JOC Reference is required');
         }
         if (controller.cluster) {
@@ -1355,7 +1380,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           }
         }
         if (!joc.members.clusterId && !isSkip) {
-          this.navToField('clusterId' + i, 'joc');
+          this.navToField('clusterId' + i, i, i, 'joc');
           this.errorMessages.push('Joc cluster Id is required');
         }
         joc.members.instances.forEach((element, j) => {
@@ -1382,7 +1407,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   editJSON(): void {
-    this.validate();
+    this.validate(true);
     this.modal.create({
       nzTitle: undefined,
       nzContent: ShowJsonModalComponent,
@@ -1400,6 +1425,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       if (result) {
         this.deploymentData.mainObj = result;
         this.updateJSONObject();
+        this.saveJSON();
       }
     });
   }
@@ -1684,7 +1710,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   download(): void {
-    this.validate();
+    this.validate(true);
     const name = this.data.descriptor.descriptorId + '-descriptor' + '.json';
     const fileType = 'application/octet-stream';
     const data = JSON.stringify(this.deploymentData.mainObj, undefined, 2);
@@ -1704,8 +1730,8 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.deploymentData.mainObj = result;
-        this.updateJSONObject();
+        this.loading = true;
+        this.storeData(this.selectedObj, result);
       }
     });
   }
@@ -1887,7 +1913,8 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         if (flag) {
           list.push(obj);
         }
-        this.deploymentData = obj;
+        this.selectedObj = obj;
+        this.getObject(this.selectedObj);
         this.updateTree(false);
       });
     }

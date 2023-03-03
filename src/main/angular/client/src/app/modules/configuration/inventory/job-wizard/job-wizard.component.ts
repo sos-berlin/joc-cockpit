@@ -325,19 +325,19 @@ export class JobWizardComponent implements OnInit {
   /*--------------- Checkbox functions -------------*/
 
   onAllChecked(isChecked: boolean): void {
-    this.job.params.forEach(item => this.updateCheckedSet(item.name, isChecked));
+    this.job.params.forEach(item => this.updateCheckedSet(item, isChecked));
   }
 
   onItemChecked(item: any, checked: boolean): void {
-    this.updateCheckedSet(item.name, checked);
+    this.updateCheckedSet(item, checked);
   }
 
-  updateCheckedSet(name: string, checked: boolean): void {
-    if (name) {
+  updateCheckedSet(data: any, checked: boolean): void {
+    if (data.name && (data.newValue || data.newValue == 0 || data.newValue ==  false)) {
       if (checked) {
-        this.wizard.setOfCheckedValue.add(name);
+        this.wizard.setOfCheckedValue.add(data.name);
       } else {
-        this.wizard.setOfCheckedValue.delete(name);
+        this.wizard.setOfCheckedValue.delete(data.name);
       }
     }
     this.wizard.checked = this.job.params.every(item => {

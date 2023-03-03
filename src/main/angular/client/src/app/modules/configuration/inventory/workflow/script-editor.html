@@ -99,8 +99,8 @@
           <ngx-codemirror required #codeMirror title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}"
                           #cm="ngModel" name="cm" [(ngModel)]="scriptObj.data" [options]="cmOption"
           ></ngx-codemirror>
-          <div class="rg-right" style="background: transparent; margin-right: -10px"><span style="top:48%"></span></div>
-          <div class="rg-bottom" style="bottom: -10px;background: transparent"><span></span></div>
+          <div class="rg-right" style="background: transparent; margin-right: -16px"><span style="top:48%"></span></div>
+          <div class="rg-bottom" style="bottom: -16px;background: transparent"><span></span></div>
         </div>
         <div *ngIf="(cm.invalid && (cm.dirty || cm.touched))"
              class="text-danger help-block">

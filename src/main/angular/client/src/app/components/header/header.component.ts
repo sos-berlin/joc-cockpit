@@ -28,6 +28,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   timeout: any;
   jocMonitor = [];
   systemMonitor = [];
+  problemEvent: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -53,6 +54,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (sessionStorage['$SOS$SYSTEMMONITOR']) {
       this.systemMonitor = JSON.parse(sessionStorage['$SOS$SYSTEMMONITOR']);
+    }
+    if (sessionStorage['$SOS$NODELOSS']) {
+      this.problemEvent = JSON.parse(sessionStorage['$SOS$NODELOSS']);
     }
     this.init();
   }
@@ -234,7 +238,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
             for (let j = 0; j < res.eventSnapshots.length; j++) {
               if (res.eventSnapshots[j].eventType === 'JOCStateChanged') {
                 this.isJocActive();
-                break;
+              } else if (res.eventSnapshots[j].eventType === 'NodeLossProblemEvent') {
+                this.problemEvent = res.eventSnapshots[j];
+                sessionStorage['$SOS$NODELOSS'] = JSON.stringify(res.eventSnapshots[j]);
               }
             }
 
