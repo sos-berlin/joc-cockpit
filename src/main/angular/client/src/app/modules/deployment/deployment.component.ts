@@ -426,7 +426,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
           this.updateFolders(path, false, (response) => {
             this.updateTree(false);
-            console.log(response)
           }, redirect);
           if (mainPath && path !== mainPath) {
             this.updateFolders(mainPath, false, () => {
@@ -531,7 +530,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
       traverseTree(isTrash ? this.trashTree[0] : this.tree[0]);
     }
-    console.log(matchData)
     if (!matchData && cb) {
       cb();
     }
@@ -570,8 +568,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
                     arr.push(destTree[i].children[x]);
                   }
                 }
-                console.log('arr', arr)
-                console.log(scrTree[j])
                 if (arr.length > 0) {
                   scrTree[j].children = arr.concat(scrTree[j].children || []);
                 }
@@ -611,7 +607,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         });
         if (!this.deploymentData?.path && this.selectedObj.path) {
           for (let i in res.deploymentDescriptors) {
-            if(res.deploymentDescriptors[i].path == this.selectedObj.path){
+            if (res.deploymentDescriptors[i].path == this.selectedObj.path) {
               this.selectedObj = res.deploymentDescriptors[i];
               this.deploymentData.path = this.selectedObj.path;
               this.getObject(res.deploymentDescriptors[i]);
@@ -638,7 +634,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
   openFolder(node: NzTreeNode): void {
     if (node instanceof NzTreeNode) {
-      console.log('openFolder');
       node.isExpanded = !node.isExpanded;
       if (node.isExpanded && node.origin.children) {
         this.expandFolder(node);
@@ -671,7 +666,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
 
   /** Actions */
-
   switchToTrash(): void {
     this.trashTree = [];
     this.isTrash = !this.isTrash;
@@ -709,10 +703,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
             self.updateObjects(scrTree[j], self.isTrash, () => {
               scrTree[j].loading = false;
               self.updateTree(self.isTrash);
-              if (self.selectedObj.path) {
-                console.log(self.selectedObj.path, 'self.selectedObj.path');
-                console.log(scrTree[j], 'scrTree[j]');
-              }
             })
           }
           if (scrTree[j].children) {
@@ -1941,8 +1931,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
     if (this.copyObj) {
       if (this.copyObj.operation === 'COPY') {
-        this.openObjectNameModal(object, (res) => {
-          console.log(res);
+        this.openObjectNameModal(object, () => {
         });
       } else if (this.copyObj.operation === 'CUT') {
         if (this.preferences.auditLog) {
