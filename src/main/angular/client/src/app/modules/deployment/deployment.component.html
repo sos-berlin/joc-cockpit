@@ -110,7 +110,7 @@
                         <span *ngIf="!node.origin.loading && (!node.origin.children || node.children.length === 0 || (node.origin.children.length > 0 && node.origin.children[node.origin.children.length-1].objectType))">
                           <span class="p-r"></span>
                         </span>
-                        <button [disabled]="permission.joc?.inventory.manage" (click)="openMenu(node, $event)" class="btn-drop more-option-h" type="button">
+                        <button [disabled]="!permission.joc?.inventory.manage" (click)="openMenu(node, $event)" class="btn-drop more-option-h" type="button">
                           <i class="fa fa-ellipsis-h"></i>
                         </button>
                         <div (click)="selectNode(node)" [ngClass]="{'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.name === node.origin.name
@@ -983,7 +983,7 @@
                     </div>
                     <div class="m-t">
                       <a class="text-primary text-hover-primary" (click)="addAnotherAgent()"
-                         translate>deploymentService.agent.button.addAgentAgent</a>
+                         translate>deploymentService.agent.button.addAnotherAgent</a>
                     </div>
                   </div>
                   <hr>
