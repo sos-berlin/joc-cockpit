@@ -27,31 +27,31 @@
               <i class="fa fa-check"></i>
               {{'deploymentService.button.validate' | translate}}
             </button>
-            <button *ngIf="object.setOfCheckedId.size==0" type="button" class="btn btn-sm btn-grey m-l-12"
+            <button *ngIf="object.setOfCheckedId.size==0 && permission.joc?.inventory.manage" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="editJSON();">
               <i class="fa fa-edit"></i>
               {{'deploymentService.button.editJSON' | translate}}
             </button>
-            <button *ngIf="data.joc?.length > 0 || data.agents?.controllerRefs?.length > 0 || data.controllers?.length > 0" type="button" class="btn btn-sm btn-grey m-l-12" (click)="bulkUpdate();">
+            <button *ngIf="(data.joc?.length > 0 || data.agents?.controllerRefs?.length > 0 || data.controllers?.length > 0) && permission.joc?.inventory.manage" type="button" class="btn btn-sm btn-grey m-l-12" (click)="bulkUpdate();">
               <i class="fa fa-pencil"></i>
               {{'deploymentService.button.bulkUpdate' | translate}}
             </button>
-            <button *ngIf="!data.license && object.setOfCheckedId.size==0" type="button"
+            <button *ngIf="(!data.license && object.setOfCheckedId.size==0) && permission.joc?.inventory.manage" type="button"
                     class="btn btn-sm btn-grey m-l-12" (click)="addLicense();">
               <i class="fa fa-plus"></i>
               {{'deploymentService.license.button.addLicense' | translate}}
             </button>
-            <button *ngIf="(!data.agents || !data.agents.controllerRefs || data.agents.controllerRefs?.length == 0) && object.setOfCheckedId.size==0" type="button"
+            <button *ngIf="((!data.agents || !data.agents.controllerRefs || data.agents.controllerRefs?.length == 0) && object.setOfCheckedId.size==0) && permission.joc?.inventory.manage" type="button"
                     class="btn btn-sm btn-grey m-l-12" (click)="addAgent();">
               <i class="fa fa-plus"></i>
               {{'deploymentService.agent.button.addAgent' | translate}}
             </button>
-            <button *ngIf="(!data.controllers || data.controllers.length == 0) && object.setOfCheckedId.size==0"
+            <button *ngIf="((!data.controllers || data.controllers.length == 0) && object.setOfCheckedId.size==0) && permission.joc?.inventory.manage"
                     type="button" class="btn btn-sm btn-grey m-l-12" (click)="addController();">
               <i class="fa fa-plus"></i>
               {{'deploymentService.controller.button.addController' | translate}}
             </button>
-            <button *ngIf="(!data.joc || data.joc.length == 0) && object.setOfCheckedId.size==0" type="button" class="btn btn-sm btn-grey m-l-12"
+            <button *ngIf="((!data.joc || data.joc.length == 0) && object.setOfCheckedId.size==0) && permission.joc?.inventory.manage" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="addJOC();">
               <i class="fa fa-plus"></i>
               {{'deploymentService.joc.button.addJOC' | translate}}
@@ -110,7 +110,7 @@
                         <span *ngIf="!node.origin.loading && (!node.origin.children || node.children.length === 0 || (node.origin.children.length > 0 && node.origin.children[node.origin.children.length-1].objectType))">
                           <span class="p-r"></span>
                         </span>
-                        <button (click)="openMenu(node, $event)" class="btn-drop more-option-h" type="button">
+                        <button [disabled]="permission.joc?.inventory.manage" (click)="openMenu(node, $event)" class="btn-drop more-option-h" type="button">
                           <i class="fa fa-ellipsis-h"></i>
                         </button>
                         <div (click)="selectNode(node)" [ngClass]="{'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.name === node.origin.name
@@ -172,15 +172,15 @@
                           <span class="nav-text"> <i nz-icon nzType="redo" nzTheme="outline"></i></span>
                         </a>
                       </li>
-                      <li class="nav-item dropdown-separator">
+                      <li class="nav-item dropdown-separator" *ngIf="permission.joc?.inventory.manage">
                         <span class="separator"></span>
                       </li>
-                      <li class="nav-item" [nz-tooltip]="'inventory.button.download' | translate">
+                      <li class="nav-item" *ngIf="permission.joc?.inventory.manage" [nz-tooltip]="'inventory.button.download' | translate">
                         <a class="nav-link" (click)="download()">
                           <span class="nav-text"> <i nz-icon nzType="download" nzTheme="outline"></i></span>
                         </a>
                       </li>
-                      <li class="nav-item" [nz-tooltip]="'inventory.button.upload' | translate">
+                      <li class="nav-item" *ngIf="permission.joc?.inventory.manage" [nz-tooltip]="'inventory.button.upload' | translate">
                         <a class="nav-link" (click)="upload()">
                           <span class="nav-text"> <i nz-icon nzType="upload" nzTheme="outline"></i></span>
                         </a>
@@ -2603,8 +2603,8 @@
     <li nz-menu-item [nzDisabled]="node.origin.children && node.origin.path === '/'" (click)="renameObject();">
       <a translate>inventory.button.rename</a>
     </li>
-    <li nz-menu-divider></li>
-    <li nz-menu-item (click)="removeObject();"
+    <li nz-menu-divider *ngIf="permission.joc.inventory.manage"></li>
+    <li nz-menu-item (click)="removeObject();"  *ngIf="permission.joc.inventory.manage"
         [nzDisabled]="node.origin.children && node.origin.path === '/'">
       <a translate>inventory.button.remove</a>
     </li>
@@ -2614,7 +2614,7 @@
       <a translate>inventory.button.showJSON</a>
     </li>
     <li nz-menu-item (click)="editJson(true)"
-        *ngIf="!node.origin.children">
+        *ngIf="!node.origin.children && permission.joc.inventory.manage">
       <a translate>inventory.button.editJSON</a>
     </li>
     <li nz-menu-divider *ngIf="!node.origin.children"></li>
@@ -2623,7 +2623,7 @@
       <a translate>inventory.button.downloadJSON</a>
     </li>
     <li nz-menu-item (click)="importJSON()"
-        *ngIf="!node.origin.children">
+        *ngIf="!node.origin.children && permission.joc.inventory.manage">
       <a translate>inventory.button.uploadJSON</a>
     </li>
   </ul>

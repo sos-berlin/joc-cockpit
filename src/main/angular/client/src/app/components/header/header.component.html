@@ -20,7 +20,7 @@
     <ul class="nav navbar-nav pull-right ">
       <ng-template #problemEventTemp>
         <div class="pos-abt" style="top:16px;right: 16px">
-          <a class="primary-text-hover-color cursor" (click)="problemEvent = {}" translate>common.button.clear</a>
+          <a class="primary-text-hover-color cursor" (click)="clearProblemEvent()" translate>common.button.clear</a>
         </div>
         <div class="notification">
           <div>
@@ -95,7 +95,7 @@
         <app-info-menu [isHeader]="true"></app-info-menu>
       </li>
       <li class="nav-item dropdown"
-            *ngIf="permission.joc && (permission.joc.administration.accounts.view || permission.joc.administration.controllers.view || permission.joc.administration.settings.view)">
+            *ngIf="permission.joc && (permission.joc.administration.accounts.view || permission.joc.inventory.view || permission.joc.administration.controllers.view || permission.joc.administration.settings.view)">
         <a class="nav-link text-white pointer" style="top: 6px">
           <span class="p-l-xs cursor" nzTrigger="click" nz-dropdown [nzDropdownMenu]="submenu">
             <i class="icon3-administration-icon text-20" style="line-height: 0"></i>
@@ -110,7 +110,7 @@
                 </a>
               </li>
               <li nz-menu-item routerLink="/deployment_service" [routerLinkActive]="['active']"
-                  *ngIf="permission && permission.joc && permission.joc.administration.controllers.view">
+                  *ngIf="(showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && permission.joc.inventory.view)">
                 <a>
                   <i class="wd-14 fa fa-rocket"></i>
                   {{'header.button.manageDeployment' | translate}}

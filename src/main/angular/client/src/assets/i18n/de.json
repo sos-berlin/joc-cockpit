@@ -912,10 +912,10 @@
       },
       "button": {
         "addAgent": "Agent hinzufügen",
-        "addSecondaryAgent": "Add Agent Instance",
+        "addSecondaryAgent": "Agenten-Instanz hinzufügen",
         "addAnotherAgent": "Weiteren Agenten hinzufügen",
         "removeAgent": "Agent entfernen",
-        "removeSecondaryAgent": "Remove Agent Instance"
+        "removeSecondaryAgent": "Agenten-Instanz entfernen"
       },
       "placeholder": {
         "agentId": "Agenten-Kennung angeben",
@@ -1432,7 +1432,7 @@
     "label.openSourceLicense": "Open Source Lizenz",
     "label.jocMonitorEvent": "Warnungen und Fehler von Aufträgen",
     "label.systemMonitorEvent": "Warnungen und Fehler des Systems",
-    "label.notification": "Notification",
+    "label.notification": "Alarme",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
     "button.aboutJS7": "Über JS7",
     "button.js7Download": "JS7 Herunterladen",
