@@ -107,6 +107,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
+  clearProblemEvent(): void {
+    setTimeout(() => {
+      this.problemEvent = {};
+      sessionStorage.removeItem('$SOS$NODELOSS');
+    }, 250);
+  }
+
   clearJocEvent(): void {
     this.jocMonitor = [];
     sessionStorage.removeItem('$SOS$JOCMONITOR')

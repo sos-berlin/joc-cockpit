@@ -1053,7 +1053,9 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
   convertJSON(): void {
     this.validate(true);
-    this.saveJSON();
+    if (this.permission.joc?.inventory.manage) {
+      this.saveJSON();
+    }
   }
 
   private saveJSON(flag = false): void {
@@ -1897,26 +1899,27 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           ticketLink: comments.ticketLink
         }
       }
-
-      this.coreService.post('descriptor/store', request).subscribe(() => {
-        obj.valid = false;
-        obj.objectType = obj.type;
-        obj.path = PATH;
-        let flag = true;
-        for (let i in list) {
-          if (list[i].children) {
-            list.splice(i, 0, obj);
-            flag = false;
-            break;
+      if (this.permission.joc?.inventory.manage) {
+        this.coreService.post('descriptor/store', request).subscribe(() => {
+          obj.valid = false;
+          obj.objectType = obj.type;
+          obj.path = PATH;
+          let flag = true;
+          for (let i in list) {
+            if (list[i].children) {
+              list.splice(i, 0, obj);
+              flag = false;
+              break;
+            }
           }
-        }
-        if (flag) {
-          list.push(obj);
-        }
-        this.selectedObj = obj;
-        this.getObject(this.selectedObj);
-        this.updateTree(false);
-      });
+          if (flag) {
+            list.push(obj);
+          }
+          this.selectedObj = obj;
+          this.getObject(this.selectedObj);
+          this.updateTree(false);
+        });
+      }
     }
   }
 
@@ -2297,12 +2300,14 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       configuration: conf
     };
 
-    this.coreService.post('descriptor/store', request).subscribe((res) => {
-      data.valid = res.valid;
-      if (this.selectedObj?.path == data.path) {
-        this.getObject(data);
-      }
-    });
+    if (this.permission.joc?.inventory.manage) {
+      this.coreService.post('descriptor/store', request).subscribe((res) => {
+        data.valid = res.valid;
+        if (this.selectedObj?.path == data.path) {
+          this.getObject(data);
+        }
+      });
+    }
   }
 
   private clearSection() {

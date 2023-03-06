@@ -7514,7 +7514,11 @@ tr.tr-border td:first-child {
     color: inherit;
   }
 
-  .ui-resizable-s{
+  .ui-resizable-e {
+    right: -10px;
+  }
+
+  .ui-resizable-s {
     bottom: -10px;
   }
 
