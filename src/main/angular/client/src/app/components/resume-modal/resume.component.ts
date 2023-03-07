@@ -78,7 +78,6 @@ export class ResumeOrderModalComponent implements OnInit {
                 })
               }
             });
-            console.log(this.variables)
           }
           this.constants = this.coreService.convertObjectToArray(res, 'constants');
           this.constants.forEach((item) => {
@@ -324,7 +323,6 @@ export class ResumeOrderModalComponent implements OnInit {
     }
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    console.log(obj)
     this.submitted = false;
     this.coreService.post('orders/resume', obj).subscribe({
       next: () => {

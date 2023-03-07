@@ -10772,49 +10772,37 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const startPosition = clone(json.instructions[x].startPosition);
             const remainWhenTerminated = clone(json.instructions[x].remainWhenTerminated);
             const endPositions = clone(json.instructions[x].endPositions);
-            const label = clone(json.instructions[x].label);
             delete json.instructions[x].workflowName;
             delete json.instructions[x].arguments;
             delete json.instructions[x].remainWhenTerminated;
             delete json.instructions[x].startPosition;
             delete json.instructions[x].endPositions;
-            delete json.instructions[x].label;
             json.instructions[x].workflowName = workflowName;
             json.instructions[x].arguments = argu;
             json.instructions[x].remainWhenTerminated = remainWhenTerminated;
             json.instructions[x].startPosition = startPosition;
             json.instructions[x].endPositions = endPositions;
-            json.instructions[x].label = label;
           } else if (json.instructions[x].TYPE === 'Lock') {
             json.instructions[x].lockedWorkflow = {
               instructions: json.instructions[x].instructions
             };
 
-            const label = clone(json.instructions[x].label);
             const demands = clone(json.instructions[x].demands);
             delete json.instructions[x].instructions;
             delete json.instructions[x].demands;
-            delete json.instructions[x].label;
             json.instructions[x].demands = demands;
-            json.instructions[x].label = label;
           } else if (json.instructions[x].TYPE === 'ConsumeNotices' || json.instructions[x].TYPE === 'StickySubagent') {
             json.instructions[x].subworkflow = {
               instructions: json.instructions[x].instructions
             };
-            const label = clone(json.instructions[x].label);
             delete json.instructions[x].instructions;
-            delete json.instructions[x].label;
-            json.instructions[x].label = label;
           } else if (json.instructions[x].TYPE === 'Cycle') {
             json.instructions[x].cycleWorkflow = {
               instructions: json.instructions[x].instructions
             };
-            const label = clone(json.instructions[x].label);
             let scheduleObj = json.instructions[x].schedule ? clone(json.instructions[x].schedule) : null;
             delete json.instructions[x].instructions;
             delete json.instructions[x].schedule;
-            delete json.instructions[x].label;
-            json.instructions[x].label = label;
             if (scheduleObj && typeof scheduleObj === 'string') {
               try {
                 scheduleObj = JSON.parse(scheduleObj);
@@ -10831,7 +10819,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const subagentClusterIdObj = clone(json.instructions[x].subagentClusterId);
             const subagentClusterIdExprObj = clone(json.instructions[x].subagentClusterIdExpr);
             const subagentIdVariableObj = clone(json.instructions[x].subagentIdVariable);
-            const label = clone(json.instructions[x].label);
             let joinIfFailed = clone(json.instructions[x].joinIfFailed);
             let result = clone(json.instructions[x].result);
             joinIfFailed = joinIfFailed == 'true' || joinIfFailed === true;
@@ -10843,7 +10830,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             delete json.instructions[x].subagentClusterId;
             delete json.instructions[x].subagentClusterIdExpr;
             delete json.instructions[x].subagentIdVariable;
-            delete json.instructions[x].label;
             if (childrenObj) {
               json.instructions[x].children = childrenObj;
               json.instructions[x].childToId = childToIdObj;
@@ -10858,19 +10844,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               result
             };
             json.instructions[x].joinIfFailed = joinIfFailed;
-            json.instructions[x].label = label;
             delete json.instructions[x].instructions;
           } else if (json.instructions[x].TYPE === 'Fork') {
             const branchObj = clone(json.instructions[x].branches);
-            const label = clone(json.instructions[x].label);
             let joinIfFailed = clone(json.instructions[x].joinIfFailed);
             joinIfFailed = joinIfFailed == 'true' || joinIfFailed === true;
             delete json.instructions[x].branches;
             delete json.instructions[x].joinIfFailed;
-            delete json.instructions[x].label;
             json.instructions[x].branches = branchObj;
             json.instructions[x].joinIfFailed = joinIfFailed;
-            json.instructions[x].label = label;
           } else if (json.instructions[x].TYPE === 'Fail') {
             if (json.instructions[x].uncatchable == 'false') {
               json.instructions[x].uncatchable = false;
@@ -10883,6 +10865,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             } else if (json.instructions[x].unsuccessful == 'true') {
               json.instructions[x].unsuccessful = true;
             }
+
           }
 
           if (json.instructions[x].catch) {
@@ -10899,6 +10882,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               recursive(json.instructions[x].else);
             } else {
               delete json.instructions[x].else;
+            }
+          }
+          if(json.instructions[x].TYPE !== 'Execute.Named' && json.instructions[x].TYPE !== 'Try'){
+            if(json.instructions[x].label) {
+              const label = clone(json.instructions[x].label);
+              delete json.instructions[x].label;
+              json.instructions[x].label = label;
             }
           }
         }

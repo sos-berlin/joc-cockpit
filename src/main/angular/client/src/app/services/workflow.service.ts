@@ -452,12 +452,15 @@ export class WorkflowService {
 
   convertTryInstruction(instruction: any): void {
     const catchObj = clone(instruction.catch);
+    const label = clone(instruction.label);
     instruction.try = {
       instructions: instruction.instructions
     };
     delete instruction.instructions;
     delete instruction.catch;
+    delete instruction.label;
     instruction.catch = catchObj;
+    instruction.label = label;
   }
 
   convertRetryToTryCatch(instruction: any): void {

@@ -254,7 +254,6 @@ export class TableComponent implements OnChanges, OnDestroy {
   }
 
   removeObject(object): void {
-    console.log(this.mapOfCheckedId)
     if (this.objectType !== 'WORKFLOW') {
       if (this.preferences.auditLog) {
         const comments = {
@@ -332,7 +331,6 @@ export class TableComponent implements OnChanges, OnDestroy {
           nzMaskClosable: false
         }).afterClose.subscribe(result => {
           if (result) {
-            console.log(result)
             this.removeApiCall(object, {
               comment: result.comment,
               timeSpent: result.timeSpent,

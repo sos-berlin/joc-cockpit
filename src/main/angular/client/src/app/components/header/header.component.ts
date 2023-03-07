@@ -132,6 +132,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.colorOfSystemEvent = 0;
   }
 
+  navToOrderNoti(index, data): void {
+    let filter = this.coreService.getMonitorTab();
+    filter.tabIndex = index;
+    if (index == 2) {
+      filter.orderNotification.filter.types = [data.level];
+    }
+    else {
+      filter.systemNotification.filter.categories = [data.category];
+      filter.systemNotification.filter.types = [data.level];
+    }
+    this.router.navigate(['/monitor']).then();
+  }
+
   logout(): void {
     this.isLogout = true;
     this.myLogout.emit();
