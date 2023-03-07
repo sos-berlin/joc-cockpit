@@ -1341,14 +1341,14 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.selectedNode.job.executable.arguments = result.executable.arguments || [];
       if (!isArray(this.selectedNode.job.executable.arguments)) {
         this.selectedNode.job.executable.arguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'arguments');
-        this.selectedNode.job.executable.arguments.filter((argu) => {
+        this.selectedNode.job.executable.arguments.forEach((argu) => {
           this.coreService.removeSlashToString(argu, 'value');
         });
       }
       this.selectedNode.job.executable.jobArguments = result.executable.jobArguments || [];
       if (!isArray(this.selectedNode.job.executable.jobArguments)) {
         this.selectedNode.job.executable.jobArguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'jobArguments');
-        this.selectedNode.job.executable.jobArguments.filter((argu) => {
+        this.selectedNode.job.executable.jobArguments.forEach((argu) => {
           this.coreService.removeSlashToString(argu, 'value');
         });
       }
@@ -1356,7 +1356,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.selectedNode.job.executable.env = result.executable.env || [];
       if (!isArray(this.selectedNode.job.executable.env)) {
         this.selectedNode.job.executable.env = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'env');
-        this.selectedNode.job.executable.env.filter((env) => {
+        this.selectedNode.job.executable.env.forEach((env) => {
           this.coreService.removeSlashToString(env, 'value');
         });
       }
@@ -2153,6 +2153,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.getJobInfo();
     this.getJobTemplate();
     this.selectedNode.obj.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.obj, 'defaultArguments');
+    this.selectedNode.obj.defaultArguments.forEach((argu) => {
+      this.coreService.removeSlashToString(argu, 'value');
+    });
     if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length === 0) {
       this.addArgument();
     }
@@ -2224,9 +2227,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!isArray(this.selectedNode.job.defaultArguments)) {
         this.selectedNode.job.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.job, 'defaultArguments');
-        this.selectedNode.job.defaultArguments = this.selectedNode.job.defaultArguments.filter((argu) => {
+        this.selectedNode.job.defaultArguments.forEach((argu) => {
           this.coreService.removeSlashToString(argu, 'value');
-          return argu.name && (argu.value || argu.value == false || argu.value == 0)
         });
       }
     }
@@ -2235,9 +2237,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!isArray(this.selectedNode.job.executable.arguments)) {
         this.selectedNode.job.executable.arguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'arguments');
-        this.selectedNode.job.executable.arguments = this.selectedNode.job.executable.arguments.filter((argu) => {
+        this.selectedNode.job.executable.arguments.forEach((argu) => {
           this.coreService.removeSlashToString(argu, 'value');
-          return argu.name && (argu.value || argu.value == false || argu.value == 0)
         });
       }
     }
@@ -2247,9 +2248,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!isArray(this.selectedNode.job.executable.jobArguments)) {
         this.selectedNode.job.executable.jobArguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'jobArguments');
-        this.selectedNode.job.executable.jobArguments = this.selectedNode.job.executable.jobArguments.filter((argu) => {
+        this.selectedNode.job.executable.jobArguments.forEach((argu) => {
           this.coreService.removeSlashToString(argu, 'value');
-          return argu.name && (argu.value || argu.value == false || argu.value == 0)
         });
       }
     }
@@ -2259,9 +2259,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!isArray(this.selectedNode.job.executable.env)) {
         this.selectedNode.job.executable.env = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'env');
-        this.selectedNode.job.executable.env = this.selectedNode.job.executable.env.filter((env) => {
+        this.selectedNode.job.executable.env.forEach((env) => {
           this.coreService.removeSlashToString(env, 'value');
-          return env.name && (env.value || env.value == false || env.value == 0)
         });
       }
     }
@@ -4070,7 +4069,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       documentationName: this.documentationName,
       jobResourceNames: this.jobResourceNames,
     };
-
     if (this.extraConfiguration.jobResourceNames && this.extraConfiguration.jobResourceNames.length > 0) {
       this.extraConfiguration.jobResourceNames = [...this.extraConfiguration.jobResourceNames];
       this.ref.detectChanges();
@@ -8243,9 +8241,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         self.dataService.reloadWorkflowError.next({error: self.error});
         self.selectedNode.newObj = self.coreService.clone(self.selectedNode.obj);
         if (self.selectedNode && self.selectedNode.type === 'Job') {
-          self.selectedNode.newObj.defaultArguments = self.selectedNode.newObj.defaultArguments.filter((argu) => {
-            return argu.name && (argu.value || argu.value == false || argu.value == 0)
-          });
           self.coreService.convertArrayToObject(self.selectedNode.newObj, 'defaultArguments', false);
         }
         if (self.selectedNode.type === 'If') {
@@ -10777,37 +10772,49 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const startPosition = clone(json.instructions[x].startPosition);
             const remainWhenTerminated = clone(json.instructions[x].remainWhenTerminated);
             const endPositions = clone(json.instructions[x].endPositions);
+            const label = clone(json.instructions[x].label);
             delete json.instructions[x].workflowName;
             delete json.instructions[x].arguments;
             delete json.instructions[x].remainWhenTerminated;
             delete json.instructions[x].startPosition;
             delete json.instructions[x].endPositions;
+            delete json.instructions[x].label;
             json.instructions[x].workflowName = workflowName;
             json.instructions[x].arguments = argu;
             json.instructions[x].remainWhenTerminated = remainWhenTerminated;
             json.instructions[x].startPosition = startPosition;
             json.instructions[x].endPositions = endPositions;
+            json.instructions[x].label = label;
           } else if (json.instructions[x].TYPE === 'Lock') {
             json.instructions[x].lockedWorkflow = {
               instructions: json.instructions[x].instructions
             };
 
+            const label = clone(json.instructions[x].label);
             const demands = clone(json.instructions[x].demands);
             delete json.instructions[x].instructions;
             delete json.instructions[x].demands;
+            delete json.instructions[x].label;
             json.instructions[x].demands = demands;
+            json.instructions[x].label = label;
           } else if (json.instructions[x].TYPE === 'ConsumeNotices' || json.instructions[x].TYPE === 'StickySubagent') {
             json.instructions[x].subworkflow = {
               instructions: json.instructions[x].instructions
             };
+            const label = clone(json.instructions[x].label);
             delete json.instructions[x].instructions;
+            delete json.instructions[x].label;
+            json.instructions[x].label = label;
           } else if (json.instructions[x].TYPE === 'Cycle') {
             json.instructions[x].cycleWorkflow = {
               instructions: json.instructions[x].instructions
             };
+            const label = clone(json.instructions[x].label);
             let scheduleObj = json.instructions[x].schedule ? clone(json.instructions[x].schedule) : null;
             delete json.instructions[x].instructions;
             delete json.instructions[x].schedule;
+            delete json.instructions[x].label;
+            json.instructions[x].label = label;
             if (scheduleObj && typeof scheduleObj === 'string') {
               try {
                 scheduleObj = JSON.parse(scheduleObj);
@@ -10824,6 +10831,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const subagentClusterIdObj = clone(json.instructions[x].subagentClusterId);
             const subagentClusterIdExprObj = clone(json.instructions[x].subagentClusterIdExpr);
             const subagentIdVariableObj = clone(json.instructions[x].subagentIdVariable);
+            const label = clone(json.instructions[x].label);
             let joinIfFailed = clone(json.instructions[x].joinIfFailed);
             let result = clone(json.instructions[x].result);
             joinIfFailed = joinIfFailed == 'true' || joinIfFailed === true;
@@ -10835,6 +10843,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             delete json.instructions[x].subagentClusterId;
             delete json.instructions[x].subagentClusterIdExpr;
             delete json.instructions[x].subagentIdVariable;
+            delete json.instructions[x].label;
             if (childrenObj) {
               json.instructions[x].children = childrenObj;
               json.instructions[x].childToId = childToIdObj;
@@ -10849,15 +10858,19 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               result
             };
             json.instructions[x].joinIfFailed = joinIfFailed;
+            json.instructions[x].label = label;
             delete json.instructions[x].instructions;
           } else if (json.instructions[x].TYPE === 'Fork') {
             const branchObj = clone(json.instructions[x].branches);
+            const label = clone(json.instructions[x].label);
             let joinIfFailed = clone(json.instructions[x].joinIfFailed);
             joinIfFailed = joinIfFailed == 'true' || joinIfFailed === true;
             delete json.instructions[x].branches;
             delete json.instructions[x].joinIfFailed;
+            delete json.instructions[x].label;
             json.instructions[x].branches = branchObj;
             json.instructions[x].joinIfFailed = joinIfFailed;
+            json.instructions[x].label = label;
           } else if (json.instructions[x].TYPE === 'Fail') {
             if (json.instructions[x].uncatchable == 'false') {
               json.instructions[x].uncatchable = false;
@@ -10918,9 +10931,17 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
             }
 
+
+            if (/[$.]jobs\[/gm.test(self.invalidMsg)) {
+              let reg = "$.jobs\['" + self.jobs[n].name + "']";
+              if (self.invalidMsg.indexOf(reg) > -1) {
+                flag = false;
+                checkErr = true;
+              }
+            }
             if (!flag && isValidate) {
               if (isOpen) {
-                self.openSideBar(ids.get(this.jobs[n].name));
+                self.openSideBar(ids.get(self.jobs[n].name));
               }
               break;
             }

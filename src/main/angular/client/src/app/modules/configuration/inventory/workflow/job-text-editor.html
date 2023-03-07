@@ -443,7 +443,7 @@
                           <div class="col-md-5 col-lg-5 m-b-sm p-r-0"
                                [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
                             <label class="w-full">
-                              <input autocomplete="off" identifierValidation type="text" class="form-control"
+                              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" identifierValidation type="text" class="form-control"
                                      name="name{{i}}" [appAutofocus]="i == selectedNode.job.defaultArguments.length -1"
                                      [(ngModel)]="argument.name" #aname="ngModel"
                                      placeholder="{{'common.placeholder.name' | translate}} {{i+1}}"
@@ -469,7 +469,7 @@
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'defaultArguments' && object.setOfCheckedDefaultArgu.has(argument.name)"
                               class="fa fa-scissors m-t-sm"></i>
                             <a
-                              *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'defaultArguments' &&  object.setOfCheckedDefaultArgu.has(argument.name))"><i
+                              *ngIf="!(selectedNode.job?.jobTemplate && selectedNode.job.jobTemplate.name) && !(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'defaultArguments' &&  object.setOfCheckedDefaultArgu.has(argument.name))"><i
                               (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                           </div>
                         </div>
@@ -535,7 +535,7 @@
                           <div class="col-md-5 col-lg-5 m-b-sm p-r-0"
                                [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
                             <label class="w-full">
-                              <input autocomplete="off" nz-input envVariableValidation name="name{{i}}"
+                              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" nz-input envVariableValidation name="name{{i}}"
                                      class="form-control" [(ngModel)]="env.name" #ename="ngModel"
                                      (blur)="isStringValid(env, ename, selectedNode.job.executable.env);upperCase(env)"
                                      placeholder="{{'common.placeholder.name' | translate}} {{i+1}}"
@@ -572,7 +572,7 @@
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name)"
                               class="fa fa-scissors m-t-sm"></i>
                             <a
-                              *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name))"><i
+                              *ngIf="!(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) && !(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name))"><i
                               (click)="removeEnv(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                           </div>
                         </div>

@@ -1456,7 +1456,7 @@ export class CoreService {
   }
 
   addSlashToStringForEvn(obj: any): void {
-    obj.env = obj.env.filter((env) => {
+    obj.env.forEach((env) => {
       if (env.value) {
         if (!(/[$+]/.test(env.value)) || (/\s/g.test(env.value) && !/[+]/.test(env.value))) {
           const startChar = env.value.substring(0, 1);
@@ -1475,9 +1475,7 @@ export class CoreService {
             }
           }
         }
-        return true;
       }
-      return false;
     });
   }
 
@@ -1522,9 +1520,6 @@ export class CoreService {
           }
         }
       }
-    } else if (data[type] === '') {
-      data[type] = '"' +
-        data[type].trim() + '"';
     }
   }
 

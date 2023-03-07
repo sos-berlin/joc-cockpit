@@ -5376,6 +5376,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   private refresh(args): void {
     let loadTree = false;
+    let _isNormal = false;
     let _isTrash = false;
     let paths = [];
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
@@ -5395,6 +5396,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 if (!_isTrash && this.isTrash) {
                   _isTrash = isTrash;
                 }
+                if(args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/)){
+                  _isNormal = true;
+                }
               } else if (args.eventSnapshots[j].eventType.match(/InventoryUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryTrashUpdated/)) {
                 paths = paths.filter((path) => {
                   return path !== args.eventSnapshots[j].path;
@@ -5408,15 +5412,30 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
       }
     }
+
     if (loadTree) {
-      this.reloadTree(_isTrash);
+      if(_isTrash) {
+        this.reloadTree(_isTrash);
+      }
+      if(_isNormal){
+        this.reloadTree(false);
+      }
       if (paths.length > 0) {
         paths.forEach((path, index) => {
-          this.updateFolders(path, _isTrash, () => {
-            if (index == paths.length - 1) {
-              this.updateTree(_isTrash);
-            }
-          });
+          if(_isTrash) {
+            this.updateFolders(path, _isTrash, () => {
+              if (index == paths.length - 1) {
+                this.updateTree(_isTrash);
+              }
+            });
+          }
+          if(_isNormal) {
+            this.updateFolders(path, false, () => {
+              if (index == paths.length - 1) {
+                this.updateTree(false);
+              }
+            });
+          }
         });
       }
     }
