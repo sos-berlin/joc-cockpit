@@ -478,11 +478,14 @@ export class WorkflowService {
     const catchObj = clone(instruction.catch);
     const retryDelays = clone(instruction.retryDelays);
     const maxTries = clone(instruction.maxTries);
+    const label = clone(instruction.label);
     delete instruction.instructions;
     delete instruction.catch;
     delete instruction.retryDelays;
     delete instruction.maxTries;
+    delete instruction.label;
     instruction.catch = catchObj;
+    instruction.label = label;
     instruction.maxTries = parseInt(maxTries, 10);
     instruction.retryDelays = retryDelays;
   }
@@ -2680,7 +2683,7 @@ export class WorkflowService {
       }
       if (job.defaultArguments) {
         if (job.executable.v1Compatible && job.executable.TYPE === 'ShellScriptExecutable') {
-          job.defaultArguments.filter((argu) => {
+          job.defaultArguments.forEach((argu) => {
             this.coreService.addSlashToString(argu, 'value');
           });
           this.coreService.convertArrayToObject(job, 'defaultArguments', true);
@@ -2691,7 +2694,7 @@ export class WorkflowService {
       if (job.executable.arguments) {
         if (job.executable.TYPE === 'InternalExecutable') {
           if (isArray(job.executable.arguments)) {
-            job.executable.arguments.filter((argu) => {
+            job.executable.arguments.forEach((argu) => {
               this.coreService.addSlashToString(argu, 'value');
             });
             this.coreService.convertArrayToObject(job.executable, 'arguments', true);
@@ -2713,7 +2716,7 @@ export class WorkflowService {
     if (job.executable && job.executable.jobArguments) {
       if (job.executable.TYPE === 'InternalExecutable') {
         if (job.executable.jobArguments && isArray(job.executable.jobArguments)) {
-          job.executable.jobArguments.filter((argu) => {
+          job.executable.jobArguments.forEach((argu) => {
             this.coreService.addSlashToString(argu, 'value');
           });
           this.coreService.convertArrayToObject(job.executable, 'jobArguments', true);
@@ -2778,7 +2781,7 @@ export class WorkflowService {
     }
     if (job.arguments) {
       if (job.arguments && isArray(job.arguments)) {
-        job.arguments.filter((argu) => {
+        job.arguments.forEach((argu) => {
           this.coreService.addSlashToString(argu, 'value');
         });
         this.coreService.convertArrayToObject(job, 'arguments', true);
