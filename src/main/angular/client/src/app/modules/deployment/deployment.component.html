@@ -6,6 +6,13 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
+          <div class="show-inline" *ngIf="tree.length > 0 && tree[0]?.children?.length == 0">
+            <button type="button" class="btn btn-sm btn-grey"
+                    (click)="createObject(tree[0]);">
+              <i class="fa fa-plus"></i>
+              {{'deploymentService.button.newDescriptor' | translate}}
+            </button>
+          </div>
           <div class="show-inline" *ngIf="deploymentData?.data && !isTrash">
             <div class="inline" *ngIf="object.setOfCheckedId.size==0">
               <ng-template #titleTemplate>

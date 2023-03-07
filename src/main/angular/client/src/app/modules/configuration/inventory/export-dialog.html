@@ -59,7 +59,7 @@
       <div class="row m-b-12" *ngIf="!origin || !origin.object">
         <div class="col-md-3" translate>inventory.label.exportType</div>
         <div class="col-md-6">
-          <nz-radio-group  name="exportType" [(ngModel)]="exportObj.exportType" (ngModelChange)="filterList()">
+          <nz-radio-group  name="exportType" [(ngModel)]="exportObj.exportType" (ngModelChange)="filterList(false)">
             <label nz-radio nzValue="individual"><span translate>inventory.label.individualObjects</span></label>
             <label nz-radio nzValue="folders"><span translate>inventory.label.folders</span></label>
           </nz-radio-group>
@@ -69,7 +69,7 @@
         <label class="col-md-3 form-control-label" translate>inventory.label.objectTypes</label>
         <div class="col-md-6">
           <nz-select name="objectTypes" nzMode="multiple" [(ngModel)]="exportObj.objectTypes"
-                     [nzPlaceHolder]="'inventory.placeholder.objectTypes' | translate" (ngModelChange)="filterList()">
+                     [nzPlaceHolder]="'inventory.placeholder.objectTypes' | translate" (ngModelChange)="filterList(false)">
             <nz-option *ngFor="let option of objectTypes" [nzLabel]="option | translate" [nzValue]="option"></nz-option>
           </nz-select>
         </div>
@@ -164,7 +164,7 @@
                 <span class="p-l-sm text-capitalize" *ngIf="node.origin.object">{{node.origin.name | translate}}</span>
                 <span class="p-l-sm" *ngIf="!node.origin.object">{{node.origin.name}}</span>
               </div>
-              <div class="m-l" *ngIf="node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0">
+              <div class="m-l" *ngIf="!node.origin.disableCheckbox && node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0">
                 <nz-select name="'version-' + {{node.key}}"
                            [nzSize]="'small'"
                            [(ngModel)]="node.origin.deployId">
@@ -190,7 +190,7 @@
                   </ng-container>
                 </nz-select>
               </div>
-              <div class="m-l" *ngIf="node.origin.type && node.origin.releasableVersions && node.origin.releasableVersions.length >0">
+              <div class="m-l" *ngIf="!node.origin.disableCheckbox && node.origin.type && node.origin.releasableVersions && node.origin.releasableVersions.length >0">
                 <nz-select name="'version-' + {{node.key}}" [nzSize]="'small'" [(ngModel)]="node.origin.releaseId">
                   <ng-container *ngIf="!node.origin.valid" >
                     <nz-option nzCustomContent [nzValue]="''" [nzLabel]="'workflow.label.draft' | translate">
@@ -209,7 +209,7 @@
                   </ng-container>
                 </nz-select>
               </div>
-              <div class="m-l" *ngIf="node.origin.type && (!node.origin.releasableVersions || node.origin.releasableVersions.length ===0) && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
+              <div class="m-l" *ngIf="!node.origin.disableCheckbox && node.origin.type && (!node.origin.releasableVersions || node.origin.releasableVersions.length ===0) && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
                 <i class="text-muted" translate>workflow.label.draft</i>
               </div>
             </div>

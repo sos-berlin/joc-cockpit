@@ -335,9 +335,9 @@ export class SingleDeployComponent implements OnInit {
   }
 
   private getSingleObject(obj): void {
-    if(this.isRemoved){
+    if (this.isRemoved) {
       this.loading = false;
-     // this.deployablesObject.push(this.data);
+      // this.deployablesObject.push(this.data);
     } else {
       this.coreService.post((this.releasable ? 'inventory/releasable' : 'inventory/deployable'), obj).subscribe({
         next: (res: any) => {
@@ -381,6 +381,7 @@ export class DeployComponent implements OnInit {
   selectedSchedulerIds = [];
   loading = true;
   nodes: any = [];
+  checkedObject = new Set();
   dateFormat: any = '';
   dateObj: any = {};
   object: any = {
@@ -474,7 +475,24 @@ export class DeployComponent implements OnInit {
     this.ref.detectChanges();
   }
 
+  private recursiveCheck(node, isUpdate = false): void {
+    for (const i in node) {
+      if (!isUpdate) {
+        if (node[i].checked && !node[i].disableCheckbox) {
+          this.checkedObject.add(node[i].key)
+        }
+      } else {
+        node[i].checked = this.checkedObject.has(node[i].key);
+      }
+      if (node[i].children && node[i].children.length > 0) {
+        this.recursiveCheck(node[i].children, isUpdate);
+      }
+    }
+  }
+
   filterList(): void {
+    this.checkedObject.clear();
+    this.recursiveCheck(this.nodes);
     this.nodes = [];
     this.loading = true;
     this.buildTree(this.path);
@@ -580,6 +598,10 @@ export class DeployComponent implements OnInit {
           }
         } else {
           this.nodes = tree;
+          if (this.checkedObject.size > 0) {
+            this.recursiveCheck(this.nodes, true);
+            this.checkedObject.clear();
+          }
           if (!cb) {
             setTimeout(() => {
               this.loading = false;
@@ -1074,6 +1096,7 @@ export class ExportComponent implements OnInit {
   @Input() display: any;
   loading = true;
   nodes: any = [];
+  checkedObject = new Set();
   submitted = false;
   required = false;
   comments: any = {radio: 'predefined'};
@@ -1328,7 +1351,27 @@ export class ExportComponent implements OnInit {
     }
   }
 
-  filterList(): void {
+  private recursiveCheck(node, isUpdate = false): void {
+    for (const i in node) {
+      if (!isUpdate) {
+        if (node[i].checked && !node[i].disableCheckbox) {
+          this.checkedObject.add(node[i].key)
+        }
+      } else {
+        node[i].checked = this.checkedObject.has(node[i].key);
+      }
+      if (node[i].children && node[i].children.length > 0) {
+        this.recursiveCheck(node[i].children, isUpdate);
+      }
+    }
+  }
+
+
+  filterList(isChecked = true): void {
+    this.checkedObject.clear();
+    if (isChecked) {
+      this.recursiveCheck(this.nodes);
+    }
     this.nodes = [];
     if (!this.filter.controller && !this.filter.dailyPlan) {
       return;
@@ -1339,6 +1382,10 @@ export class ExportComponent implements OnInit {
         if (this.nodes.length > 0) {
           this.nodes[0].expanded = true;
           this.inventoryService.checkAndUpdateVersionList(this.nodes[0], this.exportObj.exportType === 'folders');
+        }
+        if (this.checkedObject.size > 0) {
+          this.recursiveCheck(this.nodes, true);
+          this.checkedObject.clear();
         }
         this.nodes = [...this.nodes];
       });
@@ -2814,12 +2861,12 @@ export class CreateObjectModalComponent implements OnInit {
       request.objectType = this.copy.objectType;
       request.path = this.copy.path + (this.copy.path === '/' ? '' : '/') + this.copy.name;
     } else {
-      request.objectType = this.type == 'DEPLOYMENTDESCRIPTOR' ? 'DESCRIPTORFOLDER': 'FOLDER';
+      request.objectType = this.type == 'DEPLOYMENTDESCRIPTOR' ? 'DESCRIPTORFOLDER' : 'FOLDER';
       request.path = this.copy.path;
       request.newPath = (obj.path || '/') + (data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.copy.name);
     }
 
-    if(this.type == 'DEPLOYMENTDESCRIPTOR'){
+    if (this.type == 'DEPLOYMENTDESCRIPTOR') {
       request.path = this.copy.path;
       delete request.shallowCopy;
     }
@@ -2970,7 +3017,7 @@ export class CreateFolderModalComponent implements OnInit {
       }
 
       let URL = this.folder.deepRename === 'replace' ? 'inventory/replace' : 'inventory/rename';
-      if(this.type == 'DEPLOYMENTDESCRIPTOR'){
+      if (this.type == 'DEPLOYMENTDESCRIPTOR') {
         URL = 'descriptor/rename'
         obj.path = this.origin.path;
       }
