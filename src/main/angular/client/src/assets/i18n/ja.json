@@ -15,8 +15,8 @@
   "ClusterFailedOver": "フェイルオーバー",
   "ClusterSwitchedOver": "切戻し",
   "ClusterEmpty": "空き",
-    "ClusterActiveNodeIsNotReady": "アクティブノードは準備できていません",
-  "ClusterNodeLossToBeConfirmed": "NodeLossToBeConfirmed",
+  "ClusterActiveNodeIsNotReady": "アクティブノードは準備できていません",
+  "ClusterNodeLossToBeConfirmed": "ノードロストを確認します",
   "healthy": "正常",
   "ACTIVE": "アクティブ",
   "DEAD": "停止",
@@ -706,7 +706,7 @@
     "button.restartServiceName": "サービス再起動",
     "button.removeFromInventory": " インベントリーから削除",
     "button.viewAllAgentsDetails": "エージェント詳細表示",
-    "button.confirmNodeLoss": "Confirm node loss",
+    "button.confirmNodeLoss": "ノードロストが確認されました",
     "message.noWidgetFound": "追加できるウィジェットはありません",
     "message.agentStatus": "パイチャートウィジェットはエージェントのステータスを表示します",
     "message.agentClusterStatus": "パイチャートウィジェットはエージェントクラスターのステータスを表示します",
@@ -720,7 +720,7 @@
     "message.fileTransferSummary": "ファイル転送実行履歴表示ウィジェット",
     "message.dailyPlanOverview": "実行計画表示ウィジェット",
     "message.fileTransferHistorySummary": "ファイル転送履歴を表示",
-    "message.confirmNodeLoss": " Confirm that the Controller instance {{lossNode}} is really down."
+    "message.confirmNodeLoss": " コントローラーインスタンス {{lossNode}} が停止していることが確認されました"
   },
   "dailyPlan": {
     "label.createPlan": "実行計画作成",
@@ -912,10 +912,10 @@
       },
       "button": {
         "addAgent": "エージェント追加",
-        "addSecondaryAgent": "Add Agent Instance",
+        "addSecondaryAgent": "セカンダリーエージェント追加",
         "addAnotherAgent": "エージェント新規追加",
         "removeAgent": "エージェント削除",
-        "removeSecondaryAgent": "Remove Agent Instance"
+        "removeSecondaryAgent": "セカンダリーエージェント削除"
       },
       "placeholder": {
         "agentId": "エージェントID入力",
@@ -3159,7 +3159,7 @@
     "button.unskip": "スキップ解除",
     "button.stop": "停止",
     "button.unstop": "停止解除",
-    "button.transitionOrders": "Transition Orders",
+    "button.transitionOrders": "オーダートランジション",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",
