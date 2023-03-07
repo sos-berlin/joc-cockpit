@@ -1445,9 +1445,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       const currentLine = this.cm.codeMirror.getLine(cursor.line);
       const isSpace = currentLine.substring(cursor.ch, cursor.ch + 1) == ' ';
       let str = (!isSpace ? ' ' : '');
+      if (cursor.ch == 0) {
+        str = '';
+      }
       if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
         if (this.scriptObj.name) {
-          str = str + '##!include ' + this.scriptObj.name + ' ';
+          str = str + '##!include ' + this.scriptObj.name;
         }
       } else {
         str = str + this.scriptObj.name + ' ';
@@ -2184,6 +2187,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   private setJobProperties(): void {
     if (!this.selectedNode.job.parallelism) {
       this.selectedNode.job.parallelism = 1;
+    }
+    if (!this.selectedNode.job.graceTimeout) {
+      this.selectedNode.job.graceTimeout = 1;
     }
     if (!this.selectedNode.job.executable || !this.selectedNode.job.executable.TYPE) {
       this.selectedNode.job.executable = {
