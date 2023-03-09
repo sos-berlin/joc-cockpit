@@ -188,6 +188,7 @@ export class SearchComponent implements OnInit {
 export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   objectType = 'AGENTCLUSTER';
   isLoading = false;
+  configLoading = true;
   showSearchPanel = false;
   schedulerIds: any = {};
   preferences: any = {};
@@ -211,7 +212,9 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, public coreService: CoreService, private searchPipe: SearchPipe, private saveService: SaveService,
               private dataService: DataService, private modal: NzModalService, private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
-      this.refresh(res);
+      if(!this.configLoading) {
+        this.refresh(res);
+      }
     });
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
@@ -319,11 +322,11 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
       this.checkSharedFilters();
     } else {
       this.savedFilter.selected = undefined;
-      this.loadAgentTasks(null);
+      this.loadAgentTasks();
     }
   }
 
-  
+
   private generateRequestObj(object, filter): any {
     if (object.urls) {
       filter.urls = object.urls.split(',');
@@ -417,25 +420,25 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
                 next: (conf: any) => {
                   this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
                   this.selectedFiltered.account = value.account;
-                  this.loadAgentTasks(null);
+                  this.loadAgentTasks();
                 }, error: () => {
                   this.savedFilter.selected = undefined;
-                  this.loadAgentTasks(null);
+                  this.loadAgentTasks();
                 }
               });
             }
           });
           if (flag) {
             this.savedFilter.selected = undefined;
-            this.loadAgentTasks(null);
+            this.loadAgentTasks();
           }
         } else {
           this.savedFilter.selected = undefined;
-          this.loadAgentTasks(null);
+          this.loadAgentTasks();
         }
       }, error: () => {
         this.savedFilter.selected = undefined;
-        this.loadAgentTasks(null);
+        this.loadAgentTasks();
       }
     });
   }
@@ -465,7 +468,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  loadAgentTasks(date: string): void {
+  loadAgentTasks(date?: string): void {
     if (date) {
       this.agentFilters.filter.date = date;
       this.isLoading = false;
@@ -488,9 +491,11 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
         this.searchInResult();
         this.totalJobExecution = res.totalNumOfSuccessfulTasks;
         this.totalNumOfJobs = res.totalNumOfJobs;
+        this.configLoading = false;
       }, error: () => {
         this.agentTasks = [];
         this.isLoading = true;
+        this.configLoading = false;
       }
     });
   }
@@ -518,7 +523,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     }
     this.showSearchPanel = false;
     this.searchFilter = {};
-    this.loadAgentTasks(null);
+    this.loadAgentTasks();
   }
 
   search(flag = false): void {
@@ -544,9 +549,11 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
         this.searchInResult();
         this.totalJobExecution = res.totalNumOfSuccessfulTasks;
         this.totalNumOfJobs = res.totalNumOfJobs;
+        this.configLoading = false;
       }, error: () => {
         this.agentTasks = [];
         this.isLoading = true;
+        this.configLoading = false;
       }
     })
   }
@@ -567,7 +574,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   }
 
   changeController(): void {
-    this.loadAgentTasks(null);
+    this.loadAgentTasks();
   }
 
   exportToExcel(): void {
@@ -608,10 +615,11 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'JobStateChanged') {
+          this.configLoading = true;
           if (this.searchFilter && !isEmpty(this.searchFilter) && !this.agentFilters.filter.date) {
             this.search(true);
           } else {
-            this.loadAgentTasks(null);
+            this.loadAgentTasks();
           }
           break;
         }
@@ -706,7 +714,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
       }).subscribe((conf: any) => {
         this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
         this.selectedFiltered.account = filter.account;
-        this.loadAgentTasks(null);
+        this.loadAgentTasks();
       });
     } else {
       this.isCustomizationSelected(false);
@@ -714,7 +722,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
       this.agentFilters.selectedView = false;
       this.selectedFiltered = {};
       this.setDateRange({});
-      this.loadAgentTasks(null);
+      this.loadAgentTasks();
     }
 
     this.saveService.setAgent(this.savedFilter);

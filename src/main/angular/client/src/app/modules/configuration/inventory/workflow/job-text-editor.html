@@ -456,7 +456,7 @@
                           </div>
                           <div class="col-md-6 col-lg-6 m-b-sm">
                             <label class="w-full">
-                              <input [required]="argument.name && argument.name.length > 0" autocomplete="off" type="text" class="form-control" name="value{{i}}"
+                              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [required]="argument.name && argument.name.length > 0" autocomplete="off" type="text" class="form-control" name="value{{i}}"
                                      (keydown)="onKeyPress($event, 'default')"
                                      [(ngModel)]="argument.value"
                                      placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
@@ -555,7 +555,7 @@
                                         [nzNotFoundContent]="'common.message.noDataAvailable' | translate"
                                         [nzValueWith]="valueWith" [nzPrefix]="['$']">
                               <label class="w-full">
-                                <input [required]="env.name && env.name.length > 0" nz-input nzMentionTrigger autocomplete="off" class="form-control"
+                                <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [required]="env.name && env.name.length > 0" nz-input nzMentionTrigger autocomplete="off" class="form-control"
                                        [(ngModel)]="env.value" name="value{{i}}"
                                        placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
                                        (ngModelChange)="checkValue(env)"/>

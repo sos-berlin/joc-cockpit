@@ -263,12 +263,20 @@
       <div class="form-group row">
         <label class="col-sm-3 form-control-label" title="{{'workflow.admissionTime.label.startTime' | translate}}"
                [nz-tooltip]="isTooltipVisible ? ((!repeatObject ? 'inventory.tooltips.workflow.admissionTime.periodBeginOfAdmissionTime' : 'inventory.tooltips.workflow.admissionTime.startTime') | translate) : ''"
-               [nzTooltipMouseEnterDelay]="0.5" translate>workflow.admissionTime.label.startTime</label>
-        <div class="col-sm-9">
+               [nzTooltipMouseEnterDelay]="0.5" translate>
+          workflow.admissionTime.label.startTime
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-9" [ngClass]="{ 'has-error' : (((timePicker.dirty || timePicker.touched) && timePicker.invalid))}">
           <div class="time-picker m-l-0">
-            <input timevalidator type="text" #timePicker="ngModel" class="form-control"
+            <input required timevalidator type="text" #timePicker="ngModel" class="form-control"
                 name="startTime" [(ngModel)]="object.startTime" (ngModelChange)="selectTime(object.startTime, true)" placeholder="HH:MM:SS">
             <nz-time-picker [nzAllowEmpty]="false" (keydown.Tab)="onTab()" (ngModelChange)="selectTime($event)" [(ngModel)]="object.startTime1" name="fromTimeIcon"></nz-time-picker>
+          </div>
+          <div *ngIf="timePicker.invalid && (timePicker.dirty || timePicker.touched)" class="text-danger help-block">
+            <div *ngIf="timePicker.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
           </div>
         </div>
       </div>
@@ -276,10 +284,10 @@
         <label class="col-sm-3 form-control-label" title="{{'common.label.duration' | translate}}"
                [nz-tooltip]="isTooltipVisible ? ((!repeatObject ? 'inventory.tooltips.workflow.admissionTime.durationOfAdmissionTime' : 'inventory.tooltips.workflow.admissionTime.duration') | translate) : ''"
                [nzTooltipMouseEnterDelay]="0.5" translate>common.label.duration
-         <sup *ngIf="!!object.startTime" class="text-danger text-sm">*</sup>
+         <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-9" [ngClass]="{ 'has-error' : (((duration.dirty || duration.touched) && duration.invalid))}">
-          <input appValidateDuration [required]="!!object.startTime" class="form-control" name="duration"
+          <input appValidateDuration required class="form-control" name="duration"
                  #duration="ngModel" [(ngModel)]="object.duration"
                  placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
           <div *ngIf="duration.invalid && (duration.dirty || duration.touched)" class="text-danger help-block">
@@ -295,9 +303,9 @@
   <div class="form-group row ">
     <div class="col-sm-12 b-b p-t p-b">
       <button class="btn btn-sm btn-primary" [disabled]="!myForm.form.valid || !editor.isEnable"
-              (click)="addFrequency()" translate>workflow.admissionTime.button.update
+              (click)="addFrequency(myForm)" translate>workflow.admissionTime.button.update
       </button>
-      <button (click)="closeRuntime()" *ngIf="!_temp" [disabled]="!isValid" type="button" class="btn btn-grey m-l-12 btn-sm" translate>workflow.admissionTime.button.back</button>
+      <button (click)="closeRuntime()" *ngIf="!_temp" type="button" class="btn btn-grey m-l-12 btn-sm" translate>workflow.admissionTime.button.back</button>
       <button (click)="resetTab()" *ngIf="_temp" type="button" class="btn btn-grey m-l-12 btn-sm" translate>common.button.cancel</button>
     </div>
   </div>

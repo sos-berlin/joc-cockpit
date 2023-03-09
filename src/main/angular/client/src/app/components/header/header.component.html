@@ -34,7 +34,7 @@
         </div>
         <div class="notification">
           <div *ngFor="let log of jocMonitor | orderBy: 'timestamp' : true">
-            <span class="cursor" (click)="navToOrderNoti(2, log)">
+            <span class="cursor primary-text-hover-color" (click)="navToOrderNoti(2, log)">
               <span class="inline w-182">{{log.timestamp}}</span>
               <span class="inline w-64">[{{log.level}}]</span>
               {{log.workflowName}} {{log.orderId}} {{log.jobName}} {{log.message}}
@@ -51,7 +51,7 @@
         </div>
         <div class="notification">
           <div *ngFor="let log of systemMonitor | orderBy: 'timestamp' : true">
-            <span class="cursor" (click)="navToOrderNoti(3,log)">
+            <span class="cursor primary-text-hover-color" (click)="navToOrderNoti(3,log)">
               <span class="inline w-182">{{log.timestamp}}</span>
               <span class="inline w-64">[{{log.level}}]</span>
               {{log.category}}

@@ -1,11 +1,11 @@
-import { Component, EventEmitter, OnInit, Input, Output, OnDestroy } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { isEmpty } from 'underscore';
-import { AuthService } from "../guard";
-import { InventorySearch } from '../../models/enums';
-import { CoreService } from '../../services/core.service';
-import { UpdateJobComponent } from '../../modules/configuration/inventory/update-job/update-job.component';
-import { UpdateObjectComponent } from '../../modules/configuration/inventory/update-object/update-object.component';
+import {Component, EventEmitter, OnInit, Input, Output, OnDestroy} from '@angular/core';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {isEmpty} from 'underscore';
+import {AuthService} from "../guard";
+import {InventorySearch} from '../../models/enums';
+import {CoreService} from '../../services/core.service';
+import {UpdateJobComponent} from '../../modules/configuration/inventory/update-job/update-job.component';
+import {UpdateObjectComponent} from '../../modules/configuration/inventory/update-object/update-object.component';
 
 @Component({
   selector: 'app-inventory-search',
@@ -52,18 +52,18 @@ export class SearchComponent implements OnInit, OnDestroy {
     availabilityStatus: []
   };
   synchronizationStatusOptions = [
-    { label: 'synchronized', value: 'IN_SYNC', checked: false },
-    { label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false }
+    {label: 'synchronized', value: 'IN_SYNC', checked: false},
+    {label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false}
   ];
 
   availabilityStatusOptions = [
-    { label: 'suspended', value: 'SUSPENDED', checked: false },
-    { label: 'outstanding', value: 'OUTSTANDING', checked: false }
+    {label: 'suspended', value: 'SUSPENDED', checked: false},
+    {label: 'outstanding', value: 'OUTSTANDING', checked: false}
   ];
 
   jobAvailabilityStatusOptions = [
-    { label: 'skipped', value: 'SKIPPED', checked: false },
-    { label: 'stopped', value: 'STOPPED', checked: false }
+    {label: 'skipped', value: 'SKIPPED', checked: false},
+    {label: 'stopped', value: 'STOPPED', checked: false}
   ];
 
   constructor(public coreService: CoreService, public modal: NzModalService, private authService: AuthService) {
@@ -81,7 +81,34 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (!isEmpty(savedObj.request)) {
       this.searchObj = savedObj.request;
       this.results = savedObj.result;
+      const inventObj = this.coreService.getConfigurationTab().inventory;
+
+      if (inventObj.selectedObj && !isEmpty(inventObj.selectedObj)) {
+        let path = (inventObj.selectedObj.path + (inventObj.selectedObj.path == '/' ? '' : '/') + inventObj.selectedObj.name);
+        if (this.searchObj.returnType == inventObj.selectedObj.type) {
+          if (this.searchObj.selectedPath) {
+            if (this.searchObj.selectedPath != path) {
+              this.searchObj.selectedPath = path;
+            }
+          } else {
+            this.searchObj.selectedPath = path;
+          }
+        } else {
+          delete this.searchObj.selectedPath;
+        }
+      }
+      setTimeout(() => {
+        if (this.searchObj.selectedPath) {
+          const elem = document.getElementById(this.searchObj.selectedPath);
+          if(elem) {
+            elem.scrollIntoView({block: 'center'});
+          }
+        }
+      }, 10);
     } else {
+      if(savedObj.request?.selectedPath) {
+        delete savedObj.request.selectedPath;
+      }
       if (!this.isWorkflow && !this.isBoard && !this.isLock && !this.isCalendar) {
         this.searchObj.returnType = this.ENUM.WORKFLOW;
       } else {
@@ -129,7 +156,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     const savedObj: any = this.coreService.getSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory');
     this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory',
-      { ...savedObj, panel: this.panel.active, request: this.searchObj });
+      {...savedObj, panel: this.panel.active, request: this.searchObj});
   }
 
   private getAgents(): void {
@@ -202,6 +229,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   navToObject(data): void {
+    this.searchObj.selectedPath = data.path;
     this.onNavigate.emit(data);
   }
 
@@ -294,6 +322,9 @@ export class SearchComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.object.type = obj.returnType;
         this.results = res.results;
+        this.results.forEach((item) => {
+          item.path1 = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
+        })
         this.isControllerId = false;
         if (!this.isWorkflow && !this.isBoard && !this.isLock && !this.isCalendar) {
           if (this.results.length > 0 && this.results[0].controllerId) {
@@ -302,7 +333,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.isJobSearch = (obj.returnType === this.ENUM.WORKFLOW);
         }
         this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory',
-          { panel: this.panel.active, request: this.searchObj, result: this.results });
+          {panel: this.panel.active, request: this.searchObj, result: this.results});
         this.submitted = false;
       }, error: () => {
         this.submitted = false;
@@ -312,13 +343,13 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   clear(): void {
     const type = this.searchObj.returnType;
-    this.searchObj = { advanced: {}, returnType: type };
+    this.searchObj = {advanced: {}, returnType: type};
     this.results = [];
     this.object.mapOfCheckedId = new Set();
     this.object.checked = false;
     this.object.indeterminate = false;
     this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory',
-      { panel: false, request: {}, result: [] });
+      {panel: false, request: {}, result: []});
   }
 
   propagateJob(): void {

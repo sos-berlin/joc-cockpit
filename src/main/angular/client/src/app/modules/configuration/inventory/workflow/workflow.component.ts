@@ -337,10 +337,23 @@ export class CycleInstructionComponent implements OnChanges {
     const obj: any = {
       TYPE: !data.frequency ? 'DailyPeriod' : 'WeekdayPeriod'
     };
-    if (obj.TYPE === 'DailyPeriod') {
-      obj.secondOfDay = ((data.secondOfDay || data.secondOfWeek || 0) + period.startTime);
-    } else {
-      obj.secondOfWeek = ((data.secondOfDay || data.secondOfWeek || 0) + period.startTime);
+    if (data.secondOfMonth != undefined) {
+      obj.TYPE = 'MonthlyDatePeriod';
+      obj.secondOfMonth = data.secondOfMonth + period.startTime;
+    } else if (data.lastSecondOfMonth != undefined) {
+      obj.TYPE = 'MonthlyLastDatePeriod';
+      obj.lastSecondOfMonth = data.lastSecondOfMonth + period.startTime;
+    } else if (data.secondOfWeeks != undefined) {
+      obj.TYPE = data.secondOfWeeks < 0 ? 'MonthlyLastWeekdayPeriod' : 'MonthlyWeekdayPeriod';
+      obj.secondOfWeeks = data.secondOfWeeks + period.startTime;
+    } else if (data.date != undefined) {
+      obj.TYPE = 'SpecificDatePeriod';
+      obj.secondsSinceLocalEpoch = (data.date + period.startTime);
+    }
+    if (obj.TYPE === 'WeekdayPeriod') {
+      obj.secondOfWeek = ((data.secondOfWeek || data.secondOfDay || 0) + period.startTime);
+    } else if (obj.TYPE === 'DailyPeriod') {
+      obj.secondOfDay = ((data.secondOfDay || 0) + period.startTime);
     }
     obj.duration = period.duration;
     return obj;
@@ -435,8 +448,7 @@ export class CycleInstructionComponent implements OnChanges {
     modal.afterClose.subscribe((res) => {
       if (res) {
         this.selectedNode.obj.schedule.schemes[index].repeat = this.workflowService.convertRepeatObject(res);
-        data.repeat = this.workflowService.getTextOfRepeatObject(this.selectedNode.obj.schedule.schemes[index].repeat);
-        this.ref.detectChanges();
+        this.convertSchemeList();
       }
     });
   }
@@ -612,7 +624,6 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       this.checkDays();
       this.checkFrequency();
     }
-
   }
 
   ngOnDestroy(): void {
@@ -750,11 +761,10 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     return this.selectedMonthsU.indexOf(value) !== -1;
   }
 
-  addFrequency(): void {
+  addFrequency(myForm): void {
     this.isValid = true;
     let p: any;
     let periods = [];
-
     if (this._temp) {
       for (let i = 0; i < this.data.periodList.length; i++) {
         if (this.data.periodList[i].frequency === this._temp.frequency) {
@@ -828,6 +838,8 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
         return i.date;
       });
     }
+
+
     for (let i in temp) {
       for (let j = 0; j < this.data.periodList.length; j++) {
         if (temp[i].match && temp[i].frequency === this.data.periodList[j].frequency) {
@@ -845,6 +857,15 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     this.frequency.all = false;
     this.checkDays();
     this.ref.detectChanges();
+    if (this.isEdit) {
+      this.closeRuntime();
+    } else {
+      Object.keys(myForm.controls).forEach((key) => {
+        const control = myForm.controls[key];
+        control.markAsPristine();
+        control.markAsUntouched();
+      });
+    }
   }
 
   private addWeekdayFrequency(day, temp, p, isDaily, periods): any {
@@ -901,14 +922,19 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   }
 
   resetTab(): void {
-    this._temp = null;
-    this.selectedMonths = [];
-    this.selectedMonthsU = [];
-    this.frequency.tab = 'weekDays';
-    this.frequency.days = [];
-    this.frequency.all = false;
-    this.object = {};
-    this.ref.detectChanges();
+    if (this.isEdit) {
+      this.closeRuntime();
+    } else {
+      this._temp = null;
+      this.selectedMonths = [];
+      this.selectedMonthsU = [];
+      this.frequency.tab = 'weekDays';
+      this.frequency.days = [];
+      this.frequency.all = false;
+      this.object = {};
+      this.checkDays();
+      this.ref.detectChanges();
+    }
   }
 
   editFrequency(data): void {
@@ -10884,8 +10910,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               delete json.instructions[x].else;
             }
           }
-          if(json.instructions[x].TYPE !== 'Execute.Named' && json.instructions[x].TYPE !== 'Try'){
-            if(json.instructions[x].label) {
+          if (json.instructions[x].TYPE !== 'Execute.Named' && json.instructions[x].TYPE !== 'Try') {
+            if (json.instructions[x].label) {
               const label = clone(json.instructions[x].label);
               delete json.instructions[x].label;
               json.instructions[x].label = label;
@@ -11191,7 +11217,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         request.auditLog = {comment: translatedValue};
       });
     }
-
     this.coreService.post('inventory/store', request).subscribe({
       next: (res: any) => {
         this.isStore = false;
