@@ -68,7 +68,7 @@
           </nz-checkbox-wrapper>
         </div>
       </div>
-      
+
       <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar">
         <label class="col-md-4 col-lg-3 block-ellipsis-job"
           [nz-tooltip]="'inventory.search.tooltips.deployedOrReleased' | translate"
@@ -335,7 +335,7 @@
       <div class="col-sm-12">
         <div class="table-responsive text-overflow" [ngStyle]="{'max-height': 'calc(100vh - 360px)'}">
           <nz-table #ajaxTable [nzSize]="'small'" [nzNoResult]="'inventory.search.label.noDataMatched' | translate"
-            [nzPageSize]="results.length" [nzBordered]="true" [nzShowPagination]="false" [nzData]="results"
+            [nzPageSize]="results.length" [nzBordered]="true" [nzShowPagination]="false" [nzData]="results | orderBy: 'path1':false:false"
             [nzShowSizeChanger]="false">
             <thead>
               <tr>
@@ -350,7 +350,7 @@
             </thead>
             <tbody>
               <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
-                <tr class="cursor" [ngClass]="{'disabled-row' : !data.permitted}">
+                <tr id="{{data.path}}" class="cursor" [ngClass]="{'disabled-row' : !data.permitted,  'light-bg':(searchObj.selectedPath == data.path && searchObj.returnType == data.objectType)}">
                   <td *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar" [nzShowCheckbox]="true"
                     [nzChecked]="object.mapOfCheckedId.has(data.name)" (nzCheckedChange)="onItemChecked(data, $event)">
                   </td>
@@ -368,7 +368,7 @@
                       <i *ngIf="(isWorkflow || isLock || isBoard || isCalendar) && data.permitted"
                         (click)="coreService.navToInventoryTab(data.path, this.type);$event.stopPropagation();"
                         class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                      <span> {{data.path.substring(0, data.path.lastIndexOf('/')) || '/'}}</span>
+                      <span> {{data.path1}}</span>
                     </span>
                   </td>
                   <td *ngIf="searchObj.returnType === 'CALENDAR'">{{data.objectType | translate}}</td>

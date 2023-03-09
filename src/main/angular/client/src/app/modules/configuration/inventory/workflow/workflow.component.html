@@ -183,7 +183,7 @@
         </div>
 
         <div class="box-body">
-          <div class="form-group row" *ngIf="selectedNode.type !== 'Job'">
+          <div class="form-group row" *ngIf="selectedNode.type !== 'Job' && selectedNode.type !== 'Cycle'">
             <label class="col-md-4 col-lg-3 form-control-label"
                    [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
                    [nzTooltipMouseEnterDelay]="0.5"

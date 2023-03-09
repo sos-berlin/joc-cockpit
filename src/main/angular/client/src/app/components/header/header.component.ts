@@ -139,7 +139,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       filter.orderNotification.filter.types = [data.level];
     }
     else {
-      filter.systemNotification.filter.categories = [data.category];
+      filter.systemNotification.filter.categories = data.category;
       filter.systemNotification.filter.types = [data.level];
     }
     this.router.navigate(['/monitor']).then();
