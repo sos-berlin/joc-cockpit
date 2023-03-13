@@ -409,8 +409,8 @@ export class CycleInstructionComponent implements OnChanges {
     this.selectedNode.data.periodList = [];
   }
 
-  editFrequency(data, index, listIndex): void {
-    this.selectedNode.isEdit = true;
+  editFrequency(data, index, listIndex?): void {
+    this.selectedNode.isEdit = listIndex > -1;
     this.selectedNode.obj.show = true;
     this.selectedNode.repeatObject = data.repeat;
     this.selectedNode.repeatObject.index = index;
@@ -10885,6 +10885,16 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             } else if (json.instructions[x].uncatchable == 'true') {
               json.instructions[x].uncatchable = true;
             }
+
+            const message = clone(json.instructions[x].message);
+            const outcome = clone(json.instructions[x].outcome);
+            const uncatchable = clone(json.instructions[x].uncatchable);
+            delete json.instructions[x].message;
+            delete json.instructions[x].outcome;
+            delete json.instructions[x].uncatchable;
+            json.instructions[x].message = message;
+            json.instructions[x].outcome = outcome;
+            json.instructions[x].uncatchable = uncatchable;
           } else if (json.instructions[x].TYPE === 'Finish') {
             if (json.instructions[x].unsuccessful == 'false') {
               json.instructions[x].unsuccessful = false;

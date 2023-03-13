@@ -2616,6 +2616,8 @@ export class JsonEditorModalComponent implements OnInit {
   }
 
   copyToClipboard(): void {
+    this.validateByURL(this.editor.get(), (isValid) => {
+    });
     this.coreService.showCopyMessage(this.message);
     this.clipboardService.copyFromContent(this.editor.getText());
   }
