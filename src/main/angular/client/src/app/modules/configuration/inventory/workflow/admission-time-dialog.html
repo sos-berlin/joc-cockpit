@@ -303,7 +303,9 @@
   <div class="form-group row ">
     <div class="col-sm-12 b-b p-t p-b">
       <button class="btn btn-sm btn-primary" [disabled]="!myForm.form.valid || !editor.isEnable"
-              (click)="addFrequency(myForm)" translate>workflow.admissionTime.button.update
+              (click)="addFrequency(myForm)" >
+        <span translate *ngIf="isEdit">workflow.admissionTime.button.update</span>
+        <span translate *ngIf="!isEdit">runtime.button.addNewFrequency</span>
       </button>
       <button (click)="closeRuntime()" *ngIf="!_temp" type="button" class="btn btn-grey m-l-12 btn-sm" translate>workflow.admissionTime.button.back</button>
       <button (click)="resetTab()" *ngIf="_temp" type="button" class="btn btn-grey m-l-12 btn-sm" translate>common.button.cancel</button>
