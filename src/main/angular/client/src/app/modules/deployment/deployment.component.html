@@ -48,6 +48,11 @@
               <i class="fa fa-plus"></i>
               {{'deploymentService.license.button.addLicense' | translate}}
             </button>
+            <button *ngIf="!data.certificates && object.setOfCheckedId.size==0" type="button" class="btn btn-sm btn-grey m-l-12"
+                    (click)="addCertificates();">
+              <i class="fa fa-plus"></i>
+              {{'deploymentService.certificate.button.addCertificates' | translate}}
+            </button>
             <button *ngIf="((!data.agents || !data.agents.controllerRefs || data.agents.controllerRefs?.length == 0) && object.setOfCheckedId.size==0) && permission.joc?.inventory.manage" type="button"
                     class="btn btn-sm btn-grey m-l-12" (click)="addAgent();">
               <i class="fa fa-plus"></i>
@@ -329,6 +334,130 @@
                              class="text-danger help-block">
                           <div *ngIf="licenseBinFile.errors.required" translate>
                             common.message.requiredError
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                </div>
+                <div class="p-l-sm hover-trash-icon" *ngIf="data.certificates">
+                  <h5 class="p-l-sm hover-icon" translate>deploymentService.label.certificates
+                    <i class="fa fa-caret-down p-l-xs text-hover-primary"
+                       (click)="obj.isCertificateExpanded = !obj.isCertificateExpanded"
+                       [ngClass]="{'fa-caret-up': obj.isCertificateExpanded}"></i>
+                    <a class="m-l-sm fa-icon" (click)="toggleNode('certificates');"
+                       [nz-tooltip]="'common.tooltip.expandAll' | translate">
+                      <i class="fa fa-angle-double-down"></i>
+                    </a>
+                    <a class="m-l-xs fa-icon" (click)="toggleNode('certificates', false);"
+                       [nz-tooltip]="'common.tooltip.collapseAll' | translate">
+                      <i class="fa fa-angle-double-up"></i>
+                    </a>
+                    <i class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm text-16 cursor"
+                       (click)="data.certificates = undefined;convertJSON()"></i>
+                  </h5>
+
+                  <div class="m-l-md hide" [ngClass]="{'fade-in show': obj.isCertificateExpanded}">
+
+                    <h6 class="m-t-12" translate>deploymentService.label.controller
+                      <i class="fa fa-caret-down p-l-xs text-hover-primary"
+                         (click)="data.certificates.isControllerExpanded = !data.certificates.isControllerExpanded"
+                         [ngClass]="{'fa-caret-up': data.certificates.isControllerExpanded}"></i>
+                    </h6>
+                    <div class="p-a b-a hide" [ngClass]="{'fade-in show': data.certificates.isControllerExpanded}">
+                      <div class="row ">
+                        <div class="col-md-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.certificate.label.primaryControllerCert
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.certificate.tooltip.primaryControllerCert' | translate"></i>
+                        </div>
+                        <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-36"
+                             [ngClass]="{'has-error' : ((primaryControllerCert.dirty || primaryControllerCert.touched) && primaryControllerCert.invalid)}">
+                          <input [readOnly]="isTrash" id="primaryControllerCert" autocomplete="off" type="text" class="form-control" #primaryControllerCert="ngModel"
+                                 required name="primaryControllerCert" (blur)="convertJSON()"
+                                 placeholder="{{'deploymentService.certificate.placeholder.primaryControllerCert' | translate}}"
+                                 [(ngModel)]="data.certificates.controller.primaryControllerCert">
+                          <div
+                            *ngIf="primaryControllerCert.invalid && (primaryControllerCert.dirty || primaryControllerCert.touched)"
+                            class="text-danger help-block">
+                            <div *ngIf="primaryControllerCert.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row m-t-sm">
+                        <div class="col-md-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.certificate.label.secondaryControllerCert
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.certificate.tooltip.secondaryControllerCert' | translate"></i>
+                        </div>
+                        <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-36"
+                             [ngClass]="{'has-error' : ((secondaryControllerCert.dirty || secondaryControllerCert.touched) && secondaryControllerCert.invalid)}">
+                          <input  [readOnly]="isTrash" id="secondaryControllerCert" autocomplete="off" type="text" class="form-control"
+                                 #secondaryControllerCert="ngModel" required name="secondaryControllerCert"
+                                 (blur)="convertJSON()" placeholder="{{'deploymentService.certificate.placeholder.secondaryControllerCert' | translate}}"
+                                 [(ngModel)]="data.certificates.controller.secondaryControllerCert">
+                          <div
+                            *ngIf="secondaryControllerCert.invalid && (secondaryControllerCert.dirty || secondaryControllerCert.touched)"
+                            class="text-danger help-block">
+                            <div *ngIf="secondaryControllerCert.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <h6 class="m-t-12" translate>deploymentService.label.joc
+                      <i class="fa fa-caret-down p-l-xs text-hover-primary"
+                         (click)="data.certificates.isJocExpanded = !data.certificates.isJocExpanded"
+                         [ngClass]="{'fa-caret-up': data.certificates.isJocExpanded}"></i>
+                    </h6>
+                    <div class="p-a b-a hide" [ngClass]="{'fade-in show': data.certificates.isJocExpanded}">
+
+                      <div class="row">
+                        <div class="col-md-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.certificate.label.primaryJocCert
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.certificate.tooltip.primaryJocCert' | translate"></i>
+                        </div>
+                        <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-36"
+                             [ngClass]="{'has-error' : ((primaryJocCert.dirty || primaryJocCert.touched) && primaryJocCert.invalid)}">
+                          <input [readOnly]="isTrash" id="primaryJocCert" autocomplete="off" type="text" class="form-control" #primaryJocCert="ngModel"
+                                 required name="primaryJocCert" (blur)="convertJSON()"
+                                 placeholder="{{'deploymentService.certificate.placeholder.primaryJocCert' | translate}}"
+                                 [(ngModel)]="data.certificates.joc.primaryJocCert">
+                          <div *ngIf="primaryJocCert.invalid && (primaryJocCert.dirty || primaryJocCert.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="primaryJocCert.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row m-t-sm">
+                        <div class="col-md-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.certificate.label.secondaryJocCert
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.certificate.tooltip.secondaryJocCert' | translate"></i>
+                        </div>
+                        <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-36"
+                             [ngClass]="{'has-error' : ((secondaryJocCert.dirty || secondaryJocCert.touched) && secondaryJocCert.invalid)}">
+                          <input [readOnly]="isTrash" id="secondaryJocCert" autocomplete="off" type="text" class="form-control" #secondaryJocCert="ngModel"
+                                 required name="secondaryJocCert" (blur)="convertJSON()"
+                                 placeholder="{{'deploymentService.certificate.placeholder.secondaryJocCert' | translate}}"
+                                 [(ngModel)]="data.certificates.joc.secondaryJocCert">
+                          <div *ngIf="secondaryJocCert.invalid && (secondaryJocCert.dirty || secondaryJocCert.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="secondaryJocCert.errors.required" translate>
+                              common.message.requiredError
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1641,20 +1770,20 @@
                                       </div>
                                     </div>
                                   </div>
-                                </div>
-                                <div class="row m-t-sm">
-                                  <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                    <label translate>deploymentService.controller.label.controllerCert
-                                    </label> <i class="p-l-sm fa fa-info-circle"
-                                                [nz-tooltip]="'deploymentService.controller.tooltip.controllerCert' | translate"></i>
-                                  </div>
-                                  <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
-                                    <input [readOnly]="isTrash" id="controllerCert{{i}}{{j}}" autocomplete="off" type="text"
-                                           class="form-control"
-                                           name="controllerCert{{i}}{{j}}"
-                                           placeholder="{{'deploymentService.controller.placeholder.controllerCert' | translate}}"
-                                           [(ngModel)]="item.configuration.cert" (blur)="convertJSON()">
+                                  <div class="row m-t-sm">
+                                    <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
+                                      <label translate>deploymentService.controller.label.controllerCert
+                                      </label> <i class="p-l-sm fa fa-info-circle"
+                                                  [nz-tooltip]="'deploymentService.controller.tooltip.controllerCert' | translate"></i>
+                                    </div>
+                                    <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
+                                      <input [readOnly]="isTrash" id="controllerCert{{i}}{{j}}" autocomplete="off" type="text"
+                                             class="form-control"
+                                             name="controllerCert{{i}}{{j}}"
+                                             placeholder="{{'deploymentService.controller.placeholder.controllerCert' | translate}}"
+                                             [(ngModel)]="item.configuration.certificates.cert" (blur)="convertJSON()">
 
+                                    </div>
                                   </div>
                                 </div>
                                 <div class="row m-t-12"
@@ -2472,6 +2601,18 @@
                                       </div>
                                     </div>
                                   </div>
+                                  <div class="row m-t-sm">
+                                    <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
+                                      <label translate>deploymentService.joc.label.jocCert</label> <i class="p-l-sm fa fa-info-circle"
+                                                                                                      [nz-tooltip]="'deploymentService.joc.tooltip.jocCert' | translate"></i>
+                                    </div>
+                                    <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
+                                      <input [readOnly]="isTrash" id="jocCert{{i}}{{j}}" autocomplete="off" type="text" class="form-control"
+                                             name="jocCert{{i}}{{j}}"
+                                             placeholder="{{'deploymentService.joc.placeholder.jocCert' | translate}}"
+                                             [(ngModel)]="item.configuration.certificates.cert" (blur)="convertJSON()">
+                                    </div>
+                                  </div>
                                 </div>
                                 <h6 class="m-t-12" translate>deploymentService.label.startFiles </h6>
                                 <div class="p-a b-a">
@@ -2518,18 +2659,7 @@
                                     </div>
                                   </div>
                                 </div>
-                                <div class="row m-t-sm">
-                                  <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                    <label translate>deploymentService.joc.label.jocCert</label> <i class="p-l-sm fa fa-info-circle"
-                                                [nz-tooltip]="'deploymentService.joc.tooltip.jocCert' | translate"></i>
-                                  </div>
-                                  <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
-                                    <input [readOnly]="isTrash" id="jocCert{{i}}{{j}}" autocomplete="off" type="text" class="form-control"
-                                           name="jocCert{{i}}{{j}}"
-                                           placeholder="{{'deploymentService.joc.placeholder.jocCert' | translate}}"
-                                           [(ngModel)]="item.configuration.cert" (blur)="convertJSON()">
-                                  </div>
-                                </div>
+
                                 <div class="row m-t-12" *ngFor="let temp of item.configuration.templates; let k = index">
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label *ngIf="k == 0" translate>deploymentService.joc.label.templates

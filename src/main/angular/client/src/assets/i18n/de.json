@@ -878,6 +878,29 @@
         "licenseBinFile": "Der Pfad zur Lizenz Binärdatei wird erwartet. Die Datei enthält Binärcode, der nicht der Open Source Lizenz unterliegt, z.B. die Cluster Funktionen von JOC Cockpit und Controller. Der Binärcode wird durch eine Lizenz Schlüsseldatei freigeschaltet."
       }
     },
+    "certificate": {
+      "label": {
+        "primaryControllerCert": "Primary Controller Certificate",
+        "secondaryControllerCert": "Secondary Controller Certificate",
+        "primaryJocCert": "Primary JOC Cockpit Certificate",
+        "secondaryJocCert": "Secondary JOC Cockpit Certificate"
+      },
+      "button": {
+        "addCertificates": "Add Certificates"
+      },
+      "placeholder": {
+        "primaryControllerCert": "Enter Primary Controller Certificate",
+        "secondaryControllerCert": "Enter Secondary Controller Certificate",
+        "primaryJocCert": "Enter Primary JOC Cockpit Certificate",
+        "secondaryJocCert": "Enter Secondary JOC Cockpit Certificate"
+      },
+      "tooltip": {
+        "primaryControllerCert": "Primary Controller Certificate",
+        "secondaryControllerCert": "Secondary Controller Certificate",
+        "primaryJocCert": "Primary JOC Cockpit Certificate",
+        "secondaryJocCert": "Secondary JOC Cockpit Certificate"
+      }
+    },
     "agent": {
       "label": {
         "agentId": "Agenten-Kennung",

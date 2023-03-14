@@ -277,7 +277,8 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     isJOCExpanded: false,
     isAgentExpanded: false,
     isControllerExpanded: false,
-    isLicenseExpanded: false
+    isLicenseExpanded: false,
+    isCertificateExpanded: false
   };
 
   securityLevel: Array<string> = ['low', 'medium', 'high'];
@@ -376,7 +377,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
                 if (!_isTrash && this.isTrash) {
                   _isTrash = isTrash;
                 }
-                if(args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/)){
+                if (args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/)) {
                   _isNormal = true;
                 }
               } else if (args.eventSnapshots[j].eventType.match(/InventoryUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryTrashUpdated/)) {
@@ -393,22 +394,22 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       }
     }
     if (loadTree) {
-      if(_isTrash) {
+      if (_isTrash) {
         this.reloadTree(_isTrash);
       }
-      if(_isNormal){
+      if (_isNormal) {
         this.reloadTree(false);
       }
       if (paths.length > 0) {
         paths.forEach((path, index) => {
-          if(_isTrash) {
+          if (_isTrash) {
             this.updateFolders(path, _isTrash, () => {
               if (index == paths.length - 1) {
                 this.updateTree(_isTrash);
               }
             });
           }
-          if(_isNormal) {
+          if (_isNormal) {
             this.updateFolders(path, false, () => {
               if (index == paths.length - 1) {
                 this.updateTree(false);
@@ -784,6 +785,14 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   addLicense(): void {
     this.data.license = {};
     this.obj.isLicenseExpanded = true;
+  }
+
+  addCertificates(): void {
+    this.data.certificates = {
+      controller: {},
+      joc: {}
+    };
+    this.obj.isCertificateExpanded = true;
   }
 
   addAgent(flag = false): void {
@@ -1271,6 +1280,8 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         this.obj.isAgentExpanded = true;
       } else if (type == 'controllers') {
         this.obj.isControllerExpanded = true;
+      } else if (type == 'certificates') {
+        this.obj.isCertificateExpanded = true;
       }
 
       setTimeout(() => {
@@ -1318,6 +1329,24 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       } else if (!isSkip) {
         this.isValid = false;
         this.errorMessages.push('License is required for cluster');
+      }
+    }
+    if (this.data.certificates && !isEmpty(this.data.certificates)) {
+      if (isEmpty(this.data.certificates.controller) && isEmpty(this.data.certificates.joc)) {
+
+      } else {
+        this.deploymentData.mainObj['certificates'] = this.data.certificates;
+        if (isEmpty(this.data.certificates.controller)) {
+          if (!isSkip && (!this.data.certificates.joc.primaryJocCert || !this.data.certificates.joc.secondaryJocCert)) {
+            this.navToField(!this.data.certificates.joc.primaryJocCert ? 'primaryJocCert' : 'secondaryJocCert', 0, 0, 'certificates');
+            this.errorMessages.push(this.data.certificates.joc.primaryJocCert ? 'Primary JOC certificate is required' : 'Secondary JOC certificate is required');
+          }
+        } else {
+          if (!isSkip && (!this.data.certificates.controller.primaryControllerCert || !this.data.certificates.controller.secondaryControllerCert)) {
+            this.navToField(!this.data.certificates.controller.primaryControllerCert ? 'primaryControllerCert' : 'secondaryControllerCert', 0, 0, 'certificates');
+            this.errorMessages.push(this.data.certificates.controller.primaryControllerCert ? 'Primary Controller certificate is required' : 'Secondary Controller certificate is required');
+          }
+        }
       }
     }
 
@@ -1698,6 +1727,12 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           })
         });
       }
+    } else {
+      this.obj.isCertificateExpanded = flag;
+      if (this.data.certificates) {
+        this.data.certificates.isControllerExpanded = flag;
+        this.data.certificates.isJocExpanded = flag;
+      }
     }
   }
 
@@ -1721,7 +1756,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
   download(): void {
     this.validate(true);
-    const name = this.data.descriptor.descriptorId + '-descriptor' + '.json';
+    const name = this.data.descriptor.descriptorId + '.descriptor' + '.json';
     const fileType = 'application/octet-stream';
     const data = JSON.stringify(this.deploymentData.mainObj, undefined, 2);
     const blob = new Blob([data], {type: fileType});
