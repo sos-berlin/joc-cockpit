@@ -415,6 +415,7 @@ export class CycleInstructionComponent implements OnChanges {
     this.selectedNode.repeatObject = data.repeat;
     this.selectedNode.repeatObject.index = index;
     this.selectedNode.obj.listIndex = listIndex;
+    this.selectedNode.obj.addNewFreq = true;
     this.selectedNode.data.schedule = this.selectedNode.obj.schedule.schemes[index];
     this.selectedNode.data.periodList = [];
   }
@@ -514,6 +515,8 @@ export class CycleInstructionComponent implements OnChanges {
   }
 
   closeScheme(scheme): void {
+    console.log(this.selectedNode.obj.schedule.schemes, '>')
+    console.log(scheme)
     scheme.show = false;
     setTimeout(() => {
       let flag1 = true;
@@ -533,10 +536,12 @@ export class CycleInstructionComponent implements OnChanges {
       }
       if (flag1) {
         if (!this.selectedNode.isEdit) {
-          this.selectedNode.obj.schedule.schemes.push({
-            repeat: this.workflowService.convertRepeatObject(this.selectedNode.repeatObject),
-            admissionTimeScheme: this.selectedNode.data.schedule.admissionTimeScheme
-          });
+          if(this.selectedNode.obj.addNewFreq) {
+            this.selectedNode.obj.schedule.schemes.push({
+              repeat: this.workflowService.convertRepeatObject(this.selectedNode.repeatObject),
+              admissionTimeScheme: this.selectedNode.data.schedule.admissionTimeScheme
+            });
+          }
         } else {
           if (this.selectedNode.repeatObject.index || this.selectedNode.repeatObject.index === 0) {
             this.selectedNode.obj.schedule.schemes[this.selectedNode.repeatObject.index].repeat = this.workflowService.convertRepeatObject(this.selectedNode.repeatObject);
@@ -605,7 +610,6 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     if (this.repeatObject && !this.repeatObject.TYPE) {
       this.repeatObject.TYPE = 'Periodic';
     }
-
     this.days = this.coreService.getLocale().days;
     this.days.push(this.days[0]);
     if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {

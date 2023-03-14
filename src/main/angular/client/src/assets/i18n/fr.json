@@ -878,6 +878,29 @@
         "licenseBinFile": "Le chemin d'accès au fichier binaire de la licence est attendu. Ce fichier contient du code binaire qui n'est pas soumis à la licence Open Source, par exemple les fonctions de cluster du JOC Cockpit et du Contrôleur. Le code binaire est déverrouillé par un fichier de clé de licence."
       }
     },
+    "certificate": {
+      "label": {
+        "primaryControllerCert": "Primary Controller Certificate",
+        "secondaryControllerCert": "Secondary Controller Certificate",
+        "primaryJocCert": "Primary JOC Cockpit Certificate",
+        "secondaryJocCert": "Secondary JOC Cockpit Certificate"
+      },
+      "button": {
+        "addCertificates": "Add Certificates"
+      },
+      "placeholder": {
+        "primaryControllerCert": "Enter Primary Controller Certificate",
+        "secondaryControllerCert": "Enter Secondary Controller Certificate",
+        "primaryJocCert": "Enter Primary JOC Cockpit Certificate",
+        "secondaryJocCert": "Enter Secondary JOC Cockpit Certificate"
+      },
+      "tooltip": {
+        "primaryControllerCert": "Primary Controller Certificate",
+        "secondaryControllerCert": "Secondary Controller Certificate",
+        "primaryJocCert": "Primary JOC Cockpit Certificate",
+        "secondaryJocCert": "Secondary JOC Cockpit Certificate"
+      }
+    },
     "agent": {
       "label": {
         "agentId": "ID Agent",
