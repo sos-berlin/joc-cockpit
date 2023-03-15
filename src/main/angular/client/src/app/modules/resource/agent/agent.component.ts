@@ -22,6 +22,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   selectedAgentId = '';
   searchableProperties = ['agentId', 'agentName', 'state', 'url', '_text'];
   agentsFilters: any = {};
+  totalAgents = 0;
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -63,6 +64,15 @@ export class AgentComponent implements OnInit, OnDestroy {
 
   searchInResult(): void {
     this.data = this.agentsFilters.searchText ? this.searchPipe.transform(this.agentClusters, this.agentsFilters.searchText, this.searchableProperties) : this.agentClusters;
+    this.totalAgents = 0;
+    this.data.forEach((item) => {
+      if (item.subagents) {
+        this.totalAgents = this.totalAgents + item.subagents.length;
+      } else {
+        ++this.totalAgents;
+      }
+    });
+    console.log(this.totalAgents, 'this.totalAgents');
     this.data = [...this.data];
   }
 
@@ -116,7 +126,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   private getVesrions(agents: any): void {
-    this.coreService.post('joc/versions', { controllerIds: [this.schedulerIds.selected] }).subscribe({
+    this.coreService.post('joc/versions', {controllerIds: [this.schedulerIds.selected]}).subscribe({
       next: res => {
 
         agents.forEach((agent: any) => {
@@ -128,7 +138,8 @@ export class AgentComponent implements OnInit, OnDestroy {
               if (!agent.subagents) {
                 break;
               }
-            } if (agent.subagents) {
+            }
+            if (agent.subagents) {
               for (let j = 0; j < agent.subagents.length; j++) {
                 if (agent.subagents[j].subagentId === res.agentVersions[i].subagentId) {
                   agent.subagents[j].compatibility = res.agentVersions[i].compatibility;
@@ -245,7 +256,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         if (isSubagent) {
           for (let i in result.agents[0].subagents) {
             if (cluster.subagentId == result.agents[0].subagents[i].subagentId) {
-               cluster.orders = result.agents[0].subagents[i].orders;
+              cluster.orders = result.agents[0].subagents[i].orders;
               break
             }
           }

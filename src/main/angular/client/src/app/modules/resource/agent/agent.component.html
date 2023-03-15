@@ -400,7 +400,7 @@
                 </tbody>
               </nz-table>
               <div class="w-half label-top" *ngIf="ajaxTable.data.length >0"><span
-                translate>common.label.total</span> {{data.length}}
+                translate>common.label.total</span> {{totalAgents || data.length}}
                 <span translate *ngIf="ajaxTable.data.length >1">agent.label.agentsFound</span>
                 <span translate *ngIf="ajaxTable.data.length ==1">agent.label.agentFound</span>
               </div>

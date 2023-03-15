@@ -1767,6 +1767,14 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     this.data.descriptor = this.deploymentData.mainObj.descriptor || {};
     this.data.license = this.deploymentData.mainObj.license;
     this.data.certificates = this.deploymentData.mainObj.certificates;
+    if(this.data.certificates && !isEmpty(this.data.certificates)) {
+      if (!this.data.certificates.controller) {
+        this.data.certificates.controller = {};
+      }
+      if (!this.data.certificates.joc) {
+        this.data.certificates.joc = {};
+      }
+    }
     if (this.deploymentData.mainObj.joc && this.deploymentData.mainObj.joc.length > 0) {
       this.deploymentData.mainObj.joc.forEach((joc) => {
         joc.members?.instances?.forEach((config) => {
