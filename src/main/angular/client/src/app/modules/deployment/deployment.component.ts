@@ -1331,24 +1331,6 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         this.errorMessages.push('License is required for cluster');
       }
     }
-    if (this.data.certificates && !isEmpty(this.data.certificates)) {
-      if (isEmpty(this.data.certificates.controller) && isEmpty(this.data.certificates.joc)) {
-
-      } else {
-        this.deploymentData.mainObj['certificates'] = this.data.certificates;
-        if (isEmpty(this.data.certificates.controller)) {
-          if (!isSkip && (!this.data.certificates.joc.primaryJocCert || !this.data.certificates.joc.secondaryJocCert)) {
-            this.navToField(!this.data.certificates.joc.primaryJocCert ? 'primaryJocCert' : 'secondaryJocCert', 0, 0, 'certificates');
-            this.errorMessages.push(this.data.certificates.joc.primaryJocCert ? 'Primary JOC certificate is required' : 'Secondary JOC certificate is required');
-          }
-        } else {
-          if (!isSkip && (!this.data.certificates.controller.primaryControllerCert || !this.data.certificates.controller.secondaryControllerCert)) {
-            this.navToField(!this.data.certificates.controller.primaryControllerCert ? 'primaryControllerCert' : 'secondaryControllerCert', 0, 0, 'certificates');
-            this.errorMessages.push(this.data.certificates.controller.primaryControllerCert ? 'Primary Controller certificate is required' : 'Secondary Controller certificate is required');
-          }
-        }
-      }
-    }
 
     if (this.data.agents?.controllerRefs?.length > 0) {
       this.deploymentData.mainObj['agents'] = {
@@ -1784,6 +1766,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   private updateJSONObject(): void {
     this.data.descriptor = this.deploymentData.mainObj.descriptor || {};
     this.data.license = this.deploymentData.mainObj.license;
+    this.data.certificates = this.deploymentData.mainObj.certificates;
     if (this.deploymentData.mainObj.joc && this.deploymentData.mainObj.joc.length > 0) {
       this.deploymentData.mainObj.joc.forEach((joc) => {
         joc.members?.instances?.forEach((config) => {
