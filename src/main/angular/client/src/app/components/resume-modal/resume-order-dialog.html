@@ -24,7 +24,7 @@
       </div>
       <div class="form-group row m-b-0" *ngIf="constants.length > 0">
         <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
-        <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
+        <div class="col-md-4 col-lg-7 m-b-sm" translate>common.label.value</div>
       </div>
       <div class="row" *ngFor="let argument of constants; let i=index">
         <div class="col-sm-4 m-b-sm" [ngClass]="{'col-sm-10' : argument.type == 'list'}">
@@ -52,11 +52,20 @@
         <div class="col-md-12 m-b-sm" *ngIf="variables.length == 0"><span><</span>empty></div>
       </div>
       <div class="form-group row m-b-0" *ngIf="variables.length > 0">
-        <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
-        <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
+        <div class="pos-abt m-l-12">
+          <label nz-checkbox [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
+                 (nzCheckedChange)="onAllChecked($event)"></label>
+        </div>
+        <div class="col-md-4 col-lg-4 m-b-sm" style="padding-left: 36px" translate>common.label.name</div>
+        <div class="col-md-4 col-lg-7 m-b-sm" translate>common.label.value</div>
       </div>
       <div class="form-group row m-b-0" *ngFor="let argument of variables; let i=index">
-        <div class="col-sm-4 m-b-sm" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid), 'col-sm-10' : argument.isArray}">
+        <div class="pos-abt m-l-12">
+          <label nz-checkbox style="position: relative;top:5px"
+                 [nzChecked]="object.setOfCheckedValue.has(argument.name)"
+                 (nzCheckedChange)="onItemChecked(argument, $event)"></label>
+        </div>
+        <div class="col-sm-4 m-b-sm" style="padding-left: 36px" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid), 'col-sm-10' : argument.isArray}">
           <input #name="ngModel" required autocomplete="off" type="text" class="form-control"
                  name="name_{{i}}"
                  [(ngModel)]="argument.name" placeholder="{{'common.placeholder.name' | translate}}">
@@ -66,7 +75,7 @@
         </div>
         <ng-container *ngIf="argument.isArray">
           <ng-container *ngFor="let item of argument.value; let j=index">
-            <div class="col-sm-10 m-b-sm p-l-md"
+            <div class="col-sm-10 m-b-sm p-l-lg"
                  [ngClass]="{'has-error' : ((item.dirty || item.touched) && item.invalid)}">
               <input #item="ngModel" autocomplete="off" type="text"
                      class="form-control" name="item{{i}}{{j}}" (keydown)="onKeyPress($event)"
@@ -104,6 +113,13 @@
       <nz-spin nzSimple></nz-spin>
     </div>
     <div *ngIf="workflow">
+      <div class="form-group row" *ngIf="withCyclePosition">
+        <label class="col-sm-4 form-control-label" translate>order.label.cycleEndTime</label>
+        <div class="col-sm-6">
+          <nz-input-number name="cycleEndTime" [nzPlaceHolder]="'order.placeholder.enterCycleEndTime' | translate" [nzMin]="0" [nzStep]="1" [(ngModel)]="order.cycleEndTime"></nz-input-number>
+        </div>
+      </div>
+
       <div class="hover" >
         <a class="text-primary noExl" translate >workflow.label.start</a>
         <span class="expand-collapse-btn">

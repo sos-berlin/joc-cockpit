@@ -231,18 +231,48 @@ export class ShowJsonModalComponent implements OnInit {
     });
     this.options.modes = ['code', 'tree'];
     this.data = this.coreService.clone(this.object);
+    if (this.isEdit) {
+      delete this.data.version;
+    }
   }
 
   copyToClipboard(): void {
+    this.validateByURL(this.editor.get(), (isValid) => {
+    });
     this.coreService.showCopyMessage(this.message);
     this.clipboardService.copyFromContent(this.editor.getText());
   }
 
   onSubmit(): void {
     this.submitted = true;
-    setTimeout(() => {
-      this.activeModal.close(this.editor.get());
-    }, 100);
+    this.validateByURL(this.editor.get(), (isValid) => {
+      if (isValid) {
+        this.activeModal.close(this.editor.get());
+      }
+      this.submitted = false;
+    });
+  }
+
+  private validateByURL(json, cb): void {
+    this.coreService.post('inventory/DEPLOYMENTDESCRIPTOR/validate', json).subscribe({
+      next: (res: any) => {
+        this.parseErrorMsg(res, (flag) => {
+          cb(flag);
+        });
+      }, error: (err) => {
+        cb(err);
+      }
+    });
+  }
+
+  private parseErrorMsg(res, cb): void {
+    let flag = true;
+    if (!res.valid) {
+      flag = false;
+      this.errorMsg = res.invalidMsg;
+    }
+    this.isError = !flag;
+    cb(flag);
   }
 
 }
@@ -757,12 +787,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         this.lastModified = res.configurationDate;
         this.history = [];
         this.indexOfNextAdd = 0;
-        if (res.configuration) {
-          delete res.configuration.TYPE;
-          delete res.configuration.path;
-          delete res.configuration.version;
-          delete res.configuration.versionId;
-        } else {
+        if (!res.configuration) {
           res.configuration = {};
         }
         this.data = {};
@@ -773,6 +798,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         };
         this.isValid = res.valid;
         this.deploymentData.mainObj = res.configuration;
+        this.deploymentData.version = res.configuration.version;
         this.loading = false;
         this.updateJSONObject();
         this.history.push(this.deploymentData.data);
@@ -1331,6 +1357,9 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         this.errorMessages.push('License is required for cluster');
       }
     }
+    if (this.data.certificates) {
+      this.deploymentData.mainObj['certificates'] = this.data.certificates;
+    }
 
     if (this.data.agents?.controllerRefs?.length > 0) {
       this.deploymentData.mainObj['agents'] = {
@@ -1741,6 +1770,9 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     const name = this.data.descriptor.descriptorId + '.descriptor' + '.json';
     const fileType = 'application/octet-stream';
     const data = JSON.stringify(this.deploymentData.mainObj, undefined, 2);
+    if (this.deploymentData.version) {
+      data['version'] = this.deploymentData.version
+    }
     const blob = new Blob([data], {type: fileType});
     saveAs(blob, name);
   }
