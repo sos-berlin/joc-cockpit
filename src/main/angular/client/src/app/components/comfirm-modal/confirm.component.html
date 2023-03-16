@@ -18,7 +18,7 @@
         {{objectName}}
       </span>
     </span>
-    <span *ngIf="lossNode">{{'common.label.confirm' | translate}}</span>
+    <span *ngIf="lossNode || title == 'confirm'">{{'common.label.confirm' | translate}}</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>

@@ -7494,12 +7494,16 @@ tr.tr-border td:first-child {
 }
 
 .CodeMirror-gutter-wrapper {
-  left: -30px !important;
+  left: -35px !important;
 }
 
 .CodeMirror-cursor {
   border-left-width: 2px !important;
   height: 19.5px !important;
+}
+
+.CodeMirror-linenumber{
+  width: auto !important;
 }
 
 .script-editor {

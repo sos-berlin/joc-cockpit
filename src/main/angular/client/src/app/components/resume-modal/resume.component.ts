@@ -24,6 +24,12 @@ export class ResumeOrderModalComponent implements OnInit {
   variables: any = [];
   constants = [];
   allowVariable = true;
+  withCyclePosition = false;
+  object = {
+    setOfCheckedValue: new Set(),
+    checked: false,
+    indeterminate: false
+  }
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
               private modal: NzModalService) {
@@ -66,6 +72,7 @@ export class ResumeOrderModalComponent implements OnInit {
     }).subscribe({
       next: (res: any) => {
         if (res) {
+          this.withCyclePosition = res.withCyclePosition;
           if (res.variablesNotSettable) {
             this.allowVariable = false;
           } else {
@@ -311,7 +318,9 @@ export class ResumeOrderModalComponent implements OnInit {
       obj.position = this.order.position;
     }
     if (this.allowVariable && this.variables.length > 0) {
-      let argu = this.variables.filter((item) => item.name);
+      let argu = this.variables.filter((item) => {
+        return item.name && this.object.setOfCheckedValue.has(item.name);
+      });
       if (argu.length > 0) {
         obj.variables = this.coreService.keyValuePair(argu);
         for (let i in obj.variables) {
@@ -324,6 +333,9 @@ export class ResumeOrderModalComponent implements OnInit {
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     this.submitted = false;
+    if (this.withCyclePosition && this.order.cycleEndTime > -1) {
+      obj.cycleEndTime = this.order.cycleEndTime
+    }
     this.coreService.post('orders/resume', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
@@ -333,6 +345,30 @@ export class ResumeOrderModalComponent implements OnInit {
 
   cancel(): void {
     this.activeModal.destroy();
+  }
+
+  /*--------------- Checkbox functions -------------*/
+
+  onAllChecked(isChecked: boolean): void {
+    this.variables.forEach(item => this.updateCheckedSet(item, isChecked));
+  }
+
+  onItemChecked(item: any, checked: boolean): void {
+    this.updateCheckedSet(item, checked);
+  }
+
+  updateCheckedSet(data: any, checked: boolean): void {
+    if (data.name && (data.value || data.value == 0 || data.value ==  false)) {
+      if (checked) {
+        this.object.setOfCheckedValue.add(data.name);
+      } else {
+        this.object.setOfCheckedValue.delete(data.name);
+      }
+    }
+    this.object.checked = this.variables.every(item => {
+      return this.object.setOfCheckedValue.has(item.name);
+    });
+    this.object.indeterminate = this.object.setOfCheckedValue.size > 0 && !this.object.checked;
   }
 
   onDrop(position): void {
@@ -383,6 +419,7 @@ export class ResumeOrderModalComponent implements OnInit {
     if (this.variables) {
       if (!this.coreService.isLastEntryEmpty(this.variables, 'name', '')) {
         this.variables.push(param);
+
       }
     }
   }
