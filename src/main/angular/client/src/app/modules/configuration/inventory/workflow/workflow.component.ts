@@ -515,8 +515,6 @@ export class CycleInstructionComponent implements OnChanges {
   }
 
   closeScheme(scheme): void {
-    console.log(this.selectedNode.obj.schedule.schemes, '>')
-    console.log(scheme)
     scheme.show = false;
     setTimeout(() => {
       let flag1 = true;

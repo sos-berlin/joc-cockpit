@@ -1,8 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {isArray, isEmpty} from "underscore";
 import {CoreService} from '../../services/core.service';
 import {ValueEditorComponent} from '../value-editor/value.component';
-import {isArray, isEmpty} from "underscore";
+import {WorkflowService} from "../../services/workflow.service";
 
 @Component({
   selector: 'app-resume-order',
@@ -32,7 +33,7 @@ export class ResumeOrderModalComponent implements OnInit {
   }
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
-              private modal: NzModalService) {
+              private modal: NzModalService, private workflowService: WorkflowService) {
   }
 
   ngOnInit(): void {
@@ -332,9 +333,8 @@ export class ResumeOrderModalComponent implements OnInit {
     }
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    this.submitted = false;
-    if (this.withCyclePosition && this.order.cycleEndTime > -1) {
-      obj.cycleEndTime = this.order.cycleEndTime
+    if (this.withCyclePosition && this.order.cycleEndTime) {
+      obj.cycleEndTime = this.workflowService.convertStringToDuration(this.order.cycleEndTime, true);
     }
     this.coreService.post('orders/resume', obj).subscribe({
       next: () => {
@@ -350,7 +350,12 @@ export class ResumeOrderModalComponent implements OnInit {
   /*--------------- Checkbox functions -------------*/
 
   onAllChecked(isChecked: boolean): void {
-    this.variables.forEach(item => this.updateCheckedSet(item, isChecked));
+    if (!isChecked) {
+      this.object.indeterminate = false;
+      this.object.setOfCheckedValue.clear();
+    } else {
+      this.variables.forEach(item => this.updateCheckedSet(item, isChecked));
+    }
   }
 
   onItemChecked(item: any, checked: boolean): void {
@@ -419,7 +424,6 @@ export class ResumeOrderModalComponent implements OnInit {
     if (this.variables) {
       if (!this.coreService.isLastEntryEmpty(this.variables, 'name', '')) {
         this.variables.push(param);
-
       }
     }
   }

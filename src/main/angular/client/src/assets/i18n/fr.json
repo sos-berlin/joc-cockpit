@@ -2203,10 +2203,11 @@
     "button.assignParameterizationFromSchedules": "Paramétrage à partir des Planifications",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",
-    "placeholder.enterCycleEndTime": "Enter cycle end time in second",
+    "placeholder.enterCycleEndTime": "Enter value as d/w/m/y/h or hh:mm:ss or seconds",
     "message.noVariableAvailable": "aucune variable disponible",
     "message.orderModificationNotAllowed": "L'état de l'ordre {{state}} ne permet pas de modification",
     "message.noLogHistoryFound": "Aucun journal n'a été trouvé pour cet ordre",
+    "tooltip.cycleEndTime": "Cycle end time in second",
     "treeView": {
       "label": {
         "state": "Étape",
