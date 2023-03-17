@@ -265,9 +265,10 @@
           </span>
         </span>
       </div>
-      <div *ngIf="instruction.TYPE === 'ForkListEnd'" class="m-l-n-40">
+      <div *ngIf="instruction.TYPE === 'ForkListEnd' || instruction.TYPE === 'CycleEnd'" class="m-l-n-40">
         <span>
           <span class="_600" *ngIf="instruction.TYPE === 'ForkListEnd'">{{'workflow.label.forkListEnd' | translate}}</span>
+          <span class="_600" *ngIf="instruction.TYPE === 'CycleEnd'">{{'workflow.label.cycleEnd' | translate}}</span>
         </span>
         <span class="m-l-md" *ngIf="instruction.orders && instruction.orders.length> 0">
          <ng-template ngFor let-order [ngForOf]="instruction.orders | orderBy : 'scheduledFor': true | slice:0:3">

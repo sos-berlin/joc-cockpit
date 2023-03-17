@@ -735,6 +735,8 @@ export class WorkflowService {
             if (json.instructions[x].TYPE === 'ImplicitEnd' && (json.TYPE || parent)) {
               if (json.TYPE === 'ForkList') {
                 json.instructions[x].TYPE = 'ForkListEnd';
+              } else if (json.TYPE === 'Cycle') {
+                json.instructions[x].TYPE = 'CycleEnd';
               } else if (parent) {
                 let positions = [];
                 if (!parent.join) {
@@ -1104,9 +1106,9 @@ export class WorkflowService {
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
-          } else if (json.instructions[x].TYPE === 'ImplicitEnd' || json.instructions[x].TYPE === 'ForkListEnd' || json.instructions[x].TYPE === 'Join') {
+          } else if (json.instructions[x].TYPE === 'ImplicitEnd' || json.instructions[x].TYPE === 'CycleEnd' || json.instructions[x].TYPE === 'ForkListEnd' || json.instructions[x].TYPE === 'Join') {
             _node.setAttribute('displayLabel', 'end');
-            if ((type || json.instructions[x].TYPE === 'ForkListEnd') && useString) {
+            if ((type || (json.instructions[x].TYPE === 'ForkListEnd') || json.instructions[x].TYPE === 'CycleEnd') && useString) {
               v1 = null;
             } else {
               v1 = graph.insertVertex(parent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));
@@ -1518,7 +1520,7 @@ export class WorkflowService {
             if (branches[i].instructions && branches[i].instructions.length > 0) {
               let x = branches[i].instructions[branches[i].instructions.length - 1];
               let pos;
-              if ((x.TYPE === 'ImplicitEnd' || x.TYPE === 'ForkListEnd' || x.TYPE === 'Join') && branches[i].instructions.length > 1) {
+              if ((x.TYPE === 'ImplicitEnd' || x.TYPE === 'CycleEnd' || x.TYPE === 'ForkListEnd' || x.TYPE === 'Join') && branches[i].instructions.length > 1) {
                 pos = JSON.stringify(x.position);
                 if (mapObj.vertixMap.has(pos)) {
                   mapObj.vertixMap.set(pos, v1);
@@ -1646,7 +1648,7 @@ export class WorkflowService {
       if (branches.instructions && branches.instructions.length > 0) {
         let x = branches.instructions[branches.instructions.length - 1];
         let pos;
-        if ((x.TYPE === 'ImplicitEnd' || x.TYPE === 'ForkListEnd' || x.TYPE === 'Join') && branches.instructions.length > 1) {
+        if ((x.TYPE === 'ImplicitEnd' || x.TYPE === 'CycleEnd' || x.TYPE === 'ForkListEnd' || x.TYPE === 'Join') && branches.instructions.length > 1) {
           pos = JSON.stringify(x.position);
           if (mapObj.vertixMap.has(pos)) {
             mapObj.vertixMap.set(pos, v1);

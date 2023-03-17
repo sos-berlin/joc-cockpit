@@ -115,6 +115,8 @@ export class GraphicalViewModalComponent implements OnInit {
           if (json.instructions[x].TYPE === 'ImplicitEnd' && (json.TYPE || parent)) {
             if (json.TYPE === 'ForkList') {
               json.instructions[x].TYPE = 'ForkListEnd';
+            } else if (json.TYPE === 'Cycle') {
+              json.instructions[x].TYPE = 'CycleEnd';
             } else if (parent) {
               let positions = [];
               if (!parent.join) {
