@@ -72,7 +72,6 @@ export class AgentComponent implements OnInit, OnDestroy {
         ++this.totalAgents;
       }
     });
-    console.log(this.totalAgents, 'this.totalAgents');
     this.data = [...this.data];
   }
 

@@ -61,7 +61,7 @@
       </div>
       <div class="form-group row m-b-0" *ngFor="let argument of variables; let i=index">
         <div class="pos-abt m-l-12">
-          <label nz-checkbox style="position: relative;top:5px"
+          <label nz-checkbox style="position: relative;top:5px" [nzDisabled]="!argument.name"
                  [nzChecked]="object.setOfCheckedValue.has(argument.name)"
                  (nzCheckedChange)="onItemChecked(argument, $event)"></label>
         </div>
@@ -114,9 +114,17 @@
     </div>
     <div *ngIf="workflow">
       <div class="form-group row" *ngIf="withCyclePosition">
-        <label class="col-sm-4 form-control-label" translate>order.label.cycleEndTime</label>
-        <div class="col-sm-6">
-          <nz-input-number name="cycleEndTime" [nzPlaceHolder]="'order.placeholder.enterCycleEndTime' | translate" [nzMin]="0" [nzStep]="1" [(ngModel)]="order.cycleEndTime"></nz-input-number>
+        <label class="col-sm-4 form-control-label" translate>
+          order.label.cycleEndTime
+          <i [nz-tooltip]="'order.tooltip.cycleEndTime' | translate"  class=" p-l-xs fa fa-info-circle"></i>
+        </label>
+        <div class="col-sm-6"
+             [ngClass]="{'has-error' : ((cycleEndTime.dirty || cycleEndTime.touched) && cycleEndTime.invalid)}">
+          <label class="w-full">
+            <input autocomplete="off" #cycleEndTime="ngModel" type="text" class="form-control" name="cycleEndTime"
+                   placeholder="{{'order.placeholder.enterCycleEndTime' | translate}}"
+                   validateDurtionReqex [(ngModel)]="order.cycleEndTime">
+          </label>
         </div>
       </div>
 

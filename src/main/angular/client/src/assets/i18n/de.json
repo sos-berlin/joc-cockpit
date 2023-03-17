@@ -2203,10 +2203,11 @@
     "button.assignParameterizationFromSchedules": "Parametrisierung aus Zeitplänen",
     "placeholder.selectStartNode": "Start-Position auswählen",
     "placeholder.selectEndNode": "End-Position auswählen",
-    "placeholder.enterCycleEndTime": "Enter cycle end time in second",
+    "placeholder.enterCycleEndTime": "Enter value as d/w/m/y/h or hh:mm:ss or seconds",
     "message.noVariableAvailable": "keine Variablen vorhanden",
     "message.orderModificationNotAllowed": "Der Auftagszustand {{state}} erlaubt keine Änderung",
     "message.noLogHistoryFound": "Kein Protokoll für diesen Auftrag gefunden",
+    "tooltip.cycleEndTime": "Cycle end time in second",
     "treeView": {
       "label": {
         "state": "Zustand",

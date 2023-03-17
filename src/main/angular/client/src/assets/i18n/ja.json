@@ -1171,7 +1171,6 @@
         "packageLocation": "パッケージ保存場所入力",
         "execPre": "前処理コマンド入力",
         "execPost": "後処理コマンド入力",
-        "makeService": "サービス作成入力",
         "release": "リリース入力",
         "tarball": "Tarballファイル名入力",
         "setupDir": "セットアップディレクトリ入力",
@@ -1181,7 +1180,6 @@
         "dataOwner": "データディレクトリオーナー入力",
         "runUser": "実行ユーザーアカウント入力",
         "title": "タイトル入力",
-        "securityLevel": "セキュリティレベル入力",
         "dbmsConfig": "DBMS Hibernate設定ファイル (hibernate.cfg.xml)入力",
         "dbmsDriver": "DBMS JDBCドライバー (*.jar)入力",
         "dbmsInit": "DBMS初期化入力",
@@ -2205,10 +2203,11 @@
     "button.assignParameterizationFromSchedules": "スケジュールから変数設定",
     "placeholder.selectStartNode": "開始ノード選択",
     "placeholder.selectEndNode": "終了ノード選択",
-    "placeholder.enterCycleEndTime": "Enter cycle end time in second",
+    "placeholder.enterCycleEndTime": "Enter value as d/w/m/y/h or hh:mm:ss or seconds",
     "message.noVariableAvailable": "変数はありません",
     "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません",
     "message.noLogHistoryFound": "このオーダーにはログがありません",
+    "tooltip.cycleEndTime": "Cycle end time in second",
     "treeView": {
       "label": {
         "state": "ステート",
