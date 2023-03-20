@@ -1404,6 +1404,7 @@
     "label.plannedTime": "Geplante Zeit",
     "label.orderHistory": "Auftragshistorie",
     "label.taskHistory": "Prozesshistorie",
+    "label.jobHistory": "Job History",
     "label.criticality": "Kritikalität",
     "label.returnCode": "Rückgabewert",
     "label.submitted": "Übermittelt",

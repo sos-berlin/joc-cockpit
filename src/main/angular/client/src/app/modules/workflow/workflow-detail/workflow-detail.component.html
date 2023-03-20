@@ -275,7 +275,7 @@
             </div>
           </div>
           <div *ngIf="pageView === 'grid' && workflow.instructions">
-            <app-workflow-graphical [jobMap]="jobMap" [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [reload]="isReload" [permission]="permission" [preferences]="preferences"
+            <app-workflow-graphical (onClick)="viewHistory($event)" [jobMap]="jobMap" [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [reload]="isReload" [permission]="permission" [preferences]="preferences"
                                     [jobs]="workflow.jobs" [controllerId]="schedulerIds.selected" [orders]="workflow.orders"
                                     [workflowFilters]="workflowFilters" [orderPreparation]="orderPreparation"></app-workflow-graphical>
           </div>
@@ -289,7 +289,7 @@
                     <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll()"></i>
                   </span>
                 </div>
-                <app-type [timezone]="workFlowJson.timeZone" [workflowObj]="{path: path, versionId: versionId}" [recursiveCals]="recursiveCals" [configuration]="workFlowJson" [jobs]="workFlowJson.jobs" [orderPreparation]="orderPreparation" [permission]="permission" [preferences]="preferences"
+                <app-type (onClick)="viewHistory($event)" [timezone]="workFlowJson.timeZone" [workflowObj]="{path: path, versionId: versionId}" [recursiveCals]="recursiveCals" [configuration]="workFlowJson" [jobs]="workFlowJson.jobs" [orderPreparation]="orderPreparation" [permission]="permission" [preferences]="preferences"
                           [schedulerId]="schedulerIds.selected" [expandAll]="isExpandAll" (isChanged)="changedHandler($event)" (isProcessing)="changedHandler($event)" [orders]="workflow.orders"
                           [workflowFilters]="workflowFilters" [expectedNoticeBoards]="workFlowJson.expectedNoticeBoards" [addOrderToWorkflows]="workFlowJson.addOrderToWorkflows" [postNoticeBoards]="workFlowJson.postNoticeBoards"></app-type>
                 <div class="rg-bottom"><span></span></div>
@@ -317,7 +317,7 @@
                       class="text-sm text-muted">{{workFlowJson.title}}</i></span>
           </div>
           <div class="box-body p-t-0 b-t">
-            <app-workflow-history [workflow]="{name: workFlowJson.name, path: workFlowJson.path}"></app-workflow-history>
+            <app-workflow-history [jobName]="workFlowJson.jobName" [workflow]="{name: workFlowJson.name, path: workFlowJson.path}"></app-workflow-history>
           </div>
         </div>
       </div>

@@ -114,17 +114,47 @@
     </div>
     <div *ngIf="workflow">
       <div class="form-group row" *ngIf="withCyclePosition">
-        <label class="col-sm-4 form-control-label" translate>
+        <label class="col-sm-4 " translate>
           order.label.cycleEndTime
           <i [nz-tooltip]="'order.tooltip.cycleEndTime' | translate"  class=" p-l-xs fa fa-info-circle"></i>
         </label>
-        <div class="col-sm-6"
-             [ngClass]="{'has-error' : ((cycleEndTime.dirty || cycleEndTime.touched) && cycleEndTime.invalid)}">
-          <label class="w-full">
-            <input autocomplete="off" #cycleEndTime="ngModel" type="text" class="form-control" name="cycleEndTime"
-                   placeholder="{{'order.placeholder.enterCycleEndTime' | translate}}"
-                   validateDurtionReqex [(ngModel)]="order.cycleEndTime">
-          </label>
+        <div class="col-md-8">
+          <nz-radio-group name="at" [(ngModel)]="order.at">
+            <label nz-radio nzValue="now"><span translate>common.label.specificDate</span></label>
+            <label nz-radio nzValue="later"><span translate>common.label.relativeTime</span></label>
+          </nz-radio-group>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="withCyclePosition && order.at == 'later'">
+        <label class="col-sm-4 form-control-label" translate>common.label.time</label>
+        <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
+          <input validTimeReqex type="text" #time="ngModel" class="form-control"
+                 name="atTime" [(ngModel)]="order.atTime" placeholder="{{'common.placeholder.enterSecond' | translate}}">
+          <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
+            <div translate *ngIf="!time.valid">common.message.invalid</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="withCyclePosition && order.at == 'now'">
+        <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime</label>
+        <div class="col-sm-6" [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}">
+          <nz-date-picker [nzFormat]="dateFormat"
+                          #date="ngModel" name="date" [(ngModel)]="order.fromDate"></nz-date-picker>
+          <div class="time-picker" [ngClass]="{'has-error': (time.dirty || time.touched) && time.invalid}">
+            <input timevalidator validTimeReqex [disabled]="!order.fromDate" type="text" #time="ngModel" class="form-control"
+                   name="fromTime" [(ngModel)]="order.fromTime" (ngModelChange)="selectTime(order.fromTime, true)"
+                   placeholder="HH:MM:SS">
+            <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)" [(ngModel)]="order.fromTime1"
+                            name="fromTimeIcon"></nz-time-picker>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row" [hidden]="!(order.at =='date')">
+        <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
+        <div class="col-sm-6">
+          <nz-select nzShowSearch name="timeZone" nzAllowClear [(ngModel)]="order.timeZone">
+            <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
+          </nz-select>
         </div>
       </div>
 

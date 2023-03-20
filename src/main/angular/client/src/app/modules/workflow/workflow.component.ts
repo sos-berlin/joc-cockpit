@@ -323,6 +323,12 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     this.workflowService.convertTryToRetry(workflow.configuration, null, {}, {count: 0});
   }
 
+  viewHistory(data): void {
+    if (this.permission && this.permission.joc && (this.permission.currentController.orders.view || this.permission.joc.auditLog.view)) {
+      this.showPanel.jobName = data.jobName;
+    }
+  }
+
   hidePanelFuc(workflow): void {
     workflow.show = false;
     $('#workflowTableId').css('height', 150);
@@ -1459,6 +1465,20 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.workflowFilters.isCompact = !this.workflowFilters.isCompact;
     this.preferences.isWorkflowCompact = this.workflowFilters.isCompact;
     this.saveProfileSettings(this.preferences);
+  }
+
+  viewHistory(data): void {
+    if (this.permission && this.permission.joc && (this.permission.currentController.orders.view || this.permission.joc.auditLog.view)) {
+      if (data.path) {
+        for (let i in this.data) {
+          if (this.data[i].path == data.path) {
+            this.showPanel = this.data[i];
+            this.showPanel.jobName = data.jobName;
+            break;
+          }
+        }
+      }
+    }
   }
 
   cancel(): void {

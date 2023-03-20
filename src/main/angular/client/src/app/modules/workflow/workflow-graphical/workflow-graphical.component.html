@@ -71,32 +71,32 @@
       </div>
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul nz-menu *ngIf="order">
-          <li nz-menu-item (click)="cancelOrder()" *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')">
+          <li nz-menu-item (click)="cancelOrder()" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')">
             <a translate>order.button.cancel</a>
           </li>
-          <li nz-menu-item (click)="cancelOrderWithKill()" *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED' && order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')">
+          <li nz-menu-item (click)="cancelOrderWithKill()" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED' && order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')">
             <a translate>order.button.cancelAndKillTask</a>
           </li>
-          <li nz-menu-item (click)="suspendOrder()" *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.suspendResume && (order.state._text === 'RUNNING' || order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'INPROGRESS' || order.state._text === 'WAITING')">
+          <li nz-menu-item (click)="suspendOrder()" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'RUNNING' || order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'INPROGRESS' || order.state._text === 'WAITING')">
             <a translate>order.button.suspend</a>
           </li>
-          <li nz-menu-item (click)="suspendOrderWithKill()" *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.suspendResume && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS' || order.state._text === 'WAITING')">
+          <li nz-menu-item (click)="suspendOrderWithKill()" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS' || order.state._text === 'WAITING')">
             <a translate>order.button.suspendAndKillTask</a>
           </li>
-          <li nz-menu-item (click)="resumeOrder()" *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.suspendResume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')">
+          <li nz-menu-item (click)="resumeOrder()" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')">
             <a>{{'order.button.resume' | translate}} ..</a>
           </li>
-          <li nz-menu-item (click)="modifyOrder()" *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')">
+          <li nz-menu-item (click)="modifyOrder()" *ngIf="permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')">
             <a>{{'dailyPlan.button.setStartTime' | translate}} ..</a>
           </li>
-          <li nz-menu-item (click)="changeParameter()" *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')">
+          <li nz-menu-item (click)="changeParameter()" *ngIf="permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')">
             <a>{{'dailyPlan.button.setParameters' | translate}} ..</a>
           </li>
-          <li nz-menu-item (click)="removeWhenTerminated()" *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.cancel
+          <li nz-menu-item (click)="removeWhenTerminated()" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel
              && order.state && (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED') && (order.positionString && !order.positionString.match('/fork'))">
             <a translate>order.button.leaveWorkflow</a>
           </li>
-          <li nz-menu-item (click)="confirmOrder()" *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.modify && order.state && (order.state._text === 'PROMPTING')">
+          <li nz-menu-item (click)="confirmOrder()" *ngIf="permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'PROMPTING')">
             <a>{{'order.button.confirm' | translate}} ..</a>
           </li>
           <li nz-menu-divider *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')"></li>
@@ -108,34 +108,34 @@
           </li>
         </ul>
         <ul nz-menu *ngIf="stopInstruction">
-          <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && !stopInstruction.isStop" (click)="stop(stopInstruction);">
+          <li nz-menu-item *ngIf="permission.currentController && permission.currentController.orders.managePositions && !stopInstruction.isStop" (click)="stop(stopInstruction);">
             <a>
               <span translate>workflow.button.stop</span>
             </a>
           </li>
-          <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && stopInstruction.isStop" (click)="unstop(stopInstruction);">
+          <li nz-menu-item *ngIf="permission.currentController && permission.currentController.orders.managePositions && stopInstruction.isStop" (click)="unstop(stopInstruction);">
             <a>
               <span translate>workflow.button.unstop</span>
             </a>
           </li>
         </ul>
         <ul nz-menu *ngIf="job">
-          <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && !job.predicate && (!job.isSkip)" (click)="skip(job);">
+          <li nz-menu-item *ngIf="permission.currentController && permission.currentController.orders.managePositions && !job.predicate && (!job.isSkip)" (click)="skip(job);">
             <a>
               <span translate>workflow.button.skip</span>
             </a>
           </li>
-          <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && job.isSkip" (click)="unskip(job);">
+          <li nz-menu-item *ngIf="permission.currentController && permission.currentController.orders.managePositions && job.isSkip" (click)="unskip(job);">
             <a>
               <span translate>workflow.button.unskip</span>
             </a>
           </li>
-          <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && !job.isStop" (click)="stop(job);">
+          <li nz-menu-item *ngIf="permission.currentController && permission.currentController.orders.managePositions && !job.isStop" (click)="stop(job);">
             <a>
               <span translate>workflow.button.stop</span>
             </a>
           </li>
-          <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && job.isStop" (click)="unstop(job);">
+          <li nz-menu-item *ngIf="permission.currentController && permission.currentController.orders.managePositions && job.isStop" (click)="unstop(job);">
             <a>
               <span translate>workflow.button.unstop</span>
             </a>
@@ -145,6 +145,11 @@
           </li>
           <li nz-menu-item (click)="coreService.showDocumentation(job.documentationName, preferences)" [nzDisabled]="!job.documentationName" *ngIf="job.jobName">
             <a translate>common.button.viewDocumentation</a>
+          </li>
+          <li nz-menu-item *ngIf="job && permission.currentController && permission.currentController.orders.view" (click)="viewHistory(job)">
+            <a>
+              <span translate>common.button.viewHistory</span>
+            </a>
           </li>
         </ul>
       </nz-dropdown-menu>

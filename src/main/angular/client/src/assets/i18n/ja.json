@@ -1404,6 +1404,7 @@
     "label.plannedTime": "予定時間",
     "label.orderHistory": "オーダー履歴",
     "label.taskHistory": "タスク履歴",
+    "label.jobHistory": "Job History",
     "label.criticality": "重大度",
     "label.returnCode": "リターンコード",
     "label.submitted": "登録",

@@ -723,14 +723,14 @@ export class WorkflowService {
     }
   }
 
-  convertTryToRetry(mainJson: any, cb: any, jobs = {}, countObj): void {
+  convertTryToRetry(mainJson: any, cb: any, jobs = {}, countObj, isSkip = false): void {
     const self = this;
     const jobMap = new Map();
 
     function recursive(json: any, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
-          if (!cb) {
+          if (!cb || isSkip) {
             json.instructions[x].id = ++countObj.count;
             if (json.instructions[x].TYPE === 'ImplicitEnd' && (json.TYPE || parent)) {
               if (json.TYPE === 'ForkList') {

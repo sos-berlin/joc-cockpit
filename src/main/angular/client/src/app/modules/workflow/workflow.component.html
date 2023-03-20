@@ -453,9 +453,11 @@
                       </td>
                       <td>
                         <span class="show-in-single-line">
-                          <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                          <i *ngIf="!workflow.show" class="cursor fa fa-angle-double-down _600" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="workflow.isExpand = true;showPanelFuc(workflow)"></i>
+                          <i *ngIf="workflow.show" class="cursor fa fa-angle-double-up _600" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;hidePanelFuc(workflow)"></i>
+                          <i class="cursor fa fa-caret-down fa-lg p-l-xxs"
                              *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
-                          <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="workflow.show"
+                          <i class="cursor fa fa-caret-up fa-lg p-l-xxs " *ngIf="workflow.show"
                              (click)="hidePanelFuc(workflow)"></i>
                           <i *ngIf="permission.currentController && permission.currentController.orders.create && workflow.isCurrentVersion && workflow.state._text !== 'NOT_IN_SYNC'" class="cursor fa fa-plus p-l-xs"
                              [nz-tooltip]="'workflow.button.addOrder' | translate" (click)="addOrder(workflow)"></i>
@@ -523,7 +525,7 @@
                     <ng-container *ngIf="workflow.show && workflow.fileOrderSources && workflow.fileOrderSources.length>0">
                       <tr>
                         <td class="menu"></td>
-                        <td [colSpan]="!workflowFilters.isCompact ? 16 : 5" style="padding:0 !important;">
+                        <td [colSpan]="!workflowFilters.isCompact ? 17 : 5" style="padding:0 !important;">
                           <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
                                     [nzData]="workflow.fileOrderSources" [nzShowPagination]="false" [nzFrontPagination]="false">
                             <thead>
@@ -571,7 +573,7 @@
                       </tr>
                     </ng-container>
                     <tr *ngIf="workflow.show">
-                      <td colspan="16">
+                      <td colspan="17">
                         <div class="m-a-sm">
                           <div class="hover" >
                             <a class="text-primary noExl" translate >workflow.label.start</a>
@@ -580,7 +582,7 @@
                               <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;"></i>
                             </span>
                           </div>
-                          <app-type [timezone]="workflow.configuration.timeZone" [workflowObj]="{path: workflow.configuration.path, versionId: workflow.configuration.versionId}" [configuration]="workflow.configuration" [orderReload]="workflow.orderReload" [jobs]="workflow.configuration.jobs" [orderPreparation]="workflow.configuration.orderPreparation" [permission]="permission" [preferences]="preferences"
+                          <app-type (onClick)="viewHistory($event)" [timezone]="workflow.configuration.timeZone" [workflowObj]="{path: workflow.configuration.path, versionId: workflow.configuration.versionId}" [configuration]="workflow.configuration" [orderReload]="workflow.orderReload" [jobs]="workflow.configuration.jobs" [orderPreparation]="workflow.configuration.orderPreparation" [permission]="permission" [preferences]="preferences"
                                     [schedulerId]="schedulerIds.selected" [expandAll]="workflow.isExpand"
                                     (update)="updatePanelHeight()" (isChanged)="changedHandler($event)" (isProcessing)="processingHandler($event)" [orders]="workflow.orders"></app-type>
                         </div>
@@ -616,7 +618,7 @@
                     </ul>
                   </div>
                   <div class="box-body p-t-0 b-t">
-                    <app-workflow-history [workflow]="{name: showPanel.name, path: showPanel.path}"></app-workflow-history>
+                    <app-workflow-history [jobName]="showPanel.jobName" [workflow]="{name: showPanel.name, path: showPanel.path}"></app-workflow-history>
                   </div>
                 </div>
               </div>

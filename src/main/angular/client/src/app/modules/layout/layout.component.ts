@@ -168,7 +168,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
             let timeZone = '';
             if (res.configurations[0] && res.configurations[0].configurationItem) {
               const configuration = JSON.parse(res.configurations[0].configurationItem);
-              timeZone = configuration?.dailyplan.time_zone?.value;
+              timeZone = configuration?.dailyplan?.time_zone?.value;
               if (configuration?.joc) {
                 flag = configuration.joc.disable_warning_on_license_expiration;
               }

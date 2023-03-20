@@ -29,6 +29,7 @@ export class TypeComponent implements OnChanges {
   @Output() update: EventEmitter<any> = new EventEmitter();
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
   @Output() isProcessing: EventEmitter<boolean> = new EventEmitter();
+  @Output() onClick: EventEmitter<any> = new EventEmitter();
 
   sideBar: any = {};
   isFirst = false;
@@ -457,6 +458,10 @@ export class TypeComponent implements OnChanges {
     }
   }
 
+  viewHistory(instruction): void{
+    this.onClick.emit({jobName: instruction.jobName, path: this.workflowObj.path});
+  }
+
   getObstacles(order): void {
     if (order.state._text === 'INPROGRESS' && !order.obstacles) {
       order.obstacles = [];
@@ -527,7 +532,7 @@ export class TypeComponent implements OnChanges {
   }
 
   @HostListener('window:click', ['$event'])
-  onClick(event): void {
+  onClicked(event): void {
     if (event) {
       if (event.target.getAttribute('data-id-x')) {
         this.coreService.navToInventoryTab(event.target.getAttribute('data-id-x'), 'NOTICEBOARD');

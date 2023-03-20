@@ -1,11 +1,11 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
+  ElementRef, EventEmitter,
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
+  OnInit, Output,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
@@ -128,7 +128,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
       this.workFlowJson = this.coreService.clone(this.workflow);
       this.workflowService.convertTryToRetry(this.workFlowJson, (jobMap)=>{
         this.jobMap = jobMap;
-      }, this.workflow.jobs, {count: 0});
+      }, this.workflow.jobs, {count: 0}, true);
       this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
       this.workFlowJson.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
       this.workFlowJson.consumeNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'consumeNoticeBoards');
@@ -213,6 +213,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   @Input() recursiveCals: any;
   @Input() jobMap: any;
   @Input() workflowObjects: any;
+  @Output() onClick: EventEmitter<any> = new EventEmitter();
 
   loading: boolean = false;
   order: any;
@@ -1520,6 +1521,11 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         nzMaskClosable: !!argu.noticeNames
       });
     }
+  }
+
+  viewHistory(job): void{
+
+    this.onClick.emit({jobName: job.jobName});
   }
 
   getObstacles(order, cell): void {
