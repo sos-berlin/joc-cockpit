@@ -173,10 +173,13 @@
           </div>
         </span>
       </div>
-      <div id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'ForkListEnd'" class="m-l-n-40"
+      <div id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'ForkListEnd' || instruction.TYPE === 'CycleEnd'" class="m-l-n-40"
         [ngClass]="{'drop-area': instruction.enabled}">
         <span class="inst-text _600" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}" *ngIf="instruction.TYPE === 'ForkListEnd'">{{'workflow.label.forkListEnd' |
             translate}}
+        </span>
+        <span class="inst-text _600" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}" *ngIf="instruction.TYPE === 'CycleEnd'">{{'workflow.label.cycleEnd' |
+          translate}}
         </span>
         <span class="m-l-md" *ngIf="instruction.order">
           <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">

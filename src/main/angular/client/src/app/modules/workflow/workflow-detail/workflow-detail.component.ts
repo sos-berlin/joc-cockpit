@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {sortBy} from 'underscore';
@@ -66,6 +66,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     {date: '7d', text: 'nextWeak'}
   ];
 
+
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
               public workflowService: WorkflowService, public modal: NzModalService, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
@@ -114,6 +115,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   changedHandler(flag: boolean): void {
     this.isProcessing = flag;
+  }
+
+  viewHistory(data): any{
+    this.workFlowJson.jobName = data.jobName;
+    this.scrollBottom()
   }
 
   private resetAction(time = 100): void {
@@ -469,7 +475,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           this.workFlowJson = res.workflow;
           this.workflowService.convertTryToRetry(res.workflow, (jobMap)=>{
             this.jobMap = jobMap;
-          }, res.workflow.jobs, this.countObj);
+          }, res.workflow.jobs, this.countObj, true);
           this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
           if (res.workflow.hasExpectedNoticeBoards || res.workflow.hasConsumeNoticeBoards || res.workflow.hasPostNoticeBoards || res.workflow.hasAddOrderDependencies) {
             this.showDependency(res.workflow, flag);
@@ -479,7 +485,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         } else {
           this.workflowService.convertTryToRetry(res.workflow, (jobMap)=>{
             this.jobMap = jobMap;
-          }, {}, {count: 0});
+          }, {}, {count: 0}, true);
           this.workflowService.compareAndMergeInstructions(this.workFlowJson.instructions, res.workflow.instructions);
           setTimeout(() => {
             this.isReload = true;

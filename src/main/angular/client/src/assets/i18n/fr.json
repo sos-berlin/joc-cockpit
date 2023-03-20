@@ -1404,6 +1404,7 @@
     "label.plannedTime": "Heure prévue",
     "label.orderHistory": "Historique des Ordres",
     "label.taskHistory": "Historique des Tâches",
+    "label.jobHistory": "Job History",
     "label.criticality": "Criticité",
     "label.returnCode": "Code Retour",
     "label.submitted": "Soumis",

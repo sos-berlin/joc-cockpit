@@ -1404,6 +1404,7 @@
     "label.plannedTime": "Planned Time",
     "label.orderHistory": "Order History",
     "label.taskHistory": "Task History",
+    "label.jobHistory": "Job History",
     "label.criticality": "Criticality",
     "label.returnCode": "Return Code",
     "label.submitted": "Submitted",

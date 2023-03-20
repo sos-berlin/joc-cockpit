@@ -133,6 +133,55 @@
       </nz-table>
     </div>
   </nz-tab>
+  <nz-tab *ngIf="jobName && permission.currentController && permission.currentController.orders.view" [nzTitle]="titleTemplate" (nzClick)="loadJobHistory()">
+    <ng-template #titleTemplate>
+      <span translate>history.label.jobHistory</span>
+      <span class="text-muted p-l-xs">({{jobName}})</span>
+    </ng-template>
+    <div class="table-responsive">
+      <nz-table
+        #jobHistoryTable
+        [nzSize]="'small'"
+        [nzBordered]="true"
+        [nzFrontPagination]="false"
+        [nzShowPagination]="false"
+        [nzData]="jobHistory"
+      >
+        <thead>
+        <tr>
+          <th><span translate>history.label.position</span></th>
+          <th><span translate>history.label.status</span></th>
+          <th><span translate>history.label.startTime</span></th>
+          <th><span translate>history.label.endTime</span></th>
+          <th><span translate>history.label.duration</span></th>
+          <th><span translate>history.label.criticality</span></th>
+          <th><span translate>history.label.returnCode</span></th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-template ngFor let-history [ngForOf]="jobHistoryTable.data | orderBy: 'startTime':true">
+          <tr (click)="coreService.showLogWindow(null, history, null, history.controllerId, null)" class="cursor">
+            <td [innerHtml]="history.position"></td>
+            <td>
+            <span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')"
+                  [innerHtml]="history.state._text | translate"></span>
+            </td>
+            <td [innerHtml]="history.startTime | stringToDate"></td>
+            <td [innerHtml]="history.endTime | stringToDate"></td>
+            <td [innerHtml]="history.startTime | duration:history.endTime"></td>
+            <td [innerHtml]="history.criticality | translate"></td>
+            <td [innerHtml]="history.exitCode"></td>
+          </tr>
+          <tr *ngIf="history.show">
+            <td colspan="8">
+              <app-order-variable [order]="history" [type]="'arguments'" [history]="true" [schedulerId]="schedulerIds.selected"></app-order-variable>
+            </td>
+          </tr>
+        </ng-template>
+        </tbody>
+      </nz-table>
+    </div>
+  </nz-tab>
   <nz-tab *ngIf="(permission.joc && permission.joc.auditLog.view)" [nzTitle]="'auditLog.label.auditLog' | translate" (nzClick)="loadAuditLogs()">
     <div class="table-responsive ">
       <nz-table

@@ -1,4 +1,14 @@
-import {Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from "@angular/router";
 import {CoreService} from '../../../services/core.service';
@@ -49,14 +59,18 @@ export class WorkflowTemplateComponent {
 })
 export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   @Input() workflow: any;
+  @Input() jobName: any;
+  @Output() onClick: EventEmitter<any> = new EventEmitter();
   index = 0;
   loading = true;
+  isCalled = false;
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
   auditLogs: any = [];
   orderHistory: any = [];
   taskHistory: any = [];
+  jobHistory: any = [];
   subscription: Subscription;
 
   constructor(public coreService: CoreService, private authService: AuthService,
@@ -72,6 +86,9 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     if (changes.workflow && this.schedulerIds.selected) {
       this.init();
     }
+    if (changes.jobName && this.isCalled) {
+      this.index = 2;
+    }
   }
 
   ngOnInit(): void {
@@ -80,6 +97,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
+
     this.init();
   }
 
@@ -106,9 +124,14 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
         } else if ((args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' || args.eventSnapshots[j].eventType === 'HistoryTaskStarted' || args.eventSnapshots[j].eventType === 'HistoryTaskUpdated') && this.index == 1) {
           this.loadTaskHistory();
           break;
-        } else if (args.eventSnapshots[j].eventType === 'WorkflowAuditLogChanged' && this.index == 2) {
+        } else if (args.eventSnapshots[j].eventType === 'WorkflowAuditLogChanged' && ((this.jobName && this.index == 3) || (!this.jobName && this.index == 2))) {
           if (args.eventSnapshots[j].workflow && args.eventSnapshots[j].workflow.path === this.workflow.path) {
             this.loadAuditLogs();
+            break;
+          }
+        } else if ((args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' || args.eventSnapshots[j].eventType === 'HistoryTaskStarted' || args.eventSnapshots[j].eventType === 'HistoryTaskUpdated') && ((this.jobName && this.index == 2))) {
+          if (args.eventSnapshots[j].workflow && args.eventSnapshots[j].workflow.path === this.workflow.path) {
+            this.loadJobHistory();
             break;
           }
         }
@@ -122,8 +145,13 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     } else if (this.index === 1) {
       this.loadTaskHistory();
     } else if (this.index === 2) {
-      this.loadAuditLogs();
+      if (this.jobName) {
+        this.loadJobHistory();
+      } else {
+        this.loadAuditLogs();
+      }
     }
+    this.isCalled = true;
   }
 
   loadOrderHistory(): void {
@@ -217,6 +245,18 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     };
     this.coreService.post('tasks/history', obj).subscribe((res: any) => {
       this.taskHistory = res.history;
+    });
+  }
+
+  loadJobHistory(): void {
+    let obj = {
+      controllerId: this.schedulerIds.selected,
+      jobs: [{workflowPath: this.workflow.name, job: this.workflow.jobName}],
+      limit: this.preferences.maxHistoryPerTask
+    };
+
+    this.coreService.post('tasks/history', obj).subscribe((res: any) => {
+      this.jobHistory = res.history;
     });
   }
 

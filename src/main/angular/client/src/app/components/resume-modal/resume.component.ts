@@ -26,6 +26,8 @@ export class ResumeOrderModalComponent implements OnInit {
   constants = [];
   allowVariable = true;
   withCyclePosition = false;
+  dateFormat: any;
+  zones = [];
   object = {
     setOfCheckedValue: new Set(),
     checked: false,
@@ -38,6 +40,9 @@ export class ResumeOrderModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.display = this.preferences.auditLog;
+    this.zones = this.coreService.getTimeZoneList();
+    this.order.timeZone = this.preferences.zone;
+    this.order.at = 'now';
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
@@ -47,7 +52,6 @@ export class ResumeOrderModalComponent implements OnInit {
       this.order = this.orders.values().next().value;
     }
     this.order.timeZone = this.preferences.zone;
-    this.order.fromTime = new Date();
     if (!this.order.positionString) {
       this.order.positionString = '0';
     }
@@ -149,6 +153,8 @@ export class ResumeOrderModalComponent implements OnInit {
           if (json.instructions[x].TYPE === 'ImplicitEnd' && (json.TYPE || parent)) {
             if (json.TYPE === 'ForkList') {
               json.instructions[x].TYPE = 'ForkListEnd';
+            } else if (json.TYPE === 'Cycle') {
+              json.instructions[x].TYPE = 'CycleEnd';
             } else if (parent) {
               let arr = [];
               if (map.has(parent.positionString)) {
@@ -333,8 +339,19 @@ export class ResumeOrderModalComponent implements OnInit {
     }
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    if (this.withCyclePosition && this.order.cycleEndTime) {
-      obj.cycleEndTime = this.workflowService.convertStringToDuration(this.order.cycleEndTime, true);
+    if (this.withCyclePosition) {
+      //  obj.cycleEndTime = this.workflowService.convertStringToDuration(this.order.cycleEndTime, true);
+      if (this.order.at === 'later') {
+        if (this.order.atTime) {
+          obj.cycleEndTime = 'now + ' + this.order.atTime;
+        }
+      } else {
+        if (this.order.fromDate) {
+          this.coreService.getDateAndTime(this.order);
+          obj.cycleEndTime = this.coreService.getDateByFormat(this.order.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
+          obj.timeZone = this.order.timeZone;
+        }
+      }
     }
     this.coreService.post('orders/resume', obj).subscribe({
       next: () => {
@@ -530,4 +547,7 @@ export class ResumeOrderModalComponent implements OnInit {
     recursive(this.workflow.configuration);
   }
 
+  selectTime(time, isEditor = false): void {
+    this.coreService.selectTime(time, isEditor, this.order);
+  }
 }
