@@ -1524,7 +1524,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   }
 
   viewHistory(job): void{
-
     this.onClick.emit({jobName: job.jobName});
   }
 

@@ -88,6 +88,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     }
     if (changes.jobName && this.isCalled) {
       this.index = 2;
+      this.loadJobHistory();
     }
   }
 
@@ -97,7 +98,9 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
-
+    if (this.jobName) {
+      this.index = 2;
+    }
     this.init();
   }
 
@@ -251,12 +254,16 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   loadJobHistory(): void {
     let obj = {
       controllerId: this.schedulerIds.selected,
-      jobs: [{workflowPath: this.workflow.name, job: this.workflow.jobName}],
+      jobs: [{workflowPath: this.workflow.name, job: this.jobName}],
       limit: this.preferences.maxHistoryPerTask
     };
 
-    this.coreService.post('tasks/history', obj).subscribe((res: any) => {
-      this.jobHistory = res.history;
+    this.coreService.post('tasks/history', obj).subscribe({
+      next: (res: any) => {
+        this.jobHistory = res.history;
+      }, error: () => {
+        this.jobHistory = [];
+      }
     });
   }
 

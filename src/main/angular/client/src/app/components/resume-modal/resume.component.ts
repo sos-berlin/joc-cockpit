@@ -457,7 +457,10 @@ export class ResumeOrderModalComponent implements OnInit {
     list.splice(index, 1);
   }
 
-  onKeyPress($event): void {
+  onKeyPress($event, argument): void {
+    if (argument.name && argument.value) {
+      this.onItemChecked(argument, true);
+    }
     if ($event.which === '13' || $event.which === 13) {
       $event.preventDefault();
       this.addArgument();

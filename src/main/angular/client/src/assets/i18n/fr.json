@@ -532,6 +532,7 @@
     "button.unassignDocumentation": "Disscocier la Documentation",
     "button.viewDocumentation": "Voir la Documentation",
     "button.viewHistory": "Afficher l'Historique",
+    "button.showHistory": "Show History",
     "placeholder.search": "Filtrer les résultats",
     "placeholder.name": "Nom",
     "placeholder.value": "Valeur",
