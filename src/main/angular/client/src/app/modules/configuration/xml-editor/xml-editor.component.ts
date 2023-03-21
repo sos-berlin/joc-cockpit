@@ -1553,7 +1553,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             this.submitXsd = false;
           }
           this.recreateJsonFlag = res.recreateJson;
-          if (!res.recreateJson) {
+          if (!res.recreateJson && jsonArray.node) {
             this.nodes = jsonArray.node;
             this.counting = clone(jsonArray.nodesCount);
           } else {
@@ -1561,11 +1561,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             this.counting = jsonArray.lastUuid;
             this.nodes = a;
           }
-          this.isLoading = false;
-          this.selectedNode = this.nodes[0];
-          this.getIndividualData(this.selectedNode, undefined);
-          this.selectedNodeDoc = this.checkText(this.nodes[0]);
-          this.printArraya(false);
+          if (this.nodes) {
+            this.isLoading = false;
+            this.selectedNode = this.nodes[0];
+            this.getIndividualData(this.selectedNode, undefined);
+            this.selectedNodeDoc = this.checkText(this.nodes[0]);
+            this.printArraya(false);
+          }
+
         } else if (res.configuration) {
           if (!this.ok(res.configuration)) {
             this.nodes = [];

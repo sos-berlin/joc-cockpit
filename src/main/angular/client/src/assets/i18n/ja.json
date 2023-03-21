@@ -532,6 +532,7 @@
     "button.unassignDocumentation": "割当ドキュメントを解除",
     "button.viewDocumentation": "ドキュメント表示",
     "button.viewHistory": "履歴表示",
+    "button.showHistory": "Show History",
     "placeholder.search": "検索",
     "placeholder.name": "名称",
     "placeholder.value": "値",

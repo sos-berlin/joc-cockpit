@@ -239,6 +239,7 @@
                       <span
                         *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan">{{node.origin.name}}</span>
                     </span>
+                    <i *ngIf="node.origin.repoControlled && !node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan" class="fa fa-github p-l-xs" aria-hidden="true"></i>
                   </div>
                 </div>
               </ng-template>

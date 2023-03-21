@@ -93,7 +93,7 @@
           <div class="col-md-6 col-lg-6 m-b-sm"
                [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
             <input #value="ngModel" autocomplete="off" type="text"
-                   class="form-control" name="value{{i}}" (keydown)="onKeyPress($event)"
+                   class="form-control" name="value{{i}}" (keydown)="onKeyPress($event, argument)"
                    [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
             <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline"
                (click)="openEditor(argument)"></i>

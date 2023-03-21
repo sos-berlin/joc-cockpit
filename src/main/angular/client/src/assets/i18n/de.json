@@ -532,6 +532,7 @@
     "button.unassignDocumentation": "Zuweisung der Dokumentation entfernen",
     "button.viewDocumentation": "Dokumentation anzeigen",
     "button.viewHistory": "Historie anzeigen",
+    "button.showHistory": "Show History",
     "placeholder.search": "Ergebnisse filtern",
     "placeholder.name": "Name",
     "placeholder.value": "Wert",
