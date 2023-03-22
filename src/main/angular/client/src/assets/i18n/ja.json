@@ -1751,6 +1751,7 @@
     "message.deleteCurrentDraftObject": "オブジェクトを消去しようとしています、このまま続けますか？",
     "message.noObjectFoundToRelease": "リリースできるオブジェクトはありません",
     "message.updateFromJobTemplate": "本当にジョブテンプレートから更新しますか？",
+    "message.localChangesWillBeOverwritten": "All the local changes will be overwritten by this action",
     "cronTab": {
       "label.convertCron": "crontab変換",
       "label.folder": "フォルダー",
@@ -2678,7 +2679,8 @@
       "log_maximum_display_size": "JOCコックピットは、非圧縮ログ出力のサイズがこの値を超えない場合、ログビューウィンドウで表示するためにログ出力を提供します。それ以外の場合は、ログをダウンロードするためにのみ提供されます。",
       "log_applicable_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、最初と最後の100KBをタスクログに使用します。元のログファイルは削除されます。",
       "log_maximum_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、タスクログ用に最初の100KBを使用します。オリジナルのログファイルは削除されます。",
-      "joc_reverse_proxy_url": "JOCコックピットが本来のURLからではなく、リバースプロキシサービスからしかアクセスできない場合、この値は、例えばメール通知で使用されるURLを指定します。"
+      "joc_reverse_proxy_url": "JOCコックピットが本来のURLからではなく、リバースプロキシサービスからしかアクセスできない場合、この値は、例えばメール通知で使用されるURLを指定します。",
+      "allow_empty_arguments": "Allow empty arguments"
     },
     "user": {
       "welcome_got_it": "了解",

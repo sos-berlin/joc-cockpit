@@ -781,6 +781,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if (this.workflowFilters.expandedObjects && this.workflowFilters.expandedObjects.length > 0 &&
             this.workflowFilters.expandedObjects.indexOf(path) > -1) {
             this.showPanelFuc(res.workflows[i], false);
+            setTimeout(() => {
+              const elem = document.getElementById(res.workflows[i].path);
+              if (elem) {
+                elem.scrollIntoView({block: 'center'});
+              }
+            }, 10)
+
             request.workflowIds.push({path, versionId: res.workflows[i].versionId});
           } else {
             request2.workflowIds.push({path, versionId: res.workflows[i].versionId});
@@ -801,6 +808,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         } else if (panelObj) {
           this.showPanelFunc(panelObj);
         }
+        this.workflowFilters.expandedObjects = [];
         this.loading = false;
         this.workflows = res.workflows;
         this.workflows = this.orderPipe.transform(this.workflows, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
