@@ -442,7 +442,7 @@
                   <tbody>
                   <ng-template ngFor let-workflow
                                [ngForOf]="ajaxTable.data">
-                    <tr [ngClass]="{'light-bg':workflow.show}">
+                    <tr id="{{workflow.path}}" [ngClass]="{'light-bg':workflow.show}">
 			                <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(workflow.path)"
                           (nzCheckedChange)="onItemChecked(workflow,$event)"></td>
                       <td>

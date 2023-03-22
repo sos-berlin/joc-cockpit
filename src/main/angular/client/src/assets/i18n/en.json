@@ -1751,6 +1751,7 @@
     "message.deleteCurrentDraftObject": "Your are about to replace the draft. Are you sure you want to continue?",
     "message.noObjectFoundToRelease": "No releasable object found",
     "message.updateFromJobTemplate": "Are you sure you want to update the job from the Job Template?",
+    "message.localChangesWillBeOverwritten": "All the local changes will be overwritten by this action",
     "cronTab": {
       "label.convertCron": "Convert crontab",
       "label.folder": "Folder",
@@ -2678,7 +2679,8 @@
       "log_maximum_display_size": "JOC Cockpit offers log output for display with the Log View window if the size of uncompressed log output does not exceed this value. Otherwise the log is offered for download only. The size is assumed in MB.",
       "log_applicable_size": "If this value for the size of a job's log output is exceeded then the History Service will truncate the log output and will use the first and last 100 KB for the task log. The original log file will be removed. The size is assumed in MB.",
       "log_maximum_size": "If this value for the size of a job's log output is exceeded then the History Service will truncate the log output and will use the first 100 KB for the task log. The original log file will be removed. The size is assumed in MB.",
-      "joc_reverse_proxy_url": "If JOC Cockpit is not accessible from its original URL but from a reverse proxy service only then this value specifies the URL to be used, for example with e-mail notifications."
+      "joc_reverse_proxy_url": "If JOC Cockpit is not accessible from its original URL but from a reverse proxy service only then this value specifies the URL to be used, for example with e-mail notifications.",
+      "allow_empty_arguments": "Allow empty arguments"
     },
     "user": {
       "welcome_got_it": "Specifies that the welcome window that offers defaults and examples for download should no longer be displayed.",

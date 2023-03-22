@@ -17,6 +17,9 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a min-ht-150">
     <div>
+      <div class="font14" *ngIf="operation === 'update' && category !== 'LOCAL' && nodes.length > 0">
+        {{'inventory.message.localChangesWillBeOverwritten' | translate}}
+      </div>
       <div class="hide" [ngClass]="{'show': display && nodes.length > 0}">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
       </div>
