@@ -130,8 +130,8 @@
                 <tr *ngFor="let data of calendar.configuration.includesFrequency;let i = index;"
                     [ngClass]="{'hide':editor.frequencyType !=='INCLUDE'}">
                   <td class="cursor ver-top">
-                    <a *ngIf="!isTrash && permission.joc.inventory.manage && data.tab !=='every'" (click)="updateFrequency(data);">{{data.str}}</a>
-                    <a *ngIf="isTrash || !permission.joc.inventory.manage || data.tab=='every'">{{data.str}}</a>
+                    <a *ngIf="!isTrash && permission.joc.inventory.manage" (click)="updateFrequency(data);">{{data.str}}</a>
+                    <a *ngIf="isTrash || !permission.joc.inventory.manage">{{data.str}}</a>
                   </td>
                   <td>
                     <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1}}</span>

@@ -534,7 +534,7 @@ export class CycleInstructionComponent implements OnChanges {
       }
       if (flag1) {
         if (!this.selectedNode.isEdit) {
-          if(this.selectedNode.obj.addNewFreq) {
+          if(!this.selectedNode.obj.addNewFreq) {
             this.selectedNode.obj.schedule.schemes.push({
               repeat: this.workflowService.convertRepeatObject(this.selectedNode.repeatObject),
               admissionTimeScheme: this.selectedNode.data.schedule.admissionTimeScheme

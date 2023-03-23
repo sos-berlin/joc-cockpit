@@ -203,6 +203,76 @@
             </div>
           </div>
           <div class="hide" [ngClass]="{'show': isLoading}">
+            <div class="box p-t-6 p-b-6 text-overflow m-b-12">
+              <div class="table-responsive">
+                <table class="w-full">
+                  <tr class="text-center">
+                    <td [width]="'10%'">
+                      <div translate>common.label.pending</div>
+                    </td>
+                    <td [width]="'10%'">
+                      <div translate>common.label.scheduled</div>
+                    </td>
+                    <td [width]="'10%'">
+                      <div translate>common.label.incomplete</div>
+                    </td>
+                    <td [width]="'10%'">
+                      <div translate>common.label.running</div>
+                    </td>
+                    <td [width]="'10%'">
+                      <div translate>common.label.suspended</div>
+                    </td>
+                    <td [width]="'10%'">
+                      <div translate>common.label.completed</div>
+                    </td>
+                    <td [width]="'10%'">
+                      <div translate>common.label.prompting</div>
+                    </td>
+                    <td [width]="'10%'">
+                      <div translate>common.label.waiting</div>
+                    </td>
+                    <td [width]="'10%'">
+                      <div translate>common.label.blocked</div>
+                    </td>
+                    <td [width]="'10%'">
+                      <div translate>common.label.failed</div>
+                    </td>
+                  </tr>
+                  <tr class="text-center">
+                    <td [width]="'10%'" style="padding:0 !important;">
+                      <span class="text-16 _600 " [ngClass]="{'light-yellow' : numOfAllOrders.pending > 0}" [innerHtml]="numOfAllOrders.pending || 0"></span>
+                    </td>
+                    <td [width]="'10%'" style="padding:0 !important;">
+                      <span class="text-16 _600" [ngClass]="{'gold' : numOfAllOrders.scheduled > 0}" [innerHtml]="numOfAllOrders.scheduled || 0"></span>
+                    </td>
+                    <td [width]="'10%'" style="padding:0 !important;">
+                      <span class="text-16 _600" [ngClass]="{'light-blue' : numOfAllOrders.inProgress > 0}" [innerHtml]="numOfAllOrders.inProgress || 0"></span>
+                    </td>
+                    <td [width]="'10%'" style="padding:0 !important;">
+                      <span class="text-16 _600" [ngClass]="{'green' : numOfAllOrders.running > 0}" [innerHtml]="numOfAllOrders.running || 0"></span>
+                    </td>
+                    <td [width]="'10%'" style="padding:0 !important;">
+                      <span class="text-16 _600" [ngClass]="{'orange' : numOfAllOrders.suspended > 0}" [innerHtml]="numOfAllOrders.suspended || 0"></span>
+                    </td>
+                    <td [width]="'10%'" style="padding:0 !important;">
+                      <span class="text-16 _600" [ngClass]="{'dark-blue' : numOfAllOrders.terminated > 0}" [innerHtml]="numOfAllOrders.terminated || 0"></span>
+                    </td>
+                    <td [width]="'10%'" style="padding:0 !important;">
+                      <span class="text-16 _600 " [ngClass]="{'light-green' : numOfAllOrders.prompting > 0}" [innerHtml]="numOfAllOrders.prompting || 0"></span>
+                    </td>
+                    <td [width]="'10%'" style="padding:0 !important;">
+                      <span class="text-16 _600" [ngClass]="{'yellow-green' : numOfAllOrders.waiting > 0}" [innerHtml]="numOfAllOrders.waiting || 0"></span>
+                    </td>
+                    <td [width]="'10%'" style="padding:0 !important;">
+                      <span class="text-16 _600" [ngClass]="{'mangenta' : numOfAllOrders.blocked > 0}" [innerHtml]="numOfAllOrders.blocked || 0"></span>
+                    </td>
+                    <td [width]="'10%'" style="padding:0 !important;">
+                      <span class="text-16 _600" [ngClass]="{'red' : numOfAllOrders.failed > 0}" [innerHtml]="numOfAllOrders.failed || 0"></span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
             <div class="row" *ngIf="pageView=='grid' && data.length>0" [hidden]="loading">
               <div class="w-full" *ngFor="let item of data | groupBy: 'path1'">
                 <div class="col-sm-12 m-b-10">
@@ -306,7 +376,7 @@
             </div>
             <div class="box p-a m-t-xs m-b-0" *ngIf="pageView!=='grid' && tree.length > 0">
               <perfect-scrollbar appResizable class="resizable pos-init" [height]="resizerHeight"
-                   [type]="'workflow'" [path]="currentPath" id="workflowTableId">
+                   [type]="'workflow'" [path]="currentPath" id="workflowTableId" (psScrollY)="scrollEnd($event)">
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"
@@ -323,7 +393,7 @@
                 >
                   <thead>
                   <tr>
-        	    <th class="chk" [nzShowCheckbox]="true" [(nzChecked)]="object.checked"
+        	          <th class="chk" [nzShowCheckbox]="true" [(nzChecked)]="object.checked"
                         [nzIndeterminate]="object.indeterminate" (nzCheckedChange)="checkAll($event)" rowspan="2"></th>
                     <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
                     <th [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" (click)="sort('name')" rowspan="2">
@@ -442,7 +512,7 @@
                   <tbody>
                   <ng-template ngFor let-workflow
                                [ngForOf]="ajaxTable.data">
-                    <tr id="{{workflow.path}}" [ngClass]="{'light-bg':workflow.show}">
+                    <tr [ngClass]="{'light-bg':workflow.show}">
 			                <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(workflow.path)"
                           (nzCheckedChange)="onItemChecked(workflow,$event)"></td>
                       <td>
@@ -572,7 +642,7 @@
                         </td>
                       </tr>
                     </ng-container>
-                    <tr *ngIf="workflow.show">
+                    <tr id="{{workflow.path + workflow.versionId}}" *ngIf="workflow.show">
                       <td colspan="17">
                         <div class="m-a-sm">
                           <div class="hover" >

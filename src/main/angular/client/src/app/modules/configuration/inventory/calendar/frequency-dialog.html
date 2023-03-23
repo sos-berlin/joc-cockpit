@@ -290,7 +290,7 @@
                   <div class="col-sm-6 p-l-0">
                     <div class="col-sm-12 p-l-0"
                          *ngFor="let holiday of holidayList.slice(0,Math.floor(holidayList.length/2));let i=index">
-                       <label nz-checkbox [nzChecked]="frequency.nationalHoliday.indexOf(holiday.date) > -1" (nzCheckedChange)="onItemChecked(holiday.date, $event)">
+                       <label nz-checkbox [nzChecked]="frequency.nationalHoliday?.indexOf(holiday.date) > -1" (nzCheckedChange)="onItemChecked(holiday.date, $event)">
                          {{getDateFormat(holiday.date)}} <b *ngIf="holiday.name">-</b>
                          {{holiday.name}}
                          <i class="text-muted text-sm p-l-sm" *ngIf="holiday.type">{{holiday.type}}</i>
@@ -300,7 +300,7 @@
                   <div class="col-sm-6 p-l-0">
                     <div class="col-sm-12 p-l-0"
                          *ngFor="let holiday of holidayList.slice(Math.floor(holidayList.length/2),holidayList.length);let i=index">
-                      <label nz-checkbox [nzChecked]="frequency.nationalHoliday.indexOf(holiday.date) > -1" (nzCheckedChange)="onItemChecked(holiday.date, $event)">
+                      <label nz-checkbox [nzChecked]="frequency.nationalHoliday?.indexOf(holiday.date) > -1" (nzCheckedChange)="onItemChecked(holiday.date, $event)">
                          {{getDateFormat(holiday.date)}} <b *ngIf="holiday.name">-</b>
                          {{holiday.name}}
                         <i class="text-muted text-sm p-l-sm" *ngIf="holiday.type">{{holiday.type}}</i>

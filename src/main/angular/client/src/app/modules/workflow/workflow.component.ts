@@ -16,6 +16,7 @@ import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
 import {ExcelService} from '../../services/excel.service';
 import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
+import {PerfectScrollbarComponent} from "../perfect-scrollbar/perfect-scrollbar.component";
 
 declare const $;
 
@@ -87,18 +88,18 @@ export class SearchComponent implements OnInit {
   };
 
   synchronizationStatusOptions = [
-    { label: 'synchronized', value: 'IN_SYNC', checked: false },
-    { label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false }
+    {label: 'synchronized', value: 'IN_SYNC', checked: false},
+    {label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false}
   ];
 
   availabilityStatusOptions = [
-    { label: 'suspended', value: 'SUSPENDED', checked: false },
-    { label: 'outstanding', value: 'OUTSTANDING', checked: false }
+    {label: 'suspended', value: 'SUSPENDED', checked: false},
+    {label: 'outstanding', value: 'OUTSTANDING', checked: false}
   ];
 
   jobAvailabilityStatusOptions = [
-    { label: 'skipped', value: 'SKIPPED', checked: false },
-    { label: 'stopped', value: 'STOPPED', checked: false }
+    {label: 'skipped', value: 'SKIPPED', checked: false},
+    {label: 'stopped', value: 'STOPPED', checked: false}
   ];
 
 
@@ -236,7 +237,7 @@ export class SearchComponent implements OnInit {
     const states = this.statusObj.syncStatus.concat(this.statusObj.availabilityStatus);
     if (states && states.length > 0) {
       this.filter.states = states;
-    } else{
+    } else {
       delete this.filter.states;
     }
     this.onSearch.emit();
@@ -486,6 +487,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   sideBar: any = {};
   reloadState = 'no';
   objectType = 'WORKFLOW';
+  numOfAllOrders: any = {};
   object = {
     mapOfCheckedId: new Map(),
     checked: false,
@@ -496,6 +498,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
+  @ViewChild(PerfectScrollbarComponent) scrollbar?: PerfectScrollbarComponent;
 
   searchableProperties = ['name', 'path', 'versionDate', 'state', '_text'];
 
@@ -539,12 +542,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.workflowFilters.expandedObjects = [];
+    this.workflowFilters.mapObj = new Map();
     const workflows = this.getCurrentData(this.data, this.workflowFilters);
+
     for (const i in workflows) {
       if (workflows[i].show) {
-        this.workflowFilters.expandedObjects.push(workflows[i].path);
+        let key = workflows[i].path + workflows[i].versionId;
+        this.workflowFilters.expandedObjects.push(key);
+        this.workflowFilters.mapObj.set(key, this.getExpandData(workflows[i].configuration));
       }
     }
+
     if (this.child) {
       this.workflowFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.workflowFilters.selectedkeys = this.child.defaultSelectedKeys;
@@ -556,6 +564,58 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.pendingHTTPRequests$.next();
     this.pendingHTTPRequests$.complete();
     $('.scroll-y').remove();
+  }
+
+  private getExpandData(mainJson): any{
+    let expandedPos = new Set<string>();
+    function recursive(json): void {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+
+          if (json.instructions[x].positionString && json.instructions[x].show) {
+            expandedPos.add(json.instructions[x].positionString);
+          }
+
+          if (json.instructions[x].TYPE === 'Fork') {
+            if (json.instructions[x].branches) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                if (json.instructions[x].branches[i].show) {
+                  expandedPos.add(json.instructions[x].positionString + '_branch' + i);
+                }
+                if (json.instructions[x].branches[i].instructions) {
+                  recursive(json.instructions[x].branches[i]);
+                }
+              }
+            }
+          }
+          if (json.instructions[x].instructions) {
+            recursive(json.instructions[x]);
+          }
+
+          if (json.instructions[x].catch) {
+            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+              recursive(json.instructions[x].catch);
+            }
+          }
+          if (json.instructions[x].then && json.instructions[x].then.instructions) {
+            recursive(json.instructions[x].then);
+          }
+          if (json.instructions[x].else) {
+            if (json.instructions[x].else.instructions) {
+              recursive(json.instructions[x].else);
+            }
+          }
+        }
+      }
+    }
+
+    recursive(mainJson);
+
+    return expandedPos;
+  }
+
+  scrollEnd(e): void {
+    this.workflowFilters.scrollTop = $(e.target).scrollTop();
   }
 
   changedHandler(obj: any): void {
@@ -646,7 +706,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).workflow;
     }
-
     this.savedFilter = JSON.parse(this.saveService.workflowFilters) || {};
     if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
       this.checkSharedFilters();
@@ -778,20 +837,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if (!res.workflows[i].ordersSummary) {
             res.workflows[i].ordersSummary = {};
           }
-          if (this.workflowFilters.expandedObjects && this.workflowFilters.expandedObjects.length > 0 &&
-            this.workflowFilters.expandedObjects.indexOf(path) > -1) {
-            this.showPanelFuc(res.workflows[i], false);
-            setTimeout(() => {
-              const elem = document.getElementById(res.workflows[i].path);
-              if (elem) {
-                elem.scrollIntoView({block: 'center'});
-              }
-            }, 10)
 
+          if (this.workflowFilters.expandedObjects && this.workflowFilters.expandedObjects.length > 0 &&
+            this.workflowFilters.expandedObjects.indexOf(path + res.workflows[i].versionId) > -1) {
+            this.showPanelFuc(res.workflows[i], false, this.workflowFilters.mapObj.get(path + res.workflows[i].versionId));
             request.workflowIds.push({path, versionId: res.workflows[i].versionId});
           } else {
             request2.workflowIds.push({path, versionId: res.workflows[i].versionId});
           }
+
           if (this.showPanel && this.showPanel.path === path) {
             flag = false;
             panelObj = this.showPanel;
@@ -803,12 +857,19 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             }
           }
         }
+        setTimeout(() => {
+          if (this.workflowFilters.scrollTop) {
+            this.scrollbar.directiveRef.scrollToY(this.workflowFilters.scrollTop, 100);
+          }
+          this.workflowFilters.scrollTop = 0;
+        }, 10)
         if (flag) {
           this.hidePanel();
         } else if (panelObj) {
           this.showPanelFunc(panelObj);
         }
         this.workflowFilters.expandedObjects = [];
+        this.workflowFilters.mapObj = new Map();
         this.loading = false;
         this.workflows = res.workflows;
         this.workflows = this.orderPipe.transform(this.workflows, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
@@ -1105,7 +1166,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.loadWorkflow();
   }
 
-  showPanelFuc(workflow, flag = true): void {
+  showPanelFuc(workflow, flag = true, setObj?): void {
     if (flag && workflow.numOfOrders > 0) {
       this.getOrders({
         compact: true,
@@ -1115,7 +1176,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     workflow.show = true;
     workflow.configuration = this.coreService.clone(workflow);
-    this.workflowService.convertTryToRetry(workflow.configuration, null, {},{count: 0});
+    this.workflowService.convertTryToRetry(workflow.configuration, null, {}, {count: 0, setObj});
     this.updatePanelHeight();
   }
 
@@ -1399,9 +1460,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     workflows.forEach((workflow) => {
       workflow.show = true;
       workflow.configuration = this.coreService.clone(workflow);
-      this.workflowService.convertTryToRetry(workflow.configuration, null, {}, { count: 0 });
+      this.workflowService.convertTryToRetry(workflow.configuration, null, {}, {count: 0});
       if (workflow.numOfOrders > 0) {
-        workflowIds.push({ path: workflow.path, versionId: workflow.versionId });
+        workflowIds.push({path: workflow.path, versionId: workflow.versionId});
       }
     });
     this.updatePanelHeight();
@@ -1460,7 +1521,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.getOrders({
         compact: true,
         controllerId: this.schedulerIds.selected,
-        workflowIds: [{ path: workflow.path, versionId: workflow.versionId }]
+        workflowIds: [{path: workflow.path, versionId: workflow.versionId}]
       }, () => {
         this.sideBar.loading = false;
       });
@@ -1537,14 +1598,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             } else if (args.eventSnapshots[j].eventType === 'WorkflowUpdated' && (args.eventSnapshots[j].path && this.workflows[i].path === args.eventSnapshots[j].path)) {
               this.coreService.post('workflow', {
                 controllerId: this.schedulerIds.selected,
-                workflowId: { path: this.workflows[i].path, versionId: this.workflows[i].versionId }
+                workflowId: {path: this.workflows[i].path, versionId: this.workflows[i].versionId}
               }).subscribe({
                 next: (res: any) => {
                   this.workflows[i].suspended = res.workflow.suspended;
                   this.workflows[i].state = res.workflow.state;
                   this.workflows[i].jobs = res.workflow.jobs;
                   if (this.workflows[i].show) {
-                    this.workflowService.convertTryToRetry(res.workflow, null, {}, { count: 0 });
+                    this.workflowService.convertTryToRetry(res.workflow, null, {}, {count: 0});
                     this.workflowService.compareAndMergeInstructions(this.workflows[i].configuration.instructions, res.workflow.instructions);
                   }
                 }
@@ -1606,6 +1667,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       obj.timeZone = this.preferences.zone;
     }
     this.coreService.post('workflows/order_count', obj).subscribe((res: any) => {
+      this.numOfAllOrders = res.numOfAllOrders;
       for (let i in this.workflows) {
         for (let j in res.workflows) {
           if ((this.workflows[i].path === res.workflows[j].path || this.workflows[i].name === res.workflows[j].path)
