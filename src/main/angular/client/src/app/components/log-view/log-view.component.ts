@@ -283,10 +283,10 @@ export class LogViewComponent implements OnInit, OnDestroy {
   private checkDom(res, order): void {
     if (!(POPOUT_MODALS['windowInstance']?.document.getElementById('logs'))) {
       ++this.count;
-      if(this.count < 10) {
+      if(this.count < 12) {
         setTimeout(() => {
           this.checkDom(res, order);
-        }, 100);
+        }, 150);
       }
     } else {
       this.jsonToString(res);

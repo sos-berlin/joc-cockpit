@@ -726,10 +726,14 @@ export class WorkflowService {
   convertTryToRetry(mainJson: any, cb: any, jobs = {}, countObj, isSkip = false): void {
     const self = this;
     const jobMap = new Map();
-
     function recursive(json: any, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
+          if(countObj.setObj){
+            if (countObj.setObj.has(json.instructions[x].positionString)){
+              json.instructions[x].show = true;
+            }
+          }
           if (!cb || isSkip) {
             json.instructions[x].id = ++countObj.count;
             if (json.instructions[x].TYPE === 'ImplicitEnd' && (json.TYPE || parent)) {
@@ -866,7 +870,12 @@ export class WorkflowService {
             recursive(json.instructions[x].else);
           }
           if (json.instructions[x].branches) {
-            json.instructions[x].branches = json.instructions[x].branches.filter((branch: any) => {
+            json.instructions[x].branches = json.instructions[x].branches.filter((branch: any, index) => {
+              if(countObj.setObj){
+                if (countObj.setObj.has(json.instructions[x].positionString + '_branch'+ index)){
+                  branch.show = true;
+                }
+              }
               if (branch.workflow) {
                 branch.instructions = branch.workflow.instructions;
                 branch.result = branch.workflow.result;

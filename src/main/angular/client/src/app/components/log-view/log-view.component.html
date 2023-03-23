@@ -97,7 +97,7 @@
   </div>
   <pre id="logs" #dataBody *ngIf="!error" class="log p-a-sm"></pre>
 </div>
-<div class="text-center hide" [ngClass]="{'show' : error && !loading}">
+<div class="text-center" *ngIf="error && !loading">
   <div class="text-dark p-t text-38 m-b-n-8"><span [innerHtml]="errStatus"></span></div>
   <div class="hide text-lg text-muted" [ngClass]="{'show' : errStatus}">{{'log.label.error' | translate}}!</div>
   <div class="text m-t" [innerHtml]="error"></div>
