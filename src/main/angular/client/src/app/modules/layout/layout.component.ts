@@ -395,6 +395,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           sessionStorage.welcomeGotIt = result.welcomeGotIt;
           sessionStorage.hasLicense = result.clusterLicense;
           sessionStorage.licenseType = result.licenseType;
+          sessionStorage.allowEmptyArguments = result.allowEmptyArguments;
           if (result.licenseValidFrom) {
             sessionStorage.licenseValidFrom = result.licenseValidFrom;
           }

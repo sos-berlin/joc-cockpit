@@ -121,6 +121,49 @@ export class DailyPlanRegexValidator implements Validator {
 }
 
 @Directive({
+  selector: '[validateHostNameRegex]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => HostNameRegexValidator), multi: true}
+  ]
+})
+export class HostNameRegexValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      if (/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/i.test(v)) {
+        return null;
+      }
+    }
+    return {
+      invalidIdentifier: true
+    };
+  }
+}
+
+@Directive({
+  selector: '[validateUrl]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => UrlValidator), multi: true}
+  ]
+})
+export class UrlValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v) {
+      if (/^(http|https):\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(?:\/[\w\-\.\/\?\@\%\!\&=\+\~\:\#\;\,]*)?$/gm.test(v) ||
+        /^(http|https):\/\/(?:\d{1,3}\.){3}\d{1,3}(?::\d{1,5})?(?:\/[\w\-\.\/\?\@\%\!\&=\+\~\:\#\;\,]*)?$/gm.test(v)) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+    return {
+      invalidUrl: true
+    };
+  }
+}
+
+@Directive({
   selector: '[validTimeReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => TimeRegexValidator), multi: true}

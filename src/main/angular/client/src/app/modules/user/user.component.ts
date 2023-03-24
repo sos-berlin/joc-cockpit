@@ -906,8 +906,34 @@ export class UserComponent implements OnInit, OnDestroy {
     const obj = {accounts: [this.username], complete: false};
     this.coreService.post('profiles/delete', obj).subscribe(() => {
       sessionStorage.removeItem('preferences');
-      this.dataService.isProfileReload.next(true);
+      if(sessionStorage.defaultProfile && sessionStorage.defaultProfile !== this.username){
+        this.getDefaultUserConfiguration()
+      } else {
+        this.dataService.isProfileReload.next(true);
+      }
     });
+  }
+
+  private getDefaultUserConfiguration(): void {
+
+    const configObj = {
+      controllerId: this.schedulerIds.selected,
+      accountName: sessionStorage.defaultProfile
+    };
+    const preferences: any = {};
+    this.coreService.post('profile/prefs', configObj).subscribe({
+      next: (res: any) => {
+        const config = {
+          controllerId: this.schedulerIds.selected,
+          accountName: this.username,
+          profileItem: res.profileItem
+        };
+        this.coreService.post('profile/prefs/store', config).subscribe((res: any) => {
+          this.dataService.isProfileReload.next(true);
+        });
+      }
+    });
+
   }
 
   getKeys(): void {

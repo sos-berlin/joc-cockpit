@@ -1854,6 +1854,9 @@
           "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
           "unsuccessful": "By default the Finish Instruction makes orders leave the workflow with a successfuly history outcome. This checkbox can be used to make an order leave the workflow with an unsuccessful historic outcome."
         },
+        "options": {
+          "stopOnFailure": "Stop On Failure"
+        },
         "fileWatch": {
           "directory": "The Directory that is watched for incoming files.",
           "regex": "A regular expression specifies the Pattern for the paths of incoming files that a directory is watched for. For example .* means any files, .*\\.txt$ means any files with a .txt extension."
@@ -2790,6 +2793,7 @@
     "label.iamOidcTruststoreType": "OIDC Truststore Type",
     "label.iamOidcTruststorePassword": "OIDC Truststore Password",
     "label.iamOidcImage": "OIDC Image",
+    "label.iamOidcUserAttribute": "OIDC User Attribute",
     "label.group": "Group",
     "label.general": "General",
     "label.on": "On",
@@ -2890,6 +2894,7 @@
     "placeholder.iamOidcTruststorePath": "Enter OIDC Truststore Path",
     "placeholder.iamOidcTruststoreType": "Enter OIDC Truststore Type",
     "placeholder.iamOidcTruststorePassword": "Enter OIDC Truststore Password",
+    "placeholder.iamOidcUserAttribute": "Enter OIDC User Attribute",
     "placeholder.group": "Enter Group",
     "placeholder.initialPassword": "Enter initial password",
     "placeholder.minPasswordLength": "Enter minimum password length",
@@ -2979,6 +2984,7 @@
         "iamOidcTruststorePath": "The path to a Truststore that holds the OIDC Identity Provider certificate or Root CA certificate used to sign the OIDC Identity Provider certificate.",
         "iamOidcTruststoreType": "The OIDC Truststore Type can be PKCS12 or JKS (deprecated).",
         "iamOidcTruststorePassword": "If the OIDC Truststore is protected by a password, then the password has to be specified.",
+        "iamOidcUserAttribute": "OIDC User Attribute",
         "iamOidcImage": "If an OIDC Image is specified then it is displayed with the login screen. Image files of type .png are allowed with a maximum size of 1 MB. Images are best displayed using a width and height of 96 pixels."
       },
       "general": {
@@ -3054,6 +3060,9 @@
     "label.expectNotices": "ExpectNotices",
     "label.fail": "Fail",
     "label.finish": "Finish",
+    "label.break": "Break",
+    "label.options": "Options",
+    "label.optionsEnd": "Options-End",
     "label.try": "Try",
     "label.tryEnd": "Try-End",
     "label.catch": "Catch",
@@ -3220,6 +3229,7 @@
     "message.invalidPostNoticeInstruction": "PostNotices Instruction is not valid",
     "message.invalidExpectNoticeInstruction": "ExpectNotices Instruction is not valid",
     "message.invalidConsumeNoticeInstruction": "ConsumeNotices Instruction cannot be empty",
+    "message.invalidOptionsInstruction": "Options Instruction cannot be empty",
     "message.agentIsMissing": "Agent is missing, but is required",
     "message.orderNameIsMissing": "Order Name is missing, but is required",
     "message.workflowNameIsNotValid": "Workflow Name is missing, but is required",

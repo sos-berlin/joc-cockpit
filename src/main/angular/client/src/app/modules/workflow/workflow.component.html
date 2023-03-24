@@ -523,11 +523,11 @@
                       </td>
                       <td>
                         <span class="show-in-single-line">
-                          <i *ngIf="!workflow.show" class="cursor fa fa-angle-double-down _600" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="workflow.isExpand = true;showPanelFuc(workflow)"></i>
-                          <i *ngIf="workflow.show" class="cursor fa fa-angle-double-up _600" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;hidePanelFuc(workflow)"></i>
-                          <i class="cursor fa fa-caret-down fa-lg p-l-xxs"
+                          <i *ngIf="!workflow.show" class="cursor fa fa-chevron-down p-l-xs p-r-xs t-n-1 pos-rel" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="workflow.isExpand = true;showPanelFuc(workflow)"></i>
+                          <i *ngIf="workflow.show" class="cursor fa fa-chevron-up p-l-xs p-r-xs t-n-1 pos-rel" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;hidePanelFuc(workflow)"></i>
+                          <i class="cursor fa fa-caret-down fa-lg p-l-xxs t-n-1 pos-rel"
                              *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
-                          <i class="cursor fa fa-caret-up fa-lg p-l-xxs " *ngIf="workflow.show"
+                          <i class="cursor fa fa-caret-up fa-lg p-l-xxs t-n-1 pos-rel" *ngIf="workflow.show"
                              (click)="hidePanelFuc(workflow)"></i>
                           <i *ngIf="permission.currentController && permission.currentController.orders.create && workflow.isCurrentVersion && workflow.state._text !== 'NOT_IN_SYNC'" class="cursor fa fa-plus p-l-xs"
                              [nz-tooltip]="'workflow.button.addOrder' | translate" (click)="addOrder(workflow)"></i>

@@ -1562,9 +1562,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       const request = [];
-      const request2 = [];
+
       let flag = false;
       let reload = true;
+      let callOrderCount = false;
       for (const j in args.eventSnapshots) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' || args.eventSnapshots[j].eventType === 'WorkflowUpdated') {
           for (const i in this.workflows) {
@@ -1583,18 +1584,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                   request.push(args.eventSnapshots[j].workflow);
                 }
               }
-              let flg2 = true;
-              for (const x in request2) {
-                if (request2[x].path === args.eventSnapshots[j].workflow.path && request2[x].versionId === args.eventSnapshots[j].workflow.versionId) {
-                  flg2 = false;
-                  break;
-                }
-              }
-              if (flg2) {
-                if (!this.workflows[i].show) {
-                  request2.push(args.eventSnapshots[j].workflow);
-                }
-              }
+              callOrderCount = true;
+
             } else if (args.eventSnapshots[j].eventType === 'WorkflowUpdated' && (args.eventSnapshots[j].path && this.workflows[i].path === args.eventSnapshots[j].path)) {
               this.coreService.post('workflow', {
                 controllerId: this.schedulerIds.selected,
@@ -1646,10 +1637,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           workflowIds: request
         });
       }
-      if (request2 && request2.length > 0) {
+      if (callOrderCount) {
         this.getOrderCounts({
           controllerId: this.schedulerIds.selected,
-          workflowIds: request2
+          workflowIds: this.workflows.map(item => {
+            return {path: item.path, versionId: item.versionId}
+          })
         });
       }
     }

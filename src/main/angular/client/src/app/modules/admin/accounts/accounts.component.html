@@ -37,7 +37,7 @@
             <i *ngIf="usr.sortBy == 'roles' && usr.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
-        <th nzWidth="20%" (click)="sort('forcePasswordChange')">
+        <th *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')" nzWidth="20%" (click)="sort('forcePasswordChange')">
           <a><span class="p-r-xs" translate>user.label.forcePasswordChange</span>
             <i *ngIf="usr.sortBy == 'forcePasswordChange' && !usr.reverse"
                class="fa fa-caret-up "></i>
@@ -111,7 +111,7 @@
         <td>
           <div *ngFor="let role of account.roles"><span [innerHtml]= "role | highlight: searchKey"></span></div>
         </td>
-        <td><span>{{(account.forcePasswordChange ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+        <td *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')"><span>{{(account.forcePasswordChange ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
         <td><span>{{(account.blocked ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
         <td><span>{{(account.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
       </tr>
