@@ -167,7 +167,7 @@
         </span>
         <span class="order-count" (click)="showOrders(instruction)" *ngIf="instruction.orderCount > 0 && (!instruction.show && !expandAll)">{{instruction.orderCount}}</span>
       </a>
-      <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'AddOrder' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
+      <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'AddOrder' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Break' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
        || instruction.TYPE === 'PostNotices' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'ExpectNotices'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd'}">
         <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'Job'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
@@ -234,6 +234,7 @@
             </ul>
           </nz-dropdown-menu>
         </div>
+        <i *ngIf="instruction.TYPE === 'Job' && permission.currentController && permission.currentController.orders.view" (click)="viewHistory(instruction)" class="cursor fa fa-history p-l-xs p-r-xs"></i>
         <i *ngIf="instruction.TYPE === 'Job' && instruction.documentationName" (click)="coreService.showDocumentation(instruction.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
         <span class="cursor" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">
           {{instruction.jobName}}

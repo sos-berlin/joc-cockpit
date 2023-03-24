@@ -44,12 +44,13 @@
         </label>
         <div class="col-sm-8"
              [ngClass]="{ 'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}">
-          <input type="url" class="form-control" placeholder="http://host:port" required name="remoteUrl" [(ngModel)]="controller.url"
+          <input type="url" validateUrl class="form-control" placeholder="http://host:port" required name="remoteUrl" [(ngModel)]="controller.url"
                  #remoteUrl="ngModel">
           <div *ngIf="remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)" class="text-danger help-block">
             <div *ngIf="remoteUrl.errors.required">
               <div translate>common.message.requiredError</div>
             </div>
+            <div *ngIf="remoteUrl.errors.invalidUrl" translate>common.message.invalid</div>
           </div>
         </div>
       </div>
@@ -89,11 +90,12 @@
           </label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((primaryUrl.dirty || primaryUrl.touched) && primaryUrl.invalid)}">
-            <input type="url" placeholder="http://host:port" class="form-control" required name="primaryUrl" [(ngModel)]="controller.primaryUrl" #primaryUrl="ngModel">
+            <input type="url" validateUrl placeholder="http://host:port" class="form-control" required name="primaryUrl" [(ngModel)]="controller.primaryUrl" #primaryUrl="ngModel">
             <div *ngIf="primaryUrl.invalid && (primaryUrl.dirty || primaryUrl.touched)" class="text-danger help-block">
               <div *ngIf="primaryUrl.errors.required">
                 <div translate>common.message.requiredError</div>
               </div>
+              <div *ngIf="primaryUrl.errors.invalidUrl" translate>common.message.invalid</div>
             </div>
           </div>
         </div>
@@ -101,7 +103,10 @@
           <label class="col-sm-4 form-control-label" [nz-tooltip]="'controller.tooltip.urlForBackup' | translate" translate>controller.label.backupUrl</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((primaryClusterUrl.dirty || primaryClusterUrl.touched) && primaryClusterUrl.invalid)}">
-            <input type="url" placeholder="http://host:port" class="form-control" name="primaryClusterUrl" [(ngModel)]="controller.primaryClusterUrl" #primaryClusterUrl="ngModel">
+            <input type="url" validateUrl placeholder="http://host:port" class="form-control" name="primaryClusterUrl" [(ngModel)]="controller.primaryClusterUrl" #primaryClusterUrl="ngModel">
+            <div *ngIf="primaryClusterUrl.invalid && (primaryClusterUrl.dirty || primaryClusterUrl.touched)" class="text-danger help-block">
+              <div *ngIf="primaryClusterUrl.errors.invalidUrl" translate>common.message.invalid</div>
+            </div>
           </div>
         </div>
         <div class="row ">
@@ -139,11 +144,12 @@
           </label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((backupUrl.dirty || backupUrl.touched) && backupUrl.invalid)}">
-            <input type="url" placeholder="http://host:port" class="form-control" required name="backupUrl" [(ngModel)]="controller.backupUrl" #backupUrl="ngModel">
+            <input type="url" validateUrl placeholder="http://host:port" class="form-control" required name="backupUrl" [(ngModel)]="controller.backupUrl" #backupUrl="ngModel">
             <div *ngIf="backupUrl.invalid && (backupUrl.dirty || backupUrl.touched)" class="text-danger help-block">
               <div *ngIf="backupUrl.errors.required">
                 <div translate>common.message.requiredError</div>
               </div>
+              <div *ngIf="backupUrl.errors.invalidUrl" translate>common.message.invalid</div>
             </div>
           </div>
         </div>
@@ -151,7 +157,10 @@
           <label class="col-sm-4 form-control-label" [nz-tooltip]="'controller.tooltip.urlForPrimary' | translate" translate>controller.label.primaryUrl</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((backupClusterUrl.dirty || backupClusterUrl.touched) && backupClusterUrl.invalid)}">
-            <input type="url" placeholder="http://host:port" class="form-control" name="backupClusterUrl" [(ngModel)]="controller.backupClusterUrl" #backupClusterUrl="ngModel">
+            <input type="url" validateUrl placeholder="http://host:port" class="form-control" name="backupClusterUrl" [(ngModel)]="controller.backupClusterUrl" #backupClusterUrl="ngModel">
+            <div *ngIf="backupClusterUrl.invalid && (backupClusterUrl.dirty || backupClusterUrl.touched)" class="text-danger help-block">
+              <div *ngIf="backupClusterUrl.errors.invalidUrl" translate>common.message.invalid</div>
+            </div>
           </div>
         </div>
         <div class="row ">
@@ -237,13 +246,14 @@
             <sup *ngIf="agent.agentId && agent.agentId.length > 0" class="text-danger text-sm">*</sup>
           </label>
           <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
-            <input type="url" class="form-control" name="url" #url="ngModel" [readonly]="!new && agents && agents.length>0"
+            <input type="url" validateUrl class="form-control" name="url" #url="ngModel" [readonly]="!new && agents && agents.length>0"
                    [required]="(agent.agentId && agent.agentId.length > 0) ? true : false" [(ngModel)]="agent.url" placeholder="http://host:port">
             <div *ngIf="url.invalid && (url.dirty || url.touched)"
                  class="text-danger help-block">
               <div *ngIf="(url.errors && url.errors.required)">
                 <div translate>common.message.requiredError</div>
               </div>
+              <div *ngIf="url.errors.invalidUrl" translate>common.message.invalid</div>
             </div>
           </div>
         </div>

@@ -68,8 +68,8 @@
                   </td>
                   <td>
                     <span class="show-in-single-line">
-                      <i *ngIf="!workflow.show" class="cursor fa fa-angle-double-down _600" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="workflow.isExpand = true;showPanelFuc(workflow)"></i>
-                      <i *ngIf="workflow.show" class="cursor fa fa-angle-double-up _600" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;hidePanelFuc(workflow)"></i>
+                      <i *ngIf="!workflow.show" class="cursor fa fa-chevron-down p-l-xs p-r-xs" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="workflow.isExpand = true;showPanelFuc(workflow)"></i>
+                      <i *ngIf="workflow.show" class="cursor fa fa-chevron-up p-l-xs p-r-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;hidePanelFuc(workflow)"></i>
                       <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                          *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
                       <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="workflow.show"

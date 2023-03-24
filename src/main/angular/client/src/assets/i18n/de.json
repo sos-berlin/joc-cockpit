@@ -1854,6 +1854,9 @@
           "uncatchable": "Ein nicht abfangbarer Fehler kann nicht mit Try/Catch abgefangen werden.",
           "returnCode": "Der Fail-Anweisung kann eine positive Zahl als Rückgabewert zugeordnet werden, die in der Auftragshistorie sichtbar wird. Rückgabewerte ungleich 0 werden als fehlerhafte Ausführung gewertet."
         },
+        "options": {
+          "stopOnFailure": "Stop On Failure"
+        },
         "fileWatch": {
           "directory": "Das Verzeichnis, das auf die Existenz neuer Dateien hin überwacht wird.",
           "regex": "Ein regulärer Ausdruck beschreibt das Muster der Namen von Dateien, die im Verzeichnis überwacht werden."
@@ -2790,6 +2793,7 @@
     "label.iamOidcTruststoreType": "OIDC Truststore Type",
     "label.iamOidcTruststorePassword": "OIDC Truststore Password",
     "label.iamOidcImage": "OIDC Bild",
+    "label.iamOidcUserAttribute": "OIDC User Attribute",
     "label.group": "Gruppe",
     "label.general": "Generelles",
     "label.on": "An",
@@ -2890,6 +2894,7 @@
     "placeholder.iamOidcTruststorePath": "OIDC Truststore Path angeben",
     "placeholder.iamOidcTruststoreType": "OIDC Truststore Type angeben",
     "placeholder.iamOidcTruststorePassword": "OIDC Truststore Password angeben",
+    "placeholder.iamOidcUserAttribute": "Enter OIDC User Attribute",
     "placeholder.group": "Gruppe angeben",
     "placeholder.initialPassword": "Initialkennwort angeben",
     "placeholder.minPasswordLength": "Minimallänge des Kennworts angeben",
@@ -2979,6 +2984,7 @@
         "iamOidcTruststorePath": "Der Pfad zum OIDC Truststore, der das OIDC Identity Provider Zertifikat oder das Root CA Zertifikat enthält, mit dem das OIDC Identity Provider Zertifikat signiert ist.",
         "iamOidcTruststoreType": "Der Typ des OIDC Truststore kann PKCS12 sein oder JKS (deprecated).",
         "iamOidcTruststorePassword": "Ist der OIDC Truststore mit einem Kennwort geschützt, dann wird hier das Kennwort angegeben.",
+        "iamOidcUserAttribute": "OIDC User Attribute",
         "iamOidcImage": "Wenn ein OIDC Bild angegeben ist, wird es im Anmeldefenster angezeigt. Bilddateien des Typs .png mit einer maximalen Größe von 1 MB können verwendet werden. Bilder werden am besten mit einer Breite und Höhe von 64 Pixel dargestellt."
       },
       "general": {
@@ -3054,6 +3060,9 @@
     "label.expectNotices": "ExpectNotices",
     "label.fail": "Fail",
     "label.finish": "Finish",
+    "label.break": "Break",
+    "label.options": "Options",
+    "label.optionsEnd": "Options-End",
     "label.try": "Try",
     "label.tryEnd": "Try-End",
     "label.catch": "Catch",
@@ -3218,6 +3227,7 @@
     "message.invalidPostNoticeInstruction": "PostNotices-Anweisung ist nicht gültig",
     "message.invalidExpectNoticeInstruction": "ExpectNotices-Anweisung ist nicht gültig",
     "message.invalidConsumeNoticeInstruction": "ConsumeNotices-Anweisung darf nicht leer sein",
+    "message.invalidOptionsInstruction": "Options Instruction cannot be empty",
     "message.agentIsMissing": "Agent ist erforderlich",
     "message.orderNameIsMissing": "Auftragsname darf nicht leer sein",
     "message.workflowNameIsNotValid": "Name des Arbeitsablaufs darf nicht leer sein",

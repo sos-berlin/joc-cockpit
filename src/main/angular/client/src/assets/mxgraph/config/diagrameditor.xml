@@ -88,6 +88,13 @@
         </mxCell>
       </Finish>
     </add>
+    <add as="Break">
+      <Break displayLabel="break">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </Break>
+    </add>
     <add as="ExpectNotices">
       <ExpectNotices displayLabel="expectNotices">
         <mxCell vertex="1">
@@ -115,6 +122,13 @@
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </StickySubagent>
+    </add>
+    <add as="Options">
+      <Options displayLabel="options">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </Options>
     </add>
     <add as="Prompt">
       <Prompt displayLabel="prompt">
@@ -212,6 +226,8 @@
     <add as="Finish" template="Finish" style="finish" icon="./assets/mxgraph/images/finish.png"/>
     <hr/>
     <add as="Fail" template="Fail" style="fail" icon="./assets/mxgraph/images/fail.png"/>
+    <hr/>
+    <add as="Break" template="Break" style="break" icon="./assets/mxgraph/images/break.png"/>
     <hr/>
     <add as="Prompt" template="Prompt" style="prompt" icon="./assets/mxgraph/images/prompt.png"/>
     <hr/>

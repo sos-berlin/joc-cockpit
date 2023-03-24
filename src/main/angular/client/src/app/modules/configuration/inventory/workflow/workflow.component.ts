@@ -3522,7 +3522,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   private updateToolbar(operation, cell, name = ''): void {
     $('#toolbar').find('img').each(function (index) {
-      if (index === 17) {
+      if (index === 18) {
         if (!cell && !name) {
           $(this).addClass('disable-link');
           $(this).attr('title', '');
@@ -5275,8 +5275,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 flag = true;
                 break;
               } else {
-                if (obj.lastId && (list[i].value.tagName === 'Job' || list[i].value.tagName === 'AddOrder' || list[i].value.tagName === 'Finish' || list[i].value.tagName === 'Fail' ||
-                  list[i].value.tagName === 'ExpectNotices' || list[i].value.tagName === 'PostNotices' || list[i].value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(list[i].value.tagName))) {
+                if (obj.lastId && (self.workflowService.isSingleInstruction(list[i].value.tagName) || self.workflowService.isInstructionCollapsible(list[i].value.tagName))) {
                   if (edges[j].source && self.workflowService.checkClosingCell(edges[j].source.value.tagName)) {
                     if (branchObj.instructions[branchObj.instructions.length - 1].id === edges[j].source.getAttribute('targetId')) {
                       flag = true;
@@ -5528,7 +5527,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           });
           $(this).hide();
         }
-        if (index === 17) {
+        if (index === 18) {
           $(this).addClass('disable-link');
         }
       });
@@ -5943,8 +5942,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         function mxIconSet(state) {
           this.images = [];
           let img;
-          if (state.cell && (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'AddOrder' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
-            state.cell.value.tagName === 'ExpectNotices' || state.cell.value.tagName === 'PostNotices' || state.cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
+          if (state.cell && (self.workflowService.isSingleInstruction(state.cell.value.tagName) || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
             img = mxUtils.createImage('./assets/images/menu.svg');
             let x = state.x - (20 * state.shape.scale);
             let y = state.y - (8 * state.shape.scale);
@@ -6349,8 +6347,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
             }
             if (isProceed) {
-              if (cell.value.tagName === 'Job' || cell.value.tagName === 'AddOrder' || cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail' ||
-                cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'PostNotices' || cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
+              if (self.workflowService.isSingleInstruction(cell.value.tagName) || self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
                 if (!evt.ctrlKey) {
                   graph.setSelectionCell(cell);
                 } else {
@@ -6560,8 +6557,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }
             if (!check) {
               if (drpTargt.value.tagName !== 'Connection') {
-                if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'AddOrder' || drpTargt.value.tagName === 'Finish' || drpTargt.value.tagName === 'Fail'
-                  || drpTargt.value.tagName === 'ExpectNotices' || drpTargt.value.tagName === 'PostNotices' || drpTargt.value.tagName === 'Prompt') {
+                if (self.workflowService.isSingleInstruction(drpTargt.value.tagName)) {
                   for (let i = 0; i < drpTargt.edges.length; i++) {
                     if (drpTargt.edges[i].target.id !== drpTargt.id) {
                       self.translate.get('workflow.message.validationError').subscribe(translatedValue => {
@@ -7030,8 +7026,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                       if (cell.source.edges[x].id === cell.id) {
                         const _sourCellName = cell.source.value.tagName;
                         const _tarCellName = cell.target.value.tagName;
-                        if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'AddOrder' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotices' || _sourCellName === 'Prompt' || _sourCellName === 'ExpectNotices') &&
-                          (_tarCellName === 'Job' || _tarCellName === 'AddOrder' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotices' || _tarCellName === 'Prompt' || _tarCellName === 'ExpectNotices')))) {
+                        if (cell.target && self.workflowService.isSingleInstruction(_sourCellName) &&
+                          self.workflowService.isSingleInstruction(_tarCellName)) {
                           graph.getModel().remove(cell.source.edges[x]);
                         } else {
                           cell.source.removeEdge(cell.source.edges[x], true);
@@ -9122,6 +9118,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           _node.setAttribute('displayLabel', 'fail');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'fail');
+        } else if (title.match('break')) {
+          _node = doc.createElement('Break');
+          _node.setAttribute('displayLabel', 'break');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'break');
         } else if (title.match('addOrder')) {
           _node = doc.createElement('AddOrder');
           _node.setAttribute('displayLabel', 'addOrder');
@@ -9170,6 +9171,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           _node.setAttribute('displayLabel', 'consumeNotices');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'consumeNotices');
+        } else if (title.match('options')) {
+          _node = doc.createElement('Options');
+          _node.setAttribute('displayLabel', 'options');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'options');
         } else if (title.match('try')) {
           _node = doc.createElement('Try');
           _node.setAttribute('displayLabel', 'try');
@@ -9258,8 +9264,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               if (targetCell.source.edges[x].id === targetCell.id) {
                 const _sourCellName = targetCell.source.value.tagName;
                 const _tarCellName = targetCell.target.value.tagName;
-                if ((targetCell.target && ((_sourCellName === 'Job' || _sourCellName === 'AddOrder' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotices' || _sourCellName === 'Prompt' || _sourCellName === 'ExpectNotices') &&
-                  (_tarCellName === 'Job' || _tarCellName === 'AddOrder' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotices' || _tarCellName === 'Prompt' || _tarCellName === 'ExpectNotices')))) {
+                if (targetCell.target && self.workflowService.isSingleInstruction(_sourCellName) &&
+                  self.workflowService.isSingleInstruction(_tarCellName)) {
                   graph.getModel().remove(targetCell.source.edges[x]);
                 } else {
                   targetCell.source.removeEdge(targetCell.source.edges[x], true);
@@ -9349,7 +9355,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
       if (!flg) {
         if (tagName !== 'Connection') {
-          if (tagName === 'Job' || tagName === 'AddOrder' || tagName === 'Finish' || tagName === 'Fail' || tagName === 'ExpectNotices' || tagName === 'PostNotices' || tagName === 'Prompt') {
+          if (self.workflowService.isSingleInstruction(tagName)) {
             for (let i = 0; i < targetCell.edges.length; i++) {
               if (targetCell.edges[i].target.id !== targetCell.id) {
                 return 'inValid';
@@ -11183,7 +11189,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
     this.cutCell = [];
     $('#toolbar').find('img').each(function (index) {
-      if (index === 17) {
+      if (index === 18) {
         $(this).addClass('disable-link');
       }
     });

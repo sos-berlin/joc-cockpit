@@ -1854,6 +1854,9 @@
           "uncatchable": "アンキャッチャブルエラーはTry/Catch命令では処理できません。",
           "returnCode": "リターンコード"
         },
+        "options": {
+          "stopOnFailure": "Stop On Failure"
+        },
         "fileWatch": {
           "directory": "監視する受信ファイルのディレクトリー",
           "regex": "監視する受信ファイル名の正規表現"
@@ -2790,6 +2793,7 @@
     "label.iamOidcTruststoreType": "OIDC トラストストアタイプ",
     "label.iamOidcTruststorePassword": "OIDC Tトラストストアパスワード",
     "label.iamOidcImage": "OIDC イメージ",
+    "label.iamOidcUserAttribute": "OIDC User Attribute",
     "label.group": "グループ",
     "label.general": "共通",
     "label.on": "On",
@@ -2890,6 +2894,7 @@
     "placeholder.iamOidcTruststorePath": "OIDC トラストストアパス入力",
     "placeholder.iamOidcTruststoreType": "OIDC トラストストアタイプ入力",
     "placeholder.iamOidcTruststorePassword": "OIDC トラストストアパスワード入力",
+    "placeholder.iamOidcUserAttribute": "Enter OIDC User Attribute",
     "placeholder.group": "グループを入力",
     "placeholder.initialPassword": "初期パスワードを入力",
     "placeholder.minPasswordLength": "最少パスワード文字数を入力",
@@ -2979,6 +2984,7 @@
         "iamOidcTruststorePath": "OIDC トラストストアパス",
         "iamOidcTruststoreType": "OIDC トラストストアタイプ",
         "iamOidcTruststorePassword": "OIDC トラストストアパスワード",
+        "iamOidcUserAttribute": "OIDC User Attribute",
         "iamOidcImage": "OIDC イメージ"
       },
       "general": {
@@ -3054,6 +3060,9 @@
     "label.expectNotices": "ExpectNotices",
     "label.fail": "失敗",
     "label.finish": "終了",
+    "label.break": "Break",
+    "label.options": "Options",
+    "label.optionsEnd": "Options-End",
     "label.try": "Try",
     "label.tryEnd": "Try-End",
     "label.catch": "Catch",
@@ -3219,6 +3228,7 @@
     "message.invalidPostNoticeInstruction": "PostNotice命令が無効です",
     "message.invalidExpectNoticeInstruction": "ExpectNoticeが無効です",
     "message.invalidConsumeNoticeInstruction": "ConsumeNotices命令は空にできません",
+    "message.invalidOptionsInstruction": "Options Instruction cannot be empty",
     "message.agentIsMissing": "エージェント名が必要です",
     "message.orderNameIsMissing": "オーダー名が必要です",
     "message.workflowNameIsNotValid": "ワークフロー名が必要です",

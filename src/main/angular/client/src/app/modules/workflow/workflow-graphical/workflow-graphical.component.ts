@@ -757,8 +757,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     function mxIconSet(state) {
       this.images = [];
       let img;
-      if (state.cell && (state.cell.getAttribute('path') == self.workFlowJson.path) && (state.cell.value.tagName === 'Order' || state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'AddOrder' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
-        state.cell.value.tagName === 'ExpectNotices' || state.cell.value.tagName === 'PostNotices' || state.cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
+      if (state.cell && (state.cell.getAttribute('path') == self.workFlowJson.path) && (state.cell.value.tagName === 'Order' || self.workflowService.isSingleInstruction(state.cell.value.tagName)  || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
         img = mxUtils.createImage('./assets/images/menu.svg');
         let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
         if (state.cell.value.tagName !== 'Job') {

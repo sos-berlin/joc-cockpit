@@ -35,7 +35,12 @@ import {
   ResizableDirective,
   MaximumDirective,
   AutofocusDirective,
-  TimeValidatorDirective, TimeRegexValidator, RelativeDateValidator, RelativeDateRegexValidator, FacetValidator
+  TimeValidatorDirective,
+  TimeRegexValidator,
+  RelativeDateValidator,
+  RelativeDateRegexValidator,
+  FacetValidator,
+  UrlValidator
 } from '../../directives/core.directive';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {CalendarModalComponent} from '../../components/calendar-modal/calendar.component';
@@ -62,7 +67,7 @@ const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModa
   CalendarModalComponent, TreeModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
   ModifyStartTimeModalComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
-const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, RelativeDateValidator, RelativeDateRegexValidator,
+const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, RelativeDateValidator, RelativeDateRegexValidator, UrlValidator,
   ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, FacetValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
   StartUpModalComponent, TreeComponent, AgentSelectionComponent, ValueEditorComponent, WorkflowTreeStructureComponent, NodePositionComponent, SearchComponent,
