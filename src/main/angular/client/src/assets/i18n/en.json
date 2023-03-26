@@ -881,25 +881,25 @@
     },
     "certificate": {
       "label": {
-        "primaryControllerCert": "Primary Controller Certificate",
-        "secondaryControllerCert": "Secondary Controller Certificate",
-        "primaryJocCert": "Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Secondary JOC Cockpit Certificate"
+        "primaryControllerCert": "Primary Controller Instance Certificate",
+        "secondaryControllerCert": "Secondary Controller Instance Certificate",
+        "primaryJocCert": "Primary JOC Cockpit Instance Certificate",
+        "secondaryJocCert": "Secondary JOC Cockpit Instance Certificate"
       },
       "button": {
         "addCertificates": "Add Certificates"
       },
       "placeholder": {
-        "primaryControllerCert": "Enter Primary Controller Certificate",
-        "secondaryControllerCert": "Enter Secondary Controller Certificate",
-        "primaryJocCert": "Enter Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Enter Secondary JOC Cockpit Certificate"
+        "primaryControllerCert": "Enter path to Primary Controller instance's Certificate",
+        "secondaryControllerCert": "Enter path to Secondary Controller instance's Certificate",
+        "primaryJocCert": "Enter path to Primary JOC Cockpit instance's Certificate",
+        "secondaryJocCert": "Enter path to Secondary JOC Cockpit instance's Certificate"
       },
       "tooltip": {
-        "primaryControllerCert": "Primary Controller Certificate",
-        "secondaryControllerCert": "Secondary Controller Certificate",
-        "primaryJocCert": "Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Secondary JOC Cockpit Certificate"
+        "primaryControllerCert": "The Primary Controller Certificate is required by Agents that are set up for HTTPS mutual authentication (default).",
+        "secondaryControllerCert": "The Secondary Controller Certificate is required by Agents that are set up for HTTPS mutual authentication (default).",
+        "primaryJocCert": "The Primary JOC Cockpit Certificate is required by Controller instances that are set up for HTTPS mutual authentication (default).",
+        "secondaryJocCert": "The Secondary JOC Cockpit Certificate is required by Controller instances that are set up for HTTPS mutual authentication (default)."
       }
     },
     "agent": {
@@ -1751,7 +1751,7 @@
     "message.deleteCurrentDraftObject": "Your are about to replace the draft. Are you sure you want to continue?",
     "message.noObjectFoundToRelease": "No releasable object found",
     "message.updateFromJobTemplate": "Are you sure you want to update the job from the Job Template?",
-    "message.localChangesWillBeOverwritten": "All the local changes will be overwritten by this action",
+    "message.localChangesWillBeOverwritten": "All local changes will be overwritten by this action",
     "cronTab": {
       "label.convertCron": "Convert crontab",
       "label.folder": "Folder",
@@ -2213,7 +2213,7 @@
     "message.noVariableAvailable": "no variable available",
     "message.orderModificationNotAllowed": "The order state {{state}} does not allow modification",
     "message.noLogHistoryFound": "No log found for this order",
-    "tooltip.cycleEndTime": "Cycle end time in second",
+    "tooltip.cycleEndTime": "Optionally specifies the cycle end time. Users can specify a shorter period than predefined for the cycle to terminate. The order will be resumed from the position choosen by the user and the specified end time will be check when the order returns to the begin of the cycle. Cycle end times exceeding the predefined cycle period will be ignored.",
     "treeView": {
       "label": {
         "state": "State",
@@ -2793,7 +2793,7 @@
     "label.iamOidcTruststoreType": "OIDC Truststore Type",
     "label.iamOidcTruststorePassword": "OIDC Truststore Password",
     "label.iamOidcImage": "OIDC Image",
-    "label.iamOidcUserAttribute": "OIDC User Attribute",
+    "label.iamOidcUserAttribute": "OIDC User Name Attribute",
     "label.group": "Group",
     "label.general": "General",
     "label.on": "On",
@@ -2894,7 +2894,7 @@
     "placeholder.iamOidcTruststorePath": "Enter OIDC Truststore Path",
     "placeholder.iamOidcTruststoreType": "Enter OIDC Truststore Type",
     "placeholder.iamOidcTruststorePassword": "Enter OIDC Truststore Password",
-    "placeholder.iamOidcUserAttribute": "Enter OIDC User Attribute",
+    "placeholder.iamOidcUserAttribute": "Enter OIDC User Name Attribute",
     "placeholder.group": "Enter Group",
     "placeholder.initialPassword": "Enter initial password",
     "placeholder.minPasswordLength": "Enter minimum password length",

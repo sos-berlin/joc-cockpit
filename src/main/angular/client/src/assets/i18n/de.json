@@ -532,7 +532,7 @@
     "button.unassignDocumentation": "Zuweisung der Dokumentation entfernen",
     "button.viewDocumentation": "Dokumentation anzeigen",
     "button.viewHistory": "Historie anzeigen",
-    "button.showHistory": "Show History",
+    "button.showHistory": "Historie anzeigen",
     "placeholder.search": "Ergebnisse filtern",
     "placeholder.name": "Name",
     "placeholder.value": "Wert",
@@ -858,13 +858,13 @@
         "descriptorId": "Die Deskriptor-Kennung ist eindeutig für einen Deskriptor.",
         "title": "Der Titel eines Deskriptors benennt den Verwendungszweck.",
         "account": "Das Benutzerkonto, das den Deskriptor verwaltet.",
-        "scheduled": "Das Datum für das das Ausrollen der Software-Komponenten geplant ist.",
+        "scheduled": "Das Datum, für das das Ausrollen der Software-Komponenten geplant ist.",
         "created": "Das Datum der Anlage des Deskriptors."
       }
     },
     "license": {
       "label": {
-        "licenseKeyFile": "Liuenz Schlüsseldatei",
+        "licenseKeyFile": "Lizenz Schlüsseldatei",
         "licenseBinFile": "Lizenz Binärdatei"
       },
       "button": {
@@ -881,25 +881,25 @@
     },
     "certificate": {
       "label": {
-        "primaryControllerCert": "Primary Controller Certificate",
-        "secondaryControllerCert": "Secondary Controller Certificate",
-        "primaryJocCert": "Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Secondary JOC Cockpit Certificate"
+        "primaryControllerCert": "Zertifikat der Primären Controller Instanz",
+        "secondaryControllerCert": "Zertifikat der Sekundären Controller Instanz",
+        "primaryJocCert": "Zertifikat der Primären JOC Cockpit Instanz",
+        "secondaryJocCert": "Zertifikat der Sekundären JOC Cockpit Instanz"
       },
       "button": {
-        "addCertificates": "Add Certificates"
+        "addCertificates": "Zertifikate hinzufügen"
       },
       "placeholder": {
-        "primaryControllerCert": "Enter Primary Controller Certificate",
-        "secondaryControllerCert": "Enter Secondary Controller Certificate",
-        "primaryJocCert": "Enter Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Enter Secondary JOC Cockpit Certificate"
+        "primaryControllerCert": "Pfad zum Zertifikat der Primären Controller Instanz hinzufügen",
+        "secondaryControllerCert": "Pfad zum Zertifikat der Sekundären Controller Instanz hinzufügen",
+        "primaryJocCert": "Pfad zum Zertifikat der Primären JOC Cockpit Instanz hinzufügen",
+        "secondaryJocCert": "Pfad zum Zertifikat der Sekundären JOC Cockpit Instanz hinzufügen"
       },
       "tooltip": {
-        "primaryControllerCert": "Primary Controller Certificate",
-        "secondaryControllerCert": "Secondary Controller Certificate",
-        "primaryJocCert": "Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Secondary JOC Cockpit Certificate"
+        "primaryControllerCert": "Das Zertifikat der Primären Controller Instanz wird von Agenten benötigt, die für HTTPS Mutual Authentication konfiguriert sind (Voreinstellung).",
+        "secondaryControllerCert": "Das Zertifikat der Sekundären Controller Instanz wird von Agenten benötigt, die für HTTPS Mutual Authentication konfiguriert sind (Voreinstellung).",
+        "primaryJocCert": "Das Zertifikat der Primären JOC Cockpit Instanz wird von Controller Instanzen benötigt, die für HTTPS Mutual Authentication konfiguriert sind (Voreinstellung).",
+        "secondaryJocCert": "Das Zertifikat der Sekundären JOC Cockpit Instanz wird von Controller Instanzen benötigt, die für HTTPS Mutual Authentication konfiguriert sind (Voreinstellung)."
       }
     },
     "agent": {
@@ -1405,7 +1405,7 @@
     "label.plannedTime": "Geplante Zeit",
     "label.orderHistory": "Auftragshistorie",
     "label.taskHistory": "Prozesshistorie",
-    "label.jobHistory": "Job History",
+    "label.jobHistory": "Job-Historie",
     "label.criticality": "Kritikalität",
     "label.returnCode": "Rückgabewert",
     "label.submitted": "Übermittelt",
@@ -1751,7 +1751,7 @@
     "message.deleteCurrentDraftObject": "Sie sind im Begriff, den Entwurf zu ersetzen. Sind Sie sicher, dass Sie fortfahren wollen?",
     "message.noObjectFoundToRelease": "Kein freigebbares Objekt gefunden",
     "message.updateFromJobTemplate": "Sind Sie sicher, dass Sie den Job aus der Job-Vorlage aktualisieren wollen?",
-    "message.localChangesWillBeOverwritten": "All the local changes will be overwritten by this action",
+    "message.localChangesWillBeOverwritten": "Alle lokalen Änderungen werden durch diese Operation überschrieben",
     "cronTab": {
       "label.convertCron": "crontab konvertieren",
       "label.folder": "Ordner",
@@ -1855,7 +1855,7 @@
           "returnCode": "Der Fail-Anweisung kann eine positive Zahl als Rückgabewert zugeordnet werden, die in der Auftragshistorie sichtbar wird. Rückgabewerte ungleich 0 werden als fehlerhafte Ausführung gewertet."
         },
         "options": {
-          "stopOnFailure": "Stop On Failure"
+          "stopOnFailure": "Stop im Fehlerfall"
         },
         "fileWatch": {
           "directory": "Das Verzeichnis, das auf die Existenz neuer Dateien hin überwacht wird.",
@@ -2192,7 +2192,7 @@
     "label.selectOrder": "Auftragsvorlage auswählen",
     "label.listOfConstants": "Variablen mit konstanten Werten",
     "label.listOfDynamicallyVariables": "Variablen mit änderbaren Werten",
-    "label.cycleEndTime": "Cycle End Time",
+    "label.cycleEndTime": "Zyklus Ende Zeit",
     "button.allOrders": "Alle Aufträge",
     "button.cancel": "Abbrechen",
     "button.startNow": "Jetzt starten",
@@ -2209,11 +2209,11 @@
     "button.assignParameterizationFromSchedules": "Parametrisierung aus Zeitplänen",
     "placeholder.selectStartNode": "Start-Position auswählen",
     "placeholder.selectEndNode": "End-Position auswählen",
-    "placeholder.enterCycleEndTime": "Enter value as d/w/m/y/h or hh:mm:ss or seconds",
+    "placeholder.enterCycleEndTime": "Wert angeben im Format d/w/m/y/h oder hh:mm:ss oder Sekunden",
     "message.noVariableAvailable": "keine Variablen vorhanden",
     "message.orderModificationNotAllowed": "Der Auftagszustand {{state}} erlaubt keine Änderung",
     "message.noLogHistoryFound": "Kein Protokoll für diesen Auftrag gefunden",
-    "tooltip.cycleEndTime": "Cycle end time in second",
+    "tooltip.cycleEndTime": "Gibt optional die Endzeit des Zyklus an. Der Benutzer kann eine kürzere als die vordefinierte Zeitspanne für das Ende des Zyklus angeben. Der Auftrag wird an der vom Benutzer gewählten Position fortgesetzt, und die angegebene Endzeit wird überprüft, wenn der Auftrag zum Beginn des Zyklus zurückkehrt. Zyklusendzeiten, die die vordefinierte Zyklusdauer überschreiten, werden ignoriert.",
     "treeView": {
       "label": {
         "state": "Zustand",
@@ -2683,7 +2683,7 @@
       "log_applicable_size": "Falls die Größe der Protokollausgaben eines Jobs diesen Wert überschreitet, wird der History Service die Ausgaben trunkieren und die ersten und letzten 100 KB verwenden. Die originale Protokolldatei des Jobs wird entfernt. Die Größe wird in MB angenommen.",
       "log_maximum_size": "Falls die Größe der Protokollausgaben eines Jobs diesen Wert überschreitet, wird der History Service die Ausgaben trunkieren und die ersten 100 KB verwenden. Die originale Protokolldatei des Jobs wird entfernt. Die Größe wird in MB angenommen.",
       "joc_reverse_proxy_url": "Wenn JOC Cockpit nicht über die originäre URL, sondern nur über einen Reverse Proxy Dienst erreichbar ist, gibt dieser Wert die zu verwendende URL an, zum Beispiel bei E-Mail-Benachrichtigungen.",
-      "allow_empty_arguments": "Allow empty arguments"
+      "allow_empty_arguments": "Leere Argumente zulassen"
     },
     "user": {
       "welcome_got_it": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht länger angezeigt werden soll.",
@@ -2793,7 +2793,7 @@
     "label.iamOidcTruststoreType": "OIDC Truststore Type",
     "label.iamOidcTruststorePassword": "OIDC Truststore Password",
     "label.iamOidcImage": "OIDC Bild",
-    "label.iamOidcUserAttribute": "OIDC User Attribute",
+    "label.iamOidcUserAttribute": "OIDC User Name Attribute",
     "label.group": "Gruppe",
     "label.general": "Generelles",
     "label.on": "An",
@@ -2894,7 +2894,7 @@
     "placeholder.iamOidcTruststorePath": "OIDC Truststore Path angeben",
     "placeholder.iamOidcTruststoreType": "OIDC Truststore Type angeben",
     "placeholder.iamOidcTruststorePassword": "OIDC Truststore Password angeben",
-    "placeholder.iamOidcUserAttribute": "Enter OIDC User Attribute",
+    "placeholder.iamOidcUserAttribute": "OIDC User Name Attribute angeben",
     "placeholder.group": "Gruppe angeben",
     "placeholder.initialPassword": "Initialkennwort angeben",
     "placeholder.minPasswordLength": "Minimallänge des Kennworts angeben",
@@ -3227,7 +3227,7 @@
     "message.invalidPostNoticeInstruction": "PostNotices-Anweisung ist nicht gültig",
     "message.invalidExpectNoticeInstruction": "ExpectNotices-Anweisung ist nicht gültig",
     "message.invalidConsumeNoticeInstruction": "ConsumeNotices-Anweisung darf nicht leer sein",
-    "message.invalidOptionsInstruction": "Options Instruction cannot be empty",
+    "message.invalidOptionsInstruction": "Options-Anweisung darf nicht leer sein",
     "message.agentIsMissing": "Agent ist erforderlich",
     "message.orderNameIsMissing": "Auftragsname darf nicht leer sein",
     "message.workflowNameIsNotValid": "Name des Arbeitsablaufs darf nicht leer sein",
