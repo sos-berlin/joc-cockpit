@@ -71,6 +71,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   orderHistory: any = [];
   taskHistory: any = [];
   jobHistory: any = [];
+  workflowFilters: any = {};
   subscription: Subscription;
 
   constructor(public coreService: CoreService, private authService: AuthService,
@@ -93,6 +94,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.workflowFilters = this.coreService.getWorkflowTab();
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
@@ -141,6 +143,25 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
       }
     }
   }
+
+  sort(key, tab): void {
+    if (tab === 'orderHistory') {
+      this.workflowFilters.historyFilter.reverse = !this.workflowFilters.historyFilter.reverse;
+      this.workflowFilters.historyFilter.sortBy = key;
+    }
+    if (tab === 'taskHistory') {
+      this.workflowFilters.taskHistoryFilter.reverse = !this.workflowFilters.taskHistoryFilter.reverse;
+      this.workflowFilters.taskHistoryFilter.sortBy = key;
+    }
+
+    if (tab === 'auditLog') {
+      this.workflowFilters.auditLogFilter.reverse = !this.workflowFilters.auditLogFilter.reverse;
+      this.workflowFilters.auditLogFilter.sortBy = key;
+    }
+
+
+  }
+
 
   private init(): void {
     if (this.index === 0) {

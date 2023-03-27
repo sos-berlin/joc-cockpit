@@ -143,6 +143,18 @@ export class CoreService {
 
     this.tabs._workflow = {};
     this.tabs._workflow.filter = {};
+    this.tabs._workflow.historyFilter = {
+      sortBy: 'startTime',
+      reverse: true
+    };
+    this.tabs._workflow.taskHistoryFilter = {
+      sortBy: 'startTime',
+      reverse: true
+    };
+    this.tabs._workflow.auditLogFilter = {
+      sortBy: 'created',
+      reverse: true
+    };
     this.tabs._workflow.filter.date = '1d';
     this.tabs._workflow.filter.label = 'today'
     this.tabs._workflow.filter.states = [];
@@ -504,7 +516,7 @@ export class CoreService {
   }
 
   getFilterAgentList(list, value: string, skip = false): any {
-    return value ? list.filter(option => {
+    return !value ? list : list.filter(option => {
       let flag = false;
       option.children = option.children.filter(option2 => {
         let isCheck = false;
@@ -536,7 +548,7 @@ export class CoreService {
         return isCheck;
       });
       return flag;
-    }) : list;
+    });
   }
 
   download(url: string, options: any, fileName: string, cb: any): void {
@@ -620,11 +632,11 @@ export class CoreService {
     this.translate.get('common.message.' + type).subscribe(translatedValue => {
       msg = translatedValue;
     });
-    if(messageType == 'error') {
+    if (messageType == 'error') {
       message.error(msg);
-    } else if(messageType == 'warn') {
+    } else if (messageType == 'warn') {
       message.warn(msg);
-    } else if(messageType == 'info') {
+    } else if (messageType == 'info') {
       message.info(msg);
     } else {
       message.success(msg);
@@ -1594,7 +1606,7 @@ export class CoreService {
       list: []
     };
     data.arr.forEach(items => {
-      if(items) {
+      if (items) {
         if (items.name === '/') {
           if (!items.notFound) {
             obj.list = items.list;
@@ -1620,7 +1632,7 @@ export class CoreService {
     for (let i in data.jobResources) {
       let flag = true;
       for (let j in tempARr) {
-        if(tempARr[j]) {
+        if (tempARr[j]) {
           if (data.jobResources[i] === tempARr[j].name) {
             flag = false;
             break;
@@ -1792,8 +1804,8 @@ export class CoreService {
   createTreeStructure(mainObj): any {
     let nodes = [];
     mainObj.treeStructure.forEach(item => {
-      if(item.name1){
-        item.position += '.'+item.name1
+      if (item.name1) {
+        item.position += '.' + item.name1
       }
       let data: any = {
         title: '',
@@ -1820,7 +1832,7 @@ export class CoreService {
 
         let _tempArr = item.position.split('/');
         _tempArr.splice(_tempArr.length - 1, 1)
-       let pos = _tempArr.join('/');
+        let pos = _tempArr.join('/');
         if (pos) {
           data.position = pos;
           item.position = pos;
@@ -1949,11 +1961,11 @@ export class CoreService {
               break;
             } else if ((nodes[i].position == _tempArr.join('/'))) {
               let isFound = false;
-              if(!item.job) {
+              if (!item.job) {
                 for (let x in nodes[i].children) {
                   if (nodes[i].children[x].position == item.position || (nodes[i].children[x].position.indexOf(':') > -1 &&
                     nodes[i].children[x].position.substring(0, nodes[i].children[x].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
-                    if(nodes[i].children[x].title != 'Job'){
+                    if (nodes[i].children[x].title != 'Job') {
                       if (parentNode) {
                         parentNode.children.push(data);
                         checkAndUpdate(nodes[i].children[x], parentNode);
@@ -1966,7 +1978,7 @@ export class CoreService {
                   }
                 }
               }
-              if(!isFound) {
+              if (!isFound) {
                 if (parentNode && parentNode.children) {
                   parentNode.children.push(data);
                   checkAndUpdate(nodes[i], parentNode);
@@ -1985,15 +1997,15 @@ export class CoreService {
                   let arr = /(try\+)(\d)/gm.exec(item.position);
                   if (arr.length > 1) {
                     let regex = arr[1] + arr[2];
-                     let pos = item.position.replace(regex, (arr[1] + 0));
-                    if(pos == (nodes[i].position+':0') && item.job) {
+                    let pos = item.position.replace(regex, (arr[1] + 0));
+                    if (pos == (nodes[i].position + ':0') && item.job) {
                       nodes[i].retryCount = (nodes[i].retryCount || 1) + 1;
                       checkAndUpdate(nodes[i], data);
                       isCheck = true;
                     }
                   }
                 }
-                if(!isCheck) {
+                if (!isCheck) {
                   tryCatchRecursion(nodes, item, data);
                 }
                 obj.flag = true;
@@ -2059,11 +2071,11 @@ export class CoreService {
             break;
           } else if ((node.children[i].position == arr.join('/'))) {
             let isFound = false;
-            if(!item.job) {
+            if (!item.job) {
               for (let x in node.children[i].children) {
                 if (node.children[i].children[x].position == item.position || (node.children[i].children[x].position.indexOf(':') > -1 &&
                   node.children[i].children[x].position.substring(0, node.children[i].children[x].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
-                  if(node.children[i].children[x].title != 'Job'){
+                  if (node.children[i].children[x].title != 'Job') {
                     if (parentNode && parentNode.children) {
                       parentNode.children.push(data);
                       checkAndUpdate(node.children[i].children[x], parentNode);
@@ -2076,7 +2088,7 @@ export class CoreService {
                 }
               }
             }
-            if(!isFound) {
+            if (!isFound) {
               if (parentNode && parentNode.children) {
                 parentNode.children.push(data);
                 checkAndUpdate(node.children[i], parentNode);
@@ -2176,13 +2188,13 @@ export class CoreService {
       }
       if (!flag) {
         const _tempArr = data.position.split('/');
-        if(_tempArr.length > 1) {
+        if (_tempArr.length > 1) {
           const lastPos = _tempArr[_tempArr.length - 1];
           if (lastPos.match(/fork+/) && !lastPos.match(/branch/) && node.title == 'Fork') {
             node.title = 'ForkList'
           }
         }
-        if(node.children) {
+        if (node.children) {
           if (data.title == 'Join' && node.children[node.children.length - 1].title == 'ForkList') {
             data.end = 'ForkList-End';
           }
@@ -2190,6 +2202,7 @@ export class CoreService {
         }
       }
     }
+
     return nodes;
   }
 }
