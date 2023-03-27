@@ -10,22 +10,62 @@
         [nzBordered]="true"
         [nzShowPagination]="false"
         [nzFrontPagination]="false"
-        [nzData]="orderHistory"
+        [nzData]="orderHistory | orderBy: workflowFilters.historyFilter.sortBy: workflowFilters.historyFilter.reverse"
       >
         <thead>
         <tr>
-          <th class="dynamic-thead"><span translate>history.label.orderId</span></th>
-          <th class="dynamic-thead"><span translate>history.label.position</span></th>
-          <th class="dynamic-thead"><span translate>history.label.status</span></th>
-          <th class="dynamic-thead"><span translate>history.label.orderState</span></th>
-          <th class="dynamic-thead"><span translate>history.label.plannedTime</span></th>
-          <th class="dynamic-thead"><span translate>history.label.startTime</span></th>
-          <th class="dynamic-thead"><span translate>history.label.endTime</span></th>
-          <th class="dynamic-thead"><span translate>history.label.duration</span></th>
+          <th class="dynamic-thead" (click)="sort('orderId','orderHistory')"><a>
+            <span class="p-r-xs" translate>history.label.orderId</span>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'orderId' && !workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'orderId' && workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-down "></i></a></th>
+          <th class="dynamic-thead" (click)="sort('position','orderHistory')"><a><span
+            class="p-r-xs" translate>history.label.position</span>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'position' && !workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'position' && workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-down "></i></a></th>
+          <th class="dynamic-thead" (click)="sort('status','orderHistory')"><a>
+            <span class="p-r-xs" translate>history.label.status</span>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'status' && !workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'status' && workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-down "></i></a></th>
+          <th class="dynamic-thead" (click)="sort('orderState','orderHistory')"><a>
+            <span class="p-r-xs" translate>history.label.orderState</span>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'orderState' && !workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'orderState' && workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-down "></i></a></th>
+          <th class="dynamic-thead" (click)="sort('plannedTime','orderHistory')"><a>
+            <span class="p-r-xs" translate>history.label.plannedTime</span>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'plannedTime' && !workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'plannedTime' && workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-down "></i></a></th>
+          <th class="dynamic-thead" (click)="sort('startTime','orderHistory')"><a>
+            <span class="p-r-xs" translate>history.label.startTime</span>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'startTime' && !workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'startTime' && workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-down "></i></a></th>
+          <th class="dynamic-thead" (click)="sort('endTime','orderHistory')"><a>
+            <span class="p-r-xs" translate>history.label.endTime</span>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'endTime' && !workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'endTime' && workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-down "></i></a></th>
+          <th class="dynamic-thead" (click)="sort('duration','orderHistory')"><a>
+            <span class="p-r-xs" translate>history.label.duration</span>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'duration' && !workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'duration' && workflowFilters.historyFilter.reverse"
+               class="fa fa-caret-down "></i></a></th>
         </tr>
         </thead>
         <tbody>
-        <ng-template ngFor let-history [ngForOf]="orderHistoryTable.data | orderBy: 'startTime':true">
+        <ng-template ngFor let-history [ngForOf]="orderHistoryTable.data">
           <tr (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)"
               class="cursor" [ngClass]="{'light-bg':history.show}">
             <td>
@@ -63,12 +103,14 @@
           <ng-container *ngIf="history.show">
             <tr *ngIf="history.arguments">
               <td colspan="8">
-                <app-order-variable [order]="history" [type]="'arguments'" [history]="true" [schedulerId]="schedulerIds.selected"></app-order-variable>
+                <app-order-variable [order]="history" [type]="'arguments'" [history]="true"
+                                    [schedulerId]="schedulerIds.selected"></app-order-variable>
               </td>
             </tr>
             <tr>
               <td colspan="8" style="padding:0 !important;">
-                <app-order-history-template [permission]="permission" class="order-history-template0" style="display: block" [history]="history"
+                <app-order-history-template [permission]="permission" class="order-history-template0"
+                                            style="display: block" [history]="history"
                                             [schedulerId]="schedulerIds.selected"></app-order-history-template>
               </td>
             </tr>
@@ -78,7 +120,8 @@
       </nz-table>
     </div>
   </nz-tab>
-  <nz-tab *ngIf="permission.currentController && permission.currentController.orders.view" [nzTitle]="'history.label.taskHistory' | translate" (nzClick)="loadTaskHistory()">
+  <nz-tab *ngIf="permission.currentController && permission.currentController.orders.view"
+          [nzTitle]="'history.label.taskHistory' | translate" (nzClick)="loadTaskHistory()">
     <a class="text-primary text-hover-primary pos-abt r-15" (click)="navToHistory('TASK')" style="top: 64px" translate>common.button.viewHistory</a>
     <div class="table-responsive">
       <nz-table
@@ -87,23 +130,69 @@
         [nzBordered]="true"
         [nzFrontPagination]="false"
         [nzShowPagination]="false"
-        [nzData]="taskHistory"
+        [nzData]="taskHistory | orderBy: workflowFilters.taskHistoryFilter.sortBy: workflowFilters.taskHistoryFilter.reverse"
       >
         <thead>
         <tr>
-          <th><span translate>history.label.job</span></th>
-          <th><span translate>history.label.position</span></th>
-          <th><span translate>history.label.status</span></th>
-          <th><span translate>history.label.startTime</span></th>
-          <th><span translate>history.label.endTime</span></th>
-          <th><span translate>history.label.duration</span></th>
-          <th><span translate>history.label.criticality</span></th>
-          <th><span translate>history.label.returnCode</span></th>
+          <th (click)="sort('job','taskHistory')"><span class="p-r-xs" translate>history.label.job</span>
+            <i *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'job' && !workflowFilters.taskHistoryFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'job' && workflowFilters.taskHistoryFilter.reverse"
+               class="fa fa-caret-down "></i></th>
+          <th (click)="sort('position','taskHistory')"><span class="p-r-xs" translate>history.label.position</span>
+            <i
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'position' && !workflowFilters.taskHistoryFilter.reverse"
+              class="fa fa-caret-up "></i>
+            <i
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'position' && workflowFilters.taskHistoryFilter.reverse"
+              class="fa fa-caret-down "></i></th>
+          <th (click)="sort('status','taskHistory')"><span class="p-r-xs" translate>history.label.status</span>
+            <i
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'status' && !workflowFilters.taskHistoryFilter.reverse"
+              class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'status' && workflowFilters.taskHistoryFilter.reverse"
+               class="fa fa-caret-down "></i></th>
+          <th (click)="sort('startTime','taskHistory')"><span class="p-r-xs" translate>history.label.startTime</span>
+            <i
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'startTime' && !workflowFilters.taskHistoryFilter.reverse"
+              class="fa fa-caret-up "></i>
+            <i
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'startTime' && workflowFilters.taskHistoryFilter.reverse"
+              class="fa fa-caret-down "></i></th>
+          <th (click)="sort('endTime','taskHistory')"><span class="p-r-xs" translate>history.label.endTime</span>
+            <i
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'endTime' && !workflowFilters.taskHistoryFilter.reverse"
+              class="fa fa-caret-up "></i>
+            <i
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'endTime' && workflowFilters.taskHistoryFilter.reverse"
+              class="fa fa-caret-down "></i></th>
+          <th (click)="sort('duration','taskHistory')"><span class="p-r-xs" translate>history.label.duration</span>
+            <i
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'duration' && !workflowFilters.taskHistoryFilter.reverse"
+              class="fa fa-caret-up "></i>
+            <i
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'duration' && workflowFilters.taskHistoryFilter.reverse"
+              class="fa fa-caret-down "></i></th>
+          <th (click)="sort('criticality','taskHistory')"><span class="p-r-xs" translate>history.label.criticality</span>
+            <i
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'criticality' && !workflowFilters.taskHistoryFilter.reverse"
+              class="fa fa-caret-up "></i>
+            <i
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'criticality' && workflowFilters.taskHistoryFilter.reverse"
+              class="fa fa-caret-down "></i></th>
+          <th (click)="sort('returnCode','taskHistory')"><span class="p-r-xs" translate>history.label.returnCode</span>
+            <i
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'returnCode' && !workflowFilters.taskHistoryFilter.reverse"
+              class="fa fa-caret-up "></i>
+            <i
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'returnCode' && workflowFilters.taskHistoryFilter.reverse"
+              class="fa fa-caret-down "></i></th>
         </tr>
         </thead>
         <tbody>
-        <ng-template ngFor let-history [ngForOf]="taskHistoryTable.data | orderBy: 'startTime':true">
-          <tr (click)="coreService.showLogWindow(null, history, null, history.controllerId, null)" class="cursor" [ngClass]="{'light-bg':history.show}">
+        <ng-template ngFor let-history [ngForOf]="taskHistoryTable.data">
+          <tr (click)="coreService.showLogWindow(null, history, null, history.controllerId, null)" class="cursor"
+              [ngClass]="{'light-bg':history.show}">
             <td>
                <span class="show-in-single-line">
                   <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
@@ -125,7 +214,8 @@
           </tr>
           <tr *ngIf="history.show">
             <td colspan="8">
-              <app-order-variable [order]="history" [type]="'arguments'" [history]="true" [schedulerId]="schedulerIds.selected"></app-order-variable>
+              <app-order-variable [order]="history" [type]="'arguments'" [history]="true"
+                                  [schedulerId]="schedulerIds.selected"></app-order-variable>
             </td>
           </tr>
         </ng-template>
@@ -133,7 +223,8 @@
       </nz-table>
     </div>
   </nz-tab>
-  <nz-tab *ngIf="jobName && permission.currentController && permission.currentController.orders.view" [nzTitle]="titleTemplate" (nzClick)="loadJobHistory()">
+  <nz-tab *ngIf="jobName && permission.currentController && permission.currentController.orders.view"
+          [nzTitle]="titleTemplate" (nzClick)="loadJobHistory()">
     <ng-template #titleTemplate>
       <span translate>history.label.jobHistory</span>
       <span class="text-muted p-l-xs">({{jobName}})</span>
@@ -174,7 +265,8 @@
           </tr>
           <tr *ngIf="history.show">
             <td colspan="8">
-              <app-order-variable [order]="history" [type]="'arguments'" [history]="true" [schedulerId]="schedulerIds.selected"></app-order-variable>
+              <app-order-variable [order]="history" [type]="'arguments'" [history]="true"
+                                  [schedulerId]="schedulerIds.selected"></app-order-variable>
             </td>
           </tr>
         </ng-template>
@@ -182,7 +274,8 @@
       </nz-table>
     </div>
   </nz-tab>
-  <nz-tab *ngIf="(permission.joc && permission.joc.auditLog.view)" [nzTitle]="'auditLog.label.auditLog' | translate" (nzClick)="loadAuditLogs()">
+  <nz-tab *ngIf="(permission.joc && permission.joc.auditLog.view)" [nzTitle]="'auditLog.label.auditLog' | translate"
+          (nzClick)="loadAuditLogs()">
     <div class="table-responsive ">
       <nz-table
         #auditTable
@@ -190,21 +283,49 @@
         [nzBordered]="true"
         [nzFrontPagination]="false"
         [nzShowPagination]="false"
-        [nzData]="auditLogs"
+        [nzData]="auditLogs| orderBy: workflowFilters.auditLogFilter.sortBy: workflowFilters.auditLogFilter.reverse"
       >
         <thead>
         <tr>
-          <th><span translate>auditLog.label.created</span></th>
-          <th><span translate>auditLog.label.account</span></th>
-          <th><span translate>auditLog.label.request</span></th>
-          <th><span translate>auditLog.label.category</span></th>
-          <th><span translate>auditLog.label.comment</span></th>
-          <th><span translate>auditLog.label.timeSpend</span></th>
-          <th><span translate>auditLog.label.ticketLink</span></th>
+          <th (click)="sort('created','auditLog')"><span class="p-r-xs" translate>auditLog.label.created</span>
+            <i *ngIf="workflowFilters.auditLogFilter.sortBy == 'created' && !workflowFilters.auditLogFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.auditLogFilter.sortBy == 'created' && workflowFilters.auditLogFilter.reverse"
+               class="fa fa-caret-down "></i></th>
+          <th (click)="sort('account','auditLog')"><span class="p-r-xs" translate>auditLog.label.account</span>
+            <i *ngIf="workflowFilters.auditLogFilter.sortBy == 'account' && !workflowFilters.auditLogFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.auditLogFilter.sortBy == 'account' && workflowFilters.auditLogFilter.reverse"
+               class="fa fa-caret-down "></i></th>
+          <th (click)="sort('request','auditLog')"><span class="p-r-xs" translate>auditLog.label.request</span>
+            <i *ngIf="workflowFilters.auditLogFilter.sortBy == 'request' && !workflowFilters.auditLogFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.auditLogFilter.sortBy == 'request' && workflowFilters.auditLogFilter.reverse"
+               class="fa fa-caret-down "></i></th>
+          <th (click)="sort('category','auditLog')"><span class="p-r-xs" translate>auditLog.label.category</span>
+            <i *ngIf="workflowFilters.auditLogFilter.sortBy == 'category' && !workflowFilters.auditLogFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.auditLogFilter.sortBy == 'category' && workflowFilters.auditLogFilter.reverse"
+               class="fa fa-caret-down "></i></th>
+          <th (click)="sort('comment','auditLog')"><span class="p-r-xs" translate>auditLog.label.comment</span>
+            <i *ngIf="workflowFilters.auditLogFilter.sortBy == 'comment' && !workflowFilters.auditLogFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.auditLogFilter.sortBy == 'comment' && workflowFilters.auditLogFilter.reverse"
+               class="fa fa-caret-down "></i></th>
+          <th (click)="sort('timeSpend','auditLog')"><span class="p-r-xs" translate>auditLog.label.timeSpend</span>
+            <i *ngIf="workflowFilters.auditLogFilter.sortBy == 'timeSpend' && !workflowFilters.auditLogFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.auditLogFilter.sortBy == 'timeSpend' && workflowFilters.auditLogFilter.reverse"
+               class="fa fa-caret-down "></i></th>
+          <th (click)="sort('ticketLink','auditLog')"><span class="p-r-xs" translate>auditLog.label.ticketLink</span>
+            <i *ngIf="workflowFilters.auditLogFilter.sortBy == 'ticketLink' && !workflowFilters.auditLogFilter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="workflowFilters.auditLogFilter.sortBy == 'ticketLink' && workflowFilters.auditLogFilter.reverse"
+               class="fa fa-caret-down "></i></th>
         </tr>
         </thead>
         <tbody>
-        <ng-template ngFor let-auditLog [ngForOf]="auditTable.data | orderBy: 'created':true">
+        <ng-template ngFor let-auditLog [ngForOf]="auditTable.data">
           <tr>
             <td>
               <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!auditLog.show"

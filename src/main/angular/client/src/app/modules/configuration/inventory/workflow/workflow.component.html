@@ -671,6 +671,16 @@
               </div>
             </div>
           </div>
+          <div  *ngIf="selectedNode.type === 'Options'">
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 block-ellipsis-job"
+                     [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.options.stopOnFailure' | translate) : ''"
+                     [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.stopOnFailure</label>
+              <div class="col-md-8 col-lg-9">
+                <label nz-checkbox [(ngModel)]="selectedNode.obj.stopOnFailure" name="stopOnFailure"></label>
+              </div>
+            </div>
+          </div>
           <div  *ngIf="selectedNode.type === 'Fail'">
             <div class="form-group row">
               <label class="col-md-4 col-lg-3 form-control-label"

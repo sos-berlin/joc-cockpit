@@ -3522,7 +3522,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   private updateToolbar(operation, cell, name = ''): void {
     $('#toolbar').find('img').each(function (index) {
-      if (index === 18) {
+      if (index === 19) {
         if (!cell && !name) {
           $(this).addClass('disable-link');
           $(this).attr('title', '');
@@ -5527,7 +5527,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           });
           $(this).hide();
         }
-        if (index === 18) {
+        if (index === 19) {
           $(this).addClass('disable-link');
         }
       });
@@ -6497,6 +6497,26 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           this.currentPoint = new mxPoint(x, y);
         };
 
+        function validationCheck(drpTargt, title, msg): boolean{
+          let flag1 = false;
+          if (drpTargt.edges && drpTargt.edges.length) {
+            for (let i = 0; i < drpTargt.edges.length; i++) {
+              let endTagName = 'End' + drpTargt.edges[i].source.value.tagName;
+              if (drpTargt.edges[i].target.value.tagName === endTagName) {
+                flag1 = true;
+                break;
+              }
+            }
+          }
+          if (!flag1) {
+            self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
+              msg = translatedValue;
+            });
+            self.toasterService.error(msg, title + '!!');
+          }
+          return flag1;
+        }
+
         /**
          * Check the drop target on drop event
          */
@@ -6535,7 +6555,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   return;
                 }
               }
-              if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('cycle') || dragElement.match('lock') || dragElement.match('try') || dragElement.match('if')) {
+              if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('cycle') || dragElement.match('lock') || dragElement.match('options') || dragElement.match('try') || dragElement.match('if')) {
                 const selectedCell = graph.getSelectionCell();
                 if (selectedCell) {
                   const cells = graph.getSelectionCells();
@@ -6587,85 +6607,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                       }
                     }
                   }
-                } else if (drpTargt.value.tagName === 'Retry') {
-                  let flag1 = false;
-                  if (drpTargt.edges && drpTargt.edges.length) {
-                    for (let i = 0; i < drpTargt.edges.length; i++) {
-                      if (drpTargt.edges[i].source.value.tagName === 'Retry' && drpTargt.edges[i].target.value.tagName === 'EndRetry') {
-                        flag1 = true;
-                      }
-                    }
-                  }
+                } else if (self.workflowService.isOnlyInstruction(drpTargt.value.tagName)) {
+                  let flag1 = validationCheck(drpTargt, title, msg);
                   if (!flag1) {
-                    self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
-                      msg = translatedValue;
-                    });
-                    self.toasterService.error(msg, title + '!!');
-                    return;
-                  }
-                } else if (drpTargt.value.tagName === 'Lock') {
-                  let flag1 = false;
-                  if (drpTargt.edges && drpTargt.edges.length) {
-                    for (let i = 0; i < drpTargt.edges.length; i++) {
-                      if ((drpTargt.edges[i].source.value.tagName === 'Lock' && drpTargt.edges[i].target.value.tagName === 'EndLock')) {
-                        flag1 = true;
-                      }
-                    }
-                  }
-                  if (!flag1) {
-                    self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
-                      msg = translatedValue;
-                    });
-                    self.toasterService.error(msg, title + '!!');
-                    return;
-                  }
-                } else if (drpTargt.value.tagName === 'Cycle') {
-                  let flag1 = false;
-                  if (drpTargt.edges && drpTargt.edges.length) {
-                    for (let i = 0; i < drpTargt.edges.length; i++) {
-                      if (drpTargt.edges[i].source.value.tagName === 'Cycle' && drpTargt.edges[i].target.value.tagName === 'EndCycle') {
-                        flag1 = true;
-                      }
-                    }
-                  }
-                  if (!flag1) {
-                    self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
-                      msg = translatedValue;
-                    });
-                    self.toasterService.error(msg, title + '!!');
-                    return;
-                  }
-                } else if (drpTargt.value.tagName === 'ConsumeNotices') {
-                  let flag1 = false;
-                  if (drpTargt.edges && drpTargt.edges.length) {
-                    for (let i = 0; i < drpTargt.edges.length; i++) {
-                      if (drpTargt.edges[i].source.value.tagName === 'ConsumeNotices' && drpTargt.edges[i].target.value.tagName === 'EndConsumeNotices') {
-                        flag1 = true;
-                      }
-                    }
-                  }
-                  if (!flag1) {
-                    self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
-                      msg = translatedValue;
-                    });
-                    self.toasterService.error(msg, title + '!!');
-                    return;
-                  }
-                } else if (drpTargt.value.tagName === 'ForkList' || drpTargt.value.tagName === 'StickySubagent') {
-                  let flag1 = false;
-                  if (drpTargt.edges && drpTargt.edges.length) {
-                    for (let i = 0; i < drpTargt.edges.length; i++) {
-                      if ((drpTargt.edges[i].source.value.tagName === 'ForkList' && drpTargt.edges[i].target.value.tagName === 'EndForkList') ||
-                        (drpTargt.edges[i].source.value.tagName === 'StickySubagent' && drpTargt.edges[i].target.value.tagName === 'EndStickySubagent')) {
-                        flag1 = true;
-                      }
-                    }
-                  }
-                  if (!flag1) {
-                    self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
-                      msg = translatedValue;
-                    });
-                    self.toasterService.error(msg, title + '!!');
                     return;
                   }
                 } else if (drpTargt.value.tagName === 'Try') {
@@ -6715,17 +6659,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 dropTarget = drpTargt;
               } else {
                 if (drpTargt.value.tagName === 'Connection') {
-                  if ((drpTargt.source.value.tagName === 'Fork' && drpTargt.target.value.tagName === 'Join') ||
-                    (drpTargt.source.value.tagName === 'If' && drpTargt.target.value.tagName === 'EndIf') ||
-                    (drpTargt.source.value.tagName === 'Retry' && drpTargt.target.value.tagName === 'EndRetry') ||
-                    (drpTargt.source.value.tagName === 'ForkList' && drpTargt.target.value.tagName === 'EndForkList') ||
-                    (drpTargt.source.value.tagName === 'Lock' && drpTargt.target.value.tagName === 'EndLock') ||
-                    (drpTargt.source.value.tagName === 'StickySubagent' && drpTargt.target.value.tagName === 'EndStickySubagent') ||
-                    (drpTargt.source.value.tagName === 'ConsumeNotices' && drpTargt.target.value.tagName === 'EndConsumeNotices') ||
-                    (drpTargt.source.value.tagName === 'Cycle' && drpTargt.target.value.tagName === 'EndCycle') ||
-                    (drpTargt.source.value.tagName === 'Try' && drpTargt.target.value.tagName === 'Catch') ||
-                    (drpTargt.source.value.tagName === 'Catch' && drpTargt.target.value.tagName === 'EndTry') ||
-                    (drpTargt.source.value.tagName === 'Try' && drpTargt.target.value.tagName === 'EndTry')) {
+                  if (checkClosedCellWithSourceCell(drpTargt.source,  drpTargt.target)) {
                     return;
                   }
                 }
@@ -6977,7 +6911,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   if (cell.source) {
                     if (cell.source.getParent() && cell.source.getParent().id !== '1') {
                       const _type = cell.getAttribute('type');
-                      if (!(_type === 'retry' || _type === 'lock' || _type === 'cycle' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
+                      if (!(_type === 'retry' || _type === 'lock' || _type === 'options' || _type === 'cycle' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
                         cell.setParent(cell.source.getParent());
                       }
                     }
@@ -6997,18 +6931,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     }
                     if (cells[0].value.tagName === 'Fork') {
                       v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, 'join');
-                    } else if (cells[0].value.tagName === 'ForkList') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', null), 0, 0, 68, 68, 'closeForkList');
+                    } else if (cells[0].value.tagName === 'ForkList' || cells[0].value.tagName === 'Lock' || cells[0].value.tagName === 'StickySubagent' ||
+                      cells[0].value.tagName === 'Options' || cells[0].value.tagName === 'ConsumeNotices') {
+                      v1 = createEndVertex (parent, cells[0].value.tagName);
                     } else if (cells[0].value.tagName === 'If') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
                     } else if (cells[0].value.tagName === 'Retry') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
-                    } else if (cells[0].value.tagName === 'Lock') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, 'closeLock');
-                    } else if (cells[0].value.tagName === 'StickySubagent') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndStickySubagent', 'stickySubagentEnd', null), 0, 0, 68, 68, 'closeStickySubagent');
-                    } else if (cells[0].value.tagName === 'ConsumeNotices') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndConsumeNotices', 'consumeNoticesEnd', null), 0, 0, 68, 68, 'closeConsumeNotices');
                     } else if (cells[0].value.tagName === 'Cycle') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 75, 75, 'cycle');
                     } else {
@@ -7416,11 +7345,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     function checkClosedCellWithSourceCell(sour, targ): boolean {
       const sourName = sour.value.tagName;
       const tarName = targ.value.tagName;
-      return (sourName === 'Fork' && tarName === 'Join') || (sourName === 'If' && tarName === 'EndIf') ||
-        ((sourName === 'Try' && tarName === 'EndTry') || (sourName === 'Try' && tarName === 'Catch') ||
-          (sourName === 'Catch' && tarName === 'EndTry')) || (sourName === 'Retry' && tarName === 'EndRetry') ||
-        (sourName === 'Cycle' && tarName === 'EndCycle') || (sourName === 'ForkList' && tarName === 'EndForkList') ||
-        (sourName === 'Lock' && tarName === 'EndLock') || (sourName === 'StickySubagent' && tarName === 'EndStickySubagent');
+      return (sourName === 'Fork' && tarName === 'Join') ||
+        (sourName === 'If' && tarName === 'EndIf') ||
+        (sourName === 'ConsumeNotices' && tarName === 'EndConsumeNotices') ||
+        (sourName === 'Try' && tarName === 'EndTry') ||
+        (sourName === 'Try' && tarName === 'Catch') ||
+        (sourName === 'Catch' && tarName === 'EndTry') ||
+        (sourName === 'Retry' && tarName === 'EndRetry') ||
+        (sourName === 'Cycle' && tarName === 'EndCycle') ||
+        (sourName === 'ForkList' && tarName === 'EndForkList') ||
+        (sourName === 'Lock' && tarName === 'EndLock') ||
+        (sourName === 'Options' && tarName === 'EndOptions') ||
+        (sourName === 'StickySubagent' && tarName === 'EndStickySubagent');
     }
 
     function getLastNodeAndConnect(name, parent, parentCell, cell, cells): any {
@@ -7450,6 +7386,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         label1 = 'stickySubagent';
         label2 = 'endStickySubagent';
         v2 = graph.insertVertex(parent, null, getCellNode('EndStickySubagent', 'stickySubagentEnd', parentCell.id), 0, 0, 68, 68, 'stickySubagent');
+      } else if (name === 'Options') {
+        label1 = 'options';
+        label2 = 'endOptions';
+        v2 = graph.insertVertex(parent, null, getCellNode('EndOptions', 'optionsEnd', parentCell.id), 0, 0, 68, 68, 'options');
       } else if (name === 'ConsumeNotices') {
         label1 = 'consumeNotices';
         label2 = 'endConsumeNotices';
@@ -7461,7 +7401,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       } else if (name === 'ForkList') {
         label1 = 'forkList';
         label2 = 'endForkList';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', parentCell.id), 0, 0, 68, 68, 'closeForkList');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', parentCell.id), 0, 0, 68, 68, 'forkList');
       }
 
       if (cell) {
@@ -7574,7 +7514,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         graph.insertEdge(parent, null, getConnectionNode('try'), parentCell, cell);
         graph.insertEdge(parent, null, getConnectionNode('try'), _middle, v3);
         graph.insertEdge(parent, null, getConnectionNode('endTry'), v3, v2);
-      } else if (cellName === 'If' || cellName === 'Fork' || cellName === 'ForkList' || cellName === 'Retry' || cellName === 'Lock' || cellName === 'StickySubagent' || cellName === 'ConsumeNotices' || cellName === 'Cycle') {
+      } else if (self.workflowService.isInstructionCollapsible(cellName) && cellName !== 'Try') {
         const obj = getLastNodeAndConnect(cellName, parent, parentCell, cell, cells);
         _sour = obj._sour;
         _tar = obj._tar;
@@ -7622,7 +7562,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
 
     /**
-     * Get end node of If/Fork/Try/Retry/Lock/StickySubagent/Cycle/ForkList/ConsumeNotices
+     * Get end node of If/Fork/Try/Retry/Lock/Options/StickySubagent/Cycle/ForkList/ConsumeNotices
      */
     function getEndNode(cell): any {
       let targetNode = {};
@@ -8166,6 +8106,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const edit3 = new mxCellAttributeChange(
               obj.cell, 'unsuccessful', self.selectedNode.newObj.unsuccessful);
             graph.getModel().execute(edit3);
+          } else if (self.selectedNode.type === 'Options') {
+            const edit2 = new mxCellAttributeChange(
+              obj.cell, 'stopOnFailure', self.selectedNode.newObj.stopOnFailure);
+            graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'ExpectNotices' || self.selectedNode.type === 'PostNotices') {
             let noticeBoardNames;
             if (self.selectedNode.type === 'ExpectNotices') {
@@ -8774,7 +8718,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
           branchId = 'branch' + (targetObj.branches.length + 1);
           targetObj.branches.push({id: branchId, instructions: copyObject});
-        } else if (target.value.tagName === 'Retry' || target.value.tagName === 'Lock' || target.value.tagName === 'StickySubagent' || target.value.tagName === 'Cycle' || target.value.tagName === 'ForkList' || target.value.tagName === 'ConsumeNotices') {
+        } else if (self.workflowService.isOnlyInstruction(target.value.tagName)) {
           if (!targetObj.instructions) {
             targetObj.instructions = [];
           }
@@ -8976,7 +8920,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (copyObject.else && copyObject.else.instructions) {
           recursion(copyObject.else);
         }
-      } else if (copyObject.TYPE === 'Retry' || copyObject.TYPE === 'Cycle' || copyObject.TYPE === 'Try' || copyObject.TYPE === 'Lock' || copyObject.TYPE === 'StickySubagent' || copyObject.TYPE === 'ConsumeNotices' || copyObject.TYPE === 'ForkList') {
+      } else if (self.workflowService.isOnlyInstruction(copyObject.TYPE) || copyObject.TYPE === 'Try') {
         recursion(copyObject);
       }
     }
@@ -9025,18 +8969,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (cells.length < 2) {
         selectionChanged();
       } else if (cells.length === 2) {
-        if ((cells[0].value.tagName === 'Fork' && cells[1].value.tagName === 'Join') ||
-          (cells[0].value.tagName === 'If' && cells[1].value.tagName === 'EndIf') ||
-          (cells[0].value.tagName === 'Retry' && cells[1].value.tagName === 'EndRetry') ||
-          (cells[0].value.tagName === 'Cycle' && cells[1].value.tagName === 'EndCycle') ||
-          (cells[0].value.tagName === 'Lock' && cells[1].value.tagName === 'EndLock') ||
-          (cells[0].value.tagName === 'StickySubagent' && cells[1].value.tagName === 'EndStickySubagent') ||
-          (cells[0].value.tagName === 'ConsumeNotices' && cells[1].value.tagName === 'EndConsumeNotices') ||
-          (cells[0].value.tagName === 'ForkList' && cells[1].value.tagName === 'EndForkList') ||
-          (cells[0].value.tagName === 'Try' && cells[1].value.tagName === 'EndTry')) {
+        if (checkClosedCellWithSourceCell(cells[0], cells[1]) && !((cells[0].value.tagName === 'Try' && cells[1].value.tagName === 'Catch') ||
+(cells[0].value.tagName === 'Catch' && cells[1].value.tagName === 'EndTry'))) {
           selectionChanged();
         }
       }
+    }
+
+    function createEndVertex(parent, tagName, id?): any {
+      let endTag = 'End' + tagName;
+      let closeTag = 'close' + tagName;
+      let lastEndTag = tagName.substring(0,1).toLowerCase() +  tagName.substring(1, tagName.length) + 'End';
+      return graph.insertVertex(parent, null, getCellNode(endTag, lastEndTag, id), 0, 0, 68, 68, closeTag);
     }
 
     /**
@@ -9049,7 +8993,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           return;
         }
       }
-
       if ((targetCell.value.tagName === 'ForkList' || targetCell.value.tagName === 'StickySubagent') && title.match('fork.')) {
         return;
       }
@@ -9223,7 +9166,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (targetCell.source) {
             if (targetCell.source.getParent().id !== '1') {
               const _type = targetCell.getAttribute('type') || targetCell.getAttribute('displayLabel');
-              if (!(_type === 'retry' || _type === 'cycle' || _type === 'lock' || _type === 'consumeNotices' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
+              if (!(_type === 'retry' || _type === 'cycle' || _type === 'lock' || _type === 'options' || _type === 'consumeNotices' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
                 targetCell.setParent(targetCell.source.getParent());
               }
             }
@@ -9237,16 +9180,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
             } else if (clickedCell.value.tagName === 'Retry') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
-            } else if (clickedCell.value.tagName === 'Lock') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, 'closeLock');
-            } else if (clickedCell.value.tagName === 'StickySubagent') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndStickySubagent', 'stickySubagentEnd', null), 0, 0, 68, 68, 'closeStickySubagent');
-            } else if (clickedCell.value.tagName === 'ConsumeNotices') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndConsumeNotices', 'consumeNoticesEnd', null), 0, 0, 68, 68, 'closeConsumeNotices');
-            } else if (clickedCell.value.tagName === 'Cycle') {
+            }  else if (clickedCell.value.tagName === 'ForkList' || clickedCell.value.tagName === 'Lock' || clickedCell.value.tagName === 'StickySubagent' ||
+            clickedCell.value.tagName === 'Options' || clickedCell.value.tagName === 'ConsumeNotices') {
+              v1 = createEndVertex (parent, clickedCell.value.tagName);
+            }  else if (clickedCell.value.tagName === 'Cycle') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 75, 75, 'cycle');
-            } else if (clickedCell.value.tagName === 'ForkList') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', null), 0, 0, 68, 68, 'closeForkList');
             } else {
               v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
               v2 = graph.insertVertex(clickedCell, null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
@@ -9337,7 +9275,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if ((tagName === 'ForkList' || tagName === 'StickySubagent') && title.match('fork.')) {
           return 'inValid';
         }
-        if (title.match('fork') || title.match('retry') || title.match('cycle') || title.match('consumeNotices') || title.match('lock') || title.match('try') || title.match('if')) {
+        if (title.match('fork') || title.match('retry') || title.match('cycle') || title.match('consumeNotices') || title.match('lock') || title.match('options') || title.match('try') || title.match('if')) {
           const selectedCell = graph.getSelectionCell();
           if (selectedCell) {
             const cells = graph.getSelectionCells();
@@ -9373,18 +9311,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 }
               }
             }
-          } else if (tagName === 'Retry' || tagName === 'Cycle' || tagName === 'Lock' || tagName === 'StickySubagent' || tagName === 'ConsumeNotices' || tagName === 'ForkList') {
+          } else if (self.workflowService.isOnlyInstruction(tagName)) {
             let flag1 = false;
             if (targetCell.edges && targetCell.edges.length) {
               for (let i = 0; i < targetCell.edges.length; i++) {
-                if (targetCell.edges[i].source && targetCell.edges[i].target &&
-                  (targetCell.edges[i].source.value.tagName === 'Retry' && targetCell.edges[i].target.value.tagName === 'EndRetry') ||
-                  (targetCell.edges[i].source.value.tagName === 'Cycle' && targetCell.edges[i].target.value.tagName === 'EndCycle') ||
-                  (targetCell.edges[i].source.value.tagName === 'Lock' && targetCell.edges[i].target.value.tagName === 'EndLock') ||
-                  (targetCell.edges[i].source.value.tagName === 'StickySubagent' && targetCell.edges[i].target.value.tagName === 'EndStickySubagent') ||
-                  (targetCell.edges[i].source.value.tagName === 'ConsumeNotices' && targetCell.edges[i].target.value.tagName === 'EndConsumeNotices') ||
-                  (targetCell.edges[i].source.value.tagName === 'ForkList' && targetCell.edges[i].target.value.tagName === 'EndForkList')
-                ) {
+                if (targetCell.edges[i].source && targetCell.edges[i].target && checkClosedCellWithSourceCell(targetCell.edges[i].source, targetCell.edges[i].target)) {
                   flag1 = true;
                 }
               }
@@ -9426,17 +9357,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
         } else {
           if (tagName === 'Connection') {
-            if ((targetCell.source.value.tagName === 'Fork' && targetCell.target.value.tagName === 'Join') ||
-              (targetCell.source.value.tagName === 'If' && targetCell.target.value.tagName === 'EndIf') ||
-              (targetCell.source.value.tagName === 'Retry' && targetCell.target.value.tagName === 'EndRetry') ||
-              (targetCell.source.value.tagName === 'Cycle' && targetCell.target.value.tagName === 'EndCycle') ||
-              (targetCell.source.value.tagName === 'Lock' && targetCell.target.value.tagName === 'EndLock') ||
-              (targetCell.source.value.tagName === 'StickySubagent' && targetCell.target.value.tagName === 'EndStickySubagent') ||
-              (targetCell.source.value.tagName === 'ConsumeNotices' && targetCell.target.value.tagName === 'EndConsumeNotices') ||
-              (targetCell.source.value.tagName === 'ForkList' && targetCell.target.value.tagName === 'EndForkList') ||
-              (targetCell.source.value.tagName === 'Try' && targetCell.target.value.tagName === 'Catch') ||
-              (targetCell.source.value.tagName === 'Catch' && targetCell.target.value.tagName === 'EndTry') ||
-              (targetCell.source.value.tagName === 'Try' && targetCell.target.value.tagName === 'EndTry')) {
+            if (checkClosedCellWithSourceCell(targetCell.source,  targetCell.target)) {
               return 'return';
             }
           }
@@ -9508,6 +9429,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         displayLabel = 'lock';
       } else if (dropTargetName === 'StickySubagent') {
         displayLabel = 'stickySubagent';
+      } else if (dropTargetName === 'Options') {
+        displayLabel = 'options';
       } else if (dropTargetName === 'ConsumeNotices') {
         displayLabel = 'consumeNotices';
       } else if (dropTargetName === 'ForkList') {
@@ -9532,20 +9455,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         } else if (cell.value.tagName === 'Retry') {
           v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, 75, 75, 'retry');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
-        } else if (cell.value.tagName === 'Lock') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', cell.id), 0, 0, 68, 68, 'closeLock');
-          graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
-        } else if (cell.value.tagName === 'StickySubagent') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndStickySubagent', 'stickySubagentEnd', cell.id), 0, 0, 68, 68, 'closeStickySubagent');
-          graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
-        } else if (cell.value.tagName === 'ConsumeNotices') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndConsumeNotices', 'consumeNoticesEnd', cell.id), 0, 0, 68, 68, 'closeConsumeNotices');
+        } else if (cell.value.tagName === 'ForkList' || cell.value.tagName === 'Lock' || cell.value.tagName === 'StickySubagent' ||
+          cell.value.tagName === 'Options' || cell.value.tagName === 'ConsumeNotices') {
+          v1 = createEndVertex (parent, cell.value.tagName,  cell.id);
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Cycle') {
           v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', cell.id), 0, 0, 75, 75, 'cycle');
-          graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
-        } else if (cell.value.tagName === 'ForkList') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', cell.id), 0, 0, 68, 68, 'closeForkList');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Try') {
           v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'catch', cell.id), 0, 0, 100, 40, 'dashRectangle');
@@ -9555,9 +9470,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
         }
         if (self.workflowService.isInstructionCollapsible(dropTargetName) || dropTargetName === 'Catch') {
-          _label = dropTargetName === 'Fork' ? 'join' : dropTargetName === 'Retry' ? 'endRetry' : dropTargetName === 'ConsumeNotices' ? 'endConsumeNotices'
-            : dropTargetName === 'Lock' ? 'endLock' : dropTargetName === 'StickySubagent' ? 'endStickySubagent' : dropTargetName === 'ForkList' ? 'endForkList' : dropTargetName === 'Catch' ? 'catch' : dropTargetName === 'If' ? 'endIf' :
-              dropTargetName === 'Cycle' ? 'endCycle' : 'try';
+          _label = self.workflowService.getLabelName(dropTargetName);
           if (dropTargetName === 'Try') {
             for (let i = 0; i < _dropTarget.edges.length; i++) {
               if (_dropTarget.edges[i].source.id === _dropTarget.id) {
@@ -9637,6 +9550,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           checkLabel = 'EndLock';
         } else if (dropTargetName === 'StickySubagent') {
           checkLabel = 'EndStickySubagent';
+        } else if (dropTargetName === 'Options') {
+          checkLabel = 'EndOptions';
         } else if (dropTargetName === 'ConsumeNotices') {
           checkLabel = 'EndConsumeNotices';
         } else if (dropTargetName === 'Cycle') {
@@ -9728,7 +9643,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (cell.edges[i].target.value.tagName === checkLabel) {
               const _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndForkList' ? 'endForkList' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'EndRetry'
                 ? 'endRetry' : checkLabel === 'EndLock' ? 'endLock' : checkLabel === 'EndStickySubagent' ? 'endStickySubagent' : checkLabel === 'EndConsumeNotices' ? 'endConsumeNotices' : checkLabel === 'EndCycle' ? 'endCycle' : 'endTry';
-              if (cell.value.tagName !== 'Fork' && cell.value.tagName !== 'If' && cell.value.tagName !== 'Try' && cell.value.tagName !== 'Cycle' && cell.value.tagName !== 'Retry' && cell.value.tagName !== 'Lock' && cell.value.tagName !== 'StickySubagent' && cell.value.tagName !== 'ConsumeNotices' && cell.value.tagName !== 'ForkList' && cell.value.tagName !== 'Catch') {
+              if (!self.workflowService.isInstructionCollapsible(cell.value.tagName) && cell.value.tagName !== 'Catch') {
                 cell.edges[i].value.attributes[0].nodeValue = _label;
                 cell.edges[i].value.attributes[1].nodeValue = _label;
               }
@@ -9817,7 +9732,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           branchId = 'branch' + (targetObj.branches.length + 1);
           targetObj.branches.push({id: branchId, instructions: [sourceObj]});
           isDone = true;
-        } else if (targetObj.TYPE === 'Retry' || targetObj.TYPE === 'Lock' || targetObj.TYPE === 'StickySubagent' || targetObj.TYPE === 'Cycle' || targetObj.TYPE === 'ForkList' || targetObj.TYPE === 'ConsumeNotices') {
+        } else if (self.workflowService.isOnlyInstruction(targetObj.TYPE)) {
           if (!targetObj.instructions) {
             targetObj.instructions = [];
           }
@@ -10029,7 +9944,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                           }
                         }
                       }
-                    } else if (targetObj.TYPE === 'Retry' || targetObj.TYPE === 'Lock' || targetObj.TYPE === 'StickySubagent' || targetObj.TYPE === 'ConsumeNotices' || targetObj.TYPE === 'Cycle' || targetObj.TYPE === 'ForkList') {
+                    } else if (self.workflowService.isOnlyInstruction(targetObj.TYPE)) {
                       if (obj.type || isSameObj) {
                         if (!targetObj.instructions || targetObj.instructions.length === 0) {
                           targetObj.instructions = [sourceObj];
@@ -10830,6 +10745,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               instructions: json.instructions[x].instructions
             };
             delete json.instructions[x].instructions;
+          } else if (json.instructions[x].TYPE === 'Options') {
+            json.instructions[x].block = {
+              instructions: json.instructions[x].instructions
+            };
+            delete json.instructions[x].instructions;
           } else if (json.instructions[x].TYPE === 'Cycle') {
             json.instructions[x].cycleWorkflow = {
               instructions: json.instructions[x].instructions
@@ -11189,7 +11109,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
     this.cutCell = [];
     $('#toolbar').find('img').each(function (index) {
-      if (index === 18) {
+      if (index === 19) {
         $(this).addClass('disable-link');
       }
     });

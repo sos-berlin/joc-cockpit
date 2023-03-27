@@ -230,6 +230,8 @@
     <hr/>
     <add as="StickySubagent" template="StickySubagent" style="stickySubagent" icon="./assets/mxgraph/images/white-sticky-subagent.png"/>
     <hr/>
+    <add as="Options" template="Options" style="options" icon="./assets/mxgraph/images/white-options.png"/>
+    <hr/>
     <add as="AddOrder" template="AddOrder" style="addOrder" icon="./assets/mxgraph/images/white-addOrder.png"/>
     <hr/>
     <add as="Paste" template="symbol" style="symbol" icon="./assets/mxgraph/images/white-paste.png"/>

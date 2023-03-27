@@ -464,6 +464,7 @@ export class SettingComponent implements OnInit {
       sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
       sessionStorage.welcomeDoNotRemindMe = result.welcomeDoNotRemindMe;
       sessionStorage.welcomeGotIt = result.welcomeGotIt;
+      sessionStorage.allowEmptyArguments = result.allowEmptyArguments;
       this.dataService.isProfileReload.next(true);
     });
   }
