@@ -532,7 +532,7 @@
     "button.unassignDocumentation": "Disscocier la Documentation",
     "button.viewDocumentation": "Voir la Documentation",
     "button.viewHistory": "Afficher l'Historique",
-    "button.showHistory": "Show History",
+    "button.showHistory": "Afficher l'Historique",
     "placeholder.search": "Filtrer les résultats",
     "placeholder.name": "Nom",
     "placeholder.value": "Valeur",
@@ -881,25 +881,25 @@
     },
     "certificate": {
       "label": {
-        "primaryControllerCert": "Primary Controller Certificate",
-        "secondaryControllerCert": "Secondary Controller Certificate",
-        "primaryJocCert": "Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Secondary JOC Cockpit Certificate"
+        "primaryControllerCert": "Certificat du Contrôleur Primaire",
+        "secondaryControllerCert": "Certificat du Contrôleur Secondaire",
+        "primaryJocCert": "Certificat du JOC Cockpit Primaire",
+        "secondaryJocCert": "Certificat du  JOC Cockpit Secondaire"
       },
       "button": {
-        "addCertificates": "Add Certificates"
+        "addCertificates": "Ajouter des Certificates"
       },
       "placeholder": {
-        "primaryControllerCert": "Enter Primary Controller Certificate",
-        "secondaryControllerCert": "Enter Secondary Controller Certificate",
-        "primaryJocCert": "Enter Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Enter Secondary JOC Cockpit Certificate"
+        "primaryControllerCert": "Entrer le chemin d'accès au Certificat du Contrôleur Primaire",
+        "secondaryControllerCert": "Entrer le chemin d'accès au Certificat du Contrôleur Secondair",
+        "primaryJocCert": "Entrer le chemin d'accès au Certificat du JOC Cockpit Primaire",
+        "secondaryJocCert": "Entrer le chemin d'accès au Certificat du JOC Cockpit Secondaire"
       },
       "tooltip": {
-        "primaryControllerCert": "Primary Controller Certificate",
-        "secondaryControllerCert": "Secondary Controller Certificate",
-        "primaryJocCert": "Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Secondary JOC Cockpit Certificate"
+        "primaryControllerCert": "Le Certificat du Contrôleur Primaire est requis par les Agents qui sont configurés pour l'authentification mutuelle HTTPS (par défaut).",
+        "secondaryControllerCert": "Le Certificat du Contrôleur Secondair est requis par les Agents qui sont configurés pour l'authentification mutuelle HTTPS (par défaut).",
+        "primaryJocCert": "Le Certificat du JOC Cockpit Primaire est requis par les instances Contrôleur qui sont configurés pour l'authentification mutuelle HTTPS (par défaut).",
+        "secondaryJocCert": "Le Certificat du JOC Cockpit Secondair est requis par les instances Contrôleur qui sont configurés pour l'authentification mutuelle HTTPS (par défaut)."
       }
     },
     "agent": {
@@ -1404,8 +1404,8 @@
     "label.duration": "Durée",
     "label.plannedTime": "Heure prévue",
     "label.orderHistory": "Historique des Ordres",
-    "label.taskHistory": "Historique des Tâches",
-    "label.jobHistory": "Job History",
+    "label.taskHistory": "Historique des Processus",
+    "label.jobHistory": "Historique des Tâches",
     "label.criticality": "Criticité",
     "label.returnCode": "Code Retour",
     "label.submitted": "Soumis",
@@ -1751,7 +1751,7 @@
     "message.deleteCurrentDraftObject": "Vous êtes sur le point de remplacer le brouillon. Vous êtes sûr de vouloir continuer ?",
     "message.noObjectFoundToRelease": "Aucun objet publiable trouvé",
     "message.updateFromJobTemplate": "Vous êtes sûr de vouloir mettre à jour le Job à partir du Modèle de Tâche ?",
-    "message.localChangesWillBeOverwritten": "All the local changes will be overwritten by this action",
+    "message.localChangesWillBeOverwritten": "Toutes les modifications locales seront écrasées par cette action",
     "cronTab": {
       "label.convertCron": "Convertir crontab",
       "label.folder": "Dossier",
@@ -1855,7 +1855,7 @@
           "returnCode": "L'instruction FAIL peut se voir attribuer un code de retour positif non nul qui devient visible avec l'historique des ordres. Un code de retour non nul indique que l'exécution a échoué."
         },
         "options": {
-          "stopOnFailure": "Stop On Failure"
+          "stopOnFailure": "Arrêt sur échec"
         },
         "fileWatch": {
           "directory": "Le répertoire qui est surveillé pour les fichiers entrants.",
@@ -2192,7 +2192,7 @@
     "label.selectOrder": "Sélectionner le Modèle d'Ordre",
     "label.listOfConstants": "Variables avec valeurs constantes",
     "label.listOfDynamicallyVariables": "Variables avec des valeurs modifiables",
-    "label.cycleEndTime": "Cycle End Time",
+    "label.cycleEndTime": "Fin du Cycle",
     "button.allOrders": "Tous les Ordres",
     "button.cancel": "Annuler",
     "button.startNow": "Démarrer Maintenant",
@@ -2209,11 +2209,11 @@
     "button.assignParameterizationFromSchedules": "Paramétrage à partir des Planifications",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",
-    "placeholder.enterCycleEndTime": "Enter value as d/w/m/y/h or hh:mm:ss or seconds",
+    "placeholder.enterCycleEndTime": "Entrer une valeur comme d/w/m/y/h ou hh:mm:ss ou secondes",
     "message.noVariableAvailable": "aucune variable disponible",
     "message.orderModificationNotAllowed": "L'état de l'ordre {{state}} ne permet pas de modification",
     "message.noLogHistoryFound": "Aucun journal n'a été trouvé pour cet ordre",
-    "tooltip.cycleEndTime": "Cycle end time in second",
+    "tooltip.cycleEndTime": "Cette option permet de spécifier l'heure de fin du cycle. Les utilisateurs peuvent spécifier une période plus courte que celle prédéfinie pour la fin du cycle. L'ordre reprendra à partir de la position choisie par l'utilisateur et l'heure de fin spécifiée sera vérifiée lorsque l'ordre reviendra au début du cycle. Les heures de fin de cycle dépassant la période prédéfinie seront ignorées.",
     "treeView": {
       "label": {
         "state": "Étape",
@@ -2683,7 +2683,7 @@
       "log_applicable_size": "Si cette valeur pour la taille de la sortie du journal d'une tâche est dépassée, le History Service tronquera la sortie du journal et utilisera les 100 premiers et derniers Ko pour le journal de la tâche. Le fichier journal original sera supprimé. La taille est spécifiée en MO.",
       "log_maximum_size": "Si cette valeur pour la taille de la sortie du journal d'une tâche est dépassée, le History Service tronquera la sortie du journal et utilisera les 100 premiers Ko pour le journal de la tâche. Le fichier journal original sera supprimé. La taille est spécifiée en MO.",
       "joc_reverse_proxy_url": "Si JOC Cockpit n'est pas accessible à partir de son URL d'origine mais uniquement à partir d'un service de reverse proxy, cette valeur indique l'URL à utiliser, par exemple pour les notifications par e-mail.",
-      "allow_empty_arguments": "Allow empty arguments"
+      "allow_empty_arguments": "Permettre les arguments vides"
     },
     "user": {
       "welcome_got_it": "Spécifie que la fenêtre d'accueil qui propose des valeurs par défaut et des exemples à télécharger ne doit plus être affichée.",
@@ -2793,7 +2793,7 @@
     "label.iamOidcTruststoreType": "OIDC Truststore Type",
     "label.iamOidcTruststorePassword": "OIDC Truststore Password",
     "label.iamOidcImage": "OIDC Image",
-    "label.iamOidcUserAttribute": "OIDC User Attribute",
+    "label.iamOidcUserAttribute": "OIDC User Name Attribute",
     "label.group": "Groupe",
     "label.general": "Généralités",
     "label.on": "On",
@@ -2891,7 +2891,7 @@
     "placeholder.iamOidcAuthenticationUrl": "Entrer le OIDC Authentication URL",
     "placeholder.iamOidcClientId": "Entrer le OIDC Client ID",
     "placeholder.iamOidcClientSecret": "Entrer le OIDC Client Secret",
-    "placeholder.iamOidcUserAttribute": "Enter OIDC User Attribute",
+    "placeholder.iamOidcUserAttribute": "Entrer le OIDC User Name Attribute",
     "placeholder.group": "Entrer le Groupe",
     "placeholder.iamOidcTruststorePath": "Entrer le OIDC Truststore Path",
     "placeholder.iamOidcTruststoreType": "Entrer le OIDC Truststore Type",
@@ -3228,7 +3228,7 @@
     "message.invalidPostNoticeInstruction": "L'instruction PostNotices n'est pas valide",
     "message.invalidExpectNoticeInstruction": "L'instruction ExpectNotices n'est pas valide",
     "message.invalidConsumeNoticeInstruction": "L'instruction ConsumeNotices ne peut pas être vide",
-    "message.invalidOptionsInstruction": "Options Instruction cannot be empty",
+    "message.invalidOptionsInstruction": "L'instruction Options ne peut pas être vide",
     "message.agentIsMissing": "L'Agent est absent, mais il est nécessaire",
     "message.orderNameIsMissing": "Le nom de l'Ordre est manquant, mais est requis",
     "message.workflowNameIsNotValid": "Le nom du Workflow est manquant, mais est requis",
