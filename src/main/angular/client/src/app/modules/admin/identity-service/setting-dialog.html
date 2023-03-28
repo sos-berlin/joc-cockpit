@@ -677,7 +677,6 @@
         </label>
         <div class="col-sm-6"
           [ngClass]="{'has-error' : ((iamOidcClientSecret.dirty || iamOidcClientSecret.touched) && iamOidcClientSecret.invalid)}">
-
           <input type="{{!passwordFields.fourth ? 'password' : 'text'}}" class="form-control" required
             #iamOidcClientSecret="ngModel" name="iamOidcClientSecret"
             [placeholder]="'user.placeholder.iamOidcClientSecret' | translate"
@@ -693,9 +692,26 @@
         </div>
       </div>
       <div class="form-group row">
+        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.oidc.iamOidcUserAttribute' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcUserAttribute
+        </label>
+        <div class="col-sm-6"
+             [ngClass]="{'has-error' : ((iamOidcUserAttribute.dirty || iamOidcUserAttribute.touched) && iamOidcUserAttribute.invalid)}">
+          <input type="text" class="form-control" #iamOidcUserAttribute="ngModel" name="iamOidcUserAttribute"
+                 [placeholder]="'user.placeholder.iamOidcUserAttribute' | translate"
+                 [(ngModel)]="currentObj.iamOidcUserAttribute" autocomplete="off">
+          <div *ngIf="iamOidcUserAttribute.invalid && (iamOidcUserAttribute.dirty || iamOidcUserAttribute.touched)"
+               class="text-danger help-block">
+            <div *ngIf="iamOidcUserAttribute.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
         <label class="col-sm-4" [ngClass]="{'form-control-label': imageUploader.queue.length > 0}" [nz-tooltip]="'user.tooltips.oidc.iamOidcImage' | translate"
           [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcImage
-        
+
         </label>
         <div class="col-sm-6">
           <div class="upload-btn-wrapper1" *ngIf="imageUploader.queue.length == 0 && !imageUrl">
@@ -707,7 +723,7 @@
           </div>
           <div *ngFor="let item of imageUploader.queue; let first = first;">
             <img src="" thumbnail [image]="item?._file"/>
-            {{ item?.file?.name }}   
+            {{ item?.file?.name }}
           </div>
           <div *ngIf="imageUrl">
             <img src="{{imageUrl}}" height="28px"/>
@@ -718,7 +734,7 @@
           <a *ngIf="imageUrl" class="text-hover-color pos-rel t-xs" (click)="deleteImage()"><i class="fa fa-trash"></i></a>
         </div>
       </div>
-  
+
       <div class="p-a b-a">
         <div class="form-group row">
           <label class="col-sm-4 form-control-label"

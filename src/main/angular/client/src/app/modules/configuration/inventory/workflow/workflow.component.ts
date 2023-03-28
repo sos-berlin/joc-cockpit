@@ -5420,7 +5420,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             let val = attr[j].value;
             if ((attr[j].name === 'arguments' || attr[j].name === 'defaultArguments' || attr[j].name === 'outcome' || attr[j].name === 'result')) {
               val = val ? JSON.parse(val) : attr[j].name === 'outcome' ? {returnCode: 0} : {};
-            } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'joinIfFailed' || attr[j].name === 'uncatchable' || attr[j].name === 'unsuccessful') {
+            } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'stopOnFailure' || attr[j].name === 'joinIfFailed' || attr[j].name === 'uncatchable' || attr[j].name === 'unsuccessful') {
               val = val == 'true';
             } else if (obj.TYPE === 'PostNotices' && attr[j].name === 'noticeBoardNames') {
               val = val ? val.split(',') : '';
@@ -8420,6 +8420,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (obj.subagentClusterIdExpr) {
             self.coreService.removeSlashToString(obj, 'subagentClusterIdExpr');
           }
+        } else if (cell.value.tagName === 'Options') {
+          obj.stopOnFailure = cell.getAttribute('stopOnFailure');
+          obj.stopOnFailure = obj.stopOnFailure == 'true';
         } else if (cell.value.tagName === 'Lock') {
           obj.lockNames = [];
           let demands = cell.getAttribute('demands');

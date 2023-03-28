@@ -148,18 +148,16 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     if (tab === 'orderHistory') {
       this.workflowFilters.historyFilter.reverse = !this.workflowFilters.historyFilter.reverse;
       this.workflowFilters.historyFilter.sortBy = key;
-    }
-    if (tab === 'taskHistory') {
+    } else if (tab === 'taskHistory') {
       this.workflowFilters.taskHistoryFilter.reverse = !this.workflowFilters.taskHistoryFilter.reverse;
       this.workflowFilters.taskHistoryFilter.sortBy = key;
-    }
-
-    if (tab === 'auditLog') {
+    } else if (tab === 'auditLog') {
       this.workflowFilters.auditLogFilter.reverse = !this.workflowFilters.auditLogFilter.reverse;
       this.workflowFilters.auditLogFilter.sortBy = key;
+    } else if (tab === 'jobHistory') {
+      this.workflowFilters.jobHistoryFilter.reverse = !this.workflowFilters.jobHistoryFilter.reverse;
+      this.workflowFilters.jobHistoryFilter.sortBy = key;
     }
-
-
   }
 
 
