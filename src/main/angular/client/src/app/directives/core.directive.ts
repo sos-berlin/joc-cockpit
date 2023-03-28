@@ -346,6 +346,7 @@ export class DurationRegexValidator implements Validator {
   }
 }
 
+
 @Directive({
   selector: '[validateRangeRegex]',
   providers: [
