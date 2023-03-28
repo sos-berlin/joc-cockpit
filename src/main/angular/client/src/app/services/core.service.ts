@@ -151,6 +151,10 @@ export class CoreService {
       sortBy: 'startTime',
       reverse: true
     };
+    this.tabs._workflow.jobHistoryFilter = {
+      sortBy: 'startTime',
+      reverse: true
+    };
     this.tabs._workflow.auditLogFilter = {
       sortBy: 'created',
       reverse: true
