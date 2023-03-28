@@ -3157,7 +3157,7 @@
     "label.agentAsExpression": "Expression Cluster de Sous-agents",
     "label.byListVariable": "Par Variable de Liste",
     "label.bySubagentCluster": "Par Cluster de Sous-agents",
-    "label.stopOnFailure": "Stop On Failure",
+    "label.stopOnFailure": "Arrêt en cas d'échec",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
