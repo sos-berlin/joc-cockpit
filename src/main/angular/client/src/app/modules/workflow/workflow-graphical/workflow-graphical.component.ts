@@ -745,7 +745,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       let cell = evt.getProperty('cell');
       self.sideBar = {};
       if (cell != null && cell.vertex == 1) {
-        if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
+        if (self.workflowService.isInstructionCollapsible(cell.value.tagName) || cell.value.tagName === 'Catch' ) {
           const flag = cell.collapsed != true;
           graph.foldCells(flag, false, null, null, evt);
         }

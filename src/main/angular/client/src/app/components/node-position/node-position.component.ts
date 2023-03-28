@@ -17,7 +17,7 @@ export class NodePositionComponent implements OnChanges {
   @Input() index = 0;
   @Input() reload: boolean;
 
-  nodes:any = [];
+  nodes: any = [];
   @Output() onBlur = new EventEmitter<string>();
 
   constructor(public workflowService: WorkflowService, private modal: NzModalService) {
@@ -28,8 +28,8 @@ export class NodePositionComponent implements OnChanges {
       this.getNodes(this.position);
     }
 
-     if(changes.reload && changes.reload.currentValue == true){
-       this.getNodes(this.position);
+    if (changes.reload && changes.reload.currentValue == true) {
+      this.getNodes(this.position);
     }
   }
 
@@ -43,6 +43,7 @@ export class NodePositionComponent implements OnChanges {
     function recursive(json, obj, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
+
           let skip = false;
           let isEnable = self.positions ? self.positions.has(json.instructions[x].positionString) : true;
           if (!position || json.instructions[x].positionString === position) {
@@ -92,12 +93,7 @@ export class NodePositionComponent implements OnChanges {
                   }
                 }
               }
-            }
-
-            if (json.instructions[x].instructions) {
-              recursive(json.instructions[x], obj);
-            }
-            if (json.instructions[x].TYPE === 'Try') {
+            } else if (json.instructions[x].TYPE === 'Try') {
               let isRetry = false;
               json.instructions[x].catch.instructions.forEach(element => {
                 if (element.TYPE === 'Retry') {
@@ -123,15 +119,13 @@ export class NodePositionComponent implements OnChanges {
                 let obj1 = {
                   title: "catch",
                   disabled: !isEnable,
-                  label: json.instructions[x].label,
                   key: json.instructions[x].positionString + "catch",
                   children: []
                 };
                 _obj.children.push(obj1);
                 recursive(json.instructions[x].catch, obj1);
               }
-            }
-            if (json.instructions[x].TYPE === 'If') {
+            } else if (json.instructions[x].TYPE === 'If') {
               let _obj = {
                 title: json.instructions[x].TYPE,
                 disabled: !isEnable,
@@ -149,7 +143,6 @@ export class NodePositionComponent implements OnChanges {
                 let obj1 = {
                   title: "Else",
                   disabled: true,
-                  label: json.instructions[x].label,
                   key: json.instructions[x].positionString,
                   children: []
                 };
@@ -158,53 +151,80 @@ export class NodePositionComponent implements OnChanges {
                 }
                 recursive(json.instructions[x].else, obj1);
               }
-            }
-            if (json.instructions[x].TYPE === 'Cycle') {
+            } else if (json.instructions[x].TYPE === 'Cycle') {
+
+              let _obj = {
+                title: json.instructions[x].TYPE,
+                disabled: !isEnable,
+                label: json.instructions[x].label,
+                key: json.instructions[x].positionString,
+                children: []
+              };
+              if (flag && !skip) {
+                obj.children.push(_obj);
+              }
               if (json.instructions[x].cycleWorkflow) {
-                let _obj = {
-                  title: json.instructions[x].TYPE,
-                  disabled: !isEnable,
-                  label: json.instructions[x].label,
-                  key: json.instructions[x].positionString,
-                  children: []
-                };
-                if (flag && !skip) {
-                  obj.children.push(_obj);
-                }
                 recursive(json.instructions[x].cycleWorkflow, _obj);
+              } else {
+                recursive(json.instructions[x], _obj);
               }
-            }
-            if (json.instructions[x].TYPE === 'Lock') {
+            } else if (json.instructions[x].TYPE === 'Lock') {
+
+              let _obj = {
+                title: json.instructions[x].TYPE,
+                disabled: !isEnable,
+                label: json.instructions[x].label,
+                key: json.instructions[x].positionString,
+                children: []
+              };
+              if (flag && !skip) {
+                obj.children.push(_obj);
+              }
               if (json.instructions[x].lockedWorkflow) {
-                let _obj = {
-                  title: json.instructions[x].TYPE,
-                  disabled: !isEnable,
-                  label: json.instructions[x].label,
-                  key: json.instructions[x].positionString,
-                  children: []
-                };
-                if (flag && !skip) {
-                  obj.children.push(_obj);
-                }
                 recursive(json.instructions[x].lockedWorkflow, _obj);
+              } else {
+                recursive(json.instructions[x], _obj);
               }
-            }
-            if (json.instructions[x].TYPE === 'ForkList') {
+            } else if (json.instructions[x].TYPE === 'Options') {
+              let _obj = {
+                title: json.instructions[x].TYPE,
+                disabled: !isEnable,
+                label: json.instructions[x].label,
+                key: json.instructions[x].positionString,
+                children: []
+              };
+              if (flag && !skip) {
+                obj.children.push(_obj);
+              }
+              if (json.instructions[x].block) {
+                recursive(json.instructions[x].block, _obj);
+              } else {
+                recursive(json.instructions[x], _obj);
+              }
+            } else if (json.instructions[x].TYPE === 'ForkList') {
+
+              let _obj = {
+                title: json.instructions[x].TYPE,
+                disabled: !isEnable,
+                label: json.instructions[x].label,
+                key: json.instructions[x].positionString,
+                children: []
+              };
+              if (flag && !skip) {
+                obj.children.push(_obj);
+              }
               if (json.instructions[x].workflow) {
-                let _obj = {
-                  title: json.instructions[x].TYPE,
-                  disabled: !isEnable,
-                  label: json.instructions[x].label,
-                  key: json.instructions[x].positionString,
-                  children: []
-                };
-                if (flag && !skip) {
-                  obj.children.push(_obj);
-                }
                 recursive(json.instructions[x].workflow, _obj);
+              } else {
+                recursive(json.instructions[x], _obj);
+              }
+            } else {
+              if (json.instructions[x].instructions) {
+                recursive(json.instructions[x], obj);
               }
             }
           }
+
           if (json.instructions[x].positionString && json.instructions[x].positionString === position && isEnable) {
             skip = true;
           }
