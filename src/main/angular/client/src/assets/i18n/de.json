@@ -1855,7 +1855,7 @@
           "returnCode": "Der Fail-Anweisung kann eine positive Zahl als Rückgabewert zugeordnet werden, die in der Auftragshistorie sichtbar wird. Rückgabewerte ungleich 0 werden als fehlerhafte Ausführung gewertet."
         },
         "options": {
-          "stopOnFailure": "Stop im Fehlerfall"
+          "stopOnFailure": "Stoppen im Fehlerfall"
         },
         "fileWatch": {
           "directory": "Das Verzeichnis, das auf die Existenz neuer Dateien hin überwacht wird.",
@@ -3157,7 +3157,7 @@
     "label.agentAsExpression": "Subagenten Cluster Ausdruck",
     "label.byListVariable": "Per Listenvariable",
     "label.bySubagentCluster": "Per Subagenten Cluster",
-    "label.stopOnFailure": "Stop On Failure",
+    "label.stopOnFailure": "Stoppen im Fehlerfall",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",

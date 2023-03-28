@@ -1287,13 +1287,19 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   private navToField(id, index1, index2, type): void {
     if (type == 'joc') {
       this.data.joc[index1].isJOCExpanded = true;
-      this.data.joc[index1].members.instances[index2].isJOCPropertiesExpanded = true;
+      if(index2 > -1) {
+        this.data.joc[index1].members.instances[index2].isJOCPropertiesExpanded = true;
+      }
     } else if (type == 'agents') {
       this.data.agents.controllerRefs[index1].isAgentExpanded = true;
-      this.data.agents.controllerRefs[index1].members[index2].isAgentPropertiesExpanded = true;
+      if(index2 > -1) {
+        this.data.agents.controllerRefs[index1].members[index2].isAgentPropertiesExpanded = true;
+      }
     } else if (type == 'controllers') {
       this.data.controllers[index1].isControllerExpanded = true;
-      this.data.controllers[index1].cluster[index2].isControllerPropertiesExpanded = true;
+      if (index2 > -1) {
+        this.data.controllers[index1].cluster[index2].isControllerPropertiesExpanded = true;
+      }
     }
 
     if (!this.isNavigate) {
@@ -1393,11 +1399,11 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       this.deploymentData.mainObj['controllers'] = [];
       this.data.controllers.forEach((controller, i) => {
         if (!controller.controllerId && !isSkip) {
-          this.navToField('controllerId' + i, i, i, 'controllers');
+          this.navToField('controllerId' + i, i, -1, 'controllers');
           this.errorMessages.push('Controller Id is required');
         }
         if (!controller.jocRef && !isSkip) {
-          this.navToField('jocRef' + i, i, i, 'controllers');
+          this.navToField('jocRef' + i, i, -1, 'controllers');
           this.errorMessages.push('JOC Reference is required');
         }
         if (controller.cluster) {

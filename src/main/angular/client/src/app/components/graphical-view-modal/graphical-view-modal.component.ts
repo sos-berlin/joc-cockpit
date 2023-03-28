@@ -168,6 +168,12 @@ export class GraphicalViewModalComponent implements OnInit {
               delete json.instructions[x].lockedWorkflow;
             }
           }
+          if (json.instructions[x].TYPE === 'Options') {
+            if (json.instructions[x].block) {
+              json.instructions[x].instructions = json.instructions[x].block.instructions;
+              delete json.instructions[x].block;
+            }
+          }
           if (json.instructions[x].TYPE === 'Cycle') {
             if (json.instructions[x].cycleWorkflow) {
               json.instructions[x].instructions = json.instructions[x].cycleWorkflow.instructions;

@@ -1270,9 +1270,9 @@ export class WorkflowService {
             if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
               recursive(json.instructions[x], '', v1, path, versionId);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'forkList', 'forkList', v1);
-              v2 = joinForkList(json.instructions[x], v1.id, parent);
+              v2 = joinForkListAndCycle(json.instructions[x], v1.id, parent, 'ForkList');
             } else {
-              v2 = joinForkList(v1, v1.id, parent);
+              v2 = joinForkListAndCycle(v1, v1.id, parent, 'ForkList');
             }
           } else if (json.instructions[x].TYPE === 'If') {
             _node.setAttribute('displayLabel', 'if');
@@ -1362,7 +1362,7 @@ export class WorkflowService {
             } else {
               v2 = closingNode(v1, v1.id, parent, 'Options');
             }
-          }  else if (json.instructions[x].TYPE === 'Cycle') {
+          } else if (json.instructions[x].TYPE === 'Cycle') {
             _node.setAttribute('displayLabel', 'cycle');
             if (json.instructions[x].schedule) {
               _node.setAttribute('schedule', JSON.stringify(json.instructions[x].schedule));
@@ -1374,9 +1374,9 @@ export class WorkflowService {
             if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
               recursive(json.instructions[x], '', v1, path, versionId);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'cycle', 'cycle', v1);
-              v2 = closingNode(json.instructions[x], v1.id, parent, 'Cycle');
+              v2 = joinForkListAndCycle(json.instructions[x], v1.id, parent, 'Cycle');
             } else {
-              v2 = closingNode(v1, v1.id, parent, 'Cycle');
+              v2 = joinForkListAndCycle(v1, v1.id, parent, 'Cycle');
             }
           } else if (json.instructions[x].TYPE === 'Try') {
             _node.setAttribute('displayLabel', 'try');
@@ -1694,8 +1694,6 @@ export class WorkflowService {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
       } else if (type === 'ConsumeNotices') {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToSymbol('closeConsumeNotices', colorCode, self.theme) : 'closeConsumeNotices');
-      } else {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('cycle', colorCode, self.theme) : 'cycle');
       }
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
@@ -1717,13 +1715,14 @@ export class WorkflowService {
       return v1;
     }
 
-    function joinForkList(branches: any, targetId: any, parent: any): any {
-      const _node = doc.createElement('EndForkList');
-      _node.setAttribute('displayLabel', 'forkListEnd');
+    function joinForkListAndCycle(branches: any, targetId: any, parent: any, type): any {
+      const _node = doc.createElement('End' + type);
+      _node.setAttribute('displayLabel', type === 'Cycle' ? 'cycleEnd' : 'forkListEnd');
       if (targetId) {
         _node.setAttribute('targetId', targetId);
       }
-      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeForkList', colorCode, self.theme) : 'closeForkList');
+      let closeTag =  type === 'Cycle' ? 'cycle' : 'close' +type;
+      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol(closeTag, colorCode, self.theme) : closeTag);
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
       if (branches.instructions && branches.instructions.length > 0) {
@@ -1752,7 +1751,7 @@ export class WorkflowService {
             arr.push(prevVal)
           }
           v1.value.setAttribute('positions', JSON.stringify(arr));
-          connectInstruction(endNode, v1, 'endForkList', 'endForkList', parent);
+          connectInstruction(endNode, v1, 'end' + type, 'end' + type, parent);
         }
       } else {
         connectInstruction(branches, v1, '', '', parent);
