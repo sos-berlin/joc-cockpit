@@ -534,7 +534,7 @@ export class CycleInstructionComponent implements OnChanges {
       }
       if (flag1) {
         if (!this.selectedNode.isEdit) {
-          if(!this.selectedNode.obj.addNewFreq) {
+          if (!this.selectedNode.obj.addNewFreq) {
             this.selectedNode.obj.schedule.schemes.push({
               repeat: this.workflowService.convertRepeatObject(this.selectedNode.repeatObject),
               admissionTimeScheme: this.selectedNode.data.schedule.admissionTimeScheme
@@ -1093,6 +1093,24 @@ export class FindAndReplaceComponent implements OnInit {
 
   onSubmit(): void {
     this.activeModal.close(this.object);
+  }
+}
+
+@Component({
+  selector: 'app-show-reference',
+  templateUrl: './show-reference-dialog.html'
+})
+export class ShowReferenceComponent {
+  @Input() data: any = [];
+  @Input() type: string;
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  navToObj(path: string): void {
+    this.activeModal.close({
+      path, type: this.type
+    });
   }
 }
 
@@ -2734,6 +2752,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   propertyPanelWidth: number;
   selectedNode: any;
   node: any;
+  isReferencedBy: any;
   title = '';
   timeZone = '';
   documentationName = '';
@@ -4004,6 +4023,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     this.coreService.post(URL, obj).subscribe({
       next: (res: any) => {
         this.lastModified = res.configurationDate;
+        this.isReferencedBy = res.isReferencedBy;
         this.isLoading = false;
         if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === res.path) {
           if (this.data.deployed !== res.deployed) {
@@ -4069,6 +4089,33 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
         }
       }, error: () => this.isLoading = false
+    });
+  }
+
+  getReferences(type): void {
+    const obj: any = {
+      objectType: this.objectType,
+      path: this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name
+    };
+    this.coreService.post('inventory/workflow/references', obj).subscribe({
+      next: (res: any) => {
+        this.modal.create({
+          nzTitle: undefined,
+          nzContent: ShowReferenceComponent,
+          nzComponentParams: {
+            data: res,
+            type
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        }).afterClose.subscribe(result => {
+          if (result) {
+            const name = result.path.substring(result.path.lastIndexOf('/') + 1, result.path.length);
+            this.navToObj(name, result.type)
+          }
+        });
+      }
     });
   }
 
@@ -6497,7 +6544,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           this.currentPoint = new mxPoint(x, y);
         };
 
-        function validationCheck(drpTargt, title, msg): boolean{
+        function validationCheck(drpTargt, title, msg): boolean {
           let flag1 = false;
           if (drpTargt.edges && drpTargt.edges.length) {
             for (let i = 0; i < drpTargt.edges.length; i++) {
@@ -6659,7 +6706,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 dropTarget = drpTargt;
               } else {
                 if (drpTargt.value.tagName === 'Connection') {
-                  if (checkClosedCellWithSourceCell(drpTargt.source,  drpTargt.target)) {
+                  if (checkClosedCellWithSourceCell(drpTargt.source, drpTargt.target)) {
                     return;
                   }
                 }
@@ -6933,7 +6980,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                       v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, 'join');
                     } else if (cells[0].value.tagName === 'ForkList' || cells[0].value.tagName === 'Lock' || cells[0].value.tagName === 'StickySubagent' ||
                       cells[0].value.tagName === 'Options' || cells[0].value.tagName === 'ConsumeNotices') {
-                      v1 = createEndVertex (parent, cells[0].value.tagName);
+                      v1 = createEndVertex(parent, cells[0].value.tagName);
                     } else if (cells[0].value.tagName === 'If') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
                     } else if (cells[0].value.tagName === 'Retry') {
@@ -8973,7 +9020,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         selectionChanged();
       } else if (cells.length === 2) {
         if (checkClosedCellWithSourceCell(cells[0], cells[1]) && !((cells[0].value.tagName === 'Try' && cells[1].value.tagName === 'Catch') ||
-(cells[0].value.tagName === 'Catch' && cells[1].value.tagName === 'EndTry'))) {
+          (cells[0].value.tagName === 'Catch' && cells[1].value.tagName === 'EndTry'))) {
           selectionChanged();
         }
       }
@@ -8982,7 +9029,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     function createEndVertex(parent, tagName, id?): any {
       let endTag = 'End' + tagName;
       let closeTag = 'close' + tagName;
-      let lastEndTag = tagName.substring(0,1).toLowerCase() +  tagName.substring(1, tagName.length) + 'End';
+      let lastEndTag = tagName.substring(0, 1).toLowerCase() + tagName.substring(1, tagName.length) + 'End';
       return graph.insertVertex(parent, null, getCellNode(endTag, lastEndTag, id), 0, 0, 68, 68, closeTag);
     }
 
@@ -9183,10 +9230,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
             } else if (clickedCell.value.tagName === 'Retry') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
-            }  else if (clickedCell.value.tagName === 'ForkList' || clickedCell.value.tagName === 'Lock' || clickedCell.value.tagName === 'StickySubagent' ||
-            clickedCell.value.tagName === 'Options' || clickedCell.value.tagName === 'ConsumeNotices') {
-              v1 = createEndVertex (parent, clickedCell.value.tagName);
-            }  else if (clickedCell.value.tagName === 'Cycle') {
+            } else if (clickedCell.value.tagName === 'ForkList' || clickedCell.value.tagName === 'Lock' || clickedCell.value.tagName === 'StickySubagent' ||
+              clickedCell.value.tagName === 'Options' || clickedCell.value.tagName === 'ConsumeNotices') {
+              v1 = createEndVertex(parent, clickedCell.value.tagName);
+            } else if (clickedCell.value.tagName === 'Cycle') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 75, 75, 'cycle');
             } else {
               v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
@@ -9360,7 +9407,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
         } else {
           if (tagName === 'Connection') {
-            if (checkClosedCellWithSourceCell(targetCell.source,  targetCell.target)) {
+            if (checkClosedCellWithSourceCell(targetCell.source, targetCell.target)) {
               return 'return';
             }
           }
@@ -9460,7 +9507,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'ForkList' || cell.value.tagName === 'Lock' || cell.value.tagName === 'StickySubagent' ||
           cell.value.tagName === 'Options' || cell.value.tagName === 'ConsumeNotices') {
-          v1 = createEndVertex (parent, cell.value.tagName,  cell.id);
+          v1 = createEndVertex(parent, cell.value.tagName, cell.id);
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Cycle') {
           v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', cell.id), 0, 0, 75, 75, 'cycle');

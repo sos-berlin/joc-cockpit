@@ -1182,7 +1182,7 @@
         </div>
       </div>
       <div class="m-l-sm m-r-sm text-left" *ngIf="workflow.id && !selectedNode">
-        <div class="box-body">
+        <div class="box-body p-b-0">
           <div class="pos-abt" style="top: 8px; right: 22px" *ngIf="jobs && jobs.length > 0">
             <button class="btn btn-default btn-sm" (click)="findAndReplace()">
               <i class="fa fa-search-plus" aria-hidden="true"></i>
@@ -1419,7 +1419,25 @@
           </div>
 
         </div>
+        <div class="box-body p-t-0">
+          <div *ngIf="isReferencedBy.fileOrderSources || isReferencedBy.schedules || isReferencedBy.workflows" class="b-t p-t-sm text-16 _600" translate>workflow.label.references</div>
+          <div *ngIf="isReferencedBy.fileOrderSources || isReferencedBy.schedules || isReferencedBy.workflows">
+            <div class="p-l-sm p-t-sm" *ngIf="isReferencedBy.fileOrderSources">
+              <i class="icon-orders-icon icon-color tree-icon"></i>
+              <a class="text-hover-primary p-l-6" (click)="getReferences('FILEORDERSOURCE')">{{'inventory.label.fileOrderSources' | translate}} : <b>{{isReferencedBy.fileOrderSources}}</b></a>
+            </div>
+            <div class="p-l-sm p-t-sm" *ngIf="isReferencedBy.schedules">
+              <i nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
+              <a class="text-hover-primary p-l-6" (click)="getReferences('SCHEDULE')">{{'inventory.label.orders' | translate}} : <b>{{isReferencedBy.schedules}}</b></a>
+            </div>
+            <div class="p-l-sm p-t-sm" *ngIf="isReferencedBy.workflows">
+              <i nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+              <a class="text-hover-primary p-l-6" (click)="getReferences('WORKFLOW')">{{'inventory.label.workflows' | translate}} : <b>{{isReferencedBy.workflows}}</b></a>
+            </div>
+          </div>
+        </div>
       </div>
+
       <div class="rg-right"><span></span></div>
     </div>
   </div>

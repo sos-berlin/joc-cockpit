@@ -1776,7 +1776,9 @@
       "label.validOnly": "有効のみ",
       "label.draft": "下書き",
       "label.deployed": "配置済",
-      "label.released": "リリース済"
+      "label.released": "リリース済",
+      "label.addDraftVersion": "add draft version if no deployed version exists",
+      "tooltip.perDefaultStorageOfDeployedReleased": "Per default storage of deployed/released versions is preferentially supported. Choosing both draft and deployed/released versions will result in drafts being stored only, if no deployed/released version exists. Choosing only draft versions will result in draft version being stored even if deployed/released versions exist. Draft versions are considered untested and therefore unsafe."
     },
     "tooltips": {
       "calendar": {
@@ -3158,6 +3160,7 @@
     "label.byListVariable": "変数リスト",
     "label.bySubagentCluster": "サブエージェントクラスター",
     "label.stopOnFailure": "Stop On Failure",
+    "label.references": "References",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",

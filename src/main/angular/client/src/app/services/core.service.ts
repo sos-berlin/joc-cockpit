@@ -1097,6 +1097,7 @@ export class CoreService {
       boardFilters.expandedKeys = pathArr;
       boardFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
       boardFilters.expandedObjects = [res.path];
+      boardFilters.searchText = boardName;
       this.router.navigate(['/resources/boards']).then();
     });
   }
@@ -1140,6 +1141,7 @@ export class CoreService {
       lockFilters.expandedKeys = pathArr;
       lockFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
       lockFilters.expandedObjects = [lockName];
+      lockFilters.searchText = lockName;
       this.router.navigate(['/resources/locks']).then();
     });
   }

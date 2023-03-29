@@ -1776,7 +1776,9 @@
       "label.validOnly": "Valid Only",
       "label.draft": "Draft",
       "label.deployed": "Deployed",
-      "label.released": "Released"
+      "label.released": "Released",
+      "label.addDraftVersion": "add draft version if no deployed version exists",
+      "tooltip.perDefaultStorageOfDeployedReleased": "Per default storage of deployed/released versions is preferentially supported. Choosing both draft and deployed/released versions will result in drafts being stored only, if no deployed/released version exists. Choosing only draft versions will result in draft version being stored even if deployed/released versions exist. Draft versions are considered untested and therefore unsafe."
     },
     "tooltips": {
       "calendar": {
@@ -3158,6 +3160,7 @@
     "label.byListVariable": "By List Variable",
     "label.bySubagentCluster": "By Subagent Cluster",
     "label.stopOnFailure": "Stop On Failure",
+    "label.references": "References",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",

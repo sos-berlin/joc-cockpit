@@ -1693,12 +1693,12 @@ export class RepositoryComponent implements OnInit {
   exportObj = {
     isRecursive: false
   };
+  showLabel = false;
   filter = {
     envRelated: true,
     envIndependent: false,
-    draft: true,
     deploy: true,
-    release: true,
+    draft: false,
     valid: false,
   };
   object: any = {
@@ -1728,7 +1728,7 @@ export class RepositoryComponent implements OnInit {
         } else {
           this.type = this.origin.object;
           this.filter.envRelated = false;
-          this.filter.release = false;
+          this.filter.deploy = false;
         }
       }
     }
@@ -1770,7 +1770,7 @@ export class RepositoryComponent implements OnInit {
       } else {
         obj.objectTypes = [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.SCHEDULE, InventoryObject.JOBTEMPLATE];
       }
-      obj.withoutReleased = !this.filter.release;
+      obj.withoutReleased = !this.filter.deploy;
       if (obj.objectTypes.length === 0) {
         APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
           catchError(error => of(error))
@@ -1945,6 +1945,17 @@ export class RepositoryComponent implements OnInit {
   }
 
   filterList(): void {
+    this.showLabel = false;
+    if (!this.filter.deploy && !this.filter.draft) {
+      this.showLabel = false;
+      this.filter.draft = true;
+      this.filter.valid = true;
+    } else {
+      if (this.filter.deploy && this.filter.draft) {
+        this.showLabel = true;
+        this.filter.valid = true;
+      }
+    }
     this.nodes = [];
     if (!this.filter.envRelated && !this.filter.envIndependent) {
       return;
@@ -2185,19 +2196,15 @@ export class RepositoryComponent implements OnInit {
               if (self.filter.envIndependent) {
                 if (self.filter.deploy) {
                   self.object.deployConfigurations.push(objDep);
+                  self.object.releasedConfigurations.push(objDep);
                 }
                 if (self.filter.draft) {
                   self.object.draftConfigurations.push(objDep);
-                }
-                if (self.filter.release) {
-                  self.object.releasedConfigurations.push(objDep);
                 }
               }
               if (self.filter.envRelated) {
                 if (self.filter.deploy) {
                   self.object.deploy2Configurations.push(objDep);
-                }
-                if (self.filter.release) {
                   self.object.releasedConfigurations.push(objDep);
                 }
                 if (self.filter.draft) {
@@ -2462,6 +2469,7 @@ export class ImportWorkflowModalComponent implements OnInit {
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       if (!this.isDeploy) {
         if (this.requestObj.targetFolder) {
+          this.requestObj.targetFolder = this.requestObj.targetFolder.trimEnd();
           if (this.requestObj.targetFolder.substring(0, 1) !== '/') {
             this.requestObj.targetFolder = '/' + this.requestObj.targetFolder;
           }
