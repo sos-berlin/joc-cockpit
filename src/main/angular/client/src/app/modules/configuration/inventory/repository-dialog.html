@@ -25,21 +25,25 @@
       </div>
       <div class="form-group row" *ngIf="operation === 'store'">
         <div class="col-md-3">
-          <label translate>inventory.repository.label.filter</label>
+          <label>{{'inventory.repository.label.deployed' | translate}} / {{'inventory.repository.label.released'| translate}}</label>
+          <i class="fa fa-info-circle p-l-xs" [nz-tooltip]="'inventory.repository.tooltip.perDefaultStorageOfDeployedReleased' | translate"></i>
+        </div>
+        <div class="col-md-9">
+          <nz-switch name="deployed" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()"></nz-switch>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="operation === 'store'">
+        <div class="col-md-3">
+          <label><span *ngIf="showLabel" translate>inventory.repository.label.addDraftVersion</span></label>
         </div>
         <div class="col-md-9">
           <label nz-checkbox name="valid" [(ngModel)]="filter.valid" (ngModelChange)="filterList()">
             {{'inventory.repository.label.validOnly'| translate}}
           </label>
-          <label class="m-l-md" nz-checkbox name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
+          <label class="m-l-md" [nzDisabled]="!filter.deploy" nz-checkbox name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
             {{'inventory.repository.label.draft'| translate}}
           </label>
-          <label *ngIf="type === 'ALL' || !(type === 'SCHEDULE' && type === 'JOBTEMPLATE' && type === 'INCLUDESCRIPT' && type.match('CALENDAR'))" class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()">
-            {{'inventory.repository.label.deployed'| translate}}
-          </label>
-          <label *ngIf="type === 'ALL' || type === 'SCHEDULE' || type === 'JOBTEMPLATE' || type === 'INCLUDESCRIPT' || type.match('CALENDAR')" class="m-l-md" nz-checkbox name="release" [(ngModel)]="filter.release" (ngModelChange)="filterList()">
-            {{'inventory.repository.label.released'| translate}}
-          </label>
+
         </div>
       </div>
       <div class="form-group row" *ngIf="nodes.length > 0">
