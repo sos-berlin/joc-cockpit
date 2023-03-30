@@ -15,7 +15,7 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a min-ht-150">
-    <div *ngIf="!loading">
+    <div>
       <div class="hide" [ngClass]="{'show': display && nodes.length > 0}">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
       </div>
@@ -192,13 +192,13 @@
     <div class="m-t-md" *ngIf="nodes.length===0 && !loading">
       <app-empty-data></app-empty-data>
     </div>
-    <div class="text-center m-t-md" *ngIf="loading">
+    <div class="text-center m-t-md" *ngIf="loading" [ngClass]="{'loading-on-text': nodes.length>0}">
       <nz-spin nzSimple></nz-spin>
     </div>
   </div>
   <div class="modal-footer">
     <button *ngIf="nodes.length > 0 && !isRemove" type="submit" class="btn btn-primary btn-sm"
-            [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted || (required && !comments.comment)">
+            [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted || loading || (required && !comments.comment)">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

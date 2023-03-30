@@ -493,7 +493,7 @@ export class DeployComponent implements OnInit {
   filterList(): void {
     this.checkedObject.clear();
     this.recursiveCheck(this.nodes);
-    this.nodes = [];
+  //  this.nodes = [];
     this.loading = true;
     this.buildTree(this.path);
   }
@@ -1372,8 +1372,8 @@ export class ExportComponent implements OnInit {
     if (isChecked) {
       this.recursiveCheck(this.nodes);
     }
-    this.nodes = [];
     if (!this.filter.controller && !this.filter.dailyPlan) {
+      this.nodes = [];
       return;
     } else {
       this.loading = true;
@@ -1956,8 +1956,8 @@ export class RepositoryComponent implements OnInit {
         this.filter.valid = true;
       }
     }
-    this.nodes = [];
     if (!this.filter.envRelated && !this.filter.envIndependent) {
+      this.nodes = [];
       return;
     } else {
       this.loading = true;
