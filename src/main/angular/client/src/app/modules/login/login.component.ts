@@ -70,14 +70,17 @@ export class LoginComponent implements OnInit {
           const elem: any = document.getElementsByClassName('login-box');
           if (elem.length > 0) {
             let logHt = (res.customLogo.height || '140px').replace(/^\D+/g, '');
-            let ht = (window.innerHeight - document.getElementById('center-block').clientHeight);
-           
+            let ht = (window.innerHeight - document.getElementById('center-block')?.clientHeight);
+
             if (ht < parseInt(logHt)) {
               elem[0].style.height = 'calc(100% + ' + (parseInt(logHt)) + 'px)';
             }
           }
-          // Append the created div to the body element
-          this.renderer.appendChild(document.getElementById(res.customLogo.position && res.customLogo.position.match('top') ? 'logo-top' : 'logo-bottom'), imgContainer);
+          const dom = document.getElementById(res.customLogo.position && res.customLogo.position.match('top') ? 'logo-top' : 'logo-bottom');
+          if (dom) {
+            // Append the created div to the body element
+            this.renderer?.appendChild(dom, imgContainer);
+          }
         }
       }
     })

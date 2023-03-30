@@ -1100,11 +1100,24 @@ export class FindAndReplaceComponent implements OnInit {
   selector: 'app-show-reference',
   templateUrl: './show-reference-dialog.html'
 })
-export class ShowReferenceComponent {
-  @Input() data: any = [];
+export class ShowReferenceComponent implements OnInit{
   @Input() type: string;
+  @Input() obj: any;
+  data: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.getReferences();
+  }
+
+  private getReferences(): void {
+    this.coreService.post('inventory/workflow/references', this.obj).subscribe({
+      next: (res: any) => {
+        this.data = res;
+      }
+    });
   }
 
   navToObj(path: string): void {
@@ -4097,24 +4110,20 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       objectType: this.objectType,
       path: this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name
     };
-    this.coreService.post('inventory/workflow/references', obj).subscribe({
-      next: (res: any) => {
-        this.modal.create({
-          nzTitle: undefined,
-          nzContent: ShowReferenceComponent,
-          nzComponentParams: {
-            data: res,
-            type
-          },
-          nzFooter: null,
-          nzClosable: false,
-          nzMaskClosable: false
-        }).afterClose.subscribe(result => {
-          if (result) {
-            const name = result.path.substring(result.path.lastIndexOf('/') + 1, result.path.length);
-            this.navToObj(name, result.type)
-          }
-        });
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ShowReferenceComponent,
+      nzComponentParams: {
+        obj,
+        type
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        const name = result.path.substring(result.path.lastIndexOf('/') + 1, result.path.length);
+        this.navToObj(name, result.type)
       }
     });
   }
