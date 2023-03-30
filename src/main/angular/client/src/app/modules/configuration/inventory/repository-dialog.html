@@ -37,10 +37,10 @@
           <label><span *ngIf="showLabel" translate>inventory.repository.label.addDraftVersion</span></label>
         </div>
         <div class="col-md-9">
-          <label class="m-l-md" [nzDisabled]="!filter.deploy" nz-checkbox name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
+          <label [nzDisabled]="!filter.deploy" nz-checkbox name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
             {{'inventory.repository.label.draft'| translate}}
           </label>
-          <label nz-checkbox name="valid" [(ngModel)]="filter.valid" (ngModelChange)="filterList()">
+          <label class="m-l-md" nz-checkbox name="valid" [(ngModel)]="filter.valid" (ngModelChange)="filterList()">
             {{'inventory.repository.label.validOnly'| translate}}
           </label>
         </div>
@@ -150,12 +150,12 @@
     <div class="m-t-md" *ngIf="nodes.length===0 && !loading">
       <app-empty-data></app-empty-data>
     </div>
-    <div class="text-center m-t-md" *ngIf="loading">
+    <div class="text-center m-t-md" *ngIf="loading" [ngClass]="{'loading-on-text': nodes.length>0}">
       <nz-spin nzSimple></nz-spin>
     </div>
   </div>
   <div class="modal-footer text-left" >
-    <button *ngIf="nodes.length > 0 || (operation === 'delete' && !origin.object)" type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)">
+    <button *ngIf="nodes.length > 0 || (operation === 'delete' && !origin.object)" type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || loading || (required && !comments.comment)">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
       {{'common.button.submit' | translate}}
     </button>

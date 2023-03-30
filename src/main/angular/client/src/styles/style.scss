@@ -9063,3 +9063,10 @@ cdk-virtual-scroll-viewport {
   background: var(--background-color);
   padding: 0 8px;
 }
+
+.loading-on-text {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  transform: translate(-50%, 100%);
+}

@@ -689,7 +689,6 @@ export class UserComponent implements OnInit, OnDestroy {
   };
   forceLoging = false;
   isGroupBtnActive = false;
-  selectedController = '';
   securityLevel: string;
   identityServiceType: string;
   subscription1: Subscription;
@@ -716,11 +715,9 @@ export class UserComponent implements OnInit, OnDestroy {
       this.preferences.auditLog = true;
     }
     this.identityServiceType = this.authService.currentUserIdentityService.substring(0, this.authService.currentUserIdentityService.lastIndexOf(':'));
-    this.setIds();
     this.setPreferences();
     this.zones = this.coreService.getTimeZoneList();
     this.timeZone = this.coreService.getTimeZone();
-    this.configObj.controllerId = this.schedulerIds.selected;
     this.configObj.accountName = this.username;
   }
 
@@ -794,9 +791,6 @@ export class UserComponent implements OnInit, OnDestroy {
     this.isGroupBtnActive = true;
   }
 
-  setIds(): void {
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-  }
 
   setPreferences(): void {
     this.username = this.authService.currentUserData;
@@ -804,6 +798,8 @@ export class UserComponent implements OnInit, OnDestroy {
     if (this.securityLevel === 'LOW' && sessionStorage.defaultProfile && sessionStorage.defaultProfile === this.username) {
       this.securityLevel = 'MEDIUM';
     }
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.configObj.controllerId = this.schedulerIds.selected;
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
   }

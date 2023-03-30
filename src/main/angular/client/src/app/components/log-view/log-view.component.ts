@@ -64,7 +64,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
   constructor(private authService: AuthService, public coreService: CoreService,
-              @Inject(POPOUT_MODAL_DATA) public data: PopoutData, private renderer: Renderer2) {
+              @Inject(POPOUT_MODAL_DATA) public data: PopoutData) {
     this.dataObject = data;
   }
 
@@ -966,13 +966,15 @@ export class LogViewComponent implements OnInit, OnDestroy {
         lastClass = '';
       }
 
-      if (!domId) {
-        POPOUT_MODALS['windowInstance']?.document.getElementById('logs').appendChild(div);
-      } else {
-        try {
-          POPOUT_MODALS['windowInstance']?.document.getElementById(domId).appendChild(div);
-        } catch (e) {
+      if (POPOUT_MODALS['windowInstance']?.document.getElementById('logs')) {
+        if (!domId) {
+          POPOUT_MODALS['windowInstance']?.document.getElementById('logs').appendChild(div);
+        } else {
+          try {
+            POPOUT_MODALS['windowInstance']?.document.getElementById(domId).appendChild(div);
+          } catch (e) {
 
+          }
         }
       }
       return '';
