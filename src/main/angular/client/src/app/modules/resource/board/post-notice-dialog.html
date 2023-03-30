@@ -19,7 +19,7 @@
         </label>
         <div class="col-sm-6">
           <input type="text" class="form-control" [readOnly]="notice" name="noticeId" placeholder="{{'resource.board.placeholder.enterNoticeId' | translate}}"
-                 [(ngModel)]="postObj.noticeId" required [appAutofocus]="true" autocomplete="off" #noticeId="ngModel"/>
+                 [(ngModel)]="postObj.noticeId" required autocomplete="off" #noticeId="ngModel"/>
           <div *ngIf="noticeId.invalid && (noticeId.dirty || noticeId.touched)" class="text-danger help-block">
             <div *ngIf="noticeId.errors.required" translate>
               common.message.requiredError
@@ -31,8 +31,8 @@
         <label class="col-sm-4 " translate>resource.board.label.endOfLife</label>
         <div class="col-md-8">
           <nz-radio-group name="at" [(ngModel)]="postObj.at">
-            <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
             <label nz-radio nzValue="later"><span translate>common.label.relativeDate</span></label>
+            <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
           </nz-radio-group>
         </div>
       </div>
@@ -42,7 +42,7 @@
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
-          <input relativeDateValidatorRegex type="text" #time="ngModel" class="form-control" required
+          <input relativeDateValidatorRegex [appAutofocus]="true"  type="text" #time="ngModel" class="form-control" required
                  name="atTime" [(ngModel)]="postObj.atTime" placeholder="+1(s|m|h|d|w|M|y)">
           <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
             <div translate *ngIf="!time.valid && !time.errors.required">common.message.invalid</div>

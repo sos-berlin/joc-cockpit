@@ -10,32 +10,70 @@
 
   <div class="modal-body p-a">
     <div class="form-group row" *ngIf="type==='FILEORDERSOURCE'">
-      <label class="col-md-12" translate>inventory.label.fileOrderSources</label>
-      <div class="col-md-12 m-t-xs">
-        <div class="p-l" *ngFor="let item of data.fileOrderSources">
-          <i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
-          &nbsp;{{item.path}}
-          &nbsp;Agent - {{item.agentName}}
-          &nbsp;Pattern - {{item.pattern}}
+      <label class="col-md-12 _600">{{'inventory.label.fileOrderSources' | translate}}:</label>
+      <div class="col-md-12 m-t-sm">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th>
+                <span translate>common.label.path</span>
+              </th>
+              <th>
+                <span translate>workflow.label.agent</span>
+              </th>
+              <th>
+                <span translate>inventory.label.directory</span>
+              </th>
+              <th>
+                <span translate>inventory.label.pattern</span>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr  *ngFor="let item of data.fileOrderSources">
+              <td>
+                <a><i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
+                  &nbsp;{{item.path}}</a>
+              </td>
+              <td>
+                <span>{{item.agentName}}</span>
+              </td>
+              <td>
+                <span>{{item.directory}}</span>
+              </td>
+              <td>
+                <span>{{item.pattern}}</span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
     <div class="form-group row" *ngIf="type==='SCHEDULE'">
-      <label class="col-md-12" translate>inventory.label.orders</label>
-      <div class="col-md-12 m-t-xs">
+      <label class="col-md-12 _600">{{'inventory.label.orders' | translate}}:</label>
+      <div class="col-md-12 m-t-sm">
         <div class="p-l" *ngFor="let item of data.schedules">
-          <i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
+          <a><i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
           &nbsp;{{item.path}}
+          </a>
         </div>
       </div>
     </div>
     <div class="form-group row" *ngIf="type==='WORKFLOW'">
-      <label class="col-md-12" translate>inventory.label.workflows</label>
-      <div class="col-md-12 m-t-xs">
+      <label class="col-md-12 _600">{{'inventory.label.workflows' | translate}}:</label>
+      <div class="col-md-12 m-t-sm">
         <div class="p-l" *ngFor="let item of data.workflows">
-          <i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
-          &nbsp;{{item.path}}
+          <a><i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
+            &nbsp;{{item.path}}
+          </a>
         </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="!data.fileOrderSources && !data.schedules && !data.workflows">
+      <div class="col-md-12 m-t-xs text-center">
+        <i><nz-spin nzSimple></nz-spin></i>
       </div>
     </div>
   </div>

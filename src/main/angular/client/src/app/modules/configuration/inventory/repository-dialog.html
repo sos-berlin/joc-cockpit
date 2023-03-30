@@ -37,13 +37,12 @@
           <label><span *ngIf="showLabel" translate>inventory.repository.label.addDraftVersion</span></label>
         </div>
         <div class="col-md-9">
-          <label nz-checkbox name="valid" [(ngModel)]="filter.valid" (ngModelChange)="filterList()">
-            {{'inventory.repository.label.validOnly'| translate}}
-          </label>
           <label class="m-l-md" [nzDisabled]="!filter.deploy" nz-checkbox name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
             {{'inventory.repository.label.draft'| translate}}
           </label>
-
+          <label nz-checkbox name="valid" [(ngModel)]="filter.valid" (ngModelChange)="filterList()">
+            {{'inventory.repository.label.validOnly'| translate}}
+          </label>
         </div>
       </div>
       <div class="form-group row" *ngIf="nodes.length > 0">

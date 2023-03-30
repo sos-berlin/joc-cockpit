@@ -41,7 +41,7 @@ export class PostModalComponent implements OnInit {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.postObj.timeZone = this.coreService.getTimeZone();
-    this.postObj.at = 'date';
+    this.postObj.at = 'later';
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
