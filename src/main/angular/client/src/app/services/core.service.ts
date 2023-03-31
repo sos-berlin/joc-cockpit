@@ -793,8 +793,7 @@ export class CoreService {
             controllerId,
             orderId: orderId,
             historyId: url,
-            workflow: workflow,
-            instance: null
+            workflow: workflow
           };
           self.openPopout(modalData, 'top=' + window.localStorage.log_window_y + ',' +
             'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +
@@ -880,8 +879,7 @@ export class CoreService {
         orderId: (order && order.orderId) ? order.orderId : undefined,
         taskId: task ? task.taskId : undefined,
         historyId: (order && order.historyId) ? order.historyId : undefined,
-        job: (task && task.taskId) ? (task.job ? task.job : job) : undefined,
-        instance: null
+        job: (task && task.taskId) ? (task.job ? task.job : job) : undefined
       };
       this.openPopout(modalData, 'top=' + window.localStorage.log_window_y + ',' +
         'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +

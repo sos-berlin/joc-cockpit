@@ -23,7 +23,6 @@ export interface PopoutData {
   workflow?: string;
   taskId?: number;
   job?: string;
-  instance: any;
 }
 
 export const POPOUT_MODAL_DATA = new InjectionToken<PopoutData>('POPOUT_MODAL_DATA');
@@ -51,10 +50,11 @@ export class PopupService implements OnDestroy {
       'assets/log.html',
       properties
     );
+
     // Wait for window instance to be created
     setTimeout(() => {
       this.createCDKPortal(data, windowInstance);
-    }, 800);
+    }, 1000);
   }
 
   openOnce(url, options?) {
@@ -126,7 +126,6 @@ export class PopupService implements OnDestroy {
 
   createInjector(data): PortalInjector {
     const injectionTokens = new WeakMap();
-    data.instance = POPOUT_MODALS['windowInstance'];
     injectionTokens.set(POPOUT_MODAL_DATA, data);
     return new PortalInjector(this.injector, injectionTokens);
   }
