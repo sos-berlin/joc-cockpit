@@ -203,8 +203,8 @@
             </div>
           </div>
           <div class="hide" [ngClass]="{'show': isLoading}">
-            <h3 class="orders"><span translate>dashboard.label.orders</span></h3>
-            <div class="box p-t-sm p-b-6 text-overflow m-b-12">
+            <h3 *ngIf="data.length>0" class="orders"><span translate>dashboard.label.orders</span></h3>
+            <div  *ngIf="data.length>0" class="box p-t-sm p-b-6 text-overflow m-b-12">
               <div class="table-responsive">
                 <table class="w-full">
                   <tr class="text-center text-sm">

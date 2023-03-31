@@ -218,6 +218,12 @@ export class ResumeOrderModalComponent implements OnInit {
               }
             }
           }
+          if (json.instructions[x].TYPE === 'StickySubagent' || json.instructions[x].TYPE === 'ConsumeNotices') {
+            if (json.instructions[x].subworkflow) {
+              json.instructions[x].instructions = json.instructions[x].subworkflow.instructions;
+              delete json.instructions[x].subworkflow;
+            }
+          }
           if (json.instructions[x].TYPE === 'Lock') {
             if (json.instructions[x].lockedWorkflow) {
               json.instructions[x].instructions = json.instructions[x].lockedWorkflow.instructions;

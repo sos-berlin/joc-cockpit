@@ -487,6 +487,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             this.jobMap = jobMap;
           }, {}, {count: 0}, true);
           this.workflowService.compareAndMergeInstructions(this.workFlowJson.instructions, res.workflow.instructions);
+          this.getOrders(res.workflow, flag);
           setTimeout(() => {
             this.isReload = true;
           }, 0);

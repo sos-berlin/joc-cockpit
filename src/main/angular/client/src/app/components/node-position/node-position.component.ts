@@ -151,7 +151,8 @@ export class NodePositionComponent implements OnChanges {
                 }
                 recursive(json.instructions[x].else, obj1);
               }
-            } else if (json.instructions[x].TYPE === 'Cycle') {
+            } else if (json.instructions[x].TYPE === 'Cycle' || json.instructions[x].TYPE === 'Lock' ||
+              json.instructions[x].TYPE === 'Options' || json.instructions[x].TYPE === 'ForkList' || json.instructions[x].TYPE === 'ConsumeNotices') {
 
               let _obj = {
                 title: json.instructions[x].TYPE,
@@ -163,57 +164,15 @@ export class NodePositionComponent implements OnChanges {
               if (flag && !skip) {
                 obj.children.push(_obj);
               }
-              if (json.instructions[x].cycleWorkflow) {
+              if ((json.instructions[x].TYPE === 'Cycle' && json.instructions[x].cycleWorkflow)) {
                 recursive(json.instructions[x].cycleWorkflow, _obj);
-              } else {
-                recursive(json.instructions[x], _obj);
-              }
-            } else if (json.instructions[x].TYPE === 'Lock') {
-
-              let _obj = {
-                title: json.instructions[x].TYPE,
-                disabled: !isEnable,
-                label: json.instructions[x].label,
-                key: json.instructions[x].positionString,
-                children: []
-              };
-              if (flag && !skip) {
-                obj.children.push(_obj);
-              }
-              if (json.instructions[x].lockedWorkflow) {
+              } else if ((json.instructions[x].TYPE === 'Lock' && json.instructions[x].lockedWorkflow)) {
                 recursive(json.instructions[x].lockedWorkflow, _obj);
-              } else {
-                recursive(json.instructions[x], _obj);
-              }
-            } else if (json.instructions[x].TYPE === 'Options') {
-              let _obj = {
-                title: json.instructions[x].TYPE,
-                disabled: !isEnable,
-                label: json.instructions[x].label,
-                key: json.instructions[x].positionString,
-                children: []
-              };
-              if (flag && !skip) {
-                obj.children.push(_obj);
-              }
-              if (json.instructions[x].block) {
+              } else if ((json.instructions[x].TYPE === 'Options' && json.instructions[x].block)) {
                 recursive(json.instructions[x].block, _obj);
-              } else {
-                recursive(json.instructions[x], _obj);
-              }
-            } else if (json.instructions[x].TYPE === 'ForkList') {
-
-              let _obj = {
-                title: json.instructions[x].TYPE,
-                disabled: !isEnable,
-                label: json.instructions[x].label,
-                key: json.instructions[x].positionString,
-                children: []
-              };
-              if (flag && !skip) {
-                obj.children.push(_obj);
-              }
-              if (json.instructions[x].workflow) {
+              } else if (((json.instructions[x].TYPE === 'ConsumeNotices' || json.instructions[x].TYPE === 'StickySubagent') && json.instructions[x].subworkflow)) {
+                recursive(json.instructions[x].subworkflow, _obj);
+              } else if ((json.instructions[x].TYPE === 'ForkList' && json.instructions[x].workflow)) {
                 recursive(json.instructions[x].workflow, _obj);
               } else {
                 recursive(json.instructions[x], _obj);

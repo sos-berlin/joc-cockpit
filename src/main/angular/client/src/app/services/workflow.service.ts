@@ -840,18 +840,13 @@ export class WorkflowService {
               delete json.instructions[x].lockedWorkflow;
             }
           }
-          if (json.instructions[x].TYPE === 'StickySubagent') {
+          if (json.instructions[x].TYPE === 'StickySubagent' || json.instructions[x].TYPE === 'ConsumeNotices') {
             if (json.instructions[x].subworkflow) {
               json.instructions[x].instructions = json.instructions[x].subworkflow.instructions;
               delete json.instructions[x].subworkflow;
             }
           }
-          if (json.instructions[x].TYPE === 'ConsumeNotices') {
-            if (json.instructions[x].subworkflow) {
-              json.instructions[x].instructions = json.instructions[x].subworkflow.instructions;
-              delete json.instructions[x].subworkflow;
-            }
-          }
+
           if (json.instructions[x].TYPE === 'Cycle') {
             if (json.instructions[x].cycleWorkflow) {
               json.instructions[x].instructions = json.instructions[x].cycleWorkflow.instructions;
