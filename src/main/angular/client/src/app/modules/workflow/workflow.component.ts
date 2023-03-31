@@ -839,8 +839,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
 
           if (this.workflowFilters.expandedObjects && this.workflowFilters.expandedObjects.length > 0 &&
-            this.workflowFilters.expandedObjects.indexOf(path + res.workflows[i].versionId) > -1) {
-            this.showPanelFuc(res.workflows[i], false, this.workflowFilters.mapObj.get(path + res.workflows[i].versionId));
+            ((this.workflowFilters.expandedObjects.indexOf(path + res.workflows[i].versionId) > -1 ) ||
+              (this.workflowFilters.expandedObjects.indexOf(path + 'CURRENT') > -1 && res.workflows[i].isCurrentVersion))) {
+            this.showPanelFuc(res.workflows[i], false, this.workflowFilters?.mapObj?.get(path + res.workflows[i].versionId));
             request.workflowIds.push({path, versionId: res.workflows[i].versionId});
           } else {
             request2.workflowIds.push({path, versionId: res.workflows[i].versionId});

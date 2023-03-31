@@ -4,7 +4,6 @@ import {
   Inject,
   OnDestroy,
   OnInit,
-  Renderer2,
   ViewChild
 } from '@angular/core';
 import {isEmpty, isArray} from 'underscore';
@@ -59,7 +58,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
   treeStructure = [];
   isChildren: boolean;
   nodes = [];
-  count = 0;
+
 
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
@@ -95,7 +94,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
     } else {
       this.init();
     }
-
   }
 
   ngOnDestroy() {
@@ -246,7 +244,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
   }
 
   loadOrderLog(): void {
-    this.count = 0;
     this.workflow = this.dataObject.workflow;
     this.treeStructure = [];
     const order: any = {
@@ -281,14 +278,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
   }
 
   private checkDom(res, order): void {
-    if (!(POPOUT_MODALS['windowInstance']?.document.getElementById('logs'))) {
-      ++this.count;
-      if(this.count < 12) {
-        setTimeout(() => {
-          this.checkDom(res, order);
-        }, 150);
-      }
-    } else {
       this.jsonToString(res);
       this.showHideTask(res.logEvents);
       if (!res.complete && !this.isCancel) {
@@ -296,7 +285,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
       } else {
         this.finished = true;
       }
-    }
+    
   }
 
   showHideTask(logs): void {
@@ -801,6 +790,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
         div.className += ' m-l-13';
         div.innerHTML = `<span class="">` + col;
       }
+
       if (POPOUT_MODALS['windowInstance']?.document.getElementById('logs')) {
         POPOUT_MODALS['windowInstance']?.document.getElementById('logs').appendChild(div);
       }

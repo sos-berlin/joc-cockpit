@@ -3591,9 +3591,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (pathArr.length === 0) {
         pathArr.push('/');
       }
+      workflowFilters.searchText = this.data.name;
       workflowFilters.expandedKeys = pathArr;
       workflowFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
-      workflowFilters.expandedObjects = [PATH];
+      workflowFilters.expandedObjects = [PATH + 'CURRENT'];
       this.router.navigate(['/workflows']).then();
     }
   }
