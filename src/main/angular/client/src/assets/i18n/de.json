@@ -1204,7 +1204,7 @@
       "tooltip": {
         "jocInstanceId": "JOC Cockpit Instanz-Kennung",
         "jocClusterId": "JOC Cockpit Cluster-Kennung",
-        "ordering": "Reihenfolge",
+        "ordering": "Aufsteigende Reihenfolge der JOC Cockpit Instanz im Dashboard.",
         "host": "Der Rechner, auf dem JOC Cockpit installiert wird.",
         "port": "Der Port, über den eine Verbindung zum Rechner aufgenommen wird. Häufig ist dies Port 22 für SSH Verbindungen.",
         "method": "Die Authentifizierungsmethode für die SSH Verbindung zum Rechner von JOC Cockpit. Die Methode private/public key wird unterstützt.",
@@ -1777,8 +1777,8 @@
       "label.draft": "Entwurf",
       "label.deployed": "Ausgerollt",
       "label.released": "Freigegeben",
-      "label.addDraftVersion": "add draft version if no deployed version exists",
-      "tooltip.perDefaultStorageOfDeployedReleased": "Per default storage of deployed/released versions is preferentially supported. Choosing both draft and deployed/released versions will result in drafts being stored only, if no deployed/released version exists. Choosing only draft versions will result in draft version being stored even if deployed/released versions exist. Draft versions are considered untested and therefore unsafe."
+      "label.addDraftVersion": "Entwurfsversion verwenden, falls keine ausgerollte/freigegebene Version existiert",
+      "tooltip.perDefaultStorageOfDeployedReleased": "Standardmäßig wird die Speicherung von ausgerollten/freigegebenen Versionen empfohlen. Wenn sowohl Entwurfsversionen als auch ausgerollte/freigegebene Versionen ausgewählt werden, so werden Entwurfsversionen dann gespeichert, wenn keine ausgerollte/freigegebene Version existiert. Wenn nur Entwurfsversionen auswählt werden, werden nur Entwurfsversionen gespeichert und keine ausgerollten/freigegebenen Versionen. Entwurfsversionen gelten als ungetestet und daher als unsicher."
     },
     "tooltips": {
       "calendar": {
@@ -1857,7 +1857,7 @@
           "returnCode": "Der Fail-Anweisung kann eine positive Zahl als Rückgabewert zugeordnet werden, die in der Auftragshistorie sichtbar wird. Rückgabewerte ungleich 0 werden als fehlerhafte Ausführung gewertet."
         },
         "options": {
-          "stopOnFailure": "Stoppen im Fehlerfall"
+          "stopOnFailure": "Die Einstellung wirkt sich auf Anweisungen wie Lock, ConsumeNotices und Cycle aus. Sie bewirkt, dass Aufträge im Fehlerfall bei der aktuellen Anweisung verbleiben, anstatt zum Beginn der jeweiligen Lock-, ConsumeNotices- oder Cycle-Anweisung zurückzukehren."
         },
         "fileWatch": {
           "directory": "Das Verzeichnis, das auf die Existenz neuer Dateien hin überwacht wird.",
@@ -1944,8 +1944,8 @@
           "workflowName": "Die AddOrder-Anweisung erlaubt es einem anderen Arbeitsablauf einen unabhängigen Auftrag hinzuzufügen.",
           "arguments": "Argumente müssen dem Auftrag hinzugefügt werden sofern diese vom Arbeisablauf verlangt werden. Optionale Argumente können entfallen.",
           "remainWhenTerminated": "Nach Terminierung soll der Auftrag im Arbeitsablauf verbleiben. Dies erfordert die manuelle Ausführung der Funktion 'Arbeitsablauf verlassen', die z.B. in der Sicht ARBEITSABLAUF verfügbar ist.",
-          "startPosition": "Start Position",
-          "endPositions": "End Positions"
+          "startPosition": "Erlaubt die Auwahl der Start-Position des Auftrags im Arbeitsablauf. Ohen Start-Position startet der Aufrag ab Beginn des Arbeitsablaufs.",
+          "endPositions": "Erlabut die Auswahl einer oder mehrerer Ende-Positionen des Auftrags im Arbeitsablauf. Ohne Ende-Position endet der Auftrag mit dem Ende des Arbeitsablaufs."
         },
         "lock": {
           "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in Arbeitsabläufen können durch Ressourcen-Sperren für die parallele Ausführung limitiert werden.",
@@ -3160,7 +3160,7 @@
     "label.byListVariable": "Per Listenvariable",
     "label.bySubagentCluster": "Per Subagenten Cluster",
     "label.stopOnFailure": "Stoppen im Fehlerfall",
-    "label.references": "References",
+    "label.references": "Referenzen",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",

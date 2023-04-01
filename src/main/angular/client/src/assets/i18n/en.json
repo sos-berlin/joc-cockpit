@@ -1204,7 +1204,7 @@
       "tooltip": {
         "jocInstanceId": "The JOC Cockpit Instance ID is a unique number that specifies the instance in a JOC Cockpit cluster.",
         "jocClusterId": "The JOC Cockpit Cluster ID is a common identifier used by all JOC Cockpit instances in the same cluster.",
-        "ordering": "Ordering",
+        "ordering": "Ascening order of the JOC Cockpit instance in the DASHSBOARD view.",
         "host": "The Host on which the JOC Cockpit is installed.",
         "port": "The port through which a connection to the host is established. This is often port 22 for SSH connections.",
         "method": "The Authentication Method for the SSH connection to the JOC Cockpit's host. The private/public key method is supported.",
@@ -1777,8 +1777,8 @@
       "label.draft": "Draft",
       "label.deployed": "Deployed",
       "label.released": "Released",
-      "label.addDraftVersion": "add draft version if no deployed version exists",
-      "tooltip.perDefaultStorageOfDeployedReleased": "Per default storage of deployed/released versions is preferentially supported. Choosing both draft and deployed/released versions will result in drafts being stored only, if no deployed/released version exists. Choosing only draft versions will result in draft version being stored even if deployed/released versions exist. Draft versions are considered untested and therefore unsafe."
+      "label.addDraftVersion": "use draft version if no deployed/released version exists",
+      "tooltip.perDefaultStorageOfDeployedReleased": "Per default storing deployed/released versions is preferentially recommended. Choosing both draft and deployed/released versions will result in drafts being stored only, if no deployed/released version exists. Choosing only draft versions will result in draft version being stored and no deployed/released versions. Draft versions are considered untested and therefore unsafe."
     },
     "tooltips": {
       "calendar": {
@@ -1857,7 +1857,7 @@
           "unsuccessful": "By default the Finish Instruction makes orders leave the workflow with a successfuly history outcome. This checkbox can be used to make an order leave the workflow with an unsuccessful historic outcome."
         },
         "options": {
-          "stopOnFailure": "Stop On Failure"
+          "stopOnFailure": "The setting impacts instructions such as Lock, ConsumeNotices and Cycle. It causes orders in case of errors to remain with the current instruction instead of returning to the begin of the respective Lock, ConsumeNotices or Cycle Instruction."
         },
         "fileWatch": {
           "directory": "The Directory that is watched for incoming files.",
@@ -1944,8 +1944,8 @@
           "workflowName": "The AddOrder Instruction allows to add an independent order to the specified workflow.",
           "arguments": "Arguments have to be added to the Order if required by the target workflow. Optional arguments can be omitted.",
           "remainWhenTerminated": "After termination the Order remains with the workflow. This requires to manually perform the operation 'Leave Workflow' that is available from the WORKFLOWS view.",
-          "startPosition": "Start Position",
-          "endPositions": "End Positions"
+          "startPosition": "Allows to select the start position of the order in the workflow. Without a start position, the orders starts from the beginning of the workflow.",
+          "endPositions": "Allows the selection of one or more end positions of the order in the workflow. Without an end position, the order ends with the end of the workflow."
         },
         "lock": {
           "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parallelism by using Resource Locks.",
