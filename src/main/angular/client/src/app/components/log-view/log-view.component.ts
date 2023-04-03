@@ -71,7 +71,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
-    this.dataObject.instance.document.title = this.dataObject.modalName + ' - ' + (this.dataObject.orderId || this.dataObject.job);
+    POPOUT_MODALS['windowInstance'].document.title = this.dataObject.modalName + ' - ' + (this.dataObject.orderId || this.dataObject.job);
     this.controllerId = this.dataObject.controllerId;
     if (this.authService.scheduleIds) {
       const ids = JSON.parse(this.authService.scheduleIds);
@@ -167,7 +167,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
 
   scrollBottom(): void {
     if (!this.scrolled) {
-      $(this.dataObject.instance).scrollTop(this.dataBody.nativeElement.scrollHeight);
+      $(POPOUT_MODALS['windowInstance']).scrollTop(this.dataBody.nativeElement.scrollHeight);
     }
   }
 
@@ -278,14 +278,13 @@ export class LogViewComponent implements OnInit, OnDestroy {
   }
 
   private checkDom(res, order): void {
-      this.jsonToString(res);
-      this.showHideTask(res.logEvents);
-      if (!res.complete && !this.isCancel) {
-        this.runningOrderLog({historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId});
-      } else {
-        this.finished = true;
-      }
-    
+    this.jsonToString(res);
+    this.showHideTask(res.logEvents);
+    if (!res.complete && !this.isCancel) {
+      this.runningOrderLog({historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId});
+    } else {
+      this.finished = true;
+    }
   }
 
   showHideTask(logs): void {
@@ -1052,15 +1051,8 @@ export class LogViewComponent implements OnInit, OnDestroy {
             dom[x].style.background = color;
           }
         }
-        let top = $(dom[dom.length > 2 ? 1 : dom.length - 1]).position().top;
-        if(top > 0){
-          top = (top + $(this.dataObject.instance).scrollTop()) - 54
-        } else {
-          top = ($(this.dataObject.instance).scrollTop() + top) - 32;
-        }
-        top = Math.abs(top);
-        $(this.dataObject.instance).scrollTop(top);
 
+        dom[dom.length > 2 ? 1 : dom.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center'  });
         if (dom.length > 0) {
           for (let x in dom) {
             if (dom[x] && dom[x].style) {

@@ -241,34 +241,34 @@
                   </tr>
                   <tr class="text-center">
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600 " [ngClass]="{'light-yellow' : numOfAllOrders.pending > 0}" [innerHtml]="numOfAllOrders.pending || 0"></span>
+                      <span class="font14 _600 cursor " (click)="viewOrderState('PENDING')" [ngClass]="{'light-yellow' : numOfAllOrders.pending > 0}" [innerHtml]="numOfAllOrders.pending || 0"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600" [ngClass]="{'gold' : numOfAllOrders.scheduled > 0}" [innerHtml]="numOfAllOrders.scheduled || 0"></span>
+                      <span class="font14 _600 cursor"  (click)="viewOrderState('SCHEDULED')" [ngClass]="{'gold' : numOfAllOrders.scheduled > 0}" [innerHtml]="numOfAllOrders.scheduled || 0"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600" [ngClass]="{'light-blue' : numOfAllOrders.inProgress > 0}" [innerHtml]="numOfAllOrders.inProgress || 0"></span>
+                      <span class="font14 _600 cursor" (click)="viewOrderState('INPROGRESS')" [ngClass]="{'light-blue' : numOfAllOrders.inProgress > 0}" [innerHtml]="numOfAllOrders.inProgress || 0"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600" [ngClass]="{'green' : numOfAllOrders.running > 0}" [innerHtml]="numOfAllOrders.running || 0"></span>
+                      <span class="font14 _600 cursor"  (click)="viewOrderState('RUNNING')" [ngClass]="{'green' : numOfAllOrders.running > 0}" [innerHtml]="numOfAllOrders.running || 0"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600" [ngClass]="{'orange' : numOfAllOrders.suspended > 0}" [innerHtml]="numOfAllOrders.suspended || 0"></span>
+                      <span class="font14 _600 cursor"  (click)="viewOrderState('SUSPENDED')" [ngClass]="{'orange' : numOfAllOrders.suspended > 0}" [innerHtml]="numOfAllOrders.suspended || 0"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600" [ngClass]="{'dark-blue' : numOfAllOrders.terminated > 0}" [innerHtml]="numOfAllOrders.terminated || 0"></span>
+                      <span class="font14 _600 cursor"  (click)="viewOrderState('uu')" [ngClass]="{'dark-blue' : numOfAllOrders.terminated > 0}" [innerHtml]="numOfAllOrders.terminated || 0"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600 " [ngClass]="{'light-green' : numOfAllOrders.prompting > 0}" [innerHtml]="numOfAllOrders.prompting || 0"></span>
+                      <span class="font14 _600 cursor " (click)="viewOrderState('PROMPTING')" [ngClass]="{'light-green' : numOfAllOrders.prompting > 0}" [innerHtml]="numOfAllOrders.prompting || 0"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600" [ngClass]="{'yellow-green' : numOfAllOrders.waiting > 0}" [innerHtml]="numOfAllOrders.waiting || 0"></span>
+                      <span class="font14 _600 cursor"  (click)="viewOrderState('WAITING')" [ngClass]="{'yellow-green' : numOfAllOrders.waiting > 0}" [innerHtml]="numOfAllOrders.waiting || 0"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600" [ngClass]="{'mangenta' : numOfAllOrders.blocked > 0}" [innerHtml]="numOfAllOrders.blocked || 0"></span>
+                      <span class="font14 _600 cursor"  (click)="viewOrderState('BLOCKED')" [ngClass]="{'mangenta' : numOfAllOrders.blocked > 0}" [innerHtml]="numOfAllOrders.blocked || 0"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600" [ngClass]="{'red' : numOfAllOrders.failed > 0}" [innerHtml]="numOfAllOrders.failed || 0"></span>
+                      <span class="font14 _600 cursor"  (click)="viewOrderState('FAILED')" [ngClass]="{'red' : numOfAllOrders.failed > 0}" [innerHtml]="numOfAllOrders.failed || 0"></span>
                     </td>
                   </tr>
                 </table>

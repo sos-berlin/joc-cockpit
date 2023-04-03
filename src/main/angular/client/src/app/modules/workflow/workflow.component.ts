@@ -1531,6 +1531,36 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
+  viewOrderState(state) {
+    let workflowIds = [];
+    for (let i in this.workflows) {
+      workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
+    }
+    this.sideBar = {
+      isVisible: true,
+      loading: true,
+      state,
+      orders: []
+    };
+    const request = {
+      compact: true,
+      controllerId: this.schedulerIds.selected,
+      workflowIds: workflowIds,
+      states: [state]
+    };
+
+    this.getOrdersOnState(request);
+  }
+
+  private getOrdersOnState(obj) {
+    this.coreService.post('orders', obj).subscribe((res: any) => {
+      if (res) {
+        this.sideBar.loading = false;
+      }
+      this.sideBar.orders = res.orders;
+    });
+  }
+
   toggleCompactView(): void {
     this.workflowFilters.isCompact = !this.workflowFilters.isCompact;
     this.preferences.isWorkflowCompact = this.workflowFilters.isCompact;
@@ -1645,6 +1675,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             return {path: item.path, versionId: item.versionId}
           })
         });
+        if (this.sideBar?.isVisible) {
+          if (this.sideBar.state) {
+            this.viewOrderState(this.sideBar.state);
+          }
+        }
       }
     }
   }

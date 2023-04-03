@@ -822,7 +822,7 @@
       "media": "Media",
       "installation": "Installation",
       "configuration": "Configuration",
-      "certificates": "Certificates",
+      "certificates": "Certificats",
       "startFiles": "Fichiers de Configuration",
       "createDescriptor": "Créer Descripteur"
     },
@@ -887,7 +887,7 @@
         "secondaryJocCert": "Certificat du  JOC Cockpit Secondaire"
       },
       "button": {
-        "addCertificates": "Ajouter des Certificates"
+        "addCertificates": "Ajouter des Certificats"
       },
       "placeholder": {
         "primaryControllerCert": "Entrer le chemin d'accès au Certificat du Contrôleur Primaire",
@@ -1204,7 +1204,7 @@
       "tooltip": {
         "jocInstanceId": "Le JOC Cockpit ID Instance est un numéro unique qui spécifie l'instance dans un cluster JOC Cockpit.",
         "jocClusterId": "L'ID du cluster du JOC Cockpit est un identifiant commun utilisé par toutes les instances du JOC Cockpit dans le même cluster.",
-        "ordering": "Séquence",
+        "ordering": "Ordre coissant de l'instance de JOC Cockpit dans la vue TABLEAU DE BOrd.",
         "host": "L'hôte sur lequel le JOC Cockpit est installé.",
         "port": "Le port par lequel une connexion à l'hôte est établie. Il s'agit souvent du port 22 pour les connexions SSH.",
         "method": "La méthode d'authentification pour la connexion SSH à l'hôte du JOC Cockpit. La méthode de clé privée/publique est prise en charge.",
@@ -1777,8 +1777,8 @@
       "label.draft": "Brouillon",
       "label.deployed": "Déployé",
       "label.released": "Publié",
-      "label.addDraftVersion": "add draft version if no deployed version exists",
-      "tooltip.perDefaultStorageOfDeployedReleased": "Per default storage of deployed/released versions is preferentially supported. Choosing both draft and deployed/released versions will result in drafts being stored only, if no deployed/released version exists. Choosing only draft versions will result in draft version being stored even if deployed/released versions exist. Draft versions are considered untested and therefore unsafe."
+      "label.addDraftVersion": "utiliser la version provisoire si aucune version deployée/publiée n'existe",
+      "tooltip.perDefaultStorageOfDeployedReleased": "Par défaut, le stockage des versions déployées/publiées est privilégié. Si vous choisissez à la fois les versions provisoires et les versions déployées/publiées, les versions provisoires seront stockées si aucune version déployée/publiée n'existe. En choisissant uniquement les versions provisoires, les versions provisoires seront stockées et aucune version déployée/publiée ne sera stockée. Les versions provisoires sont considérées comme non testées et donc non sûres."
     },
     "tooltips": {
       "calendar": {
@@ -1857,7 +1857,7 @@
           "returnCode": "L'instruction FAIL peut se voir attribuer un code de retour positif non nul qui devient visible avec l'historique des ordres. Un code de retour non nul indique que l'exécution a échoué."
         },
         "options": {
-          "stopOnFailure": "Arrêt sur échec"
+          "stopOnFailure": "Ce paramètre a une incidence sur les instructions telles que Lock, ConsumeNotices et Cycle. En cas d'erreur, les ordres restent dans l'instruction en cours au lieu de revenir au début de l'instruction Lock, ConsumeNotices ou Cycle."
         },
         "fileWatch": {
           "directory": "Le répertoire qui est surveillé pour les fichiers entrants.",
@@ -1944,8 +1944,8 @@
           "workflowName": "L'instruction Ajouter un Ordre permet d'ajouter un ordre indépendant au workflow spécifié.",
           "arguments": "Des arguments doivent être ajoutés à l'ordre si le workflow cible l'exige. Les arguments facultatifs peuvent être omis.",
           "remainWhenTerminated": "Après la fin des exécutions des tâches, l'ordre reste dans le workflow. Pour cela, il faut effectuer manuellement l'opération 'Quitter le Workflow 'qui est disponible dans la vue WORKFLOW",
-          "startPosition": "Start Position",
-          "endPositions": "End Positions"
+          "startPosition": "Permet de sélectionner la position de départ de l'Ordere le Workflow. Sans position de départ, l'ordre va démarrer dès le début du Workflow.",
+          "endPositions": "Permet de sélectionner une ou plusieurs positions de fin de l'Ordre dans le Workflow. Sans position de fin, l'Ordre va se terminer à la fin du Workflow."
         },
         "lock": {
           "name": "Les noms des Verrous de Ressources sont uniques dans l'inventaire. Les sections des workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressources.",
@@ -3160,7 +3160,7 @@
     "label.byListVariable": "Par Variable de Liste",
     "label.bySubagentCluster": "Par Cluster de Sous-agents",
     "label.stopOnFailure": "Arrêt en cas d'échec",
-    "label.references": "References",
+    "label.references": "Références",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
