@@ -220,14 +220,8 @@ export class LogComponent implements OnInit {
             dom[x].style.background = color;
           }
         }
-        let top = $(dom[dom.length > 2 ? 1 : dom.length - 1]).position().top;
-        if(top > 0){
-          top = (top + $('#logs').scrollTop()) - 54
-        } else {
-          top = ($('#logs').scrollTop() + top) - 32;
-        }
-        top = Math.abs(top);
-        $('#logs').scrollTop(top);
+
+        dom[dom.length > 2 ? 1 : dom.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center'  });
         if (dom.length > 0) {
           for (let x in dom) {
             if (dom[x] && dom[x].style) {

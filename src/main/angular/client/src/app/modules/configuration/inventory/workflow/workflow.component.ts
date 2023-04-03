@@ -33,6 +33,7 @@ import {JobWizardComponent} from '../job-wizard/job-wizard.component';
 import {InventoryService} from '../inventory.service';
 import {CreateObjectModalComponent} from "../inventory.component";
 import {UpdateJobTemplatesComponent} from "../job-template/job-template.component";
+import {CalendarService} from "../../../../services/calendar.service";
 
 // Mx-Graph Objects
 declare const mxEditor;
@@ -1100,12 +1101,13 @@ export class FindAndReplaceComponent implements OnInit {
   selector: 'app-show-reference',
   templateUrl: './show-reference-dialog.html'
 })
-export class ShowReferenceComponent implements OnInit{
+export class ShowReferenceComponent implements OnInit {
   @Input() type: string;
   @Input() obj: any;
+  @Input() preferences: any;
   data: any = {};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private calendarService: CalendarService) {
   }
 
   ngOnInit(): void {
@@ -1116,14 +1118,45 @@ export class ShowReferenceComponent implements OnInit{
     this.coreService.post('inventory/workflow/references', this.obj).subscribe({
       next: (res: any) => {
         this.data = res;
+        if(this.type==='SCHEDULE') {
+          let dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+          for (let i in this.data.schedules) {
+            for (let j in this.data.schedules[i].calendars) {
+              this.calendarService.convertObjToArr(this.data.schedules[i].calendars[j], dateFormat);
+            }
+          }
+        
+        }
       }
     });
   }
 
-  navToObj(path: string): void {
-    this.activeModal.close({
-      path, type: this.type
-    });
+  navToObj(path: string, type?): void {
+    if (type) {
+      this.activeModal.close({
+        name: path, type
+      });
+    } else {
+      this.activeModal.close({
+        path, type: this.type
+      });
+    }
+  }
+
+  getPeriodStr(period): string {
+    let periodStr = null;
+    if (period.begin) {
+      periodStr = period.begin;
+    }
+    if (period.end) {
+      periodStr = periodStr + '-' + period.end;
+    }
+    if (period.singleStart) {
+      periodStr = 'Single start: ' + period.singleStart;
+    } else if (period.repeat) {
+      periodStr = periodStr + ' every ' + this.calendarService.getTimeInString(period.repeat);
+    }
+    return periodStr;
   }
 }
 
@@ -3591,7 +3624,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (pathArr.length === 0) {
         pathArr.push('/');
       }
-      workflowFilters.searchText = this.data.name;
+
       workflowFilters.expandedKeys = pathArr;
       workflowFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
       workflowFilters.expandedObjects = [PATH + 'CURRENT'];
@@ -4116,6 +4149,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzContent: ShowReferenceComponent,
       nzComponentParams: {
         obj,
+        preferences: this.preferences,
         type
       },
       nzFooter: null,
@@ -4123,7 +4157,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
       if (result) {
-        const name = result.path.substring(result.path.lastIndexOf('/') + 1, result.path.length);
+        const name = result.path ? result.path.substring(result.path.lastIndexOf('/') + 1, result.path.length) : result.name;
         this.navToObj(name, result.type)
       }
     });
@@ -5576,9 +5610,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     const doc = mxUtils.createXmlDocument();
     if (!callFun && !isNavigate) {
       $('#toolbar').find('img').each(function (index) {
-        if (index === 15 && !self.hasLicense) {
+        if (index === 16 && !self.hasLicense) {
           $('#toolbar').find('hr').each(function (index) {
-            if (index === 14) {
+            if (index === 15) {
               $(this).hide();
             }
           });
