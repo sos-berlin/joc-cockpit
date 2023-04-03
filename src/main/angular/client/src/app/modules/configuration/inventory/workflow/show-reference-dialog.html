@@ -33,8 +33,8 @@
           <tbody>
           <tr *ngFor="let item of data.fileOrderSources">
             <td>
-              <a><i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
-                &nbsp;{{item.path}}</a>
+              <i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
+                &nbsp;{{item.path}}
             </td>
             <td>
               <span>{{item.agentName}}</span>
@@ -70,7 +70,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let calendar of item.calendars; let i =index">
-              <td class="cursor">
+              <td>
                 <i (click)="navToObj(calendar.calendarName, 'WORKINGDAYSCALENDAR');" class="fa fa-pencil cursor"></i>
                 <i class="fa fa-calendar p-l-xs text-success"></i>&nbsp;
                 {{calendar.calendarName}} <i *ngIf="calendar.title">-</i> {{calendar.title}}
@@ -88,7 +88,6 @@
             </tr>
             <tr *ngFor="let holiday of item.nonWorkingDayCalendars; let i =index">
               <td>
-
                 <i (click)="navToObj(holiday.calendarName, 'NONWORKINGDAYSCALENDAR');" class="fa fa-pencil cursor"></i>
                 <i class="fa fa-calendar p-l-xs text-danger"></i>&nbsp;
                 {{holiday.calendarName}}
@@ -106,9 +105,8 @@
     <label class="col-md-12 _600">{{'inventory.label.workflows' | translate}}:</label>
     <div class="col-md-12 m-t-sm">
       <div class="p-l" *ngFor="let item of data.workflows">
-        <a><i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
+        <i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
           &nbsp;{{item.path}}
-        </a>
       </div>
     </div>
   </div>

@@ -779,6 +779,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       data.value = '';
       return;
     }
+    if(!this.schedule.configuration.planOrderAutomatically) {
+      this.schedule.configuration.submitOrderToControllerWhenPlanned = false;
+    }
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }

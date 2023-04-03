@@ -1924,44 +1924,49 @@ export class CoreService {
               if (parentNode && parentNode.children) {
                 parentNode.children.push(data);
                 nodes.push(parentNode);
+                obj.flag = true;
               } else {
-                if (nodes[i].title == data.title || (nodes[i].title == '' && data.title == 'Job') || (nodes[i].title == 'Job' && data.title == '') || (nodes[i].title == 'Try' && data.title == 'Retry') || (nodes[i].title == 'Retry' && data.title == 'Try')) {
-                  if (data.title) {
-                    nodes[i].title = data.title;
-                  }
-                  if (data.name) {
-                    nodes[i].name = data.name;
-                  }
-                  nodes[i].logEvent = data.logEvent;
-                  nodes[i].logLevel = data.logLevel;
-                  nodes[i].children = data.children;
+                if (nodes[i].title == 'Job' && nodes[i].title == data.title && nodes[i].name && data.name && nodes[i].name != data.name) {
 
                 } else {
-                  let flag = false;
-                  for (let prop in nodes) {
-                    if (nodes[prop].position == data.position && (nodes[prop].title == data.title || (!nodes[prop].title && data.title) || (nodes[prop].title == 'Try' && data.title == 'Retry') || (nodes[prop].title == 'Retry' && data.title == 'Try'))) {
-                      nodes[prop].name = data.name;
-                      nodes[prop].logEvent = data.logEvent;
-                      nodes[prop].logLevel = data.logLevel;
-                      nodes[prop].children = data.children;
-                      if ((nodes[prop].title == data.title || (nodes[prop].title == 'Try' && data.title == 'Retry') || (nodes[prop].title == 'Retry' && data.title == 'Try'))) {
+                  if (nodes[i].title == data.title || (nodes[i].title == '' && data.title == 'Job') || (nodes[i].title == 'Job' && data.title == '') || (nodes[i].title == 'Try' && data.title == 'Retry') || (nodes[i].title == 'Retry' && data.title == 'Try')) {
+                    if (data.title) {
+                      nodes[i].title = data.title;
+                    }
+                    if (data.name) {
+                      nodes[i].name = data.name;
+                    }
+                    nodes[i].logEvent = data.logEvent;
+                    nodes[i].logLevel = data.logLevel;
+                    nodes[i].children = data.children;
+                  } else {
+                    let flag = false;
+                    for (let prop in nodes) {
+                      if (nodes[prop].position == data.position && (nodes[prop].title == data.title || (!nodes[prop].title && data.title) || (nodes[prop].title == 'Try' && data.title == 'Retry') || (nodes[prop].title == 'Retry' && data.title == 'Try'))) {
+                        nodes[prop].name = data.name;
+                        nodes[prop].logEvent = data.logEvent;
+                        nodes[prop].logLevel = data.logLevel;
+                        nodes[prop].children = data.children;
+                        if ((nodes[prop].title == data.title || (nodes[prop].title == 'Try' && data.title == 'Retry') || (nodes[prop].title == 'Retry' && data.title == 'Try'))) {
 
-                      } else {
-                        nodes[prop].title = data.title;
+                        } else {
+                          nodes[prop].title = data.title;
+                        }
+                        flag = true;
+                        break;
                       }
-                      flag = true;
-                      break;
+                    }
+                    if (!flag) {
+                      if (data.title == 'Join' && nodes[nodes.length - 1].title == 'ForkList') {
+                        data.end = 'ForkList-End';
+                      }
+                      nodes.push(data);
                     }
                   }
-                  if (!flag) {
-                    if (data.title == 'Join' && nodes[nodes.length - 1].title == 'ForkList') {
-                      data.end = 'ForkList-End';
-                    }
-                    nodes.push(data);
-                  }
+                  obj.flag = true;
                 }
               }
-              obj.flag = true;
+
               break;
             } else if ((nodes[i].position == _tempArr.join('/'))) {
               let isFound = false;
