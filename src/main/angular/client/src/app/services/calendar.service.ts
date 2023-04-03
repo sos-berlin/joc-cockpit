@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {DatePipe} from '@angular/common';
-import {groupBy, isArray, toArray} from 'underscore';
+import {groupBy, isArray, isEmpty, toArray} from 'underscore';
 import * as moment from 'moment';
 
 @Injectable()
@@ -252,6 +252,121 @@ export class CalendarService {
     }
     return str;
   }
+
+  convertObjToArr(calendar, dateFormat): void {
+    let obj: any = {};
+    if (!calendar.frequencyList) {
+      calendar.frequencyList = [];
+    }
+    if (calendar.includes && !isEmpty(calendar.includes)) {
+      if (calendar.includes.dates && calendar.includes.dates.length > 0) {
+        obj = {
+          tab: 'specificDays',
+          type: 'INCLUDE',
+          dates: calendar.includes.dates
+        };
+        obj.str = this.freqToStr(obj, dateFormat);
+        calendar.frequencyList.push(obj);
+      }
+      if (calendar.includes.weekdays && calendar.includes.weekdays.length > 0) {
+        calendar.includes.weekdays.forEach(weekday => {
+          obj = {
+            tab: 'weekDays',
+            type: 'INCLUDE',
+            days: [],
+            startingWithW: weekday.from,
+            endOnW: weekday.to,
+            all: weekday.days.length == 7
+          };
+          weekday.days.forEach(day => {
+            obj.days.push(day.toString());
+          });
+          obj.str = this.freqToStr(obj, dateFormat);
+          calendar.frequencyList.push(obj);
+        });
+      }
+      if (calendar.includes.monthdays && calendar.includes.monthdays.length > 0) {
+        calendar.includes.monthdays.forEach(monthday => {
+          if (monthday.weeklyDays && monthday.weeklyDays.length > 0) {
+            monthday.weeklyDays.forEach(day => {
+              obj = {
+                type: 'INCLUDE',
+                tab: 'specificWeekDays',
+                specificWeekDay: this.getStringDay(day.day),
+                which: day.weekOfMonth.toString(),
+                startingWithS: monthday.from,
+                endOnS: monthday.to
+              };
+              obj.str = this.freqToStr(obj, dateFormat);
+              calendar.frequencyList.push(obj);
+            });
+          } else {
+            obj = {
+              type: 'INCLUDE',
+              tab: 'monthDays',
+              selectedMonths: [],
+              isUltimos: 'months',
+              startingWithM: monthday.from,
+              endOnM: monthday.to
+            };
+            monthday.days.forEach(day => {
+              obj.selectedMonths.push(day.toString());
+            });
+            obj.str = this.freqToStr(obj, dateFormat);
+            calendar.frequencyList.push(obj);
+          }
+        });
+      }
+      if (calendar.includes.ultimos && calendar.includes.ultimos.length > 0) {
+        calendar.includes.ultimos.forEach(ultimos => {
+          if (ultimos.weeklyDays && ultimos.weeklyDays.length > 0) {
+            ultimos.weeklyDays.forEach(day => {
+              obj = {
+                type: 'INCLUDE',
+                tab: 'specificWeekDays',
+                specificWeekDay: this.getStringDay(day.day),
+                which: -day.weekOfMonth,
+                startingWithS: ultimos.from,
+                endOnS: ultimos.to
+              };
+              obj.str = this.freqToStr(obj, dateFormat);
+              calendar.frequencyList.push(obj);
+            });
+          } else {
+            obj = {
+              type: 'INCLUDE',
+              tab: 'monthDays',
+              selectedMonthsU: [],
+              isUltimos: 'ultimos',
+              startingWithM: ultimos.from,
+              endOnM: ultimos.to
+            };
+            ultimos.days.forEach(day => {
+              obj.selectedMonthsU.push(day.toString());
+            });
+            obj.str = this.freqToStr(obj, dateFormat);
+            calendar.frequencyList.push(obj);
+          }
+
+        });
+      }
+      if (calendar.includes.repetitions && calendar.includes.repetitions.length > 0) {
+        calendar.includes.repetitions.forEach(value => {
+          obj = {
+            tab: 'every',
+            type: 'INCLUDE',
+            dateEntity: value.repetition,
+            interval: value.step,
+            startingWith: value.from,
+            endOn: value.to
+          };
+          obj.str = this.freqToStr(obj, dateFormat);
+          calendar.frequencyList.push(obj);
+        });
+      }
+    }
+  }
+
 
   generateCalendarObj(data, obj): any {
     const self = this;

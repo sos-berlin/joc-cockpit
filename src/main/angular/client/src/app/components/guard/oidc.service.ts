@@ -277,19 +277,20 @@ export class OIDCAuthService {
             .set('token', content.token)
             .set('token_type_hint', 'access_token');
           if (logoutUrl.includes('login.windows.net')) {
-            revokationParams = revokationParams.set('post_logout_redirect_uri', window.location.href);
+            // navigate to the logout URL
+            window.location.replace(logoutUrl +'?post_logout_redirect_uri='+window.location.href);
+            return
           }
-          const headersObj = logoutUrl.includes('login.windows.net') ? {headers, responseType: 'text'} : {headers}
           revokeAccessToken = this.coreService.log(
             logoutUrl,
             revokationParams,
-            headersObj
+            headers
           );
         } else {
           revokeAccessToken = of(null);
         }
 
-        if (!logoutUrl.includes('login.windows.net') && content.refreshToken && content.refreshToken != 'undefined' && content.refreshToken != 'null') {
+        if (content.refreshToken && content.refreshToken != 'undefined' && content.refreshToken != 'null') {
           let revokationParams = params
             .set('token', content.refreshToken)
             .set('token_type_hint', 'refresh_token');
@@ -304,13 +305,6 @@ export class OIDCAuthService {
 
         combineLatest([revokeAccessToken, revokeRefreshToken]).subscribe({
             next: (res: any) => {
-              console.log(res)
-              for (let i in res) {
-                if (typeof res[i] == 'string') {
-                  window.document.write(res[i]);
-                  break;
-                }
-              }
               resolve(res);
             }, error: (err) => {
               reject(err);
