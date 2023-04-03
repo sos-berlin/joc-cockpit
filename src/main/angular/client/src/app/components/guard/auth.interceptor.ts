@@ -6,9 +6,9 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
+import { isEmpty } from 'underscore';
 import { AuthService } from './auth.service';
 import { LoggingService } from '../../services/logging.service';
-import { isEmpty } from 'underscore';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -19,7 +19,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: any, next: HttpHandler): Observable<HttpEvent<any>> {
     const re = new RegExp("^(http|https)://", "i");
-
     if (req.method === 'POST') {
       if (!re.test(req.url)) {
         req = req.clone({
@@ -52,7 +51,7 @@ export class AuthInterceptor implements HttpInterceptor {
           req.requestTimeStamp = new Date().getTime();
           this.logService.debug('START LOADING ' + req.url);
         }
-      } 
+      }
       return next.handle(req).pipe(
         tap({
           next: (event: any) => {
@@ -61,83 +60,86 @@ export class AuthInterceptor implements HttpInterceptor {
               this.logService.debug(message);
             }
           }, error: (err: any) => {
+            if(err.status === 200){
 
-            if (re.test(req.url) && err.error && !isEmpty(err.error)) {
-              this.toasterService.error(err.error.error, err.error.error_description);
-            }
-            if ((err.status === 401 || err.status === 440 || (err.status === 420 && err.error.error && (err.error.error.message.match(/UnknownSessionException/)
-              || err.error.error.message.match(/user is null/))))) {
-              if (!this.router.url.match('/login') && !req.url.match('authentication/login')) {
-                let title = '';
-                let msg = '';
-                this.translate.get('error.message.sessionTimeout').subscribe(translatedValue => {
-                  title = translatedValue;
-                });
-                this.translate.get('error.message.sessionExpired').subscribe(translatedValue => {
-                  msg = translatedValue;
-                });
-                this.toasterService.error(title, msg);
-                this.authService.clearUser();
-                this.authService.clearStorage();
-                let url = this.router.url;
-                if (url && url.match(/returnUrl/)) {
-                  url = url.substring(0, url.indexOf('returnUrl'));
-                }
-                this.router.navigate(['login'], { queryParams: { returnUrl: url } }).then();
-                return;
-              }
-            } else if (err.status && err.status !== 434 && err.status !== 502) {
-
-              if (req.url.match('inventory/path') && err.status === 420) {
-                return;
-              }
-              if (req.url.match('controller/ids') && err.status === 403) {
-                return;
-              }
-              let flag = false;
-              if (typeof err.error === 'string') {
-                try {
-                  let _err = JSON.parse(err.error);
-                  if (!isEmpty(_err.error)) {
-                    this.toasterService.error(_err.error.code, _err.error.message);
-                  }
-                  flag = true;
-                } catch (e) {
-                }
-              }
-              if (!flag) {
-                if (err.error.error) {
-                  if (err.error.error.message && err.error.error.message.match('JocObjectAlreadyExistException')) {
-                    this.toasterService.error('', err.error.error.message.replace(/JocObjectAlreadyExistException:/, ''));
-                  } else if (err.error.error.message) {
-                    this.toasterService.error('', err.error.error.message);
-                  }
-                } else if (err.error.message) {
-                  this.toasterService.error(err.error.message);
-                } else {
-                  if (err.error.errors) {
-                    for (let i = 0; i < err.error.errors.length; i++) {
-                      this.toasterService.error(err.error.errors[i].message);
-                    }
-                  } else if (err.message) {
-                    this.toasterService.error(err.message);
-                  }
-                }
-              }
-            }
-            let errorMessage: string;
-            if (err.error instanceof ErrorEvent) {
-              // client-side error
-              errorMessage = `${err.error.message}`;
             } else {
-              // server-side error
-              if (err.error && err.error.error) {
-                errorMessage = JSON.stringify(err.error.error);
-              } else {
-                errorMessage = typeof err.error === 'string' ? err.error : JSON.stringify(err.error);
+              if (re.test(req.url) && err.error && !isEmpty(err.error)) {
+                this.toasterService.error(err.error.error, err.error.error_description);
               }
+              if ((err.status === 401 || err.status === 440 || (err.status === 420 && err.error.error && (err.error.error.message.match(/UnknownSessionException/)
+                || err.error.error.message.match(/user is null/))))) {
+                if (!this.router.url.match('/login') && !req.url.match('authentication/login')) {
+                  let title = '';
+                  let msg = '';
+                  this.translate.get('error.message.sessionTimeout').subscribe(translatedValue => {
+                    title = translatedValue;
+                  });
+                  this.translate.get('error.message.sessionExpired').subscribe(translatedValue => {
+                    msg = translatedValue;
+                  });
+                  this.toasterService.error(title, msg);
+                  this.authService.clearUser();
+                  this.authService.clearStorage();
+                  let url = this.router.url;
+                  if (url && url.match(/returnUrl/)) {
+                    url = url.substring(0, url.indexOf('returnUrl'));
+                  }
+                  this.router.navigate(['login'], {queryParams: {returnUrl: url}}).then();
+                  return;
+                }
+              } else if (err.status && err.status !== 434 && err.status !== 502) {
+
+                if (req.url.match('inventory/path') && err.status === 420) {
+                  return;
+                }
+                if (req.url.match('controller/ids') && err.status === 403) {
+                  return;
+                }
+                let flag = false;
+                if (typeof err.error === 'string') {
+                  try {
+                    let _err = JSON.parse(err.error);
+                    if (!isEmpty(_err.error)) {
+                      this.toasterService.error(_err.error.code, _err.error.message);
+                    }
+                    flag = true;
+                  } catch (e) {
+                  }
+                }
+                if (!flag) {
+                  if (err.error.error) {
+                    if (err.error.error.message && err.error.error.message.match('JocObjectAlreadyExistException')) {
+                      this.toasterService.error('', err.error.error.message.replace(/JocObjectAlreadyExistException:/, ''));
+                    } else if (err.error.error.message) {
+                      this.toasterService.error('', err.error.error.message);
+                    }
+                  } else if (err.error.message) {
+                    this.toasterService.error(err.error.message);
+                  } else {
+                    if (err.error.errors) {
+                      for (let i = 0; i < err.error.errors.length; i++) {
+                        this.toasterService.error(err.error.errors[i].message);
+                      }
+                    } else if (err.message) {
+                      this.toasterService.error(err.message);
+                    }
+                  }
+                }
+              }
+              let errorMessage: string;
+              if (err.error instanceof ErrorEvent) {
+                // client-side error
+                errorMessage = `${err.error.message}`;
+              } else {
+                // server-side error
+                if (err.error && err.error.error) {
+                  errorMessage = JSON.stringify(err.error.error);
+                } else {
+                  errorMessage = typeof err.error === 'string' ? err.error : JSON.stringify(err.error);
+                }
+              }
+              this.logService.error(errorMessage);
             }
-            this.logService.error(errorMessage);
           }
         }));
     } else {

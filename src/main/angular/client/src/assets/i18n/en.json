@@ -2215,7 +2215,7 @@
     "message.noVariableAvailable": "no variable available",
     "message.orderModificationNotAllowed": "The order state {{state}} does not allow modification",
     "message.noLogHistoryFound": "No log found for this order",
-    "tooltip.cycleEndTime": "Optionally specifies the cycle end time. Users can specify a shorter period than predefined for the cycle to terminate. The order will be resumed from the position choosen by the user and the specified end time will be check when the order returns to the begin of the cycle. Cycle end times exceeding the predefined cycle period will be ignored.",
+    "tooltip.cycleEndTime": "Optionally specifies the cycle end time. Users can specify a shorter period than predefined for the cycle to terminate. The order will be resumed from the position choosen by the user and the specified end time will be checked when the order returns to the begin of the cycle. Cycle end times exceeding the predefined cycle period will be ignored.",
     "treeView": {
       "label": {
         "state": "State",
