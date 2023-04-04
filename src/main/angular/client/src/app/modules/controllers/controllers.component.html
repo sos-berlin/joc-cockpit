@@ -298,7 +298,7 @@
                             <i class="text-muted">{{agent.title}}</i>
                           </td>
                           <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentName"></span></td>
-                          <td (click)="editAgent(agent, controller)"><span
+                          <td [nzBreakWord] (click)="editAgent(agent, controller)"><span
                             [innerHtml]="agent.agentNameAliases || '-'"></span></td>
                           <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.url"></span></td>
                           <td (click)="editAgent(agent, controller)">
@@ -501,7 +501,7 @@
                             </td>
                             <td (click)="editAgent(clusterAgent, controller, true)"><span
                               [innerHtml]="clusterAgent.agentName"></span></td>
-                            <td (click)="editAgent(clusterAgent, controller, true)"><span
+                            <td [nzBreakWord] (click)="editAgent(clusterAgent, controller, true)"><span
                               [innerHtml]="clusterAgent.agentNameAliases || '-'"></span></td>
                             <td (click)="editAgent(clusterAgent, controller, true)">
                               <label class="label" *ngIf="clusterAgent.syncState"

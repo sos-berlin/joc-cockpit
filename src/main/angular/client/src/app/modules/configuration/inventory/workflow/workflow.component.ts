@@ -1125,7 +1125,6 @@ export class ShowReferenceComponent implements OnInit {
               this.calendarService.convertObjToArr(this.data.schedules[i].calendars[j], dateFormat);
             }
           }
-        
         }
       }
     });
@@ -3626,6 +3625,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
 
       workflowFilters.expandedKeys = pathArr;
+      workflowFilters.scrollTop = 0;
       workflowFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
       workflowFilters.expandedObjects = [PATH + 'CURRENT'];
       this.router.navigate(['/workflows']).then();

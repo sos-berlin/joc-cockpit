@@ -77,7 +77,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }
     });
     this.subscription5 = router.events
-      .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
+      .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe(() => {
         if (!this.isChangePasswordPopupOpen && this.authService.currentUserData && (this.authService.forcePasswordChange == true || this.authService.forcePasswordChange == 'true')) {
           this.isChangePasswordPopupOpen = true;
           this.changePassword();
@@ -204,13 +204,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }
     }
     if (this.preferences.licenseExpirationWarning && !date) {
-      if (remainingDays > 30) {
-        this.preferences.licenseReminderDate = new Date().setMonth(new Date().getMonth() + 1);
-      } else if (remainingDays > 7) {
-        this.preferences.licenseReminderDate = new Date().setDate(new Date().getDate() + 7);
-      } else {
-        this.preferences.licenseReminderDate = new Date(this.licenseDate).setDate(new Date(this.licenseDate).getDate() - 1);
-      }
+      this.preferences.licenseReminderDate = remainingDays > 30 ? new Date().setMonth(new Date().getMonth() + 1) : this.preferences.licenseReminderDate = remainingDays > 7 ? new Date().setDate(new Date().getDate() + 7) : new Date(this.licenseDate).setDate(new Date(this.licenseDate).getDate() - 1);
       if (remainingDays !== 30 && remainingDays !== 7) {
         return;
       }
@@ -291,7 +285,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('window:beforeunload', ['$event'])
-  onWindowClose(event: Event) {
+  onWindowClose() {
     this.popoutService.closePopoutModal();
   }
 
@@ -346,10 +340,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.child.isLogout = true;
     }
     this.coreService.post('authentication/logout', {}).subscribe({
-      next: (res) => {
+      next: () => {
         this._logout(timeout);
-      },
-      error: () => this._logout(timeout)
+      }, error: () => this._logout(timeout)
     });
   }
 
@@ -631,16 +624,19 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private refreshSession(): void {
-    if (!this.isTouch && this.sessionTimeout >= 0) {
-      this.isTouch = true;
-      this.coreService.post('touch', undefined).subscribe({
-        next: res => {
-          this.isTouch = false;
-          if (res) {
-            this.count = this.sessionTimeout / 1000 - 1;
-          }
-        }, error: () => this.isTouch = false
-      });
+    const inSec = (this.sessionTimeout / 1000 - 1);
+    if (!(inSec > 60 && this.count > 60 && ((inSec - this.count) <= 12))) {
+      if (!this.isTouch && this.sessionTimeout >= 0) {
+        this.isTouch = true;
+        this.coreService.post('touch', undefined).subscribe({
+          next: res => {
+            this.isTouch = false;
+            if (res) {
+              this.count = inSec;
+            }
+          }, error: () => this.isTouch = false
+        });
+      }
     }
   }
 

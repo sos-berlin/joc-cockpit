@@ -149,6 +149,7 @@
         </div>
         <span class="cursor inst-text" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}" *ngIf="instruction.TYPE === 'Job'"
           (click)="showConfiguration(instruction)">{{instruction.jobName}}</span>
+        <i class="p-l-xs p-r-xs text-muted _400" *ngIf="instruction.TYPE === 'Job' && instruction.label">({{instruction.label}})</i>
         <span class="inst-text" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}" *ngIf="instruction.TYPE !== 'Job'"
           [nz-tooltip]="(instruction.question || instruction.message)">
           {{instruction.TYPE | translate}}

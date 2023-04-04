@@ -1710,7 +1710,6 @@ tbody.collapse.show {
 
   .dropdown-toggle {
     &::after {
-      display: inline-block;
       width: 0;
       height: 0;
       margin-left: .255em;
@@ -9637,12 +9636,10 @@ a.btn.disabled, fieldset[disabled] a.btn {
 
 .c-select {
   max-width: 100%;
-  padding: .375rem 1.75rem .375rem .75rem;
-  padding-right: .75rem 9;
+  padding: .375rem .75rem 9 .375rem .75rem;
   color: #55595c;
   vertical-align: middle;
-  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAUCAMAAACzvE1FAAAADFBMVEUzMzMzMzMzMzMzMzMKAG/3AAAAA3RSTlMAf4C/aSLHAAAAPElEQVR42q3NMQ4AIAgEQTn//2cLdRKppSGzBYwzVXvznNWs8C58CiussPJj8h6NwgorrKRdTvuV9v16Afn0AYFOB7aYAAAAAElFTkSuQmCC) right .75rem center no-repeat #fff;
-  background-image: none 9;
+  background: #fff none 9 no-repeat right .75rem center;
   -webkit-background-size: 8px 10px;
   background-size: 8px 10px;
   border: 1px solid #ccc;
@@ -9746,7 +9743,6 @@ a.btn.disabled, fieldset[disabled] a.btn {
   }
 
   &.disabled {
-    color: #818a91;
     color: #818a91;
     cursor: not-allowed;
     background-color: transparent;

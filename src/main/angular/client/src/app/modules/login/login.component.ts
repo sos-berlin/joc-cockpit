@@ -122,7 +122,7 @@ export class LoginComponent implements OnInit {
         this.authService.setUser(data);
         this.authService.save();
         if (this.returnUrl.indexOf('?') > -1) {
-          this.router.navigateByUrl(this.returnUrl);
+          this.router.navigateByUrl(this.returnUrl).then();
         } else {
           this.router.navigate([this.returnUrl]).then();
         }
