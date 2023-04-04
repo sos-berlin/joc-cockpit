@@ -1903,12 +1903,11 @@ export class CoreService {
         for (let i in nodes) {
           let _tempArr = item.position.split('/');
           _tempArr.splice(_tempArr.length - 1, 1);
-          if ((lastPos && (lastPos.match('then') || lastPos.match('else')) && item.job)) {
+          if ((lastPos && (lastPos.match('then') || lastPos.match('else')) && (item.job || item.moved))) {
             ifInstructionRecursion(nodes, item, data);
             obj.flag = true;
             break;
           } else if ((lastPos && lastPos.match('branch') && item.job)) {
-
             if (nodes[i].position == item.position || (nodes[i].position.substring(0, nodes[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
               checkAndUpdate(nodes[i], data);
               obj.flag = true;

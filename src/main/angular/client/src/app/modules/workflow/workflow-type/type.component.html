@@ -239,6 +239,7 @@
         <span class="cursor" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">
           {{instruction.jobName}}
         </span>
+        <i class="p-l-xs p-r-xs text-muted _400" *ngIf="instruction.TYPE === 'Job' && instruction.label">({{instruction.label}})</i>
         <span (click)="openWorkflowDependency(instruction);" [ngClass]="{'cursor' : (instruction.TYPE === 'PostNotices' || instruction.TYPE === 'AddOrder')}" *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
           {{instruction.TYPE | translate}}
           <i class="p-l-xs p-r-xs text-muted _400" *ngIf="instruction.label">({{instruction.label}})</i>

@@ -532,7 +532,7 @@
     "button.unassignDocumentation": "割当ドキュメントを解除",
     "button.viewDocumentation": "ドキュメント表示",
     "button.viewHistory": "履歴表示",
-    "button.showHistory": "Show History",
+    "button.showHistory": "履歴表示",
     "placeholder.search": "検索",
     "placeholder.name": "名称",
     "placeholder.value": "値",
@@ -881,25 +881,25 @@
     },
     "certificate": {
       "label": {
-        "primaryControllerCert": "Primary Controller Certificate",
-        "secondaryControllerCert": "Secondary Controller Certificate",
-        "primaryJocCert": "Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Secondary JOC Cockpit Certificate"
+        "primaryControllerCert": "プライマリーコントローラー証明書",
+        "secondaryControllerCert": "セカンダリーコントローラー証明書",
+        "primaryJocCert": "プライマリーJOCコックピット証明書",
+        "secondaryJocCert": "セカンダリーJOCコックピット証明書"
       },
       "button": {
-        "addCertificates": "Add Certificates"
+        "addCertificates": "証明書追加"
       },
       "placeholder": {
-        "primaryControllerCert": "Enter Primary Controller Certificate",
-        "secondaryControllerCert": "Enter Secondary Controller Certificate",
-        "primaryJocCert": "Enter Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Enter Secondary JOC Cockpit Certificate"
+        "primaryControllerCert": "プライマリーコントローラー証明書入力",
+        "secondaryControllerCert": "セカンダリーコントローラー証明書入力",
+        "primaryJocCert": "プライマリーJOCコックピット証明書入力",
+        "secondaryJocCert": "セカンダリーJOCコックピット証明書入力"
       },
       "tooltip": {
-        "primaryControllerCert": "Primary Controller Certificate",
-        "secondaryControllerCert": "Secondary Controller Certificate",
-        "primaryJocCert": "Primary JOC Cockpit Certificate",
-        "secondaryJocCert": "Secondary JOC Cockpit Certificate"
+        "primaryControllerCert": "プライマリーコントローラー証明書",
+        "secondaryControllerCert": "セカンダリーコントローラー証明書",
+        "primaryJocCert": "プライマリーJOCコックピット証明書",
+        "secondaryJocCert": "セカンダリーJOCコックピット証明書"
       }
     },
     "agent": {
@@ -1405,7 +1405,7 @@
     "label.plannedTime": "予定時間",
     "label.orderHistory": "オーダー履歴",
     "label.taskHistory": "タスク履歴",
-    "label.jobHistory": "Job History",
+    "label.jobHistory": "ジョブ履歴",
     "label.criticality": "重大度",
     "label.returnCode": "リターンコード",
     "label.submitted": "登録",
@@ -1777,7 +1777,7 @@
       "label.draft": "下書き",
       "label.deployed": "配置済",
       "label.released": "リリース済",
-      "label.addDraftVersion": "add draft version if no deployed version exists",
+      "label.addDraftVersion": "未配置のものがあれば、下書きが追加されます",
       "tooltip.perDefaultStorageOfDeployedReleased": "Per default storage of deployed/released versions is preferentially supported. Choosing both draft and deployed/released versions will result in drafts being stored only, if no deployed/released version exists. Choosing only draft versions will result in draft version being stored even if deployed/released versions exist. Draft versions are considered untested and therefore unsafe."
     },
     "tooltips": {
@@ -1857,7 +1857,7 @@
           "returnCode": "リターンコード"
         },
         "options": {
-          "stopOnFailure": "Stop On Failure"
+          "stopOnFailure": "失敗時停止"
         },
         "fileWatch": {
           "directory": "監視する受信ファイルのディレクトリー",
@@ -2070,7 +2070,7 @@
       }
     },
     "addOrdersDateFrom": {
-      "addOrders": "オーダー追加",
+      "addOrders": "実行計画更新",
       "no": "No",
       "now": "Now",
       "startingFrom": "開始位置"
@@ -2194,7 +2194,7 @@
     "label.selectOrder": "オーダー選択",
     "label.listOfConstants": "定数値を持つ変数",
     "label.listOfDynamicallyVariables": "値を変更可能な変数",
-    "label.cycleEndTime": "Cycle End Time",
+    "label.cycleEndTime": "サイクル終了時間",
     "button.allOrders": "全オーダー",
     "button.cancel": "キャンセル",
     "button.startNow": "即時開始",
@@ -2211,11 +2211,11 @@
     "button.assignParameterizationFromSchedules": "スケジュールから変数設定",
     "placeholder.selectStartNode": "開始ノード選択",
     "placeholder.selectEndNode": "終了ノード選択",
-    "placeholder.enterCycleEndTime": "Enter value as hh:mm:ss or seconds",
+    "placeholder.enterCycleEndTime": "hh:mm:ssか、秒で入力",
     "message.noVariableAvailable": "変数はありません",
     "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません",
     "message.noLogHistoryFound": "このオーダーにはログがありません",
-    "tooltip.cycleEndTime": "Cycle end time in second",
+    "tooltip.cycleEndTime": "秒でのサイクル終了時間",
     "treeView": {
       "label": {
         "state": "ステート",
@@ -2685,7 +2685,7 @@
       "log_applicable_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、最初と最後の100KBをタスクログに使用します。元のログファイルは削除されます。",
       "log_maximum_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、タスクログ用に最初の100KBを使用します。オリジナルのログファイルは削除されます。",
       "joc_reverse_proxy_url": "JOCコックピットが本来のURLからではなく、リバースプロキシサービスからしかアクセスできない場合、この値は、例えばメール通知で使用されるURLを指定します。",
-      "allow_empty_arguments": "Allow empty arguments"
+      "allow_empty_arguments": "空の引数を許可"
     },
     "user": {
       "welcome_got_it": "了解",
@@ -2795,7 +2795,7 @@
     "label.iamOidcTruststoreType": "OIDC トラストストアタイプ",
     "label.iamOidcTruststorePassword": "OIDC Tトラストストアパスワード",
     "label.iamOidcImage": "OIDC イメージ",
-    "label.iamOidcUserAttribute": "OIDC User Attribute",
+    "label.iamOidcUserAttribute": "OIDC ユーザー属性",
     "label.group": "グループ",
     "label.general": "共通",
     "label.on": "On",
@@ -2896,7 +2896,7 @@
     "placeholder.iamOidcTruststorePath": "OIDC トラストストアパス入力",
     "placeholder.iamOidcTruststoreType": "OIDC トラストストアタイプ入力",
     "placeholder.iamOidcTruststorePassword": "OIDC トラストストアパスワード入力",
-    "placeholder.iamOidcUserAttribute": "Enter OIDC User Attribute",
+    "placeholder.iamOidcUserAttribute": "OIDC ユーザー属性入力",
     "placeholder.group": "グループを入力",
     "placeholder.initialPassword": "初期パスワードを入力",
     "placeholder.minPasswordLength": "最少パスワード文字数を入力",
@@ -2986,7 +2986,7 @@
         "iamOidcTruststorePath": "OIDC トラストストアパス",
         "iamOidcTruststoreType": "OIDC トラストストアタイプ",
         "iamOidcTruststorePassword": "OIDC トラストストアパスワード",
-        "iamOidcUserAttribute": "OIDC User Attribute",
+        "iamOidcUserAttribute": "OIDC ユーザー属性",
         "iamOidcImage": "OIDC イメージ"
       },
       "general": {
@@ -3062,7 +3062,7 @@
     "label.expectNotices": "ExpectNotices",
     "label.fail": "失敗",
     "label.finish": "終了",
-    "label.break": "Break",
+    "label.break": "ブレーク",
     "label.options": "Options",
     "label.optionsEnd": "Options-End",
     "label.try": "Try",
@@ -3159,8 +3159,8 @@
     "label.agentAsExpression": "サブエージェント式",
     "label.byListVariable": "変数リスト",
     "label.bySubagentCluster": "サブエージェントクラスター",
-    "label.stopOnFailure": "Stop On Failure",
-    "label.references": "References",
+    "label.stopOnFailure": "失敗時停止",
+    "label.references": "参照",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
@@ -3232,7 +3232,7 @@
     "message.invalidPostNoticeInstruction": "PostNotice命令が無効です",
     "message.invalidExpectNoticeInstruction": "ExpectNoticeが無効です",
     "message.invalidConsumeNoticeInstruction": "ConsumeNotices命令は空にできません",
-    "message.invalidOptionsInstruction": "Options Instruction cannot be empty",
+    "message.invalidOptionsInstruction": "Options命令は空にできません",
     "message.agentIsMissing": "エージェント名が必要です",
     "message.orderNameIsMissing": "オーダー名が必要です",
     "message.workflowNameIsNotValid": "ワークフロー名が必要です",
