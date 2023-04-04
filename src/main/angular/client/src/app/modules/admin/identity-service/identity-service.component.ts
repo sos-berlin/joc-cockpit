@@ -304,7 +304,7 @@ export class SettingModalComponent implements OnInit {
     if (this.userObj.iamLdapWithMemberOf) {
       if (this.userObj.iamLdapAD) {
         if (!this.currentObj.iamLdapUserSearchFilter || this.currentObj.iamLdapUserSearchFilter === '(uid=%s' || this.currentObj.iamLdapUserSearchFilter === '%s') {
-          this.currentObj.iamLdapUserSearchFilter = '%s';
+          this.currentObj.iamLdapUserSearchFilter = '';
         }
       } else {
         if (!this.currentObj.iamLdapUserSearchFilter || this.currentObj.iamLdapUserSearchFilter === '%s') {
@@ -561,8 +561,10 @@ export class SettingModalComponent implements OnInit {
 
   pasteSetting(): void {
     this.currentObj = clone(this.saveService.copiedSetting.data);
+    if(this.saveService.copiedSetting.type.match('LDAP')) {
+      this.updateUserMode();
+    }
   }
-
 }
 
 @Component({

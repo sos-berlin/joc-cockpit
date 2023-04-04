@@ -1846,7 +1846,11 @@ export class CoreService {
         lastPos = _tempArr[_tempArr.length - 1];
         if (lastPos) {
           if (lastPos.match(/branch/)) {
-            data.name = lastPos.substring(lastPos.indexOf('+') + 1, lastPos.indexOf(':'));
+            if('OrderNoticePosted' == item.logEvent ) {
+              data.name = 'OrderNoticePosted';
+            } else {
+              data.name = lastPos.substring(lastPos.indexOf('+') + 1, lastPos.indexOf(':'));
+            }
             data.title = data.name;
           } else {
             if (lastPos == 'try+0:0') {

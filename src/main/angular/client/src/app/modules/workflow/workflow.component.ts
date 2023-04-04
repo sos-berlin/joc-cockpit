@@ -1200,7 +1200,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.isSearchHit = true;
     let obj: any = {
       controllerId: this.schedulerIds.selected,
-      compact: true
+      compact: false
     };
     if (this.searchFilter && this.searchFilter.regex) {
       obj.regex = this.searchFilter.regex;

@@ -330,6 +330,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   agentVersions: any = [];
   object = {
     mapOfCheckedId2: new Map(),
+    mapOfCheckedId3: new Map(),
     mapOfCheckedId: new Map()
   };
   isJOCActive = false;
@@ -707,11 +708,11 @@ export class ControllersComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteAll(): void {
+  deleteAll(subagent = false): void {
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
-        type: 'Agent',
+        type: subagent ? 'Subagent' : 'Agent',
         operation: 'Delete',
         name: ''
       };
@@ -737,7 +738,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           title: 'delete',
-          message: 'deleteSelectedAgents',
+          message: subagent ? 'deleteSubagent' : 'deleteSelectedAgents',
           type: 'Delete',
           objectName: '',
         },
@@ -765,6 +766,13 @@ export class ControllersComponent implements OnInit, OnDestroy {
       this.coreService.post('agent/delete', {
         controllerId: k,
         agentId: v,
+        auditLog
+      }).subscribe();
+    });
+    this.object.mapOfCheckedId3.forEach((k, v) => {
+      this.coreService.post('agents/inventory/cluster/subagents/delete', {
+        controllerId: k,
+        subagentIds: [v],
         auditLog
       }).subscribe();
     });
@@ -881,11 +889,11 @@ export class ControllersComponent implements OnInit, OnDestroy {
     this.resetCheckbox();
   }
 
-  disableAll(): void {
+  disableAll(subagent = false): void {
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
-        type: 'Agent',
+        type: subagent ? 'Subagent' : 'Agent',
         operation: 'Disable',
         name: ''
       };
@@ -903,27 +911,59 @@ export class ControllersComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.object.mapOfCheckedId.forEach((k, v) => {
-            this.coreService.post('agents/inventory/disable', {
-              controllerId: k,
-              agentIds: [v],
-              auditLog: result || {}
-            }).subscribe();
-          })
+          if(subagent){
+            this.object.mapOfCheckedId3.forEach((value, key) => {
+              this.coreService.post('agents/inventory/cluster/subagents/disable', {
+                controllerId: value,
+                subagentIds: [key],
+                auditLog: result || {}
+              }).subscribe();
+            })
+          } else {
+            this.object.mapOfCheckedId.forEach((k, v) => {
+              this.coreService.post('agents/inventory/disable', {
+                controllerId: k,
+                agentIds: [v],
+                auditLog: result || {}
+              }).subscribe();
+            })
+          }
         }
       });
     } else {
-      this.object.mapOfCheckedId.forEach((k, v) => {
-        this.coreService.post('agents/inventory/disable', {
-          controllerId: k,
-          agentIds: [v]
-        }).subscribe();
-      })
+      if(subagent){
+        this.object.mapOfCheckedId3.forEach((value, key) => {
+          console.log(value, key)
+          this.coreService.post('agents/inventory/cluster/subagents/disable', {
+            controllerId: value,
+            subagentIds: [key]
+          }).subscribe();
+        })
+      } else {
+        this.object.mapOfCheckedId.forEach((k, v) => {
+          this.coreService.post('agents/inventory/disable', {
+            controllerId: k,
+            agentIds: [v]
+          }).subscribe();
+        })
+      }
     }
     this.resetCheckbox();
   }
 
-  resetAll(force = false) {
+  disableAllSubAgent(){
+    this.disableAll(true);
+  }
+
+  resetAllSubagent(force = false): void {
+    this.resetAll(force, true);
+  }
+
+  deleteAllSubagent(): void{
+    this.deleteAll(true);
+  }
+
+  resetAll(force = false, subagent = false) {
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
@@ -943,24 +983,28 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzMaskClosable: false
       }).afterClose.subscribe(result => {
         if (result) {
-          this.controllers.forEach((controller) => {
-            let obj = {
-              controllerId: controller.controllerId,
-              agentIds: [],
-              force,
-              auditLog: result
-            };
-            if (controller.agents) {
-              controller.agents.forEach((agent) => {
-                if (this.object.mapOfCheckedId.has(agent.agentId)) {
-                  obj.agentIds.push(agent.agentId);
+          if (!subagent) {
+            this.controllers.forEach((controller) => {
+              let obj = {
+                controllerId: controller.controllerId,
+                agentIds: [],
+                force,
+                auditLog: result
+              };
+              if (controller.agents) {
+                controller.agents.forEach((agent) => {
+                  if (this.object.mapOfCheckedId.has(agent.agentId)) {
+                    obj.agentIds.push(agent.agentId);
+                  }
+                });
+                if (obj.agentIds.length > 0) {
+                  this.coreService.post('agents/reset', obj).subscribe();
                 }
-              });
-              if (obj.agentIds.length > 0) {
-                this.coreService.post('agents/reset', obj).subscribe();
               }
-            }
-          });
+            });
+          } else {
+            this.restSubagents(force);
+          }
           this.resetCheckbox();
         }
       });
@@ -980,51 +1024,67 @@ export class ControllersComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.controllers.forEach((controller) => {
-
-            let obj = {
-              controllerId: controller.controllerId,
-              agentIds: [],
-              force: true,
-              auditLog: {}
-            };
-            if (controller.agents) {
-              controller.agents.forEach((agent) => {
-                if (this.object.mapOfCheckedId.has(agent.agentId)) {
-                  obj.agentIds.push(agent.agentId);
+          if (!subagent) {
+            this.controllers.forEach((controller) => {
+              let obj = {
+                controllerId: controller.controllerId,
+                agentIds: [],
+                force: true,
+                auditLog: {}
+              };
+              if (controller.agents) {
+                controller.agents.forEach((agent) => {
+                  if (this.object.mapOfCheckedId.has(agent.agentId)) {
+                    obj.agentIds.push(agent.agentId);
+                  }
+                });
+                if (obj.agentIds.length > 0) {
+                  this.coreService.post('agents/reset', obj).subscribe();
                 }
-              });
-              if (obj.agentIds.length > 0) {
-                this.coreService.post('agents/reset', obj).subscribe();
               }
-            }
-          });
+            });
+          } else {
+            this.restSubagents(force);
+          }
           this.resetCheckbox();
         }
       });
 
     } else {
-      this.controllers.forEach((controller) => {
-        let obj = {
-          controllerId: controller.controllerId,
-          agentIds: [],
-          force: false,
-          auditLog: {}
-        };
-        if (controller.agents) {
-          controller.agents.forEach((agent) => {
-            if (this.object.mapOfCheckedId.has(agent.agentId)) {
-              obj.agentIds.push(agent.agentId);
+      if (!subagent) {
+        this.controllers.forEach((controller) => {
+          let obj = {
+            controllerId: controller.controllerId,
+            agentIds: [],
+            force: false,
+            auditLog: {}
+          };
+          if (controller.agents) {
+            controller.agents.forEach((agent) => {
+              if (this.object.mapOfCheckedId.has(agent.agentId)) {
+                obj.agentIds.push(agent.agentId);
+              }
+            });
+            if (obj.agentIds.length > 0) {
+              this.coreService.post('agents/reset', obj).subscribe();
             }
-          });
-          if (obj.agentIds.length > 0) {
-            this.coreService.post('agents/reset', obj).subscribe();
           }
-        }
-      });
+        });
+      } else {
+        this.restSubagents(force);
+      }
       this.resetCheckbox();
     }
+  }
 
+  private restSubagents(force): void {
+    this.object.mapOfCheckedId3.forEach((value, key) => {
+      this.coreService.post('agents/inventory/cluster/subagent/reset', {
+        controllerId: value,
+        subagentId: key,
+        force
+      }).subscribe();
+    });
   }
 
   addAgent(controller): void {
@@ -1540,6 +1600,39 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
+  checkAllSubagent(isChecked: boolean, agent): void{
+    if (isChecked && agent.subagents.length > 0) {
+      agent.subagents.forEach(item => {
+        if (!item.disabled) {
+          this.object.mapOfCheckedId3.set(item.subagentId, agent.controllerId);
+        }
+      });
+    } else {
+      agent.subagents.forEach(item => {
+        this.object.mapOfCheckedId3.delete(item.subagentId);
+      });
+    }
+  }
+
+  onItemCheckedSubagent(agent: any, subagent: any, checked: boolean): void {
+    if (checked) {
+      this.object.mapOfCheckedId3.set(subagent.subagentId, agent.controllerId);
+    } else {
+      this.object.mapOfCheckedId3.delete(subagent.subagentId);
+    }
+    let count = 0;
+    if (this.object.mapOfCheckedId3.size > 0) {
+      agent.subagents.forEach(item => {
+        if (this.object.mapOfCheckedId3.has(item.subagentId)) {
+          ++count;
+        }
+      });
+    }
+    agent.checked = count === agent.subagents.length;
+    agent.indeterminate = count > 0 && !agent.checked;
+
+  }
+
   onItemChecked(controller: any, agent: any, checked: boolean, isCluster = false): void {
     if (checked) {
       if (isCluster) {
@@ -1581,6 +1674,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   private resetCheckbox(): void {
     this.object.mapOfCheckedId.clear();
     this.object.mapOfCheckedId2.clear();
+    this.object.mapOfCheckedId3.clear();
     this.controllers.forEach((controller) => {
       controller.checked = false;
       controller.checked2 = false;
