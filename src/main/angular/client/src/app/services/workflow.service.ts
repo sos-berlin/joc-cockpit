@@ -1889,36 +1889,34 @@ export class WorkflowService {
         const count = cell.getAttribute('count');
         return '<i class="text-white text-xs cursor">' + count + '</i>';
       } else {
-        const x = cell.getAttribute('displayLabel');
-        if (x) {
-          if (cell.value.tagName === 'Connection') {
-            if (x === 'then' || x === 'else') {
-              this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
-                str = translatedValue.toLowerCase();
-              });
-            } else if ((cell.source.value.tagName === 'Job' && cell.source.getAttribute('label'))) {
-              str = cell.source.getAttribute('label');
-            } else if (cell.source.value.tagName === 'Fork') {
-              str = x;
-            }
-            if (((cell.source.value.tagName === 'AddOrder'))) {
-              str = cell.source.getAttribute('workflowName');
-            }
-          } else {
+        let x = cell.getAttribute('displayLabel');
+        if (cell.value.tagName === 'Connection') {
+          if (x === 'then' || x === 'else') {
             this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
-              str = translatedValue;
+              str = translatedValue.toLowerCase();
             });
-            let _state = cell.getAttribute('state');
-            if (_state) {
-              try {
-                _state = JSON.parse(_state);
-                if (_state && _state._text) {
-                  this.translate.get(_state._text).subscribe(translatedValue => {
-                    str = str + ' <br><span class="label bg-red">' + translatedValue + '</span>';
-                  });
-                }
-              } catch (e) {
+          } else if ((cell.source.value.tagName === 'Job' && cell.source.getAttribute('label'))) {
+            str = cell.source.getAttribute('label');
+          } else if (cell.source.value.tagName === 'Fork') {
+            str = x;
+          }
+          if (((cell.source.value.tagName === 'AddOrder'))) {
+            str = cell.source.getAttribute('workflowName');
+          }
+        } else if (x) {
+          this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
+            str = translatedValue;
+          });
+          let _state = cell.getAttribute('state');
+          if (_state) {
+            try {
+              _state = JSON.parse(_state);
+              if (_state && _state._text) {
+                this.translate.get(_state._text).subscribe(translatedValue => {
+                  str = str + ' <br><span class="label bg-red">' + translatedValue + '</span>';
+                });
               }
+            } catch (e) {
             }
           }
         }
