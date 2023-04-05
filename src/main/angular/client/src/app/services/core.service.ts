@@ -1846,8 +1846,8 @@ export class CoreService {
         lastPos = _tempArr[_tempArr.length - 1];
         if (lastPos) {
           if (lastPos.match(/branch/)) {
-            if('OrderNoticePosted' == item.logEvent ) {
-              data.name = 'OrderNoticePosted';
+            if(item.expectNotices || item.postNotice || item.consumeNotices || item.moved) {
+              data.name = item.logEvent;
             } else {
               data.name = lastPos.substring(lastPos.indexOf('+') + 1, lastPos.indexOf(':'));
             }
@@ -1907,11 +1907,11 @@ export class CoreService {
         for (let i in nodes) {
           let _tempArr = item.position.split('/');
           _tempArr.splice(_tempArr.length - 1, 1);
-          if ((lastPos && (lastPos.match('then') || lastPos.match('else')) && (item.job || item.moved))) {
+          if ((lastPos && (lastPos.match('then') || lastPos.match('else')) && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved))) {
             ifInstructionRecursion(nodes, item, data);
             obj.flag = true;
             break;
-          } else if ((lastPos && lastPos.match('branch') && item.job)) {
+          } else if ((lastPos && lastPos.match('branch') && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved))) {
             if (nodes[i].position == item.position || (nodes[i].position.substring(0, nodes[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
               checkAndUpdate(nodes[i], data);
               obj.flag = true;
@@ -2010,7 +2010,7 @@ export class CoreService {
                   if (arr.length > 1) {
                     let regex = arr[1] + arr[2];
                     let pos = item.position.replace(regex, (arr[1] + 0));
-                    if (pos == (nodes[i].position + ':0') && item.job) {
+                    if (pos == (nodes[i].position + ':0') && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved)) {
                       nodes[i].retryCount = (nodes[i].retryCount || 1) + 1;
                       checkAndUpdate(nodes[i], data);
                       isCheck = true;
@@ -2049,7 +2049,8 @@ export class CoreService {
       for (let i in node.children) {
         let arr = item.position.split('/');
         arr.splice(arr.length - 1, 1);
-        if ((item.position.match('try') || item.position.match('catch')) && item.job) {
+        if ((item.position.match('try') || item.position.match('catch')) && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved)) {
+           
           if (arr.join('/') == node.children[i].position) {
             for (let x in node.children[i].children) {
               if (node.children[i].children[x].position == item.position.substring(0, item.position.lastIndexOf(':'))) {
@@ -2060,7 +2061,8 @@ export class CoreService {
             }
           }
         }
-        if ((lastPos && lastPos.match('branch') && item.job)) {
+
+        if ((lastPos && lastPos.match('branch') && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved))) {
           if (node.children[i].position == item.position || (node.children[i].position.indexOf(':') > -1 && node.children[i].position.substring(0, node.children[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
             checkAndUpdate(node.children[i], data);
             obj.flag = true;

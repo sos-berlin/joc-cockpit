@@ -483,7 +483,9 @@ export class LogViewComponent implements OnInit, OnDestroy {
       let flag = false;
       if (dt[i].logEvent !== 'OrderForked' && dt[i].logEvent !== 'OrderJoined') {
         for (let x in this.treeStructure) {
-          if (this.treeStructure[x].position == dt[i].position && this.treeStructure[x].job == dt[i].job) {
+          if (this.treeStructure[x].position == dt[i].position && this.treeStructure[x].job == dt[i].job
+            && (this.treeStructure[x].expectNotices == dt[i].expectNotices && this.treeStructure[x].postNotice == dt[i].postNotice
+              && this.treeStructure[x].consumeNotices == dt[i].consumeNotices && this.treeStructure[x].moved == dt[i].moved)) {
             if (this.treeStructure[x].orderId == dt[i].orderId) {
               flag = true;
               break;
