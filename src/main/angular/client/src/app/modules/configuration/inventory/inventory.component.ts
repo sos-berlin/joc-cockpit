@@ -1708,16 +1708,23 @@ export class RepositoryComponent implements OnInit {
     releasedConfigurations: []
   };
 
+  listOfDeployables = [];
+  listOfReleaseables = [];
+
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
               private inventoryService: InventoryService) {
   }
 
   ngOnInit(): void {
+    this.loadSetting();
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
       this.display = true;
     }
     this.filter.envIndependent = this.category !== 'LOCAL';
+  }
+
+  private init(): void{
     if (this.origin) {
       this.path = this.origin.path;
       if (this.origin.object) {
@@ -1739,6 +1746,59 @@ export class RepositoryComponent implements OnInit {
     }
   }
 
+  private loadSetting() {
+    this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe({
+      next: (res) => {
+        let configuration: any = {};
+        if (res.configurations[0] && res.configurations[0].configurationItem) {
+          configuration = JSON.parse(res.configurations[0].configurationItem);
+        }
+        const category = this.category.toLowerCase();
+        if ((configuration.git?.git_hold_job_resources && configuration.git?.git_hold_job_resources.value == category)
+          || (!configuration.git?.git_hold_job_resources && res.defaultGlobals.git?.git_hold_job_resources && res.defaultGlobals.git?.git_hold_job_resources.default == category)) {
+          this.listOfDeployables.push(InventoryObject.JOBRESOURCE);
+        }
+        if ((configuration.git?.git_hold_workflows && configuration.git?.git_hold_workflows.value == category)
+          || (!configuration.git?.git_hold_workflows &&  res.defaultGlobals.git?.git_hold_workflows && res.defaultGlobals.git?.git_hold_workflows.default == category)) {
+          this.listOfDeployables.push(InventoryObject.WORKFLOW);
+        }
+        if ((configuration.git?.git_hold_notice_boards && configuration.git?.git_hold_notice_boards.value == category)
+          || (!configuration.git?.git_hold_notice_boards && res.defaultGlobals.git?.git_hold_notice_boards && res.defaultGlobals.git?.git_hold_notice_boards.default == category)) {
+          this.listOfDeployables.push(InventoryObject.NOTICEBOARD);
+        }
+        if ((configuration.git?.git_hold_resource_locks && configuration.git?.git_hold_resource_locks.value == category)
+          || (!configuration.git?.git_hold_resource_locks && res.defaultGlobals.git?.git_hold_resource_locks && res.defaultGlobals.git?.git_hold_resource_locks.default == category)) {
+          this.listOfDeployables.push(InventoryObject.LOCK);
+        }
+
+        if ((configuration.git?.git_hold_file_order_sources && configuration.git?.git_hold_file_order_sources.value == category)
+          || (!configuration.git?.git_hold_file_order_sources && res.defaultGlobals.git?.git_hold_file_order_sources && res.defaultGlobals.git?.git_hold_file_order_sources.default == category)) {
+          this.listOfDeployables.push(InventoryObject.FILEORDERSOURCE);
+        }
+        if ((configuration.git?.git_hold_schedules && configuration.git?.git_hold_schedules.value == category)
+          || (!configuration.git?.git_hold_schedules && res.defaultGlobals.git?.git_hold_schedules && res.defaultGlobals.git?.git_hold_schedules.default == category)) {
+          this.listOfReleaseables.push(InventoryObject.SCHEDULE);
+        }
+        if ((configuration.git?.git_hold_calendars && configuration.git?.git_hold_calendars.value == category)
+          || (!configuration.git?.git_hold_calendars &&  res.defaultGlobals.git?.git_hold_calendars && res.defaultGlobals.git?.git_hold_calendars.default == category)) {
+          this.listOfReleaseables.push(InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR);
+        }
+
+        if ((configuration.git?.git_hold_job_templates && configuration.git?.git_hold_job_templates.value == category)
+          || (!configuration.git?.git_hold_job_templates && res.defaultGlobals.git?.git_hold_job_templates && res.defaultGlobals.git?.git_hold_job_templates.default == category)) {
+          this.listOfReleaseables.push(InventoryObject.JOBTEMPLATE);
+        }
+        if ((configuration.git?.git_hold_script_includes && configuration.git?.git_hold_script_includes.value == category)
+          || (!configuration.git?.git_hold_script_includes && res.defaultGlobals.git?.git_hold_script_includes && res.defaultGlobals.git?.git_hold_script_includes.default == category)) {
+          this.listOfReleaseables.push(InventoryObject.INCLUDESCRIPT);
+        }
+        this.init();
+      }, error: () => {
+        this.init();
+      }
+    });
+  }
+
   private buildTree(path, merge = null, cb = null, flag = false): void {
     const obj: any = {
       folder: path || '/',
@@ -1754,24 +1814,17 @@ export class RepositoryComponent implements OnInit {
         obj.objectTypes = this.type === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.type];
       } else {
         const obj2 = clone(obj);
-        if (!this.filter.envIndependent && this.type === 'ALL') {
-          obj2.objectTypes = [InventoryObject.JOBRESOURCE];
-        } else {
-          obj2.objectTypes = [InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.LOCK, InventoryObject.NOTICEBOARD];
-        }
+        obj2.objectTypes = this.listOfDeployables;
         if (obj2.objectTypes.length > 0) {
           APIs.push(this.coreService.post('inventory/deployables', obj2).pipe(
             catchError(error => of(error))
           ));
         }
       }
-      if (this.category !== 'LOCAL') {
-        obj.objectTypes = [InventoryObject.INCLUDESCRIPT];
-      } else {
-        obj.objectTypes = [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.SCHEDULE, InventoryObject.JOBTEMPLATE];
-      }
+
+      obj.objectTypes = this.listOfReleaseables;
       obj.withoutReleased = !this.filter.deploy;
-      if (obj.objectTypes.length === 0) {
+      if (obj.objectTypes.length > 0) {
         APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
           catchError(error => of(error))
         ));
@@ -1781,9 +1834,9 @@ export class RepositoryComponent implements OnInit {
       if (this.type !== 'ALL') {
         obj.objectTypes = [this.type];
       } else {
-        obj.objectTypes = [InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.LOCK, InventoryObject.NOTICEBOARD];
+        obj.objectTypes = this.listOfDeployables;
       }
-      if (obj.objectTypes.length === 0) {
+      if (obj.objectTypes.length > 0) {
         APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
           catchError(error => of(error))
         ));

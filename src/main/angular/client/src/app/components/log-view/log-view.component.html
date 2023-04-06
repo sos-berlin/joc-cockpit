@@ -83,7 +83,7 @@
                   <span class="_600" *ngIf="!node.origin.end && !node.origin.name">{{node.origin.title | translate}}</span>
                   <span class="text-muted" *ngIf="!node.origin.end && !node.origin.name && !node.origin.title">{{node.origin.logEvent}}</span>
                   <i class="text-primary" *ngIf="node.origin.name1">&nbsp;({{node.origin.name1}})</i>
-                  <i class="text-primary" *ngIf="node.origin.retryCount > 1">&nbsp;(Total Tries {{node.origin.retryCount}})</i>
+                  <i class="text-primary" *ngIf="node.origin.retryCount > 1 && node.origin.title == 'Retry'">&nbsp;(Total Tries {{node.origin.retryCount}})</i>
                   <span *ngIf="node.origin.logLevel == 'ERROR'">
                     - (<i class="text-sm log_error">Failed</i>)
                   </span>
@@ -95,7 +95,7 @@
       </div>
     </div>
   </div>
-  <pre id="logs" #dataBody *ngIf="!error" class="log p-a-sm"></pre>
+  <pre id="logs" #dataBody *ngIf="!error" class="log p-t-sm p-r-sm p-b-sm"></pre>
 </div>
 <div class="text-center" *ngIf="error && !loading">
   <div class="text-dark p-t text-38 m-b-n-8"><span [innerHtml]="errStatus"></span></div>
