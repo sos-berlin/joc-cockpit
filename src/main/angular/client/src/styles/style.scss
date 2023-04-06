@@ -2235,6 +2235,10 @@ button.close {
   margin-left: 13px;
 }
 
+.p-l-21 {
+  padding-left: 21px !important;
+}
+
 .m-r-12 {
   margin-right: 12px !important;
 }
@@ -3812,6 +3816,10 @@ pre.log {
   .success {
     background-color: transparent;
   }
+}
+
+.log_line{
+  padding-left: 8px;
 }
 
 .log_error, .log_stderr {
