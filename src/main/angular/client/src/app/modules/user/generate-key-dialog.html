@@ -44,7 +44,7 @@
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (dn.dirty || dn.touched) && dn.invalid}">
-          <input autocomplete="off" required class="form-control"
+          <input [appAutofocus]="true" autocomplete="off" required class="form-control"
                  name="dn" [(ngModel)]="caObj.dn" #dn="ngModel">
           <div *ngIf="dn.invalid && (dn.dirty || dn.touched)" class="text-danger help-block">
             <div *ngIf="dn.errors.required">

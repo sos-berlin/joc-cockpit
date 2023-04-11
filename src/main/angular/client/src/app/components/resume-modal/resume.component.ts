@@ -420,6 +420,7 @@ export class ResumeOrderModalComponent implements OnInit {
         data: data.value
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });

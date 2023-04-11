@@ -42,7 +42,7 @@
             <label translate>inventory.label.folder</label>
           </label>
           <div class="col-md-9">
-            <input autocomplete="off" type="text" name="folder" class="form-control pos-abt input-path-with-select" [(ngModel)]="requestObj.targetFolder" placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}">
+            <input autocomplete="off" [appAutofocus]="true" type="text" name="folder" class="form-control pos-abt input-path-with-select" [(ngModel)]="requestObj.targetFolder" placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}">
             <nz-tree-select
               name="path1"
               class="custom-select-box"

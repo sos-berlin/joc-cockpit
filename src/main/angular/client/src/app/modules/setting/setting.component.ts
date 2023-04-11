@@ -249,6 +249,7 @@ export class SettingComponent implements OnInit {
       nzClassName: 'lg',
       nzFooter: null,
       nzClosable: false,
+      nzAutofocus: null,
       nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
@@ -414,6 +415,7 @@ export class SettingComponent implements OnInit {
             comments
           },
           nzFooter: null,
+          nzAutofocus: null,
           nzClosable: false,
           nzMaskClosable: false
         });

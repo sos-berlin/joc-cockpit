@@ -32,7 +32,7 @@
              <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-6" [ngClass]="{ 'has-error' : (((period.dirty || period.touched) && period.invalid))}">
-              <input appValidateDuration required class="form-control" name="period"
+              <input [appAutofocus]="true" appValidateDuration required class="form-control" name="period"
                      #period="ngModel" [(ngModel)]="object.period"
                      placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
               <div *ngIf="period.invalid && (period.dirty || period.touched)" class="text-danger help-block">

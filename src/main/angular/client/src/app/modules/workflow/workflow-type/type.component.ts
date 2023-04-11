@@ -358,6 +358,7 @@ export class TypeComponent implements OnChanges {
           comments,
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -452,6 +453,7 @@ export class TypeComponent implements OnChanges {
         nzClassName: 'lg script-editor2',
         nzComponentParams,
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -518,6 +520,7 @@ export class TypeComponent implements OnChanges {
             workflowFilters: this.workflowFilters
           },
           nzFooter: null,
+          nzAutofocus: null,
           nzClosable: false,
           nzMaskClosable: false
         });

@@ -74,7 +74,7 @@
                                                            translate>order.button.resume</span>
             </button>
             <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="transitionOrders()" [disabled]="workflow?.state?._text === 'NOT_IN_SYNC'"
-                    *ngIf="!workflow.isCurrentVersion"><i class="fa fa-exchange"></i>
+                    *ngIf="workflow.path && !workflow.isCurrentVersion"><i class="fa fa-exchange"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.transitionOrders</span>
             </button>
             <div class="btn-group m-l-12">

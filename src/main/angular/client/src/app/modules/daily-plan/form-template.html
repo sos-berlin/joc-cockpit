@@ -8,7 +8,7 @@
       <div class="col-sm-6">
         <input autocomplete="off" required class="form-control"
                placeholder="{{'customization.placeholder.enterName' | translate}}"
-               name="filtername" maxlength="30" [(ngModel)]="filter.name" #name="ngModel"
+               name="filtername" [appAutofocus]="!isSearch" maxlength="30" [(ngModel)]="filter.name" #name="ngModel"
                (blur)="checkFilterName()">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
           <div *ngIf="name.errors.required">

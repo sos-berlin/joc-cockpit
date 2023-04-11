@@ -44,7 +44,7 @@
         </label>
         <div class="col-sm-8"
              [ngClass]="{ 'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}">
-          <input type="url" class="form-control" placeholder="http://host:port" required name="remoteUrl" [(ngModel)]="controller.url"
+          <input type="url" [appAutofocus]="true" class="form-control" placeholder="http://host:port" required name="remoteUrl" [(ngModel)]="controller.url"
                  #remoteUrl="ngModel">
           <div *ngIf="remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)" class="text-danger help-block">
             <div *ngIf="remoteUrl.errors.required">
@@ -75,7 +75,7 @@
           </label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((primaryTitle.dirty || primaryTitle.touched) && primaryTitle.invalid)}">
-            <input type="text" class="form-control" [maxlength]="30" required name="primaryTitle" [(ngModel)]="controller.primaryTitle"
+            <input [appAutofocus]="true"  type="text" class="form-control" [maxlength]="30" required name="primaryTitle" [(ngModel)]="controller.primaryTitle"
                    #primaryTitle="ngModel">
             <div *ngIf="primaryTitle.invalid && (primaryTitle.dirty || primaryTitle.touched)" class="text-danger help-block">
               <div *ngIf="primaryTitle.errors.required">

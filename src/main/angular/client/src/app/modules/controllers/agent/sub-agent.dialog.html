@@ -28,7 +28,7 @@
       </label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}">
         <input identifierValidation type="text" class="form-control" name="subagentId" #subagentId="ngModel" [readOnly]="!new"
-               required [(ngModel)]="subagent.subagentId" placeholder="{{'agent.placeholder.enterSubagentId' | translate}}">
+               [appAutofocus]="true" required [(ngModel)]="subagent.subagentId" placeholder="{{'agent.placeholder.enterSubagentId' | translate}}">
         <div *ngIf="subagentId.invalid && (subagentId.dirty || subagentId.touched)"
              class="text-danger help-block">
           <div *ngIf="(subagentId.errors && subagentId.errors.required)">

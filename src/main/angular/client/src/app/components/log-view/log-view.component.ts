@@ -159,9 +159,9 @@ export class LogViewComponent implements OnInit, OnDestroy {
 
   private onScroll(): void {
     const nowScrollTop = $(this).scrollTop();
-    if (Math.abs(this.lastScrollTop - nowScrollTop) >= this.delta) {
-      this.scrolled = nowScrollTop <= this.lastScrollTop;
-      this.lastScrollTop = nowScrollTop;
+    if (Math.abs(that.lastScrollTop - nowScrollTop) >= that.delta) {
+      that.scrolled = nowScrollTop <= that.lastScrollTop;
+      that.lastScrollTop = nowScrollTop;
     }
   }
 

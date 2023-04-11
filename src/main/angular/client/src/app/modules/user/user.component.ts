@@ -771,6 +771,7 @@ export class UserComponent implements OnInit, OnDestroy {
         identityServiceName: this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':') + 1)
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -888,6 +889,7 @@ export class UserComponent implements OnInit, OnDestroy {
         objectName: this.username
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -1015,6 +1017,7 @@ export class UserComponent implements OnInit, OnDestroy {
         type
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -1036,6 +1039,7 @@ export class UserComponent implements OnInit, OnDestroy {
         type
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -1056,6 +1060,7 @@ export class UserComponent implements OnInit, OnDestroy {
         data: type === 'key' ? this.keys : type === 'certificate' ? this.caCertificates : this.certificates
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -1108,6 +1113,7 @@ export class UserComponent implements OnInit, OnDestroy {
           comments
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -1127,6 +1133,7 @@ export class UserComponent implements OnInit, OnDestroy {
           objectName: data.gitAccount,
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       }).afterClose.subscribe(result => {

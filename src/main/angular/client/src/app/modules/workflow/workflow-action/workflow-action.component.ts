@@ -17,13 +17,41 @@ import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.c
 })
 export class ShowDependencyComponent implements OnInit {
   @Input() workflow: any;
+  @Input() schedulerId: any;
   permission: any = {}
+  loading = true;
 
   constructor(private coreService: CoreService, private activeModal: NzModalRef, private authService: AuthService) {
   }
 
   ngOnInit(): void {
     this.permission = JSON.parse(this.authService.permission) || {};
+    this.getDependencies();
+  }
+
+  private getDependencies(): void{
+    if (!this.workflow.expectedNoticeBoards && this.schedulerId) {
+      this.coreService.post('workflow/dependencies', {
+        controllerId: this.schedulerId,
+        workflowId: {
+          path: this.workflow.path,
+          version: this.workflow.versionId
+        }
+      }).subscribe({
+        next: (res) => {
+          this.workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
+          this.workflow.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
+          this.workflow.consumeNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'consumeNoticeBoards');
+          this.workflow.addOrderFromWorkflows = res.workflow.addOrderFromWorkflows;
+          this.workflow.addOrderToWorkflows = res.workflow.addOrderToWorkflows;
+          this.loading = false;
+        }, error: (err) => {
+          this.loading = false;
+        }
+      });
+    } else {
+      this.loading = false;
+    }
   }
 
   close(): void {
@@ -382,6 +410,7 @@ export class AddOrderModalComponent implements OnInit {
       nzTitle: undefined,
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
+      nzAutofocus: null,
       nzComponentParams: {
         data: data.value,
         object: data
@@ -585,6 +614,7 @@ export class WorkflowActionComponent {
           comments,
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -647,6 +677,7 @@ export class WorkflowActionComponent {
           url: 'workflows/' + (type === 'Resume' ? 'resume' : 'suspend')
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -670,6 +701,7 @@ export class WorkflowActionComponent {
           message2: type === 'Resume' ? 'resumeAllWarning' : 'suspendAllWarning'
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -724,24 +756,7 @@ export class WorkflowActionComponent {
   }
 
   showDependency(workflow): void {
-    if (!workflow.expectedNoticeBoards) {
-      this.coreService.post('workflow/dependencies', {
-        controllerId: this.schedulerId,
-        workflowId: {
-          path: workflow.path,
-          version: workflow.versionId
-        }
-      }).subscribe((res) => {
-        workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
-        workflow.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
-        workflow.consumeNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'consumeNoticeBoards');
-        workflow.addOrderFromWorkflows = res.workflow.addOrderFromWorkflows;
-        workflow.addOrderToWorkflows = res.workflow.addOrderToWorkflows;
-        this.openModal(workflow);
-      });
-    } else {
-      this.openModal(workflow);
-    }
+    this.openModal(workflow);
   }
 
   private openModal(workflow): void {
@@ -750,9 +765,11 @@ export class WorkflowActionComponent {
       nzContent: ShowDependencyComponent,
       nzClassName: 'lg',
       nzComponentParams: {
-        workflow
+        workflow,
+        schedulerId: this.schedulerId
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });

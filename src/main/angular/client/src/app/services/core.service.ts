@@ -1869,6 +1869,12 @@ export class CoreService {
               if (item.logEvent === 'OrderRetrying') {
                 data.title = 'Retry';
               }
+              for(let x in nodes){
+                if(nodes[x].title == parentNode.title && nodes[x].name == parentNode.name && nodes[x].position == parentNode.position && nodes[x].orderId == parentNode.orderId){
+                  parentNode = null;
+                  break;
+                }
+              }
             } else if (lastPos == 'catch+0:0' && item.logEvent == 'OrderCaught') {
               data = {
                 title: 'Catch',

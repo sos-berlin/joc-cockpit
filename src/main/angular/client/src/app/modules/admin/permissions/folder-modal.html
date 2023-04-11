@@ -20,7 +20,7 @@
             <sup *ngIf="folderObj.paths.length===0" class="text-danger text-sm">*</sup>
           </label>
           <div class="col-sm-8" [ngClass]="{'has-error' : ((folder.dirty || folder.touched) && folder.invalid)}">
-            <input type="text" class="form-control" name="name" placeholder="{{'user.placeholder.folderPath' | translate}}"  [(ngModel)]="currentFolder.folder" [required]="(folderObj.paths.length===0) ? true : false" #folder="ngModel"/>
+            <input type="text" class="form-control" name="name" placeholder="{{'user.placeholder.folderPath' | translate}}" [(ngModel)]="currentFolder.folder" [required]="(folderObj.paths.length===0) ? true : false" #folder="ngModel"/>
             <div *ngIf="folder.invalid && (folder.dirty || folder.touched) " class="text-danger help-block">
               <div *ngIf="folder.errors.required">
                 <div translate>common.message.requiredError</div>

@@ -860,7 +860,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
         setTimeout(() => {
           if (this.workflowFilters.scrollTop) {
-            this.scrollbar.directiveRef.scrollToY(this.workflowFilters.scrollTop, 100);
+            this.scrollbar?.directiveRef?.scrollToY(this.workflowFilters.scrollTop, 100);
           }
           this.workflowFilters.scrollTop = 0;
         }, 10)
@@ -1234,6 +1234,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           new: true
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -1265,6 +1266,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         self: this
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -1878,6 +1880,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             edit: !isCopy
           },
           nzFooter: null,
+          nzAutofocus: null,
           nzClosable: false,
           nzMaskClosable: false
         });

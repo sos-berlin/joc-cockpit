@@ -480,6 +480,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
           comments
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -544,6 +545,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
           comments
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -563,6 +565,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
           objectName: account,
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -593,6 +596,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
           comments
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -610,6 +614,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
           identityServiceName: this.identityServiceName
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       }).afterClose.subscribe(result => {
@@ -654,6 +659,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         accounts: this.object.mapOfCheckedId
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe((res) => {
@@ -675,6 +681,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         accounts: this.object.mapOfCheckedId
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe((res) => {
@@ -723,6 +730,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
           comments
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -745,6 +753,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
           blocklist: true
         },
         nzFooter: null,
+        nzAutofocus: undefined,
         nzClosable: false,
         nzMaskClosable: false
       }).afterClose.subscribe(result => {
@@ -790,6 +799,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
           comments
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });

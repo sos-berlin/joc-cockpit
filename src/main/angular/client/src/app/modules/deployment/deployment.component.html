@@ -220,7 +220,7 @@
                       <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-46"
                            [ngClass]="{'has-error' : ((descriptorId.dirty || descriptorId.touched) && descriptorId.invalid)}">
                         <input [readOnly]="isTrash" id="descriptorId" autocomplete="off" type="text" class="form-control" #descriptorId="ngModel"
-                               required name="descriptorId" identifierValidation maxlength="100"
+                               required name="descriptorId" identifierValidation maxlength="100" [appAutofocus]="true"
                                placeholder="{{'deploymentService.descriptor.placeholder.descriptorId' | translate}}"
                                [(ngModel)]="data.descriptor.descriptorId" (blur)="convertJSON()">
                         <div *ngIf="descriptorId.invalid && (descriptorId.dirty || descriptorId.touched)"
@@ -1090,7 +1090,7 @@
                   <hr>
                 </div>
                 <div class="p-l-sm " *ngIf="data.controllers?.length > 0">
-                  <h5 class="p-l-sm hover-icon" translate>deploymentService.label.controllers
+                  <h5 class="p-l-sm hover-icon" translate>deploymentService.label.controller
                     <i class="fa fa-caret-down p-l-xs text-hover-primary"
                        (click)="obj.isControllerExpanded = !obj.isControllerExpanded"
                        [ngClass]="{'fa-caret-up': obj.isControllerExpanded}"></i>
