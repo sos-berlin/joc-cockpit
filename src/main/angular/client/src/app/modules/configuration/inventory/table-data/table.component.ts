@@ -5,19 +5,20 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  OnInit, SimpleChanges
+  SimpleChanges
 } from '@angular/core';
 import {CoreService} from 'src/app/services/core.service';
 import {DataService} from 'src/app/services/data.service';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {isEmpty} from 'underscore';
+import {clone, isEmpty} from 'underscore';
 import {Subscription} from 'rxjs';
 import {ConfirmModalComponent} from '../../../../components/comfirm-modal/confirm.component';
-import {CreateObjectModalComponent, SingleDeployComponent} from '../inventory.component';
+import {CreateObjectModalComponent, DeployComponent, SingleDeployComponent} from '../inventory.component';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
 import {SearchPipe, OrderPipe} from "../../../../pipes/core.pipe";
+import {AuthService} from "../../../../components/guard";
 
 @Component({
   selector: 'app-table',
@@ -43,7 +44,7 @@ export class TableComponent implements OnChanges, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(public coreService: CoreService, private dataService: DataService, public inventoryService: InventoryService,
+  constructor(public coreService: CoreService, private dataService: DataService, public inventoryService: InventoryService, private authService: AuthService,
               private modal: NzModalService, private ref: ChangeDetectorRef, private searchPipe: SearchPipe, private orderPipe: OrderPipe) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -341,6 +342,48 @@ export class TableComponent implements OnChanges, OnDestroy {
         });
       }
     }
+  }
+
+  deployAll(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: DeployComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        schedulerIds: this.getAllowedControllerOnly(),
+        display: this.preferences.auditLog,
+        path: this.dataObj.path,
+        data: {
+          objectType: this.objectType,
+          list: Array.from(this.mapOfCheckedId.values())
+        },
+        releasable: (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.JOBTEMPLATE || this.objectType === InventoryObject.INCLUDESCRIPT),
+        isSelectedObjects: true,
+        isChecked: this.inventoryService.checkDeploymentStatus.isChecked
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(() => {
+      this.reset();
+    });
+  }
+
+  private getAllowedControllerOnly(): any {
+    const schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    const obj = clone(schedulerIds);
+    obj.controllerIds = obj.controllerIds.filter((id) => {
+      let flag = true;
+      if (this.permission.controllers) {
+        if (this.permission.controllers[id]) {
+          if (!this.permission.controllers[id].deployments.deploy) {
+            flag = false;
+          }
+        }
+      }
+      return flag;
+    });
+    return obj;
   }
 
   removeAll(): void {
