@@ -45,7 +45,7 @@
       </ng-container>
       <ng-container *ngIf="type == 'FACET'">
         <div class="col-sm-8" [ngClass]="{ 'has-error' : (name.dirty || name.touched) && name.invalid}">
-          <input type="text" class="form-control" maxlength="255" [placeholder]="'customization.placeholder.enterName' | translate" name="name" [(ngModel)]="object.name"
+          <input type="text" class="form-control" maxlength="255" [appAutofocus]="true" [placeholder]="'customization.placeholder.enterName' | translate" name="name" [(ngModel)]="object.name"
                  required #name="ngModel"/>
           <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
             <div *ngIf="name.errors.required">

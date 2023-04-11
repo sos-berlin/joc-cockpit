@@ -1301,6 +1301,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         dateRanges: this.dateRanges
       },
       nzFooter: null,
+      nzAutofocus: undefined,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -1404,6 +1405,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           preferences: self.preferences
         },
         nzFooter: null,
+        nzAutofocus: undefined,
         nzClosable: false,
         nzMaskClosable: false
       }).afterClose.subscribe(result => {
@@ -1462,6 +1464,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           workflow
         },
         nzFooter: null,
+        nzAutofocus: undefined,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -1481,6 +1484,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         isSubmit: true
       },
       nzFooter: null,
+      nzAutofocus: undefined,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -1506,6 +1510,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         isSubmit: true
       },
       nzFooter: null,
+      nzAutofocus: undefined,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -1534,6 +1539,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             comments,
           },
           nzFooter: null,
+          nzAutofocus: undefined,
           nzClosable: false,
           nzMaskClosable: false
         });
@@ -1610,6 +1616,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           url: 'daily_plan/orders/cancel'
         },
         nzFooter: null,
+        nzAutofocus: undefined,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -1648,6 +1655,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         dateRange: this.dateRanges
       },
       nzFooter: null,
+      nzAutofocus: undefined,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -1673,6 +1681,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         selectedDate: this.selectedDate
       },
       nzFooter: null,
+      nzAutofocus: undefined,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -2083,6 +2092,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             preferences: this.preferences
           },
           nzFooter: null,
+          nzAutofocus: undefined,
           nzClosable: false,
           nzMaskClosable: false
         });
@@ -2465,6 +2475,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         workflow
       },
       nzFooter: null,
+      nzAutofocus: undefined,
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
@@ -2788,6 +2799,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           new: true
         },
         nzFooter: null,
+        nzAutofocus: undefined,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -2808,6 +2820,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       },
       nzFooter: null,
       nzClosable: false,
+      nzAutofocus: undefined,
       nzMaskClosable: false
     });
     modal.afterClose.subscribe(obj => {
@@ -2911,6 +2924,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             edit: !isCopy
           },
           nzFooter: null,
+          nzAutofocus: undefined,
           nzClosable: false,
           nzMaskClosable: false
         });

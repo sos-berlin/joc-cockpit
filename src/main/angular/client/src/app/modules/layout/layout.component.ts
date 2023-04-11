@@ -586,6 +586,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         identityServiceName: this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':') + 1)
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe((result) => {
@@ -876,6 +877,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         nzContent: StepGuideComponent,
         nzClassName: 'w-620',
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });

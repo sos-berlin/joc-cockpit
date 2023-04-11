@@ -113,6 +113,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
           comments
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -138,6 +139,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
           resetProfiles: profile ? undefined : Array.from(this.setOfCheckedId)
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });

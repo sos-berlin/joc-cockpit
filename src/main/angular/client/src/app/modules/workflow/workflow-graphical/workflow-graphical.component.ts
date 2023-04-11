@@ -443,6 +443,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         order: this.order
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -475,6 +476,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         order: this.coreService.clone(this.order)
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -495,6 +497,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         question: this.order.question
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -720,6 +723,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
               },
               nzFooter: null,
               nzClosable: false,
+              nzAutofocus: null,
               nzMaskClosable: false
             });
           } else if (self.workflowObjects) {
@@ -1350,6 +1354,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         orderPreparation: this.orderPreparation
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -1376,6 +1381,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           url: 'orders/' + url
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -1413,6 +1419,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         nzComponentParams: {
           comments,
         },
+        nzAutofocus: null,
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
@@ -1515,6 +1522,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         nzClassName: argu.noticeNames ? '' : 'lg script-editor2',
         nzComponentParams,
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: !!argu.noticeNames,
         nzMaskClosable: !!argu.noticeNames
       });

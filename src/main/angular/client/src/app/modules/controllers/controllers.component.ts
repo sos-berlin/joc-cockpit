@@ -612,6 +612,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: StartUpModalComponent,
       nzClassName: 'lg',
+      nzAutofocus: null,
       nzComponentParams: {
         isModal: true,
         new: true,
@@ -636,6 +637,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
           nzTitle: undefined,
           nzContent: StartUpModalComponent,
           nzClassName: 'lg',
+          nzAutofocus: null,
           nzComponentParams: {
             isModal: true,
             controllerInfo: res.controllers,
@@ -662,6 +664,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmModalComponent,
+      nzAutofocus: null,
       nzComponentParams: {
         title: 'delete',
         message: 'deleteController',
@@ -720,6 +723,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
+        nzAutofocus: null,
         nzComponentParams: {
           comments,
         },
@@ -736,6 +740,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
+        nzAutofocus: null,
         nzComponentParams: {
           title: 'delete',
           message: subagent ? 'deleteSubagent' : 'deleteSelectedAgents',
@@ -799,6 +804,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
+        nzAutofocus: null,
         nzComponentParams: {
           comments,
         },
@@ -866,6 +872,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
+        nzAutofocus: null,
         nzComponentParams: {
           comments
         },
@@ -902,6 +909,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
+        nzAutofocus: null,
         nzComponentParams: {
           comments
         },
@@ -933,7 +941,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
     } else {
       if(subagent){
         this.object.mapOfCheckedId3.forEach((value, key) => {
-          console.log(value, key)
           this.coreService.post('agents/inventory/cluster/subagents/disable', {
             controllerId: value,
             subagentIds: [key]
@@ -975,6 +982,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
+        nzAutofocus: null,
         nzComponentParams: {
           comments
         },
@@ -1012,6 +1020,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
+        nzAutofocus: null,
         nzComponentParams: {
           title: 'resetForced',
           message: 'resetAgentConfirmation',
@@ -1152,6 +1161,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
+        nzAutofocus: null,
         nzComponentParams: {
           comments,
           obj,
@@ -1267,6 +1277,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
+        nzAutofocus: null,
         nzComponentParams: {
           comments,
           obj,
@@ -1393,6 +1404,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
+        nzAutofocus: null,
         nzComponentParams: {
           comments
         },
@@ -1442,6 +1454,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
+        nzAutofocus: null,
         nzComponentParams: {
           comments
         },
@@ -1480,6 +1493,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
+        nzAutofocus: null,
         nzComponentParams: {
           comments,
         },
@@ -1521,6 +1535,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
+        nzAutofocus: null,
         nzComponentParams: {
           comments,
         },

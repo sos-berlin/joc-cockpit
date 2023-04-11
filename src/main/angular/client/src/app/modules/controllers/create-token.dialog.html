@@ -28,7 +28,7 @@
        <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-8" *ngIf="token.at === 'date'" [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}">
-        <nz-date-picker [nzDisabledDate]="disabledDate" [nzFormat]="dateFormat" name="date" #date="ngModel" required [(ngModel)]="token.fromDate"></nz-date-picker>
+        <nz-date-picker [nzAutoFocus]="true" [nzDisabledDate]="disabledDate" [nzFormat]="dateFormat" name="date" #date="ngModel" required [(ngModel)]="token.fromDate"></nz-date-picker>
         <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
           <div *ngIf="date.errors.required">
             <div translate>common.message.requiredError</div>

@@ -22,7 +22,7 @@
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
-          <input type="text" class="form-control" required name="timeout"
+          <input [appAutofocus]="true" type="text" class="form-control" required name="timeout"
             [placeholder]="'user.placeholder.sessionTimeout' | translate" #timeout="ngModel" validateSessionTimeReqex
             [(ngModel)]="currentObj.sessionTimeout">
           <div *ngIf="timeout.invalid && (timeout.dirty || timeout.touched)" class="text-danger help-block">
@@ -83,7 +83,7 @@
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6" [ngClass]="{'has-error' : ((vaultUrl.dirty || vaultUrl.touched) && vaultUrl.invalid)}">
-          <input type="url" class="form-control" required #vaultUrl="ngModel" name="iamVaultUrl"
+          <input [appAutofocus]="true" type="url" class="form-control" required #vaultUrl="ngModel" name="iamVaultUrl"
             [placeholder]="'user.placeholder.iamVaultUrl' | translate" [(ngModel)]="currentObj.iamVaultUrl">
           <div *ngIf="vaultUrl.invalid && (vaultUrl.dirty || vaultUrl.touched)" class="text-danger help-block">
             <div *ngIf="vaultUrl.errors.required">
@@ -171,7 +171,7 @@
         </label>
         <div class="col-sm-6"
           [ngClass]="{'has-error' : ((keycloakUrl.dirty || keycloakUrl.touched) && keycloakUrl.invalid)}">
-          <input type="url" class="form-control" required #keycloakUrl="ngModel" name="iamKeycloakUrl"
+          <input [appAutofocus]="true" type="url" class="form-control" required #keycloakUrl="ngModel" name="iamKeycloakUrl"
             [placeholder]="'user.placeholder.iamKeycloakUrl' | translate" [(ngModel)]="currentObj.iamKeycloakUrl">
           <div *ngIf="keycloakUrl.invalid && (keycloakUrl.dirty || keycloakUrl.touched)" class="text-danger help-block">
             <div *ngIf="keycloakUrl.errors.required">
@@ -294,7 +294,7 @@
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-sm-6" [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}">
-                <input type="text" class="form-control" name="iamLdapHost" required #host="ngModel"
+                <input [appAutofocus]="true" type="text" class="form-control" name="iamLdapHost" required #host="ngModel"
                   (blur)="changeField()" [(ngModel)]="userObj.iamLdapHost"
                   [placeholder]="'user.usermode.placeholder.iamLdapHost' | translate">
               </div>
@@ -624,7 +624,7 @@
         </label>
         <div class="col-sm-6"
           [ngClass]="{'has-error' : ((iamOidcName.dirty || iamOidcName.touched) && iamOidcName.invalid)}">
-          <input type="text" class="form-control" required #iamOidcName="ngModel" name="iamOidcName"
+          <input [appAutofocus]="true" type="text" class="form-control" required #iamOidcName="ngModel" name="iamOidcName"
             [placeholder]="'user.placeholder.iamOidcName' | translate" [(ngModel)]="currentObj.iamOidcName">
           <div *ngIf="iamOidcName.invalid && (iamOidcName.dirty || iamOidcName.touched)" class="text-danger help-block">
             <div *ngIf="iamOidcName.errors.required">

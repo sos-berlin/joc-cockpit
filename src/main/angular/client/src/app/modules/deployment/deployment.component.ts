@@ -1775,10 +1775,11 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     this.validate(true);
     const name = this.data.descriptor.descriptorId + '.descriptor' + '.json';
     const fileType = 'application/octet-stream';
-    const data = JSON.stringify(this.deploymentData.mainObj, undefined, 2);
+    const temp = this.coreService.clone(this.deploymentData.mainObj);
     if (this.deploymentData.version) {
-      data['version'] = this.deploymentData.version
+      temp['version'] = this.deploymentData.version
     }
+    const data = JSON.stringify(temp, undefined, 2);
     const blob = new Blob([data], {type: fileType});
     saveAs(blob, name);
   }
@@ -1790,6 +1791,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       nzClassName: 'lg',
       nzComponentParams: {},
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -2031,6 +2033,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
               comments,
             },
             nzFooter: null,
+            nzAutofocus: null,
             nzClosable: false,
             nzMaskClosable: false
           });
@@ -2128,6 +2131,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           comments,
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -2159,6 +2163,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           objectName: this.deploymentData.path,
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -2236,6 +2241,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           comments
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -2260,6 +2266,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
           objectName: object.path
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -2342,6 +2349,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       nzClassName: 'lg',
       nzComponentParams: {},
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -2356,7 +2364,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     this.coreService.post('descriptor/read', {
       path: this.node.origin.path,
     }).subscribe((res: any) => {
-      const name = res.configuration.descriptor.descriptorId + '-descriptor' + '.json';
+      const name = res.configuration.descriptor.descriptorId + '.descriptor' + '.json';
       const fileType = 'application/octet-stream';
       const data = JSON.stringify(res.configuration, undefined, 2);
       const blob = new Blob([data], {type: fileType});

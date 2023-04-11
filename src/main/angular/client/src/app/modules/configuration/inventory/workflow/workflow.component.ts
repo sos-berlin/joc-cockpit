@@ -1409,6 +1409,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: JobWizardComponent,
       nzClassName: 'lg',
+      nzAutofocus: null,
       nzComponentParams: {
         existingJob: this.selectedNode.job,
         node: this.selectedNode.obj
@@ -1560,6 +1561,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: ScriptEditorComponent,
       nzClassName: 'lg script-editor',
+      nzAutofocus: null,
       nzComponentParams: {
         script: this.selectedNode.job.executable.script,
         scriptTree: this.scriptTree,
@@ -1917,6 +1919,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
+      nzAutofocus: null,
       nzComponentParams: {
         data: data.value
       },
@@ -3431,6 +3434,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: UpdateJobTemplatesComponent,
       nzClassName: 'lg',
+      nzAutofocus: null,
       nzComponentParams: {
         preferences: this.preferences,
         job: {
@@ -3695,6 +3699,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzContent: ImportComponent,
       nzClassName: 'lg',
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -4153,6 +4158,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         type
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
@@ -4636,6 +4642,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         preferences: this.preferences
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -4662,6 +4669,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         object: data
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -4695,6 +4703,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               comments
             },
             nzFooter: null,
+            nzAutofocus: null,
             nzClosable: false,
             nzMaskClosable: false
           });
@@ -11281,6 +11290,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         preferences: this.preferences
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });

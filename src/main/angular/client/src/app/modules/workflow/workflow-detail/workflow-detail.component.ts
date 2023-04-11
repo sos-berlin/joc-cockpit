@@ -176,6 +176,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.modal.create({
       nzTitle: undefined,
       nzContent: DependentWorkflowComponent,
+      nzAutofocus: null,
       nzClassName: 'x-lg',
       nzComponentParams: {
         workflow: obj.workflow,
@@ -307,6 +308,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: ShowDependencyComponent,
       nzClassName: 'lg',
+      nzAutofocus: null,
       nzComponentParams: {
         workflow: this.workFlowJson
       },
@@ -321,6 +323,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: AddOrderModalComponent,
       nzClassName: 'lg',
+      nzAutofocus: null,
       nzComponentParams: {
         preferences: this.preferences,
         permission: this.permission,
@@ -362,6 +365,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
+        nzAutofocus: null,
         nzComponentParams: {
           comments,
         },
@@ -414,6 +418,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
+        nzAutofocus: null,
         nzComponentParams: {
           comments,
           obj,

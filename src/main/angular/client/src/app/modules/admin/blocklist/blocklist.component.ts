@@ -261,6 +261,7 @@ export class BlocklistComponent implements OnInit, OnDestroy {
           comments
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -283,6 +284,7 @@ export class BlocklistComponent implements OnInit, OnDestroy {
           blocklist: true
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       }).afterClose.subscribe(result => {

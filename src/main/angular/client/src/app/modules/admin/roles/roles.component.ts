@@ -527,6 +527,7 @@ export class RolesComponent implements OnInit, OnDestroy {
             comments
           },
           nzFooter: null,
+          nzAutofocus: null,
           nzClosable: false,
           nzMaskClosable: false
         });
@@ -550,6 +551,7 @@ export class RolesComponent implements OnInit, OnDestroy {
             objectName: role.roleName
           },
           nzFooter: null,
+          nzAutofocus: null,
           nzClosable: false,
           nzMaskClosable: false
         });
@@ -597,6 +599,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         userDetail: this.userDetail
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -619,6 +622,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         userDetail: this.userDetail
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -645,6 +649,7 @@ export class RolesComponent implements OnInit, OnDestroy {
           comments
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -664,6 +669,7 @@ export class RolesComponent implements OnInit, OnDestroy {
           objectName: controller || 'default'
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -734,6 +740,7 @@ export class RolesComponent implements OnInit, OnDestroy {
             comments
           },
           nzFooter: null,
+          nzAutofocus: null,
           nzClosable: false,
           nzMaskClosable: false
         });
@@ -751,6 +758,7 @@ export class RolesComponent implements OnInit, OnDestroy {
             isRole: true
           },
           nzFooter: null,
+          nzAutofocus: null,
           nzClosable: false,
           nzMaskClosable: false
         }).afterClose.subscribe(result => {
@@ -910,6 +918,7 @@ export class RolesComponent implements OnInit, OnDestroy {
           comments
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });

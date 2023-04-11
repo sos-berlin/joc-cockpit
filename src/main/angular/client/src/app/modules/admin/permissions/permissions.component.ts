@@ -397,6 +397,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         folderArr: []
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -427,6 +428,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         oldFolder: folder
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -457,6 +459,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           comments
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -477,6 +480,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           objectName: folder.folder
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -522,6 +526,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         add: true
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
@@ -548,6 +553,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         roleName: this.roleName
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
@@ -573,6 +579,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           comments
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -595,6 +602,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           objectName: permission.permissionPath
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });

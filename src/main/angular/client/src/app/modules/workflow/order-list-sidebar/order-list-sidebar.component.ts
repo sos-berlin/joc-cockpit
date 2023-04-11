@@ -231,6 +231,7 @@ export class OrderListSidebarComponent implements OnChanges {
           workflow: res.workflow
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       }).afterClose.subscribe(result => {
@@ -254,6 +255,7 @@ export class OrderListSidebarComponent implements OnChanges {
         orders: this.setOfCheckedId,
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
@@ -290,6 +292,7 @@ export class OrderListSidebarComponent implements OnChanges {
         orders: map
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -331,6 +334,7 @@ export class OrderListSidebarComponent implements OnChanges {
           url: 'orders/' + url
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });

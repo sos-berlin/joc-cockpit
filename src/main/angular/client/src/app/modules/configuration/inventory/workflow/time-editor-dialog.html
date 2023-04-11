@@ -20,7 +20,7 @@
             </label>
             <div class="col-sm-6" [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
               <div class="time-picker m-l-0">
-                <input timevalidator validTimeReqex required type="text" #startTime="ngModel" class="form-control"
+                <input [appAutofocus]="true" timevalidator validTimeReqex required type="text" #startTime="ngModel" class="form-control"
                     name="startTime" [(ngModel)]="object.startTime" (ngModelChange)="selectTime(object.startTime, true)" placeholder="HH:MM:SS">
                 <nz-time-picker [nzAllowEmpty]="false" (keydown.Tab)="onTab()" (ngModelChange)="selectTime($event)" [(ngModel)]="object.startTime1"
                  name="startTimeIcon"></nz-time-picker>
