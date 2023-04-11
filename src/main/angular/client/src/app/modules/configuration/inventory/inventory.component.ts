@@ -378,6 +378,7 @@ export class DeployComponent implements OnInit {
   @Input() isRemove: any;
   @Input() isRevoke: boolean;
   @Input() isChecked: boolean;
+  @Input() isSelectedObjects: boolean;
   selectedSchedulerIds = [];
   loading = true;
   nodes: any = [];
@@ -564,10 +565,41 @@ export class DeployComponent implements OnInit {
       obj.withoutDrafts = !this.filter.draft;
       obj.withoutDeployed = !this.filter.deploy;
     }
+    if (this.isSelectedObjects) {
+      obj.objectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.objectType];
+    }
     const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
     this.coreService.post(URL, obj).subscribe({
       next: (res: any) => {
         let tree = [];
+        if (this.isSelectedObjects) {
+          res.folders = [];
+          if (res.deployables) {
+            res.deployables = res.deployables.filter((item) => {
+              let flag = false;
+              item.checked = true;
+              for (let i in this.data.list) {
+                if (this.data.list[i].name == item.objectName) {
+                  flag = true;
+                  break;
+                }
+              }
+              return flag;
+            });
+          }
+          if (res.releasables) {
+            res.releasables = res.releasables.filter((item) => {
+              let flag = false;
+              for (let i in this.data.list) {
+                if (this.data.list[i].name == item.objectName) {
+                  flag = true;
+                  break;
+                }
+              }
+              return flag;
+            });
+          }
+        }
         if (res.folders && res.folders.length > 0 ||
           ((res.deployables && res.deployables.length > 0) || (res.releasables && res.releasables.length > 0))) {
           tree = this.coreService.prepareTree({
@@ -651,7 +683,7 @@ export class DeployComponent implements OnInit {
     this.object.deleteObj = {deployConfigurations: []};
     const self = this;
     let selectFolder = true;
-    if (this.data && this.data.object) {
+    if ((this.data && this.data.object) || this.isSelectedObjects) {
       selectFolder = false;
     }
 
@@ -1724,7 +1756,7 @@ export class RepositoryComponent implements OnInit {
     this.filter.envIndependent = this.category !== 'LOCAL';
   }
 
-  private init(): void{
+  private init(): void {
     if (this.origin) {
       this.path = this.origin.path;
       if (this.origin.object) {
@@ -1759,7 +1791,7 @@ export class RepositoryComponent implements OnInit {
           this.listOfDeployables.push(InventoryObject.JOBRESOURCE);
         }
         if ((configuration.git?.git_hold_workflows && configuration.git?.git_hold_workflows.value == category)
-          || (!configuration.git?.git_hold_workflows &&  res.defaultGlobals.git?.git_hold_workflows && res.defaultGlobals.git?.git_hold_workflows.default == category)) {
+          || (!configuration.git?.git_hold_workflows && res.defaultGlobals.git?.git_hold_workflows && res.defaultGlobals.git?.git_hold_workflows.default == category)) {
           this.listOfDeployables.push(InventoryObject.WORKFLOW);
         }
         if ((configuration.git?.git_hold_notice_boards && configuration.git?.git_hold_notice_boards.value == category)
@@ -1780,7 +1812,7 @@ export class RepositoryComponent implements OnInit {
           this.listOfReleaseables.push(InventoryObject.SCHEDULE);
         }
         if ((configuration.git?.git_hold_calendars && configuration.git?.git_hold_calendars.value == category)
-          || (!configuration.git?.git_hold_calendars &&  res.defaultGlobals.git?.git_hold_calendars && res.defaultGlobals.git?.git_hold_calendars.default == category)) {
+          || (!configuration.git?.git_hold_calendars && res.defaultGlobals.git?.git_hold_calendars && res.defaultGlobals.git?.git_hold_calendars.default == category)) {
           this.listOfReleaseables.push(InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR);
         }
 
@@ -5455,7 +5487,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 if (!_isTrash && this.isTrash) {
                   _isTrash = isTrash;
                 }
-                if(args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/)){
+                if (args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/)) {
                   _isNormal = true;
                 }
               } else if (args.eventSnapshots[j].eventType.match(/InventoryUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryTrashUpdated/)) {
@@ -5473,7 +5505,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
 
     if (loadTree) {
-      if(_isTrash) {
+      if (_isTrash) {
         this.reloadTree(_isTrash);
       }
       if(_isNormal){

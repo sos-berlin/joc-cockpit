@@ -37,6 +37,13 @@
         <span *ngIf="objectType && objectType.match('CALENDAR')" translate>inventory.button.newCalendar</span>
         <span *ngIf="objectType === 'JOBTEMPLATE'" translate>inventory.button.newJobTemplate</span>
       </button>
+      <button *ngIf="mapOfCheckedId.size > 0" class="btn btn-sm btn-grey m-l-12" (click)="deployAll()" >
+        <i class="fa fa-rocket p-r-xs"></i>
+        <span *ngIf="!objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'JOBTEMPLATE'
+        && objectType !== 'INCLUDESCRIPT'" translate>inventory.button.deploy</span>
+        <span *ngIf="(objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE'
+        || objectType === 'INCLUDESCRIPT')" translate>inventory.button.release</span>
+      </button>
       <button *ngIf="mapOfCheckedId.size > 0" class="btn btn-sm btn-grey m-l-12" (click)="removeAll()" >
         <i class="fa fa-trash p-r-xs"></i>
         <span translate>inventory.button.remove</span>
