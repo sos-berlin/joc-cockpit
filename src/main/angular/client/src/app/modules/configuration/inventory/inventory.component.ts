@@ -909,7 +909,11 @@ export class DeployComponent implements OnInit {
     const URL = this.releasable ? this.operation === 'recall' ? 'inventory/releasables/recall' : 'inventory/release' : this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
     this.coreService.post(URL, obj).subscribe({
       next: () => {
-        this.activeModal.close();
+        if (this.isSelectedObjects) {
+          this.activeModal.close('CLOSE');
+        } else {
+          this.activeModal.close();
+        }
       }, error: () => {
         this.submitted = false;
         this.ref.detectChanges();

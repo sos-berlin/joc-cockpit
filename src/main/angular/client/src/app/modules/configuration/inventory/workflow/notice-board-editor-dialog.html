@@ -1,0 +1,59 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>workflow.label.valueEditor</span>
+  </h4>
+  <a class="max-btn" appMaximum [codeMirror]="codeMirror">
+    <i class="fa fa-window-maximize"></i>
+  </a>
+  <button type="button" class="close" aria-label="Close"
+          (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a">
+    <div class="row">
+      <div class="col-md-12 mono-font">
+        <div id="show-tree-editor" style="width: 80%;position: absolute;min-width: 150px;">
+          <nz-tree-select nzNoAnimation [nzPlaceHolder]="'workflow.placeholder.selectExpectBoard' | translate"
+                          [nzNodes]="boardTree" [nzHideUnMatched]="true"
+                          [nzDropdownStyle]="{ 'max-height': '300px' }" nzShowSearch [nzAllowClear]="false"
+                          (ngModelChange)="checkExpectNoticeExp($event)"
+                          [(ngModel)]="noticeBoardName"
+                          name="noticeBoardName"
+                          (nzExpandChange)="onExpand($event)">
+            <ng-template #nzTreeTemplate let-node>
+              <div class="node-wrapper w-93" (click)="loadData(node, $event);">
+                <div class="node-content-wrapper"
+                     [class.node-content-wrapper-active]="node.origin.path == noticeBoardName">
+                  <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                     class="w-14"></i>
+                  <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                  {{node.origin.name}}
+                </div>
+              </div>
+            </ng-template>
+          </nz-tree-select>
+        </div>
+        <div id="boardId" class="b-a"
+             [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}">
+          <ngx-codemirror [autoFocus]="true" #codeMirror name="expectBoardExpression"
+                          title="{{'workflow.placeholder.expression' | translate}}" required
+                          #expectBoardExpression="ngModel" [(ngModel)]="data"
+                          [options]="{lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
+                                  mode: 'shell'}"
+          ></ngx-codemirror>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary btn-sm" translate>
+      common.button.submit
+    </button>
+    <button type="button" class="btn btn-grey btn-sm"
+            (click)="activeModal.destroy()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>
