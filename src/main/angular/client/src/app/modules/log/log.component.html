@@ -67,7 +67,7 @@
                (ngModelChange)="checkLogLevel('ERROR')"><span translate>log.label.error</span></label>
         <label *ngIf="isWarnLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.warn"
                (ngModelChange)="checkLogLevel('WARN')"><span translate>log.label.warn</span></label>
-        <label *ngIf="isDeBugLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.debug"
+        <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.debug"
                (ngModelChange)="checkLogLevel('DEBUG')"><span translate>log.label.debug</span></label>
         <label *ngIf="isTraceLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.trace"
                (ngModelChange)="checkLogLevel('TRACE')"><span translate>log.label.trace</span></label>

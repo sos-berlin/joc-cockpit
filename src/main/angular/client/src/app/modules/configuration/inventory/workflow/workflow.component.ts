@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, Directive, EventEmitter, forwardRef,
+  Component, Directive, ElementRef, EventEmitter, forwardRef,
   HostListener,
   Input,
   OnChanges,
@@ -142,6 +142,121 @@ export class OffsetValidator implements Validator {
     return {
       invalidOffset: true
     };
+  }
+}
+
+
+@Component({
+  selector: 'app-notice-board-editor-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './notice-board-editor-dialog.html'
+})
+export class NoticeBoardEditorComponent implements AfterViewInit {
+  @Input() boardTree: any = [];
+  @Input() data: any;
+  @Input() object: any = {};
+  noticeBoardName: string;
+  @ViewChild('codeMirror', {static: false}) cm;
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngAfterViewInit(): void {
+    $('#show-tree-editor').hide();
+    setTimeout(() => {
+      if (this.cm && this.cm.codeMirror) {
+        this.cm.codeMirror.setOption("extraKeys", {
+          "Ctrl-Space": function(editor) {
+            const cursor = editor.getCursor();
+            const dom = $('#show-tree-editor');
+            dom?.show();
+            const editorWidth = $('#boardId').width();
+            let left = ((cursor.ch * 7) + 10);
+            if ((editorWidth - left) < 145) {
+              left = editorWidth - 150;
+            }
+
+            dom?.css({
+              'top': (cursor.line > 0 ? (cursor.line * 18.7) - 10 : -10) + 'px',
+              'left': left + 'px',
+              'width': 'calc(100% - ' + (left + 8) + 'px)'
+            });
+            const dom2 = $('#show-tree-editor .ant-select');
+            dom2?.css({opacity: 0});
+            setTimeout(() => {
+              dom2?.click();
+            }, 0);
+          }
+        })
+      }
+    }, 0);
+  }
+
+  loadData(node, $event, isExpand = false): void {
+    if (!node || !node.origin) {
+      return;
+    }
+    if (!node.origin.type) {
+      if ($event) {
+        node.isExpanded = !node.isExpanded;
+        $event.stopPropagation();
+      } else if (isExpand) {
+        node.isExpanded = true;
+      }
+      let flag = true;
+      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
+        flag = false;
+      }
+      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
+        let obj: any = {
+          path: node.key,
+          objectTypes: ['NOTICEBOARD']
+        };
+        const URL = 'inventory/read/folder';
+        this.coreService.post(URL, obj).subscribe((res: any) => {
+          let data = res.noticeBoards;
+          for (let i = 0; i < data.length; i++) {
+            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+            data[i].title = data[i].assignReference || data[i].name;
+            data[i].path = _path;
+            data[i].key = data[i].assignReference || data[i].name;
+            data[i].type = 'NOTICEBOARD';
+            data[i].isLeaf = true;
+          }
+
+          if (node.origin.children && node.origin.children.length > 0) {
+            data = data.concat(node.origin.children);
+          }
+          if (node.origin.isLeaf) {
+            node.origin.expanded = true;
+          }
+          node.origin.isLeaf = false;
+          node.origin.children = data;
+
+          this.boardTree = [...this.boardTree];
+        });
+      }
+    }
+  }
+
+  checkExpectNoticeExp(event): void {
+    const doc = this.cm.codeMirror.getDoc();
+    const cursor = doc.getCursor(); // gets the line number in the cursor position
+    cursor.ch = cursor.ch - 1;
+    doc.replaceRange("'" + event + "'", cursor);
+    cursor.ch = cursor.ch + (event.length + 2);
+    this.cm.codeMirror.focus();
+    let text = this.cm.codeMirror.getValue();
+    this.cm.codeMirror.setValue(text.substring(0, text.length - 1));
+    doc.setCursor(cursor);
+  }
+
+  onExpand(e): void {
+    this.loadData(e.node, null);
+  }
+
+  onSubmit(): void {
+    this.activeModal.close(this.data);
   }
 }
 
@@ -1118,7 +1233,7 @@ export class ShowReferenceComponent implements OnInit {
     this.coreService.post('inventory/workflow/references', this.obj).subscribe({
       next: (res: any) => {
         this.data = res;
-        if(this.type==='SCHEDULE') {
+        if (this.type === 'SCHEDULE') {
           let dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
           for (let i in this.data.schedules) {
             for (let j in this.data.schedules[i].calendars) {
@@ -2777,6 +2892,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   @Input() copyObj: any;
   @Input() reload: any;
   @Input() isTrash: any;
+  @ViewChild('codeMirror', {static: false}) cm;
 
   searchNode = {
     text: ''
@@ -3830,7 +3946,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   checkExpectNoticeExp(event): void {
-    this.selectedNode.obj.noticeBoardNames = "'" + event + "'";
+    console.log(event, 'event')
+    const doc = this.cm.codeMirror.getDoc();
+    const cursor = doc.getCursor(); // gets the line number in the cursor position
+    doc.replaceRange("'" + event + "'", cursor);
+    console.log(cursor)
+    cursor.ch = cursor.ch + (event.length + 2);
+    this.cm.codeMirror.focus();
+    doc.setCursor(cursor);
   }
 
   onExpand(e, type): void {
@@ -4660,25 +4783,45 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   openEditor(data: any, type = 'default'): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ValueEditorComponent,
-      nzClassName: 'lg',
-      nzComponentParams: {
-        data: data[type],
-        object: data
-      },
-      nzFooter: null,
-      nzAutofocus: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
+    let modal;
+    if (type === 'noticeBoardNames') {
+      modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: NoticeBoardEditorComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          boardTree: this.boardTree,
+          data: data[type],
+          object: data,
+        },
+        nzFooter: null,
+        nzAutofocus: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    } else {
+      modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ValueEditorComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          data: data[type],
+          object: data,
+        },
+        nzFooter: null,
+        nzAutofocus: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    }
     modal.afterClose.subscribe(result => {
       if (result) {
         if (data[type] !== result) {
           data[type] = result;
           this.ref.detectChanges();
-          this.updateOtherProperties('variable');
+          if (type !== 'noticeBoardNames') {
+            this.updateOtherProperties('variable');
+          }
         }
       }
     });
@@ -8646,6 +8789,65 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       }
       self.ref.detectChanges();
+      $('#show-tree').hide();
+      setTimeout(() => {
+        if (self.cm && self.cm.codeMirror) {
+          self.cm.codeMirror.setOption("extraKeys", {
+            "Ctrl-Space": function(editor) {
+              // Save contents
+              console.log(editor.getValue());
+              const cursor = editor.getCursor();
+              const dom = $('#show-tree');
+              dom?.show();
+              const editorWidth = $('#boardId').width();
+              let left = ((cursor.ch * 7) + 10);
+              if ((editorWidth - left) < 145) {
+                left = editorWidth - 150;
+              }
+
+              dom?.css({
+                'top': (cursor.line > 0 ? (cursor.line * 18.7) - 10 : -10) + 'px',
+                'left': left + 'px',
+                'width': 'calc(100% - ' + (left + 8) + 'px)'
+              });
+
+              const dom2 = $('#show-tree .ant-select');
+              dom2?.css({opacity: 0});
+              setTimeout(() => {
+                dom2?.click();
+              }, 0);
+            }
+          });
+        }
+      }, 500);
+
+      const snippets: any[] = [
+        {text: 'const', displayText: 'const declarations'},
+        {text: 'let', displayText: 'let declarations'},
+        {text: 'var', displayText: 'var declarations'},
+      ]
+
+      function snippet(): void {
+        self.cm.codeMirror.showHint(self.cm.codeMirror, function (): any {
+          const cursor = self.cm.codeMirror.getCursor()
+          const token = self.cm.codeMirror.getTokenAt(cursor)
+          const start: number = token.start
+          const end: number = cursor.ch
+          const line: number = cursor.line
+          const currentWord: string = token.string
+
+          // 入力した文字列をスニペット配列から探す
+          const list: any[] = snippets.filter(function (item): boolean {
+            return item.text.indexOf(currentWord) >= 0
+          })
+
+          return {
+            list: list.length ? list : snippets,
+            from: self.cm.codeMirror.Pos(line, start),
+            to: self.cm.codeMirror.Pos(line, end)
+          }
+        }, {completeSingle: false})
+      }
     }
 
     function checkEachIntructions(list, job) {

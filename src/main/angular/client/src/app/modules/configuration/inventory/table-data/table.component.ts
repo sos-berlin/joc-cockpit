@@ -152,6 +152,7 @@ export class TableComponent implements OnChanges, OnDestroy {
     this.mapOfCheckedId = new Map();
     this.checked = false;
     this.indeterminate = false;
+    this.ref.detectChanges();
   }
 
   onItemChecked(item: any, checked: boolean): void {
@@ -364,8 +365,10 @@ export class TableComponent implements OnChanges, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    }).afterClose.subscribe(() => {
-      this.reset();
+    }).afterClose.subscribe((result) => {
+      if(result) {
+        this.reset();
+      }
     });
   }
 

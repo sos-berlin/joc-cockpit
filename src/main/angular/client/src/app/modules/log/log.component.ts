@@ -26,7 +26,6 @@ export class LogComponent implements OnInit {
     checkBoxs: [],
   };
   isStdSuccessLevel = false;
-  isDeBugLevel = false;
   isFatalLevel = false;
   isErrorLevel = false;
   isWarnLevel = false;
@@ -444,9 +443,6 @@ export class LogComponent implements OnInit {
     }
     if (!this.isStdSuccessLevel && logLevel === 'SUCCESS') {
       this.isStdSuccessLevel = true;
-    }
-    if (!this.isDeBugLevel && logLevel === 'DEBUG') {
-      this.isDeBugLevel = true;
     }
     if (!this.isStdErrLevel && logLevel === 'STDERR') {
       this.isStdErrLevel = true;
@@ -901,7 +897,6 @@ export class LogComponent implements OnInit {
           div.className += ' hide-block';
         }
       } else if (prefix.search(/\[debug\]/i) > -1) {
-        this.isDeBugLevel = true;
         div.className += ' debug log_debug';
         if (!this.object.checkBoxs.debug) {
           div.className += ' hide-block';

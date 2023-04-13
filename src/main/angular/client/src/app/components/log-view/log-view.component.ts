@@ -32,7 +32,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
     checkBoxs: []
   };
   isStdSuccessLevel = false;
-  isDeBugLevel = false;
   isFatalLevel = false;
   isErrorLevel = false;
   isWarnLevel = false;
@@ -359,7 +358,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
     const jobs: any = {};
     jobs.controllerId = this.controllerId;
     jobs.taskId = this.taskId;
-
     this.orderCanceller = this.coreService.log('task/log', jobs, {
       responseType: 'text' as 'json',
       observe: 'response' as 'response'
@@ -446,9 +444,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
     }
     if (!this.isStdSuccessLevel && logLevel === 'SUCCESS') {
       this.isStdSuccessLevel = true;
-    }
-    if (!this.isDeBugLevel && logLevel === 'DEBUG') {
-      this.isDeBugLevel = true;
     }
     if (!this.isStdErrLevel && logLevel === 'STDERR') {
       this.isStdErrLevel = true;
@@ -796,6 +791,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
         POPOUT_MODALS['windowInstance']?.document.getElementById('logs').appendChild(div);
       }
     }
+
     if (this.taskCount > 1) {
       this.isExpandCollapse = true;
     }
@@ -912,7 +908,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
           div.className += ' hide-block';
         }
       } else if (prefix.search(/\[debug\]/i) > -1) {
-        this.isDeBugLevel = true;
         div.className += ' debug log_debug';
         if (!this.object.checkBoxs.debug) {
           div.className += ' hide-block';
@@ -970,6 +965,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
       }
       return '';
     });
+
   }
 
   expandAll(): void {
