@@ -148,7 +148,6 @@ export class OffsetValidator implements Validator {
 
 @Component({
   selector: 'app-notice-board-editor-modal',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './notice-board-editor-dialog.html'
 })
 export class NoticeBoardEditorComponent implements AfterViewInit {
@@ -166,25 +165,27 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
     setTimeout(() => {
       if (this.cm && this.cm.codeMirror) {
         this.cm.codeMirror.setOption("extraKeys", {
-          "Ctrl-Space": function(editor) {
+          "Ctrl-Space": function (editor) {
             const cursor = editor.getCursor();
             const dom = $('#show-tree-editor');
             dom?.show();
             const editorWidth = $('#boardId').width();
-            let left = ((cursor.ch * 7) + 10);
+            let left = ((cursor.ch * 7) + 12);
             if ((editorWidth - left) < 145) {
               left = editorWidth - 150;
             }
 
             dom?.css({
-              'top': (cursor.line > 0 ? (cursor.line * 18.7) - 10 : -10) + 'px',
+              'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
               'left': left + 'px',
               'width': 'calc(100% - ' + (left + 8) + 'px)'
             });
             const dom2 = $('#show-tree-editor .ant-select');
-            dom2?.css({opacity: 0});
             setTimeout(() => {
               dom2?.click();
+              $('#show-tree-editor input').on('blur', () => {
+                $('#show-tree-editor').hide();
+              });
             }, 0);
           }
         })
@@ -232,7 +233,6 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
           }
           node.origin.isLeaf = false;
           node.origin.children = data;
-
           this.boardTree = [...this.boardTree];
         });
       }
@@ -240,15 +240,25 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
   }
 
   checkExpectNoticeExp(event): void {
-    const doc = this.cm.codeMirror.getDoc();
-    const cursor = doc.getCursor(); // gets the line number in the cursor position
-    cursor.ch = cursor.ch - 1;
-    doc.replaceRange("'" + event + "'", cursor);
-    cursor.ch = cursor.ch + (event.length + 2);
-    this.cm.codeMirror.focus();
-    let text = this.cm.codeMirror.getValue();
-    this.cm.codeMirror.setValue(text.substring(0, text.length - 1));
-    doc.setCursor(cursor);
+    if (event) {
+      $('#show-tree-editor').hide();
+      this.noticeBoardName = '';
+      const doc = this.cm.codeMirror.getDoc();
+      const cursor = doc.getCursor();
+      if(this.cm.codeMirror.getSelection()) {
+        let text = this.cm.codeMirror.getValue();
+        text = text.replace(this.cm.codeMirror.getSelection(), event);
+        this.cm.codeMirror.setValue(text);
+        cursor.ch = text.length;
+      } else {
+        const doc = this.cm.codeMirror.getDoc();
+        const cursor = doc.getCursor(); // gets the line number in the cursor position
+        doc.replaceRange("'" + event + "'", cursor);
+        cursor.ch = cursor.ch + (event.length + 2);
+      }
+      this.cm.codeMirror.focus();
+      doc.setCursor(cursor);
+    }
   }
 
   onExpand(e): void {
@@ -3946,19 +3956,31 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   checkExpectNoticeExp(event): void {
-    console.log(event, 'event')
-    const doc = this.cm.codeMirror.getDoc();
-    const cursor = doc.getCursor(); // gets the line number in the cursor position
-    doc.replaceRange("'" + event + "'", cursor);
-    console.log(cursor)
-    cursor.ch = cursor.ch + (event.length + 2);
-    this.cm.codeMirror.focus();
-    doc.setCursor(cursor);
+    if (event) {
+      $('#show-tree').hide();
+      this.selectedNode.obj.noticeBoardName = '';
+      const doc = this.cm.codeMirror.getDoc();
+      const cursor = doc.getCursor();
+      if(this.cm.codeMirror.getSelection()) {
+        let text = this.cm.codeMirror.getValue();
+        text = text.replace(this.cm.codeMirror.getSelection(), event);
+        this.cm.codeMirror.setValue(text);
+        cursor.ch = text.length;
+      } else {
+        const doc = this.cm.codeMirror.getDoc();
+        const cursor = doc.getCursor(); // gets the line number in the cursor position
+        doc.replaceRange("'" + event + "'", cursor);
+        cursor.ch = cursor.ch + (event.length + 2);
+      }
+      this.cm.codeMirror.focus();
+      doc.setCursor(cursor);
+    }
   }
 
   onExpand(e, type): void {
     this.loadData(e.node, type, null);
   }
+
 
   private loadScripts(): void {
     if (this.scriptList.length === 0) {
@@ -8793,28 +8815,55 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       setTimeout(() => {
         if (self.cm && self.cm.codeMirror) {
           self.cm.codeMirror.setOption("extraKeys", {
-            "Ctrl-Space": function(editor) {
+            "Ctrl-Space": function (editor) {
               // Save contents
-              console.log(editor.getValue());
               const cursor = editor.getCursor();
               const dom = $('#show-tree');
               dom?.show();
               const editorWidth = $('#boardId').width();
-              let left = ((cursor.ch * 7) + 10);
+              let left = ((cursor.ch * 7) + 12);
               if ((editorWidth - left) < 145) {
                 left = editorWidth - 150;
               }
-
+              if (self.boardTree.length > 0) {
+                self.boardTree[0].expanded = true;
+                let flag = false;
+                if (self.boardTree[0].children.length > 0 && self.boardTree[0].children[0].type) {
+                  flag = true;
+                }
+                if (!flag) {
+                  self.coreService.post('inventory/read/folder', {
+                    path: '/',
+                    objectTypes: ['NOTICEBOARD']
+                  }).subscribe((res: any) => {
+                    let data = res.noticeBoards;
+                    for (let i = 0; i < data.length; i++) {
+                      data[i].title = data[i].name;
+                      data[i].path = '/' + data[i].name;
+                      data[i].key = data[i].name;
+                      data[i].type = 'NOTICEBOARD';
+                      data[i].isLeaf = true;
+                    }
+                    if (self.boardTree[0].children && self.boardTree[0].children.length > 0) {
+                      data = data.concat(self.boardTree[0].children);
+                    }
+                    self.boardTree[0].children = data;
+                    self.boardTree = [...self.boardTree];
+                    self.ref.detectChanges();
+                  });
+                }
+              }
               dom?.css({
-                'top': (cursor.line > 0 ? (cursor.line * 18.7) - 10 : -10) + 'px',
+                'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
                 'left': left + 'px',
                 'width': 'calc(100% - ' + (left + 8) + 'px)'
               });
-
               const dom2 = $('#show-tree .ant-select');
-              dom2?.css({opacity: 0});
               setTimeout(() => {
                 dom2?.click();
+                $('#show-tree input').on('blur', () => {
+                  $('#show-tree').hide();
+                });
               }, 0);
             }
           });

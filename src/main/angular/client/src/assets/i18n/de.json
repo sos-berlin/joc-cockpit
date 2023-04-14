@@ -3118,6 +3118,7 @@
     "label.boardNames": "Namen der Notzbretter",
     "label.expectBoardName": "Name Notizbrett",
     "label.expectBoardExpression": "ExpectNotices Ausdruck",
+    "label.showNoticeBoardNames": "Hit Ctrl+Space to lookup Notice Boards",
     "label.children": "Listenvariable",
     "label.childToId": "Element der Listenvariable für Kennung des Zweigs",
     "label.createForkListVariable": "Listenvariable erstellen",

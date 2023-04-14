@@ -3118,6 +3118,7 @@
     "label.boardNames": "Noms des Conditions",
     "label.expectBoardName": "Board Name",
     "label.expectBoardExpression": "ExpectNotices Expression",
+    "label.showNoticeBoardNames": "Hit Ctrl+Space to lookup Notice Boards",
     "label.children": "Variable de Tableau",
     "label.childToId": "Mappage de l'élément à l'ID ordre",
     "label.createForkListVariable": "Créer une Variable de Tableau",

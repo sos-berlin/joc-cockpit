@@ -3118,6 +3118,7 @@
     "label.boardNames": "通知ボード名",
     "label.expectBoardName": "通知ボード名",
     "label.expectBoardExpression": "ExpectNotice条件式",
+    "label.showNoticeBoardNames": "Hit Ctrl+Space to lookup Notice Boards",
     "label.children": "オーダー変数",
     "label.childToId": "オーダーId",
     "label.createForkListVariable": "ForkList変数作成",
