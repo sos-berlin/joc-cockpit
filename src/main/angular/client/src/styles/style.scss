@@ -9078,3 +9078,15 @@ cdk-virtual-scroll-viewport {
   top: 55%;
   transform: translate(-50%, 100%);
 }
+
+#show-tree, #show-tree-editor {
+  color: var(--text-color);
+  background-color: var(--bg-box);
+  box-sizing: border-box;
+  font-size: 13px;
+  font-variant: initial;
+  border-radius: 0;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 2px;
+}

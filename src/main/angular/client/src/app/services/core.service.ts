@@ -2196,6 +2196,13 @@ export class CoreService {
     function checkAndUpdate(node, data) {
       let flag = false;
       for (let i in node.children) {
+        if (node.children[i].logEvent == 'OrderNoticesConsumptionStarted') {
+          if ((node.children[i].position == data.position || node.children[i].position == data.position.substring(0, data.position.lastIndexOf(':') + 1) + '0') && data.name ) {
+            node.children[i].children.push(data);
+            flag = true;
+            break;
+          }
+        }
         if (node.children[i].position == data.position && (node.children[i].title == data.title || (node.children[i].title == 'Try' && data.title == 'Retry') || (node.children[i].title == 'Retry' && data.title == 'Try'))) {
           node.children[i].name = data.name;
           node.children[i].logEvent = data.logEvent;

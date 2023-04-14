@@ -14,10 +14,10 @@
   <div class="modal-body p-a">
     <div class="row">
       <div class="col-md-12 mono-font">
-        <div id="show-tree-editor" style="width: 80%;position: absolute;min-width: 150px;">
-          <nz-tree-select nzNoAnimation [nzPlaceHolder]="'workflow.placeholder.selectExpectBoard' | translate"
+        <div id="show-tree-editor" class="z-index-9999 pos-abt" style="min-width: 150px;">
+          <nz-tree-select nzNoAnimation [nzPlaceHolder]="'common.placeholder.search' | translate"
                           [nzNodes]="boardTree" [nzHideUnMatched]="true"
-                          [nzDropdownStyle]="{ 'max-height': '300px' }" nzShowSearch [nzAllowClear]="false"
+                          [nzDropdownStyle]="{ 'max-height': '300px' }" nzShowSearch [nzAllowClear]="true"
                           (ngModelChange)="checkExpectNoticeExp($event)"
                           [(ngModel)]="noticeBoardName"
                           name="noticeBoardName"
@@ -44,6 +44,7 @@
                                   mode: 'shell'}"
           ></ngx-codemirror>
         </div>
+        <div class="text-sm text-muted" translate>workflow.label.showNoticeBoardNames</div>
       </div>
     </div>
   </div>

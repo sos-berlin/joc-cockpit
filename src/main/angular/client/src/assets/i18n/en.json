@@ -3118,6 +3118,7 @@
     "label.boardNames": "Notice Board Names",
     "label.expectBoardName": "Notice Board Name",
     "label.expectBoardExpression": "ExpectNotices Expression",
+    "label.showNoticeBoardNames": "Hit Ctrl+Space to lookup Notice Boards",
     "label.children": "List Variable",
     "label.childToId": "Element of list variable for branch ID",
     "label.createForkListVariable": "Create ForkList Variable",

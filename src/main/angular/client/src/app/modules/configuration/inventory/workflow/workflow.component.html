@@ -597,8 +597,8 @@
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-md-8 col-lg-9">
-                <div id="show-tree" style="width: 80%;position: absolute;min-width: 150px;">
-                  <nz-tree-select [appAutofocus]="true" nzNoAnimation [nzPlaceHolder]="'workflow.placeholder.selectExpectBoard' | translate"
+                <div id="show-tree" class="z-index-9999 pos-abt" style="min-width: 150px;">
+                  <nz-tree-select [appAutofocus]="true" nzNoAnimation [nzPlaceHolder]="'common.placeholder.search' | translate"
                                   [nzNodes]="boardTree" [nzHideUnMatched]="true"
                                   [nzDropdownStyle]="{ 'max-height': '300px' }" nzShowSearch [nzAllowClear]="false"
                                   (ngModelChange)="checkExpectNoticeExp($event)"
@@ -621,13 +621,13 @@
                    (click)="openEditor(selectedNode.obj, 'noticeBoardNames')"></i>
                 <div id="boardId" class="b-a"
                      [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}">
-                  <ngx-codemirror #codeMirror
-                                  title="{{'workflow.placeholder.expression' | translate}}" required
+                  <ngx-codemirror #codeMirror required
                                   #expectBoardExpression="ngModel" [(ngModel)]="selectedNode.obj.noticeBoardNames"
                                   [options]="{lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
                                   mode: 'shell'}"
                   ></ngx-codemirror>
                 </div>
+                <div class="text-sm text-muted" translate>workflow.label.showNoticeBoardNames</div>
               </div>
             </div>
           </div>
