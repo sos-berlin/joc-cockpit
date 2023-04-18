@@ -934,8 +934,8 @@
         "trustStorePassword": "Vertrauensspeicher Kennwort",
         "templates": "Vorlagen",
         "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceDir": "Service Verzeichnis",
+        "forceSudo": "sudo forcieren"
       },
       "button": {
         "addAgent": "Agent hinzufügen",
@@ -973,8 +973,8 @@
         "trustStore": "Vertrauensspeicher angeben",
         "trustStorePassword": "Vertrauensspeicher Kennwort angeben",
         "templates": "Verzeichnis der Vorlagen angeben",
-        "serviceName": "Enter Service Name",
-        "serviceDir": "Enter Service Dir"
+        "serviceName": "Namen des systemd Service angeben",
+        "serviceDir": "Pfad zum Verzeichnis des systemd Service angeben"
       },
       "tooltip": {
         "agentId": "Die Kennung des Agenten ist eindeutig und identifiziert den Agenten. Die Kennung kann während der Lebenszeit eines Agenten nicht geändert werden.",
@@ -1006,9 +1006,9 @@
         "trustStore": "Der Vertrauensspeicher (truststore) enthält das öffentliche Zertifikat der Zertifizierungsstelle, die das Zertifikat des Agenten signiert hat.",
         "trustStorePassword": "Der Vertrauensspeicher (truststore) ist durch ein Kennwort geschützt.",
         "templates": "Der Pfad zu einem Verzeichnis, das Vorlagendateien zur Konfiguration des Agenten enthält, z.B. 'agent.conf'. Das Verzeichnis kann ein Unterverzeichnis 'private' mit weiteren Konfigurationsdateien besitzen.",
-        "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceName": "Der Name des systemd Service.",
+        "serviceDir": "Das Verzeichnis, in dem die systemd Service Datei abgelegt wird, Voreinstellung: /usr/lib/systemd/system, zum Beispiel /etc/systemd/system.",
+        "forceSudo": "Die Verwendung von sudo für alle Operationen auf Verzeichnisse und Dateien forcieren."
       }
     },
     "controller": {
@@ -1044,8 +1044,8 @@
         "controllerCert": "Zertifikat Controller",
         "templates": "Vorlagen",
         "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceDir": "Service Verzeichnis",
+        "forceSudo": "sudo forcieren"
       },
       "button": {
         "addController": "Controller hinzufügen",
@@ -1084,8 +1084,8 @@
         "trustStorePassword": "Vertrauensspeicher Kennwort angeben",
         "controllerCert": "Zertifikat Controller angeben",
         "templates": "Verzeichnis der Vorlagen angeben",
-        "serviceName": "Enter Service Name",
-        "serviceDir": "Enter Service Dir"
+        "serviceName": "Namen des systemd Service angeben",
+        "serviceDir": "Pfad zum systemd Service Verzeichnis angeben"
       },
       "tooltip": {
         "host": "Der Rechner, auf dem der Controller installiert wird.",
@@ -1118,9 +1118,9 @@
         "trustStorePassword": "Der Vertrauensspeicher (truststore) ist durch ein Kennwort geschützt.",
         "controllerCert": "Der Pfad zum Zertifikat (*.pem, *.crt) des Controller.",
         "templates": "Der Pfad zu einem Verzeichnis, das Vorlagendateien zur Konfiguration des Controller enthält, z.B. 'controller.conf'. Das Verzeichnis kann ein Unterverzeichnis 'private' mit weiteren Konfigurationsdateien besitzen.",
-        "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceName": "Der Name des systemd Service.",
+        "serviceDir": "Das Verzeichnis, in dem die systemd Service Datei abgelegt wird, Voreinstellung: /usr/lib/systemd/system, zum Beispiel /etc/systemd/system.",
+        "forceSudo": "Die Verwendung von sudo für alle Operationen auf Verzeichnisse und Dateien forcieren."
       }
     },
     "joc": {
@@ -1169,8 +1169,8 @@
         "httpsIni": "Jetty HTTPS Konfiguration (https.ini)",
         "sslIni": "Jetty SSL Konfiguration (ssl.ini)",
         "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceDir": "Service Verzeichnis",
+        "forceSudo": "sudo forcieren"
       },
       "button": {
         "addJOC": "JOC Cockpit hinzufügen",
@@ -1219,8 +1219,8 @@
         "httpIni": "Jetty HTTP Konfigurationsdatei (http.ini) angeben",
         "httpsIni": "Jetty HTTPS Konfigurationsdatei (https.ini) angeben",
         "sslIni": "Jetty HTTP Konfigurationsdatei (ssl.ini) angeben",
-        "serviceName": "Enter Service Name",
-        "serviceDir": "Enter Service Dir"
+        "serviceName": "Namen des systemd Service angeben",
+        "serviceDir": "Pfad zum systemd Service Verzeichnis angeben"
       },
       "tooltip": {
         "jocInstanceId": "JOC Cockpit Instanz-Kennung",
@@ -1266,9 +1266,9 @@
         "httpIni": "Die Jetty HTTP Konfigurationsdatei (http.ini) kann angegeben werden, wenn spezfische Einstellungenn für den Betrieb von HTTP Verbindungen zu JOC Cockpit benötigt werden.",
         "httpsIni": "Jetty HTTPS Konfigurationsdatei (https.ini) kann angegeben werden, wenn spezfische Einstellungenn für den Betrieb von HTTPS Verbindungen zu JOC Cockpit benötigt werden.",
         "sslIni": "Jetty SSL Konfigurationsdatei (ssl.ini) kann angegeben werden, wenn spezfische Einstellungenn für den Betrieb von HTTPS Verbindungen zu JOC Cockpit benötigt werden.",
-        "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceName": "Der Name des systemd Service.",
+        "serviceDir": "Das Verzeichnis, in dem die systemd Service Datei abgelegt wird, Voreinstellung: /usr/lib/systemd/system, zum Beispiel /etc/systemd/system.",
+        "forceSudo": "Die Verwendung von sudo für alle Operationen auf Verzeichnisse und Dateien forcieren."
       }
     }
   },
@@ -3142,7 +3142,7 @@
     "label.boardNames": "Namen der Notzbretter",
     "label.expectBoardName": "Name Notizbrett",
     "label.expectBoardExpression": "ExpectNotices Ausdruck",
-    "label.showNoticeBoardNames": "Hit Ctrl+Space to lookup Notice Boards",
+    "label.showNoticeBoardNames": "Ctrl+Leertaste drückenn um Notizbretter nachzuschlagen",
     "label.children": "Listenvariable",
     "label.childToId": "Element der Listenvariable für Kennung des Zweigs",
     "label.createForkListVariable": "Listenvariable erstellen",

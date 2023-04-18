@@ -933,9 +933,9 @@
         "trustStore": "Magasin de Certificats",
         "trustStorePassword": "Mot de passe du Magasin de Certificats",
         "templates": "Modèles",
-        "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceName": "Nom du Service",
+        "serviceDir": "Répertoire du Service",
+        "forceSudo": "Forcer sudo"
       },
       "button": {
         "addAgent": "Ajouter Agent",
@@ -973,8 +973,8 @@
         "trustStore": "Entrer Magasin de Certificats",
         "trustStorePassword": "Entrer Mot de passe du Magasin de Certificats",
         "templates": "Entrer Modéles",
-        "serviceName": "Enter Service Name",
-        "serviceDir": "Enter Service Dir"
+        "serviceName": "Entrer le Nom du Services systemd",
+        "serviceDir": "Entrer le Répertoire du Service systemd"
       },
       "tooltip": {
         "agentId": "L'identifiant de l'Agent est unique et identifie l'Agent. L'identifiant ne peut pas être modifié pendant la durée de vie d'un Agent.",
@@ -1006,9 +1006,9 @@
         "trustStore": "Le magasin de certificats (truststore) contient le certificat public de l'autorité de certification qui a signé le certificat de l'Agent.",
         "trustStorePassword": "Le magasin de certificats (truststore) est protégé par un mot de passe",
         "templates": "Le chemin d'accès à un répertoire contenant des fichiers modèles pour la configuration de l'Agent, par exemple 'agent.conf'. Le répertoire peut contenir un sous-répertoire 'private' contenant d'autres fichiers de configuration.",
-        "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceName": "Le nom du Service systemd.",
+        "serviceDir": "Le répertoire ou stocker le fichier service de systemd, valeur par default: /usr/lib/systemd/system, par example /etc/systemd/system.",
+        "forceSudo": "L'utilisation de sudo est forcé pour les operations concernant des répertoires et des fichiers."
       }
     },
     "controller": {
@@ -1043,9 +1043,9 @@
         "trustStorePassword": "Mot de passe du Magasin de Certificats",
         "controllerCert": "Certificat Contrôleur",
         "templates": "Modèles",
-        "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceName": "Nom du Service",
+        "serviceDir": "Répertoire du Service",
+        "forceSudo": "Forcer sudo"
       },
       "button": {
         "addController": "Ajouter une instance Contrôleur",
@@ -1083,9 +1083,9 @@
         "trustStore": "Entrer Magasin de Certificats",
         "trustStorePassword": "Entrer Mot de passe du Magasin de Certificats",
         "controllerCert": "Entrer le Certificat Contrôleur",
-        "templates": "Entrer Modéles",
-        "serviceName": "Enter Service Name",
-        "serviceDir": "Enter Service Dir"
+        "templates": "Entrer le chemin d'accès au répetoire des Modéles",
+        "serviceName": "Entrer le Nom du Service systemd",
+        "serviceDir": "Entrer le chemin d'accès au répertoire du Services systemd"
       },
       "tooltip": {
         "host": "L'hôte sur lequel le Contrôleur est installé.",
@@ -1118,9 +1118,9 @@
         "trustStorePassword": "Le magasin de certificats (truststore) est protégé par un mot de passe",
         "controllerCert": "Le chemin d'accès au fichier de certificat du Contrôleur (*.pem, *.crt).",
         "templates": "Le chemin d'accès à un répertoire contenant des fichiers modèles pour la configuration du Contrôleur, par exemple 'controller.conf'. Le répertoire peut contenir un sous-répertoire 'private' contenant d'autres fichiers de configuration.",
-        "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceName": "Le Nom du Service systemd.",
+        "serviceDir": "Le répertoire ou stocker le fichier service de systemd, valeur par default: /usr/lib/systemd/system, par example /etc/systemd/system.",
+        "forceSudo": "L'utilisation de sudo est forcé pour les operations concernant des répertoires et des fichiers."
       }
     },
     "joc": {
@@ -1168,9 +1168,9 @@
         "httpIni": "Jetty HTTP Configuration (http.ini)",
         "httpsIni": "Jetty HTTPS Configuration (https.ini)",
         "sslIni": "Jetty SSL Configuration (ssl.ini)",
-        "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceName": "Nom du Service",
+        "serviceDir": "Répertoire du Service",
+        "forceSudo": "Forcer sudo"
       },
       "button": {
         "addJOC": "Ajouter JOC Cockpit",
@@ -1219,8 +1219,8 @@
         "httpIni": "Entrer Jetty HTTP Fichier Configuration (http.ini)",
         "httpsIni": "Entrer Jetty HTTPS Fichier Configuration (https.ini)",
         "sslIni": "Entrer Jetty HTTP Fichier Configuration (ssl.ini)",
-        "serviceName": "Enter Service Name",
-        "serviceDir": "Enter Service Dir"
+        "serviceName": "Entrer le Nom du Service systemd",
+        "serviceDir": "Entrer le chemin d'accès au répertoire du Service systemd"
       },
       "tooltip": {
         "jocInstanceId": "Le JOC Cockpit ID Instance est un numéro unique qui spécifie l'instance dans un cluster JOC Cockpit.",
@@ -1237,7 +1237,7 @@
         "makeService": "Le service du JOC Cockpit sous Unix ou Windows est configuré.",
         "release": "La version du logiciel du JOC Cockpit.",
         "tarball": "L'archive Tarball de l'installation du logiciel du JOC Cockpit. Pour Unix, il s'agit d'une archive .tar.gz, pour Windows d'une archive .zip.",
-        "setupDir": "Setup Directory",
+        "setupDir": "Le répertoire temporaire utilisé pour l'extraction des fichiers de l'installateur.",
         "home": "Le répertoire d'installation du JOC Cockpit contient des fichiers binaires et des fichiers exécutables. Sous Unix, le répertoire /opt/sos-berlin.com/js7/joc est souvent utilisé. Sous Windows, le répertoire C:/Program Files/sos-berlin.com/js7/joc est souvent utilisé.",
         "data": "Le répertoire de données du JOC Cockpit contient, entre autres, des fichiers de configuration et des fichiers journaux dans les sous-répertoires 'config' et 'logs'. Sous Unix, le répertoire /var/sos-berlin.com/js7/joc est souvent utilisé. Sous Windows, le répertoire C:/ProgramData/sos-berlin.com/js7/joc est souvent utilisé.",
         "homeOwner": "Le compte d'utilisateur qui possède le répertoire d'installation du JOC Cockpit.",
@@ -1266,9 +1266,9 @@
         "httpIni": "Le chemin d'accès au fichier de configuration HTTP de Jetty (http.ini) peut être spécifié si des paramètres spécifiques pour les connexions HTTP à JOC Cockpit sont nécessaires.",
         "httpsIni": "Le fichier de configuration HTTPS de Jetty (https.ini) peut être spécifié si des paramètres spécifiques pour les connexions HTTPS au Cockpit JOC sont nécessaires.",
         "sslIni": "Le fichier de configuration SSL de Jetty (ssl.ini) peut être spécifié si des paramètres spécifiques pour les connexions HTTPS au JOC Cockpit sont nécessaires.)",
-        "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceName": "Le Nom du Service systemd.",
+        "serviceDir": "Le répertoire ou stocker le fichier service de systemd, valeur par default: /usr/lib/systemd/system, par example /etc/systemd/system.",
+        "forceSudo": "L'utilisation de sudo est forcé pour les operations concernant des répertoires et des fichiers."
       }
     }
   },
@@ -3142,7 +3142,7 @@
     "label.boardNames": "Noms des Conditions",
     "label.expectBoardName": "Board Name",
     "label.expectBoardExpression": "ExpectNotices Expression",
-    "label.showNoticeBoardNames": "Hit Ctrl+Space to lookup Notice Boards",
+    "label.showNoticeBoardNames": "Appuyez sur Ctrl+Espace pour consulter les Conditions",
     "label.children": "Variable de Tableau",
     "label.childToId": "Mappage de l'élément à l'ID ordre",
     "label.createForkListVariable": "Créer une Variable de Tableau",
