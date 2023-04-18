@@ -162,6 +162,45 @@
               <label nz-checkbox [(ngModel)]="object.makeService" name="cmakeService"></label>
             </div>
           </div>
+          <div class="row m-t-sm">
+            <div class="col-md-4">
+              <label translate>deploymentService.joc.label.forceSudo</label>
+            </div>
+            <div class="col-md-6">
+              <label nz-checkbox [(ngModel)]="data.target.forceSudo" name="forceSudo"></label>
+            </div>
+            <div class="col-md-1">
+              <label nz-checkbox [(ngModel)]="object.forceSudo" name="cforceSudo"></label>
+            </div>
+          </div>
+          <div class="row m-t-sm">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.serviceName</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control" name="serviceName"
+                     placeholder="{{'deploymentService.joc.placeholder.serviceName' | translate}}"
+                     [(ngModel)]="data.target.serviceName">
+
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.serviceName" name="cserviceName"></label>
+            </div>
+          </div>
+          <div class="row m-t-sm">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.serviceDir</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control" name="serviceDir"
+                     placeholder="{{'deploymentService.joc.placeholder.serviceDir' | translate}}"
+                     [(ngModel)]="data.target.serviceDir">
+
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.serviceDir" name="cserviceDir"></label>
+            </div>
+          </div>
         </div>
         <h6 class="m-t-12" translate>deploymentService.label.media
           <i class="fa fa-caret-down p-l-xs text-hover-primary" (click)="data.isMediaExpanded = !data.isMediaExpanded"

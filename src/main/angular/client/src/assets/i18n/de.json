@@ -932,7 +932,10 @@
         "keyAlias": "Schlüssel Alias",
         "trustStore": "Vertrauensspeicher",
         "trustStorePassword": "Vertrauensspeicher Kennwort",
-        "templates": "Vorlagen"
+        "templates": "Vorlagen",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       },
       "button": {
         "addAgent": "Agent hinzufügen",
@@ -969,7 +972,9 @@
         "keyAlias": "Schlüssel Alias angeben",
         "trustStore": "Vertrauensspeicher angeben",
         "trustStorePassword": "Vertrauensspeicher Kennwort angeben",
-        "templates": "Verzeichnis der Vorlagen angeben"
+        "templates": "Verzeichnis der Vorlagen angeben",
+        "serviceName": "Enter Service Name",
+        "serviceDir": "Enter Service Dir"
       },
       "tooltip": {
         "agentId": "Die Kennung des Agenten ist eindeutig und identifiziert den Agenten. Die Kennung kann während der Lebenszeit eines Agenten nicht geändert werden.",
@@ -1000,7 +1005,10 @@
         "keyAlias": "Der Schlüssel Alias kann verwendet werden, wenn ein Schlüsselspeicher mehrere private Schlüssel enthält. Der Alias Name bestimmt den für HTTPS Verbindungen zum Agenten zu verwendenden privaten Schlüssel.",
         "trustStore": "Der Vertrauensspeicher (truststore) enthält das öffentliche Zertifikat der Zertifizierungsstelle, die das Zertifikat des Agenten signiert hat.",
         "trustStorePassword": "Der Vertrauensspeicher (truststore) ist durch ein Kennwort geschützt.",
-        "templates": "Der Pfad zu einem Verzeichnis, das Vorlagendateien zur Konfiguration des Agenten enthält, z.B. 'agent.conf'. Das Verzeichnis kann ein Unterverzeichnis 'private' mit weiteren Konfigurationsdateien besitzen."
+        "templates": "Der Pfad zu einem Verzeichnis, das Vorlagendateien zur Konfiguration des Agenten enthält, z.B. 'agent.conf'. Das Verzeichnis kann ein Unterverzeichnis 'private' mit weiteren Konfigurationsdateien besitzen.",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       }
     },
     "controller": {
@@ -1034,7 +1042,10 @@
         "trustStore": "Vertrauensspeicher",
         "trustStorePassword": "Vertrauensspeicher Kennwort",
         "controllerCert": "Zertifikat Controller",
-        "templates": "Vorlagen"
+        "templates": "Vorlagen",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       },
       "button": {
         "addController": "Controller hinzufügen",
@@ -1072,7 +1083,9 @@
         "trustStore": "Vertrauensspeicher angeben",
         "trustStorePassword": "Vertrauensspeicher Kennwort angeben",
         "controllerCert": "Zertifikat Controller angeben",
-        "templates": "Verzeichnis der Vorlagen angeben"
+        "templates": "Verzeichnis der Vorlagen angeben",
+        "serviceName": "Enter Service Name",
+        "serviceDir": "Enter Service Dir"
       },
       "tooltip": {
         "host": "Der Rechner, auf dem der Controller installiert wird.",
@@ -1104,7 +1117,10 @@
         "trustStore": "Der Vertrauensspeicher (truststore) enthält das öffentliche Zertifikat der Zertifizierungsstelle, die das Zertifikat des Controller signiert hat.",
         "trustStorePassword": "Der Vertrauensspeicher (truststore) ist durch ein Kennwort geschützt.",
         "controllerCert": "Der Pfad zum Zertifikat (*.pem, *.crt) des Controller.",
-        "templates": "Der Pfad zu einem Verzeichnis, das Vorlagendateien zur Konfiguration des Controller enthält, z.B. 'controller.conf'. Das Verzeichnis kann ein Unterverzeichnis 'private' mit weiteren Konfigurationsdateien besitzen."
+        "templates": "Der Pfad zu einem Verzeichnis, das Vorlagendateien zur Konfiguration des Controller enthält, z.B. 'controller.conf'. Das Verzeichnis kann ein Unterverzeichnis 'private' mit weiteren Konfigurationsdateien besitzen.",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       }
     },
     "joc": {
@@ -1151,7 +1167,10 @@
         "jocCert": "Zertifikat JOC Cockpit",
         "httpIni": "Jetty HTTP Konfiguration (http.ini)",
         "httpsIni": "Jetty HTTPS Konfiguration (https.ini)",
-        "sslIni": "Jetty SSL Konfiguration (ssl.ini)"
+        "sslIni": "Jetty SSL Konfiguration (ssl.ini)",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       },
       "button": {
         "addJOC": "JOC Cockpit hinzufügen",
@@ -1199,7 +1218,9 @@
         "jocCert": "Zertifikat JOC Cockpit angeben",
         "httpIni": "Jetty HTTP Konfigurationsdatei (http.ini) angeben",
         "httpsIni": "Jetty HTTPS Konfigurationsdatei (https.ini) angeben",
-        "sslIni": "Jetty HTTP Konfigurationsdatei (ssl.ini) angeben"
+        "sslIni": "Jetty HTTP Konfigurationsdatei (ssl.ini) angeben",
+        "serviceName": "Enter Service Name",
+        "serviceDir": "Enter Service Dir"
       },
       "tooltip": {
         "jocInstanceId": "JOC Cockpit Instanz-Kennung",
@@ -1244,7 +1265,10 @@
         "jocCert": "Der Pfad zum Zertifikat (*.pem, *.crt) von JOC Cockpit.",
         "httpIni": "Die Jetty HTTP Konfigurationsdatei (http.ini) kann angegeben werden, wenn spezfische Einstellungenn für den Betrieb von HTTP Verbindungen zu JOC Cockpit benötigt werden.",
         "httpsIni": "Jetty HTTPS Konfigurationsdatei (https.ini) kann angegeben werden, wenn spezfische Einstellungenn für den Betrieb von HTTPS Verbindungen zu JOC Cockpit benötigt werden.",
-        "sslIni": "Jetty SSL Konfigurationsdatei (ssl.ini) kann angegeben werden, wenn spezfische Einstellungenn für den Betrieb von HTTPS Verbindungen zu JOC Cockpit benötigt werden."
+        "sslIni": "Jetty SSL Konfigurationsdatei (ssl.ini) kann angegeben werden, wenn spezfische Einstellungenn für den Betrieb von HTTPS Verbindungen zu JOC Cockpit benötigt werden.",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       }
     }
   },

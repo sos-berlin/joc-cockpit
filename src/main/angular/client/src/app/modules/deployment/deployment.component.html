@@ -689,6 +689,43 @@
                                          name="amakeService{{i}}{{j}}"></label>
                                 </div>
                               </div>
+                              <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                                <div class="col-md-4 col-lg-3 col-xl-3">
+                                  <label translate>deploymentService.agent.label.forceSudo
+                                  </label> <i class="p-l-sm fa fa-info-circle"
+                                              [nz-tooltip]="'deploymentService.agent.tooltip.forceSudo' | translate"></i>
+                                </div>
+                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
+                                  <label nz-checkbox [(ngModel)]="item.target.forceSudo" (ngModelChange)="convertJSON()"
+                                         name="aforceSudo{{i}}{{j}}"></label>
+                                </div>
+                              </div>
+                              <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                                <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
+                                  <label translate>deploymentService.agent.label.serviceName
+                                  </label> <i class="p-l-sm fa fa-info-circle"
+                                              [nz-tooltip]="'deploymentService.agent.tooltip.serviceName' | translate"></i>
+                                </div>
+                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
+                                  <input [readOnly]="isTrash" autocomplete="off" type="text" class="form-control" (blur)="convertJSON()"
+                                         name="aserviceName{{i}}{{j}}"
+                                         placeholder="{{'deploymentService.agent.placeholder.serviceName' | translate}}"
+                                         [(ngModel)]="item.target.serviceName">
+                                </div>
+                              </div>
+                              <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                                <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
+                                  <label translate>deploymentService.agent.label.serviceDir
+                                  </label> <i class="p-l-sm fa fa-info-circle"
+                                              [nz-tooltip]="'deploymentService.agent.tooltip.serviceDir' | translate"></i>
+                                </div>
+                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
+                                  <input [readOnly]="isTrash" autocomplete="off" type="text" class="form-control" (blur)="convertJSON()"
+                                         name="aserviceDir{{i}}{{j}}"
+                                         placeholder="{{'deploymentService.agent.placeholder.serviceDir' | translate}}"
+                                         [(ngModel)]="item.target.serviceDir">
+                                </div>
+                              </div>
                             </div>
                             <h6 class="m-t-12 hover-icon" translate>
                               deploymentService.label.media
@@ -1358,6 +1395,46 @@
                                   <label nz-checkbox [(ngModel)]="item.target.makeService"
                                          (ngModelChange)="convertJSON()"
                                          name="cmakeService{{i}}{{j}}"></label>
+                                </div>
+                              </div>
+                              <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                                <div class="col-md-4 col-lg-3 col-xl-3">
+                                  <label translate>deploymentService.controller.label.forceSudo
+                                  </label> <i class="p-l-sm fa fa-info-circle"
+                                              [nz-tooltip]="'deploymentService.controller.tooltip.forceSudo' | translate"></i>
+                                </div>
+                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
+                                  <label nz-checkbox [(ngModel)]="item.target.forceSudo"
+                                         (ngModelChange)="convertJSON()"
+                                         name="cforceSudo{{i}}{{j}}"></label>
+                                </div>
+                              </div>
+                              <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                                <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
+                                  <label translate>deploymentService.controller.label.serviceName
+                                  </label> <i class="p-l-sm fa fa-info-circle"
+                                              [nz-tooltip]="'deploymentService.controller.tooltip.serviceName' | translate"></i>
+                                </div>
+                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
+                                  <input [readOnly]="isTrash" autocomplete="off" type="text" class="form-control" (blur)="convertJSON()"
+                                         name="cserviceName{{i}}{{j}}"
+                                         placeholder="{{'deploymentService.controller.placeholder.serviceName' | translate}}"
+                                         [(ngModel)]="item.target.serviceName">
+
+                                </div>
+                              </div>
+                              <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                                <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
+                                  <label translate>deploymentService.controller.label.serviceDir
+                                  </label> <i class="p-l-sm fa fa-info-circle"
+                                              [nz-tooltip]="'deploymentService.controller.tooltip.serviceDir' | translate"></i>
+                                </div>
+                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
+                                  <input [readOnly]="isTrash" autocomplete="off" type="text" class="form-control" (blur)="convertJSON()"
+                                         name="cserviceDir{{i}}{{j}}"
+                                         placeholder="{{'deploymentService.controller.placeholder.serviceDir' | translate}}"
+                                         [(ngModel)]="item.target.serviceDir">
+
                                 </div>
                               </div>
                             </div>
@@ -2062,6 +2139,43 @@
                                          name="makeService{{i}}{{j}}"></label>
                                 </div>
                               </div>
+                              <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                                <div class="col-md-4 col-lg-3 col-xl-3">
+                                  <label translate>deploymentService.joc.label.forceSudo
+                                  </label> <i class="p-l-sm fa fa-info-circle"
+                                              [nz-tooltip]="'deploymentService.joc.tooltip.forceSudo' | translate"></i>
+                                </div>
+                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
+                                  <label nz-checkbox [(ngModel)]="item.target.forceSudo" (ngModelChange)="convertJSON()"
+                                         name="forceSudo{{i}}{{j}}"></label>
+                                </div>
+                              </div>
+                              <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                                <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
+                                  <label translate>deploymentService.joc.label.serviceName
+                                  </label> <i class="p-l-sm fa fa-info-circle"
+                                              [nz-tooltip]="'deploymentService.joc.tooltip.serviceName' | translate"></i>
+                                </div>
+                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
+                                  <input [readOnly]="isTrash" autocomplete="off" type="text" class="form-control" name="serviceName{{i}}{{j}}"
+                                         placeholder="{{'deploymentService.joc.placeholder.serviceName' | translate}}"
+                                         [(ngModel)]="item.target.serviceName" (blur)="convertJSON()">
+
+                                </div>
+                              </div>
+                              <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                                <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
+                                  <label translate>deploymentService.joc.label.serviceDir
+                                  </label> <i class="p-l-sm fa fa-info-circle"
+                                              [nz-tooltip]="'deploymentService.joc.tooltip.serviceDir' | translate"></i>
+                                </div>
+                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
+                                  <input [readOnly]="isTrash" autocomplete="off" type="text" class="form-control" name="serviceDir{{i}}{{j}}"
+                                         placeholder="{{'deploymentService.joc.placeholder.serviceDir' | translate}}"
+                                         [(ngModel)]="item.target.serviceDir" (blur)="convertJSON()">
+
+                                </div>
+                              </div>
                             </div>
                             <h6 class="m-t-12 hover-icon" translate>
                               deploymentService.label.media
@@ -2130,22 +2244,16 @@
                               <div class="row">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.setupDir
-                                    <sup class="text-danger text-sm">*</sup>
+                                    
                                   </label> <i class="p-l-sm fa fa-info-circle"
                                               [nz-tooltip]="'deploymentService.joc.tooltip.setupDir' | translate"></i>
                                 </div>
-                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20"
-                                     [ngClass]="{'has-error' : ((setupDir.dirty || setupDir.touched) && setupDir.invalid)}">
+                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                   <input [readOnly]="isTrash" id="setupDir{{i}}{{j}}" autocomplete="off" type="text" class="form-control"
-                                         #setupDir="ngModel" required name="setupDir{{i}}{{j}}" (blur)="convertJSON()"
+                                         #setupDir="ngModel" name="setupDir{{i}}{{j}}" (blur)="convertJSON()"
                                          placeholder="{{'deploymentService.joc.placeholder.setupDir' | translate}}"
                                          [(ngModel)]="item.installation.setupDir">
-                                  <div *ngIf="setupDir.invalid && (setupDir.dirty || setupDir.touched)"
-                                       class="text-danger help-block">
-                                    <div *ngIf="setupDir.errors.required" translate>
-                                      common.message.requiredError
-                                    </div>
-                                  </div>
+                              
                                 </div>
                               </div>
                               <div class="row m-t-sm">

@@ -932,7 +932,10 @@
         "keyAlias": "Alias de la Clé",
         "trustStore": "Magasin de Certificats",
         "trustStorePassword": "Mot de passe du Magasin de Certificats",
-        "templates": "Modèles"
+        "templates": "Modèles",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       },
       "button": {
         "addAgent": "Ajouter Agent",
@@ -969,7 +972,9 @@
         "keyAlias": "Entrer Alias de la Clé",
         "trustStore": "Entrer Magasin de Certificats",
         "trustStorePassword": "Entrer Mot de passe du Magasin de Certificats",
-        "templates": "Entrer Modéles"
+        "templates": "Entrer Modéles",
+        "serviceName": "Enter Service Name",
+        "serviceDir": "Enter Service Dir"
       },
       "tooltip": {
         "agentId": "L'identifiant de l'Agent est unique et identifie l'Agent. L'identifiant ne peut pas être modifié pendant la durée de vie d'un Agent.",
@@ -1000,7 +1005,10 @@
         "keyAlias": "L'alias de clé peut être utilisé lorsqu'un magasin de clés contient plusieurs clés privées. Le nom de l'alias détermine la clé privée à utiliser pour les connexions HTTPS à l'Agent.",
         "trustStore": "Le magasin de certificats (truststore) contient le certificat public de l'autorité de certification qui a signé le certificat de l'Agent.",
         "trustStorePassword": "Le magasin de certificats (truststore) est protégé par un mot de passe",
-        "templates": "Le chemin d'accès à un répertoire contenant des fichiers modèles pour la configuration de l'Agent, par exemple 'agent.conf'. Le répertoire peut contenir un sous-répertoire 'private' contenant d'autres fichiers de configuration."
+        "templates": "Le chemin d'accès à un répertoire contenant des fichiers modèles pour la configuration de l'Agent, par exemple 'agent.conf'. Le répertoire peut contenir un sous-répertoire 'private' contenant d'autres fichiers de configuration.",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       }
     },
     "controller": {
@@ -1034,7 +1042,10 @@
         "trustStore": "Magasin de Certificats",
         "trustStorePassword": "Mot de passe du Magasin de Certificats",
         "controllerCert": "Certificat Contrôleur",
-        "templates": "Modèles"
+        "templates": "Modèles",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       },
       "button": {
         "addController": "Ajouter une instance Contrôleur",
@@ -1072,7 +1083,9 @@
         "trustStore": "Entrer Magasin de Certificats",
         "trustStorePassword": "Entrer Mot de passe du Magasin de Certificats",
         "controllerCert": "Entrer le Certificat Contrôleur",
-        "templates": "Entrer Modéles"
+        "templates": "Entrer Modéles",
+        "serviceName": "Enter Service Name",
+        "serviceDir": "Enter Service Dir"
       },
       "tooltip": {
         "host": "L'hôte sur lequel le Contrôleur est installé.",
@@ -1104,7 +1117,10 @@
         "trustStore": "Le magasin de certificats (truststore) contient le certificat public de l'autorité de certification qui a signé le certificat du Contrôleur.",
         "trustStorePassword": "Le magasin de certificats (truststore) est protégé par un mot de passe",
         "controllerCert": "Le chemin d'accès au fichier de certificat du Contrôleur (*.pem, *.crt).",
-        "templates": "Le chemin d'accès à un répertoire contenant des fichiers modèles pour la configuration du Contrôleur, par exemple 'controller.conf'. Le répertoire peut contenir un sous-répertoire 'private' contenant d'autres fichiers de configuration."
+        "templates": "Le chemin d'accès à un répertoire contenant des fichiers modèles pour la configuration du Contrôleur, par exemple 'controller.conf'. Le répertoire peut contenir un sous-répertoire 'private' contenant d'autres fichiers de configuration.",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       }
     },
     "joc": {
@@ -1151,7 +1167,10 @@
         "jocCert": "JOC Cockpit Fichier Certificat",
         "httpIni": "Jetty HTTP Configuration (http.ini)",
         "httpsIni": "Jetty HTTPS Configuration (https.ini)",
-        "sslIni": "Jetty SSL Configuration (ssl.ini)"
+        "sslIni": "Jetty SSL Configuration (ssl.ini)",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       },
       "button": {
         "addJOC": "Ajouter JOC Cockpit",
@@ -1199,7 +1218,9 @@
         "jocCert": "Entrer le Certificat JOC Cockpit",
         "httpIni": "Entrer Jetty HTTP Fichier Configuration (http.ini)",
         "httpsIni": "Entrer Jetty HTTPS Fichier Configuration (https.ini)",
-        "sslIni": "Entrer Jetty HTTP Fichier Configuration (ssl.ini)"
+        "sslIni": "Entrer Jetty HTTP Fichier Configuration (ssl.ini)",
+        "serviceName": "Enter Service Name",
+        "serviceDir": "Enter Service Dir"
       },
       "tooltip": {
         "jocInstanceId": "Le JOC Cockpit ID Instance est un numéro unique qui spécifie l'instance dans un cluster JOC Cockpit.",
@@ -1244,7 +1265,10 @@
         "jocCert": "Le chemin d'accès au fichier de certificat du JOC Cockpit (*.pem, *.crt).",
         "httpIni": "Le chemin d'accès au fichier de configuration HTTP de Jetty (http.ini) peut être spécifié si des paramètres spécifiques pour les connexions HTTP à JOC Cockpit sont nécessaires.",
         "httpsIni": "Le fichier de configuration HTTPS de Jetty (https.ini) peut être spécifié si des paramètres spécifiques pour les connexions HTTPS au Cockpit JOC sont nécessaires.",
-        "sslIni": "Le fichier de configuration SSL de Jetty (ssl.ini) peut être spécifié si des paramètres spécifiques pour les connexions HTTPS au JOC Cockpit sont nécessaires.)"
+        "sslIni": "Le fichier de configuration SSL de Jetty (ssl.ini) peut être spécifié si des paramètres spécifiques pour les connexions HTTPS au JOC Cockpit sont nécessaires.)",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       }
     }
   },

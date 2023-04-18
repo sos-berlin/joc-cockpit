@@ -932,7 +932,10 @@
         "keyAlias": "Key Alias",
         "trustStore": "Truststore",
         "trustStorePassword": "Truststore Password",
-        "templates": "Templates"
+        "templates": "Templates",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       },
       "button": {
         "addAgent": "Add Agent",
@@ -969,7 +972,9 @@
         "keyAlias": "Enter Key Alias",
         "trustStore": "Enter Truststore",
         "trustStorePassword": "Enter Truststore Password",
-        "templates": "Enter Templates"
+        "templates": "Enter Templates",
+        "serviceName": "Enter Service Name",
+        "serviceDir": "Enter Service Dir"
       },
       "tooltip": {
         "agentId": "The Agent ID is unique and identifies the Agent. The identifier cannot be changed during the lifetime of an Agent.",
@@ -1000,7 +1005,10 @@
         "keyAlias": "The Key Alias can be used when a keystore contains multiple private keys. The alias name determines the private key to be used for HTTPS connections to the Agent.",
         "trustStore": "The Truststore contains the public certificate of the Certificate Authority that signed the Agent's certificate.",
         "trustStorePassword": "The Truststore is protected by a password",
-        "templates": "The path to a directory containing template files for configuring the Agent, e.g. 'agent.conf'. The directory may have a sub-directory 'private' with further configuration files."
+        "templates": "The path to a directory containing template files for configuring the Agent, e.g. 'agent.conf'. The directory may have a sub-directory 'private' with further configuration files.",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       }
     },
     "controller": {
@@ -1034,7 +1042,10 @@
         "trustStore": "Truststore",
         "trustStorePassword": "Truststore Password",
         "controllerCert": "Controller Certificate",
-        "templates": "Templates"
+        "templates": "Templates",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       },
       "button": {
         "addController": "Add Controller Instance",
@@ -1072,7 +1083,9 @@
         "trustStore": "Enter Truststore",
         "trustStorePassword": "Enter Truststore Password",
         "controllerCert": "Enter Controller Certificate",
-        "templates": "Enter Templates"
+        "templates": "Enter Templates",
+        "serviceName": "Enter Service Name",
+        "serviceDir": "Enter Service Dir"
       },
       "tooltip": {
         "host": "The Host on which the Controller is installed.",
@@ -1104,7 +1117,10 @@
         "trustStore": "The Truststore contains the public certificate of the Certificate Authority that signed the Controller's certificate.",
         "trustStorePassword": "The Truststore is protected by a password",
         "controllerCert": "The path to the Controller's Certificate file (*.pem, *.crt).",
-        "templates": "The path to a directory containing template files for configuring the Controller, e.g. 'controller.conf'. The directory may have a sub-directory 'private' with further configuration files."
+        "templates": "The path to a directory containing template files for configuring the Controller, e.g. 'controller.conf'. The directory may have a sub-directory 'private' with further configuration files.",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       }
     },
     "joc": {
@@ -1151,7 +1167,10 @@
         "jocCert": "JOC Cockpit Certificate Path",
         "httpIni": "Jetty HTTP Configuration (http.ini)",
         "httpsIni": "Jetty HTTPS Configuration (https.ini)",
-        "sslIni": "Jetty SSL Configuration (ssl.ini)"
+        "sslIni": "Jetty SSL Configuration (ssl.ini)",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       },
       "button": {
         "addJOC": "Add JOC Cockpit",
@@ -1199,7 +1218,9 @@
         "jocCert": "Enter JOC Cockpit Certificate Path",
         "httpIni": "Enter Jetty HTTP Configuration File (http.ini)",
         "httpsIni": "Enter Jetty HTTPS Configuration File (https.ini)",
-        "sslIni": "Enter Jetty HTTP Configuration File (ssl.ini)"
+        "sslIni": "Enter Jetty HTTP Configuration File (ssl.ini)",
+        "serviceName": "Enter Service Name",
+        "serviceDir": "Enter Service Dir"
       },
       "tooltip": {
         "jocInstanceId": "The JOC Cockpit Instance ID is a unique number that specifies the instance in a JOC Cockpit cluster.",
@@ -1244,7 +1265,10 @@
         "jocCert": "The path to the JOC Cockpit Certificate file (*.pem, *.crt).",
         "httpIni": "The path to the Jetty HTTP Configuration File (http.ini) can be specified if specific settings for HTTP connections to JOC Cockpit are required.",
         "httpsIni": "Jetty HTTPS Configuration File (https.ini)  can be specified if specific settings for HTTPS connections to JOC Cockpit are required.",
-        "sslIni": "Jetty SSL Configuration File (ssl.ini) can be specified if specific settings for HTTPS connections to JOC Cockpit are required."
+        "sslIni": "Jetty SSL Configuration File (ssl.ini) can be specified if specific settings for HTTPS connections to JOC Cockpit are required.",
+        "serviceName": "Service Name",
+        "serviceDir": "Service Dir",
+        "forceSudo": "Force Sudo"
       }
     }
   },
