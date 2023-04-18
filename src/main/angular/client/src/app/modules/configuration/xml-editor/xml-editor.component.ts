@@ -12,6 +12,7 @@ import {saveAs} from 'file-saver';
 import {isEmpty, isArray, isEqual, sortBy, clone} from 'underscore';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {AuthService} from '../../../components/guard';
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 
@@ -1113,22 +1114,63 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   removeConf(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmationModalComponent,
-      nzComponentParams: {
-        remove: true,
-        objectType: this.objectType
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.del(null, true);
-      }
-    });
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Notification',
+        operation: 'Remove',
+        name: ''
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          let obj: any = {
+            release: true,
+            auditLog: {
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+            }
+          };
+
+          this.deleteNotification(obj);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmationModalComponent,
+        nzComponentParams: {
+          remove: true,
+          objectType: this.objectType
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          if (this.objectType === 'NOTIFICATION') {
+            let obj: any = {
+              release: true
+            };
+
+            this.deleteNotification(obj);
+          } else {
+            this.del(null, true);
+          }
+        }
+      });
+    }
   }
 
   releaseXML(): void {
@@ -1138,31 +1180,42 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       return;
     }
     if (isEmpty(this.nonValidattribute)) {
-      this.coreService.post('xmleditor/release', {
-        controllerId: this.schedulerIds.selected,
-        objectType: this.objectType,
+      let obj: any = {
         configuration: this.mainXml,
-        configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
-      }).subscribe({
-        next: (res: any) => {
-          if (res.validationError) {
-            this.showError(res.validationError);
-          } else {
-            this.prevXML = this.mainXml;
-            this.extraInfo = {
-              released: res.released,
-              configurationDate: res.configurationDate,
-              state: res.state,
-              hasReleases: res.hasReleases
+        configurationJson: JSON.stringify({ nodesCount: this.counting, node: this.nodes }),
+      }
+      if (this.preferences.auditLog) {
+        let comments = {
+          radio: 'predefined',
+          type: 'Notification',
+          operation: 'Remove',
+          name: ''
+        };
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: CommentModalComponent,
+          nzComponentParams: {
+            comments,
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            obj.auditLog = {
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+
             };
-            this.validConfig = true;
+
+            this.releaseNOtification(obj);
           }
-        }, error: (error) => {
-          if (error && error.error) {
-            this.showErrorToast(error.error.message, '');
-          }
-        }
-      });
+        });
+      } else {
+        this.releaseNOtification(obj);
+      }
     } else {
       this.gotoErrorLocation();
       this.popToast(this.nonValidattribute);
@@ -1170,6 +1223,30 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.validateAttr('', this.nonValidattribute);
       }
     }
+  }
+
+  private releaseNOtification(obj): void {
+
+    this.coreService.post('notification/release', obj).subscribe({
+      next: (res: any) => {
+        if (res.validationError) {
+          this.showError(res.validationError);
+        } else {
+          this.prevXML = this.mainXml;
+          this.extraInfo = {
+            released: res.released,
+            configurationDate: res.configurationDate,
+            state: res.state,
+            hasReleases: res.hasReleases
+          };
+          this.validConfig = true;
+        }
+      }, error: (error) => {
+        if (error && error.error) {
+          this.showErrorToast(error.error.message, '');
+        }
+      }
+    });
   }
 
   deployXML(isCheck = false): void {
@@ -1199,7 +1276,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
       if (!flag) {
         this.translate.get('xml.message.jobResourceNotFound').subscribe(translatedValue => {
-          this.toasterService.info(obj.name + ' ' +translatedValue, '');
+          this.toasterService.info(obj.name + ' ' + translatedValue, '');
         });
       }
     }
@@ -5512,7 +5589,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   private del(tab, isRelease = false) {
-    if (this.objectType !== 'NOTIFICATION' && tab.id < 0) {
+    if (tab.id < 0) {
       this.tabsArray = this.tabsArray.filter(x => {
         return x.id !== tab.id;
       });
@@ -5526,24 +5603,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     let obj: any = {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
+      id: tab.id
     };
-    if (this.objectType !== 'NOTIFICATION') {
-      obj.id = tab.id;
-    } else {
-      obj.release = isRelease;
-    }
+
     this.coreService.post('xmleditor/remove', obj).subscribe({
       next: (res: any) => {
-        if (this.objectType === 'NOTIFICATION') {
-          this.extraInfo = {
-            released: res.released,
-            state: res.state,
-            hasReleases: res.hasReleases
-          };
-          if (res.released) {
-            this.validConfig = true;
-          }
-        }
+
         if (res.configuration) {
           if (!this.ok(res.configuration)) {
             let obj1: any = {
@@ -5551,9 +5616,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
               objectType: this.objectType,
               configuration: res.configuration
             };
-            if (this.objectType !== 'NOTIFICATION') {
-              obj1.schemaIdentifier = this.schemaIdentifier;
-            }
+
+            obj1.schemaIdentifier = this.schemaIdentifier;
+
             this.coreService.post('xmleditor/xml2json', obj1).subscribe({
               next: (result: any) => {
                 this.isLoading = true;
@@ -5589,6 +5654,66 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  private deleteNotification(obj) {
+
+
+    this.coreService.post('notification/delete', obj).subscribe({
+      next: (res: any) => {
+
+        this.extraInfo = {
+          released: res.released,
+          state: res.state,
+          hasReleases: res.hasReleases
+        };
+        if (res.released) {
+          this.validConfig = true;
+        }
+
+        if (res.configuration) {
+          if (!this.ok(res.configuration)) {
+            let obj1: any = {
+              controllerId: this.schedulerIds.selected,
+              objectType: this.objectType,
+              configuration: res.configuration
+            };
+
+            this.coreService.post('xmleditor/xml2json', obj1).subscribe({
+              next: (result: any) => {
+                this.isLoading = true;
+                let a = [];
+                let arr = JSON.parse(result.configurationJson);
+                a.push(arr);
+                this.counting = arr.lastUuid;
+                this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
+                this.nodes = a;
+                this.isLoading = false;
+                this.selectedNode = this.nodes[0];
+                this.selectedNodeDoc = this.checkText(this.nodes[0]);
+                this.getIndividualData(this.selectedNode, undefined);
+                this.submitXsd = true;
+                this.prevXML = this.removeComment(res.configuration);
+                this.copyItem = undefined;
+              }, error: (err) => {
+                this.isLoading = false;
+                this.error = true;
+                this.showErrorToast(err.data.error.message, '');
+              }
+            });
+          } else {
+            this.afterDelete(res, null);
+          }
+        } else {
+          this.afterDelete(res, null);
+        }
+      }, error: (error) => {
+        if (error && error.error) {
+          this.showErrorToast(error.error.message, '');
+        }
+      }
+    });
+  }
+
 
   private afterDelete(res, tab): void {
     let flag = true;
@@ -5670,11 +5795,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.removeDocs();
       this.isStore = true;
       if (this.objectType === 'NOTIFICATION') {
-        this.coreService.post('xmleditor/store', {
-          controllerId: this.schedulerIds.selected,
-          objectType: this.objectType,
-          configuration: this.mainXml,
-          configurationJson: JSON.stringify({nodesCount: this.counting, node: tempNode || this.nodes}),
+        this.coreService.post('notification/store', {
+          configuration: this.mainXml
         }).subscribe({
           next: () => {
             this.prevXML = this.mainXml;
@@ -5691,7 +5813,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           controllerId: this.schedulerIds.selected,
           objectType: this.objectType,
           configuration: this.mainXml,
-          configurationJson: JSON.stringify({nodesCount: this.counting, node: tempNode || this.nodes}),
+          configurationJson: JSON.stringify({ nodesCount: this.counting, node: tempNode || this.nodes }),
           id: this.activeTab.id > 0 ? this.activeTab.id : 0,
           name: this.activeTab.name,
           schemaIdentifier: this.schemaIdentifier || ((tab && tab.schemaIdentifier) ? tab.schemaIdentifier : this.path),
