@@ -1157,7 +1157,10 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         packageLocation: source.target.packageLocation,
         execPre: source.target.execPre,
         execPost: source.target.execPost,
-        makeService: source.target.makeService
+        makeService: source.target.makeService,
+        forceSudo: source.target.forceSudo,
+        serviceName: source.target.serviceName,
+        serviceDir: source.target.serviceDir,
       };
     }
     if (source.target.connection && !isEmpty(source.target.connection)) {
@@ -1205,17 +1208,15 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     }
 
     if (source.installation && !isEmpty(source.installation)) {
-      if (!isSkip && ((type == 'joc' && !source.installation.setupDir) || !source.installation.home || !source.installation.data)) {
+      if (!isSkip && (!source.installation.home || !source.installation.data)) {
         let id;
-        if ((type == 'joc' && !source.installation.setupDir)) {
-          id = 'setupDir';
-        } else if (!source.installation.home) {
+        if (!source.installation.home) {
           id = 'home';
         } else if (!source.installation.data) {
           id = 'data';
         }
         this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + id + index1 + index2, index1, index2, type);
-        this.errorMessages.push((type == 'joc' && !source.installation.setupDir) ? 'Installation setupDir is required' : !source.installation.home ? 'Installation home is required' : 'Installation data is required');
+        this.errorMessages.push(!source.installation.home ? 'Installation home is required' : 'Installation data is required');
       }
       if (!isSkip && !source.installation.httpPort && !source.installation.httpsPort) {
         this.navToField((type == 'controllers' ? 'c' : type == 'agents' ? 'a' : '') + 'httpPort' + index1 + index2, index1, index2, type);
@@ -1598,6 +1599,16 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       }
       if (checkValues.makeService) {
         data.target.makeService = obj.target.makeService;
+      }
+      if (checkValues.forceSudo) {
+        data.target.forceSudo = obj.target.forceSudo;
+      }
+
+      if (checkValues.serviceName) {
+        data.target.serviceName = obj.target.serviceName;
+      }
+      if (checkValues.serviceDir) {
+        data.target.serviceDir = obj.target.serviceDir;
       }
     }
     if (obj.media) {
