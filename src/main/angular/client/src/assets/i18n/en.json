@@ -1869,7 +1869,8 @@
         "board": {
           "expectBoardName": "The name of a Notice Board is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
           "boardNames": "A number of Notice Board names can be specified for which Notices are created.",
-          "expectBoardExpression": "The ExpectNotices Expression can be used to specify a single Notice Board and to specify Boolean logic: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. The Notice Board names are quoted and the && (and) operator and || (or) operator can be used optinally including bracketing"
+          "expectBoardExpression": "The ExpectNotices Expression can be used to specify a single Notice Board and to specify Boolean logic: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. The Notice Board names are quoted and the && (and) operator and || (or) operator can be used optinally including bracketing",
+          "consumeBoardExpression": "The ConsumeNotices Expression can be used to specify a single Notice Board and to specify Boolean logic: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. The Notice Board names are quoted and the && (and) operator and || (or) operator can be used optinally including bracketing"
         },
         "fail": {
           "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
@@ -3142,6 +3143,7 @@
     "label.boardNames": "Notice Board Names",
     "label.expectBoardName": "Notice Board Name",
     "label.expectBoardExpression": "ExpectNotices Expression",
+    "label.consumeBoardExpression": "ConsumeNotices Expression",
     "label.showNoticeBoardNames": "Hit Ctrl+Space to look up Notice Boards",
     "label.children": "List Variable",
     "label.childToId": "Element of list variable for branch ID",
@@ -3257,7 +3259,7 @@
     "message.nestedForkListInstruction": "ForkList Instruction cannot be nested",
     "message.invalidPostNoticeInstruction": "PostNotices Instruction is not valid",
     "message.invalidExpectNoticeInstruction": "ExpectNotices Instruction is not valid",
-    "message.invalidConsumeNoticeInstruction": "ConsumeNotices Instruction cannot be empty",
+    "message.invalidConsumeNoticeInstruction": "ConsumeNotices Instruction is not valid",
     "message.invalidOptionsInstruction": "Options Instruction cannot be empty",
     "message.agentIsMissing": "Agent is missing, but is required",
     "message.orderNameIsMissing": "Order Name is missing, but is required",

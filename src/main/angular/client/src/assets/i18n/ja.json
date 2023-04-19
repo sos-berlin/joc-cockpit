@@ -1869,7 +1869,8 @@
         "board": {
           "expectBoardName": "通知ボード名",
           "boardNames": "通知ボード登録",
-          "expectBoardExpression": "ExpectNotice条件式"
+          "expectBoardExpression": "ExpectNotice条件式",
+          "consumeBoardExpression": "ConsumeNotice条件式"
         },
         "finish": {
           "message": "オーダーに添付され、オーダー履歴に表示される「メッセージ」を指定することができます",
@@ -3142,6 +3143,7 @@
     "label.boardNames": "通知ボード名",
     "label.expectBoardName": "通知ボード名",
     "label.expectBoardExpression": "ExpectNotice条件式",
+    "label.consumeBoardExpression": "ConsumeNotice条件式",
     "label.showNoticeBoardNames": "Hit Ctrl+Space to lookup Notice Boards",
     "label.children": "オーダー変数",
     "label.childToId": "オーダーId",
@@ -3256,7 +3258,7 @@
     "message.invalidForkListInstruction": "ForkList命令が必要です",
     "message.invalidPostNoticeInstruction": "PostNotice命令が無効です",
     "message.invalidExpectNoticeInstruction": "ExpectNoticeが無効です",
-    "message.invalidConsumeNoticeInstruction": "ConsumeNotices命令は空にできません",
+    "message.invalidConsumeNoticeInstruction": "ConsumeNoticeが無効です",
     "message.invalidOptionsInstruction": "Options命令は空にできません",
     "message.agentIsMissing": "エージェント名が必要です",
     "message.orderNameIsMissing": "オーダー名が必要です",

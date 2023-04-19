@@ -1094,23 +1094,59 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   //delete config
   deleteConf(tab = null): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmationModalComponent,
-      nzComponentParams: {
-        delete: true,
-        objectType: this.objectType,
-        activeTab: (this.objectType !== 'NOTIFICATION') ? tab : undefined
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.del(tab);
-      }
-    });
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Notification',
+        operation: 'Delete',
+        name: ''
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          let obj = {
+            auditLog: {
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+            }
+          };
+
+          this.deleteNotification(obj);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmationModalComponent,
+        nzComponentParams: {
+          delete: true,
+          objectType: this.objectType,
+          activeTab: (this.objectType !== 'NOTIFICATION') ? tab : undefined
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          if (this.objectType === 'NOTIFICATION') {
+            this.deleteNotification({});
+          } else {
+            this.del(tab);
+          }
+        }
+      });
+    }
   }
 
   removeConf(): void {
@@ -1166,7 +1202,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
             this.deleteNotification(obj);
           } else {
-            this.del(null, true);
+            this.del(null);
           }
         }
       });
@@ -1308,7 +1344,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (res.configuration.env && !res.configuration.env[obj.env]) {
       res.configuration.env[obj.env] = '$' + obj.variable;
     }
-    res.configuration.title = 'Job Resource for File Transfer: '+ this.activeTab.name;
+    res.configuration.title = 'Job Resource for File Transfer: ' + this.activeTab.name;
     const request = {
       configuration: res.configuration,
       valid: true,
@@ -1318,7 +1354,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     };
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        request.auditLog = {comment: translatedValue};
+        request.auditLog = { comment: translatedValue };
       });
     }
     this.coreService.post('inventory/store', request).subscribe(() => {
@@ -1596,10 +1632,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   readXML(): void {
     this.selectedXsd = this.selectedXsd.toUpperCase();
     let obj = {
-      controllerId: this.schedulerIds.selected,
       objectType: this.objectType
     };
-    this.coreService.post('xmleditor/read', obj).subscribe({
+    this.coreService.post('notification', obj).subscribe({
       next: (res: any) => {
         this.isChange = false;
         if (res.validation && res.validation.validated) {
@@ -4915,41 +4950,73 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   // open new Confirmation model
   newFile(): void {
-    if (this.submitXsd && this.objectType === 'NOTIFICATION') {
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: ConfirmationModalComponent,
-        nzComponentParams: {
-          save: this.save2,
-          assignXsd: this.newXsdAssign,
-          self: this
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(() => {
-        this.copyItem = undefined;
-        this.nodes = [];
-        this.selectedNode = {};
-        this.newConf();
-      });
-    } else if (!this.submitXsd && this.objectType === 'NOTIFICATION') {
-      this.copyItem = undefined;
+    if (this.objectType === 'NOTIFICATION') {
+      if (this.preferences.auditLog) {
+        let comments = {
+          radio: 'predefined',
+          type: 'Notification',
+          operation: 'Create',
+          name: ''
+        };
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: CommentModalComponent,
+          nzComponentParams: {
+            comments,
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+    
+            this.copyItem = undefined;
+            this.nodes = [];
+            this.selectedNode = {};
+            this.newConf({
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+            });
+          }
+        });
+      } else {
+        if (this.submitXsd) {
+          const modal = this.modal.create({
+            nzTitle: undefined,
+            nzContent: ConfirmationModalComponent,
+            nzComponentParams: {
+              save: this.save2,
+              assignXsd: this.newXsdAssign,
+              self: this
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+          modal.afterClose.subscribe((result) => {
+            if (result) {
+              this.copyItem = undefined;
+              this.nodes = [];
+              this.selectedNode = {};
+              this.newConf();
+            }
+          });
+        } else {
+          this.copyItem = undefined;
+          this.nodes = [];
+          this.selectedNode = {};
+          this.newConf();
+        }
+      }
+    } else {
+      this.storeXML(this.activeTab, true);
       this.nodes = [];
       this.selectedNode = {};
-      this.newConf();
-    } else {
-      if (this.objectType !== 'NOTIFICATION') {
-        this.storeXML(this.activeTab, true);
-        this.nodes = [];
-        this.selectedNode = {};
-        this.selectedXsd = undefined;
-        this.copyItem = undefined;
-        this.createNewTab();
-      } else {
-        this.newConf();
-      }
+      this.selectedXsd = undefined;
+      this.copyItem = undefined;
+      this.createNewTab();
     }
   }
 
@@ -5075,7 +5142,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     $('[data-toggle="tooltip"]').tooltip({
       trigger: 'hover focus manual',
       html: true,
-      delay: {show: 500, hide: 200}
+      delay: { show: 500, hide: 200 }
     });
     const a = '#' + id;
     $(a).tooltip('show');
@@ -5174,7 +5241,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       name = 'Notification.xml';
     }
     const fileType = 'application/xml';
-    const blob = new Blob([xml], {type: fileType});
+    const blob = new Blob([xml], { type: fileType });
     saveAs(blob, name);
   }
 
@@ -5588,8 +5655,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private del(tab, isRelease = false) {
-    if (tab.id < 0) {
+  private del(tab) {
+    if (tab?.id < 0) {
       this.tabsArray = this.tabsArray.filter(x => {
         return x.id !== tab.id;
       });
@@ -5603,7 +5670,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     let obj: any = {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
-      id: tab.id
+      id: tab?.id
     };
 
     this.coreService.post('xmleditor/remove', obj).subscribe({
@@ -5768,7 +5835,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private storeXML(tab = null, isClone = false): void {
+  private storeXML(tab = null, isClone = false, auditLog?): void {
     if (!this.permission || !this.permission.joc ||
       (!this.permission.joc.fileTransfer.manage && this.objectType === 'YADE') ||
       (!this.permission.joc.notification.manage && this.objectType === 'NOTIFICATION') ||
@@ -5795,9 +5862,16 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.removeDocs();
       this.isStore = true;
       if (this.objectType === 'NOTIFICATION') {
-        this.coreService.post('notification/store', {
-          configuration: this.mainXml
-        }).subscribe({
+        let request = {
+          configuration: this.mainXml,
+          auditLog
+        };
+        if (!auditLog && sessionStorage.$SOS$FORCELOGING === 'true') {
+          this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+            request.auditLog = {comment: translatedValue};
+          });
+        }
+        this.coreService.post('notification/store', request).subscribe({
           next: () => {
             this.prevXML = this.mainXml;
             this.isStore = false;
@@ -5848,7 +5922,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   private getNodeRulesData(node): void {
     if (!node.recreateJson) {
-      let nod = {ref: node.parent};
+      let nod = { ref: node.parent };
       let a = this.checkChildNode(nod, undefined);
       if (a && a.length > 0) {
         for (let i = 0; i < a.length; i++) {
@@ -6027,15 +6101,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  private newConf(): void {
+  private newConf(auditLog?): void {
     const obj: any = {
-      controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
     };
     if (this.mainXml) {
       obj.configuration = this.mainXml;
     }
-    this.coreService.post('xmleditor/read', obj).subscribe({
+    if (this.objectType !== 'NOTIFICATION') {
+      obj.controllerId = this.schedulerIds.selected;
+    }
+    this.coreService.post(this.objectType === 'NOTIFICATION' ? 'notification' : 'xmleditor/read', obj).subscribe({
       next: (res: any) => {
         if (res.validation && res.validation.validated) {
           this.validConfig = true;
@@ -6057,7 +6133,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             modified: res.modified
           };
           this.prevXML = '';
-          this.storeXML();
+          this.storeXML(null, false, auditLog);
         }
       }, error: (err) => {
         this.submitXsd = false;
@@ -6119,7 +6195,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   private showErrorToast(msg: string, title: string): void {
     this.toasterService.error(msg, title).onTap
-    .pipe(take(1))
-    .subscribe(() => this.gotoErrorLocation());
+      .pipe(take(1))
+      .subscribe(() => this.gotoErrorLocation());
   }
 }

@@ -1869,7 +1869,8 @@
         "board": {
           "expectBoardName": "Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
           "boardNames": "Mehrere Notizbretter können ausgewählt werden, für die Notizen erzeugt werden.",
-          "expectBoardExpression": "Der ExpectNotices-Ausdruck kann zur Angabe eines einzelnen Notizbretts und zur Angabe einer Booleschen Logik verwendet werden: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. Die Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren && (und) und || (oder) können wahlweise einschließlich Klammern verwendet werden."
+          "expectBoardExpression": "Der ExpectNotices-Ausdruck kann zur Angabe eines einzelnen Notizbretts und zur Angabe einer Booleschen Logik verwendet werden: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. Die Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren && (und) und || (oder) können wahlweise einschließlich Klammern verwendet werden.",
+          "consumeBoardExpression": "Der ConsumeNotices-Ausdruck kann zur Angabe eines einzelnen Notizbretts und zur Angabe einer Booleschen Logik verwendet werden: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. Die Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren && (und) und || (oder) können wahlweise einschließlich Klammern verwendet werden."
         },
         "finish": {
           "message": "Mit dieser Anweisung kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
@@ -3142,6 +3143,7 @@
     "label.boardNames": "Namen der Notzbretter",
     "label.expectBoardName": "Name Notizbrett",
     "label.expectBoardExpression": "ExpectNotices Ausdruck",
+    "label.consumeBoardExpression": "ConsumeNotices Ausdruck",
     "label.showNoticeBoardNames": "Ctrl+Leertaste drückenn um Notizbretter nachzuschlagen",
     "label.children": "Listenvariable",
     "label.childToId": "Element der Listenvariable für Kennung des Zweigs",
@@ -3255,7 +3257,7 @@
     "message.invalidLockInstruction": "Resource-Lock-Anweisung darf nicht leer sein",
     "message.invalidPostNoticeInstruction": "PostNotices-Anweisung ist nicht gültig",
     "message.invalidExpectNoticeInstruction": "ExpectNotices-Anweisung ist nicht gültig",
-    "message.invalidConsumeNoticeInstruction": "ConsumeNotices-Anweisung darf nicht leer sein",
+    "message.invalidConsumeNoticeInstruction": "ConsumeNotices-Anweisung ist nicht gültig",
     "message.invalidOptionsInstruction": "Options-Anweisung darf nicht leer sein",
     "message.agentIsMissing": "Agent ist erforderlich",
     "message.orderNameIsMissing": "Auftragsname darf nicht leer sein",
