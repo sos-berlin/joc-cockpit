@@ -934,8 +934,8 @@
         "trustStorePassword": "Truststore Password",
         "templates": "Templates",
         "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceDir": "Service Directory",
+        "forceSudo": "Force sudo"
       },
       "button": {
         "addAgent": "Add Agent",
@@ -972,9 +972,9 @@
         "keyAlias": "Enter Key Alias",
         "trustStore": "Enter Truststore",
         "trustStorePassword": "Enter Truststore Password",
-        "templates": "Enter Templates",
-        "serviceName": "Enter Service Name",
-        "serviceDir": "Enter Service Dir"
+        "templates": "Enter path to Templates",
+        "serviceName": "Enter systemd Service Name",
+        "serviceDir": "Enter systemd Service Directory"
       },
       "tooltip": {
         "agentId": "The Agent ID is unique and identifies the Agent. The identifier cannot be changed during the lifetime of an Agent.",
@@ -1006,9 +1006,9 @@
         "trustStore": "The Truststore contains the public certificate of the Certificate Authority that signed the Agent's certificate.",
         "trustStorePassword": "The Truststore is protected by a password",
         "templates": "The path to a directory containing template files for configuring the Agent, e.g. 'agent.conf'. The directory may have a sub-directory 'private' with further configuration files.",
-        "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceName": "The name of the systemd Service.",
+        "serviceDir": "Specifies the path to the systemd Service Directory, default: /usr/lib/systemd/system, for example /etc/systemd/system.",
+        "forceSudo": "Force use of sudo for any operation on directories and files."
       }
     },
     "controller": {
@@ -1044,8 +1044,8 @@
         "controllerCert": "Controller Certificate",
         "templates": "Templates",
         "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceDir": "Service Directory",
+        "forceSudo": "Force sudo"
       },
       "button": {
         "addController": "Add Controller Instance",
@@ -1083,9 +1083,9 @@
         "trustStore": "Enter Truststore",
         "trustStorePassword": "Enter Truststore Password",
         "controllerCert": "Enter Controller Certificate",
-        "templates": "Enter Templates",
-        "serviceName": "Enter Service Name",
-        "serviceDir": "Enter Service Dir"
+        "templates": "Enter path to Templates directory",
+        "serviceName": "Enter Name of systemd Service",
+        "serviceDir": "Enter path to systemd Service Directory"
       },
       "tooltip": {
         "host": "The Host on which the Controller is installed.",
@@ -1118,9 +1118,9 @@
         "trustStorePassword": "The Truststore is protected by a password",
         "controllerCert": "The path to the Controller's Certificate file (*.pem, *.crt).",
         "templates": "The path to a directory containing template files for configuring the Controller, e.g. 'controller.conf'. The directory may have a sub-directory 'private' with further configuration files.",
-        "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceName": "The name of the systemd Service.",
+        "serviceDir": "Specifies the path to the systemd Service Directory, default: /usr/lib/systemd/system, for example /etc/systemd/system.",
+        "forceSudo": "Force use of sudo for any operation on directories and files."
       }
     },
     "joc": {
@@ -1169,8 +1169,8 @@
         "httpsIni": "Jetty HTTPS Configuration (https.ini)",
         "sslIni": "Jetty SSL Configuration (ssl.ini)",
         "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceDir": "Service Directory",
+        "forceSudo": "Force sudo"
       },
       "button": {
         "addJOC": "Add JOC Cockpit",
@@ -1219,8 +1219,8 @@
         "httpIni": "Enter Jetty HTTP Configuration File (http.ini)",
         "httpsIni": "Enter Jetty HTTPS Configuration File (https.ini)",
         "sslIni": "Enter Jetty HTTP Configuration File (ssl.ini)",
-        "serviceName": "Enter Service Name",
-        "serviceDir": "Enter Service Dir"
+        "serviceName": "Enter systemd Service Name",
+        "serviceDir": "Enter path to systemd Service Directory"
       },
       "tooltip": {
         "jocInstanceId": "The JOC Cockpit Instance ID is a unique number that specifies the instance in a JOC Cockpit cluster.",
@@ -1266,9 +1266,9 @@
         "httpIni": "The path to the Jetty HTTP Configuration File (http.ini) can be specified if specific settings for HTTP connections to JOC Cockpit are required.",
         "httpsIni": "Jetty HTTPS Configuration File (https.ini)  can be specified if specific settings for HTTPS connections to JOC Cockpit are required.",
         "sslIni": "Jetty SSL Configuration File (ssl.ini) can be specified if specific settings for HTTPS connections to JOC Cockpit are required.",
-        "serviceName": "Service Name",
-        "serviceDir": "Service Dir",
-        "forceSudo": "Force Sudo"
+        "serviceName": "The name of the systemd Service.",
+        "serviceDir": "Specifies the path to the systemd Service Directory, default: /usr/lib/systemd/system, for example /etc/systemd/system.",
+        "forceSudo": "Force use of sudo for any operation on directories and files."
       }
     }
   },
@@ -1869,7 +1869,8 @@
         "board": {
           "expectBoardName": "The name of a Notice Board is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
           "boardNames": "A number of Notice Board names can be specified for which Notices are created.",
-          "expectBoardExpression": "The ExpectNotices Expression can be used to specify a single Notice Board and to specify Boolean logic: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. The Notice Board names are quoted and the && (and) operator and || (or) operator can be used optinally including bracketing"
+          "expectBoardExpression": "The ExpectNotices Expression can be used to specify a single Notice Board and to specify Boolean logic: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. The Notice Board names are quoted and the && (and) operator and || (or) operator can be used optinally including bracketing",
+          "consumeBoardExpression": "The ConsumeNotices Expression can be used to specify a single Notice Board and to specify Boolean logic: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. The Notice Board names are quoted and the && (and) operator and || (or) operator can be used optinally including bracketing"
         },
         "fail": {
           "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
@@ -3142,7 +3143,8 @@
     "label.boardNames": "Notice Board Names",
     "label.expectBoardName": "Notice Board Name",
     "label.expectBoardExpression": "ExpectNotices Expression",
-    "label.showNoticeBoardNames": "Hit Ctrl+Space to lookup Notice Boards",
+    "label.consumeBoardExpression": "ConsumeNotices Expression",
+    "label.showNoticeBoardNames": "Hit Ctrl+Space to look up Notice Boards",
     "label.children": "List Variable",
     "label.childToId": "Element of list variable for branch ID",
     "label.createForkListVariable": "Create ForkList Variable",
@@ -3257,7 +3259,7 @@
     "message.nestedForkListInstruction": "ForkList Instruction cannot be nested",
     "message.invalidPostNoticeInstruction": "PostNotices Instruction is not valid",
     "message.invalidExpectNoticeInstruction": "ExpectNotices Instruction is not valid",
-    "message.invalidConsumeNoticeInstruction": "ConsumeNotices Instruction cannot be empty",
+    "message.invalidConsumeNoticeInstruction": "ConsumeNotices Instruction is not valid",
     "message.invalidOptionsInstruction": "Options Instruction cannot be empty",
     "message.agentIsMissing": "Agent is missing, but is required",
     "message.orderNameIsMissing": "Order Name is missing, but is required",

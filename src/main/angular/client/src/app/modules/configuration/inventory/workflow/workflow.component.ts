@@ -155,7 +155,10 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
   @Input() data: any;
   @Input() object: any = {};
   noticeBoardName: string;
-  @ViewChild('codeMirror', {static: false}) cm;
+  obj = {
+    data: ''
+  };
+  @ViewChild('codeMirror', { static: false }) cm;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -164,6 +167,17 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
     $('#show-tree-editor').hide();
     setTimeout(() => {
       if (this.cm && this.cm.codeMirror) {
+        setTimeout(() => {
+          let arr = this.data?.split('\n') || [];
+          const doc = this.cm.codeMirror.getDoc();
+          const cursor = doc.getCursor();  // gets the line number in the cursor position 
+          doc.replaceRange(this.data || '', cursor);
+          cursor.line = arr.length > 0 ? arr.length - 1 : 0;
+          cursor.ch = arr.length > 0 ? arr[arr.length - 1]?.length + 1 : 0;
+          this.cm.codeMirror.focus();
+          doc.setCursor(cursor);
+        }, 400);
+
         this.cm.codeMirror.setOption("extraKeys", {
           "Ctrl-Space": function (editor) {
             const cursor = editor.getCursor();
@@ -213,8 +227,7 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
           path: node.key,
           objectTypes: ['NOTICEBOARD']
         };
-        const URL = 'inventory/read/folder';
-        this.coreService.post(URL, obj).subscribe((res: any) => {
+        this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
           let data = res.noticeBoards;
           for (let i = 0; i < data.length; i++) {
             const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
@@ -266,7 +279,7 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
   }
 
   onSubmit(): void {
-    this.activeModal.close(this.data);
+    this.activeModal.close(this.obj.data);
   }
 }
 
@@ -3960,15 +3973,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       $('#show-tree').hide();
       this.selectedNode.obj.noticeBoardName = '';
       const doc = this.cm.codeMirror.getDoc();
-      const cursor = doc.getCursor();
-      if(this.cm.codeMirror.getSelection()) {
+      const cursor = doc.getCursor();  // gets the line number in the cursor position
+      if (this.cm.codeMirror.getSelection()) {
         let text = this.cm.codeMirror.getValue();
         text = text.replace(this.cm.codeMirror.getSelection(), event);
         this.cm.codeMirror.setValue(text);
         cursor.ch = text.length;
       } else {
-        const doc = this.cm.codeMirror.getDoc();
-        const cursor = doc.getCursor(); // gets the line number in the cursor position
         doc.replaceRange("'" + event + "'", cursor);
         cursor.ch = cursor.ch + (event.length + 2);
       }
@@ -4018,8 +4029,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
           const top = (_top + $('#rightPanel').position().top);
           const ht = 'calc(100vh - ' + (top + 22) + 'px)';
-          dom.css({height: ht, 'scroll-top': '0'});
-          $('#graph').slimscroll({height: ht, scrollTo: '0'});
+          dom.css({ height: ht, 'scroll-top': '0' });
+          $('#graph').slimscroll({ height: ht, scrollTo: '0' });
         }
       }, 10);
     }
@@ -8814,6 +8825,19 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       $('#show-tree').hide();
       setTimeout(() => {
         if (self.cm && self.cm.codeMirror) {
+          setTimeout(() => {
+            if (self.selectedNode && self.selectedNode.obj) {
+              let arr = self.selectedNode.obj.noticeBoardNames?.split('\n') || [];
+              const doc = self.cm.codeMirror.getDoc();
+              const cursor = doc.getCursor();  // gets the line number in the cursor position 
+              doc.replaceRange('', cursor);
+              cursor.line = arr.length > 0 ? arr.length - 1 : 0;
+              cursor.ch = arr.length > 0 ? arr[arr.length - 1]?.length + 1 : 0;
+              self.cm.codeMirror.focus();
+              doc.setCursor(cursor);
+            }
+          }, 100);
+
           self.cm.codeMirror.setOption("extraKeys", {
             "Ctrl-Space": function (editor) {
               // Save contents

@@ -39,7 +39,7 @@
              [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}">
           <ngx-codemirror [autoFocus]="true" #codeMirror name="expectBoardExpression"
                           title="{{'workflow.placeholder.expression' | translate}}" required
-                          #expectBoardExpression="ngModel" [(ngModel)]="data"
+                          #expectBoardExpression="ngModel" [(ngModel)]="obj.data"
                           [options]="{lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
                                   mode: 'shell'}"
           ></ngx-codemirror>
