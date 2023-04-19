@@ -215,13 +215,6 @@
                               <i *ngIf="controller.sortBy == 'disabled' && controller.reverse"
                                  class="fa fa-caret-down "></i></a>
                           </th>
-                          <th nzWidth="140px" (click)="sort(controller, 'clusterWatcher')">
-                            <a><span class="p-r-xs" translate>agent.label.clusterWatcher</span>
-                              <i *ngIf="controller.sortBy == 'clusterWatcher' && !controller.reverse"
-                                 class="fa fa-caret-up "></i>
-                              <i *ngIf="controller.sortBy == 'clusterWatcher' && controller.reverse"
-                                 class="fa fa-caret-down "></i></a>
-                          </th>
                           <th nzWidth="150px" (click)="sort(controller, 'validityDate')">
                             <a><span class="p-r-xs" translate>agent.label.validityDate</span>
                               <i *ngIf="controller.sortBy == 'validityDate' && !controller.reverse"
@@ -323,8 +316,6 @@
                             (click)="editAgent(agent, controller)">{{(agent.hidden ? 'common.label.yes' : 'common.label.no') | translate}}</td>
                           <td
                             (click)="editAgent(agent, controller)">{{(agent.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</td>
-                          <td
-                            (click)="editAgent(agent, controller)">{{(agent.isClusterWatcher ? 'common.label.yes' : 'common.label.no') | translate}}</td>
                           <td>
                             <span *ngIf="!agent.token">-</span>
                             <span *ngIf="agent.token">{{agent.token.validUntil | stringToDate}}</span>
@@ -404,13 +395,7 @@
                               <i *ngIf="controller.sortBy2 == 'version' && controller.reverse2"
                                  class="fa fa-caret-down "></i></a>
                           </th>
-                          <th nzWidth="140px" (click)="sort(controller, 'clusterWatcher', true)">
-                            <a><span class="p-r-xs" translate>agent.label.clusterWatcher</span>
-                              <i *ngIf="controller.sortBy2 == 'clusterWatcher' && !controller.reverse2"
-                                 class="fa fa-caret-up "></i>
-                              <i *ngIf="controller.sortBy2 == 'clusterWatcher' && controller.reverse2"
-                                 class="fa fa-caret-down "></i></a>
-                          </th>
+                    
                           <th nzWidth="150px" (click)="sort(controller, 'validityDate', true)">
                             <a><span class="p-r-xs" translate>agent.label.validityDate</span>
                               <i *ngIf="controller.sortBy2 == 'validityDate' && !controller.reverse2"
@@ -523,8 +508,7 @@
                                  [ngClass]="clusterAgent.compatibility === 'COMPATIBLE' ? 'text-success' : clusterAgent.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'"></i>&nbsp;
                               <span [innerHtml]="clusterAgent.version"></span>
                             </td>
-                            <td
-                              (click)="editAgent(clusterAgent, controller, true)">{{(clusterAgent.isClusterWatcher ? 'common.label.yes' : 'common.label.no') | translate}}</td>
+            
                             <td>
                               <span *ngIf="!clusterAgent.token">-</span>
                               <span *ngIf="clusterAgent.token">{{clusterAgent.token.validUntil | stringToDate}}</span>

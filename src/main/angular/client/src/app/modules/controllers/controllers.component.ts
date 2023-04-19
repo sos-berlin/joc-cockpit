@@ -641,8 +641,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
           nzComponentParams: {
             isModal: true,
             controllerInfo: res.controllers,
-            agents: res.agents,
-            clusterAgents: res.clusterAgents,
             modalRef: true
           },
           nzFooter: null,

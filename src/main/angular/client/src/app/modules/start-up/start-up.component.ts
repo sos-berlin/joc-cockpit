@@ -17,8 +17,6 @@ export class StartUpModalComponent implements OnInit {
   @Input() new: boolean;
   @Input() modalRef: boolean;
   @Input() controllerInfo: any;
-  @Input() agents: any;
-  @Input() clusterAgents: any;
   @Output() afterSubmit: EventEmitter<any> = new EventEmitter();
   submitted = false;
   controller: any = {};
@@ -28,13 +26,12 @@ export class StartUpModalComponent implements OnInit {
   required = false;
   display: any;
   comments: any = {};
-  agent: any = {};
   schedulerIds: any = {};
   error: any;
   controllerId = '';
   hasLicense = false;
 
-  constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private dataService: DataService,
+  constructor(public coreService: CoreService, private router: Router, private dataService: DataService,
               public translate: TranslateService, private toasterService: ToastrService) {
   }
 
@@ -43,7 +40,6 @@ export class StartUpModalComponent implements OnInit {
       this.required = true;
       this.display = true;
     }
-    this.agent.asStandaloneAgent =  false;
     this.hasLicense = sessionStorage.hasLicense == 'true';
     this.controller = {
       url: '',
@@ -54,30 +50,6 @@ export class StartUpModalComponent implements OnInit {
       backupTitle: 'SECONDARY CONTROLLER',
     };
 
-    let isFound = false;
-    if (this.agents && this.agents.length > 0) {
-      for (let i = 0; i < this.agents.length; i++) {
-        if (this.agents[i].isClusterWatcher) {
-          this.agent = this.agents[i];
-          isFound = true;
-          break;
-        }
-      }
-    }
-    if(!isFound){
-      if(!this.new){
-        this.controller.clusterAs = 'JOC';
-      }
-      if (this.clusterAgents && this.clusterAgents.length > 0) {
-        for (let i = 0; i < this.clusterAgents.length; i++) {
-          if (this.clusterAgents[i].isClusterWatcher) {
-            this.agent = this.clusterAgents[i];
-            isFound = true;
-            break;
-          }
-        }
-      }
-    }
 
     if (this.controllerInfo) {
       const len = this.controllerInfo.length;
@@ -140,18 +112,6 @@ export class StartUpModalComponent implements OnInit {
         _obj.clusterUrl = this.controller.backupClusterUrl;
         _obj.title = this.controller.backupTitle;
         obj.controllers.push(_obj);
-      }
-      if (this.agent && this.agent.agentId) {
-        obj.clusterWatcher = this.agent;
-      }
-      if (this.agent && this.agent.asStandaloneAgent) {
-        obj.clusterWatcher.asStandaloneAgent= this.agent.asStandaloneAgent;
-      } else if (this.agent && this.agent.primaryDirectorId) {
-        obj.clusterWatcher.primaryDirectorId = this.agent.primaryDirectorId;
-      }
-
-      if(obj.clusterWatcher && this.controller.clusterAs == 'JOC'){
-        obj.clusterWatcher = undefined;
       }
     }
     if (this.display) {
