@@ -89,7 +89,7 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="isCluster && new">
-      <div class="col-sm-12 m-t" translate>PRIMARY_DIRECTOR</div>
+      <div class="col-sm-12 m-t-xs" translate>PRIMARY_DIRECTOR</div>
     </div>
     <div class="p-a b-a" *ngIf="isCluster && new">
       <div class="form-group row">
@@ -138,7 +138,43 @@
         </div>
       </div>
     </div>
-
+   <div class="form-group row" *ngIf="isCluster && new">
+      <div class="col-sm-12 m-t-12" translate>SECONDARY_DIRECTOR</div>
+    </div>
+    <div class="p-a b-a" *ngIf="isCluster && new">
+      <div class="form-group row">
+        <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.cluster.tooltip.subagentId' | translate" translate>agent.label.subagentId</label>        <div class=" col-sm-8" [ngClass]="{'has-error' : ((subagentId2.dirty || subagentId2.touched) && subagentId2.invalid)}">
+          <input identifierValidation type="text" class="form-control" name="subagentId2" #subagentId2="ngModel"
+                 [(ngModel)]="agent.subagentId2" placeholder="{{'agent.placeholder.enterSubagentId' | translate}}">
+          <div *ngIf="subagentId2.invalid && (subagentId2.dirty || subagentId2.touched)"
+               class="text-danger help-block">
+            <div *ngIf="subagentId2.errors.invalidIdentifier" translate>common.message.invalid</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.title' | translate" translate>common.label.title</label>
+        <div class=" col-sm-8">
+          <input type="text" class="form-control" [(ngModel)]="agent.subtitle2"
+                 [maxLength]="255" name="subtitle2" placeholder="{{'common.placeholder.title' | translate}}">
+        </div>
+      </div>
+      <div class="row">
+        <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.url' | translate" translate>agent.label.url
+          <sup *ngIf="agent.subagentId2 && agent.subagentId2.length > 0" class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-8" [ngClass]="{'has-error' : ((url2.dirty || url2.touched) && url2.invalid)}">
+          <input type="text" class="form-control" name="url2" #url2="ngModel"
+                 [required]="(agent.subagentId2 && agent.subagentId2.length > 0) ? true : false" [(ngModel)]="agent.url2" placeholder="http://host:port">
+          <div *ngIf="url2.invalid && (url2.dirty || url2.touched)"
+               class="text-danger help-block">
+            <div *ngIf="(url2.errors && url2.errors.required)">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="row" *ngIf="!new && !isCluster">
       <label class="col-sm-3" [nz-tooltip]="'agent.tooltip.hidden' | translate" translate>agent.label.hidden</label>
       <div class="col-sm-6">
