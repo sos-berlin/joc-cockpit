@@ -565,7 +565,7 @@ export class ShowModalComponent implements AfterViewInit {
   @ViewChild('codeMirror', {static: true}) cm;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private message: NzMessageService,
-              private toasterService: ToastrService, private clipboardService: ClipboardService) {
+    private toasterService: ToastrService, private clipboardService: ClipboardService, private translate: TranslateService,) {
   }
 
   ngAfterViewInit(): void {
@@ -625,21 +625,28 @@ export class ShowModalComponent implements AfterViewInit {
   submitXML(): void {
     let data = this.obj.xml;
     let obj: any = {
-      controllerId: this.schedulerId,
-      objectType: this.objectType,
       configuration: data
     };
     if (this.objectType !== 'NOTIFICATION') {
+      obj.controllerId = this.schedulerId;
+      obj.objectType = this.objectType;
       obj.id = this.activeTab.id;
       obj.schemaIdentifier = this.schemaIdentifier;
       obj.name = this.activeTab.name;
+
+    } else {
+      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+        this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+          obj.auditLog = { comment: translatedValue };
+        });
+      }
     }
-    this.coreService.post('xmleditor/apply', obj).subscribe((res: any) => {
+    this.coreService.post(this.objectType !== 'NOTIFICATION' ? 'xmleditor/apply' : 'notification/store', obj).subscribe((res: any) => {
       if (res.validationError) {
         this.highlightLineNo(res.validationError.line);
         this.toasterService.error(res.ValidationError.message, '');
       } else {
-        this.activeModal.close({result: res});
+        this.activeModal.close(res);
       }
     });
   }
@@ -5170,39 +5177,54 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       nzMaskClosable: false
     });
     modal.afterClose.subscribe(res => {
-      if (res && res.result.configurationJson) {
-        let a = [];
-        let arr = JSON.parse(res.result.configurationJson);
-        a.push(arr);
-        this.counting = arr.lastUuid;
-        this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
-        this.nodes = a;
-        this.submitXsd = true;
-        this.extraInfo = {
-          released: res.result.released,
-          state: res.result.state,
-          hasReleases: res.result.hasReleases,
-          configurationDate: res.result.configurationDate,
-          modified: res.result.configuration ? res.result.configuration.modified : ''
+      if (res && res.configurationJson) {
+        this.updateXML(res);
+      } else if (this.objectType === 'NOTIFICATION') {
+        let obj = {
+          objectType: this.objectType
         };
-        this.prevXML = '';
-        this.getIndividualData(this.nodes[0], undefined);
-        this.getData(this.nodes[0]);
-        if (this.nodes.length > 0 && this.nodes[0].children && this.nodes[0].children.length > 0) {
-          for (const i in this.nodes[0].children) {
-            if (this.nodes[0].children[i].ref === 'JobResource') {
-              for (const j in this.nodes[0].children[i].attributes) {
-                if (this.nodes[0].children[i].attributes[j].name === 'name') {
-                  this.getJobResourceTree(this.nodes[0].children[i].attributes[j]);
-                  break;
-                }
+        this.coreService.post('notification', obj).subscribe({
+          next: (res: any) => {
+            this.updateXML(res);
+          }
+        });
+      }
+    });
+  }
+
+  private updateXML(res) {
+    if (res && res.configurationJson) {
+      let a = [];
+      let arr = JSON.parse(res.result.configurationJson);
+      a.push(arr);
+      this.counting = arr.lastUuid;
+      this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
+      this.nodes = a;
+      this.submitXsd = true;
+      this.extraInfo = {
+        released: res.result.released,
+        state: res.result.state,
+        hasReleases: res.result.hasReleases,
+        configurationDate: res.result.configurationDate,
+        modified: res.result.configuration ? res.result.configuration.modified : ''
+      };
+      this.prevXML = '';
+      this.getIndividualData(this.nodes[0], undefined);
+      this.getData(this.nodes[0]);
+      if (this.nodes.length > 0 && this.nodes[0].children && this.nodes[0].children.length > 0) {
+        for (const i in this.nodes[0].children) {
+          if (this.nodes[0].children[i].ref === 'JobResource') {
+            for (const j in this.nodes[0].children[i].attributes) {
+              if (this.nodes[0].children[i].attributes[j].name === 'name') {
+                this.getJobResourceTree(this.nodes[0].children[i].attributes[j]);
+                break;
               }
-              break;
             }
+            break;
           }
         }
       }
-    });
+    }
   }
 
   createChildJson(node, childrenNode, curentNode, doc) {

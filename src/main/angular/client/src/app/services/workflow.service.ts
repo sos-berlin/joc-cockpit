@@ -1840,14 +1840,14 @@ export class WorkflowService {
           }
         }
         return str;
-      } else if (cell.value.tagName === 'Workflow') {
+      } else if (cell.value?.tagName === 'Workflow') {
         const cls = cell.getAttribute('type') === 'expect' ? 'm-t-n-6' : cell.getAttribute('type') === 'post' ? 'm-t-sm' : '';
         return '<div class="cursor text-dark ' + cls + '"><i class="icon-workflows-icon p-r-xs"></i>'
           + truncate(cell.getAttribute('workflowName'), cls ? 16 : 20) + '</div>';
-      } else if (cell.value.tagName === 'Board') {
+      } else if (cell.value?.tagName === 'Board') {
         return '<div class="cursor text-dark"><i class="fa fa-thumb-tack p-r-xs"></i>'
           + truncate(cell.getAttribute('displayLabel'), 18) + '</div>';
-      } else if (cell.value.tagName === 'Order') {
+      } else if (cell.value?.tagName === 'Order') {
         let data = cell.getAttribute('order');
         data = JSON.parse(data);
         let className = 'hide';
@@ -1885,22 +1885,22 @@ export class WorkflowService {
         }
         str = str + '</div>';
         return str;
-      } else if (cell.value.tagName === 'Count') {
+      } else if (cell.value?.tagName === 'Count') {
         const count = cell.getAttribute('count');
         return '<i class="text-white text-xs cursor">' + count + '</i>';
       } else {
         let x = cell.getAttribute('displayLabel');
-        if (cell.value.tagName === 'Connection') {
+        if (cell.value?.tagName === 'Connection') {
           if (x === 'then' || x === 'else') {
             this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
               str = translatedValue.toLowerCase();
             });
-          } else if ((cell.source.value.tagName === 'Job' && cell.source.getAttribute('label'))) {
+          } else if ((cell.source?.value?.tagName === 'Job' && cell.source?.getAttribute('label'))) {
             str = cell.source.getAttribute('label');
-          } else if (cell.source.value.tagName === 'Fork') {
+          } else if (cell.source?.value?.tagName === 'Fork') {
             str = x;
           }
-          if (((cell.source.value.tagName === 'AddOrder'))) {
+          if (((cell.source?.value?.tagName === 'AddOrder'))) {
             str = cell.source.getAttribute('workflowName');
           }
         } else if (x) {

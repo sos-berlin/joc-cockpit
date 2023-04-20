@@ -12,6 +12,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NzTreeNode} from 'ng-zorro-antd/tree';
 import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
@@ -154,8 +155,8 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
   @Input() boardTree: any = [];
   @Input() data: any;
   @Input() object: any = {};
-  noticeBoardName: string;
   obj = {
+    noticeBoardName: '',
     data: ''
   };
   @ViewChild('codeMirror', { static: false }) cm;
@@ -207,6 +208,53 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
     }, 0);
   }
 
+  openFolder(node: NzTreeNode): void {
+    if (node instanceof NzTreeNode) {
+      node.isExpanded = !node.isExpanded;
+      if (node.isExpanded && !node.origin.type) {
+        this.loadData(node, null);
+      }
+    }
+  }
+
+  expandAll(): void {
+    const self = this;
+    function traverseTree(data): void {
+      if (data.children && data.children.length > 0) {
+        data.expanded = true;
+        if (!data.children[0].type) {
+          self.loadNotices(data, data.key);
+        }
+        for (const i in data.children) {
+          if (!data.children[i].type) {
+            traverseTree(data.children[i]);
+          }
+        }
+      } else {
+        data.expanded = true;
+        self.loadNotices(data, data.key);
+      }
+    }
+
+    traverseTree(this.boardTree[0]);
+  }
+
+  collapseAll(): void {
+    function traverseTree(data): void {
+      data.expanded = false;
+      if (data.children && data.children.length > 0) {
+        for (const i in data.children) {
+          if (!data.children[i].type) {
+            traverseTree(data.children[i]);
+          }
+        }
+      }
+    }
+
+    traverseTree(this.boardTree[0]);
+    this.boardTree = [...this.boardTree];
+  }
+
   loadData(node, $event, isExpand = false): void {
     if (!node || !node.origin) {
       return;
@@ -223,39 +271,49 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        let obj: any = {
-          path: node.key,
-          objectTypes: ['NOTICEBOARD']
-        };
-        this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
-          let data = res.noticeBoards;
-          for (let i = 0; i < data.length; i++) {
-            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            data[i].title = data[i].assignReference || data[i].name;
-            data[i].path = _path;
-            data[i].key = data[i].assignReference || data[i].name;
-            data[i].type = 'NOTICEBOARD';
-            data[i].isLeaf = true;
-          }
-
-          if (node.origin.children && node.origin.children.length > 0) {
-            data = data.concat(node.origin.children);
-          }
-          if (node.origin.isLeaf) {
-            node.origin.expanded = true;
-          }
-          node.origin.isLeaf = false;
-          node.origin.children = data;
-          this.boardTree = [...this.boardTree];
-        });
+        this.loadNotices(node.origin, node.key);
       }
+    } else if (this.obj.noticeBoardName) {
+      this.checkExpectNoticeExp(node.origin.name);
+      delete this.obj.noticeBoardName;
     }
+  }
+
+  private loadNotices(origin, key): void {
+    origin.loading = true;
+    this.coreService.post('inventory/read/folder', {
+      path: key,
+      objectTypes: ['NOTICEBOARD']
+    }).subscribe({
+      next: (res: any) => {
+        let data = res.noticeBoards;
+        for (let i = 0; i < data.length; i++) {
+          const _path = key + (key === '/' ? '' : '/') + data[i].name;
+          data[i].title = data[i].name;
+          data[i].path = _path;
+          data[i].key = data[i].name;
+          data[i].type = 'NOTICEBOARD';
+          data[i].isLeaf = true;
+        }
+
+        if (origin.children && origin.children.length > 0) {
+          data = data.concat(origin.children);
+        }
+        if (origin.isLeaf) {
+          origin.expanded = true;
+        }
+        origin.loading = false;
+        origin.isLeaf = false;
+        origin.children = data;
+        this.boardTree = [...this.boardTree];
+      }, error: () => origin.loading = false
+    });
   }
 
   checkExpectNoticeExp(event): void {
     if (event) {
       $('#show-tree-editor').hide();
-      this.noticeBoardName = '';
+      this.obj.noticeBoardName = '';
       const doc = this.cm.codeMirror.getDoc();
       const cursor = doc.getCursor();
       if(this.cm.codeMirror.getSelection()) {
@@ -2748,7 +2806,7 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './expression-editor.html'
 })
-export class ExpressionComponent implements OnInit {
+export class ExpressionComponent implements OnInit, AfterViewInit {
   @Input() selectedNode: any;
   @Input() error: any;
   @Input() isTooltipVisible: boolean;
@@ -2758,7 +2816,7 @@ export class ExpressionComponent implements OnInit {
   variablesOperators = ['matches', 'startWith', 'endsWith', 'contains'];
   varExam = 'variable ("aString", default="") matches ".*"';
   lastSelectOperator = '';
-  @ViewChild('codeMirror', {static: false}) cm;
+  @ViewChild('codeMirror', { static: true }) cm;
   cmOption: any = {
     lineNumbers: false,
     scrollbarStyle: 'simple',
@@ -2773,6 +2831,22 @@ export class ExpressionComponent implements OnInit {
   ngOnInit(): void {
     this.expression.type = 'returnCode';
     this.change();
+
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (this.cm && this.cm.codeMirror) {
+        let arr = this.selectedNode.obj.predicate?.split('\n') || [];
+        const doc = this.cm.codeMirror.getDoc();
+        const cursor = doc.getCursor();  // gets the line number in the cursor position 
+        doc.replaceRange('', cursor);
+        cursor.line = arr.length > 0 ? arr.length - 1 : 0;
+        cursor.ch = arr.length > 0 ? arr[arr.length - 1]?.length + 1 : 0;
+        this.cm.codeMirror.focus();
+        doc.setCursor(cursor);
+      }
+    }, 400);
   }
 
   generateExpression(type, operator): void {
@@ -3892,6 +3966,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
+        if (type === InventoryObject.NOTICEBOARD){
+          this.loadNotices(node.origin, node.key);
+          return;
+        }
         let obj: any = {
           path: node.key,
           objectTypes: [type]
@@ -3964,8 +4042,93 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             this.selectedNode.obj.noticeBoardNames.push(node.key);
           }
         }
+      } else if (type == 'NOTICEBOARD') {
+        this.checkExpectNoticeExp(node.origin.name);
+        delete this.selectedNode.obj.noticeBoardName;
       }
     }
+  }
+
+  openFolder(node: NzTreeNode): void {
+    if (node instanceof NzTreeNode) {
+      node.isExpanded = !node.isExpanded;
+      if (node.isExpanded && !node.origin.type) {
+        this.loadData(node, 'NOTICEBOARD', null);
+      }
+    }
+  }
+
+  expandAllNotices(): void {
+    const self = this;
+    function traverseTree(data): void {
+      if (data.children && data.children.length > 0) {
+        data.expanded = true;
+        if (!data.children[0].type) {
+          self.loadNotices(data, data.key);
+        }
+        for (const i in data.children) {
+          if (!data.children[i].type) {
+            traverseTree(data.children[i]);
+          }
+        }
+      } else {
+        data.expanded = true;
+        self.loadNotices(data, data.key);
+      }
+    }
+
+    traverseTree(this.boardTree[0]);
+  }
+
+  collapseAllNotices(): void {
+    function traverseTree(data): void {
+      data.expanded = false;
+      if (data.children && data.children.length > 0) {
+        for (const i in data.children) {
+          if (!data.children[i].type) {
+            traverseTree(data.children[i]);
+          }
+        }
+      }
+    }
+
+    traverseTree(this.boardTree[0]);
+    this.boardTree = [...this.boardTree];
+  }
+
+  private loadNotices(origin, key): void {
+    origin.loading = true;
+    this.coreService.post('inventory/read/folder', {
+      path: key,
+      objectTypes: ['NOTICEBOARD']
+    }).subscribe({
+      next: (res: any) => {
+        let data = res.noticeBoards;
+        for (let i = 0; i < data.length; i++) {
+          const _path = key + (key === '/' ? '' : '/') + data[i].name;
+          data[i].title = data[i].name;
+          data[i].path = _path;
+          data[i].key = data[i].name;
+          data[i].type = 'NOTICEBOARD';
+          data[i].isLeaf = true;
+        }
+
+        if (origin.children && origin.children.length > 0) {
+          data = data.concat(origin.children);
+        }
+        if (origin.isLeaf) {
+          origin.expanded = true;
+        }
+        origin.loading = false;
+        origin.isLeaf = false;
+        origin.children = data;
+        this.boardTree = [...this.boardTree];
+        this.ref.detectChanges();
+      }, error: () => {
+        origin.loading = false;
+        this.ref.detectChanges();
+      }
+    });
   }
 
   checkExpectNoticeExp(event): void {
