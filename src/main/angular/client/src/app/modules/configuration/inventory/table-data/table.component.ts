@@ -137,8 +137,10 @@ export class TableComponent implements OnChanges, OnDestroy {
   }
 
   searchInResult(): void {
-    this.data = this.searchKey ? this.searchPipe.transform(this.dataObj.children, this.searchKey, ['name']) : this.dataObj.children;
-    this.data = [...this.data];
+    if (this.dataObj?.children) {
+      this.data = this.searchKey ? this.searchPipe.transform(this.dataObj.children, this.searchKey, ['name']) : this.dataObj.children;
+      this.data = [...this.data];
+    }
   }
 
   sort(key): void {
