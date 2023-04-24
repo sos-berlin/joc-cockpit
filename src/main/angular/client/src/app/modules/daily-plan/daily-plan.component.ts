@@ -2236,11 +2236,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     obj.dailyPlanDateTo = this.coreService.getStringDate(to);
     this.coreService.post('daily_plan/orders', this.coreService.clone(obj)).subscribe({
       next: (result: any) => {
-        let plannedOrderItems = [];
-        for (let i = 0; i < result.length; i++) {
-          plannedOrderItems = plannedOrderItems.concat(result[i].plannedOrderItems);
-        }
-        this.filterData(plannedOrderItems);
+        this.filterData(result.plannedOrderItems);
         this.isLoaded = true;
       }, error: () => {
         this.resetCheckBox();
