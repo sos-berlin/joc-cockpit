@@ -2812,6 +2812,8 @@
     "label.iamLdapTrustStoreType": "LDAP Truststore Type",
     "label.iamLdapSystemUser": "LDAP System User Account",
     "label.iamLdapSystemPassword": "LDAP System User Password",
+    "label.iamLdapReadTimeout": "LDAP Read Timeout",
+    "label.iamLdapConnectTimeout": "LDAP Connect Timeout",
     "label.iamOidcName": "OIDC Name",
     "label.iamOidcAuthenticationUrl": "OIDC Authentication URL",
     "label.iamOidcClientId": "OIDC Client ID",
@@ -2914,6 +2916,8 @@
     "placeholder.iamLdapTrustStoreType": "LDAP Truststore Type angeben",
     "placeholder.iamLdapSystemUser": "LDAP System User Account angeben",
     "placeholder.iamLdapSystemPassword": "LDAP System User Password angeben",
+    "placeholder.iamLdapReadTimeout": "Enter LDAP Read Timeout",
+    "placeholder.iamLdapConnectTimeout": "Enter LDAP Connect Timeout",
     "placeholder.iamOidcName": "OIDC Name angeben",
     "placeholder.iamOidcAuthenticationUrl": "OIDC Authentication URL angeben",
     "placeholder.iamOidcClientId": "OIDC Client ID angeben",
@@ -2982,7 +2986,9 @@
         "iamLdapTrustStorePassword": "Sofern ein LDAP Truststore verwendet wird, der durch ein Kennwort geschützt ist, wird das Kennwort hier angegeben.",
         "iamLdapTrustStoreType": "Der Typ des LDAP Truststore kann PKCS12 oder JKS (deprecated) sein.",
         "iamLdapSystemUser": "Wird ein LDAP System User Account angegeben, so erfolgt die 'bind' Operation mit diesem Konto. Bleibt die Einstellung leer, dann erfolgt die 'bind' Operation mit Benutzerkonto der Anmeldung.",
-        "iamLdapSystemPassword": "Ein LDAP System User Password wird meist verlangt, wenn ein LDAP System User Account angegeben ist."
+        "iamLdapSystemPassword": "Ein LDAP System User Password wird meist verlangt, wenn ein LDAP System User Account angegeben ist.",
+        "iamLdapReadTimeout": "LDAP Read Timeout",
+        "iamLdapConnectTimeout": "LDAP Connect Timeout"
       },
       "vault": {
         "iamVaultUrl": "Die URL, unter der das Vault Server REST API verfügbar ist.",
@@ -3301,6 +3307,8 @@
     "tooltip.facetEntryMode": "Eingabemodus für Prüfungen",
     "tooltip.editorEntryMode": "Direkter Eingabemodus",
     "tooltip.removeJobTemplateReference": "Verweis auf Job-Vorlage entfernen",
+    "tooltip.singleClickToSelect": "Single-clicking on an instruction will highlight it, and if a new instruction is dropped onto it, the new instruction will be added as its child",
+    "tooltip.doubleClickToSelect": "Double-clicking on an instruction will highlight it, and if a new instruction is dropped onto it, the new instruction will be added as its parent",
     "findAndReplace": {
       "label.find": "Suchen",
       "label.replace": "Ersetzen",

@@ -2812,6 +2812,8 @@
     "label.iamLdapTrustStoreType": "LDAPトラストストアタイプ",
     "label.iamLdapSystemUser": "LDAPシステムユーザー",
     "label.iamLdapSystemPassword": "LDAPシステムパスワード",
+    "label.iamLdapReadTimeout": "LDAP Read Timeout",
+    "label.iamLdapConnectTimeout": "LDAP Connect Timeout",
     "label.iamOidcName": "OIDC名",
     "label.iamOidcAuthenticationUrl": "OIDC認証URL",
     "label.iamOidcClientId": "OIDC クライアントID",
@@ -2914,6 +2916,8 @@
     "placeholder.iamLdapTrustStoreType": "LDAP トラストストアタイプを入力",
     "placeholder.iamLdapSystemUser": "LDAP システムユーザーを入力",
     "placeholder.iamLdapSystemPassword": "LDAP システムパスワードを入力",
+    "placeholder.iamLdapReadTimeout": "Enter LDAP Read Timeout",
+    "placeholder.iamLdapConnectTimeout": "Enter LDAP Connect Timeout",
     "placeholder.iamOidcName": "OIDC名入力",
     "placeholder.iamOidcAuthenticationUrl": "OIDC 認証URL入力",
     "placeholder.iamOidcClientId": "OIDC クライアントID入力",
@@ -2982,7 +2986,9 @@
         "iamLdapTrustStorePassword": "LDAPトラストストアがパスワードで保護されている場合は、そのパスワードを指定する必要があります。",
         "iamLdapTrustStoreType": "LDAPトラストストアタイプには、PKCS12またはJKS（非推奨）を指定します。",
         "iamLdapSystemUser": "LDAPシステムユーザー",
-        "iamLdapSystemPassword": "LDAPシステムパスワード"
+        "iamLdapSystemPassword": "LDAPシステムパスワード",
+        "iamLdapReadTimeout": "LDAP Read Timeout",
+        "iamLdapConnectTimeout": "LDAP Connect Timeout"
       },
       "vault": {
         "iamVaultUrl": "VaultサーバーREST APIにアクセスするためのURL",
@@ -3301,6 +3307,8 @@
     "tooltip.facetEntryMode": "ファセット入力モード",
     "tooltip.editorEntryMode": "エディター入力モード",
     "tooltip.removeJobTemplateReference": "参照ジョブテンプレート削除",
+    "tooltip.singleClickToSelect": "Single-clicking on an instruction will highlight it, and if a new instruction is dropped onto it, the new instruction will be added as its child",
+    "tooltip.doubleClickToSelect": "Double-clicking on an instruction will highlight it, and if a new instruction is dropped onto it, the new instruction will be added as its parent",
     "findAndReplace": {
       "label.find": "検索",
       "label.replace": "置換",

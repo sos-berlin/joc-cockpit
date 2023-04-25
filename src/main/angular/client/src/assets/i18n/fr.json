@@ -2812,6 +2812,8 @@
     "label.iamLdapTrustStoreType": "LDAP Truststore Type",
     "label.iamLdapSystemUser": "LDAP System User Account",
     "label.iamLdapSystemPassword": "LDAP System User Password",
+    "label.iamLdapReadTimeout": "LDAP Read Timeout",
+    "label.iamLdapConnectTimeout": "LDAP Connect Timeout",
     "label.iamOidcName": "OIDC Name",
     "label.iamOidcAuthenticationUrl": "OIDC Authentication URL",
     "label.iamOidcClientId": "OIDC Client ID",
@@ -2914,6 +2916,8 @@
     "placeholder.iamLdapTrustStoreType": "Entrer le LDAP Truststore Type",
     "placeholder.iamLdapSystemUser": "Entrer le LDAP System User Account",
     "placeholder.iamLdapSystemPassword": "Entrer le LDAP System User Password",
+    "placeholder.iamLdapReadTimeout": "Enter LDAP Read Timeout",
+    "placeholder.iamLdapConnectTimeout": "Enter LDAP Connect Timeout",
     "placeholder.iamOidcName": "Entrer le OIDC Name",
     "placeholder.iamOidcAuthenticationUrl": "Entrer le OIDC Authentication URL",
     "placeholder.iamOidcClientId": "Entrer le OIDC Client ID",
@@ -2982,7 +2986,9 @@
         "iamLdapTrustStorePassword": "Si le Truststore LDAP est protégé par un mot de passe, elui-ci doit être spécifié.",
         "iamLdapTrustStoreType": "Le type de Truststore LDAP peut être PKCS12 ou JKS (déprécié).",
         "iamLdapSystemUser": "Si un LDAP System User Account est indiqué, l'opération 'bind' se fait avec ce compte. Si le paramètre reste vide, l'opération 'bind' s'effectue avec le compte utilisateur de la connexion.",
-        "iamLdapSystemPassword": "Un LDAP System User Password est généralement demandé lorsqu'un LDAP System User Account est indiqué."
+        "iamLdapSystemPassword": "Un LDAP System User Password est généralement demandé lorsqu'un LDAP System User Account est indiqué.",
+        "iamLdapReadTimeout": "LDAP Read Timeout",
+        "iamLdapConnectTimeout": "LDAP Connect Timeout"
       },
       "vault": {
         "iamVaultUrl": "L'URL par laquelle l'API REST du serveur Vault est accessible.",
@@ -3301,6 +3307,8 @@
     "tooltip.facetEntryMode": "Mode contrôle des entrées",
     "tooltip.editorEntryMode": "Mode d'entrée directe",
     "tooltip.removeJobTemplateReference": "Supprimer la référence au Modèle de Tâche",
+    "tooltip.singleClickToSelect": "Single-clicking on an instruction will highlight it, and if a new instruction is dropped onto it, the new instruction will be added as its child",
+    "tooltip.doubleClickToSelect": "Double-clicking on an instruction will highlight it, and if a new instruction is dropped onto it, the new instruction will be added as its parent",
     "findAndReplace": {
       "label.find": "Trouver",
       "label.replace": "Remplacer",

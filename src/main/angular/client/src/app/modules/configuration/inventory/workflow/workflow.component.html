@@ -135,6 +135,19 @@
                 <span class="nav-text"> <i nz-icon nzType="export" nzTheme="outline"></i></span>
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'">
+                <span class="nav-text"> <i nz-icon nzType="info-circle" nzTheme="outline"></i></span>
+              </a>
+            </li>
+
+            <ng-template #tooltipTemplate>
+              <div class="m-a-xs">
+                <i class="fa fa-circle circle daily-plan-step-icon"></i><span translate>workflow.tooltip.singleClickToSelect</span><br>
+                <i class="fa fa-circle circle daily-plan-step-icon"></i><span translate>workflow.tooltip.doubleClickToSelect</span>
+              </div>
+            </ng-template>
+          
           </ul>
         </div>
         <div id="outlineContainer"></div>
@@ -1439,7 +1452,7 @@
 
         </div>
         <div class="box-body p-t-0">
-          <div *ngIf="isReferencedBy.fileOrderSources || isReferencedBy.schedules || isReferencedBy.workflows" class="b-t p-t-sm text-16 _600" translate>workflow.label.references</div>
+          <div *ngIf="isReferencedBy.fileOrderSources || isReferencedBy.schedules || isReferencedBy.workflows" class="b-t p-t-sm text-16 _500" translate>workflow.label.references</div>
           <div *ngIf="isReferencedBy.fileOrderSources || isReferencedBy.schedules || isReferencedBy.workflows">
             <div class="p-l-sm p-t-sm" *ngIf="isReferencedBy.fileOrderSources">
               <i class="icon-orders-icon icon-color tree-icon"></i>
