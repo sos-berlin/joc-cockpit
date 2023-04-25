@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, Directive, ElementRef, EventEmitter, forwardRef,
+  Component, Directive, EventEmitter, forwardRef,
   HostListener,
   Input,
   OnChanges,
@@ -3054,6 +3054,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   info3 = '';
   forkListAgentAssignment = '';
   stickySubagentAgentAssignment = '';
+  selectedCellId = '';
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -3215,9 +3216,46 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               this.getWorkflowObject();
               break;
             }
+          } else if (args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/)) {
+            this.initTreeObject(true);
+            break;
           }
         }
       }
+    }
+  }
+
+  private initTreeObject(flag = false): void {
+    if (this.lockTree.length === 0 || flag) {
+      this.getLocks();
+    }
+    if (this.workflowTree.length === 0 || flag) {
+      this.coreService.post('tree', {
+        controllerId: this.schedulerId,
+        forInventory: true,
+        types: [InventoryObject.WORKFLOW]
+      }).subscribe((res) => {
+        this.workflowTree = this.coreService.prepareTree(res, true);
+      });
+    }
+    if (this.boardTree.length === 0 || flag) {
+      this.coreService.post('tree', {
+        controllerId: this.schedulerId,
+        forInventory: true,
+        types: [InventoryObject.NOTICEBOARD]
+      }).subscribe((res) => {
+        this.boardTree = this.coreService.prepareTree(res, false);
+      });
+    }
+    if (this.scriptTree.length === 0 || flag) {
+      this.loadScripts();
+      this.coreService.post('tree', {
+        controllerId: this.schedulerId,
+        forInventory: true,
+        types: [InventoryObject.INCLUDESCRIPT]
+      }).subscribe((res) => {
+        this.scriptTree = this.coreService.prepareTree(res, false);
+      });
     }
   }
 
@@ -4279,37 +4317,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (this.jobResourcesTree.length === 0) {
         this.getJobResources();
       }
-      if (this.lockTree.length === 0) {
-        this.getLocks();
-      }
-      if (this.workflowTree.length === 0) {
-        this.coreService.post('tree', {
-          controllerId: this.schedulerId,
-          forInventory: true,
-          types: [InventoryObject.WORKFLOW]
-        }).subscribe((res) => {
-          this.workflowTree = this.coreService.prepareTree(res, true);
-        });
-      }
-      if (this.boardTree.length === 0) {
-        this.coreService.post('tree', {
-          controllerId: this.schedulerId,
-          forInventory: true,
-          types: [InventoryObject.NOTICEBOARD]
-        }).subscribe((res) => {
-          this.boardTree = this.coreService.prepareTree(res, false);
-        });
-      }
-      if (this.scriptTree.length === 0) {
-        this.loadScripts();
-        this.coreService.post('tree', {
-          controllerId: this.schedulerId,
-          forInventory: true,
-          types: [InventoryObject.INCLUDESCRIPT]
-        }).subscribe((res) => {
-          this.scriptTree = this.coreService.prepareTree(res, false);
-        });
-      }
+
+      this.initTreeObject();
       if (this.documentationTree.length === 0 && this.permission.joc.documentations.view) {
         this.coreService.post('tree', {
           onlyWithAssignReference: true,
@@ -5350,6 +5359,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       return;
     }
     const graph = this.editor.graph;
+    this.selectedCellId = '';
     if (!isEmpty(this.workflow.configuration)) {
       if (noConversion) {
         this.workflowService.checkEmptyObjects(this.workflow.configuration, () => {
@@ -6008,7 +6018,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 if (targetId) {
                   const lastCell = graph.getModel().getCell(targetId);
                   if (lastCell) {
-                    endNodes.push(graph.getModel().getCell(targetId));
+                    endNodes.push(lastCell);
                   }
                 }
               }
@@ -6685,10 +6695,74 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         };
 
         /**
+         * Overrides method to provide a cell collapse/expandable on double click
+         */
+        graph.dblClick = function (evt, cell) {
+          if (cell != null && cell.vertex == 1) {
+            if (self.workflowService.isInstructionCollapsible(cell.value.tagName) || self.workflowService.isSingleInstruction(cell.value.tagName)) {
+
+              mxDragSource.prototype.currentHighlight = new mxCellHighlight(graph,
+                (!(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || !self.preferences.theme) ? '#FF8000' : '#1171a6'), 2);
+              // Highlights the drop target under the mouse
+              if (mxDragSource.prototype.currentHighlight != null) {
+                const state = graph.getView().getState(cell);
+                if (state && state.cell) {
+                  self.selectedCellId = cell.id;
+                  mxDragSource.prototype.currentHighlight.highlight(state);
+                }
+              }
+            }
+          }
+        };
+
+        /**
          * Function: handle a click event
          *
          */
+        let count = 0, lastClickId = 0, time = 0;
         graph.click = function (me) {
+          if (me.state?.cell?.id && me.state?.cell?.value?.tagName == 'Job') {
+            if (count == 0) {
+              lastClickId = me.state.cell.id;
+              time = new Date().getTime();
+            }
+            if (me.state.cell.id === lastClickId) {
+              if ((new Date().getTime() - 200) > 0) {
+                ++count;
+              } else {
+                count = 0;
+                lastClickId = 0;
+              }
+            }
+          } else {
+            count = 0;
+            lastClickId = 0;
+          }
+          if (count == 2) {
+            mxDragSource.prototype.currentHighlight = new mxCellHighlight(graph,
+              (!(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || !self.preferences.theme) ? '#FF8000' : '#1171a6'), 2);
+            // Highlights the drop target under the mouse
+            if (mxDragSource.prototype.currentHighlight != null) {
+              const state = graph.getView().getState(me.state?.cell);
+              if (state && state.cell) {
+                self.selectedCellId = me.state?.cell.id;
+                mxDragSource.prototype.currentHighlight.highlight(state);
+              }
+            }
+          }
+          if (me && self.selectedCellId) {
+            const cell = graph.getModel().getCell(self.selectedCellId);
+            if (mxDragSource.prototype.currentHighlight != null && cell) {
+              const state = graph.getView().getState(cell);
+              if (!me.state || (me.state?.cell?.id != cell.id)) {
+                self.selectedCellId = '';
+                if (state.style && mxDragSource.prototype.currentHighlight != null) {
+                  mxDragSource.prototype.currentHighlight.destroy();
+                  mxDragSource.prototype.currentHighlight = null;
+                }
+              }
+            }
+          }
           checkState();
           dropTargetForPaste = null;
           const evt = me.getEvent();
@@ -6793,7 +6867,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   const cells = graph.getSelectionCells();
                   if (cells && cells.length > 0) {
                     if (cells[0].getParent().id !== cell.getParent().id) {
-                      let parentCell = {cell: cell.getParent()};
+                      let parentCell = { cell: cell.getParent() };
                       checkParentRecursively(parentCell, cells[0]);
                       cell = parentCell.cell;
                     }
@@ -6978,6 +7052,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               return;
             }
             if (this.dragElement && this.dragElement.getAttribute('src')) {
+
               dragElement = this.dragElement.getAttribute('src');
               if (dragElement.match('fork-list') && drpTargt.value.tagName === 'Connection') {
                 let flag = checkNestedForkList(drpTargt);
@@ -7327,7 +7402,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                       targetId = 'start';
                     }
                     self.droppedCell = {
-                      target: {source: sourceId, target: targetId},
+                      target: { source: sourceId, target: targetId },
                       cells: self.movedCells,
                       type: cell.value.getAttribute('type'),
                       isOutside
@@ -7336,7 +7411,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
                   }
                 } else {
-                  self.droppedCell = {target: cell.id, cells: self.movedCells};
+                  self.droppedCell = { target: cell.id, cells: self.movedCells };
                   return true;
                 }
               } else {
@@ -7713,7 +7788,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
      * Function: Get first and last cell from the user selected cells
      */
     function isCellSelectedValid(cells): any {
-      const obj = {firstCell: null, lastCell: null, ids: [], invalid: false};
+      const obj = { firstCell: null, lastCell: null, ids: [], invalid: false };
       if (cells.length === 2) {
         if (!checkClosedCellWithSourceCell(cells[0], cells[1])) {
           const x = graph.getEdgesBetween(cells[0], cells[1]);
@@ -8645,7 +8720,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           self.selectedNode.job.withSubagentClusterIdExpr = self.selectedNode.radio == 'expression';
           delete self.selectedNode.radio;
         }
-        self.dataService.reloadWorkflowError.next({error: self.error});
+        self.dataService.reloadWorkflowError.next({ error: self.error });
         self.selectedNode.newObj = self.coreService.clone(self.selectedNode.obj);
         if (self.selectedNode && self.selectedNode.type === 'Job') {
           self.coreService.convertArrayToObject(self.selectedNode.newObj, 'defaultArguments', false);
@@ -8765,7 +8840,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             argument = [];
           } else {
             argument = JSON.parse(argument);
-            argument = self.coreService.convertObjectToArray({argument}, 'argument');
+            argument = self.coreService.convertObjectToArray({ argument }, 'argument');
             argument.forEach((arg) => {
               if (isArray(arg.value)) {
                 arg.value.forEach((item, index) => {
@@ -8799,10 +8874,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const arr = obj.retryDelays.split(',');
             obj.retryDelays = [];
             arr.forEach((item) => {
-              obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item) || '0s'});
+              obj.retryDelays.push({ value: self.workflowService.convertDurationToHour(item) || '0s' });
             });
           } else {
-            obj.retryDelays = [{value: '0s'}];
+            obj.retryDelays = [{ value: '0s' }];
           }
         } else if (cell.value.tagName === 'Cycle') {
           obj.schedule = cell.getAttribute('schedule');
@@ -9056,34 +9131,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           });
         }
       }, 500);
-
-      const snippets: any[] = [
-        {text: 'const', displayText: 'const declarations'},
-        {text: 'let', displayText: 'let declarations'},
-        {text: 'var', displayText: 'var declarations'},
-      ]
-
-      function snippet(): void {
-        self.cm.codeMirror.showHint(self.cm.codeMirror, function (): any {
-          const cursor = self.cm.codeMirror.getCursor()
-          const token = self.cm.codeMirror.getTokenAt(cursor)
-          const start: number = token.start
-          const end: number = cursor.ch
-          const line: number = cursor.line
-          const currentWord: string = token.string
-
-          // 入力した文字列をスニペット配列から探す
-          const list: any[] = snippets.filter(function (item): boolean {
-            return item.text.indexOf(currentWord) >= 0
-          })
-
-          return {
-            list: list.length ? list : snippets,
-            from: self.cm.codeMirror.Pos(line, start),
-            to: self.cm.codeMirror.Pos(line, end)
-          }
-        }, {completeSingle: false})
-      }
     }
 
     function checkEachIntructions(list, job) {
@@ -9528,6 +9575,16 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
      * Function: Check and create clicked instructions
      */
     function createClickInstruction(title, targetCell) {
+      if (self.selectedCellId) {
+        const cell = graph.getModel().getCell(self.selectedCellId);
+        if (mxDragSource.prototype.currentHighlight != null && cell) {
+          self.selectedCellId = '';
+          if (mxDragSource.prototype.currentHighlight != null) {
+            mxDragSource.prototype.currentHighlight.destroy();
+            mxDragSource.prototype.currentHighlight = null;
+          }
+        }
+      }
       if (title.match('fork-list')) {
         let flag = checkNestedForkList(targetCell);
         if (!flag) {
@@ -9827,7 +9884,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
             }
             if (selectedCell.id === targetCell.id || (selectedCellsObj && selectedCellsObj.ids && selectedCellsObj.ids.length > 0 && selectedCellsObj.ids.indexOf(targetCell.id) > -1)) {
-              flg = true;
+              // flg = true;
+              if (targetCell.id == self.selectedCellId) {
+                return 'select';
+              }
             }
           }
         }
@@ -9903,8 +9963,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }
           }
         }
-      } else {
-        return 'select';
       }
       return 'valid';
     }
@@ -11479,18 +11537,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   private validatePredicate(predicate, id, isOpen): void {
-    this.coreService.post('inventory/validate/predicate', predicate).subscribe((res: any) => {
-      if (res.invalidMsg) {
-        this.invalidMsg = res.invalidMsg;
-        this.workflow.valid = false;
-        if (this.workflow.path === this.data.path) {
-          this.data.valid = false;
-        }
-        if (isOpen) {
+    if (isOpen) {
+      this.coreService.post('inventory/validate/predicate', predicate).subscribe((res: any) => {
+        if (res.invalidMsg) {
+          this.invalidMsg = res.invalidMsg;
+          this.workflow.valid = false;
+          if (this.workflow.path === this.data.path) {
+            this.data.valid = false;
+          }
           this.openSideBar(id);
         }
-      }
-    });
+      });
+    }
   }
 
   private checkJobInstruction(data): any {

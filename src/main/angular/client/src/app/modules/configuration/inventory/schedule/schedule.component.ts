@@ -50,6 +50,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
 
   @ViewChild('treeSelectCtrl', {static: false}) treeCtrl;
 
@@ -69,6 +70,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       } else if (res === 'UNDO') {
         this.undo();
       }
+    });
+    this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
     });
   }
 
@@ -106,8 +110,22 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
     if (this.schedule.name) {
       this.saveJSON();
+    }
+  }
+
+  private refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].path) {
+          if (args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/)) {
+            this.getWorkflowTree();
+            break;
+          }
+        }
+      }
     }
   }
 
@@ -995,16 +1013,20 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
+  private getWorkflowTree(): void {
+    this.coreService.post('tree', {
+      controllerId: this.schedulerId,
+      forInventory: true,
+      types: ['WORKFLOW']
+    }).subscribe((res) => {
+      this.workflowTree = this.coreService.prepareTree(res, true);
+      this.ref.detectChanges();
+    });
+  }
+
   private getObject(): void {
     if (this.workflowTree.length === 0) {
-      this.coreService.post('tree', {
-        controllerId: this.schedulerId,
-        forInventory: true,
-        types: ['WORKFLOW']
-      }).subscribe((res) => {
-        this.workflowTree = this.coreService.prepareTree(res, true);
-        this.ref.detectChanges();
-      });
+      this.getWorkflowTree();
     }
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, {

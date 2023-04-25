@@ -47,6 +47,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
 
   private subject: Subject<string> = new Subject<string>();
   @ViewChild('treeSelectCtrl', {static: false}) treeCtrl;
@@ -71,6 +72,9 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       debounceTime(250)
     ).subscribe(searchTextValue => {
       this.checkWorkflowExist(searchTextValue);
+    });
+    this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
     });
   }
 
@@ -105,22 +109,32 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
     this.subject.complete();
     if (this.fileOrder.name) {
       this.saveJSON();
     }
   }
 
-  private getWorkflows(): void {
-    if (this.workflowTree.length === 0) {
-      this.coreService.post('tree', {
-        controllerId: this.schedulerId,
-        forInventory: true,
-        types: [InventoryObject.WORKFLOW]
-      }).subscribe((res) => {
-        this.workflowTree = this.coreService.prepareTree(res, true);
-      });
+  private refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/)) {
+          this.getWorkflows();
+          break;
+        }
+      }
     }
+  }
+
+  private getWorkflows(): void {
+    this.coreService.post('tree', {
+      controllerId: this.schedulerId,
+      forInventory: true,
+      types: [InventoryObject.WORKFLOW]
+    }).subscribe((res) => {
+      this.workflowTree = this.coreService.prepareTree(res, true);
+    });
   }
 
   private getObject(): void {
@@ -162,14 +176,16 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       if (!this.fileOrder.configuration.timeZone) {
         // Daily plan time zone
         let timeZone = sessionStorage.getItem('$SOS$DAILYPLANTIMEZONE');
-        if (!timeZone || timeZone ==  'undefined' || timeZone ==  'null') {
+        if (!timeZone || timeZone == 'undefined' || timeZone == 'null') {
           this.getDailyPlanTimeZone();
         } else {
           this.fileOrder.configuration.timeZone = timeZone;
         }
       }
       this.agentList = this.coreService.clone(this.inventoryService.agentList);
-      this.getWorkflows();
+      if (this.workflowTree.length === 0) {
+        this.getWorkflows();
+      }
       this.getFavList();
       if (!res.valid) {
         if (!this.fileOrder.configuration.workflowName) {

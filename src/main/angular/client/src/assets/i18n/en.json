@@ -2812,6 +2812,8 @@
     "label.iamLdapTrustStoreType": "LDAP Truststore Type",
     "label.iamLdapSystemUser": "LDAP System User Account",
     "label.iamLdapSystemPassword": "LDAP System User Password",
+    "label.iamLdapReadTimeout": "LDAP Read Timeout",
+    "label.iamLdapConnectTimeout": "LDAP Connect Timeout",
     "label.iamOidcName": "OIDC Name",
     "label.iamOidcAuthenticationUrl": "OIDC Authentication URL",
     "label.iamOidcClientId": "OIDC Client ID",
@@ -2914,6 +2916,8 @@
     "placeholder.iamLdapTrustStoreType": "Enter LDAP Truststore Type",
     "placeholder.iamLdapSystemUser": "Enter LDAP System User Account",
     "placeholder.iamLdapSystemPassword": "Enter LDAP System User Password",
+    "placeholder.iamLdapReadTimeout": "Enter LDAP Read Timeout",
+    "placeholder.iamLdapConnectTimeout": "Enter LDAP Connect Timeout",
     "placeholder.iamOidcName": "Enter OIDC Name",
     "placeholder.iamOidcAuthenticationUrl": "Enter OIDC Authentication URL",
     "placeholder.iamOidcClientId": "Enter OIDC Client ID",
@@ -2982,7 +2986,9 @@
         "iamLdapTrustStorePassword": "If the LDAP Truststore is protected by a password, then the password has to be specified.",
         "iamLdapTrustStoreType": "The LDAP Truststore Type can be PKCS12 or JKS (deprecated).",
         "iamLdapSystemUser": "If an LDAP System User Account is specified, the 'bind' operation is performed with this account. If the setting remains empty, then the 'bind' operation is performed with the user account of the login.",
-        "iamLdapSystemPassword": "An LDAP System User Password is usually required when an LDAP System User Account is specified."
+        "iamLdapSystemPassword": "An LDAP System User Password is usually required when an LDAP System User Account is specified.",
+        "iamLdapReadTimeout": "LDAP Read Timeout",
+        "iamLdapConnectTimeout": "LDAP Connect Timeout"
       },
       "vault": {
         "iamVaultUrl": "The URL by which the Vault Server REST API is accessible.",
@@ -3301,6 +3307,8 @@
     "tooltip.facetEntryMode": "Facet entry mode",
     "tooltip.editorEntryMode": "Editor entry mode",
     "tooltip.removeJobTemplateReference": "Remove Job Template Reference",
+    "tooltip.singleClickToSelect": "Single-clicking on an instruction will highlight it, and if a new instruction is dropped onto it, the new instruction will be added as its child",
+    "tooltip.doubleClickToSelect": "Double-clicking on an instruction will highlight it, and if a new instruction is dropped onto it, the new instruction will be added as its parent",
     "findAndReplace": {
       "label.find": "Search",
       "label.replace": "Replace",
