@@ -2294,7 +2294,9 @@ export class RepositoryComponent implements OnInit {
               if (self.filter.envRelated) {
                 if (self.filter.deploy) {
                   self.object.deploy2Configurations.push(objDep);
-                  self.object.releasedConfigurations.push(objDep);
+                  if (!self.filter.envIndependent) {
+                    self.object.releasedConfigurations.push(objDep);
+                  }
                 }
                 if (self.filter.draft) {
                   self.object.releaseDraftConfigurations.push(objDep);
