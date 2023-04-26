@@ -48,10 +48,10 @@
             </button>
           </form>
 
-          <div *ngIf="identityServiceItems.length > 0" class="horz-line-text text-u-c" translate>common.label.or</div>
+          <div *ngIf="oidcIdentityServiceItems?.length > 0 || fido2IdentityServiceItems?.length > 0" class="horz-line-text text-u-c" translate>common.label.or</div>
 
-          <div class="row" *ngIf="identityServiceItems.length > 0">
-            <div class="col-md-12" *ngFor="let item of identityServiceItems">
+          <div class="row" *ngIf="oidcIdentityServiceItems?.length > 0">
+            <div class="col-md-12" *ngFor="let item of oidcIdentityServiceItems">
               <ng-container *ngIf="item.iamOidcName">
                 <button class="btn btn-default btn-block btn-sm m-b-12" (click)="loginWithPopup(item)"
                   [ngStyle]="{'padding-bottom': (item.iamIconUrl ? '4px' : '7px'), 'padding-top': (item.iamIconUrl ? '4px' : '7px')}">

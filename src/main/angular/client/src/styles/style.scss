@@ -5495,7 +5495,7 @@ tr.disabled-row td:not(.menu) {
 }
 
 .tree-block > .ps.ps--active-y > .ps__rail-y {
-  right: 7px !important;
+  right: 4px !important;
 }
 
 .tree-children {
@@ -9089,4 +9089,8 @@ cdk-virtual-scroll-viewport {
   outline: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   padding: 2px;
+}
+
+.hide-on-focus{
+  visibility: hidden;
 }
