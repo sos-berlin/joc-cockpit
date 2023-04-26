@@ -18,7 +18,8 @@ export class LoginComponent implements OnInit {
   errorMsg = false;
   returnUrl = '';
   defaultSetting: any = {};
-  identityServiceItems = [];
+  oidcIdentityServiceItems = [];
+  fido2IdentityServiceItems = [];
 
   constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService,
               private authService: AuthService, private oAuthService: OIDCAuthService, private renderer: Renderer2) {
@@ -89,7 +90,8 @@ export class LoginComponent implements OnInit {
   private loadProviders(): void {
     this.coreService.post('iam/identityproviders', {}).subscribe({
       next: (res) => {
-        this.identityServiceItems = res.identityServiceItems;
+        this.oidcIdentityServiceItems = res.oidcServiceItems || [];
+        this.fido2IdentityServiceItems = res.fido2ServiceItems || [];
       }, error(err) {
         console.error(err)
       },

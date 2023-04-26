@@ -11,30 +11,30 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {NzTreeNode} from 'ng-zorro-antd/tree';
-import {FileUploader} from 'ng2-file-upload';
-import {TranslateService} from '@ngx-translate/core';
-import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
-import {Subscription} from 'rxjs';
-import {NzMessageService} from "ng-zorro-antd/message";
-import {isEmpty, isArray, isEqual, clone, extend, sortBy, groupBy} from 'underscore';
-import {saveAs} from 'file-saver';
-import {ToastrService} from 'ngx-toastr';
-import {Router} from '@angular/router';
-import {AbstractControl, NG_VALIDATORS, Validator} from '@angular/forms';
-import {CdkDragDrop, moveItemInArray, DragDrop} from '@angular/cdk/drag-drop';
-import {WorkflowService} from '../../../../services/workflow.service';
-import {DataService} from '../../../../services/data.service';
-import {CoreService} from '../../../../services/core.service';
-import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
-import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
-import {InventoryObject} from '../../../../models/enums';
-import {JobWizardComponent} from '../job-wizard/job-wizard.component';
-import {InventoryService} from '../inventory.service';
-import {CreateObjectModalComponent} from "../inventory.component";
-import {UpdateJobTemplatesComponent} from "../job-template/job-template.component";
-import {CalendarService} from "../../../../services/calendar.service";
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzTreeNode } from 'ng-zorro-antd/tree';
+import { FileUploader } from 'ng2-file-upload';
+import { TranslateService } from '@ngx-translate/core';
+import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
+import { NzMessageService } from "ng-zorro-antd/message";
+import { isEmpty, isArray, isEqual, clone, extend, sortBy, groupBy } from 'underscore';
+import { saveAs } from 'file-saver';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+import { AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
+import { CdkDragDrop, moveItemInArray, DragDrop } from '@angular/cdk/drag-drop';
+import { WorkflowService } from '../../../../services/workflow.service';
+import { DataService } from '../../../../services/data.service';
+import { CoreService } from '../../../../services/core.service';
+import { ValueEditorComponent } from '../../../../components/value-editor/value.component';
+import { CommentModalComponent } from '../../../../components/comment-modal/comment.component';
+import { InventoryObject } from '../../../../models/enums';
+import { JobWizardComponent } from '../job-wizard/job-wizard.component';
+import { InventoryService } from '../inventory.service';
+import { CreateObjectModalComponent } from "../inventory.component";
+import { UpdateJobTemplatesComponent } from "../job-template/job-template.component";
+import { CalendarService } from "../../../../services/calendar.service";
 
 // Mx-Graph Objects
 declare const mxEditor;
@@ -200,6 +200,7 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
               dom2?.click();
               $('#show-tree-editor input').on('blur', () => {
                 $('#show-tree-editor').hide();
+                $('.ant-select-tree-dropdown').hide();
               });
             }, 0);
           }
@@ -3055,6 +3056,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   forkListAgentAssignment = '';
   stickySubagentAgentAssignment = '';
   selectedCellId = '';
+  intervalId: any;
+  allObjects: any = [];
+
+  searchCriteriaSubject: BehaviorSubject<any> = new BehaviorSubject(null);
+  private _destroying$: Subject<void> = new Subject<void>();
+
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -4187,6 +4194,53 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       this.cm.codeMirror.focus();
       doc.setCursor(cursor);
     }
+  }
+
+  selectObject(item): void {
+    console.log(item)
+  }
+
+  searchObjects(value: any) {
+    console.log(value, 'value')
+    if (value !== '') {
+      if (value.length > 2) {
+        this.selectedNode.obj.loading = true;
+        this.searchCriteriaSubject.pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          takeUntil(this._destroying$),
+          switchMap(() => this.coreService.post('inventory/search', {
+            search: value,
+            returnType: InventoryObject.NOTICEBOARD
+          })
+          ),
+        ).subscribe({
+          next: (res: any) => {
+            this.updateData(res.results);
+            this.selectedNode.obj.loading = false;
+          }, error: () => this.selectedNode.obj.loading = true
+        });
+      }
+    } else {
+      this.allObjects = [];
+    }
+  }
+
+  private updateData(data): void {
+    this.allObjects = [];
+    let index = 20;
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+    this.allObjects = data.slice(0, 20);
+    this.intervalId = setInterval(() => {
+      if (index < data.length && this.allObjects.length < 20) {
+        this.allObjects = this.allObjects.concat(data.slice(index, 20));
+        index = index + 20;
+      } else {
+        clearInterval(this.intervalId);
+      }
+    }, 20);
   }
 
   onExpand(e, type): void {
@@ -9125,6 +9179,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 dom2?.click();
                 $('#show-tree input').on('blur', () => {
                   $('#show-tree').hide();
+                  $('.ant-select-tree-dropdown').hide();
                 });
               }, 0);
             }
