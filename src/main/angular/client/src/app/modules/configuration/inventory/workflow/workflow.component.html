@@ -617,23 +617,17 @@
               </label>
               <div class="col-md-8 col-lg-9">
                 <div id="show-tree" class="z-index-9999 pos-abt" style="min-width: 150px;">
-                  <nz-tree-select [appAutofocus]="true" nzNoAnimation [nzPlaceHolder]="'common.placeholder.search' | translate"
+                  <nz-tree-select nzNoAnimation [nzPlaceHolder]="'common.placeholder.search' | translate"
                                   [nzNodes]="boardTree"
+                                  [nzHideUnMatched]="false"
                                   [nzDropdownStyle]="{ 'max-height': '300px' }" nzShowSearch [nzAllowClear]="true"
                                   [nzShowExpand]="false"
                                   [(ngModel)]="selectedNode.obj.noticeBoardName"
                                   (nzExpandChange)="onExpand($event, 'NOTICEBOARD')">
                     <ng-template #nzTreeTemplate let-node>
-                      <div class="pos-abt p-l-xs" *ngIf="node.origin.path == '/'">
-                        <!-- <a class="text" (click)="expandAllNotices();$event.stopPropagation()" [nz-tooltip]="'common.tooltip.expandAll' | translate">
-                          <i class="fa fa-angle-double-down fa-lg"></i>
-                        </a>
-                        <a class="text m-l-xs" (click)="collapseAllNotices();$event.stopPropagation()" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
-                          <i class="fa fa-angle-double-up fa-lg"></i>
-                        </a> -->
-                      </div>
-                      <div class="node-wrapper w-93" [ngStyle]="{'margin-top': node.origin.path == '/' ? '0px' : '0'}">
-                        <span *ngIf="node.origin.loading || !node.origin.type"
+      
+                      <div class="node-wrapper w-93">
+                        <span *ngIf="node.origin.loading || (!node.origin.type && !node.origin.objectType)"
                             [class.toggle-children-wrapper-expanded]="node.isExpanded"
                             [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
                             (click)="openFolder(node);$event.stopPropagation()" class="cursor w-14 m-l-xxs m-t-n-1"
@@ -649,10 +643,11 @@
                         </span>
                         <div class="node-content-wrapper p-l-xs" (click)="loadData(node, 'NOTICEBOARD', $event);"
                              [class.node-content-wrapper-active]="node.origin.path == selectedNode.obj.noticeBoardName">
-                          <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                          <i *ngIf="!node.origin.type && !node.origin.objectType" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
                              class="w-14"></i>
-                          <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                          {{node.origin.name}}
+                          <i *ngIf="node.origin.type || node.origin.objectType" class="fa fa-circle-o text-xs w-11 m-t-xs" 
+                             [ngClass]="{'p-l-xs': node.origin.objectType}"></i>
+                          <span class="p-l-sm">{{node.origin.name}}</span>
                         </div>
                       </div>
                     </ng-template>

@@ -7,28 +7,28 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {forkJoin, of, Subscription} from 'rxjs';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {FileUploader} from 'ng2-file-upload';
-import {ToastrService} from 'ngx-toastr';
-import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
-import {TranslateService} from '@ngx-translate/core';
-import {clone, extend, isArray, isEmpty, isEqual, sortBy} from 'underscore';
-import {ClipboardService} from 'ngx-clipboard';
-import {saveAs} from 'file-saver';
-import {catchError} from 'rxjs/operators';
-import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {ActivatedRoute} from "@angular/router";
-import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
-import {CoreService} from '../../../services/core.service';
-import {DataService} from '../../../services/data.service';
-import {InventoryService} from './inventory.service';
-import {AuthService} from '../../../components/guard';
-import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
-import {InventoryObject} from '../../../models/enums';
-import {UpdateJobTemplatesComponent} from "./job-template/job-template.component";
+import { BehaviorSubject, forkJoin, of, Subject, Subscription } from 'rxjs';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { FileUploader } from 'ng2-file-upload';
+import { ToastrService } from 'ngx-toastr';
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
+import { TranslateService } from '@ngx-translate/core';
+import { clone, extend, isArray, isEmpty, isEqual, sortBy } from 'underscore';
+import { ClipboardService } from 'ngx-clipboard';
+import { saveAs } from 'file-saver';
+import { catchError, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
+import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/tree';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { ActivatedRoute } from "@angular/router";
+import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
+import { CoreService } from '../../../services/core.service';
+import { DataService } from '../../../services/data.service';
+import { InventoryService } from './inventory.service';
+import { AuthService } from '../../../components/guard';
+import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
+import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
+import { InventoryObject } from '../../../models/enums';
+import { UpdateJobTemplatesComponent } from "./job-template/job-template.component";
 
 declare const $: any;
 
@@ -43,7 +43,7 @@ export class NewDraftComponent implements OnInit {
   submitted = false;
   display = false;
   required = false;
-  comments: any = {radio: 'predefined'};
+  comments: any = { radio: 'predefined' };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -143,11 +143,11 @@ export class SingleDeployComponent implements OnInit {
   loading = true;
   submitted = false;
   required = false;
-  comments: any = {radio: 'predefined'};
+  comments: any = { radio: 'predefined' };
   dateFormat: any = {};
   object: any = {
-    store: {draftConfigurations: [], deployConfigurations: []},
-    delete: {deployConfigurations: []}
+    store: { draftConfigurations: [], deployConfigurations: [] },
+    delete: { deployConfigurations: [] }
   };
   dailyPlanDate: any = {
     addOrdersDateFrom: 'now',
@@ -188,8 +188,8 @@ export class SingleDeployComponent implements OnInit {
 
   getJSObject(): void {
     this.object = {
-      store: {draftConfigurations: [], deployConfigurations: []},
-      delete: {deployConfigurations: []}
+      store: { draftConfigurations: [], deployConfigurations: [] },
+      delete: { deployConfigurations: [] }
     };
     const self = this;
     for (let i = 0; i < this.deployablesObject.length; i++) {
@@ -304,9 +304,9 @@ export class SingleDeployComponent implements OnInit {
       obj.addOrdersDateFrom = 'now';
     }
     if (this.data.deleted) {
-      obj.delete = [{objectType: this.data.objectType, path: PATH}];
+      obj.delete = [{ objectType: this.data.objectType, path: PATH }];
     } else {
-      obj.update = [{objectType: this.data.objectType, path: PATH}];
+      obj.update = [{ objectType: this.data.objectType, path: PATH }];
     }
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
@@ -367,7 +367,7 @@ export class SingleDeployComponent implements OnInit {
   templateUrl: './deploy-dialog.html'
 })
 export class DeployComponent implements OnInit {
-  @ViewChild('treeCtrl', {static: false}) treeCtrl;
+  @ViewChild('treeCtrl', { static: false }) treeCtrl;
   @Input() schedulerIds;
   @Input() preferences;
   @Input() path: string;
@@ -390,8 +390,8 @@ export class DeployComponent implements OnInit {
     delete: [],
     update: [],
     releasables: [],
-    store: {draftConfigurations: [], deployConfigurations: []},
-    deleteObj: {deployConfigurations: []}
+    store: { draftConfigurations: [], deployConfigurations: [] },
+    deleteObj: { deployConfigurations: [] }
   };
   dailyPlanDate: any = {
     addOrdersDateFrom: 'now',
@@ -402,11 +402,11 @@ export class DeployComponent implements OnInit {
   };
   submitted = false;
   required = false;
-  comments: any = {radio: 'predefined'};
+  comments: any = { radio: 'predefined' };
   isDeleted = false;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
-              private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService) {
+    private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService) {
   }
 
   ngOnInit(): void {
@@ -494,7 +494,7 @@ export class DeployComponent implements OnInit {
   filterList(): void {
     this.checkedObject.clear();
     this.recursiveCheck(this.nodes);
-  //  this.nodes = [];
+    //  this.nodes = [];
     this.loading = true;
     this.buildTree(this.path);
   }
@@ -679,8 +679,8 @@ export class DeployComponent implements OnInit {
   }
 
   getJSObject(): void {
-    this.object.store = {draftConfigurations: [], deployConfigurations: []};
-    this.object.deleteObj = {deployConfigurations: []};
+    this.object.store = { draftConfigurations: [], deployConfigurations: [] };
+    this.object.deleteObj = { deployConfigurations: [] };
     const self = this;
     let selectFolder = true;
     if ((this.data && this.data.object) || this.isSelectedObjects) {
@@ -1029,7 +1029,7 @@ export class CronImportModalComponent implements OnInit {
     }).subscribe({
       next: (res: any) => {
         if (res.folders.length === 0) {
-          res.folders.push({name: '', path: '/'});
+          res.folders.push({ name: '', path: '/' });
         }
         this.nodes = this.coreService.prepareTree(res, true);
       }
@@ -1125,7 +1125,7 @@ export class CronImportModalComponent implements OnInit {
   templateUrl: './export-dialog.html'
 })
 export class ExportComponent implements OnInit {
-  @ViewChild('treeCtrl', {static: false}) treeCtrl;
+  @ViewChild('treeCtrl', { static: false }) treeCtrl;
   @Input() schedulerIds;
   @Input() preferences;
   @Input() origin: any;
@@ -1135,7 +1135,7 @@ export class ExportComponent implements OnInit {
   checkedObject = new Set();
   submitted = false;
   required = false;
-  comments: any = {radio: 'predefined'};
+  comments: any = { radio: 'predefined' };
   inValid = false;
   exportType = 'BOTH';
   path: string;
@@ -1166,7 +1166,7 @@ export class ExportComponent implements OnInit {
   };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
-              private inventoryService: InventoryService) {
+    private inventoryService: InventoryService) {
   }
 
   ngOnInit(): void {
@@ -1263,12 +1263,12 @@ export class ExportComponent implements OnInit {
     if (this.filter.controller && this.filter.dailyPlan) {
       obj.withoutReleased = !this.filter.release;
       if (deployObjectTypes.length > 0) {
-        APIs.push(this.coreService.post('inventory/deployables', {...obj, ...{objectTypes: deployObjectTypes}}).pipe(
+        APIs.push(this.coreService.post('inventory/deployables', { ...obj, ...{ objectTypes: deployObjectTypes } }).pipe(
           catchError(error => of(error))
         ));
       }
       if (releaseObjectTypes.length > 0) {
-        APIs.push(this.coreService.post('inventory/releasables', {...obj, ...{objectTypes: releaseObjectTypes}}).pipe(
+        APIs.push(this.coreService.post('inventory/releasables', { ...obj, ...{ objectTypes: releaseObjectTypes } }).pipe(
           catchError(error => of(error))
         ));
       }
@@ -1597,7 +1597,7 @@ export class ExportComponent implements OnInit {
 
   export(): void {
     const obj: any = {
-      exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
+      exportFile: { filename: this.exportObj.filename, format: this.exportObj.fileFormat }
     };
     if (this.comments.comment) {
       obj.auditLog = {};
@@ -1625,7 +1625,7 @@ export class ExportComponent implements OnInit {
         }
       }
       if (this.exportObj.forSigning) {
-        obj.forSigning = {controllerId: this.exportObj.controllerId};
+        obj.forSigning = { controllerId: this.exportObj.controllerId };
         if (this.object.draftConfigurations || this.object.deployConfigurations) {
           obj.forSigning.deployables = {
             draftConfigurations: this.object.draftConfigurations,
@@ -1712,7 +1712,7 @@ export class ExportComponent implements OnInit {
   templateUrl: './repository-dialog.html'
 })
 export class RepositoryComponent implements OnInit {
-  @ViewChild('treeCtrl', {static: false}) treeCtrl;
+  @ViewChild('treeCtrl', { static: false }) treeCtrl;
   @Input() controllerId;
   @Input() preferences;
   @Input() origin: any;
@@ -1725,7 +1725,7 @@ export class RepositoryComponent implements OnInit {
   nodes: any = [];
   submitted = false;
   required = false;
-  comments: any = {radio: 'predefined'};
+  comments: any = { radio: 'predefined' };
   exportObj = {
     isRecursive: false
   };
@@ -1748,7 +1748,7 @@ export class RepositoryComponent implements OnInit {
   listOfReleaseables = [];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
-              private inventoryService: InventoryService) {
+    private inventoryService: InventoryService) {
   }
 
   ngOnInit(): void {
@@ -1783,7 +1783,7 @@ export class RepositoryComponent implements OnInit {
   }
 
   private loadSetting() {
-    this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe({
+    this.coreService.post('configurations', { configurationType: 'GLOBALS' }).subscribe({
       next: (res) => {
         let configuration: any = {};
         if (res.configurations[0] && res.configurations[0].configurationItem) {
@@ -2393,7 +2393,7 @@ export class GitComponent implements OnInit {
   @Input() display: boolean;
   submitted = false;
   required = false;
-  comments: any = {radio: 'predefined'};
+  comments: any = { radio: 'predefined' };
   object: any = {
     folder: '',
     category: ''
@@ -2529,7 +2529,7 @@ export class ImportWorkflowModalComponent implements OnInit {
   };
 
   constructor(public activeModal: NzModalRef, private modal: NzModalService, private translate: TranslateService,
-              public toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
+    public toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -2608,7 +2608,7 @@ export class ImportWorkflowModalComponent implements OnInit {
       types: ['INVENTORY']
     }).subscribe((res: any) => {
       if (res.folders.length === 0) {
-        res.folders.push({name: '', path: '/'});
+        res.folders.push({ name: '', path: '/' });
       }
       this.nodes = this.coreService.prepareTree(res, true);
     });
@@ -2681,10 +2681,10 @@ export class JsonEditorModalComponent implements OnInit {
   errorMsg: string;
   options = new JsonEditorOptions();
 
-  @ViewChild('editor', {static: false}) editor: JsonEditorComponent;
+  @ViewChild('editor', { static: false }) editor: JsonEditorComponent;
 
   constructor(public coreService: CoreService, private clipboardService: ClipboardService, public activeModal: NzModalRef,
-              private message: NzMessageService, private ref: ChangeDetectorRef) {
+    private message: NzMessageService, private ref: ChangeDetectorRef) {
     this.options.mode = 'code';
     this.options.onEditable = () => {
       return this.edit;
@@ -2850,7 +2850,7 @@ export class UploadModalComponent implements OnInit {
   private showErrorMsg(errorMsg): void {
     let msg = errorMsg;
     if (!errorMsg) {
-      this.translate.get('inventory.message.invalidFile', {objectType: this.object.objectType}).subscribe(translatedValue => {
+      this.translate.get('inventory.message.invalidFile', { objectType: this.object.objectType }).subscribe(translatedValue => {
         msg = translatedValue;
       });
     }
@@ -2878,7 +2878,7 @@ export class CreateObjectModalComponent implements OnInit {
   display: any;
   required = false;
   comments: any = {};
-  object = {name: '', type: 'suffix', newName: '', onlyContains: false, originalName: '', suffix: '', prefix: ''};
+  object = { name: '', type: 'suffix', newName: '', onlyContains: false, originalName: '', suffix: '', prefix: '' };
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private ref: ChangeDetectorRef) {
   }
@@ -3040,7 +3040,7 @@ export class CreateFolderModalComponent implements OnInit {
   required = false;
   isUnique = true;
   isValid = true;
-  folder = {error: false, name: '', deepRename: 'rename', search: '', replace: ''};
+  folder = { error: false, name: '', deepRename: 'rename', search: '', replace: '' };
   comments: any = {};
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private ref: ChangeDetectorRef) {
@@ -3122,7 +3122,7 @@ export class CreateFolderModalComponent implements OnInit {
         if (this.origin.object || this.origin.controller || this.origin.dailyPlan) {
           obj = this.getObjectArr(this.origin);
         } else {
-          obj = {path: this.origin.path};
+          obj = { path: this.origin.path };
           URL = 'inventory/replace/folder';
         }
         obj.search = this.folder.search;
@@ -3170,14 +3170,14 @@ export class CreateFolderModalComponent implements OnInit {
   }
 
   private getObjectArr(object): any {
-    const obj: any = {objects: []};
+    const obj: any = { objects: [] };
     object.children.forEach((item) => {
       if (item.children) {
         item.children.forEach((data) => {
-          obj.objects.push({objectType: data.objectType, path: data.path + (data.path === '/' ? '' : '/') + data.name});
+          obj.objects.push({ objectType: data.objectType, path: data.path + (data.path === '/' ? '' : '/') + data.name });
         });
       } else {
-        obj.objects.push({objectType: item.objectType, path: item.path + (item.path === '/' ? '' : '/') + item.name});
+        obj.objects.push({ objectType: item.objectType, path: item.path + (item.path === '/' ? '' : '/') + item.name });
       }
     });
     return obj;
@@ -3210,17 +3210,29 @@ export class InventoryComponent implements OnInit, OnDestroy {
   isTreeLoaded = false;
   isTrash = false;
   isSearchVisible = false;
+  isNavigationComplete = true;
   tempObjSelection: any = {};
   objectType: string;
   path: string;
   indexOfNextAdd = 0;
+  intervalId: any;
+
+  allObjects: any = [];
   objectHistory = [];
+  searchNode = {
+    loading: false,
+    text: ''
+  }
+
+  searchCriteriaSubject: BehaviorSubject<any> = new BehaviorSubject(null);
+  private _destroying$: Subject<void> = new Subject<void>();
+
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
 
-  @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
-  @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
+  @ViewChild('treeCtrl', { static: false }) treeCtrl: any;
+  @ViewChild('menu', { static: true }) menu: NzDropdownMenuComponent;
 
   constructor(
     private authService: AuthService,
@@ -3319,6 +3331,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
     this.inventoryConfig.copyObj = this.copyObj;
     this.inventoryConfig.isTrash = this.isTrash;
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
     $('.scroll-y').remove();
   }
 
@@ -3336,7 +3351,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (res: any) => {
         if (res.folders.length === 0) {
-          res.folders.push({name: '', path: '/'});
+          res.folders.push({ name: '', path: '/' });
         }
         const tree = this.coreService.prepareTree(res, false);
         if (path) {
@@ -3597,7 +3612,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   reloadFolders(isChecked: boolean): void {
-    this.dataService.reloadTree.next({reloadFolder: isChecked + ''});
+    this.dataService.reloadTree.next({ reloadFolder: isChecked + '' });
     if (!this.isTrash && isChecked) {
       if (this.tree.length > 0) {
         const paths = [];
@@ -3667,12 +3682,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
                   for (let k = 0; k < x.children.length; k++) {
                     if (x.children[k].name === self.selectedObj.name) {
                       isMatch = true;
-                      cb({data: x.children[k], parentNode: data.children[i]});
+                      cb({ data: x.children[k], parentNode: data.children[i] });
                       break;
                     }
                   }
                   if (!isMatch) {
-                    cb({data: x, parentNode: data.children[i]});
+                    cb({ data: x, parentNode: data.children[i] });
                   }
                   break;
                 }
@@ -3741,8 +3756,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
       return;
     }
     let flag = true;
-    const controllerObj: any = {controllerArr: [], isArrow: false};
-    const dailyPlanObj: any = {dailyPlanArr: [], isArrow: false};
+    const controllerObj: any = { controllerArr: [], isArrow: false };
+    const dailyPlanObj: any = { dailyPlanArr: [], isArrow: false };
     const KEY = data.path === '/' ? '/' : (data.path + '/');
     if (!data.children) {
       data.children = [];
@@ -3959,6 +3974,77 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }]);
       }
     });
+  }
+
+  treeSearch(): void {
+    $('#treeSearch').focus();
+    $('.editor-tree > a').addClass('hide-on-focus');
+  }
+
+  searchObjects(value: string) {
+    if (value !== '') {
+      if (value.length > 2) {
+        this.searchNode.loading = true;
+        this.searchCriteriaSubject.pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          takeUntil(this._destroying$),
+          switchMap(() => this.coreService.post('inventory/quick/search', {
+            search: value
+          })
+          ),
+        ).subscribe({
+          next: (res: any) => {
+            this.updateData(res.results);
+            this.searchNode.loading = false;
+          }, error: () => this.searchNode.loading = true
+        });
+      }
+    } else {
+      this.allObjects = [];
+    }
+  }
+
+  private updateData(data): void {
+    this.allObjects = [];
+    let index = 20;
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+    this.allObjects = data.slice(0, 20);
+    this.intervalId = setInterval(() => {
+      if (index < data.length && this.allObjects.length < 20) {
+        this.allObjects = this.allObjects.concat(data.slice(index, 20));
+        index = index + 20;
+      } else {
+        clearInterval(this.intervalId);
+      }
+    }, 20);
+  }
+
+  clearSearchInput(): void {
+    this.allObjects = [];
+    this.searchNode.text = '';
+    $('.editor-tree > a').removeClass('hide-on-focus');
+  }
+
+  selectObject(item): void {
+    this.isNavigationComplete = false;
+    if (item.objectType && item.path) {
+      this.selectedObj = {
+        name: item.name,
+        path: item.path.substring(0, item.path.lastIndexOf('/')) || '/',
+        type: item.objectType
+      };
+
+    }
+    this.recursivelyExpandTree();
+    setTimeout(() => {
+      this.allObjects = [];
+      this.searchNode.text = '';
+      $('#treeSearch').blur();
+      //$('.editor-tree > a').removeClass('hide-on-focus');
+    }, 10);
   }
 
   switchToTrash(): void {
@@ -4347,7 +4433,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     const origin = this.coreService.clone(node.origin ? node.origin : node);
     if (this.selectedObj && this.selectedObj.id &&
       this.selectedObj.type === InventoryObject.WORKFLOW && skip) {
-      this.dataService.reloadTree.next({saveObject: origin});
+      this.dataService.reloadTree.next({ saveObject: origin });
       setTimeout(() => {
         this.deployObject(node, releasable, operation, isRemoved, false);
       }, 750)
@@ -4697,7 +4783,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   editJson(data: any, isEdit: boolean): void {
-    this.showJson({showJson: data, edit: isEdit});
+    this.showJson({ showJson: data, edit: isEdit });
   }
 
   importJSON(obj: any): void {
@@ -4740,7 +4826,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         const fileType = 'application/octet-stream';
         delete res.configuration.TYPE;
         const data = JSON.stringify(res.configuration, undefined, 2);
-        const blob = new Blob([data], {type: fileType});
+        const blob = new Blob([data], { type: fileType });
         saveAs(blob, name);
       });
     }
@@ -4820,7 +4906,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private cutPaste(object, comments: any = {}): void {
-    const request: any = {newPath: object.path};
+    const request: any = { newPath: object.path };
     if (this.copyObj.objectType || this.copyObj.type) {
       request.objectType = this.copyObj.objectType || this.copyObj.type;
       request.path = (this.copyObj.path + (this.copyObj.path === '/' ? '' : '/') + this.copyObj.name);
@@ -4888,8 +4974,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if ((object.object === InventoryObject.INCLUDESCRIPT || object.object === InventoryObject.FILEORDERSOURCE ||
       object.object === InventoryObject.LOCK || object.object === InventoryObject.JOBRESOURCE || object.object === InventoryObject.JOBTEMPLATE ||
       object.object === InventoryObject.NOTICEBOARD) || (object.type === InventoryObject.INCLUDESCRIPT || object.type === InventoryObject.FILEORDERSOURCE ||
-      object.type === InventoryObject.LOCK || object.type === InventoryObject.JOBRESOURCE || object.type === InventoryObject.JOBTEMPLATE ||
-      object.type === InventoryObject.NOTICEBOARD)) {
+        object.type === InventoryObject.LOCK || object.type === InventoryObject.JOBRESOURCE || object.type === InventoryObject.JOBTEMPLATE ||
+        object.type === InventoryObject.NOTICEBOARD)) {
       const obj = this.getObjectArr(object, false);
       if (this.preferences.auditLog) {
         let comments = {
@@ -5219,7 +5305,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (this.tree.length > 0) {
       function traverseTree(data) {
         if (data.children && data.children.length > 0) {
-          const obj: any = {name: data.name, path: data.path};
+          const obj: any = { name: data.name, path: data.path };
           if (data.children[0].controller) {
             obj.child1 = data.children[0];
             obj.child2 = data.children[1];
@@ -5283,12 +5369,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
     let obj: any = {};
     if (operation === 'release') {
       if (data.deleted) {
-        obj.delete = [{objectType: data.objectType, path: PATH}];
+        obj.delete = [{ objectType: data.objectType, path: PATH }];
       } else {
-        obj.update = [{objectType: data.objectType, path: PATH}];
+        obj.update = [{ objectType: data.objectType, path: PATH }];
       }
     } else {
-      obj.releasables = [{objectType: data.objectType, name: data.name}];
+      obj.releasables = [{ objectType: data.objectType, name: data.name }];
     }
     if (this.preferences.auditLog) {
       let comments = {
@@ -5344,7 +5430,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        request.auditLog = {comment: translatedValue};
+        request.auditLog = { comment: translatedValue };
       });
     }
     this.coreService.post('inventory/store', request).subscribe((res: any) => {
@@ -5514,19 +5600,19 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (_isTrash) {
         this.reloadTree(_isTrash);
       }
-      if(_isNormal){
+      if (_isNormal) {
         this.reloadTree(false);
       }
       if (paths.length > 0) {
         paths.forEach((path, index) => {
-          if(_isTrash) {
+          if (_isTrash) {
             this.updateFolders(path, _isTrash, () => {
               if (index == paths.length - 1) {
                 this.updateTree(_isTrash);
               }
             });
           }
-          if(_isNormal) {
+          if (_isNormal) {
             this.updateFolders(path, false, () => {
               if (index == paths.length - 1) {
                 this.updateTree(false);
@@ -5560,7 +5646,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (this.selectedObj.id) {
       this.pushObjectInHistory();
     }
-    this.selectedObj = {type, name, path, id};
+    this.selectedObj = { type, name, path, id };
   }
 
   private checkAndUpdateSelectedObj(sour): void {
@@ -5662,11 +5748,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
         let configuration = {};
         obj.name = res.name;
         if (type === InventoryObject.SCHEDULE) {
-          configuration = {controllerId: this.schedulerIds.selected};
+          configuration = { controllerId: this.schedulerIds.selected };
         } else if (type === 'LOCK') {
-          configuration = {limit: 1, id: res.name};
+          configuration = { limit: 1, id: res.name };
         } else if (type === InventoryObject.WORKINGDAYSCALENDAR || type === InventoryObject.NONWORKINGDAYSCALENDAR) {
-          configuration = {type};
+          configuration = { type };
         }
         this.storeObject(obj, list, configuration, res.comments);
       }
@@ -5715,7 +5801,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     object.expanded = false;
     object.deleted = true;
     object.loading = true;
-    this.coreService.post('inventory/remove/folder', {path, auditLog, cancelOrdersDateFrom}).subscribe({
+    this.coreService.post('inventory/remove/folder', { path, auditLog, cancelOrdersDateFrom }).subscribe({
       next: () => {
         object.loading = false;
         if (node && node.parentNode && node.parentNode.origin) {
@@ -5736,7 +5822,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private getObjectArr(object, isDraft): any {
-    let obj: any = {objects: []};
+    let obj: any = { objects: [] };
     if (!object.type) {
       if (object.object || object.controller || object.dailyPlan) {
         object.children.forEach((item) => {
@@ -5757,7 +5843,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           }
         });
       } else {
-        obj = {path: object.path};
+        obj = { path: object.path };
       }
     } else {
       obj.objects.push({
@@ -5769,6 +5855,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private updateTree(isTrash): void {
+    this.isNavigationComplete = true;
     if (isTrash) {
       this.trashTree = [...this.trashTree];
     } else {
@@ -5777,7 +5864,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         if (this.selectedData.children) {
           this.selectedData.children = [...this.selectedData.children];
         }
-        this.dataService.reloadTree.next({reloadTree: this.selectedData});
+        this.dataService.reloadTree.next({ reloadTree: this.selectedData });
       }
     }
   }

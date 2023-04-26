@@ -35,10 +35,54 @@
       display: block;
     }
   }
+  .r-82{
+    right: 82px;;
+  }
 }
 .sidebar-hover-effect{
   .trash{
     right: 16px;
     top:16px;
   }
+  .r-82{
+    right: 42px;;
+  }
+}
+
+#treeSearch {
+  width: 10px;
+  transition: all .5s ease-in-out;
+  position: absolute;
+  opacity: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--background-color);
+}
+
+#treeSearch:focus {
+  width: calc(100% - 46px);
+  opacity: 1;
+  z-index: 999;
+  pointer-events: auto;
+  transition: all 400ms cubic-bezier(0, 0, 0.46, 0.53);
+}
+
+#treeSearch {
+  border: 1px solid transparent !important;
+  border-bottom: 1px solid var(--primary) !important;
+  margin-top: -8px !important;
+}
+
+.tree-search-icon {
+  display: none;
+  position: absolute;
+  right: 32px;
+  font-size: 18px;
+  color: var(--text-muted);
+  background: var(--background-color);
+  z-index: 999;
+}
+
+.input-tree-search:focus ~ .tree-search-icon{
+  display: inline-block;
 }
