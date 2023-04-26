@@ -3307,8 +3307,8 @@
     "tooltip.facetEntryMode": "Mode contrôle des entrées",
     "tooltip.editorEntryMode": "Mode d'entrée directe",
     "tooltip.removeJobTemplateReference": "Supprimer la référence au Modèle de Tâche",
-    "tooltip.singleClickToSelect": "Single-clicking on an instruction will highlight it, and open a property editor to update its properties",
-    "tooltip.doubleClickToSelect": "Double-clicking on an instruction will highlight it, and if a new instruction is dropped onto it, the new instruction will be added as its parent",
+    "tooltip.singleClickToSelect": "Un simple clic met en évidence une instruction et permet de modifier ses propriétés.",
+    "tooltip.doubleClickToSelect": "Un double-clic met une instruction en évidence. Si une nouvelle instruction est déposée dessus, elle sera ajoutée en tant que parent.",
     "findAndReplace": {
       "label.find": "Trouver",
       "label.replace": "Remplacer",

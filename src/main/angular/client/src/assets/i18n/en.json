@@ -804,7 +804,7 @@
     "popup.cannotModifyStartTime": "Cannot modify start time as {{n1}} single orders and {{n2}} cyclic orders have been found",
     "popup.differentModifyStartTime": "{{n1}} different planned start times",
     "tooltip.dateRangeSelectStep1": "Hold mouse and drag to select date range",
-    "tooltip.dateRangeSelectStep2": "Or press CTRL key and select start date and end date using mouse click",
+    "tooltip.dateRangeSelectStep2": "Or press Ctrl key and select start date and end date using mouse click",
     "tooltip.dateRangeSelectStep3": "Or click calendar icon and then select start date and end date using mouse click"
   },
   "deploymentService": {
@@ -1857,7 +1857,7 @@
         "documentation": "A reference to a Documentation can be added that will be displayed with the Script. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Script Include can be specified as desired.",
         "script": "Depending on its use with job scripts the content of a Script Include can include Shell commands or Code for scripting languages such as Perl, PowerShell etc.",
-        "autocompleteShortCut": "Use Ctrl+Space to retrieve the list of available Script Includes"
+        "autocompleteShortCut": "Hit Ctrl+Space to retrieve the list of available Script Includes"
       },
       "workflow": {
         "name": "The name of a Workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -3307,8 +3307,8 @@
     "tooltip.facetEntryMode": "Facet entry mode",
     "tooltip.editorEntryMode": "Editor entry mode",
     "tooltip.removeJobTemplateReference": "Remove Job Template Reference",
-    "tooltip.singleClickToSelect": "Single-clicking on an instruction will highlight it, and open a property editor to update its properties",
-    "tooltip.doubleClickToSelect": "Double-clicking on an instruction will highlight it, and if a new instruction is dropped onto it, the new instruction will be added as its parent",
+    "tooltip.singleClickToSelect": "Single-clicking highlights an instruction and makes its properties available for editing.",
+    "tooltip.doubleClickToSelect": "Double-clicking highlights an instruction. If a new instruction is dropped onto it then the new instruction will be added as its parent.",
     "findAndReplace": {
       "label.find": "Search",
       "label.replace": "Replace",
