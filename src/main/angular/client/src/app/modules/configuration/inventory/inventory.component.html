@@ -150,12 +150,48 @@
           <a class="text resize-cursor a-3 pos-abt r-18 z-index-99">
             <i class="fa fa-angle-double-right fa-lg" (click)="showPanel()"></i>
           </a>
-          <a class="trash notify" *ngIf="!isTrash" (click)="switchToTrash()">
+          <a class="trash " *ngIf="!isTrash" (click)="treeSearch()">
+            <i nz-icon [nzType]="'search'" nzTheme="outline"></i>
+          </a>
+          <a class="trash notify r-82" *ngIf="!isTrash" (click)="switchToTrash()">
             <i nz-icon [nzType]="'delete'" nzTheme="outline"></i>
           </a>
           <a class="rollback" *ngIf="isTrash" (click)="switchToTrash()">
             <i nz-icon [nzType]="'rollback'" nzTheme="outline"></i>
           </a>
+          <div>
+            <input id="treeSearch" class="input-tree-search"
+              [placeholder]="'workflow.placeholder.findNode' | translate"
+              nz-input [(ngModel)]="searchNode.text"
+              (blur)="clearSearchInput()"
+              (ngModelChange)="searchObjects($event)"
+              [nzAutocomplete]="auto"
+            />
+            
+            <i class="tree-search-icon" nz-icon [nzType]="searchNode.loading ? 'loading' : 'search'" nzTheme="outline"></i>
+            <nz-autocomplete #auto>
+              <nz-auto-option *ngFor="let option of allObjects" [nzValue]="option.path" (click)="selectObject(option)">
+                <div class="node-wrapper" >
+                  <div class="node-content-wrapper2" >
+                    <i *ngIf="option.objectType == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color"
+                       nzTheme="outline"></i>
+                    <i *ngIf="option.objectType == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
+                    <i *ngIf="option.objectType == 'JOBRESOURCE'" class="icon-resources-icon icon-color tree-icon"></i>
+                    <i *ngIf="option.objectType == 'JOBTEMPLATE'" class="icon-jobs-icon icon-color tree-icon"></i>
+                    <i *ngIf="option.objectType == 'NOTICEBOARD'" nz-icon nzType="pushpin" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="option.objectType == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="option.objectType == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="option.objectType == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
+                    <i *ngIf="option.objectType && option.objectType.match('CALENDAR')" nz-icon nzType="calendar"
+                       class="icon-color" nzTheme="outline"></i>
+                    <i class="fa fa-circle-o text-xs m-t-xxs p-l-sm"></i>
+                    <span class="p-l-sm">{{option.name}}</span>
+                  </div>
+                </div>
+              </nz-auto-option>
+            </nz-autocomplete>
+      
+          </div>
           <perfect-scrollbar class="tree-block">
             <div class="fade-in" [ngClass]="{'m-t': isTrash}">
               <nz-tree
@@ -524,7 +560,7 @@
     </li>
   </ul>
 </nz-dropdown-menu>
-<div class="spinner" *ngIf="isLoading">
+<div class="spinner" *ngIf="isLoading || !isNavigationComplete">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>

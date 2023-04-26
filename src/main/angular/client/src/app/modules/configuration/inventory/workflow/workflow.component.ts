@@ -67,7 +67,7 @@ declare const $;
 @Directive({
   selector: '[appValidateDuration]',
   providers: [
-    {provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationValidator), multi: true}
+    { provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationValidator), multi: true }
   ]
 })
 export class DurationValidator implements Validator {
@@ -101,7 +101,7 @@ export class DurationValidator implements Validator {
 @Directive({
   selector: '[appValidateOffset]',
   providers: [
-    {provide: NG_VALIDATORS, useExisting: forwardRef(() => OffsetValidator), multi: true}
+    { provide: NG_VALIDATORS, useExisting: forwardRef(() => OffsetValidator), multi: true }
   ]
 })
 export class OffsetValidator implements Validator {
@@ -161,10 +161,15 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
   };
   @ViewChild('codeMirror', { static: false }) cm;
 
+  
+  searchCriteriaSubject: BehaviorSubject<any> = new BehaviorSubject(null);
+  private _destroying$: Subject<void> = new Subject<void>();
+
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngAfterViewInit(): void {
+    const self = this;
     $('#show-tree-editor').hide();
     setTimeout(() => {
       if (this.cm && this.cm.codeMirror) {
@@ -196,10 +201,20 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
               'width': 'calc(100% - ' + (left + 8) + 'px)'
             });
             const dom2 = $('#show-tree-editor .ant-select');
+            const _tree = [...self.boardTree];
             setTimeout(() => {
               dom2?.click();
+              $('#show-tree-editor input').on('keyup', (evt) => {
+                if (evt.target.value) {
+                  self.searchObjects(evt.target.value);
+                } else {
+                  self.boardTree = _tree;
+                }
+              });
               $('#show-tree-editor input').on('blur', () => {
+                $("#show-tree-editor input").off("keyup");
                 $('#show-tree-editor').hide();
+                self.boardTree = _tree;
                 $('.ant-select-tree-dropdown').hide();
               });
             }, 0);
@@ -209,6 +224,28 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
     }, 0);
   }
 
+  searchObjects(value: string) {
+    if (value !== '') {
+      if (value.length > 2) {
+        this.searchCriteriaSubject.pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          takeUntil(this._destroying$),
+          switchMap(() => this.coreService.post('inventory/quick/search', {
+            search: value
+          })
+          ),
+        ).subscribe({
+          next: (res: any) => {
+            this.boardTree = res.results.map(function(item) {
+              return { ...item, key: item.name, title: item.name};
+            });
+          }
+        });
+      }
+    }
+  }
+
   openFolder(node: NzTreeNode): void {
     if (node instanceof NzTreeNode) {
       node.isExpanded = !node.isExpanded;
@@ -216,44 +253,6 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
         this.loadData(node, null);
       }
     }
-  }
-
-  expandAll(): void {
-    const self = this;
-    function traverseTree(data): void {
-      if (data.children && data.children.length > 0) {
-        data.expanded = true;
-        if (!data.children[0].type) {
-          self.loadNotices(data, data.key);
-        }
-        for (const i in data.children) {
-          if (!data.children[i].type) {
-            traverseTree(data.children[i]);
-          }
-        }
-      } else {
-        data.expanded = true;
-        self.loadNotices(data, data.key);
-      }
-    }
-
-    traverseTree(this.boardTree[0]);
-  }
-
-  collapseAll(): void {
-    function traverseTree(data): void {
-      data.expanded = false;
-      if (data.children && data.children.length > 0) {
-        for (const i in data.children) {
-          if (!data.children[i].type) {
-            traverseTree(data.children[i]);
-          }
-        }
-      }
-    }
-
-    traverseTree(this.boardTree[0]);
-    this.boardTree = [...this.boardTree];
   }
 
   loadData(node, $event, isExpand = false): void {
@@ -317,7 +316,7 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
       this.obj.noticeBoardName = '';
       const doc = this.cm.codeMirror.getDoc();
       const cursor = doc.getCursor();
-      if(this.cm.codeMirror.getSelection()) {
+      if (this.cm.codeMirror.getSelection()) {
         let text = this.cm.codeMirror.getValue();
         text = text.replace(this.cm.codeMirror.getSelection(), event);
         this.cm.codeMirror.setValue(text);
@@ -458,7 +457,7 @@ export class TimeEditorComponent implements OnInit {
 
   object: any = {};
 
-  @ViewChild('timePicker', {static: true}) tp;
+  @ViewChild('timePicker', { static: true }) tp;
 
   constructor(public activeModal: NzModalRef, private workflowService: WorkflowService, private coreService: CoreService) {
   }
@@ -522,7 +521,7 @@ export class CycleInstructionComponent implements OnChanges {
   days = [];
 
   constructor(private coreService: CoreService, private modal: NzModalService,
-              private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
+    private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -778,25 +777,25 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
 
   countArr = [0, 1, 2, 3, 4];
   countUArr = [1, 2, 3, 4];
-  editor: any = {isEnable: false};
+  editor: any = { isEnable: false };
   daysOptions = [
-    {label: 'monday', value: '1', checked: false},
-    {label: 'tuesday', value: '2', checked: false},
-    {label: 'wednesday', value: '3', checked: false},
-    {label: 'thursday', value: '4', checked: false},
-    {label: 'friday', value: '5', checked: false},
-    {label: 'saturday', value: '6', checked: false},
-    {label: 'sunday', value: '7', checked: false}
+    { label: 'monday', value: '1', checked: false },
+    { label: 'tuesday', value: '2', checked: false },
+    { label: 'wednesday', value: '3', checked: false },
+    { label: 'thursday', value: '4', checked: false },
+    { label: 'friday', value: '5', checked: false },
+    { label: 'saturday', value: '6', checked: false },
+    { label: 'sunday', value: '7', checked: false }
   ];
 
   tempDates = [];
 
   @Output() close: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild('timePicker', {static: true}) tp;
+  @ViewChild('timePicker', { static: true }) tp;
 
   constructor(private coreService: CoreService, private modal: NzModalService,
-              private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
+    private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -1250,7 +1249,7 @@ export class FindAndReplaceComponent implements OnInit {
     finds: []
   };
 
-  @ViewChild('selectBox', {static: true}) sb;
+  @ViewChild('selectBox', { static: true }) sb;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -1362,7 +1361,7 @@ export class ShowReferenceComponent implements OnInit {
   templateUrl: './job-text-editor.html'
 })
 export class JobComponent implements OnInit, OnChanges, OnDestroy {
-  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
+  @ViewChild('treeSelectCtrl', { static: false }) treeSelectCtrl;
   @Input() schedulerId: any;
   @Input() selectedNode: any;
   @Input() jobs: any;
@@ -1393,7 +1392,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   isLengthExceed = false;
   index = 0;
   presentObj: any = {};
-  returnCodes: any = {on: 'success'};
+  returnCodes: any = { on: 'success' };
   state: any = {};
 
   object = {
@@ -1427,12 +1426,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   subscription: Subscription;
 
-  @ViewChild('codeMirror', {static: false}) cm: any;
+  @ViewChild('codeMirror', { static: false }) cm: any;
 
   @Output() updateFromJobTemplateFn: EventEmitter<any> = new EventEmitter();
 
   constructor(public coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,
-              private workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService) {
+    private workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService) {
     this.subscription = dataService.reloadWorkflowError.subscribe(res => {
       if (res.error) {
         this.error = res.error;
@@ -1447,7 +1446,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       } else {
         if (res.change && res.change.current && this.selectedNode && this.selectedNode.job) {
           this.jobs = res.change.jobs;
-          this.selectedNode.job = {...this.selectedNode.job, ...this.coreService.clone(res.change.current.value)};
+          this.selectedNode.job = { ...this.selectedNode.job, ...this.coreService.clone(res.change.current.value) };
           this.setJobProperties();
           this.ref.detectChanges();
           this.isRuntimeVisible = false;
@@ -1512,7 +1511,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   navToJobTemp(name): void {
-    this.dataService.reloadTree.next({navigate: {name, type: InventoryObject.JOBTEMPLATE}});
+    this.dataService.reloadTree.next({ navigate: { name, type: InventoryObject.JOBTEMPLATE } });
   }
 
   changeType(): void {
@@ -1555,7 +1554,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.variableList.forEach((item) => {
       if (item.value.listParameters) {
         Object.entries(item.value.listParameters).map(([k1, v1]) => {
-          x.push({name: k1, value: v1});
+          x.push({ name: k1, value: v1 });
         });
       } else {
         x.push(item);
@@ -1577,7 +1576,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   updateVariableList(): void {
     if (this.orderPreparation && this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.orderPreparation.parameters).map(([k, v]) => {
-        return {name: k, value: v};
+        return { name: k, value: v };
       });
     }
     this.updateSelectItems();
@@ -1653,12 +1652,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedNode.job.executable.login = result.executable.login || {};
     this.selectedNode.job.executable.returnCodeMeaning = result.executable.returnCodeMeaning || {};
     if (result.notification) {
-      this.selectedNode.job.notification = result.notification || {mail: {}};
+      this.selectedNode.job.notification = result.notification || { mail: {} };
     }
     this.selectedNode.job.title = result.title;
     this.selectedNode.job.documentationName = result.documentationName;
     if (result.jobTemplateName) {
-      this.selectedNode.job.jobTemplate = {name: result.jobTemplateName, hash: result.hash};
+      this.selectedNode.job.jobTemplate = { name: result.jobTemplateName, hash: result.hash };
       this.getJobTemplate();
     } else {
       delete this.selectedNode.job.jobTemplate;
@@ -2011,7 +2010,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         return this.object.setOfCheckedDefaultArgu.has(item.name);
       }
     });
-    this.copiedParamObjects = {operation, type, data: arr, name: this.selectedNode.obj.jobName};
+    this.copiedParamObjects = { operation, type, data: arr, name: this.selectedNode.obj.jobName };
     this.coreService.tabs._configuration.copiedParamObjects = this.coreService.clone(this.copiedParamObjects);
     if (arr.length > 0) {
       this.coreService.showCopyMessage(this.message, operation === 'CUT' ? 'cut' : 'copied');
@@ -2195,13 +2194,13 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       let flag = false;
       for (let i = 0; i < this.jobs.length; i++) {
         if (this.jobs[i].name === this.selectedNode.obj.jobName) {
-          this.selectedNode.job = {...this.selectedNode.job, ...this.coreService.clone(this.jobs[i].value)};
+          this.selectedNode.job = { ...this.selectedNode.job, ...this.coreService.clone(this.jobs[i].value) };
           flag = true;
           break;
         }
       }
       if (!flag) {
-        this.selectedNode.job = {jobName: this.selectedNode.obj.jobName};
+        this.selectedNode.job = { jobName: this.selectedNode.obj.jobName };
       }
     }
     this.setJobProperties();
@@ -2228,7 +2227,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.selectedNode.job.jobName = this.selectedNode.obj.jobName;
       for (const i in this.jobs) {
         if (this.jobs[i] && this.jobs[i].name === this.selectedNode.obj.jobName) {
-          this.selectedNode.job = {...this.selectedNode.job, ...this.coreService.clone(this.jobs[i].value)};
+          this.selectedNode.job = { ...this.selectedNode.job, ...this.coreService.clone(this.jobs[i].value) };
           break;
         }
       }
@@ -2337,7 +2336,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
             ++count;
           }
           if (count > 1) {
-            form.control.setErrors({incorrect: true});
+            form.control.setErrors({ incorrect: true });
             break;
           }
         }
@@ -2651,9 +2650,9 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
     viewportMargin: Infinity,
     autoRefresh: true,
     mode: 'shell',
-    extraKeys: {'Ctrl-Space': 'autocomplete'}
+    extraKeys: { 'Ctrl-Space': 'autocomplete' }
   };
-  @ViewChild('codeMirror', {static: false}) cm: any;
+  @ViewChild('codeMirror', { static: false }) cm: any;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private dragDrop: DragDrop) {
   }
@@ -2990,7 +2989,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   @Input() copyObj: any;
   @Input() reload: any;
   @Input() isTrash: any;
-  @ViewChild('codeMirror', {static: false}) cm;
+  @ViewChild('codeMirror', { static: false }) cm;
 
   searchNode = {
     text: ''
@@ -3027,7 +3026,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   forkListVariableObj: any = {};
   orderPreparation: any = {};
   workflow: any = {};
-  history = {past: [], present: {}, future: [], type: 'new'};
+  history = { past: [], present: {}, future: [], type: 'new' };
   implicitSave = false;
   noSave = false;
   isLoading = true;
@@ -3042,8 +3041,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   invalidMsg: string;
   inventoryConf: any;
   allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'List'];
-  variableDeclarations = {parameters: []};
-  document = {name: ''};
+  variableDeclarations = { parameters: [] };
+  document = { name: '' };
   fullScreen = false;
   isSearchVisible = false;
   keyHandler: any;
@@ -3056,8 +3055,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   forkListAgentAssignment = '';
   stickySubagentAgentAssignment = '';
   selectedCellId = '';
-  intervalId: any;
-  allObjects: any = [];
 
   searchCriteriaSubject: BehaviorSubject<any> = new BehaviorSubject(null);
   private _destroying$: Subject<void> = new Subject<void>();
@@ -3065,12 +3062,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
-  @ViewChild('treeSelectCtrl', {static: false}) treeCtrl;
+  @ViewChild('menu', { static: true }) menu: NzDropdownMenuComponent;
+  @ViewChild('treeSelectCtrl', { static: false }) treeCtrl;
 
   constructor(public coreService: CoreService, private translate: TranslateService, private modal: NzModalService, public inventoryService: InventoryService,
-              private toasterService: ToastrService, public workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService,
-              private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
+    private toasterService: ToastrService, public workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService,
+    private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
     this.hasLicense = sessionStorage.hasLicense == 'true';
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -3206,7 +3203,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         mxOutline.prototype.destroy();
         this.keyHandler.destroy();
         this.editor = null;
-        $('.mxTooltip').css({visibility: 'hidden'})
+        $('.mxTooltip').css({ visibility: 'hidden' })
       }
     } catch (e) {
       console.error(e);
@@ -3297,7 +3294,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             graph.clearSelection();
             graph.setSelectionCell(cell);
             this.initEditorConf(this.editor, false, false, true);
-            this.searchNode = {text: ''};
+            this.searchNode = { text: '' };
             $('#searchTree input').blur();
             $('#workflowHeader').removeClass('hide-on-focus')
             break;
@@ -3404,12 +3401,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             recursive(json.instructions[x].then, child);
           }
           if (json.instructions[x].else && json.instructions[x].else.instructions) {
-            let obj = {title: "Else", disabled: true, key: json.instructions[x].uuid + 'else', children: []};
+            let obj = { title: "Else", disabled: true, key: json.instructions[x].uuid + 'else', children: [] };
             child.children.push(obj);
             recursive(json.instructions[x].else, obj);
           }
           if (json.instructions[x].catch && json.instructions[x].catch.instructions) {
-            let obj = {title: "Catch", disabled: true, key: json.instructions[x].uuid + 'catch', children: []};
+            let obj = { title: "Catch", disabled: true, key: json.instructions[x].uuid + 'catch', children: [] };
             child.children.push(obj);
             recursive(json.instructions[x].catch, obj);
           }
@@ -3494,7 +3491,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
             for (const i in self.jobs) {
               if (self.jobs[i] && self.jobs[i].name === json.instructions[x].jobName) {
-                obj.jobs.push({name: json.instructions[x].jobName, value: self.jobs[i].value});
+                obj.jobs.push({ name: json.instructions[x].jobName, value: self.jobs[i].value });
                 break;
               }
             }
@@ -3946,7 +3943,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         newData.jobs = data.jobs;
         data = JSON.stringify(newData, undefined, 2);
       }
-      const blob = new Blob([data], {type: fileType});
+      const blob = new Blob([data], { type: fileType });
       saveAs(blob, name);
     }
   }
@@ -3974,7 +3971,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (this.workflow.configuration.jobs) {
           if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
             this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
-              return {name: k, value: v};
+              return { name: k, value: v };
             });
           }
         }
@@ -3989,7 +3986,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           arr: this.jobResourcesTree,
           jobResources: this.extraConfiguration.jobResourceNames
         });
-        this.history = {past: [], present: {}, future: [], type: 'new'};
+        this.history = { past: [], present: {}, future: [], type: 'new' };
         this.storeData(result);
       }
     });
@@ -4011,7 +4008,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        if (type === InventoryObject.NOTICEBOARD){
+        if (type === InventoryObject.NOTICEBOARD) {
           this.loadNotices(node.origin, node.key);
           return;
         }
@@ -4103,49 +4100,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  expandAllNotices(): void {
-    const self = this;
-    function traverseTree(data): void {
-      if (data.children && data.children.length > 0) {
-        data.expanded = true;
-        if (!data.children[0].type) {
-          self.loadNotices(data, data.key);
-        }
-        for (const i in data.children) {
-          if (!data.children[i].type) {
-            traverseTree(data.children[i]);
-          }
-        }
-      } else {
-        data.expanded = true;
-        self.loadNotices(data, data.key);
-      }
-    }
-
-    traverseTree(this.boardTree[0]);
-  }
-
-  collapseAllNotices(): void {
-    function traverseTree(data): void {
-      data.expanded = false;
-      if (data.children && data.children.length > 0) {
-        for (const i in data.children) {
-          if (!data.children[i].type) {
-            traverseTree(data.children[i]);
-          }
-        }
-      }
-    }
-
-    traverseTree(this.boardTree[0]);
-    this.boardTree = [...this.boardTree];
-  }
-
   private loadNotices(origin, key): void {
     origin.loading = true;
     this.coreService.post('inventory/read/folder', {
       path: key,
-      objectTypes: ['NOTICEBOARD']
+      objectTypes: [InventoryObject.NOTICEBOARD]
     }).subscribe({
       next: (res: any) => {
         let data = res.noticeBoards;
@@ -4154,7 +4113,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           data[i].title = data[i].name;
           data[i].path = _path;
           data[i].key = data[i].name;
-          data[i].type = 'NOTICEBOARD';
+          data[i].type = InventoryObject.NOTICEBOARD;
           data[i].isLeaf = true;
         }
 
@@ -4196,51 +4155,28 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  selectObject(item): void {
-    console.log(item)
-  }
-
-  searchObjects(value: any) {
+  searchObjects(value: string) {
     console.log(value, 'value')
     if (value !== '') {
       if (value.length > 2) {
-        this.selectedNode.obj.loading = true;
         this.searchCriteriaSubject.pipe(
           debounceTime(300),
           distinctUntilChanged(),
           takeUntil(this._destroying$),
-          switchMap(() => this.coreService.post('inventory/search', {
+          switchMap(() => this.coreService.post('inventory/quick/search', {
             search: value,
-            returnType: InventoryObject.NOTICEBOARD
           })
           ),
         ).subscribe({
           next: (res: any) => {
-            this.updateData(res.results);
-            this.selectedNode.obj.loading = false;
-          }, error: () => this.selectedNode.obj.loading = true
+            this.boardTree = res.results.map(function(item) {
+              return { ...item, key: item.name, title: item.name};
+            });
+            this.ref.detectChanges();
+          }
         });
       }
-    } else {
-      this.allObjects = [];
     }
-  }
-
-  private updateData(data): void {
-    this.allObjects = [];
-    let index = 20;
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
-    this.allObjects = data.slice(0, 20);
-    this.intervalId = setInterval(() => {
-      if (index < data.length && this.allObjects.length < 20) {
-        this.allObjects = this.allObjects.concat(data.slice(index, 20));
-        index = index + 20;
-      } else {
-        clearInterval(this.intervalId);
-      }
-    }, 20);
   }
 
   onExpand(e, type): void {
@@ -4312,11 +4248,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (this.isStore) {
           this._reload();
         } else {
-          this.dataService.reloadTree.next({deploy: this.workflow});
+          this.dataService.reloadTree.next({ deploy: this.workflow });
         }
       }, 500);
     } else {
-      this.dataService.reloadTree.next({deploy: this.workflow});
+      this.dataService.reloadTree.next({ deploy: this.workflow });
     }
   }
 
@@ -4325,17 +4261,17 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (this.isStore) {
         this._reload();
       } else {
-        this.dataService.reloadTree.next({deploy: this.workflow});
+        this.dataService.reloadTree.next({ deploy: this.workflow });
       }
     }, 100);
   }
 
   backToListView(): void {
-    this.dataService.reloadTree.next({back: this.workflow});
+    this.dataService.reloadTree.next({ back: this.workflow });
   }
 
   navToObj(name, type): void {
-    this.dataService.reloadTree.next({navigate: {name, type}});
+    this.dataService.reloadTree.next({ navigate: { name, type } });
   }
 
   changeDataType(type, variable): void {
@@ -4418,7 +4354,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         });
         const arr = [];
         for (const [key, value] of Object.entries(groupBy(entries, 'path'))) {
-          arr.push({name: key, list: value});
+          arr.push({ name: key, list: value });
         }
         this.lockTree = arr;
       }, error: () => {
@@ -4438,7 +4374,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
     }
     this.error = false;
-    this.history = {past: [], present: {}, future: [], type: 'new'};
+    this.history = { past: [], present: {}, future: [], type: 'new' };
     this.isLoading = true;
     this.invalidMsg = '';
     const obj: any = {
@@ -4468,7 +4404,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
           this.data.syncState = res.syncState;
           this.jobs = [];
-          this.variableDeclarations = {parameters: []};
+          this.variableDeclarations = { parameters: [] };
           this.orderPreparation = {};
           this.jobResourceNames = [];
           if (res.configuration) {
@@ -4494,7 +4430,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (this.workflow.configuration.jobs) {
               if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
                 this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
-                  return {name: k, value: v};
+                  return { name: k, value: v };
                 });
               }
             }
@@ -4599,7 +4535,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             delete val.list;
             if (val.listParameters) {
               val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
-                return {name: k1, value: v1};
+                return { name: k1, value: v1 };
               });
             } else {
               this.addVariableToList(val);
@@ -4619,13 +4555,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (val.list) {
             let list = [];
             val.list.forEach((val) => {
-              let obj = {name: val};
+              let obj = { name: val };
               this.coreService.removeSlashToString(obj, 'name');
               list.push(obj);
             });
             val.list = list;
           }
-          return {name: k, value: val};
+          return { name: k, value: val };
         });
       }
     }
@@ -4649,7 +4585,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   addArgumentToList(data): void {
     const arr = [];
     data.list.forEach(item => {
-      arr.push({name: item.name, type: item.value.type});
+      arr.push({ name: item.name, type: item.value.type });
     });
     let flag = false;
     for (const i in data.actualList) {
@@ -4679,16 +4615,16 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (val.listParameters) {
             if (isArray(val.listParameters)) {
               val.listParameters.forEach((item) => {
-                actualList.push({name: item.name, type: item.value.type});
+                actualList.push({ name: item.name, type: item.value.type });
               });
             } else {
               val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
                 const val1: any = v1;
-                actualList.push({name: k1, type: val1.type});
-                return {name: k1, value: val1};
+                actualList.push({ name: k1, type: val1.type });
+                return { name: k1, value: val1 };
               });
             }
-            this.selectedNode.obj.forkListArguments.push({name: k, list: val.listParameters, actualList: [actualList]});
+            this.selectedNode.obj.forkListArguments.push({ name: k, list: val.listParameters, actualList: [actualList] });
           }
         } else {
           let isExist = false;
@@ -4705,11 +4641,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
           if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
             if (!val.final) {
-              this.selectedNode.obj.arguments.push({name: k, type: val.type, isRequired: true, isExist: true});
+              this.selectedNode.obj.arguments.push({ name: k, type: val.type, isRequired: true, isExist: true });
             }
           }
         }
-        return {name: k, value: v};
+        return { name: k, value: v };
       });
       this.selectedNode.obj.argumentList = this.selectedNode.obj.argumentList.filter((item) => {
         if (item.value.type === 'List') {
@@ -4748,13 +4684,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     break;
                   }
                 }
-                return {name: k1, value: v1, type};
+                return { name: k1, value: v1, type };
               });
             }
           } else {
             const tempArr = [];
             for (const prop in target[x].list) {
-              tempArr.push({name: target[x].list[prop].name, value: '', type: target[x].list[prop].value.type});
+              tempArr.push({ name: target[x].list[prop].name, value: '', type: target[x].list[prop].value.type });
             }
             sour.value.push(tempArr);
           }
@@ -4845,7 +4781,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (this.orderPreparation && this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
       const arr = Object.entries(this.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
-        return {name: k, value: val};
+        return { name: k, value: val };
       });
 
       for (let i = 0; i < arr.length; i++) {
@@ -4913,7 +4849,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (this.selectedNode.obj.maxTries > this.selectedNode.obj.retryDelays.length) {
       const len = (this.selectedNode.obj.maxTries - this.selectedNode.obj.retryDelays.length);
       for (let i = 0; i <= len; i++) {
-        this.selectedNode.obj.retryDelays.push({value: '1m'});
+        this.selectedNode.obj.retryDelays.push({ value: '1m' });
       }
     }
   }
@@ -4985,7 +4921,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
           if (count > 1) {
             data.invalid = true;
-            form.control.setErrors({incorrect: true});
+            form.control.setErrors({ incorrect: true });
             break;
           }
         }
@@ -5006,7 +4942,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
         if (count > 1) {
           data.invalid = true;
-          form.control.setErrors({incorrect: true});
+          form.control.setErrors({ incorrect: true });
           break;
         }
       }
@@ -5145,7 +5081,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           this.data.name = name;
         }
         data.name1 = name;
-        this.dataService.reloadTree.next({rename: data});
+        this.dataService.reloadTree.next({ rename: data });
       }, error: () => {
         this.workflow.name = this.data.name;
         this.workflow.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
@@ -5180,7 +5116,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (this.workflow.configuration.jobs) {
       if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
         const jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
-          return {name: k, value: v};
+          return { name: k, value: v };
         });
         if (!isEqual(JSON.stringify(this.jobs), JSON.stringify(jobs))) {
           this.jobs = jobs;
@@ -5196,7 +5132,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       for (const i in this.jobs) {
         if (this.jobs[i].name === this.selectedNode.job.jobName) {
           isCheck = false;
-          this.dataService.reloadWorkflowError.next({change: {jobs: this.jobs, current: this.jobs[i]}});
+          this.dataService.reloadWorkflowError.next({ change: { jobs: this.jobs, current: this.jobs[i] } });
           break;
         }
       }
@@ -5422,7 +5358,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       } else {
         this.workflowService.convertTryToRetry(this.workflow.configuration, (jobMap) => {
           this.updateWorkflow(graph, jobMap);
-        }, {}, {count: 0});
+        }, {}, { count: 0 });
       }
     } else {
       this.reloadDummyXml(graph);
@@ -5440,7 +5376,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     graph.getModel().beginUpdate();
     try {
       graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
-      const mapObj = {nodeMap: this.nodeMap, jobMap};
+      const mapObj = { nodeMap: this.nodeMap, jobMap };
       this.workflowService.createWorkflow(this.workflow.configuration, this.editor, mapObj);
       this.nodeMap = mapObj.nodeMap;
     } finally {
@@ -5523,23 +5459,23 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     const panel = $('.property-panel');
     $('.sidebar-open', panel).click(() => {
       self.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 460;
-      $('#outlineContainer').css({right: self.propertyPanelWidth + 10 + 'px'});
-      $('.graph-container').css({'margin-right': self.propertyPanelWidth + 'px'});
-      $('.toolbar').css({'margin-right': (self.propertyPanelWidth - 12) + 'px'});
-      $('.sidebar-close').css({right: self.propertyPanelWidth + 'px'});
-      $('#property-panel').css({width: self.propertyPanelWidth + 'px'}).show();
-      $('.sidebar-open').css({right: '-20px'});
+      $('#outlineContainer').css({ right: self.propertyPanelWidth + 10 + 'px' });
+      $('.graph-container').css({ 'margin-right': self.propertyPanelWidth + 'px' });
+      $('.toolbar').css({ 'margin-right': (self.propertyPanelWidth - 12) + 'px' });
+      $('.sidebar-close').css({ right: self.propertyPanelWidth + 'px' });
+      $('#property-panel').css({ width: self.propertyPanelWidth + 'px' }).show();
+      $('.sidebar-open').css({ right: '-20px' });
       self.centered(true);
     });
 
     $('.sidebar-close', panel).click(() => {
       self.propertyPanelWidth = 0;
-      $('#outlineContainer').css({right: '10px'});
-      $('.graph-container').css({'margin-right': '0'});
-      $('.toolbar').css({'margin-right': '-12px'});
-      $('.sidebar-open').css({right: '0'});
+      $('#outlineContainer').css({ right: '10px' });
+      $('.graph-container').css({ 'margin-right': '0' });
+      $('.toolbar').css({ 'margin-right': '-12px' });
+      $('.sidebar-open').css({ right: '0' });
       $('#property-panel').hide();
-      $('.sidebar-close').css({right: '-20px'});
+      $('.sidebar-close').css({ right: '-20px' });
       self.centered(true);
     });
 
@@ -5816,7 +5752,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         result: result ? JSON.parse(result) : result,
         instructions: []
       };
-      traversForkList(list, {lastId: ''}, edge, branchObj, parent, main);
+      traversForkList(list, { lastId: '' }, edge, branchObj, parent, main);
       obj.branches.push(branchObj);
     }
 
@@ -5896,7 +5832,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       }
 
-      traversIfList(list, {lastId: ''}, edge, obj, parent, main);
+      traversIfList(list, { lastId: '' }, edge, obj, parent, main);
     }
 
     function createObject(cell: any): any {
@@ -5922,7 +5858,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (attr[j].name && attr[j].value && attr[j].name !== 'displayLabel') {
             let val = attr[j].value;
             if ((attr[j].name === 'arguments' || attr[j].name === 'defaultArguments' || attr[j].name === 'outcome' || attr[j].name === 'result')) {
-              val = val ? JSON.parse(val) : attr[j].name === 'outcome' ? {returnCode: 0} : {};
+              val = val ? JSON.parse(val) : attr[j].name === 'outcome' ? { returnCode: 0 } : {};
             } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'stopOnFailure' || attr[j].name === 'joinIfFailed' || attr[j].name === 'uncatchable' || attr[j].name === 'unsuccessful') {
               val = val == 'true';
             } else if (obj.TYPE === 'PostNotices' && attr[j].name === 'noticeBoardNames') {
@@ -5946,7 +5882,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
         if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork') {
           const edges = getOutgoingEdges(cell);
-          const main = {endNode: ''};
+          const main = { endNode: '' };
           for (const j in edges) {
             if (cell.value.tagName === 'Fork') {
               traversForkInstruction(edges[j], obj, list, cell, main);
@@ -6189,7 +6125,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                         targetId = 'start';
                       }
                       self.droppedCell = {
-                        target: {source: sourceId, target: targetId},
+                        target: { source: sourceId, target: targetId },
                         cells: self.movedCells,
                         type: cell.value.getAttribute('type'),
                         isOutside
@@ -6211,7 +6147,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     if (state.cell.value.tagName !== 'Fork') {
                       const edges = graph.getOutgoingEdges(state.cell);
                       if ((state.cell.value.tagName !== 'If' && edges.length === 1 && !self.workflowService.checkClosingCell(edges[0].target.value.tagName) &&
-                          !(state.cell.value.tagName === 'Try' && edges[0].target.value.tagName === 'Catch'))
+                        !(state.cell.value.tagName === 'Try' && edges[0].target.value.tagName === 'Catch'))
                         || (state.cell.value.tagName === 'If' && edges.length === 2)) {
                         this.setHighlightColor('#ff0000');
                       }
@@ -8968,7 +8904,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           let resultObj = cell.getAttribute('result');
           if (resultObj) {
             resultObj = JSON.parse(resultObj);
-            resultObj = self.coreService.convertObjectToArray({result: resultObj}, 'result');
+            resultObj = self.coreService.convertObjectToArray({ result: resultObj }, 'result');
             resultObj.forEach((arg) => {
               self.coreService.removeSlashToString(arg, 'value');
             });
@@ -9051,7 +8987,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               let resultObj = edges[i].getAttribute('result');
               if (resultObj) {
                 resultObj = JSON.parse(resultObj);
-                resultObj = self.coreService.convertObjectToArray({result: resultObj}, 'result');
+                resultObj = self.coreService.convertObjectToArray({ result: resultObj }, 'result');
                 resultObj.forEach((arg) => {
                   self.coreService.removeSlashToString(arg, 'value');
                 });
@@ -9150,14 +9086,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 if (!flag) {
                   self.coreService.post('inventory/read/folder', {
                     path: '/',
-                    objectTypes: ['NOTICEBOARD']
+                    objectTypes: [InventoryObject.NOTICEBOARD]
                   }).subscribe((res: any) => {
                     let data = res.noticeBoards;
                     for (let i = 0; i < data.length; i++) {
                       data[i].title = data[i].name;
                       data[i].path = '/' + data[i].name;
                       data[i].key = data[i].name;
-                      data[i].type = 'NOTICEBOARD';
+                      data[i].type = InventoryObject.NOTICEBOARD;
                       data[i].isLeaf = true;
                     }
                     if (self.boardTree[0].children && self.boardTree[0].children.length > 0) {
@@ -9175,10 +9111,22 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 'width': 'calc(100% - ' + (left + 8) + 'px)'
               });
               const dom2 = $('#show-tree .ant-select');
+              const _tree = [...self.boardTree];
               setTimeout(() => {
                 dom2?.click();
+                $('#show-tree input').on('keyup', (evt) => {
+                  if (evt.target.value) {
+                    self.searchObjects(evt.target.value);
+                  } else {
+                    self.boardTree = _tree;
+                    self.ref.detectChanges();
+                  }
+                });
+
                 $('#show-tree input').on('blur', () => {
+                  $("#show-tree input").off("keyup");
                   $('#show-tree').hide();
+                  self.boardTree = _tree;
                   $('.ant-select-tree-dropdown').hide();
                 });
               }, 0);
@@ -9346,9 +9294,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         const targetObj = targetObject.instructions[targetIndex];
         if (target.value.tagName === 'If') {
           if (!targetObj.then) {
-            targetObj.then = {instructions: copyObject};
+            targetObj.then = { instructions: copyObject };
           } else if (!targetObj.else) {
-            targetObj.else = {instructions: copyObject};
+            targetObj.else = { instructions: copyObject };
           }
         } else if (target.value.tagName === 'Fork') {
           let branchId;
@@ -9360,7 +9308,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             });
           }
           branchId = 'branch' + (targetObj.branches.length + 1);
-          targetObj.branches.push({id: branchId, instructions: copyObject});
+          targetObj.branches.push({ id: branchId, instructions: copyObject });
         } else if (self.workflowService.isOnlyInstruction(target.value.tagName)) {
           if (!targetObj.instructions) {
             targetObj.instructions = [];
@@ -9464,7 +9412,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           break;
         }
         if (name === self.jobs[i].name) {
-          job = {name: newName, value: self.jobs[i].value};
+          job = { name: newName, value: self.jobs[i].value };
         }
       }
 
@@ -9474,13 +9422,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           for (let x in self.inventoryConf.copiedInstuctionObject) {
 
             if (self.inventoryConf.copiedInstuctionObject[x].jobName === name) {
-              job = {name: newName, value: self.inventoryConf.copiedInstuctionObject[x].jobObject || {}};
+              job = { name: newName, value: self.inventoryConf.copiedInstuctionObject[x].jobObject || {} };
               break;
             }
           }
         }
         if (!job.name) {
-          job = {name: newName, value: {}};
+          job = { name: newName, value: {} };
           if (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.length > 0) {
             for (let x in self.inventoryConf.copiedInstuctionObject) {
               if (self.inventoryConf.copiedInstuctionObject[x].jobs && self.inventoryConf.copiedInstuctionObject[x].jobName === name) {
@@ -9670,12 +9618,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 targetId = 'start';
               }
               self.droppedCell = {
-                target: {source: sourceId, target: targetId},
+                target: { source: sourceId, target: targetId },
                 cells: self.cutCell,
                 type: targetCell.value.getAttribute('type')
               };
             } else {
-              self.droppedCell = {target: targetCell.id, cells: self.cutCell};
+              self.droppedCell = { target: targetCell.id, cells: self.cutCell };
             }
           }
         }
@@ -9928,7 +9876,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if ((tagName === 'ForkList' || tagName === 'StickySubagent') && title.match('fork.')) {
           return 'inValid';
         }
-        if (title.match('fork') || title.match('retry') || title.match('cycle') || title.match('consumeNotices') || title.match('lock') || title.match('options') || title.match('try') || title.match('if')) {
+        if (title.match('fork') || title.match('retry') || title.match('cycle') || title.match('consume') || title.match('lock') || title.match('options') || title.match('try') || title.match('if')) {
           const selectedCell = graph.getSelectionCell();
           if (selectedCell) {
             const cells = graph.getSelectionCells();
@@ -10356,10 +10304,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         let isDone = false;
         if (targetObj.TYPE === 'If') {
           if (!targetObj.then) {
-            targetObj.then = {instructions: [sourceObj]};
+            targetObj.then = { instructions: [sourceObj] };
             isDone = true;
           } else if (!targetObj.else) {
-            targetObj.else = {instructions: [sourceObj]};
+            targetObj.else = { instructions: [sourceObj] };
             isDone = true;
           }
           if (!isDone) {
@@ -10384,7 +10332,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             });
           }
           branchId = 'branch' + (targetObj.branches.length + 1);
-          targetObj.branches.push({id: branchId, instructions: [sourceObj]});
+          targetObj.branches.push({ id: branchId, instructions: [sourceObj] });
           isDone = true;
         } else if (self.workflowService.isOnlyInstruction(targetObj.TYPE)) {
           if (!targetObj.instructions) {
@@ -10564,14 +10512,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                       if (obj.type || isSameObj) {
                         if (!obj.type.match('else')) {
                           if (!targetObj.then || targetObj.then.instructions.length === 0) {
-                            targetObj.then = {instructions: [sourceObj]};
+                            targetObj.then = { instructions: [sourceObj] };
                             booleanObj.isMatch = true;
                           } else {
                             dropAndAdd(targetObj.then.instructions, droppedCells[i].id, connection.target, sourceObj, booleanObj);
                           }
                         } else {
                           if (!targetObj.else || targetObj.else.instructions.length === 0) {
-                            targetObj.else = {instructions: [sourceObj]};
+                            targetObj.else = { instructions: [sourceObj] };
                             booleanObj.isMatch = true;
                           } else {
                             dropAndAdd(targetObj.else.instructions, droppedCells[i].id, connection.target, sourceObj, booleanObj);
@@ -10581,7 +10529,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     } else if (targetObj.TYPE === 'Fork') {
                       if (obj.type || isSameObj) {
                         if (!targetObj.branches || targetObj.branches.length === 0) {
-                          targetObj.branches = [{id: 'branch1', instructions: [sourceObj]}];
+                          targetObj.branches = [{ id: 'branch1', instructions: [sourceObj] }];
                           booleanObj.isMatch = true;
                         } else if (targetObj.branches && targetObj.branches.length > 0) {
                           for (let j = 0; j < targetObj.branches.length; j++) {
@@ -10865,7 +10813,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
     if (flag) {
       delete job.jobName;
-      this.jobs.push({name: data.job.jobName, value: job});
+      this.jobs.push({ name: data.job.jobName, value: job });
     }
     return isChange;
   }
@@ -10932,7 +10880,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   private openSideBar(id): void {
     this.error = true;
     if (this.editor.graph && id) {
-      this.dataService.reloadWorkflowError.next({error: this.error, msg: this.invalidMsg});
+      this.dataService.reloadWorkflowError.next({ error: this.error, msg: this.invalidMsg });
       this.editor.graph.setSelectionCells([this.editor.graph.getModel().getCell(id)]);
       this.initEditorConf(this.editor, false, true);
     }
@@ -11684,7 +11632,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         flag = true;
       }
     } else if (type === 'variable') {
-      const variableDeclarations = {parameters: [], allowUndeclared: false};
+      const variableDeclarations = { parameters: [], allowUndeclared: false };
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
         delete value.value.invalid;
@@ -11806,7 +11754,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        request.auditLog = {comment: translatedValue};
+        request.auditLog = { comment: translatedValue };
       });
     }
     this.coreService.post('inventory/store', request).subscribe({

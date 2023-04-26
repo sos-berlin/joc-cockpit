@@ -5,8 +5,7 @@
   <a class="max-btn" appMaximum [codeMirror]="codeMirror">
     <i class="fa fa-window-maximize"></i>
   </a>
-  <button type="button" class="close" aria-label="Close"
-          (click)="activeModal.destroy()">
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -16,53 +15,47 @@
       <div class="col-md-12 mono-font">
         <div id="show-tree-editor" class="z-index-9999 pos-abt" style="min-width: 150px;">
           <nz-tree-select nzNoAnimation [nzPlaceHolder]="'common.placeholder.search' | translate"
-                          [nzNodes]="boardTree" [nzHideUnMatched]="true" [nzShowExpand]="false"
-                          [nzDropdownStyle]="{ 'max-height': '300px' }" nzShowSearch [nzAllowClear]="true"
-                          [(ngModel)]="obj.noticeBoardName" name="noticeBoardName"
-                          (nzExpandChange)="onExpand($event)">
+               [nzNodes]="boardTree"
+               [nzHideUnMatched]="false"
+               [nzShowExpand]="false"
+               [nzDropdownStyle]="{ 'max-height': '300px' }"
+               nzShowSearch [nzAllowClear]="true"
+              [(ngModel)]="obj.noticeBoardName" name="noticeBoardName" (nzExpandChange)="onExpand($event)">
             <ng-template #nzTreeTemplate let-node>
-              <div class="pos-abt p-l-xs" *ngIf="node.origin.path == '/'">
-                <a class="text" (click)="expandAll();$event.stopPropagation()" [nz-tooltip]="'common.tooltip.expandAll' | translate">
-                  <i class="fa fa-angle-double-down fa-lg"></i>
-                </a>
-                <a class="text m-l-xs" (click)="collapseAll();$event.stopPropagation()" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
-                  <i class="fa fa-angle-double-up fa-lg"></i>
-                </a>
-              </div>
-              <div class="node-wrapper w-93" [ngStyle]="{'margin-top': node.origin.path == '/' ? '20px' : '0'}">
-                <span *ngIf="node.origin.loading || !node.origin.type"
-                    [class.toggle-children-wrapper-expanded]="node.isExpanded"
-                    [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                    (click)="openFolder(node);$event.stopPropagation()" class="cursor w-14 m-l-xxs m-t-n-1"
-                    [ngClass]="{'m-l-0': node.origin.path === '/'}">
-                    <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzType="caret-right"
-                      nzTheme="outline"></i>
-                    <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzType="caret-down"
-                      nzTheme="outline"></i>
-                    <i *ngIf="node.origin.loading"><nz-spin nzSimple [nzSize]="'small'"></nz-spin></i>
+              <div class="node-wrapper w-93">
+                <span *ngIf="node.origin.loading || (!node.origin.type && !node.origin.objectType)"
+                  [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                  [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                  (click)="openFolder(node);$event.stopPropagation()" class="cursor w-14 m-l-xxs m-t-n-1"
+                  [ngClass]="{'m-l-0': node.origin.path === '/'}">
+                  <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzType="caret-right"
+                    nzTheme="outline"></i>
+                  <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzType="caret-down" nzTheme="outline"></i>
+                  <i *ngIf="node.origin.loading"><nz-spin nzSimple [nzSize]="'small'"></nz-spin></i>
                 </span>
                 <span *ngIf="!node.origin.loading && node.origin.type" class="w-16">
                   <span class="fa fa-lg p-r-sm"></span>
                 </span>
                 <div class="node-content-wrapper p-l-xs" (click)="loadData(node, $event);"
-                     [class.node-content-wrapper-active]="node.origin.path == noticeBoardName">
-                  <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                     class="w-14"></i>
-                  <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                  {{node.origin.name}}
+                  [class.node-content-wrapper-active]="node.origin.path == noticeBoardName">
+                  <i *ngIf="!node.origin.type && !node.origin.objectType" nz-icon
+                    [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                  <i *ngIf="node.origin.type || node.origin.objectType" class="fa fa-circle-o text-xs w-11 m-t-xs"
+                    [ngClass]="{'p-l-xs': node.origin.objectType}"></i>
+                  <span class="p-l-sm">{{node.origin.name}}</span>
+                
                 </div>
+
               </div>
             </ng-template>
           </nz-tree-select>
         </div>
         <div id="boardId" class="b-a"
-             [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}">
+          [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}">
           <ngx-codemirror [autoFocus]="true" #codeMirror name="expectBoardExpression"
-                          title="{{'workflow.placeholder.expression' | translate}}" required
-                          #expectBoardExpression="ngModel" [(ngModel)]="obj.data"
-                          [options]="{lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
-                                  mode: 'shell'}"
-          ></ngx-codemirror>
+            title="{{'workflow.placeholder.expression' | translate}}" required #expectBoardExpression="ngModel"
+            [(ngModel)]="obj.data" [options]="{lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
+                                  mode: 'shell'}"></ngx-codemirror>
         </div>
         <div class="text-sm text-muted" translate>workflow.label.showNoticeBoardNames</div>
       </div>
@@ -72,8 +65,7 @@
     <button type="submit" class="btn btn-primary btn-sm" translate>
       common.button.submit
     </button>
-    <button type="button" class="btn btn-grey btn-sm"
-            (click)="activeModal.destroy()" translate>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
       common.button.cancel
     </button>
   </div>
