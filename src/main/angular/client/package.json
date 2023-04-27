@@ -52,7 +52,7 @@
     "svg-gauge": "^1.0.6",
     "tslib": "^2.3.0",
     "underscore": "^1.13.2",
-    "xlsx": "^0.17.4",
+    "xlsx": "^0.18.5",
     "xml-formatter": "^2.6.0",
     "xml-js": "^1.6.11",
     "xpath": "0.0.32",

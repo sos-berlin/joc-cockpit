@@ -16,7 +16,7 @@ import { NzTreeNode } from 'ng-zorro-antd/tree';
 import { FileUploader } from 'ng2-file-upload';
 import { TranslateService } from '@ngx-translate/core';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { NzMessageService } from "ng-zorro-antd/message";
 import { isEmpty, isArray, isEqual, clone, extend, sortBy, groupBy } from 'underscore';
 import { saveAs } from 'file-saver';
@@ -159,18 +159,15 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
     noticeBoardName: '',
     data: ''
   };
+  isTreeShow = false;
   @ViewChild('codeMirror', { static: false }) cm;
 
-  
-  searchCriteriaSubject: BehaviorSubject<any> = new BehaviorSubject(null);
-  private _destroying$: Subject<void> = new Subject<void>();
-
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef) {
   }
 
   ngAfterViewInit(): void {
     const self = this;
-    $('#show-tree-editor').hide();
+    this.isTreeShow = false;
     setTimeout(() => {
       if (this.cm && this.cm.codeMirror) {
         setTimeout(() => {
@@ -187,132 +184,35 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
         this.cm.codeMirror.setOption("extraKeys", {
           "Ctrl-Space": function (editor) {
             const cursor = editor.getCursor();
-            const dom = $('#show-tree-editor');
-            dom?.show();
-            const editorWidth = $('#boardId').width();
-            let left = ((cursor.ch * 7) + 12);
-            if ((editorWidth - left) < 145) {
-              left = editorWidth - 150;
-            }
-
-            dom?.css({
-              'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
-              'left': left + 'px',
-              'width': 'calc(100% - ' + (left + 8) + 'px)'
-            });
-            const dom2 = $('#show-tree-editor .ant-select');
-            const _tree = [...self.boardTree];
+            self.isTreeShow = true;
             setTimeout(() => {
-              dom2?.click();
-              $('#show-tree-editor input').on('keyup', (evt) => {
-                if (evt.target.value) {
-                  self.searchObjects(evt.target.value);
-                } else {
-                  self.boardTree = _tree;
-                }
+              const dom = $('#show-tree-editor');
+              const editorWidth = $('#boardId').width();
+              let left = ((cursor.ch * 7) + 12);
+              if ((editorWidth - left) < 145) {
+                left = editorWidth - 150;
+              }
+              dom?.css({
+                'opacity': '1',
+                'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
+                'left': left + 'px',
+                'width': 'calc(100% - ' + (left + 8) + 'px)'
               });
-              $('#show-tree-editor input').on('blur', () => {
-                $("#show-tree-editor input").off("keyup");
-                $('#show-tree-editor').hide();
-                self.boardTree = _tree;
-                $('.ant-select-tree-dropdown').hide();
-              });
-            }, 0);
+            }, 0)
           }
         })
       }
     }, 0);
   }
 
-  searchObjects(value: string) {
-    if (value !== '') {
-      if (value.length > 2) {
-        this.searchCriteriaSubject.pipe(
-          debounceTime(300),
-          distinctUntilChanged(),
-          takeUntil(this._destroying$),
-          switchMap(() => this.coreService.post('inventory/quick/search', {
-            search: value
-          })
-          ),
-        ).subscribe({
-          next: (res: any) => {
-            this.boardTree = res.results.map(function(item) {
-              return { ...item, key: item.name, title: item.name};
-            });
-          }
-        });
-      }
-    }
-  }
-
-  openFolder(node: NzTreeNode): void {
-    if (node instanceof NzTreeNode) {
-      node.isExpanded = !node.isExpanded;
-      if (node.isExpanded && !node.origin.type) {
-        this.loadData(node, null);
-      }
-    }
-  }
-
-  loadData(node, $event, isExpand = false): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      } else if (isExpand) {
-        node.isExpanded = true;
-      }
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        this.loadNotices(node.origin, node.key);
-      }
-    } else if (this.obj.noticeBoardName) {
-      this.checkExpectNoticeExp(node.origin.name);
-      delete this.obj.noticeBoardName;
-    }
-  }
-
-  private loadNotices(origin, key): void {
-    origin.loading = true;
-    this.coreService.post('inventory/read/folder', {
-      path: key,
-      objectTypes: ['NOTICEBOARD']
-    }).subscribe({
-      next: (res: any) => {
-        let data = res.noticeBoards;
-        for (let i = 0; i < data.length; i++) {
-          const _path = key + (key === '/' ? '' : '/') + data[i].name;
-          data[i].title = data[i].name;
-          data[i].path = _path;
-          data[i].key = data[i].name;
-          data[i].type = 'NOTICEBOARD';
-          data[i].isLeaf = true;
-        }
-
-        if (origin.children && origin.children.length > 0) {
-          data = data.concat(origin.children);
-        }
-        if (origin.isLeaf) {
-          origin.expanded = true;
-        }
-        origin.loading = false;
-        origin.isLeaf = false;
-        origin.children = data;
-        this.boardTree = [...this.boardTree];
-      }, error: () => origin.loading = false
-    });
+  onBlur(value: string): void {
+    $('.ant-select-tree-dropdown').hide();
+    this.checkExpectNoticeExp(value);
   }
 
   checkExpectNoticeExp(event): void {
+    this.isTreeShow = false;
     if (event) {
-      $('#show-tree-editor').hide();
       this.obj.noticeBoardName = '';
       const doc = this.cm.codeMirror.getDoc();
       const cursor = doc.getCursor();
@@ -330,10 +230,6 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
       this.cm.codeMirror.focus();
       doc.setCursor(cursor);
     }
-  }
-
-  onExpand(e): void {
-    this.loadData(e.node, null);
   }
 
   onSubmit(): void {
@@ -3056,9 +2952,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   stickySubagentAgentAssignment = '';
   selectedCellId = '';
 
-  searchCriteriaSubject: BehaviorSubject<any> = new BehaviorSubject(null);
-  private _destroying$: Subject<void> = new Subject<void>();
-
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -4008,10 +3901,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        if (type === InventoryObject.NOTICEBOARD) {
-          this.loadNotices(node.origin, node.key);
-          return;
-        }
         let obj: any = {
           path: node.key,
           objectTypes: [type]
@@ -4084,60 +3973,22 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             this.selectedNode.obj.noticeBoardNames.push(node.key);
           }
         }
-      } else if (type == 'NOTICEBOARD') {
-        this.checkExpectNoticeExp(node.origin.name);
-        delete this.selectedNode.obj.noticeBoardName;
       }
     }
   }
 
-  openFolder(node: NzTreeNode): void {
-    if (node instanceof NzTreeNode) {
-      node.isExpanded = !node.isExpanded;
-      if (node.isExpanded && !node.origin.type) {
-        this.loadData(node, 'NOTICEBOARD', null);
-      }
-    }
-  }
 
-  private loadNotices(origin, key): void {
-    origin.loading = true;
-    this.coreService.post('inventory/read/folder', {
-      path: key,
-      objectTypes: [InventoryObject.NOTICEBOARD]
-    }).subscribe({
-      next: (res: any) => {
-        let data = res.noticeBoards;
-        for (let i = 0; i < data.length; i++) {
-          const _path = key + (key === '/' ? '' : '/') + data[i].name;
-          data[i].title = data[i].name;
-          data[i].path = _path;
-          data[i].key = data[i].name;
-          data[i].type = InventoryObject.NOTICEBOARD;
-          data[i].isLeaf = true;
-        }
-
-        if (origin.children && origin.children.length > 0) {
-          data = data.concat(origin.children);
-        }
-        if (origin.isLeaf) {
-          origin.expanded = true;
-        }
-        origin.loading = false;
-        origin.isLeaf = false;
-        origin.children = data;
-        this.boardTree = [...this.boardTree];
-        this.ref.detectChanges();
-      }, error: () => {
-        origin.loading = false;
-        this.ref.detectChanges();
-      }
-    });
+  onBlur(value: string): void {
+    this.checkExpectNoticeExp(value);
   }
 
   checkExpectNoticeExp(event): void {
+    if (this.selectedNode) {
+      this.selectedNode.isTreeShow = false;
+      this.ref.detectChanges();
+      $('.ant-select-tree-dropdown').hide();
+    }
     if (event) {
-      $('#show-tree').hide();
       this.selectedNode.obj.noticeBoardName = '';
       const doc = this.cm.codeMirror.getDoc();
       const cursor = doc.getCursor();  // gets the line number in the cursor position
@@ -4155,34 +4006,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  searchObjects(value: string) {
-    console.log(value, 'value')
-    if (value !== '') {
-      if (value.length > 2) {
-        this.searchCriteriaSubject.pipe(
-          debounceTime(300),
-          distinctUntilChanged(),
-          takeUntil(this._destroying$),
-          switchMap(() => this.coreService.post('inventory/quick/search', {
-            search: value,
-          })
-          ),
-        ).subscribe({
-          next: (res: any) => {
-            this.boardTree = res.results.map(function(item) {
-              return { ...item, key: item.name, title: item.name};
-            });
-            this.ref.detectChanges();
-          }
-        });
-      }
-    }
-  }
-
   onExpand(e, type): void {
     this.loadData(e.node, type, null);
   }
-
 
   private loadScripts(): void {
     if (this.scriptList.length === 0) {
@@ -5288,21 +5114,25 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   private checkAndLoadBoards(list): void {
+    const paths = new Set<string>();
     list.forEach((name, index) => {
       this.getBoardPath(name, (path) => {
         if (path) {
-          this.loadBoardList(path);
+          paths.add(path.substring(0, path.lastIndexOf('/')) || '/');
           if (list.length - 1 === index) {
-            this.boardTree = [...this.boardTree];
+            paths.forEach(path => {
+               this.loadBoardList(path);
+            })
           }
         }
       });
     });
+
   }
 
   private getBoardPath(name, cb): void {
-    this.coreService.post('inventory/read/configuration', {
-      path: name,
+    this.coreService.post('inventory/path', {
+      name,
       objectType: InventoryObject.NOTICEBOARD
     }).subscribe((conf: any) => {
       if (cb) {
@@ -5313,7 +5143,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   private loadBoardList(path): void {
     if (this.treeCtrl) {
-      const node = this.treeCtrl.getTreeNodeByKey(path.substring(0, path.lastIndexOf('/')) || '/');
+      const node = this.treeCtrl.getTreeNodeByKey(path);
       if (node && node.origin) {
         this.loadData(node, InventoryObject.NOTICEBOARD, null, true);
       }
@@ -9049,91 +8879,49 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           self.getListOfVariables(obj);
         }
       }
-      self.ref.detectChanges();
-      $('#show-tree').hide();
-      setTimeout(() => {
-        if (self.cm && self.cm.codeMirror) {
-          setTimeout(() => {
-            if (self.selectedNode && self.selectedNode.obj) {
-              let arr = self.selectedNode.obj.noticeBoardNames?.split('\n') || [];
-              const doc = self.cm.codeMirror.getDoc();
-              const cursor = doc.getCursor();  // gets the line number in the cursor position 
-              doc.replaceRange('', cursor);
-              cursor.line = arr.length > 0 ? arr.length - 1 : 0;
-              cursor.ch = arr.length > 0 ? arr[arr.length - 1]?.length + 1 : 0;
-              self.cm.codeMirror.focus();
-              doc.setCursor(cursor);
-            }
-          }, 100);
+      if (cell?.value?.tagName === 'ExpectNotices' || cell?.value?.tagName === 'ConsumeNotices') {
+        self.selectedNode.isTreeShow = false;
+        self.ref.detectChanges();
+        setTimeout(() => {
+          if (self.cm && self.cm.codeMirror) {
+            setTimeout(() => {
+              if (self.selectedNode && self.selectedNode.obj) {
+                let arr = self.selectedNode.obj.noticeBoardNames?.split('\n') || [];
+                const doc = self.cm.codeMirror.getDoc();
+                const cursor = doc.getCursor();  // gets the line number in the cursor position 
+                doc.replaceRange('', cursor);
+                cursor.line = arr.length > 0 ? arr.length - 1 : 0;
+                cursor.ch = arr.length > 0 ? arr[arr.length - 1]?.length + 1 : 0;
+                self.cm.codeMirror.focus();
+                doc.setCursor(cursor);
+              }
+            }, 100);
 
-          self.cm.codeMirror.setOption("extraKeys", {
-            "Ctrl-Space": function (editor) {
-              // Save contents
-              const cursor = editor.getCursor();
-              const dom = $('#show-tree');
-              dom?.show();
-              const editorWidth = $('#boardId').width();
-              let left = ((cursor.ch * 7) + 12);
-              if ((editorWidth - left) < 145) {
-                left = editorWidth - 150;
-              }
-              if (self.boardTree.length > 0) {
-                self.boardTree[0].expanded = true;
-                let flag = false;
-                if (self.boardTree[0].children.length > 0 && self.boardTree[0].children[0].type) {
-                  flag = true;
-                }
-                if (!flag) {
-                  self.coreService.post('inventory/read/folder', {
-                    path: '/',
-                    objectTypes: [InventoryObject.NOTICEBOARD]
-                  }).subscribe((res: any) => {
-                    let data = res.noticeBoards;
-                    for (let i = 0; i < data.length; i++) {
-                      data[i].title = data[i].name;
-                      data[i].path = '/' + data[i].name;
-                      data[i].key = data[i].name;
-                      data[i].type = InventoryObject.NOTICEBOARD;
-                      data[i].isLeaf = true;
-                    }
-                    if (self.boardTree[0].children && self.boardTree[0].children.length > 0) {
-                      data = data.concat(self.boardTree[0].children);
-                    }
-                    self.boardTree[0].children = data;
-                    self.boardTree = [...self.boardTree];
-                    self.ref.detectChanges();
-                  });
-                }
-              }
-              dom?.css({
-                'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
-                'left': left + 'px',
-                'width': 'calc(100% - ' + (left + 8) + 'px)'
-              });
-              const dom2 = $('#show-tree .ant-select');
-              const _tree = [...self.boardTree];
-              setTimeout(() => {
-                dom2?.click();
-                $('#show-tree input').on('keyup', (evt) => {
-                  if (evt.target.value) {
-                    self.searchObjects(evt.target.value);
-                  } else {
-                    self.boardTree = _tree;
-                    self.ref.detectChanges();
+            self.cm.codeMirror.setOption("extraKeys", {
+              "Ctrl-Space": function (editor) {
+                // Save contents
+                const cursor = editor.getCursor();
+                self.selectedNode.isTreeShow = true;
+                self.ref.detectChanges();
+                setTimeout(() => {
+                  const dom = $('#show-tree');
+                  const editorWidth = $('#boardId').width();
+                  let left = ((cursor.ch * 7) + 12);
+                  if ((editorWidth - left) < 145) {
+                    left = editorWidth - 150;
                   }
-                });
-
-                $('#show-tree input').on('blur', () => {
-                  $("#show-tree input").off("keyup");
-                  $('#show-tree').hide();
-                  self.boardTree = _tree;
-                  $('.ant-select-tree-dropdown').hide();
-                });
-              }, 0);
-            }
-          });
-        }
-      }, 500);
+                  dom?.css({
+                    'opacity': '1',
+                    'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
+                    'left': left + 'px',
+                    'width': 'calc(100% - ' + (left + 8) + 'px)'
+                  });
+                }, 0)
+              }
+            });
+          }
+        }, 500);
+      }
     }
 
     function checkEachIntructions(list, job) {

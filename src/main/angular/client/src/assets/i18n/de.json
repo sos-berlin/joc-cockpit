@@ -1857,7 +1857,7 @@
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Skript angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Skript Bausteins kann nach Belieben angegeben werden.",
         "script": "Der Inhalt des Skript Bausteins kann je nach Verwendung in Job-Skripten aus Shell Kommandos oder Code für Skriptsprachen wie Perl, PowerShell etc. bestehen.",
-        "autocompleteShortCut": "Verwenden Sie die Tasten Ctrl+Leertaste um die Liste der Skript Bausteine anzuzeigen."
+        "autocompleteShortCut": "Verwenden Sie die Tasten Strg+Leertaste um die Liste der Skript Bausteine anzuzeigen."
       },
       "workflow": {
         "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Bindestriche und Punkte sind nicht zugelassen.",
@@ -3150,7 +3150,7 @@
     "label.expectBoardName": "Name Notizbrett",
     "label.expectBoardExpression": "ExpectNotices Ausdruck",
     "label.consumeBoardExpression": "ConsumeNotices Ausdruck",
-    "label.showNoticeBoardNames": "Ctrl+Leertaste drücken um Notizbretter nachzuschlagen",
+    "label.showNoticeBoardNames": "Strg+Leertaste drücken um Notizbretter nachzuschlagen",
     "label.children": "Listenvariable",
     "label.childToId": "Element der Listenvariable für Kennung des Zweigs",
     "label.createForkListVariable": "Listenvariable erstellen",
@@ -3307,8 +3307,8 @@
     "tooltip.facetEntryMode": "Eingabemodus für Prüfungen",
     "tooltip.editorEntryMode": "Direkter Eingabemodus",
     "tooltip.removeJobTemplateReference": "Verweis auf Job-Vorlage entfernen",
-    "tooltip.singleClickToSelect": "Single-clicking on an instruction will highlight it, and open a property editor to update its properties",
-    "tooltip.doubleClickToSelect": "Double-clicking on an instruction will highlight it, and if a new instruction is dropped onto it, the new instruction will be added as its parent",
+    "tooltip.singleClickToSelect": "Einfaches Klicken markiert die Anweisung und lässt das Editieren der Eigenschaften zu.",
+    "tooltip.doubleClickToSelect": "Doppeltes Klicken markiert die Anweisung. Wird eine neue Anweisung auf dieser Anweisung abgelegt, dann umfasst die neue Anweisung die vorhandene.",
     "findAndReplace": {
       "label.find": "Suchen",
       "label.replace": "Ersetzen",
@@ -3503,10 +3503,10 @@
         "dateFormat": "D.M.YYYY",
         "dayFormat": "D",
         "dateTimeFormat": "D.M.YYYY HH:mm:ss",
-        "previousMonth": "Vorheriger Monat (PageUp)",
-        "nextMonth": "Nächster Monat (PageDown)",
-        "previousYear": "Vorheriges Jahr (Ctrl + left)",
-        "nextYear": "Nächstes Jahr (Ctrl + right)",
+        "previousMonth": "Vorheriger Monat (Seite aufwärts)",
+        "nextMonth": "Nächster Monat (Seite abwärts)",
+        "previousYear": "Vorheriges Jahr (Strg+links)",
+        "nextYear": "Nächstes Jahr (Strg+rechts)",
         "previousDecade": "Vorheriges Jahrzehnt",
         "nextDecade": "Nächstes Jahrzehnt",
         "previousCentury": "Vorheriges Jahrhundert",
