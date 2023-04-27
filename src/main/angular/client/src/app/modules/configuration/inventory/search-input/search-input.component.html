@@ -1,0 +1,27 @@
+<nz-tree-select nzNoAnimation [nzPlaceHolder]="'common.placeholder.search' | translate" [nzNodes]="nodes"
+  [nzHideUnMatched]="false" [nzShowExpand]="false" [nzDropdownStyle]="{ 'max-height': '300px' }" nzShowSearch
+  [nzAllowClear]="true" [(ngModel)]="obj.name" name="objectName" (nzExpandChange)="onExpand($event)">
+  <ng-template #nzTreeTemplate let-node>
+    <div class="node-wrapper w-93">
+      <span *ngIf="node.origin.loading || (!node.origin.type && !node.origin.objectType)"
+        [class.toggle-children-wrapper-expanded]="node.isExpanded"
+        [class.toggle-children-wrapper-collapsed]="!node.isExpanded" (click)="openFolder(node);$event.stopPropagation()"
+        class="cursor w-14 m-l-xxs m-t-n-1" [ngClass]="{'m-l-0': node.origin.path === '/'}">
+        <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzType="caret-right" nzTheme="outline"></i>
+        <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzType="caret-down" nzTheme="outline"></i>
+        <i *ngIf="node.origin.loading"><nz-spin nzSimple [nzSize]="'small'"></nz-spin></i>
+      </span>
+      <span *ngIf="!node.origin.loading && node.origin.type" class="w-16">
+        <span class="fa fa-lg p-r-sm"></span>
+      </span>
+      <div class="node-content-wrapper p-l-xs" (click)="loadData(node, $event);"
+        [class.node-content-wrapper-active]="node.origin.path == obj.name">
+        <i *ngIf="!node.origin.type && !node.origin.objectType" nz-icon
+          [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+        <i *ngIf="node.origin.type || node.origin.objectType" class="fa fa-circle-o text-xs w-11 m-t-xs"
+          [ngClass]="{'p-l-xs': node.origin.objectType}"></i>
+        <span class="p-l-sm">{{node.origin.name}}</span>
+      </div>
+    </div>
+  </ng-template>
+</nz-tree-select>

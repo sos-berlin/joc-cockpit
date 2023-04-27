@@ -3221,6 +3221,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   objectHistory = [];
   searchNode = {
     loading: false,
+    token: '',
     text: ''
   }
 
@@ -3985,16 +3986,22 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (value !== '') {
       if (value.length > 2) {
         this.searchNode.loading = true;
+
+        const request: any = {
+          search: value
+        };
+        if (this.searchNode.token) {
+          request.token = this.searchNode.token;
+        }
         this.searchCriteriaSubject.pipe(
           debounceTime(300),
           distinctUntilChanged(),
           takeUntil(this._destroying$),
-          switchMap(() => this.coreService.post('inventory/quick/search', {
-            search: value
-          })
+          switchMap(() => this.coreService.post('inventory/quick/search', request)
           ),
         ).subscribe({
           next: (res: any) => {
+            this.searchNode.token = res.token;
             this.updateData(res.results);
             this.searchNode.loading = false;
           }, error: () => this.searchNode.loading = true

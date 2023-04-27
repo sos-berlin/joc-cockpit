@@ -13,7 +13,6 @@ import {OrderListSidebarComponent} from './order-list-sidebar/order-list-sidebar
 import {TypeComponent} from './workflow-type/type.component';
 import {ScriptModalComponent} from './script-modal/script-modal.component';
 import {TooltipInfoComponent} from "./tooltip-info/tooltip-info.component";
-import {NoticeBoardEditorComponent} from "../configuration/inventory/workflow/workflow.component";
 
 @NgModule({
   imports: [
@@ -36,7 +35,6 @@ import {NoticeBoardEditorComponent} from "../configuration/inventory/workflow/wo
     OrderListSidebarComponent,
     ShowDependencyComponent,
     ScriptModalComponent,
-    NoticeBoardEditorComponent,
     FilterModalComponent,
     TooltipInfoComponent,
     SearchComponent,
