@@ -14,12 +14,15 @@ export class LoginComponent implements OnInit {
   user: any = {};
   schedulerIds: any = {};
   submitted = false;
+  submitted1 = false;
   rememberMe = false;
   errorMsg = false;
   returnUrl = '';
+  errorMsgText = '';
   defaultSetting: any = {};
   oidcIdentityServiceItems = [];
   fido2IdentityServiceItems = [];
+  showRegister = false;
 
   constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService,
               private authService: AuthService, private oAuthService: OIDCAuthService, private renderer: Renderer2) {
@@ -99,8 +102,13 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(values: any): void {
-    this.submitted = true;
     this.errorMsg = false;
+    this.errorMsgText = '';
+    if (this.showRegister) {
+      this.register();
+      return;
+    }
+    this.submitted = true;
     this.coreService.post('authentication/login', values).subscribe({
       next: (data) => {
         this.authService.rememberMe = this.rememberMe;
@@ -151,8 +159,7 @@ export class LoginComponent implements OnInit {
   }
 
   private getIdAndSecret(identityServiceName): void {
-
-    this.coreService.post('iam/identityclient', {identityServiceName}).subscribe({
+    this.coreService.post('iam/identityclient', { identityServiceName }).subscribe({
       next: (data) => {
         this.oAuthService.clientId = data.iamOidcClientId;
         this.oAuthService.clientSecret = data.iamOidcClientSecret;
@@ -163,4 +170,138 @@ export class LoginComponent implements OnInit {
     });
   }
 
+
+  idList: any = [];
+
+  registerDevice() {
+    this.showRegister = true;
+    this.errorMsg = false;
+    this.errorMsgText = '';
+    this.coreService.post('iam/identityclient', { identityServiceName: this.fido2IdentityServiceItems[0].identityServiceName }).subscribe({
+      next: (data) => {
+        console.log(data)
+      }
+    });
+  }
+
+  register() {
+    this.submitted1 = true;
+    const challenge = new Uint8Array(32);
+    window.crypto.getRandomValues(challenge);
+    let id = new Uint8Array(32);
+    let publicKeyCredentialCreationOptions: PublicKeyCredentialCreationOptions = {
+      challenge: challenge,
+      rp: {
+        name: 'SOS'
+      },
+      user: {
+        id: id,
+        name: this.user.email,
+        displayName: this.user.displayName
+      },
+      pubKeyCredParams: [
+        { type: 'public-key', alg: -7 }
+      ],
+      authenticatorSelection: {
+        // authenticatorAttachment: "platform", // "cross-platform" | "platform"
+        // requireResidentKey: false,
+        userVerification: "preferred", // "discouraged" | "preferred" | "required"
+        // specify the allowed AuthenticatorTransport types here
+        //  residentKey: "preferred" // "discouraged" | "preferred" | "required";
+      },
+      timeout: 60000,
+      attestation: "none", // "direct" | "enterprise" | "indirect" | "none"
+      // PublicKeyCredentialDescriptor[] { id: BufferSource,  transports?: ["ble" | "hybrid" | "internal" | "nfc" | "usb"], type: "public-key";
+
+    };
+
+
+    //  const publicKeyCredentialCreationOptions: any = await response.json();
+
+    navigator.credentials.create({
+      publicKey: publicKeyCredentialCreationOptions
+    }).then((credential: any) => {
+
+      // Send the credential to the back-end for verification
+      console.log(credential)
+      const credentialData = {
+        id: credential.id,
+        type: credential.type,
+        rawId: this.bufferToBase64Url(credential.rawId),
+        response: {
+          clientDataJSON: this.bufferToBase64Url(credential.response.clientDataJSON),
+          attestationObject: this.bufferToBase64Url(credential.response.attestationObject)
+        }
+      };
+
+      //TODO
+      console.log(credentialData, ' Save in DB')
+      let enc = new TextDecoder("utf-8");
+      let clientDataJSON = enc.decode(credential.response.clientDataJSON);
+
+      console.log(clientDataJSON);
+      let clientData = JSON.parse(clientDataJSON);
+      console.log(clientData);
+      this.coreService.post('/iam/fido2registration/requestregistration', {
+        "identityServiceName": this.fido2IdentityServiceItems[0].identityServiceName,
+        "accountName": this.user.displayName,
+        "rpName": "myRpName",
+        "email": this.user.email,
+        "publicKey": this.user.displayName
+      }).subscribe({
+        next: () => {
+          this.submitted1 = false;
+          this.back();
+        }, error: () => {
+          this.submitted1 = false;
+        }
+      })
+    })
+      .catch((error) => {
+        this.submitted1 = false;
+        this.errorMsg = true;
+        this.errorMsgText = error;
+        console.log('FAIL', error)
+      })
+  }
+
+  back(): void {
+    this.showRegister = false;
+    this.submitted = false;
+    this.submitted1 = false;
+    this.errorMsg = false;
+    this.errorMsgText = '';
+  }
+
+
+  private bufferToBase64Url(buffer: any) {
+    const base64String = btoa(String.fromCharCode(...new Uint8Array(buffer)))
+    base64String.replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+
+    return base64String;
+  }
+
+  onSign(data) {
+    console.log(data)
+    this.errorMsgText = '';
+    let challenge = new Uint8Array(32);
+    window.crypto.getRandomValues(challenge);
+    let publicKey: PublicKeyCredentialRequestOptions = {
+      challenge: challenge,
+      allowCredentials: this.idList
+    }
+    console.log(publicKey);
+
+    navigator.credentials.get({ 'publicKey': publicKey })
+      .then((getAssertionResponse) => {
+        alert('SUCCESSFULLY LOGIN!');
+        console.log('SUCCESSFULLY LOGIN!', getAssertionResponse)
+      })
+      .catch((error) => {
+        this.errorMsg = true;
+        this.errorMsgText = error;
+      })
+  }
 }

@@ -2132,7 +2132,14 @@
     "label.rememberMe": "Remember Me",
     "button.logIn": "Log In",
     "button.loginWith": "Continue with {{identityServiceName}}",
+    "button.registerDevice": "Register New Device",
     "message.loginError": "Account or password is wrong"
+  },
+  "register": {
+    "label.displayName": "Name",
+    "label.email": "Email",
+    "button.back": "Back",
+    "button.register": "Register"
   },
   "monitor": {
     "label": {
@@ -2823,6 +2830,11 @@
     "label.iamOidcTruststorePassword": "OIDC Truststore Password",
     "label.iamOidcImage": "OIDC Image",
     "label.iamOidcUserAttribute": "OIDC User Name Attribute",
+    "label.iamFido2RpName": "FIDO2 Rp Name",
+    "label.iamFido2Attestation": "FIDO2 Attestation",
+    "label.iamFido2Timeout": "FIDO2 Timeout",
+    "label.iamFido2Transports": "FIDO2 Transports",
+    "label.iamFido2UserVerification": "FIDO2 User Verification",
     "label.group": "Group",
     "label.general": "General",
     "label.on": "On",
@@ -2926,6 +2938,11 @@
     "placeholder.iamOidcTruststoreType": "Enter OIDC Truststore Type",
     "placeholder.iamOidcTruststorePassword": "Enter OIDC Truststore Password",
     "placeholder.iamOidcUserAttribute": "Enter OIDC User Name Attribute",
+    "placeholder.iamFido2RpName": "Enter FIDO2 Rp name",
+    "placeholder.iamFido2Attestation": "Select Attestation",
+    "placeholder.iamFido2Timeout": "Enter timeout in miliseconds",
+    "placeholder.iamFido2Transports": "Select transport",
+    "placeholder.iamFido2UserVerification": "Select user verification",
     "placeholder.group": "Enter Group",
     "placeholder.initialPassword": "Enter initial password",
     "placeholder.minPasswordLength": "Enter minimum password length",
@@ -3019,6 +3036,13 @@
         "iamOidcTruststorePassword": "If the OIDC Truststore is protected by a password, then the password has to be specified.",
         "iamOidcUserAttribute": "OIDC User Attribute",
         "iamOidcImage": "If an OIDC Image is specified then it is displayed with the login screen. Image files of type .png are allowed with a maximum size of 1 MB. Images are best displayed using a width and height of 96 pixels."
+      },
+      "fido2" : {
+        "iamFido2Attestation" : "Fido2 Attestation",
+        "iamFido2RpName" : "Fido2 Rp Name",
+        "iamFido2Timeout" : "Fido2 Timeout",
+        "iamFido2Transports" : "Fido2 Transports",
+        "iamFido2UserVerification" : "Fido2 User Verification"
       },
       "general": {
         "sessionTimeout": "A user session will be terminated by JOC Cockpit and the user has to login after the given number of seconds if no action is performed in JOC Cockpit.",

@@ -12,7 +12,6 @@ import {
   ViewChild
 } from '@angular/core';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { NzTreeNode } from 'ng-zorro-antd/tree';
 import { FileUploader } from 'ng2-file-upload';
 import { TranslateService } from '@ngx-translate/core';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
@@ -156,7 +155,6 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
   @Input() data: any;
   @Input() object: any = {};
   obj = {
-    noticeBoardName: '',
     data: ''
   };
   isTreeShow = false;
@@ -213,7 +211,6 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
   checkExpectNoticeExp(event): void {
     this.isTreeShow = false;
     if (event) {
-      this.obj.noticeBoardName = '';
       const doc = this.cm.codeMirror.getDoc();
       const cursor = doc.getCursor();
       if (this.cm.codeMirror.getSelection()) {
@@ -1265,7 +1262,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() jobResourcesTree = [];
   @Input() documentationTree = [];
   @Input() scriptTree = [];
-  @Input() scriptList = [];
   @Input() orderPreparation;
   @Input() agents: any = [];
   @Input() isTooltipVisible: boolean;
@@ -1275,7 +1271,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() checkboxObjects: any = {};
 
   history = [];
-  list: Array<string> = [];
   indexOfNextAdd = 0;
   error: boolean;
   errorMsg: string;
@@ -1310,8 +1305,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   };
 
   scriptObj = {
-    name: '',
-    show: false
+    name: ''
   };
 
   variableList = [];
@@ -1319,7 +1313,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   mentionValueList = [];
   copiedParamObjects: any = {};
   hasLicense: boolean;
-
+  isTreeShow = false;
   subscription: Subscription;
 
   @ViewChild('codeMirror', { static: false }) cm: any;
@@ -1357,33 +1351,36 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.index = 0;
-    if (this.scriptList.length > 0) {
-      this.list = this.scriptList.map((item) => item.name);
-    }
+    const self = this;
+    this.isTreeShow = false;
     if (!this.isModal) {
       this.updateVariableList();
     }
 
     setTimeout(() => {
       if (this.cm && this.cm.codeMirror) {
-        this.cm.codeMirror.on('inputRead', (editor, e) => {
-          const cursor = editor.getCursor();
-          const currentLine = editor.getLine(cursor.line);
-          if (currentLine && currentLine.match(/^(##|::|\/\/)!include/i)) {
-            let start = cursor.ch;
-            let end = start;
-            while (end < currentLine.length && /[\w$]+/.test(currentLine.charAt(end))) {
-              ++end;
-            }
-            while (start && /[\w$]+/.test(currentLine.charAt(start - 1))) {
-              --start;
-            }
-            const curWord = start != end && currentLine.slice(start, end);
-            this.getScript(curWord);
+        this.cm.codeMirror.setOption("extraKeys", {
+          "Ctrl-Space": function (editor) {
+            const cursor = editor.getCursor();
+            self.isTreeShow = true;
+            self.ref.detectChanges();
+            setTimeout(() => {
+              const dom = $('#show-tree');
+              const editorWidth = $('#scriptId').width();
+              let left = ((cursor.ch * 7) + 40);
+              if ((editorWidth - left) < 145) {
+                left = editorWidth - 150;
+              }
+              dom?.css({
+                'opacity': '1',
+                'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
+                'left': left + 'px',
+                'width': 'calc(100% - ' + (left + 8) + 'px)'
+              });
+            }, 0)
           }
-        });
+        })
       }
-      this.mergeScriptData();
     }, 100);
   }
 
@@ -1578,76 +1575,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.ref.detectChanges();
   }
 
-  showTree(): void {
-    this.scriptObj.show = true;
-  }
-
-  private mergeScriptData(): void {
-    const self = this;
-
-    function recursive(mainObj): void {
-      for (const i in mainObj) {
-        if (mainObj[i].children && mainObj[i].children.length > 0) {
-          recursive(mainObj[i].children);
-        }
-        let data = [];
-        for (const j in self.scriptList) {
-          self.scriptList[j].path1 = self.scriptList[j].path.substring(0, self.scriptList[j].path.lastIndexOf('/')) || self.scriptList[j].path.substring(0, self.scriptList[j].path.lastIndexOf('/') + 1);
-          if (self.scriptList[j].path1 === mainObj[i].path) {
-            data.push({
-              title: self.scriptList[j].name,
-              path: self.scriptList[j].path,
-              key: self.scriptList[j].name,
-              type: self.scriptList[j].objectType,
-              isLeaf: true
-            });
-          }
-        }
-        if (mainObj[i].children && mainObj[i].children.length > 0) {
-          data = data.concat(mainObj[i].children);
-        }
-        if (mainObj[i].isLeaf) {
-          mainObj[i].expanded = true;
-        }
-        mainObj[i].isLeaf = false;
-        mainObj[i].children = data;
-      }
-    }
-
-    if (this.scriptTree.length > 0) {
-      if (!this.scriptTree[0].done) {
-        this.scriptTree[0].done = true;
-        recursive(this.scriptTree);
-      }
-    }
-  }
-
-  closeScriptTree(): void {
-    if (this.scriptObj.show) {
-      const doc = this.cm.codeMirror.getDoc();
-      const cursor = this.cm.codeMirror.getCursor(); // gets the line number in the cursor position
-      const currentLine = this.cm.codeMirror.getLine(cursor.line);
-      const isSpace = currentLine.substring(cursor.ch, cursor.ch + 1) == ' ';
-      let str = (!isSpace ? ' ' : '');
-      if (cursor.ch == 0) {
-        str = '';
-      }
-      if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
-        if (this.scriptObj.name) {
-          str = str + '##!include ' + this.scriptObj.name;
-        }
-      } else {
-        str = str + this.scriptObj.name + ' ';
-      }
-      doc.replaceRange(str, cursor);
-      cursor.ch = cursor.ch + str.length;
-      this.cm.codeMirror.focus();
-      doc.setCursor(cursor);
-      this.scriptObj.name = '';
-    }
-    this.scriptObj.show = false;
-  }
-
   showEditor(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -1657,7 +1584,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       nzComponentParams: {
         script: this.selectedNode.job.executable.script,
         scriptTree: this.scriptTree,
-        list: this.scriptList,
         disabled: (this.selectedNode.job && this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name)
       },
       nzFooter: null,
@@ -1988,24 +1914,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     return temp;
   }
 
-  private getScript(curWord): void {
-    const regex = new RegExp('^' + curWord, 'i');
-    const list = (!curWord ? this.list : this.list.filter((item) => {
-      return item.match(regex);
-    })).sort();
-    const options = {
-      completeSingle: false,
-      hint: (CodeMirror) => {
-        return {
-          from: CodeMirror.getDoc().getCursor(),
-          to: CodeMirror.getDoc().getCursor(),
-          list
-        };
-      }
-    };
-    this.cm.codeMirror.showHint(options);
-  }
-
   openEditor(data: any): void {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -2038,6 +1946,34 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.obj = {};
     }
     this.saveToHistory();
+  }
+
+  onBlurTree(value: string): void{
+    $('.ant-select-tree-dropdown').hide();
+    this.checkExpectNoticeExp(value);
+  }
+
+  checkExpectNoticeExp(name): void {
+    this.isTreeShow = false;
+    this.ref.detectChanges();
+    if (name) {
+      const doc = this.cm.codeMirror.getDoc();
+      const cursor = doc.getCursor(); // gets the line number in the cursor position
+      const currentLine = this.cm.codeMirror.getLine(cursor.line);
+      const isSpace = cursor.ch > 0 ? currentLine.substring(cursor.ch-1, cursor.ch) == ' ' : true;
+   
+      let str = (!isSpace ? ' ' : '');
+      let text = name;
+      if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
+        text = '##!include ' + name;
+      }
+      str = str + text + ' ';
+      doc.replaceRange(str, cursor);
+      cursor.ch = cursor.ch + (text.length);
+
+      this.cm.codeMirror.focus();
+      doc.setCursor(cursor);
+    }
   }
 
   onChangeJobResource(value): void {
@@ -2317,15 +2253,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         });
       }
     } else {
-      if (type === InventoryObject.INCLUDESCRIPT) {
-        setTimeout(() => {
-          this.closeScriptTree();
-        }, 10);
-      } else {
         setTimeout(() => {
           this.saveToHistory();
         }, 10);
-      }
     }
   }
 
@@ -2525,28 +2455,23 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
 @Component({
   selector: 'app-script-content',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './script-editor.html'
 })
 export class ScriptEditorComponent implements AfterViewInit, OnInit {
   @Input() script: any;
-  @Input() list: any = [];
   @Input() scriptTree: any = [];
   @Input() disabled: boolean;
+  isTreeShow = false;
   dragEle: any;
-  scriptList: Array<string> = [];
   scriptObj = {
-    name: '',
-    data: '',
-    show: false
+    data: ''
   };
   cmOption: any = {
     lineNumbers: true,
     scrollbarStyle: 'simple',
     viewportMargin: Infinity,
     autoRefresh: true,
-    mode: 'shell',
-    extraKeys: { 'Ctrl-Space': 'autocomplete' }
+    mode: 'shell'
   };
   @ViewChild('codeMirror', { static: false }) cm: any;
 
@@ -2571,9 +2496,7 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
         localStorage.$SOS$SCRIPTWINDOWHIGHT = x.size.height;
       }
     });
-    if (this.list.length > 0) {
-      this.scriptList = this.list.map((item) => item.name);
-    }
+
     setTimeout(() => {
       if (this.cm && this.cm.codeMirror) {
         if (localStorage.$SOS$SCRIPTWINDOWWIDTH) {
@@ -2581,34 +2504,46 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
           this.cm.codeMirror.setSize(wt - 2, (parseInt(localStorage.$SOS$SCRIPTWINDOWHIGHT, 10) - 2));
           $('.ant-modal').css('cssText', 'width : ' + (wt + 32) + 'px !important');
         }
-        setTimeout(() => {
-          if (this.cm && this.cm.codeMirror) {
-            const doc = this.cm.codeMirror.getDoc();
-            const cursor = doc.getCursor(); // gets the line number in the cursor position
-            doc.replaceRange(this.script || '', cursor);
-            this.cm.codeMirror.focus();
-            doc.setCursor(cursor);
-          }
-        }, 450);
-
-        this.cm.codeMirror.on('inputRead', (editor, e) => {
-          const cursor = editor.getCursor();
-          const currentLine = editor.getLine(cursor.line);
-          if (currentLine && currentLine.match(/^(##|::|\/\/)!include/i)) {
-            let start = cursor.ch;
-            let end = start;
-            while (end < currentLine.length && /[\w$]+/.test(currentLine.charAt(end))) {
-              ++end;
-            }
-            while (start && /[\w$]+/.test(currentLine.charAt(start - 1))) {
-              --start;
-            }
-            const curWord = start != end && currentLine.slice(start, end);
-            this.getScript(curWord);
-          }
-        });
       }
     }, 100);
+
+    const self = this;
+    this.isTreeShow = false;
+    setTimeout(() => {
+      if (this.cm && this.cm.codeMirror) {
+        setTimeout(() => {
+          let arr = this.script?.split('\n') || [];
+          const doc = this.cm.codeMirror.getDoc();
+          const cursor = doc.getCursor();  // gets the line number in the cursor position 
+          doc.replaceRange(this.script, cursor);
+          cursor.line = arr.length > 0 ? arr.length - 1 : 0;
+          cursor.ch = arr.length > 0 ? arr[arr.length - 1]?.length + 1 : 0;
+          this.cm.codeMirror.focus();
+          doc.setCursor(cursor);
+        }, 400);
+
+        this.cm.codeMirror.setOption("extraKeys", {
+          "Ctrl-Space": function (editor) {
+            const cursor = editor.getCursor();
+            self.isTreeShow = true;
+            setTimeout(() => {
+              const dom = $('#show-tree-editor');
+              const editorWidth = $('#resizable').width();
+              let left = ((cursor.ch * 7) + 40);
+              if ((editorWidth - left) < 145) {
+                left = editorWidth - 150;
+              }
+              dom?.css({
+                'opacity': '1',
+                'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
+                'left': left + 'px',
+                'width': 'calc(100% - ' + (left + 8) + 'px)'
+              });
+            }, 0)
+          }
+        })
+      }
+    }, 0);
   }
 
   @HostListener('document:mousemove', ['$event'])
@@ -2630,69 +2565,31 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
     this.coreService.updateReplaceText();
   }
 
-  loadData(node, $event): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-    } else {
-      setTimeout(() => {
-        this.closeScriptTree();
-      }, 10)
-    }
+  onBlur(value: string): void {
+    $('.ant-select-tree-dropdown').hide();
+    this.checkExpectNoticeExp(value);
   }
 
-  onExpand(e): void {
-    this.loadData(e.node, null);
-  }
-
-  private getScript(curWord): void {
-    const regex = new RegExp('^' + curWord, 'i');
-    const list = (!curWord ? this.scriptList : this.scriptList.filter((item) => {
-      return item.match(regex);
-    })).sort();
-    const options = {
-      completeSingle: false,
-      hint: (CodeMirror) => {
-        return {
-          from: CodeMirror.getDoc().getCursor(),
-          to: CodeMirror.getDoc().getCursor(),
-          list
-        };
-      }
-    };
-    this.cm.codeMirror.showHint(options);
-  }
-
-  showTree(): void {
-    this.scriptObj.show = true;
-  }
-
-  closeScriptTree(): void {
-    if (this.scriptObj.show) {
+  checkExpectNoticeExp(name): void {
+    this.isTreeShow = false;
+    if (name) {
       const doc = this.cm.codeMirror.getDoc();
-      const cursor = this.cm.codeMirror.getCursor(); // gets the line number in the cursor position
+      const cursor = doc.getCursor(); // gets the line number in the cursor position
       const currentLine = this.cm.codeMirror.getLine(cursor.line);
-      const isSpace = currentLine.substring(cursor.ch, cursor.ch + 1) == ' ';
+      const isSpace = cursor.ch > 0 ? currentLine.substring(cursor.ch-1, cursor.ch) == ' ' : true;
+
       let str = (!isSpace ? ' ' : '');
+      let text = name;
       if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
-        if (this.scriptObj.name) {
-          str = str + '##!include ' + this.scriptObj.name + ' ';
-        }
-      } else {
-        str = str + this.scriptObj.name + ' ';
+        text = '##!include ' + name;
       }
+      str = str + text + ' ';
       doc.replaceRange(str, cursor);
-      cursor.ch = cursor.ch + str.length;
+      cursor.ch = cursor.ch + (text.length);
+
       this.cm.codeMirror.focus();
       doc.setCursor(cursor);
-      this.scriptObj.name = '';
     }
-    this.scriptObj.show = false;
   }
 
 }
@@ -2896,7 +2793,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   lockTree = [];
   boardTree = [];
   scriptTree = [];
-  scriptList = [];
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
   dummyXml: any;
@@ -3145,7 +3041,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       });
     }
     if (this.scriptTree.length === 0 || flag) {
-      this.loadScripts();
       this.coreService.post('tree', {
         controllerId: this.schedulerId,
         forInventory: true,
@@ -4010,17 +3905,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     this.loadData(e.node, type, null);
   }
 
-  private loadScripts(): void {
-    if (this.scriptList.length === 0) {
-      this.coreService.post('inventory/read/folder', {
-        objectTypes: ['INCLUDESCRIPT'],
-        path: '/',
-        recursive: true
-      }).subscribe((res) => {
-        this.scriptList = res.includeScripts;
-      });
-    }
-  }
 
   @HostListener('window:beforeunload', ['$event'])
   beforeunload(): void {
@@ -5121,7 +5005,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           paths.add(path.substring(0, path.lastIndexOf('/')) || '/');
           if (list.length - 1 === index) {
             paths.forEach(path => {
-               this.loadBoardList(path);
+              this.loadBoardList(path);
             })
           }
         }

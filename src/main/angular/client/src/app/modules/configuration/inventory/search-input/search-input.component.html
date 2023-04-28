@@ -14,7 +14,7 @@
       <span *ngIf="!node.origin.loading && node.origin.type" class="w-16">
         <span class="fa fa-lg p-r-sm"></span>
       </span>
-      <div class="node-content-wrapper p-l-xs" (click)="loadData(node, $event);"
+      <div class="node-content-wrapper p-l-xs" [nz-tooltip]="node.origin.path?.substring(0, node.origin.path?.lastIndexOf('/')) || '/'" nzTooltipPlacement="right" (click)="loadData(node, $event);"
         [class.node-content-wrapper-active]="node.origin.path == obj.name">
         <i *ngIf="!node.origin.type && !node.origin.objectType" nz-icon
           [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>

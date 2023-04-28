@@ -107,7 +107,7 @@ export class SearchInputComponent implements OnInit, OnDestroy {
       objectTypes: [this.type]
     }).subscribe({
       next: (res: any) => {
-        let data = res.noticeBoards;
+        let data = this.type == 'NOTICEBOARD' ? res.noticeBoards : res.includeScripts;
         for (let i = 0; i < data.length; i++) {
           const _path = key + (key === '/' ? '' : '/') + data[i].name;
           data[i].title = data[i].name;

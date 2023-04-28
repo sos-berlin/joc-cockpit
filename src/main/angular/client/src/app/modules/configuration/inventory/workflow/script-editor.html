@@ -68,40 +68,18 @@
           </ul>
         </div>
       </div>
-      <div class="col-md-12 role">
-        <div class="select-script-input2" *ngIf="scriptObj.show">
-          <nz-tree-select
-            name="scriptName"
-            nzNoAnimation
-            [nzAllowClear]="true"
-            [nzNodes]="scriptTree"
-            [nzHideUnMatched]="true"
-            [nzDropdownStyle]="{ 'max-height': '300px' }"
-            [nzDropdownClassName]="'select-script-input3'"
-            nzShowSearch
-            nzPlaceHolder="{{'workflow.placeholder.selectScript' | translate}}"
-            [(ngModel)]="scriptObj.name"
-            (nzExpandChange)="onExpand($event)"
-          >
-            <ng-template #nzTreeTemplate let-node>
-              <div class="node-wrapper w-93" (click)="loadData(node,  $event);">
-                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.key == scriptObj.name">
-                  <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                  <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                  {{node.origin.key}}
-                </div>
-              </div>
-            </ng-template>
-          </nz-tree-select>
+      <div class="col-md-12">
+        <div id="show-tree-editor" *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" style="min-width: 150px;">
+          <app-search-input [nodes]="scriptTree" [type]="'INCLUDESCRIPT'" (onSelect)="checkExpectNoticeExp($event)" (onBlur)="onBlur($event)"></app-search-input>
         </div>
-        <i *ngIf="list.length > 0" class="pos-abt z-index-9999 text-20 r-24 t-1" nz-icon nzType="folder" nzTheme="outline" (click)="showTree()"></i>
-        <div (click)="closeScriptTree()" id="resizable" class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}">
-          <ngx-codemirror [appAutofocus]="true" required #codeMirror title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}"
+        <div id="resizable" class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}">
+          <ngx-codemirror [appAutofocus]="true" required #codeMirror
                           #cm="ngModel" name="cm" [(ngModel)]="scriptObj.data" [options]="cmOption"
           ></ngx-codemirror>
           <div class="rg-right" style="background: transparent; margin-right: -16px"><span style="top:48%"></span></div>
           <div class="rg-bottom" style="bottom: -16px;background: transparent"><span></span></div>
         </div>
+        <div class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
         <div *ngIf="(cm.invalid && (cm.dirty || cm.touched))"
              class="text-danger help-block">
           <div *ngIf="(cm.errors && cm.errors.required)">

@@ -76,6 +76,7 @@
         </div>
       </div>
     </div>
+    <!------------------------------------BEGIN VAULT-------------------------------------------->
     <div *ngIf="data && data.identityServiceType.match('VAULT')">
       <div class="form-group row">
         <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.vault.iamVaultUrl' | translate"
@@ -163,6 +164,7 @@
         </div>
       </div>
     </div>
+    <!------------------------------------BEGIN KEYCLOAK----------------------------------------->
     <div *ngIf="data && data.identityServiceType.match('KEYCLOAK')">
       <div class="form-group row">
         <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakUrl' | translate"
@@ -284,6 +286,7 @@
         </div>
       </div>
     </div>
+    <!------------------------------------BEGIN LDAP--------------------------------------------->
     <div *ngIf="data && data.identityServiceType.match('LDAP')">
       <nz-tabset class="m-t-n-8">
         <nz-tab [nzTitle]="'user.tab.simpleMode' | translate">
@@ -640,6 +643,7 @@
         </nz-tab>
       </nz-tabset>
     </div>
+    <!------------------------------------BEGIN OIDC--------------------------------------------->
     <div *ngIf="data && data.identityServiceType.match('OIDC')">
       <div class="form-group row">
         <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.oidc.iamOidcName' | translate"
@@ -803,6 +807,72 @@
         </div>
       </div>
     </div>
+    <!------------------------------------BEGIN FIDO2-------------------------------------------->
+    <div *ngIf="data && data.identityServiceType.match('FIDO2')">
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.fido2.iamFido2RpName' | translate"
+          [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2RpName
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6"
+          [ngClass]="{'has-error' : ((iamFido2RpName.dirty || iamFido2RpName.touched) && iamFido2RpName.invalid)}">
+          <input [appAutofocus]="true" type="text" class="form-control" required #iamFido2RpName="ngModel" name="iamFido2RpName"
+            [placeholder]="'user.placeholder.iamFido2RpName' | translate" [(ngModel)]="currentObj.iamFido2RpName">
+          <div *ngIf="iamFido2RpName.invalid && (iamFido2RpName.dirty || iamFido2RpName.touched)" class="text-danger help-block">
+            <div *ngIf="iamFido2RpName.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+          [nz-tooltip]="'user.tooltips.fido2.iamFido2Attestation' | translate" [nzTooltipMouseEnterDelay]="0.5"
+          translate>user.label.iamFido2Attestation
+        </label>
+        <div class="col-sm-6">
+          <nz-select name="iamFido2Attestation" [(ngModel)]="currentObj.iamFido2Attestation">
+            <nz-option *ngFor="let option of iamFido2Attestation"
+              [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
+          </nz-select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.fido2.iamFido2Timeout' | translate"
+          [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2Timeout
+        </label>
+        <div class="col-sm-6"
+          [ngClass]="{'has-error' : ((iamFido2Timeout.dirty || iamFido2Timeout.touched) && iamFido2Timeout.invalid)}">
+          <nz-input-number name="iamFido2Timeout"
+          [nzPlaceHolder]="'user.placeholder.iamFido2Timeout' | translate" [nzMin]="0" #iamFido2Timeout="ngModel"
+          [(ngModel)]="currentObj.iamFido2Timeout" ></nz-input-number>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.fido2.iamFido2Transports' | translate"
+          [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2Transports
+        </label>
+        <div class="col-sm-6">
+          <nz-select name="iamFido2Transports" [(ngModel)]="currentObj.iamFido2Transports" nzMode="multiple">
+            <nz-option *ngFor="let option of iamFido2Transports"
+              [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
+          </nz-select>
+        </div>
+
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.fido2.iamFido2UserVerification' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2UserVerification
+        </label>
+        <div class="col-sm-6">
+          <nz-select name="iamFido2UserVerification" [(ngModel)]="currentObj.iamFido2UserVerification">
+            <nz-option *ngFor="let option of iamFido2UserVerification"
+              [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
+          </nz-select>
+        </div>
+      </div>
+    </div>
+    <!------------------------------------END FIDO2---------------------------------------------->
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-primary btn-sm"

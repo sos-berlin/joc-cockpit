@@ -2132,7 +2132,14 @@
     "label.rememberMe": "保存",
     "button.logIn": "ログイン",
     "button.loginWith" : "{{identityServiceName}}IDサービスでログイン",
+    "button.registerDevice": "Register New Device",
     "message.loginError": "アカウントかパスワードが間違っています"
+  },
+  "register": {
+    "label.displayName": "Name",
+    "label.email": "Email",
+    "button.back": "Back",
+    "button.register": "Register"
   },
   "monitor": {
     "label": {
@@ -2823,6 +2830,11 @@
     "label.iamOidcTruststorePassword": "OIDC Tトラストストアパスワード",
     "label.iamOidcImage": "OIDC イメージ",
     "label.iamOidcUserAttribute": "OIDC ユーザー属性",
+    "label.iamFido2RpName": "FIDO2 Rp Name",
+    "label.iamFido2Attestation": "FIDO2 Attestation",
+    "label.iamFido2Timeout": "FIDO2 Timeout",
+    "label.iamFido2Transports": "FIDO2 Transports",
+    "label.iamFido2UserVerification": "FIDO2 User Verification",
     "label.group": "グループ",
     "label.general": "共通",
     "label.on": "On",
@@ -2926,6 +2938,11 @@
     "placeholder.iamOidcTruststoreType": "OIDC トラストストアタイプ入力",
     "placeholder.iamOidcTruststorePassword": "OIDC トラストストアパスワード入力",
     "placeholder.iamOidcUserAttribute": "OIDC ユーザー属性入力",
+    "placeholder.iamFido2RpName": "Enter FIDO2 Rp name",
+    "placeholder.iamFido2Attestation": "Select Attestation",
+    "placeholder.iamFido2Timeout": "Enter timeout in miliseconds",
+    "placeholder.iamFido2Transports": "Select transport",
+    "placeholder.iamFido2UserVerification": "Select user verification",
     "placeholder.group": "グループを入力",
     "placeholder.initialPassword": "初期パスワードを入力",
     "placeholder.minPasswordLength": "最少パスワード文字数を入力",
@@ -3019,6 +3036,13 @@
         "iamOidcTruststorePassword": "OIDC トラストストアパスワード",
         "iamOidcUserAttribute": "OIDC ユーザー属性",
         "iamOidcImage": "OIDC イメージ"
+      },
+      "fido2" : {
+        "iamFido2Attestation" : "Fido2 Attestation",
+        "iamFido2RpName" : "Fido2 Rp Name",
+        "iamFido2Timeout" : "Fido2 Timeout",
+        "iamFido2Transports" : "Fido2 Transports",
+        "iamFido2UserVerification" : "Fido2 User Verification"
       },
       "general": {
         "sessionTimeout": "JOCコックピットで何もアクションが行われなかった場合、指定された秒数後にユーザーセッションが終了し、ユーザーは再ログインする必要があります。",
