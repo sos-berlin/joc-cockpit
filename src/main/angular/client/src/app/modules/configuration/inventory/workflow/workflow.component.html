@@ -187,7 +187,7 @@
       <div class="m-l-sm m-r-12 text-left" *ngIf="selectedNode">
         <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
           <app-job-content [selectedNode]="selectedNode" [timeZone]="extraConfiguration.timeZone"
-                           [scriptList]="scriptList" [preferences]="preferences"
+                           [preferences]="preferences"
                            [isTooltipVisible]="!preferences.showTooltipInfo" [orderPreparation]="orderPreparation"
                            [jobs]="jobs"
                            [agents]="inventoryService.agentList" [jobResourcesTree]="jobResourcesTree"
@@ -575,9 +575,9 @@
                 <nz-tree-select #treeSelectCtrl nzMultiple required nzNoAnimation
                                 [nzPlaceHolder]="'workflow.placeholder.selectBoards' | translate"
                                 #noticeBoardName="ngModel"
-                                [nzNodes]="boardTree" [nzHideUnMatched]="true"
+                                [nzNodes]="boardTree"
                                 [nzDropdownStyle]="{ 'max-height': '300px' }"
-                                nzShowSearch [nzAllowClear]="false" [(ngModel)]="selectedNode.obj.noticeBoardNames"
+                                [nzAllowClear]="false" [(ngModel)]="selectedNode.obj.noticeBoardNames"
                                 (nzExpandChange)="onExpand($event, 'NOTICEBOARD')">
                   <ng-template #nzTreeTemplate let-node>
                     <div class="node-wrapper w-93" (click)="loadData(node, 'NOTICEBOARD', $event);">
@@ -618,7 +618,7 @@
               <div class="col-md-8 col-lg-9">
                 <div id="show-tree" *ngIf="selectedNode.isTreeShow" class="z-index-9999 pos-abt opacity0" style="min-width: 150px;">
                   <app-search-input [nodes]="boardTree" [type]="'NOTICEBOARD'" (onSelect)="checkExpectNoticeExp($event)"
-                   (onBlur)="onBlur()" [changeDetect]="true"></app-search-input>
+                   (onBlur)="onBlur($event)" [changeDetect]="true"></app-search-input>
                 </div>
                 <i class="pos-abt z-index-9999 text-20 r-15 t-1" nz-icon nzType="form" nzTheme="outline"
                    (click)="openEditor(selectedNode.obj, 'noticeBoardNames')"></i>

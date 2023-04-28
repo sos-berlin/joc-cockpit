@@ -83,6 +83,50 @@ export class SettingModalComponent implements OnInit {
     text: 'ssl',
     value: 'SSL'
   }];
+  iamFido2Transports = [{
+    text: 'ble',
+    value: 'ble'
+  }, {
+    text: 'hybrid',
+    value: 'hybrid'
+  }, {
+    text: 'internal',
+    value: 'internal'
+  },
+  {
+    text: 'nfc',
+    value: 'nfc'
+  },
+  {
+    text: 'usb',
+    value: 'usb'
+  }
+  ];
+  iamFido2Attestation = [{
+    text: 'Direct',
+    value: 'direct'
+  }, {
+    text: 'Enterprise',
+    value: 'enterprise'
+  }, {
+    text: 'Indirect',
+    value: 'indirect'
+  }, {
+    text: 'None',
+    value: 'none'
+  }
+  ];
+  iamFido2UserVerification = [{
+    text: 'Discouraged',
+    value: 'discouraged'
+  }, {
+    text: 'Preferred',
+    value: 'preferred'
+  }, {
+    text: 'Required',
+    value: 'required'
+  }
+  ];
   isEnable = false;
   isLengthMatch = true;
   submitted = false;
@@ -213,7 +257,7 @@ export class SettingModalComponent implements OnInit {
         const data = JSON.parse(res.configuration.configurationItem);
         if (this.data) {
           if (data) {
-            this.currentObj = data.vault || data.keycloak || data.oidc || {};
+            this.currentObj = data.vault || data.keycloak || data.oidc || data.fido2 || {};
             if (data.ldap || (res.configuration.objectType && res.configuration.objectType.match(/LDAP/))) {
               if (data.ldap && data.ldap.simple) {
                 this.userObj = data.ldap.simple;
@@ -246,7 +290,7 @@ export class SettingModalComponent implements OnInit {
           if (data.sessionTimeout) {
             this.currentObj.sessionTimeout = SettingModalComponent.convertDurationToString(data.sessionTimeout);
           }
-        }
+        }        
       }
     });
   }
@@ -522,6 +566,10 @@ export class SettingModalComponent implements OnInit {
       } else if (this.data.identityServiceType.match('OIDC')) {
         obj.oidc = this.currentObj;
       }
+      else if (this.data.identityServiceType.match('FIDO2')) {
+        this.currentObj.iamFido2Transports = "USB";
+        obj.fido2 = this.currentObj;
+      }
     } else {
       obj = this.coreService.clone(this.currentObj);
       delete obj.initialPassword1;
@@ -561,7 +609,7 @@ export class SettingModalComponent implements OnInit {
 
   pasteSetting(): void {
     this.currentObj = clone(this.saveService.copiedSetting.data);
-    if(this.saveService.copiedSetting.type.match('LDAP')) {
+    if (this.saveService.copiedSetting.type.match('LDAP')) {
       this.updateUserMode();
     }
   }
@@ -664,7 +712,7 @@ export class IdentityServiceModalComponent implements OnInit {
       if (res.configuration.configurationItem) {
         const data = JSON.parse(res.configuration.configurationItem);
         if (data) {
-          if (data.vault || data.ldap || data.keycloak || data.oidc) {
+          if (data.vault || data.ldap || data.keycloak || data.oidc || data.fido2) {
             this.removeSettingId = res.configuration.id;
             this.settingObj = res.configuration.configurationItem;
           }

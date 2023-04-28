@@ -13,7 +13,7 @@ import { FileUploader } from 'ng2-file-upload';
 import { ToastrService } from 'ngx-toastr';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { TranslateService } from '@ngx-translate/core';
-import { clone, extend, isArray, isEmpty, isEqual, sortBy } from 'underscore';
+import { clone, extend, groupBy, isArray, isEmpty, isEqual, sortBy } from 'underscore';
 import { ClipboardService } from 'ngx-clipboard';
 import { saveAs } from 'file-saver';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
@@ -3215,7 +3215,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
   objectType: string;
   path: string;
   indexOfNextAdd = 0;
-  intervalId: any;
 
   allObjects: any = [];
   objectHistory = [];
@@ -3332,9 +3331,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
     this.inventoryConfig.copyObj = this.copyObj;
     this.inventoryConfig.isTrash = this.isTrash;
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
     $('.scroll-y').remove();
   }
 
@@ -3990,6 +3986,21 @@ export class InventoryComponent implements OnInit, OnDestroy {
         const request: any = {
           search: value
         };
+        if (value.includes(":")) {
+          const arr = value.split(":");
+          const qualifiers = arr[0];
+          request.search = arr[1];
+          if (qualifiers?.trim().length == 1) {
+            request.returnType = getReturnType(qualifiers);
+          } else {
+            let chars = qualifiers.split('');
+            console.log(chars);
+            const returnTypes = [];
+            chars.forEach(char => {
+                returnTypes.push(getReturnType(char))
+            })
+          }
+        }
         if (this.searchNode.token) {
           request.token = this.searchNode.token;
         }
@@ -4010,23 +4021,36 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else {
       this.allObjects = [];
     }
+
+    function getReturnType(qualifier){
+      qualifier = qualifier.toLowerCase();
+      if (qualifier === 'w') {
+        return "WORKFLOW";
+      } else if (qualifier === 'f') {
+        return "FILEORDERSOURCE";
+      } else if (qualifier === 'r') {
+        return "JOBRESOURCE";
+      } else if (qualifier === 'b') {
+        return "NOTICEBOARD";
+      } else if (qualifier === 'l') {
+        return "LOCK";
+      } else if (qualifier === 'i') {
+        return "INCLUDESCRIPT";
+      } else if (qualifier === 's') {
+        return "SCHEDULE";
+      } else if (qualifier === 'c') {
+        return "CALENDAR";
+      } else if (qualifier === 't') {
+        return "JOBTEMPLATE";
+      }
+    }
   }
 
   private updateData(data): void {
-    this.allObjects = [];
-    let index = 20;
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
-    this.allObjects = data.slice(0, 20);
-    this.intervalId = setInterval(() => {
-      if (index < data.length && this.allObjects.length < 20) {
-        this.allObjects = this.allObjects.concat(data.slice(index, 20));
-        index = index + 20;
-      } else {
-        clearInterval(this.intervalId);
-      }
-    }, 20);
+    const x = groupBy(data, (res) => {
+      return res.objectType;
+    });
+    this.allObjects = x;
   }
 
   clearSearchInput(): void {
@@ -4037,13 +4061,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   selectObject(item): void {
     this.isNavigationComplete = false;
-    if (item.objectType && item.path) {
+    if (item.objectType && item.path && item.objectType !== 'FOLDER') {
       this.selectedObj = {
         name: item.name,
         path: item.path.substring(0, item.path.lastIndexOf('/')) || '/',
         type: item.objectType
       };
-
     }
     this.recursivelyExpandTree();
     setTimeout(() => {
