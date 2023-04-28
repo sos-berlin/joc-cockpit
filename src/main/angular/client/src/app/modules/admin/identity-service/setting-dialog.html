@@ -810,22 +810,6 @@
     <!------------------------------------BEGIN FIDO2-------------------------------------------->
     <div *ngIf="data && data.identityServiceType.match('FIDO2')">
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.fido2.iamFido2RpName' | translate"
-          [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2RpName
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-sm-6"
-          [ngClass]="{'has-error' : ((iamFido2RpName.dirty || iamFido2RpName.touched) && iamFido2RpName.invalid)}">
-          <input [appAutofocus]="true" type="text" class="form-control" required #iamFido2RpName="ngModel" name="iamFido2RpName"
-            [placeholder]="'user.placeholder.iamFido2RpName' | translate" [(ngModel)]="currentObj.iamFido2RpName">
-          <div *ngIf="iamFido2RpName.invalid && (iamFido2RpName.dirty || iamFido2RpName.touched)" class="text-danger help-block">
-            <div *ngIf="iamFido2RpName.errors.required">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
         <label class="col-sm-4 form-control-label"
           [nz-tooltip]="'user.tooltips.fido2.iamFido2Attestation' | translate" [nzTooltipMouseEnterDelay]="0.5"
           translate>user.label.iamFido2Attestation

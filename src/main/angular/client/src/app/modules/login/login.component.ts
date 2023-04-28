@@ -1,9 +1,11 @@
-import {Component, OnInit, Renderer2} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnInit, Renderer2 } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
-import {CoreService} from '../../services/core.service';
-import {AuthService, OIDCAuthService} from '../../components/guard';
+import { CoreService } from '../../services/core.service';
+import { AuthService, OIDCAuthService } from '../../components/guard';
 
 @Component({
   selector: 'app-login',
@@ -25,7 +27,8 @@ export class LoginComponent implements OnInit {
   showRegister = false;
 
   constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService,
-              private authService: AuthService, private oAuthService: OIDCAuthService, private renderer: Renderer2) {
+    private authService: AuthService, private oAuthService: OIDCAuthService, private renderer: Renderer2,
+    private translate: TranslateService, private toasterService: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -170,18 +173,21 @@ export class LoginComponent implements OnInit {
     });
   }
 
-
-  idList: any = [];
-
   registerDevice() {
-    this.showRegister = true;
-    this.errorMsg = false;
-    this.errorMsgText = '';
-    this.coreService.post('iam/identityclient', { identityServiceName: this.fido2IdentityServiceItems[0].identityServiceName }).subscribe({
-      next: (data) => {
-        console.log(data)
-      }
-    });
+    if (window.PublicKeyCredential) {
+      this.showRegister = true;
+      this.errorMsg = false;
+      this.errorMsgText = '';
+      this.coreService.post('iam/identityclient', { identityServiceName: this.fido2IdentityServiceItems[0].identityServiceName }).subscribe({
+        next: (data) => {
+          console.log(data);
+          
+        }
+      });
+    } else {
+      this.toasterService.warning('Your browser doesn\'t support WebAuthn', 
+      'We recommend updating to a modern browser that supports WebAuthn for the best user experience and increased security.');
+    }
   }
 
   register() {
@@ -247,13 +253,16 @@ export class LoginComponent implements OnInit {
         "accountName": this.user.displayName,
         "rpName": "myRpName",
         "email": this.user.email,
-        "publicKey": this.user.displayName
+        "publicKey": credentialData.rawId
       }).subscribe({
         next: () => {
           this.submitted1 = false;
+          this.toasterService.success('Your registration was successful.',
+          'To complete your account setup, please check your email to verify your email address')
           this.back();
-        }, error: () => {
+        }, error: (err) => {
           this.submitted1 = false;
+          this.toasterService.error(err.message)
         }
       })
     })
@@ -290,7 +299,7 @@ export class LoginComponent implements OnInit {
     window.crypto.getRandomValues(challenge);
     let publicKey: PublicKeyCredentialRequestOptions = {
       challenge: challenge,
-      allowCredentials: this.idList
+      allowCredentials: []
     }
     console.log(publicKey);
 

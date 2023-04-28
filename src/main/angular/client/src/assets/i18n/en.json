@@ -2830,7 +2830,6 @@
     "label.iamOidcTruststorePassword": "OIDC Truststore Password",
     "label.iamOidcImage": "OIDC Image",
     "label.iamOidcUserAttribute": "OIDC User Name Attribute",
-    "label.iamFido2RpName": "FIDO2 Rp Name",
     "label.iamFido2Attestation": "FIDO2 Attestation",
     "label.iamFido2Timeout": "FIDO2 Timeout",
     "label.iamFido2Transports": "FIDO2 Transports",
@@ -2938,7 +2937,6 @@
     "placeholder.iamOidcTruststoreType": "Enter OIDC Truststore Type",
     "placeholder.iamOidcTruststorePassword": "Enter OIDC Truststore Password",
     "placeholder.iamOidcUserAttribute": "Enter OIDC User Name Attribute",
-    "placeholder.iamFido2RpName": "Enter FIDO2 Rp name",
     "placeholder.iamFido2Attestation": "Select Attestation",
     "placeholder.iamFido2Timeout": "Enter timeout in miliseconds",
     "placeholder.iamFido2Transports": "Select transport",
@@ -3039,7 +3037,6 @@
       },
       "fido2" : {
         "iamFido2Attestation" : "Fido2 Attestation",
-        "iamFido2RpName" : "Fido2 Rp Name",
         "iamFido2Timeout" : "Fido2 Timeout",
         "iamFido2Transports" : "Fido2 Transports",
         "iamFido2UserVerification" : "Fido2 User Verification"
