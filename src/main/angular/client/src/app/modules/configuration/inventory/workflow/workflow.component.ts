@@ -1948,7 +1948,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.saveToHistory();
   }
 
-  onBlurTree(value: string): void{
+  onBlurTree(value: string): void {
     $('.ant-select-tree-dropdown').hide();
     this.checkExpectNoticeExp(value);
   }
@@ -1960,8 +1960,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       const doc = this.cm.codeMirror.getDoc();
       const cursor = doc.getCursor(); // gets the line number in the cursor position
       const currentLine = this.cm.codeMirror.getLine(cursor.line);
-      const isSpace = cursor.ch > 0 ? currentLine.substring(cursor.ch-1, cursor.ch) == ' ' : true;
-   
+      const isSpace = cursor.ch > 0 ? currentLine.substring(cursor.ch - 1, cursor.ch) == ' ' : true;
+
       let str = (!isSpace ? ' ' : '');
       let text = name;
       if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
@@ -2253,9 +2253,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         });
       }
     } else {
-        setTimeout(() => {
-          this.saveToHistory();
-        }, 10);
+      setTimeout(() => {
+        this.saveToHistory();
+      }, 10);
     }
   }
 
@@ -2576,7 +2576,7 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
       const doc = this.cm.codeMirror.getDoc();
       const cursor = doc.getCursor(); // gets the line number in the cursor position
       const currentLine = this.cm.codeMirror.getLine(cursor.line);
-      const isSpace = cursor.ch > 0 ? currentLine.substring(cursor.ch-1, cursor.ch) == ' ' : true;
+      const isSpace = cursor.ch > 0 ? currentLine.substring(cursor.ch - 1, cursor.ch) == ' ' : true;
 
       let str = (!isSpace ? ' ' : '');
       let text = name;
@@ -2869,6 +2869,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               this.initEditorConf(this.editor, false, true);
             }
           } else {
+
             this.initEditorConf(this.editor, false, true);
           }
         }
@@ -7243,26 +7244,28 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         mgr.save = function () {
           if (!self.isLoading && !self.isTrash) {
             setTimeout(() => {
-              if (self.workflow.actual) {
-                self.implicitSave = true;
-                if (self.noSave) {
-                  self.noSave = false;
-                } else {
-                  if (!self.skipXMLToJSONConversion) {
-                    self.xmlToJsonParser();
+              if (!self.implicitSave) {
+                if (self.workflow.actual) {
+                  self.implicitSave = true;
+                  if (self.noSave) {
+                    self.noSave = false;
                   } else {
-                    self.skipXMLToJSONConversion = false;
+                    if (!self.skipXMLToJSONConversion) {
+                      self.xmlToJsonParser();
+                    } else {
+                      self.skipXMLToJSONConversion = false;
+                    }
+                    if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
+                      graph.setEnabled(true);
+                    } else {
+                      self.reloadDummyXml(graph);
+                    }
+                    self.validateJSON();
                   }
-                  if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
-                    graph.setEnabled(true);
-                  } else {
-                    self.reloadDummyXml(graph);
-                  }
-                  self.validateJSON();
+                  setTimeout(() => {
+                    self.implicitSave = false;
+                  }, 250);
                 }
-                setTimeout(() => {
-                  self.implicitSave = false;
-                }, 250);
               }
             }, 200);
           } else {
@@ -10671,9 +10674,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (flag && !ids.has(json.instructions[x].jobName)) {
               ids.set(json.instructions[x].jobName, json.instructions[x].id);
             }
-          }
-
-          if (json.instructions[x].TYPE === 'If') {
+          } else if (json.instructions[x].TYPE === 'If') {
             if ((!json.instructions[x].predicate || !json.instructions[x].then)) {
               flag = false;
               self.invalidMsg = !json.instructions[x].predicate ? 'workflow.message.predicateIsMissing' : 'workflow.message.invalidIfInstruction';
@@ -10701,19 +10702,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (json.instructions[x].else && json.instructions[x].else.instructions && json.instructions[x].else.instructions.length === 0) {
               delete json.instructions[x].else;
             }
-          }
-
-          if (json.instructions[x].TYPE === 'Try') {
+          } else if (json.instructions[x].TYPE === 'Try') {
             if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0) && isValidate) {
               flag = false;
               checkErr = true;
               self.invalidMsg = 'workflow.message.invalidTryInstruction';
               return;
             }
-          }
-
-          if (json.instructions[x].TYPE === 'Retry') {
-            if (!(!json.instructions[x].id && !json.instructions[x].instructions && !json.instructions[x].maxTries)) {
+          } else if (json.instructions[x].TYPE === 'Retry') {
+            if (!(!json.instructions[x].id && !json.instructions[x].instructions)) {
               if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0)) {
                 flag = false;
                 checkErr = true;
@@ -10730,9 +10727,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 }
               }
             }
-          }
-
-          if (json.instructions[x].TYPE === 'Cycle') {
+          } else if (json.instructions[x].TYPE === 'Cycle') {
             if (json.instructions[x].schedule && typeof json.instructions[x].schedule === 'string') {
               try {
                 json.instructions[x].schedule = JSON.parse(json.instructions[x].schedule);
@@ -10760,9 +10755,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 }
               }
             }
-          }
-
-          if (json.instructions[x].TYPE === 'Lock') {
+          } else if (json.instructions[x].TYPE === 'Lock') {
             if (!json.instructions[x].id && !json.instructions[x].instructions && !json.instructions[x].demands) {
 
             } else {
@@ -10790,9 +10783,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 }
               }
             }
-          }
-
-          if (json.instructions[x].TYPE === 'ConsumeNotices') {
+          } else if (json.instructions[x].TYPE === 'ConsumeNotices') {
             if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0)) {
               flag = self.workflowService.validateFields(json.instructions[x], 'ConsumeNotices');
               if (!flag) {
@@ -10806,9 +10797,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 return;
               }
             }
-          }
-
-          if (json.instructions[x].TYPE === 'ForkList') {
+          } else if (json.instructions[x].TYPE === 'ForkList') {
             if (!json.instructions[x].id && !json.instructions[x].instructions && !json.instructions[x].children) {
 
             } else {
@@ -10832,9 +10821,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 }
               }
             }
-          }
-
-          if (json.instructions[x].TYPE === 'StickySubagent') {
+          } else if (json.instructions[x].TYPE === 'StickySubagent') {
             if (!json.instructions[x].id && !json.instructions[x].instructions && !json.instructions[x].agentName) {
 
             } else {
@@ -10858,9 +10845,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 }
               }
             }
-          }
-
-          if (json.instructions[x].TYPE === 'AddOrder') {
+          } else if (json.instructions[x].TYPE === 'AddOrder') {
             flag = self.workflowService.validateFields(json.instructions[x], 'AddOrder');
             if (isEmpty(json.instructions[x].arguments)) {
               delete json.instructions[x].arguments;
@@ -10875,9 +10860,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
               return;
             }
-          }
-
-          if (json.instructions[x].TYPE === 'ExpectNotices') {
+          } else if (json.instructions[x].TYPE === 'ExpectNotices') {
             flag = self.workflowService.validateFields(json.instructions[x], 'ExpectNotices');
             if (!flag) {
               checkErr = true;
@@ -10889,9 +10872,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
               return;
             }
-          }
-
-          if (json.instructions[x].TYPE === 'PostNotices') {
+          } else if (json.instructions[x].TYPE === 'PostNotices') {
             flag = self.workflowService.validateFields(json.instructions[x], 'PostNotices');
             if (!flag) {
               checkErr = true;
@@ -10903,9 +10884,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
               return;
             }
-          }
-
-          if (json.instructions[x].TYPE === 'Fork') {
+          } else if (json.instructions[x].TYPE === 'Fork') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Fork');
             if (!flag) {
               checkErr = true;
@@ -10985,7 +10964,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (json.instructions[x].TYPE === 'Try' && json.instructions[x].instructions && !json.instructions[x].try) {
             self.workflowService.convertTryInstruction(json.instructions[x]);
           }
-          if (json.instructions[x].TYPE === 'Retry' && (json.instructions[x].retryDelays || json.instructions[x].maxTries)) {
+          if (json.instructions[x].TYPE === 'Retry') {
             json.instructions[x].TYPE = 'Try';
             self.workflowService.convertRetryToTryCatch(json.instructions[x]);
           }

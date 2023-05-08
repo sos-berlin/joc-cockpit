@@ -248,7 +248,7 @@ export class LoginComponent implements OnInit {
       console.log(clientDataJSON);
       let clientData = JSON.parse(clientDataJSON);
       console.log(clientData);
-      this.coreService.post('/iam/fido2registration/requestregistration', {
+      this.coreService.post('iam/fido2registration/request_registration', {
         "identityServiceName": this.fido2IdentityServiceItems[0].identityServiceName,
         "accountName": this.user.displayName,
         "rpName": "myRpName",
@@ -305,7 +305,7 @@ export class LoginComponent implements OnInit {
 
     navigator.credentials.get({ 'publicKey': publicKey })
       .then((getAssertionResponse) => {
-        alert('SUCCESSFULLY LOGIN!');
+       
         console.log('SUCCESSFULLY LOGIN!', getAssertionResponse)
       })
       .catch((error) => {

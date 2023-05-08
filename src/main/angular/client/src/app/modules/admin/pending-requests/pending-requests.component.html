@@ -1,0 +1,90 @@
+<div class="box p-a">
+    <div class="table-responsive">
+      <nz-table
+        #ajaxTable
+        [nzSize]="'small'"
+        [nzPageSize]="usr.entryPerPage || preferences.entryPerPage || 25"
+        [nzPageIndex]="usr.currentPage || 1"
+        [nzBordered]="true"
+        [nzShowPagination]="data.length > 0"
+        [nzData]="data"
+        [nzLoading]="loading" 
+        [nzShowSizeChanger]="true"
+        (nzPageIndexChange)="pageIndexChange($event)"
+        (nzPageSizeChange)="pageSizeChange($event)"
+        [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 5000]"
+      >
+      <thead>
+        <tr>
+          <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="chk"
+              [nzShowCheckbox]="true"
+              [(nzChecked)]="object.checked"
+              [nzIndeterminate]="object.indeterminate"
+              (nzCheckedChange)="checkAll($event)"
+        ></th>
+          <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span></th>
+          <th (click)="sort('name')">
+            <a><span class="p-r-xs" translate>user.label.name</span>
+              <i *ngIf="usr.sortBy == 'name' && !usr.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="usr.sortBy == 'name' && usr.reverse"
+                 class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('email')">
+            <a><span class="p-r-xs" translate>user.label.email</span>
+              <i *ngIf="usr.sortBy == 'email' && !usr.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="usr.sortBy == 'email' && usr.reverse"
+                 class="fa fa-caret-down "></i></a>
+          </th>
+
+          <th nzWidth="20%" (click)="sort('emailVerified')">
+            <a><span class="p-r-xs" translate>user.label.emailVerified</span>
+              <i *ngIf="usr.sortBy == 'emailVerified' && !usr.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="usr.sortBy == 'emailVerified' && usr.reverse"
+                 class="fa fa-caret-down "></i></a>
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let account of ajaxTable.data" [ngClass]="{'opacity7': account.disabled}">
+                <td *ngIf="permission.joc && permission.joc.administration.accounts.manage" [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(account.accountName)" (nzCheckedChange)="onItemChecked(account, $event)"></td>
+                <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
+                  <div class="btn-group dropdown pull-left m-r-sm">
+                    <button type="button" class="btn-drop more-option-h" [nzDisabled]="object.checked || object.indeterminate" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+                    <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                      <ul nz-menu >
+                        <li nz-menu-item (click)="approveList(account)">
+                          <a translate>common.button.approve</a>
+                        </li>
+                        <li nz-menu-item [nzDisabled]="!account.blocked" (click)="rejectList(account)">
+                          <a translate>common.button.reject</a>
+                        </li>
+                        <li nz-menu-item (click)="deleteList(account.accountName)" class="bg-hover-color"
+                            [ngClass]="{'disable-link' :username==account.accountName && selectedIdentityService === userIdentityService}">
+                          <a translate>user.button.delete</a>
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                </td>
+                <td>
+                  <a (click)="showRole(account.accountName)" class="text-hover-primary" [innerHtml]="account.accountName  | decodeSpace | highlight: searchKey"></a>
+                </td>
+                <td>
+                </td>
+              
+               
+                <td><span>{{(account.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+              </tr>
+        </tbody>
+      </nz-table>
+    </div>
+    <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
+      <span translate>common.label.total</span> <span> {{data.length}} </span>
+      <span translate *ngIf="ajaxTable.data.length >1">user.label.usersFound</span>
+      <span translate *ngIf="ajaxTable.data.length ===1">user.label.userFound</span>
+    </div>
+  </div>
+  

@@ -25,6 +25,10 @@ export class ConfirmationModalComponent implements OnInit {
   @Input() forceChange;
   @Input() accounts;
   @Input() account;
+  @Input() approve;
+  @Input() reject;
+  @Input() deleteRequest;
+  @Input() accountNames;
   @Input() isRole;
   @Input() blocklist;
   @Input() activeSession;
@@ -70,7 +74,14 @@ export class ConfirmationModalComponent implements OnInit {
       this.dataService.comments = this.comments;
     }
     this.submitted = true;
-    const URL = this.forceChange ? 'iam/accounts/forcepasswordchange' : 'iam/accounts/resetpassword';
+    let URL = this.forceChange ? 'iam/accounts/forcepasswordchange' : 'iam/accounts/resetpassword';
+    if(this.approve) {
+      URL = 'iam/fido2registration/approve';
+    }else if(this.reject) {
+      URL = 'iam/fido2registration/reject';
+    }else if(this.deleteRequest) {
+      URL ='iam/fido2registration/delete' ;
+    }
     this.coreService.post(URL, {
       identityServiceName: this.identityServiceName,
       accountNames,

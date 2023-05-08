@@ -189,6 +189,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
           comments
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -211,6 +212,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
           activeSession: true
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       }).afterClose.subscribe(result => {

@@ -21,6 +21,7 @@ import {ShowPermissionComponent} from './show-permission/show-permission.compone
 import {UploadModalComponent} from "./upload/upload.component";
 import {AddBlocklistModalComponent, BlocklistComponent} from './blocklist/blocklist.component';
 import {SessionManagementComponent} from './session-management/session-management.component';
+import { PendingRequestsComponent } from './pending-requests/pending-requests.component';
 
 @NgModule({
   imports: [
@@ -51,7 +52,8 @@ import {SessionManagementComponent} from './session-management/session-managemen
     BlocklistComponent,
     AddBlocklistModalComponent,
     SessionManagementComponent,
-    ThumbnailDirective
+    ThumbnailDirective,
+    PendingRequestsComponent
   ],
   providers: [
     DataService
