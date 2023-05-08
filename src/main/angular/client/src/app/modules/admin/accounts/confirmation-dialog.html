@@ -38,6 +38,15 @@
         <span *ngIf="reset" translate>user.message.resetPasswordForSelectedUser</span>
         <span *ngIf="forceChange" translate>user.message.forcePasswordChangeForSelectedUser</span>
       </span>
+      <span *ngIf="approve">
+        <span  translate>user.message.approveForSelectedPendingRequests</span>
+      </span>
+      <span *ngIf="reject">
+        <span  translate>user.message.rejectForSelectedPendingRequests</span>
+      </span>
+      <span *ngIf="deleteRequest">
+        <span  translate>user.message.deleteForSelectedPendingRequests</span>
+      </span>
     </div>
   </div>
 </div>

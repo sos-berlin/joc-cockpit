@@ -19,6 +19,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   isBlockButtonShow = false;
   isSessionButtonShow = false;
   isSelected = false;
+  isApproveButtonShow=false;
   selectedUser: string;
   accounts: any = [];
   route: string;
@@ -49,6 +50,10 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.isSelected = true;
       } else if (res === 'IS_ACCOUNT_PROFILES_FALSE' || res === 'IS_ROLE_PROFILES_FALSE') {
         this.isSelected = false;
+      } else if (res === 'IS_PENDING_REQUEST_FALSE' ) {
+        this.isSelected = false;
+      } else if (res === 'IS_PENDING_REQUEST_TRUE' ) {
+        this.isSelected = true;
       } else if (res === 'RELOAD') {
         this.getUsersData();
       } else if (res === 'IS_BLOCKLIST_PROFILES_TRUE') {
@@ -132,6 +137,18 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   deleteList(): void {
     this.dataService.announceFunction('DELETE');
+  }
+
+  approveRequest() {
+    this.dataService.announceFunction('APPROVE_REQUEST');
+  }
+
+  rejectRequest() {
+    this.dataService.announceFunction('REJECT_REQUEST');
+  }
+
+  deleteRequest() {
+    this.dataService.announceFunction('DELETE_REQUEST');
   }
 
   disableList(flag = false): void {

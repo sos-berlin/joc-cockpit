@@ -3991,14 +3991,21 @@ export class InventoryComponent implements OnInit, OnDestroy {
           const qualifiers = arr[0];
           request.search = arr[1];
           if (qualifiers?.trim().length == 1) {
-            request.returnType = getReturnType(qualifiers);
+            let char = getReturnType(qualifiers);
+            if (char) {
+              request.returnTypes = [char]
+            }
           } else {
             let chars = qualifiers.split('');
-            console.log(chars);
-            const returnTypes = [];
-            chars.forEach(char => {
-                returnTypes.push(getReturnType(char))
-            })
+            if (chars.length > 0) {
+              request.returnTypes = [];
+              chars.forEach(char => {
+                const type = getReturnType(char);
+                if (type) {
+                  request.returnTypes.push(type)
+                }
+              })
+            }
           }
         }
         if (this.searchNode.token) {
@@ -4022,7 +4029,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.allObjects = [];
     }
 
-    function getReturnType(qualifier){
+    function getReturnType(qualifier) {
       qualifier = qualifier.toLowerCase();
       if (qualifier === 'w') {
         return "WORKFLOW";

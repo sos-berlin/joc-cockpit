@@ -708,10 +708,10 @@
               <label class="col-md-4 col-lg-3 form-control-label"
                      [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.retry.maxTries' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.maxTries
-                <sup class="text-danger text-sm">*</sup>
+                
               </label>
               <div class="col-md-8 col-lg-9">
-                <nz-input-number [appAutofocus]="true" required #maxTries="ngModel" [nzMin]="0" [nzStep]="1"
+                <nz-input-number [appAutofocus]="true" #maxTries="ngModel" [nzMin]="0" [nzStep]="1"
                                  name="maxTries" [(ngModel)]="selectedNode.obj.maxTries" (nzBlur)="checkDelayEntries()">
                 </nz-input-number>
                 <div *ngIf="maxTries.invalid && (maxTries.dirty || maxTries.touched)" class="text-danger help-block">

@@ -57,7 +57,7 @@ export class SearchInputComponent implements OnInit, OnDestroy {
       // this.coreService.post('inventory/quick/search', {
       //   token: this.obj.token,
       //   search: '',
-      //   returnType: this.type,
+      //   returnTypes: [this.type],
       //   quite: true
       // }).subscribe();
     }
@@ -139,7 +139,7 @@ export class SearchInputComponent implements OnInit, OnDestroy {
       if (value.length > 2) {
         const request: any = {
           search: value,
-          returnType: this.type
+          returnTypes: [this.type]
         };
         if (this.obj.token) {
           request.token = this.obj.token;
