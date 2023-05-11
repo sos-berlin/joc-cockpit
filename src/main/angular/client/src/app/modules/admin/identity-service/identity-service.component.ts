@@ -1,21 +1,21 @@
-import { Component, Input, OnDestroy, OnInit, Directive, ElementRef, SimpleChanges } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { clone, isEmpty } from 'underscore';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { FileUploader } from 'ng2-file-upload';
-import { ToastrService } from 'ngx-toastr';
-import { TranslateService } from '@ngx-translate/core';
-import { saveAs } from 'file-saver';
-import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard';
-import { DataService } from '../data.service';
-import { SaveService } from '../../../services/save.service';
-import { OrderPipe } from '../../../pipes/core.pipe';
-import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
-import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
+import {Component, Input, OnDestroy, OnInit, Directive, ElementRef, SimpleChanges} from '@angular/core';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {clone, isEmpty} from 'underscore';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {FileUploader} from 'ng2-file-upload';
+import {ToastrService} from 'ngx-toastr';
+import {TranslateService} from '@ngx-translate/core';
+import {saveAs} from 'file-saver';
+import {CoreService} from '../../../services/core.service';
+import {AuthService} from '../../../components/guard';
+import {DataService} from '../data.service';
+import {SaveService} from '../../../services/save.service';
+import {OrderPipe} from '../../../pipes/core.pipe';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 
 
 @Directive({
@@ -25,7 +25,8 @@ export class ThumbnailDirective {
 
   @Input() public image: any;
 
-  constructor(private el: ElementRef) { }
+  constructor(private el: ElementRef) {
+  }
 
   public ngOnChanges(changes: SimpleChanges) {
 
@@ -85,48 +86,53 @@ export class SettingModalComponent implements OnInit {
   }];
   iamFido2Transports = [{
     text: 'ble',
-    value: 'ble'
+    value: 'BLE'
   }, {
     text: 'hybrid',
-    value: 'hybrid'
+    value: 'HYBRID'
   }, {
     text: 'internal',
-    value: 'internal'
+    value: 'INTERNAL'
   },
-  {
-    text: 'nfc',
-    value: 'nfc'
-  },
-  {
-    text: 'usb',
-    value: 'usb'
-  }
+    {
+      text: 'nfc',
+      value: 'NFC'
+    },
+    {
+      text: 'usb',
+      value: 'USB'
+    }
   ];
   iamFido2Attestation = [{
     text: 'Direct',
-    value: 'direct'
+    value: 'DIRECT'
   }, {
     text: 'Enterprise',
-    value: 'enterprise'
+    value: 'ENTERPRISE'
   }, {
     text: 'Indirect',
-    value: 'indirect'
+    value: 'INDIRECT'
   }, {
     text: 'None',
-    value: 'none'
+    value: 'NONE'
   }
   ];
   iamFido2UserVerification = [{
     text: 'Discouraged',
-    value: 'discouraged'
+    value: 'DISCOURAGED'
   }, {
     text: 'Preferred',
-    value: 'preferred'
+    value: 'PREFERRED'
   }, {
     text: 'Required',
-    value: 'required'
+    value: 'REQUIRED'
   }
   ];
+  iamFido2CipherTypes = [
+    'RSA/ECB/OAEPWithSHA-1AndMGF1Padding',
+    'RSA/ECB/PKCS1Padding',
+    'RSA'
+  ]
   isEnable = false;
   isLengthMatch = true;
   submitted = false;
@@ -149,7 +155,7 @@ export class SettingModalComponent implements OnInit {
   imageUrl: string;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private authService: AuthService,
-    private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService, private dataService: DataService) {
+              private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService, private dataService: DataService) {
     this.uploader = new FileUploader({
       url: '',
       queueLimit: 1
@@ -290,7 +296,10 @@ export class SettingModalComponent implements OnInit {
           if (data.sessionTimeout) {
             this.currentObj.sessionTimeout = SettingModalComponent.convertDurationToString(data.sessionTimeout);
           }
-        }        
+        }
+        if (this.data.identityServiceType == 'FIDO2' && !this.currentObj.iamFido2EmailSettings) {
+          this.currentObj.iamFido2EmailSettings = {};
+        }
       }
     });
   }
@@ -401,7 +410,7 @@ export class SettingModalComponent implements OnInit {
       roles: []
     };
     if (!this.currentObj.iamLdapGroupRolesMap) {
-      this.currentObj.iamLdapGroupRolesMap = { items: [] };
+      this.currentObj.iamLdapGroupRolesMap = {items: []};
     }
     if (!this.coreService.isLastEntryEmpty(this.currentObj.iamLdapGroupRolesMap.items, 'ldapGroupDn', '')) {
       this.currentObj.iamLdapGroupRolesMap.items.push(param);
@@ -514,10 +523,10 @@ export class SettingModalComponent implements OnInit {
     const fileType = 'application/octet-stream';
     let obj = this.currentObj;
     if (this.data.identityServiceType.match('LDAP')) {
-      obj = { simple: this.userObj, expert: this.currentObj };
+      obj = {simple: this.userObj, expert: this.currentObj};
     }
     const data = JSON.stringify(obj, undefined, 2);
-    const blob = new Blob([data], { type: fileType });
+    const blob = new Blob([data], {type: fileType});
     saveAs(blob, name);
   }
 
@@ -562,11 +571,10 @@ export class SettingModalComponent implements OnInit {
       } else if (this.data.identityServiceType.match('KEYCLOAK')) {
         obj.keycloak = this.currentObj;
       } else if (this.data.identityServiceType.match('LDAP')) {
-        obj.ldap = { expert: this.coreService.clone(this.currentObj), simple: this.userObj };
+        obj.ldap = {expert: this.coreService.clone(this.currentObj), simple: this.userObj};
       } else if (this.data.identityServiceType.match('OIDC')) {
         obj.oidc = this.currentObj;
-      }
-      else if (this.data.identityServiceType.match('FIDO2')) {
+      } else if (this.data.identityServiceType.match('FIDO2')) {
         this.currentObj.iamFido2Transports = "USB";
         obj.fido2 = this.currentObj;
       }
@@ -633,6 +641,8 @@ export class IdentityServiceModalComponent implements OnInit {
   display: any;
   required = false;
   comments: any = {};
+  fido2List = [];
+  certList = [];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
   }
@@ -655,8 +665,28 @@ export class IdentityServiceModalComponent implements OnInit {
       this.currentObj = clone(this.identityService);
     } else {
       this.currentObj.serviceAuthenticationScheme = 'SINGLE-FACTOR';
-      this.currentObj.singleFactorPwd = true;
     }
+    this.getFido2List();
+    this.getCertList();
+  }
+
+  private getFido2List(): void {
+    this.coreService.post('iam/identityservices', {"identityServiceType": "FIDO2", "secondFactor": true}).subscribe({
+      next: (res) => {
+        this.fido2List = res.identityServiceItems;
+      }
+    })
+  }
+
+  private getCertList(): void {
+    this.coreService.post('iam/identityservices', {
+      "identityServiceType": "CERTIFICATE",
+      "secondFactor": true
+    }).subscribe({
+      next: (res) => {
+        this.fido2List = res.identityServiceItems;
+      }
+    })
   }
 
   checkService(): void {
@@ -672,28 +702,6 @@ export class IdentityServiceModalComponent implements OnInit {
   changeType($event): void {
     if (this.identityService) {
       this.getSettings($event);
-    }
-  }
-
-  changeScheme($event): void {
-    if (this.currentObj.identityServiceType === 'JOC' || this.currentObj.identityServiceType === 'VAULT-JOC-ACTIVE') {
-      if ($event === 'SINGLE-FACTOR') {
-        if (!this.currentObj.singleFactorPwd && !this.currentObj.singleFactorCert) {
-          this.currentObj.singleFactorPwd = true;
-        }
-      }
-    }
-  }
-
-  checkCheckbox(type): void {
-    if (type === 'pwd') {
-      if (!this.currentObj.singleFactorPwd && !this.currentObj.singleFactorCert) {
-        this.currentObj.singleFactorCert = true;
-      }
-    } else {
-      if (!this.currentObj.singleFactorPwd && !this.currentObj.singleFactorCert) {
-        this.currentObj.singleFactorPwd = true;
-      }
     }
   }
 
@@ -830,7 +838,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private router: Router, private authService: AuthService, private coreService: CoreService,
-    private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe, private translate: TranslateService,) {
+              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe, private translate: TranslateService,) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
     });
@@ -1012,7 +1020,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     let comments = {};
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        comments = { comment: translatedValue };
+        comments = {comment: translatedValue};
       });
     }
     this.coreService.post('iam/identityservices/reorder', {
@@ -1051,7 +1059,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
         nzClassName: 'lg',
         nzComponentParams: {
           comments,
-          obj: { identityServiceName: identityService.identityServiceName },
+          obj: {identityServiceName: identityService.identityServiceName},
           url: 'iam/identityservice/delete'
         },
         nzFooter: null,

@@ -1,11 +1,11 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { TranslateService } from '@ngx-translate/core';
+import {Component, OnInit, Renderer2} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
+import {TranslateService} from '@ngx-translate/core';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
-import { CoreService } from '../../services/core.service';
-import { AuthService, OIDCAuthService } from '../../components/guard';
+import {CoreService} from '../../services/core.service';
+import {AuthService, OIDCAuthService} from '../../components/guard';
 
 @Component({
   selector: 'app-login',
@@ -21,14 +21,16 @@ export class LoginComponent implements OnInit {
   errorMsg = false;
   returnUrl = '';
   errorMsgText = '';
+  identityServiceName = '';
   defaultSetting: any = {};
   oidcIdentityServiceItems = [];
   fido2IdentityServiceItems = [];
   showRegister = false;
+  showLogin = false;
 
   constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService,
-    private authService: AuthService, private oAuthService: OIDCAuthService, private renderer: Renderer2,
-    private translate: TranslateService, private toasterService: ToastrService) {
+              private authService: AuthService, private oAuthService: OIDCAuthService, private renderer: Renderer2,
+              private translate: TranslateService, private toasterService: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -110,6 +112,9 @@ export class LoginComponent implements OnInit {
     if (this.showRegister) {
       this.register();
       return;
+    } else if (this.showLogin) {
+      this.signIn();
+      return;
     }
     this.submitted = true;
     this.coreService.post('authentication/login', values).subscribe({
@@ -151,7 +156,6 @@ export class LoginComponent implements OnInit {
     // Tweak config for code flow
     this.oAuthService.configure(config);
     this.oAuthService.loadDiscoveryDocument().then((_) => {
-
       sessionStorage.setItem('authConfig', JSON.stringify(config));
       sessionStorage.setItem('providerName', config.identityServiceName);
       if (this.returnUrl) {
@@ -162,7 +166,7 @@ export class LoginComponent implements OnInit {
   }
 
   private getIdAndSecret(identityServiceName): void {
-    this.coreService.post('iam/identityclient', { identityServiceName }).subscribe({
+    this.coreService.post('iam/identityclient', {identityServiceName}).subscribe({
       next: (data) => {
         this.oAuthService.clientId = data.iamOidcClientId;
         this.oAuthService.clientSecret = data.iamOidcClientSecret;
@@ -178,19 +182,19 @@ export class LoginComponent implements OnInit {
       this.showRegister = true;
       this.errorMsg = false;
       this.errorMsgText = '';
-      this.coreService.post('iam/identityclient', { identityServiceName: this.fido2IdentityServiceItems[0].identityServiceName }).subscribe({
+      this.coreService.post('iam/identityclient', {identityServiceName: this.fido2IdentityServiceItems[0].identityServiceName}).subscribe({
         next: (data) => {
           console.log(data);
-          
         }
       });
     } else {
-      this.toasterService.warning('Your browser doesn\'t support WebAuthn', 
-      'We recommend updating to a modern browser that supports WebAuthn for the best user experience and increased security.');
+      this.toasterService.warning('Your browser doesn\'t support WebAuthn',
+        'We recommend updating to a modern browser that supports WebAuthn for the best user experience and increased security.');
     }
   }
 
   register() {
+    this.identityServiceName = '';
     this.submitted1 = true;
     const challenge = new Uint8Array(32);
     window.crypto.getRandomValues(challenge);
@@ -198,7 +202,7 @@ export class LoginComponent implements OnInit {
     let publicKeyCredentialCreationOptions: PublicKeyCredentialCreationOptions = {
       challenge: challenge,
       rp: {
-        name: 'SOS'
+        name: window.location.hostname
       },
       user: {
         id: id,
@@ -206,28 +210,19 @@ export class LoginComponent implements OnInit {
         displayName: this.user.displayName
       },
       pubKeyCredParams: [
-        { type: 'public-key', alg: -7 }
+        {type: 'public-key', alg: -7}
       ],
       authenticatorSelection: {
-        // authenticatorAttachment: "platform", // "cross-platform" | "platform"
-        // requireResidentKey: false,
         userVerification: "preferred", // "discouraged" | "preferred" | "required"
-        // specify the allowed AuthenticatorTransport types here
-        //  residentKey: "preferred" // "discouraged" | "preferred" | "required";
       },
       timeout: 60000,
-      attestation: "none", // "direct" | "enterprise" | "indirect" | "none"
-      // PublicKeyCredentialDescriptor[] { id: BufferSource,  transports?: ["ble" | "hybrid" | "internal" | "nfc" | "usb"], type: "public-key";
-
+      attestation: "none"
     };
 
-
     //  const publicKeyCredentialCreationOptions: any = await response.json();
-
     navigator.credentials.create({
       publicKey: publicKeyCredentialCreationOptions
     }).then((credential: any) => {
-
       // Send the credential to the back-end for verification
       console.log(credential)
       const credentialData = {
@@ -240,25 +235,16 @@ export class LoginComponent implements OnInit {
         }
       };
 
-      //TODO
-      console.log(credentialData, ' Save in DB')
-      let enc = new TextDecoder("utf-8");
-      let clientDataJSON = enc.decode(credential.response.clientDataJSON);
-
-      console.log(clientDataJSON);
-      let clientData = JSON.parse(clientDataJSON);
-      console.log(clientData);
       this.coreService.post('iam/fido2registration/request_registration', {
         "identityServiceName": this.fido2IdentityServiceItems[0].identityServiceName,
         "accountName": this.user.displayName,
-        "rpName": "myRpName",
         "email": this.user.email,
         "publicKey": credentialData.rawId
       }).subscribe({
         next: () => {
           this.submitted1 = false;
           this.toasterService.success('Your registration was successful.',
-          'To complete your account setup, please check your email to verify your email address')
+            'To complete your account setup, please check your email to verify your email address')
           this.back();
         }, error: (err) => {
           this.submitted1 = false;
@@ -276,12 +262,12 @@ export class LoginComponent implements OnInit {
 
   back(): void {
     this.showRegister = false;
+    this.showLogin = false;
     this.submitted = false;
     this.submitted1 = false;
     this.errorMsg = false;
     this.errorMsgText = '';
   }
-
 
   private bufferToBase64Url(buffer: any) {
     const base64String = btoa(String.fromCharCode(...new Uint8Array(buffer)))
@@ -293,19 +279,34 @@ export class LoginComponent implements OnInit {
   }
 
   onSign(data) {
-    console.log(data)
+    this.showLogin = true;
+    this.identityServiceName = data;
+  }
+
+  signIn(): void {
     this.errorMsgText = '';
-    let challenge = new Uint8Array(32);
-    window.crypto.getRandomValues(challenge);
+    this.coreService.post('iam/fido2/request_authentication', {
+      identityServiceName: this.identityServiceName,
+      accountName: this.user.displayName,
+    }).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.getCredentials(res.challenge);
+      }, error: (err) => {
+        this.errorMsg = true;
+        this.errorMsgText = err;
+        // this.toasterService.error(err.message)
+      }
+    })
+  }
+
+  private getCredentials(challenge): void {
     let publicKey: PublicKeyCredentialRequestOptions = {
       challenge: challenge,
       allowCredentials: []
     }
-    console.log(publicKey);
-
-    navigator.credentials.get({ 'publicKey': publicKey })
+    navigator.credentials.get({'publicKey': publicKey})
       .then((getAssertionResponse) => {
-       
         console.log('SUCCESSFULLY LOGIN!', getAssertionResponse)
       })
       .catch((error) => {

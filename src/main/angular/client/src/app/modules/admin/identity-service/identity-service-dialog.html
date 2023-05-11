@@ -37,14 +37,9 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6" [ngClass]="{'has-error' : ((type.dirty || type.touched) && type.invalid)}">
-        <nz-select
-          name="type"
-          #type="ngModel"
-          required
-          nzShowSearch
-          nzPlaceHolder="{{'user.placeholder.selectIdentityServiceType' | translate}}"
-          [(ngModel)]="currentObj.identityServiceType"
-          (ngModelChange)="changeType($event)">
+        <nz-select name="type" #type="ngModel"
+          required nzShowSearch nzPlaceHolder="{{'user.placeholder.selectIdentityServiceType' | translate}}"
+          [(ngModel)]="currentObj.identityServiceType" (ngModelChange)="changeType($event)">
           <nz-option *ngFor="let option of identityServiceTypes | orderBy" [nzLabel]="option" [nzValue]="option"></nz-option>
         </nz-select>
         <div *ngIf="type.invalid && (type.dirty || type.touched)" class="text-danger help-block">
@@ -61,11 +56,18 @@
                              [(ngModel)]="currentObj.ordering"></nz-input-number>
       </div>
     </div>
-    <div class="form-group row" *ngIf="currentObj.identityServiceType != 'OIDC'">
+    <div class="form-group row" *ngIf="currentObj.identityServiceType != 'OIDC' && currentObj.identityServiceType !== 'CERTIFICATE'">
       <label class="col-sm-4" translate>user.label.identityServiceRequired</label>
       <div class="col-sm-6">
         <label nz-checkbox [(ngModel)]="currentObj.required"
                        name="serviceRequired"></label>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="(currentObj.identityServiceType === 'CERTIFICATE' || currentObj.identityServiceType === 'FIDO2')">
+      <label class="col-sm-4" translate>user.label.usedAsSecondFactor</label>
+      <div class="col-sm-6">
+        <label nz-checkbox [(ngModel)]="currentObj.secondFactor"
+               name="secondFactor"></label>
       </div>
     </div>
     <div class="form-group row" *ngIf="identityService">
@@ -75,31 +77,33 @@
                name="disabled"></label>
       </div>
     </div>
-    <div class="form-group row b-t p-t">
+    <div class="form-group row b-t p-t" *ngIf="currentObj.identityServiceType !== 'CERTIFICATE'">
       <label class="col-sm-4 form-control-label" translate>user.label.serviceAuthenticationScheme
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6" [ngClass]="{'has-error' : ((scheme.dirty || scheme.touched) && scheme.invalid)}">
         <nz-select name="serviceAuthenticationScheme" required #scheme="ngModel"
-          [(ngModel)]="currentObj.serviceAuthenticationScheme" (ngModelChange)="changeScheme($event)">
+          [(ngModel)]="currentObj.serviceAuthenticationScheme">
           <nz-option *ngFor="let option of serviceAuthenticationSchemes" [nzLabel]="option | translate" [nzValue]="option"></nz-option>
         </nz-select>
       </div>
     </div>
-    <div class="form-group row" *ngIf="(currentObj.identityServiceType === 'JOC' || currentObj.identityServiceType === 'VAULT-JOC-ACTIVE')
-       && currentObj.serviceAuthenticationScheme === 'SINGLE-FACTOR'">
-      <label class="col-sm-4" translate>user.label.singleFactorPwd</label>
+    <div class="form-group row" *ngIf="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR'">
+      <label class="col-sm-4 form-control-label" translate>user.label.listOfFido2</label>
       <div class="col-sm-6">
-         <label nz-checkbox [(ngModel)]="currentObj.singleFactorPwd"
-                       name="singleFactorPwd" (nzCheckedChange)="checkCheckbox('pwd')"></label>
+        <nz-select name="fido2Name"
+                   [(ngModel)]="currentObj.secondFactorIdentityServiceName">
+          <nz-option *ngFor="let option of fido2List" [nzLabel]="option.identityServiceName" [nzValue]="option.identityServiceName"></nz-option>
+        </nz-select>
       </div>
     </div>
-    <div class="form-group row" *ngIf="(currentObj.identityServiceType === 'JOC' || currentObj.identityServiceType === 'VAULT-JOC-ACTIVE')
-       && currentObj.serviceAuthenticationScheme === 'SINGLE-FACTOR'">
-      <label class="col-sm-4" translate>user.label.singleFactorCert</label>
+    <div class="form-group row" *ngIf="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR'">
+      <label class="col-sm-4 form-control-label" translate>user.label.listOfCert</label>
       <div class="col-sm-6">
-         <label nz-checkbox [(ngModel)]="currentObj.singleFactorCert"
-                       name="singleFactorCert" (nzCheckedChange)="checkCheckbox('cert')"></label>
+        <nz-select name="certName"
+                   [(ngModel)]="currentObj.secondFactorIdentityServiceName" >
+          <nz-option *ngFor="let option of certList" [nzLabel]="option.identityServiceName" [nzValue]="option.identityServiceName"></nz-option>
+        </nz-select>
       </div>
     </div>
   </div>

@@ -10964,7 +10964,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (json.instructions[x].TYPE === 'Try' && json.instructions[x].instructions && !json.instructions[x].try) {
             self.workflowService.convertTryInstruction(json.instructions[x]);
           }
-          if (json.instructions[x].TYPE === 'Retry') {
+          if (json.instructions[x].TYPE === 'Retry' && json.instructions[x].instructions && !json.instructions[x].try) {
             json.instructions[x].TYPE = 'Try';
             self.workflowService.convertRetryToTryCatch(json.instructions[x]);
           }

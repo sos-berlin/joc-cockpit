@@ -180,6 +180,13 @@
                     <i *ngIf="agentsFilters.filter.sortBy == 'state._text' && agentsFilters.reverse"
                        class="fa fa-caret-down "></i></a>
                   </th>
+                  <th class="status" (click)="sort('clusterState._text')">
+                    <a><span class="p-r-xs" translate>agent.label.clusterState</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'clusterState._text' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'clusterState._text' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                  </th>
                   <th (click)="sort('url')"><a><span class="p-r-xs" translate>agent.label.url</span>
                     <i *ngIf="agentsFilters.filter.sortBy == 'url' && !agentsFilters.reverse"
                        class="fa fa-caret-up "></i>
@@ -226,6 +233,11 @@
                       </span>
                       <i *ngIf="cluster.state && cluster.state._text == 'INITIALISED'" class="fa fa-info-circle p-l-sm" [nz-tooltip]="cluster.state._reason | translate"></i>
                     </td>
+                    <td class="cursor" (click)="navToController(cluster, null)">
+                      <span *ngIf="cluster.clusterState" class="label" [ngClass]="coreService.getColor(cluster.clusterState.severity,'bg')">
+                        <span [innerHtml]="cluster.clusterState._text | translate | highlight : agentsFilters.searchText"></span>
+                      </span>
+                    </td>
                     <td>
                       <a class="text-hover-primary" [href]="cluster.url+'/agent/api'" target="_blank"
                          [innerHtml]="cluster.url | highlight : agentsFilters.searchText"></a>
@@ -258,6 +270,13 @@
                            class="fa fa-caret-up "></i>
                         <i *ngIf="cluster.sortBy == 'state._text' && cluster.reverse"
                            class="fa fa-caret-down "></i></a>
+                      </td>
+                      <td class="custom-th" (click)="sort('clusterState._text', cluster)"><a><span class="p-r-xs"
+                                                                                translate>agent.label.clusterState</span>
+                        <i *ngIf="cluster.sortBy == 'clusterState._text' && !cluster.reverse"
+                            class="fa fa-caret-up "></i>
+                        <i *ngIf="cluster.sortBy == 'clusterState._text' && cluster.reverse"
+                            class="fa fa-caret-down "></i></a>
                       </td>
                       <td class="custom-th" (click)="sort('url', cluster)"><a><span class="p-r-xs" translate>agent.label.url</span>
                         <i *ngIf="cluster.sortBy == 'url' && !cluster.reverse"
@@ -295,6 +314,11 @@
                             <span [innerHtml]="subagent.state._text | translate | highlight : agentsFilters.searchText"></span>
                           </span>
                           <i *ngIf="subagent.state && subagent.state._text == 'INITIALISED'" class="fa fa-info-circle p-l-sm" [nz-tooltip]="subagent.state._reason"></i>
+                        </td>
+                        <td class="cursor" (click)="navToController(subagent, cluster)">
+                          <span *ngIf="subagent.clusterNodeState" class="label" [ngClass]="coreService.getColor(subagent.clusterNodeState.severity,'bg')">
+                            <span [innerHtml]="subagent.clusterNodeState._text | translate | highlight : agentsFilters.searchText"></span>
+                          </span>
                         </td>
                         <td>
                           <a class="text-hover-primary" [href]="subagent.url+'/agent/api'" target="_blank"
