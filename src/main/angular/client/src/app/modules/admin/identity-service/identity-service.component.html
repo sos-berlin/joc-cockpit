@@ -73,18 +73,11 @@
             <i *ngIf="filter.filter.sortBy == 'serviceAuthenticationScheme' && filter.filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
-        <th (click)="sort('singleFactorPwd')">
-          <a><span class="p-r-xs" translate>user.label.singleFactorPwd</span>
-            <i *ngIf="filter.filter.sortBy == 'singleFactorPwd' && !filter.filter.reverse"
+        <th (click)="sort('secondFactor')">
+          <a><span class="p-r-xs" translate>user.label.secondFactor</span>
+            <i *ngIf="filter.filter.sortBy == 'secondFactor' && !filter.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="filter.filter.sortBy == 'singleFactorPwd' && filter.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-        </th>
-        <th (click)="sort('singleFactorCert')">
-          <a><span class="p-r-xs" translate>user.label.singleFactorCert</span>
-            <i *ngIf="filter.filter.sortBy == 'singleFactorCert' && !filter.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filter.filter.sortBy == 'singleFactorCert' && filter.filter.reverse"
+            <i *ngIf="filter.filter.sortBy == 'secondFactor' && filter.filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
         <th (click)="sort('ordering')">
@@ -125,7 +118,7 @@
                   <li nz-menu-item *ngIf="identityService.identityServiceType !== 'UNKNOWN'" (click)="edit(identityService)">
                     <a translate>common.button.edit</a>
                   </li>
-                  <li nz-menu-item (click)="manageSetting(identityService)" *ngIf="identityService.identityServiceType !== 'JOC' && identityService.identityServiceType !== 'UNKNOWN'">
+                  <li nz-menu-item (click)="manageSetting(identityService)" *ngIf="identityService.identityServiceType !== 'JOC' && identityService.identityServiceType !== 'UNKNOWN' && identityService.identityServiceType !== 'CERTIFICATE'">
                     <a translate>user.button.manageSetting</a>
                   </li>
                   <li nz-menu-item (click)="disable(identityService)" *ngIf="!identityService.disabled && identityService.identityServiceType !== 'UNKNOWN'">
@@ -148,8 +141,7 @@
             [innerHtml]="identityService.identityServiceType | highlight: filter.searchKey"></span></td>
           <td (click)="showUser(identityService)"><span
             [innerHtml]="identityService.serviceAuthenticationScheme | translate | highlight: filter.searchKey"></span></td>
-          <td (click)="showUser(identityService)"><span *ngIf="(identityService.identityServiceType === 'JOC' || identityService.identityServiceType === 'VAULT-JOC-ACTIVE') && identityService.serviceAuthenticationScheme === 'SINGLE-FACTOR'">{{(identityService.singleFactorPwd ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
-          <td (click)="showUser(identityService)"><span *ngIf="(identityService.identityServiceType === 'JOC' || identityService.identityServiceType === 'VAULT-JOC-ACTIVE') && identityService.serviceAuthenticationScheme === 'SINGLE-FACTOR'">{{(identityService.singleFactorCert ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+          <td (click)="showUser(identityService)"><span *ngIf="(identityService.identityServiceType === 'JOC' || identityService.identityServiceType === 'VAULT-JOC-ACTIVE') && identityService.serviceAuthenticationScheme === 'SINGLE-FACTOR'">{{(identityService.secondFactor ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
           <td (click)="showUser(identityService)"><span [innerHtml]="identityService.ordering"></span></td>
           <td (click)="showUser(identityService)"><span>{{(identityService.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
           <td (click)="showUser(identityService)"><span>{{(identityService.required ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
