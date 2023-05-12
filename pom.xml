@@ -139,6 +139,13 @@
                             <!--includes> <include>version.json</include> 
                                 </includes -->
                         </resource>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <filtering>false</filtering>
+                            <includes>
+                                <include>api-server/**</include>
+                            </includes>
+                        </resource>                        
                     </webResources>
                 </configuration>
             </plugin>
