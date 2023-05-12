@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { DataService } from '../data.service';
-import { OrderPipe, SearchPipe } from 'src/app/pipes/core.pipe';
-import { AuthService } from 'src/app/components/guard';
-import { CoreService } from 'src/app/services/core.service';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { ConfirmationModalComponent } from '../accounts/accounts.component';
+import {Component, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {DataService} from '../data.service';
+import {OrderPipe, SearchPipe} from 'src/app/pipes/core.pipe';
+import {AuthService} from 'src/app/components/guard';
+import {CoreService} from 'src/app/services/core.service';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {ConfirmationModalComponent} from '../accounts/accounts.component';
 
 @Component({
   selector: 'app-pending-requests',
@@ -13,20 +13,16 @@ import { ConfirmationModalComponent } from '../accounts/accounts.component';
   styleUrls: ['./pending-requests.component.scss']
 })
 export class PendingRequestsComponent implements OnInit {
-  usr: any = {};
+  requests: any = {};
   preferences: any = {};
   data: any = [];
   permission: any = {};
   loading = true;
-  pendingRequest: any = [];
-  accounts: any = [];
+  pendingRequests: any = [];
   identityServiceType: string;
   searchKey: string;
   identityServiceName: string;
-  username: string;
-  userIdentityService: string;
-  selectedIdentityService: string;
-  searchableProperties = ['accountName', 'roles'];
+  searchableProperties = ['accountName', 'email'];
   object = {
     checked: false,
     indeterminate: false,
@@ -36,7 +32,8 @@ export class PendingRequestsComponent implements OnInit {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(private authService: AuthService, private modal: NzModalService,private coreService: CoreService,private dataService: DataService,private searchPipe: SearchPipe,private orderPipe: OrderPipe) { 
+  constructor(private authService: AuthService, private modal: NzModalService, private coreService: CoreService,
+              private dataService: DataService, private searchPipe: SearchPipe, private orderPipe: OrderPipe) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
       this.searchInResult();
@@ -44,23 +41,20 @@ export class PendingRequestsComponent implements OnInit {
     this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'APPROVE_REQUEST') {
         this.approveList();
-      } 
+      }
       if (res === 'REJECT_REQUEST') {
         this.rejectList();
-      } 
+      }
       if (res === 'DELETE_REQUEST') {
         this.deleteList();
-      } 
+      }
     });
   }
 
   ngOnInit(): void {
-    this.usr = {currentPage: 1, sortBy: 'name', reverse: false};
+    this.requests = {currentPage: 1, sortBy: 'name', reverse: false};
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    this.username = this.authService.currentUserData;
-    this.selectedIdentityService = sessionStorage.identityServiceType + ':' + sessionStorage.identityServiceName;
-    this.userIdentityService = this.authService.currentUserIdentityService;
     this.identityServiceName = sessionStorage.identityServiceName;
     this.identityServiceType = sessionStorage.identityServiceType;
     this.getList();
@@ -68,10 +62,10 @@ export class PendingRequestsComponent implements OnInit {
 
   private getList(): void {
     this.coreService.post('iam/fido2registrations', {identityServiceName: this.identityServiceName}).subscribe((res: any) => {
-      this.accounts = res.fido2RegistrationItems;
+      this.pendingRequests = res.fido2RegistrationItems;
       this.loading = false;
       this.searchInResult();
-     })
+    })
   }
 
   private reset(): void {
@@ -84,13 +78,13 @@ export class PendingRequestsComponent implements OnInit {
   }
 
   searchInResult(): void {
-    this.data = this.searchKey ? this.searchPipe.transform(this.accounts, this.searchKey, this.searchableProperties) : this.accounts;
-    this.data = this.orderPipe.transform(this.data, this.usr.sortBy, this.usr.reverse);
+    this.data = this.searchKey ? this.searchPipe.transform(this.pendingRequests, this.searchKey, this.searchableProperties) : this.pendingRequests;
+    this.data = this.orderPipe.transform(this.data, this.requests.sortBy, this.requests.reverse);
     this.data = [...this.data];
   }
 
   pageIndexChange($event): void {
-    this.usr.currentPage = $event;
+    this.requests.currentPage = $event;
     if (this.object.mapOfCheckedId.size !== this.data.length) {
       if (this.object.checked) {
         this.checkAll(true);
@@ -101,7 +95,7 @@ export class PendingRequestsComponent implements OnInit {
   }
 
   pageSizeChange($event): void {
-    this.usr.entryPerPage = $event;
+    this.requests.entryPerPage = $event;
     if (this.object.mapOfCheckedId.size !== this.data.length) {
       if (this.object.checked) {
         this.checkAll(true);
@@ -110,9 +104,9 @@ export class PendingRequestsComponent implements OnInit {
   }
 
   sort(key): void {
-    this.usr.reverse = !this.usr.reverse;
-    this.usr.sortBy = key;
-    this.data = this.orderPipe.transform(this.data, this.usr.sortBy, this.usr.reverse);
+    this.requests.reverse = !this.requests.reverse;
+    this.requests.sortBy = key;
+    this.data = this.orderPipe.transform(this.data, this.requests.sortBy, this.requests.reverse);
     this.reset();
   }
 
@@ -122,8 +116,8 @@ export class PendingRequestsComponent implements OnInit {
   }
 
   checkAll(value: boolean): void {
-    if (value && this.accounts.length > 0) {
-      const users = this.getCurrentData(this.data, this.usr);
+    if (value && this.pendingRequests.length > 0) {
+      const users = this.getCurrentData(this.data, this.requests);
       users.forEach(item => {
         this.object.mapOfCheckedId.set(item.accountName, item);
 
@@ -143,10 +137,10 @@ export class PendingRequestsComponent implements OnInit {
     }
   }
 
-  
+
   onItemChecked(account: any, checked: boolean): void {
-    if (!checked && this.object.mapOfCheckedId.size > (this.usr.entryPerPage || this.preferences.entryPerPage)) {
-      const users = this.getCurrentData(this.data, this.usr);
+    if (!checked && this.object.mapOfCheckedId.size > (this.requests.entryPerPage || this.preferences.entryPerPage)) {
+      const users = this.getCurrentData(this.data, this.requests);
       if (users.length < this.data.length) {
         this.object.mapOfCheckedId.clear();
         users.forEach(item => {
@@ -159,61 +153,34 @@ export class PendingRequestsComponent implements OnInit {
     } else {
       this.object.mapOfCheckedId.delete(account.accountName);
     }
-    const users = this.getCurrentData(this.data, this.usr);
+    const users = this.getCurrentData(this.data, this.requests);
     this.object.checked = this.object.mapOfCheckedId.size === users.length;
     this.checkCheckBoxState();
   }
 
-  private deleteList(account?): void {
-      this.modal.create({
-        nzTitle: undefined,
-        nzContent: ConfirmationModalComponent,
-        nzComponentParams: {
-          deleteRequest: true,
-          identityServiceName: this.identityServiceName,
-          accountNames:[]
-        },
-        nzFooter: null,
-        nzAutofocus: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      }).afterClose.subscribe(result => {
-        if (result) {
-          this.getList();
-          this.reset();
-        }
-      });
+  deleteList(account?): void {
+    this.openConfirmation('DELETE', account);
   }
 
   rejectList(account?) {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmationModalComponent,
-      nzComponentParams: {
-        reject: true,
-        identityServiceName: this.identityServiceName,
-        accountNames:[]
-      },
-      nzFooter: null,
-      nzAutofocus: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    }).afterClose.subscribe(result => {
-      if (result) {
-        this.getList();
-        this.reset();
-      }
-    });
+    this.openConfirmation('REJECT', account);
   }
 
   approveList(account?) {
+    this.openConfirmation('APPROVE', account);
+  }
+
+  private openConfirmation(type: string, account?): void{
     this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmationModalComponent,
       nzComponentParams: {
-        approve: true,
-        identityServiceName: this.identityServiceName,
-        accountNames:[]
+        approve: type === 'APPROVE',
+        reject: type === 'REJECT',
+        deleteRequest: type === 'DELETE',
+        account,
+        accounts: this.object.mapOfCheckedId,
+        identityServiceName: this.identityServiceName
       },
       nzFooter: null,
       nzAutofocus: null,

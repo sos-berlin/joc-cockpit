@@ -25,10 +25,9 @@ export class ConfirmationModalComponent implements OnInit {
   @Input() forceChange;
   @Input() accounts;
   @Input() account;
-  @Input() approve;
-  @Input() reject;
+  @Input() approve: boolean;
+  @Input() reject: boolean;
   @Input() deleteRequest;
-  @Input() accountNames;
   @Input() isRole;
   @Input() blocklist;
   @Input() activeSession;
