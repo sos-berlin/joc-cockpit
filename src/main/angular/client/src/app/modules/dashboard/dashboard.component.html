@@ -62,6 +62,9 @@
               <div *ngIf="item.name === 'JS7Status'">
                   <app-scheduler-instance [sizeY]="item.rows" [permission]="permission"></app-scheduler-instance>
               </div>
+              <div *ngIf="item.name === 'apiServerStatus'">
+                <app-api-server-status [sizeY]="item.rows" [permission]="permission"></app-api-server-status>
+              </div>
               <div *ngIf="item.name === 'orders'">
                   <app-order-overview [sizeX]="item.cols" [sizeY]="item.rows"></app-order-overview>
               </div>
