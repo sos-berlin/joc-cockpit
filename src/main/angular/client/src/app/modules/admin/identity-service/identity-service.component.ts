@@ -136,6 +136,7 @@ export class SettingModalComponent implements OnInit {
   isEnable = false;
   isLengthMatch = true;
   submitted = false;
+  jobResourcesTree: any = [];
   currentObj: any = {};
   userObj: any = {};
   allRoles = [];
@@ -153,6 +154,7 @@ export class SettingModalComponent implements OnInit {
   uploader: FileUploader;
   imageUploader: FileUploader;
   imageUrl: string;
+  preview: boolean;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private authService: AuthService,
               private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService, private dataService: DataService) {
@@ -297,10 +299,26 @@ export class SettingModalComponent implements OnInit {
             this.currentObj.sessionTimeout = SettingModalComponent.convertDurationToString(data.sessionTimeout);
           }
         }
-        if (this.data.identityServiceType == 'FIDO2' && !this.currentObj.iamFido2EmailSettings) {
-          this.currentObj.iamFido2EmailSettings = {};
+        if (this.data.identityServiceType == 'FIDO2') {
+          if (!this.currentObj.iamFido2EmailSettings) {
+            this.currentObj.iamFido2EmailSettings = {};
+          }
+          this.getJobResources(this.currentObj.iamFido2EmailSettings.nameOfJobResource);
         }
       }
+    });
+  }
+
+  private getJobResources(jobResourceName): void {
+    this.coreService.getJobResource((arr) => {
+      this.jobResourcesTree = arr;
+      this.checkJobResource(jobResourceName);
+    });
+  }
+  private checkJobResource(jobResourceName): void{
+    this.jobResourcesTree = this.coreService.getNotExistJobResource({
+      arr: this.jobResourcesTree,
+      jobResources: jobResourceName
     });
   }
 

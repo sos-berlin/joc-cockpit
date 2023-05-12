@@ -689,6 +689,8 @@
     "label.submittedLate": "Submitted Late",
     "label.scheduled": "Scheduled",
     "label.scheduledLate": "Late",
+    "label.apiServerStatus": "API Server Status",
+    "label.JS7ServerInstanceId": "Instance ID",
     "button.editLayout": "Edit Layout",
     "button.resetLayout": "Reset Layout",
     "button.widget": "Add Widget",
@@ -714,6 +716,7 @@
     "button.removeFromInventory": "Remove from Inventory",
     "button.viewAllAgentsDetails": "View all Agent details",
     "button.confirmNodeLoss": "Confirm loss of a Controller Instance",
+    "button.removeRepository": "Remove from repository",
     "message.noWidgetFound": "No widget found to add",
     "message.agentStatus": "The Pie Chart widget identifies the current component status of Agents",
     "message.agentClusterStatus": "The Pie Chart widget identifies the current status of Agent Clusters",
@@ -727,6 +730,7 @@
     "message.fileTransferSummary": "This widget displays the history of past File Transfers",
     "message.dailyPlanOverview": "This widget displays the summary of the Daily Plan",
     "message.fileTransferHistorySummary": "This widget displays the summary of past File Transfers",
+    "message.apiServerStatus": "This widget displays the status of API server",
     "message.confirmNodeLoss": "Can you confirm that the Controller instance '{{lossNode}}' is not running?"
   },
   "dailyPlan": {

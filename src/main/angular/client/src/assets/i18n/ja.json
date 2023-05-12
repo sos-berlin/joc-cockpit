@@ -689,6 +689,8 @@
     "label.submittedLate": "遅延登録",
     "label.scheduled": "予定",
     "label.scheduledLate": "遅延予定",
+    "label.apiServerStatus": "API Server Status",
+    "label.JS7ServerInstanceId": "Instance ID",
     "button.editLayout": "レイアウト編集",
     "button.resetLayout": "レイアウトリセット",
     "button.widget": "ウイジェット追加",
@@ -714,6 +716,7 @@
     "button.removeFromInventory": " インベントリーから削除",
     "button.viewAllAgentsDetails": "エージェント詳細表示",
     "button.confirmNodeLoss": "ノードロストが確認されました",
+    "button.removeRepository": "Remove from repository",
     "message.noWidgetFound": "追加できるウィジェットはありません",
     "message.agentStatus": "パイチャートウィジェットはエージェントのステータスを表示します",
     "message.agentClusterStatus": "パイチャートウィジェットはエージェントクラスターのステータスを表示します",
@@ -727,6 +730,7 @@
     "message.fileTransferSummary": "ファイル転送実行履歴表示ウィジェット",
     "message.dailyPlanOverview": "実行計画表示ウィジェット",
     "message.fileTransferHistorySummary": "ファイル転送履歴を表示",
+    "message.apiServerStatus": "This widget displays the status of API server",
     "message.confirmNodeLoss": " コントローラーインスタンス {{lossNode}} が停止していることが確認されました"
   },
   "dailyPlan": {

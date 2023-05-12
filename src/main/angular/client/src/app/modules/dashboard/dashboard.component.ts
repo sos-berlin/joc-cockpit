@@ -369,6 +369,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'name': 'agentClusterStatus',
         'visible': false,
         'message': 'message.agentClusterStatus'
+      } , {
+        'cols': 12,
+        'rows': 3,
+        'y': 12,
+        'x': 0,
+        'id': 'apiServerStatus',
+        'name': 'apiServerStatus',
+        'visible': false,
+        'message': 'message.apiServerStatus'
       }];
     }
 
@@ -393,6 +402,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         } else if (this.dashboardLayout[i].name === 'dailyPlan' && this.permission.joc.dailyPlan.view && this.permission.currentController.orders.view) {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'fileTransferSummary' && this.permission.joc.fileTransfer && this.permission.joc.fileTransfer.view) {
+          this.widgets.push(this.dashboardLayout[i]);
+        } else if (this.dashboardLayout[i].name === 'apiServerStatus' && this.permission.joc) {
           this.widgets.push(this.dashboardLayout[i]);
         }
       }

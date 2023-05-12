@@ -295,8 +295,7 @@ export class LoginComponent implements OnInit {
         this.getCredentials(res.challenge);
       }, error: (err) => {
         this.errorMsg = true;
-        this.errorMsgText = err;
-        // this.toasterService.error(err.message)
+        this.errorMsgText = err.message;
       }
     })
   }
