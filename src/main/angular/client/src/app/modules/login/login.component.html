@@ -96,17 +96,17 @@
                 </ng-container>
               </div>
             </div>
-            <div *ngIf="fido2IdentityServiceItems?.length > 0" class="horz-line-text text-u-c" translate>common.label.or
+            <div *ngIf="fido2IdentityServiceItems?.length > 0 && oidcIdentityServiceItems?.length > 0" class="horz-line-text text-u-c" translate>common.label.or
             </div>
             <div class="row" *ngIf="fido2IdentityServiceItems?.length > 0">
               <div class="col-md-12" *ngFor="let item of fido2IdentityServiceItems">
                 <ng-container *ngIf="item.identityServiceName">
-                  <button class="btn btn-default btn-block btn-sm m-b-12" (click)="onSign(item.identityServiceName)">
+                  <button class="btn btn-default btn-block btn-sm m-b-sm" (click)="onSign(item.identityServiceName)">
                     <img height="24px" width="24px" class="m-r-sm" src="./assets/images/fido2.png" />
                     <span translate
                       [translateParams]="{identityServiceName: item.identityServiceName}">login.button.loginWith</span>
                   </button>
-                  <a class="float-right font-14 text-primary" (click)="registerDevice()">{{'login.button.registerDevice' | translate}}</a>
+                  <a class="float-right font-14 text-primary m-b-12 m-t-xxs" (click)="registerDevice(item.identityServiceName)">{{'login.button.registerDevice' | translate}}</a>
                 </ng-container>
               </div>
             </div>

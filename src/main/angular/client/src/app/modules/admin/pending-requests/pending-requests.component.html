@@ -3,12 +3,12 @@
       <nz-table
         #ajaxTable
         [nzSize]="'small'"
-        [nzPageSize]="usr.entryPerPage || preferences.entryPerPage || 25"
-        [nzPageIndex]="usr.currentPage || 1"
+        [nzPageSize]="requests.entryPerPage || preferences.entryPerPage || 25"
+        [nzPageIndex]="requests.currentPage || 1"
         [nzBordered]="true"
         [nzShowPagination]="data.length > 0"
         [nzData]="data"
-        [nzLoading]="loading" 
+        [nzLoading]="loading"
         [nzShowSizeChanger]="true"
         (nzPageIndexChange)="pageIndexChange($event)"
         (nzPageSizeChange)="pageSizeChange($event)"
@@ -23,26 +23,39 @@
               (nzCheckedChange)="checkAll($event)"
         ></th>
           <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span></th>
-          <th (click)="sort('name')">
+          <th (click)="sort('accountName')">
             <a><span class="p-r-xs" translate>user.label.name</span>
-              <i *ngIf="usr.sortBy == 'name' && !usr.reverse"
+              <i *ngIf="requests.sortBy == 'accountName' && !requests.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="usr.sortBy == 'name' && usr.reverse"
+              <i *ngIf="requests.sortBy == 'accountName' && requests.reverse"
                  class="fa fa-caret-down "></i></a>
           </th>
           <th (click)="sort('email')">
             <a><span class="p-r-xs" translate>user.label.email</span>
-              <i *ngIf="usr.sortBy == 'email' && !usr.reverse"
+              <i *ngIf="requests.sortBy == 'email' && !requests.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="usr.sortBy == 'email' && usr.reverse"
+              <i *ngIf="requests.sortBy == 'email' && requests.reverse"
                  class="fa fa-caret-down "></i></a>
           </th>
-
-          <th nzWidth="20%" (click)="sort('emailVerified')">
+          <th (click)="sort('confirmed')">
             <a><span class="p-r-xs" translate>user.label.emailVerified</span>
-              <i *ngIf="usr.sortBy == 'emailVerified' && !usr.reverse"
+              <i *ngIf="requests.sortBy == 'confirmed' && !requests.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="usr.sortBy == 'emailVerified' && usr.reverse"
+              <i *ngIf="requests.sortBy == 'confirmed' && requests.reverse"
+                 class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('approved')">
+            <a><span class="p-r-xs" translate>user.label.approved</span>
+              <i *ngIf="requests.sortBy == 'approved' && !requests.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="requests.sortBy == 'approved' && requests.reverse"
+                 class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('rejected')">
+            <a><span class="p-r-xs" translate>user.label.rejected</span>
+              <i *ngIf="requests.sortBy == 'rejected' && !requests.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="requests.sortBy == 'rejected' && requests.reverse"
                  class="fa fa-caret-down "></i></a>
           </th>
         </tr>
@@ -55,14 +68,13 @@
                     <button type="button" class="btn-drop more-option-h" [nzDisabled]="object.checked || object.indeterminate" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                     <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                       <ul nz-menu >
-                        <li nz-menu-item (click)="approveList(account)">
+                        <li nz-menu-item [nzDisabled]="!account.confirmed || account.approved" (click)="approveList(account)">
                           <a translate>common.button.approve</a>
                         </li>
-                        <li nz-menu-item [nzDisabled]="!account.blocked" (click)="rejectList(account)">
+                        <li nz-menu-item [nzDisabled]="account.approved || account.rejected" (click)="rejectList(account)">
                           <a translate>common.button.reject</a>
                         </li>
-                        <li nz-menu-item (click)="deleteList(account.accountName)" class="bg-hover-color"
-                            [ngClass]="{'disable-link' :username==account.accountName && selectedIdentityService === userIdentityService}">
+                        <li nz-menu-item (click)="deleteList(account)" class="bg-hover-color">
                           <a translate>user.button.delete</a>
                         </li>
                       </ul>
@@ -70,13 +82,14 @@
                   </div>
                 </td>
                 <td>
-                  <a (click)="showRole(account.accountName)" class="text-hover-primary" [innerHtml]="account.accountName  | decodeSpace | highlight: searchKey"></a>
+                  <span [innerHtml]="account.accountName  | decodeSpace | highlight: searchKey"></span>
                 </td>
                 <td>
+                  <span [innerHtml]="account.email | highlight: searchKey"></span>
                 </td>
-              
-               
-                <td><span>{{(account.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+                <td><span>{{(account.approved ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+                <td><span>{{(account.confirmed ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+                <td><span>{{(account.rejected ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
               </tr>
         </tbody>
       </nz-table>
@@ -87,4 +100,3 @@
       <span translate *ngIf="ajaxTable.data.length ===1">user.label.userFound</span>
     </div>
   </div>
-  

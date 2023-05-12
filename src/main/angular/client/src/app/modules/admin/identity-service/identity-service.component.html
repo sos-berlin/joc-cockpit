@@ -1,7 +1,7 @@
 <div class="row m-b-12" >
   <div class="col-md-12">
     <div class="pull-left">
-     
+
       <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
         <li class="nav-item">
           <a class="nav-link" [ngClass]="{'active': !adminFilter.isBlocklist && !adminFilter.isSession}" (click)="adminFilter.isSession = false;adminFilter.isBlocklist = false;">
@@ -141,7 +141,7 @@
             [innerHtml]="identityService.identityServiceType | highlight: filter.searchKey"></span></td>
           <td (click)="showUser(identityService)"><span
             [innerHtml]="identityService.serviceAuthenticationScheme | translate | highlight: filter.searchKey"></span></td>
-          <td (click)="showUser(identityService)"><span *ngIf="(identityService.identityServiceType === 'JOC' || identityService.identityServiceType === 'VAULT-JOC-ACTIVE') && identityService.serviceAuthenticationScheme === 'SINGLE-FACTOR'">{{(identityService.secondFactor ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+          <td (click)="showUser(identityService)"><span>{{(identityService.secondFactor ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
           <td (click)="showUser(identityService)"><span [innerHtml]="identityService.ordering"></span></td>
           <td (click)="showUser(identityService)"><span>{{(identityService.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
           <td (click)="showUser(identityService)"><span>{{(identityService.required ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>

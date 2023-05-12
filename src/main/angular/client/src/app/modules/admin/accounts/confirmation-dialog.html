@@ -1,6 +1,8 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="delete" translate>common.label.delete</span>
+    <span *ngIf="approve" translate>common.label.approve</span>
+    <span *ngIf="reject" translate>common.label.reject</span>
+    <span *ngIf="delete || deleteRequest" translate>common.label.delete</span>
     <span *ngIf="cancel" translate>common.button.cancel</span>
     <span *ngIf="reset" translate>user.label.resetPassword</span>
     <span *ngIf="forceChange" translate>user.label.forcePasswordChange</span>
@@ -39,22 +41,23 @@
         <span *ngIf="forceChange" translate>user.message.forcePasswordChangeForSelectedUser</span>
       </span>
       <span *ngIf="approve">
-        <span  translate>user.message.approveForSelectedPendingRequests</span>
+        <span translate>user.message.approveForSelectedPendingRequests</span>
       </span>
       <span *ngIf="reject">
-        <span  translate>user.message.rejectForSelectedPendingRequests</span>
+        <span translate>user.message.rejectForSelectedPendingRequests</span>
       </span>
       <span *ngIf="deleteRequest">
-        <span  translate>user.message.deleteForSelectedPendingRequests</span>
+        <span translate>user.message.deleteForSelectedPendingRequests</span>
       </span>
     </div>
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-danger btn-sm" [disabled]="submitted || (required && !comments.comment)" [ngClass]="{'btn-primary' : (!delete)}" (click)="confirm()">
+  <button type="button" class="btn btn-danger btn-sm" [disabled]="submitted || (required && !comments.comment)"
+          [ngClass]="{'btn-primary' : (!delete || !deleteRequest)}" (click)="confirm()">
     <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-    <span *ngIf="delete">{{'common.button.delete' | translate}}</span>
-    <span *ngIf="!delete">{{'common.button.confirm' | translate}}</span>
+    <span *ngIf="delete || deleteRequest">{{'common.button.delete' | translate}}</span>
+    <span *ngIf="!delete && !deleteRequest">{{'common.button.confirm' | translate}}</span>
   </button>
   <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()"
           translate>common.button.cancel

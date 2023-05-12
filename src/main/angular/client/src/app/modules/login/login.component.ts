@@ -177,12 +177,13 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  registerDevice() {
+  registerDevice(identityServiceName) {
     if (window.PublicKeyCredential) {
       this.showRegister = true;
       this.errorMsg = false;
       this.errorMsgText = '';
-      this.coreService.post('iam/identityclient', {identityServiceName: this.fido2IdentityServiceItems[0].identityServiceName}).subscribe({
+      this.identityServiceName = identityServiceName;
+      this.coreService.post('iam/identityclient', {identityServiceName}).subscribe({
         next: (data) => {
           console.log(data);
         }
@@ -194,7 +195,6 @@ export class LoginComponent implements OnInit {
   }
 
   register() {
-    this.identityServiceName = '';
     this.submitted1 = true;
     const challenge = new Uint8Array(32);
     window.crypto.getRandomValues(challenge);
@@ -236,10 +236,10 @@ export class LoginComponent implements OnInit {
       };
 
       this.coreService.post('iam/fido2registration/request_registration', {
-        "identityServiceName": this.fido2IdentityServiceItems[0].identityServiceName,
-        "accountName": this.user.displayName,
-        "email": this.user.email,
-        "publicKey": credentialData.rawId
+        identityServiceName: this.identityServiceName,
+        accountName: this.user.displayName,
+        email: this.user.email,
+        publicKey: credentialData.rawId
       }).subscribe({
         next: () => {
           this.submitted1 = false;
@@ -261,6 +261,7 @@ export class LoginComponent implements OnInit {
   }
 
   back(): void {
+    this.identityServiceName = '';
     this.showRegister = false;
     this.showLogin = false;
     this.submitted = false;

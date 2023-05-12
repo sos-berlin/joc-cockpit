@@ -53,19 +53,19 @@
                 <i class="fa fa-download"></i>&nbsp;
                 <span translate>inventory.button.export</span>
               </button>
-              <button *ngIf="!isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-sm btn-grey m-l-12" (click)="importObject()">
+              <button *ngIf="!isSelected && ((route.match('/users/identity_service/account') && identityServiceType !== 'FIDO2') || route.match('/users/identity_service/role'))" class="btn btn-sm btn-grey m-l-12" (click)="importObject()">
                 <i class="fa fa-upload"></i>&nbsp;
                 <span translate>inventory.button.import</span>
               </button>
-              <button *ngIf="isSelected && (route.match('/users/identity_service/pendingRequests'))" class="btn btn-sm btn-grey m-l-12" (click)="approveRequest()">
+              <button *ngIf="isSelected && (route.match('/users/identity_service/pending_requests'))" class="btn btn-sm btn-grey m-l-12" (click)="approveRequest()">
                 <i class="fa fa-check"></i>&nbsp;
                 <span translate>common.button.approve</span>
               </button>
-              <button *ngIf="isSelected && (route.match('/users/identity_service/pendingRequests'))" class="btn btn-sm btn-grey m-l-12" (click)="rejectRequest()">
+              <button *ngIf="isSelected && (route.match('/users/identity_service/pending_requests'))" class="btn btn-sm btn-grey m-l-12" (click)="rejectRequest()">
                 <i class="fa fa-times"></i>&nbsp;
                 <span translate>common.button.reject</span>
               </button>
-              <button *ngIf="isSelected && (route.match('/users/identity_service/pendingRequests'))" class="btn btn-sm btn-grey m-l-12" (click)="deleteRequest()">
+              <button *ngIf="isSelected && (route.match('/users/identity_service/pending_requests'))" class="btn btn-sm btn-grey m-l-12" (click)="deleteRequest()">
                 <i class="fa fa-trash"></i>&nbsp;
                 <span translate>common.button.delete</span>
               </button>
@@ -81,7 +81,7 @@
                 <i class="fa fa-paste"></i>&nbsp;
                 <span translate>common.button.paste</span>
               </button>
-              <button *ngIf="!isSelected && route.match('/users/identity_service/account')" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
+              <button *ngIf="!isSelected && route.match('/users/identity_service/account') && identityServiceType !== 'FIDO2'" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
                 <i class="fa fa-plus"></i>&nbsp;
                 <span translate>user.button.addUser</span>
               </button>
@@ -194,13 +194,13 @@
             <span class="separator"></span>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="identity_service/pendingRequests" routerLinkActive="active">
+            <a class="nav-link" routerLink="identity_service/pending_requests" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.pendingRequests</span></span>
             </a>
           </li>
         </ng-container>
         </ul>
-        <div *ngIf="route.match('/users/identity_service/account')" class="inline pull-right search-box-field admin-search-bar">
+        <div *ngIf="route.match('/users/identity_service/account') || route.match('/users/identity_service/pending_requests')" class="inline pull-right search-box-field admin-search-bar">
           <label>
             <input type="search" #input (keyup)="searchBar(input.value)"
                    placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="filter.searchKey">

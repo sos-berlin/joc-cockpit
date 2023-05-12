@@ -874,7 +874,7 @@
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2Transports
         </label>
         <div class="col-sm-6">
-          <nz-select name="iamFido2Transports" [(ngModel)]="currentObj.iamFido2Transports" nzMode="multiple">
+          <nz-select name="iamFido2Transports" [(ngModel)]="currentObj.iamFido2Transports">
             <nz-option *ngFor="let option of iamFido2Transports"
                        [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
           </nz-select>
@@ -904,14 +904,6 @@
             <nz-option *ngFor="let option of iamFido2CipherTypes"
                        [nzLabel]="option" [nzValue]="option"></nz-option>
           </nz-select>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-sm-4" [nz-tooltip]="'user.tooltips.fido2.iamFido2IsSecondFactor' | translate"
-               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2IsSecondFactor</label>
-        <div class="col-sm-6">
-          <label nz-checkbox [(ngModel)]="currentObj.iamFido2IsSecondFactor"
-                 name="iamFido2IsSecondFactor"></label>
         </div>
       </div>
       <div class="form-group row">

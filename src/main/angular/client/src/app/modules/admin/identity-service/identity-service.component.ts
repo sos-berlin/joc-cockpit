@@ -684,7 +684,7 @@ export class IdentityServiceModalComponent implements OnInit {
       "secondFactor": true
     }).subscribe({
       next: (res) => {
-        this.fido2List = res.identityServiceItems;
+        this.certList = res.identityServiceItems;
       }
     })
   }
