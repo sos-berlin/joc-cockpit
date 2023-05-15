@@ -833,7 +833,8 @@
       "installation": "インストレーション",
       "configuration": "コンフィグレーション",
       "certificates": "証明書",
-      "startFiles": "起動ファイル"
+      "startFiles": "起動ファイル",
+      "createDescriptor": "ディスクリプター作成"
     },
     "button": {
       "showMoreOption": "オプション表示",
@@ -854,8 +855,7 @@
         "title": "タイトル",
         "account": "アカウント",
         "scheduled": "スケジュール日時",
-        "created": "作成日時",
-        "createDescriptor": "ディスクリプター作成"
+        "created": "作成日時"
       },
       "placeholder": {
         "descriptorId": "ディスクリプターID入力",
@@ -2149,7 +2149,15 @@
     "label.displayName": "Name",
     "label.email": "Email",
     "button.back": "Back",
-    "button.register": "Register"
+    "button.register": "Register",
+    "message.registrationSuccessful": "Your registration was successful.",
+    "message.verifyEmailAddress": "To complete your account setup, please check your email to verify your email address",
+    "message.browseDoesnotSupportWebAuthn": "Your browser doesn't support WebAuthn",
+    "message.updateToModernBrowser": "We recommend updating to a modern browser that supports WebAuthn for the best user experience and increased security.",
+    "message.tokenExpired": "The token is expired or broken.",
+    "message.successfullyVerified": "Successfully Verified",
+    "message.mailVerifiedMessage": "Your mail has been verified successfully",
+    "message.newFIDOAccountRegistration": "Please start over with a new FIDO Account registration."
   },
   "monitor": {
     "label": {
@@ -2723,6 +2731,10 @@
       "controller_connection_history_password": "コントローラー接続履歴パスワード",
       "encoding": "エンコーディング",
       "disable_warning_on_license_expiration": "ライセンス期限警告を無効化",
+      "log_ext_directory": "Specifies a directory that is accessible for JOC Cockpit and to which copies of order log files and task log files will be written.",
+      "log_ext_order_history": "Specifies that a JSON file holding information about the order history is created in case of successful orders, failed orders or both.",
+      "log_ext_order": "Specifies that an order log file is created in case of successful orders, failed orders or both.",
+      "log_ext_task": "Specifies that a task log file is created in case of successful task, failed tasks or both",
       "log_maximum_display_size": "JOCコックピットは、非圧縮ログ出力のサイズがこの値を超えない場合、ログビューウィンドウで表示するためにログ出力を提供します。それ以外の場合は、ログをダウンロードするためにのみ提供されます。",
       "log_applicable_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、最初と最後の100KBをタスクログに使用します。元のログファイルは削除されます。",
       "log_maximum_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、タスクログ用に最初の100KBを使用します。オリジナルのログファイルは削除されます。",
@@ -3262,8 +3274,6 @@
     "button.replaceAll": "全てを置換",
     "button.jumpToLine": "行指定",
     "button.remove": "削除",
-    "button.approve": "Approve",
-    "button.reject": "Reject",
     "button.submitWorkFlow": "配置準備完了",
     "button.reload": "リロード",
     "button.addArgument": "引数追加",

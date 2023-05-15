@@ -73,7 +73,8 @@ export class CoreService {
     if (!sessionStorage.$SOS$SIDEVIEW || typeof JSON.parse(sessionStorage.$SOS$SIDEVIEW) !== 'object') {
       sessionStorage.$SOS$SIDEVIEW = JSON.stringify(this.sideView);
     } else {
-      this.sideView = JSON.parse(sessionStorage.$SOS$SIDEVIEW);
+      let sideView = JSON.parse(sessionStorage.$SOS$SIDEVIEW);
+      if (sideView && sideView.workflow) { this.sideView = sideView; }
     }
   }
 

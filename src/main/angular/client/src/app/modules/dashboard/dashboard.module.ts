@@ -15,7 +15,7 @@ import {ControllerClusterComponent} from './controller-cluster/controller-cluste
 import {InventoryStatisticsComponent} from './inventory-statistics/inventory-statistics.component';
 import {FileTransferHistorySummaryComponent} from './file-transfer-history-summary/file-transfer-history-summary.component';
 import {AgentClusterStatusComponent} from "./agent-cluster-status/agent-cluster-status.component";
-import {APIServerStatusComponent} from './api-server-status/api-server-status.component';
+import { APIServerStatusComponent } from './api-server-status/api-server-status.component';
 
 @NgModule({
   imports: [

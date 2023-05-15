@@ -537,10 +537,10 @@
                           <i *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies" class="cursor fa fa-codepen p-l-xs p-r-xs"
                              [nz-tooltip]="'workflow.button.showDependency' | translate" (click)="showDependency(workflow)"></i>
                           <i *ngIf="workflow.documentationName" (click)="coreService.showDocumentation(workflow.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
-                          <a class="text-dark" (click)="showPanelFunc(workflow)">
-                            <span [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
+                          <a class="text-dark noExl" >
+                            <span class="cursor text-primary" (click)="showPanelFunc(workflow)" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
                             <i *ngIf="workflow.title"> - </i>
-                            <i class="text-muted">{{workflow.title}}</i>
+                            <i class="text-muted" [innerHtml]="workflow.title | stringToLink"></i>
                           </a>
                         </span>
                       </td>

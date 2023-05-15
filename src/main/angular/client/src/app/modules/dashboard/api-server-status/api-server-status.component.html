@@ -26,7 +26,7 @@
                     </button>
                     <nz-dropdown-menu #action="nzDropdownMenu">
                       <ul nz-menu >
-                        <li nz-menu-item (click)="removeInstance(item)">
+                        <li nz-menu-item (click)="removeInstance(item.instanceId)">
                           <a translate>dashboard.button.removeRepository</a>
                         </li>
                       </ul>

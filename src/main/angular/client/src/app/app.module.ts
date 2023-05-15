@@ -1,19 +1,20 @@
-import { ErrorHandler, Injectable, NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
-import { registerLocaleData } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { ToastrModule } from 'ngx-toastr';
-import { PortalModule } from '@angular/cdk/portal';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { AppRoutingModule } from './app-routing.module';
-import { LoginModule } from './modules/login/login.module';
-import { AppComponent } from './app.component';
-import { AuthInterceptor } from './components/guard';
-import { LoggingService } from './services/logging.service';
+import {ErrorHandler, Injectable, NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {en_US, NZ_I18N} from 'ng-zorro-antd/i18n';
+import {registerLocaleData} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {ToastrModule} from 'ngx-toastr';
+import {PortalModule} from '@angular/cdk/portal';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {AppRoutingModule} from './app-routing.module';
+import {LoginModule} from './modules/login/login.module';
+import {AppComponent} from './app.component';
+import {AuthInterceptor} from './components/guard';
+import {LoggingService} from './services/logging.service';
+import {SignupCompleteModule} from "./modules/signup-complete/signup-complete.module";
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   const lang = localStorage['$SOS$LANG'] || 'en';
@@ -46,6 +47,7 @@ export class MyErrorHandler implements ErrorHandler {
     HttpClientModule,
     BrowserAnimationsModule,
     LoginModule,
+    SignupCompleteModule,
     PortalModule,
     ToastrModule.forRoot({
       maxOpened: 1,
@@ -61,7 +63,7 @@ export class MyErrorHandler implements ErrorHandler {
     })
   ],
   providers: [
-    { provide: ErrorHandler, useClass: MyErrorHandler },
+    {provide: ErrorHandler, useClass: MyErrorHandler},
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

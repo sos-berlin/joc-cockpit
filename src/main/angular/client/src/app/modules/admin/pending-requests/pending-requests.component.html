@@ -68,7 +68,7 @@
                     <button type="button" class="btn-drop more-option-h" [nzDisabled]="object.checked || object.indeterminate" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                     <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                       <ul nz-menu >
-                        <li nz-menu-item [nzDisabled]="!account.confirmed || account.approved" (click)="approveList(account)">
+                        <li nz-menu-item [nzDisabled]="account.approved" (click)="approveList(account)">
                           <a translate>common.button.approve</a>
                         </li>
                         <li nz-menu-item [nzDisabled]="account.approved || account.rejected" (click)="rejectList(account)">
