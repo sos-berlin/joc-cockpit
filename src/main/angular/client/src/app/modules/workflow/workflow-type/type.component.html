@@ -130,7 +130,9 @@
         <span class="_600">
           <span *ngIf="instruction.TYPE !== 'If' && instruction.TYPE !== 'Cycle'">{{instruction.TYPE}}</span>
           <a class="cursor" (click)="showConfiguration(instruction);" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'">{{instruction.TYPE}}</a><span *ngIf="instruction.TYPE === 'Lock'">:</span>
-         <i class="p-l-xs p-r-xs text-muted _400" *ngIf="instruction.label">({{instruction.label}})</i>
+          <span class="p-l-xs  _400" *ngIf="instruction.label">(</span>
+          <i class="text-muted _400" *ngIf="instruction.label">{{instruction.label}}</i>
+          <span class="p-r-xs _400" *ngIf="instruction.label">)</span>
           <span class="text-muted" *ngIf="instruction.TYPE === 'Lock'">
             <span class="text-muted" *ngFor="let item of instruction.demands">
               <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(item.lockName, 'LOCK');$event.stopPropagation();"
@@ -239,10 +241,17 @@
         <span class="cursor" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">
           {{instruction.jobName}}
         </span>
-        <i class="p-l-xs p-r-xs text-muted _400" *ngIf="instruction.TYPE === 'Job' && instruction.label">({{instruction.label}})</i>
+        <span *ngIf="instruction.TYPE === 'Job'">
+          - <span class="text-muted" [innerHTML]="jobs[instruction.jobName].title | stringToLink"></span>
+           <span class="p-l-xs  _400" *ngIf="instruction.label">(</span>
+           <i class="text-muted _400" *ngIf="instruction.label">{{instruction.label}}</i>
+           <span class="p-r-xs _400" *ngIf="instruction.label">)</span>
+        </span>
         <span (click)="openWorkflowDependency(instruction);" [ngClass]="{'cursor' : (instruction.TYPE === 'PostNotices' || instruction.TYPE === 'AddOrder')}" *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
           {{instruction.TYPE | translate}}
-          <i class="p-l-xs p-r-xs text-muted _400" *ngIf="instruction.label">({{instruction.label}})</i>
+          <span class="p-l-xs  _400" *ngIf="instruction.label">(</span>
+           <i class="text-muted _400" *ngIf="instruction.label">{{instruction.label}}</i>
+           <span class="p-r-xs _400" *ngIf="instruction.label">)</span>
           <span *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices' || instruction.TYPE === 'AddOrder')">: </span>
           <span *ngIf="instruction.TYPE === 'PostNotices' && instruction.noticeBoardNames">
             <span class="text-muted" *ngFor="let board of instruction.noticeBoardNames">

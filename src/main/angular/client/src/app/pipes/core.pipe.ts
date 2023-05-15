@@ -543,6 +543,9 @@ export class OrderPipe implements PipeTransform {
 })
 export class StringToLinkPipe implements PipeTransform {
   transform(text): string {
+    if (!text) {
+      return text;
+    }
     return this.convertTitleToLink(text);
   }
 
@@ -552,14 +555,13 @@ export class StringToLinkPipe implements PipeTransform {
   }
 
   convertTitleToLink(text: string): string {
-    const pattern = /(\w+)\[(.*?)\]\((.*?)\)/;
+    const pattern = /(.+?)?\s*\[(.*?)\]\((.*?)\)(.*)/;
     const match = text.match(pattern);
     if (match) {
-      const title = match[1];
-      const anchorText = match[2];
-      const link = match[3];
+      const groups = match.slice(1).map((group) => group?.trim());
+      const [title, anchorText, link, remainingText] = groups;
       if (this.isLinkValid(link)) {
-        return `${title} <a href="${link}">${anchorText}</a>`;
+        return `${title || ''} <a class="primary-text-hover-color text-u-l" target="_blank" href="${link}">${anchorText}</a> ${remainingText || ''}`;
       }
     }
     return text;
