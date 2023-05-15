@@ -18,24 +18,26 @@ export class InventoryService {
       if (arr[i]) {
         if (arr[i].objectType === InventoryObject.WORKFLOW) {
           arr[i].level = 0;
-        } else if (arr[i].objectType === InventoryObject.FILEORDERSOURCE) {
-          arr[i].level = 1;
         } else if (arr[i].objectType === InventoryObject.JOBRESOURCE) {
+          arr[i].level = 1;
+        } else if (arr[i].objectType === InventoryObject.SCHEDULE) {
           arr[i].level = 2;
         } else if (arr[i].objectType === InventoryObject.NOTICEBOARD) {
           arr[i].level = 3;
         } else if (arr[i].objectType === InventoryObject.LOCK) {
           arr[i].level = 4;
-        } else if (arr[i].objectType === InventoryObject.INCLUDESCRIPT) {
+        } else if (arr[i].objectType === InventoryObject.FILEORDERSOURCE) {
           arr[i].level = 5;
-        } else if (arr[i].objectType === InventoryObject.SCHEDULE) {
+        } else if (arr[i].objectType === InventoryObject.JOBTEMPLATE) {
           arr[i].level = 6;
-        } else if (arr[i].objectType === InventoryObject.WORKINGDAYSCALENDAR) {
+        } else if (arr[i].objectType === InventoryObject.INCLUDESCRIPT) {
           arr[i].level = 7;
-        } else if (arr[i].objectType === InventoryObject.NONWORKINGDAYSCALENDAR) {
+        }  else if (arr[i].objectType === InventoryObject.WORKINGDAYSCALENDAR) {
           arr[i].level = 8;
-        } else {
+        } else if (arr[i].objectType === InventoryObject.NONWORKINGDAYSCALENDAR) {
           arr[i].level = 9;
+        } else {
+          arr[i].level = 10;
         }
       }
     }

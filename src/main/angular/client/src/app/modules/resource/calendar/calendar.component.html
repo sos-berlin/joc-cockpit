@@ -235,9 +235,9 @@
                       <a (click)="previewCalendar(calendar)" class="text-primary-hover text-dark">
                           <span [innerHTML]="calendar.name | highlight : calendarFilters.searchText"></span>
                         </a>
-                        <span *ngIf="calendar.title">-</span>
+                        <span *ngIf="calendar.title"> - </span>
                         <i class="text-muted">
-                          <span [innerHTML]="calendar.title | highlight : calendarFilters.searchText"></span>
+                          <span [innerHTML]="calendar.title | stringToLink"></span>
                         </i>
                     </td>
                     <td>

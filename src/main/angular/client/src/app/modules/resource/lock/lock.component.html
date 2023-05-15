@@ -235,7 +235,7 @@
                           <i *ngIf="lock.documentationName" (click)="coreService.showDocumentation(lock.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
                           <span [innerHtml]="lock.id | highlight : locksFilters.searchText"></span>
                           <i *ngIf="lock.title"> - </i>
-                          <i class="text-muted" [innerHtml]="lock.title | highlight : locksFilters.searchText"></i>
+                          <i class="text-muted" [innerHtml]="lock.title | stringToLink"></i>
                         </span>
                       </td>
                       <td>

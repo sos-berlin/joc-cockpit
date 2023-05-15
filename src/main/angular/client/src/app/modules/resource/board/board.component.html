@@ -226,7 +226,7 @@
                                [ngForOf]="ajaxTable.data">
                     <tr [ngClass]="{'light-bg':board.show}">
                       <td  [nzDisabled]="board.numOfNotices === board.numOfExpectingOrders"
-                      *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" 
+                      *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
                       [nzShowCheckbox]="true" [nzChecked]="object.setOfCheckedId.has(board.path)" (nzCheckedChange)="onItemChecked(board, null, $event)"></td>
                       <td>
                         <div class="btn-group dropdown">
@@ -259,7 +259,7 @@
                           <i *ngIf="board.documentationName" (click)="coreService.showDocumentation(board.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
                           <span [innerHtml]="board.name | highlight : boardsFilters.searchText"></span>
                           <i *ngIf="board.title"> - </i>
-                          <i class="text-muted" [innerHtml]="board.title | highlight : boardsFilters.searchText"></i>
+                          <i class="text-muted" [innerHtml]="board.title | stringToLink"></i>
                         </span>
                       </td>
                       <td>
@@ -333,7 +333,7 @@
                               <ng-template ngFor let-notice
                                            [ngForOf]="nestedTable.data">
                                 <tr>
-                                  <td  
+                                  <td
                                   *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" [nzDisabled]="notice.state._text === 'EXPECTED'" [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(notice.id +'__' + board.path)" (nzCheckedChange)="onItemChecked(board, notice, $event)"></td>
                                   <td *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)">
                                     <div class="btn-group dropdown">
