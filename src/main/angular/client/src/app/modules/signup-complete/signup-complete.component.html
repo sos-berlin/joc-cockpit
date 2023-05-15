@@ -1,0 +1,36 @@
+<ul class="m-r-165 pos-abt r-12" style="z-index: 9999;">
+  <li class="nav-item dropdown">
+    <app-info-menu></app-info-menu>
+  </li>
+</ul>
+<div class="w-full" style="overflow: auto;height: 100%">
+  <img src="./assets/images/diamond_img.png" alt="" class="pos-abt top-50">
+  <div class="smooth pos-rlt login-box">
+    <div class="w-full">
+      <div class="center-block w-xxxl w-auto-xs" id="center-block">
+        <div class="padding text-color m-a p-t-xs">
+          <div class="navbar min-ht">
+            <div class="pull-center">
+              <a class="navbar-brand" target="_blank" href="https://js7.sh/">
+                <img class="cursor logo-for-default logo-ht" src="./assets/images/JS7-logo-default-theme.png" alt="JS7">
+                <img class="cursor logo-for-light logo-ht" src="./assets/images/JS7-logo-light-theme.png" alt="JS7">
+                <img class="cursor logo-for-dark logo-ht" src="./assets/images/JS7-light-dark-theme.png" alt="JS7">
+                <img class="cursor logo-for-grey logo-ht" src="./assets/images/JS7-logo-grey-theme.png" alt="JS7">
+              </a>
+            </div>
+          </div>
+          <div class="m-t-72"></div>
+        </div>
+        <div class="p-t-sm p-b-sm p-l-xs p-r-xs text-center" style="margin-top: 108px">
+          <div *ngIf="!isVerified" class="text-danger text-18 _500">{{'register.message.tokenExpired' | translate}}</div>
+          <div *ngIf="!isVerified" class="text-danger text-16 _400 m-t-sm">{{'register.message.newFIDOAccountRegistration' | translate}}</div>
+          <div *ngIf="isVerified" class="text-18 _500">{{'register.message.successfullyVerified' | translate}}</div>
+          <div *ngIf="isVerified" class="text-md text-16 _400 m-t-sm">{{'register.message.mailVerifiedMessage' | translate}}</div>
+          <button *ngIf="isVerified" type="button" (click)="navToLogin()" class="btn btn-primary m-t p-x-md">
+            {{'login.button.logIn' | translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

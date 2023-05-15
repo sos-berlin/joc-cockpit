@@ -537,3 +537,31 @@ export class OrderPipe implements PipeTransform {
     }, value);
   }
 }
+
+@Pipe({
+  name: 'stringToLink'
+})
+export class StringToLinkPipe implements PipeTransform {
+  transform(text): string {
+    return this.convertTitleToLink(text);
+  }
+
+  isLinkValid(link: string): boolean {
+    const pattern = /^(ftp|http|https):\/\/[^ "]+$/;
+    return pattern.test(link);
+  }
+
+  convertTitleToLink(text: string): string {
+    const pattern = /(\w+)\[(.*?)\]\((.*?)\)/;
+    const match = text.match(pattern);
+    if (match) {
+      const title = match[1];
+      const anchorText = match[2];
+      const link = match[3];
+      if (this.isLinkValid(link)) {
+        return `${title} <a href="${link}">${anchorText}</a>`;
+      }
+    }
+    return text;
+  }
+}

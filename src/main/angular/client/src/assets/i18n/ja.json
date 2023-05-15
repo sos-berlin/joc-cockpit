@@ -833,7 +833,8 @@
       "installation": "インストレーション",
       "configuration": "コンフィグレーション",
       "certificates": "証明書",
-      "startFiles": "起動ファイル"
+      "startFiles": "起動ファイル",
+      "createDescriptor": "ディスクリプター作成"
     },
     "button": {
       "showMoreOption": "オプション表示",
@@ -854,8 +855,7 @@
         "title": "タイトル",
         "account": "アカウント",
         "scheduled": "スケジュール日時",
-        "created": "作成日時",
-        "createDescriptor": "ディスクリプター作成"
+        "created": "作成日時"
       },
       "placeholder": {
         "descriptorId": "ディスクリプターID入力",
@@ -2149,7 +2149,15 @@
     "label.displayName": "Name",
     "label.email": "Email",
     "button.back": "Back",
-    "button.register": "Register"
+    "button.register": "Register",
+    "message.registrationSuccessful": "Your registration was successful.",
+    "message.verifyEmailAddress": "To complete your account setup, please check your email to verify your email address",
+    "message.browseDoesnotSupportWebAuthn": "Your browser doesn't support WebAuthn",
+    "message.updateToModernBrowser": "We recommend updating to a modern browser that supports WebAuthn for the best user experience and increased security.",
+    "message.tokenExpired": "The token is expired or broken.",
+    "message.successfullyVerified": "Successfully Verified",
+    "message.mailVerifiedMessage": "Your mail has been verified successfully",
+    "message.newFIDOAccountRegistration": "Please start over with a new FIDO Account registration."
   },
   "monitor": {
     "label": {
@@ -3266,8 +3274,6 @@
     "button.replaceAll": "全てを置換",
     "button.jumpToLine": "行指定",
     "button.remove": "削除",
-    "button.approve": "Approve",
-    "button.reject": "Reject",
     "button.submitWorkFlow": "配置準備完了",
     "button.reload": "リロード",
     "button.addArgument": "引数追加",

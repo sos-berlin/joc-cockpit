@@ -24,7 +24,7 @@
           <div class="m-t-72"></div>
           <div class="hide b-a p-a-sm m-t-sm error-input" [ngClass]="{'show':errorMsg}">
             <span *ngIf="!errorMsgText" translate>login.message.loginError</span>
-            <span *ngIf="errorMsgText">{{errorMsgText}}</span>
+            <span *ngIf="errorMsgText" class="m-b-sm">{{errorMsgText}}</span>
           </div>
           <form  #myForm="ngForm" (ngSubmit)="onSubmit(user)" class="p-t-sm p-b-sm p-l-xs p-r-xs">
             <div *ngIf="showRegister || showLogin" class="md-form-group">

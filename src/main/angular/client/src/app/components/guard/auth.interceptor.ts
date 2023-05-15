@@ -3,7 +3,6 @@ import { HttpEvent, HttpInterceptor, HttpHandler, HttpHeaders } from '@angular/c
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { isEmpty } from 'underscore';
@@ -13,7 +12,7 @@ import { LoggingService } from '../../services/logging.service';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService,
+  constructor(private router: Router, private authService: AuthService,
     private logService: LoggingService, private translate: TranslateService, private toasterService: ToastrService) {
   }
 
@@ -60,6 +59,9 @@ export class AuthInterceptor implements HttpInterceptor {
               this.logService.debug(message);
             }
           }, error: (err: any) => {
+            if(req.url.match('iam/fido2')){
+              return;
+            }
             if(err.status === 200){
 
             } else {

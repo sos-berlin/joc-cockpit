@@ -189,8 +189,16 @@ export class LoginComponent implements OnInit {
         }
       });
     } else {
-      this.toasterService.warning('Your browser doesn\'t support WebAuthn',
-        'We recommend updating to a modern browser that supports WebAuthn for the best user experience and increased security.');
+      let title = '';
+      let msg = '';
+      this.translate.get('register.message.updateToModernBrowser').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.translate.get('register.message.browseDoesnotSupportWebAuthn').subscribe(translatedValue => {
+        title = translatedValue;
+      });
+      this.toasterService.warning(msg,
+        title);
     }
   }
 
@@ -243,12 +251,23 @@ export class LoginComponent implements OnInit {
       }).subscribe({
         next: () => {
           this.submitted1 = false;
-          this.toasterService.success('Your registration was successful.',
-            'To complete your account setup, please check your email to verify your email address')
+          let title = '';
+          let msg = '';
+          this.translate.get('register.message.verifyEmailAddress').subscribe(translatedValue => {
+            msg = translatedValue;
+          });
+          this.translate.get('register.message.registrationSuccessful').subscribe(translatedValue => {
+            title = translatedValue;
+          });
+          this.toasterService.success(msg, title)
           this.back();
         }, error: (err) => {
           this.submitted1 = false;
-          this.toasterService.error(err.message)
+          if(err.error && err.error.error){
+            this.toasterService.error(err.error.error.message);
+          } else {
+            this.toasterService.error(err.message);
+          }
         }
       })
     })
@@ -295,7 +314,11 @@ export class LoginComponent implements OnInit {
         this.getCredentials(res.challenge);
       }, error: (err) => {
         this.errorMsg = true;
-        this.errorMsgText = err.message;
+        if(err.error && err.error.error){
+          this.errorMsgText = err.error.error.message;
+        } else {
+          this.errorMsgText = err.message;
+        }
       }
     })
   }

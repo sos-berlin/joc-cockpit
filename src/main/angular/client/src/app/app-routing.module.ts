@@ -1,12 +1,17 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule, PreloadAllModules} from '@angular/router';
-import {LoginComponent} from './modules/login/login.component';
 import {AuthGuard} from './components/guard';
+import {LoginComponent} from './modules/login/login.component';
+import {SignupCompleteComponent} from "./modules/signup-complete/signup-complete.component";
 
 const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: 'email_verify',
+    component: SignupCompleteComponent
   },
   {
     path: '',

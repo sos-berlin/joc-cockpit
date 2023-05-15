@@ -2149,7 +2149,15 @@
     "label.displayName": "Nom",
     "label.email": "E-mail",
     "button.back": "Retour",
-    "button.register": "Enregistrer"
+    "button.register": "Enregistrer",
+    "message.registrationSuccessful": "Your registration was successful.",
+    "message.verifyEmailAddress": "To complete your account setup, please check your email to verify your email address",
+    "message.browseDoesnotSupportWebAuthn": "Your browser doesn't support WebAuthn",
+    "message.updateToModernBrowser": "We recommend updating to a modern browser that supports WebAuthn for the best user experience and increased security.",
+    "message.tokenExpired": "The token is expired or broken.",
+    "message.successfullyVerified": "Successfully Verified",
+    "message.mailVerifiedMessage": "Your mail has been verified successfully",
+    "message.newFIDOAccountRegistration": "Please start over with a new FIDO Account registration."
   },
   "monitor": {
     "label": {
@@ -2728,7 +2736,6 @@
       "log_ext_order_history": "Spécifie qu'un fichier JSON contenant des informations sur l'historique des ordres est créé en cas de commandes réussies, de commandes échouées ou des deux.",
       "log_ext_order": "Spécifie qu'un fichier journal des ordres est créé en cas de ordres réussies, de ordres échouées ou les deux.",
       "log_ext_task": "Spécifie qu'un fichier journal des ordres est créé en cas de commandes réussies, de commandes échouées ou les deux.",
-
       "log_applicable_size": "Si cette valeur pour la taille de la sortie du journal d'une tâche est dépassée, le History Service tronquera la sortie du journal et utilisera les 100 premiers et derniers Ko pour le journal de la tâche. Le fichier journal original sera supprimé. La taille est spécifiée en MO.",
       "log_maximum_size": "Si cette valeur pour la taille de la sortie du journal d'une tâche est dépassée, le History Service tronquera la sortie du journal et utilisera les 100 premiers Ko pour le journal de la tâche. Le fichier journal original sera supprimé. La taille est spécifiée en MO.",
       "joc_reverse_proxy_url": "Si JOC Cockpit n'est pas accessible à partir de son URL d'origine mais uniquement à partir d'un service de reverse proxy, cette valeur indique l'URL à utiliser, par exemple pour les notifications par e-mail.",
@@ -3267,8 +3274,6 @@
     "button.replaceAll": "Remplacer Tous",
     "button.jumpToLine": "Sauter à la ligne",
     "button.remove": "Supprimer",
-    "button.approve": "Approve",
-    "button.reject": "Reject",
     "button.submitWorkFlow": "Prêt pour le Déploiement",
     "button.reload": "Recharger",
     "button.addArgument": "Ajouter un Argument",

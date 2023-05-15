@@ -2149,7 +2149,15 @@
     "label.displayName": "Name",
     "label.email": "E-mail",
     "button.back": "Back",
-    "button.register": "Register"
+    "button.register": "Register",
+    "message.registrationSuccessful": "Your registration was successful.",
+    "message.verifyEmailAddress": "To complete your account setup, please check your email to verify your email address",
+    "message.browseDoesnotSupportWebAuthn": "Your browser doesn't support WebAuthn",
+    "message.updateToModernBrowser": "We recommend updating to a modern browser that supports WebAuthn for the best user experience and increased security.",
+    "message.tokenExpired": "The token is expired or broken.",
+    "message.successfullyVerified": "Successfully Verified",
+    "message.mailVerifiedMessage": "Your mail has been verified successfully",
+    "message.newFIDOAccountRegistration": "Please start over with a new FIDO Account registration."
   },
   "monitor": {
     "label": {

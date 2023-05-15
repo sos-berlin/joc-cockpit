@@ -61,6 +61,6 @@ export class APIServerStatusComponent implements OnInit, OnDestroy {
   }
 
   removeInstance(id): void {
-    console.log('todo')
+    this.coreService.post('joc/cluster/delete_member', {memberId: id}).subscribe()
   }
 }

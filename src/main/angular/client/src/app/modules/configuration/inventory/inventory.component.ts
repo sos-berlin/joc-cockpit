@@ -3303,7 +3303,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.newDraft(res.newDraft);
         } else if (res.updateFromJobTemplate) {
           this.updateFromJobTemplates(res.updateFromJobTemplate);
-        }
+        } 
       }
     });
     this.subscription3 = dataService.refreshAnnounced$.subscribe(() => {
