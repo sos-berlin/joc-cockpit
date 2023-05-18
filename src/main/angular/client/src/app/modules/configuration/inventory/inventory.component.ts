@@ -7,28 +7,28 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import { BehaviorSubject, forkJoin, of, Subject, Subscription } from 'rxjs';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { FileUploader } from 'ng2-file-upload';
-import { ToastrService } from 'ngx-toastr';
-import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
-import { TranslateService } from '@ngx-translate/core';
-import { clone, extend, groupBy, isArray, isEmpty, isEqual, sortBy } from 'underscore';
-import { ClipboardService } from 'ngx-clipboard';
-import { saveAs } from 'file-saver';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
-import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/tree';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { ActivatedRoute } from "@angular/router";
-import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
-import { CoreService } from '../../../services/core.service';
-import { DataService } from '../../../services/data.service';
-import { InventoryService } from './inventory.service';
-import { AuthService } from '../../../components/guard';
-import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
-import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
-import { InventoryObject } from '../../../models/enums';
-import { UpdateJobTemplatesComponent } from "./job-template/job-template.component";
+import {forkJoin, of, Subject, Subscription} from 'rxjs';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {FileUploader} from 'ng2-file-upload';
+import {ToastrService} from 'ngx-toastr';
+import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
+import {TranslateService} from '@ngx-translate/core';
+import {clone, extend, groupBy, isArray, isEmpty, isEqual, sortBy} from 'underscore';
+import {ClipboardService} from 'ngx-clipboard';
+import {saveAs} from 'file-saver';
+import {catchError, debounceTime} from 'rxjs/operators';
+import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {ActivatedRoute} from "@angular/router";
+import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
+import {CoreService} from '../../../services/core.service';
+import {DataService} from '../../../services/data.service';
+import {InventoryService} from './inventory.service';
+import {AuthService} from '../../../components/guard';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
+import {InventoryObject} from '../../../models/enums';
+import {UpdateJobTemplatesComponent} from "./job-template/job-template.component";
 
 declare const $: any;
 
@@ -43,7 +43,7 @@ export class NewDraftComponent implements OnInit {
   submitted = false;
   display = false;
   required = false;
-  comments: any = { radio: 'predefined' };
+  comments: any = {radio: 'predefined'};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -143,11 +143,11 @@ export class SingleDeployComponent implements OnInit {
   loading = true;
   submitted = false;
   required = false;
-  comments: any = { radio: 'predefined' };
+  comments: any = {radio: 'predefined'};
   dateFormat: any = {};
   object: any = {
-    store: { draftConfigurations: [], deployConfigurations: [] },
-    delete: { deployConfigurations: [] }
+    store: {draftConfigurations: [], deployConfigurations: []},
+    delete: {deployConfigurations: []}
   };
   dailyPlanDate: any = {
     addOrdersDateFrom: 'now',
@@ -188,8 +188,8 @@ export class SingleDeployComponent implements OnInit {
 
   getJSObject(): void {
     this.object = {
-      store: { draftConfigurations: [], deployConfigurations: [] },
-      delete: { deployConfigurations: [] }
+      store: {draftConfigurations: [], deployConfigurations: []},
+      delete: {deployConfigurations: []}
     };
     const self = this;
     for (let i = 0; i < this.deployablesObject.length; i++) {
@@ -304,9 +304,9 @@ export class SingleDeployComponent implements OnInit {
       obj.addOrdersDateFrom = 'now';
     }
     if (this.data.deleted) {
-      obj.delete = [{ objectType: this.data.objectType, path: PATH }];
+      obj.delete = [{objectType: this.data.objectType, path: PATH}];
     } else {
-      obj.update = [{ objectType: this.data.objectType, path: PATH }];
+      obj.update = [{objectType: this.data.objectType, path: PATH}];
     }
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
@@ -367,7 +367,7 @@ export class SingleDeployComponent implements OnInit {
   templateUrl: './deploy-dialog.html'
 })
 export class DeployComponent implements OnInit {
-  @ViewChild('treeCtrl', { static: false }) treeCtrl;
+  @ViewChild('treeCtrl', {static: false}) treeCtrl;
   @Input() schedulerIds;
   @Input() preferences;
   @Input() path: string;
@@ -390,8 +390,8 @@ export class DeployComponent implements OnInit {
     delete: [],
     update: [],
     releasables: [],
-    store: { draftConfigurations: [], deployConfigurations: [] },
-    deleteObj: { deployConfigurations: [] }
+    store: {draftConfigurations: [], deployConfigurations: []},
+    deleteObj: {deployConfigurations: []}
   };
   dailyPlanDate: any = {
     addOrdersDateFrom: 'now',
@@ -402,11 +402,11 @@ export class DeployComponent implements OnInit {
   };
   submitted = false;
   required = false;
-  comments: any = { radio: 'predefined' };
+  comments: any = {radio: 'predefined'};
   isDeleted = false;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
-    private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService) {
+              private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService) {
   }
 
   ngOnInit(): void {
@@ -679,8 +679,8 @@ export class DeployComponent implements OnInit {
   }
 
   getJSObject(): void {
-    this.object.store = { draftConfigurations: [], deployConfigurations: [] };
-    this.object.deleteObj = { deployConfigurations: [] };
+    this.object.store = {draftConfigurations: [], deployConfigurations: []};
+    this.object.deleteObj = {deployConfigurations: []};
     const self = this;
     let selectFolder = true;
     if ((this.data && this.data.object) || this.isSelectedObjects) {
@@ -1029,7 +1029,7 @@ export class CronImportModalComponent implements OnInit {
     }).subscribe({
       next: (res: any) => {
         if (res.folders.length === 0) {
-          res.folders.push({ name: '', path: '/' });
+          res.folders.push({name: '', path: '/'});
         }
         this.nodes = this.coreService.prepareTree(res, true);
       }
@@ -3224,8 +3224,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
     text: ''
   }
 
-  searchCriteriaSubject: BehaviorSubject<any> = new BehaviorSubject(null);
-  private _destroying$: Subject<void> = new Subject<void>();
+  private intervalIds: { [objectType: string]: ReturnType<typeof setInterval> } = {}; // Store interval IDs for each objectType
+  private searchTerm = new Subject<string>();
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -3309,6 +3309,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.subscription3 = dataService.refreshAnnounced$.subscribe(() => {
       this.initConf(false);
     });
+
+    //200ms Delay in search
+    this.searchTerm.pipe(debounceTime(200))
+      .subscribe((searchValue: string) => {
+        this.searchObjects(searchValue);
+      });
   }
 
   ngOnInit(): void {
@@ -3318,6 +3324,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    Object.values(this.intervalIds).forEach((intervalId) => {
+      clearInterval(intervalId);
+    });
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
@@ -3978,9 +3987,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
     $('.editor-tree > a').addClass('hide-on-focus');
   }
 
-  searchObjects(value: string) {
+  onSearchInput(searchValue: string) {
+    this.searchTerm.next(searchValue);
+  }
+
+  private searchObjects(value: string) {
     if (value !== '') {
-      if (value.length > 2) {
+      const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
+      if (searchValueWithoutSpecialChars.length >= 2) {
         this.searchNode.loading = true;
 
         const request: any = {
@@ -4011,16 +4025,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
         if (this.searchNode.token) {
           request.token = this.searchNode.token;
         }
-        this.searchCriteriaSubject.pipe(
-          debounceTime(300),
-          distinctUntilChanged(),
-          takeUntil(this._destroying$),
-          switchMap(() => this.coreService.post('inventory/quick/search', request)
-          ),
-        ).subscribe({
+        this.coreService.post('inventory/quick/search', request).subscribe({
           next: (res: any) => {
             this.searchNode.token = res.token;
-            this.updateData(res.results);
+            if (res.results?.length == 0) {
+              this.allObjects = [];
+            } else {
+              this.updateData(res.results);
+            }
             this.searchNode.loading = false;
           }, error: () => this.searchNode.loading = true
         });
@@ -4053,11 +4065,52 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateData(data): void {
+  orderKeys(object: any): string[] {
+    const order = [
+      'WORKFLOW',
+      'JOBRESOURCE',
+      'SCHEDULE',
+      'NOTICEBOARD',
+      'LOCK',
+      'FILEORDERSOURCE',
+      'JOBTEMPLATE',
+      'INCLUDESCRIPT',
+      'WORKINGDAYSCALENDAR'
+    ];
+    return Object.keys(object).sort((a, b) => order.indexOf(a) - order.indexOf(b));
+  }
+
+  private updateData(data: any[]): void {
+    // Clear existing intervals if any
+    Object.values(this.intervalIds).forEach((intervalId) => {
+      clearInterval(intervalId);
+    });
     const x = groupBy(data, (res) => {
       return res.objectType;
     });
-    this.allObjects = x;
+
+    const objectTypes = Object.keys(x);
+    const batchSize = 100;
+    const delay = 100;
+    const updatedAllObjects: { [objectType: string]: any[] } = {};
+
+    objectTypes.forEach((objectType) => {
+      const subObjects = x[objectType];
+      let index = 0;
+      const intervalId = setInterval(() => {
+        const batch = subObjects.slice(index, index + batchSize);
+        if (!updatedAllObjects[objectType]) {
+          updatedAllObjects[objectType] = [];
+        }
+        updatedAllObjects[objectType].push(...batch);
+        index += batchSize;
+        if (index >= subObjects.length) {
+          clearInterval(intervalId);
+          this.allObjects = updatedAllObjects;
+        }
+      }, index == 0 ? 0 : delay);
+      this.intervalIds[objectType] = intervalId;
+    });
   }
 
   clearSearchInput(): void {

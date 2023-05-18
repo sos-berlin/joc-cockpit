@@ -2862,7 +2862,6 @@
     "label.iamFido2Timeout": "FIDO2 Timeout",
     "label.iamFido2Transports": "FIDO2 Transports",
     "label.iamFido2UserVerification": "FIDO2 User Verification",
-    "label.iamFido2CipherType": "FIDO2 Cipher Type",
     "label.body" : "Body",
     "label.subject" : "Subject",
     "label.emailSettings" : "E-mail Settings",
@@ -3080,7 +3079,6 @@
         "iamFido2Timeout" : "FIDO2 Timeout",
         "iamFido2Transports" : "FIDO2 Transports",
         "iamFido2UserVerification" : "FIDO2 User Verification",
-        "iamFido2CipherType" : "FIDO2 Cipher Type",
         "body" : "Body",
         "subject" : "Subject",
         "emailSettings" : "E-mail Settings"
