@@ -164,37 +164,37 @@
               [placeholder]="'workflow.placeholder.findNode' | translate"
               nz-input [(ngModel)]="searchNode.text"
               (blur)="clearSearchInput()"
-              (ngModelChange)="searchObjects($event)"
+              (ngModelChange)="onSearchInput($event)"
               [nzAutocomplete]="auto"
             />
-            
+
             <i class="tree-search-icon" nz-icon [nzType]="searchNode.loading ? 'loading' : 'search'" nzTheme="outline"></i>
             <nz-autocomplete #auto>
-              <ng-container *ngFor="let pair of allObjects | keyvalue | orderBy: 'name'" >
+              <ng-container *ngFor="let key of orderKeys(allObjects)">
                 <div class="node-wrapper p-l-sm m-l-xxs m-t-xxs" (click)="$event.preventDefault();$event.stopPropagation()">
-                  <i *ngIf="pair.key == 'FOLDER'" nz-icon nzType="folder" class="icon-color tree-icon"
-                    nzTheme="outline"></i>
-                  <i *ngIf="pair.key == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color tree-icon"
-                    nzTheme="outline"></i>
-                  <i *ngIf="pair.key == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
-                  <i *ngIf="pair.key == 'JOBRESOURCE'" class="icon-resources-icon icon-color tree-icon"></i>
-                  <i *ngIf="pair.key == 'JOBTEMPLATE'" class="icon-jobs-icon icon-color tree-icon tree-icon"></i>
-                  <i *ngIf="pair.key == 'NOTICEBOARD'" nz-icon nzType="pushpin" class="icon-color tree-icon" nzTheme="outline"></i>
-                  <i *ngIf="pair.key == 'LOCK'" nz-icon nzType="lock" class="icon-color tree-icon" nzTheme="outline"></i>
-                  <i *ngIf="pair.key == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color tree-icon" nzTheme="outline"></i>
-                  <i *ngIf="pair.key == 'INCLUDESCRIPT'" class="fa fa-terminal w-13 tree-icon"></i>
-                  <i *ngIf="pair.key && pair.key.match('CALENDAR')" nz-icon nzType="calendar"
-                    class="icon-color tree-icon" nzTheme="outline"></i>
-                    <span class="p-l-sm">{{pair.key | translate}}</span>
+                  <i *ngIf="key == 'FOLDER'" nz-icon nzType="folder" class="icon-color tree-icon" nzTheme="outline"></i>
+                  <i *ngIf="key == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color tree-icon" nzTheme="outline"></i>
+                  <i *ngIf="key == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
+                  <i *ngIf="key == 'JOBRESOURCE'" class="icon-resources-icon icon-color tree-icon"></i>
+                  <i *ngIf="key == 'JOBTEMPLATE'" class="icon-jobs-icon icon-color tree-icon tree-icon"></i>
+                  <i *ngIf="key == 'NOTICEBOARD'" nz-icon nzType="pushpin" class="icon-color tree-icon" nzTheme="outline"></i>
+                  <i *ngIf="key == 'LOCK'" nz-icon nzType="lock" class="icon-color tree-icon" nzTheme="outline"></i>
+                  <i *ngIf="key == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color tree-icon" nzTheme="outline"></i>
+                  <i *ngIf="key == 'INCLUDESCRIPT'" class="fa fa-terminal w-13 tree-icon"></i>
+                  <i *ngIf="key && key.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color tree-icon" nzTheme="outline"></i>
+                  <span class="p-l-sm">{{ key | translate }}</span>
                 </div>
-                <nz-auto-option class="min-ht-opt" *ngFor="let option of pair.value | orderBy: 'name'" [nzValue]="option.path" (click)="selectObject(option)">
-                  <div class="node-wrapper p-l" >
-                    <div class="node-content-wrapper2" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'" nzTooltipPlacement="right">
-                      <i class="fa fa-circle-o text-xs"></i>
-                      <span class="p-l-sm" >{{option.name}}</span>
+
+                <ng-container *ngFor="let option of allObjects[key] | orderBy: 'name'">
+                  <nz-auto-option class="min-ht-opt" [nzValue]="option.path" (click)="selectObject(option)">
+                    <div class="node-wrapper p-l">
+                      <div class="node-content-wrapper2" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'" nzTooltipPlacement="right">
+                        <i class="fa fa-circle-o text-xs"></i>
+                        <span class="p-l-sm">{{ option.name }}</span>
+                      </div>
                     </div>
-                  </div>
-                </nz-auto-option>
+                  </nz-auto-option>
+                </ng-container>
               </ng-container>
             </nz-autocomplete>
           </div>

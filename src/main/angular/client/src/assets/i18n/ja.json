@@ -2865,7 +2865,6 @@
     "label.body" : "Body",
     "label.subject" : "Subject",
     "label.emailSettings" : "Email Settings",
-    "label.iamFido2CipherType": "FIDO2 Cipher Type",
     "label.listOfFido2" : "List Of Fido2",
     "label.listOfCert" : "List Of Certificate",
     "label.group": "グループ",
@@ -3080,7 +3079,6 @@
         "iamFido2Timeout" : "Fido2 Timeout",
         "iamFido2Transports" : "Fido2 Transports",
         "iamFido2UserVerification" : "Fido2 User Verification",
-        "iamFido2CipherType" : "Fido2 Cipher Type",
         "body" : "Body",
         "subject" : "Subject",
         "emailSettings" : "Email Settings"

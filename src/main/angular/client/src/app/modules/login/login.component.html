@@ -28,13 +28,13 @@
           </div>
           <form  #myForm="ngForm" (ngSubmit)="onSubmit(user)" class="p-t-sm p-b-sm p-l-xs p-r-xs">
             <div *ngIf="showRegister || showLogin" class="md-form-group">
-              <input type="text" [(ngModel)]="user.displayName" id="display-name" class="md-input"
-                #displayName="ngModel" required name="displayName">
-              <label class="font14" for="displayName"> {{ 'register.label.displayName' | translate}}
+              <input type="text" [(ngModel)]="user.userName" id="display-name" class="md-input"
+                #userName="ngModel" required name="userName">
+              <label class="font14" for="display-name"> {{ 'register.label.displayName' | translate}}
                 <sup class="text-danger text-sm">*</sup>
               </label>
-              <div *ngIf="displayName.invalid && (displayName.dirty || displayName.touched)" class="text-danger help-block">
-                <div *ngIf="displayName.errors.required">
+              <div *ngIf="userName.invalid && (userName.dirty || userName.touched)" class="text-danger help-block">
+                <div *ngIf="userName.errors.required">
                   <div translate>common.message.requiredError</div>
                 </div>
             </div>

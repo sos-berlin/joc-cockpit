@@ -128,11 +128,6 @@ export class SettingModalComponent implements OnInit {
     value: 'REQUIRED'
   }
   ];
-  iamFido2CipherTypes = [
-    'RSA/ECB/OAEPWithSHA-1AndMGF1Padding',
-    'RSA/ECB/PKCS1Padding',
-    'RSA'
-  ]
   isEnable = false;
   isLengthMatch = true;
   submitted = false;

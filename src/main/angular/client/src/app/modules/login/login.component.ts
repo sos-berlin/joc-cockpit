@@ -4,6 +4,8 @@ import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
+import {HttpHeaders} from "@angular/common/http";
+import {isArray} from "underscore";
 import {CoreService} from '../../services/core.service';
 import {AuthService, OIDCAuthService} from '../../components/guard';
 
@@ -182,12 +184,8 @@ export class LoginComponent implements OnInit {
       this.showRegister = true;
       this.errorMsg = false;
       this.errorMsgText = '';
+      this.user.userName = '';
       this.identityServiceName = identityServiceName;
-      this.coreService.post('iam/identityclient', {identityServiceName}).subscribe({
-        next: (data) => {
-          console.log(data);
-        }
-      });
     } else {
       let title = '';
       let msg = '';
@@ -204,50 +202,75 @@ export class LoginComponent implements OnInit {
 
   register() {
     this.submitted1 = true;
+    this.coreService.post('iam/fido2registration/request_registration_start', {
+      identityServiceName: this.identityServiceName,
+      accountName: this.user.userName,
+      email: this.user.email
+    }).subscribe({
+      next: (res) => {
+        this.createRegistrationRequest(res);
+      }, error: (err) => {
+        this.submitted1 = false;
+        this.errorMsg = true;
+        if (err.error && err.error.error) {
+          if (err.error.error.message) {
+            err.error.error.message = err.error.error.message.replace('JocBadRequestException:', '');
+          }
+          this.errorMsgText = err.error.error.message;
+        } else {
+          this.errorMsgText = err.message;
+        }
+      }
+    });
+  }
+
+  private createRegistrationRequest(res) {
+    let id = new Uint8Array(32);
     const challenge = new Uint8Array(32);
     window.crypto.getRandomValues(challenge);
-    let id = new Uint8Array(32);
+    console.log(challenge, '1');
+    console.log(new Uint8Array(res.challenge), '2');
+    console.log(new Uint8Array(res.challenge), '2');
+    // console.log(res.challenge, Uint8Array.from(res.challenge, c => {
+    //   let number = c.charCodeAt(0);
+    //   return number;
+    // }));
     let publicKeyCredentialCreationOptions: PublicKeyCredentialCreationOptions = {
-      challenge: challenge,
+      challenge: new Uint8Array(res.challenge),
       rp: {
-        name: window.location.hostname
+        id: window.location.hostname,
+        name: 'JS7'
       },
       user: {
         id: id,
-        name: this.user.email,
-        displayName: this.user.displayName
+        name: this.user.userName,
+        displayName: this.user.email
       },
       pubKeyCredParams: [
         {type: 'public-key', alg: -7}
       ],
-      authenticatorSelection: {
-        userVerification: "preferred", // "discouraged" | "preferred" | "required"
-      },
       timeout: 60000,
-      attestation: "none"
+      authenticatorSelection: {
+        authenticatorAttachment: "cross-platform",
+        userVerification: res.fido2Properties?.iamFido2UserVerification?.toLowerCase() || "preferred"
+      },
+      extensions: {"credProps": true},
+      attestation: res.fido2Properties?.iamFido2Attestation?.toLowerCase() || "direct"
     };
 
     //  const publicKeyCredentialCreationOptions: any = await response.json();
     navigator.credentials.create({
       publicKey: publicKeyCredentialCreationOptions
     }).then((credential: any) => {
-      // Send the credential to the back-end for verification
-      console.log(credential)
-      const credentialData = {
-        id: credential.id,
-        type: credential.type,
-        rawId: this.bufferToBase64Url(credential.rawId),
-        response: {
-          clientDataJSON: this.bufferToBase64Url(credential.response.clientDataJSON),
-          attestationObject: this.bufferToBase64Url(credential.response.attestationObject)
-        }
-      };
-
+      const attestationObject = this.bufferToBase64Url(credential.response.attestationObject);
+      const publicKey = this.getPublicKey(attestationObject);
       this.coreService.post('iam/fido2registration/request_registration', {
         identityServiceName: this.identityServiceName,
-        accountName: this.user.displayName,
+        accountName: this.user.userName,
         email: this.user.email,
-        publicKey: credentialData.rawId
+        publicKey: this.bufferToBase64Url(publicKey),
+        clientDataJSON: this.bufferToBase64Url(credential.response.clientDataJSON),
+        credentialId: this.bufferToBase64Url(credential.rawId)
       }).subscribe({
         next: () => {
           this.submitted1 = false;
@@ -263,24 +286,23 @@ export class LoginComponent implements OnInit {
           this.back();
         }, error: (err) => {
           this.submitted1 = false;
-          if(err.error && err.error.error){
+          if (err.error && err.error.error) {
             this.toasterService.error(err.error.error.message);
           } else {
             this.toasterService.error(err.message);
           }
         }
       })
+    }).catch((error) => {
+      this.submitted1 = false;
+      this.errorMsg = true;
+      this.errorMsgText = error;
     })
-      .catch((error) => {
-        this.submitted1 = false;
-        this.errorMsg = true;
-        this.errorMsgText = error;
-        console.log('FAIL', error)
-      })
   }
 
   back(): void {
     this.identityServiceName = '';
+    this.user.userName = '';
     this.showRegister = false;
     this.showLogin = false;
     this.submitted = false;
@@ -294,27 +316,27 @@ export class LoginComponent implements OnInit {
     base64String.replace(/\+/g, '-')
       .replace(/\//g, '_')
       .replace(/=+$/, '');
-
     return base64String;
   }
 
   onSign(data) {
     this.showLogin = true;
     this.identityServiceName = data;
+    this.user.userName = '';
   }
 
   signIn(): void {
     this.errorMsgText = '';
     this.coreService.post('iam/fido2/request_authentication', {
       identityServiceName: this.identityServiceName,
-      accountName: this.user.displayName,
+      accountName: this.user.userName,
     }).subscribe({
       next: (res) => {
         console.log(res);
-        this.getCredentials(res.challenge);
+        this.getCredentials(res);
       }, error: (err) => {
         this.errorMsg = true;
-        if(err.error && err.error.error){
+        if (err.error && err.error.error) {
           this.errorMsgText = err.error.error.message;
         } else {
           this.errorMsgText = err.message;
@@ -323,18 +345,100 @@ export class LoginComponent implements OnInit {
     })
   }
 
-  private getCredentials(challenge): void {
+  private getCredentials(res): void {
+
     let publicKey: PublicKeyCredentialRequestOptions = {
-      challenge: challenge,
-      allowCredentials: []
-    }
+      challenge: new Uint8Array(res.challenge),
+      allowCredentials: [{
+        id: res.credentialId,
+        type: 'public-key',
+        transports: res.fido2Properties?.iamFido2Transports ? (isArray(res.fido2Properties?.iamFido2Transports) ? res.fido2Properties?.iamFido2Transports : [res.fido2Properties?.iamFido2Transports]) : []
+      }],
+      timeout: res.fido2Properties?.iamFido2Timeout || 60000,
+    };
     navigator.credentials.get({'publicKey': publicKey})
-      .then((getAssertionResponse) => {
-        console.log('SUCCESSFULLY LOGIN!', getAssertionResponse)
+      .then((getAssertionResponse: Credential) => {
+        this.fido2Authenticate(getAssertionResponse);
       })
       .catch((error) => {
         this.errorMsg = true;
         this.errorMsgText = error;
       })
+  }
+
+  private fido2Authenticate(getAssertionResponse): void {
+    console.log('SUCCESSFULLY LOGIN!', getAssertionResponse);
+    console.log(this.bufferToBase64Url(getAssertionResponse.response.clientDataJSON))
+    console.log(this.bufferToBase64Url(getAssertionResponse.response.signature))
+    const headers = new HttpHeaders({
+      'X-CLIENT-DATA-JSON': this.bufferToBase64Url(getAssertionResponse.response.clientDataJSON),
+      'X-SIGNATURE': this.bufferToBase64Url(getAssertionResponse.response.signature),
+      'X-IDENTITY-SERVICE': this.identityServiceName
+      // Add any additional headers as needed
+    });
+    this.coreService.log('authentication/login', {}, {headers}).subscribe({
+      next: (data) => {
+        this.authService.setUser(data);
+        this.authService.save();
+        if (this.returnUrl.indexOf('?') > -1) {
+          this.router.navigateByUrl(this.returnUrl).then();
+        } else {
+          this.router.navigate([this.returnUrl]).then();
+        }
+      }, error: () => {
+        this.submitted = false;
+        this.errorMsg = true;
+      }
+    });
+  }
+
+  // Get public key from attestation object
+
+  private getPublicKey(base64Str: string): any {
+    function decodeAttestationObject(attestationObject) {
+      const buffer = base64ToArrayBuffer(attestationObject);
+      return window['CBOR'].decode(buffer);
+    }
+
+    function extractPublicKey(data) {
+      const authData = parseAuthenticatorData(data.authData);
+      return authData.attestedCredentialData.credentialPublicKey;
+    }
+
+    function parseAuthenticatorData(authData) {
+      const rpIdHash = authData.slice(0, 32);
+      // Parse other fields from authData as needed
+      const attestedCredentialData = parseAttestedCredentialData(authData.slice(37));
+      // Parse other fields from attestedCredentialData as needed
+
+      return {
+        rpIdHash,
+        attestedCredentialData,
+        // Other parsed fields
+      };
+    }
+
+    function parseAttestedCredentialData(data) {
+      const credentialIdLength = data.slice(16, 18);
+      const credentialPublicKey = data.slice(18 + credentialIdLength);
+      return {
+        credentialIdLength,
+        credentialPublicKey,
+        // Other parsed fields
+      };
+    }
+
+    function base64ToArrayBuffer(base64) {
+      const binaryString = window.atob(base64);
+      const len = binaryString.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      return bytes.buffer;
+    }
+
+    const data = decodeAttestationObject(base64Str);
+    return extractPublicKey(data);
   }
 }

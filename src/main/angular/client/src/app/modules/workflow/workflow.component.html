@@ -143,11 +143,40 @@
       <div class="col-lg-12">
         <div appResizable [sideView]="sideView" id="leftPanel" class="sticky leftPanel workflow">
           <div *ngIf="tree.length>0">
-            <app-tree-navigation [tree]="tree" [sideView]="sideView.workflow"
-                                 [defaultSelectedKeys]="workflowFilters.selectedkeys"
-                                 [defaultExpandedKeys]="workflowFilters.expandedKeys"
-                                 (messageEvent)="receiveAction($event)"></app-tree-navigation>
-          </div>
+            <div class="editor-tree">
+              <a class="workflow-search" (click)="workflowTreeSearch()">
+                <i nz-icon [nzType]="'search'" nzTheme="outline"></i>
+              </a>
+              <div>
+                <input id="workflowTreeSearch" class="input-tree-search"
+                  [placeholder]="'workflow.placeholder.findNode' | translate"
+                  nz-input [(ngModel)]="searchNode.text"
+                  (blur)="clearSearchInput()"
+                  (ngModelChange)="onSearchInput($event)"
+                  [nzAutocomplete]="auto"
+                />
+
+                <i class="tree-search-icon" nz-icon [nzType]="searchNode.loading ? 'loading' : 'search'" nzTheme="outline"></i>
+                <nz-autocomplete #auto>
+                  <nz-auto-option class="min-ht-opt" *ngFor="let option of allObjects | orderBy: 'name'"
+                                  [nzValue]="option.path" (click)="selectObject(option)">
+                    <div class="node-wrapper p-l">
+                      <div class="node-content-wrapper2"
+                           [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+                           nzTooltipPlacement="right">
+                        <i class="fa fa-circle-o text-xs"></i>
+                        <span class="p-l-sm">{{option.name}}</span>
+                      </div>
+                    </div>
+                  </nz-auto-option>
+                </nz-autocomplete>
+              </div>
+              <app-tree-navigation [tree]="tree" [sideView]="sideView.workflow"
+                                   [defaultSelectedKeys]="workflowFilters.selectedkeys"
+                                   [defaultExpandedKeys]="workflowFilters.expandedKeys"
+                                   (messageEvent)="receiveAction($event)"></app-tree-navigation>
+            </div>
+        </div>
         </div>
         <div id="rightPanel">
           <div class="row m-b-12" *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && data.length > (workflowFilters.entryPerPage || preferences.entryPerPage))">
@@ -538,7 +567,7 @@
                              [nz-tooltip]="'workflow.button.showDependency' | translate" (click)="showDependency(workflow)"></i>
                           <i *ngIf="workflow.documentationName" (click)="coreService.showDocumentation(workflow.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
                           <a class="text-dark noExl" >
-                            <span class="cursor text-primary" (click)="showPanelFunc(workflow)" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
+                            <span class="cursor primary-text-hover-color" (click)="showPanelFunc(workflow)" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
                             <i *ngIf="workflow.title"> - </i>
                             <i class="text-muted" [innerHtml]="workflow.title | stringToLink"></i>
                           </a>

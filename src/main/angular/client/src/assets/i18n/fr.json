@@ -2867,7 +2867,6 @@
     "label.emailSettings" : "E-mail Settings",
     "label.listOfFido2" : "Liste des Services d'Identité basés sur FIDO2",
     "label.listOfCert" : "Liste des Services d'Identité  basés sur des certificats",
-    "label.iamFido2CipherType": "FIDO2 Cipher Type",
     "label.group": "Groupe",
     "label.general": "Généralités",
     "label.on": "On",
@@ -3080,7 +3079,6 @@
         "iamFido2Timeout" : "FIDO2 Timeout",
         "iamFido2Transports" : "FIDO2 Transports",
         "iamFido2UserVerification" : "FIDO2 User Verification",
-        "iamFido2CipherType" : "FIDO2 Cipher Type",
         "body" : "Body",
         "subject" : "Subject",
         "emailSettings" : "Paramètres de l'E-mail"
