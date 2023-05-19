@@ -661,7 +661,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
       } else if (dt[i].logEvent === 'OrderNoticesConsumptionStarted' && dt[i].consumeNotices) {
         col += ', Consuming';
         for (let x in dt[i].consumeNotices.consuming) {
-          col += ', ExpectNotice(board=' + dt[i].consumeNotices.consuming[x].boardName + ', id=' + dt[i].consumeNotices.consuming[x].id + ')';
+          col += ' ExpectNotice(board=' + dt[i].consumeNotices.consuming[x].boardName + ', id=' + dt[i].consumeNotices.consuming[x].id + ')';
           if (parseInt(x) < dt[i].consumeNotices.consuming.length - 1)
             col += ',';
         }
@@ -681,6 +681,8 @@ export class LogViewComponent implements OnInit, OnDestroy {
       }
       if (dt[i].logEvent === 'OrderMoved' && dt[i].moved && dt[i].moved.skipped && dt[i].moved.to) {
         col += ', Skipped(' + (dt[i].moved.skipped.instruction.job ? ('job=' + dt[i].moved.skipped.instruction.job) : ('instruction=' + dt[i].moved.skipped.instruction.instruction)) + ', reason=' + dt[i].moved.skipped.reason + '). Moved To(pos=' + dt[i].moved.to.position + ')';
+      } else if (dt[i].logEvent === 'OrderMoved' && dt[i].moved?.waitingForAdmission?.entries) {
+        col += ', waitingForAdmission(' + dt[i].moved.waitingForAdmission.entries + ')';
       } else if (dt[i].logEvent === 'OrderStarted' && dt[i].arguments) {
         col += ', arguments(';
         let arr: any = Object.entries(dt[i].arguments).map(([k1, v1]) => {
@@ -775,6 +777,17 @@ export class LogViewComponent implements OnInit, OnDestroy {
           }
         }
         col += ')';
+      } else if (dt[i].logEvent === 'OrderAttached' && dt[i].attached?.waitingForAdmission?.entries) {
+        col += ', waitingForAdmission(' + dt[i].attached.waitingForAdmission.entries + ')';
+      } else if (dt[i].logEvent === 'OrderPrompted' && dt[i].question) {
+        col += ', question(' + dt[i].question + ')';
+      } else if (dt[i].logEvent === 'OrderCyclingPrepared' && dt[i].cycle.prepared && (dt[i].cycle.prepared.next || dt[i].cycle.prepared.end)) {
+        if (dt[i].cycle.prepared.next) {
+          col += ', next(' + dt[i].cycle.prepared.next + ')';
+        }
+        if (dt[i].cycle.prepared.end) {
+          col += ', end(' + dt[i].cycle.prepared.end + ')';
+        }
       }
 
       if (dt[i].logEvent === 'OrderProcessingStarted') {

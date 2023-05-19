@@ -37,6 +37,7 @@
     "file-saver": "^2.0.5",
     "font-awesome": "^4.7.0",
     "jsoneditor": "^9.9.2",
+    "jwk-to-pem": "^2.0.5",
     "moment-timezone": "^0.5.42",
     "ng-zorro-antd": "^14.2.1",
     "ng2-charts": "^3.0.5",

@@ -61,6 +61,7 @@
               "src/assets/js/slimscroll.js",
               "src/assets/js/d3.min.js",
               "src/assets/js/jsgantt.js",
+              "src/assets/js/cbor.js",
               "src/assets/js/full-year-calendar.js",
               "src/assets/mxgraph/mxClient.min.js",
               "node_modules/date-holidays/dist/umd.min.js",
