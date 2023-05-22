@@ -51,7 +51,7 @@ export class APIServerStatusComponent implements OnInit, OnDestroy {
 
   private getInstances(): void {
     this.coreService.post('jocs', {
-      controllerId: ''
+      onlyApiServer: true
     }).subscribe({
       next: (res: any) => {
         this.list = res.jocs;
