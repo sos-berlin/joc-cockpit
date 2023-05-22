@@ -480,7 +480,8 @@ export class LogComponent implements OnInit {
         for (let x in this.treeStructure) {
           if (this.treeStructure[x].position == dt[i].position && this.treeStructure[x].orderId == dt[i].orderId && this.treeStructure[x].job == dt[i].job
             && (this.treeStructure[x].expectNotices == dt[i].expectNotices && this.treeStructure[x].postNotice == dt[i].postNotice
-              && this.treeStructure[x].consumeNotices == dt[i].consumeNotices && this.treeStructure[x].moved == dt[i].moved)) {
+              && this.treeStructure[x].consumeNotices == dt[i].consumeNotices && this.treeStructure[x].moved == dt[i].moved
+              && this.treeStructure[x].question == dt[i].question && this.treeStructure[x].cycle == dt[i].cycle && this.treeStructure[x].attached == dt[i].attached)) {
             flag = true;
             break;
           }

@@ -650,9 +650,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           search: value,
           controllerId: this.schedulerIds.selected
         };
+        if (this.searchNode.token) {
+          request.token = this.searchNode.token;
+        }
         this.coreService.post('workflows/quick/search', request).subscribe({
           next: (res: any) => {
             this.allObjects = res.results;
+            this.searchNode.token = res.token;
             this.searchNode.loading = false;
           }, error: () => this.searchNode.loading = true
         });
