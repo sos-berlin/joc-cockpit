@@ -370,10 +370,10 @@ export class LoginComponent implements OnInit {
   private fido2Authenticate(getAssertionResponse): void {
     const headers = new HttpHeaders({
       'X-AUTHENTICATOR-DATA': this.bufferToBase64Url(getAssertionResponse.response.authenticatorData),
+      'X-CLIENT-DATA-JSON': this.bufferToBase64Url(getAssertionResponse.response.clientDataJSON),
       'X-SIGNATURE': this.bufferToBase64Url(getAssertionResponse.response.signature),
-      'X-ALGORITHM': 'EC',
       'X-IDENTITY-SERVICE': this.identityServiceName,
-      'X-ACCOUNT-NAME': this.user.userName
+      'Authorization': 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(this.user.userName)))
     });
     this.coreService.log('authentication/login', {}, {headers}).subscribe({
       next: (data) => {

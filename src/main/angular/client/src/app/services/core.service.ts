@@ -74,7 +74,9 @@ export class CoreService {
       sessionStorage.$SOS$SIDEVIEW = JSON.stringify(this.sideView);
     } else {
       let sideView = JSON.parse(sessionStorage.$SOS$SIDEVIEW);
-      if (sideView && sideView.workflow) { this.sideView = sideView; }
+      if (sideView && sideView.workflow) {
+        this.sideView = sideView;
+      }
     }
   }
 
@@ -1847,7 +1849,8 @@ export class CoreService {
         lastPos = _tempArr[_tempArr.length - 1];
         if (lastPos) {
           if (lastPos.match(/branch/)) {
-            if(item.expectNotices || item.postNotice || item.consumeNotices || item.moved) {
+            if (item.expectNotices || item.postNotice || item.consumeNotices
+              || item.moved || item.attached || item.cycle || item.question) {
               data.name = item.logEvent;
             } else {
               data.name = lastPos.substring(lastPos.indexOf('+') + 1, lastPos.indexOf(':'));
@@ -1870,8 +1873,8 @@ export class CoreService {
               if (item.logEvent === 'OrderRetrying') {
                 data.title = 'Retry';
               }
-              for(let x in nodes){
-                if(nodes[x].title == parentNode.title && nodes[x].name == parentNode.name && nodes[x].position == parentNode.position && nodes[x].orderId == parentNode.orderId){
+              for (let x in nodes) {
+                if (nodes[x].title == parentNode.title && nodes[x].name == parentNode.name && nodes[x].position == parentNode.position && nodes[x].orderId == parentNode.orderId) {
                   parentNode = null;
                   break;
                 }
@@ -1914,11 +1917,11 @@ export class CoreService {
         for (let i in nodes) {
           let _tempArr = item.position.split('/');
           _tempArr.splice(_tempArr.length - 1, 1);
-          if ((lastPos && (lastPos.match('then') || lastPos.match('else')) && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved))) {
+          if ((lastPos && (lastPos.match('then') || lastPos.match('else')) && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question))) {
             ifInstructionRecursion(nodes, item, data);
             obj.flag = true;
             break;
-          } else if ((lastPos && lastPos.match('branch') && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved))) {
+          } else if ((lastPos && lastPos.match('branch') && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question))) {
             if (nodes[i].position == item.position || (nodes[i].position.substring(0, nodes[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
               checkAndUpdate(nodes[i], data);
               obj.flag = true;
@@ -2017,7 +2020,7 @@ export class CoreService {
                   if (arr.length > 1) {
                     let regex = arr[1] + arr[2];
                     let pos = item.position.replace(regex, (arr[1] + 0));
-                    if (pos == (nodes[i].position + ':0') && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved)) {
+                    if (pos == (nodes[i].position + ':0') && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question)) {
                       nodes[i].retryCount = (nodes[i].retryCount || 1) + 1;
                       checkAndUpdate(nodes[i], data);
                       isCheck = true;
@@ -2056,8 +2059,8 @@ export class CoreService {
       for (let i in node.children) {
         let arr = item.position.split('/');
         arr.splice(arr.length - 1, 1);
-        if ((item.position.match('try') || item.position.match('catch')) && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved)) {
-           
+        if ((item.position.match('try') || item.position.match('catch')) && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question)) {
+
           if (arr.join('/') == node.children[i].position) {
             for (let x in node.children[i].children) {
               if (node.children[i].children[x].position == item.position.substring(0, item.position.lastIndexOf(':'))) {
@@ -2069,7 +2072,7 @@ export class CoreService {
           }
         }
 
-        if ((lastPos && lastPos.match('branch') && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved))) {
+        if ((lastPos && lastPos.match('branch') && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question))) {
           if (node.children[i].position == item.position || (node.children[i].position.indexOf(':') > -1 && node.children[i].position.substring(0, node.children[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
             checkAndUpdate(node.children[i], data);
             obj.flag = true;
@@ -2198,7 +2201,7 @@ export class CoreService {
       let flag = false;
       for (let i in node.children) {
         if (node.children[i].logEvent == 'OrderNoticesConsumptionStarted') {
-          if ((node.children[i].position == data.position || node.children[i].position == data.position.substring(0, data.position.lastIndexOf(':') + 1) + '0') && data.name ) {
+          if ((node.children[i].position == data.position || node.children[i].position == data.position.substring(0, data.position.lastIndexOf(':') + 1) + '0') && data.name) {
             node.children[i].children.push(data);
             flag = true;
             break;
@@ -2233,4 +2236,5 @@ export class CoreService {
 
     return nodes;
   }
+
 }
