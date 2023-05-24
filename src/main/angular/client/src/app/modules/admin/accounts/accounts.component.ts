@@ -77,7 +77,7 @@ export class ConfirmationModalComponent implements OnInit {
     if(this.approve) {
       URL = 'iam/fido2registration/approve';
     }else if(this.reject) {
-      URL = 'iam/fido2registration/reject';
+      URL = 'iam/fido2registration/deferr';
     }else if(this.deleteRequest) {
       URL ='iam/fido2registration/delete' ;
     }

@@ -44,18 +44,11 @@
               <i *ngIf="requests.sortBy == 'confirmed' && requests.reverse"
                  class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('approved')">
-            <a><span class="p-r-xs" translate>user.label.approved</span>
-              <i *ngIf="requests.sortBy == 'approved' && !requests.reverse"
-                 class="fa fa-caret-up "></i>
-              <i *ngIf="requests.sortBy == 'approved' && requests.reverse"
-                 class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('rejected')">
+          <th (click)="sort('deferred')">
             <a><span class="p-r-xs" translate>user.label.rejected</span>
-              <i *ngIf="requests.sortBy == 'rejected' && !requests.reverse"
+              <i *ngIf="requests.sortBy == 'deferred' && !requests.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="requests.sortBy == 'rejected' && requests.reverse"
+              <i *ngIf="requests.sortBy == 'deferred' && requests.reverse"
                  class="fa fa-caret-down "></i></a>
           </th>
         </tr>
@@ -87,9 +80,8 @@
                 <td>
                   <span [innerHtml]="account.email | highlight: searchKey"></span>
                 </td>
-                <td><span>{{(account.approved ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
                 <td><span>{{(account.confirmed ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
-                <td><span>{{(account.rejected ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+                <td><span>{{(account.deferred ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
               </tr>
         </tbody>
       </nz-table>

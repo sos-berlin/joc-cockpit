@@ -86,6 +86,14 @@
             <i *ngIf="filter.sortBy == 'positionString' && filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
+        <th (click)="sort('label')">
+          <a><span class="p-r-xs" translate>workflow.label.label</span>
+            <i *ngIf="filter.sortBy == 'label' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'label' && filter.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
+
         <th (click)="sort('state._text')">
           <a><span class="p-r-xs" translate>order.label.state</span>
             <i *ngIf="filter.sortBy == 'state._text' && !filter.reverse"
@@ -146,6 +154,7 @@
           <td style="max-width: 160px">
             <span [innerHtml]="order.positionString"></span>
           </td>
+          <td><span>{{order.label}}</span></td>
           <td nowrap class="combine-two-label" (mouseover)="getObstacles(order)">
             <span [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''" class="label" *ngIf="order.state" [ngClass]="[coreService.getColor(order.state.severity, 'bg'),order.marked ? 'label1' : '']"
                [innerHtml]="order.state._text | translate"></span>
