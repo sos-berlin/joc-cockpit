@@ -1,7 +1,15 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { NzTreeNode } from 'ng-zorro-antd/tree';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } from 'rxjs';
-import { CoreService } from 'src/app/services/core.service';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
+import {NzTreeNode} from 'ng-zorro-antd/tree';
+import {debounceTime, Subject} from 'rxjs';
+import {CoreService} from 'src/app/services/core.service';
 
 declare const $: any;
 
@@ -9,7 +17,7 @@ declare const $: any;
   selector: 'app-search-input',
   templateUrl: './search-input.component.html'
 })
-export class SearchInputComponent implements OnInit, OnDestroy {
+export class SearchInputComponent implements OnInit {
   @Input() type: string;
   @Input() nodes: any = [];
   @Input() changeDetect: boolean;
@@ -22,8 +30,7 @@ export class SearchInputComponent implements OnInit, OnDestroy {
   @Output() onSelect = new EventEmitter<string>();
   @Output() onBlur = new EventEmitter<string>();
 
-  searchCriteriaSubject: BehaviorSubject<any> = new BehaviorSubject(null);
-  private _destroying$: Subject<void> = new Subject<void>();
+  private searchTerm = new Subject<string>();
 
   constructor(public coreService: CoreService, private el: ElementRef, private ref: ChangeDetectorRef) {
   }
@@ -37,7 +44,7 @@ export class SearchInputComponent implements OnInit, OnDestroy {
     }, this.changeDetect ? 5 : 0);
     $(this.el.nativeElement).find('input').on('keyup', (evt) => {
       if (evt.target.value) {
-        self.searchObjects(evt.target.value);
+        self.onSearchInput(evt.target.value);
       } else {
         self.nodes = _tree;
         if (this.changeDetect) {
@@ -49,18 +56,11 @@ export class SearchInputComponent implements OnInit, OnDestroy {
       $(self.el.nativeElement).find('input').off("keyup");
       self.onBlur.emit(self.obj.name);
     });
-
-  }
-
-  ngOnDestroy(): void {
-    if (this.obj.token) {
-      // this.coreService.post('inventory/quick/search', {
-      //   token: this.obj.token,
-      //   search: '',
-      //   returnTypes: [this.type],
-      //   quite: true
-      // }).subscribe();
-    }
+    //200ms Delay in search
+    this.searchTerm.pipe(debounceTime(200))
+      .subscribe((searchValue: string) => {
+        this.searchObjects(searchValue);
+      });
   }
 
   openFolder(node: NzTreeNode): void {
@@ -76,7 +76,6 @@ export class SearchInputComponent implements OnInit, OnDestroy {
     if (!node || !node.origin) {
       return;
     }
-    console.log(node.origin,'?')
     if (!node.origin.type && !node.origin.objectType) {
       if ($event) {
         node.isExpanded = !node.isExpanded;
@@ -134,9 +133,14 @@ export class SearchInputComponent implements OnInit, OnDestroy {
     });
   }
 
-  searchObjects(value: string) {
+  onSearchInput(searchValue: string) {
+    this.searchTerm.next(searchValue);
+  }
+
+  private searchObjects(value: string) {
     if (value !== '') {
-      if (value.length > 2) {
+      const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
+      if (searchValueWithoutSpecialChars.length >= 2) {
         const request: any = {
           search: value,
           returnTypes: [this.type]
@@ -144,17 +148,11 @@ export class SearchInputComponent implements OnInit, OnDestroy {
         if (this.obj.token) {
           request.token = this.obj.token;
         }
-        this.searchCriteriaSubject.pipe(
-          debounceTime(300),
-          distinctUntilChanged(),
-          takeUntil(this._destroying$),
-          switchMap(() => this.coreService.post('inventory/quick/search', request)
-          ),
-        ).subscribe({
+        this.coreService.post('inventory/quick/search', request).subscribe({
           next: (res: any) => {
             this.obj.token = res.token;
             this.nodes = res.results.map(function (item) {
-              return { ...item, key: item.name, title: item.name };
+              return {...item, key: item.name, title: item.name};
             });
             if (this.changeDetect) {
               this.ref.detectChanges();

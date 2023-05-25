@@ -575,6 +575,7 @@
                 <nz-tree-select #treeSelectCtrl nzMultiple required nzNoAnimation
                                 [nzPlaceHolder]="'workflow.placeholder.selectBoards' | translate"
                                 #noticeBoardName="ngModel"
+                                [nzShowSearch]="true"
                                 [nzNodes]="boardTree"
                                 [nzDropdownStyle]="{ 'max-height': '300px' }"
                                 [nzAllowClear]="false" [(ngModel)]="selectedNode.obj.noticeBoardNames"
