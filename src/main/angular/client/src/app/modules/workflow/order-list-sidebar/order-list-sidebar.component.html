@@ -79,6 +79,13 @@
             <i *ngIf="filter.sortBy == 'orderId' && filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
+        <th (click)="sort('workflowId.path')" *ngIf="!isSingleWorkflow">
+          <a><span class="p-r-xs" translate>order.label.workflow</span>
+            <i *ngIf="filter.sortBy == 'workflowId.path' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'workflowId.path' && filter.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
         <th (click)="sort('positionString')">
           <a><span class="p-r-xs" translate>order.label.position</span>
             <i *ngIf="filter.sortBy == 'positionString' && !filter.reverse"
@@ -86,14 +93,13 @@
             <i *ngIf="filter.sortBy == 'positionString' && filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
-        <th (click)="sort('label')">
+        <th (click)="sort('label')" *ngIf="isSingleWorkflow">
           <a><span class="p-r-xs" translate>workflow.label.label</span>
             <i *ngIf="filter.sortBy == 'label' && !filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filter.sortBy == 'label' && filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
-
         <th (click)="sort('state._text')">
           <a><span class="p-r-xs" translate>order.label.state</span>
             <i *ngIf="filter.sortBy == 'state._text' && !filter.reverse"
@@ -108,7 +114,7 @@
             <i *ngIf="filter.sortBy == 'scheduledFor' && filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
-        <th (click)="sort('lastOutcome.TYPE')">
+        <th (click)="sort('lastOutcome.TYPE')" *ngIf="isSingleWorkflow">
           <a><span class="p-r-xs" translate>order.label.lastOutcome</span>
             <i *ngIf="filter.sortBy == 'lastOutcome.TYPE' && !filter.reverse"
                class="fa fa-caret-up "></i>
@@ -151,10 +157,18 @@
               </div>
             </ng-template>
           </td>
+          <td *ngIf="!isSingleWorkflow">
+            <span class="show-in-single-line">
+              <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+              <a class="text-hover-primary" (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);">
+                <span [innerHtml]="order.workflowId.path"></span>
+              </a>
+            </span>
+          </td>
           <td style="max-width: 160px">
             <span [innerHtml]="order.positionString"></span>
           </td>
-          <td><span>{{order.label}}</span></td>
+          <td *ngIf="isSingleWorkflow"><span>{{order.label}}</span></td>
           <td nowrap class="combine-two-label" (mouseover)="getObstacles(order)">
             <span [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''" class="label" *ngIf="order.state" [ngClass]="[coreService.getColor(order.state.severity, 'bg'),order.marked ? 'label1' : '']"
                [innerHtml]="order.state._text | translate"></span>
@@ -189,7 +203,7 @@
             <span *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
             <span *ngIf="order.scheduledNever" translate>common.label.never</span>
           </td>
-          <td>
+          <td *ngIf="isSingleWorkflow">
               <span *ngIf="order.lastOutcome">
                 {{order.lastOutcome.TYPE | translate}}
               </span>
@@ -197,7 +211,7 @@
         </tr>
         <tr *ngIf="order.show">
           <td colspan="2"></td>
-          <td colspan="5">
+          <td colspan="7">
             <app-order-variable [order]="order" [type]="'arguments'" [schedulerId]="schedulerId"></app-order-variable>
           </td>
         </tr>

@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {BehaviorSubject, Subject, Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
@@ -9,6 +9,7 @@ import {debounceTime, takeUntil} from 'rxjs/operators';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {WorkflowActionComponent} from './workflow-action/workflow-action.component';
+import {PerfectScrollbarComponent} from "../perfect-scrollbar/perfect-scrollbar.component";
 import {AuthService} from '../../components/guard';
 import {SaveService} from '../../services/save.service';
 import {DataService} from '../../services/data.service';
@@ -16,7 +17,6 @@ import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
 import {ExcelService} from '../../services/excel.service';
 import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
-import {PerfectScrollbarComponent} from "../perfect-scrollbar/perfect-scrollbar.component";
 
 declare const $;
 
@@ -504,8 +504,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
-  searchCriteriaSubject: BehaviorSubject<any> = new BehaviorSubject(null);
-  private _destroying$: Subject<void> = new Subject<void>();
+
   @ViewChild(PerfectScrollbarComponent) scrollbar?: PerfectScrollbarComponent;
 
   searchableProperties = ['name', 'path', 'versionDate', 'state', '_text'];
@@ -628,7 +627,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   workflowTreeSearch() {
     $('#workflowTreeSearch').focus();
     $('.editor-tree  a').addClass('hide-on-focus');
-
   }
 
   clearSearchInput(): void {
@@ -666,8 +664,36 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectObject(data): void {
+  selectObject(item): void {
+    let flag = true;
+    const PATH = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
+    for (let i in this.workflowFilters.expandedKeys) {
+      if (PATH == this.workflowFilters.expandedKeys[i]) {
+        flag = false;
+        break;
+      }
+    }
+    if (flag) {
+      this.workflowFilters.expandedKeys.push(PATH);
+    }
+    let selectedCheck = false;
+    if(this.workflowFilters.selectedkeys.length <= 1){
+      if(this.workflowFilters.selectedkeys[0] == PATH){
+        selectedCheck = true;
+      }
+    }
+    this.workflowFilters.selectedkeys = [PATH];
+    this.workflowFilters.expandedObjects = [item.path + 'CURRENT'];
+    if(!selectedCheck){
+      this.loadWorkflow(null, true);
+    }
 
+    setTimeout(() => {
+      this.allObjects = [];
+      this.searchNode.text = '';
+      $('#workflowTreeSearch').blur();
+      //$('.editor-tree > a').removeClass('hide-on-focus');
+    }, 0);
   }
 
   scrollEnd(e): void {
@@ -1161,7 +1187,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadWorkflow(status?): void {
+  loadWorkflow(status?, skipChild = false): void {
     if (status) {
       const index = this.workflowFilters.filter.states.indexOf(status);
       if (index === -1) {
@@ -1178,7 +1204,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.workflows = [];
     this.loading = true;
     let paths;
-    if (this.child) {
+    if (this.child && !skipChild) {
       if (this.child.defaultSelectedKeys.length === 0) {
         this.child.defaultSelectedKeys = ['/'];
       }

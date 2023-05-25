@@ -375,7 +375,7 @@ export class LoginComponent implements OnInit {
       'X-IDENTITY-SERVICE': this.identityServiceName,
       'Authorization': 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(this.user.userName)))
     });
-    this.coreService.log('authentication/login', {}, {headers}).subscribe({
+    this.coreService.log('authentication/login', {fido2: true}, {headers}).subscribe({
       next: (data) => {
         this.authService.setUser(data);
         this.authService.save();
