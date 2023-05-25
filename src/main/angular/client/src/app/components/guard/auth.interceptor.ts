@@ -35,7 +35,8 @@ export class AuthInterceptor implements HttpInterceptor {
             const headers = new HttpHeaders(headerOptions);
 
             req = req.clone({ headers });
-          } else {
+          } else if(!user.fido2){
+
             req = req.clone({
               headers: req.headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((user.userName || '') + ':' + (user.password || ''))))),
               body: {}

@@ -22,6 +22,7 @@ export class OrderListSidebarComponent implements OnChanges {
   @Input() schedulerId: any;
   @Input() orderPreparation: any;
   @Input() loading: boolean;
+  @Input() isSingleWorkflow = true;
   filter = {
     sortBy: 'scheduledFor',
     entryPerPage: 25,
