@@ -8795,8 +8795,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   const editorWidth = $('#boardId').width();
                   let left = ((cursor.ch * 7) + 12);
                   if ((editorWidth - left) < 145) {
-                    left = editorWidth - 150;
+                    left = editorWidth - 145;
                   }
+                  if(editorWidth < 200){
+                    left = 0;
+                  }
+                 
                   dom?.css({
                     'opacity': '1',
                     'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',

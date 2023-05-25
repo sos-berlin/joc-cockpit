@@ -9103,7 +9103,6 @@ cdk-virtual-scroll-viewport {
   padding: 4px 6px;
   border-radius: 50%;
   background: var(--menu-hover);
-  display: none;
   position: absolute;
   cursor: pointer;
   right: 48px;
@@ -9116,24 +9115,6 @@ cdk-virtual-scroll-viewport {
 
   i {
     color: var(--text-color);
-  }
-
-}
-
-.workflow {
-  &:hover {
-    .workflow-search {
-      display: block;
-    }
-  }
-
-}
-
-.resource {
-  &:hover {
-    .workflow-search {
-      display: block;
-    }
   }
 
 }
