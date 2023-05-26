@@ -718,6 +718,12 @@ export class IdentityServiceModalComponent implements OnInit {
     }
   }
 
+  checkTwoFactor($event): void {
+    if ($event) {
+      this.currentObj.serviceAuthenticationScheme = 'SINGLE-FACTOR';
+    }
+  }
+
   private getSettings(type): void {
     if (this.identityService.identityServiceType === type || this.identityService.identityServiceType === 'JOC' ||
       type === 'JOC') {

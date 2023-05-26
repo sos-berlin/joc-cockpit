@@ -66,7 +66,7 @@
     <div class="form-group row" *ngIf="(currentObj.identityServiceType === 'CERTIFICATE' || currentObj.identityServiceType === 'FIDO2')">
       <label class="col-sm-4" translate>user.label.usedAsSecondFactor</label>
       <div class="col-sm-6">
-        <label nz-checkbox [(ngModel)]="currentObj.secondFactor"
+        <label nz-checkbox [(ngModel)]="currentObj.secondFactor" (ngModelChange)="checkTwoFactor($event)"
                name="secondFactor"></label>
       </div>
     </div>
@@ -88,7 +88,7 @@
         </nz-select>
       </div>
     </div>
-    <div class="form-group row" *ngIf="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR'">
+    <div class="form-group row" *ngIf="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'FIDO2'">
       <label class="col-sm-4 form-control-label" translate>user.label.listOfFido2</label>
       <div class="col-sm-6">
         <nz-select name="fido2Name"
@@ -97,7 +97,7 @@
         </nz-select>
       </div>
     </div>
-    <div class="form-group row" *ngIf="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR'">
+    <div class="form-group row" *ngIf="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'CERTIFICATE'">
       <label class="col-sm-4 form-control-label" translate>user.label.listOfCert</label>
       <div class="col-sm-6">
         <nz-select name="certName"

@@ -71,7 +71,14 @@
                 <li nz-menu-item (click)="editUser(account)">
                   <a translate>common.button.edit</a>
                 </li>
-                <li nz-menu-item (click)="copyUser(account)">
+                <li *ngIf="identityServiceType == 'FIDO2'" nz-menu-divider></li>
+                <li nz-menu-item  *ngIf="identityServiceType == 'FIDO2'" (click)="addDevice(account)">
+                  <a translate>user.button.addAuthenticatorDevice</a>
+                </li>
+                <li nz-menu-item  *ngIf="identityServiceType == 'FIDO2'" (click)="removeDevice(account)">
+                  <a translate>user.button.removeDevices</a>
+                </li>
+                <li nz-menu-item  *ngIf="identityServiceType !== 'FIDO2'" (click)="copyUser(account)">
                   <a translate>common.button.duplicate</a>
                 </li>
                 <li *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')" nz-menu-item (click)="resetPassword(account)">

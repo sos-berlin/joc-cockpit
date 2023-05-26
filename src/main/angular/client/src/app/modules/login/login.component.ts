@@ -5,7 +5,6 @@ import {TranslateService} from '@ngx-translate/core';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 import {isArray} from "underscore";
-import jwkToPem from "jwk-to-pem";
 import {HttpHeaders} from "@angular/common/http";
 import {CoreService} from '../../services/core.service';
 import {AuthService, OIDCAuthService} from '../../components/guard';
@@ -242,7 +241,7 @@ export class LoginComponent implements OnInit {
       pubKeyCredParams: [
         {type: "public-key", alg: -7}, {type: "public-key", alg: -257}
       ],
-      timeout: res.fido2Properties?.iamFido2Timeout || 60000,
+      timeout: res.fido2Properties?.iamFido2Timeout ? res.fido2Properties?.iamFido2Timeout * 1000 : 60000,
       authenticatorSelection: {
         authenticatorAttachment: "cross-platform",
         userVerification: res.fido2Properties?.iamFido2UserVerification?.toLowerCase() || "preferred"
@@ -265,14 +264,14 @@ export class LoginComponent implements OnInit {
       delete decodedClientData['other_keys_can_be_added_here'];
       let clientDataJSON = utf8Encoder.encode(JSON.stringify(decodedClientData))
 
-      const publicKey = this.getPublicKey(credential.response.attestationObject);
+      const publicKey = this.authService.getPublicKey(credential.response.attestationObject);
       this.coreService.post('iam/fido2registration/request_registration', {
         identityServiceName: this.identityServiceName,
         accountName: this.user.userName,
         email: this.user.email,
-        publicKey: (publicKey),
-        clientDataJSON: this.bufferToBase64Url(clientDataJSON),
-        credentialId: this.bufferToBase64Url(credential.rawId)
+        publicKey: publicKey,
+        clientDataJSON: this.authService.bufferToBase64Url(clientDataJSON),
+        credentialId: this.authService.bufferToBase64Url(credential.rawId)
       }).subscribe({
         next: () => {
           this.submitted1 = false;
@@ -313,14 +312,6 @@ export class LoginComponent implements OnInit {
     this.errorMsgText = '';
   }
 
-  private bufferToBase64Url(buffer: any) {
-    const base64String = btoa(String.fromCharCode(...new Uint8Array(buffer)))
-    base64String.replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '');
-    return base64String;
-  }
-
   onSign(data) {
     this.showLogin = true;
     this.identityServiceName = data;
@@ -348,14 +339,21 @@ export class LoginComponent implements OnInit {
   }
 
   private getCredentials(res): void {
+    let allowCredentials = [];
+    if(res.credentialIds && isArray(res.credentialIds)) {
+      res.credentialIds.forEach((item) => {
+        allowCredentials.push({
+          id: Uint8Array.from(atob((item)), c => c.charCodeAt(0)),
+          type: 'public-key',
+          transports: res.fido2Properties?.iamFido2Transports ? (isArray(res.fido2Properties?.iamFido2Transports) ? res.fido2Properties?.iamFido2Transports : [res.fido2Properties?.iamFido2Transports]) : []
+        })
+      })
+    }
     let publicKey: PublicKeyCredentialRequestOptions = {
       challenge: Uint8Array.from(atob(btoa(res.challenge)), c => c.charCodeAt(0)),
-      allowCredentials: [{
-        id: Uint8Array.from(atob((res.credentialId)), c => c.charCodeAt(0)),
-        type: 'public-key',
-        transports: res.fido2Properties?.iamFido2Transports ? (isArray(res.fido2Properties?.iamFido2Transports) ? res.fido2Properties?.iamFido2Transports : [res.fido2Properties?.iamFido2Transports]) : []
-      }],
-      timeout: res.fido2Properties?.iamFido2Timeout || 60000,
+      allowCredentials: allowCredentials,
+      timeout: res.fido2Properties?.iamFido2Timeout ? res.fido2Properties?.iamFido2Timeout * 1000 : 60000,
+      userVerification: res.fido2Properties?.iamFido2UserVerification?.toLowerCase() || "preferred"
     };
     navigator.credentials.get({'publicKey': publicKey})
       .then((getAssertionResponse: Credential) => {
@@ -369,9 +367,9 @@ export class LoginComponent implements OnInit {
 
   private fido2Authenticate(getAssertionResponse): void {
     const headers = new HttpHeaders({
-      'X-AUTHENTICATOR-DATA': this.bufferToBase64Url(getAssertionResponse.response.authenticatorData),
-      'X-CLIENT-DATA-JSON': this.bufferToBase64Url(getAssertionResponse.response.clientDataJSON),
-      'X-SIGNATURE': this.bufferToBase64Url(getAssertionResponse.response.signature),
+      'X-AUTHENTICATOR-DATA': this.authService.bufferToBase64Url(getAssertionResponse.response.authenticatorData),
+      'X-CLIENT-DATA-JSON': this.authService.bufferToBase64Url(getAssertionResponse.response.clientDataJSON),
+      'X-SIGNATURE': this.authService.bufferToBase64Url(getAssertionResponse.response.signature),
       'X-IDENTITY-SERVICE': this.identityServiceName,
       'Authorization': 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(this.user.userName)))
     });
@@ -391,71 +389,5 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  // Get public key from attestation object
 
-  private getPublicKey(attestationObject: any): any {
-    const decodedAttestationObject = window['CBOR'].decode(
-      attestationObject);
-    const {authData} = decodedAttestationObject;
-
-    // get the length of the credential ID
-    const dataView = new DataView(
-      new ArrayBuffer(2));
-    const idLenBytes = authData.slice(53, 55);
-    idLenBytes.forEach(
-      (value, index) => dataView.setUint8(
-        index, value));
-    const credentialIdLength = dataView.getUint16(0);
-
-    // get the public key object
-    const publicKeyBytes = authData.slice(
-      55 + credentialIdLength);
-
-    // the publicKeyBytes are encoded again as CBOR
-    const publicKeyObject = window['CBOR'].decode(
-      publicKeyBytes.buffer);
-
-    let publicKeyJwk = COSEtoJWK(publicKeyObject);
-
-    function convertToPEM(curve, x, y) {
-      // Create a JWK (JSON Web Key) object from the public key components
-      const jwk = {
-        crv: curve,
-        kty: 'EC',
-        x: base64urlEncode(x),
-        y: base64urlEncode(y)
-      };
-
-      // Convert the JWK to PEM format
-      const pem = jwkToPem(jwk);
-
-      // Return the PEM-formatted public key
-      return pem;
-    }
-
-    // Function to base64url encode data
-    function base64urlEncode(data) {
-      const base64 = btoa(String.fromCharCode.apply(null, new Uint8Array(data)));
-      return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    }
-
-    // Function to convert COSE format to JWK format
-    function COSEtoJWK(parsedCoseKey) {
-
-      const COSE_ALGORITHM_LABEL = 3;
-
-      // Extract the values from the COSE public key
-      const algorithm = parsedCoseKey[COSE_ALGORITHM_LABEL];
-
-      // Set the specific key parameters based on the algorithm and public key values
-      if (algorithm === -7) {
-        return convertToPEM('P-256', parsedCoseKey[-2], parsedCoseKey[-3]);
-        // ECDSA algorithm
-      } else if (algorithm === -257) {
-        // RSASSA-PKCS1-v1_5 algorithm
-        return convertToPEM('P-256', parsedCoseKey[-2], parsedCoseKey[-3]);
-      }
-    }
-    return publicKeyJwk; // The extracted public key in JWK format
-  }
 }

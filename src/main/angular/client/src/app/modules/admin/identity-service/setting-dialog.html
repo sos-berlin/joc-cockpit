@@ -874,7 +874,7 @@
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2Transports
         </label>
         <div class="col-sm-6">
-          <nz-select name="iamFido2Transports" [(ngModel)]="currentObj.iamFido2Transports">
+          <nz-select name="iamFido2Transports" nzMode="multiple" [(ngModel)]="currentObj.iamFido2Transports">
             <nz-option *ngFor="let option of iamFido2Transports"
                        [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
           </nz-select>
@@ -945,10 +945,10 @@
           </div>
         </div>
         <div class=" row">
-          <label class="col-sm-4 form-control-label" title="{{'workflow.label.jobResourceNames' | translate}}"
-                 [nz-tooltip]="'inventory.tooltips.workflow.jobResourceNames' | translate"
+          <label class="col-sm-4 form-control-label" title="{{'user.label.jobResourceName' | translate}}"
+                 [nz-tooltip]="'user.tooltips.fido2.jobResourceName' | translate"
                  [nzTooltipMouseEnterDelay]="0.5"
-                 translate>workflow.label.jobResourceNames
+                 translate>user.label.jobResourceName
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-md-6" [ngClass]="{'has-error' : ((jobResource.dirty || jobResource.touched) && jobResource.invalid)}">
@@ -959,7 +959,7 @@
               nzShowSearch
               [nzAllowClear]="false"
               [nzDropdownClassName]="'group-list'"
-              [nzPlaceHolder]="'workflow.placeholder.selectJobResources' | translate"
+              [nzPlaceHolder]="'user.placeholder.selectJobResource' | translate"
             >
               <nz-option-group [nzLabel]="nzTreeTemplate" *ngFor="let item of jobResourcesTree">
                 <ng-template #nzTreeTemplate>
