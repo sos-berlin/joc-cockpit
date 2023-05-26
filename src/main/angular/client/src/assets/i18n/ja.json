@@ -1693,6 +1693,7 @@
     "button.recall": "取消",
     "button.delete": "削除",
     "button.remove": "削除",
+    "button.revalidate": "Revalidate",
     "button.rename": "名前変更",
     "button.cut": "切り取り",
     "button.copy": "コピー",

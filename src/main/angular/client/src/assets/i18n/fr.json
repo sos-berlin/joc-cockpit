@@ -1693,6 +1693,7 @@
     "button.recall": "Retirer",
     "button.delete": "Supprimer",
     "button.remove": "Supprimer",
+    "button.revalidate": "Revalidate",
     "button.rename": "Renommer",
     "button.cut": "Couper",
     "button.copy": "Copier",

@@ -515,6 +515,10 @@
       <a translate>inventory.button.recall</a>
     </li>
     <li nz-menu-divider *ngIf="permission.joc.inventory.manage"></li>
+
+    <li nz-menu-item (click)="revalidateObject(node);" *ngIf="permission.joc.inventory.manage && (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object)">
+      <a translate>inventory.button.revalidate</a>
+    </li>
     <li nz-menu-item (click)="removeObject(node);" *ngIf="permission.joc.inventory.manage"
         [nzDisabled]="(node.origin.object && node.origin.children.length === 0) || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')">
       <a translate>inventory.button.remove</a>
@@ -566,7 +570,7 @@
     </li>
   </ul>
 </nz-dropdown-menu>
-<div class="spinner" *ngIf="isLoading || !isNavigationComplete">
+<div class="spinner" *ngIf="isLoading || !isNavigationComplete || revalidating">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>

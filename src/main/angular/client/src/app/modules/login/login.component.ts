@@ -254,15 +254,6 @@ export class LoginComponent implements OnInit {
     navigator.credentials.create({
       publicKey: publicKeyCredentialCreationOptions
     }).then((credential: any) => {
-      const utf8Decoder = new TextDecoder('utf-8');
-      const utf8Encoder = new TextEncoder();
-      let decodedClientData: any = utf8Decoder.decode(
-        credential.response.clientDataJSON);
-      // parse the string as an object
-      decodedClientData = JSON.parse(decodedClientData);
-      decodedClientData.challenge = res.challenge;
-      delete decodedClientData['other_keys_can_be_added_here'];
-      let clientDataJSON = utf8Encoder.encode(JSON.stringify(decodedClientData))
 
       const publicKey = this.authService.getPublicKey(credential.response.attestationObject);
       this.coreService.post('iam/fido2registration/request_registration', {
@@ -270,7 +261,7 @@ export class LoginComponent implements OnInit {
         accountName: this.user.userName,
         email: this.user.email,
         publicKey: publicKey,
-        clientDataJSON: this.authService.bufferToBase64Url(clientDataJSON),
+        clientDataJSON: this.authService.bufferToBase64Url(credential.response.clientDataJSON),
         credentialId: this.authService.bufferToBase64Url(credential.rawId)
       }).subscribe({
         next: () => {
