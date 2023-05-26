@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     <span *ngIf="approve" translate>common.label.approve</span>
     <span *ngIf="reject" translate>common.label.reject</span>
-    <span *ngIf="delete || deleteRequest" translate>common.label.delete</span>
+    <span *ngIf="delete || deleteRequest || deleteDevices" translate>common.label.delete</span>
     <span *ngIf="cancel" translate>common.button.cancel</span>
     <span *ngIf="reset" translate>user.label.resetPassword</span>
     <span *ngIf="forceChange" translate>user.label.forcePasswordChange</span>
@@ -48,6 +48,9 @@
       </span>
       <span *ngIf="deleteRequest">
         <span translate>user.message.deleteForSelectedPendingRequests</span>
+      </span>
+      <span *ngIf="deleteDevices">
+        <span translate>user.message.deleteDevices</span>
       </span>
     </div>
   </div>

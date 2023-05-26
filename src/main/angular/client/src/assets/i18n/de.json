@@ -2865,6 +2865,7 @@
     "label.body" : "Body",
     "label.subject" : "Subject",
     "label.emailSettings" : "E-Mail Einstellungen",
+    "label.jobResourceName" : "Job Resource",
     "label.listOfFido2" : "FIDO2 basierte Identitätsdienste",
     "label.listOfCert" : "Zertifikatsbasierte Identitätsdienste",
     "label.group": "Gruppe",
@@ -2921,6 +2922,8 @@
     "button.cancelSessions": "Sitzungen abbrechen",
     "button.sessionManagement": "Aktive Sitzungen",
     "button.uploadImage": "Bild hochladen",
+    "button.addAuthenticatorDevice": "Add Authenticator Device",
+    "button.removeDevices": "Remove Devices",
     "placeholder.role": "Name der Rolle angeben",
     "placeholder.selectRoles": "Rollen auswählen",
     "placeholder.user": "Konto angeben",
@@ -2977,6 +2980,7 @@
     "placeholder.body" : "Body angeben",
     "placeholder.subject" : "Subject angeben",
     "placeholder.emailSettings" : "E-Mail Einstellungen angeben",
+    "placeholder.selectJobResource" : "Select Job Resource",
     "placeholder.group": "Gruppe angeben",
     "placeholder.initialPassword": "Initialkennwort angeben",
     "placeholder.minPasswordLength": "Minimallänge des Kennworts angeben",
@@ -3000,6 +3004,7 @@
     "message.approveForSelectedPendingRequests":"Sind Sie sicher, dass Sie die ausstehenden Anfragen freigeben wollen?",
     "message.rejectForSelectedPendingRequests": "Sind Sie sicher, dass Sie die ausgewählten ausstehenden Anfragen aufschieben wollen?",
     "message.deleteForSelectedPendingRequests": "Sind Sie sicher, dass Sie alle ausstehenden Anfragen löschen wollen?",
+    "message.deleteDevices": "Are you sure that you want to delete the all the devices for this account?",
     "tab.simpleMode": "Weniger Optionen",
     "tab.expertMode": "Mehr Optionen",
     "tooltip.toAddNonExistFolders": "Ordner können ausgewählt werden. Zur Eingabe eines Ordnerpfads per Tastatur den Pfad eingeben und Leertaste oder Eingabetaste drücken.",
@@ -3081,7 +3086,8 @@
         "iamFido2UserVerification" : "FIDO2 User Verification",
         "body" : "Body",
         "subject" : "Subject",
-        "emailSettings" : "E-Mail Einstellungen"
+        "emailSettings" : "E-Mail Einstellungen",
+        "jobResourceName" : "Job Resource Name"
       },
       "general": {
         "sessionTimeout": "Eine Benutzersitzung wird von JOC Cockpit geschlossen und der Benutzer zur Anmeldung aufgeforder, wenn für die in Sekunden angegebene Dauer keine Aktivitäten in JOC Cockpit durch den Benutzer erfolgt sind.",

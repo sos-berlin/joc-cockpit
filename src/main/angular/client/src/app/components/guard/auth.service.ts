@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-
+import jwkToPem from "jwk-to-pem";
 @Injectable({
   providedIn: 'root'
 })
@@ -193,5 +193,80 @@ export class AuthService {
   private load(name: any): any {
     const key = this.propsPrefix + name;
     return localStorage[key] || sessionStorage[key] || null;
+  }
+
+  bufferToBase64Url(buffer: any) {
+    const base64String = btoa(String.fromCharCode(...new Uint8Array(buffer)))
+    base64String.replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+    return base64String;
+  }
+
+  // Get public key from attestation object
+  getPublicKey(attestationObject: any): any {
+    const decodedAttestationObject = window['CBOR'].decode(
+      attestationObject);
+    const {authData} = decodedAttestationObject;
+
+    // get the length of the credential ID
+    const dataView = new DataView(
+      new ArrayBuffer(2));
+    const idLenBytes = authData.slice(53, 55);
+    idLenBytes.forEach(
+      (value, index) => dataView.setUint8(
+        index, value));
+    const credentialIdLength = dataView.getUint16(0);
+
+    // get the public key object
+    const publicKeyBytes = authData.slice(
+      55 + credentialIdLength);
+
+    // the publicKeyBytes are encoded again as CBOR
+    const publicKeyObject = window['CBOR'].decode(
+      publicKeyBytes.buffer);
+
+    let publicKeyJwk = COSEtoJWK(publicKeyObject);
+
+    function convertToPEM(curve, x, y) {
+      // Create a JWK (JSON Web Key) object from the public key components
+      const jwk = {
+        crv: curve,
+        kty: 'EC',
+        x: base64urlEncode(x),
+        y: base64urlEncode(y)
+      };
+
+      // Convert the JWK to PEM format
+      const pem = jwkToPem(jwk);
+
+      // Return the PEM-formatted public key
+      return pem;
+    }
+
+    // Function to base64url encode data
+    function base64urlEncode(data) {
+      const base64 = btoa(String.fromCharCode.apply(null, new Uint8Array(data)));
+      return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    // Function to convert COSE format to JWK format
+    function COSEtoJWK(parsedCoseKey) {
+
+      const COSE_ALGORITHM_LABEL = 3;
+
+      // Extract the values from the COSE public key
+      const algorithm = parsedCoseKey[COSE_ALGORITHM_LABEL];
+
+      // Set the specific key parameters based on the algorithm and public key values
+      if (algorithm === -7) {
+        return convertToPEM('P-256', parsedCoseKey[-2], parsedCoseKey[-3]);
+        // ECDSA algorithm
+      } else if (algorithm === -257) {
+        // RSASSA-PKCS1-v1_5 algorithm
+        return convertToPEM('P-256', parsedCoseKey[-2], parsedCoseKey[-3]);
+      }
+    }
+    return publicKeyJwk; // The extracted public key in JWK format
   }
 }

@@ -32,6 +32,7 @@ export class ConfirmationModalComponent implements OnInit {
   @Input() blocklist;
   @Input() activeSession;
   @Input() identityServiceName: string;
+  @Input() deleteDevices: boolean;
   submitted = false;
   display: any;
   required = false;
@@ -74,12 +75,12 @@ export class ConfirmationModalComponent implements OnInit {
     }
     this.submitted = true;
     let URL = this.forceChange ? 'iam/accounts/forcepasswordchange' : 'iam/accounts/resetpassword';
-    if(this.approve) {
+    if (this.approve) {
       URL = 'iam/fido2registration/approve';
-    }else if(this.reject) {
+    } else if (this.reject) {
       URL = 'iam/fido2registration/deferr';
-    }else if(this.deleteRequest) {
-      URL ='iam/fido2registration/delete' ;
+    } else if (this.deleteRequest) {
+      URL = 'iam/fido2registration/delete';
     }
     this.coreService.post(URL, {
       identityServiceName: this.identityServiceName,
@@ -983,5 +984,135 @@ export class AccountsComponent implements OnInit, OnDestroy {
     } else {
       this.dataService.announceFunction('IS_ACCOUNT_PROFILES_FALSE');
     }
+  }
+
+  /* ----------------------FIDO2--------------------- */
+  addDevice(account): void {
+
+    this.coreService.post('configuration', {
+      id: 0,
+      objectType: 'FIDO2',
+      configurationType: 'IAM',
+      name: this.identityServiceName
+    }).subscribe((res) => {
+      if (res.configuration.configurationItem) {
+        const data = JSON.parse(res.configuration.configurationItem);
+        this.createRequestObject(data, account);
+      }
+    });
+
+  }
+
+  private createRequestObject(fido2Properties, account): void {
+    // Add Authenticator Device iam/fido2/add_device
+    let id = new Uint8Array(32);
+    const challenge = new Uint8Array(32);
+    window.crypto.getRandomValues(challenge);
+    let publicKeyCredentialCreationOptions: PublicKeyCredentialCreationOptions = {
+      challenge: challenge,
+      rp: {
+        id: window.location.hostname,
+        name: 'JS7'
+      },
+      user: {
+        id: id,
+        name: account.accountName,
+        displayName: account.email || account.accountName
+      },
+      pubKeyCredParams: [
+        {type: "public-key", alg: -7}, {type: "public-key", alg: -257}
+      ],
+      timeout: fido2Properties?.iamFido2Timeout ? fido2Properties?.iamFido2Timeout * 1000 : 60000,
+      authenticatorSelection: {
+        authenticatorAttachment: "cross-platform",
+        userVerification: fido2Properties?.iamFido2UserVerification?.toLowerCase() || "preferred"
+      },
+      extensions: {"credProps": true},
+      attestation: fido2Properties?.iamFido2Attestation?.toLowerCase() || "direct"
+    };
+
+    //  const publicKeyCredentialCreationOptions: any = await response.json();
+    navigator.credentials.create({
+      publicKey: publicKeyCredentialCreationOptions
+    }).then((credential: any) => {
+
+      const publicKey = this.authService.getPublicKey(credential.response.attestationObject);
+      this.coreService.post('iam/fido2/add_device', {
+        identityServiceName: this.identityServiceName,
+        accountName: account.accountName,
+        publicKey: publicKey,
+        credentialId: this.authService.bufferToBase64Url(credential.rawId)
+      }).subscribe({
+        next: () => {
+
+        }, error: (err) => {
+
+        }
+      })
+    });
+  }
+
+  removeDevice(account): void {
+    // Remove Authenticator Device
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Account',
+        operation: 'Delete',
+        name: ''
+      };
+      this.object.mapOfCheckedId.forEach((value, key) => {
+        comments.name = comments.name + key + ', ';
+      });
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzAutofocus: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.deleteDevices(null, result);
+        }
+      });
+    } else {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmationModalComponent,
+        nzComponentParams: {
+          deleteDevices: true,
+          account: account
+        },
+        nzFooter: null,
+        nzAutofocus: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this.deleteDevices(null, this.dataService.comments);
+        }
+      });
+    }
+  }
+
+  private deleteDevices(account, comments: any = {}) {
+    const obj: any = {
+      accountName: account.accountName,
+      identityServiceName: this.identityServiceName,
+      auditLog: {}
+    };
+    this.coreService.getAuditLogObj(comments, obj.auditLog);
+    if (comments.isChecked) {
+      this.dataService.comments = comments;
+    }
+    this.coreService.post('iam/fido2/remove_devices', obj).subscribe(() => {
+
+    });
   }
 }

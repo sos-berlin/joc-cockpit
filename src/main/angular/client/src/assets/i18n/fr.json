@@ -2865,6 +2865,7 @@
     "label.body" : "Body",
     "label.subject" : "Subject",
     "label.emailSettings" : "Paramètres du courriel",
+    "label.jobResourceName" : "Job Resource",
     "label.listOfFido2" : "Services d'Identité basés sur FIDO2",
     "label.listOfCert" : "Services d'Identité basés sur des certificats",
     "label.group": "Groupe",
@@ -2921,6 +2922,8 @@
     "button.cancelSessions": "Annuler Sessions",
     "button.sessionManagement": "Sessions Actives",
     "button.uploadImage": "Télécharger l'Image",
+    "button.addAuthenticatorDevice": "Add Authenticator Device",
+    "button.removeDevices": "Remove Devices",
     "placeholder.role": "Entrer le nom du Rôle",
     "placeholder.selectRoles": "Sélectionner les Rôles",
     "placeholder.user": "Entrer l'utilisateur",
@@ -2978,6 +2981,7 @@
     "placeholder.body" : "Entrer le Body",
     "placeholder.subject" : "Entrer le Subject",
     "placeholder.emailSettings" : "Entrer les paramètres des l'e-mail",
+    "placeholder.selectJobResource" : "Select Job Resource",
     "placeholder.initialPassword": "Entrer le mot de passe initial",
     "placeholder.minPasswordLength": "Entrer la longueur minimale du mot de passe",
     "message.permissionIsAlreadyCovered": "Permission déjà active",
@@ -3000,6 +3004,7 @@
     "message.approveForSelectedPendingRequests":"Êtes-vous sûr de  vouloir approuver les demandes en attente sélectionnées ?",
     "message.rejectForSelectedPendingRequests": "Êtes-vous sûr de vouloir rejeter les demandes en attente sélectionnées ?",
     "message.deleteForSelectedPendingRequests": "Êtes-vous sûr de vouloir supprimer les demandes en attente sélectionnées ?",
+    "message.deleteDevices": "Are you sure that you want to delete the all the devices for this account?",
     "tab.simpleMode": "Moins d'Options",
     "tab.expertMode": "Plus d'Options",
     "tooltip.toAddNonExistFolders": "Les dossiers peuvent être sélectionnés. Pour saisir manuellement le chemin d'accès à un dossier, utilisez le clavier et appuyez sur la touche d'espacement ou la touche Entrée.",
@@ -3081,7 +3086,8 @@
         "iamFido2UserVerification" : "FIDO2 User Verification",
         "body" : "Body",
         "subject" : "Subject",
-        "emailSettings" : "Paramètres de l'E-mail"
+        "emailSettings" : "Paramètres de l'E-mail",
+        "jobResourceName" : "Job Resource Name"
       },
       "general": {
         "sessionTimeout": "Une session utilisateur sera terminée par JOC Cockpit et l'utilisateur devra se connecter après le nombre de secondes indiqué si aucune action n'est effectuée dans JOC Cockpit.",
