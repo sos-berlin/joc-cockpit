@@ -588,7 +588,6 @@ export class SettingModalComponent implements OnInit {
       } else if (this.data.identityServiceType.match('OIDC')) {
         obj.oidc = this.currentObj;
       } else if (this.data.identityServiceType.match('FIDO2')) {
-        this.currentObj.iamFido2Transports = "USB";
         obj.fido2 = this.currentObj;
       }
     } else {

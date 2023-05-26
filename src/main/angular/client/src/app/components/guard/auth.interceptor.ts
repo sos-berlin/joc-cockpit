@@ -60,7 +60,7 @@ export class AuthInterceptor implements HttpInterceptor {
               this.logService.debug(message);
             }
           }, error: (err: any) => {
-            if(req.url.match('iam/fido2')){
+            if(req.url.match('iam/fido2') && this.router.url.match('/login')){
               return;
             }
             if(err.status === 200){

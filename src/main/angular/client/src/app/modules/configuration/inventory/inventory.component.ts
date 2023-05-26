@@ -3211,6 +3211,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   isTrash = false;
   isSearchVisible = false;
   isNavigationComplete = true;
+  revalidating = false;
   tempObjSelection: any = {};
   objectType: string;
   path: string;
@@ -3303,7 +3304,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.newDraft(res.newDraft);
         } else if (res.updateFromJobTemplate) {
           this.updateFromJobTemplates(res.updateFromJobTemplate);
-        } 
+        }
       }
     });
     this.subscription3 = dataService.refreshAnnounced$.subscribe(() => {
@@ -5322,6 +5323,52 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  revalidateObject(node: any): void {
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Folder',
+        operation: 'Revalidate',
+        name: node.origin.name
+      };
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          let auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          this.revalidate({path: node.origin.path, recursive: true, auditLog})
+        }
+      });
+    } else {
+      this.revalidate({path: node.origin.path, recursive: true})
+    }
+  }
+
+  private revalidate(obj){
+    this.revalidating = true;
+    this.coreService.post('inventory/revalidate/folder',
+      obj).subscribe({
+      next: (res) => {
+        this.revalidating = false;
+        console.log(res);
+      }, error: (err) => {
+        this.revalidating = false;
+      }
+    })
   }
 
   restoreObject(node: any): void {
