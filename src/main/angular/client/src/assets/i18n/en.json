@@ -3005,7 +3005,7 @@
     "message.approveForSelectedPendingRequests":"Are you sure that you want to approve the selected pending requests?",
     "message.rejectForSelectedPendingRequests": "Are you sure that you want to defer the selected pending requests?",
     "message.deleteForSelectedPendingRequests": "Are you sure that you want to delete the selected pending requests?",
-    "message.deleteDevices": "Are you sure that you want to delete the all the devices for this account?",
+    "message.deleteDevices": "Are you sure that you want to remove the devices for this account?",
     "tab.simpleMode": "Fewer Options",
     "tab.expertMode": "More Options",
     "tooltip.toAddNonExistFolders": "Folders can be selected. For manual input of a folder path use the keyboard and press the space key or enter key.",
