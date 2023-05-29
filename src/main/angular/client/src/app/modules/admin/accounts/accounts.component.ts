@@ -988,7 +988,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   /* ----------------------FIDO2--------------------- */
   addDevice(account): void {
-
     this.coreService.post('configuration', {
       id: 0,
       objectType: 'FIDO2',
@@ -1000,55 +999,24 @@ export class AccountsComponent implements OnInit, OnDestroy {
         this.createRequestObject(data, account);
       }
     });
-
   }
 
   private createRequestObject(fido2Properties, account): void {
-    // Add Authenticator Device iam/fido2/add_device
-    let id = new Uint8Array(32);
     const challenge = new Uint8Array(32);
     window.crypto.getRandomValues(challenge);
-    let publicKeyCredentialCreationOptions: PublicKeyCredentialCreationOptions = {
-      challenge: challenge,
-      rp: {
-        id: window.location.hostname,
-        name: 'JS7'
-      },
-      user: {
-        id: id,
-        name: account.accountName,
-        displayName: account.email || account.accountName
-      },
-      pubKeyCredParams: [
-        {type: "public-key", alg: -7}, {type: "public-key", alg: -257}
-      ],
-      timeout: fido2Properties?.iamFido2Timeout ? fido2Properties?.iamFido2Timeout * 1000 : 60000,
-      authenticatorSelection: {
-        authenticatorAttachment: "cross-platform",
-        userVerification: fido2Properties?.iamFido2UserVerification?.toLowerCase() || "preferred"
-      },
-      extensions: {"credProps": true},
-      attestation: fido2Properties?.iamFido2Attestation?.toLowerCase() || "direct"
-    };
+    let publicKeyCredentialCreationOptions = this.authService.createPublicKeyCredentialRequest(challenge,
+      fido2Properties, account);
 
-    //  const publicKeyCredentialCreationOptions: any = await response.json();
     navigator.credentials.create({
       publicKey: publicKeyCredentialCreationOptions
     }).then((credential: any) => {
-
       const publicKey = this.authService.getPublicKey(credential.response.attestationObject);
       this.coreService.post('iam/fido2/add_device', {
         identityServiceName: this.identityServiceName,
         accountName: account.accountName,
         publicKey: publicKey,
         credentialId: this.authService.bufferToBase64Url(credential.rawId)
-      }).subscribe({
-        next: () => {
-
-        }, error: (err) => {
-
-        }
-      })
+      }).subscribe();
     });
   }
 
