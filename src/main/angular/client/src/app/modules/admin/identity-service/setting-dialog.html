@@ -847,7 +847,7 @@
     <div *ngIf="data && data.identityServiceType.match('FIDO2')">
       <div class="form-group row">
         <label class="col-sm-4 form-control-label"
-               [nz-tooltip]="'user.tooltips.fido2.iamFido2Attestation' | translate" [nzTooltipMouseEnterDelay]="0.5"
+               [nz-tooltip]="'user.tooltips.webauthn.iamFido2Attestation' | translate" [nzTooltipMouseEnterDelay]="0.5"
                translate>user.label.iamFido2Attestation
         </label>
         <div class="col-sm-6">
@@ -858,7 +858,7 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.fido2.iamFido2Timeout' | translate"
+        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.webauthn.iamFido2Timeout' | translate"
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2Timeout
         </label>
         <div class="col-sm-6"
@@ -870,7 +870,7 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.fido2.iamFido2Transports' | translate"
+        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.webauthn.iamFido2Transports' | translate"
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2Transports
         </label>
         <div class="col-sm-6">
@@ -883,7 +883,7 @@
       </div>
       <div class="form-group row">
         <label class="col-sm-4 form-control-label"
-               [nz-tooltip]="'user.tooltips.fido2.iamFido2UserVerification' | translate"
+               [nz-tooltip]="'user.tooltips.webauthn.iamFido2UserVerification' | translate"
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2UserVerification
         </label>
         <div class="col-sm-6">
@@ -899,7 +899,7 @@
       <div class="p-a b-a" *ngIf="currentObj.iamFido2EmailSettings">
         <div class="form-group row" >
           <label class="col-sm-4 form-control-label"
-                 [nz-tooltip]="'user.tooltips.fido2.subject' | translate" [nzTooltipMouseEnterDelay]="0.5"
+                 [nz-tooltip]="'user.tooltips.webauthn.subject' | translate" [nzTooltipMouseEnterDelay]="0.5"
                  translate>user.label.subject
             <sup class="text-danger text-sm">*</sup>
           </label>
@@ -918,7 +918,7 @@
         </div>
         <div class="form-group row">
           <label class="col-sm-4 form-control-label"
-                 [nz-tooltip]="'user.tooltips.fido2.body' | translate" [nzTooltipMouseEnterDelay]="0.5"
+                 [nz-tooltip]="'user.tooltips.webauthn.body' | translate" [nzTooltipMouseEnterDelay]="0.5"
                  translate>user.label.body
             <sup class="text-danger text-sm">*</sup>
           </label>
@@ -946,7 +946,7 @@
         </div>
         <div class=" row">
           <label class="col-sm-4 form-control-label" title="{{'user.label.jobResourceName' | translate}}"
-                 [nz-tooltip]="'user.tooltips.fido2.jobResourceName' | translate"
+                 [nz-tooltip]="'user.tooltips.webauthn.jobResource' | translate"
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>user.label.jobResourceName
             <sup class="text-danger text-sm">*</sup>

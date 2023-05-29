@@ -243,11 +243,12 @@ export class LoginComponent implements OnInit {
       ],
       timeout: res.fido2Properties?.iamFido2Timeout ? res.fido2Properties?.iamFido2Timeout * 1000 : 60000,
       authenticatorSelection: {
-        authenticatorAttachment: "cross-platform",
-        userVerification: res.fido2Properties?.iamFido2UserVerification?.toLowerCase() || "preferred"
+        residentKey: res.fido2Properties?.iamFido2UserVerification?.toLowerCase() || 'preferred',
+        requireResidentKey: res.fido2Properties?.iamFido2UserVerification?.toLowerCase() == 'required',
+        userVerification: res.fido2Properties?.iamFido2UserVerification?.toLowerCase() || 'preferred'
       },
       extensions: {"credProps": true},
-      attestation: res.fido2Properties?.iamFido2Attestation?.toLowerCase() || "direct"
+      attestation: res.fido2Properties?.iamFido2Attestation?.toLowerCase() || 'direct'
     };
 
     //  const publicKeyCredentialCreationOptions: any = await response.json();
@@ -316,7 +317,6 @@ export class LoginComponent implements OnInit {
       accountName: this.user.userName,
     }).subscribe({
       next: (res) => {
-        console.log(res);
         this.getCredentials(res);
       }, error: (err) => {
         this.errorMsg = true;
@@ -331,14 +331,16 @@ export class LoginComponent implements OnInit {
 
   private getCredentials(res): void {
     let allowCredentials = [];
-    if(res.credentialIds && isArray(res.credentialIds)) {
-      res.credentialIds.forEach((item) => {
-        allowCredentials.push({
-          id: Uint8Array.from(atob((item)), c => c.charCodeAt(0)),
-          type: 'public-key',
-          transports: res.fido2Properties?.iamFido2Transports ? (isArray(res.fido2Properties?.iamFido2Transports) ? res.fido2Properties?.iamFido2Transports : [res.fido2Properties?.iamFido2Transports]) : []
+    if(!res.fido2Properties?.iamFido2UserVerification || res.fido2Properties?.iamFido2UserVerification?.toLowerCase() !== 'required') {
+      if (res.credentialIds && isArray(res.credentialIds)) {
+        res.credentialIds.forEach((item) => {
+          allowCredentials.push({
+            id: Uint8Array.from(atob((item)), c => c.charCodeAt(0)),
+            type: 'public-key',
+            transports: res.fido2Properties?.iamFido2Transports ? (isArray(res.fido2Properties?.iamFido2Transports) ? res.fido2Properties?.iamFido2Transports : [res.fido2Properties?.iamFido2Transports]) : []
+          })
         })
-      })
+      }
     }
     let publicKey: PublicKeyCredentialRequestOptions = {
       challenge: Uint8Array.from(atob(btoa(res.challenge)), c => c.charCodeAt(0)),
@@ -379,6 +381,4 @@ export class LoginComponent implements OnInit {
       }
     });
   }
-
-
 }

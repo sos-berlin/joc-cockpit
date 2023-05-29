@@ -1,0 +1,76 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span class="drag-text" translate>inventory.label.result</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close"
+          (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+
+<div class="modal-body p-a">
+
+  <nz-collapse nzGhost>
+    <nz-collapse-panel
+      *ngFor="let panel of panels;let i = index"
+      [nzHeader]="panel.name | translate"
+      [nzActive]="panel.active"
+    >
+      <div class="table-responsive" *ngIf="panel.data.length > 0">
+        <table class="table table-hover">
+          <thead>
+          <tr>
+            <th>
+              <span translate>common.label.name</span>
+            </th>
+            <th>
+              <span translate>common.label.path</span>
+            </th>
+            <th>
+              <span translate>inventory.label.objectType</span>
+            </th>
+            <th>
+              <span translate>inventory.label.errorText</span>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of data.invalidObjs">
+            <td>
+              <span class="fa fa-check-circle-o text-xs w-11 m-t-xs"
+                    [ngClass]="{'fa-circle-o': !item.valid}"></span>
+              <span class="p-l-xs" [innerHTML]="item.name"></span>
+              <i *ngIf="item.title"> - </i>
+              <span class="text-muted">{{item.title}}</span>
+            </td>
+            <td>
+              <span class="show-in-single-line">
+                <i (click)="coreService.navToInventoryTab(item.path, item.objectType);$event.stopPropagation();"
+                   class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                <span> {{data.path.substring(0, item.path.lastIndexOf('/')) || '/'}}</span>
+              </span>
+            </td>
+            <td>
+              <span>{{item.objectType | translate}}</span>
+            </td>
+            <td>
+              <span class="text-danger">{{item.invalidMsg}}</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="m-t-sm m-b-sm" *ngIf="panel.data.length == 0">
+        <app-empty-data></app-empty-data>
+      </div>
+      <hr *ngIf="i < 2">
+    </nz-collapse-panel>
+  </nz-collapse>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-grey btn-sm"
+          (click)="activeModal.destroy()" translate>
+    common.button.close
+  </button>
+</div>
+

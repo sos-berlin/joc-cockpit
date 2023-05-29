@@ -498,6 +498,9 @@
         *ngIf="securityLevel !== 'HIGH' && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && (node.origin.controller || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))">
       <a translate>inventory.button.redeploy</a>
     </li>
+    <li nz-menu-item (click)="revalidateObject(node);" *ngIf="permission.joc.inventory.manage && (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object)">
+      <a translate>inventory.button.revalidate</a>
+    </li>
     <li nz-menu-item (click)="synchronize(node);"
         *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && (node.origin.controller || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))">
       <a translate>inventory.button.synchronize</a>
@@ -515,10 +518,6 @@
       <a translate>inventory.button.recall</a>
     </li>
     <li nz-menu-divider *ngIf="permission.joc.inventory.manage"></li>
-
-    <li nz-menu-item (click)="revalidateObject(node);" *ngIf="permission.joc.inventory.manage && (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object)">
-      <a translate>inventory.button.revalidate</a>
-    </li>
     <li nz-menu-item (click)="removeObject(node);" *ngIf="permission.joc.inventory.manage"
         [nzDisabled]="(node.origin.object && node.origin.children.length === 0) || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')">
       <a translate>inventory.button.remove</a>

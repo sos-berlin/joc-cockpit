@@ -576,6 +576,7 @@
                                 [nzPlaceHolder]="'workflow.placeholder.selectBoards' | translate"
                                 #noticeBoardName="ngModel"
                                 [nzShowSearch]="true"
+                                (keyup)="onKeySearch($event)"
                                 [nzNodes]="boardTree"
                                 [nzDropdownStyle]="{ 'max-height': '300px' }"
                                 [nzAllowClear]="false" [(ngModel)]="selectedNode.obj.noticeBoardNames"
