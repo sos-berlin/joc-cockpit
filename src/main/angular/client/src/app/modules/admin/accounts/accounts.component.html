@@ -30,6 +30,13 @@
             <i *ngIf="usr.sortBy == 'accountName' && usr.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
+        <th *ngIf="identityServiceType === 'FIDO2'" (click)="sort('email')">
+          <a><span class="p-r-xs" translate>user.label.email</span>
+            <i *ngIf="usr.sortBy == 'email' && !usr.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="usr.sortBy == 'email' && usr.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
         <th (click)="sort('roles')">
           <a><span class="p-r-xs" translate>user.label.roles</span>
             <i *ngIf="usr.sortBy == 'roles' && !usr.reverse"
@@ -113,8 +120,9 @@
           </div>
         </td>
         <td>
-          <a (click)="showRole(account.accountName)" class="text-hover-primary" [innerHtml]="account.accountName  | decodeSpace | highlight: searchKey"></a>
+          <a (click)="editUser(account)" class="text-hover-primary" [innerHtml]="account.accountName  | decodeSpace | highlight: searchKey"></a>
         </td>
+        <td *ngIf="identityServiceType === 'FIDO2'">{{account.email}}</td>
         <td>
           <div *ngFor="let role of account.roles"><span [innerHtml]= "role | highlight: searchKey"></span></div>
         </td>

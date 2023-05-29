@@ -315,7 +315,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     mapOfCheckedId: new Map()
   };
 
-  searchableProperties = ['accountName', 'roles'];
+  searchableProperties = ['accountName', 'email', 'roles'];
   identityServiceName: string;
   identityServiceType: string;
 
