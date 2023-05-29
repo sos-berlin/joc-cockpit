@@ -2928,7 +2928,7 @@
     "button.cancelSessions": "Cancel Sessions",
     "button.sessionManagement": "Active Sessions",
     "button.uploadImage": "Upload Image",
-    "button.addAuthenticatorDevice": "Add Authenticator Device",
+    "button.addAuthenticatorDevice": "Add Security Key Device",
     "button.removeDevices": "Remove Devices",
     "placeholder.role": "Enter role name",
     "placeholder.selectRoles": "Select Roles",
