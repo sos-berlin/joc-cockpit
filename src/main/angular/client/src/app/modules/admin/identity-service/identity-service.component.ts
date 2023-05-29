@@ -85,21 +85,21 @@ export class SettingModalComponent implements OnInit {
     value: 'SSL'
   }];
   iamFido2Transports = [{
-    text: 'ble',
+    text: 'Ble',
     value: 'BLE'
   }, {
-    text: 'hybrid',
+    text: 'Hybrid',
     value: 'HYBRID'
   }, {
-    text: 'internal',
+    text: 'Internal',
     value: 'INTERNAL'
   },
     {
-      text: 'nfc',
+      text: 'Nfc',
       value: 'NFC'
     },
     {
-      text: 'usb',
+      text: 'Usb',
       value: 'USB'
     }
   ];

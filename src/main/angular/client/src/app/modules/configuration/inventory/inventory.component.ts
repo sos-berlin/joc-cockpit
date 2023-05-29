@@ -33,6 +33,37 @@ import {UpdateJobTemplatesComponent} from "./job-template/job-template.component
 declare const $: any;
 
 @Component({
+  selector: 'app-show-objects',
+  templateUrl: './show-objects-dialog.html'
+})
+export class ShowObjectsComponent implements OnInit{
+  @Input() data: any;
+  panels = [];
+
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.panels.push({
+      active: true,
+      name: 'inventory.label.validityDenied',
+      data: this.data.invalidObjs,
+    });
+    this.panels.push({
+      active: false,
+      name: 'inventory.label.validityApproved',
+      data: this.data.validObjs,
+    });
+    this.panels.push({
+      active: false,
+      name: 'inventory.label.validationInfeasible',
+      data: this.data.erroneousObjs,
+    });
+  }
+
+}
+
+@Component({
   selector: 'app-new-draft-modal',
   templateUrl: './new-draft-dialog.html'
 })
@@ -5365,6 +5396,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.revalidating = false;
         console.log(res);
+        this.modal.create({
+          nzTitle: undefined,
+          nzContent: ShowObjectsComponent,
+          nzClassName: 'lg',
+          nzComponentParams: {
+            data: res,
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        })
       }, error: (err) => {
         this.revalidating = false;
       }

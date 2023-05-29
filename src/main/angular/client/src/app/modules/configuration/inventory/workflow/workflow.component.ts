@@ -15,7 +15,7 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { FileUploader } from 'ng2-file-upload';
 import { TranslateService } from '@ngx-translate/core';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
-import { Subscription } from 'rxjs';
+import {debounceTime, Subject, Subscription} from 'rxjs';
 import { NzMessageService } from "ng-zorro-antd/message";
 import { isEmpty, isArray, isEqual, clone, extend, sortBy, groupBy } from 'underscore';
 import { saveAs } from 'file-saver';
@@ -2850,6 +2850,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   subscription1: Subscription;
   subscription2: Subscription;
+  private searchTerm = new Subject<string>();
 
   @ViewChild('menu', { static: true }) menu: NzDropdownMenuComponent;
   @ViewChild('treeSelectCtrl', { static: false }) treeCtrl;
@@ -2901,6 +2902,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.stickySubagentAgentAssignment = translatedValue;
       });
     }
+    //200ms Delay in search
+    this.searchTerm.pipe(debounceTime(200))
+      .subscribe((searchValue: string) => {
+        this.searchObjects(searchValue);
+      });
   }
 
   private static parseWorkflowJSON(result): void {
@@ -3779,6 +3785,37 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.storeData(result);
       }
     });
+  }
+
+  onKeySearch($event): void{
+    console.log($event.target.value);
+    this.searchTerm.next($event.target.value);
+  }
+
+  private searchObjects(value: string) {
+    if (value !== '') {
+      const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
+      if (searchValueWithoutSpecialChars.length >= 2) {
+        const request: any = {
+          search: value,
+          returnTypes: ['NOTICEBOARD']
+        };
+        // if (this.obj.token) {
+        //   request.token = this.obj.token;
+        // }
+        this.coreService.post('inventory/quick/search', request).subscribe({
+          next: (res: any) => {
+           // this.obj.token = res.token;
+            this.boardTree = res.results.map(function (item) {
+              return {...item, key: item.name, title: item.name};
+            });
+
+              this.ref.detectChanges();
+
+          }
+        });
+      }
+    }
   }
 
   loadData(node, type, $event, isExpand = false): void {
@@ -8775,7 +8812,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               if (self.selectedNode && self.selectedNode.obj) {
                 let arr = self.selectedNode.obj.noticeBoardNames?.split('\n') || [];
                 const doc = self.cm.codeMirror.getDoc();
-                const cursor = doc.getCursor();  // gets the line number in the cursor position 
+                const cursor = doc.getCursor();  // gets the line number in the cursor position
                 doc.replaceRange('', cursor);
                 cursor.line = arr.length > 0 ? arr.length - 1 : 0;
                 cursor.ch = arr.length > 0 ? arr[arr.length - 1]?.length + 1 : 0;
