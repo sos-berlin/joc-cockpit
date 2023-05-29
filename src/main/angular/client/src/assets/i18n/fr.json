@@ -2148,7 +2148,7 @@
     "label.rememberMe": "Se Souvenir",
     "button.logIn": "Connexion",
     "button.loginWith" : "Continuer avec {{identityServiceName}}",
-    "button.registerDevice": "Enregistrer une nouvelle Clé de Sécurité",
+    "button.registerDevice": "Enregistrer une Clé de Sécurité",
     "message.loginError": "Compte ou Mot de Passe est incorrect"
   },
   "register": {

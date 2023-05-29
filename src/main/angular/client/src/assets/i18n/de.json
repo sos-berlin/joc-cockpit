@@ -2148,7 +2148,7 @@
     "label.rememberMe": "Eingaben merken",
     "button.logIn": "Anmelden",
     "button.loginWith" : "Fortsetzen mit {{identityServiceName}}",
-    "button.registerDevice": "Neuen Sicherheitsschlüssel registrieren",
+    "button.registerDevice": "Sicherheitsschlüssel registrieren",
     "message.loginError": "Konto oder Kennwort falsch"
   },
   "register": {
