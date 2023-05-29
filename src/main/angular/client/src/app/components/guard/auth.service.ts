@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import jwkToPem from "jwk-to-pem";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -203,6 +204,33 @@ export class AuthService {
     return base64String;
   }
 
+  createPublicKeyCredentialRequest(challenge, fido2Properties, user): PublicKeyCredentialCreationOptions {
+    return {
+      challenge: challenge,
+      rp: {
+        id: window.location.hostname,
+        name: 'JS7'
+      },
+      user: {
+        id: new Uint8Array(32),
+        name: user.userName || user.accountName,
+        displayName: user.email || user.accountName
+      },
+      pubKeyCredParams: [
+        {type: "public-key", alg: -7},
+        {type: "public-key", alg: -257}
+      ],
+      timeout: fido2Properties?.iamFido2Timeout ? fido2Properties?.iamFido2Timeout * 1000 : 60000,
+      authenticatorSelection: {
+        residentKey: fido2Properties?.iamFido2UserVerification?.toLowerCase() || 'preferred',
+        requireResidentKey: fido2Properties?.iamFido2UserVerification?.toLowerCase() == 'required',
+        userVerification: fido2Properties?.iamFido2UserVerification?.toLowerCase() || 'preferred'
+      },
+      extensions: {"credProps": true},
+      attestation: fido2Properties?.iamFido2Attestation?.toLowerCase() || 'direct'
+    };
+  }
+
   // Get public key from attestation object
   getPublicKey(attestationObject: any): any {
     const decodedAttestationObject = window['CBOR'].decode(
@@ -227,6 +255,7 @@ export class AuthService {
       publicKeyBytes.buffer);
 
     let publicKeyJwk = COSEtoJWK(publicKeyObject);
+    
 
     function convertToPEM(curve, x, y) {
       // Create a JWK (JSON Web Key) object from the public key components
@@ -238,10 +267,7 @@ export class AuthService {
       };
 
       // Convert the JWK to PEM format
-      const pem = jwkToPem(jwk);
-
-      // Return the PEM-formatted public key
-      return pem;
+      return jwkToPem(jwk);
     }
 
     // Function to base64url encode data
@@ -267,6 +293,7 @@ export class AuthService {
         return convertToPEM('P-256', parsedCoseKey[-2], parsedCoseKey[-3]);
       }
     }
+
     return publicKeyJwk; // The extracted public key in JWK format
   }
 }
