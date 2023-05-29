@@ -225,33 +225,8 @@ export class LoginComponent implements OnInit {
   }
 
   private createRegistrationRequest(res) {
-    let id = new Uint8Array(32);
-
-    let publicKeyCredentialCreationOptions: PublicKeyCredentialCreationOptions = {
-      challenge: Uint8Array.from(atob(btoa(res.challenge)), c => c.charCodeAt(0)),
-      rp: {
-        id: window.location.hostname,
-        name: 'JS7'
-      },
-      user: {
-        id: id,
-        name: this.user.userName,
-        displayName: this.user.email
-      },
-      pubKeyCredParams: [
-        {type: "public-key", alg: -7}, {type: "public-key", alg: -257}
-      ],
-      timeout: res.fido2Properties?.iamFido2Timeout ? res.fido2Properties?.iamFido2Timeout * 1000 : 60000,
-      authenticatorSelection: {
-        residentKey: res.fido2Properties?.iamFido2UserVerification?.toLowerCase() || 'preferred',
-        requireResidentKey: res.fido2Properties?.iamFido2UserVerification?.toLowerCase() == 'required',
-        userVerification: res.fido2Properties?.iamFido2UserVerification?.toLowerCase() || 'preferred'
-      },
-      extensions: {"credProps": true},
-      attestation: res.fido2Properties?.iamFido2Attestation?.toLowerCase() || 'direct'
-    };
-
-    //  const publicKeyCredentialCreationOptions: any = await response.json();
+    let publicKeyCredentialCreationOptions = this.authService.createPublicKeyCredentialRequest(Uint8Array.from(atob(btoa(res.challenge)), c => c.charCodeAt(0)),
+      res.fido2Properties, this.user);
     navigator.credentials.create({
       publicKey: publicKeyCredentialCreationOptions
     }).then((credential: any) => {

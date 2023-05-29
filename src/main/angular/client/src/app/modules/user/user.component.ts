@@ -691,6 +691,7 @@ export class UserComponent implements OnInit, OnDestroy {
   isGroupBtnActive = false;
   securityLevel: string;
   identityServiceType: string;
+  identityServiceName: string;
   subscription1: Subscription;
   subscription2: Subscription;
   favList: any = [];
@@ -715,6 +716,7 @@ export class UserComponent implements OnInit, OnDestroy {
       this.preferences.auditLog = true;
     }
     this.identityServiceType = this.authService.currentUserIdentityService.substring(0, this.authService.currentUserIdentityService.lastIndexOf(':'));
+    this.identityServiceName = this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':') + 1);
     this.setPreferences();
     this.zones = this.coreService.getTimeZoneList();
     this.timeZone = this.coreService.getTimeZone();
@@ -768,7 +770,7 @@ export class UserComponent implements OnInit, OnDestroy {
       nzContent: ChangePasswordComponent,
       nzComponentParams: {
         username: this.username,
-        identityServiceName: this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':') + 1)
+        identityServiceName: this.identityServiceName
       },
       nzFooter: null,
       nzAutofocus: null,
@@ -904,7 +906,7 @@ export class UserComponent implements OnInit, OnDestroy {
     const obj = {accounts: [this.username], complete: false};
     this.coreService.post('profiles/delete', obj).subscribe(() => {
       sessionStorage.removeItem('preferences');
-      if(sessionStorage.defaultProfile && sessionStorage.defaultProfile !== this.username){
+      if (sessionStorage.defaultProfile && sessionStorage.defaultProfile !== this.username) {
         this.getDefaultUserConfiguration()
       } else {
         this.dataService.isProfileReload.next(true);
@@ -913,12 +915,10 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   private getDefaultUserConfiguration(): void {
-
     const configObj = {
       controllerId: this.schedulerIds.selected,
       accountName: sessionStorage.defaultProfile
     };
-    const preferences: any = {};
     this.coreService.post('profile/prefs', configObj).subscribe({
       next: (res: any) => {
         const config = {
@@ -931,7 +931,6 @@ export class UserComponent implements OnInit, OnDestroy {
         });
       }
     });
-
   }
 
   getKeys(): void {
@@ -1189,6 +1188,39 @@ export class UserComponent implements OnInit, OnDestroy {
   reload(type): void {
     if (type)
       this.getFavorite();
+  }
+
+  /* ----------------------FIDO2--------------------- */
+  addDevice(): void {
+    this.coreService.post('configuration', {
+      id: 0,
+      objectType: 'FIDO2',
+      configurationType: 'IAM',
+      name: this.identityServiceName
+    }).subscribe((res) => {
+      if (res.configuration.configurationItem) {
+        const data = JSON.parse(res.configuration.configurationItem);
+        this.createRequestObject(data);
+      }
+    });
+  }
+
+  private createRequestObject(fido2Properties): void {
+    const challenge = new Uint8Array(32);
+    window.crypto.getRandomValues(challenge);
+    let publicKeyCredentialCreationOptions = this.authService.createPublicKeyCredentialRequest(challenge,
+      fido2Properties, {accountName: this.username});
+    navigator.credentials.create({
+      publicKey: publicKeyCredentialCreationOptions
+    }).then((credential: any) => {
+      const publicKey = this.authService.getPublicKey(credential.response.attestationObject);
+      this.coreService.post('iam/fido2/add_device', {
+        identityServiceName: this.identityServiceName,
+        accountName: this.username,
+        publicKey: publicKey,
+        credentialId: this.authService.bufferToBase64Url(credential.rawId)
+      }).subscribe();
+    });
   }
 }
 
