@@ -2161,7 +2161,7 @@
     "message.browseDoesnotSupportWebAuthn": "Votre navigateur ne supporte pas WebAuthn.",
     "message.updateToModernBrowser": "Nous recommandons d'utiliser un navigateur moderne qui prend en charge WebAuthn pour une meilleure expérience utilisateur et une sécurité accrue.",
     "message.tokenExpired": "Le jeton a expiré ou est cassé.",
-    "message.successfullyVerified": "Vérifiée avec succès",
+    "message.successfullyVerified": "Vérifiée avec succès.",
     "message.mailVerifiedMessage": "Votre adresse e-mail a été vérifiée avec succès.",
     "message.newFIDOAccountRegistration": "Veuillez recommencer avec un nouvel enregistrement d'une clé de sécurité."
   },

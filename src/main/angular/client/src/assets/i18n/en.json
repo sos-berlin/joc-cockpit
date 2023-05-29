@@ -2161,7 +2161,7 @@
     "message.browseDoesnotSupportWebAuthn": "Your browser doesn't support WebAuthn.",
     "message.updateToModernBrowser": "We recommend updating to a modern browser that supports WebAuthn for the best user experience and increased security.",
     "message.tokenExpired": "The token is expired or broken.",
-    "message.successfullyVerified": "Successfully Verified",
+    "message.successfullyVerified": "Successfully Verified.",
     "message.mailVerifiedMessage": "Your e-mail address has been verified successfully.",
     "message.newFIDOAccountRegistration": "Please start over with a new security key registration."
   },

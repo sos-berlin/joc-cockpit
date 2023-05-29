@@ -2161,7 +2161,7 @@
     "message.browseDoesnotSupportWebAuthn": "Ihr Browser unterstützt WebAuthn nich.t",
     "message.updateToModernBrowser": "Wir empfehlen, auf einen modernen Browser zu aktualisieren, der WebAuthn unterstützt, um ein optimales Benutzererlebnis und erhöhte Sicherheit zu gewährleisten.",
     "message.tokenExpired": "Das Token ist abgelaufen oder defekt.",
-    "message.successfullyVerified": "Erfolgreich verifiziert",
+    "message.successfullyVerified": "Erfolgreich verifiziert.",
     "message.mailVerifiedMessage": "Ihre E-Mail Adresse wurde erfolgreich verifiziert.",
     "message.newFIDOAccountRegistration": "Bitte beginnen Sie mit der Registrierung eines neuen Sicherheitsschlüssels."
   },
