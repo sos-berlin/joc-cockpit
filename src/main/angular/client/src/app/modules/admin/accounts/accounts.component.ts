@@ -986,11 +986,11 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
   }
 
-  /* ----------------------FIDO2--------------------- */
+  /* ----------------------FIDO--------------------- */
   addDevice(account): void {
     this.coreService.post('configuration', {
       id: 0,
-      objectType: 'FIDO2',
+      objectType: this.identityServiceType,
       configurationType: 'IAM',
       name: this.identityServiceName
     }).subscribe((res) => {
@@ -1010,11 +1010,12 @@ export class AccountsComponent implements OnInit, OnDestroy {
     navigator.credentials.create({
       publicKey: publicKeyCredentialCreationOptions
     }).then((credential: any) => {
-      const publicKey = this.authService.getPublicKey(credential.response.attestationObject);
+      const {jwk, publicKey} = this.authService.getPublicKey(credential.response.attestationObject);
       this.coreService.post('iam/fido2/add_device', {
         identityServiceName: this.identityServiceName,
         accountName: account.accountName,
         publicKey: publicKey,
+        jwk: jwk,
         credentialId: this.authService.bufferToBase64Url(credential.rawId)
       }).subscribe();
     });

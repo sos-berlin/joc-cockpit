@@ -578,6 +578,7 @@
                                 [nzShowSearch]="true"
                                 (keyup)="onKeySearch($event)"
                                 [nzNodes]="boardTree"
+                                [nzHideUnMatched]="false"
                                 [nzDropdownStyle]="{ 'max-height': '300px' }"
                                 [nzAllowClear]="false" [(ngModel)]="selectedNode.obj.noticeBoardNames"
                                 (nzExpandChange)="onExpand($event, 'NOTICEBOARD')">

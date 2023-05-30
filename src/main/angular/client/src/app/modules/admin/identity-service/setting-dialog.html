@@ -843,8 +843,8 @@
         </div>
       </div>
     </div>
-    <!------------------------------------BEGIN FIDO2-------------------------------------------->
-    <div *ngIf="data && data.identityServiceType.match('FIDO2')">
+    <!------------------------------------BEGIN FIDO-------------------------------------------->
+    <div *ngIf="data && data.identityServiceType.match('FIDO')">
       <div class="form-group row">
         <label class="col-sm-4 form-control-label"
                [nz-tooltip]="'user.tooltips.webauthn.iamAttestation' | translate" [nzTooltipMouseEnterDelay]="0.5"

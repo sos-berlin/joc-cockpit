@@ -202,6 +202,8 @@ export class LoginComponent implements OnInit {
 
   register() {
     this.submitted1 = true;
+    this.errorMsg = false;
+    this.errorMsgText = '';
     this.coreService.post('iam/fido2registration/request_registration_start', {
       identityServiceName: this.identityServiceName,
       accountName: this.user.userName,
@@ -231,12 +233,13 @@ export class LoginComponent implements OnInit {
       publicKey: publicKeyCredentialCreationOptions
     }).then((credential: any) => {
 
-      const publicKey = this.authService.getPublicKey(credential.response.attestationObject);
+      const {jwk, publicKey} = this.authService.getPublicKey(credential.response.attestationObject);
       this.coreService.post('iam/fido2registration/request_registration', {
         identityServiceName: this.identityServiceName,
         accountName: this.user.userName,
         email: this.user.email,
         publicKey: publicKey,
+        jwk: jwk,
         clientDataJSON: this.authService.bufferToBase64Url(credential.response.clientDataJSON),
         credentialId: this.authService.bufferToBase64Url(credential.rawId)
       }).subscribe({
@@ -286,6 +289,7 @@ export class LoginComponent implements OnInit {
   }
 
   signIn(): void {
+    this.errorMsg = false;
     this.errorMsgText = '';
     this.coreService.post('iam/fido2/request_authentication', {
       identityServiceName: this.identityServiceName,
@@ -341,7 +345,7 @@ export class LoginComponent implements OnInit {
       'X-IDENTITY-SERVICE': this.identityServiceName,
       'Authorization': 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(this.user.userName)))
     });
-    this.coreService.log('authentication/login', {fido2: true}, {headers}).subscribe({
+    this.coreService.log('authentication/login', {fido: true}, {headers}).subscribe({
       next: (data) => {
         this.authService.setUser(data);
         this.authService.save();

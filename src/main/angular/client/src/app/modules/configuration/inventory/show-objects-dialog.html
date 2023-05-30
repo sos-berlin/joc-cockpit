@@ -16,7 +16,7 @@
       [nzHeader]="panel.name | translate"
       [nzActive]="panel.active"
     >
-      <div class="table-responsive" *ngIf="panel.data.length > 0">
+      <div class="table-responsive m-t-sm" *ngIf="panel.data.length > 0">
         <table class="table table-hover">
           <thead>
           <tr>
@@ -45,9 +45,9 @@
             </td>
             <td>
               <span class="show-in-single-line">
-                <i (click)="coreService.navToInventoryTab(item.path, item.objectType);$event.stopPropagation();"
+                <i (click)="navToObject(item);$event.stopPropagation();"
                    class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                <span> {{data.path.substring(0, item.path.lastIndexOf('/')) || '/'}}</span>
+                <span> {{item.path.substring(0, item.path.lastIndexOf('/')) || '/'}}</span>
               </span>
             </td>
             <td>
