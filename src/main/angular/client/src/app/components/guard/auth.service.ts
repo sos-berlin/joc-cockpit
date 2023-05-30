@@ -257,13 +257,25 @@ export class AuthService {
     let publicKeyJwk = COSEtoJWK(publicKeyObject);
     
 
-    function convertToPEM(curve, x, y) {
+    function convertEcToPEM(curve, x, y) {
       // Create a JWK (JSON Web Key) object from the public key components
       const jwk = {
         crv: curve,
         kty: 'EC',
         x: base64urlEncode(x),
         y: base64urlEncode(y)
+      };
+
+      // Convert the JWK to PEM format
+      return jwkToPem(jwk);
+    }
+
+    function convertRsaToPEM(x, y) {
+      // Create a JWK (JSON Web Key) object from the public key components
+      const jwk = {
+        kty: 'RSA',
+        n: base64urlEncode(x),
+        e: base64urlEncode(y)
       };
 
       // Convert the JWK to PEM format
@@ -278,7 +290,6 @@ export class AuthService {
 
     // Function to convert COSE format to JWK format
     function COSEtoJWK(parsedCoseKey) {
-
       const COSE_ALGORITHM_LABEL = 3;
 
       // Extract the values from the COSE public key
@@ -286,11 +297,11 @@ export class AuthService {
 
       // Set the specific key parameters based on the algorithm and public key values
       if (algorithm === -7) {
-        return convertToPEM('P-256', parsedCoseKey[-2], parsedCoseKey[-3]);
+        return convertEcToPEM('P-256', parsedCoseKey[-2], parsedCoseKey[-3]);
         // ECDSA algorithm
       } else if (algorithm === -257) {
         // RSASSA-PKCS1-v1_5 algorithm
-        return convertToPEM('P-256', parsedCoseKey[-2], parsedCoseKey[-3]);
+        return convertRsaToPEM(parsedCoseKey[-1], parsedCoseKey[-2]);
       }
     }
 
