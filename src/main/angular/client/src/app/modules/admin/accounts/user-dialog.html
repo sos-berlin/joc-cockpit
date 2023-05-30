@@ -25,7 +25,7 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <input [readOnly]="identityServiceType == 'FIDO2'" type="text" class="form-control" name="name" [(ngModel)]="currentUser.accountName" required
+        <input [readOnly]="identityServiceType.match('FIDO')" type="text" class="form-control" name="name" [(ngModel)]="currentUser.accountName" required
                #account="ngModel" [appAutofocus]="true" autocomplete="off"
                (blur)="checkUser(account.value, currentUser.userName)"/>
 

@@ -2882,7 +2882,7 @@
     "label.body" : "Body",
     "label.sendMailToConfirmEmail" : "Send Mail to confirm e-mail address",
     "label.sendMailToNotifyRegistrationEmail" : "Send Mail to notify successful registration",
-    "label.listOfFido2" : "Services d'Identité basés sur FIDO2",
+    "label.listOfFido2" : "Services d'Identité basés sur FIDO",
     "label.listOfCert" : "Services d'Identité basés sur des certificats",
     "label.group": "Groupe",
     "label.general": "Généralités",

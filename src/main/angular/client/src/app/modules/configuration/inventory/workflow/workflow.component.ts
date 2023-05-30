@@ -2530,8 +2530,12 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
               const dom = $('#show-tree-editor');
               const editorWidth = $('#resizable').width();
               let left = ((cursor.ch * 7) + 40);
-              if ((editorWidth - left) < 145) {
-                left = editorWidth - 150;
+
+              if ((editorWidth - left) < 200) {
+                left = editorWidth - 200;
+              }
+              if (editorWidth < 200) {
+                left = 0;
               }
               dom?.css({
                 'opacity': '1',
@@ -2847,6 +2851,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   forkListAgentAssignment = '';
   stickySubagentAgentAssignment = '';
   selectedCellId = '';
+  searchToken = '';
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -3787,8 +3792,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     });
   }
 
-  onKeySearch($event): void{
-    console.log($event.target.value);
+  onKeySearch($event): void {
     this.searchTerm.next($event.target.value);
   }
 
@@ -3800,9 +3804,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           search: value,
           returnTypes: ['NOTICEBOARD']
         };
-        // if (this.obj.token) {
-        //   request.token = this.obj.token;
-        // }
+        if (this.searchToken) {
+          request.token = this.searchToken;
+        }
         this.coreService.post('inventory/quick/search', request).subscribe({
           next: (res: any) => {
            // this.obj.token = res.token;
@@ -3822,7 +3826,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (!node || !node.origin) {
       return;
     }
-    if (!node.origin.type) {
+    if (!node.origin.type && !node.origin.objectType) {
       if ($event) {
         node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
@@ -3900,13 +3904,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             this.getWorkflow(true);
           }
         }
-      } else if (type === 'PostNotices') {
+      } else if (type === InventoryObject.NOTICEBOARD) {
         if (node.key && !node.key.match('/')) {
           if (this.selectedNode.obj.noticeBoardNames.indexOf(node.key) === -1) {
             this.selectedNode.obj.noticeBoardNames.push(node.key);
           }
         }
       }
+      this.ref.detectChanges();
     }
   }
 
@@ -8831,13 +8836,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   const dom = $('#show-tree');
                   const editorWidth = $('#boardId').width();
                   let left = ((cursor.ch * 7) + 12);
-                  if ((editorWidth - left) < 145) {
-                    left = editorWidth - 145;
+                  if ((editorWidth - left) < 200) {
+                    left = editorWidth - 200;
                   }
-                  if(editorWidth < 200){
+                  if (editorWidth < 200) {
                     left = 0;
                   }
-                 
                   dom?.css({
                     'opacity': '1',
                     'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
@@ -9010,9 +9014,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         const targetObj = targetObject.instructions[targetIndex];
         if (target.value.tagName === 'If') {
           if (!targetObj.then) {
-            targetObj.then = { instructions: copyObject };
+            targetObj.then = {instructions: copyObject};
           } else if (!targetObj.else) {
-            targetObj.else = { instructions: copyObject };
+            targetObj.else = {instructions: copyObject};
           }
         } else if (target.value.tagName === 'Fork') {
           let branchId;

@@ -260,7 +260,7 @@ export class SettingModalComponent implements OnInit {
         const data = JSON.parse(res.configuration.configurationItem);
         if (this.data) {
           if (data) {
-            this.currentObj = data.vault || data.keycloak || data.oidc || data.fido2 || {};
+            this.currentObj = data.vault || data.keycloak || data.oidc || data.fido2 || data.fido || {};
             if (data.ldap || (res.configuration.objectType && res.configuration.objectType.match(/LDAP/))) {
               if (data.ldap && data.ldap.simple) {
                 this.userObj = data.ldap.simple;
@@ -294,7 +294,7 @@ export class SettingModalComponent implements OnInit {
             this.currentObj.sessionTimeout = SettingModalComponent.convertDurationToString(data.sessionTimeout);
           }
         }
-        if (this.data.identityServiceType == 'FIDO2') {
+        if (this.data.identityServiceType.match('FIDO')) {
           if (!this.currentObj.iamFido2EmailSettings) {
             this.currentObj.iamFido2EmailSettings = {};
           }
@@ -587,7 +587,7 @@ export class SettingModalComponent implements OnInit {
         obj.ldap = {expert: this.coreService.clone(this.currentObj), simple: this.userObj};
       } else if (this.data.identityServiceType.match('OIDC')) {
         obj.oidc = this.currentObj;
-      } else if (this.data.identityServiceType.match('FIDO2')) {
+      } else if (this.data.identityServiceType.match('FIDO')) {
         obj.fido2 = this.currentObj;
       }
     } else {
@@ -738,7 +738,7 @@ export class IdentityServiceModalComponent implements OnInit {
       if (res.configuration.configurationItem) {
         const data = JSON.parse(res.configuration.configurationItem);
         if (data) {
-          if (data.vault || data.ldap || data.keycloak || data.oidc || data.fido2) {
+          if (data.vault || data.ldap || data.keycloak || data.oidc || data.fido2 || data.fido) {
             this.removeSettingId = res.configuration.id;
             this.settingObj = res.configuration.configurationItem;
           }

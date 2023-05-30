@@ -2882,7 +2882,7 @@
     "label.body" : "Body",
     "label.sendMailToConfirmEmail" : "Send Mail to confirm e-mail address",
     "label.sendMailToNotifyRegistrationEmail" : "Send Mail to notify successful registration",
-    "label.listOfFido2" : "List Of Fido2",
+    "label.listOfFido2" : "List Of Fido",
     "label.listOfCert" : "List Of Certificate",
     "label.group": "グループ",
     "label.general": "共通",

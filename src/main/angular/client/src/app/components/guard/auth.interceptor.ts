@@ -35,12 +35,13 @@ export class AuthInterceptor implements HttpInterceptor {
             const headers = new HttpHeaders(headerOptions);
 
             req = req.clone({ headers });
-          } else if(!user.fido2){
-
+          } else if(!user.fido){
             req = req.clone({
               headers: req.headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((user.userName || '') + ':' + (user.password || ''))))),
               body: {}
             });
+          } else{
+            delete user.fido;
           }
         } else if (this.authService.accessTokenId) {
           req = req.clone({

@@ -254,12 +254,12 @@ export class AuthService {
     const publicKeyObject = window['CBOR'].decode(
       publicKeyBytes.buffer);
 
-    let publicKeyJwk = COSEtoJWK(publicKeyObject);
-    
 
+    let jwk = {};
+    let publicKeyJwk = COSEtoJWK(publicKeyObject);
     function convertEcToPEM(curve, x, y) {
       // Create a JWK (JSON Web Key) object from the public key components
-      const jwk = {
+      jwk = {
         crv: curve,
         kty: 'EC',
         x: base64urlEncode(x),
@@ -272,7 +272,7 @@ export class AuthService {
 
     function convertRsaToPEM(x, y) {
       // Create a JWK (JSON Web Key) object from the public key components
-      const jwk = {
+      jwk = {
         kty: 'RSA',
         n: base64urlEncode(x),
         e: base64urlEncode(y)
@@ -305,6 +305,6 @@ export class AuthService {
       }
     }
 
-    return publicKeyJwk; // The extracted public key in JWK format
+    return {publicKey: publicKeyJwk, jwk}; // The extracted public key in JWK format
   }
 }
