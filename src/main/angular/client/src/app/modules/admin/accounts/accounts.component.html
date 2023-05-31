@@ -30,7 +30,7 @@
             <i *ngIf="usr.sortBy == 'accountName' && usr.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
-        <th *ngIf="identityServiceType.match('FIDO')" (click)="sort('email')">
+        <th *ngIf="identityServiceType == 'FIDO'" (click)="sort('email')">
           <a><span class="p-r-xs" translate>user.label.email</span>
             <i *ngIf="usr.sortBy == 'email' && !usr.reverse"
                class="fa fa-caret-up "></i>
@@ -78,14 +78,14 @@
                 <li nz-menu-item (click)="editUser(account)">
                   <a translate>common.button.edit</a>
                 </li>
-                <li *ngIf="identityServiceType.match('FIDO')" nz-menu-divider></li>
-                <li nz-menu-item  *ngIf="identityServiceType.match('FIDO')" (click)="addDevice(account)">
+                <li *ngIf="identityServiceType == 'FIDO'" nz-menu-divider></li>
+                <li nz-menu-item  *ngIf="identityServiceType == 'FIDO'" (click)="addDevice(account)">
                   <a translate>user.button.addAuthenticatorDevice</a>
                 </li>
-                <li nz-menu-item  *ngIf="identityServiceType.match('FIDO')" (click)="removeDevice(account)">
+                <li nz-menu-item  *ngIf="identityServiceType == 'FIDO'" (click)="removeDevice(account)">
                   <a translate>user.button.removeDevices</a>
                 </li>
-                <li nz-menu-item  *ngIf="!identityServiceType.match('FIDO')" (click)="copyUser(account)">
+                <li nz-menu-item  *ngIf="identityServiceType !== 'FIDO'" (click)="copyUser(account)">
                   <a translate>common.button.duplicate</a>
                 </li>
                 <li *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')" nz-menu-item (click)="resetPassword(account)">
@@ -122,7 +122,7 @@
         <td>
           <a (click)="editUser(account)" class="text-hover-primary" [innerHtml]="account.accountName  | decodeSpace | highlight: searchKey"></a>
         </td>
-        <td *ngIf="identityServiceType.match('FIDO')">{{account.email}}</td>
+        <td *ngIf="identityServiceType == 'FIDO'">{{account.email}}</td>
         <td>
           <div *ngFor="let role of account.roles"><span [innerHtml]= "role | highlight: searchKey"></span></div>
         </td>
