@@ -3,6 +3,8 @@ import {
   HostListener, OnChanges, SimpleChanges, AfterViewInit
 } from '@angular/core';
 import {CoreService} from '../../services/core.service';
+import {Subject} from "rxjs";
+import {debounceTime} from "rxjs/operators";
 
 declare const $: any;
 
@@ -14,11 +16,23 @@ export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
   preferences: any;
   @Input() tree;
   @Input() sideView;
+  @Input() type: string;
+  @Input() schedulerId: string;
   @Input() defaultExpandedKeys;
   @Input() defaultSelectedKeys;
   @Input() isAction: boolean;
   @Output() messageEvent = new EventEmitter<string>();
   @Output() actionEvent = new EventEmitter<any>();
+  @Output() selectObjectEvent = new EventEmitter<any>();
+
+  allObjects = [];
+  searchNode = {
+    loading: false,
+    token: '',
+    text: ''
+  }
+
+  private searchTerm = new Subject<string>();
 
   constructor(public coreService: CoreService) {
   }
@@ -66,6 +80,12 @@ export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
     if (this.sideView && !this.sideView.show) {
       this.hidePanel();
     }
+
+    //200ms Delay in search
+    this.searchTerm.pipe(debounceTime(200))
+      .subscribe((searchValue: string) => {
+        this.searchObjects(searchValue);
+      });
   }
 
   ngAfterViewInit(): void {
@@ -177,5 +197,65 @@ export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
   showPanel(): void {
     this.sideView.show = true;
     this.coreService.showLeftPanel();
+  }
+
+  objectTreeSearch() {
+    $('#objectTreeSearch').focus();
+    if (this.type == 'WORKFLOW') {
+      $('.editor-tree  a').addClass('hide-on-focus');
+    } else {
+      $('.resource  a').addClass('hide-on-focus');
+    }
+  }
+
+  clearSearchInput(): void {
+    this.allObjects = [];
+    this.searchNode.text = '';
+    if (this.type == 'WORKFLOW') {
+      $('.editor-tree  a').removeClass('hide-on-focus');
+    } else {
+      $('.resource  a').removeClass('hide-on-focus');
+    }
+  }
+
+  onSearchInput(searchValue: string) {
+    this.searchTerm.next(searchValue);
+  }
+
+  private searchObjects(value: string) {
+    if (value !== '') {
+      const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
+      if (searchValueWithoutSpecialChars.length >= 2) {
+        this.searchNode.loading = true;
+        let request: any = {
+          search: value,
+          controllerId: this.schedulerId
+        };
+        if (this.searchNode.token) {
+          request.token = this.searchNode.token;
+        }
+        if (this.type != 'WORKFLOW') {
+          request.returnTypes = [this.type]
+        }
+        this.coreService.post(this.type != 'WORKFLOW' ? 'inventory/quick/search' : 'workflows/quick/search', request).subscribe({
+          next: (res: any) => {
+            this.allObjects = res.results;
+            this.searchNode.token = res.token;
+            this.searchNode.loading = false;
+          }, error: () => this.searchNode.loading = true
+        });
+      }
+    } else {
+      this.allObjects = [];
+    }
+  }
+
+  selectObject(item): void {
+    this.selectObjectEvent.emit(item);
+    setTimeout(() => {
+      this.allObjects = [];
+      this.searchNode.text = '';
+      $('#objectTreeSearch').blur();
+    }, 0);
   }
 }

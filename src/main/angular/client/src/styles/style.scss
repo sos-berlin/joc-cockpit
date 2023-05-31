@@ -9103,7 +9103,7 @@ cdk-virtual-scroll-viewport {
   visibility: hidden;
 }
 
-.workflow-search {
+.tree-search {
   padding: 4px 6px;
   border-radius: 50%;
   background: var(--menu-hover);
@@ -9123,7 +9123,7 @@ cdk-virtual-scroll-viewport {
 
 }
 
-#workflowTreeSearch, #lockTreeSearch, #boardTreeSearch {
+#objectTreeSearch {
   width: 10px;
   transition: all .5s ease-in-out;
   position: absolute;

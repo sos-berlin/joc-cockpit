@@ -5,7 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
 import {isEmpty, clone} from 'underscore';
-import {debounceTime, takeUntil} from 'rxjs/operators';
+import {takeUntil} from 'rxjs/operators';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {WorkflowActionComponent} from './workflow-action/workflow-action.component';
@@ -495,12 +495,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     isSuspend: false,
     isResume: false,
   };
-  searchNode = {
-    loading: false,
-    token: '',
-    text: ''
-  }
-  allObjects: any = [];
+
   subscription1: Subscription;
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
@@ -525,8 +520,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     {date: '2d', text: 'nextDay'},
     {date: '7d', text: 'nextWeak'}
   ];
-
-  private searchTerm = new Subject<string>();
 
   @ViewChild(TreeComponent, {static: false}) child;
   @ViewChild(WorkflowActionComponent, {static: false}) actionChild;
@@ -624,46 +617,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     return expandedPos;
   }
 
-  workflowTreeSearch() {
-    $('#workflowTreeSearch').focus();
-    $('.editor-tree  a').addClass('hide-on-focus');
-  }
-
-  clearSearchInput(): void {
-    this.allObjects = [];
-    this.searchNode.text = '';
-    $('.editor-tree  a').removeClass('hide-on-focus');
-  }
-
-  onSearchInput(searchValue: string) {
-    this.searchTerm.next(searchValue);
-  }
-
-  private searchObjects(value: string) {
-    if (value !== '') {
-      const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
-      if (searchValueWithoutSpecialChars.length >= 2) {
-        this.searchNode.loading = true;
-        let request: any = {
-          search: value,
-          controllerId: this.schedulerIds.selected
-        };
-        if (this.searchNode.token) {
-          request.token = this.searchNode.token;
-        }
-        this.coreService.post('workflows/quick/search', request).subscribe({
-          next: (res: any) => {
-            this.allObjects = res.results;
-            this.searchNode.token = res.token;
-            this.searchNode.loading = false;
-          }, error: () => this.searchNode.loading = true
-        });
-      }
-    } else {
-      this.allObjects = [];
-    }
-  }
-
   selectObject(item): void {
     let flag = true;
     const PATH = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
@@ -687,13 +640,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if(!selectedCheck){
       this.loadWorkflow(null, true);
     }
-
-    setTimeout(() => {
-      this.allObjects = [];
-      this.searchNode.text = '';
-      $('#workflowTreeSearch').blur();
-      //$('.editor-tree > a').removeClass('hide-on-focus');
-    }, 0);
   }
 
   scrollEnd(e): void {
@@ -795,11 +741,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.savedFilter.selected = undefined;
       this.initTree();
     }
-    //200ms Delay in search
-    this.searchTerm.pipe(debounceTime(200))
-      .subscribe((searchValue: string) => {
-        this.searchObjects(searchValue);
-      });
   }
 
   private initTree(reload = false): void {

@@ -899,7 +899,7 @@
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2ResidentKey
         </label>
         <div class="col-sm-6">
-          <nz-select name="iamFido2ResidentKey" [(ngModel)]="currentObj.iamFido2ResidentKey">
+          <nz-select name="iamFido2ResidentKey" [(ngModel)]="currentObj.residentKey">
             <nz-option *ngFor="let option of iamFido2UserVerification"
                        [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
           </nz-select>
@@ -1029,67 +1029,8 @@
               <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.sendMailToConfirmEmail' | translate"
                      [nzTooltipMouseEnterDelay]="0.5" translate>user.label.sendMailToConfirmEmail</label>
               <div class="col-sm-6">
-                <label nz-checkbox [(ngModel)]="currentObj.iamFido2EmailSettings.sendMailToConfirmEmail"
+                <label nz-checkbox [(ngModel)]="currentObj.iamFido2EmailSettings.sendMailToConfirm"
                        name="sendMailToConfirmEmail"></label>
-              </div>
-            </div>
-            <div class="form-group row" >
-              <label class="col-sm-4 form-control-label"
-                     [nz-tooltip]="'user.tooltips.webauthn.subject' | translate" [nzTooltipMouseEnterDelay]="0.5"
-                     translate>user.label.subject
-                <sup class="text-danger text-sm">*</sup>
-              </label>
-              <div class="col-sm-6"
-                   [ngClass]="{'has-error' : ((subject.dirty || subject.touched) && subject.invalid)}">
-                <input type="text" class="form-control" #subject="ngModel" name="subject"
-                       [placeholder]="'user.placeholder.subject' | translate"
-                       [(ngModel)]="currentObj.iamFido2EmailSettings.subjectAccess" autocomplete="off">
-                <div *ngIf="subject.invalid && (subject.dirty || subject.touched)"
-                     class="text-danger help-block">
-                  <div *ngIf="subject.errors.required">
-                    <div translate>common.message.requiredError</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-sm-4 form-control-label"
-                     [nz-tooltip]="'user.tooltips.webauthn.body' | translate" [nzTooltipMouseEnterDelay]="0.5"
-                     translate>user.label.body
-                <sup class="text-danger text-sm">*</sup>
-              </label>
-              <div class="col-sm-6" [ngClass]="{'has-error' : ((body.dirty || body.touched) && body.invalid)}">
-                <a class="btn btn-xs btn-default" style="box-shadow: none !important;" [ngClass]="{'text-primary': preview !== true}" (click)="preview = false;" translate>xml.button.sourceCode</a>
-                <a class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" [ngClass]="{'text-primary': preview === true}" (click)="preview = true;" translate>xml.button.preview</a>
-                <textarea class="form-control" nz-input [hidden]="preview"
-                          [placeholder]="'user.placeholder.body' | translate"
-                          [(ngModel)]="currentObj.iamFido2EmailSettings.bodyAccess"
-                          [nzAutosize]="{ minRows: 5, maxRows:10}"
-                          #body="ngModel"
-                          name="body"
-                          required
-                ></textarea>
-                <div class="b-a" style="min-height: 104px;max-height: 450px;overflow: auto" *ngIf="preview">
-                  <pre class="mail-template" [innerHTML]="currentObj.iamFido2EmailSettings.bodyAccess | safeHtml"></pre>
-                </div>
-                <div *ngIf="body.invalid && (body.dirty || body.touched)"
-                     class="text-danger help-block">
-                  <div *ngIf="body.errors.required">
-                    <div translate>common.message.requiredError</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </nz-tab>
-        <nz-tab [nzTitle]="'user.label.notificationEmail' | translate">
-          <div *ngIf="currentObj.iamFido2EmailSettings">
-            <div class="form-group row">
-              <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyRegistrationEmail' | translate"
-                     [nzTooltipMouseEnterDelay]="0.5" translate>user.label.sendMailToNotifyRegistrationEmail</label>
-              <div class="col-sm-6">
-                <label nz-checkbox [(ngModel)]="currentObj.iamFido2EmailSettings.sendMailToNotifyRegistrationEmail"
-                       name="sendMailToNotifyRegistrationEmail"></label>
               </div>
             </div>
             <div class="form-group row" >
@@ -1134,6 +1075,65 @@
                 <div *ngIf="bodyRegistration.invalid && (bodyRegistration.dirty || bodyRegistration.touched)"
                      class="text-danger help-block">
                   <div *ngIf="bodyRegistration.errors.required">
+                    <div translate>common.message.requiredError</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nz-tab>
+        <nz-tab [nzTitle]="'user.label.notificationEmail' | translate">
+          <div *ngIf="currentObj.iamFido2EmailSettings">
+            <div class="form-group row">
+              <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyRegistrationEmail' | translate"
+                     [nzTooltipMouseEnterDelay]="0.5" translate>user.label.sendMailToNotifyRegistrationEmail</label>
+              <div class="col-sm-6">
+                <label nz-checkbox [(ngModel)]="currentObj.iamFido2EmailSettings.sendMailToNotifySuccessfulRegistration"
+                       name="sendMailToNotifyRegistrationEmail"></label>
+              </div>
+            </div>
+            <div class="form-group row" >
+              <label class="col-sm-4 form-control-label"
+                     [nz-tooltip]="'user.tooltips.webauthn.subject' | translate" [nzTooltipMouseEnterDelay]="0.5"
+                     translate>user.label.subject
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-sm-6"
+                   [ngClass]="{'has-error' : ((subject.dirty || subject.touched) && subject.invalid)}">
+                <input type="text" class="form-control" #subject="ngModel" name="subject"
+                       [placeholder]="'user.placeholder.subject' | translate"
+                       [(ngModel)]="currentObj.iamFido2EmailSettings.subjectAccess" autocomplete="off">
+                <div *ngIf="subject.invalid && (subject.dirty || subject.touched)"
+                     class="text-danger help-block">
+                  <div *ngIf="subject.errors.required">
+                    <div translate>common.message.requiredError</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-4 form-control-label"
+                     [nz-tooltip]="'user.tooltips.webauthn.body' | translate" [nzTooltipMouseEnterDelay]="0.5"
+                     translate>user.label.body
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-sm-6" [ngClass]="{'has-error' : ((body.dirty || body.touched) && body.invalid)}">
+                <a class="btn btn-xs btn-default" style="box-shadow: none !important;" [ngClass]="{'text-primary': preview !== true}" (click)="preview = false;" translate>xml.button.sourceCode</a>
+                <a class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" [ngClass]="{'text-primary': preview === true}" (click)="preview = true;" translate>xml.button.preview</a>
+                <textarea class="form-control" nz-input [hidden]="preview"
+                          [placeholder]="'user.placeholder.body' | translate"
+                          [(ngModel)]="currentObj.iamFido2EmailSettings.bodyAccess"
+                          [nzAutosize]="{ minRows: 5, maxRows:10}"
+                          #body="ngModel"
+                          name="body"
+                          required
+                ></textarea>
+                <div class="b-a" style="min-height: 104px;max-height: 450px;overflow: auto" *ngIf="preview">
+                  <pre class="mail-template" [innerHTML]="currentObj.iamFido2EmailSettings.bodyAccess | safeHtml"></pre>
+                </div>
+                <div *ngIf="body.invalid && (body.dirty || body.touched)"
+                     class="text-danger help-block">
+                  <div *ngIf="body.errors.required">
                     <div translate>common.message.requiredError</div>
                   </div>
                 </div>

@@ -328,7 +328,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadBoards(): void {
+  loadBoards(skipChild = false): void {
     this.reloadState = 'no';
     const obj = {
       folders: [],
@@ -337,7 +337,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.boards = [];
     this.loading = true;
     let paths = [];
-    if (this.child) {
+    if (this.child && !skipChild) {
       paths = this.child.defaultSelectedKeys;
     } else {
       paths = this.boardsFilters.selectedkeys;
@@ -364,6 +364,23 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   /* ---------------------------- Action ----------------------------------*/
+
+  selectObject(item): void {
+    let flag = true;
+    const PATH = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
+    for (let i in this.boardsFilters.expandedKeys) {
+      if (PATH == this.boardsFilters.expandedKeys[i]) {
+        flag = false;
+        break;
+      }
+    }
+    if (flag) {
+      this.boardsFilters.expandedKeys.push(PATH);
+    }
+    this.boardsFilters.selectedkeys = [PATH];
+    this.boardsFilters.expandedObjects = [item.path];
+    this.loadBoards(true);
+  }
 
   pageIndexChange($event): void {
     this.boardsFilters.currentPage = $event;
