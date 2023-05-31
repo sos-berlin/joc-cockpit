@@ -150,6 +150,7 @@ export class SettingModalComponent implements OnInit {
   imageUploader: FileUploader;
   imageUrl: string;
   preview: boolean;
+  previewRegistration: boolean;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private authService: AuthService,
               private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService, private dataService: DataService) {
@@ -247,7 +248,7 @@ export class SettingModalComponent implements OnInit {
       this.getImage();
     }
 
-    this.coreService.post('configuration', {
+    this.coreService.post(this.data.identityServiceType == 'FIDO' ? 'iam/fido2/configuration' : 'configuration', {
       id: 0,
       objectType: this.data ? this.data.identityServiceType : 'GENERAL',
       configurationType: 'IAM',
@@ -294,9 +295,12 @@ export class SettingModalComponent implements OnInit {
             this.currentObj.sessionTimeout = SettingModalComponent.convertDurationToString(data.sessionTimeout);
           }
         }
-        if (this.data.identityServiceType.match('FIDO')) {
+        if (this.data.identityServiceType == 'FIDO') {
           if (!this.currentObj.iamFido2EmailSettings) {
             this.currentObj.iamFido2EmailSettings = {};
+          }
+          if(!this.currentObj.iamFido2EmailSettings.priority){
+            this.currentObj.iamFido2EmailSettings.priority = 'normal';
           }
           this.getJobResources(this.currentObj.iamFido2EmailSettings.nameOfJobResource);
         }
@@ -683,7 +687,7 @@ export class IdentityServiceModalComponent implements OnInit {
   }
 
   private getFido2List(): void {
-    this.coreService.post('iam/identityservices', {"identityServiceType": "FIDO2", "secondFactor": true}).subscribe({
+    this.coreService.post('iam/identityservices', {"identityServiceType": "FIDO", "secondFactor": true}).subscribe({
       next: (res) => {
         this.fido2List = res.identityServiceItems;
       }

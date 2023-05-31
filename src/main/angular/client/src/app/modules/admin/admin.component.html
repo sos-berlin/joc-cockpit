@@ -53,7 +53,7 @@
                 <i class="fa fa-download"></i>&nbsp;
                 <span translate>inventory.button.export</span>
               </button>
-              <button *ngIf="!isSelected && ((route.match('/users/identity_service/account') && !identityServiceType.match('FIDO')) || route.match('/users/identity_service/role'))" class="btn btn-sm btn-grey m-l-12" (click)="importObject()">
+              <button *ngIf="!isSelected && ((route.match('/users/identity_service/account') && identityServiceType !== 'FIDO') || route.match('/users/identity_service/role'))" class="btn btn-sm btn-grey m-l-12" (click)="importObject()">
                 <i class="fa fa-upload"></i>&nbsp;
                 <span translate>inventory.button.import</span>
               </button>
@@ -81,7 +81,7 @@
                 <i class="fa fa-paste"></i>&nbsp;
                 <span translate>common.button.paste</span>
               </button>
-              <button *ngIf="!isSelected && route.match('/users/identity_service/account') && !identityServiceType.match('FIDO')" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
+              <button *ngIf="!isSelected && route.match('/users/identity_service/account') && identityServiceType !== 'FIDO'" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
                 <i class="fa fa-plus"></i>&nbsp;
                 <span translate>user.button.addUser</span>
               </button>
@@ -189,7 +189,7 @@
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.profiles</span></span>
             </a>
           </li>
-          <ng-container *ngIf="identityServiceType.match('FIDO')">
+          <ng-container *ngIf="identityServiceType == 'FIDO'">
           <li class="nav-item dropdown-separator">
             <span class="separator"></span>
           </li>
