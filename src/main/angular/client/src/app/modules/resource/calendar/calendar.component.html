@@ -97,8 +97,8 @@
       <div class="col-sm-12">
         <div appResizable [sideView]="sideView.calendar" id="leftPanel" class="sticky leftPanel resource">
           <div *ngIf="tree.length>0">
-            <app-tree-navigation [tree]="tree" [sideView]="sideView.calendar" [defaultSelectedKeys]="calendarFilters.selectedkeys" [defaultExpandedKeys]="calendarFilters.expandedKeys"
-                                 (messageEvent)="receiveAction($event)"></app-tree-navigation>
+            <app-tree-navigation [schedulerId]="schedulerIds.selected" [type]="'CALENDAR'" [tree]="tree" [sideView]="sideView.calendar" [defaultSelectedKeys]="calendarFilters.selectedkeys" [defaultExpandedKeys]="calendarFilters.expandedKeys"
+                                 (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)"></app-tree-navigation>
           </div>
         </div>
         <div id="rightPanel">

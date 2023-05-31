@@ -170,7 +170,7 @@ export class LockComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadLocks(): void {
+  loadLocks(skipChild = false): void {
     this.reloadState = 'no';
     const obj = {
       folders: [],
@@ -179,7 +179,7 @@ export class LockComponent implements OnInit, OnDestroy {
     this.locks = [];
     this.loading = true;
     let paths = [];
-    if (this.child) {
+    if (this.child && !skipChild) {
       paths = this.child.defaultSelectedKeys;
     } else {
       paths = this.locksFilters.selectedkeys;
@@ -206,6 +206,23 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   /* ---------------------------- Action ----------------------------------*/
+
+  selectObject(item): void {
+    let flag = true;
+    const PATH = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
+    for (let i in this.locksFilters.expandedKeys) {
+      if (PATH == this.locksFilters.expandedKeys[i]) {
+        flag = false;
+        break;
+      }
+    }
+    if (flag) {
+      this.locksFilters.expandedKeys.push(PATH);
+    }
+    this.locksFilters.selectedkeys = [PATH];
+    this.locksFilters.expandedObjects = [item.path];
+    this.loadLocks(true);
+  }
 
   pageIndexChange($event): void {
     this.locksFilters.currentPage = $event;

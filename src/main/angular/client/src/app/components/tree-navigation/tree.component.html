@@ -1,3 +1,30 @@
+<a class="tree-search" (click)="objectTreeSearch()">
+  <i nz-icon [nzType]="'search'" nzTheme="outline"></i>
+</a>
+<div>
+  <input id="objectTreeSearch" class="input-tree-search"
+         [placeholder]="'workflow.placeholder.findNode' | translate"
+         nz-input [(ngModel)]="searchNode.text"
+         (blur)="clearSearchInput()"
+         (ngModelChange)="onSearchInput($event)"
+         [nzAutocomplete]="auto"
+  />
+
+  <i class="tree-search-icon" nz-icon [nzType]="searchNode.loading ? 'loading' : 'search'" nzTheme="outline"></i>
+  <nz-autocomplete #auto>
+    <nz-auto-option class="min-ht-opt" *ngFor="let option of allObjects | orderBy: 'name'"
+                    [nzValue]="option.path" (click)="selectObject(option)">
+      <div class="node-wrapper p-l-xs">
+        <div class="node-content-wrapper2"
+             [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+             nzTooltipPlacement="right">
+          <i class="fa fa-circle-o text-xs"></i>
+          <span class="p-l-sm">{{option.name}}</span>
+        </div>
+      </div>
+    </nz-auto-option>
+  </nz-autocomplete>
+</div>
 <div class="pl-20">
 <a class="text" (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate">
   <i class="fa fa-angle-double-down fa-lg"></i>

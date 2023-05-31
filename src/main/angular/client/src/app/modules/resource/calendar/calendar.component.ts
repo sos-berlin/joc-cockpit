@@ -151,7 +151,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadCalendar(status): void {
+  loadCalendar(status, skipChild = false): void {
     this.reloadState = 'no';
     if (status && status !== 'remove') {
       this.calendarFilters.filter.type = status;
@@ -165,7 +165,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.calendars = [];
     this.loading = true;
     let paths = [];
-    if (this.child) {
+    if (this.child && !skipChild) {
       paths = this.child.defaultSelectedKeys;
     } else {
       paths = this.calendarFilters.selectedkeys;
@@ -192,6 +192,23 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   /* ---------------------------- Action ----------------------------------*/
+
+  selectObject(item): void {
+    let flag = true;
+    const PATH = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
+    for (let i in this.calendarFilters.expandedKeys) {
+      if (PATH == this.calendarFilters.expandedKeys[i]) {
+        flag = false;
+        break;
+      }
+    }
+    if (flag) {
+      this.calendarFilters.expandedKeys.push(PATH);
+    }
+    this.calendarFilters.selectedkeys = [PATH];
+    this.loadCalendar(null, true);
+  }
+
   pageIndexChange($event): void {
     this.calendarFilters.currentPage = $event;
   }
@@ -246,7 +263,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
     const PATH = data.path.substring(0, data.path.lastIndexOf('/')) || '/';
     this.calendarFilters.expandedKeys = pathArr;
     this.calendarFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
-    this.calendarFilters.expandedObjects = [data.path];
     const obj = {
       controllerId: this.schedulerIds.selected,
       folders: [{folder: PATH, recursive: false}]
