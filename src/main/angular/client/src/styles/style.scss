@@ -9164,8 +9164,12 @@ cdk-virtual-scroll-viewport {
   padding-bottom: 1px !important;
 }
 
-.mail-template{
-  display: flex;
-  font-size: 13px;
+.mail-template, .mail-template-full{
   max-height: 400px;
+  width: 100%;
+  border: none;
+}
+.mail-template-full{
+  min-height: 100vh;
+  height: 100%;
 }

@@ -222,12 +222,12 @@ export class AuthService {
       ],
       timeout: fido2Properties?.iamFido2Timeout ? fido2Properties?.iamFido2Timeout * 1000 : 60000,
       authenticatorSelection: {
-        residentKey: fido2Properties?.residentKey?.toLowerCase() || 'preferred',
-        requireResidentKey: fido2Properties?.residentKey?.toLowerCase() == 'required',
+        residentKey: fido2Properties?.iamFido2ResidentKey?.toLowerCase() || 'preferred',
+        requireResidentKey: fido2Properties?.iamFido2ResidentKey?.toLowerCase() == 'required',
         userVerification: fido2Properties?.iamFido2UserVerification?.toLowerCase() || 'preferred'
       },
       extensions: {"credProps": true},
-      attestation: fido2Properties?.iamFido2Attestation?.toLowerCase() || 'direct'
+      attestation: 'direct'
     };
   }
 
