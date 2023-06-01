@@ -25,6 +25,7 @@ export class LoginComponent implements OnInit {
   errorMsgText = '';
   identityServiceName = '';
   defaultSetting: any = {};
+  fido2Properties: any = {};
   oidcIdentityServiceItems = [];
   fido2IdentityServiceItems = [];
   showRegister = false;
@@ -283,9 +284,18 @@ export class LoginComponent implements OnInit {
   }
 
   onSign(data) {
-    this.showLogin = true;
     this.identityServiceName = data;
     this.user.userName = '';
+    this.coreService.post('iam/identity_fido2_client', {
+      identityServiceName: this.identityServiceName
+    }).subscribe((res) => {
+      this.fido2Properties = res;
+      if(res.iamFido2ResidentKey === 'REQUIRED' && res.iamFido2UserVerification === 'REQUIRED'){
+        this.signIn();
+      } else{
+        this.showLogin = true;
+      }
+    });
   }
 
   signIn(): void {
@@ -293,7 +303,7 @@ export class LoginComponent implements OnInit {
     this.errorMsgText = '';
     this.coreService.post('iam/fido2/request_authentication', {
       identityServiceName: this.identityServiceName,
-      accountName: this.user.userName,
+      accountName: this.user.userName ? this.user.userName : undefined,
     }).subscribe({
       next: (res) => {
         this.getCredentials(res);
@@ -310,13 +320,13 @@ export class LoginComponent implements OnInit {
 
   private getCredentials(res): void {
     let allowCredentials = [];
-    if(!res.fido2Properties?.iamFido2UserVerification || res.fido2Properties?.iamFido2UserVerification?.toLowerCase() !== 'required') {
+    if(!this.fido2Properties?.iamFido2UserVerification || this.fido2Properties?.iamFido2UserVerification?.toLowerCase() !== 'required') {
       if (res.credentialIds && isArray(res.credentialIds)) {
         res.credentialIds.forEach((item) => {
           allowCredentials.push({
             id: Uint8Array.from(atob((item)), c => c.charCodeAt(0)),
             type: 'public-key',
-            transports: res.fido2Properties?.iamFido2Transports ? (isArray(res.fido2Properties?.iamFido2Transports) ? res.fido2Properties?.iamFido2Transports : [res.fido2Properties?.iamFido2Transports]) : []
+            transports: this.fido2Properties?.iamFido2Transports ? (isArray(this.fido2Properties?.iamFido2Transports) ? this.fido2Properties?.iamFido2Transports : [this.fido2Properties?.iamFido2Transports]) : []
           })
         })
       }
@@ -324,12 +334,12 @@ export class LoginComponent implements OnInit {
     let publicKey: PublicKeyCredentialRequestOptions = {
       challenge: Uint8Array.from(atob(btoa(res.challenge)), c => c.charCodeAt(0)),
       allowCredentials: allowCredentials,
-      timeout: res.fido2Properties?.iamFido2Timeout ? res.fido2Properties?.iamFido2Timeout * 1000 : 60000,
-      userVerification: res.fido2Properties?.iamFido2UserVerification?.toLowerCase() || "preferred"
+      timeout: this.fido2Properties?.iamFido2Timeout ? this.fido2Properties?.iamFido2Timeout * 1000 : 60000,
+      userVerification: this.fido2Properties?.iamFido2UserVerification?.toLowerCase() || "preferred"
     };
     navigator.credentials.get({'publicKey': publicKey})
       .then((getAssertionResponse: Credential) => {
-        this.fido2Authenticate(getAssertionResponse);
+        this.fido2Authenticate(getAssertionResponse, res.requestId || '');
       })
       .catch((error) => {
         this.errorMsg = true;
@@ -337,12 +347,14 @@ export class LoginComponent implements OnInit {
       })
   }
 
-  private fido2Authenticate(getAssertionResponse): void {
+  private fido2Authenticate(getAssertionResponse, requestId): void {
     const headers = new HttpHeaders({
       'X-AUTHENTICATOR-DATA': this.authService.bufferToBase64Url(getAssertionResponse.response.authenticatorData),
       'X-CLIENT-DATA-JSON': this.authService.bufferToBase64Url(getAssertionResponse.response.clientDataJSON),
       'X-SIGNATURE': this.authService.bufferToBase64Url(getAssertionResponse.response.signature),
       'X-IDENTITY-SERVICE': this.identityServiceName,
+      'X-REQUEST-ID': requestId,
+      'X-CREDENTIAL-ID': this.authService.bufferToBase64Url(getAssertionResponse.rawId),
       'Authorization': 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(this.user.userName)))
     });
     this.coreService.log('authentication/login', {fido: true}, {headers}).subscribe({
@@ -354,7 +366,7 @@ export class LoginComponent implements OnInit {
         } else {
           this.router.navigate([this.returnUrl]).then();
         }
-      }, error: () => {
+      }, error: (err) => {
         this.submitted = false;
         this.errorMsg = true;
       }
