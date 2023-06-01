@@ -249,7 +249,6 @@ export class SettingModalComponent implements OnInit {
       if (res.configuration.configurationItem) {
         const data = JSON.parse(res.configuration.configurationItem);
         if(this.data.identityServiceType == 'FIDO') {
-          console.log(data.fido2)
           if (data.fido2.iamFido2ResidentKey !== 'REQUIRED') {
             this.object.type = 'FIDOU2F';
           } else if (data.fido2.iamFido2UserVerification !== 'REQUIRED') {

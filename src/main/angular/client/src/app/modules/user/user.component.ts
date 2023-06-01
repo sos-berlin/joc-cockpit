@@ -1192,16 +1192,10 @@ export class UserComponent implements OnInit, OnDestroy {
 
   /* ----------------------FIDO--------------------- */
   addDevice(): void {
-    this.coreService.post('configuration', {
-      id: 0,
-      objectType: this.identityServiceType,
-      configurationType: 'IAM',
-      name: this.identityServiceName
+    this.coreService.post('iam/identity_fido2_client', {
+      identityServiceName: this.identityServiceName
     }).subscribe((res) => {
-      if (res.configuration.configurationItem) {
-        const data = JSON.parse(res.configuration.configurationItem);
-        this.createRequestObject(data);
-      }
+        this.createRequestObject(res);
     });
   }
 
