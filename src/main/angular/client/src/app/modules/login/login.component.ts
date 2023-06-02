@@ -334,12 +334,13 @@ export class LoginComponent implements OnInit {
     let publicKey: PublicKeyCredentialRequestOptions = {
       challenge: Uint8Array.from(atob(btoa(res.challenge)), c => c.charCodeAt(0)),
       allowCredentials: allowCredentials,
+      rpId: window.location.hostname,
       timeout: this.fido2Properties?.iamFido2Timeout ? this.fido2Properties?.iamFido2Timeout * 1000 : 60000,
       userVerification: this.fido2Properties?.iamFido2UserVerification?.toLowerCase() || "preferred"
     };
     navigator.credentials.get({'publicKey': publicKey})
       .then((getAssertionResponse: Credential) => {
-        this.fido2Authenticate(getAssertionResponse, res.requestId || '');
+        this.fido2Authenticate(getAssertionResponse, res.requestId + '');
       })
       .catch((error) => {
         this.errorMsg = true;

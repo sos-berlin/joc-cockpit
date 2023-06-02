@@ -305,6 +305,8 @@ export class AuthService {
       }
     }
 
-    return {publicKey: publicKeyJwk, jwk: this.bufferToBase64Url(jwk)}; // The extracted public key in JWK format
+    
+
+    return {publicKey: publicKeyJwk, jwk: this.bufferToBase64Url(jwk) || btoa(JSON.stringify(jwk))}; // The extracted public key in JWK format
   }
 }
