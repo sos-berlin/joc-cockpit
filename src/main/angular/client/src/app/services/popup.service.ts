@@ -51,10 +51,23 @@ export class PopupService implements OnDestroy {
       properties
     );
 
+    this.checkAndCall(data, windowInstance);
+  }
+
+  private checkAndCall(data, windowInstance){
     // Wait for window instance to be created
     setTimeout(() => {
-      this.createCDKPortal(data, windowInstance);
-    }, 1000);
+      if(this.isPopupInitialized(windowInstance)) {
+        this.createCDKPortal(data, windowInstance);
+      } else{
+        this.checkAndCall(data, windowInstance);
+      }
+    }, 400);
+  }
+
+  // Check if the popup window is initialized
+  private isPopupInitialized(popupWindow) {
+    return popupWindow !== null && popupWindow.document && popupWindow.document.body && popupWindow.document.body.getAttribute('id');
   }
 
   openOnce(url, options?) {
