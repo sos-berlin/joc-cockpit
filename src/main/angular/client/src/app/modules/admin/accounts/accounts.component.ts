@@ -56,7 +56,7 @@ export class ConfirmationModalComponent implements OnInit {
   }
 
   confirm(): void {
-    if (this.delete || this.cancel) {
+    if (this.delete || this.cancel || this.deleteDevices) {
       this.activeModal.close('DONE');
       return;
     }
