@@ -236,7 +236,7 @@ export class AuthService {
     const decodedAttestationObject = window['CBOR'].decode(
       attestationObject);
     const {authData} = decodedAttestationObject;
-
+    console.log('authData', authData)
     // get the length of the credential ID
     const dataView = new DataView(
       new ArrayBuffer(2));
@@ -249,11 +249,11 @@ export class AuthService {
     // get the public key object
     const publicKeyBytes = authData.slice(
       55 + credentialIdLength);
+    console.log('publicKeyBytes', publicKeyBytes)
 
     // the publicKeyBytes are encoded again as CBOR
     const publicKeyObject = window['CBOR'].decode(
       publicKeyBytes.buffer);
-
 
     let jwk = {};
     let publicKeyJwk = COSEtoJWK(publicKeyObject);
@@ -305,7 +305,8 @@ export class AuthService {
       }
     }
 
-    
+    console.log(jwk, 'jwt');
+    console.log(publicKeyJwk, 'publicKeyJwk');
 
     return {publicKey: publicKeyJwk, jwk: this.bufferToBase64Url(jwk) || btoa(JSON.stringify(jwk))}; // The extracted public key in JWK format
   }
