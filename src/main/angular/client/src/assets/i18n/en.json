@@ -2775,6 +2775,7 @@
     "label.approved": "Approved",
     "label.rejected": "Deferred",
     "label.emailVerified": "E-mail confirmed",
+    "label.origin": "Origin",
     "label.usersFound": "Accounts found",
     "label.roles": "Roles",
     "label.role": "Role",

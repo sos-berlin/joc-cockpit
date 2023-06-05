@@ -100,6 +100,9 @@ export class FileTransferSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if(this.filter.name){
+      this.existingName = this.coreService.clone(this.filter.name);
+    }
     this.allhosts = this.coreService.getProtocols();
     this.getFolderTree();
     if (!this.filter.profiles) {

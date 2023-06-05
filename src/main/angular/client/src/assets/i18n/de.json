@@ -2775,6 +2775,7 @@
     "label.approved": "Bestätigt",
     "label.rejected": "Zurückgewiesen",
     "label.emailVerified": "E-Mail bestätigt",
+    "label.origin": "Origin",
     "label.usersFound": "Konten gefunden",
     "label.roles": "Rollen",
     "label.role": "Rolle",

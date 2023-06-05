@@ -62,10 +62,24 @@ export class ConfirmationModalComponent implements OnInit {
     }
     const accountNames = [];
     if (this.account) {
-      accountNames.push(this.account.accountName)
+      if (this.approve || this.reject || this.deleteRequest) {
+        accountNames.push({
+          accountName: this.account.accountName,
+          origin: this.account.origin
+        });
+      } else {
+        accountNames.push(this.account.accountName);
+      }
     } else {
       this.accounts.forEach((value, key) => {
-        accountNames.push(key)
+        if (this.approve || this.reject || this.deleteRequest) {
+          accountNames.push({
+            accountName: key,
+            origin: value.origin
+          });
+        } else {
+          accountNames.push(key);
+        }
       });
     }
     const auditLog: any = {};
@@ -82,11 +96,16 @@ export class ConfirmationModalComponent implements OnInit {
     } else if (this.deleteRequest) {
       URL = 'iam/fido2registration/delete';
     }
-    this.coreService.post(URL, {
+    let obj: any = {
       identityServiceName: this.identityServiceName,
-      accountNames,
       auditLog
-    }).subscribe({
+    };
+    if (this.approve || this.reject || this.deleteRequest) {
+      obj.accounts = accountNames;
+    } else {
+      obj.accountNames = accountNames;
+    }
+    this.coreService.post(URL, obj).subscribe({
       next: () => {
         this.activeModal.close('DONE');
       }, error: () => {

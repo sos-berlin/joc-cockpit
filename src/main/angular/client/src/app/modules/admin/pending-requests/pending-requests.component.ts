@@ -22,7 +22,7 @@ export class PendingRequestsComponent implements OnInit {
   identityServiceType: string;
   searchKey: string;
   identityServiceName: string;
-  searchableProperties = ['accountName', 'email'];
+  searchableProperties = ['accountName', 'email', 'origin'];
   object = {
     checked: false,
     indeterminate: false,

@@ -291,7 +291,7 @@ export class LoginComponent implements OnInit {
       identityServiceName: this.identityServiceName
     }).subscribe((res) => {
       this.fido2Properties = res;
-      if(res.iamFido2ResidentKey === 'REQUIRED' && res.iamFido2UserVerification === 'REQUIRED'){
+      if(!res.requireAccount){
         this.signIn();
       } else{
         this.showLogin = true;
@@ -304,6 +304,7 @@ export class LoginComponent implements OnInit {
     this.errorMsgText = '';
     this.coreService.post('iam/fido2/request_authentication', {
       identityServiceName: this.identityServiceName,
+      origin: location.origin,
       accountName: this.user.userName ? this.user.userName : undefined,
     }).subscribe({
       next: (res) => {
