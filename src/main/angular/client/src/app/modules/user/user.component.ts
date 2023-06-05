@@ -1212,6 +1212,7 @@ export class UserComponent implements OnInit, OnDestroy {
         identityServiceName: this.identityServiceName,
         accountName: this.username,
         publicKey: publicKey,
+        origin: location.origin,
         jwk: jwk,
         credentialId: this.authService.bufferToBase64Url(credential.rawId)
       }).subscribe();

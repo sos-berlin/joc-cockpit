@@ -240,6 +240,7 @@ export class LoginComponent implements OnInit {
         accountName: this.user.userName,
         email: this.user.email,
         publicKey: publicKey,
+        origin: location.origin,
         jwk: jwk,
         clientDataJSON: this.authService.bufferToBase64Url(credential.response.clientDataJSON),
         credentialId: this.authService.bufferToBase64Url(credential.rawId)
@@ -338,6 +339,7 @@ export class LoginComponent implements OnInit {
       timeout: this.fido2Properties?.iamFido2Timeout ? this.fido2Properties?.iamFido2Timeout * 1000 : 60000,
       userVerification: this.fido2Properties?.iamFido2UserVerification?.toLowerCase() || "preferred"
     };
+
     navigator.credentials.get({'publicKey': publicKey})
       .then((getAssertionResponse: Credential) => {
         this.fido2Authenticate(getAssertionResponse, res.requestId + '');

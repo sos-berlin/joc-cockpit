@@ -77,6 +77,7 @@ export class SearchComponent implements OnInit {
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
   folders = [];
+  listOfAgents = [];
   dateFormat: any;
   existingName: any;
   submitted = false;
@@ -108,9 +109,19 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if(this.filter.name){
+      this.existingName = this.coreService.clone(this.filter.name);
+    }
     this.getFolderTree();
     this.filter.instructionStates = this.filter.instructionStates ? this.filter.instructionStates : [];
     this.filter.states = this.filter.states ? this.filter.states : [];
+    let obj = {
+      agentList: []
+    }
+    this.coreService.getAgents(obj, this.schedulerIds.selected, () => {
+      this.listOfAgents = obj.agentList;
+    });
+
 
     this.filter.instructionStates.forEach((item) => {
       for (let i in this.jobAvailabilityStatusOptions) {
@@ -203,6 +214,7 @@ export class SearchComponent implements OnInit {
       paths: result.paths,
       name: result.name,
       instructionStates: result.instructionStates,
+      agentNames: result.agentNames,
 
     };
     const states = this.statusObj.syncStatus.concat(this.statusObj.availabilityStatus);
@@ -1244,6 +1256,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     if (this.searchFilter.states && this.searchFilter.states.length > 0) {
       obj.states = this.searchFilter.states;
+    }
+    if (this.searchFilter.agentNames && this.searchFilter.agentNames.length > 0) {
+      obj.agentNames = this.searchFilter.agentNames;
     }
 
     this.getWorkflowList(obj);

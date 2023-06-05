@@ -107,6 +107,9 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if(this.filter.name){
+      this.existingName = this.coreService.clone(this.filter.name);
+    }
   }
 
   checkFilterName(): void {
@@ -619,6 +622,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         obj
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -895,6 +899,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
           new: true
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -914,6 +919,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         self: this
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -987,6 +993,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
           },
           nzFooter: null,
           nzClosable: false,
+          nzAutofocus: null,
           nzMaskClosable: false
         });
         modal.afterClose.subscribe(obj => {

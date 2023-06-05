@@ -2149,7 +2149,9 @@
     "button.logIn": "ログイン",
     "button.loginWith" : "{{identityServiceName}}IDサービスでログイン",
     "button.registerDevice": "Register New Device",
-    "message.loginError": "アカウントかパスワードが間違っています"
+    "message.loginError": "アカウントかパスワードが間違っています",
+    "message.operationTimeoutOrCancelled": "The operation either timed out or was cancelled",
+    "message.notSecureConnection": "Your connection to JOC Cockpit is not secure. Use of the Identity Service requires a secure HTTPS connection."
   },
   "register": {
     "label.displayName": "Name",
@@ -2879,10 +2881,9 @@
     "label.priority" : "Priority",
     "label.subject" : "Subject",
     "label.body" : "Body",
-    "label.fidoType" : "FIDO Type",
     "label.fido2" : "FIDO2",
-    "label.fidoU2F" : "FIDO U2F",
-    "label.passkeys" : "Passkeys",
+    "label.u2f" : "U2F",
+    "label.requireAccount" : "Require Account",
     "label.sendMailToConfirmEmail" : "Send Mail to confirm e-mail address",
     "label.sendMailToNotifyRegistrationEmail" : "Send Mail to notify successful registration",
     "label.listOfFido2" : "List Of Fido",
@@ -3117,8 +3118,7 @@
         "subject" : "Subject",
         "body" : "Body",
         "fido2" : "FIDO2",
-        "fidoU2F" : "FIDO U2F",
-        "passkeys" : "Passkeys",
+        "u2f" : "U2F",
         "sendMailToConfirmEmail" : "Send Mail to confirm e-mail address",
         "sendMailToNotifyRegistrationEmail" : "Send Mail to notify successful registration"
       },

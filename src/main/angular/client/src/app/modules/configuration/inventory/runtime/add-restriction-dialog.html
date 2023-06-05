@@ -273,19 +273,19 @@
                 <span>{{data.str}}</span>
               </td>
               <td>
-                <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1}}</span>
+                <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1:true}}</span>
                 <span
-                  *ngIf="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1}}</span>
+                  *ngIf="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1:true}}</span>
                 <span
-                  *ngIf="data.tab=='monthDays'">{{data.startingWithM | stringToDate1}}</span>
-                <span *ngIf="data.tab=='every'">{{data.startingWith | stringToDate1}}</span>
+                  *ngIf="data.tab=='monthDays'">{{data.startingWithM | stringToDate1:true}}</span>
+                <span *ngIf="data.tab=='every'">{{data.startingWith | stringToDate1:true}}</span>
               </td>
               <td>
-                <span *ngIf="data.tab=='weekDays'">{{data.endOnW | stringToDate1}}</span>
+                <span *ngIf="data.tab=='weekDays'">{{data.endOnW | stringToDate1:true}}</span>
                 <span
-                  *ngIf="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1}}</span>
-                <span *ngIf="data.tab=='monthDays'">{{data.endOnM | stringToDate1}}</span>
-                <span *ngIf="data.tab=='every'">{{data.endOn | stringToDate1}}</span>
+                  *ngIf="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1:true}}</span>
+                <span *ngIf="data.tab=='monthDays'">{{data.endOnM | stringToDate1:true}}</span>
+                <span *ngIf="data.tab=='every'">{{data.endOn | stringToDate1:true}}</span>
               </td>
               <td>
                 <a><i (click)="editFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
