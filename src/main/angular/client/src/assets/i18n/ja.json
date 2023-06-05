@@ -2775,6 +2775,7 @@
     "label.approved": "Approved",
     "label.rejected": "Rejected",
     "label.emailVerified": "Email Verified",
+    "label.origin": "Origin",
     "label.usersFound": "アカウントがあります",
     "label.roles": "ロール",
     "label.role": "ロール",

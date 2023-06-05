@@ -37,6 +37,13 @@
               <i *ngIf="requests.sortBy == 'email' && requests.reverse"
                  class="fa fa-caret-down "></i></a>
           </th>
+          <th (click)="sort('origin')">
+            <a><span class="p-r-xs" translate>user.label.origin</span>
+              <i *ngIf="requests.sortBy == 'origin' && !requests.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="requests.sortBy == 'origin' && requests.reverse"
+                 class="fa fa-caret-down "></i></a>
+          </th>
           <th (click)="sort('confirmed')">
             <a><span class="p-r-xs" translate>user.label.emailVerified</span>
               <i *ngIf="requests.sortBy == 'confirmed' && !requests.reverse"
@@ -61,10 +68,10 @@
                     <button type="button" class="btn-drop more-option-h" [nzDisabled]="object.checked || object.indeterminate" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                     <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                       <ul nz-menu >
-                        <li nz-menu-item [nzDisabled]="account.approved" (click)="approveList(account)">
+                        <li nz-menu-item (click)="approveList(account)">
                           <a translate>common.button.approve</a>
                         </li>
-                        <li nz-menu-item [nzDisabled]="account.approved || account.rejected" (click)="rejectList(account)">
+                        <li nz-menu-item [nzDisabled]="account.rejected" (click)="rejectList(account)">
                           <a translate>common.button.reject</a>
                         </li>
                         <li nz-menu-item (click)="deleteList(account)" class="bg-hover-color">
@@ -77,9 +84,8 @@
                 <td>
                   <span [innerHtml]="account.accountName  | decodeSpace | highlight: searchKey"></span>
                 </td>
-                <td>
-                  <span [innerHtml]="account.email | highlight: searchKey"></span>
-                </td>
+                <td><span [innerHtml]="account.email | highlight: searchKey"></span></td>
+                <td><span [innerHtml]="account.origin | highlight: searchKey"></span></td>
                 <td><span>{{(account.confirmed ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
                 <td><span>{{(account.deferred ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
               </tr>
