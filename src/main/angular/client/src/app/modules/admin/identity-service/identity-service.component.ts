@@ -74,7 +74,8 @@ export class SettingModalComponent implements OnInit {
   @Input() data: any;
 
   object = {
-    type: 'FIDO2'
+    u2f: false,
+    fido2: true
   };
   keyStoreTypes = ['JKS', 'PKCS12'];
 
@@ -249,10 +250,9 @@ export class SettingModalComponent implements OnInit {
       if (res.configuration.configurationItem) {
         const data = JSON.parse(res.configuration.configurationItem);
         if(this.data.identityServiceType == 'FIDO') {
-          if (data.fido2.iamFido2ResidentKey !== 'REQUIRED') {
-            this.object.type = 'FIDOU2F';
-          } else if (data.fido2.iamFido2UserVerification !== 'REQUIRED') {
-            this.object.type = 'PASSKEYS';
+          if (data.fido2.requireAccount) {
+            this.object.u2f = true;
+            this.object.fido2 = false;
           }
         }
         if (this.data) {
@@ -317,13 +317,15 @@ export class SettingModalComponent implements OnInit {
     });
   }
 
-  changeSettings(evt): void {
-    if (evt === 'FIDO2') {
+  changeSettings(isChecked, type): void {
+    if (type === 'FIDO2' && isChecked) {
+      this.object.fido2 = true;
+      this.object.u2f = false;
       this.currentObj.iamFido2UserVerification = 'REQUIRED';
       this.currentObj.iamFido2ResidentKey = 'REQUIRED';
-    } else if (evt === 'PASSKEYS') {
-      this.currentObj.iamFido2ResidentKey = 'REQUIRED';
     } else {
+      this.object.fido2 = false;
+      this.object.u2f = true;
       if (this.currentObj.iamFido2UserVerification === 'REQUIRED') {
         this.currentObj.iamFido2UserVerification = 'PREFERRED';
       }

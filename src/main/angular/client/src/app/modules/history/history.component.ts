@@ -153,6 +153,9 @@ export class OrderSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if(this.filter.name){
+      this.existingName = this.coreService.clone(this.filter.name);
+    }
     this.getFolderTree();
     if (this.filter.historyStates && this.filter.historyStates.length > 0) {
       this.checkOptions = this.checkOptions.map(item => {
@@ -355,6 +358,9 @@ export class TaskSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if(this.filter.name){
+      this.existingName = this.coreService.clone(this.filter.name);
+    }
     this.getFolderTree();
     if (this.filter.historyStates && this.filter.historyStates.length > 0) {
       this.checkOptions = this.checkOptions.map(item => {
@@ -561,6 +567,9 @@ export class DeploymentSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if(this.filter.name){
+      this.existingName = this.coreService.clone(this.filter.name);
+    }
     this.deployTypes = Object.keys(InventoryForHistory).filter(key => isNaN(+key));
   }
 
@@ -676,6 +685,9 @@ export class SubmissionSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if(this.filter.name){
+      this.existingName = this.coreService.clone(this.filter.name);
+    }
     if (this.filter.type && this.filter.type.length > 0) {
       this.checkOptions = this.checkOptions.map(item => {
         return {

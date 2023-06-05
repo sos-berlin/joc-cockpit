@@ -142,9 +142,9 @@
                       <div class="text-sm text-left p-t-xs">
                         <span *ngIf="calendar.from && calendar.to"><span translate>resource.calendar.label.validity</span> :</span>
                         <span *ngIf="!calendar.from && calendar.to"><span translate>resource.calendar.label.validityUntil</span> : </span>
-                        <span *ngIf="calendar.from" [innerHtml]="calendar.from | stringToDate1"></span>
+                        <span *ngIf="calendar.from" [innerHtml]="calendar.from | stringToDate1:true"></span>
                         <span *ngIf="calendar.from && calendar.to" translate>common.label.to </span>
-                        <span *ngIf="calendar.to" [innerHtml]="calendar.to | stringToDate1"></span>
+                        <span *ngIf="calendar.to" [innerHtml]="calendar.to | stringToDate1:true"></span>
                         <span *ngIf="!calendar.from && !calendar.to" >-</span>
                       </div>
                     </div>
@@ -249,8 +249,8 @@
                     </td>
                     <td><span class="label " [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'"
                               [innerHtml]="calendar.type | translate | highlight : calendarFilters.searchText"></span></td>
-                    <td [innerHtml]="calendar.from | stringToDate1"></td>
-                    <td [innerHtml]="calendar.to | stringToDate1"></td>
+                    <td [innerHtml]="calendar.from | stringToDate1:true"></td>
+                    <td [innerHtml]="calendar.to | stringToDate1:true"></td>
                   </tr>
                   </tbody>
                 </nz-table>

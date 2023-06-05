@@ -842,6 +842,9 @@ export class SearchComponent implements OnInit {
     if (!this.filter.workflowFolders) {
       this.filter.workflowFolders = [];
     }
+    if(this.filter.name){
+      this.existingName = this.coreService.clone(this.filter.name);
+    }
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getFolderTree();
     if (this.filter.state && this.filter.state.length > 0) {

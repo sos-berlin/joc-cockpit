@@ -134,16 +134,16 @@
                     <a *ngIf="isTrash || !permission.joc.inventory.manage">{{data.str}}</a>
                   </td>
                   <td>
-                    <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1}}</span>
-                    <span *ngIf="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1}}</span>
-                    <span *ngIf="data.tab=='monthDays'">{{data.startingWithM | stringToDate1}}</span>
-                    <span *ngIf="data.tab=='every'">{{data.startingWith | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1:true}}</span>
+                    <span *ngIf="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1:true}}</span>
+                    <span *ngIf="data.tab=='monthDays'">{{data.startingWithM | stringToDate1:true}}</span>
+                    <span *ngIf="data.tab=='every'">{{data.startingWith | stringToDate1:true}}</span>
                   </td>
                   <td>
-                    <span *ngIf="data.tab=='weekDays'">{{data.endOnW | stringToDate1}}</span>
-                    <span *ngIf="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1}}</span>
-                    <span *ngIf="data.tab=='monthDays'">{{data.endOnM | stringToDate1}}</span>
-                    <span *ngIf="data.tab=='every'">{{data.endOn | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='weekDays'">{{data.endOnW | stringToDate1:true}}</span>
+                    <span *ngIf="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1:true}}</span>
+                    <span *ngIf="data.tab=='monthDays'">{{data.endOnM | stringToDate1:true}}</span>
+                    <span *ngIf="data.tab=='every'">{{data.endOn | stringToDate1:true}}</span>
                   </td>
                   <td>
                     <a class="text-hover-primary">
@@ -162,16 +162,16 @@
                     <a (click)="updateFrequency(data);">{{data.str}}</a>
                   </td>
                   <td>
-                    <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1}}</span>
-                    <span *ngIf="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1}}</span>
-                    <span *ngIf="data.tab=='monthDays'">{{data.startingWithM | stringToDate1}}</span>
-                    <span *ngIf="data.tab=='others'">{{data.startingWith | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1:true}}</span>
+                    <span *ngIf="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1:true}}</span>
+                    <span *ngIf="data.tab=='monthDays'">{{data.startingWithM | stringToDate1:true}}</span>
+                    <span *ngIf="data.tab=='others'">{{data.startingWith | stringToDate1:true}}</span>
                   </td>
                   <td>
-                    <span *ngIf="data.tab=='weekDays'">{{data.endOnW | stringToDate1}}</span>
-                    <span *ngIf="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1}}</span>
-                    <span *ngIf="data.tab=='monthDays'">{{data.endOnM | stringToDate1}}</span>
-                    <span *ngIf="data.tab=='others'">{{data.endOn | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='weekDays'">{{data.endOnW | stringToDate1:true}}</span>
+                    <span *ngIf="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1:true}}</span>
+                    <span *ngIf="data.tab=='monthDays'">{{data.endOnM | stringToDate1:true}}</span>
+                    <span *ngIf="data.tab=='others'">{{data.endOn | stringToDate1:true}}</span>
                   </td>
                   <td>
                     <a class="text-hover-primary ">

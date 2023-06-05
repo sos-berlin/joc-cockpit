@@ -2149,7 +2149,9 @@
     "button.logIn": "Anmelden",
     "button.loginWith" : "Fortsetzen mit {{identityServiceName}}",
     "button.registerDevice": "Sicherheitsschlüssel registrieren",
-    "message.loginError": "Konto oder Kennwort falsch"
+    "message.loginError": "Konto oder Kennwort falsch",
+    "message.operationTimeoutOrCancelled": "The operation either timed out or was cancelled",
+    "message.notSecureConnection": "Your connection to JOC Cockpit is not secure. Use of the Identity Service requires a secure HTTPS connection."
   },
   "register": {
     "label.displayName": "Name",
@@ -2879,10 +2881,9 @@
     "label.priority" : "Priority",
     "label.subject" : "Subject",
     "label.body" : "Body",
-    "label.fidoType" : "FIDO Typ",
     "label.fido2" : "FIDO2",
-    "label.fidoU2F" : "FIDO U2F",
-    "label.passkeys" : "Passkeys",
+    "label.u2f" : "U2F",
+    "label.requireAccount" : "Require Account",
     "label.sendMailToConfirmEmail" : "E-Mail zur Bestätigung der E-Mail Adresse senden",
     "label.sendMailToNotifyRegistrationEmail" : "E-Mail zur Benachrichtigung über erfolgreiche Registrierung senden",
     "label.listOfFido2" : "FIDO basierte Identitätsdienste",
@@ -3117,8 +3118,7 @@
         "subject" : "Subject",
         "body" : "Body",
         "fido2" : "FIDO2",
-        "fidoU2F" : "FIDO U2F",
-        "passkeys" : "Passkeys",
+        "u2f" : "U2F",
         "sendMailToConfirmEmail" : "E-Mail zur Bestätigung der E-Mail Adresse senden",
         "sendMailToNotifyRegistrationEmail" : "E-Mail zur Benachrichtigung über erfolgreiche Registrierung senden"
       },

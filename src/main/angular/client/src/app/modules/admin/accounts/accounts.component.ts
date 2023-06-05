@@ -1009,6 +1009,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         identityServiceName: this.identityServiceName,
         accountName: account.accountName,
         publicKey: publicKey,
+        origin: location.origin,
         jwk: jwk,
         credentialId: this.authService.bufferToBase64Url(credential.rawId)
       }).subscribe();

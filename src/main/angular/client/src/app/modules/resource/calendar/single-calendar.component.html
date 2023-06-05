@@ -63,8 +63,8 @@
                 <td [innerHtml]="calendar.path"></td>
                 <td><span class="label " [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'"
                           [innerHtml]="calendar.type | translate"></span></td>
-                <td [innerHtml]="calendar.from | stringToDate1"></td>
-                <td [innerHtml]="calendar.to | stringToDate1"></td>
+                <td [innerHtml]="calendar.from | stringToDate1:true"></td>
+                <td [innerHtml]="calendar.to | stringToDate1:true"></td>
               </tr>
               </tbody>
             </nz-table>
