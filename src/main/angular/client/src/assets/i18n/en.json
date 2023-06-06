@@ -2150,7 +2150,7 @@
     "button.loginWith": "Continue with {{identityServiceName}}",
     "button.registerDevice": "Register Security Key",
     "message.loginError": "Account or password wrong",
-    "message.operationTimeoutOrCancelled": "The operation either timed out or was cancelled",
+    "message.operationTimeoutOrCancelled": "The operation timed out or was cancelled",
     "message.notSecureConnection": "Your connection to JOC Cockpit is not secure. Use of the Identity Service requires a secure HTTPS connection."
   },
   "register": {
@@ -2775,7 +2775,7 @@
     "label.approved": "Approved",
     "label.rejected": "Deferred",
     "label.emailVerified": "E-mail confirmed",
-    "label.origin": "Origin",
+    "label.origin": "URL",
     "label.usersFound": "Accounts found",
     "label.roles": "Roles",
     "label.role": "Role",
@@ -2883,7 +2883,7 @@
     "label.subject" : "Subject",
     "label.body" : "Body",
     "label.fido2" : "FIDO2",
-    "label.u2f" : "U2F",
+    "label.u2f" : "FIDO U2F",
     "label.requireAccount" : "Require Account",
     "label.sendMailToConfirmEmail" : "Send mail to confirm e-mail address",
     "label.sendMailToNotifyRegistrationEmail" : "Send mail to notify about successful registration",
@@ -3119,7 +3119,7 @@
         "subject" : "Subject",
         "body" : "Body",
         "fido2" : "FIDO2",
-        "u2f" : "U2F",
+        "u2f" : "FIDO U2F",
         "sendMailToConfirmEmail" : "Send mail to confirm e-mail address",
         "sendMailToNotifyRegistrationEmail" : "Send mail to notify about successful registration"
       },
