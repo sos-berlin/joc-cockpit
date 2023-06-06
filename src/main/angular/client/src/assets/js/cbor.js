@@ -388,10 +388,7 @@
       }
     }
 
-    var ret = decodeItem();
-    if (offset !== data.byteLength)
-      throw "Remaining bytes";
-    return ret;
+    return decodeItem();
   }
 
   var obj = { encode: encode, decode: decode };

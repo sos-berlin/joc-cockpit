@@ -250,7 +250,7 @@ export class SettingModalComponent implements OnInit {
       if (res.configuration.configurationItem) {
         const data = JSON.parse(res.configuration.configurationItem);
         if(this.data.identityServiceType == 'FIDO') {
-          if (data.fido2.requireAccount) {
+          if (data.fido2.iamFido2RequireAccount) {
             this.object.u2f = true;
             this.object.fido2 = false;
           }
@@ -323,9 +323,11 @@ export class SettingModalComponent implements OnInit {
       this.object.u2f = false;
       this.currentObj.iamFido2UserVerification = 'REQUIRED';
       this.currentObj.iamFido2ResidentKey = 'REQUIRED';
+      this.currentObj.iamFido2RequireAccount = false;
     } else {
       this.object.fido2 = false;
       this.object.u2f = true;
+      this.currentObj.iamFido2RequireAccount = true;
       if (this.currentObj.iamFido2UserVerification === 'REQUIRED') {
         this.currentObj.iamFido2UserVerification = 'PREFERRED';
       }

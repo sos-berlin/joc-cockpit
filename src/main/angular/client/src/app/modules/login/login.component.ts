@@ -208,6 +208,7 @@ export class LoginComponent implements OnInit {
     this.coreService.post('iam/fido2registration/request_registration_start', {
       identityServiceName: this.identityServiceName,
       accountName: this.user.userName,
+      origin: location.origin,
       email: this.user.email
     }).subscribe({
       next: (res) => {
@@ -240,7 +241,6 @@ export class LoginComponent implements OnInit {
         accountName: this.user.userName,
         email: this.user.email,
         publicKey: publicKey,
-        origin: location.origin,
         jwk: jwk,
         clientDataJSON: this.authService.bufferToBase64Url(credential.response.clientDataJSON),
         credentialId: this.authService.bufferToBase64Url(credential.rawId)
@@ -291,7 +291,7 @@ export class LoginComponent implements OnInit {
       identityServiceName: this.identityServiceName
     }).subscribe((res) => {
       this.fido2Properties = res;
-      if(!res.requireAccount){
+      if(!res.iamFido2RequireAccount){
         this.signIn();
       } else{
         this.showLogin = true;
