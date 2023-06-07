@@ -460,6 +460,14 @@
                                         nz-menu-item (click)="revoke(clusterAgent, controller)">
                                       <a translate>agent.button.revoke</a>
                                     </li>
+                                    <li *ngIf="permission.joc && permission.joc.administration.controllers.manage"
+                                        (click)="resetAgent(clusterAgent, controller)" nz-menu-item>
+                                      <a translate>agent.button.reset</a>
+                                    </li>
+                                    <li *ngIf="permission.joc && permission.joc.administration.controllers.manage"
+                                        (click)="resetAgent(clusterAgent, controller, true)" nz-menu-item>
+                                      <a translate>agent.button.resetForced</a>
+                                    </li>
                                     <li nz-menu-divider
                                         *ngIf="permission.joc && permission.joc.administration.controllers.manage"></li>
                                     <li *ngIf="permission.joc && permission.joc.administration.controllers.manage"

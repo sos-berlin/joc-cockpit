@@ -71,7 +71,7 @@
               <i *ngIf="!submitted" class="fa fa-sign-in p-r-xs"></i>
               {{'login.button.logIn' | translate}}
             </button>
-            <button *ngIf="showRegister" [disabled]="submitted1 || !myForm.form.valid" type="submit" class="btn btn-primary btn-block p-x-md m-t-12"  (click)="register()">
+            <button *ngIf="showRegister" [disabled]="submitted1 || !myForm.form.valid" type="submit" class="btn btn-primary btn-block p-x-md m-t-12">
               <i *ngIf="submitted1" class="fa fa-spin fa-spinner"></i>
               <i *ngIf="!submitted1" class="fa fa-user-plus p-r-xs"></i>
               {{'register.button.register' | translate}}

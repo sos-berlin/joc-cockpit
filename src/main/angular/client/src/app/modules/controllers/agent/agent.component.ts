@@ -336,6 +336,9 @@ export class AgentModalComponent implements OnInit {
           });
         }
         if (this.secondaryDirector?.subagentId && this.secondaryDirector?.url) {
+          _agent.subagents = _agent.subagents.filter((subagent) => {
+            return subagent.subagentId !== this.secondaryDirector.subagentId && subagent.url !== this.secondaryDirector?.url
+          });
           _agent.subagents.push({
             isDirector: 'SECONDARY_DIRECTOR',
             subagentId: this.secondaryDirector.subagentId,
