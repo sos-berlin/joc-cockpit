@@ -141,6 +141,7 @@ export class SettingModalComponent implements OnInit {
   previewRegistration: boolean;
   fullScreen: boolean;
   fullScreen2: boolean;
+  fullScreen3: boolean;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private authService: AuthService,
               private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService, private dataService: DataService) {
