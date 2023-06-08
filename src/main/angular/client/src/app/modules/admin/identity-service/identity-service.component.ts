@@ -74,8 +74,7 @@ export class SettingModalComponent implements OnInit {
   @Input() data: any;
 
   object = {
-    u2f: false,
-    fido2: true
+    type: 'FIDO2'
   };
   keyStoreTypes = ['JKS', 'PKCS12'];
 
@@ -90,15 +89,15 @@ export class SettingModalComponent implements OnInit {
     value: 'SSL'
   }];
   iamFido2Transports = [{
-    text: 'Ble',
-    value: 'BLE'
-  }, {
-    text: 'Hybrid',
-    value: 'HYBRID'
-  }, {
-    text: 'Internal',
-    value: 'INTERNAL'
-  },
+      text: 'Ble',
+      value: 'BLE'
+    }, {
+      text: 'Hybrid',
+      value: 'HYBRID'
+    }, {
+      text: 'Internal',
+      value: 'INTERNAL'
+    },
     {
       text: 'Nfc',
       value: 'NFC'
@@ -116,6 +115,7 @@ export class SettingModalComponent implements OnInit {
     value: 'PREFERRED'
   }
   ];
+
   isEnable = false;
   isLengthMatch = true;
   submitted = false;
@@ -251,9 +251,10 @@ export class SettingModalComponent implements OnInit {
       if (res.configuration.configurationItem) {
         const data = JSON.parse(res.configuration.configurationItem);
         if(this.data.identityServiceType == 'FIDO') {
-          if (data.fido2.iamFido2RequireAccount) {
-            this.object.u2f = true;
-            this.object.fido2 = false;
+          if (data.fido2.iamFido2ResidentKey !== 'REQUIRED') {
+            this.object.type = 'FIDOU2F';
+          } else if (data.fido2.iamFido2Attachment !== 'ROAMING') {
+            this.object.type = 'PASSKEYS';
           }
         }
         if (this.data) {
@@ -296,7 +297,7 @@ export class SettingModalComponent implements OnInit {
           if (!this.currentObj.iamFido2EmailSettings) {
             this.currentObj.iamFido2EmailSettings = {};
           }
-          if(!this.currentObj.iamFido2EmailSettings.priority){
+          if (!this.currentObj.iamFido2EmailSettings.priority) {
             this.currentObj.iamFido2EmailSettings.priority = 'normal';
           }
           this.getJobResources(this.currentObj.iamFido2EmailSettings.nameOfJobResource);
@@ -311,23 +312,25 @@ export class SettingModalComponent implements OnInit {
       this.checkJobResource(jobResourceName);
     });
   }
-  private checkJobResource(jobResourceName): void{
+
+  private checkJobResource(jobResourceName): void {
     this.jobResourcesTree = this.coreService.getNotExistJobResource({
       arr: this.jobResourcesTree,
       jobResources: jobResourceName
     });
   }
 
-  changeSettings(isChecked, type): void {
-    if (type === 'FIDO2' && isChecked) {
-      this.object.fido2 = true;
-      this.object.u2f = false;
+
+  changeSettings(evt): void {
+    if (evt === 'FIDO2') {
       this.currentObj.iamFido2UserVerification = 'REQUIRED';
       this.currentObj.iamFido2ResidentKey = 'REQUIRED';
-      this.currentObj.iamFido2RequireAccount = false;
+      this.currentObj.iamFido2Attachment = 'ROAMING';
+    } else if (evt === 'PASSKEYS') {
+      this.currentObj.iamFido2ResidentKey = 'REQUIRED';
+      this.currentObj.iamFido2Attachment = 'PLATTFORM';
     } else {
-      this.object.fido2 = false;
-      this.object.u2f = true;
+      this.currentObj.iamFido2Attachment = undefined;
       this.currentObj.iamFido2RequireAccount = true;
       if (this.currentObj.iamFido2UserVerification === 'REQUIRED') {
         this.currentObj.iamFido2UserVerification = 'PREFERRED';
