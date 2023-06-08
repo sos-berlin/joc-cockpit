@@ -205,29 +205,38 @@ export class AuthService {
   }
 
   createPublicKeyCredentialRequest(challenge, fido2Properties, user): PublicKeyCredentialCreationOptions {
+    let authenticatorSelection: AuthenticatorSelectionCriteria = {
+      userVerification: fido2Properties?.iamFido2UserVerification?.toLowerCase() || 'preferred'
+    };
+    if (fido2Properties?.iamFido2Attachment == 'ROAMING') {
+      authenticatorSelection.authenticatorAttachment = 'cross-platform';
+    } else if (fido2Properties?.iamFido2Attachment == 'PLATTFORM') {
+      authenticatorSelection.authenticatorAttachment = 'platform';
+    }
+    if (fido2Properties?.iamFido2ResidentKey) {
+      authenticatorSelection.residentKey = fido2Properties?.iamFido2ResidentKey?.toLowerCase();
+    }
+    if (fido2Properties?.iamFido2ResidentKey?.toLowerCase() == 'required') {
+      authenticatorSelection.requireResidentKey = true;
+    }
     return {
       challenge: challenge,
       rp: {
-        id: window.location.hostname,
         name: 'JS7'
       },
       user: {
-        id: new Uint8Array(32),
+        id: Uint8Array.from(
+          (user.userName || user.accountName) + '', c => c.charCodeAt(0)),
         name: user.userName || user.accountName,
-        displayName: user.email || user.accountName
+        displayName: user.userName || user.accountName
       },
       pubKeyCredParams: [
         {type: "public-key", alg: -7},
         {type: "public-key", alg: -257}
       ],
       timeout: fido2Properties?.iamFido2Timeout ? fido2Properties?.iamFido2Timeout * 1000 : 60000,
-      authenticatorSelection: {
-        residentKey: fido2Properties?.iamFido2ResidentKey?.toLowerCase() || 'preferred',
-        requireResidentKey: fido2Properties?.iamFido2ResidentKey?.toLowerCase() == 'required',
-        userVerification: fido2Properties?.iamFido2UserVerification?.toLowerCase() || 'preferred'
-      },
-      extensions: {"credProps": true},
-      attestation: 'direct'
+      authenticatorSelection,
+      extensions: {"credProps": true}
     };
   }
 
@@ -236,7 +245,7 @@ export class AuthService {
     const decodedAttestationObject = window['CBOR'].decode(
       attestationObject);
     const {authData} = decodedAttestationObject;
-    console.log('authData', authData)
+    
     // get the length of the credential ID
     const dataView = new DataView(
       new ArrayBuffer(2));

@@ -846,16 +846,27 @@
     <!------------------------------------BEGIN FIDO-------------------------------------------->
     <div *ngIf="data && data.identityServiceType == 'FIDO'">
       <ng-container *ngIf="!fullScreen && !fullScreen2 && !fullScreen3">
-        <div class="form-group row">
-          <label class="col-sm-4" translate>user.label.requireAccount</label>
+        <div class="m-b-12 row">
+          <label class="col-sm-4"
+                 translate>user.label.fidoType
+          </label>
           <div class="col-sm-6">
-            <label class="m-r" nz-checkbox [nzDisabled]="object.fido2"
-                   (ngModelChange)="changeSettings($event, 'FIDO2')" [ngModel]="object.fido2" name="fido2">
-              <span [nz-tooltip]="'user.tooltips.webauthn.fido2' | translate" [nzTooltipMouseEnterDelay]="0.5" translate>user.label.fido2</span>
-            </label>
-            <label class="m-l" nz-checkbox (ngModelChange)="changeSettings($event, 'U2F')"
-                   [nzDisabled]="object.u2f" [ngModel]="object.u2f" name="u2f">
-              <span [nz-tooltip]="'user.tooltips.webauthn.u2f' | translate" [nzTooltipMouseEnterDelay]="0.5" translate>user.label.u2f</span>
+            <nz-radio-group name="type" [(ngModel)]="object.type" (ngModelChange)="changeSettings($event)">
+              <label [nz-tooltip]="'user.tooltips.webauthn.fido2' | translate" [nzTooltipMouseEnterDelay]="0.5"
+                     nz-radio nzValue="FIDO2"><span translate>user.label.fido2</span></label>
+              <label [nz-tooltip]="'user.tooltips.webauthn.fidoU2F' | translate" [nzTooltipMouseEnterDelay]="0.5"
+                     nz-radio nzValue="FIDOU2F"><span translate>user.label.u2f</span></label>
+              <label [nz-tooltip]="'user.tooltips.webauthn.passkeys' | translate" [nzTooltipMouseEnterDelay]="0.5"
+                     nz-radio nzValue="PASSKEYS"><span translate>user.label.passkeys</span></label>
+            </nz-radio-group>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.iamRequireAccount' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.requireAccount</label>
+          <div class="col-sm-6">
+            <label nz-checkbox [nzDisabled]="object.type === 'FIDOU2F'"
+                   [(ngModel)]="currentObj.iamFido2RequireAccount" name="iamFido2RequireAccount">
             </label>
           </div>
         </div>
@@ -871,7 +882,7 @@
                              [(ngModel)]="currentObj.iamFido2Timeout"></nz-input-number>
           </div>
         </div>
-        <div class="form-group row" *ngIf="object.u2f">
+        <div class="form-group row" *ngIf="currentObj.iamFido2RequireAccount">
           <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.webauthn.iamTransports' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2Transports
           </label>
@@ -883,29 +894,39 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label"
+          <label class="col-sm-4 " [ngClass]="{'form-control-label' : object.type !== 'FIDO2'}"
                  [nz-tooltip]="'user.tooltips.webauthn.iamUserVerification' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2UserVerification
           </label>
-          <div class="col-sm-6">
-            <nz-select name="iamFido2UserVerification" [nzDisabled]="object.fido2" [(ngModel)]="currentObj.iamFido2UserVerification">
+          <div class="col-sm-6" *ngIf="object.type !== 'FIDO2'">
+            <nz-select name="iamFido2UserVerification" [(ngModel)]="currentObj.iamFido2UserVerification">
               <nz-option *ngFor="let option of iamFido2UserVerification"
                          [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
-              <nz-option *ngIf="object.fido2" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
+              <nz-option *ngIf="object.type !== 'FIDOU2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
             </nz-select>
           </div>
+          <div class="col-sm-6" *ngIf="object.type === 'FIDO2'">Required</div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label"
+          <label class="col-sm-4" [ngClass]="{'form-control-label' : object.type == 'FIDOU2F'}"
                  [nz-tooltip]="'user.tooltips.webauthn.iamResidentKey' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2ResidentKey
           </label>
-          <div class="col-sm-6">
-            <nz-select name="iamFido2ResidentKey" [nzDisabled]="object.fido2" [(ngModel)]="currentObj.iamFido2ResidentKey">
+          <div class="col-sm-6" *ngIf="object.type == 'FIDOU2F'">
+            <nz-select name="iamFido2ResidentKey" [(ngModel)]="currentObj.iamFido2ResidentKey">
               <nz-option *ngFor="let option of iamFido2UserVerification"
                          [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
-              <nz-option *ngIf="object.fido2" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
+              <nz-option *ngIf="object.type !== 'FIDOU2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
             </nz-select>
+          </div>
+          <div class="col-sm-6" *ngIf="object.type !== 'FIDOU2F'">Required</div>
+        </div>
+        <div class="form-group row" *ngIf="object.type !== 'FIDOU2F'">
+          <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.iamAttachment' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2Attachment
+          </label>
+          <div class="col-sm-6">
+            {{object.type === 'FIDO2' ? 'Roaming' : 'Platform'}}
           </div>
         </div>
         <div class="row">
