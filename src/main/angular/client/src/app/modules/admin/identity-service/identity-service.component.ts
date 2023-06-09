@@ -73,9 +73,6 @@ export class ThumbnailDirective {
 export class SettingModalComponent implements OnInit {
   @Input() data: any;
 
-  object = {
-    type: 'FIDO2'
-  };
   keyStoreTypes = ['JKS', 'PKCS12'];
 
   iamLdapProtocols = [{
@@ -250,13 +247,6 @@ export class SettingModalComponent implements OnInit {
       }
       if (res.configuration.configurationItem) {
         const data = JSON.parse(res.configuration.configurationItem);
-        if(this.data.identityServiceType == 'FIDO') {
-          if (data.fido2.iamFido2ResidentKey !== 'REQUIRED') {
-            this.object.type = 'FIDOU2F';
-          } else if (data.fido2.iamFido2Attachment !== 'ROAMING') {
-            this.object.type = 'PASSKEYS';
-          }
-        }
         if (this.data) {
           if (data) {
             this.currentObj = data.vault || data.keycloak || data.oidc || data.fido2 || {};
@@ -517,6 +507,13 @@ export class SettingModalComponent implements OnInit {
         } else if (self.data.identityServiceType.match('OIDC')) {
           for (const prop in data) {
             if (prop && prop.match('iamOidc')) {
+              self.currentObj = data;
+              break;
+            }
+          }
+        } else if (self.data.identityServiceType.match('FIDO')) {
+          for (const prop in data) {
+            if (prop && prop.match('iamFido')) {
               self.currentObj = data;
               break;
             }
@@ -917,10 +914,17 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   }
 
   showUser(identityService): void {
-    if (identityService.identityServiceType !== 'UNKNOWN') {
+    if (identityService.identityServiceType !== 'UNKNOWN' && identityService.identityServiceType !== 'CERTIFICATE') {
+
       sessionStorage.identityServiceName = identityService.identityServiceName;
       sessionStorage.identityServiceType = identityService.identityServiceType;
-      this.router.navigate(['/users/identity_service/role']).then();
+      if (identityService.secondFactor) {
+        sessionStorage.secondFactor = identityService.secondFactor;
+        this.router.navigate(['/users/identity_service/pending_requests']).then();
+      } else {
+        sessionStorage.removeItem('secondFactor');
+        this.router.navigate(['/users/identity_service/role']).then();
+      }
     }
   }
 

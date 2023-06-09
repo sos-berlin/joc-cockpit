@@ -84,6 +84,9 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if(this.filter.name){
+      this.existingName = this.coreService.clone(this.filter.name);
+    }
     this.getAgentIds();
   }
 

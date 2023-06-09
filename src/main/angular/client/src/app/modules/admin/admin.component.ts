@@ -19,13 +19,14 @@ export class AdminComponent implements OnInit, OnDestroy {
   isBlockButtonShow = false;
   isSessionButtonShow = false;
   isSelected = false;
-  isApproveButtonShow=false;
+  isApproveButtonShow = false;
   selectedUser: string;
   accounts: any = [];
   route: string;
   userObj: any = {};
   identityService: string;
   identityServiceType: string;
+  secondFactor: boolean;
   pageView: string;
   adminFilter: any = {};
   isLoaded = false;
@@ -240,10 +241,14 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.isPaste = this.route && ((this.route.match('/users/identity_service/account') && this.dataService.copiedObject.accounts && this.dataService.copiedObject.accounts.size > 0) ||
         (this.route.match('/users/identity_service/role') && this.dataService.copiedObject.roles && this.dataService.copiedObject.roles.size > 0));
       if (this.route.match('/users')) {
-        if (sessionStorage.identityServiceType) {
-          if ((sessionStorage.identityServiceType === 'VAULT' || sessionStorage.identityServiceType === 'KEYCLOAK' || sessionStorage.identityServiceType === 'LDAP') && this.route.match('/users/identity_service/account')) {
-            this.selectedUser = null;
-            this.router.navigate(['/users/identity_service/role']).then();
+        if (sessionStorage.identityServiceType ) {
+          if (sessionStorage.secondFactor && this.route.match('/role')) {
+            this.router.navigate(['/users/identity_service/pending_requests']).then();
+          } else {
+            if ((sessionStorage.identityServiceType === 'VAULT' || sessionStorage.identityServiceType === 'KEYCLOAK' || sessionStorage.identityServiceType === 'LDAP') && this.route.match('/users/identity_service/account')) {
+              this.selectedUser = null;
+              this.router.navigate(['/users/identity_service/role']).then();
+            }
           }
         }
         this.selectedUser = AdminComponent.getParameterByName('account');
@@ -251,6 +256,7 @@ export class AdminComponent implements OnInit, OnDestroy {
           this.userObj = {};
           this.identityService = sessionStorage.identityServiceName;
           this.identityServiceType = sessionStorage.identityServiceType;
+          this.secondFactor = !!sessionStorage.secondFactor;
           this.getUsersData();
         }
       }

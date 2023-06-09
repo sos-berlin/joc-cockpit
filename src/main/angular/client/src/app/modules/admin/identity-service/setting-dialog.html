@@ -851,13 +851,13 @@
                  translate>user.label.fidoType
           </label>
           <div class="col-sm-6">
-            <nz-radio-group name="type" [(ngModel)]="object.type" (ngModelChange)="changeSettings($event)">
+            <nz-radio-group name="type" [(ngModel)]="currentObj.iamFidoProtocolType" (ngModelChange)="changeSettings($event)">
               <label [nz-tooltip]="'user.tooltips.webauthn.fido2' | translate" [nzTooltipMouseEnterDelay]="0.5"
                      nz-radio nzValue="FIDO2"><span translate>user.label.fido2</span></label>
-              <label [nz-tooltip]="'user.tooltips.webauthn.fidoU2F' | translate" [nzTooltipMouseEnterDelay]="0.5"
-                     nz-radio nzValue="FIDOU2F"><span translate>user.label.u2f</span></label>
+              <label [nz-tooltip]="'user.tooltips.webauthn.u2f' | translate" [nzTooltipMouseEnterDelay]="0.5"
+                     nz-radio nzValue="U2F"><span translate>user.label.u2f</span></label>
               <label [nz-tooltip]="'user.tooltips.webauthn.passkeys' | translate" [nzTooltipMouseEnterDelay]="0.5"
-                     nz-radio nzValue="PASSKEYS"><span translate>user.label.passkeys</span></label>
+                     nz-radio nzValue="PASSKEY"><span translate>user.label.passkeys</span></label>
             </nz-radio-group>
           </div>
         </div>
@@ -865,7 +865,7 @@
           <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.iamRequireAccount' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.requireAccount</label>
           <div class="col-sm-6">
-            <label nz-checkbox [nzDisabled]="object.type === 'FIDOU2F'"
+            <label nz-checkbox [nzDisabled]="currentObj.iamFidoProtocolType === 'U2F'"
                    [(ngModel)]="currentObj.iamFido2RequireAccount" name="iamFido2RequireAccount">
             </label>
           </div>
@@ -894,39 +894,39 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 " [ngClass]="{'form-control-label' : object.type !== 'FIDO2'}"
+          <label class="col-sm-4 " [ngClass]="{'form-control-label' : currentObj.iamFidoProtocolType !== 'FIDO2'}"
                  [nz-tooltip]="'user.tooltips.webauthn.iamUserVerification' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2UserVerification
           </label>
-          <div class="col-sm-6" *ngIf="object.type !== 'FIDO2'">
+          <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType !== 'FIDO2'">
             <nz-select name="iamFido2UserVerification" [(ngModel)]="currentObj.iamFido2UserVerification">
               <nz-option *ngFor="let option of iamFido2UserVerification"
                          [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
-              <nz-option *ngIf="object.type !== 'FIDOU2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
+              <nz-option *ngIf="currentObj.iamFidoProtocolType !== 'U2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
             </nz-select>
           </div>
-          <div class="col-sm-6" *ngIf="object.type === 'FIDO2'">Required</div>
+          <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType === 'FIDO2'">Required</div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4" [ngClass]="{'form-control-label' : object.type == 'FIDOU2F'}"
+          <label class="col-sm-4" [ngClass]="{'form-control-label' : currentObj.iamFidoProtocolType == 'U2F'}"
                  [nz-tooltip]="'user.tooltips.webauthn.iamResidentKey' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2ResidentKey
           </label>
-          <div class="col-sm-6" *ngIf="object.type == 'FIDOU2F'">
+          <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType == 'U2F'">
             <nz-select name="iamFido2ResidentKey" [(ngModel)]="currentObj.iamFido2ResidentKey">
               <nz-option *ngFor="let option of iamFido2UserVerification"
                          [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
-              <nz-option *ngIf="object.type !== 'FIDOU2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
+              <nz-option *ngIf="currentObj.iamFidoProtocolType !== 'U2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
             </nz-select>
           </div>
-          <div class="col-sm-6" *ngIf="object.type !== 'FIDOU2F'">Required</div>
+          <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType !== 'U2F'">Required</div>
         </div>
-        <div class="form-group row" *ngIf="object.type !== 'FIDOU2F'">
+        <div class="form-group row" *ngIf="currentObj.iamFidoProtocolType !== 'U2F'">
           <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.iamAttachment' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2Attachment
           </label>
           <div class="col-sm-6">
-            {{object.type === 'FIDO2' ? 'Roaming' : 'Platform'}}
+            {{currentObj.iamFidoProtocolType === 'FIDO2' ? 'Roaming' : 'Platform'}}
           </div>
         </div>
         <div class="row">
@@ -1193,11 +1193,11 @@
               </div>
               <div class="form-group row" >
                 <label class="col-sm-4 form-control-label"
-                       [nz-tooltip]="'user.tooltips.webauthn.receipt' | translate" [nzTooltipMouseEnterDelay]="0.5"
-                       translate>user.label.receipt
+                       [nz-tooltip]="'user.tooltips.webauthn.recipient' | translate" [nzTooltipMouseEnterDelay]="0.5"
+                       translate>user.label.recipient
                 </label>
                 <div class="col-sm-6">
-                  <input type="text" class="form-control" name="receipt"
+                  <input type="text" class="form-control" name="recipient"
                          [placeholder]="'user.placeholder.enterEmail' | translate"
                          [(ngModel)]="currentObj.iamFido2EmailSettings.receiptConfirmed" autocomplete="off">
                 </div>

@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
   fido2IdentityServiceItems = [];
   showRegister = false;
   showLogin = false;
+  userObject: any = {};
 
   constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService,
               private authService: AuthService, private oAuthService: OIDCAuthService, private renderer: Renderer2,
@@ -121,7 +122,7 @@ export class LoginComponent implements OnInit {
     }
     this.submitted = true;
     this.coreService.post('authentication/login', values).subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.authService.rememberMe = this.rememberMe;
         if (this.rememberMe) {
           if (values.userName) {
@@ -140,8 +141,19 @@ export class LoginComponent implements OnInit {
           localStorage.removeItem('$SOS$BOO');
           localStorage.removeItem('$SOS$REMEMBER');
         }
+
         this.authService.setUser(data);
         this.authService.save();
+        this.userObject = {
+          userName: values.userName,
+          password: values.password,
+        };
+        this.onSign('Fido')
+        return;
+        if (data.accessToken === '' && data.isAuthenticated && data.secondFactoridentityService) {
+          this.onSign(data.secondFactoridentityService)
+          return;
+        }
         if (this.returnUrl.indexOf('?') > -1) {
           this.router.navigateByUrl(this.returnUrl).then();
         } else {
@@ -180,24 +192,58 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  private isDomainSecureAndValid() {
+    let hostname = window.location.hostname;
+    // Check if the protocol is HTTPS
+    if (hostname !== 'localhost') {
+      if (window.location.protocol !== 'https:') {
+        return false;
+      }
+
+      // Check if the domain is valid (not an IP address)
+      let ipAddressRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
+      if (ipAddressRegex.test(hostname)) {
+        return false;
+      }
+
+      // Check if the domain has a valid TLD (Top-Level Domain)
+      let tldRegex = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i;
+      if (!tldRegex.test(hostname)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+
   registerDevice(identityServiceName) {
-    if (window.PublicKeyCredential) {
-      this.showRegister = true;
-      this.errorMsg = false;
-      this.errorMsgText = '';
-      this.user.userName = '';
-      this.identityServiceName = identityServiceName;
+    // Usage:
+    if (this.isDomainSecureAndValid()) {
+
+      if (window.PublicKeyCredential) {
+        this.showRegister = true;
+        this.errorMsg = false;
+        this.errorMsgText = '';
+        this.user.userName = '';
+        this.identityServiceName = identityServiceName;
+      } else {
+        let title = '';
+        let msg = '';
+        this.translate.get('register.message.updateToModernBrowser').subscribe(translatedValue => {
+          msg = translatedValue;
+        });
+        this.translate.get('register.message.browseDoesnotSupportWebAuthn').subscribe(translatedValue => {
+          title = translatedValue;
+        });
+        this.toasterService.warning(msg,
+          title);
+      }
     } else {
-      let title = '';
-      let msg = '';
-      this.translate.get('register.message.updateToModernBrowser').subscribe(translatedValue => {
-        msg = translatedValue;
+      this.translate.get('login.message.notSecureConnection').subscribe(translatedValue => {
+        this.toasterService.warning(translatedValue);
       });
-      this.translate.get('register.message.browseDoesnotSupportWebAuthn').subscribe(translatedValue => {
-        title = translatedValue;
-      });
-      this.toasterService.warning(msg,
-        title);
+
     }
   }
 
@@ -291,9 +337,9 @@ export class LoginComponent implements OnInit {
       identityServiceName: this.identityServiceName
     }).subscribe((res) => {
       this.fido2Properties = res;
-      if(!res.iamFido2RequireAccount){
+      if (!res.iamFido2RequireAccount) {
         this.signIn();
-      } else{
+      } else {
         this.showLogin = true;
       }
     });
@@ -322,7 +368,7 @@ export class LoginComponent implements OnInit {
 
   private getCredentials(res): void {
     let allowCredentials = [];
-    if(!this.fido2Properties?.iamFido2UserVerification || this.fido2Properties?.iamFido2UserVerification?.toLowerCase() !== 'required') {
+    if (!this.fido2Properties?.iamFido2UserVerification || this.fido2Properties?.iamFido2UserVerification?.toLowerCase() !== 'required') {
       if (res.credentialIds && isArray(res.credentialIds)) {
         res.credentialIds.forEach((item) => {
           allowCredentials.push({
@@ -352,18 +398,26 @@ export class LoginComponent implements OnInit {
   }
 
   private fido2Authenticate(getAssertionResponse, requestId): void {
-    const headers = new HttpHeaders({
+    let obj: any = {
       'X-AUTHENTICATOR-DATA': this.authService.bufferToBase64Url(getAssertionResponse.response.authenticatorData),
       'X-CLIENT-DATA-JSON': this.authService.bufferToBase64Url(getAssertionResponse.response.clientDataJSON),
       'X-SIGNATURE': this.authService.bufferToBase64Url(getAssertionResponse.response.signature),
       'X-IDENTITY-SERVICE': this.identityServiceName,
       'X-REQUEST-ID': requestId,
-      'X-CREDENTIAL-ID': this.authService.bufferToBase64Url(getAssertionResponse.rawId),
-      'Authorization': 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(this.user.userName)))
-    });
-    this.coreService.log('authentication/login', {fido: true}, {headers}).subscribe({
-      next: (data) => {
-        this.authService.setUser(data);
+      'X-CREDENTIAL-ID': this.authService.bufferToBase64Url(getAssertionResponse.rawId)
+    };
+
+    if (this.userObject.userName) {
+      obj['X-1ST-IDENTITY-SERVICE'] = this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':') + 1);
+    }
+    let headers = new HttpHeaders(obj);
+    this.coreService.log('authentication/login', this.userObject.userName ? this.userObject : {fido: true}, {headers}).subscribe({
+      next: (data: any) => {
+        if (this.userObject.userName) {
+          this.authService.accessTokenId = data.accessToken;
+        } else {
+          this.authService.setUser(data);
+        }
         this.authService.save();
         if (this.returnUrl.indexOf('?') > -1) {
           this.router.navigateByUrl(this.returnUrl).then();

@@ -53,7 +53,7 @@
     "svg-gauge": "^1.0.6",
     "tslib": "^2.3.0",
     "underscore": "^1.13.2",
-    "xlsx": "^0.18.5",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz",
     "xml-formatter": "^2.6.0",
     "xml-js": "^1.6.11",
     "xpath": "0.0.32",

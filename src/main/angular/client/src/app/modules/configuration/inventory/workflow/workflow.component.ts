@@ -185,16 +185,11 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
             self.isTreeShow = true;
             setTimeout(() => {
               const dom = $('#show-tree-editor');
-              const editorWidth = $('#boardId').width();
-              let left = ((cursor.ch * 7) + 12);
-              if ((editorWidth - left) < 145) {
-                left = editorWidth - 150;
-              }
               dom?.css({
                 'opacity': '1',
                 'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
-                'left': left + 'px',
-                'width': 'calc(100% - ' + (left + 8) + 'px)'
+                'left': '12px',
+                'width': 'calc(100% - 16px)'
               });
             }, 0)
           }
@@ -1367,15 +1362,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
             setTimeout(() => {
               const dom = $('#show-tree');
               const editorWidth = $('#scriptId').width();
-              let left = ((cursor.ch * 7) + 40);
-              if ((editorWidth - left) < 145) {
-                left = editorWidth - 150;
-              }
               dom?.css({
                 'opacity': '1',
                 'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
-                'left': left + 'px',
-                'width': 'calc(100% - ' + (left + 8) + 'px)'
+                'left': '12px',
+                'width': 'calc(100% - 16px)'
               });
             }, 0)
           }
@@ -2528,20 +2519,11 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
             self.isTreeShow = true;
             setTimeout(() => {
               const dom = $('#show-tree-editor');
-              const editorWidth = $('#resizable').width();
-              let left = ((cursor.ch * 7) + 40);
-
-              if ((editorWidth - left) < 200) {
-                left = editorWidth - 200;
-              }
-              if (editorWidth < 200) {
-                left = 0;
-              }
               dom?.css({
                 'opacity': '1',
                 'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
-                'left': left + 'px',
-                'width': 'calc(100% - ' + (left + 8) + 'px)'
+                'left': '12px',
+                'width': 'calc(100% - 16px)'
               });
             }, 0)
           }
@@ -4728,6 +4710,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   addList(data: any): void {
     this.addFacet(data, true);
+  }
+
+  changeSettings(evn): void {
+    console.log(evn);
+    if (evn == 'unchanged') {
+      delete this.selectedNode.obj.unsuccessful;
+    } else {
+      this.selectedNode.obj.unsuccessful = evn == 'unsuccessful';
+    }
   }
 
   openEditor(data: any, type = 'default'): void {
@@ -8719,7 +8710,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         } else if (cell.value.tagName === 'Finish') {
           obj.message = cell.getAttribute('message');
           obj.unsuccessful = cell.getAttribute('unsuccessful');
-          obj.unsuccessful = obj.unsuccessful == 'true';
+          if(obj.unsuccessful == 'true' || obj.unsuccessful == 'false') {
+            obj.unsuccessful = obj.unsuccessful == 'true';
+            obj.type = obj.unsuccessful ? 'unsuccessful' : 'successful';
+          } else {
+            delete obj.unsuccessful;
+            obj.type = 'unchanged';
+          }
         } else if (cell.value.tagName === 'PostNotices') {
           obj.noticeBoardNames = cell.getAttribute('noticeBoardNames');
           if (obj.noticeBoardNames) {
@@ -8834,19 +8831,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 self.ref.detectChanges();
                 setTimeout(() => {
                   const dom = $('#show-tree');
-                  const editorWidth = $('#boardId').width();
-                  let left = ((cursor.ch * 7) + 12);
-                  if ((editorWidth - left) < 200) {
-                    left = editorWidth - 200;
-                  }
-                  if (editorWidth < 200) {
-                    left = 0;
-                  }
                   dom?.css({
                     'opacity': '1',
                     'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
-                    'left': left + 'px',
-                    'width': 'calc(100% - ' + (left + 8) + 'px)'
+                    'left': '12px',
+                    'width': 'calc(100% - 16px)'
                   });
                 }, 0)
               }
