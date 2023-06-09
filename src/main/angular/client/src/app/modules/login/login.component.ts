@@ -28,6 +28,7 @@ export class LoginComponent implements OnInit {
   fido2Properties: any = {};
   oidcIdentityServiceItems = [];
   fido2IdentityServiceItems = [];
+  fido2ndFactorServiceItems = [];
   showRegister = false;
   showLogin = false;
   userObject: any = {};
@@ -104,6 +105,7 @@ export class LoginComponent implements OnInit {
       next: (res) => {
         this.oidcIdentityServiceItems = res.oidcServiceItems || [];
         this.fido2IdentityServiceItems = res.fido2ServiceItems || [];
+        this.fido2ndFactorServiceItems = res.fido2ndFactorServiceItems || [];
       }, error(err) {
         console.error(err)
       },
@@ -144,12 +146,11 @@ export class LoginComponent implements OnInit {
 
         this.authService.setUser(data);
         this.authService.save();
-        this.userObject = {
-          userName: values.userName,
-          password: values.password,
-        };
-         
         if (data.accessToken === '' && data.isAuthenticated && data.secondFactoridentityService) {
+          this.userObject = {
+            userName: values.userName,
+            password: values.password,
+          };
           this.onSign(data.secondFactoridentityService)
           return;
         }
