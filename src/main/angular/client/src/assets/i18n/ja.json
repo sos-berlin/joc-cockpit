@@ -2160,6 +2160,7 @@
     "label.email": "Email",
     "button.back": "Back",
     "button.register": "Register",
+    "button.registerKeyFor": "Register Security Key for {{identityServiceName}}",
     "message.registrationSuccessful": "Your registration was successful.",
     "message.verifyEmailAddress": "To complete your account setup, please check your email to verify your email address",
     "message.browseDoesnotSupportWebAuthn": "Your browser doesn't support WebAuthn",
