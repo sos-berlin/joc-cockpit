@@ -148,8 +148,7 @@ export class LoginComponent implements OnInit {
           userName: values.userName,
           password: values.password,
         };
-        this.onSign('Fido')
-        return;
+         
         if (data.accessToken === '' && data.isAuthenticated && data.secondFactoridentityService) {
           this.onSign(data.secondFactoridentityService)
           return;
