@@ -168,12 +168,12 @@
     <div class="row m-b m-t-xs" *ngIf="route !== '/users' && route !== '/users/identity_service'">
       <div class="col-md-12">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-          <li class="nav-item">
+          <li class="nav-item" *ngIf="!secondFactor">
             <a class="nav-link" routerLink="identity_service/role" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.manageRoles</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'">
+          <li class="nav-item dropdown-separator" *ngIf="!secondFactor && identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'">
             <span class="separator"></span>
           </li>
           <li class="nav-item" *ngIf="identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'">
