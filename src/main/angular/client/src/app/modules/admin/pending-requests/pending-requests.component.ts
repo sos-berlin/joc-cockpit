@@ -61,8 +61,8 @@ export class PendingRequestsComponent implements OnInit {
   }
 
   private getList(): void {
-    this.coreService.post('iam/fido2registrations', {identityServiceName: this.identityServiceName}).subscribe((res: any) => {
-      this.pendingRequests = res.fido2RegistrationItems;
+    this.coreService.post('iam/fidoregistrations', {identityServiceName: this.identityServiceName}).subscribe((res: any) => {
+      this.pendingRequests = res.fidoRegistrationItems;
       this.loading = false;
       this.searchInResult();
     })
