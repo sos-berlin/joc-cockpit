@@ -25,9 +25,9 @@ export class LoginComponent implements OnInit {
   errorMsgText = '';
   identityServiceName = '';
   defaultSetting: any = {};
-  fido2Properties: any = {};
+  fidoProperties: any = {};
   oidcIdentityServiceItems = [];
-  fido2IdentityServiceItems = [];
+  fidoIdentityServiceItems = [];
   fido2ndFactorServiceItems = [];
   showRegister = false;
   showLogin = false;
@@ -104,7 +104,7 @@ export class LoginComponent implements OnInit {
     this.coreService.post('iam/identityproviders', {}).subscribe({
       next: (res) => {
         this.oidcIdentityServiceItems = res.oidcServiceItems || [];
-        this.fido2IdentityServiceItems = res.fido2ServiceItems || [];
+        this.fidoIdentityServiceItems = res.fidoServiceItems || [];
         this.fido2ndFactorServiceItems = res.fido2ndFactorServiceItems || [];
       }, error(err) {
         console.error(err)
@@ -251,7 +251,7 @@ export class LoginComponent implements OnInit {
     this.submitted1 = true;
     this.errorMsg = false;
     this.errorMsgText = '';
-    this.coreService.post('iam/fido2registration/request_registration_start', {
+    this.coreService.post('iam/fidoregistration/request_registration_start', {
       identityServiceName: this.identityServiceName,
       accountName: this.user.userName,
       origin: location.origin,
@@ -276,13 +276,13 @@ export class LoginComponent implements OnInit {
 
   private createRegistrationRequest(res) {
     let publicKeyCredentialCreationOptions = this.authService.createPublicKeyCredentialRequest(Uint8Array.from(atob(btoa(res.challenge)), c => c.charCodeAt(0)),
-      res.fido2Properties, this.user);
+      res.fidoProperties, this.user);
     navigator.credentials.create({
       publicKey: publicKeyCredentialCreationOptions
     }).then((credential: any) => {
 
       const {jwk, publicKey} = this.authService.getPublicKey(credential.response.attestationObject);
-      this.coreService.post('iam/fido2registration/request_registration', {
+      this.coreService.post('iam/fidoregistration/request_registration', {
         identityServiceName: this.identityServiceName,
         accountName: this.user.userName,
         email: this.user.email,
@@ -333,11 +333,11 @@ export class LoginComponent implements OnInit {
   onSign(data) {
     this.identityServiceName = data;
     this.user.userName = '';
-    this.coreService.post('iam/identity_fido2_client', {
+    this.coreService.post('iam/identity_fido_client', {
       identityServiceName: this.identityServiceName
     }).subscribe((res) => {
-      this.fido2Properties = res;
-      if (!res.iamFido2RequireAccount) {
+      this.fidoProperties = res;
+      if (!res.iamFidoRequireAccount) {
         this.signIn();
       } else {
         this.showLogin = true;
@@ -348,7 +348,7 @@ export class LoginComponent implements OnInit {
   signIn(): void {
     this.errorMsg = false;
     this.errorMsgText = '';
-    this.coreService.post('iam/fido2/request_authentication', {
+    this.coreService.post('iam/fido/request_authentication', {
       identityServiceName: this.identityServiceName,
       origin: location.origin,
       accountName: this.user.userName ? this.user.userName : undefined,
@@ -368,13 +368,13 @@ export class LoginComponent implements OnInit {
 
   private getCredentials(res): void {
     let allowCredentials = [];
-    if (!this.fido2Properties?.iamFido2UserVerification || this.fido2Properties?.iamFido2UserVerification?.toLowerCase() !== 'required') {
+    if (!this.fidoProperties?.iamFidoUserVerification || this.fidoProperties?.iamFidoUserVerification?.toLowerCase() !== 'required') {
       if (res.credentialIds && isArray(res.credentialIds)) {
         res.credentialIds.forEach((item) => {
           allowCredentials.push({
             id: Uint8Array.from(atob((item)), c => c.charCodeAt(0)),
             type: 'public-key',
-            transports: this.fido2Properties?.iamFido2Transports ? (isArray(this.fido2Properties?.iamFido2Transports) ? this.fido2Properties?.iamFido2Transports : [this.fido2Properties?.iamFido2Transports]) : []
+            transports: this.fidoProperties?.iamFidoTransports ? (isArray(this.fidoProperties?.iamFidoTransports) ? this.fidoProperties?.iamFidoTransports : [this.fidoProperties?.iamFidoTransports]) : []
           })
         })
       }
@@ -383,13 +383,13 @@ export class LoginComponent implements OnInit {
       challenge: Uint8Array.from(atob(btoa(res.challenge)), c => c.charCodeAt(0)),
       allowCredentials: allowCredentials,
       rpId: window.location.hostname,
-      timeout: this.fido2Properties?.iamFido2Timeout ? this.fido2Properties?.iamFido2Timeout * 1000 : 60000,
-      userVerification: this.fido2Properties?.iamFido2UserVerification?.toLowerCase() || "preferred"
+      timeout: this.fidoProperties?.iamFidoTimeout ? this.fidoProperties?.iamFidoTimeout * 1000 : 60000,
+      userVerification: this.fidoProperties?.iamFidoUserVerification?.toLowerCase() || "preferred"
     };
 
     navigator.credentials.get({'publicKey': publicKey})
       .then((getAssertionResponse: Credential) => {
-        this.fido2Authenticate(getAssertionResponse, res.requestId + '');
+        this.fidoAuthenticate(getAssertionResponse, res.requestId + '');
       })
       .catch((error) => {
         this.errorMsg = true;
@@ -397,7 +397,7 @@ export class LoginComponent implements OnInit {
       })
   }
 
-  private fido2Authenticate(getAssertionResponse, requestId): void {
+  private fidoAuthenticate(getAssertionResponse, requestId): void {
     let obj: any = {
       'X-AUTHENTICATOR-DATA': this.authService.bufferToBase64Url(getAssertionResponse.response.authenticatorData),
       'X-CLIENT-DATA-JSON': this.authService.bufferToBase64Url(getAssertionResponse.response.clientDataJSON),

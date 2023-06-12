@@ -2898,7 +2898,7 @@
     "label.sendMailToConfirmEmail" : "E-Mail an Anwender zur Bestätigung der E-Mail Adresse senden",
     "label.sendMailToNotifyConfirmationReceived" : "E-Mail an Administrator zur Benachrichtigung über erfolgreiche Bestätigung senden",
     "label.sendMailToNotifyRegistrationEmail" : "E-Mail an Anwender zur Benachrichtigung über erfolgreiche Registrierung senden",
-    "label.listOfFido2" : "FIDO basierte Identitätsdienste",
+    "label.listOfFido" : "FIDO basierte Identitätsdienste",
     "label.listOfCert" : "Zertifikatsbasierte Identitätsdienste",
     "label.group": "Gruppe",
     "label.general": "Generelles",

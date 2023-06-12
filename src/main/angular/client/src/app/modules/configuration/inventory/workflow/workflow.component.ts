@@ -4713,7 +4713,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   changeSettings(evn): void {
-    console.log(evn);
     if (evn == 'unchanged') {
       delete this.selectedNode.obj.unsuccessful;
     } else {

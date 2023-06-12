@@ -2,7 +2,7 @@
   nzHideUnMatched="false" [nzShowExpand]="false" [nzDropdownStyle]="{ 'max-height': '300px' }" nzShowSearch
   [nzAllowClear]="true" [(ngModel)]="obj.name" name="objectName" (nzExpandChange)="onExpand($event)">
   <ng-template #nzTreeTemplate let-node>
-    <div class="node-wrapper w-93">
+    <div class="node-wrapper w-full">
       <span *ngIf="node.origin.loading || (!node.origin.type && !node.origin.objectType)"
         [class.toggle-children-wrapper-expanded]="node.isExpanded"
         [class.toggle-children-wrapper-collapsed]="!node.isExpanded" (click)="openFolder(node);$event.stopPropagation()"
@@ -14,7 +14,7 @@
       <span *ngIf="!node.origin.loading && node.origin.type" class="w-16">
         <span class="fa fa-lg p-r-sm"></span>
       </span>
-      <div class="node-content-wrapper p-l-xs" [nz-tooltip]="node.origin.path?.substring(0, node.origin.path?.lastIndexOf('/')) || '/'" nzTooltipPlacement="right" (click)="loadData(node, $event);"
+      <div class="node-content-wrapper p-l-xs w-full" [nz-tooltip]="node.origin.path?.substring(0, node.origin.path?.lastIndexOf('/')) || '/'" nzTooltipPlacement="right" (click)="loadData(node, $event);"
         [class.node-content-wrapper-active]="node.origin.path == obj.name">
         <i *ngIf="!node.origin.type && !node.origin.objectType" nz-icon
           [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>

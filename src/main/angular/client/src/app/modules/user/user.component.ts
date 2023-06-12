@@ -1192,23 +1192,23 @@ export class UserComponent implements OnInit, OnDestroy {
 
   /* ----------------------FIDO--------------------- */
   addDevice(): void {
-    this.coreService.post('iam/identity_fido2_client', {
+    this.coreService.post('iam/identity_fido_client', {
       identityServiceName: this.identityServiceName
     }).subscribe((res) => {
         this.createRequestObject(res);
     });
   }
 
-  private createRequestObject(fido2Properties): void {
+  private createRequestObject(fidoProperties): void {
     const challenge = new Uint8Array(32);
     window.crypto.getRandomValues(challenge);
     let publicKeyCredentialCreationOptions = this.authService.createPublicKeyCredentialRequest(challenge,
-      fido2Properties, {accountName: this.username});
+      fidoProperties, {accountName: this.username});
     navigator.credentials.create({
       publicKey: publicKeyCredentialCreationOptions
     }).then((credential: any) => {
       const {jwk, publicKey} = this.authService.getPublicKey(credential.response.attestationObject);
-      this.coreService.post('iam/fido2/add_device', {
+      this.coreService.post('iam/fido/add_device', {
         identityServiceName: this.identityServiceName,
         accountName: this.username,
         publicKey: publicKey,

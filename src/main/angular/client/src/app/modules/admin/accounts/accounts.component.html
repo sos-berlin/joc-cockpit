@@ -102,7 +102,7 @@
                   <a translate>user.button.removeFromBlocklist</a>
                 </li>
                 <li nz-menu-divider></li>
-                <li nz-menu-item *ngIf="identityServiceType.match('JOC')" (click)="disabledUser(account, account.disabled)"
+                <li nz-menu-item *ngIf="identityServiceType.match('JOC') || secondFactor" (click)="disabledUser(account, account.disabled)"
                     [ngClass]="{'disable-link' :username==account.accountName && selectedIdentityService === userIdentityService}">
                   <a *ngIf="account.disabled" translate>user.button.enable</a>
                   <a *ngIf="!account.disabled" translate>user.button.disable</a>
