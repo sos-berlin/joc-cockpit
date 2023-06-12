@@ -963,13 +963,16 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.sideView = this.coreService.getSideView();
+    if(!this.sideView.xml){
+      this.sideView.xml = { width: 500, show: true };
+    }
+    if (this.sideView.xml && !this.sideView.xml.show) {
+      this.hidePanel();
+    }
     if (!this.schedulerIds.selected) {
       this.isLoading = false;
       return;
-    }
-    this.sideView = this.coreService.getSideView();
-    if (this.sideView.xml && !this.sideView.xml.show) {
-      this.hidePanel();
     }
     const url = this.router.url.split('/')[2];
     this.objectType = url.toUpperCase();
