@@ -250,6 +250,16 @@ export class SettingModalComponent implements OnInit {
         if (this.data) {
           if (data) {
             this.currentObj = data.vault || data.keycloak || data.oidc || data.fido2 || {};
+            if(this.data.identityServiceType == 'FIDO' && this.data.secondFactor){
+              this.currentObj.iamFidoProtocolType = 'U2F';
+              this.currentObj.iamFido2RequireAccount = true;
+              if (this.currentObj.iamFido2UserVerification === 'REQUIRED') {
+                this.currentObj.iamFido2UserVerification = 'PREFERRED';
+              }
+              if (this.currentObj.iamFido2ResidentKey === 'REQUIRED') {
+                this.currentObj.iamFido2ResidentKey = 'PREFERRED';
+              }
+            }
             if (data.ldap || (res.configuration.objectType && res.configuration.objectType.match(/LDAP/))) {
               if (data.ldap && data.ldap.simple) {
                 this.userObj = data.ldap.simple;
@@ -316,9 +326,9 @@ export class SettingModalComponent implements OnInit {
       this.currentObj.iamFido2UserVerification = 'REQUIRED';
       this.currentObj.iamFido2ResidentKey = 'REQUIRED';
       this.currentObj.iamFido2Attachment = 'ROAMING';
-    } else if (evt === 'PASSKEYS') {
+    } else if (evt === 'PASSKEY') {
       this.currentObj.iamFido2ResidentKey = 'REQUIRED';
-      this.currentObj.iamFido2Attachment = 'PLATTFORM';
+      this.currentObj.iamFido2Attachment = 'PLATFORM';
     } else {
       this.currentObj.iamFido2Attachment = undefined;
       this.currentObj.iamFido2RequireAccount = true;

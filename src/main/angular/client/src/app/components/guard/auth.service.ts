@@ -208,9 +208,9 @@ export class AuthService {
     let authenticatorSelection: AuthenticatorSelectionCriteria = {
       userVerification: fido2Properties?.iamFido2UserVerification?.toLowerCase() || 'preferred'
     };
-    if (fido2Properties?.iamFido2Attachment == 'ROAMING') {
+    if (fido2Properties?.iamFidoProtocolType == 'FIDO2') {
       authenticatorSelection.authenticatorAttachment = 'cross-platform';
-    } else if (fido2Properties?.iamFido2Attachment == 'PLATTFORM') {
+    } else if (fido2Properties?.iamFidoProtocolType == 'PASSKEY') {
       authenticatorSelection.authenticatorAttachment = 'platform';
     }
     if (fido2Properties?.iamFido2ResidentKey) {
