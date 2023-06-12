@@ -1,10 +1,12 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from "@angular/router";
+import {NzModalService} from "ng-zorro-antd/modal";
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {SearchPipe} from '../../../pipes/core.pipe';
+import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 
 // Main Component
 @Component({
@@ -27,7 +29,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private router: Router,
-              private searchPipe: SearchPipe, private dataService: DataService) {
+              private searchPipe: SearchPipe, private dataService: DataService, public modal: NzModalService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -244,6 +246,37 @@ export class AgentComponent implements OnInit, OnDestroy {
   backToList(): void {
     this.selectedAgentId = '';
     this.searchInResult();
+  }
+
+  switchOver(cluster): void {
+    const obj = {
+      controllerId: this.schedulerIds.selected,
+      agentId: cluster.agentId,
+      auditLog: {}
+    };
+
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        name: obj.agentId,
+        operation: 'Switch Over'
+      };
+      this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzComponentParams: {
+          comments,
+          url: 'agent/cluster/switchover',
+          obj,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+
+    } else {
+      this.coreService.post('agent/cluster/switchover', obj).subscribe();
+    }
   }
 
   showAgents(cluster, isSubagent = false): void {

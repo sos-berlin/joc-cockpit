@@ -19,7 +19,7 @@ export class SignupCompleteComponent implements OnInit {
   }
 
   private confirmToken(token): void {
-    this.coreService.post('iam/fido2registration/confirm', {
+    this.coreService.post('iam/fidoregistration/confirm', {
       token
     }).subscribe({
       next: (res) => {
