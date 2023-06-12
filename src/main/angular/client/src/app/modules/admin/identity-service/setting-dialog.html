@@ -851,7 +851,7 @@
                  translate>user.label.fidoType
           </label>
           <div class="col-sm-6">
-            <nz-radio-group name="type" [(ngModel)]="currentObj.iamFidoProtocolType" (ngModelChange)="changeSettings($event)">
+            <nz-radio-group [nzDisabled]="data.secondFactor" name="type" [(ngModel)]="currentObj.iamFido2ProtocolType" (ngModelChange)="changeSettings($event)">
               <label [nz-tooltip]="'user.tooltips.webauthn.fido2' | translate" [nzTooltipMouseEnterDelay]="0.5"
                      nz-radio nzValue="FIDO2"><span translate>user.label.fido2</span></label>
               <label [nz-tooltip]="'user.tooltips.webauthn.u2f' | translate" [nzTooltipMouseEnterDelay]="0.5"
@@ -865,26 +865,26 @@
           <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.iamRequireAccount' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.requireAccount</label>
           <div class="col-sm-6">
-            <label nz-checkbox [nzDisabled]="currentObj.iamFidoProtocolType === 'U2F'"
+            <label nz-checkbox [nzDisabled]="currentObj.iamFido2ProtocolType === 'U2F'"
                    [(ngModel)]="currentObj.iamFido2RequireAccount" name="iamFido2RequireAccount">
             </label>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.webauthn.iamTimeout' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2Timeout
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFidoTimeout
           </label>
           <div class="col-sm-6"
                [ngClass]="{'has-error' : ((iamFido2Timeout.dirty || iamFido2Timeout.touched) && iamFido2Timeout.invalid)}">
             <nz-input-number name="iamFido2Timeout"
-                             [nzPlaceHolder]="'user.placeholder.iamFido2Timeout' | translate" [nzMin]="0"
+                             [nzPlaceHolder]="'user.placeholder.iamFidoTimeout' | translate" [nzMin]="0"
                              #iamFido2Timeout="ngModel"
                              [(ngModel)]="currentObj.iamFido2Timeout"></nz-input-number>
           </div>
         </div>
         <div class="form-group row" *ngIf="currentObj.iamFido2RequireAccount">
           <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.webauthn.iamTransports' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2Transports
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFidoTransports
           </label>
           <div class="col-sm-6">
             <nz-select name="iamFido2Transports" nzMode="multiple" [(ngModel)]="currentObj.iamFido2Transports">
@@ -894,39 +894,39 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 " [ngClass]="{'form-control-label' : currentObj.iamFidoProtocolType !== 'FIDO2'}"
+          <label class="col-sm-4 " [ngClass]="{'form-control-label' : currentObj.iamFido2ProtocolType !== 'FIDO2'}"
                  [nz-tooltip]="'user.tooltips.webauthn.iamUserVerification' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2UserVerification
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFidoUserVerification
           </label>
-          <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType !== 'FIDO2'">
+          <div class="col-sm-6" *ngIf="currentObj.iamFido2ProtocolType !== 'FIDO2'">
             <nz-select name="iamFido2UserVerification" [(ngModel)]="currentObj.iamFido2UserVerification">
               <nz-option *ngFor="let option of iamFido2UserVerification"
                          [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
-              <nz-option *ngIf="currentObj.iamFidoProtocolType !== 'U2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
+              <nz-option *ngIf="currentObj.iamFido2ProtocolType !== 'U2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
             </nz-select>
           </div>
-          <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType === 'FIDO2'">Required</div>
+          <div class="col-sm-6" *ngIf="currentObj.iamFido2ProtocolType === 'FIDO2'">Required</div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4" [ngClass]="{'form-control-label' : currentObj.iamFidoProtocolType == 'U2F'}"
+          <label class="col-sm-4" [ngClass]="{'form-control-label' : currentObj.iamFido2ProtocolType == 'U2F'}"
                  [nz-tooltip]="'user.tooltips.webauthn.iamResidentKey' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2ResidentKey
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFidoResidentKey
           </label>
-          <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType == 'U2F'">
+          <div class="col-sm-6" *ngIf="currentObj.iamFido2ProtocolType == 'U2F'">
             <nz-select name="iamFido2ResidentKey" [(ngModel)]="currentObj.iamFido2ResidentKey">
               <nz-option *ngFor="let option of iamFido2UserVerification"
                          [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
-              <nz-option *ngIf="currentObj.iamFidoProtocolType !== 'U2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
+              <nz-option *ngIf="currentObj.iamFido2ProtocolType !== 'U2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
             </nz-select>
           </div>
-          <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType !== 'U2F'">Required</div>
+          <div class="col-sm-6" *ngIf="currentObj.iamFido2ProtocolType !== 'U2F'">Required</div>
         </div>
-        <div class="form-group row" *ngIf="currentObj.iamFidoProtocolType !== 'U2F'">
+        <div class="form-group row" *ngIf="currentObj.iamFido2ProtocolType !== 'U2F'">
           <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.iamAttachment' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFido2Attachment
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFidoAttachment
           </label>
           <div class="col-sm-6">
-            {{currentObj.iamFidoProtocolType === 'FIDO2' ? 'Roaming' : 'Platform'}}
+            {{currentObj.iamFido2ProtocolType === 'FIDO2' ? 'Roaming' : 'Platform'}}
           </div>
         </div>
         <div class="row">
