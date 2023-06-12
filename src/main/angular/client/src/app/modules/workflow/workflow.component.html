@@ -14,16 +14,66 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline m-b-xs" [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}">
+            <div class="btn-group dropdown">
+              <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm m-l-12">
+                {{'deploymentService.label.agents' | translate}}
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-select [disabled]="savedFilter.selected" (ngModelChange)="selectAgents($event)" nzMode="multiple" class="multi-select-dropdown" name="agentNames" [nzDropdownClassName]="'multi-select-dropdown-list'"
+                         nzPlaceHolder=" "
+                         [(ngModel)]="workflowFilters.filter.agentNames" >
+                <ng-container *ngFor="let item of listOfAgents">
+                  <ng-container *ngIf="!item.title">
+                    <nz-option [nzHide]="item === '*'" nzCustomContent [nzLabel]="item"
+                               [nzValue]="item">
+                      <span class="_600" style="font-size: 12px;">
+                        {{item}}
+                      </span>
+                    </nz-option>
+                  </ng-container>
+                  <ng-container *ngIf="item.title == 'agents'">
+                    <nz-option-group *ngFor="let group of [item]" [nzLabel]="groupTitle">
+                      <ng-template #groupTitle>
+                        <span class="_600">
+                          {{ 'agent.label.' + group.title | translate }}
+                        </span>
+                      </ng-template>
+                      <nz-option *ngFor="let agent of group.children" [nzLabel]="agent"
+                                 [nzValue]="agent"></nz-option>
+                    </nz-option-group>
+                  </ng-container>
+                  <ng-container
+                    *ngIf="item.title == 'agentGroups'">
+                    <nz-option nzCustomContent nzDisabled>
+                      <span class="_600" style="font-size: 12px;">
+                        {{'agent.label.agentGroups' | translate}}
+                      </span>
+                    </nz-option>
+                    <nz-option-group *ngFor="let group of item.children" [nzLabel]="groupTitle">
+                      <ng-template #groupTitle>
+                        <span class="_600 pl-20">
+                          {{ group.title }}
+                        </span>
+                      </ng-template>
+                      <nz-option nzCustomContent *ngFor="let agent of group.children" [nzLabel]="agent"
+                                 [nzValue]="agent">
+                        <span class="pl-20">{{ agent }}</span>
+                      </nz-option>
+                    </nz-option-group>
+                  </ng-container>
+                </ng-container>
+              </nz-select>
+            </div>
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterState">
-                <button class="btn btn-grey btn-sm button-group-ellipsis"
+                <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                         [ngClass]="{'btn-primary': workflowFilters.filter.states.includes(btn.state)}"
                         (click)="loadWorkflow(btn.state)" translate>filters.button.{{btn.text}}
                 </button>
               </ng-container>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" type="button" translate>
+              <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" type="button" translate>
                 common.label.status
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
@@ -199,7 +249,7 @@
           <div class="row m-b" *ngIf="showSearchPanel">
             <div class="col-md-12">
               <div class="box p-a m-b-xs">
-                <app-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds"
+                <app-form-template [filter]="searchFilter" [listOfAgents]="listOfAgents" [preferences]="preferences" [schedulerIds]="schedulerIds"
                                    [permission]="permission" [allFilter]="filterList" [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-form-template>
               </div>
             </div>

@@ -7943,6 +7943,21 @@ tr.tr-border td:first-child {
   min-height: auto;
 }
 
+.multi-select-dropdown{
+  opacity: 0;
+  right: 0;
+  position: absolute;
+  height: 28px !important;
+  .ant-select-selector{
+    height: 30px !important;
+    cursor:pointer;
+  }
+}
+
+.multi-select-dropdown-list{
+  width: 180px !important;
+}
+
 .group-list .cdk-virtual-scroll-spacer {
   height: auto !important;
 }

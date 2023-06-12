@@ -851,7 +851,7 @@
                  translate>user.label.fidoType
           </label>
           <div class="col-sm-6">
-            <nz-radio-group [nzDisabled]="data.secondFactor" name="type" [(ngModel)]="currentObj.iamFido2ProtocolType" (ngModelChange)="changeSettings($event)">
+            <nz-radio-group [nzDisabled]="data.secondFactor" name="type" [(ngModel)]="currentObj.iamFidoProtocolType" (ngModelChange)="changeSettings($event)">
               <label [nz-tooltip]="'user.tooltips.webauthn.fido2' | translate" [nzTooltipMouseEnterDelay]="0.5"
                      nz-radio nzValue="FIDO2"><span translate>user.label.fido2</span></label>
               <label [nz-tooltip]="'user.tooltips.webauthn.u2f' | translate" [nzTooltipMouseEnterDelay]="0.5"
@@ -865,8 +865,8 @@
           <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.iamRequireAccount' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.requireAccount</label>
           <div class="col-sm-6">
-            <label nz-checkbox [nzDisabled]="currentObj.iamFido2ProtocolType === 'U2F'"
-                   [(ngModel)]="currentObj.iamFido2RequireAccount" name="iamFido2RequireAccount">
+            <label nz-checkbox [nzDisabled]="currentObj.iamFidoProtocolType === 'U2F'"
+                   [(ngModel)]="currentObj.iamFidoRequireAccount" name="iamFidoRequireAccount">
             </label>
           </div>
         </div>
@@ -875,58 +875,58 @@
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFidoTimeout
           </label>
           <div class="col-sm-6"
-               [ngClass]="{'has-error' : ((iamFido2Timeout.dirty || iamFido2Timeout.touched) && iamFido2Timeout.invalid)}">
-            <nz-input-number name="iamFido2Timeout"
+               [ngClass]="{'has-error' : ((iamFidoTimeout.dirty || iamFidoTimeout.touched) && iamFidoTimeout.invalid)}">
+            <nz-input-number name="iamFidoTimeout"
                              [nzPlaceHolder]="'user.placeholder.iamFidoTimeout' | translate" [nzMin]="0"
-                             #iamFido2Timeout="ngModel"
-                             [(ngModel)]="currentObj.iamFido2Timeout"></nz-input-number>
+                             #iamFidoTimeout="ngModel"
+                             [(ngModel)]="currentObj.iamFidoTimeout"></nz-input-number>
           </div>
         </div>
-        <div class="form-group row" *ngIf="currentObj.iamFido2RequireAccount">
+        <div class="form-group row" *ngIf="currentObj.iamFidoRequireAccount">
           <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.webauthn.iamTransports' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFidoTransports
           </label>
           <div class="col-sm-6">
-            <nz-select name="iamFido2Transports" nzMode="multiple" [(ngModel)]="currentObj.iamFido2Transports">
-              <nz-option *ngFor="let option of iamFido2Transports"
+            <nz-select name="iamFidoTransports" nzMode="multiple" [(ngModel)]="currentObj.iamFidoTransports">
+              <nz-option *ngFor="let option of iamFidoTransports"
                          [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
             </nz-select>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 " [ngClass]="{'form-control-label' : currentObj.iamFido2ProtocolType !== 'FIDO2'}"
+          <label class="col-sm-4 " [ngClass]="{'form-control-label' : currentObj.iamFidoProtocolType !== 'FIDO2'}"
                  [nz-tooltip]="'user.tooltips.webauthn.iamUserVerification' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFidoUserVerification
           </label>
-          <div class="col-sm-6" *ngIf="currentObj.iamFido2ProtocolType !== 'FIDO2'">
-            <nz-select name="iamFido2UserVerification" [(ngModel)]="currentObj.iamFido2UserVerification">
-              <nz-option *ngFor="let option of iamFido2UserVerification"
+          <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType !== 'FIDO2'">
+            <nz-select name="iamFidoUserVerification" [(ngModel)]="currentObj.iamFidoUserVerification">
+              <nz-option *ngFor="let option of iamFidoUserVerification"
                          [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
-              <nz-option *ngIf="currentObj.iamFido2ProtocolType !== 'U2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
+              <nz-option *ngIf="currentObj.iamFidoProtocolType !== 'U2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
             </nz-select>
           </div>
-          <div class="col-sm-6" *ngIf="currentObj.iamFido2ProtocolType === 'FIDO2'">Required</div>
+          <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType === 'FIDO2'">Required</div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4" [ngClass]="{'form-control-label' : currentObj.iamFido2ProtocolType == 'U2F'}"
+          <label class="col-sm-4" [ngClass]="{'form-control-label' : currentObj.iamFidoProtocolType == 'U2F'}"
                  [nz-tooltip]="'user.tooltips.webauthn.iamResidentKey' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFidoResidentKey
           </label>
-          <div class="col-sm-6" *ngIf="currentObj.iamFido2ProtocolType == 'U2F'">
-            <nz-select name="iamFido2ResidentKey" [(ngModel)]="currentObj.iamFido2ResidentKey">
-              <nz-option *ngFor="let option of iamFido2UserVerification"
+          <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType == 'U2F'">
+            <nz-select name="iamFidoResidentKey" [(ngModel)]="currentObj.iamFidoResidentKey">
+              <nz-option *ngFor="let option of iamFidoUserVerification"
                          [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
-              <nz-option *ngIf="currentObj.iamFido2ProtocolType !== 'U2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
+              <nz-option *ngIf="currentObj.iamFidoProtocolType !== 'U2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
             </nz-select>
           </div>
-          <div class="col-sm-6" *ngIf="currentObj.iamFido2ProtocolType !== 'U2F'">Required</div>
+          <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType !== 'U2F'">Required</div>
         </div>
-        <div class="form-group row" *ngIf="currentObj.iamFido2ProtocolType !== 'U2F'">
+        <div class="form-group row" *ngIf="currentObj.iamFidoProtocolType !== 'U2F'">
           <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.iamAttachment' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFidoAttachment
           </label>
           <div class="col-sm-6">
-            {{currentObj.iamFido2ProtocolType === 'FIDO2' ? 'Roaming' : 'Platform'}}
+            {{currentObj.iamFidoProtocolType === 'FIDO2' ? 'Roaming' : 'Platform'}}
           </div>
         </div>
         <div class="row">
@@ -939,7 +939,7 @@
         </div>
         <nz-tabset [nzAnimated]="false">
           <nz-tab [nzTitle]="'user.label.connection' | translate">
-            <div *ngIf="currentObj.iamFido2EmailSettings">
+            <div *ngIf="currentObj.iamFidoEmailSettings">
               <div class="form-group row">
                 <label class="col-sm-4 form-control-label" title="{{'user.label.jobResourceName' | translate}}"
                        [nz-tooltip]="'user.tooltips.webauthn.jobResource' | translate"
@@ -951,7 +951,7 @@
                   <nz-select
                     #jobResource="ngModel"
                     name="jobResource"
-                    [(ngModel)]="currentObj.iamFido2EmailSettings.nameOfJobResource"
+                    [(ngModel)]="currentObj.iamFidoEmailSettings.nameOfJobResource"
                     nzShowSearch
                     [nzAllowClear]="false"
                     [nzDropdownClassName]="'group-list'"
@@ -985,7 +985,7 @@
                      [ngClass]="{'has-error' : ((contentType.dirty || contentType.touched) && contentType.invalid)}">
                   <input type="text" class="form-control" #contentType="ngModel" name="contentType"
                          [placeholder]="'user.placeholder.contentType' | translate"
-                         [(ngModel)]="currentObj.iamFido2EmailSettings.contentType" autocomplete="off">
+                         [(ngModel)]="currentObj.iamFidoEmailSettings.contentType" autocomplete="off">
                   <div *ngIf="contentType.invalid && (contentType.dirty || contentType.touched)"
                        class="text-danger help-block">
                     <div *ngIf="contentType.errors.required">
@@ -1004,7 +1004,7 @@
                      [ngClass]="{'has-error' : ((charset.dirty || charset.touched) && charset.invalid)}">
                   <input type="text" class="form-control" #charset="ngModel" name="charset"
                          [placeholder]="'user.placeholder.contentType' | translate"
-                         [(ngModel)]="currentObj.iamFido2EmailSettings.charset" autocomplete="off">
+                         [(ngModel)]="currentObj.iamFidoEmailSettings.charset" autocomplete="off">
                   <div *ngIf="charset.invalid && (charset.dirty || charset.touched)"
                        class="text-danger help-block">
                     <div *ngIf="charset.errors.required">
@@ -1023,7 +1023,7 @@
                      [ngClass]="{'has-error' : ((encoding.dirty || encoding.touched) && encoding.invalid)}">
                   <input type="text" class="form-control" #encoding="ngModel" name="encoding"
                          [placeholder]="'user.placeholder.encoding' | translate"
-                         [(ngModel)]="currentObj.iamFido2EmailSettings.encoding" autocomplete="off">
+                         [(ngModel)]="currentObj.iamFidoEmailSettings.encoding" autocomplete="off">
                   <div *ngIf="encoding.invalid && (encoding.dirty || encoding.touched)"
                        class="text-danger help-block">
                     <div *ngIf="encoding.errors.required">
@@ -1038,7 +1038,7 @@
                        translate>user.label.priority
                 </label>
                 <div class="col-sm-6">
-                  <nz-select name="priority" [(ngModel)]="currentObj.iamFido2EmailSettings.priority">
+                  <nz-select name="priority" [(ngModel)]="currentObj.iamFidoEmailSettings.priority">
                     <nz-option [nzLabel]="'Normal'" [nzValue]="'normal'"></nz-option>
                     <nz-option [nzLabel]="'Low'" [nzValue]="'low'"></nz-option>
                     <nz-option [nzLabel]="'High'" [nzValue]="'high'"></nz-option>
@@ -1048,12 +1048,12 @@
             </div>
           </nz-tab>
           <nz-tab [nzTitle]="'user.label.confirmationEmail' | translate">
-            <div *ngIf="currentObj.iamFido2EmailSettings">
+            <div *ngIf="currentObj.iamFidoEmailSettings">
               <div class="form-group row">
                 <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.sendMailToConfirmEmail' | translate"
                        [nzTooltipMouseEnterDelay]="0.5" translate>user.label.sendMailToConfirmEmail</label>
                 <div class="col-sm-6">
-                  <label nz-checkbox [(ngModel)]="currentObj.iamFido2EmailSettings.sendMailToConfirm"
+                  <label nz-checkbox [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToConfirm"
                          name="sendMailToConfirmEmail"></label>
                 </div>
               </div>
@@ -1065,7 +1065,7 @@
                 <div class="col-sm-6">
                   <input type="text" class="form-control" name="ccRegistration"
                          [placeholder]="'user.placeholder.enterEmail' | translate"
-                         [(ngModel)]="currentObj.iamFido2EmailSettings.ccRegistration" autocomplete="off">
+                         [(ngModel)]="currentObj.iamFidoEmailSettings.ccRegistration" autocomplete="off">
                 </div>
               </div>
               <div class="form-group row" >
@@ -1076,7 +1076,7 @@
                 <div class="col-sm-6">
                   <input type="text" class="form-control" name="bccRegistration"
                          [placeholder]="'user.placeholder.enterEmail' | translate"
-                         [(ngModel)]="currentObj.iamFido2EmailSettings.bccRegistration" autocomplete="off">
+                         [(ngModel)]="currentObj.iamFidoEmailSettings.bccRegistration" autocomplete="off">
                 </div>
               </div>
               <div class="form-group row" >
@@ -1087,7 +1087,7 @@
                 <div class="col-sm-6">
                   <input type="text" class="form-control" name="subjectRegistration"
                          [placeholder]="'user.placeholder.subject' | translate"
-                         [(ngModel)]="currentObj.iamFido2EmailSettings.subjectRegistration" autocomplete="off">
+                         [(ngModel)]="currentObj.iamFidoEmailSettings.subjectRegistration" autocomplete="off">
                 </div>
               </div>
               <div class="form-group row">
@@ -1103,24 +1103,24 @@
                   </a>
                   <textarea class="form-control" nz-input [hidden]="previewRegistration"
                             [placeholder]="'user.placeholder.body' | translate"
-                            [(ngModel)]="currentObj.iamFido2EmailSettings.bodyRegistration"
+                            [(ngModel)]="currentObj.iamFidoEmailSettings.bodyRegistration"
                             [nzAutosize]="{ minRows: 5, maxRows:10}"
                             name="bodyRegistration"
                   ></textarea>
                   <div class="b-a" style="min-height: 104px;max-height: 450px;overflow: auto" *ngIf="previewRegistration">
-                    <iframe class="mail-template" [srcdoc]="currentObj.iamFido2EmailSettings.bodyRegistration | safeHtml"></iframe>
+                    <iframe class="mail-template" [srcdoc]="currentObj.iamFidoEmailSettings.bodyRegistration | safeHtml"></iframe>
                   </div>
                 </div>
               </div>
             </div>
           </nz-tab>
           <nz-tab [nzTitle]="'user.label.notificationEmail' | translate">
-            <div *ngIf="currentObj.iamFido2EmailSettings">
+            <div *ngIf="currentObj.iamFidoEmailSettings">
               <div class="form-group row">
                 <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyRegistrationEmail' | translate"
                        [nzTooltipMouseEnterDelay]="0.5" translate>user.label.sendMailToNotifyRegistrationEmail</label>
                 <div class="col-sm-6">
-                  <label nz-checkbox [(ngModel)]="currentObj.iamFido2EmailSettings.sendMailToNotifySuccessfulRegistration"
+                  <label nz-checkbox [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToNotifySuccessfulRegistration"
                          name="sendMailToNotifyRegistrationEmail"></label>
                 </div>
               </div>
@@ -1132,7 +1132,7 @@
                 <div class="col-sm-6">
                   <input type="text" class="form-control" name="ccAccess"
                          [placeholder]="'user.placeholder.enterEmail' | translate"
-                         [(ngModel)]="currentObj.iamFido2EmailSettings.ccAccess" autocomplete="off">
+                         [(ngModel)]="currentObj.iamFidoEmailSettings.ccAccess" autocomplete="off">
                 </div>
               </div>
               <div class="form-group row" >
@@ -1143,7 +1143,7 @@
                 <div class="col-sm-6">
                   <input type="text" class="form-control" name="bccAccess"
                          [placeholder]="'user.placeholder.enterEmail' | translate"
-                         [(ngModel)]="currentObj.iamFido2EmailSettings.bccAccess" autocomplete="off">
+                         [(ngModel)]="currentObj.iamFidoEmailSettings.bccAccess" autocomplete="off">
                 </div>
               </div>
               <div class="form-group row" >
@@ -1154,7 +1154,7 @@
                 <div class="col-sm-6">
                   <input type="text" class="form-control" name="subjectAccess"
                          [placeholder]="'user.placeholder.subject' | translate"
-                         [(ngModel)]="currentObj.iamFido2EmailSettings.subjectAccess" autocomplete="off">
+                         [(ngModel)]="currentObj.iamFidoEmailSettings.subjectAccess" autocomplete="off">
                 </div>
               </div>
               <div class="form-group row">
@@ -1170,24 +1170,24 @@
                   </a>
                   <textarea class="form-control" nz-input [hidden]="preview"
                             [placeholder]="'user.placeholder.body' | translate"
-                            [(ngModel)]="currentObj.iamFido2EmailSettings.bodyAccess"
+                            [(ngModel)]="currentObj.iamFidoEmailSettings.bodyAccess"
                             [nzAutosize]="{ minRows: 5, maxRows:10}"
                             name="bodyAccess"
                   ></textarea>
                   <div class="b-a" style="min-height: 104px;max-height: 450px;overflow: auto" *ngIf="preview">
-                    <iframe class="mail-template" [srcdoc]="currentObj.iamFido2EmailSettings.bodyAccess | safeHtml"></iframe>
+                    <iframe class="mail-template" [srcdoc]="currentObj.iamFidoEmailSettings.bodyAccess | safeHtml"></iframe>
                   </div>
                 </div>
               </div>
             </div>
           </nz-tab>
           <nz-tab [nzTitle]="'user.label.administrationEmail' | translate">
-            <div *ngIf="currentObj.iamFido2EmailSettings">
+            <div *ngIf="currentObj.iamFidoEmailSettings">
               <div class="form-group row">
                 <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyConfirmationReceived' | translate"
                        [nzTooltipMouseEnterDelay]="0.5" translate>user.label.sendMailToNotifyConfirmationReceived</label>
                 <div class="col-sm-6">
-                  <label nz-checkbox [(ngModel)]="currentObj.iamFido2EmailSettings.sendMailToNotifyConfirmationReceived"
+                  <label nz-checkbox [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToNotifyConfirmationReceived"
                          name="sendMailToNotifyConfirmationReceived"></label>
                 </div>
               </div>
@@ -1199,7 +1199,7 @@
                 <div class="col-sm-6">
                   <input type="text" class="form-control" name="recipient"
                          [placeholder]="'user.placeholder.enterEmail' | translate"
-                         [(ngModel)]="currentObj.iamFido2EmailSettings.receiptConfirmed" autocomplete="off">
+                         [(ngModel)]="currentObj.iamFidoEmailSettings.receiptConfirmed" autocomplete="off">
                 </div>
               </div>
               <div class="form-group row" >
@@ -1210,7 +1210,7 @@
                 <div class="col-sm-6">
                   <input type="text" class="form-control" name="ccConfirmed"
                          [placeholder]="'user.placeholder.enterEmail' | translate"
-                         [(ngModel)]="currentObj.iamFido2EmailSettings.ccConfirmed" autocomplete="off">
+                         [(ngModel)]="currentObj.iamFidoEmailSettings.ccConfirmed" autocomplete="off">
                 </div>
               </div>
               <div class="form-group row" >
@@ -1221,7 +1221,7 @@
                 <div class="col-sm-6">
                   <input type="text" class="form-control" name="bccConfirmed"
                          [placeholder]="'user.placeholder.enterEmail' | translate"
-                         [(ngModel)]="currentObj.iamFido2EmailSettings.bccConfirmed" autocomplete="off">
+                         [(ngModel)]="currentObj.iamFidoEmailSettings.bccConfirmed" autocomplete="off">
                 </div>
               </div>
               <div class="form-group row" >
@@ -1232,7 +1232,7 @@
                 <div class="col-sm-6">
                   <input type="text" class="form-control" name="subjectConfirmed"
                          [placeholder]="'user.placeholder.subject' | translate"
-                         [(ngModel)]="currentObj.iamFido2EmailSettings.subjectConfirmed" autocomplete="off">
+                         [(ngModel)]="currentObj.iamFidoEmailSettings.subjectConfirmed" autocomplete="off">
                 </div>
               </div>
               <div class="form-group row">
@@ -1248,12 +1248,12 @@
                   </a>
                   <textarea class="form-control" nz-input [hidden]="preview"
                             [placeholder]="'user.placeholder.body' | translate"
-                            [(ngModel)]="currentObj.iamFido2EmailSettings.bodyConfirmed"
+                            [(ngModel)]="currentObj.iamFidoEmailSettings.bodyConfirmed"
                             [nzAutosize]="{ minRows: 5, maxRows:10}"
                             name="bodyConfirmed"
                   ></textarea>
                   <div class="b-a" style="min-height: 104px;max-height: 450px;overflow: auto" *ngIf="preview">
-                    <iframe class="mail-template" [srcdoc]="currentObj.iamFido2EmailSettings.bodyConfirmed | safeHtml"></iframe>
+                    <iframe class="mail-template" [srcdoc]="currentObj.iamFidoEmailSettings.bodyConfirmed | safeHtml"></iframe>
                   </div>
                 </div>
               </div>
@@ -1263,9 +1263,9 @@
       </ng-container>
       <ng-container *ngIf="fullScreen || fullScreen2 || fullScreen3">
         <a class="pos-abt text-18 r-18" (click)="fullScreen = false;fullScreen2 = false;fullScreen3 = false;"><i class="fa fa-minus-square-o text-hover-primary" ></i></a>
-        <iframe class="mail-template-full" *ngIf="fullScreen2" [srcdoc]="currentObj.iamFido2EmailSettings.bodyAccess | safeHtml"></iframe>
-        <iframe class="mail-template-full" *ngIf="fullScreen" [srcdoc]="currentObj.iamFido2EmailSettings.bodyRegistration | safeHtml"></iframe>
-        <iframe class="mail-template-full" *ngIf="fullScreen3" [srcdoc]="currentObj.iamFido2EmailSettings.bodyConfirmed | safeHtml"></iframe>
+        <iframe class="mail-template-full" *ngIf="fullScreen2" [srcdoc]="currentObj.iamFidoEmailSettings.bodyAccess | safeHtml"></iframe>
+        <iframe class="mail-template-full" *ngIf="fullScreen" [srcdoc]="currentObj.iamFidoEmailSettings.bodyRegistration | safeHtml"></iframe>
+        <iframe class="mail-template-full" *ngIf="fullScreen3" [srcdoc]="currentObj.iamFidoEmailSettings.bodyConfirmed | safeHtml"></iframe>
       </ng-container>
     </div>
     <!------------------------------------END FIDO---------------------------------------------->

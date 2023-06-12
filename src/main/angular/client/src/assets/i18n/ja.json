@@ -2898,7 +2898,7 @@
     "label.sendMailToConfirmEmail" : "Send Mail to confirm e-mail address",
     "label.sendMailToNotifyConfirmationReceived" : "Send mail to notify about successful confirmation",
     "label.sendMailToNotifyRegistrationEmail" : "Send Mail to notify successful registration",
-    "label.listOfFido2" : "List Of Fido",
+    "label.listOfFido" : "List Of Fido",
     "label.listOfCert" : "List Of Certificate",
     "label.group": "グループ",
     "label.general": "共通",

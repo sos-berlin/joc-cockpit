@@ -90,11 +90,11 @@ export class ConfirmationModalComponent implements OnInit {
     this.submitted = true;
     let URL = this.forceChange ? 'iam/accounts/forcepasswordchange' : 'iam/accounts/resetpassword';
     if (this.approve) {
-      URL = 'iam/fido2registration/approve';
+      URL = 'iam/fidoregistration/approve';
     } else if (this.reject) {
-      URL = 'iam/fido2registration/deferr';
+      URL = 'iam/fidoregistration/deferr';
     } else if (this.deleteRequest) {
-      URL = 'iam/fido2registration/delete';
+      URL = 'iam/fidoregistration/delete';
     }
     let obj: any = {
       identityServiceName: this.identityServiceName,
@@ -139,12 +139,14 @@ export class AccountModalComponent implements OnInit {
   display: any;
   required = false;
   comments: any = {};
+  secondFactor = false;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
+    this.secondFactor = !!sessionStorage.secondFactor;
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
       this.display = true;
@@ -337,6 +339,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   searchableProperties = ['accountName', 'email', 'roles'];
   identityServiceName: string;
   identityServiceType: string;
+  secondFactor: boolean;
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -381,6 +384,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.userIdentityService = this.authService.currentUserIdentityService;
     this.identityServiceName = sessionStorage.identityServiceName;
     this.identityServiceType = sessionStorage.identityServiceType;
+    this.secondFactor = sessionStorage.secondFactor;
     this.getList();
   }
 
@@ -1007,24 +1011,24 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   /* ----------------------FIDO--------------------- */
   addDevice(account): void {
-    this.coreService.post('iam/identity_fido2_client', {
+    this.coreService.post('iam/identity_fido_client', {
       identityServiceName: this.identityServiceName
     }).subscribe((res) => {
         this.createRequestObject(res, account);
     });
   }
 
-  private createRequestObject(fido2Properties, account): void {
+  private createRequestObject(fidoProperties, account): void {
     const challenge = new Uint8Array(32);
     window.crypto.getRandomValues(challenge);
     let publicKeyCredentialCreationOptions = this.authService.createPublicKeyCredentialRequest(challenge,
-      fido2Properties, account);
+      fidoProperties, account);
 
     navigator.credentials.create({
       publicKey: publicKeyCredentialCreationOptions
     }).then((credential: any) => {
       const {jwk, publicKey} = this.authService.getPublicKey(credential.response.attestationObject);
-      this.coreService.post('iam/fido2/add_device', {
+      this.coreService.post('iam/fido/add_device', {
         identityServiceName: this.identityServiceName,
         accountName: account.accountName,
         publicKey: publicKey,
@@ -1094,7 +1098,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     if (comments.isChecked) {
       this.dataService.comments = comments;
     }
-    this.coreService.post('iam/fido2/remove_devices', obj).subscribe(() => {
+    this.coreService.post('iam/fido/remove_devices', obj).subscribe(() => {
 
     });
   }

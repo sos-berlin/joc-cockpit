@@ -85,16 +85,16 @@ export class SettingModalComponent implements OnInit {
     text: 'ssl',
     value: 'SSL'
   }];
-  iamFido2Transports = [{
-      text: 'Ble',
-      value: 'BLE'
-    }, {
-      text: 'Hybrid',
-      value: 'HYBRID'
-    }, {
-      text: 'Internal',
-      value: 'INTERNAL'
-    },
+  iamFidoTransports = [{
+    text: 'Ble',
+    value: 'BLE'
+  }, {
+    text: 'Hybrid',
+    value: 'HYBRID'
+  }, {
+    text: 'Internal',
+    value: 'INTERNAL'
+  },
     {
       text: 'Nfc',
       value: 'NFC'
@@ -104,7 +104,7 @@ export class SettingModalComponent implements OnInit {
       value: 'USB'
     }
   ];
-  iamFido2UserVerification = [{
+  iamFidoUserVerification = [{
     text: 'Discouraged',
     value: 'DISCOURAGED'
   }, {
@@ -236,7 +236,7 @@ export class SettingModalComponent implements OnInit {
       this.getImage();
     }
 
-    this.coreService.post(this.data.identityServiceType == 'FIDO' ? 'iam/fido2/configuration' : 'configuration', {
+    this.coreService.post(this.data.identityServiceType == 'FIDO' ? 'iam/fido/configuration' : 'configuration', {
       id: 0,
       objectType: this.data ? this.data.identityServiceType : 'GENERAL',
       configurationType: 'IAM',
@@ -249,15 +249,15 @@ export class SettingModalComponent implements OnInit {
         const data = JSON.parse(res.configuration.configurationItem);
         if (this.data) {
           if (data) {
-            this.currentObj = data.vault || data.keycloak || data.oidc || data.fido2 || {};
+            this.currentObj = data.vault || data.keycloak || data.oidc || data.fido || {};
             if(this.data.identityServiceType == 'FIDO' && this.data.secondFactor){
               this.currentObj.iamFidoProtocolType = 'U2F';
-              this.currentObj.iamFido2RequireAccount = true;
-              if (this.currentObj.iamFido2UserVerification === 'REQUIRED') {
-                this.currentObj.iamFido2UserVerification = 'PREFERRED';
+              this.currentObj.iamFidoRequireAccount = true;
+              if (this.currentObj.iamFidoUserVerification === 'REQUIRED') {
+                this.currentObj.iamFidoUserVerification = 'PREFERRED';
               }
-              if (this.currentObj.iamFido2ResidentKey === 'REQUIRED') {
-                this.currentObj.iamFido2ResidentKey = 'PREFERRED';
+              if (this.currentObj.iamFidoResidentKey === 'REQUIRED') {
+                this.currentObj.iamFidoResidentKey = 'PREFERRED';
               }
             }
             if (data.ldap || (res.configuration.objectType && res.configuration.objectType.match(/LDAP/))) {
@@ -294,13 +294,13 @@ export class SettingModalComponent implements OnInit {
           }
         }
         if (this.data.identityServiceType == 'FIDO') {
-          if (!this.currentObj.iamFido2EmailSettings) {
-            this.currentObj.iamFido2EmailSettings = {};
+          if (!this.currentObj.iamFidoEmailSettings) {
+            this.currentObj.iamFidoEmailSettings = {};
           }
-          if (!this.currentObj.iamFido2EmailSettings.priority) {
-            this.currentObj.iamFido2EmailSettings.priority = 'normal';
+          if (!this.currentObj.iamFidoEmailSettings.priority) {
+            this.currentObj.iamFidoEmailSettings.priority = 'normal';
           }
-          this.getJobResources(this.currentObj.iamFido2EmailSettings.nameOfJobResource);
+          this.getJobResources(this.currentObj.iamFidoEmailSettings.nameOfJobResource);
         }
       }
     });
@@ -323,20 +323,20 @@ export class SettingModalComponent implements OnInit {
 
   changeSettings(evt): void {
     if (evt === 'FIDO2') {
-      this.currentObj.iamFido2UserVerification = 'REQUIRED';
-      this.currentObj.iamFido2ResidentKey = 'REQUIRED';
-      this.currentObj.iamFido2Attachment = 'ROAMING';
+      this.currentObj.iamFidoUserVerification = 'REQUIRED';
+      this.currentObj.iamFidoResidentKey = 'REQUIRED';
+      this.currentObj.iamFidoAttachment = 'ROAMING';
     } else if (evt === 'PASSKEY') {
-      this.currentObj.iamFido2ResidentKey = 'REQUIRED';
-      this.currentObj.iamFido2Attachment = 'PLATFORM';
+      this.currentObj.iamFidoResidentKey = 'REQUIRED';
+      this.currentObj.iamFidoAttachment = 'PLATFORM';
     } else {
-      this.currentObj.iamFido2Attachment = undefined;
-      this.currentObj.iamFido2RequireAccount = true;
-      if (this.currentObj.iamFido2UserVerification === 'REQUIRED') {
-        this.currentObj.iamFido2UserVerification = 'PREFERRED';
+      this.currentObj.iamFidoAttachment = undefined;
+      this.currentObj.iamFidoRequireAccount = true;
+      if (this.currentObj.iamFidoUserVerification === 'REQUIRED') {
+        this.currentObj.iamFidoUserVerification = 'PREFERRED';
       }
-      if (this.currentObj.iamFido2ResidentKey === 'REQUIRED') {
-        this.currentObj.iamFido2ResidentKey = 'PREFERRED';
+      if (this.currentObj.iamFidoResidentKey === 'REQUIRED') {
+        this.currentObj.iamFidoResidentKey = 'PREFERRED';
       }
     }
   }
@@ -619,7 +619,7 @@ export class SettingModalComponent implements OnInit {
       } else if (this.data.identityServiceType.match('OIDC')) {
         obj.oidc = this.currentObj;
       } else if (this.data.identityServiceType == 'FIDO') {
-        obj.fido2 = this.currentObj;
+        obj.fido = this.currentObj;
       }
     } else {
       obj = this.coreService.clone(this.currentObj);
@@ -684,7 +684,7 @@ export class IdentityServiceModalComponent implements OnInit {
   display: any;
   required = false;
   comments: any = {};
-  fido2List = [];
+  fidoList = [];
   certList = [];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
@@ -709,14 +709,14 @@ export class IdentityServiceModalComponent implements OnInit {
     } else {
       this.currentObj.serviceAuthenticationScheme = 'SINGLE-FACTOR';
     }
-    this.getFido2List();
+    this.getFidoList();
     this.getCertList();
   }
 
-  private getFido2List(): void {
+  private getFidoList(): void {
     this.coreService.post('iam/identityservices', {"identityServiceType": "FIDO", "secondFactor": true}).subscribe({
       next: (res) => {
-        this.fido2List = res.identityServiceItems;
+        this.fidoList = res.identityServiceItems;
       }
     })
   }
@@ -769,7 +769,7 @@ export class IdentityServiceModalComponent implements OnInit {
       if (res.configuration.configurationItem) {
         const data = JSON.parse(res.configuration.configurationItem);
         if (data) {
-          if (data.vault || data.ldap || data.keycloak || data.oidc || data.fido2 || data.fido) {
+          if (data.vault || data.ldap || data.keycloak || data.oidc || data.fido) {
             this.removeSettingId = res.configuration.id;
             this.settingObj = res.configuration.configurationItem;
           }
@@ -925,7 +925,6 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
 
   showUser(identityService): void {
     if (identityService.identityServiceType !== 'UNKNOWN' && identityService.identityServiceType !== 'CERTIFICATE') {
-
       sessionStorage.identityServiceName = identityService.identityServiceName;
       sessionStorage.identityServiceType = identityService.identityServiceType;
       if (identityService.secondFactor) {

@@ -649,21 +649,28 @@
             </div>
           </div>
           <div  *ngIf="selectedNode.type === 'Finish'">
-            <div class="form-group row">
+            <div class="m-b-12 row">
+              <label class="col-md-4 col-lg-3"
+                     translate>
+              </label>
+              <div class="col-md-8 col-lg-9">
+                <nz-radio-group name="type" [(ngModel)]="selectedNode.obj.type" (ngModelChange)="changeSettings($event)">
+                  <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.finish.unchanged' | translate) : ''"
+                         [nzTooltipMouseEnterDelay]="0.5" nz-radio nzValue="unchanged"><span translate>workflow.label.unchanged</span></label>
+                  <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.finish.unsuccessful' | translate) : ''"
+                         [nzTooltipMouseEnterDelay]="0.5" nz-radio nzValue="unsuccessful"><span translate>workflow.label.unsuccessful</span></label>
+                  <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.finish.successful' | translate) : ''"
+                         [nzTooltipMouseEnterDelay]="0.5" nz-radio nzValue="successful"><span translate>workflow.label.successful</span></label>
+                </nz-radio-group>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="selectedNode.obj.type == 'unsuccessful'">
               <label class="col-md-4 col-lg-3 form-control-label"
                      [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.finish.message' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.message</label>
               <div class="col-md-8 col-lg-9">
-                <textarea class="form-control" [appAutofocus]="true" name="message" rows="2"
+                <textarea class="form-control" [appAutofocus]="true" name="message" rows="3"
                           [(ngModel)]="selectedNode.obj.message"></textarea>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-4 col-lg-3 block-ellipsis-job"
-                     [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.finish.unsuccessful' | translate) : ''"
-                     [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.unsuccessful</label>
-              <div class="col-md-8 col-lg-9">
-                <label nz-checkbox [(ngModel)]="selectedNode.obj.unsuccessful" name="unsuccessful"></label>
               </div>
             </div>
           </div>
@@ -711,7 +718,7 @@
               <label class="col-md-4 col-lg-3 form-control-label"
                      [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.retry.maxTries' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.maxTries
-                
+
               </label>
               <div class="col-md-8 col-lg-9">
                 <nz-input-number [appAutofocus]="true" #maxTries="ngModel" [nzMin]="0" [nzStep]="1"
@@ -917,7 +924,7 @@
                                 [(ngModel)]="selectedNode.obj.workflowName1"
                                 (nzExpandChange)="onExpand($event, 'WORKFLOW')">
                   <ng-template #nzTreeTemplate let-node>
-                    <div class="node-wrapper w-93" (click)="loadData(node, 'WORKFLOW', $event);">
+                    <div class="node-wrapper w-93 " (click)="loadData(node, 'WORKFLOW', $event);">
                       <div class="node-content-wrapper"
                            [class.node-content-wrapper-active]="node.origin.name == selectedNode.obj.workflowName">
                         <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"

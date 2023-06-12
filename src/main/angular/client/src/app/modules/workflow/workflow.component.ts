@@ -34,6 +34,7 @@ export class FilterModalComponent implements OnInit {
   @Input() new;
   @Input() edit;
   @Input() filter;
+  @Input() listOfAgents: any = [];
 
   constructor(private authService: AuthService, public activeModal: NzModalRef) {
   }
@@ -71,13 +72,13 @@ export class SearchComponent implements OnInit {
   @Input() filter: any;
   @Input() preferences: any;
   @Input() allFilter: any;
+  @Input() listOfAgents = [];
   @Input() permission: any;
   @Input() isSearch: boolean;
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
   folders = [];
-  listOfAgents = [];
   dateFormat: any;
   existingName: any;
   submitted = false;
@@ -109,19 +110,12 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    if(this.filter.name){
+    if (this.filter.name) {
       this.existingName = this.coreService.clone(this.filter.name);
     }
     this.getFolderTree();
     this.filter.instructionStates = this.filter.instructionStates ? this.filter.instructionStates : [];
     this.filter.states = this.filter.states ? this.filter.states : [];
-    let obj = {
-      agentList: []
-    }
-    this.coreService.getAgents(obj, this.schedulerIds.selected, () => {
-      this.listOfAgents = obj.agentList;
-    });
-
 
     this.filter.instructionStates.forEach((item) => {
       for (let i in this.jobAvailabilityStatusOptions) {
@@ -500,6 +494,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   reloadState = 'no';
   objectType = 'WORKFLOW';
   numOfAllOrders: any = {};
+  listOfAgents: any = [];
   object = {
     mapOfCheckedId: new Map(),
     checked: false,
@@ -642,14 +637,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.workflowFilters.expandedKeys.push(PATH);
     }
     let selectedCheck = false;
-    if(this.workflowFilters.selectedkeys.length <= 1){
-      if(this.workflowFilters.selectedkeys[0] == PATH){
+    if (this.workflowFilters.selectedkeys.length <= 1) {
+      if (this.workflowFilters.selectedkeys[0] == PATH) {
         selectedCheck = true;
       }
     }
     this.workflowFilters.selectedkeys = [PATH];
     this.workflowFilters.expandedObjects = [item.path + 'CURRENT'];
-    if(!selectedCheck){
+    if (!selectedCheck) {
       this.loadWorkflow(null, true);
     }
   }
@@ -746,6 +741,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).workflow;
     }
+    let obj = {
+      agentList: []
+    }
+    this.coreService.getAgents(obj, this.schedulerIds.selected, () => {
+      this.listOfAgents = obj.agentList;
+    });
     this.savedFilter = JSON.parse(this.saveService.workflowFilters) || {};
     if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
       this.checkSharedFilters();
@@ -852,6 +853,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if (this.workflowFilters.filter.states && this.workflowFilters.filter.states.length > 0) {
           obj.states = [...this.workflowFilters.filter.states];
         }
+      }
+    }
+    if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
+      if (this.selectedFiltered.agentNames && this.selectedFiltered.agentNames.length > 0) {
+        obj.agentNames = this.selectedFiltered.agentNames;
+      }
+    } else {
+      if (this.workflowFilters.filter.agentNames && this.workflowFilters.filter.agentNames.length > 0) {
+        obj.agentNames = this.workflowFilters.filter.agentNames;
       }
     }
     this.coreService.post('workflows', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
@@ -1140,6 +1150,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
+  selectAgents(list): void {
+    this.workflowFilters.filter.agentNames = list;
+    this.loadWorkflow();
+  }
+
   loadWorkflow(status?, skipChild = false): void {
     if (status) {
       const index = this.workflowFilters.filter.states.indexOf(status);
@@ -1274,6 +1289,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         nzComponentParams: {
           permission: this.permission,
           allFilter: this.filterList,
+          listOfAgents: this.listOfAgents,
           new: true
         },
         nzFooter: null,
@@ -1919,6 +1935,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           nzComponentParams: {
             permission: this.permission,
             allFilter: this.filterList,
+            listOfAgents: this.listOfAgents,
             filter: filterObj,
             edit: !isCopy
           },

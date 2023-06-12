@@ -204,19 +204,19 @@ export class AuthService {
     return base64String;
   }
 
-  createPublicKeyCredentialRequest(challenge, fido2Properties, user): PublicKeyCredentialCreationOptions {
+  createPublicKeyCredentialRequest(challenge, fidoProperties, user): PublicKeyCredentialCreationOptions {
     let authenticatorSelection: AuthenticatorSelectionCriteria = {
-      userVerification: fido2Properties?.iamFido2UserVerification?.toLowerCase() || 'preferred'
+      userVerification: fidoProperties?.iamFidoUserVerification?.toLowerCase() || 'preferred'
     };
-    if (fido2Properties?.iamFidoProtocolType == 'FIDO2') {
+    if (fidoProperties?.iamFidoProtocolType == 'FIDO2') {
       authenticatorSelection.authenticatorAttachment = 'cross-platform';
-    } else if (fido2Properties?.iamFidoProtocolType == 'PASSKEY') {
+    } else if (fidoProperties?.iamFidoProtocolType == 'PASSKEY') {
       authenticatorSelection.authenticatorAttachment = 'platform';
     }
-    if (fido2Properties?.iamFido2ResidentKey) {
-      authenticatorSelection.residentKey = fido2Properties?.iamFido2ResidentKey?.toLowerCase();
+    if (fidoProperties?.iamFidoResidentKey) {
+      authenticatorSelection.residentKey = fidoProperties?.iamFidoResidentKey?.toLowerCase();
     }
-    if (fido2Properties?.iamFido2ResidentKey?.toLowerCase() == 'required') {
+    if (fidoProperties?.iamFidoResidentKey?.toLowerCase() == 'required') {
       authenticatorSelection.requireResidentKey = true;
     }
     return {
@@ -234,7 +234,7 @@ export class AuthService {
         {type: "public-key", alg: -7},
         {type: "public-key", alg: -257}
       ],
-      timeout: fido2Properties?.iamFido2Timeout ? fido2Properties?.iamFido2Timeout * 1000 : 60000,
+      timeout: fidoProperties?.iamFidoTimeout ? fidoProperties?.iamFidoTimeout * 1000 : 60000,
       authenticatorSelection,
       extensions: {"credProps": true}
     };
@@ -245,7 +245,6 @@ export class AuthService {
     const decodedAttestationObject = window['CBOR'].decode(
       attestationObject);
     const {authData} = decodedAttestationObject;
-    
     // get the length of the credential ID
     const dataView = new DataView(
       new ArrayBuffer(2));
@@ -258,7 +257,6 @@ export class AuthService {
     // get the public key object
     const publicKeyBytes = authData.slice(
       55 + credentialIdLength);
-    console.log('publicKeyBytes', publicKeyBytes)
 
     // the publicKeyBytes are encoded again as CBOR
     const publicKeyObject = window['CBOR'].decode(
@@ -266,6 +264,7 @@ export class AuthService {
 
     let jwk = {};
     let publicKeyJwk = COSEtoJWK(publicKeyObject);
+
     function convertEcToPEM(curve, x, y) {
       // Create a JWK (JSON Web Key) object from the public key components
       jwk = {
@@ -313,9 +312,6 @@ export class AuthService {
         return convertRsaToPEM(parsedCoseKey[-1], parsedCoseKey[-2]);
       }
     }
-
-    console.log(jwk, 'jwt');
-    console.log(publicKeyJwk, 'publicKeyJwk');
 
     return {publicKey: publicKeyJwk, jwk: this.bufferToBase64Url(jwk) || btoa(JSON.stringify(jwk))}; // The extracted public key in JWK format
   }

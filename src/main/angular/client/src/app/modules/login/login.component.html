@@ -80,7 +80,7 @@
           <a class="font14 text-primary m-t p-l-xs" *ngIf="showRegister || showLogin" (click)="back();"><i class="fa fa-arrow-left p-r-xs" aria-hidden="true"></i> {{'register.button.back' | translate}}</a>
 
           <ng-container *ngIf="!showRegister && !showLogin">
-            <div *ngIf="oidcIdentityServiceItems?.length > 0 || fido2IdentityServiceItems?.length > 0"
+            <div *ngIf="oidcIdentityServiceItems?.length > 0 || fidoIdentityServiceItems?.length > 0"
               class="horz-line-text text-u-c" translate>common.label.or</div>
 
             <div class="row" *ngIf="oidcIdentityServiceItems?.length > 0">
@@ -96,10 +96,10 @@
                 </ng-container>
               </div>
             </div>
-            <div *ngIf="fido2IdentityServiceItems?.length > 0 && oidcIdentityServiceItems?.length > 0" class="horz-line-text text-u-c" translate>common.label.or
+            <div *ngIf="fidoIdentityServiceItems?.length > 0 && oidcIdentityServiceItems?.length > 0" class="horz-line-text text-u-c" translate>common.label.or
             </div>
-            <div class="row" *ngIf="fido2IdentityServiceItems?.length > 0">
-              <div class="col-md-12" *ngFor="let item of fido2IdentityServiceItems">
+            <div class="row" *ngIf="fidoIdentityServiceItems?.length > 0">
+              <div class="col-md-12" *ngFor="let item of fidoIdentityServiceItems">
                 <ng-container *ngIf="item.identityServiceName">
                   <button class="btn btn-default btn-block btn-sm m-b-sm" (click)="onSign(item.identityServiceName)">
                     <img height="24px" width="24px" class="m-r-sm" src="./assets/images/fido2.png" />
