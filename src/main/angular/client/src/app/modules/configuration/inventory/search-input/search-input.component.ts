@@ -5,7 +5,8 @@ import {
   EventEmitter,
   Input,
   OnInit,
-  Output
+  Output,
+  ViewChild
 } from '@angular/core';
 import {NzTreeNode} from 'ng-zorro-antd/tree';
 import {debounceTime, Subject} from 'rxjs';
@@ -22,13 +23,17 @@ export class SearchInputComponent implements OnInit {
   @Input() nodes: any = [];
   @Input() changeDetect: boolean;
 
+  _tree = [];
   obj = {
     name: '',
     token: ''
   };
+  dropdownOpen: boolean = false;
 
   @Output() onSelect = new EventEmitter<string>();
   @Output() onBlur = new EventEmitter<string>();
+
+  @ViewChild('changeFocusInput') changeFocusInput!: ElementRef<HTMLInputElement>;
 
   private searchTerm = new Subject<string>();
 
@@ -38,24 +43,13 @@ export class SearchInputComponent implements OnInit {
   ngOnInit(): void {
     const self = this;
     const dom2 = $(this.el.nativeElement).find('.ant-select');
-    const _tree = [...self.nodes];
+    this._tree = [...self.nodes];
     setTimeout(() => {
       dom2?.click();
-    }, this.changeDetect ? 5 : 0);
-    $(this.el.nativeElement).find('input').on('keyup', (evt) => {
-      if (evt.target.value) {
-        self.onSearchInput(evt.target.value);
-      } else {
-        self.nodes = _tree;
-        if (this.changeDetect) {
-          this.ref.detectChanges();
-        }
-      }
-    });
-    $(this.el.nativeElement).find('input').on('blur', () => {
-      $(self.el.nativeElement).find('input').off("keyup");
-      self.onBlur.emit(self.obj.name);
-    });
+    }, this.changeDetect ? 10 : 0);
+    setTimeout(() => {
+      this.openDropdown();
+    }, 0)
     //200ms Delay in search
     this.searchTerm.pipe(debounceTime(200))
       .subscribe((searchValue: string) => {
@@ -159,9 +153,29 @@ export class SearchInputComponent implements OnInit {
             }
           }
         });
+      } else {
+        this.nodes = this._tree;
+        if (this.changeDetect) {
+          this.ref.detectChanges();
+        }
+      }
+    } else {
+      this.nodes = this._tree;
+      if (this.changeDetect) {
+        this.ref.detectChanges();
       }
     }
   }
 
+  openDropdown() {
+    this.dropdownOpen = true;
+    setTimeout(() => {
+      this.changeFocusInput.nativeElement.focus();
+    }, 0);
+  }
 
+  closeDropdown() {
+    this.dropdownOpen = false;
+    this.onBlur.emit(this.obj.name);
+  }
 }

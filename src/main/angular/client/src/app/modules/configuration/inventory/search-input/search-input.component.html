@@ -1,6 +1,12 @@
-<nz-tree-select nzNoAnimation [nzPlaceHolder]="'common.placeholder.search' | translate" [nzNodes]="nodes"
-  nzHideUnMatched="false" [nzShowExpand]="false" [nzDropdownStyle]="{ 'max-height': '300px' }" nzShowSearch
-  [nzAllowClear]="true" [(ngModel)]="obj.name" name="objectName" (nzExpandChange)="onExpand($event)">
+<div style="position: relative;">
+  <nz-input-group style="position: absolute; z-index: 1;">
+    <input nz-input type="text" placeholder="{{'common.placeholder.search' | translate}}" class="form-control" id="changeFocus"
+           [value]="obj.name" (input)="onSearchInput($event.target.value)" (blur)="closeDropdown()"  #changeFocusInput  />
+  </nz-input-group>
+  <nz-tree-select nzNoAnimation  [nzNodes]="nodes"
+    [nzHideUnMatched]="true" [nzShowExpand]="false" [nzDropdownStyle]="{ 'max-height': '300px' }"
+    [nzAllowClear]="true" [(ngModel)]="obj.name" name="objectName" (nzExpandChange)="onExpand($event)"
+    [nzOpen]="dropdownOpen">
   <ng-template #nzTreeTemplate let-node>
     <div class="node-wrapper w-full">
       <span *ngIf="node.origin.loading || (!node.origin.type && !node.origin.objectType)"

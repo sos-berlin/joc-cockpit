@@ -7955,14 +7955,14 @@ tr.tr-border td:first-child {
 }
 
 .multi-select-dropdown-list{
-  width: 180px !important;
+  min-width: 220px !important;
 }
 
-.group-list .cdk-virtual-scroll-spacer {
+.group-list .cdk-virtual-scroll-spacer , .multi-select-dropdown-list .cdk-virtual-scroll-spacer{
   height: auto !important;
 }
 
-.group-list {
+.group-list , .multi-select-dropdown-list{
   .ant-select-item-option-disabled {
     background: none !important;
     opacity: 1 !important;

@@ -6,6 +6,7 @@
   </div>
 </div>
 <div class="white box-shadow sub-header">
+
   <div class="row">
     <div class="col-md-12">
       <div class="padding p-b-sm">
@@ -23,14 +24,7 @@
                          nzPlaceHolder=" "
                          [(ngModel)]="workflowFilters.filter.agentNames" >
                 <ng-container *ngFor="let item of listOfAgents">
-                  <ng-container *ngIf="!item.title">
-                    <nz-option [nzHide]="item === '*'" nzCustomContent [nzLabel]="item"
-                               [nzValue]="item">
-                      <span class="_600" style="font-size: 12px;">
-                        {{item}}
-                      </span>
-                    </nz-option>
-                  </ng-container>
+
                   <ng-container *ngIf="item.title == 'agents'">
                     <nz-option-group *ngFor="let group of [item]" [nzLabel]="groupTitle">
                       <ng-template #groupTitle>
@@ -42,22 +36,14 @@
                                  [nzValue]="agent"></nz-option>
                     </nz-option-group>
                   </ng-container>
-                  <ng-container
-                    *ngIf="item.title == 'agentGroups'">
-                    <nz-option nzCustomContent nzDisabled>
-                      <span class="_600" style="font-size: 12px;">
-                        {{'agent.label.agentGroups' | translate}}
-                      </span>
-                    </nz-option>
-                    <nz-option-group *ngFor="let group of item.children" [nzLabel]="groupTitle">
+                  <ng-container *ngIf="item.title == 'agentGroups'">
+                    <nz-option-group *ngFor="let group of [item]" [nzLabel]="groupTitle">
                       <ng-template #groupTitle>
-                        <span class="_600 pl-20">
-                          {{ group.title }}
+                        <span class="_600">
+                          {{ 'agent.label.' + group?.title | translate }}
                         </span>
                       </ng-template>
-                      <nz-option nzCustomContent *ngFor="let agent of group.children" [nzLabel]="agent"
-                                 [nzValue]="agent">
-                        <span class="pl-20">{{ agent }}</span>
+                      <nz-option *ngFor="let agent of group?.children" [nzLabel]="agent.title" [nzValue]="agent.title">
                       </nz-option>
                     </nz-option-group>
                   </ng-container>

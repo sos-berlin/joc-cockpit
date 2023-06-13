@@ -851,7 +851,7 @@
                  translate>user.label.fidoType
           </label>
           <div class="col-sm-6">
-            <nz-radio-group [nzDisabled]="data.secondFactor" name="type" [(ngModel)]="currentObj.iamFidoProtocolType" (ngModelChange)="changeSettings($event)">
+            <nz-radio-group name="type" [(ngModel)]="currentObj.iamFidoProtocolType" (ngModelChange)="changeSettings($event)">
               <label [nz-tooltip]="'user.tooltips.webauthn.fido2' | translate" [nzTooltipMouseEnterDelay]="0.5"
                      nz-radio nzValue="FIDO2"><span translate>user.label.fido2</span></label>
               <label [nz-tooltip]="'user.tooltips.webauthn.u2f' | translate" [nzTooltipMouseEnterDelay]="0.5"

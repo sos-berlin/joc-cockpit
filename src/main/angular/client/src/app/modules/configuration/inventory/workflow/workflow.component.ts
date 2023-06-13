@@ -1361,12 +1361,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
             self.ref.detectChanges();
             setTimeout(() => {
               const dom = $('#show-tree');
-              const editorWidth = $('#scriptId').width();
               dom?.css({
                 'opacity': '1',
                 'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
-                'left': '12px',
-                'width': 'calc(100% - 16px)'
+                'left': '36px',
+                'width': 'calc(100% - 48px)'
               });
             }, 0)
           }
@@ -2522,8 +2521,8 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
               dom?.css({
                 'opacity': '1',
                 'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
-                'left': '12px',
-                'width': 'calc(100% - 16px)'
+                'left': '36px',
+                'width': 'calc(100% - 48px)'
               });
             }, 0)
           }
@@ -8579,7 +8578,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             argument = [];
           } else {
             argument = JSON.parse(argument);
-            argument = self.coreService.convertObjectToArray({ argument }, 'argument');
+            argument = self.coreService.convertObjectToArray({argument}, 'argument');
             argument.forEach((arg) => {
               if (isArray(arg.value)) {
                 arg.value.forEach((item, index) => {
@@ -8613,10 +8612,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const arr = obj.retryDelays.split(',');
             obj.retryDelays = [];
             arr.forEach((item) => {
-              obj.retryDelays.push({ value: self.workflowService.convertDurationToHour(item) || '0s' });
+              obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item) || '0s'});
             });
           } else {
-            obj.retryDelays = [{ value: '0s' }];
+            obj.retryDelays = [{value: '0s'}];
           }
         } else if (cell.value.tagName === 'Cycle') {
           obj.schedule = cell.getAttribute('schedule');
@@ -8653,7 +8652,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           let resultObj = cell.getAttribute('result');
           if (resultObj) {
             resultObj = JSON.parse(resultObj);
-            resultObj = self.coreService.convertObjectToArray({ result: resultObj }, 'result');
+            resultObj = self.coreService.convertObjectToArray({result: resultObj}, 'result');
             resultObj.forEach((arg) => {
               self.coreService.removeSlashToString(arg, 'value');
             });
@@ -8714,6 +8713,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             obj.type = obj.unsuccessful ? 'unsuccessful' : 'successful';
           } else {
             delete obj.unsuccessful;
+            delete obj.message;
             obj.type = 'unchanged';
           }
         } else if (cell.value.tagName === 'PostNotices') {
@@ -8742,7 +8742,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               let resultObj = edges[i].getAttribute('result');
               if (resultObj) {
                 resultObj = JSON.parse(resultObj);
-                resultObj = self.coreService.convertObjectToArray({ result: resultObj }, 'result');
+                resultObj = self.coreService.convertObjectToArray({result: resultObj}, 'result');
                 resultObj.forEach((arg) => {
                   self.coreService.removeSlashToString(arg, 'value');
                 });
@@ -8834,7 +8834,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     'opacity': '1',
                     'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
                     'left': '12px',
-                    'width': 'calc(100% - 16px)'
+                    'width': 'calc(100% - 22px)'
                   });
                 }, 0)
               }
@@ -9016,7 +9016,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             });
           }
           branchId = 'branch' + (targetObj.branches.length + 1);
-          targetObj.branches.push({ id: branchId, instructions: copyObject });
+          targetObj.branches.push({id: branchId, instructions: copyObject});
         } else if (self.workflowService.isOnlyInstruction(target.value.tagName)) {
           if (!targetObj.instructions) {
             targetObj.instructions = [];
@@ -9120,7 +9120,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           break;
         }
         if (name === self.jobs[i].name) {
-          job = { name: newName, value: self.jobs[i].value };
+          job = {name: newName, value: self.jobs[i].value};
         }
       }
 
@@ -9130,13 +9130,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           for (let x in self.inventoryConf.copiedInstuctionObject) {
 
             if (self.inventoryConf.copiedInstuctionObject[x].jobName === name) {
-              job = { name: newName, value: self.inventoryConf.copiedInstuctionObject[x].jobObject || {} };
+              job = {name: newName, value: self.inventoryConf.copiedInstuctionObject[x].jobObject || {}};
               break;
             }
           }
         }
         if (!job.name) {
-          job = { name: newName, value: {} };
+          job = {name: newName, value: {}};
           if (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.length > 0) {
             for (let x in self.inventoryConf.copiedInstuctionObject) {
               if (self.inventoryConf.copiedInstuctionObject[x].jobs && self.inventoryConf.copiedInstuctionObject[x].jobName === name) {
@@ -9326,12 +9326,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 targetId = 'start';
               }
               self.droppedCell = {
-                target: { source: sourceId, target: targetId },
+                target: {source: sourceId, target: targetId},
                 cells: self.cutCell,
                 type: targetCell.value.getAttribute('type')
               };
             } else {
-              self.droppedCell = { target: targetCell.id, cells: self.cutCell };
+              self.droppedCell = {target: targetCell.id, cells: self.cutCell};
             }
           }
         }
@@ -10012,10 +10012,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         let isDone = false;
         if (targetObj.TYPE === 'If') {
           if (!targetObj.then) {
-            targetObj.then = { instructions: [sourceObj] };
+            targetObj.then = {instructions: [sourceObj]};
             isDone = true;
           } else if (!targetObj.else) {
-            targetObj.else = { instructions: [sourceObj] };
+            targetObj.else = {instructions: [sourceObj]};
             isDone = true;
           }
           if (!isDone) {
@@ -10040,7 +10040,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             });
           }
           branchId = 'branch' + (targetObj.branches.length + 1);
-          targetObj.branches.push({ id: branchId, instructions: [sourceObj] });
+          targetObj.branches.push({id: branchId, instructions: [sourceObj]});
           isDone = true;
         } else if (self.workflowService.isOnlyInstruction(targetObj.TYPE)) {
           if (!targetObj.instructions) {
@@ -10220,14 +10220,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                       if (obj.type || isSameObj) {
                         if (!obj.type.match('else')) {
                           if (!targetObj.then || targetObj.then.instructions.length === 0) {
-                            targetObj.then = { instructions: [sourceObj] };
+                            targetObj.then = {instructions: [sourceObj]};
                             booleanObj.isMatch = true;
                           } else {
                             dropAndAdd(targetObj.then.instructions, droppedCells[i].id, connection.target, sourceObj, booleanObj);
                           }
                         } else {
                           if (!targetObj.else || targetObj.else.instructions.length === 0) {
-                            targetObj.else = { instructions: [sourceObj] };
+                            targetObj.else = {instructions: [sourceObj]};
                             booleanObj.isMatch = true;
                           } else {
                             dropAndAdd(targetObj.else.instructions, droppedCells[i].id, connection.target, sourceObj, booleanObj);
@@ -10237,7 +10237,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     } else if (targetObj.TYPE === 'Fork') {
                       if (obj.type || isSameObj) {
                         if (!targetObj.branches || targetObj.branches.length === 0) {
-                          targetObj.branches = [{ id: 'branch1', instructions: [sourceObj] }];
+                          targetObj.branches = [{id: 'branch1', instructions: [sourceObj]}];
                           booleanObj.isMatch = true;
                         } else if (targetObj.branches && targetObj.branches.length > 0) {
                           for (let j = 0; j < targetObj.branches.length; j++) {
@@ -10521,7 +10521,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
     if (flag) {
       delete job.jobName;
-      this.jobs.push({ name: data.job.jobName, value: job });
+      this.jobs.push({name: data.job.jobName, value: job});
     }
     return isChange;
   }
@@ -10588,7 +10588,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   private openSideBar(id): void {
     this.error = true;
     if (this.editor.graph && id) {
-      this.dataService.reloadWorkflowError.next({ error: this.error, msg: this.invalidMsg });
+      this.dataService.reloadWorkflowError.next({error: this.error, msg: this.invalidMsg});
       this.editor.graph.setSelectionCells([this.editor.graph.getModel().getCell(id)]);
       this.initEditorConf(this.editor, false, true);
     }
@@ -11112,12 +11112,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           } else if (json.instructions[x].TYPE === 'Finish') {
             if (json.instructions[x].unsuccessful == 'false') {
               json.instructions[x].unsuccessful = false;
-            } else if (json.instructions[x].unsuccessful == 'true') {
+              delete json.instructions[x].message;
+            } else if (json.instructions[x].unsuccessful == 'true' || json.instructions[x].unsuccessful == true) {
               json.instructions[x].unsuccessful = true;
+            } else {
+              delete json.instructions[x].message;
             }
-
           }
-
           if (json.instructions[x].catch) {
             json.instructions[x].catch.id = undefined;
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
@@ -11316,7 +11317,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         flag = true;
       }
     } else if (type === 'variable') {
-      const variableDeclarations = { parameters: [], allowUndeclared: false };
+      const variableDeclarations = {parameters: [], allowUndeclared: false};
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
         delete value.value.invalid;
@@ -11438,7 +11439,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        request.auditLog = { comment: translatedValue };
+        request.auditLog = {comment: translatedValue};
       });
     }
     this.coreService.post('inventory/store', request).subscribe({

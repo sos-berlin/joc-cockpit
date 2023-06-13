@@ -144,16 +144,18 @@ export class LoginComponent implements OnInit {
           localStorage.removeItem('$SOS$REMEMBER');
         }
 
-        this.authService.setUser(data);
-        this.authService.save();
         if (data.accessToken === '' && data.isAuthenticated && data.secondFactoridentityService) {
           this.userObject = {
             userName: values.userName,
             password: values.password,
+            identityService: data.identityService
           };
+          this.submitted = false;
           this.onSign(data.secondFactoridentityService)
           return;
         }
+        this.authService.setUser(data);
+        this.authService.save();
         if (this.returnUrl.indexOf('?') > -1) {
           this.router.navigateByUrl(this.returnUrl).then();
         } else {
@@ -407,17 +409,13 @@ export class LoginComponent implements OnInit {
       'X-CREDENTIAL-ID': this.authService.bufferToBase64Url(getAssertionResponse.rawId)
     };
 
-    if (this.userObject.userName) {
-      obj['X-1ST-IDENTITY-SERVICE'] = this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':') + 1);
+    if (this.userObject.userName && this.userObject.identityService) {
+      obj['X-1ST-IDENTITY-SERVICE'] = this.userObject.identityService.substring(this.userObject.identityService.lastIndexOf(':') + 1);
     }
     let headers = new HttpHeaders(obj);
     this.coreService.log('authentication/login', this.userObject.userName ? this.userObject : {fido: true}, {headers}).subscribe({
       next: (data: any) => {
-        if (this.userObject.userName) {
-          this.authService.accessTokenId = data.accessToken;
-        } else {
-          this.authService.setUser(data);
-        }
+        this.authService.setUser(data);
         this.authService.save();
         if (this.returnUrl.indexOf('?') > -1) {
           this.router.navigateByUrl(this.returnUrl).then();
