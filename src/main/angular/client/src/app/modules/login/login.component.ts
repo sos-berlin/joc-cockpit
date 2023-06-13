@@ -370,17 +370,16 @@ export class LoginComponent implements OnInit {
 
   private getCredentials(res): void {
     let allowCredentials = [];
-    if (!this.fidoProperties?.iamFidoUserVerification || this.fidoProperties?.iamFidoUserVerification?.toLowerCase() !== 'required') {
-      if (res.credentialIds && isArray(res.credentialIds)) {
-        res.credentialIds.forEach((item) => {
-          allowCredentials.push({
-            id: Uint8Array.from(atob((item)), c => c.charCodeAt(0)),
-            type: 'public-key',
-            transports: this.fidoProperties?.iamFidoTransports ? (isArray(this.fidoProperties?.iamFidoTransports) ? this.fidoProperties?.iamFidoTransports : [this.fidoProperties?.iamFidoTransports]) : []
-          })
+    if (res.credentialIds && isArray(res.credentialIds)) {
+      res.credentialIds.forEach((item) => {
+        allowCredentials.push({
+          id: Uint8Array.from(atob((item)), c => c.charCodeAt(0)),
+          type: 'public-key',
+          transports: this.fidoProperties?.iamFidoTransports ? (isArray(this.fidoProperties?.iamFidoTransports) ? this.fidoProperties?.iamFidoTransports : [this.fidoProperties?.iamFidoTransports]) : []
         })
-      }
+      })
     }
+
     let publicKey: PublicKeyCredentialRequestOptions = {
       challenge: Uint8Array.from(atob(btoa(res.challenge)), c => c.charCodeAt(0)),
       allowCredentials: allowCredentials,

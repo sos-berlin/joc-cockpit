@@ -919,7 +919,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
       sessionStorage.identityServiceType = identityService.identityServiceType;
       if (identityService.secondFactor) {
         sessionStorage.secondFactor = identityService.secondFactor;
-        this.router.navigate(['/users/identity_service/pending_requests']).then();
+        this.router.navigate(['/users/identity_service/account']).then();
       } else {
         sessionStorage.removeItem('secondFactor');
         this.router.navigate(['/users/identity_service/role']).then();
