@@ -139,12 +139,12 @@
             [innerHtml]="identityService.identityServiceName | highlight: filter.searchKey"></span></td>
           <td (click)="showUser(identityService)"><span
             [innerHtml]="identityService.identityServiceType | highlight: filter.searchKey"></span></td>
-          <td (click)="showUser(identityService)"><span
+          <td (click)="showUser(identityService)"><span *ngIf="!identityService.secondFactor"
             [innerHtml]="identityService.serviceAuthenticationScheme | translate | highlight: filter.searchKey"></span></td>
           <td (click)="showUser(identityService)"><span>{{(identityService.secondFactor ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
           <td (click)="showUser(identityService)"><span [innerHtml]="identityService.ordering"></span></td>
           <td (click)="showUser(identityService)"><span>{{(identityService.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
-          <td (click)="showUser(identityService)"><span>{{(identityService.required ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+          <td (click)="showUser(identityService)"><span *ngIf="!identityService.secondFactor">{{(identityService.required ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
         </tr>
       </tbody>
     </nz-table>
