@@ -78,7 +78,7 @@ export class NodePositionComponent implements OnChanges {
                   obj.children.push(_obj);
                 }
                 for (let i = 0; i < json.instructions[x].branches.length; i++) {
-                  if (json.instructions[x].branches[i].workflow.instructions) {
+                  if (json.instructions[x].branches[i].workflow?.instructions) {
                     let obj1 = {
                       title: json.instructions[x].branches[i].id,
                       disabled: true,

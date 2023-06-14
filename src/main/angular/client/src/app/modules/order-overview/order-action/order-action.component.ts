@@ -29,25 +29,29 @@ export class OrderActionComponent {
   }
 
   resumeOrder(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ResumeOrderModalComponent,
-      nzClassName: 'x-lg',
-      nzComponentParams: {
-        preferences: this.preferences,
-        schedulerId: this.schedulerId,
-        order: this.coreService.clone(this.order)
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.isChanged.emit(true);
-        this.resetAction();
-      }
-    });
+    if (this.order.positionIsImplicitEnd) {
+      this.restCall(false, 'Resume', this.order, 'resume');
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ResumeOrderModalComponent,
+        nzClassName: 'x-lg',
+        nzComponentParams: {
+          preferences: this.preferences,
+          schedulerId: this.schedulerId,
+          order: this.coreService.clone(this.order)
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.isChanged.emit(true);
+          this.resetAction();
+        }
+      });
+    }
   }
 
   suspendOrder(order): void {

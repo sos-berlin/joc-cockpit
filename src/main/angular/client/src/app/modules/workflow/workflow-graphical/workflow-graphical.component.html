@@ -86,17 +86,17 @@
           <li nz-menu-item (click)="resumeOrder()" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')">
             <a>{{'order.button.resume' | translate}} ..</a>
           </li>
-          <li nz-menu-item (click)="modifyOrder()" *ngIf="permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')">
+          <li nz-menu-item (click)="modifyOrder()" *ngIf="!order.positionIsImplicitEnd && permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')">
             <a>{{'dailyPlan.button.setStartTime' | translate}} ..</a>
           </li>
-          <li nz-menu-item (click)="changeParameter()" *ngIf="permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')">
+          <li nz-menu-item (click)="changeParameter()" *ngIf="!order.positionIsImplicitEnd && permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')">
             <a>{{'dailyPlan.button.setParameters' | translate}} ..</a>
           </li>
-          <li nz-menu-item (click)="removeWhenTerminated()" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel
+          <li nz-menu-item (click)="removeWhenTerminated()" *ngIf="!order.positionIsImplicitEnd && permission && permission.currentController && permission.currentController.orders.cancel
              && order.state && (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED') && (order.positionString && !order.positionString.match('/fork'))">
             <a translate>order.button.leaveWorkflow</a>
           </li>
-          <li nz-menu-item (click)="confirmOrder()" *ngIf="permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'PROMPTING')">
+          <li nz-menu-item (click)="confirmOrder()" *ngIf="!order.positionIsImplicitEnd && permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'PROMPTING')">
             <a>{{'order.button.confirm' | translate}} ..</a>
           </li>
           <li nz-menu-divider *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')"></li>
