@@ -206,18 +206,14 @@ export class AuthService {
 
   createPublicKeyCredentialRequest(challenge, fidoProperties, user): PublicKeyCredentialCreationOptions {
     let authenticatorSelection: AuthenticatorSelectionCriteria = {
-      userVerification: fidoProperties?.iamFidoUserVerification?.toLowerCase() || 'preferred'
+      userVerification: fidoProperties?.iamFidoUserVerification?.toLowerCase() || 'preferred',
+      residentKey: 'required',
+      requireResidentKey: true
     };
     if (fidoProperties?.iamFidoProtocolType == 'FIDO2') {
       authenticatorSelection.authenticatorAttachment = 'cross-platform';
     } else if (fidoProperties?.iamFidoProtocolType == 'PASSKEY') {
       authenticatorSelection.authenticatorAttachment = 'platform';
-    }
-    if (fidoProperties?.iamFidoResidentKey) {
-      authenticatorSelection.residentKey = fidoProperties?.iamFidoResidentKey?.toLowerCase();
-    }
-    if (fidoProperties?.iamFidoResidentKey?.toLowerCase() == 'required') {
-      authenticatorSelection.requireResidentKey = true;
     }
     return {
       challenge: challenge,

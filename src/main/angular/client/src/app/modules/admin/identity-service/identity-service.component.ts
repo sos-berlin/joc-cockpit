@@ -110,6 +110,9 @@ export class SettingModalComponent implements OnInit {
   }, {
     text: 'Preferred',
     value: 'PREFERRED'
+  }, {
+    text: 'Required',
+    value: 'REQUIRED'
   }
   ];
 

@@ -418,11 +418,11 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadDocument(path = null): void {
+  loadDocument(path = null, skipChild = false): void {
     const obj = {folders: [], types: [], controllerId: this.schedulerIds.selected};
     this.documents = [];
     let paths = [];
-    if (this.child) {
+    if (this.child && !skipChild) {
       paths = this.child.defaultSelectedKeys;
     } else {
       paths = this.documentFilters.selectedkeys;
@@ -520,6 +520,23 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   /* ---------------------------- Action ----------------------------------*/
+
+  selectObject(item): void {
+    let flag = true;
+    const PATH = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
+    for (let i in this.documentFilters.expandedKeys) {
+      if (PATH == this.documentFilters.expandedKeys[i]) {
+        flag = false;
+        break;
+      }
+    }
+    if (flag) {
+      this.documentFilters.expandedKeys.push(PATH);
+    }
+    this.documentFilters.selectedkeys = [PATH];
+    this.loadDocument(null, true);
+  }
+
 
   pageIndexChange($event): void {
     this.documentFilters.currentPage = $event;

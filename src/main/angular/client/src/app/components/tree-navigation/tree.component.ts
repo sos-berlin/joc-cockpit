@@ -234,10 +234,9 @@ export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
         if (this.searchNode.token) {
           request.token = this.searchNode.token;
         }
-        if (this.type != 'WORKFLOW') {
-          request.returnTypes = [this.type]
-        }
-        this.coreService.post(this.type != 'WORKFLOW' ? 'inventory/quick/search' : 'workflows/quick/search', request).subscribe({
+        this.coreService.post((this.type == 'WORKFLOW' ? 'workflows' : this.type == 'NOTICEBOARD' ? 'notice/boards' :
+          this.type == 'DOCUMENTATION' ? 'documentations' : this.type == 'LOCK' ? 'locks' :
+            this.type == 'CALENDAR' ? 'calendars' :  'inventory') + '/quick/search', request).subscribe({
           next: (res: any) => {
             this.allObjects = res.results;
             this.searchNode.token = res.token;

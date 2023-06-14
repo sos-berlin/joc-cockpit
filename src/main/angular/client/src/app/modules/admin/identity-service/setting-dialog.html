@@ -854,8 +854,6 @@
             <nz-radio-group name="type" [(ngModel)]="currentObj.iamFidoProtocolType" (ngModelChange)="changeSettings($event)">
               <label [nz-tooltip]="'user.tooltips.webauthn.fido2' | translate" [nzTooltipMouseEnterDelay]="0.5"
                      nz-radio nzValue="FIDO2"><span translate>user.label.fido2</span></label>
-              <label [nz-tooltip]="'user.tooltips.webauthn.u2f' | translate" [nzTooltipMouseEnterDelay]="0.5"
-                     nz-radio nzValue="U2F"><span translate>user.label.u2f</span></label>
               <label [nz-tooltip]="'user.tooltips.webauthn.passkeys' | translate" [nzTooltipMouseEnterDelay]="0.5"
                      nz-radio nzValue="PASSKEY"><span translate>user.label.passkeys</span></label>
             </nz-radio-group>
@@ -865,8 +863,7 @@
           <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.iamRequireAccount' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.requireAccount</label>
           <div class="col-sm-6">
-            <label nz-checkbox [nzDisabled]="currentObj.iamFidoProtocolType === 'U2F'"
-                   [(ngModel)]="currentObj.iamFidoRequireAccount" name="iamFidoRequireAccount">
+            <label nz-checkbox [(ngModel)]="currentObj.iamFidoRequireAccount" name="iamFidoRequireAccount">
             </label>
           </div>
         </div>
@@ -902,26 +899,18 @@
             <nz-select name="iamFidoUserVerification" [(ngModel)]="currentObj.iamFidoUserVerification">
               <nz-option *ngFor="let option of iamFidoUserVerification"
                          [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
-              <nz-option *ngIf="currentObj.iamFidoProtocolType !== 'U2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
             </nz-select>
           </div>
           <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType === 'FIDO2'">Required</div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4" [ngClass]="{'form-control-label' : currentObj.iamFidoProtocolType == 'U2F'}"
+          <label class="col-sm-4"
                  [nz-tooltip]="'user.tooltips.webauthn.iamResidentKey' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFidoResidentKey
           </label>
-          <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType == 'U2F'">
-            <nz-select name="iamFidoResidentKey" [(ngModel)]="currentObj.iamFidoResidentKey">
-              <nz-option *ngFor="let option of iamFidoUserVerification"
-                         [nzLabel]="option.text" [nzValue]="option.value"></nz-option>
-              <nz-option *ngIf="currentObj.iamFidoProtocolType !== 'U2F'" [nzLabel]="'Required'" [nzValue]="'REQUIRED'"></nz-option>
-            </nz-select>
-          </div>
-          <div class="col-sm-6" *ngIf="currentObj.iamFidoProtocolType !== 'U2F'">Required</div>
+          <div class="col-sm-6" >Required</div>
         </div>
-        <div class="form-group row" *ngIf="currentObj.iamFidoProtocolType !== 'U2F'">
+        <div class="form-group row">
           <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.iamAttachment' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFidoAttachment
           </label>
