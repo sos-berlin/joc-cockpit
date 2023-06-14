@@ -1,5 +1,5 @@
 <div class="btn-group dropdown">
-  <button [disabled]="order.positionIsImplicitEnd || isDisabled" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
+  <button [disabled]="isDisabled" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
           type="button" (nzVisibleChange)="change($event)">
     <i class="fa fa-ellipsis-h"></i>
   </button>
@@ -21,13 +21,13 @@
       <li (click)="resumeOrder()" nz-menu-item *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')">
         <a>{{'order.button.resume' | translate}} ..</a>
       </li>
-      <li (click)="modifyOrder(order)" nz-menu-item *ngIf="permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')">
+      <li (click)="modifyOrder(order)" nz-menu-item *ngIf="!order.positionIsImplicitEnd && permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')">
         <a>{{'dailyPlan.button.setStartTime' | translate}} ..</a>
       </li>
-      <li (click)="changeParameter(order)" nz-menu-item *ngIf="permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')">
+      <li (click)="changeParameter(order)" nz-menu-item *ngIf="!order.positionIsImplicitEnd && permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')">
         <a>{{'dailyPlan.button.setParameters' | translate}} ..</a>
       </li>
-      <li (click)="removeWhenTerminated()" nz-menu-item *ngIf="permission && permission.currentController && permission.currentController.orders.cancel
+      <li (click)="removeWhenTerminated()" nz-menu-item *ngIf="!order.positionIsImplicitEnd && permission && permission.currentController && permission.currentController.orders.cancel
        && order.state && (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED') && (order.positionString && !order.positionString.match('/fork'))">
         <a translate>order.button.leaveWorkflow</a>
       </li>
@@ -35,10 +35,10 @@
         <a>{{'order.button.confirm' | translate}} ..</a>
       </li>
       <li nz-menu-divider *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')"></li>
-      <li (click)="showLog(order)" nz-menu-item *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')">
+      <li (click)="showLog(order)" nz-menu-item *ngIf="!order.positionIsImplicitEnd && order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')">
         <a>{{'order.button.showLog' | translate}}</a>
       </li>
-      <li (click)="coreService.copyLink('order',order.orderId, order.workflowId.path)" nz-menu-item>
+      <li *ngIf="!order.positionIsImplicitEnd" (click)="coreService.copyLink('order',order.orderId, order.workflowId.path)" nz-menu-item>
         <a translate>common.button.copyLinkToObject</a>
       </li>
     </ul>

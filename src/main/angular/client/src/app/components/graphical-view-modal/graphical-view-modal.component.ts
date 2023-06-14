@@ -202,8 +202,10 @@ export class GraphicalViewModalComponent implements OnInit {
           }
           if (json.instructions[x].branches) {
             json.instructions[x].branches = json.instructions[x].branches.filter((branch: any) => {
-              branch.instructions = branch.workflow.instructions;
-              delete branch.workflow;
+              if(branch.workflow) {
+                branch.instructions = branch.workflow.instructions;
+                delete branch.workflow;
+              }
               return (branch.instructions && branch.instructions.length > 0);
             });
             for (let i = 0; i < json.instructions[x].branches.length; i++) {

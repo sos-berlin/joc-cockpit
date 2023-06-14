@@ -466,26 +466,30 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   }
 
   resumeOrder(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ResumeOrderModalComponent,
-      nzClassName: 'x-lg',
-      nzComponentParams: {
-        preferences: this.preferences,
-        schedulerId: this.controllerId,
-        order: this.coreService.clone(this.order)
-      },
-      nzFooter: null,
-      nzAutofocus: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe((res) => {
-      if (res) {
-        this.isProcessing = true;
-        this.resetAction(5000);
-      }
-    });
+    if (this.order.positionIsImplicitEnd) {
+      this.restCall(false, 'Resume', this.order, 'resume');
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ResumeOrderModalComponent,
+        nzClassName: 'x-lg',
+        nzComponentParams: {
+          preferences: this.preferences,
+          schedulerId: this.controllerId,
+          order: this.coreService.clone(this.order)
+        },
+        nzFooter: null,
+        nzAutofocus: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe((res) => {
+        if (res) {
+          this.isProcessing = true;
+          this.resetAction(5000);
+        }
+      });
+    }
   }
 
   confirmOrder(): void {
@@ -760,7 +764,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     function mxIconSet(state) {
       this.images = [];
       let img;
-      if (state.cell && (state.cell.getAttribute('path') == self.workFlowJson.path) && (state.cell.value.tagName === 'Order' || self.workflowService.isSingleInstruction(state.cell.value.tagName)  || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
+      if (state.cell && state.cell.value && ((state.cell.getAttribute('path') == self.workFlowJson.path) || state.cell.value.tagName === 'Order') && (state.cell.value.tagName === 'Order' || self.workflowService.isSingleInstruction(state.cell.value.tagName)  || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
         img = mxUtils.createImage('./assets/images/menu.svg');
         let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
         if (state.cell.value.tagName !== 'Job') {
