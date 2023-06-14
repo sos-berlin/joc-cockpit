@@ -2208,7 +2208,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.isLoaded = true;
         if (result.submissionHistoryItems.length > 0) {
           for (let i = 0; i < result.submissionHistoryItems.length; i++) {
-            result.submissionHistoryItems[i].startDate = new Date(result.submissionHistoryItems[i].dailyPlanDate).setHours(0, 0, 0, 0);
+            result.submissionHistoryItems[i].startDate = this.convertStringToDate(result.submissionHistoryItems[i].dailyPlanDate);
             result.submissionHistoryItems[i].endDate = result.submissionHistoryItems[i].startDate;
             this.submissionHistoryItems.push(result.submissionHistoryItems[i]);
             if (this.selectedDate && this.selectedDate.getTime() === result.submissionHistoryItems[i].startDate) {
@@ -2224,6 +2224,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.isLoaded = false;
       }
     });
+  }
+
+  private convertStringToDate(date): any {
+    if (typeof date === 'string') {
+      return this.coreService.getDate(date);
+    } else {
+      return date;
+    }
   }
 
   private resetAction(time = 100): void {

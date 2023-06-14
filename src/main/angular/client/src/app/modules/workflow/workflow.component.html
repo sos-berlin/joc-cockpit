@@ -16,37 +16,30 @@
           </div>
           <div class="inline m-b-xs" [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}">
             <div class="btn-group dropdown">
-              <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm m-l-12">
+              <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm m-l-12 cursor" [ngClass]="{ 'btn-primary' : workflowFilters.filter.agentNames?.length > 0}">
                 {{'deploymentService.label.agents' | translate}}
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
-              <nz-select [disabled]="savedFilter.selected" (ngModelChange)="selectAgents($event)" nzMode="multiple" class="multi-select-dropdown" name="agentNames" [nzDropdownClassName]="'multi-select-dropdown-list'"
-                         nzPlaceHolder=" "
+              <nz-select [disabled]="savedFilter.selected" (ngModelChange)="selectAgents($event)" nzMode="multiple" class="multi-select-dropdown cursor" name="agentNames" [nzDropdownClassName]="'multi-select-dropdown-list'"
+                         [nzAllowClear]="false"
                          [(ngModel)]="workflowFilters.filter.agentNames" >
-                <ng-container *ngFor="let item of listOfAgents">
-
-                  <ng-container *ngIf="item.title == 'agents'">
-                    <nz-option-group *ngFor="let group of [item]" [nzLabel]="groupTitle">
-                      <ng-template #groupTitle>
-                        <span class="_600">
-                          {{ 'agent.label.' + group.title | translate }}
-                        </span>
-                      </ng-template>
-                      <nz-option *ngFor="let agent of group.children" [nzLabel]="agent"
-                                 [nzValue]="agent"></nz-option>
-                    </nz-option-group>
-                  </ng-container>
-                  <ng-container *ngIf="item.title == 'agentGroups'">
+                <ng-container *ngFor="let item of listOfAgents; let i = index">
                     <nz-option-group *ngFor="let group of [item]" [nzLabel]="groupTitle">
                       <ng-template #groupTitle>
                         <span class="_600">
                           {{ 'agent.label.' + group?.title | translate }}
                         </span>
+                        <span *ngIf="i == 0" class="cursor text-primary-hover pos-rel pull-right font14 t-xs" (click)="selectAgents([])" nz-icon nzType="close-circle" nzTheme="outline"></span>
                       </ng-template>
-                      <nz-option *ngFor="let agent of group?.children" [nzLabel]="agent.title" [nzValue]="agent.title">
-                      </nz-option>
+                      <ng-container *ngIf="item.title == 'agents'">
+                          <nz-option *ngFor="let agent of group.children" [nzLabel]="agent"
+                                     [nzValue]="agent"></nz-option>
+                      </ng-container>
+                      <ng-container *ngIf="item.title !== 'agents'">
+                          <nz-option *ngFor="let agent of group?.children" [nzLabel]="agent.title" [nzValue]="agent.title">
+                          </nz-option>
+                      </ng-container>
                     </nz-option-group>
-                  </ng-container>
                 </ng-container>
               </nz-select>
             </div>

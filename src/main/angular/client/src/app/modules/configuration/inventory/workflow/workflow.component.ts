@@ -189,7 +189,7 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
                 'opacity': '1',
                 'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
                 'left': '12px',
-                'width': 'calc(100% - 16px)'
+                'width': 'calc(100% - 22px)'
               });
             }, 0)
           }

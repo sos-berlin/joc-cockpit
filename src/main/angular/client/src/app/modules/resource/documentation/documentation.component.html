@@ -104,8 +104,8 @@
       <div class="col-sm-12">
         <div appResizable [sideView]="sideView.documentation" id="leftPanel" class="sticky leftPanel resource">
           <div *ngIf="tree.length>0">
-            <app-tree-navigation [isAction]="!!(permission.joc && permission.joc.documentations.manage)" [tree]="tree" [sideView]="sideView.documentation" [defaultSelectedKeys]="documentFilters.selectedkeys" [defaultExpandedKeys]="documentFilters.expandedKeys"
-                                 (messageEvent)="receiveAction($event)" (actionEvent)="deleteFolder($event)"></app-tree-navigation>
+            <app-tree-navigation [isAction]="!!(permission.joc && permission.joc.documentations.manage)" [type]="'DOCUMENTATION'" [tree]="tree" [sideView]="sideView.documentation" [defaultSelectedKeys]="documentFilters.selectedkeys" [defaultExpandedKeys]="documentFilters.expandedKeys"
+                                 (messageEvent)="receiveAction($event)" (actionEvent)="deleteFolder($event)" (selectObjectEvent)="selectObject($event)"></app-tree-navigation>
            </div>
         </div>
         <div id="rightPanel">
