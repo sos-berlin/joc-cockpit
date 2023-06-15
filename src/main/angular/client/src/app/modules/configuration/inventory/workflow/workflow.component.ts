@@ -2777,6 +2777,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   workflowTree = [];
   lockTree = [];
   boardTree = [];
+  tempTree = [];
   scriptTree = [];
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
@@ -2832,11 +2833,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   forkListAgentAssignment = '';
   stickySubagentAgentAssignment = '';
   selectedCellId = '';
-  searchToken = '';
 
   subscription1: Subscription;
   subscription2: Subscription;
-  private searchTerm = new Subject<string>();
 
   @ViewChild('menu', { static: true }) menu: NzDropdownMenuComponent;
   @ViewChild('treeSelectCtrl', { static: false }) treeCtrl;
@@ -2888,11 +2887,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.stickySubagentAgentAssignment = translatedValue;
       });
     }
-    //200ms Delay in search
-    this.searchTerm.pipe(debounceTime(200))
-      .subscribe((searchValue: string) => {
-        this.searchObjects(searchValue);
-      });
   }
 
   private static parseWorkflowJSON(result): void {
@@ -3773,35 +3767,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     });
   }
 
-  onKeySearch($event): void {
-    this.searchTerm.next($event.target.value);
-  }
-
-  private searchObjects(value: string) {
-    if (value !== '') {
-      const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
-      if (searchValueWithoutSpecialChars.length >= 2) {
-        const request: any = {
-          search: value,
-          returnTypes: ['NOTICEBOARD']
-        };
-        if (this.searchToken) {
-          request.token = this.searchToken;
-        }
-        this.coreService.post('inventory/quick/search', request).subscribe({
-          next: (res: any) => {
-           // this.obj.token = res.token;
-            this.boardTree = res.results.map(function (item) {
-              return {...item, key: item.name, title: item.name};
-            });
-
-              this.ref.detectChanges();
-
-          }
-        });
-      }
-    }
-  }
 
   loadData(node, type, $event, isExpand = false): void {
     if (!node || !node.origin) {
@@ -3887,7 +3852,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       } else if (type === InventoryObject.NOTICEBOARD) {
         if (node.key && !node.key.match('/')) {
-          if (this.selectedNode.obj.noticeBoardNames.indexOf(node.key) === -1) {
+          if (typeof this.selectedNode.obj.noticeBoardNames != 'string' && this.selectedNode.obj.noticeBoardNames.indexOf(node.key) === -1) {
             this.selectedNode.obj.noticeBoardNames.push(node.key);
           }
         }

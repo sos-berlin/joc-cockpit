@@ -859,7 +859,7 @@ pre#pre {
   background: var(--bg-box) !important;
 }
 
-.ant-select-multiple .ant-select-selection-item {
+.ant-select-multiple .ant-select-selection-item, .ant-tag {
   background: #6a747e;
   border-color: #6a747e;
   color: #fff;

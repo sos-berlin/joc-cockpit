@@ -147,7 +147,7 @@
                 <i class="fa fa-circle circle daily-plan-step-icon"></i><span translate>workflow.tooltip.doubleClickToSelect</span>
               </div>
             </ng-template>
-          
+
           </ul>
         </div>
         <div id="outlineContainer"></div>
@@ -570,37 +570,8 @@
                      [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.boardNames
                 <sup class="text-danger text-sm">*</sup>
               </label>
-              <div class="col-md-8 col-lg-9"
-                   [ngClass]="{'has-error' : ((noticeBoardName.dirty || noticeBoardName.touched) && noticeBoardName.invalid)}">
-                <nz-tree-select #treeSelectCtrl nzMultiple required nzNoAnimation
-                                [nzPlaceHolder]="'workflow.placeholder.selectBoards' | translate"
-                                #noticeBoardName="ngModel"
-                                [nzShowSearch]="true"
-                                (keyup)="onKeySearch($event)"
-                                [nzNodes]="boardTree"
-                                [nzHideUnMatched]="false"
-                                [nzDropdownStyle]="{ 'max-height': '300px' }"
-                                [nzAllowClear]="false" [(ngModel)]="selectedNode.obj.noticeBoardNames"
-                                (nzExpandChange)="onExpand($event, 'NOTICEBOARD')">
-                  <ng-template #nzTreeTemplate let-node>
-                    <div class="node-wrapper w-93" (click)="loadData(node, 'NOTICEBOARD', $event);">
-                      <div class="node-content-wrapper"
-                           [class.node-content-wrapper-active]="node.origin.path == selectedNode.obj.noticeBoardName">
-                        <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                           class="w-14"></i>
-                        <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                        {{node.origin.name}}
-                      </div>
-                    </div>
-                  </ng-template>
-                </nz-tree-select>
-                <div
-                  *ngIf="(error && !noticeBoardName.touched) || noticeBoardName.invalid && (noticeBoardName.dirty || noticeBoardName.touched)"
-                  class="text-danger help-block">
-                  <div *ngIf="error || (noticeBoardName.errors && noticeBoardName.errors.required)">
-                    <div translate>common.message.requiredError</div>
-                  </div>
-                </div>
+              <div class="col-md-8 col-lg-9">
+                <app-multi-select [type]="'NOTICEBOARD'" (onClose)="selectedValues($event)" [list]="selectedNode.obj.noticeBoardNames" [nodes]="boardTree"></app-multi-select>
               </div>
             </div>
           </div>

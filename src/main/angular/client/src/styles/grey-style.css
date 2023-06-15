@@ -915,7 +915,7 @@ span ul li a {
   background: var(--bg-box) !important;
 }
 
-.ant-select-multiple .ant-select-selection-item {
+.ant-select-multiple .ant-select-selection-item, .ant-tag {
   background: #7c7c7c;
   border-color: #7c7c7c;
   color: #fff;

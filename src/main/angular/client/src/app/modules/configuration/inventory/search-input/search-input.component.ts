@@ -9,6 +9,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {NzTreeNode} from 'ng-zorro-antd/tree';
+import {NzTreeSelectComponent} from 'ng-zorro-antd/tree-select';
 import {debounceTime, Subject} from 'rxjs';
 import {CoreService} from 'src/app/services/core.service';
 
@@ -21,6 +22,7 @@ declare const $: any;
 export class SearchInputComponent implements OnInit {
   @Input() type: string;
   @Input() nodes: any = [];
+  @Input() list: any = []
   @Input() changeDetect: boolean;
 
   _tree = [];
@@ -28,12 +30,12 @@ export class SearchInputComponent implements OnInit {
     name: '',
     token: ''
   };
-  dropdownOpen: boolean = false;
 
   @Output() onSelect = new EventEmitter<string>();
   @Output() onBlur = new EventEmitter<string>();
 
   @ViewChild('changeFocusInput') changeFocusInput!: ElementRef<HTMLInputElement>;
+  @ViewChild(NzTreeSelectComponent, {static: false}) treeSelectComponent: NzTreeSelectComponent;
 
   private searchTerm = new Subject<string>();
 
@@ -167,15 +169,23 @@ export class SearchInputComponent implements OnInit {
     }
   }
 
-  openDropdown() {
-    this.dropdownOpen = true;
+  openDropdown(): void {
     setTimeout(() => {
       this.changeFocusInput.nativeElement.focus();
     }, 0);
   }
 
-  closeDropdown() {
-    this.dropdownOpen = false;
+  closeDropdown(): void {
+   
     this.onBlur.emit(this.obj.name);
+  }
+
+  onDropdownOpenChange(isOpen: boolean): void {
+    console.log(this.list)
+    if (!isOpen) {
+      Promise.resolve().then(() => {
+        this.treeSelectComponent.openDropdown(); // Open the dropdown programmatically
+      });
+    }
   }
 }
