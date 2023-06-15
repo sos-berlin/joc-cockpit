@@ -683,12 +683,13 @@ small {
   margin-bottom: 2px;
   line-height: 20px;
   background: #f5f5f5;
-  border: 1px solid #e8e8e8;
+  border: 1px solid var(--border-color);
 }
 
 .tag-input {
   border: 1px solid var(--border-color);
   padding: 2px 8px;
+  min-height: 29px;
 }
 
 .tag-input:hover, .tag-input.active {
