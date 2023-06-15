@@ -31,7 +31,7 @@ import {DataService} from "../../services/data.service";
                src="./assets/images/JS7-logo-grey-theme.png" alt="JS7" [width]="validUntil ? 122 : 100">
         </div>
         <div class=" col-sm-9">
-          <div class="row">
+          <div class="row" [ngStyle]="{'margin-top': versionData.gitHash ? 'auto' : '32px'}">
             <div class=" col-sm-12">
               <span>&copy; 2002-{{versionData.currentYear}} <a class="text-primary" target="_blank"
                                                                href="https://www.sos-berlin.com">Software- und Organisations-Service GmbH.</a> </span>
@@ -66,7 +66,7 @@ import {DataService} from "../../services/data.service";
               <i>{{validUntil}}</i>
             </div>
           </div>
-          <div class="row m-t-xs">
+          <div class="row m-t-xs" *ngIf="versionData.gitHash">
             <label class="col-sm-3">JOC Cockpit</label>
             <div class=" col-sm-9">
               <span>{{versionData.gitHash}}</span>&nbsp;
@@ -115,17 +115,21 @@ export class AboutModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.hasLicense = sessionStorage.hasLicense == 'true';
-    this.licenseType = sessionStorage.licenseType;
-    let validUntil = sessionStorage.licenseValidUntil;
-    if (validUntil && (this.hasLicense || this.licenseType !== 'OPENSOURCE')) {
-      this.checkLicense()
+    if (sessionStorage.$SOS$accessTokenId) {
+      this.licenseType = sessionStorage.licenseType;
+      let validUntil = sessionStorage.licenseValidUntil;
+      if (validUntil && (this.hasLicense || this.licenseType !== 'OPENSOURCE')) {
+        this.checkLicense()
+      } else {
+        this.isLoaded = true;
+      }
+      this.coreService.get('version.json').subscribe((data) => {
+        this.versionData = data;
+        this.ref.detectChanges();
+      });
     } else {
       this.isLoaded = true;
     }
-    this.coreService.get('version.json').subscribe((data) => {
-      this.versionData = data;
-      this.ref.detectChanges();
-    });
   }
 
   checkLicense(): void {

@@ -847,15 +847,13 @@
     <div *ngIf="data && data.identityServiceType == 'FIDO'">
       <ng-container *ngIf="!fullScreen && !fullScreen2 && !fullScreen3">
         <div class="m-b-12 row">
-          <label class="col-sm-4"
-                 translate>user.label.fidoType
+          <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.iamAuthenticatorType' | translate" [nzTooltipMouseEnterDelay]="0.5"
+                 translate>user.label.iamFidoAuthenticatorType
           </label>
           <div class="col-sm-6">
             <nz-radio-group name="type" [(ngModel)]="currentObj.iamFidoProtocolType" (ngModelChange)="changeSettings($event)">
-              <label [nz-tooltip]="'user.tooltips.webauthn.fido2' | translate" [nzTooltipMouseEnterDelay]="0.5"
-                     nz-radio nzValue="FIDO2"><span translate>user.label.fido2</span></label>
-              <label [nz-tooltip]="'user.tooltips.webauthn.passkeys' | translate" [nzTooltipMouseEnterDelay]="0.5"
-                     nz-radio nzValue="PASSKEY"><span translate>user.label.passkeys</span></label>
+              <label nz-radio nzValue="FIDO2"><span translate>user.label.roaming</span></label>
+              <label nz-radio nzValue="PASSKEY"><span translate>user.label.platform</span></label>
             </nz-radio-group>
           </div>
         </div>
@@ -909,14 +907,6 @@
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFidoResidentKey
           </label>
           <div class="col-sm-6" >Required</div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.iamAttachment' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamFidoAttachment
-          </label>
-          <div class="col-sm-6">
-            {{currentObj.iamFidoProtocolType === 'FIDO2' ? 'Roaming' : 'Platform'}}
-          </div>
         </div>
         <div class="row">
           <div class="col-sm-12">

@@ -62,12 +62,20 @@ export class OrderActionComponent {
     this.restCall(true, 'Suspend', this.order, 'suspend');
   }
 
+  deepSuspend(): void {
+    this.restCall(false, 'Suspend', this.order, 'suspend', true);
+  }
+
   cancelOrder(order): void {
     this.restCall(false, 'Cancel', order, 'cancel');
   }
 
   cancelOrderWithKill(): void {
     this.restCall(true, 'Cancel', this.order, 'cancel');
+  }
+
+  deepCancel(): void {
+    this.restCall(false, 'Cancel', this.order, 'cancel', true);
   }
 
   showLog(order): void {
@@ -80,10 +88,13 @@ export class OrderActionComponent {
     this.restCall(true, 'Terminate', this.order, 'remove_when_terminated');
   }
 
-  private restCall(isKill, type, order, url): void {
+  private restCall(isKill, type, order, url, deep = false): void {
     const obj: any = {
       controllerId: this.schedulerId, orderIds: [order.orderId], kill: isKill
     };
+    if(deep){
+      obj.deep = true;
+    }
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',

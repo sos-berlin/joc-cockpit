@@ -1155,6 +1155,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.loadWorkflow();
   }
 
+  openSelectbox(): void{
+    $('#agent-select').click();
+  }
+
   loadWorkflow(status?, skipChild = false): void {
     if (status) {
       const index = this.workflowFilters.filter.states.indexOf(status);
@@ -1607,7 +1611,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       compact: true,
       controllerId: this.schedulerIds.selected,
       workflowIds: workflowIds,
-      states: [state]
+      states: state == 'COMPLETED' ? ["FINISHED", "CANCELLED"] : [state]
     };
 
     this.getOrdersOnState(request);

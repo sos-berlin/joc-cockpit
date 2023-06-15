@@ -16,11 +16,11 @@
           </div>
           <div class="inline m-b-xs" [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}">
             <div class="btn-group dropdown">
-              <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm m-l-12 cursor" [ngClass]="{ 'btn-primary' : workflowFilters.filter.agentNames?.length > 0}">
+              <button [disabled]="savedFilter.selected" (click)="openSelectbox()" class="btn btn-grey btn-sm m-l-12 z-index" [ngClass]="{ 'btn-primary' : workflowFilters.filter.agentNames?.length > 0}">
                 {{'deploymentService.label.agents' | translate}}
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
-              <nz-select [disabled]="savedFilter.selected" (ngModelChange)="selectAgents($event)" nzMode="multiple" class="multi-select-dropdown cursor" name="agentNames" [nzDropdownClassName]="'multi-select-dropdown-list'"
+              <nz-select id="agent-select" [disabled]="savedFilter.selected" (ngModelChange)="selectAgents($event)" nzMode="multiple" class="multi-select-dropdown cursor" name="agentNames" [nzDropdownClassName]="'multi-select-dropdown-list'"
                          [nzAllowClear]="false"
                          [(ngModel)]="workflowFilters.filter.agentNames" >
                 <ng-container *ngFor="let item of listOfAgents; let i = index">
@@ -287,7 +287,7 @@
                       <span class="font14 _600 cursor"  (click)="viewOrderState('SUSPENDED')" [ngClass]="{'orange' : numOfAllOrders.suspended > 0}" [innerHtml]="numOfAllOrders.suspended || 0"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600 cursor"  (click)="viewOrderState('uu')" [ngClass]="{'dark-blue' : numOfAllOrders.terminated > 0}" [innerHtml]="numOfAllOrders.terminated || 0"></span>
+                      <span class="font14 _600 cursor"  (click)="viewOrderState('COMPLETED')" [ngClass]="{'dark-blue' : numOfAllOrders.terminated > 0}" [innerHtml]="numOfAllOrders.terminated || 0"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
                       <span class="font14 _600 cursor " (click)="viewOrderState('PROMPTING')" [ngClass]="{'light-green' : numOfAllOrders.prompting > 0}" [innerHtml]="numOfAllOrders.prompting || 0"></span>
