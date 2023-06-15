@@ -1,5 +1,5 @@
-<div style="position: relative;">
-  <nz-input-group style="position: absolute; z-index: 1;">
+<div class="pos-rel">
+  <nz-input-group class="pos-abt" style="z-index: 1;">
     <input nz-input type="text" placeholder="{{'common.placeholder.search' | translate}}" class="form-control" id="changeFocus"
            [value]="obj.name" (input)="onSearchInput($event.target.value)" (blur)="closeDropdown()"  #changeFocusInput  />
   </nz-input-group>
