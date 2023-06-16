@@ -88,7 +88,7 @@
                name="blocked"></label>
       </div>
     </div>
-    <div class="form-group row" *ngIf="!newUser && !copy && ((identityServiceType && (identityServiceType.match('JOC') || identityServiceType.match('FIDO'))) || secondFactor)">
+    <div class="form-group row" *ngIf="!newUser && !copy">
       <label class="col-sm-4" translate>user.label.disabled</label>
       <div class="col-sm-6">
         <label nz-checkbox [(ngModel)]="currentUser.disabled"

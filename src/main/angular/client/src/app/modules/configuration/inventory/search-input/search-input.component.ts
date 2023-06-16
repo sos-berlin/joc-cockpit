@@ -102,7 +102,8 @@ export class SearchInputComponent implements OnInit {
       objectTypes: [this.type]
     }).subscribe({
       next: (res: any) => {
-        let data = this.type == 'NOTICEBOARD' ? res.noticeBoards : res.includeScripts;
+        let data = this.type == 'NOTICEBOARD' ? res.noticeBoards : this.type == 'LOCK' ? res.locks : this.type === 'JOBRESOURCE' ? res.jobResources :
+          this.type === 'WORKFLOW' ? res.workflows : this.type === 'SCHEDULE' ? res.schedules : res.includeScripts;
         for (let i = 0; i < data.length; i++) {
           const _path = key + (key === '/' ? '' : '/') + data[i].name;
           data[i].title = data[i].name;

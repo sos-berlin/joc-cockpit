@@ -571,7 +571,7 @@
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-md-8 col-lg-9">
-                <app-multi-select [type]="'NOTICEBOARD'" (onClose)="selectedValues($event)" [list]="selectedNode.obj.noticeBoardNames" [nodes]="boardTree"></app-multi-select>
+                <app-multi-select [type]="'NOTICEBOARD'" [list]="selectedNode.obj.noticeBoardNames" [nodes]="boardTree"></app-multi-select>
               </div>
             </div>
           </div>
@@ -809,46 +809,10 @@
                      [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.name
                 <sup class="text-danger text-sm">*</sup>
               </label>
-              <div class="col-md-8 col-lg-9"
-                   [ngClass]="{'has-error' : (error && !lockName.touched) || ((lockName.dirty || lockName.touched) && lockName.invalid)}">
-                <nz-select
-                  required
-                  #lockName="ngModel"
-                  name="lockNameSelect"
-                  [(ngModel)]="selectedNode.obj.lockNames"
-                  nzShowSearch
-                  [nzAllowClear]="false"
-                  [nzDropdownClassName]="'group-list'"
-                  [nzPlaceHolder]="'workflow.placeholder.selectLocks' | translate"
-                  nzMode="multiple"
-                >
-                  <nz-option-group [nzLabel]="nzTreeTemplate" *ngFor="let item of lockTree">
-                    <ng-template #nzTreeTemplate>
-                      <div>
-                        <i nz-icon [nzType]="'folder-open'" class="w-14 p-r-xs"></i>
-                        {{item.name}}
-                      </div>
-                    </ng-template>
-                    <nz-option nzCustomContent *ngFor="let option of item.list" [nzValue]="option.name"
-                               [nzLabel]="option.name">
-                      <div>
-                        <i class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                        {{option.name}}<span *ngIf="option.notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
-                      </div>
-                    </nz-option>
-                  </nz-option-group>
-                </nz-select>
-                <div *ngIf="(error && !lockName.touched) || lockName.invalid && (lockName.dirty || lockName.touched)"
-                     class="text-danger help-block">
-                  <div *ngIf="error || (lockName.errors && lockName.errors.required)">
-                    <div translate>common.message.requiredError</div>
-                  </div>
-                </div>
+              <div class="col-md-8 col-lg-9">
+                <app-multi-select [type]="'LOCK'" [list]="selectedNode.obj.lockNames" [nodes]="lockTree"></app-multi-select>
               </div>
-              <div *ngIf="selectedNode.obj.lockNames && selectedNode.obj.lockNames.length >0" class="pos-abt"
-                   style="margin-top: 3px; right: 5px">
-                <i (click)="navToObj(selectedNode.obj.lockNames[0], 'LOCK')" class="fa fa-pencil cursor"></i>
-              </div>
+
             </div>
             <div class="form-group row">
               <label class="col-md-4 col-lg-3"></label>
@@ -1207,29 +1171,9 @@
                    title="{{'workflow.label.jobResourceNames' | translate}}"
                    [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''"
                    [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.jobResourceNames</label>
-            <div class="col-md-8 col-lg-9">
-              <nz-select name="jobResource" [(ngModel)]="extraConfiguration.jobResourceNames" nzShowSearch
-                         [nzAllowClear]="false" [nzDisabled]="isTrash" [nzDropdownClassName]="'group-list'"
-                         [nzPlaceHolder]="'workflow.placeholder.selectJobResources' | translate" nzMode="multiple"
-                         (ngModelChange)="onChangeJobResource($event)">
-                <nz-option-group [nzLabel]="nzTreeTemplate" *ngFor="let item of jobResourcesTree">
-                  <ng-template #nzTreeTemplate>
-                    <div>
-                      <i nz-icon [nzType]="'folder-open'" class="w-14 p-r-xs"></i>
-                      {{item.name}}
-                    </div>
-                  </ng-template>
-                  <nz-option nzCustomContent *ngFor="let option of item.list" [nzValue]="option.name"
-                             [nzLabel]="option.name">
-                    <div>
-                      <i class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                      {{option.name}} <span *ngIf="option.notFound" class="m-l-sm label bg-danger"
-                                            translate>inventory.label.objectNotExist</span>
-                    </div>
-                  </nz-option>
-                </nz-option-group>
-              </nz-select>
-            </div>
+                   <div class="col-md-8 col-lg-9">
+                    <app-multi-select [type]="'JOBRESOURCE'" [list]="extraConfiguration.jobResourceNames" [nodes]="jobResourcesTree"></app-multi-select>
+                  </div>
           </div>
           <div class="form-group row" [ngClass]="{'hide': fullScreen}">
             <div class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.timeZone' | translate}}"
