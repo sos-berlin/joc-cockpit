@@ -185,33 +185,7 @@
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.jobResourceNames</label>
           <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
-            <nz-select
-              [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
-              name="jobResource"
-              [(ngModel)]="selectedNode.job.jobResourceNames"
-              nzShowSearch
-              [nzAllowClear]="false"
-              [nzDropdownClassName]="'group-list'"
-              [nzPlaceHolder]="'workflow.placeholder.selectJobResources' | translate"
-              nzMode="multiple"
-              (ngModelChange)="onChangeJobResource($event)"
-            >
-              <nz-option-group [nzLabel]="nzTreeTemplate" *ngFor="let item of jobResourcesTree">
-                <ng-template #nzTreeTemplate>
-                  <div>
-                    <i nz-icon [nzType]="'folder-open'" class="w-14 p-r-xs"></i>
-                    {{item.name}}
-                  </div>
-                </ng-template>
-                <nz-option nzCustomContent *ngFor="let option of item.list" [nzValue]="option.name"
-                           [nzLabel]="option.name">
-                  <div>
-                    <i class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                    {{option.name}}<span *ngIf="option.notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
-                  </div>
-                </nz-option>
-              </nz-option-group>
-            </nz-select>
+            <app-multi-select [type]="'JOBRESOURCE'" [list]="selectedNode.job.jobResourceNames" [nodes]="jobResourcesTree"></app-multi-select>
           </div>
           <div class="col-md-1" *ngIf="isModal">
             <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.jobResourceNames" name="cjobResourceNames"></label>
@@ -317,7 +291,7 @@
                        (click)="showEditor()"></i>
                     <div id="scriptId" class="b-a"
                          [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}">
-                      <ngx-codemirror #codeMirror required #script="ngModel" 
+                      <ngx-codemirror #codeMirror required #script="ngModel"
                         [(ngModel)]="selectedNode.job.executable.script"
                         [options]="{lineNumbers: true, autoRefresh: true, scrollbarStyle: 'simple', readOnly: (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name),
                         mode: 'shell'}" (focusChange)="focusChange()" (focusout)="saveToHistory()"

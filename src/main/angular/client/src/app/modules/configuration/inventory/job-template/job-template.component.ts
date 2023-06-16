@@ -495,11 +495,12 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       this.job.actual = this.coreService.clone(JSON.stringify(res.configuration));
       this.setJobProperties();
       if (this.jobResourcesTree.length === 0) {
-        this.getJobResources();
-      } else {
-        this.jobResourcesTree = this.coreService.getNotExistJobResource({
-          arr: this.jobResourcesTree,
-          jobResources: this.job.configuration.jobResourceNames
+        this.coreService.post('tree', {
+          controllerId: this.schedulerId,
+          forInventory: true,
+          types: [InventoryObject.JOBRESOURCE]
+        }).subscribe((res) => {
+          this.jobResourcesTree = this.coreService.prepareTree(res, false);
         });
       }
 
@@ -702,22 +703,6 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       });
     }
   }
-
-  private getJobResources(): void {
-    this.coreService.getJobResource((arr) => {
-      this.jobResourcesTree = arr;
-      if (this.job.configuration && this.job.configuration.jobResourceNames && this.job.configuration.jobResourceNames.length > 0) {
-        this.job.configuration.jobResourceNames = [...this.job.configuration.jobResourceNames];
-        this.jobResourcesTree = this.coreService.getNotExistJobResource({
-          arr: this.jobResourcesTree,
-          jobResources: this.job.configuration.jobResourceNames
-        });
-        this.ref.detectChanges();
-      }
-    });
-  }
-
-
   release(): void {
     this.dataService.reloadTree.next({release: this.job});
   }

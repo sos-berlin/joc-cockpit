@@ -29,9 +29,9 @@ export class AuthInterceptor implements HttpInterceptor {
           if (user.idToken) {
             const headerOptions: any = {
               'X-ID-TOKEN': user.idToken,
-              'X-IDENTITY-SERVICE': user.identityServiceName
+              'X-IDENTITY-SERVICE': user.identityServiceName,
+              'X-OPENID-CONFIGURATION': user.oidcDocument
             };
-
             const headers = new HttpHeaders(headerOptions);
 
             req = req.clone({ headers });

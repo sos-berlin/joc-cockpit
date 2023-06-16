@@ -2268,10 +2268,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (this.selectedNode.job.jobResourceNames && this.selectedNode.job.jobResourceNames.length > 0) {
       this.selectedNode.job.jobResourceNames = [...this.selectedNode.job.jobResourceNames];
     }
-    this.jobResourcesTree = this.coreService.getNotExistJobResource({
-      arr: this.jobResourcesTree,
-      jobResources: this.selectedNode.job.jobResourceNames
-    });
+
     this.onBlur();
     const dom = $('#agentId');
     let flag = false;
@@ -3007,7 +3004,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   private initTreeObject(flag = false): void {
     if (this.lockTree.length === 0 || flag) {
-      this.getLocks();
+      this.coreService.post('tree', {
+        controllerId: this.schedulerId,
+        forInventory: true,
+        types: [InventoryObject.LOCK]
+      }).subscribe((res) => {
+        this.lockTree = this.coreService.prepareTree(res, true);
+      });
     }
     if (this.workflowTree.length === 0 || flag) {
       this.coreService.post('tree', {
@@ -3034,6 +3037,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         types: [InventoryObject.INCLUDESCRIPT]
       }).subscribe((res) => {
         this.scriptTree = this.coreService.prepareTree(res, false);
+      });
+    }
+    if (this.jobResourcesTree.length === 0 || flag) {
+      this.coreService.post('tree', {
+        controllerId: this.schedulerId,
+        forInventory: true,
+        types: [InventoryObject.JOBRESOURCE]
+      }).subscribe((res) => {
+        this.jobResourcesTree = this.coreService.prepareTree(res, false);
       });
     }
   }
@@ -3069,7 +3081,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             graph.clearSelection();
             graph.setSelectionCell(cell);
             this.initEditorConf(this.editor, false, false, true);
-            this.searchNode = { text: '' };
+            this.searchNode = {text: ''};
             $('#searchTree input').blur();
             $('#workflowHeader').removeClass('hide-on-focus')
             break;
@@ -3176,12 +3188,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             recursive(json.instructions[x].then, child);
           }
           if (json.instructions[x].else && json.instructions[x].else.instructions) {
-            let obj = { title: "Else", disabled: true, key: json.instructions[x].uuid + 'else', children: [] };
+            let obj = {title: "Else", disabled: true, key: json.instructions[x].uuid + 'else', children: []};
             child.children.push(obj);
             recursive(json.instructions[x].else, obj);
           }
           if (json.instructions[x].catch && json.instructions[x].catch.instructions) {
-            let obj = { title: "Catch", disabled: true, key: json.instructions[x].uuid + 'catch', children: [] };
+            let obj = {title: "Catch", disabled: true, key: json.instructions[x].uuid + 'catch', children: []};
             child.children.push(obj);
             recursive(json.instructions[x].catch, obj);
           }
@@ -3266,7 +3278,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
             for (const i in self.jobs) {
               if (self.jobs[i] && self.jobs[i].name === json.instructions[x].jobName) {
-                obj.jobs.push({ name: json.instructions[x].jobName, value: self.jobs[i].value });
+                obj.jobs.push({name: json.instructions[x].jobName, value: self.jobs[i].value});
                 break;
               }
             }
@@ -3718,7 +3730,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         newData.jobs = data.jobs;
         data = JSON.stringify(newData, undefined, 2);
       }
-      const blob = new Blob([data], { type: fileType });
+      const blob = new Blob([data], {type: fileType});
       saveAs(blob, name);
     }
   }
@@ -3746,7 +3758,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (this.workflow.configuration.jobs) {
           if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
             this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
-              return { name: k, value: v };
+              return {name: k, value: v};
             });
           }
         }
@@ -3757,11 +3769,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
 
         this.updateXMLJSON(false);
-        this.jobResourcesTree = this.coreService.getNotExistJobResource({
-          arr: this.jobResourcesTree,
-          jobResources: this.extraConfiguration.jobResourceNames
-        });
-        this.history = { past: [], present: {}, future: [], type: 'new' };
+        this.history = {past: [], present: {}, future: [], type: 'new'};
         this.storeData(result);
       }
     });
@@ -4003,10 +4011,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       this.getWorkflowObject();
     }
     if (!this.isTrash) {
-      if (this.jobResourcesTree.length === 0) {
-        this.getJobResources();
-      }
-
       this.initTreeObject();
       if (this.documentationTree.length === 0 && this.permission.joc.documentations.view) {
         this.coreService.post('tree', {
@@ -4017,49 +4021,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         });
       }
     }
-  }
-
-  private getJobResources(): void {
-    this.coreService.getJobResource((arr) => {
-      this.jobResourcesTree = arr;
-      if (this.extraConfiguration.jobResourceNames && this.extraConfiguration.jobResourceNames.length > 0) {
-        this.extraConfiguration.jobResourceNames = [...this.extraConfiguration.jobResourceNames];
-        this.ref.detectChanges();
-      }
-    });
-  }
-
-  private getLocks(): void {
-    this.coreService.post('inventory/read/folder', {
-      path: '/',
-      recursive: true,
-      objectTypes: ['LOCK']
-    }).subscribe({
-      next: (res: any) => {
-        res.locks = sortBy(res.locks, (i: any) => {
-          return i.name.toLowerCase();
-        });
-
-        let entries = [];
-        res.locks.forEach((item) => {
-          const obj = {
-            name: item.name,
-            path: item.path.substring(0, item.path.lastIndexOf('/')) || '/'
-          };
-          entries.push(obj);
-        });
-        entries = sortBy(entries, (i: any) => {
-          return i.path.toLowerCase();
-        });
-        const arr = [];
-        for (const [key, value] of Object.entries(groupBy(entries, 'path'))) {
-          arr.push({ name: key, list: value });
-        }
-        this.lockTree = arr;
-      }, error: () => {
-        this.lockTree = [];
-      }
-    });
   }
 
   private getWorkflowObject(): void {
@@ -4149,10 +4110,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               this.workflowService.setJobValue('')
             }
 
-            this.jobResourcesTree = this.coreService.getNotExistJobResource({
-              arr: this.jobResourcesTree,
-              jobResources: this.extraConfiguration.jobResourceNames
-            });
           } catch (e) {
             console.error(e);
           }

@@ -1,11 +1,11 @@
-import {Component, EventEmitter, OnInit, Input, Output} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {CoreService} from '../../../../services/core.service';
 
 @Component({
   selector: 'app-multi-select',
   templateUrl: './multi-select.component.html'
 })
-export class MultiSelectComponent implements OnInit {
+export class MultiSelectComponent {
   @Input() type: string;
   @Input() nodes: any = [];
   @Input() list: any = [];
@@ -13,13 +13,7 @@ export class MultiSelectComponent implements OnInit {
     isTreeShow: false
   };
 
-  @Output() onClose: EventEmitter<any> = new EventEmitter();
-
   constructor(public coreService: CoreService) {
-  }
-
-  ngOnInit(): void {
-
   }
 
   openSearch(): void {
@@ -39,7 +33,6 @@ export class MultiSelectComponent implements OnInit {
   }
 
   onBlur(evt): void {
-    console.log(evt, ';???????????????????');
     this.object.isTreeShow = false;
   }
 

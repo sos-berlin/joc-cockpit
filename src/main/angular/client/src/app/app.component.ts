@@ -30,10 +30,15 @@ export class AppComponent implements OnInit {
     }
     if (!this.authService.accessTokenId) {
       if (sessionStorage.authConfig) {
-        this.oAuthService.loadDiscoveryDocument().then((_) => {
+        this.oAuthService.loadDiscoveryDocument().then((res: any) => {
           this.oAuthService.tryLoginCodeFlow().then(() => {
             if (this.oAuthService.id_token) {
-              this.login(this.oAuthService.access_token, this.oAuthService.id_token, this.oAuthService.refresh_token);
+              this.login({
+                token: this.oAuthService.access_token,
+                idToken: this.oAuthService.id_token,
+                refreshToken: this.oAuthService.refresh_token,
+                document: res.discoveryDocument
+              });
             }
           });
         });
@@ -92,8 +97,13 @@ export class AppComponent implements OnInit {
     });
   }
 
-  private login(token: string, idToken: string, refreshToken?: string): void {
-    if (token) {
+  private login({
+                  token,
+                  idToken,
+                  refreshToken,
+                  document
+                }: { token: string, idToken: string, refreshToken?: string, document: any }): void {
+    if (token && document) {
       this.coreService.saveValueInLocker({
         content: {
           token,
@@ -105,7 +115,8 @@ export class AppComponent implements OnInit {
 
         this.coreService.post('authentication/login', {
           identityServiceName: sessionStorage.providerName,
-          idToken
+          idToken,
+          oidcDocument: btoa(JSON.stringify(document))
         }).subscribe({
           next: (data) => {
             let returnUrl = sessionStorage.getItem('returnUrl');
