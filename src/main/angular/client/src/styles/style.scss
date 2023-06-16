@@ -689,7 +689,16 @@ small {
 .tag-input {
   border: 1px solid var(--border-color);
   padding: 2px 8px;
-  min-height: 29px;
+  min-height: 30px;
+  .placeholder{
+    color: var(--placholder-color);
+    opacity: .55;
+    position: absolute;
+    top: 6px
+  }
+  .b-t-0{
+    border-top: none;
+  }
 }
 
 .tag-input:hover, .tag-input.active {
@@ -9228,4 +9237,10 @@ cdk-virtual-scroll-viewport {
 .mail-template-full {
   min-height: 100vh;
   height: 100%;
+}
+
+.bottom-border{
+  border-top-color: transparent !important;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
 }

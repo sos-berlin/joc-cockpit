@@ -1011,11 +1011,13 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   /* ----------------------FIDO--------------------- */
   addDevice(account): void {
-    this.coreService.post('iam/identity_fido_client', {
-      identityServiceName: this.identityServiceName
-    }).subscribe((res) => {
+    if (this.coreService.checkConnection()) {
+      this.coreService.post('iam/identity_fido_client', {
+        identityServiceName: this.identityServiceName
+      }).subscribe((res) => {
         this.createRequestObject(res, account);
-    });
+      });
+    }
   }
 
   private createRequestObject(fidoProperties, account): void {

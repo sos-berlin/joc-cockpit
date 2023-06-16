@@ -2237,4 +2237,54 @@ export class CoreService {
     return nodes;
   }
 
+  private isDomainSecureAndValid() {
+    let hostname = window.location.hostname;
+    // Check if the protocol is HTTPS
+    if (hostname !== 'localhost') {
+      if (window.location.protocol !== 'https:') {
+        return false;
+      }
+
+      // Check if the domain is valid (not an IP address)
+      let ipAddressRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
+      if (ipAddressRegex.test(hostname)) {
+        return false;
+      }
+
+      // Check if the domain has a valid TLD (Top-Level Domain)
+      let tldRegex = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i;
+      if (!tldRegex.test(hostname)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  checkConnection(): boolean {
+    if (this.isDomainSecureAndValid()) {
+      if (window.PublicKeyCredential) {
+        return true;
+      } else {
+        let title = '';
+        let msg = '';
+        this.translate.get('register.message.updateToModernBrowser').subscribe(translatedValue => {
+          msg = translatedValue;
+        });
+        this.translate.get('register.message.browseDoesnotSupportWebAuthn').subscribe(translatedValue => {
+          title = translatedValue;
+        });
+        this.toasterService.warning(msg,
+          title);
+      }
+    } else {
+      this.translate.get('login.message.notSecureConnection').subscribe(translatedValue => {
+        this.toasterService.warning(translatedValue);
+      });
+
+    }
+
+    return false;
+  }
+
 }

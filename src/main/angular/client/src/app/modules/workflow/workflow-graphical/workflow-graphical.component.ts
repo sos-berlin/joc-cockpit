@@ -520,6 +520,10 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     this.restCall(true, 'Suspend', this.order, 'suspend');
   }
 
+  deepSuspend(): void {
+    this.restCall(false, 'Suspend', this.order, 'suspend', true);
+  }
+
   cancelOrder(): void {
     this.restCall(false, 'Cancel', this.order, 'cancel');
   }
@@ -527,6 +531,11 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   cancelOrderWithKill(): void {
     this.restCall(true, 'Cancel', this.order, 'cancel');
   }
+
+  deepCancel(): void {
+    this.restCall(false, 'Cancel', this.order, 'cancel', true);
+  }
+
 
   removeWhenTerminated(): void {
     this.restCall(true, 'Terminate', this.order, 'remove_when_terminated');
@@ -1364,10 +1373,13 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     });
   }
 
-  private restCall(isKill, type, order, url): void {
+  private restCall(isKill, type, order, url, deep = false): void {
     const obj: any = {
       controllerId: this.controllerId, orderIds: [order.orderId], kill: isKill
     };
+    if(deep){
+      obj.deep = true;
+    }
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
