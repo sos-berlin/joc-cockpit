@@ -13,18 +13,15 @@
               <span translate>controller.button.newController</span>
             </button>
             <div class="show-inline" *ngIf="(object.mapOfCheckedId.size>0 || object.mapOfCheckedId2.size > 0) && object.mapOfCheckedId3.size === 0">
-              <button class="btn btn-grey btn-sm m-l-12" (click)="createToken(null)" translate>
-                agent.button.createToken
-              </button>
-              <button class="btn btn-grey btn-sm m-l-12" (click)="deleteAll()" translate>common.button.delete</button>
-              <button class="btn btn-grey btn-sm m-l-12" (click)="deployAll()" translate>inventory.button.deploy
-              </button>
+              <button class="btn btn-grey btn-sm m-l-12" (click)="deployAll()" translate>inventory.button.deploy</button>
               <button class="btn btn-grey btn-sm m-l-12" (click)="revokeAll()" translate>agent.button.revoke</button>
+              <button class="btn btn-grey btn-sm m-l-12" (click)="createToken(null)" translate>agent.button.createToken</button>
+              <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.mapOfCheckedId2.size == 0" (click)="disableAll()" translate>agent.button.disable</button>
+              <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.mapOfCheckedId2.size == 0" (click)="hideAll()" translate>agent.button.hide</button>
               <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.mapOfCheckedId2.size == 0" (click)="resetAll()" translate>agent.button.reset</button>
               <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.mapOfCheckedId2.size == 0" (click)="resetAll(true)" translate>agent.button.resetForced
               </button>
-              <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.mapOfCheckedId2.size == 0" (click)="disableAll()" translate>agent.button.disable</button>
-              <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.mapOfCheckedId2.size == 0" (click)="hideAll()" translate>agent.button.hide</button>
+              <button class="btn btn-grey btn-sm m-l-12" (click)="deleteAll()" translate>common.button.delete</button>
             </div>
             <div class="show-inline" *ngIf="object.mapOfCheckedId3.size>0 && (object.mapOfCheckedId.size == 0 && object.mapOfCheckedId2.size == 0)">
               <button class="btn btn-grey btn-sm m-l-12" (click)="disableAllSubAgent()" translate>agent.button.disable</button>

@@ -194,58 +194,14 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  private isDomainSecureAndValid() {
-    let hostname = window.location.hostname;
-    // Check if the protocol is HTTPS
-    if (hostname !== 'localhost') {
-      if (window.location.protocol !== 'https:') {
-        return false;
-      }
-
-      // Check if the domain is valid (not an IP address)
-      let ipAddressRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
-      if (ipAddressRegex.test(hostname)) {
-        return false;
-      }
-
-      // Check if the domain has a valid TLD (Top-Level Domain)
-      let tldRegex = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i;
-      if (!tldRegex.test(hostname)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
 
   registerDevice(identityServiceName) {
-    // Usage:
-    if (this.isDomainSecureAndValid()) {
-
-      if (window.PublicKeyCredential) {
-        this.showRegister = true;
-        this.errorMsg = false;
-        this.errorMsgText = '';
-        this.user.userName = '';
-        this.identityServiceName = identityServiceName;
-      } else {
-        let title = '';
-        let msg = '';
-        this.translate.get('register.message.updateToModernBrowser').subscribe(translatedValue => {
-          msg = translatedValue;
-        });
-        this.translate.get('register.message.browseDoesnotSupportWebAuthn').subscribe(translatedValue => {
-          title = translatedValue;
-        });
-        this.toasterService.warning(msg,
-          title);
-      }
-    } else {
-      this.translate.get('login.message.notSecureConnection').subscribe(translatedValue => {
-        this.toasterService.warning(translatedValue);
-      });
-
+    if (this.coreService.checkConnection()) {
+      this.showRegister = true;
+      this.errorMsg = false;
+      this.errorMsgText = '';
+      this.user.userName = '';
+      this.identityServiceName = identityServiceName;
     }
   }
 
@@ -348,24 +304,26 @@ export class LoginComponent implements OnInit {
   }
 
   signIn(): void {
-    this.errorMsg = false;
-    this.errorMsgText = '';
-    this.coreService.post('iam/fido/request_authentication', {
-      identityServiceName: this.identityServiceName,
-      origin: location.origin,
-      accountName: this.user.userName ? this.user.userName : undefined,
-    }).subscribe({
-      next: (res) => {
-        this.getCredentials(res);
-      }, error: (err) => {
-        this.errorMsg = true;
-        if (err.error && err.error.error) {
-          this.errorMsgText = err.error.error.message;
-        } else {
-          this.errorMsgText = err.message;
+    if (this.coreService.checkConnection()) {
+      this.errorMsg = false;
+      this.errorMsgText = '';
+      this.coreService.post('iam/fido/request_authentication', {
+        identityServiceName: this.identityServiceName,
+        origin: location.origin,
+        accountName: this.user.userName ? this.user.userName : undefined,
+      }).subscribe({
+        next: (res) => {
+          this.getCredentials(res);
+        }, error: (err) => {
+          this.errorMsg = true;
+          if (err.error && err.error.error) {
+            this.errorMsgText = err.error.error.message;
+          } else {
+            this.errorMsgText = err.message;
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   private getCredentials(res): void {

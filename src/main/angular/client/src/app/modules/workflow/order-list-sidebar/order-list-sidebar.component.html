@@ -176,14 +176,52 @@
                [innerHtml]="order.marked._text | translate"></span>
             <span *ngIf="order.state._text === 'PROMPTING' && order.question" class="p-l-xs"><i [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
             <ng-template #tooltipTemplate1>
-              <div *ngIf="order.state._reason">{{order.state._reason}}</div>
-              <div *ngIf="order.obstacles && order.obstacles.length > 0">
+              <div class="p-l-sm">
+                <span translate> order.label.state </span>:
+                <span class="_600" [ngClass]="coreService.getColor(order.state.severity, 'text')"> {{order.state._text |  translate}}</span>
+                <span class="_600" *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'text')">/{{order.marked._text | translate}}</span>
+              </div>
+              <div class="p-l-sm" *ngIf="order.state._reason">
+                <span translate> common.label.comment </span>:
+                <span class="_600"> {{order.state._reason}}</span>
+              </div>
+              <div class="p-l-sm" *ngIf="order.question">
+                <span translate> workflow.label.prompt </span>:
+                <span class="_600"> {{order.question}}</span>
+              </div>
+              <div class="p-l-sm" *ngIf="order.obstacles && order.obstacles.length > 0">
                 <div *ngFor="let obstacle of order.obstacles">
-                  <span translate> {{obstacle.type | translate}} </span><br>
-                  <span>{{obstacle.until | stringToDate}}</span>
+                  <span translate> {{obstacle.type | translate}} </span>
+                  <span class="_600" *ngIf="obstacle.until">:&nbsp;{{obstacle.until | stringToDate}}</span>
                 </div>
               </div>
-              <div *ngIf="order.cycleState">
+              <div class="p-l-sm" *ngIf="order.lastOutcome">
+                <span translate> order.label.lastOutcome </span>:
+                <span class="_600" >{{order.lastOutcome.TYPE}}</span>
+              </div>
+              <div class="p-l-sm" *ngIf="!order.cyclicOrder">
+                <span translate> order.label.scheduledFor </span>:
+                <span class="_600" *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
+                <span class="_600" *ngIf="order.scheduledNever" translate>common.label.never</span>
+              </div>
+              <div class="p-l-sm" *ngIf="order.expectedNotices">
+                <div class="_600 m-b-xxs">{{'order.label.expectedNotices' | translate}} :</div>
+                <div class="p-l-sm" *ngFor="let notice of order.expectedNotices">
+                  {{notice.boardName}}
+                </div>
+              </div>
+              <div class="m-a-sm m-t-0" *ngIf="order.cyclicOrder">
+                <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
+                <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+                {{order.cyclicOrder.firstStart | stringToDate}}
+                <br>
+                <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+                {{order.cyclicOrder.lastStart | stringToDate}}
+                <br>
+                <span class="_600 p-l-sm" translate>order.label.orders</span>:
+                {{order.cyclicOrder.count}}
+              </div>
+              <div class="m-a-sm m-t-0" *ngIf="order.cycleState">
                 <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
                 <span *ngIf="order.cycleState.since">
                   <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:

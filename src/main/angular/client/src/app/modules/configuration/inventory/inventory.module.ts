@@ -4,6 +4,7 @@ import {NzMentionModule} from 'ng-zorro-antd/mention';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzSwitchModule} from "ng-zorro-antd/switch";
+import {NzTagModule} from "ng-zorro-antd/tag";
 import {NgJsonEditorModule} from 'ang-jsoneditor';
 import {DatePipe} from '@angular/common';
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
@@ -55,14 +56,15 @@ import {ScriptComponent} from './script/script.component';
 import {FavoriteListComponent} from "./favorite-list/favorite-list.component";
 import {JobTemplateComponent, UpdateJobTemplatesComponent} from './job-template/job-template.component';
 import {SearchInputComponent} from './search-input/search-input.component';
+import {MultiSelectComponent} from "./multi-select/multi-select.component";
 
-const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, CalendarComponent, ScheduleComponent, ScriptComponent,
-  LockComponent, WorkflowComponent, BoardComponent, JobResourceComponent, JobTemplateComponent, FileOrderComponent, TableComponent,
-  FrequencyModalComponent, JsonEditorModalComponent, SingleDeployComponent, DeployComponent, ExportComponent, CreateFolderModalComponent,
-  CreateObjectModalComponent, NotificationComponent, RepositoryComponent, GitComponent, ImportWorkflowModalComponent, CronImportModalComponent, ImportComponent,
-  UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, UpdateJobTemplatesComponent, UpdateObjectComponent, FindAndReplaceComponent, ShowObjectsComponent,
-  CycleInstructionComponent, PeriodComponent, ShowReferenceComponent, AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent,
-  RunTimeComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, NewDraftComponent, NoticeBoardEditorComponent, SearchInputComponent];
+const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, CalendarComponent, ScheduleComponent, ScriptComponent, LockComponent,
+  WorkflowComponent, BoardComponent, JobResourceComponent, JobTemplateComponent, FileOrderComponent, TableComponent, FrequencyModalComponent,
+  JsonEditorModalComponent, SingleDeployComponent, DeployComponent, ExportComponent, CreateFolderModalComponent, CreateObjectModalComponent,
+  NotificationComponent, RepositoryComponent, GitComponent, ImportWorkflowModalComponent, CronImportModalComponent, ImportComponent, UploadModalComponent,
+  ScriptEditorComponent, UpdateJobTemplatesComponent, UpdateObjectComponent, FindAndReplaceComponent, ShowObjectsComponent, CycleInstructionComponent,
+  UpdateJobComponent, PeriodComponent, ShowReferenceComponent, AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent,
+  RunTimeComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, NewDraftComponent, NoticeBoardEditorComponent, MultiSelectComponent, SearchInputComponent];
 
 @NgModule({
   imports: [
@@ -74,6 +76,7 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
     NzTabsModule,
     NzDrawerModule,
     NzSwitchModule,
+    NzTagModule,
     NgJsonEditorModule
   ],
   providers: [DatePipe, CalendarService, InventoryService],

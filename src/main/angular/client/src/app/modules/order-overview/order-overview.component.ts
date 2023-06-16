@@ -180,6 +180,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   orderOverviewAction: any = {};
   reloadState = 'no';
   isProcessing = false;
+  dateFormat: string;
   searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position'];
   object = {
     mapOfCheckedId: new Map(),
@@ -262,6 +263,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   private init(): void {
     this.orderFilters = this.coreService.getOrderOverviewTab();
     this.orderFilters.filter.state = this.route.snapshot.paramMap.get('state');
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     if (this.authService.permission) {
       this.permission = JSON.parse(this.authService.permission) || {};
     }
@@ -453,6 +455,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
     obj.limit = this.preferences.maxOrderRecords;
     obj.compact = true;
+    if(this.orderFilters.filter.stateDateFrom){
+      obj.stateDateFrom = this.orderFilters.filter.stateDateFrom;
+    }
+    if(this.orderFilters.filter.stateDateTo){
+      obj.stateDateTo = this.orderFilters.filter.stateDateTo;
+    }
+    console.log(this.orderFilters.filter)
     this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         res.orders = this.orderPipe.transform(res.orders, this.orderFilters.filter.sortBy, this.orderFilters.reverse);
@@ -686,6 +695,16 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
     }
   }
+
+  changeDateFilter(){
+    this.loading = false;
+    if (this.pageView === 'bulk') {
+      this.loadOrder();
+    } else {
+      this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
+    }
+  }
+
   /* ----------------------------Begin Action ----------------------------------*/
 
   sort(key): void {
