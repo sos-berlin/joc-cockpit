@@ -185,7 +185,7 @@
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.jobResourceNames</label>
           <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
-            <app-multi-select [type]="'JOBRESOURCE'" [list]="selectedNode.job.jobResourceNames" [nodes]="jobResourcesTree"></app-multi-select>
+            <app-multi-select [type]="'JOBRESOURCE'" [list]="selectedNode.job" [attribute]="'jobResourceNames'" [nodes]="jobResourcesTree"></app-multi-select>
           </div>
           <div class="col-md-1" *ngIf="isModal">
             <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.jobResourceNames" name="cjobResourceNames"></label>

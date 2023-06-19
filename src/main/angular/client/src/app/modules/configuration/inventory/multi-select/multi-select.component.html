@@ -1,10 +1,10 @@
 <div class="tag-input" (click)="openSearch()" [ngClass]="{'b-b-0 active': object.isTreeShow}">
-  <span *ngIf="list.length == 0" class="placeholder">{{'common.placeholder.search' | translate}}</span>
-  <ng-container *ngFor="let notice of list">
+  <span *ngIf="list?.length == 0" class="placeholder">{{'common.placeholder.search' | translate}}</span>
+  <ng-container *ngFor="let notice of list[attribute]">
     <nz-tag nzMode="closeable" (nzOnClose)="removeItemFromList($event, notice)">{{notice}}</nz-tag>
   </ng-container>
 </div>
-<div id="show-select-tree" [ngStyle]="{'margin-top': list.length == 0 ? '-29px' : 'auto'}" *ngIf="object.isTreeShow" class="z-index-9999 w-full">
-  <app-search-input [nodes]="nodes" [type]="type" [list]="list" (onSelect)="onSelect($event)"
+<div id="show-select-tree" [ngStyle]="{'margin-top': list[attribute]?.length == 0 ? '-29px' : 'auto'}" *ngIf="object.isTreeShow" class="z-index-9999 w-full">
+  <app-search-input [nodes]="nodes" [type]="type" [list]="list[attribute]" (onSelect)="onSelect($event)"
                     (onBlur)="onBlur($event)" [changeDetect]="true"></app-search-input>
 </div>

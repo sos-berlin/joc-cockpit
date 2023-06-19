@@ -380,7 +380,6 @@ export class LoginComponent implements OnInit {
           this.router.navigate([this.returnUrl]).then();
         }
       }, error: (err) => {
-        console.log(err)
         this.submitted = false;
         this.errorMsg = true;
       }

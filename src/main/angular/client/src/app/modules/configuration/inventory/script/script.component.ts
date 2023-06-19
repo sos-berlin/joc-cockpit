@@ -7,14 +7,14 @@ import {
   OnDestroy,
   SimpleChanges, ViewChild
 } from '@angular/core';
-import { isEmpty, isEqual, clone, sortBy } from 'underscore';
-import { Subscription } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { CoreService } from '../../../../services/core.service';
-import { DataService } from '../../../../services/data.service';
-import { CommentModalComponent } from '../../../../components/comment-modal/comment.component';
-import { InventoryObject } from '../../../../models/enums';
+import {isEmpty, isEqual, clone} from 'underscore';
+import {Subscription} from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {CoreService} from '../../../../services/core.service';
+import {DataService} from '../../../../services/data.service';
+import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
+import {InventoryObject} from '../../../../models/enums';
 
 @Component({
   selector: 'app-script',
@@ -43,16 +43,16 @@ export class ScriptComponent implements OnDestroy, OnChanges {
     lineNumbers: true,
     autoRefresh: true,
     mode: 'shell',
-    extraKeys: { 'Ctrl-Space': 'autocomplete' }
+    extraKeys: {'Ctrl-Space': 'autocomplete'}
   };
   lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
 
-  @ViewChild('codeMirror', { static: false }) cm: any;
+  @ViewChild('codeMirror', {static: false}) cm: any;
 
   constructor(public coreService: CoreService, private translate: TranslateService, private dataService: DataService,
-     private ref: ChangeDetectorRef, private modal: NzModalService) {
+              private ref: ChangeDetectorRef, private modal: NzModalService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.script.actual) {
@@ -115,65 +115,8 @@ export class ScriptComponent implements OnDestroy, OnChanges {
     }
   }
 
-  loadData(node, type, $event): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        this.updateList(node, type);
-      }
-    }
-  }
-
-  updateList(node, type): void {
-    let obj: any = {
-      path: node.key,
-      objectTypes: [type]
-    };
-    const URL = 'inventory/read/folder';
-    this.coreService.post(URL, obj).subscribe((res: any) => {
-      let data;
-      if (type === 'WORKFLOW') {
-        data = res.workflows;
-      }
-      data = sortBy(data, (i: any) => {
-        return i.name.toLowerCase();
-      });
-      for (let i = 0; i < data.length; i++) {
-        const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-        data[i].title = data[i].name;
-        data[i].path = path;
-        data[i].key = data[i].name;
-        data[i].type = type;
-        data[i].isLeaf = true;
-      }
-      if (node.origin.children && node.origin.children.length > 0) {
-        data = data.concat(node.origin.children);
-      }
-      if (node.origin.isLeaf) {
-        node.origin.expanded = true;
-      }
-      node.origin.isLeaf = false;
-      node.origin.children = data;
-      this.ref.detectChanges();
-    });
-  }
-
-  onExpand(e, type): void {
-    this.loadData(e.node, type, null);
-  }
-
   rename(inValid): void {
-    if (this.data.id === this.script.id  && this.data.name !== this.script.name) {
+    if (this.data.id === this.script.id && this.data.name !== this.script.name) {
       if (!inValid) {
         this.script.path = (this.script.path1 + (this.script.path1 === '/' ? '' : '/') + this.script.name);
         if (this.preferences.auditLog) {
@@ -230,7 +173,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
           this.data.name = name;
         }
         data.name1 = name;
-        this.dataService.reloadTree.next({ rename: data });
+        this.dataService.reloadTree.next({rename: data});
       }, error: () => {
         this.script.name = this.data.name;
         this.script.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
@@ -238,12 +181,13 @@ export class ScriptComponent implements OnDestroy, OnChanges {
       }
     });
   }
+
   release(): void {
-    this.dataService.reloadTree.next({ release: this.script });
+    this.dataService.reloadTree.next({release: this.script});
   }
 
   backToListView(): void {
-    this.dataService.reloadTree.next({ back: this.script });
+    this.dataService.reloadTree.next({back: this.script});
   }
 
   /**
@@ -295,7 +239,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
 
       if (sessionStorage.$SOS$FORCELOGING === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-          request.auditLog = { comment: translatedValue };
+          request.auditLog = {comment: translatedValue};
         });
       }
 
@@ -346,7 +290,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
         this.data.valid = res.valid;
       }
       this.script = this.coreService.clone(res);
-      if(this.script.configuration.script) {
+      if (this.script.configuration.script) {
         if (this.cm && this.cm.codeMirror) {
           this.cm.codeMirror.setValue(this.script.configuration.script);
         }

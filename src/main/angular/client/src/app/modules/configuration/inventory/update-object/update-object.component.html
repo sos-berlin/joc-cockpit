@@ -123,30 +123,8 @@
             <label class="col-md-4 form-control-label"
                    translate>workflow.label.jobResourceNames</label>
             <div class="col-md-6">
-              <nz-select
-                name="jobResource"
-                [(ngModel)]="object.jobResourceNames"
-                nzShowSearch
-                [nzAllowClear]="false"
-                [nzDropdownClassName]="'group-list'"
-                [nzPlaceHolder]="'workflow.placeholder.selectJobResources' | translate"
-                nzMode="multiple"
-              >
-                <nz-option-group [nzLabel]="nzTreeTemplate" *ngFor="let item of jobResourcesTree">
-                  <ng-template #nzTreeTemplate>
-                    <div>
-                      <i nz-icon [nzType]="'folder-open'" class="w-14 p-r-xs"></i>
-                      {{item.name}}
-                    </div>
-                  </ng-template>
-                  <nz-option nzCustomContent *ngFor="let option of item.list" [nzValue]="option.name" [nzLabel]="option.name">
-                    <div>
-                      <i class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                      {{option.name}}
-                    </div>
-                  </nz-option>
-                </nz-option-group>
-              </nz-select>
+              <app-multi-select [type]="'JOBRESOURCE'" [list]="object" [attribute]="'jobResourceNames'"
+                                [nodes]="jobResourcesTree"></app-multi-select>
             </div>
             <div class="col-md-1">
               <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.jobResourceNames" name="cjobResourceNames"></label>
@@ -168,33 +146,12 @@
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>inventory.label.workflowName</label>
             <div class="col-md-6 select-input-both">
-              <input autocomplete="off" type="text" class="form-control"
-                   placeholder="{{'inventory.placeholder.workflowName' | translate}}"
-                   name="workflowName" [(ngModel)]="object.workflowName">
-              <nz-tree-select
-                name="workflowName1"
-                nzNoAnimation
-                [nzAllowClear]="false"
-                [nzNodes]="workflowTree"
-                [nzHideUnMatched]="true"
-                [nzDropdownStyle]="{ 'max-height': '300px' }"
-                nzShowSearch
-                [(ngModel)]="object.workflowName1"
-                (nzExpandChange)="onExpand($event, 'WORKFLOW')"
-              >
-                <ng-template #nzTreeTemplate let-node>
-                  <div class="node-wrapper w-93" (click)="loadData(node, 'WORKFLOW', $event);">
-                    <div class="node-content-wrapper"
-                         [class.node-content-wrapper-active]="node.origin.key == object.workflowName && object.workflowName">
-                      <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                         class="w-14"></i>
-                      <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                      {{node.origin.name}}
-                    </div>
-                  </div>
-                </ng-template>
-              </nz-tree-select>
-              <i class="tree-search-clear ant-select-clear" (click)="object.workflowName = '';object.workflowName1='';"
+              <input (click)="isTreeShow = true;" autocomplete="off" type="text" class="form-control"
+                     name="workflowName" [(ngModel)]="object.workflowName">
+              <div [ngStyle]="{'margin-top': '-29px'}" *ngIf="isTreeShow" class="z-index-9999 w-full">
+                <app-search-input [isDisplay]="true" [nodes]="workflowTree" [type]="'WORKFLOW'"></app-search-input>
+              </div>
+              <i class="tree-search-clear ant-select-clear" (click)="object.workflowName = '';"
                *ngIf="object.workflowName" nz-icon nzType="close-circle" nzTheme="fill"></i>
             </div>
             <div class="col-md-1">
@@ -266,7 +223,8 @@
               <ng-template #addOnAfterTemplate>
                 <nz-select [nzAllowClear]="true" nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" (ngModelChange)="changeExp($event, 'toNotice')" name="toNoticeMsg" [(ngModel)]="object.toNoticeMsg" style="width: 220px">
                   <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDate' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$', '$1')"></nz-option>
-                  <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDateAndOrderName' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-(.*)$', '$1$2')"></nz-option>
+                  <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDateAndOrderName' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2$3')"></nz-option>
+                  <nz-option [nzLabel]="'inventory.label.matchingOrderName' | translate" nzValue="replaceAll($js7OrderId, '^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2')"></nz-option>
                 </nz-select>
               </ng-template>
             </div>
@@ -285,7 +243,8 @@
               <ng-template #addOnAfterTemplate3>
                 <nz-select [nzAllowClear]="true" nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" (ngModelChange)="changeExp($event, 'NoticeId')" name="readingOrderToNoticeIdMsg" [(ngModel)]="object.readingOrderToNoticeIdMsg" style="width: 220px">
                   <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDate' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$', '$1')"></nz-option>
-                  <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDateAndOrderName' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-(.*)$', '$1$2')"></nz-option>
+                  <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDateAndOrderName' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2$3')"></nz-option>
+                  <nz-option [nzLabel]="'inventory.label.matchingOrderName' | translate" nzValue="replaceAll($js7OrderId, '^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2')"></nz-option>
                 </nz-select>
               </ng-template>
             </div>
@@ -336,30 +295,8 @@
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>inventory.label.workflowNames</label>
             <div class="col-md-6">
-              <nz-tree-select
-                name="workflowName"
-                nzNoAnimation
-                nzAllowClear
-                [nzNodes]="workflowTree"
-                [nzHideUnMatched]="true"
-                [nzDropdownStyle]="{ 'max-height': '300px' }"
-                nzShowSearch
-                nzMultiple
-                [nzPlaceHolder]="'inventory.placeholder.workflowNames' | translate"
-                [(ngModel)]="object.workflowNames"
-                (nzExpandChange)="onExpand($event, 'WORKFLOW')"
-                (nzRemoved)="onRemoved($event)"
-              >
-                <ng-template #nzTreeTemplate let-node>
-                  <div class="node-wrapper w-93" (click)="loadData(node, 'WORKFLOW', $event);">
-                    <div class="node-content-wrapper" [class.node-content-wrapper-active]="object.workflowNames && object.workflowNames.indexOf(node.origin.key) > -1">
-                      <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                      <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                      {{node.origin.name}}
-                    </div>
-                  </div>
-                </ng-template>
-              </nz-tree-select>
+              <app-multi-select [type]="'WORKFLOW'" [list]="object" [attribute]="'workflowNames'"
+                                [nodes]="workflowTree" (onSelectCall)="changeWorkflow($event)"></app-multi-select>
             </div>
             <div class="col-md-1">
               <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.workflowNames" name="cworkflowNames"></label>

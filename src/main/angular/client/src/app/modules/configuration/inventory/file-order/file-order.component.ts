@@ -6,12 +6,10 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
-  SimpleChanges,
-  ViewChild
+  SimpleChanges
 } from '@angular/core';
-import {Subject, Subscription} from 'rxjs';
-import {isEmpty, isEqual, sortBy} from 'underscore';
-import {debounceTime} from 'rxjs/operators';
+import {Subscription} from 'rxjs';
+import {isEmpty, isEqual} from 'underscore';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
@@ -45,12 +43,11 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   indexOfNextAdd = 0;
   history = [];
   lastModified: any = '';
+  isTreeShow = false;
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
 
-  private subject: Subject<string> = new Subject<string>();
-  @ViewChild('treeSelectCtrl', {static: false}) treeCtrl;
 
   constructor(public coreService: CoreService, private dataService: DataService, private translate: TranslateService,
               public inventoryService: InventoryService, private ref: ChangeDetectorRef, private modal: NzModalService) {
@@ -67,11 +64,6 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       } else if (res === 'UNDO') {
         this.undo();
       }
-    });
-    this.subject.pipe(
-      debounceTime(250)
-    ).subscribe(searchTextValue => {
-      this.checkWorkflowExist(searchTextValue);
     });
     this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -110,7 +102,6 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
-    this.subject.complete();
     if (this.fileOrder.name) {
       this.saveJSON();
     }
@@ -206,14 +197,14 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   private getDailyPlanTimeZone(): void {
-    this.coreService.post('configurations', { configurationType: 'GLOBALS' }).subscribe({
+    this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe({
       next: (res) => {
         let timeZone = '';
         if (res.configurations[0] && res.configurations[0].configurationItem) {
           const configuration = JSON.parse(res.configurations[0].configurationItem);
           timeZone = configuration?.dailyplan.time_zone?.value;
-        } 
-        if(!timeZone) {
+        }
+        if (!timeZone) {
           timeZone = res.defaultGlobals?.dailyplan?.time_zone?.default;
         }
         sessionStorage.setItem('$SOS$DAILYPLANTIMEZONE', timeZone);
@@ -342,108 +333,8 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  loadData(node, type, $event, reload = false): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-
-        this.updateList(node, type, reload);
-      }
-    } else {
-      if (this.fileOrder.configuration.workflowName1) {
-        if (this.fileOrder.configuration.workflowName !== this.fileOrder.configuration.workflowName1) {
-          this.fileOrder.configuration.workflowName = this.fileOrder.configuration.workflowName1;
-        }
-      } else if (node.key && !node.key.match('/')) {
-        if (this.fileOrder.configuration.workflowName !== node.key) {
-          this.fileOrder.configuration.workflowName = node.key;
-        }
-      }
-      setTimeout(() => {
-        this.saveJSON();
-      }, 10);
-    }
-  }
-
-  updateList(node, type, reload): void {
-    let obj: any = {
-      path: node.key,
-      objectTypes: [type]
-    };
-
-    const URL = 'inventory/read/folder';
-    this.coreService.post(URL, obj).subscribe((res: any) => {
-      let data = res.workflows;
-      data = sortBy(data, (i: any) => {
-        return i.name.toLowerCase();
-      });
-      for (let i = 0; i < data.length; i++) {
-        const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-        data[i].title = data[i].name;
-        data[i].path = path;
-        data[i].key = data[i].name;
-        data[i].type = type;
-        data[i].isLeaf = true;
-      }
-      if (node.origin.children && node.origin.children.length > 0) {
-        data = data.concat(node.origin.children);
-      }
-      if (node.origin.isLeaf) {
-        node.origin.expanded = true;
-      }
-      node.origin.isLeaf = false;
-      node.origin.children = data;
-
-      this.workflowTree = [...this.workflowTree];
-      if (reload) {
-        const text = this.treeCtrl.inputValue;
-        if (text) {
-          this.treeCtrl.nzSelectSearchComponent.onValueChange(text + 1);
-          setTimeout(() => {
-            this.treeCtrl.nzSelectSearchComponent.onValueChange(text);
-          }, 0);
-        }
-      }
-      this.ref.detectChanges();
-    });
-  }
-
   detectChanges(): void {
     this.ref.detectChanges();
-  }
-
-  onKeyPressFunc($event): void {
-    this.subject.next($event.target.value);
-  }
-
-  private checkWorkflowExist(name): void {
-    this.coreService.post('inventory/path', {
-      name,
-      objectType: InventoryObject.WORKFLOW
-    }).subscribe((res: any) => {
-      this.loadWorkflowList(res.path);
-    });
-  }
-
-  private loadWorkflowList(path): void {
-    const node = this.treeCtrl.getTreeNodeByKey(path.substring(0, path.lastIndexOf('/')) || '/');
-    if (node && node.origin) {
-      this.loadData(node, 'WORKFLOW', null, true);
-    }
-  }
-
-  onExpand(e, type): void {
-    this.loadData(e.node, type, null);
   }
 
   deploy(): void {
@@ -542,5 +433,16 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         }, error: () => this.ref.detectChanges()
       });
     }
+  }
+
+  onSelect(name) {
+    this.isTreeShow = false;
+    this.fileOrder.configuration.workflowName = name;
+    this.saveJSON();
+    this.ref.detectChanges();
+  }
+
+  onBlur(): void {
+    this.isTreeShow = false;
   }
 }
