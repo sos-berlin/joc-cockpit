@@ -223,7 +223,6 @@ export class LockComponent implements OnInit, OnDestroy {
     this.locksFilters.expandedObjects = [item.path];
     this.loadLocks(true);
   }
-
   pageIndexChange($event): void {
     this.locksFilters.currentPage = $event;
   }

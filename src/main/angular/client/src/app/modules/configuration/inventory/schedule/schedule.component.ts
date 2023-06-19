@@ -6,9 +6,9 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
-  SimpleChanges, ViewChild
+  SimpleChanges
 } from '@angular/core';
-import {isEmpty, isArray, isEqual, clone, sortBy} from 'underscore';
+import {isEmpty, isArray, isEqual, clone} from 'underscore';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {ToastrService} from "ngx-toastr";
@@ -51,8 +51,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
-
-  @ViewChild('treeSelectCtrl', {static: false}) treeCtrl;
 
   constructor(public coreService: CoreService, private translate: TranslateService, private toasterService: ToastrService,
               private calendarService: CalendarService, private dataService: DataService,
@@ -297,36 +295,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  loadData(node, type, $event, isExpand = false): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      } else if (isExpand) {
-        node.isExpanded = true;
-      }
-
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if ((node.isExpanded || node.origin.isLeaf) && flag && !node.origin.isCall) {
-        node.origin.isCall = true;
-        this.updateList(node, type);
-      }
-    } else {
-      if (node.key && !node.key.match('/')) {
-        if (this.schedule.configuration.workflowNames.indexOf(node.key) === -1) {
-          this.schedule.configuration.workflowNames.push(node.key);
-            this.getWorkflowInfo(node.key, true, null);
-        }
-      }
-    }
-  }
-
   navToWorkflow(workflowName): void {
     this.dataService.reloadTree.next({
       navigate: {
@@ -334,50 +302,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         type: InventoryObject.WORKFLOW
       }
     });
-  }
-
-  updateList(node, type): void {
-    let obj: any = {
-      path: node.key,
-      objectTypes: [type]
-    };
-    this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
-      let data = res.workflows;
-      data = sortBy(data, (i: any) => {
-        return i.name.toLowerCase();
-      });
-      for (let i = 0; i < data.length; i++) {
-        const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-        data[i].title = data[i].name;
-        data[i].path = path;
-        data[i].key = data[i].name;
-        data[i].type = type;
-        data[i].isLeaf = true;
-      }
-      if (node.origin.children && node.origin.children.length > 0) {
-        data = data.concat(node.origin.children);
-      }
-      if (node.origin.isLeaf) {
-        node.origin.expanded = true;
-      }
-      node.origin.isLeaf = false;
-      node.origin.children = data;
-      this.workflowTree = [...this.workflowTree];
-      this.schedule.configuration.workflowNames = [...this.schedule.configuration.workflowNames];
-      this.ref.detectChanges();
-    });
-  }
-
-  onExpand(e, type): void {
-    this.loadData(e.node, type, null);
-  }
-
-  onRemoved(data): void {
-    this.schedule.configuration.workflowNames.splice(this.schedule.configuration.workflowNames.indexOf(data.key), 1);
-    this.schedule.configuration.orderParameterisations = [];
-    this.variableList = [];
-    this.forkListVariables = [];
-    this.saveJSON();
   }
 
   private setForkListVariables(sour, target): void {
@@ -797,7 +721,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       data.value = '';
       return;
     }
-    if(!this.schedule.configuration.planOrderAutomatically) {
+    if (!this.schedule.configuration.planOrderAutomatically) {
       this.schedule.configuration.submitOrderToControllerWhenPlanned = false;
     }
     if (this.isTrash || !this.permission.joc.inventory.manage) {
@@ -941,19 +865,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  private loadWorkflowList(path): void {
-    if (this.treeCtrl) {
-      const node = this.treeCtrl.getTreeNodeByKey(path.substring(0, path.lastIndexOf('/')) || '/');
-      if (node && node.origin) {
-        this.loadData(node, 'WORKFLOW', null, true);
-      }
-    } else {
-      setTimeout(() => {
-        this.loadWorkflowList(path);
-      }, 100)
-    }
-  }
-
   private removeSelection(name): void {
     this.schedule.configuration.workflowNames.splice(this.schedule.configuration.workflowNames.indexOf(name), 1);
     this.schedule.configuration.workflowNames = [...this.schedule.configuration.workflowNames];
@@ -992,7 +903,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         });
       }
       if (cb) {
-        cb(conf.path);
+        cb();
       }
     });
   }
@@ -1080,14 +991,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       }
       if (this.schedule.configuration.workflowNames.length > 0) {
         this.schedule.configuration.workflowNames.forEach((workflow) => {
-          this.getWorkflowInfo(workflow, false, (path) => {
+          this.getWorkflowInfo(workflow, false, () => {
             this.checkValidation(res)
-            if (path) {
-              this.loadWorkflowList(path);
-            }
           });
         });
-      } else{
+      } else {
         this.checkValidation(res);
       }
 
@@ -1104,7 +1012,19 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  private checkValidation(res){
+  changeWorkflow(data): void {
+    if (this.schedule.configuration.workflowNames.length === 0) {
+      this.schedule.configuration.orderParameterisations = [];
+      this.variableList = [];
+      this.forkListVariables = [];
+      this.saveJSON();
+    }
+    if (data.add) {
+      this.getWorkflowInfo(data.add, false, null);
+    }
+  }
+
+  private checkValidation(res) {
     if (!res.valid) {
       if (this.schedule.configuration.workflowNames && this.schedule.configuration.workflowNames.length > 0 && this.schedule.configuration.calendars.length > 0) {
         this.validateJSON(res.configuration);

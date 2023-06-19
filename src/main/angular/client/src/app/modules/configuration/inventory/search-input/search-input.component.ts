@@ -23,6 +23,7 @@ export class SearchInputComponent implements OnInit {
   @Input() type: string;
   @Input() nodes: any = [];
   @Input() list: any = []
+  @Input() isDisplay: boolean;
   @Input() changeDetect: boolean;
 
   _tree = [];
@@ -39,7 +40,8 @@ export class SearchInputComponent implements OnInit {
 
   private searchTerm = new Subject<string>();
 
-  constructor(public coreService: CoreService, private el: ElementRef, private ref: ChangeDetectorRef) {
+  constructor(public coreService: CoreService, private el: ElementRef,
+              private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -84,18 +86,14 @@ export class SearchInputComponent implements OnInit {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        this.loadNotices(node.origin, node.key);
+        this.loadFolders(node.origin, node.key);
       }
     } else {
       this.onSelect.emit(node.origin.name);
     }
   }
 
-  onExpand(e): void {
-    this.loadData(e.node, null);
-  }
-
-  private loadNotices(origin, key): void {
+  private loadFolders(origin, key): void {
     origin.loading = true;
     this.coreService.post('inventory/read/folder', {
       path: key,
@@ -129,6 +127,11 @@ export class SearchInputComponent implements OnInit {
       }, error: () => origin.loading = false
     });
   }
+
+  onExpand(e): void {
+    this.loadData(e.node, null);
+  }
+
 
   onSearchInput(searchValue: string) {
     this.searchTerm.next(searchValue);
@@ -177,12 +180,10 @@ export class SearchInputComponent implements OnInit {
   }
 
   closeDropdown(): void {
-   
     this.onBlur.emit(this.obj.name);
   }
 
   onDropdownOpenChange(isOpen: boolean): void {
-    console.log(this.list)
     if (!isOpen) {
       Promise.resolve().then(() => {
         this.treeSelectComponent.openDropdown(); // Open the dropdown programmatically

@@ -56,7 +56,13 @@ export class UpdateJobComponent implements OnInit {
 
   private init(): void {
     if (this.jobResourcesTree.length === 0) {
-      this.getJobResources();
+      this.coreService.post('tree', {
+        controllerId: this.controllerId,
+        forInventory: true,
+        types: [InventoryObject.JOBRESOURCE]
+      }).subscribe((res) => {
+        this.jobResourcesTree = this.coreService.prepareTree(res, false);
+      });
     }
     if (this.documentationTree.length === 0 && this.permission.joc.documentations.view) {
       this.coreService.post('tree', {
@@ -81,12 +87,6 @@ export class UpdateJobComponent implements OnInit {
         }, 100);
       }
     }
-  }
-
-  private getJobResources(): void {
-    this.coreService.getJobResource((arr) => {
-      this.jobResourcesTree = arr;
-    });
   }
 
   getObject(id): void {

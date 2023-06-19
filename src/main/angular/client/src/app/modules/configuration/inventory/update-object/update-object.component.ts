@@ -24,6 +24,7 @@ export class UpdateObjectComponent implements OnInit {
   comments: any = {};
   selectedSchedulerIds = [];
   zones = [];
+  isTreeShow = false;
   agentList = [];
   agents = {
     agentList: []
@@ -78,7 +79,13 @@ export class UpdateObjectComponent implements OnInit {
       };
     }
     if (this.jobResourcesTree.length === 0 && this.type === InventoryObject.WORKFLOW) {
-      this.getJobResources();
+      this.coreService.post('tree', {
+        controllerId: this.controllerId,
+        forInventory: true,
+        types: [InventoryObject.JOBRESOURCE]
+      }).subscribe((res) => {
+        this.jobResourcesTree = this.coreService.prepareTree(res, false);
+      });
     }
     if (this.workflowTree.length === 0 && (this.type === InventoryObject.FILEORDERSOURCE || this.type === InventoryObject.SCHEDULE)) {
       this.coreService.post('tree', {
@@ -104,93 +111,15 @@ export class UpdateObjectComponent implements OnInit {
     }
   }
 
-  private getJobResources(): void {
-    this.coreService.getJobResource((arr) => {
-      this.jobResourcesTree = arr;
-    });
-  }
-
-  onRemoved(data): void {
-    this.object.workflowNames.splice(this.object.workflowNames.indexOf(data.key), 1);
-    this.object.orderParameterisations = [];
-    this.variableList = [];
-    this.forkListVariables = [];
-  }
-
-  onExpand(e, type): void {
-    this.loadData(e.node, type, null);
-  }
-
-  loadData(node, type, $event): void {
-    if (!node || !node.origin) {
-      return;
+  changeWorkflow(data): void {
+    if (this.object.workflowNames.length === 0) {
+      this.object.orderParameterisations = [];
+      this.variableList = [];
+      this.forkListVariables = [];
     }
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        this.updateList(node, type);
-      }
-    } else {
-      if (type === 'WORKFLOW') {
-        if (this.object.workflowName1) {
-          if (this.object.workflowName !== this.object.workflowName1) {
-            this.object.workflowName = this.object.workflowName1;
-          }
-        } else if (node.key && !node.key.match('/')) {
-          if (this.object.workflowName !== node.key) {
-            this.object.workflowName = node.key;
-          }
-        }
-        if (this.object.workflowName && this.type === InventoryObject.SCHEDULE) {
-          this.getWorkflowInfo(this.object.workflowName);
-        }
-      }
+    if (data.add) {
+      this.getWorkflowInfo(data.add);
     }
-  }
-
-  private updateList(node, type): void {
-    let obj: any = {
-      path: node.key,
-      objectTypes: [type]
-    };
-    const URL = 'inventory/read/folder';
-    this.coreService.post(URL, obj).subscribe((res: any) => {
-      let data;
-      if (type === InventoryObject.WORKFLOW) {
-        data = res.workflows;
-      }
-      data = sortBy(data, (i: any) => {
-        return i.name.toLowerCase();
-      });
-      for (let i = 0; i < data.length; i++) {
-        const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-        data[i].title = data[i].assignReference || data[i].name;
-        data[i].path = path;
-        data[i].key = data[i].assignReference || data[i].name;
-        data[i].type = type;
-        data[i].isLeaf = true;
-      }
-      if (node.origin.children && node.origin.children.length > 0) {
-        data = data.concat(node.origin.children);
-      }
-      if (node.origin.isLeaf) {
-        node.origin.expanded = true;
-      }
-      node.origin.isLeaf = false;
-      node.origin.children = data;
-      if (type === InventoryObject.WORKFLOW) {
-        this.workflowTree = [...this.workflowTree];
-      } else if (type === InventoryObject.JOBRESOURCE) {
-        this.jobResourcesTree = [...this.jobResourcesTree];
-      }
-    });
   }
 
   private getWorkflowInfo(name): void {

@@ -461,7 +461,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     if(this.orderFilters.filter.stateDateTo){
       obj.stateDateTo = this.orderFilters.filter.stateDateTo;
     }
-    console.log(this.orderFilters.filter)
+
     this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         res.orders = this.orderPipe.transform(res.orders, this.orderFilters.filter.sortBy, this.orderFilters.reverse);

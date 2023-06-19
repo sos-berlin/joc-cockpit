@@ -1,45 +1,59 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {CoreService} from '../../../../services/core.service';
 
 @Component({
   selector: 'app-multi-select',
   templateUrl: './multi-select.component.html'
 })
-export class MultiSelectComponent {
+export class MultiSelectComponent implements OnInit {
   @Input() type: string;
+  @Input() attribute: string;
   @Input() nodes: any = [];
-  @Input() list: any = [];
+  @Input() list: any = {};
   object: any = {
     isTreeShow: false
   };
 
+  @Output() funcCall: EventEmitter<any> = new EventEmitter();
+  @Output() onSelectCall: EventEmitter<any> = new EventEmitter();
+
   constructor(public coreService: CoreService) {
   }
+
+  ngOnInit(): void {
+    if (!this.list[this.attribute]) {
+      this.list[this.attribute] = [];
+    }
+  }
+
 
   openSearch(): void {
     this.object.isTreeShow = true;
   }
 
   onSelect(selectedValue): void {
-    console.log(selectedValue);
-    if (this.list.includes(selectedValue)) {
-      const index = this.list.indexOf(selectedValue);
+    if (this.list[this.attribute].includes(selectedValue)) {
+      const index = this.list[this.attribute].indexOf(selectedValue);
       if (index > -1) {
-        this.list.splice(index, 1);
+        this.list[this.attribute].splice(index, 1);
+        this.onSelectCall.emit({remove: selectedValue});
       }
     } else {
-      this.list.push(selectedValue);
+      this.list[this.attribute].push(selectedValue);
+      this.onSelectCall.emit({add: selectedValue});
     }
   }
 
   onBlur(evt): void {
     this.object.isTreeShow = false;
+    this.funcCall.emit(evt);
   }
 
   removeItemFromList(evn, item): void {
     evn.stopPropagation();
     evn.preventDefault();
-    this.list = this.list.filter((val) => val != item);
+    this.list[this.attribute] = this.list[this.attribute].filter((val) => val != item);
+    this.onSelectCall.emit({remove: item});
   }
 
 }

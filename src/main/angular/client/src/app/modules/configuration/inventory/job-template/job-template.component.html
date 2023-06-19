@@ -90,7 +90,8 @@
                  [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.jobResourceNames</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-multi-select [type]="'JOBRESOURCE'" [list]="job.configuration.jobResourceNames" [nodes]="jobResourcesTree"></app-multi-select>
+            <app-multi-select [type]="'JOBRESOURCE'" [list]="job.configuration" [attribute]="'jobResourceNames'"
+                              [nodes]="jobResourcesTree" (funcCall)="saveJSON()"></app-multi-select>
           </div>
         </div>
         <div class="form-group row">
