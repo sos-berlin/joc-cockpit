@@ -3774,6 +3774,20 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     });
   }
 
+  onSelect(name) {
+    if (this.selectedNode) {
+      this.selectedNode.isTreeShow = false;
+      this.selectedNode.obj.workflowName = name;
+      this.getWorkflow(true);
+    }
+  }
+
+  onSelectBlur(): void {
+    if (this.selectedNode) {
+      this.selectedNode.isTreeShow = false;
+    }
+  }
+
   onBlur(value: string): void {
     this.checkExpectNoticeExp(value);
   }

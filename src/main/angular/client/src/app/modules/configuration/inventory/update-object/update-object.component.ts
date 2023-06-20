@@ -136,6 +136,15 @@ export class UpdateObjectComponent implements OnInit {
     });
   }
 
+  onSelect(name) {
+    this.isTreeShow = false;
+    this.object.workflowName = name;
+  }
+
+  onBlur(): void {
+    this.isTreeShow = false;
+  }
+
   /*------------ BEGIN SCHEDULE -----------------*/
 
   openRuntimeEditor(): void {

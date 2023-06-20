@@ -118,6 +118,7 @@ export class SettingModalComponent implements OnInit {
 
   isEnable = false;
   isLengthMatch = true;
+  isTreeShow = false;
   submitted = false;
   jobResourcesTree: any = [];
   currentObj: any = {};
@@ -293,26 +294,28 @@ export class SettingModalComponent implements OnInit {
           if (!this.currentObj.iamFidoEmailSettings.priority) {
             this.currentObj.iamFidoEmailSettings.priority = 'normal';
           }
-          this.getJobResources(this.currentObj.iamFidoEmailSettings.nameOfJobResource);
+          this.getJobResources();
         }
       }
     });
   }
 
-  private getJobResources(jobResourceName): void {
-    this.coreService.getJobResource((arr) => {
-      this.jobResourcesTree = arr;
-      this.checkJobResource(jobResourceName);
+  private getJobResources(): void {
+    this.coreService.post('tree', {
+      types: ['JOBRESOURCE']
+    }).subscribe((res) => {
+      this.jobResourcesTree = this.coreService.prepareTree(res, true);
     });
   }
 
-  private checkJobResource(jobResourceName): void {
-    this.jobResourcesTree = this.coreService.getNotExistJobResource({
-      arr: this.jobResourcesTree,
-      jobResources: jobResourceName
-    });
+  onSelect(name) {
+    this.isTreeShow = false;
+    this.currentObj.iamFidoEmailSettings.nameOfJobResource = name;
   }
 
+  onBlur(): void {
+    this.isTreeShow = false;
+  }
 
   changeSettings(evt): void {
     if (evt === 'FIDO2') {

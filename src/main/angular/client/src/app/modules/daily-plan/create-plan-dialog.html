@@ -8,7 +8,7 @@
       <i class="text-muted">{{dateRanges[1] | stringToDate1:true}}</i>
     </span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button type="button" class="close" aria-label="Close" (click)="cancel()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -29,7 +29,9 @@
     <div class="form-group row" *ngIf="object.at === 'template'">
       <label class="col-md-3 form-control-label" translate>dailyPlan.label.schedules</label>
       <div class="col-md-6">
-        <app-select-schedule-template [schedulerId]="schedulerId" [object]="selectedTemplates"></app-select-schedule-template>
+        <app-multi-select [type]="'SCHEDULE'" [list]="selectedTemplates" [addFolderPossible]="true" [folders]="selectedTemplates"
+                          [attribute]="'schedules'" [nodes]="scheduleTree"></app-multi-select>
+<!--        <app-select-schedule-template [schedulerId]="schedulerId" [object]="selectedTemplates"></app-select-schedule-template>-->
       </div>
     </div>
     <div class="form-group row" *ngIf="object.at === 'template' && selectedTemplates.paths.length > 0">
@@ -44,32 +46,8 @@
     <div class="form-group row" *ngIf="object.at === 'template'">
       <label class="col-md-3 form-control-label" translate>dailyPlan.label.workflows</label>
       <div class="col-md-6">
-        <nz-tree-select
-          name="workflows"
-          nzNoAnimation
-          nzMultiple
-          [nzAllowClear]="false"
-          [nzNodes]="workflowsTree"
-          [nzHideUnMatched]="true"
-          [nzDropdownStyle]="{ 'max-height': '300px' }"
-          nzShowSearch
-          (nzExpandChange)="onExpand($event)"
-          [nzPlaceHolder]="'dailyPlan.placeholder.workflowPath' | translate"
-          [(ngModel)]="object.workflowPaths"
-        >
-          <ng-template #nzTreeTemplate let-node>
-            <div class="node-wrapper w-93" (click)="loadData(node, $event);">
-              <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
-                <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                   class="w-14"></i>
-                <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                {{node.origin.name}}
-                <i *ngIf="!node.origin.type && object.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path);$event.stopPropagation()" [nz-tooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
-                <i *ngIf="!node.origin.type && object.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path);$event.stopPropagation()" nz-icon [nzType]="'delete'" class="p-l-sm"></i>
-              </div>
-            </div>
-          </ng-template>
-        </nz-tree-select>
+        <app-multi-select [type]="'WORKFLOW'" [list]="object" [addFolderPossible]="true" [folders]="object"
+                          [attribute]="'workflowPaths'" [nodes]="workflowsTree"></app-multi-select>
       </div>
     </div>
     <div class="form-group row" *ngIf="object.at === 'template' && object.paths.length > 0">
@@ -100,7 +78,7 @@
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
       common.button.cancel
     </button>
   </div>

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {CoreService} from '../../../../services/core.service';
+import {CoreService} from '../../services/core.service';
 
 @Component({
   selector: 'app-multi-select',
@@ -10,6 +10,8 @@ export class MultiSelectComponent implements OnInit {
   @Input() attribute: string;
   @Input() nodes: any = [];
   @Input() list: any = {};
+  @Input() addFolderPossible: boolean;
+  @Input() folders: any = {};
   object: any = {
     isTreeShow: false
   };

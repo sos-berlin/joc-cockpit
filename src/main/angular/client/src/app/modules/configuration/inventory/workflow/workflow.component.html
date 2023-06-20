@@ -848,28 +848,14 @@
                      [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.workflowName
                 <sup class="text-danger text-sm">*</sup>
               </label>
-              <div class="col-md-8 col-lg-9 select-input-both"
+              <div class="col-md-8 col-lg-9"
                    [ngClass]="{'has-error' : (error && !selectedNode.obj.workflowName) || ((workflowName.dirty || workflowName.touched) && workflowName.invalid)}">
-                <input autocomplete="off" type="text" class="form-control" required
+                <input (click)="selectedNode.isTreeShow = true;" autocomplete="off" type="text" class="form-control" required
                        placeholder="{{'inventory.placeholder.workflowName' | translate}}" name="workflowName"
                        #workflowName="ngModel" [(ngModel)]="selectedNode.obj.workflowName">
-                <nz-tree-select name="workflowName1" [required]="true" nzNoAnimation #treeSelectCtrl
-                                [nzAllowClear]="false" [nzNodes]="workflowTree" [nzHideUnMatched]="true"
-                                [nzDropdownStyle]="{ 'max-height': '300px' }" nzShowSearch
-                                [(ngModel)]="selectedNode.obj.workflowName1"
-                                (nzExpandChange)="onExpand($event, 'WORKFLOW')">
-                  <ng-template #nzTreeTemplate let-node>
-                    <div class="node-wrapper w-93 " (click)="loadData(node, 'WORKFLOW', $event);">
-                      <div class="node-content-wrapper"
-                           [class.node-content-wrapper-active]="node.origin.name == selectedNode.obj.workflowName">
-                        <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                           class="w-14"></i>
-                        <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                        {{node.origin.name}}
-                      </div>
-                    </div>
-                  </ng-template>
-                </nz-tree-select>
+                <div [ngStyle]="{'margin-top': '-29px'}" *ngIf="selectedNode.isTreeShow" class="z-index-9999 w-full">
+                  <app-search-input [isDisplay]="true" [nodes]="workflowTree" [type]="'WORKFLOW'" (onBlur)="onSelectBlur()" (onSelect)="onSelect($event)" [changeDetect]="true"></app-search-input>
+                </div>
                 <div
                   *ngIf="(error && !selectedNode.obj.workflowName) || (workflowName.invalid && (workflowName.dirty || workflowName.touched))"
                   class="text-danger help-block">

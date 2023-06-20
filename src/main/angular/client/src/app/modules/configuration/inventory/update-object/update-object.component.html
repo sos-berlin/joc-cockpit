@@ -145,11 +145,11 @@
         <ng-container *ngIf="type === 'FILEORDERSOURCE'">
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>inventory.label.workflowName</label>
-            <div class="col-md-6 select-input-both">
+            <div class="col-md-6">
               <input (click)="isTreeShow = true;" autocomplete="off" type="text" class="form-control"
                      name="workflowName" [(ngModel)]="object.workflowName">
               <div [ngStyle]="{'margin-top': '-29px'}" *ngIf="isTreeShow" class="z-index-9999 w-full">
-                <app-search-input [isDisplay]="true" [nodes]="workflowTree" [type]="'WORKFLOW'"></app-search-input>
+                <app-search-input [isDisplay]="true" [nodes]="workflowTree" [type]="'WORKFLOW'" (onBlur)="onBlur()" (onSelect)="onSelect($event)"></app-search-input>
               </div>
               <i class="tree-search-clear ant-select-clear" (click)="object.workflowName = '';"
                *ngIf="object.workflowName" nz-icon nzType="close-circle" nzTheme="fill"></i>
