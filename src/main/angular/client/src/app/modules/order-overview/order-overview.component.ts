@@ -1,4 +1,15 @@
-import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {
+  Component,
+  Directive,
+  EventEmitter, forwardRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
@@ -19,8 +30,36 @@ import {
 } from '../../components/modify-modal/modify.component';
 import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
+import {AbstractControl, NG_VALIDATORS, Validator} from "@angular/forms";
 
 declare const $;
+
+@Directive({
+  selector: '[appValidateRelativeDate]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => RelativeDateValidator), multi: true}
+  ]
+})
+export class RelativeDateValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      if (v == '') {
+        return null;
+      }
+      if (/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(v)
+      ) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+    return {
+      invalidDuration: true
+    };
+  }
+}
+
 
 @Component({
   selector: 'app-pie-chart',
@@ -157,7 +196,8 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
 
 @Component({
   selector: 'app-order-overview',
-  templateUrl: './order-overview.component.html'
+  templateUrl: './order-overview.component.html',
+  styleUrls: ['./order-overview.component.css']
 })
 export class OrderOverviewComponent implements OnInit, OnDestroy {
   loading: boolean;
@@ -180,7 +220,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   orderOverviewAction: any = {};
   reloadState = 'no';
   isProcessing = false;
-  dateFormat: string;
   searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position'];
   object = {
     mapOfCheckedId: new Map(),
@@ -263,13 +302,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   private init(): void {
     this.orderFilters = this.coreService.getOrderOverviewTab();
     this.orderFilters.filter.state = this.route.snapshot.paramMap.get('state');
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     if (this.authService.permission) {
       this.permission = JSON.parse(this.authService.permission) || {};
     }
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
+
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.sideView = this.coreService.getSideView();
     if (this.sideView.orderOverview && !this.sideView.orderOverview.show) {
@@ -696,8 +735,21 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeDateFilter(){
+  changeDateFilter(type: string, date): void {
     this.loading = false;
+    if(date){
+      if(type == 'FROM'){
+        this.orderFilters.filter.stateDateFrom = new Date(date).toISOString();
+      } else {
+        this.orderFilters.filter.stateDateTo = new Date(date).toISOString();
+      }
+    } else {
+      if(type == 'FROM') {
+        this.orderFilters.filter.stateDateFrom1 = null;
+      } else {
+        this.orderFilters.filter.stateDateTo1 = null;
+      }
+    }
     if (this.pageView === 'bulk') {
       this.loadOrder();
     } else {

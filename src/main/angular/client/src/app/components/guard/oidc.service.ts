@@ -60,6 +60,7 @@ export class OIDCAuthService {
   nonceStateSeparator: string = ';';
   state = '';
   grantTypesSupported = [];
+  tokenEndMethodsSupported = [];
   discoveryDocumentLoaded = false;
   access_token: string;
   id_token: string;
@@ -107,6 +108,7 @@ export class OIDCAuthService {
           this.grantTypesSupported = doc.grant_types_supported;
           this.issuer = doc.issuer;
           this.tokenEndpoint = doc.token_endpoint;
+          this.tokenEndMethodsSupported = doc.token_endpoint_auth_methods_supported || ['client_secret_post'];
           this.discoveryDocumentLoaded = true;
           const result = {
             discoveryDocument: doc,
@@ -267,8 +269,27 @@ export class OIDCAuthService {
         'application/x-www-form-urlencoded'
       );
 
-      params = params.set('client_id', content.clientId);
-      params = params.set('client_secret', content.clientSecret);
+      let flag = true;
+      let basicAuth = false;
+      if (this.tokenEndMethodsSupported.length > 0) {
+        if (this.tokenEndMethodsSupported.length > 1) {
+          this.tokenEndMethodsSupported.forEach((method) => {
+            if (method == 'none') {
+              flag = false;
+            } else if (method == 'client_secret_basic') {
+              basicAuth = true;
+              flag = false;
+              headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(content.clientId + ':' + content.clientSecret))));
+            }
+          })
+        }
+      }
+      if (flag) {
+        params = params.set('client_secret', content.clientSecret);
+      }
+      if (!basicAuth) {
+        params = params.set('client_id', content.clientId);
+      }
       return new Promise((resolve, reject) => {
         let revokeAccessToken: Observable<void>;
         let revokeRefreshToken: Observable<void>;
@@ -278,7 +299,7 @@ export class OIDCAuthService {
             .set('token_type_hint', 'access_token');
           if (logoutUrl.includes('login.windows.net')) {
             // navigate to the logout URL
-            window.location.replace(logoutUrl +'?post_logout_redirect_uri='+window.location.href);
+            window.location.replace(logoutUrl + '?post_logout_redirect_uri=' + window.location.href);
             return
           }
           revokeAccessToken = this.coreService.log(
@@ -443,8 +464,27 @@ export class OIDCAuthService {
     let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
     const clientId = sessionStorage.getItem('clientId');
     const clientSecret = sessionStorage.getItem('clientSecret');
-    params = params.set('client_id', this.clientId || clientId);
-    params = params.set('client_secret', this.clientSecret || clientSecret);
+    let flag = true;
+    let basicAuth = false;
+    if (this.tokenEndMethodsSupported.length > 0) {
+      if (this.tokenEndMethodsSupported.length > 1) {
+        this.tokenEndMethodsSupported.forEach((method) => {
+          if (method == 'none') {
+            flag = false;
+          }
+        })
+      } else if (this.tokenEndMethodsSupported[0] == 'client_secret_basic') {
+        basicAuth = true;
+        flag = false;
+        headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((this.clientId || clientId) + ':' + (this.clientSecret || clientSecret)))));
+      }
+    }
+    if (flag) {
+      params = params.set('client_secret', this.clientSecret || clientSecret);
+    }
+    if (!basicAuth) {
+      params = params.set('client_id', this.clientId || clientId);
+    }
     return new Promise((resolve, reject) => {
       this.coreService
         .log(this.tokenEndpoint, params, {headers})
@@ -598,15 +638,33 @@ export class OIDCAuthService {
       let params = new HttpParams({encoder: new WebHttpUrlEncodingCodec()})
         .set('grant_type', 'refresh_token')
         .set('scope', this.scope)
-        .set('refresh_token', data.refreshToken)
-        .set('client_id', data.clientId)
-        .set('client_secret', data.clientSecret);
+        .set('refresh_token', data.refreshToken);
 
       let headers = new HttpHeaders().set(
         'Content-Type',
         'application/x-www-form-urlencoded'
       );
-
+      let flag = true;
+      let basicAuth = false;
+      if (this.tokenEndMethodsSupported.length > 0) {
+        if (this.tokenEndMethodsSupported.length > 1) {
+          this.tokenEndMethodsSupported.forEach((method) => {
+            if (method == 'none') {
+              flag = false;
+            }
+          })
+        } else if (this.tokenEndMethodsSupported[0] == 'client_secret_basic') {
+          basicAuth = true;
+          flag = false;
+          headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(data.clientId + ':' + data.clientSecret))));
+        }
+      }
+      if (flag) {
+        params = params.set('client_secret', data.clientSecret);
+      }
+      if (!basicAuth) {
+        params = params.set('client_id', data.clientId);
+      }
       this.coreService
         .log(this.tokenEndpoint, params, {headers})
         .subscribe({

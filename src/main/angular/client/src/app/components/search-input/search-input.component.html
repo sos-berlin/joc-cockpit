@@ -4,8 +4,7 @@
            class="form-control white" id="changeFocus" [ngClass]="{'b-t-0' : !isDisplay}"
            [value]="obj.name" (input)="onSearchInput($event.target.value)" (blur)="closeDropdown()" #changeFocusInput  />
   </nz-input-group>
-  <nz-tree-select nzNoAnimation [nzNodes]="nodes" [nzHideUnMatched]="true"
-                  [nzShowExpand]="false" [nzDropdownStyle]="{ 'max-height': '300px' }"
+  <nz-tree-select nzNoAnimation [nzNodes]="nodes" [nzShowExpand]="false" [nzDropdownStyle]="{ 'max-height': '300px' }"
     (nzOpenChange)="onDropdownOpenChange($event)" [nzAllowClear]="true" (nzExpandChange)="onExpand($event)">
   <ng-template #nzTreeTemplate let-node>
     <div class="node-wrapper w-full">
@@ -27,6 +26,8 @@
         <i *ngIf="node.origin.type || node.origin.objectType" class="fa fa-circle-o text-xs w-11 m-t-xs"
           [ngClass]="{'p-l-xs': node.origin.objectType}"></i>
         <span class="p-l-sm">{{node.origin.name}}</span>
+        <i *ngIf="addFolderPossible && !node.origin.type && !node.origin.objectType && folders.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path);$event.stopPropagation()" [nz-tooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
+        <i *ngIf="addFolderPossible && !node.origin.type && !node.origin.objectType && folders.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path);$event.stopPropagation()" nz-icon [nzType]="'delete'" class="p-l-sm"></i>
       </div>
     </div>
   </ng-template>

@@ -24,6 +24,8 @@ export class SearchInputComponent implements OnInit {
   @Input() nodes: any = [];
   @Input() list: any = []
   @Input() isDisplay: boolean;
+  @Input() addFolderPossible: boolean;
+  @Input() folders: any = {};
   @Input() changeDetect: boolean;
 
   _tree = [];
@@ -45,9 +47,8 @@ export class SearchInputComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const self = this;
     const dom2 = $(this.el.nativeElement).find('.ant-select');
-    this._tree = [...self.nodes];
+    this._tree = [...this.nodes];
     setTimeout(() => {
       dom2?.click();
     }, this.changeDetect ? 10 : 0);
@@ -132,6 +133,19 @@ export class SearchInputComponent implements OnInit {
     this.loadData(e.node, null);
   }
 
+  addFolder(path): void {
+    if (this.folders.paths.indexOf(path) === -1) {
+      this.folders.paths.push(path);
+    }
+  }
+
+  remove(path, flag = false): void {
+    if (flag) {
+      this.folders.paths.splice(this.folders.paths.indexOf(path), 1);
+    } else {
+      this.folders.paths.splice(this.folders.paths.indexOf(path), 1);
+    }
+  }
 
   onSearchInput(searchValue: string) {
     this.searchTerm.next(searchValue);

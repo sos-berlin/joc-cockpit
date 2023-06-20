@@ -282,7 +282,7 @@ export class CreatePlanModalComponent implements OnInit {
   display: any;
   required = false;
   comments: any = {};
-  schedules: any = [];
+  scheduleTree: any = [];
   workflowsTree: any = [];
   selectedTemplates: any = {schedules: [], paths: []};
 
@@ -292,6 +292,7 @@ export class CreatePlanModalComponent implements OnInit {
   ngOnInit(): void {
     this.display = this.preferences.auditLog;
     this.getWorkflowTree();
+    this.getScheduleTree();
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
@@ -302,64 +303,21 @@ export class CreatePlanModalComponent implements OnInit {
   private getWorkflowTree(): void {
     this.coreService.post('tree', {
       controllerId: this.schedulerId,
-      forInventory: true,
+      forInventory: false,
       types: ['WORKFLOW']
     }).subscribe((res) => {
       this.workflowsTree = this.coreService.prepareTree(res, true);
     });
   }
 
-  loadData(node, $event): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        let request: any = {
-          path: node.key,
-          objectTypes: ['WORKFLOW']
-        };
-        this.coreService.post('inventory/read/folder', request).subscribe((res: any) => {
-          let data = res.workflows;
-          data = sortBy(data, (i: any) => {
-            return i.name.toLowerCase();
-          });
-          for (let i = 0; i < data.length; i++) {
-            data[i].title = data[i].path;
-            data[i].key = data[i].path;
-            data[i].type = 'WORKFLOW';
-            data[i].isLeaf = true;
-          }
-          if (node.origin.children && node.origin.children.length > 0) {
-            data = data.concat(node.origin.children);
-          }
-          if (node.origin.isLeaf) {
-            node.origin.expanded = true;
-          }
-          node.origin.isLeaf = false;
-          node.origin.children = data;
-          this.workflowsTree = [...this.workflowsTree];
-        });
-      }
-    }
-  }
-
-  onExpand(e): void {
-    this.loadData(e.node, null);
-  }
-
-  addFolder(path): void {
-    if (this.object.paths.indexOf(path) === -1) {
-      this.object.paths.push(path);
-    }
+  private getScheduleTree(): void {
+    this.coreService.post('tree', {
+      controllerId: this.schedulerId,
+      forInventory: false,
+      types: ['SCHEDULE']
+    }).subscribe((res) => {
+      this.scheduleTree = this.coreService.prepareTree(res, true);
+    });
   }
 
   remove(path, flag = false): void {

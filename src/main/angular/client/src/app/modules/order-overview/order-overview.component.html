@@ -356,38 +356,42 @@
         <div id="rightPanel1" *ngIf="pageView !== 'bulk'">
           <div class="row m-b" *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && data.length > (orderFilters.entryPerPage || preferences.entryPerPage))">
             <div class="col-lg-12">
-              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView=='list'}" (click)="expandDetails()" >
-                <i class="fa fa-expand text" ></i>
-              </button>
-              <button class="hide btn btn-sm btn-grey m-l-12" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView==='list'}" (click)="collapseDetails()">
-                <i class="fa fa-compress text"></i>
-              </button>
-              <button class="hide btn btn-sm btn-grey m-l-12 m-r-12" nz-tooltip="{{'common.button.resetPanel' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView==='list'}" (click)="resetPanel()">
-                <i class="fa fa-repeat text"></i>
-              </button>
-              <nz-date-picker
-                [nzPlaceHolder]="'common.placeholder.setStartDate' | translate"
-                class="pos-rel t-xxs bottom-border"
-                nzShowTime
-                [nzFormat]="dateFormat"
-                [(ngModel)]="orderFilters.filter.stateDateFrom"
-                (ngModelChange)="changeDateFilter()"
-              ></nz-date-picker>
-              <nz-date-picker
-                [nzPlaceHolder]="'common.placeholder.setEndDate' | translate"
-                class="pos-rel t-xxs m-l-12 bottom-border"
-                nzShowTime
-                [nzFormat]="dateFormat"
-                [(ngModel)]="orderFilters.filter.stateDateTo"
-                (ngModelChange)="changeDateFilter()"
-              ></nz-date-picker>
-              <div class="search-box-field pull-right">
-                <label>
-                  <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
-                         [(ngModel)]="orderFilters.searchText">
-                </label>
-                <i [hidden]="!orderFilters.searchText" class="fa fa-times search-close"
-                   (click)="orderFilters.searchText = '';searchInResult()"></i>
+              <div style="display: flex;align-items: baseline;justify-content: space-between">
+                <div style="display: flex;">
+                  <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView=='list'}" (click)="expandDetails()" >
+                    <i class="fa fa-expand text" ></i>
+                  </button>
+                  <button class="hide btn btn-sm btn-grey m-l-12" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView==='list'}" (click)="collapseDetails()">
+                    <i class="fa fa-compress text"></i>
+                  </button>
+                  <button class="hide btn btn-sm btn-grey m-l-12 m-r-12" nz-tooltip="{{'common.button.resetPanel' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView==='list'}" (click)="resetPanel()">
+                    <i class="fa fa-repeat text"></i>
+                  </button>
+
+                  <div class="pos-rel" [ngClass]="{ 'error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
+                    <input appValidateRelativeDate type="text" #startTime="ngModel" name="startTime" placeholder="{{ 'common.placeholder.setStartDate' | translate }} (+/-)(s|m|h|d|w|M|y)"
+                      class="form-control input-overlay"
+                      [(ngModel)]="orderFilters.filter.stateDateFrom" (blur)="changeDateFilter('FROM')" />
+                    <nz-date-picker [nzPlaceHolder]="''" class="pos-rel t-xxs bottom-border cursor" nzShowTime
+                      [(ngModel)]="orderFilters.filter.stateDateFrom1" (ngModelChange)="changeDateFilter('FROM', orderFilters.filter.stateDateFrom1)"></nz-date-picker>
+                  </div>
+                  <div class="pos-rel" [ngClass]="{ 'error' : (((endTime.dirty || endTime.touched) && endTime.invalid))}">
+                    <input appValidateRelativeDate type="text" #endTime="ngModel" name="endTime"
+                      placeholder="{{ 'common.placeholder.setEndDate' | translate }} (+/-)(s|m|h|d|w|M|y)" class="form-control input-overlay m-l-12"
+                      [(ngModel)]="orderFilters.filter.stateDateTo" (blur)="changeDateFilter('TO')" />
+                    <nz-date-picker [nzPlaceHolder]="''" class="pos-rel t-xxs m-l-12 bottom-border cursor" nzShowTime
+                      [(ngModel)]="orderFilters.filter.stateDateTo1" (ngModelChange)="changeDateFilter( 'TO', orderFilters.filter.stateDateTo1)"></nz-date-picker>
+                  </div>
+                </div>
+
+                <div class="search-box-field pull-right m-b-0">
+                  <label>
+                    <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
+                           [(ngModel)]="orderFilters.searchText">
+                  </label>
+                  <i [hidden]="!orderFilters.searchText" class="fa fa-times search-close"
+                     (click)="orderFilters.searchText = '';searchInResult()"></i>
+                </div>
               </div>
             </div>
           </div>

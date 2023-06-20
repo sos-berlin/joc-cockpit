@@ -353,6 +353,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     localStorage.$SOS$LANG = preferences.locale;
     this.translate.setDefaultLang(preferences.locale);
     this.translate.use(preferences.locale);
+    if (this.child) {
+      this.child.reloadSettings();
+    }
   }
 
   private getComments(flag = false, cb): void {
