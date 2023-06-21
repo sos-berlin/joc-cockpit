@@ -5,6 +5,6 @@
   </ng-container>
 </div>
 <div id="show-select-tree" [ngStyle]="{'margin-top': list[attribute]?.length == 0 ? '-29px' : 'auto'}" *ngIf="object.isTreeShow" class="z-index-9999 w-full">
-  <app-search-input [nodes]="nodes" [addFolderPossible]="addFolderPossible" [folders]="folders" [type]="type" [list]="list[attribute]" (onSelect)="onSelect($event)"
+  <app-search-input [nodes]="nodes" [addFolderPossible]="addFolderPossible" [folders]="folders" [type]="type" [list]="list[attribute]" [pathAttribute]="pathAttribute" (onSelect)="onSelect($event)"
                     (onBlur)="onBlur($event)" [changeDetect]="true"></app-search-input>
 </div>

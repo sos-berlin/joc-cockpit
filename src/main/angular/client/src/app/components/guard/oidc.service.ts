@@ -471,12 +471,12 @@ export class OIDCAuthService {
         this.tokenEndMethodsSupported.forEach((method) => {
           if (method == 'none') {
             flag = false;
+          } else if (method == 'client_secret_basic') {
+            basicAuth = true;
+            flag = false;
+            headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((this.clientId || clientId) + ':' + (this.clientSecret || clientSecret)))));
           }
         })
-      } else if (this.tokenEndMethodsSupported[0] == 'client_secret_basic') {
-        basicAuth = true;
-        flag = false;
-        headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((this.clientId || clientId) + ':' + (this.clientSecret || clientSecret)))));
       }
     }
     if (flag) {
@@ -651,12 +651,12 @@ export class OIDCAuthService {
           this.tokenEndMethodsSupported.forEach((method) => {
             if (method == 'none') {
               flag = false;
+            } else if (method == 'client_secret_basic') {
+              basicAuth = true;
+              flag = false;
+              headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((data.clientId + ':' + this.clientSecret)))));
             }
           })
-        } else if (this.tokenEndMethodsSupported[0] == 'client_secret_basic') {
-          basicAuth = true;
-          flag = false;
-          headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(data.clientId + ':' + data.clientSecret))));
         }
       }
       if (flag) {

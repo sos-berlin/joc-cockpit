@@ -36,235 +36,6 @@ declare let jsgantt: any;
 declare const $: any;
 
 @Component({
-  selector: 'app-select-schedule-template',
-  template: '<div><nz-tree-select\n' +
-    '          name="template"\n' +
-    '          [nzNodes]="nodes"\n' +
-    '          [nzHideUnMatched]="true"\n' +
-    '          [nzDropdownStyle]="{ \'max-height\': \'260px\' }"\n' +
-    '          nzShowSearch\n' +
-    '          [nzMultiple]="true"\n' +
-    '          [nzPlaceHolder]="\'dailyPlan.placeholder.selectOrderTemplate\' | translate"\n' +
-    '          [(ngModel)]="object.schedules"\n' +
-    '        >\n' +
-    '          <ng-template #nzTreeTemplate let-node>\n' +
-    '            <div class="node-wrapper w-93" (click)="loadData(node, $event);">\n' +
-    '              <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">\n' +
-    '                <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? \'folder-open\' : \'folder\'" class="w-14"></i>\n' +
-    '                <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>\n' +
-    '                {{node.origin.name}}' +
-    '                 <i *ngIf="!node.origin.type && object.paths && object.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path);$event.stopPropagation()" [nz-tooltip]="\'user.button.addFolder\' | translate" nz-icon [nzType]="\'plus\'" class="p-l-sm"></i>' +
-    '                 <i *ngIf="!node.origin.type && object.paths && object.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path);$event.stopPropagation()" nz-icon [nzType]="\'delete\'" class="p-l-sm"></i>' +
-    '                 <i *ngIf="!node.origin.type && object.scheduleFolders && object.scheduleFolders.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path, true);$event.stopPropagation()" [nz-tooltip]="\'user.button.addFolder\' | translate" nz-icon [nzType]="\'plus\'" class="p-l-sm"></i>' +
-    '                 <i *ngIf="!node.origin.type && object.scheduleFolders && object.scheduleFolders.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path, true);$event.stopPropagation()" nz-icon [nzType]="\'delete\'" class="p-l-sm"></i>' +
-    '              </div>\n' +
-    '            </div>\n' +
-    '          </ng-template>\n' +
-    '        </nz-tree-select></div>'
-})
-export class SelectOrderTemplatesComponent implements OnInit {
-  @Input() schedulerId: any;
-  @Input() object: any;
-  nodes: any = [{path: '/', key: '/', name: '/', children: []}];
-  schedules: any = [];
-
-  constructor(public coreService: CoreService) {
-  }
-
-  static createTempArray(arr): any {
-    const tempArr = [];
-    for (let i = 0; i < arr.length; i++) {
-      const parentObj: any = {
-        name: arr[i].name,
-        path: arr[i].path,
-        key: arr[i].key,
-        title: arr[i].key,
-        type: true,
-        isLeaf: true
-      };
-      tempArr.push(parentObj);
-    }
-    return tempArr;
-  }
-
-  ngOnInit(): void {
-    this.getOrderTemplates();
-  }
-
-  getOrderTemplates(): void {
-    this.coreService.post('schedules', {
-      controllerId: this.schedulerId,
-      selector: {folders: [{folder: '/', recursive: true}]}
-    }).subscribe({
-      next: (res: any) => {
-        this.schedules = res.schedules;
-        if (!res.schedules || res.schedules.length === 0) {
-          this.nodes = [];
-        }
-        const treeObj = [];
-        for (let i = 0; i < this.schedules.length; i++) {
-          const path = this.schedules[i].path;
-          const obj = {
-            name: path.substring(path.lastIndexOf('/') + 1),
-            path: path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1),
-            key: path,
-            title: path
-          };
-          treeObj.push(obj);
-        }
-
-        const arr = groupBy(sortBy(treeObj, (i: any) => {
-          return i.path.toLowerCase();
-        }), (result) => {
-          return result.path;
-        });
-        this.generateTree(arr);
-        if (this.nodes) {
-          this.nodes = [...this.nodes];
-        }
-      }, error: () => {
-        this.nodes = [];
-      }
-    });
-  }
-
-  loadData(node, $event): void {
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-    }
-  }
-
-  addFolder(path, flag = false): void {
-    if (flag) {
-      if (this.object.scheduleFolders.indexOf(path) === -1) {
-        this.object.scheduleFolders.push(path);
-      }
-    } else {
-      if (this.object.paths.indexOf(path) === -1) {
-        this.object.paths.push(path);
-      }
-    }
-  }
-
-  remove(path, flag = false): void {
-    if (flag) {
-      this.object.scheduleFolders.splice(this.object.scheduleFolders.indexOf(path), 1);
-    } else {
-      this.object.paths.splice(this.object.paths.indexOf(path), 1);
-    }
-  }
-
-  private generateTree(arr): void {
-    for (const [key, value] of Object.entries(arr)) {
-      if (key !== '/') {
-        const paths = key.split('/');
-        if (paths.length > 1) {
-          const pathArr = [];
-          for (let i = 0; i < paths.length; i++) {
-            if (paths[i]) {
-              if (i > 0 && pathArr[i - 1]) {
-                pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + paths[i]);
-              } else {
-                pathArr.push('/' + paths[i]);
-              }
-            } else {
-              pathArr.push('/');
-            }
-          }
-          for (let i = 0; i < pathArr.length; i++) {
-            this.checkAndAddFolder(pathArr[i]);
-          }
-        }
-      }
-      this.checkFolderRecur(key, value);
-    }
-  }
-
-  private checkFolderRecur(_path, data): void {
-    let flag = false;
-    let arr = [];
-    if (data.length > 0) {
-      arr = SelectOrderTemplatesComponent.createTempArray(data);
-    }
-
-    function recursive(path, nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type) {
-          if (nodes[i].path === path) {
-            if (!nodes[i].children || nodes[i].children.length === 0) {
-              for (let j = 0; j < arr.length; j++) {
-                if (arr[j].name === nodes[i].name && arr[j].path === nodes[i].path && arr[j].type === nodes[i].type) {
-                  nodes[i].key = arr[j].key;
-                  nodes[i].deleted = arr[j].deleted;
-                  arr.splice(j, 1);
-                  break;
-                }
-              }
-              nodes[i].children = arr;
-            } else {
-              nodes[i].children = nodes[i].children.concat(arr);
-            }
-            flag = true;
-            break;
-          }
-          if (!flag && nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
-        }
-      }
-    }
-
-    if (this.nodes && this.nodes[0]) {
-      this.nodes[0].expanded = true;
-      recursive(_path, this.nodes);
-    }
-  }
-
-  private checkAndAddFolder(mainPath): void {
-    let node: any;
-
-    function recursive(path, nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type) {
-          if (nodes[i].path === path.substring(0, path.lastIndexOf('/') + 1) || nodes[i].path === path.substring(0, path.lastIndexOf('/'))) {
-            node = nodes[i];
-            break;
-          }
-          if (nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
-        }
-      }
-    }
-
-    recursive(mainPath, this.nodes);
-
-    if (node) {
-      let falg = false;
-      for (let x = 0; x < node.children.length; x++) {
-        if (!node.children[x].type && !node.children[x].object && node.children[x].path === mainPath) {
-          falg = true;
-          break;
-        }
-      }
-      if (!falg && mainPath.substring(mainPath.lastIndexOf('/') + 1)) {
-        node.children.push({
-          name: mainPath.substring(mainPath.lastIndexOf('/') + 1),
-          path: mainPath,
-          key: mainPath,
-          title: mainPath,
-          children: []
-        });
-      }
-    }
-  }
-
-}
-
-@Component({
   selector: 'app-create-plan-modal-content',
   templateUrl: './create-plan-dialog.html'
 })
@@ -781,8 +552,7 @@ export class SearchComponent implements OnInit {
   existingName: any;
   submitted = false;
   isUnique = true;
-  nodes = [];
-  schedules = [];
+  scheduleTree = [];
   workflowTree = [];
   checkOptions = [
     {status: 'PLANNED', text: 'planned', checked: false},
@@ -818,69 +588,18 @@ export class SearchComponent implements OnInit {
   getFolderTree(): void {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
-      forInventory: true,
+      forInventory: false,
       types: ['SCHEDULE']
     }).subscribe(res => {
-      this.nodes = this.coreService.prepareTree(res, false);
-      if (this.nodes.length > 0) {
-        this.nodes[0].expanded = true;
-      }
+      this.scheduleTree = this.coreService.prepareTree(res, false);
     });
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
-      forInventory: true,
+      forInventory: false,
       types: ['WORKFLOW']
     }).subscribe((res) => {
       this.workflowTree = this.coreService.prepareTree(res, false);
-      if (this.filter.workflowPaths && this.filter.workflowPaths.length > 0) {
-        const paths = [];
-        this.filter.workflowPaths.forEach((path) => {
-          const path1 = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
-          if (paths.indexOf(path1) === -1) {
-            paths.push(path1);
-          }
-        });
-        this.checkPaths(paths);
-      }
     });
-  }
-
-  private checkPaths(paths) {
-    const self = this;
-    paths.forEach((path) => {
-      function traverseTree1(data) {
-        for (let i in data.children) {
-          if (data.children[i].path === path) {
-            self.loadWorkflowObjects(data.children[i], {
-              path,
-              objectTypes: ['WORKFLOW']
-            });
-            break;
-          }
-          if (data.children[i].children && data.children[i].children.length > 0) {
-            traverseTree1(data.children[i]);
-          }
-        }
-      }
-
-      if (this.workflowTree[0].path === path) {
-        self.loadWorkflowObjects(this.workflowTree[0], {
-          path,
-          objectTypes: ['WORKFLOW']
-        });
-      }
-      traverseTree1(this.workflowTree[0]);
-    });
-  }
-
-  displayWith(data): string {
-    return data.key;
-  }
-
-  addFolder(path): void {
-    if (this.filter.workflowFolders.indexOf(path) === -1) {
-      this.filter.workflowFolders.push(path);
-    }
   }
 
   remove(path, flag = false): void {
@@ -893,65 +612,6 @@ export class SearchComponent implements OnInit {
 
   stateChange(value: string[]): void {
     this.filter.state = value;
-  }
-
-  loadData(node, $event): void {
-    if (!node.origin.type) {
-      if ($event) {
-        $event.stopPropagation();
-      }
-    }
-  }
-
-  loadWorkflow(node, $event): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        this.loadWorkflowObjects(node.origin, {
-          path: node.key,
-          objectTypes: ['WORKFLOW']
-        });
-      }
-    }
-  }
-
-  private loadWorkflowObjects(node, obj): void {
-    this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
-      let data = res.workflows;
-      data = sortBy(data, (i: any) => {
-        return i.name.toLowerCase();
-      });
-      for (let i = 0; i < data.length; i++) {
-        const path = obj.path + (obj.path === '/' ? '' : '/') + data[i].name;
-        data[i].title = path;
-        data[i].path = path;
-        data[i].type = 'WORKFLOW';
-        data[i].key = path;
-        data[i].isLeaf = true;
-      }
-      if (node.children && node.children.length > 0) {
-        data = data.concat(node.children);
-      }
-      if (node.isLeaf) {
-        node.expanded = true;
-      }
-      node.isLeaf = false;
-      node.children = data;
-      this.workflowTree = [...this.workflowTree];
-      if (this.filter.workflowPaths) {
-        this.filter.workflowPaths = [...this.filter.workflowPaths];
-      }
-    });
   }
 
   checkFilterName(): void {

@@ -358,29 +358,28 @@
             <div class="col-lg-12">
               <div style="display: flex;align-items: baseline;justify-content: space-between">
                 <div style="display: flex;">
-                  <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView=='list'}" (click)="expandDetails()" >
+                  <button class="hide btn btn-sm btn-grey" [disabled]="data.length==0" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" [ngClass]="{'show-block': pageView=='list'}" (click)="expandDetails()" >
                     <i class="fa fa-expand text" ></i>
                   </button>
-                  <button class="hide btn btn-sm btn-grey m-l-12" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView==='list'}" (click)="collapseDetails()">
+                  <button class="hide btn btn-sm btn-grey m-l-12" [disabled]="data.length==0" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" [ngClass]="{'show-block': pageView==='list'}" (click)="collapseDetails()">
                     <i class="fa fa-compress text"></i>
                   </button>
-                  <button class="hide btn btn-sm btn-grey m-l-12 m-r-12" nz-tooltip="{{'common.button.resetPanel' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView==='list'}" (click)="resetPanel()">
+                  <button class="hide btn btn-sm btn-grey m-l-12 m-r-12" [disabled]="data.length==0" nz-tooltip="{{'common.button.resetPanel' | translate}}" [ngClass]="{'show-block': pageView==='list'}" (click)="resetPanel()">
                     <i class="fa fa-repeat text"></i>
                   </button>
-
-                  <div class="pos-rel" [ngClass]="{ 'error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
-                    <input appValidateRelativeDate type="text" #startTime="ngModel" name="startTime" placeholder="{{ 'common.placeholder.setStartDate' | translate }} (+/-)(s|m|h|d|w|M|y)"
+                  <div class="pos-rel t-1" [ngClass]="{ 'error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
+                    <input [appValidateRelativeDate]="preferences.dateFormat" type="text" #startTime="ngModel" name="startTime" placeholder="{{ 'common.placeholder.setStartDate' | translate }} (+/-)(s|m|h|d|w|M|y)"
                       class="form-control input-overlay"
-                      [(ngModel)]="orderFilters.filter.stateDateFrom" (blur)="changeDateFilter('FROM')" />
-                    <nz-date-picker [nzPlaceHolder]="''" class="pos-rel t-xxs bottom-border cursor" nzShowTime
-                      [(ngModel)]="orderFilters.filter.stateDateFrom1" (ngModelChange)="changeDateFilter('FROM', orderFilters.filter.stateDateFrom1)"></nz-date-picker>
+                      [(ngModel)]="orderFilters.filter.stateDateFrom" (blur)="changeDateFilter(!(((startTime.dirty || startTime.touched) && startTime.invalid)),'FROM')" />
+                    <nz-date-picker [nzPlaceHolder]="''" class="pos-rel bottom-border cursor" nzShowTime
+                      [(ngModel)]="orderFilters.filter.stateDateFrom1" (ngModelChange)="changeDateFilter(!(((startTime.dirty || startTime.touched) && startTime.invalid)), 'FROM', orderFilters.filter.stateDateFrom1)"></nz-date-picker>
                   </div>
-                  <div class="pos-rel" [ngClass]="{ 'error' : (((endTime.dirty || endTime.touched) && endTime.invalid))}">
-                    <input appValidateRelativeDate type="text" #endTime="ngModel" name="endTime"
+                  <div class="pos-rel t-xxs" [ngClass]="{ 'error' : (((endTime.dirty || endTime.touched) && endTime.invalid))}">
+                    <input [appValidateRelativeDate]="preferences.dateFormat" type="text" #endTime="ngModel" name="endTime"
                       placeholder="{{ 'common.placeholder.setEndDate' | translate }} (+/-)(s|m|h|d|w|M|y)" class="form-control input-overlay m-l-12"
-                      [(ngModel)]="orderFilters.filter.stateDateTo" (blur)="changeDateFilter('TO')" />
-                    <nz-date-picker [nzPlaceHolder]="''" class="pos-rel t-xxs m-l-12 bottom-border cursor" nzShowTime
-                      [(ngModel)]="orderFilters.filter.stateDateTo1" (ngModelChange)="changeDateFilter( 'TO', orderFilters.filter.stateDateTo1)"></nz-date-picker>
+                      [(ngModel)]="orderFilters.filter.stateDateTo" (blur)="changeDateFilter(!(((startTime.dirty || startTime.touched) && startTime.invalid)),'TO')" />
+                    <nz-date-picker [nzPlaceHolder]="''" class="pos-rel m-l-12 bottom-border cursor" nzShowTime
+                      [(ngModel)]="orderFilters.filter.stateDateTo1" (ngModelChange)="changeDateFilter(!(((startTime.dirty || startTime.touched) && startTime.invalid)), 'TO', orderFilters.filter.stateDateTo1)"></nz-date-picker>
                   </div>
                 </div>
 

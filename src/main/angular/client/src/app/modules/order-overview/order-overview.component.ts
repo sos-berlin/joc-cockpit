@@ -41,6 +41,9 @@ declare const $;
   ]
 })
 export class RelativeDateValidator implements Validator {
+  @Input('appValidateRelativeDate') appValidateRelativeDate: string;
+  constructor(private coreService: CoreService) {
+  }
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
     if (v != null) {
@@ -48,6 +51,7 @@ export class RelativeDateValidator implements Validator {
         return null;
       }
       if (/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(v)
+        || this.coreService.getDate(v, this.appValidateRelativeDate)._isValid
       ) {
         return null;
       }
@@ -495,10 +499,18 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     obj.limit = this.preferences.maxOrderRecords;
     obj.compact = true;
     if(this.orderFilters.filter.stateDateFrom){
-      obj.stateDateFrom = this.orderFilters.filter.stateDateFrom;
+      if(/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(this.orderFilters.filter.stateDateFrom)){
+        obj.stateDateFrom = this.orderFilters.filter.stateDateFrom;
+      } else {
+        obj.stateDateFrom = this.coreService.getDate(this.orderFilters.filter.stateDateFrom, this.preferences.dateFormat)._d;
+      }
     }
     if(this.orderFilters.filter.stateDateTo){
-      obj.stateDateTo = this.orderFilters.filter.stateDateTo;
+      if(/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(this.orderFilters.filter.stateDateTo)){
+        obj.stateDateTo = this.orderFilters.filter.stateDateTo;
+      } else {
+        obj.stateDateTo = this.coreService.getDate(this.orderFilters.filter.stateDateTo, this.preferences.dateFormat)._d;
+      }
     }
 
     this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
@@ -735,25 +747,29 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeDateFilter(type: string, date): void {
-    this.loading = false;
-    if(date){
-      if(type == 'FROM'){
-        this.orderFilters.filter.stateDateFrom = new Date(date).toISOString();
+  changeDateFilter(isValid, type: string, date): void {
+
+    if (date) {
+      if (type == 'FROM') {
+        this.orderFilters.filter.stateDateFrom = this.coreService.getDateByFormat(date, this.preferences.zone, this.preferences.dateFormat);
       } else {
-        this.orderFilters.filter.stateDateTo = new Date(date).toISOString();
+        this.orderFilters.filter.stateDateTo = this.coreService.getDateByFormat(date, this.preferences.zone, this.preferences.dateFormat);
       }
     } else {
-      if(type == 'FROM') {
+      if (type == 'FROM') {
         this.orderFilters.filter.stateDateFrom1 = null;
       } else {
         this.orderFilters.filter.stateDateTo1 = null;
       }
     }
-    if (this.pageView === 'bulk') {
-      this.loadOrder();
-    } else {
-      this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
+
+    if (isValid) {
+      if (this.pageView === 'bulk') {
+        this.loadOrder();
+      } else {
+        this.loading = false;
+        this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
+      }
     }
   }
 

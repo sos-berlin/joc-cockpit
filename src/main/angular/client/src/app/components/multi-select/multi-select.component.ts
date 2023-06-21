@@ -8,6 +8,7 @@ import {CoreService} from '../../services/core.service';
 export class MultiSelectComponent implements OnInit {
   @Input() type: string;
   @Input() attribute: string;
+  @Input() pathAttribute: string;
   @Input() nodes: any = [];
   @Input() list: any = {};
   @Input() addFolderPossible: boolean;

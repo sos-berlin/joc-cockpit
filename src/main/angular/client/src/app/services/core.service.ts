@@ -1266,7 +1266,10 @@ export class CoreService {
     return moment(date).tz(preferences.zone);
   }
 
-  getDate(date: any): any {
+  getDate(date: any, format?): any {
+    if(format){
+      return moment(date, format);
+    }
     return moment(date);
   }
 
@@ -2248,12 +2251,6 @@ export class CoreService {
       // Check if the domain is valid (not an IP address)
       let ipAddressRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
       if (ipAddressRegex.test(hostname)) {
-        return false;
-      }
-
-      // Check if the domain has a valid TLD (Top-Level Domain)
-      let tldRegex = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i;
-      if (!tldRegex.test(hostname)) {
         return false;
       }
     }
