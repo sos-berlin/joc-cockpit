@@ -23,6 +23,7 @@ export class SearchInputComponent implements OnInit {
   @Input() type: string;
   @Input() nodes: any = [];
   @Input() list: any = []
+  @Input() pathAttribute: string;
   @Input() isDisplay: boolean;
   @Input() addFolderPossible: boolean;
   @Input() folders: any = {};
@@ -47,6 +48,7 @@ export class SearchInputComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.pathAttribute, 'pathAttribute')
     const dom2 = $(this.el.nativeElement).find('.ant-select');
     this._tree = [...this.nodes];
     setTimeout(() => {
@@ -54,7 +56,7 @@ export class SearchInputComponent implements OnInit {
     }, this.changeDetect ? 10 : 0);
     setTimeout(() => {
       this.openDropdown();
-    }, 0)
+    }, 20)
     //200ms Delay in search
     this.searchTerm.pipe(debounceTime(200))
       .subscribe((searchValue: string) => {
@@ -134,16 +136,16 @@ export class SearchInputComponent implements OnInit {
   }
 
   addFolder(path): void {
-    if (this.folders.paths.indexOf(path) === -1) {
-      this.folders.paths.push(path);
+    if (this.folders[this.pathAttribute].indexOf(path) === -1) {
+      this.folders[this.pathAttribute].push(path);
     }
   }
 
   remove(path, flag = false): void {
     if (flag) {
-      this.folders.paths.splice(this.folders.paths.indexOf(path), 1);
+      this.folders[this.pathAttribute].splice(this.folders[this.pathAttribute].indexOf(path), 1);
     } else {
-      this.folders.paths.splice(this.folders.paths.indexOf(path), 1);
+      this.folders[this.pathAttribute].splice(this.folders[this.pathAttribute].indexOf(path), 1);
     }
   }
 

@@ -1249,7 +1249,6 @@ export class ShowReferenceComponent implements OnInit {
   templateUrl: './job-text-editor.html'
 })
 export class JobComponent implements OnInit, OnChanges, OnDestroy {
-  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
   @Input() schedulerId: any;
   @Input() selectedNode: any;
   @Input() jobs: any;
@@ -2197,60 +2196,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       type === 'default' ? this.addVariable() : type === 'jobArgument' ? this.addJobArgument() : type === 'node' ? this.addArgument() : this.addArgu();
       this.saveToHistory();
     }
-  }
-
-  loadData(node, type, $event): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-      if (type === InventoryObject.INCLUDESCRIPT) {
-        return;
-      }
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        let request: any = {
-          path: node.key,
-          objectTypes: [type]
-        };
-        const URL = 'inventory/read/folder';
-        this.coreService.post(URL, request).subscribe((res: any) => {
-          let data = res.jobResources;
-          for (let i = 0; i < data.length; i++) {
-            const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            data[i].title = data[i].assignReference || data[i].name;
-            data[i].path = path;
-            data[i].key = data[i].assignReference || data[i].name;
-            data[i].type = type;
-            data[i].isLeaf = true;
-          }
-          if (node.origin.children && node.origin.children.length > 0) {
-            data = data.concat(node.origin.children);
-          }
-          if (node.origin.isLeaf) {
-            node.origin.expanded = true;
-          }
-          node.origin.isLeaf = false;
-          node.origin.children = data;
-          this.ref.detectChanges();
-        });
-      }
-    } else {
-      setTimeout(() => {
-        this.saveToHistory();
-      }, 10);
-    }
-  }
-
-  onExpand(e, type): void {
-    this.loadData(e.node, type, null);
   }
 
   private init(): void {

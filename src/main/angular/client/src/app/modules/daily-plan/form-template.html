@@ -74,31 +74,8 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.workflows</label>
       <div class="col-sm-6">
-        <nz-tree-select
-          name="workflowPaths"
-          [nzMultiple]="true"
-          [nzAllowClear]="true"
-          [nzNodes]="workflowTree"
-          [nzAsyncData]="true"
-          [nzHideUnMatched]="true"
-          [nzDropdownStyle]="{ 'max-height': '300px' }"
-          nzShowSearch
-          [nzPlaceHolder]="'dailyPlan.placeholder.workflowPath' | translate"
-          [(ngModel)]="filter.workflowPaths"
-          (nzExpandChange)="loadWorkflow($event.node, null)"
-        >
-          <ng-template #nzTreeTemplate let-node>
-            <div class="node-wrapper w-93" (click)="loadWorkflow(node, $event);">
-              <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
-                <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                {{node.origin.name}}
-                <i *ngIf="!node.origin.type && filter.workflowFolders.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path);$event.stopPropagation()" [nz-tooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
-                <i *ngIf="!node.origin.type && filter.workflowFolders.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path, true);$event.stopPropagation()" nz-icon [nzType]="'delete'" class="p-l-sm"></i>
-              </div>
-            </div>
-          </ng-template>
-        </nz-tree-select>
+        <app-multi-select [type]="'WORKFLOW'" [list]="filter" [addFolderPossible]="true" [folders]="filter"
+                          [attribute]="'workflowPaths'" [pathAttribute]="'workflowFolders'" [nodes]="workflowTree"></app-multi-select>
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.workflowFolders.length > 0">
@@ -113,7 +90,8 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.schedules</label>
       <div class="col-sm-6">
-        <app-select-schedule-template [schedulerId]="schedulerIds.selected" [object]="filter"></app-select-schedule-template>
+        <app-multi-select [type]="'SCHEDULE'" [list]="filter" [addFolderPossible]="true" [folders]="filter"
+                          [attribute]="'schedules'" [pathAttribute]="'scheduleFolders'" [nodes]="scheduleTree"></app-multi-select>
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.scheduleFolders.length > 0">
