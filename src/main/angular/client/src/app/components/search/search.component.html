@@ -17,8 +17,8 @@
           [nz-tooltip]="'inventory.search.tooltips.folders' | translate"
           translate>inventory.search.label.folders</label>
         <div class="col-md-8 col-lg-9">
-          <nz-tree-select name="folder" [nzNodes]="folders" [nzHideUnMatched]="true"
-            [nzDropdownStyle]="{ 'max-height': '300px' }" nzShowSearch [nzMultiple]="true" [nzDisplayWith]="displayWith"
+          <nz-tree-select name="folder" [nzNodes]="folders" nzAllowClear
+            [nzDropdownStyle]="{ 'max-height': '300px' }" [nzMultiple]="true" [nzDisplayWith]="displayWith"
             [nzPlaceHolder]="'inventory.search.placeholder.selectFromTree' | translate" [(ngModel)]="searchObj.folders">
             <ng-template #nzTreeTemplate let-node>
               <div class="node-wrapper w-93" (click)="selectFolder(node, $event);">

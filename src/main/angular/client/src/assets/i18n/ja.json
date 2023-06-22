@@ -2264,6 +2264,8 @@
     "button.suspendAndKillTask": "タスク一時停止/即時終了",
     "button.deepCancel": "全ての子オーダーをキャンセル",
     "button.deepSuspend": "全ての子オーダーを一時停止",
+    "button.deepCancelAndKillTask": "Deep Cancel/Kill Tasks",
+    "button.deepSuspendAndKillTask": "Deep Suspend/Kill Tasks",
     "button.resume": "回復",
     "button.confirm": "確認",
     "button.leaveWorkflow": "ワークフローを離れる",

@@ -2264,6 +2264,8 @@
     "button.suspendAndKillTask": "Suspendre/Tuer les tâches",
     "button.deepCancel": "Annulation récursive",
     "button.deepSuspend": "Suspension récursive",
+    "button.deepCancelAndKillTask": "Deep Cancel/Kill Tasks",
+    "button.deepSuspendAndKillTask": "Deep Suspend/Kill Tasks",
     "button.resume": "Reprendre",
     "button.confirm": "Confirmer",
     "button.leaveWorkflow": "Quitter le Workflow",

@@ -50,8 +50,9 @@ export class RelativeDateValidator implements Validator {
       if (v == '') {
         return null;
       }
+      let momentObj = this.coreService.getDate(v, this.appValidateRelativeDate);
       if (/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(v)
-        || this.coreService.getDate(v, this.appValidateRelativeDate)._isValid
+        || (momentObj._isValid && momentObj._pf.unusedInput.length == 0 && momentObj._pf.unusedTokens < 2)
       ) {
         return null;
       }
@@ -748,7 +749,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   changeDateFilter(isValid, type: string, date): void {
-
     if (date) {
       if (type == 'FROM') {
         this.orderFilters.filter.stateDateFrom = this.coreService.getDateByFormat(date, this.preferences.zone, this.preferences.dateFormat);
@@ -769,6 +769,14 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       } else {
         this.loading = false;
         this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
+      }
+    } else {
+      if (type == 'FROM') {
+        this.orderFilters.filter.stateDateFrom = null;
+        this.orderFilters.filter.stateDateFrom1 = null;
+      } else {
+        this.orderFilters.filter.stateDateTo = null;
+        this.orderFilters.filter.stateDateTo1 = null;
       }
     }
   }
