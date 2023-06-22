@@ -9,7 +9,7 @@
       <a *ngIf="favorite.show" class="primary-text-hover-color cursor" (click)="showFav(false);" translate>favorite.button.backToList</a>
     </div>
     <nz-auto-option (click)="selectAgent(null)" *ngFor="let agent of nonExistAgents" [nzValue]="agent" [nzLabel]="agent">
-      <span class="p-l-xs">{{agent}}</span> <span class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
+      <span class="p-l-xs text-danger">{{agent}}</span> <span class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
     </nz-auto-option>
     <ng-container *ngIf="favorite.show">
       <ng-container>
