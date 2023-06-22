@@ -80,6 +80,9 @@
           <li (click)="deepCancel()" nz-menu-item *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')">
             <a translate>order.button.deepCancel</a>
           </li>
+          <li (click)="cancelOrderWithKill(true)" nz-menu-item *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text === 'RUNNING')">
+            <a translate>order.button.deepCancelAndKillTask</a>
+          </li>
           <li nz-menu-item (click)="suspendOrder()" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'RUNNING' || order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'INPROGRESS' || order.state._text === 'PROMPTING' || order.state._text === 'WAITING')">
             <a translate>order.button.suspend</a>
           </li>
@@ -88,6 +91,9 @@
           </li>
           <li (click)="deepSuspend()" nz-menu-item *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'RUNNING' || order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'INPROGRESS' || order.state._text === 'PROMPTING' || order.state._text === 'WAITING')">
             <a translate>order.button.deepSuspend</a>
+          </li>
+          <li (click)="suspendOrderWithKill(true)" nz-menu-item *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'RUNNING')">
+            <a translate>order.button.deepSuspendAndKillTask</a>
           </li>
           <li nz-menu-item (click)="resumeOrder()" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')">
             <a>{{'order.button.resume' | translate}} ..</a>
@@ -109,7 +115,7 @@
           <li (click)="showLog(order)" nz-menu-item *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')">
             <a>{{'order.button.showLog' | translate}}</a>
           </li>
-          <li (click)="coreService.copyLink('order',order.orderId, order.workflowId.path)" nz-menu-item>
+          <li nz-menu-item *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')" (click)="coreService.copyLink('order',order.orderId, order.workflowId.path)" >
             <a translate>common.button.copyLinkToObject</a>
           </li>
         </ul>

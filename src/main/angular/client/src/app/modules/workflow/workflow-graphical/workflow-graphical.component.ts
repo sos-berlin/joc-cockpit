@@ -516,8 +516,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     this.restCall(false, 'Suspend', this.order, 'suspend');
   }
 
-  suspendOrderWithKill(): void {
-    this.restCall(true, 'Suspend', this.order, 'suspend');
+  suspendOrderWithKill(isDeep: false): void {
+    this.restCall(true, 'Suspend', this.order, 'suspend', isDeep);
   }
 
   deepSuspend(): void {
@@ -528,8 +528,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     this.restCall(false, 'Cancel', this.order, 'cancel');
   }
 
-  cancelOrderWithKill(): void {
-    this.restCall(true, 'Cancel', this.order, 'cancel');
+  cancelOrderWithKill(isDeep: false): void {
+    this.restCall(true, 'Cancel', this.order, 'cancel', isDeep);
   }
 
   deepCancel(): void {

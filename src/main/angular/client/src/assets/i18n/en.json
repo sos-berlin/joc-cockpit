@@ -2264,6 +2264,8 @@
     "button.suspendAndKillTask": "Suspend/Kill Tasks",
     "button.deepCancel": "Deep Cancel",
     "button.deepSuspend": "Deep Suspend",
+    "button.deepCancelAndKillTask": "Deep Cancel/Kill Tasks",
+    "button.deepSuspendAndKillTask": "Deep Suspend/Kill Tasks",
     "button.resume": "Resume",
     "button.confirm": "Confirm",
     "button.leaveWorkflow": "Leave Workflow",

@@ -40,7 +40,7 @@
             </div>
             </div>
             <div *ngIf="showRegister && !showLogin" class="md-form-group">
-              <input type="text" [(ngModel)]="user.email" id="email" class="md-input" #email="ngModel" required
+              <input type="email" [(ngModel)]="user.email" id="email" class="md-input" #email="ngModel" required
                 name="email">
               <label class="font14" for="email"> {{ 'register.label.email' | translate}}
                 <sup class="text-danger text-sm">*</sup>
@@ -52,7 +52,7 @@
               </div>
             </div>
             <div *ngIf="!showRegister && !showLogin" class="md-form-group">
-              <input type="text" [(ngModel)]="user.userName" id="account" class="md-input" #userName="ngModel"
+              <input type="text" [(ngModel)]="user.userName" id="account" class="md-input"
                 name="userName">
               <label class="font14" for="account"> {{ 'login.label.account' | translate}}</label>
             </div>

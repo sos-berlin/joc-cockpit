@@ -58,8 +58,8 @@ export class OrderActionComponent {
     this.restCall(false, 'Suspend', order, 'suspend');
   }
 
-  suspendOrderWithKill(): void {
-    this.restCall(true, 'Suspend', this.order, 'suspend');
+  suspendOrderWithKill(isDeep = false): void {
+    this.restCall(true, 'Suspend', this.order, 'suspend', isDeep);
   }
 
   deepSuspend(): void {
@@ -70,8 +70,8 @@ export class OrderActionComponent {
     this.restCall(false, 'Cancel', order, 'cancel');
   }
 
-  cancelOrderWithKill(): void {
-    this.restCall(true, 'Cancel', this.order, 'cancel');
+  cancelOrderWithKill(isDeep = false): void {
+    this.restCall(true, 'Cancel', this.order, 'cancel', isDeep);
   }
 
   deepCancel(): void {

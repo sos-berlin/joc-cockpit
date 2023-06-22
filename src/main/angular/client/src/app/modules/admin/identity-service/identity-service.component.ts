@@ -302,7 +302,8 @@ export class SettingModalComponent implements OnInit {
 
   private getJobResources(): void {
     this.coreService.post('tree', {
-      types: ['JOBRESOURCE']
+      types: ['JOBRESOURCE'],
+      forInventory: true
     }).subscribe((res) => {
       this.jobResourcesTree = this.coreService.prepareTree(res, true);
     });

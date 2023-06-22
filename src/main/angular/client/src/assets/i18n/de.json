@@ -2264,6 +2264,8 @@
     "button.suspendAndKillTask": "Aussetzen/Prozess abschießen",
     "button.deepCancel": "Rekursives Abbrechen",
     "button.deepSuspend": "Rekursives Aussetzen",
+    "button.deepCancelAndKillTask": "Deep Cancel/Kill Tasks",
+    "button.deepSuspendAndKillTask": "Deep Suspend/Kill Tasks",
     "button.resume": "Wiederaufnehmen",
     "button.confirm": "Bestätigen",
     "button.leaveWorkflow": "Arbeitsablauf verlassen",
