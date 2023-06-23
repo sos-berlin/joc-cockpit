@@ -444,10 +444,14 @@ export class UpdateKeyModalComponent implements OnInit {
           obj = {privateKey: this.data.privateKey, certificate: this.data.certificate};
         }
       } else {
-        if (this.algorithm.keyAlg === 'PGP') {
-          obj = {publicKey: this.data.publicKey};
-        } else if (this.algorithm.keyAlg === 'RSA' || this.algorithm.keyAlg === 'ECDSA') {
-          obj = {publicKey: this.data.publicKey, certificate: this.data.certificate};
+        if (this.type === 'ca') {
+          obj = {privateKey: this.data.privateKey, certificate: this.data.certificate};
+        } else {
+          if (this.algorithm.keyAlg === 'PGP') {
+            obj = {publicKey: this.data.publicKey};
+          } else if (this.algorithm.keyAlg === 'RSA' || this.algorithm.keyAlg === 'ECDSA') {
+            obj = {publicKey: this.data.publicKey, certificate: this.data.certificate};
+          }
         }
       }
       if (this.type === 'key') {
