@@ -1,12 +1,59 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from "@angular/router";
-import {NzModalService} from "ng-zorro-antd/modal";
+import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {SearchPipe} from '../../../pipes/core.pipe';
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
+
+@Component({
+  selector: 'app-confirm-node-modal',
+  templateUrl: './confirm-node-dialog.html'
+})
+export class ConfirmNodeModalComponent implements OnInit {
+  @Input() agent: any;
+
+  submitted = false;
+  display: any;
+  required = false;
+  comments: any = {};
+  data = {
+    lostDirector: 'PRIMARY_DIRECTOR'
+  };
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+      this.display = true;
+    } else {
+      let preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+      this.display = preferences.auditLog;
+    }
+  }
+
+  onSubmit(): void {
+    const request: any = {
+      auditLog: {},
+      controllerId: this.agent.controllerId,
+      agentId: this.agent.agentId,
+      lostDirector: this.data.lostDirector
+    };
+    this.coreService.getAuditLogObj(this.comments, request.auditLog);
+    this.coreService.post('agent/cluster/confirm_node_loss', request).subscribe({
+      next: () => {
+        this.activeModal.close('DONE');
+      }, error: () => {
+        this.submitted = false;
+      }
+    });
+  }
+}
 
 // Main Component
 @Component({
@@ -277,6 +324,19 @@ export class AgentComponent implements OnInit, OnDestroy {
     } else {
       this.coreService.post('agent/cluster/switchover', obj).subscribe();
     }
+  }
+
+  confirmNodeLoss(agent): void {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmNodeModalComponent,
+      nzComponentParams: {
+        agent,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
   showAgents(cluster, isSubagent = false): void {

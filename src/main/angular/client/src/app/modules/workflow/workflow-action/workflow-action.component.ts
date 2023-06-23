@@ -276,7 +276,7 @@ export class AddOrderModalComponent implements OnInit {
       orders: []
     };
 
-    const order: any = {workflowPath: this.workflow.path, orderName: this.order.orderId};
+    const order: any = {workflowPath: this.workflow.path, orderName: this.order.orderId, forceJobAdmission: this.order.forceJobAdmission};
     if (this.order.at === 'now') {
       order.scheduledFor = 'now';
     } else if (this.order.at === 'never') {

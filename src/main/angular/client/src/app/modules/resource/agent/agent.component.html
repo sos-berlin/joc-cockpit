@@ -127,6 +127,9 @@
                           <li nz-menu-item [nzDisabled]="cluster.subagents?.length < 2" (click)="switchOver(cluster)">
                             <a translate>dashboard.button.switchOver</a>
                           </li>
+                          <li nz-menu-item [nzDisabled]="cluster.subagents?.length < 2" (click)="confirmNodeLoss(cluster)">
+                            <a translate>agent.button.confirmNodeLoss</a>
+                          </li>
                         </ul>
                       </nz-dropdown-menu>
                     </div>
@@ -232,6 +235,9 @@
                           <ul nz-menu>
                             <li nz-menu-item [nzDisabled]="cluster.subagents?.length < 2" (click)="switchOver(cluster)">
                               <a translate>dashboard.button.switchOver</a>
+                            </li>
+                            <li nz-menu-item [nzDisabled]="cluster.subagents?.length < 2" (click)="confirmNodeLoss(cluster)">
+                              <a translate>agent.button.confirmNodeLoss</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
