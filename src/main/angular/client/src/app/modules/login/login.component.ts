@@ -201,6 +201,7 @@ export class LoginComponent implements OnInit {
       this.errorMsg = false;
       this.errorMsgText = '';
       this.user.userName = '';
+      this.user.email = '';
       this.identityServiceName = identityServiceName;
     }
   }
@@ -280,6 +281,7 @@ export class LoginComponent implements OnInit {
   back(): void {
     this.identityServiceName = '';
     this.user.userName = '';
+    this.user.email = '';
     this.showRegister = false;
     this.showLogin = false;
     this.submitted = false;
@@ -291,6 +293,7 @@ export class LoginComponent implements OnInit {
   onSign(data) {
     this.identityServiceName = data;
     this.user.userName = '';
+    this.user.email = '';
     this.coreService.post('iam/identity_fido_client', {
       identityServiceName: this.identityServiceName
     }).subscribe((res) => {

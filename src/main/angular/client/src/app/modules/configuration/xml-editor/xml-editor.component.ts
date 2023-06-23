@@ -565,7 +565,7 @@ export class ShowModalComponent implements AfterViewInit {
   @ViewChild('codeMirror', {static: true}) cm;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private message: NzMessageService,
-    private toasterService: ToastrService, private clipboardService: ClipboardService, private translate: TranslateService,) {
+              private toasterService: ToastrService, private clipboardService: ClipboardService, private translate: TranslateService,) {
   }
 
   ngAfterViewInit(): void {
@@ -637,7 +637,7 @@ export class ShowModalComponent implements AfterViewInit {
     } else {
       if (sessionStorage.$SOS$FORCELOGING === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-          obj.auditLog = { comment: translatedValue };
+          obj.auditLog = {comment: translatedValue};
         });
       }
     }
@@ -881,6 +881,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   oldName: string;
   tab: any;
   showSelectSchema: any;
+  isTreeShow: boolean;
   reassignSchema: boolean;
   importXSDFile: boolean;
   sideView: any = {};
@@ -898,7 +899,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   onlyNumbers: string;
   menuNode: any = {};
   beforeDrop;
-  jobResources = [];
   jobResourcesTree = [];
   zones = [];
 
@@ -964,8 +964,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.sideView = this.coreService.getSideView();
-    if(!this.sideView.xml){
-      this.sideView.xml = { width: 500, show: true };
+    if (!this.sideView.xml) {
+      this.sideView.xml = {width: 500, show: true};
     }
     if (this.sideView.xml && !this.sideView.xml.show) {
       this.hidePanel();
@@ -1001,7 +1001,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.coreService.setSideView(this.sideView);
-    if(this.activeTab) {
+    if (this.activeTab) {
       if (this.objectType === 'YADE') {
         this.coreService.xmlEditorPreferences.fileTransferActiveTab = this.activeTab.name;
       } else if (this.objectType === 'OTHER') {
@@ -1028,7 +1028,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.checkOrder(node.origin);
   }
 
-  onChangeJobResource($event): void {
+  onChangeJobResource($event, node): void {
+    this.isTreeShow = false;
+    node.data = $event;
     if (this.objectType === 'NOTIFICATION') {
       this.extraInfo.released = false;
     } else {
@@ -1039,15 +1041,20 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.isChange = true;
   }
 
+  onBlur(): void {
+    this.isTreeShow = false;
+  }
+
   private checkJobReource(name): void {
     this.extraInfo.isExist = false;
-    for (const i in this.jobResources) {
-      if (this.jobResources[i].name === name) {
-        this.extraInfo.isExist = true;
-        this.extraInfo.deployed = this.jobResources[i].deployed;
-        break;
-      }
-    }
+    const obj: any = {
+      path: name,
+      objectType: 'JOBRESOURCE',
+    };
+    this.coreService.post('inventory/read/configuration', obj).subscribe((res: any) => {
+      this.extraInfo.isExist = true;
+      this.extraInfo.deployed = res.deployed;
+    });
   }
 
   deleteAllConf(): void {
@@ -1228,7 +1235,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (isEmpty(this.nonValidattribute)) {
       let obj: any = {
         configuration: this.mainXml,
-        configurationJson: JSON.stringify({ nodesCount: this.counting, node: this.nodes }),
+        configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
       }
       if (this.preferences.auditLog) {
         let comments = {
@@ -1312,35 +1319,31 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
     }
     if (obj.name) {
-      let flag = false;
-      for (const i in this.jobResources) {
-        if (this.jobResources[i].name === obj.name) {
-          flag = true;
-          this.getSingleObject(this.jobResources[i], obj, isCheck);
-          break;
+      this.getSingleObject(obj, isCheck);
+    }
+
+  }
+
+  private getSingleObject(obj, isCheck = false): void {
+    this.coreService.post('inventory/read/configuration', {
+      path: obj.name,
+      objectType: 'JOBRESOURCE',
+    }).subscribe({
+      next: (res: any) => {
+        if (!isCheck) {
+          this.storeAndDeployJobResource(res, obj);
+        } else if (res.configuration) {
+          this.compareJobResource(res.configuration, obj);
         }
-      }
-      if (!flag) {
+      }, error: (err) => {
         this.translate.get('xml.message.jobResourceNotFound').subscribe(translatedValue => {
           this.toasterService.info(obj.name + ' ' + translatedValue, '');
         });
       }
-    }
-  }
-
-  private getSingleObject(data, obj, isCheck = false): void {
-    this.coreService.post('inventory/read/configuration', {
-      id: data.id
-    }).subscribe((res: any) => {
-      if (!isCheck) {
-        this.storeAndDeployJobResource(res, obj, data);
-      } else if (res.configuration) {
-        this.compareJobResource(res.configuration, obj);
-      }
     });
   }
 
-  private storeAndDeployJobResource(res, obj, data): void {
+  private storeAndDeployJobResource(res, obj): void {
     if (!res.configuration) {
       res.configuration = {};
     }
@@ -1358,13 +1361,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     const request = {
       configuration: res.configuration,
       valid: true,
-      id: data.id,
+      id: res.id,
       objectType: res.objectType,
       auditLog: {}
     };
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        request.auditLog = { comment: translatedValue };
+        request.auditLog = {comment: translatedValue};
       });
     }
     this.coreService.post('inventory/store', request).subscribe(() => {
@@ -1380,7 +1383,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           }]
         }
       }).subscribe(() => {
-        data.deployed = true;
         this.extraInfo.deployed = true;
         this.extraInfo.sync = true;
       });
@@ -1739,36 +1741,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   private getJobResourceTree(node): void {
     if (this.jobResourcesTree.length === 0) {
-      const obj = { list: [] };
-      this.coreService.getJobResource((arr) => {
-        this.jobResourcesTree = arr;
-        this.jobResources = obj.list;
-        this.matchJobResourceList(node);
-      }, obj);
-    } else {
-      this.matchJobResourceList(node);
+      this.coreService.post('tree', {
+        types: ['JOBRESOURCE'],
+        forInventory: true
+      }).subscribe((res) => {
+        this.jobResourcesTree = this.coreService.prepareTree(res, true);
+      });
     }
   }
 
-  private matchJobResourceList(node): void {
-    if (node) {
-      if (this.objectType === 'NOTIFICATION') {
-        if (typeof node.data === 'string') {
-          let val = node.data;
-          node.data = [val];
-        } else if (!node.data || !isArray(node.data)) {
-          node.data = [];
-        }
-      } else {
-        if (node.data) {
-          this.checkJobReource(node.data);
-        }
-      }
-      if (node.data) {
-        this.jobResourcesTree = this.coreService.getNotExistJobResource({ arr: this.jobResourcesTree, jobResources: node.data });
-      }
-    }
-  }
 
   getIndividualData(node, scroll) {
     let flag = false;
@@ -2009,12 +1990,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     let temp: any;
     let attrs: any;
     let child: any;
-    let select = xpath.useNamespaces({ 'xs': 'http://www.w3.org/2001/XMLSchema' });
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let rootElementPath = '//xs:element';
     let root = select(rootElementPath, doc);
     for (let i = 0; i < root[0].attributes.length; i++) {
       let b = root[0].attributes[i].nodeValue;
-      temp = Object.assign({}, { ref: b });
+      temp = Object.assign({}, {ref: b});
     }
     temp.parent = '#';
     temp.uuid = this.counting;
@@ -4980,7 +4961,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         });
         modal.afterClose.subscribe(result => {
           if (result) {
-    
+
             this.copyItem = undefined;
             this.nodes = [];
             this.selectedNode = {};
@@ -5152,7 +5133,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     $('[data-toggle="tooltip"]').tooltip({
       trigger: 'hover focus manual',
       html: true,
-      delay: { show: 500, hide: 200 }
+      delay: {show: 500, hide: 200}
     });
     const a = '#' + id;
     $(a).tooltip('show');
@@ -5266,7 +5247,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       name = 'Notification.xml';
     }
     const fileType = 'application/xml';
-    const blob = new Blob([xml], { type: fileType });
+    const blob = new Blob([xml], {type: fileType});
     saveAs(blob, name);
   }
 
@@ -5640,7 +5621,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.selectedTabIndex = this.tabsArray.length - 1;
     }, 0);
     if (this.objectType === 'OTHER') {
-      if(_tab.id > 0) {
+      if (_tab.id > 0) {
         this.readOthersXSD(_tab.id);
       }
     } else {
@@ -5912,7 +5893,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           controllerId: this.schedulerIds.selected,
           objectType: this.objectType,
           configuration: this.mainXml,
-          configurationJson: JSON.stringify({ nodesCount: this.counting, node: tempNode || this.nodes }),
+          configurationJson: JSON.stringify({nodesCount: this.counting, node: tempNode || this.nodes}),
           id: this.activeTab.id > 0 ? this.activeTab.id : 0,
           name: this.activeTab.name,
           schemaIdentifier: this.schemaIdentifier || ((tab && tab.schemaIdentifier) ? tab.schemaIdentifier : this.path),
@@ -5947,7 +5928,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   private getNodeRulesData(node): void {
     if (!node.recreateJson) {
-      let nod = { ref: node.parent };
+      let nod = {ref: node.parent};
       let a = this.checkChildNode(nod, undefined);
       if (a && a.length > 0) {
         for (let i = 0; i < a.length; i++) {

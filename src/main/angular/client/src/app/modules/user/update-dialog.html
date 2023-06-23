@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="paste && securityLevel !=='HIGH'" translate>profile.keyManagement.label.updateKeys</span>
-    <span *ngIf="paste && securityLevel ==='HIGH'" translate>profile.keyManagement.label.updatePublicKey</span>
+    <span *ngIf="paste && (securityLevel !=='HIGH' || (securityLevel === 'HIGH' && type == 'ca'))" translate>profile.keyManagement.label.updateKeys</span>
+    <span *ngIf="paste && securityLevel ==='HIGH' && type !== 'ca'" translate>profile.keyManagement.label.updatePublicKey</span>
     <span *ngIf="!paste && type !== 'certificate'" translate>profile.keyManagement.label.showKey</span>
     <span *ngIf="!paste && type === 'certificate'" translate>profile.keyManagement.label.showCertificate</span>
   </h4>
@@ -28,7 +28,7 @@
       <div class="col-sm-3" translate>Key ID:</div>
       <div class="col-sm-9">{{data.keyID}}</div>
     </div>
-    <div class="form-group row" *ngIf="securityLevel !== 'HIGH' && ((!paste && data.privateKey) || paste) && type !== 'certificate'">
+    <div class="form-group row" *ngIf="((securityLevel === 'HIGH' && type == 'ca') || securityLevel !== 'HIGH') && ((!paste && data.privateKey) || paste) && type !== 'certificate'">
       <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.privateKey
         <sup class="text-danger text-sm">*</sup>
       </label>

@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="type !== 'certificate' && securityLevel !=='HIGH'" translate>profile.keyManagement.label.importPrivateKey</span>
-    <span *ngIf="type !== 'certificate' && securityLevel ==='HIGH'" translate>profile.keyManagement.label.importPublicKey</span>
+    <span *ngIf="type !== 'certificate' && (securityLevel === 'HIGH' && type == 'ca')" translate>profile.keyManagement.label.importPrivateKey</span>
+    <span *ngIf="type !== 'certificate' && securityLevel ==='HIGH' && type !== 'ca'" translate>profile.keyManagement.label.importPublicKey</span>
     <span *ngIf="type === 'certificate'" translate>profile.keyManagement.label.importCertificate</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
@@ -81,7 +81,7 @@
     </div>
   </div>
   <div class="modal-footer" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="submitted || uploader.isUploading || uploader.queue[0].isError || (required && !comments.comment)" (click)="import()">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="submitted || uploader.isUploading || (required && !comments.comment)" (click)="import()">
       <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="uploader.isUploading"></i>
       {{'common.button.import' | translate}}
     </button>

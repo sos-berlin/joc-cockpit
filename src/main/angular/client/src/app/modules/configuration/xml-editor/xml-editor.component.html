@@ -362,55 +362,14 @@
                     </label></div>
                     <div class="col-sm-5">
                       <div *ngIf="node.name === 'job_resources'">
-                        <nz-select
-                          name="jobResourceNames"
-                          [(ngModel)]="node.data"
-                          nzShowSearch
-                          [nzAllowClear]="false"
-                          [nzDropdownClassName]="'group-list'"
-                          nzMode="multiple"
-                          (ngModelChange)="onChangeJobResource($event)"
-                        >
-                          <nz-option-group [nzLabel]="nzTreeTemplate" *ngFor="let item of jobResourcesTree">
-                            <ng-template #nzTreeTemplate>
-                              <div>
-                                <i nz-icon [nzType]="'folder-open'" class="w-14 p-r-xs"></i>
-                                  {{item.name}}
-                              </div>
-                            </ng-template>
-                            <nz-option nzCustomContent *ngFor="let option of item.list" [nzValue]="option.name" [nzLabel]="option.name">
-                              <div>
-                                <i class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                                 {{option.name}}<span *ngIf="option.notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
-                              </div>
-                            </nz-option>
-                          </nz-option-group>
-                        </nz-select>
+                        <app-multi-select [type]="'JOBRESOURCE'" [list]="node" [attribute]="'data'" [nodes]="jobResourcesTree"></app-multi-select>
                       </div>
                       <div *ngIf="node.name === 'name' && node.parent === 'JobResource'">
-                        <nz-select
-                          name="jobResourceName"
-                          [(ngModel)]="node.data"
-                          nzShowSearch
-                          nzAllowClear
-                          [nzDropdownClassName]="'group-list'"
-                          (ngModelChange)="onChangeJobResource($event)"
-                        >
-                          <nz-option-group [nzLabel]="nzTreeTemplate" *ngFor="let item of jobResourcesTree">
-                            <ng-template #nzTreeTemplate>
-                              <div>
-                                <i nz-icon [nzType]="'folder-open'" class="w-14 p-r-xs"></i>
-                                  {{item.name}}
-                              </div>
-                            </ng-template>
-                            <nz-option nzCustomContent *ngFor="let option of item.list" [nzValue]="option.name" [nzLabel]="option.name">
-                              <div>
-                                <i class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                                 {{option.name}}<span *ngIf="option.notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
-                              </div>
-                            </nz-option>
-                          </nz-option-group>
-                        </nz-select>
+                        <input (click)="isTreeShow = true;" autocomplete="off" type="text" class="form-control"
+                               name="jobResourceName" [(ngModel)]="node.data">
+                        <div [ngStyle]="{'margin-top': '-29px'}" *ngIf="isTreeShow" class="z-index-9999 w-full">
+                          <app-search-input [isDisplay]="true" [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'" (onBlur)="onBlur()" (onSelect)="onChangeJobResource($event, node)" ></app-search-input>
+                        </div>
                       </div>
                       <input class="form-control w-full" id="{{node.name}}" type="text"
                              [(ngModel)]="node.data"
