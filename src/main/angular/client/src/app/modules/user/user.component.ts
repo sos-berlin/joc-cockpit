@@ -428,7 +428,7 @@ export class UpdateKeyModalComponent implements OnInit {
       this.required = true;
       this.display = true;
     }
-    if (this.type === 'ca') {
+    if (this.type === 'ca' || this.type === 'certificate') {
       this.algorithm.keyAlg = 'ECDSA';
     }
   }

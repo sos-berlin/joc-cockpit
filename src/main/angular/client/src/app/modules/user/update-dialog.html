@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="paste && (securityLevel !=='HIGH' || (securityLevel === 'HIGH' && type == 'ca'))" translate>profile.keyManagement.label.updateKeys</span>
-    <span *ngIf="paste && securityLevel ==='HIGH' && type !== 'ca'" translate>profile.keyManagement.label.updatePublicKey</span>
+    <span *ngIf="paste && (securityLevel !=='HIGH' || (securityLevel === 'HIGH' && (type == 'ca' || type === 'certificate')))" translate>profile.keyManagement.label.updateKeys</span>
+    <span *ngIf="paste && securityLevel ==='HIGH' && type !== 'ca' && type !== 'certificate'" translate>profile.keyManagement.label.updatePublicKey</span>
     <span *ngIf="!paste && type !== 'certificate'" translate>profile.keyManagement.label.showKey</span>
     <span *ngIf="!paste && type === 'certificate'" translate>profile.keyManagement.label.showCertificate</span>
   </h4>
@@ -41,7 +41,7 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="((!paste && data.keyAlgorithm === 'PGP') || (securityLevel === 'HIGH' && algorithm.keyAlg === 'PGP' && paste))">
+    <div class="form-group row" *ngIf="((!paste && data.keyAlgorithm === 'PGP') || (securityLevel === 'HIGH' && type !== 'ca' && algorithm.keyAlg === 'PGP' && paste))">
       <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.publicKey
         <sup class="text-danger text-sm">*</sup>
       </label>
