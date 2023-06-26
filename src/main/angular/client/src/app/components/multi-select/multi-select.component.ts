@@ -12,6 +12,7 @@ export class MultiSelectComponent implements OnInit {
   @Input() nodes: any = [];
   @Input() list: any = {};
   @Input() addFolderPossible: boolean;
+  @Input() isPath: boolean;
   @Input() folders: any = {};
   object: any = {
     isTreeShow: false

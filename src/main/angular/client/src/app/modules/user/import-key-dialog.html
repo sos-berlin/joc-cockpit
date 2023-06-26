@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="type !== 'certificate' && (securityLevel === 'HIGH' && type == 'ca')" translate>profile.keyManagement.label.importPrivateKey</span>
+    <span *ngIf="type !== 'certificate' && (securityLevel !== 'HIGH' || (securityLevel ==='HIGH' && type === 'ca'))" translate>profile.keyManagement.label.importPrivateKey</span>
     <span *ngIf="type !== 'certificate' && securityLevel ==='HIGH' && type !== 'ca'" translate>profile.keyManagement.label.importPublicKey</span>
     <span *ngIf="type === 'certificate'" translate>profile.keyManagement.label.importCertificate</span>
   </h4>

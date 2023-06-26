@@ -46,31 +46,11 @@
             </label>
           </label>
           <div class="col-md-9" [ngClass]="{'has-error' : ((calendarName.dirty || calendarName.touched) && calendarName.invalid)}">
-            <nz-tree-select
-              name="calendarName"
-              required
-              #calendarName="ngModel"
-              nzNoAnimation
-              [nzAllowClear]="false"
-              [nzNodes]="calendarTree"
-              [nzHideUnMatched]="true"
-              [nzDropdownStyle]="{ 'max-height': '300px' }"
-              nzShowSearch
-              [(ngModel)]="requestObj.calendarName"
-              (nzExpandChange)="onExpand($event)"
-            >
-              <ng-template #nzTreeTemplate let-node>
-                <div class="node-wrapper w-93" (click)="loadData(node, $event);">
-                  <div class="node-content-wrapper"
-                       [class.node-content-wrapper-active]="node.origin.path == requestObj.calendarName && requestObj.calendarName">
-                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                       class="w-14"></i>
-                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                    {{node.origin.key}}
-                  </div>
-                </div>
-              </ng-template>
-            </nz-tree-select>
+            <input (click)="isTreeShow = true;" autocomplete="off" type="text" class="form-control"
+                   name="calendarName" required  #calendarName="ngModel" [(ngModel)]="requestObj.calendarName">
+            <div [ngStyle]="{'margin-top': '-29px'}" *ngIf="isTreeShow" class="z-index-9999 w-full">
+              <app-search-input [isDisplay]="true" [nodes]="calendarTree" [type]="'CALENDAR'" (onBlur)="onBlur()" (onSelect)="onSelect($event)" ></app-search-input>
+            </div>
             <div *ngIf="calendarName.invalid && calendarName.errors && (calendarName.dirty || calendarName.touched)" class="text-danger help-block">
               <div *ngIf="calendarName.errors.required">
                 <div translate>common.message.requiredError</div>

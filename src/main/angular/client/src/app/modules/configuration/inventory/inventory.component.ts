@@ -989,6 +989,7 @@ export class CronImportModalComponent implements OnInit {
   uploader: FileUploader;
   comments: any = {};
   required = false;
+  isTreeShow = false;
   hasBaseDropZoneOver: any;
   requestObj: any = {
     systemCrontab: false,
@@ -1081,51 +1082,13 @@ export class CronImportModalComponent implements OnInit {
     });
   }
 
-  loadData(node, $event): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        const request: any = {
-          path: node.key,
-          objectTypes: ['WORKINGDAYSCALENDAR']
-        };
-        const URL = 'inventory/read/folder';
-        this.coreService.post(URL, request).subscribe((res: any) => {
-          let data = res.calendars;
-          for (let i = 0; i < data.length; i++) {
-            const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            data[i].title = data[i].name;
-            data[i].path = path;
-            data[i].key = data[i].name;
-            data[i].type = 'WORKINGDAYSCALENDAR';
-            data[i].isLeaf = true;
-          }
-          if (node.origin.children && node.origin.children.length > 0) {
-            data = data.concat(node.origin.children);
-          }
-          if (node.origin.isLeaf) {
-            node.origin.expanded = true;
-          }
-          node.origin.isLeaf = false;
-          node.origin.children = data;
-          this.calendarTree = [...this.calendarTree];
-        });
-      }
-    }
+  onSelect(name) {
+    this.isTreeShow = false;
+    this.requestObj.calendarName = name;
   }
 
-  onExpand(e): void {
-    this.loadData(e.node, null);
+  onBlur(): void {
+    this.isTreeShow = false;
   }
 
   fileOverBase(e: any): void {
