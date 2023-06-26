@@ -29,7 +29,7 @@
     <div class="form-group row" *ngIf="object.at === 'template'">
       <label class="col-md-3 form-control-label" translate>dailyPlan.label.schedules</label>
       <div class="col-md-6">
-        <app-multi-select [type]="'SCHEDULE'" [list]="selectedTemplates" [addFolderPossible]="true" [folders]="selectedTemplates"
+        <app-multi-select [type]="'SCHEDULE'" [isPath]="true" [list]="selectedTemplates" [addFolderPossible]="true" [folders]="selectedTemplates"
                           [attribute]="'schedules'" [pathAttribute]="'paths'" [nodes]="scheduleTree"></app-multi-select>
       </div>
     </div>
@@ -45,7 +45,7 @@
     <div class="form-group row" *ngIf="object.at === 'template'">
       <label class="col-md-3 form-control-label" translate>dailyPlan.label.workflows</label>
       <div class="col-md-6">
-        <app-multi-select [type]="'WORKFLOW'" [list]="object" [addFolderPossible]="true" [folders]="object"
+        <app-multi-select [type]="'WORKFLOW'" [isPath]="true" [list]="object" [addFolderPossible]="true" [folders]="object"
                           [attribute]="'workflowPaths'" [pathAttribute]="'paths'" [nodes]="workflowsTree"></app-multi-select>
       </div>
     </div>

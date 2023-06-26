@@ -254,6 +254,11 @@ export class SettingModalComponent implements OnInit {
         if (this.data) {
           if (data) {
             this.currentObj = data.vault || data.keycloak || data.oidc || data.fido || {};
+            if (data.fido) {
+              if (!this.currentObj.iamFidoProtocolType) {
+                this.currentObj.iamFidoProtocolType = 'FIDO2';
+              }
+            }
             if (data.ldap || (res.configuration.objectType && res.configuration.objectType.match(/LDAP/))) {
               if (data.ldap && data.ldap.simple) {
                 this.userObj = data.ldap.simple;

@@ -1637,8 +1637,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       if (data.path) {
         for (let i in this.data) {
           if (this.data[i].path == data.path) {
-            this.showPanel = this.data[i];
-            this.showPanel.jobName = data.jobName;
+            let timeOut = 0;
+            if (this.showPanel && this.showPanel.jobName === data.jobName) {
+              this.showPanel.jobName = null;
+              timeOut = 10;
+            }
+            setTimeout(() => {
+              this.showPanel = this.data[i];
+              this.showPanel.jobName = data.jobName;
+            }, timeOut);
             break;
           }
         }

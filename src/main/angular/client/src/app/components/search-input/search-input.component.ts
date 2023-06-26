@@ -26,6 +26,7 @@ export class SearchInputComponent implements OnInit {
   @Input() pathAttribute: string;
   @Input() isDisplay: boolean;
   @Input() addFolderPossible: boolean;
+  @Input() isPath: boolean;
   @Input() folders: any = {};
   @Input() changeDetect: boolean;
 
@@ -48,7 +49,6 @@ export class SearchInputComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.pathAttribute, 'pathAttribute')
     const dom2 = $(this.el.nativeElement).find('.ant-select');
     this._tree = [...this.nodes];
     setTimeout(() => {
@@ -92,7 +92,7 @@ export class SearchInputComponent implements OnInit {
         this.loadFolders(node.origin, node.key);
       }
     } else {
-      this.onSelect.emit(node.origin.name);
+      this.onSelect.emit(this.isPath ? node.origin.path : node.origin.name);
     }
   }
 
@@ -107,9 +107,9 @@ export class SearchInputComponent implements OnInit {
           this.type === 'WORKFLOW' ? res.workflows : this.type === 'SCHEDULE' ? res.schedules : res.includeScripts;
         for (let i = 0; i < data.length; i++) {
           const _path = key + (key === '/' ? '' : '/') + data[i].name;
-          data[i].title = data[i].name;
+          data[i].title = this.isPath ? _path : data[i].name;
           data[i].path = _path;
-          data[i].key = data[i].name;
+          data[i].key = this.isPath ? _path : data[i].name;
           data[i].type = this.type;
           data[i].isLeaf = true;
         }

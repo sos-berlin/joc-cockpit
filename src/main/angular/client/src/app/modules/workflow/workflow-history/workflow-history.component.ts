@@ -87,8 +87,15 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     if (changes.workflow && this.schedulerIds.selected) {
       this.init();
     }
-    if (changes.jobName && this.isCalled) {
-      this.index = 2;
+    if (changes.jobName && this.isCalled && this.jobName) {
+      if (this.index == 2) {
+        this.index = 3;
+        setTimeout(() => {
+          this.index = 2;
+        }, 1);
+      } else {
+        this.index = 2;
+      }
       this.loadJobHistory();
     }
   }

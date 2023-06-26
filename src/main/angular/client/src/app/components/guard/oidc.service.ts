@@ -276,7 +276,7 @@ export class OIDCAuthService {
           this.tokenEndMethodsSupported.forEach((method) => {
             if (method == 'none') {
               flag = false;
-            } else if (method == 'client_secret_basic') {
+            } else if (method == 'client_secret_basic' && content.clientSecret) {
               basicAuth = true;
               flag = false;
               headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(content.clientId + ':' + content.clientSecret))));
@@ -284,7 +284,7 @@ export class OIDCAuthService {
           })
         }
       }
-      if (flag) {
+      if (flag && content.clientSecret) {
         params = params.set('client_secret', content.clientSecret);
       }
       if (!basicAuth) {
@@ -471,7 +471,7 @@ export class OIDCAuthService {
         this.tokenEndMethodsSupported.forEach((method) => {
           if (method == 'none') {
             flag = false;
-          } else if (method == 'client_secret_basic') {
+          } else if (method == 'client_secret_basic' && (this.clientSecret || clientSecret)) {
             basicAuth = true;
             flag = false;
             headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((this.clientId || clientId) + ':' + (this.clientSecret || clientSecret)))));
@@ -479,7 +479,7 @@ export class OIDCAuthService {
         })
       }
     }
-    if (flag) {
+    if (flag && (this.clientSecret || clientSecret)) {
       params = params.set('client_secret', this.clientSecret || clientSecret);
     }
     if (!basicAuth) {
@@ -651,7 +651,7 @@ export class OIDCAuthService {
           this.tokenEndMethodsSupported.forEach((method) => {
             if (method == 'none') {
               flag = false;
-            } else if (method == 'client_secret_basic') {
+            } else if (method == 'client_secret_basic' && data.clientSecret) {
               basicAuth = true;
               flag = false;
               headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((data.clientId + ':' + this.clientSecret)))));
@@ -659,7 +659,7 @@ export class OIDCAuthService {
           })
         }
       }
-      if (flag) {
+      if (flag && data.clientSecret) {
         params = params.set('client_secret', data.clientSecret);
       }
       if (!basicAuth) {
