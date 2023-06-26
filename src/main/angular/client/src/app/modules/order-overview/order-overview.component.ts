@@ -16,7 +16,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from 'underscore';
 import {takeUntil} from 'rxjs/operators';
-import {OrderActionComponent} from './order-action/order-action.component';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
 import {ExcelService} from '../../services/excel.service';
@@ -102,11 +101,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.loading) {
-      if (changes.schedulerId) {
-        this.init();
-      } else if (changes.date) {
-        this.init();
-      } else if (changes.state) {
+      if (changes.schedulerId || changes.date || changes.state) {
         this.init();
       }
     }
@@ -225,6 +220,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   orderOverviewAction: any = {};
   reloadState = 'no';
   isProcessing = false;
+  isDropdownOpen = false;
   searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position'];
   object = {
     mapOfCheckedId: new Map(),
@@ -269,7 +265,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   private pendingHTTPRequests$ = new Subject<void>();
 
   @ViewChild(TreeComponent, {static: false}) child;
-  @ViewChild(OrderActionComponent, {static: false}) actionChild;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private route: ActivatedRoute, private dataService: DataService, private searchPipe: SearchPipe,
@@ -302,6 +297,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   changedHandler(flag: boolean): void {
     this.isProcessing = flag;
+  }
+
+  dropdownChangedHandler(isOpen: boolean): void {
+    this.isDropdownOpen = isOpen;
   }
 
   private init(): void {
@@ -473,7 +472,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   private refreshView(): void {
-    if ( (!this.actionChild || (!this.actionChild.isVisible && this.object.mapOfCheckedId.size === 0))) {
+    if (!this.isDropdownOpen && this.object.mapOfCheckedId.size === 0) {
       this.getOrders({
         controllerId: this.schedulerIds.selected,
         states: this.getState()
@@ -499,18 +498,21 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
     obj.limit = this.preferences.maxOrderRecords;
     obj.compact = true;
-    if(this.orderFilters.filter.stateDateFrom){
-      if(/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(this.orderFilters.filter.stateDateFrom)){
-        obj.stateDateFrom = this.orderFilters.filter.stateDateFrom;
-      } else {
-        obj.stateDateFrom = this.coreService.getDate(this.orderFilters.filter.stateDateFrom, this.preferences.dateFormat)._d;
+    if(this.orderFilters.filter.state === 'INPROGRESS' || this.orderFilters.filter.state === 'FAILED'
+      || this.orderFilters.filter.state === 'RUNNING' || this.orderFilters.filter.state === 'COMPLETED') {
+      if (this.orderFilters.filter.stateDateFrom) {
+        if (/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(this.orderFilters.filter.stateDateFrom)) {
+          obj.stateDateFrom = this.orderFilters.filter.stateDateFrom;
+        } else {
+          obj.stateDateFrom = this.coreService.getDate(this.orderFilters.filter.stateDateFrom, this.preferences.dateFormat)._d;
+        }
       }
-    }
-    if(this.orderFilters.filter.stateDateTo){
-      if(/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(this.orderFilters.filter.stateDateTo)){
-        obj.stateDateTo = this.orderFilters.filter.stateDateTo;
-      } else {
-        obj.stateDateTo = this.coreService.getDate(this.orderFilters.filter.stateDateTo, this.preferences.dateFormat)._d;
+      if (this.orderFilters.filter.stateDateTo) {
+        if (/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(this.orderFilters.filter.stateDateTo)) {
+          obj.stateDateTo = this.orderFilters.filter.stateDateTo;
+        } else {
+          obj.stateDateTo = this.coreService.getDate(this.orderFilters.filter.stateDateTo, this.preferences.dateFormat)._d;
+        }
       }
     }
 

@@ -52,6 +52,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   workflowFilters: any = {};
   sideBar: any = {};
   isProcessing = false;
+  isDropdownOpen = false;
   subscription: Subscription;
   workflowObjects = new Map();
   countObj = {count: 0};
@@ -115,6 +116,10 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   changedHandler(flag: boolean): void {
     this.isProcessing = flag;
+  }
+
+  dropdownChangedHandler(isOpen: boolean): void {
+    this.isDropdownOpen = isOpen;
   }
 
   viewHistory(data): any{

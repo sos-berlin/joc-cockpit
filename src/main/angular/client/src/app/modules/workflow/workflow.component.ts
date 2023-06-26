@@ -485,6 +485,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   searchFilter: any = {};
   isProcessing = false;
   isSearchVisible = false;
+  isDropdownOpen = false;
   sideView: any = {};
   selectedFiltered: any = {};
   savedFilter: any = {};
@@ -502,12 +503,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     isSuspend: false,
     isResume: false,
   };
-
-  subscription1: Subscription;
-  subscription2: Subscription;
-  private pendingHTTPRequests$ = new Subject<void>();
-
-  @ViewChild(PerfectScrollbarComponent) scrollbar?: PerfectScrollbarComponent;
 
   searchableProperties = ['name', 'path', 'versionDate', 'state', '_text'];
 
@@ -528,6 +523,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     {date: '7d', text: 'nextWeak'}
   ];
 
+  subscription1: Subscription;
+  subscription2: Subscription;
+  private pendingHTTPRequests$ = new Subject<void>();
+
+  @ViewChild(PerfectScrollbarComponent) scrollbar?: PerfectScrollbarComponent;
   @ViewChild(TreeComponent, {static: false}) child;
   @ViewChild(WorkflowActionComponent, {static: false}) actionChild;
 
@@ -658,6 +658,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (obj.isOrderAdded && obj.flag) {
       this.showPanelFunc(obj.isOrderAdded);
     }
+  }
+
+  dropdownChangedHandler(isOpen: boolean): void {
+    this.isDropdownOpen = isOpen;
   }
 
   processingHandler(flag: boolean): void {
@@ -1155,7 +1159,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.loadWorkflow();
   }
 
-  openSelectbox(): void{
+  openSelectbox(): void {
     $('#agent-select').click();
   }
 
@@ -1730,6 +1734,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           flag = true;
         }
       }
+      this.refreshView(flag, reload, request, callOrderCount);
+    }
+  }
+
+
+  private refreshView(flag, reload, request, callOrderCount): void {
+    if (!this.isDropdownOpen && this.object.mapOfCheckedId.size === 0) {
       if (flag) {
         this.initTree(reload);
       }
@@ -1753,6 +1764,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }
       }
+    } else {
+      setTimeout(() => {
+        this.refreshView(flag, reload, request, callOrderCount);
+      }, 750);
     }
   }
 

@@ -19,13 +19,13 @@ export class OrderActionComponent {
   @Input() isDisabled: boolean;
 
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
-  isVisible: boolean;
+  @Output() isDropdownOpen: EventEmitter<boolean> = new EventEmitter();
 
   constructor(public coreService: CoreService, private modal: NzModalService) {
   }
 
   change(value: boolean): void {
-    this.isVisible = value;
+    this.isDropdownOpen.emit(value);
   }
 
   resumeOrder(): void {

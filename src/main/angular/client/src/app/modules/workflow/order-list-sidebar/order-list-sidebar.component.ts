@@ -33,6 +33,7 @@ export class OrderListSidebarComponent implements OnChanges {
   checked = false;
   indeterminate = false;
   isProcessing = false;
+  isDropdownOpen = false;
   setOfCheckedId = new Set<string>();
   object = {
     isModify: false,
@@ -78,7 +79,7 @@ export class OrderListSidebarComponent implements OnChanges {
   }
 
   private refreshView(): void {
-    if (!this.actionChild || (!this.actionChild.isVisible && this.setOfCheckedId.size === 0)) {
+    if (!this.isDropdownOpen && this.setOfCheckedId.size === 0) {
       this.data = [...this.orders];
     } else {
       if (this.setOfCheckedId.size > 0) {
@@ -107,6 +108,10 @@ export class OrderListSidebarComponent implements OnChanges {
 
   changedHandler(flag: boolean): void {
     this.isProcessing = flag;
+  }
+
+  dropdownChangedHandler(isOpen: boolean): void {
+   this.isDropdownOpen = isOpen;
   }
 
   private resetAction(time = 100): void {

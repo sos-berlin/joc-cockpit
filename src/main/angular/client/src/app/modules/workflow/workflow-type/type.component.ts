@@ -26,6 +26,7 @@ export class TypeComponent implements OnChanges {
   @Input() postNoticeBoards: any;
   @Input() addOrderToWorkflows: any;
   @Input() orderReload: boolean;
+  @Output() isDropdownChangedHandler: EventEmitter<any> = new EventEmitter();
   @Output() update: EventEmitter<any> = new EventEmitter();
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
   @Output() isProcessing: EventEmitter<boolean> = new EventEmitter();
@@ -64,6 +65,10 @@ export class TypeComponent implements OnChanges {
     setTimeout(() => {
       this.isChanged.emit(false);
     }, 5000);
+  }
+
+  dropdownChangedHandler(isOpen: boolean): void {
+    this.isDropdownChangedHandler.emit(isOpen);
   }
 
   processingHandler(flag: boolean): void {

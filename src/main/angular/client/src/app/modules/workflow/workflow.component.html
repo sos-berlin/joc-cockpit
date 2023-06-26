@@ -685,8 +685,8 @@
                             </span>
                           </div>
                           <app-type (onClick)="viewHistory($event)" [timezone]="workflow.configuration.timeZone" [workflowObj]="{path: workflow.configuration.path, versionId: workflow.configuration.versionId}" [configuration]="workflow.configuration" [orderReload]="workflow.orderReload" [jobs]="workflow.configuration.jobs" [orderPreparation]="workflow.configuration.orderPreparation" [permission]="permission" [preferences]="preferences"
-                                    [schedulerId]="schedulerIds.selected" [expandAll]="workflow.isExpand"
-                                    (update)="updatePanelHeight()" (isChanged)="changedHandler($event)" (isProcessing)="processingHandler($event)" [orders]="workflow.orders"></app-type>
+                                    [schedulerId]="schedulerIds.selected" [expandAll]="workflow.isExpand" (update)="updatePanelHeight()"
+                                    (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)" [orders]="workflow.orders"></app-type>
                         </div>
                       </td>
                     </tr>
