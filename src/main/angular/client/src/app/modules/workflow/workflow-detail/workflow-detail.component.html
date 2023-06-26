@@ -290,7 +290,7 @@
                   </span>
                 </div>
                 <app-type (onClick)="viewHistory($event)" [timezone]="workFlowJson.timeZone" [workflowObj]="{path: path, versionId: versionId}" [recursiveCals]="recursiveCals" [configuration]="workFlowJson" [jobs]="workFlowJson.jobs" [orderPreparation]="orderPreparation" [permission]="permission" [preferences]="preferences"
-                          [schedulerId]="schedulerIds.selected" [expandAll]="isExpandAll" (isChanged)="changedHandler($event)" (isProcessing)="changedHandler($event)" [orders]="workflow.orders"
+                          [schedulerId]="schedulerIds.selected" [expandAll]="isExpandAll" (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="changedHandler($event)" [orders]="workflow.orders"
                           [workflowFilters]="workflowFilters" [expectedNoticeBoards]="workFlowJson.expectedNoticeBoards" [addOrderToWorkflows]="workFlowJson.addOrderToWorkflows" [postNoticeBoards]="workFlowJson.postNoticeBoards"></app-type>
                 <div class="rg-bottom"><span></span></div>
               </div>

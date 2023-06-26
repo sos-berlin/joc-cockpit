@@ -367,6 +367,8 @@
                   <button class="hide btn btn-sm btn-grey m-l-12 m-r-12" [disabled]="data.length==0" nz-tooltip="{{'common.button.resetPanel' | translate}}" [ngClass]="{'show-block': pageView==='list'}" (click)="resetPanel()">
                     <i class="fa fa-repeat text"></i>
                   </button>
+                  <ng-container *ngIf="orderFilters.filter.state === 'INPROGRESS' || orderFilters.filter.state === 'FAILED'
+                   || orderFilters.filter.state === 'RUNNING' || orderFilters.filter.state === 'COMPLETED'">
                   <div class="pos-rel t-1" [ngClass]="{ 'error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
                     <input [appValidateRelativeDate]="preferences.dateFormat" type="text" #startTime="ngModel" name="startTime" placeholder="{{ 'common.placeholder.setStartDate' | translate }} (+/-)(s|m|h|d|w|M|y)"
                       class="form-control input-overlay"
@@ -381,6 +383,7 @@
                     <nz-date-picker [nzPlaceHolder]="''" class="pos-rel m-l-12 bottom-border cursor" nzShowTime
                       [(ngModel)]="orderFilters.filter.stateDateTo1" (ngModelChange)="changeDateFilter(!(((startTime.dirty || startTime.touched) && startTime.invalid)), 'TO', orderFilters.filter.stateDateTo1)"></nz-date-picker>
                   </div>
+                  </ng-container>
                 </div>
 
                 <div class="search-box-field pull-right m-b-0">
@@ -410,7 +413,7 @@
                           <span [nz-tooltip]="order.title" [innerHtml]="order.orderId | highlight : orderFilters.searchText"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
-                          <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" (isChanged)="changedHandler($event)"
+                          <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)"
                                             [permission]="permission" [preferences]="preferences"></app-order-action>
                         </div>
                         <div class="text-sm text-left text-muted p-t-sm" (mouseover)="getObstacles(order)">
@@ -590,7 +593,7 @@
                     <tr [ngClass]="{'light-bg': (showPanelObj && showPanelObj.orderId == order.orderId)}">
                       <td [nzShowCheckbox]="true" [nzDisabled]="order.positionIsImplicitEnd" [nzChecked]="object.mapOfCheckedId.has(order.orderId)" (nzCheckedChange)="onItemChecked(order, $event)"></td>
                       <td>
-                        <app-order-action [isDisabled]="object.checked || object.indeterminate" [order]="order" [schedulerId]="schedulerIds.selected" (isChanged)="changedHandler($event)"
+                        <app-order-action [isDisabled]="object.checked || object.indeterminate" [order]="order" [schedulerId]="schedulerIds.selected" (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)"
                                           [permission]="permission" [preferences]="preferences"></app-order-action>
                       </td>
                       <td>
