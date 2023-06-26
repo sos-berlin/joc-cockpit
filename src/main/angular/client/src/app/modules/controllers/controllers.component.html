@@ -392,7 +392,7 @@
                               <i *ngIf="controller.sortBy2 == 'version' && controller.reverse2"
                                  class="fa fa-caret-down "></i></a>
                           </th>
-                    
+
                           <th nzWidth="150px" (click)="sort(controller, 'validityDate', true)">
                             <a><span class="p-r-xs" translate>agent.label.validityDate</span>
                               <i *ngIf="controller.sortBy2 == 'validityDate' && !controller.reverse2"
@@ -513,7 +513,7 @@
                                  [ngClass]="clusterAgent.compatibility === 'COMPATIBLE' ? 'text-success' : clusterAgent.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'"></i>&nbsp;
                               <span [innerHtml]="clusterAgent.version"></span>
                             </td>
-            
+
                             <td>
                               <span *ngIf="!clusterAgent.token">-</span>
                               <span *ngIf="clusterAgent.token">{{clusterAgent.token.validUntil | stringToDate}}</span>
@@ -580,7 +580,7 @@
                                           <li (click)="editSubagent(sub, clusterAgent, controller)" nz-menu-item>
                                             <a translate>common.button.edit</a>
                                           </li>
-                                          <li nz-menu-divider></li>
+                                          <li *ngIf="sub.isDirector == 'NO_DIRECTOR'" nz-menu-divider></li>
                                           <li (click)="disableEnableSubagent(sub, controller, false)" nz-menu-item
                                               *ngIf="!sub.disabled">
                                             <a translate>agent.button.disable</a>
@@ -589,10 +589,10 @@
                                               *ngIf="sub.disabled">
                                             <a translate>agent.button.enable</a>
                                           </li>
-                                          <li (click)="resetSubagent(sub, clusterAgent, controller)" nz-menu-item>
+                                          <li *ngIf="sub.isDirector == 'NO_DIRECTOR'" (click)="resetSubagent(sub, clusterAgent, controller)" nz-menu-item>
                                             <a translate>agent.button.reset</a>
                                           </li>
-                                          <li (click)="resetSubagent(sub, clusterAgent, controller, true)" nz-menu-item>
+                                          <li *ngIf="sub.isDirector == 'NO_DIRECTOR'" (click)="resetSubagent(sub, clusterAgent, controller, true)" nz-menu-item>
                                             <a translate>agent.button.resetForced</a>
                                           </li>
                                           <li nz-menu-divider></li>
