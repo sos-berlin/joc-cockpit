@@ -58,6 +58,7 @@ export class MultiSelectComponent implements OnInit {
     evn.preventDefault();
     this.list[this.attribute] = this.list[this.attribute].filter((val) => val != item);
     this.onSelectCall.emit({remove: item});
+    this.funcCall.emit(evn);
   }
 
 }

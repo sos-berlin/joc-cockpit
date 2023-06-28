@@ -1279,6 +1279,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   presentObj: any = {};
   returnCodes: any = {on: 'success'};
   state: any = {};
+  jobresources = {
+    list: []
+  }
 
   object = {
     checked1: false,
@@ -1966,8 +1969,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onChangeJobResource(value): void {
-    if (!isEqual(JSON.stringify(this.selectedNode.job.jobResourceNames), JSON.stringify(value))) {
-      this.selectedNode.job.jobResourceNames = value;
+    if (!isEqual(JSON.stringify(this.selectedNode.job.jobResourceNames), JSON.stringify(this.jobresources.list))) {
+      this.selectedNode.job.jobResourceNames = this.coreService.clone(this.jobresources.list);
     }
   }
 
@@ -2211,7 +2214,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.addArgument();
     }
     if (this.selectedNode.job.jobResourceNames && this.selectedNode.job.jobResourceNames.length > 0) {
-      this.selectedNode.job.jobResourceNames = [...this.selectedNode.job.jobResourceNames];
+      this.jobresources.list = this.coreService.clone(this.selectedNode.job.jobResourceNames);
     }
 
     this.onBlur();
@@ -4024,7 +4027,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       title: this.title,
       timeZone: this.timeZone,
       documentationName: this.documentationName,
-      jobResourceNames: this.jobResourceNames,
+      jobResourceNames: this.coreService.clone(this.jobResourceNames),
     };
 
     if (!this.orderPreparation && this.variableDeclarations.parameters && this.variableDeclarations.parameters.length === 0) {
@@ -11046,7 +11049,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         flag = true;
       }
     } else if (type === 'jobResourceNames') {
-      flag = true;
+      if (!isEqual(JSON.stringify(this.extraConfiguration.jobResourceNames), JSON.stringify(this.jobResourceNames))) {
+        this.jobResourceNames = this.coreService.clone(this.extraConfiguration.jobResourceNames);
+        flag = true;
+      }
     } else if (type === 'variable') {
       const variableDeclarations = {parameters: [], allowUndeclared: false};
       let temp = this.coreService.clone(this.variableDeclarations.parameters);

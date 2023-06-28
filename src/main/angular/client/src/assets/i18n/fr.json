@@ -2256,6 +2256,7 @@
     "label.listOfConstants": "Variables avec valeurs constantes",
     "label.listOfDynamicallyVariables": "Variables avec des valeurs modifiables",
     "label.cycleEndTime": "Fin du Cycle",
+    "label.ignoreAdmissionTimes": "Ignorer les Heures d'Admission des Tâches",
     "button.allOrders": "Tous les Ordres",
     "button.cancel": "Annuler",
     "button.startNow": "Démarrer Maintenant",

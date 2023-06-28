@@ -38,6 +38,13 @@
         </div>
         <ng-container *ngIf="order && !order.cyclicOrder">
           <div class="form-group row">
+            <label class="col-md-3 " translate>order.label.ignoreAdmissionTimes</label>
+            <div class="col-md-8">
+              <label nz-checkbox [(ngModel)]="dateType.forceJobAdmission" name="ignoreAdmissionTimes">
+              </label>
+            </div>
+          </div>
+          <div class="form-group row">
             <label class="col-md-3" translate>common.label.startTime</label>
             <div class="col-md-9">
               <nz-radio-group name="at" [(ngModel)]="dateType.at">
@@ -81,6 +88,13 @@
           </div>
         </ng-container>
         <ng-container *ngIf="order && order.cyclicOrder">
+          <div class="form-group row">
+            <label class="col-md-3 " translate>order.label.ignoreAdmissionTimes</label>
+            <div class="col-md-8">
+              <label nz-checkbox [(ngModel)]="order.forceJobAdmission" name="ignoreAdmissionTimes">
+              </label>
+            </div>
+          </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label" translate>runtime.label.repeatTime
               <sup class="text-danger text-sm">*</sup>

@@ -2256,6 +2256,7 @@
     "label.listOfConstants": "Variables with constant values",
     "label.listOfDynamicallyVariables": "Variables with modifiable values",
     "label.cycleEndTime": "Cycle End Time",
+    "label.ignoreAdmissionTimes": "Ignore Job Admission Times",
     "button.allOrders": "All Orders",
     "button.cancel": "Cancel",
     "button.startNow": "Start Now",
