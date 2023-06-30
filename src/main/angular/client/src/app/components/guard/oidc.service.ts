@@ -670,7 +670,7 @@ export class OIDCAuthService {
         .subscribe({
           next:
             (tokenResponse) => {
-              sessionStorage.$SOS$TOKENEXPIRETIME = (new Date().getTime() + (tokenResponse.expires_in * 1000)) - 30000;
+              sessionStorage['$SOS$TOKENEXPIRETIME'] = (new Date().getTime() + (tokenResponse.expires_in * 1000)) - 30000;
               resolve(tokenResponse);
             },
           error: (err) => {

@@ -27,7 +27,7 @@ export class FileTransferHistorySummaryComponent implements OnInit, OnDestroy {
     });
   }
 
-  refresh(args): void {
+  refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (const j in args.eventSnapshots) {
         if (args.eventSnapshots[j]) {
@@ -43,8 +43,8 @@ export class FileTransferHistorySummaryComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.summary = {};
     this.filters = this.coreService.getDashboardTab().history;
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (this.schedulerIds.selected) {

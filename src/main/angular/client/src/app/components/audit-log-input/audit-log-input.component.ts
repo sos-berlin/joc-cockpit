@@ -11,14 +11,14 @@ export class AuditLogInputComponent implements OnInit {
   @Input() sizeX: any;
   @Input() sizeY: any;
   messageList: any = [];
-  required: boolean;
+  required = false;
   oldValue = '';
 
   constructor(public activeModal: NzModalRef, public router: Router) {
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
+    if (sessionStorage['comments']) {
+      this.messageList = JSON.parse(sessionStorage['comments']);
     }
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
     }
   }
@@ -27,7 +27,7 @@ export class AuditLogInputComponent implements OnInit {
     this.comments.isChecked =  false;
   }
 
-  onChange(value): void {
+  onChange(value:string): void {
     if (value === 'new') {
       this.oldValue = this.comments.comment;
       this.comments.comment = '';

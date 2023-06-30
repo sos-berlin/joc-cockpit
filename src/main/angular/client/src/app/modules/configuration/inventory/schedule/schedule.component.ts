@@ -79,11 +79,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.copyObj && !changes.data) {
+    if (changes['copyObj'] && !changes['data']) {
       return;
     }
-    if (changes.reload) {
-      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+    if (changes['reload']) {
+      if (changes['reload'].previousValue === true && changes['reload'].currentValue === false) {
         return;
       }
       if (this.reload) {
@@ -95,7 +95,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     if (this.schedule.actual) {
       this.saveJSON();
     }
-    if (changes.data) {
+    if (changes['data']) {
       if (this.data.type) {
         this.getObject();
       } else {
@@ -114,7 +114,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].path) {
@@ -780,7 +780,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     });
 
     obj.orderParameterisations = obj.orderParameterisations.map(item => {
-      return {orderName: item.orderName, variables: item.variables, positions: item.positions};
+      return {orderName: item.orderName, variables: item.variables, positions: item.positions, forceJobAdmission: item.forceJobAdmission};
     });
 
     if (obj.nonWorkingDayCalendars.length === 0) {
@@ -841,7 +841,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           objectType: this.objectType
         };
 
-        if (sessionStorage.$SOS$FORCELOGING === 'true') {
+        if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
           this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
             request.auditLog = {comment: translatedValue};
           });
@@ -1020,7 +1020,13 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       this.saveJSON();
     }
     if (data.add) {
-      this.getWorkflowInfo(data.add, false, null);
+      this.getWorkflowInfo(data.add, false, () =>{
+        if(this.schedule.configuration.workflowNames.length > 1) {
+          this.saveJSON();
+        }
+      });
+    } else if (this.schedule.configuration.workflowNames.length > 0){
+      this.saveJSON();
     }
   }
 

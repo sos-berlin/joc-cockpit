@@ -89,8 +89,8 @@ export class AdminComponent implements OnInit, OnDestroy {
       }, 50);
       return;
     }
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).permission;
+    if (localStorage['views']) {
+      this.pageView = JSON.parse(localStorage['views']).permission;
     }
     this.isLoaded = true;
     if (!this.route) {
@@ -241,22 +241,22 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.isPaste = this.route && ((this.route.match('/users/identity_service/account') && this.dataService.copiedObject.accounts && this.dataService.copiedObject.accounts.size > 0) ||
         (this.route.match('/users/identity_service/role') && this.dataService.copiedObject.roles && this.dataService.copiedObject.roles.size > 0));
       if (this.route.match('/users')) {
-        if (sessionStorage.identityServiceType ) {
-          if (sessionStorage.secondFactor && this.route.match('/role')) {
+        if (sessionStorage['identityServiceType']) {
+          if (sessionStorage['secondFactor'] && this.route.match('/role')) {
             this.router.navigate(['/users/identity_service/account']).then();
           } else {
-            if ((sessionStorage.identityServiceType === 'VAULT' || sessionStorage.identityServiceType === 'KEYCLOAK' || sessionStorage.identityServiceType === 'LDAP') && this.route.match('/users/identity_service/account')) {
+            if ((sessionStorage['identityServiceType'] === 'VAULT' || sessionStorage['identityServiceType'] === 'KEYCLOAK' || sessionStorage['identityServiceType'] === 'LDAP') && this.route.match('/users/identity_service/account')) {
               this.selectedUser = null;
               this.router.navigate(['/users/identity_service/role']).then();
             }
           }
         }
         this.selectedUser = AdminComponent.getParameterByName('account');
-        if (sessionStorage.identityServiceName && this.route.match('/users/identity_service/')) {
+        if (sessionStorage['identityServiceName'] && this.route.match('/users/identity_service/')) {
           this.userObj = {};
-          this.identityService = sessionStorage.identityServiceName;
-          this.identityServiceType = sessionStorage.identityServiceType;
-          this.secondFactor = !!sessionStorage.secondFactor;
+          this.identityService = sessionStorage['identityServiceName'];
+          this.identityServiceType = sessionStorage['identityServiceType'];
+          this.secondFactor = !!sessionStorage['secondFactor'];
           this.getUsersData();
         }
       }

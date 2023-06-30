@@ -21,7 +21,7 @@
           <input type="text" class="form-control" [readOnly]="notice" name="noticeId" placeholder="{{'resource.board.placeholder.enterNoticeId' | translate}}"
                  [(ngModel)]="postObj.noticeId" required autocomplete="off" #noticeId="ngModel"/>
           <div *ngIf="noticeId.invalid && (noticeId.dirty || noticeId.touched)" class="text-danger help-block">
-            <div *ngIf="noticeId.errors.required" translate>
+            <div *ngIf="noticeId.errors['required']" translate>
               common.message.requiredError
             </div>
           </div>
@@ -45,8 +45,8 @@
           <input relativeDateValidatorRegex [appAutofocus]="true"  type="text" #time="ngModel" class="form-control" required
                  name="atTime" [(ngModel)]="postObj.atTime" placeholder="+1(s|m|h|d|w|M|y)">
           <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
-            <div translate *ngIf="!time.valid && !time.errors.required">common.message.invalid</div>
-            <div *ngIf="time.errors.required" translate>
+            <div translate *ngIf="!time.valid && !time.errors['required']">common.message.invalid</div>
+            <div *ngIf="time.errors['required']" translate>
               common.message.requiredError
             </div>
           </div>
@@ -61,7 +61,7 @@
           <nz-date-picker required [nzDisabledDate]="disabledDate" [nzFormat]="dateFormat" name="date"
                           #date="ngModel" [(ngModel)]="postObj.fromDate"></nz-date-picker>
           <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
-            <div *ngIf="date.errors.required" translate>
+            <div *ngIf="date.errors['required']" translate>
               common.message.requiredError
             </div>
           </div>

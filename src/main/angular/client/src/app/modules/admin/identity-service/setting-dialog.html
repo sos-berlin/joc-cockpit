@@ -3,7 +3,7 @@
     <span *ngIf="!data" translate>user.label.generalSetting</span>
     <span *ngIf="data">
       <span translate>user.label.settingFor</span>:
-      {{data.identityServiceName}}
+      {{data['identityServiceName']}}
     </span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
@@ -27,7 +27,7 @@
                  validateSessionTimeReqex
                  [(ngModel)]="currentObj.sessionTimeout">
           <div *ngIf="timeout.invalid && (timeout.dirty || timeout.touched)" class="text-danger help-block">
-            <div *ngIf="timeout.errors.required">
+            <div *ngIf="timeout.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -49,7 +49,7 @@
           <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.first ? 'fa-eye' : 'fa-eye-slash'"
              (click)="passwordFields.first = !passwordFields.first"></i>
           <div *ngIf="pwd.invalid && (pwd.dirty || pwd.touched)" class="text-danger help-block">
-            <div *ngIf="pwd.errors.required">
+            <div *ngIf="pwd.errors && pwd.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -72,7 +72,7 @@
                            (ngModelChange)="isLengthMatch = true"></nz-input-number>
           <div *ngIf="minPasswordLength.invalid && (minPasswordLength.dirty || minPasswordLength.touched)"
                class="text-danger help-block">
-            <div *ngIf="minPasswordLength.errors.required">
+            <div *ngIf="minPasswordLength.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -80,7 +80,7 @@
       </div>
     </div>
     <!------------------------------------BEGIN VAULT-------------------------------------------->
-    <div *ngIf="data && data.identityServiceType.match('VAULT')">
+    <div *ngIf="data && data['identityServiceType'].match('VAULT')">
       <div class="form-group row">
         <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.vault.iamVaultUrl' | translate"
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamVaultUrl
@@ -90,7 +90,7 @@
           <input [appAutofocus]="true" type="url" class="form-control" required #vaultUrl="ngModel" name="iamVaultUrl"
                  [placeholder]="'user.placeholder.iamVaultUrl' | translate" [(ngModel)]="currentObj.iamVaultUrl">
           <div *ngIf="vaultUrl.invalid && (vaultUrl.dirty || vaultUrl.touched)" class="text-danger help-block">
-            <div *ngIf="vaultUrl.errors.required">
+            <div *ngIf="vaultUrl.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -108,7 +108,7 @@
                  [placeholder]="'user.placeholder.iamVaultAuthenticationMethodPath' | translate"
                  [(ngModel)]="currentObj.iamVaultAuthenticationMethodPath">
           <div *ngIf="methodPath.invalid && (methodPath.dirty || methodPath.touched)" class="text-danger help-block">
-            <div *ngIf="methodPath.errors.required">
+            <div *ngIf="methodPath.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -156,7 +156,7 @@
           </nz-autocomplete>
         </div>
       </div>
-      <div class="form-group row" *ngIf="data.identityServiceType === 'VAULT-JOC-ACTIVE'">
+      <div class="form-group row" *ngIf="data['identityServiceType'] === 'VAULT-JOC-ACTIVE'">
         <label class="col-sm-4 form-control-label"
                [nz-tooltip]="'user.tooltips.vault.iamVaultApplicationToken' | translate"
                [nzTooltipMouseEnterDelay]="0.5"
@@ -171,7 +171,7 @@
       </div>
     </div>
     <!------------------------------------BEGIN KEYCLOAK----------------------------------------->
-    <div *ngIf="data && data.identityServiceType.match('KEYCLOAK')">
+    <div *ngIf="data && data['identityServiceType'].match('KEYCLOAK')">
       <div class="form-group row">
         <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakUrl' | translate"
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamKeycloakUrl
@@ -183,13 +183,13 @@
                  name="iamKeycloakUrl"
                  [placeholder]="'user.placeholder.iamKeycloakUrl' | translate" [(ngModel)]="currentObj.iamKeycloakUrl">
           <div *ngIf="keycloakUrl.invalid && (keycloakUrl.dirty || keycloakUrl.touched)" class="text-danger help-block">
-            <div *ngIf="keycloakUrl.errors.required">
+            <div *ngIf="keycloakUrl.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
         </div>
       </div>
-      <div class="form-group row" *ngIf="data.identityServiceType === 'KEYCLOAK'">
+      <div class="form-group row" *ngIf="data['identityServiceType'] === 'KEYCLOAK'">
         <label class="col-sm-4 form-control-label"
                [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakAdminAccount' | translate"
                [nzTooltipMouseEnterDelay]="0.5"
@@ -204,13 +204,13 @@
           <div
             *ngIf="iamKeycloakAdminAccount.invalid && (iamKeycloakAdminAccount.dirty || iamKeycloakAdminAccount.touched)"
             class="text-danger help-block">
-            <div *ngIf="iamKeycloakAdminAccount.errors.required">
+            <div *ngIf="iamKeycloakAdminAccount.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
         </div>
       </div>
-      <div class="form-group row" *ngIf="data.identityServiceType === 'KEYCLOAK'">
+      <div class="form-group row" *ngIf="data['identityServiceType'] === 'KEYCLOAK'">
         <label class="col-sm-4 form-control-label"
                [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakAdminPassword' | translate"
                [nzTooltipMouseEnterDelay]="0.5"
@@ -299,7 +299,7 @@
       </div>
     </div>
     <!------------------------------------BEGIN LDAP--------------------------------------------->
-    <div *ngIf="data && data.identityServiceType.match('LDAP')">
+    <div *ngIf="data && data['identityServiceType'].match('LDAP')">
       <nz-tabset class="m-t-n-8">
         <nz-tab [nzTitle]="'user.tab.simpleMode' | translate">
           <div class="m-l-12 m-r-12">
@@ -557,10 +557,10 @@
                 </div>
               </div>
             </div>
-            <div class="form-group row m-t" *ngIf="data.identityServiceType !== 'LDAP-JOC'">
+            <div class="form-group row m-t" *ngIf="data['identityServiceType'] !== 'LDAP-JOC'">
               <div class="col-md-12" translate>user.label.groupRolesMapping</div>
             </div>
-            <div class="p-a b-a" *ngIf="data.identityServiceType !== 'LDAP-JOC'">
+            <div class="p-a b-a" *ngIf="data['identityServiceType'] !== 'LDAP-JOC'">
               <div class="form-group row">
                 <label class="col-sm-4 form-control-label"
                        [nz-tooltip]="'user.tooltips.ldap.iamLdapSearchBase' | translate"
@@ -673,7 +673,7 @@
       </nz-tabset>
     </div>
     <!------------------------------------BEGIN OIDC--------------------------------------------->
-    <div *ngIf="data && data.identityServiceType.match('OIDC')">
+    <div *ngIf="data && data['identityServiceType'].match('OIDC')">
       <div class="form-group row">
         <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.oidc.iamOidcName' | translate"
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcName
@@ -685,7 +685,7 @@
                  name="iamOidcName"
                  [placeholder]="'user.placeholder.iamOidcName' | translate" [(ngModel)]="currentObj.iamOidcName">
           <div *ngIf="iamOidcName.invalid && (iamOidcName.dirty || iamOidcName.touched)" class="text-danger help-block">
-            <div *ngIf="iamOidcName.errors.required">
+            <div *ngIf="iamOidcName.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -705,7 +705,7 @@
           <div
             *ngIf="iamOidcAuthenticationUrl.invalid && (iamOidcAuthenticationUrl.dirty || iamOidcAuthenticationUrl.touched)"
             class="text-danger help-block">
-            <div *ngIf="iamOidcAuthenticationUrl.errors.required">
+            <div *ngIf="iamOidcAuthenticationUrl.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -723,7 +723,7 @@
                  [(ngModel)]="currentObj.iamOidcClientId">
           <div *ngIf="iamOidcClientId.invalid && (iamOidcClientId.dirty || iamOidcClientId.touched)"
                class="text-danger help-block">
-            <div *ngIf="iamOidcClientId.errors.required">
+            <div *ngIf="iamOidcClientId.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -744,7 +744,7 @@
              (click)="passwordFields.fourth = !passwordFields.fourth"></i>
           <div *ngIf="iamOidcClientSecret.invalid && (iamOidcClientSecret.dirty || iamOidcClientSecret.touched)"
                class="text-danger help-block">
-            <div *ngIf="iamOidcClientSecret.errors.required">
+            <div *ngIf="iamOidcClientSecret.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -761,7 +761,7 @@
                  [(ngModel)]="currentObj.iamOidcUserAttribute" autocomplete="off">
           <div *ngIf="iamOidcUserAttribute.invalid && (iamOidcUserAttribute.dirty || iamOidcUserAttribute.touched)"
                class="text-danger help-block">
-            <div *ngIf="iamOidcUserAttribute.errors.required">
+            <div *ngIf="iamOidcUserAttribute.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -844,7 +844,7 @@
       </div>
     </div>
     <!------------------------------------BEGIN FIDO-------------------------------------------->
-    <div *ngIf="data && data.identityServiceType == 'FIDO'">
+    <div *ngIf="data && data['identityServiceType'] == 'FIDO'">
       <ng-container *ngIf="!fullScreen && !fullScreen2 && !fullScreen3">
         <div class="m-b-12 row">
           <label class="col-sm-4" [nz-tooltip]="'user.tooltips.webauthn.iamAuthenticatorType' | translate" [nzTooltipMouseEnterDelay]="0.5"
@@ -934,7 +934,7 @@
                   </div>
                 </div>
               </div>
-              <div class="form-group row" >
+              <div class="form-group row">
                 <label class="col-sm-4 form-control-label"
                        [nz-tooltip]="'user.tooltips.webauthn.contentType' | translate" [nzTooltipMouseEnterDelay]="0.5"
                        translate>user.label.contentType
@@ -947,7 +947,7 @@
                          [(ngModel)]="currentObj.iamFidoEmailSettings.contentType" autocomplete="off">
                   <div *ngIf="contentType.invalid && (contentType.dirty || contentType.touched)"
                        class="text-danger help-block">
-                    <div *ngIf="contentType.errors.required">
+                    <div *ngIf="contentType.errors['required']">
                       <div translate>common.message.requiredError</div>
                     </div>
                   </div>
@@ -966,7 +966,7 @@
                          [(ngModel)]="currentObj.iamFidoEmailSettings.charset" autocomplete="off">
                   <div *ngIf="charset.invalid && (charset.dirty || charset.touched)"
                        class="text-danger help-block">
-                    <div *ngIf="charset.errors.required">
+                    <div *ngIf="charset.errors['required']">
                       <div translate>common.message.requiredError</div>
                     </div>
                   </div>
@@ -985,7 +985,7 @@
                          [(ngModel)]="currentObj.iamFidoEmailSettings.encoding" autocomplete="off">
                   <div *ngIf="encoding.invalid && (encoding.dirty || encoding.touched)"
                        class="text-danger help-block">
-                    <div *ngIf="encoding.errors.required">
+                    <div *ngIf="encoding.errors['required']">
                       <div translate>common.message.requiredError</div>
                     </div>
                   </div>

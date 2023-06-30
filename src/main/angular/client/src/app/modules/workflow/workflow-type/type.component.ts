@@ -39,14 +39,14 @@ export class TypeComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.expandAll) {
+    if (changes['expandAll']) {
       if (this.expandAll) {
         this.recursiveUpdate(this.configuration, true);
       } else if (this.expandAll === false) {
         this.recursiveUpdate(this.configuration, false);
       }
     }
-    if (changes.configuration) {
+    if (changes['configuration']) {
       if (this.configuration.TYPE === 'Workflow' && this.configuration.instructions) {
         this.isFirst = true;
         for (let i = 0; i < this.configuration.instructions.length; i++) {
@@ -55,7 +55,7 @@ export class TypeComponent implements OnChanges {
         }
       }
     }
-    if (changes.orders || changes.orderReload) {
+    if (changes['orders'] || changes['orderReload']) {
       this.updateOrder();
     }
   }

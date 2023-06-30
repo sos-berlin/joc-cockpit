@@ -29,7 +29,7 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
     });
   }
 
-  refresh(args): void {
+  refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       let flag1 = false;
       let flag2 = false;
@@ -55,8 +55,8 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
     this.orderSummary = {};
     this.taskSummary = {};
     this.filters = this.coreService.getDashboardTab().history;
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (this.schedulerIds.selected) {

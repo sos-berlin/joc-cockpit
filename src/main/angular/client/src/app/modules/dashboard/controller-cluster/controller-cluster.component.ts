@@ -98,7 +98,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   }
 
   init(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.getClusterStatusData();
   }
 
@@ -719,7 +719,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         operation: (action === 'terminate' && !isFailOver) ? 'Terminate without fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : action === 'abort' ? 'Abort' : 'Switch Over'
       };
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzComponentParams: {
           comments,

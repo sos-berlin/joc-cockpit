@@ -51,7 +51,7 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.todayDate = this.coreService.getStringDate(null);
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.permission = JSON.parse(this.authService.permission) || {};
     if (this.preferences && this.preferences.zone === 'Asia/Calcutta') {
       this.preferences.zone = 'Asia/Kolkata';

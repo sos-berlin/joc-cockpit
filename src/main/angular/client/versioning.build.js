@@ -10,7 +10,7 @@ if (os.platform() === 'linux') {
 	var buildPath = '\\';
 }
 console.log('path', buildPath);
-var defaultProject = angular.defaultProject;
+
 var appendUrl = '?v=' + new Date().getTime();
 
 const getNestedObject = (nestedObj, pathArr) => {
@@ -18,9 +18,9 @@ const getNestedObject = (nestedObj, pathArr) => {
 		(obj && obj[key] !== 'undefined') ? obj[key] : undefined, nestedObj);
 }
 
-const relativePath = getNestedObject(angular, ['projects', defaultProject, 'architect', 'build', 'options', 'outputPath']); // relative build path
+const relativePath = getNestedObject(angular, ['projects', 'architect', 'build', 'options', 'outputPath']); // relative build path
 console.log(relativePath, 'relativePath')
-buildPath += relativePath.replace(/[/]/g, '\\');
+buildPath += relativePath ? relativePath.replace(/[/]/g, '\\') : relativePath;
 var indexPath = __dirname + buildPath + path.sep + 'index.html';
 
 console.log('Angular build path:', __dirname + buildPath);
@@ -50,9 +50,9 @@ function changeIndex(currentfilename, changedfilename) {
 	try {
 		let changedFiles = replaceFile.sync(options);
 		if (changedFiles == 0) {
-			console.log("File updated failed");
+			console.log("File updated failed...");
 		} else if (changedFiles[0].hasChanged === false) {
-			console.log("File already updated");
+			console.log("File already updated...");
 		}
 		console.log('Changed Filename:', changedfilename);
 		// process.exit(1);

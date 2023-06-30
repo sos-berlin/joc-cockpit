@@ -72,8 +72,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }
     });
     this.subscription4 = dataService.resetProfileSetting.subscribe(res => {
-      if (res && sessionStorage.preferences) {
-        this.preferences = JSON.parse(sessionStorage.preferences) || {};
+      if (res && sessionStorage['preferences']) {
+        this.preferences = JSON.parse(sessionStorage['preferences']) || {};
       }
     });
     this.subscription5 = router.events
@@ -113,7 +113,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  refresh(args): void {
+  refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if ((args.eventSnapshots[j].eventType === 'ProblemEvent' || args.eventSnapshots[j].eventType === 'ProblemAsHintEvent' || args.eventSnapshots[j].eventType === 'NodeLossProblemEvent') && args.eventSnapshots[j].message) {
@@ -161,7 +161,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     if (sessionStorage.getItem('licenseValidUntil')) {
       if (!this.isGlobalSettingCall) {
         this.isGlobalSettingCall = true;
-        this.coreService.post('configurations', { configurationType: 'GLOBALS' }).subscribe({
+        this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe({
           next: (res) => {
             this.isGlobalSettingCall = false;
             let flag = false;
@@ -173,7 +173,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
                 flag = configuration.joc.disable_warning_on_license_expiration;
               }
             }
-            if(!timeZone) {
+            if (!timeZone) {
               timeZone = res.defaultGlobals?.dailyplan?.time_zone?.default;
             }
             sessionStorage.setItem('$SOS$DAILYPLANTIMEZONE', timeZone);
@@ -258,7 +258,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       accountName: this.authService.currentUserData,
       profileItem: JSON.stringify(this.preferences)
     };
-    sessionStorage.preferences = configObj.profileItem;
+    sessionStorage['preferences'] = configObj.profileItem;
     this.coreService.post('profile/prefs/store', configObj).subscribe();
   }
 
@@ -331,9 +331,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   logout(timeout: any): void {
     this.popoutService.closePopoutModal();
-    if (sessionStorage.$SOS$KEY) {
-      this.oauthService.logOut(sessionStorage.$SOS$KEY);
-      delete sessionStorage.$SOS$KEY;
+    if (sessionStorage['$SOS$KEY']) {
+      this.oauthService.logOut(sessionStorage['$SOS$KEY']);
+      delete sessionStorage['$SOS$KEY'];
     }
     this.isLogout = true;
     if (this.child) {
@@ -347,10 +347,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   reloadThemeAndLang(preferences: any): void {
-    preferences = JSON.parse(sessionStorage.preferences);
+    preferences = JSON.parse(sessionStorage['preferences']);
     $('#style-color').attr('href', './styles/' + preferences.theme + '-style.css');
-    localStorage.$SOS$THEME = preferences.theme;
-    localStorage.$SOS$LANG = preferences.locale;
+    localStorage['$SOS$THEME'] = preferences.theme;
+    localStorage['$SOS$LANG'] = preferences.locale;
     this.translate.setDefaultLang(preferences.locale);
     this.translate.use(preferences.locale);
     if (this.child) {
@@ -379,27 +379,27 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.isPropertiesLoaded = true;
       this.coreService.post('joc/properties', {}).subscribe({
         next: (result: any) => {
-          sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
-          sessionStorage.comments = JSON.stringify(result.comments);
-          sessionStorage.showViews = JSON.stringify(result.showViews);
-          sessionStorage.securityLevel = result.securityLevel;
-          sessionStorage.defaultProfile = result.defaultProfileAccount;
-          sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
-          sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
-          sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
-          sessionStorage.welcomeDoNotRemindMe = result.welcomeDoNotRemindMe;
-          sessionStorage.welcomeGotIt = result.welcomeGotIt;
-          sessionStorage.hasLicense = result.clusterLicense;
-          sessionStorage.licenseType = result.licenseType;
-          sessionStorage.allowEmptyArguments = result.allowEmptyArguments;
+          sessionStorage['$SOS$FORCELOGING'] = result.forceCommentsForAuditLog;
+          sessionStorage['comments'] = JSON.stringify(result.comments);
+          sessionStorage['showViews'] = JSON.stringify(result.showViews);
+          sessionStorage['securityLevel'] = result.securityLevel;
+          sessionStorage['defaultProfile'] = result.defaultProfileAccount;
+          sessionStorage['$SOS$COPY'] = JSON.stringify(result.copy);
+          sessionStorage['$SOS$RESTORE'] = JSON.stringify(result.restore);
+          sessionStorage['$SOS$IMPORT'] = JSON.stringify(result.import);
+          sessionStorage['welcomeDoNotRemindMe'] = result.welcomeDoNotRemindMe;
+          sessionStorage['welcomeGotIt'] = result.welcomeGotIt;
+          sessionStorage['hasLicense'] = result.clusterLicense;
+          sessionStorage['licenseType'] = result.licenseType;
+          sessionStorage['allowEmptyArguments'] = result.allowEmptyArguments;
           if (result.licenseValidFrom) {
-            sessionStorage.licenseValidFrom = result.licenseValidFrom;
+            sessionStorage['licenseValidFrom'] = result.licenseValidFrom;
           }
           if (result.title) {
             document.title = 'JS7: ' + result.title;
           }
           if (result.licenseValidUntil) {
-            sessionStorage.licenseValidUntil = result.licenseValidUntil;
+            sessionStorage['licenseValidUntil'] = result.licenseValidUntil;
             setTimeout(() => {
               this.checkLicenseExpireDate();
             }, 1500);
@@ -409,7 +409,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
             this.init();
           }
           this.isPropertiesLoaded = false;
-          if (this.preferences && (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true)) {
+          if (this.preferences && (sessionStorage['$SOS$FORCELOGING'] === 'true' || sessionStorage['$SOS$FORCELOGING'] === true)) {
             this.preferences.auditLog = true;
           }
           cb();
@@ -428,7 +428,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.authService.setPermission(permission);
         this.authService.save();
         this.permission = permission;
-        if (!sessionStorage.preferences) {
+        if (!sessionStorage['preferences']) {
           this.ngOnInit();
         }
         if (this.child) {
@@ -467,7 +467,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         } else {
           const preferences: any = {};
           this.getDefaultPreferences(preferences);
-          sessionStorage.preferences = JSON.stringify(preferences);
+          sessionStorage['preferences'] = JSON.stringify(preferences);
           this.coreService.post('controllers/security_level', {}).subscribe({
             next: (result: any) => {
               this.checkSecurityControllers(result);
@@ -506,7 +506,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private authenticate(): any {
-    if (typeof sessionStorage.logoutUrl == 'string') {
+    if (typeof sessionStorage['logoutUrl'] == 'string') {
       let returnUrl = this.router.url.match(/login/) ? '/' : this.router.url;
       if (returnUrl === '/error' || returnUrl === 'error') {
         returnUrl = '/';
@@ -534,8 +534,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private init(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     } else {
       setTimeout(() => {
         this.init();
@@ -553,7 +553,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (this.permission && this.permission.joc && !this.authService.permissionCheck(this.router.url)) {
         this.router.navigate(['/error']).then();
       }
-      if (sessionStorage.preferences || isError) {
+      if (sessionStorage['preferences'] || isError) {
         if (!this.permission) {
           this.permission = JSON.parse(this.authService.permission) || {};
         }
@@ -575,7 +575,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private changePassword(): void {
-    if (!sessionStorage.$SOS$FORCELOGING) {
+    if (!sessionStorage['$SOS$FORCELOGING']) {
       setTimeout(() => {
         this.changePassword()
       }, 50);
@@ -649,9 +649,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
       clearInterval(this.interval);
     }
     this.interval = setInterval(() => {
-      if (!this.preferences || !this.preferences.zone && sessionStorage.preferences) {
-        this.preferences = JSON.parse(sessionStorage.preferences) || {};
-        if (sessionStorage.licenseValidUntil) {
+      if (!this.preferences || !this.preferences.zone && sessionStorage['preferences']) {
+        this.preferences = JSON.parse(sessionStorage['preferences']) || {};
+        if (sessionStorage['licenseValidUntil']) {
           this.checkLicenseExpireDate();
         }
       }
@@ -692,10 +692,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private setUserPreferences(preferences: any, configObj: any, reload: boolean): void {
-    if (!sessionStorage.preferences) {
+    if (!sessionStorage['preferences']) {
       this.getDefaultPreferences(preferences);
       configObj.profileItem = JSON.stringify(preferences);
-      sessionStorage.preferences = configObj.profileItem;
+      sessionStorage['preferences'] = configObj.profileItem;
       if (this.schedulerIds.selected) {
         this.coreService.post('profile/prefs/store', configObj).subscribe((res: any) => {
           if (reload) {
@@ -744,7 +744,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     preferences.expandOption = 'both';
     preferences.currentController = true;
     preferences.logTimezone = true;
-    if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true' || sessionStorage['$SOS$FORCELOGING'] === true) {
       preferences.auditLog = true;
     }
   }
@@ -752,7 +752,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   private setUserObject(preferences: any, conf: any, configObj: any): void {
     if (conf.profileItem) {
       const data = JSON.parse(conf.profileItem);
-      if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
+      if (sessionStorage['$SOS$FORCELOGING'] === 'true' || sessionStorage['$SOS$FORCELOGING'] === true) {
         data.auditLog = true;
       }
       if (!data.maxNotificationRecords) {
@@ -782,7 +782,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (!data.orderOverviewPageView) {
         data.orderOverviewPageView = 'list';
       }
-      sessionStorage.preferences = JSON.stringify(data);
+      sessionStorage['preferences'] = JSON.stringify(data);
       this.reloadThemeAndLang(preferences);
     } else {
       this.setUserPreferences(preferences, configObj, false);
@@ -818,19 +818,19 @@ export class LayoutComponent implements OnInit, OnDestroy {
         account: this.authService.currentUserData,
         configurationType: 'SETTING'
       };
-      if (!sessionStorage.settingId) {
-        sessionStorage.settingId = 0;
+      if (!sessionStorage['settingId']) {
+        sessionStorage['settingId'] = 0;
       }
       this.coreService.post('configurations', configObj).subscribe((res1: any) => {
         if (res1.configurations && res1.configurations.length > 0) {
-          sessionStorage.settingId = res1.configurations[0].id;
-          sessionStorage.clientLogFilter = res1.configurations[0].configurationItem;
+          sessionStorage['settingId'] = res1.configurations[0].id;
+          sessionStorage['clientLogFilter'] = res1.configurations[0].configurationItem;
         } else {
           const clientLogFilter = {
             status: ['info', 'debug', 'error', 'warn'],
             isEnable: false
           };
-          sessionStorage.clientLogFilter = JSON.stringify(clientLogFilter);
+          sessionStorage['clientLogFilter'] = JSON.stringify(clientLogFilter);
           this.saveSettingConf(true);
         }
       });
@@ -838,16 +838,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private saveSettingConf(flag: boolean): void {
-    if ((sessionStorage.settingId || flag) && this.authService.currentUserData) {
+    if ((sessionStorage['settingId'] || flag) && this.authService.currentUserData) {
       const configObj = {
         controllerId: this.schedulerIds.selected,
         account: this.authService.currentUserData,
         configurationType: 'SETTING',
-        id: flag ? 0 : parseInt(sessionStorage.settingId, 10),
-        configurationItem: sessionStorage.clientLogFilter
+        id: flag ? 0 : parseInt(sessionStorage['settingId'], 10),
+        configurationItem: sessionStorage['clientLogFilter']
       };
       this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-        sessionStorage.settingId = res.id;
+        sessionStorage['settingId'] = res.id;
       });
     }
   }
@@ -865,8 +865,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
         return;
       }
       this.isPopupOpen = true;
-      if ((sessionStorage.welcomeDoNotRemindMe && sessionStorage.welcomeDoNotRemindMe == 'true')
-        || (sessionStorage.welcomeGotIt && sessionStorage.welcomeGotIt == 'true')) {
+      if ((sessionStorage['welcomeDoNotRemindMe'] && sessionStorage['welcomeDoNotRemindMe'] == 'true')
+        || (sessionStorage['welcomeGotIt'] && sessionStorage['welcomeGotIt'] == 'true')) {
         return;
       }
       const date = localStorage.getItem('$SOS$REMINDMEAFTER');
@@ -920,14 +920,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
         configurationType: 'GLOBALS',
         configurationItem: JSON.stringify(configuration.configurationItem)
       };
-      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
           request.auditLog = {comment: translatedValue};
         });
       }
       this.coreService.post('configuration/save', request).subscribe(() => {
-        sessionStorage.welcomeDoNotRemindMe = true;
-        sessionStorage.welcomeGotIt = true;
+        sessionStorage['welcomeDoNotRemindMe'] = true;
+        sessionStorage['welcomeGotIt'] = true;
       });
     });
   }

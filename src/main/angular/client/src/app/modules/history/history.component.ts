@@ -17,7 +17,7 @@ import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
 import {FileTransferService} from '../../services/file-transfer.service';
 import {InventoryForHistory} from '../../models/enums';
 
-declare const $;
+declare const $: any;
 
 @Component({
   selector: 'app-order-history-template',
@@ -91,7 +91,7 @@ export class FilterModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     if (this.new) {
@@ -819,8 +819,8 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     if (this.router.url.match('/history/order?')) {
       this.isOrderExist();
     }
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     if (this.workflowPath && this.orderId) {
@@ -923,7 +923,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/Deploy/) && this.commitId) {
@@ -2134,7 +2134,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.data = this.orderPipe.transform(this.data, this.submission.filter.sortBy, this.submission.reverse);
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     if (this.historyFilters.type === 'ORDER') {
       this.order.currentPage = $event;
     } else if (this.historyFilters.type === 'TASK') {
@@ -2148,7 +2148,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     if (this.historyFilters.type === 'ORDER') {
       this.order.entryPerPage = $event;
     } else if (this.historyFilters.type === 'TASK') {
@@ -3085,7 +3085,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return data;
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if ((args.eventSnapshots[j].eventType && (args.eventSnapshots[j].eventType.match('HistoryOrder') || args.eventSnapshots[j].eventType.match('HistoryChildOrder'))) && this.isLoading && this.historyFilters.type === 'ORDER') {
@@ -3122,7 +3122,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private initConf(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     if (!this.permission.joc) {

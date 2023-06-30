@@ -40,7 +40,7 @@ export class FilterModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     if (this.new) {
@@ -53,7 +53,7 @@ export class FilterModalComponent implements OnInit {
     }
   }
 
-  cancel(obj): void {
+  cancel(obj: any): void {
     if (obj) {
       this.activeModal.close(obj);
     } else {
@@ -117,7 +117,7 @@ export class SearchComponent implements OnInit {
     this.filter.instructionStates = this.filter.instructionStates ? this.filter.instructionStates : [];
     this.filter.states = this.filter.states ? this.filter.states : [];
 
-    this.filter.instructionStates.forEach((item) => {
+    this.filter.instructionStates.forEach((item:any) => {
       for (let i in this.jobAvailabilityStatusOptions) {
         if (this.jobAvailabilityStatusOptions[i].value == item) {
           this.jobAvailabilityStatusOptions[i].checked = true;
@@ -125,7 +125,7 @@ export class SearchComponent implements OnInit {
         }
       }
     });
-    this.filter.states.forEach((item) => {
+    this.filter.states.forEach((item:any) => {
       for (let i in this.synchronizationStatusOptions) {
         if (this.synchronizationStatusOptions[i].value == item) {
           this.synchronizationStatusOptions[i].checked = true;
@@ -157,7 +157,7 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  displayWith(data): string {
+  displayWith(data:any): string {
     return data.key;
   }
 
@@ -173,21 +173,21 @@ export class SearchComponent implements OnInit {
     this.filter.instructionStates = value;
   }
 
-  selectFolder(node, $event): void {
+  selectFolder(node: any, $event: any): void {
     if (!node.origin.isLeaf) {
       node.isExpanded = !node.isExpanded;
     }
     $event.stopPropagation();
   }
 
-  addFolder(path): void {
+  addFolder(path: string): void {
     if (this.filter.paths.indexOf(path) === -1) {
       this.filter.paths.push(path);
       this.filter.paths = [...this.filter.paths];
     }
   }
 
-  remove(path): void {
+  remove(path:string): void {
     this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
     this.filter.paths = [...this.filter.paths];
   }
@@ -295,8 +295,8 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     this.path = this.route.snapshot.queryParamMap.get('path');
     this.versionId = this.route.snapshot.queryParamMap.get('versionId');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getWorkflowList({
@@ -372,7 +372,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     this.actionChild.showDependency(workflow);
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (const j in args.eventSnapshots) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow
@@ -739,11 +739,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private init(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).workflow;
+    if (localStorage['views']) {
+      this.pageView = JSON.parse(localStorage['views']).workflow;
     }
     let obj = {
       agentList: []
@@ -1666,7 +1666,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       const request = [];
 
@@ -2007,7 +2007,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       accountName: this.authService.currentUserData,
       profileItem: JSON.stringify(preferences)
     };
-    sessionStorage.preferences = configObj.profileItem;
+    sessionStorage['preferences'] = configObj.profileItem;
     this.coreService.post('profile/prefs/store', configObj).subscribe();
   }
 

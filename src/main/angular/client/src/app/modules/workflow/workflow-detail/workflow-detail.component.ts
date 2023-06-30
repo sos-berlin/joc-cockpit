@@ -95,7 +95,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.init();
   }
 
-  refresh(args): void {
+  refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow
@@ -464,8 +464,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   private init(flag?): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     $('.scroll-y').scroll(function () {
       WorkflowDetailComponent.showAndHideBtn();

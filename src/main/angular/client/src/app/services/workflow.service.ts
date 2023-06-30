@@ -23,8 +23,8 @@ export class WorkflowService {
               private stringDatePipe: StringDatePipe) {
     mxHierarchicalLayout.prototype.interRankCellSpacing = 45;
     mxTooltipHandler.prototype.delay = 0;
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
   }
 

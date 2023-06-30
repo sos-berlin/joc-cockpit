@@ -222,7 +222,7 @@ export class ShowJsonModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const preferenceObj = JSON.parse(sessionStorage.preferences);
+    const preferenceObj = JSON.parse(sessionStorage['preferences']);
     this.coreService.get('assets/i18n/json-editor-text_' + preferenceObj.locale + '.json').subscribe((data) => {
       this.options.languages = {};
       this.options.languages[preferenceObj.locale] = data;
@@ -284,7 +284,7 @@ export class ShowJsonModalComponent implements OnInit {
 })
 export class DeploymentComponent implements OnInit, OnDestroy {
   isLoading = true;
-  loading: boolean;
+  loading  = false;
   isTrash = false;
   isTreeLoaded = false;
   tree: any = [];
@@ -389,7 +389,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     let loadTree = false;
     let _isTrash = false;
     let _isNormal = false;
@@ -452,7 +452,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   }
 
   private init(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.initTree(null, null);
@@ -1120,7 +1120,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         objectType: this.objectType
       };
 
-      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
           request.auditLog = {comment: translatedValue};
         });

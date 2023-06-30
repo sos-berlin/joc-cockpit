@@ -39,7 +39,7 @@ export class ResumeOrderModalComponent implements OnInit {
   ngOnInit(): void {
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }

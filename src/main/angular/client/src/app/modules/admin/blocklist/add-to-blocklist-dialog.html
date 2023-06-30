@@ -20,7 +20,7 @@
         <input type="text" class="form-control" name="name" [(ngModel)]="accountName" required
                #account="ngModel" [appAutofocus]="true"/>
         <div *ngIf="account.invalid && (account.dirty || account.touched)" class="text-danger help-block">
-          <div *ngIf="account.errors.required">
+          <div *ngIf="account.errors['required']">
             <div translate>common.message.requiredError</div>
           </div>
         </div>

@@ -113,7 +113,7 @@ export class AddOrderModalComponent implements OnInit {
     this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -694,7 +694,7 @@ export class WorkflowActionComponent {
       this.resetCall(type, cb, obj);
     } else {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           title2: type === 'Resume' ? 'resumeAll' : 'suspendAll',

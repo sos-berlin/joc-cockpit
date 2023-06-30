@@ -13,7 +13,7 @@ import {DataService} from '../data.service';
   templateUrl: './add-to-blocklist-dialog.html'
 })
 export class AddBlocklistModalComponent implements OnInit {
-  @Input() bulkBlock: boolean;
+  @Input() bulkBlock = false;
   @Input() obj: any;
   @Input() existingComments: any;
   submitted = false;
@@ -28,11 +28,11 @@ export class AddBlocklistModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     } else {
-      let preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+      let preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
       this.display = preferences.auditLog;
     }
     if (this.obj && this.obj.accountName) {
@@ -99,7 +99,7 @@ export class BlocklistComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.blocklistFilter = this.coreService.getAdminTab().blocklist;
     if (this.preferences.entryPerPage) {
       this.blocklistFilter.entryPerPage = this.preferences.entryPerPage;
@@ -111,7 +111,7 @@ export class BlocklistComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  loadBlocklist(date?): void {
+  loadBlocklist(date?: string): void {
     if (date) {
       this.blocklistFilter.filter.date = date;
       this.isLoaded = false;
@@ -137,7 +137,7 @@ export class BlocklistComponent implements OnInit, OnDestroy {
     });
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.blocklistFilter.currentPage = $event;
     if (this.object.mapOfCheckedId.size !== this.blocklist.length) {
       if (this.object.checked) {
@@ -148,7 +148,7 @@ export class BlocklistComponent implements OnInit, OnDestroy {
     }
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.blocklistFilter.entryPerPage = $event;
     if (this.object.checked) {
       this.checkAll(true);
@@ -161,14 +161,14 @@ export class BlocklistComponent implements OnInit, OnDestroy {
     this.data = [...this.data];
   }
 
-  sort(propertyName): void {
+  sort(propertyName: string): void {
     this.blocklistFilter.filter.reverse = !this.blocklistFilter.filter.reverse;
     this.blocklistFilter.filter.sortBy = propertyName;
     this.data = this.orderPipe.transform(this.data, this.blocklistFilter.filter.sortBy, this.blocklistFilter.filter.reverse);
     this.reset();
   }
 
-  private getCurrentData(list, filter): Array<any> {
+  private getCurrentData(list: any[], filter: any): Array<any> {
     const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
     return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
   }
@@ -185,7 +185,7 @@ export class BlocklistComponent implements OnInit, OnDestroy {
   checkAll(value: boolean): void {
     if (value && this.blocklist.length > 0) {
       //const users = this.getCurrentData(this.data, this.filter);
-      this.data.forEach(item => {
+      this.data.forEach((item: any) => {
         this.object.mapOfCheckedId.add(item.accountName);
       });
     } else {
@@ -194,7 +194,7 @@ export class BlocklistComponent implements OnInit, OnDestroy {
     this.checkCheckBoxState();
   }
 
-  onItemChecked(account, checked: boolean): void {
+  onItemChecked(account:any, checked: boolean): void {
     if (!checked && this.object.mapOfCheckedId.size > (this.blocklistFilter.entryPerPage || this.preferences.entryPerPage)) {
       const users = this.getCurrentData(this.data, this.blocklistFilter);
       if (users.length < this.data.length) {
@@ -242,7 +242,7 @@ export class BlocklistComponent implements OnInit, OnDestroy {
     });
   }
 
-  removeBlocks(acc) {
+  removeBlocks(acc: any) {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
@@ -295,8 +295,8 @@ export class BlocklistComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeFromBlocklist(account, object?): void {
-    const obj = {accountNames: [], auditLog: object};
+  removeFromBlocklist(account: any, object?: any): void {
+    const obj: any = {accountNames: [], auditLog: object};
     if (account) {
       obj.accountNames.push(account.accountName);
     } else {

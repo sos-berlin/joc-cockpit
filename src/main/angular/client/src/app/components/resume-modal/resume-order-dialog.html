@@ -125,7 +125,7 @@
                    placeholder="{{'order.placeholder.enterCycleEndTime' | translate}}"
                    validTimeReqex [(ngModel)]="order.cycleEndTime">
             <div *ngIf="cycleEndTime.invalid && (cycleEndTime.dirty || cycleEndTime.touched)" class="text-danger help-block">
-              <div *ngIf="cycleEndTime.errors.validTimeReqex" translate>common.message.invalid</div>
+              <div *ngIf="cycleEndTime.errors['validTimeReqex']" translate>common.message.invalid</div>
             </div>
           </label>
         </div>

@@ -6,12 +6,12 @@ import {DomSanitizer} from '@angular/platform-browser';
   name: 'stringToDate'
 })
 export class StringDatePipe implements PipeTransform {
-  transform(date): string {
+  transform(date: string): string {
     if (!date) {
       return '-';
     }
-    if (sessionStorage.preferences) {
-      const n = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      const n = JSON.parse(sessionStorage['preferences']);
       if (!n.zone) {
         return '';
       }
@@ -26,12 +26,12 @@ export class StringDatePipe implements PipeTransform {
   name: 'stringToTime'
 })
 export class StringTimePipe implements PipeTransform {
-  transform(date): string {
+  transform(date: string): string {
     if (!date) {
       return '-';
     }
-    if (sessionStorage.preferences) {
-      const n = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      const n = JSON.parse(sessionStorage['preferences']);
       if (!n.zone) {
         return '';
       }
@@ -47,11 +47,11 @@ export class StringTimePipe implements PipeTransform {
 })
 export class StringDateFormatePipe implements PipeTransform {
   transform(t: string, skip = false): string {
-    if (sessionStorage.preferences) {
+    if (sessionStorage['preferences']) {
       if (!t) {
         return '-';
       }
-      const n = JSON.parse(sessionStorage.preferences);
+      const n = JSON.parse(sessionStorage['preferences']);
       if (!n.zone) {
         return t;
       }
@@ -89,11 +89,11 @@ export class StringDateFormatePipe implements PipeTransform {
 })
 export class TimeInStringFormatPipe implements PipeTransform {
   transform(t: any): string {
-    if (sessionStorage.preferences) {
+    if (sessionStorage['preferences']) {
       if (!t) {
         return '-';
       }
-      const r = JSON.parse(sessionStorage.preferences);
+      const r = JSON.parse(sessionStorage['preferences']);
       if (!r.zone) {
         return '';
       }
@@ -190,8 +190,8 @@ export class ConvertTimePipe implements PipeTransform {
 })
 export class DurationFromCurrentPipe implements PipeTransform {
   transform(n: any, r: any): string {
-    if ((n || (n = new Date)) && (r || (r = new Date)) && sessionStorage.preferences) {
-      const o = JSON.parse(sessionStorage.preferences);
+    if ((n || (n = new Date)) && (r || (r = new Date)) && sessionStorage['preferences']) {
+      const o = JSON.parse(sessionStorage['preferences']);
       n = moment(n).tz(o.zone);
       r = moment(r).tz(o.zone);
       let i: number = Math.abs(moment(r).diff(n));
@@ -257,7 +257,7 @@ export class SafeHtmlPipe implements PipeTransform {
   constructor(private sanitized: DomSanitizer) {
   }
 
-  transform(value): any {
+  transform(value: string): any {
     return this.sanitized.bypassSecurityTrustHtml(value);
   }
 }
@@ -268,7 +268,7 @@ export class SafeHtmlPipe implements PipeTransform {
 export class SearchPipe implements PipeTransform {
 
   static filter(items: Array<{ [key: string]: any }>, searchKey: string, includes: any): Array<{ [key: string]: any }> {
-    const n = JSON.parse(sessionStorage.preferences);
+    const n = JSON.parse(sessionStorage['preferences']);
     const toCompare = searchKey.toLowerCase();
 
     function checkInside(item: any, term: string) {

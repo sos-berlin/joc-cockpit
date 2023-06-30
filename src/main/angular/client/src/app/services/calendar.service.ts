@@ -8,26 +8,26 @@ export class CalendarService {
   preferences: any = {};
 
   constructor(private datePipe: DatePipe) {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
   }
 
-  getStringDay(day): string {
+  getStringDay(day: number): string {
     return day == 0 ? 'sunday' : day == 1 ? 'monday' : day == 2 ? 'tuesday' : day == 3 ? 'wednesday' : day == 4 ? 'thursday' : day == 5 ? 'friday' : 'saturday';
   }
 
-  getDay(day): number {
+  getDay(day: string): number {
     return day == 'sunday' ? 0 : day == 'monday' ? 1 : day == 'tuesday' ? 2 : day == 'wednesday' ? 3 : day == 'thursday' ? 4 : day == 'friday' ? 5 : 6;
   }
 
-  getMonths(month): string {
+  getMonths(month: any): string {
     let str = '';
     if (!month) {
       return '';
     }
 
-    let months = month;
+    let months: any = month;
     if (!isArray(month)) {
       months = month.toString().split(' ');
     }
@@ -35,7 +35,7 @@ export class CalendarService {
       return 'every month';
     }
 
-    months.sort(this.compareNumbers).forEach((value) => {
+    months.sort(this.compareNumbers).forEach((value: number) => {
       if (value == 1) {
         str = str + 'Jan,';
       } else if (value == 2) {
@@ -73,7 +73,7 @@ export class CalendarService {
     return str;
   }
 
-  getWeekDays(day): string {
+  getWeekDays(day: any): string {
     if (!day) {
       return '';
     }
@@ -85,7 +85,7 @@ export class CalendarService {
       return 'Every day';
     }
     let str = '';
-    days.forEach((value) => {
+    days.forEach((value: number) => {
       if (value == 0) {
         str = str + 'Sun,';
       } else if (value == 1) {
@@ -115,7 +115,7 @@ export class CalendarService {
     return str;
   }
 
-  getSpecificDay(day): string {
+  getSpecificDay(day: number): string {
     if (!day) {
       return '';
     }
@@ -140,7 +140,7 @@ export class CalendarService {
     }
   }
 
-  getMonthDays(month, isUltimos): string {
+  getMonthDays(month: any, isUltimos: boolean): string {
     let str = '';
     if (!month) {
       return month;
@@ -187,7 +187,7 @@ export class CalendarService {
     if (data.tab === 'specificDays') {
       str = 'On ';
       if (data.dates) {
-        data.dates.forEach((date, index) => {
+        data.dates.forEach((date: string, index: number) => {
           str = str + moment(date).format(dataFormat.toUpperCase());
           if (index != data.dates.length - 1) {
             str = str + ', ';
@@ -216,9 +216,9 @@ export class CalendarService {
         }
       } else {
         if (str) {
-          return self.getMonthDays(data.selectedMonths, null) + ' of ' + str;
+          return self.getMonthDays(data.selectedMonths, false) + ' of ' + str;
         } else {
-          return self.getMonthDays(data.selectedMonths, null) + ' of month';
+          return self.getMonthDays(data.selectedMonths, false) + ' of month';
         }
       }
     } else if (data.tab === 'every') {
@@ -242,7 +242,7 @@ export class CalendarService {
       if (data.nationalHoliday) {
         str = moment(data.nationalHoliday[0]).format('YYYY') + ' national holidays ';
 
-        data.nationalHoliday.forEach((date, index) => {
+        data.nationalHoliday.forEach((date: string, index: number) => {
           str = str + moment(date).format(dataFormat.toUpperCase());
           if (index != data.nationalHoliday.length - 1) {
             str = str + ', ';
@@ -253,7 +253,7 @@ export class CalendarService {
     return str;
   }
 
-  convertObjToArr(calendar, dateFormat): void {
+  convertObjToArr(calendar: any, dateFormat: string): void {
     let obj: any = {};
     if (!calendar.frequencyList) {
       calendar.frequencyList = [];
@@ -269,7 +269,7 @@ export class CalendarService {
         calendar.frequencyList.push(obj);
       }
       if (calendar.includes.weekdays && calendar.includes.weekdays.length > 0) {
-        calendar.includes.weekdays.forEach(weekday => {
+        calendar.includes.weekdays.forEach((weekday: any) => {
           obj = {
             tab: 'weekDays',
             type: 'INCLUDE',
@@ -278,7 +278,7 @@ export class CalendarService {
             endOnW: weekday.to,
             all: weekday.days.length == 7
           };
-          weekday.days.forEach(day => {
+          weekday.days.forEach((day: any) => {
             obj.days.push(day.toString());
           });
           obj.str = this.freqToStr(obj, dateFormat);
@@ -286,9 +286,9 @@ export class CalendarService {
         });
       }
       if (calendar.includes.monthdays && calendar.includes.monthdays.length > 0) {
-        calendar.includes.monthdays.forEach(monthday => {
+        calendar.includes.monthdays.forEach((monthday: any) => {
           if (monthday.weeklyDays && monthday.weeklyDays.length > 0) {
-            monthday.weeklyDays.forEach(day => {
+            monthday.weeklyDays.forEach((day: any) => {
               obj = {
                 type: 'INCLUDE',
                 tab: 'specificWeekDays',
@@ -309,7 +309,7 @@ export class CalendarService {
               startingWithM: monthday.from,
               endOnM: monthday.to
             };
-            monthday.days.forEach(day => {
+            monthday.days.forEach((day: any) => {
               obj.selectedMonths.push(day.toString());
             });
             obj.str = this.freqToStr(obj, dateFormat);
@@ -318,9 +318,9 @@ export class CalendarService {
         });
       }
       if (calendar.includes.ultimos && calendar.includes.ultimos.length > 0) {
-        calendar.includes.ultimos.forEach(ultimos => {
+        calendar.includes.ultimos.forEach((ultimos: any) => {
           if (ultimos.weeklyDays && ultimos.weeklyDays.length > 0) {
-            ultimos.weeklyDays.forEach(day => {
+            ultimos.weeklyDays.forEach((day: any) => {
               obj = {
                 type: 'INCLUDE',
                 tab: 'specificWeekDays',
@@ -341,7 +341,7 @@ export class CalendarService {
               startingWithM: ultimos.from,
               endOnM: ultimos.to
             };
-            ultimos.days.forEach(day => {
+            ultimos.days.forEach((day: any) => {
               obj.selectedMonthsU.push(day.toString());
             });
             obj.str = this.freqToStr(obj, dateFormat);
@@ -351,7 +351,7 @@ export class CalendarService {
         });
       }
       if (calendar.includes.repetitions && calendar.includes.repetitions.length > 0) {
-        calendar.includes.repetitions.forEach(value => {
+        calendar.includes.repetitions.forEach((value: any) => {
           obj = {
             tab: 'every',
             type: 'INCLUDE',
@@ -368,7 +368,7 @@ export class CalendarService {
   }
 
 
-  generateCalendarObj(data, obj): any {
+  generateCalendarObj(data: any, obj: any): any {
     const self = this;
     const arr = [];
     let from, to;
@@ -425,7 +425,7 @@ export class CalendarService {
         if (!obj[type].dates) {
           obj[type].dates = [];
         }
-        data.dates.forEach((value) => {
+        data.dates.forEach((value: string) => {
           obj[type].dates.push(moment(value).format('YYYY-MM-DD'));
         });
 
@@ -493,8 +493,8 @@ export class CalendarService {
         if (!obj[type].holidays) {
           obj[type].holidays = [];
         }
-        const dates = [];
-        data.nationalHoliday.forEach((value) => {
+        const dates: string[] = [];
+        data.nationalHoliday.forEach((value: any) => {
           dates.push(moment(value).format('YYYY-MM-DD'));
         });
         if (obj[type].holidays.length > 0) {
@@ -522,14 +522,14 @@ export class CalendarService {
     return obj;
   }
 
-  groupByDates(arrayOfDates): any {
+  groupByDates(arrayOfDates: any): any {
     const datesObj = groupBy(arrayOfDates, (el) => {
       return moment(el.toString()).format('YYYY');
     });
     return toArray(datesObj);
   }
 
-  getTimeInString(time): string {
+  getTimeInString(time:any): string {
     if (time.toString().substring(0, 2) === '00' && time.toString().substring(3, 5) === '00') {
       return time.toString().substring(6, time.length) + ' seconds';
     } else if (time.toString().substring(0, 2) === '00') {
@@ -541,25 +541,7 @@ export class CalendarService {
     }
   }
 
-  getTimeFromDate(t): string {
-    const tf = this.preferences.dateFormat;
-    let x = 'HH:mm:ss';
-    if ((tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) != null) {
-      const result = (tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) + '';
-      if (result.match(/hh/g)) {
-        x = result + ' a';
-      } else {
-        x = result;
-      }
-    }
-    let time = moment(t).format(x);
-    if (time === '00:00' || time === '00:00:00') {
-      time = '24:00:00';
-    }
-    return time;
-  }
-
-  checkTime(time): string {
+  checkTime(time: string): string {
     if (/^\d{1,2}:\d{2}?$/i.test(time)) {
       time = time + ':00';
     } else if (/^\d{1,2}:\d{2}(:)?$/i.test(time)) {
@@ -581,7 +563,7 @@ export class CalendarService {
     return time;
   }
 
-  compareNumbers(a, b): any {
+  compareNumbers(a:any, b:any): any {
     return a - b;
   }
 

@@ -41,11 +41,11 @@ export class ChangeParameterModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const preferences = JSON.parse(sessionStorage.preferences) || {};
+    const preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -407,7 +407,7 @@ export class ModifyStartTimeModalComponent implements OnInit {
     }
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }

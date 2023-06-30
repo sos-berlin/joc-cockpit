@@ -78,10 +78,10 @@ export class LogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
-    this.controllerId = this.route.snapshot.queryParams.controllerId;
+    this.controllerId = this.route.snapshot.queryParams['controllerId'];
     if (this.authService.scheduleIds) {
       const ids = JSON.parse(this.authService.scheduleIds);
       if (ids && ids.selected != this.controllerId) {
@@ -135,12 +135,12 @@ export class LogComponent implements OnInit {
     }
     this.loading = true;
     this.object.checkBoxs = this.preferences.logFilter;
-    if (this.route.snapshot.queryParams.historyId) {
-      this.historyId = parseInt(this.route.snapshot.queryParams.historyId, 10);
-      this.orderId = this.route.snapshot.queryParams.orderId;
+    if (this.route.snapshot.queryParams['historyId']) {
+      this.historyId = parseInt(this.route.snapshot.queryParams['historyId'], 10);
+      this.orderId = this.route.snapshot.queryParams['orderId'];
       this.loadOrderLog();
-    } else if (this.route.snapshot.queryParams.taskId) {
-      this.taskId = parseInt(this.route.snapshot.queryParams.taskId, 10);
+    } else if (this.route.snapshot.queryParams['taskId']) {
+      this.taskId = parseInt(this.route.snapshot.queryParams['taskId'], 10);
       this.loadJobLog();
     }
 
@@ -179,12 +179,12 @@ export class LogComponent implements OnInit {
     // do something if u want
     if (data instanceof NzTreeNode) {
       data.isExpanded = !data.isExpanded;
-      data.origin.isExpanded = !data.origin.isExpanded;
+      data.origin['isExpanded'] = !data.origin['isExpanded'];
     } else {
       const node = data.node;
       if (node) {
         node.isExpanded = !node.isExpanded;
-        node.origin.isExpanded = !node.origin.isExpanded;
+        node.origin['isExpanded'] = !node.origin['isExpanded'];
       }
     }
   }
@@ -251,7 +251,7 @@ export class LogComponent implements OnInit {
   }
 
   loadOrderLog(): void {
-    this.workflow = this.route.snapshot.queryParams.workflow;
+    this.workflow = this.route.snapshot.queryParams['workflow'];
     const order: any = {};
     order.controllerId = this.controllerId;
     order.historyId = this.historyId;
@@ -352,7 +352,7 @@ export class LogComponent implements OnInit {
   }
 
   loadJobLog(): void {
-    this.job = this.route.snapshot.queryParams.job;
+    this.job = this.route.snapshot.queryParams['job'];
     const jobs: any = {};
     jobs.controllerId = this.controllerId;
     jobs.taskId = this.taskId;
@@ -1022,12 +1022,12 @@ export class LogComponent implements OnInit {
     this.finished = false;
     this.taskCount = 1;
     document.getElementById('logs').innerHTML = '';
-    if (this.route.snapshot.queryParams.historyId) {
-      this.historyId = parseInt(this.route.snapshot.queryParams.historyId, 10);
-      this.orderId = this.route.snapshot.queryParams.orderId;
+    if (this.route.snapshot.queryParams['historyId']) {
+      this.historyId = parseInt(this.route.snapshot.queryParams['historyId'], 10);
+      this.orderId = this.route.snapshot.queryParams['orderId'];
       this.loadOrderLog();
-    } else if (this.route.snapshot.queryParams.taskId) {
-      this.taskId = parseInt(this.route.snapshot.queryParams.taskId, 10);
+    } else if (this.route.snapshot.queryParams['taskId']) {
+      this.taskId = parseInt(this.route.snapshot.queryParams['taskId'], 10);
       this.loadJobLog();
     }
   }
@@ -1147,7 +1147,7 @@ export class LogComponent implements OnInit {
       accountName: this.authService.currentUserData,
       profileItem: JSON.stringify(this.preferences)
     };
-    window.sessionStorage.preferences = configObj.profileItem;
+    window.sessionStorage['preferences'] = configObj.profileItem;
     sessionStorage.setItem('controllerId', this.controllerId);
     this.coreService.post('profile/prefs/store', configObj).subscribe();
   }

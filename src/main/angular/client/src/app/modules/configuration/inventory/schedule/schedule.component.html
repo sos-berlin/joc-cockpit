@@ -45,8 +45,8 @@
             <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" identifierValidation required class="form-control" [appAutofocus]="!isTrash"
                    name="name" [(ngModel)]="schedule.name" #name="ngModel" (blur)="rename(name.invalid)">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-              <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
-              <div *ngIf="name.errors.required">
+              <div *ngIf="name.errors['invalidIdentifier']" translate>common.message.invalid</div>
+              <div *ngIf="name.errors['required']">
                 <div translate>common.message.requiredError</div>
               </div>
             </div>
@@ -105,7 +105,7 @@
                 <input type="text" identifierValidation maxlength="30" [readOnly]="isTrash || !permission.joc.inventory.manage" class="form-control" autocomplete="off" placeholder="{{'inventory.placeholder.orderName' | translate}}"
                        name="orderName{{j}}" #orderName="ngModel" [(ngModel)]="variableSet.orderName" (keydown)="onKeyPress($event, null)" (blur)="isOrderNameValid(variableSet, orderName, schedule.configuration.orderParameterisations)">
                 <div *ngIf="orderName.invalid && (orderName.dirty || orderName.touched)" class="text-danger help-block">
-                  <div *ngIf="orderName.errors.invalidIdentifier" translate>common.message.invalid</div>
+                  <div *ngIf="orderName.errors['invalidIdentifier']" translate>common.message.invalid</div>
                 </div>
                 <div class="pos-abt r-t-n-28" [hidden]="schedule.configuration.orderParameterisations.length == 1 && variableSet.forkListVariables && variableSet.forkListVariables.length > 0">
                   <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariableSet(j)" class="fa fa-times m-t-sm text-hover-color"></i></a>
@@ -124,6 +124,13 @@
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <app-node-position [obj]="variableSet.positions" [type]="'END'" (onBlur)="updateEndNode(variableSet.positions)"
                                    [position]="variableSet.positions.startPosition" [workflow]="workflow" [positions]="positions"></app-node-position>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-lg-3 col-xl-3 col-xxl-3" translate>order.label.ignoreAdmissionTimes</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <label nz-checkbox [(ngModel)]="variableSet.forceJobAdmission" (ngModelChange)="saveJSON()" name="ignoreAdmissionTimes{{j}}">
+                </label>
               </div>
             </div>
             <div *ngIf="variableSet.forkListVariables && variableSet.forkListVariables.length > 0">
@@ -155,7 +162,7 @@
                                                [nzMin]="0" [nzStep]="1" name="_value{{i}}{{j}}{{k}}{{x}}" [(ngModel)]="argument.value"></nz-input-number>
                               <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                                    class="text-danger help-block m-l-n-23">
-                                <div *ngIf="value.errors.required">
+                                <div *ngIf="value.errors['required']">
                                   <div translate>common.message.requiredError</div>
                                 </div>
                               </div>
@@ -174,7 +181,7 @@
                               </nz-select>
                               <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                                    class="text-danger help-block m-l-n-23">
-                                <div *ngIf="value.errors.required">
+                                <div *ngIf="value.errors['required']">
                                   <div translate>common.message.requiredError</div>
                                 </div>
                               </div>
@@ -191,7 +198,7 @@
                                      [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
                               <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                                    class="text-danger help-block m-l-n-23">
-                                <div *ngIf="value.errors.required">
+                                <div *ngIf="value.errors['required']">
                                   <div translate>common.message.requiredError</div>
                                 </div>
                               </div>
@@ -229,7 +236,7 @@
                                        name="value{{i}}{{j}}" [(ngModel)]="variable.value" (nzBlur)="saveJSON()" (keydown)="onKeyPress($event, variableSet)"></nz-input-number>
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                            class="text-danger help-block">
-                        <div *ngIf="value.errors.required">
+                        <div *ngIf="value.errors['required']">
                           <div translate>common.message.requiredError</div>
                         </div>
                       </div>
@@ -247,7 +254,7 @@
                       </nz-select>
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                            class="text-danger help-block">
-                        <div *ngIf="value.errors.required">
+                        <div *ngIf="value.errors['required']">
                           <div translate>common.message.requiredError</div>
                         </div>
                       </div>
@@ -263,8 +270,8 @@
                       <i class="pos-abt cursor fa fa-info-circle" *ngIf="variable.message" [nz-tooltip]="variable.message" style="right: 18px;top:9px;"></i>
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                            class="text-danger help-block">
-                        <div *ngIf="value.errors.required" translate>common.message.requiredError</div>
-                        <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>
+                        <div *ngIf="value.errors['required']" translate>common.message.requiredError</div>
+                        <div *ngIf="value.errors['invalidFacet']" translate>common.message.invalid</div>
                       </div>
                       <div class="pos-abt r-t-n-28" *ngIf="!variable.isRequired">
                         <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariable(i, variableSet)" class="fa fa-trash m-t-sm text-hover-color"></i></a>
@@ -286,7 +293,7 @@
                 </nz-select>
                 <div *ngIf="list.invalid && list.errors && (list.dirty || list.touched)"
                      class="text-danger help-block">
-                  <div *ngIf="list.errors.required">
+                  <div *ngIf="list.errors['required']">
                     <div translate>common.message.requiredError</div>
                   </div>
                 </div>

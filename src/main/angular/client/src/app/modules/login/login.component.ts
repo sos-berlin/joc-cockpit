@@ -41,12 +41,12 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.loadProviders();
     this.getDefaultConfiguration();
-    if (localStorage.$SOS$REMEMBER === 'true' || localStorage.$SOS$REMEMBER === true) {
-      if (localStorage.$SOS$FOO) {
-        const urs = AES.decrypt(localStorage.$SOS$FOO.toString(), '$SOSJS7');
+    if (localStorage['$SOS$REMEMBER'] === 'true' || localStorage['$SOS$REMEMBER'] === true) {
+      if (localStorage['$SOS$FOO']) {
+        const urs = AES.decrypt(localStorage['$SOS$FOO'].toString(), '$SOSJS7');
         this.user.userName = urs.toString(Utf8);
-        if (localStorage.$SOS$BOO) {
-          const pwd = AES.decrypt(localStorage.$SOS$BOO.toString(), '$SOSJS7');
+        if (localStorage['$SOS$BOO']) {
+          const pwd = AES.decrypt(localStorage['$SOS$BOO'].toString(), '$SOSJS7');
           this.user.password = pwd.toString(Utf8);
         }
       }
@@ -128,16 +128,16 @@ export class LoginComponent implements OnInit {
         this.authService.rememberMe = this.rememberMe;
         if (this.rememberMe) {
           if (values.userName) {
-            localStorage.$SOS$FOO = AES.encrypt(values.userName, '$SOSJS7');
+            localStorage['$SOS$FOO'] = AES.encrypt(values.userName, '$SOSJS7');
           } else {
             localStorage.removeItem('$SOS$FOO');
           }
           if (values.password) {
-            localStorage.$SOS$BOO = AES.encrypt(values.password, '$SOSJS7');
+            localStorage['$SOS$BOO'] = AES.encrypt(values.password, '$SOSJS7');
           } else {
             localStorage.removeItem('$SOS$BOO');
           }
-          localStorage.$SOS$REMEMBER = this.rememberMe;
+          localStorage['$SOS$REMEMBER'] = this.rememberMe;
         } else {
           localStorage.removeItem('$SOS$FOO');
           localStorage.removeItem('$SOS$BOO');
@@ -169,7 +169,7 @@ export class LoginComponent implements OnInit {
   }
 
   loginWithPopup(config) {
-    sessionStorage.authConfig = JSON.stringify(config);
+    sessionStorage['authConfig'] = JSON.stringify(config);
     // Tweak config for code flow
     this.oAuthService.configure(config);
     this.oAuthService.loadDiscoveryDocument().then((_) => {

@@ -65,7 +65,7 @@ export class CreatePlanModalComponent implements OnInit {
     this.getWorkflowTree();
     this.getScheduleTree();
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -197,10 +197,10 @@ export class RemovePlanModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -499,7 +499,7 @@ export class FilterModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     if (this.new) {
@@ -2174,8 +2174,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (!this.dailyPlanFilters.filter.status) {
       this.dailyPlanFilters.filter.status = 'ALL';
     }
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).dailyPlan;
+    if (localStorage['views']) {
+      this.pageView = JSON.parse(localStorage['views']).dailyPlan;
     }
     this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {

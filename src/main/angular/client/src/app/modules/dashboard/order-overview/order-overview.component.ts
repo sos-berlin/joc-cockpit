@@ -42,8 +42,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.filters = this.coreService.getDashboardTab().order;
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     if (this.schedulerIds.selected) {
       this.getSnapshot();
@@ -57,7 +57,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  refresh(args): void {
+  refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/) || args.eventSnapshots[j].eventType === 'ProxyCoupled'

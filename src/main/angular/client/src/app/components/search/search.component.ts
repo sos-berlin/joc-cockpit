@@ -16,10 +16,10 @@ export class SearchComponent implements OnInit, OnDestroy {
   @Output() onNavigate: EventEmitter<any> = new EventEmitter();
   @Input() controllerId: any;
   @Input() agentData: any;
-  @Input() isWorkflow: boolean;
-  @Input() isBoard: boolean;
-  @Input() isLock: boolean;
-  @Input() isCalendar: boolean;
+  @Input() isWorkflow = false;
+  @Input() isBoard = false;
+  @Input() isLock = false;
+  @Input() isCalendar = false;
   permission: any = {};
   preferences: any = {};
   submitted = false;
@@ -27,7 +27,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   isJobSearch = false;
   deployTypes: Array<string> = [];
   results: any;
-  folders = [];
+  folders: any = [];
   agentList = [];
   agents = {
     agentList: []
@@ -45,9 +45,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     indeterminate: false,
     type: ''
   };
-  type: string;
-  url: string;
-  statusObj = {
+  type = '';
+  url = '';
+  statusObj: any = {
     syncStatus: [],
     availabilityStatus: []
   };
@@ -71,7 +71,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.ENUM = InventorySearch;
     this.deployTypes = Object.keys(this.ENUM).filter(key => isNaN(+key));
     this.getAgents();
@@ -128,7 +128,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.searchObj.instructionStates = this.searchObj.instructionStates ? this.searchObj.instructionStates : [];
       this.searchObj.states = this.searchObj.states ? this.searchObj.states : [];
 
-      this.searchObj.instructionStates.forEach((item) => {
+      this.searchObj.instructionStates.forEach((item: string) => {
         for (let i in this.jobAvailabilityStatusOptions) {
           if (this.jobAvailabilityStatusOptions[i].value == item) {
             this.jobAvailabilityStatusOptions[i].checked = true;
@@ -136,7 +136,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           }
         }
       });
-      this.searchObj.states.forEach((item) => {
+      this.searchObj.states.forEach((item: string) => {
         for (let i in this.synchronizationStatusOptions) {
           if (this.synchronizationStatusOptions[i].value == item) {
             this.synchronizationStatusOptions[i].checked = true;
@@ -184,7 +184,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searchObj.instructionStates = value;
   }
 
-  displayWith(data): string {
+  displayWith(data: any): string {
     return data.key;
   }
 
@@ -205,30 +205,30 @@ export class SearchComponent implements OnInit, OnDestroy {
     });
   }
 
-  selectFolder(node, $event): void {
+  selectFolder(node: any, $event: any): void {
     if (!node.origin.isLeaf) {
       node.isExpanded = !node.isExpanded;
     }
     $event.stopPropagation();
   }
 
-  addFolder(path): void {
+  addFolder(path: string): void {
     if (this.searchObj.folders.indexOf(path) === -1) {
       this.searchObj.folders.push(path);
       this.searchObj.folders = [...this.searchObj.folders];
     }
   }
 
-  remove(path): void {
+  remove(path: string): void {
     this.searchObj.folders.splice(this.searchObj.folders.indexOf(path), 1);
     this.searchObj.folders = [...this.searchObj.folders];
   }
 
-  onChange(isActive): void {
+  onChange(isActive: boolean): void {
     this.panel.active = isActive;
   }
 
-  navToObject(data): void {
+  navToObject(data: any): void {
     this.searchObj.selectedPath = data.path;
     this.onNavigate.emit(data);
   }
@@ -358,7 +358,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   updateJob(onlyUpdate = true): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: UpdateJobComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -388,7 +388,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.object.type = this.searchObj.returnType;
     }
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: UpdateObjectComponent,
       nzClassName: 'lg',
       nzComponentParams: {

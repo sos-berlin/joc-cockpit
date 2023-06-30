@@ -1,10 +1,8 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {saveAs} from 'file-saver';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../services/core.service';
 import {DataService} from "../../services/data.service";
-
 
 @Component({
   selector: 'app-about',
@@ -100,9 +98,9 @@ export class AboutModalComponent implements OnInit {
               private ref: ChangeDetectorRef) {
   }
 
-  private stringToDate(date): any{
-    if (sessionStorage.preferences) {
-      const n = JSON.parse(sessionStorage.preferences);
+  private stringToDate(date:any): any{
+    if (sessionStorage['preferences']) {
+      const n = JSON.parse(sessionStorage['preferences']);
       if (!n.zone) {
         return '';
       }
@@ -114,10 +112,10 @@ export class AboutModalComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.hasLicense = sessionStorage.hasLicense == 'true';
-    if (sessionStorage.$SOS$accessTokenId) {
-      this.licenseType = sessionStorage.licenseType;
-      let validUntil = sessionStorage.licenseValidUntil;
+    this.hasLicense = sessionStorage['hasLicense'] == 'true';
+    if (sessionStorage['$SOS$accessTokenId']) {
+      this.licenseType = sessionStorage['licenseType'];
+      let validUntil = sessionStorage['licenseValidUntil'];
       if (validUntil && (this.hasLicense || this.licenseType !== 'OPENSOURCE')) {
         this.checkLicense()
       } else {
@@ -140,19 +138,19 @@ export class AboutModalComponent implements OnInit {
           this.licenseType = data.type;
           this.isCompleted = true;
           let recheckWarningFunc = false;
-          if (sessionStorage.licenseValidUntil != data.validUntil) {
+          if (sessionStorage['licenseValidUntil'] != data.validUntil) {
             recheckWarningFunc = true;
           }
-          sessionStorage.licenseValidFrom = data.validFrom;
-          sessionStorage.licenseValidUntil = data.validUntil;
+          sessionStorage['licenseValidFrom'] = data.validFrom;
+          sessionStorage['licenseValidUntil'] = data.validUntil;
           if (recheckWarningFunc) {
             this.dataService.reloadLicenseCheck.next(true);
           }
           this.isLoading = false;
           this.formatDate(data.validFrom, data.validUntil);
         }, error: () => {
-          let validFrom = sessionStorage.licenseValidFrom;
-          let validUntil = sessionStorage.licenseValidUntil;
+          let validFrom = sessionStorage['licenseValidFrom'];
+          let validUntil = sessionStorage['licenseValidUntil'];
           this.formatDate(validFrom, validUntil);
           this.isLoading = false;
         }
@@ -160,7 +158,7 @@ export class AboutModalComponent implements OnInit {
     }
   }
 
-  private formatDate(validFrom, validUntil): void {
+  private formatDate(validFrom:any, validUntil:any): void {
     this.isLoaded = true;
     if (validFrom) {
       this.validFrom = this.stringToDate(validFrom);
@@ -212,7 +210,7 @@ export class StepGuideComponent implements OnInit {
 export class InfoMenuComponent {
   @Input() isHeader: boolean = false;
 
-  constructor(private modal: NzModalService, private coreService: CoreService) {
+  constructor(private modal: NzModalService) {
   }
 
   about(): any {
@@ -222,16 +220,6 @@ export class InfoMenuComponent {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    });
-  }
-
-  downloadSbom(): void{
-    
-    this.coreService.get('sbom.json').subscribe((res) => {
-      const fileType = 'application/octet-stream';
-      const data = JSON.stringify(res, undefined, 2);
-      const blob = new Blob([data], {type: fileType});
-      saveAs(blob, 'sbom.json');
     });
   }
 
