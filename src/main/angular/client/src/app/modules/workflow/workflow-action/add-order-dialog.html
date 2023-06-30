@@ -19,7 +19,7 @@
                class="form-control" placeholder="{{'workflow.placeholder.orderId' | translate}}"
                [(ngModel)]="order.orderId" autocomplete="off">
         <div *ngIf="orderId.invalid && (orderId.dirty || orderId.touched)" class="text-danger help-block">
-          <div *ngIf="orderId.errors.invalidIdentifier" translate>common.message.invalid</div>
+          <div *ngIf="orderId.errors['invalidIdentifier']" translate>common.message.invalid</div>
         </div>
       </div>
     </div>
@@ -61,7 +61,7 @@
         <nz-date-picker [nzDisabledDate]="disabledDate" required [nzFormat]="dateFormat"
                         #date="ngModel" name="date" [(ngModel)]="order.fromDate"></nz-date-picker>
         <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
-          <div *ngIf="date.errors.required">
+          <div *ngIf="date.errors['required']">
             <div translate>common.message.requiredError</div>
           </div>
         </div>
@@ -129,7 +129,7 @@
                                        [(ngModel)]="argument.value"></nz-input-number>
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                            class="text-danger help-block">
-                        <div *ngIf="value.errors.required">
+                        <div *ngIf="value.errors['required']">
                           <div translate>common.message.requiredError</div>
                         </div>
                       </div>
@@ -146,7 +146,7 @@
                       </nz-select>
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                            class="text-danger help-block">
-                        <div *ngIf="value.errors.required">
+                        <div *ngIf="value.errors['required']">
                           <div translate>common.message.requiredError</div>
                         </div>
                       </div>
@@ -160,7 +160,7 @@
                              placeholder="{{'common.placeholder.value' | translate}}">
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                            class="text-danger help-block">
-                        <div *ngIf="value.errors.required">
+                        <div *ngIf="value.errors['required']">
                           <div translate>common.message.requiredError</div>
                         </div>
                       </div>
@@ -213,7 +213,7 @@
                                    (keydown)="onKeyPress($event)"></nz-input-number>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                        class="text-danger help-block">
-                    <div *ngIf="value.errors.required">
+                    <div *ngIf="value.errors['required']">
                       <div translate>common.message.requiredError</div>
                     </div>
                   </div>
@@ -230,7 +230,7 @@
                   </nz-select>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                        class="text-danger help-block">
-                    <div *ngIf="value.errors.required">
+                    <div *ngIf="value.errors['required']">
                       <div translate>common.message.requiredError</div>
                     </div>
                   </div>
@@ -250,10 +250,10 @@
                      style="right: 32px;top:1px;"></i>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                        class="text-danger help-block">
-                    <div *ngIf="value.errors.required">
+                    <div *ngIf="value.errors['required']">
                       <div translate>common.message.requiredError</div>
                     </div>
-                    <div *ngIf="value.errors.invalidFacet && !value.errors.required" translate>common.message.invalid</div>
+                    <div *ngIf="value.errors['invalidFacet'] && !value.errors['required']" translate>common.message.invalid</div>
                   </div>
                 </div>
               </ng-container>
@@ -275,7 +275,7 @@
             </nz-select>
             <div *ngIf="list.invalid && list.errors && (list.dirty || list.touched)"
                  class="text-danger help-block">
-              <div *ngIf="list.errors.required">
+              <div *ngIf="list.errors['required']">
                 <div translate>common.message.requiredError</div>
               </div>
             </div>

@@ -84,10 +84,10 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.workflow && this.schedulerIds.selected) {
+    if (changes['workflow'] && this.schedulerIds.selected) {
       this.init();
     }
-    if (changes.jobName && this.isCalled && this.jobName) {
+    if (changes['jobName'] && this.isCalled && this.jobName) {
       if (this.index == 2) {
         this.index = 3;
         setTimeout(() => {
@@ -103,8 +103,8 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   ngOnInit(): void {
     this.workflowFilters = this.coreService.getWorkflowTab();
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     if (this.jobName) {
@@ -122,7 +122,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     this.coreService.calRowWidth(null);
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if ((args.eventSnapshots[j].eventType && (args.eventSnapshots[j].eventType.match('HistoryOrder') || args.eventSnapshots[j].eventType.match('HistoryChildOrder'))) && this.index == 0) {

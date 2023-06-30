@@ -78,6 +78,7 @@
               "svg-gauge",
               "clone-deep",
               "jsoneditor",
+              "jwk-to-pem",
               "codemirror/mode/shell/shell",
               "codemirror/mode/xml/xml",
               "codemirror/mode/ruby/ruby",
@@ -99,7 +100,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "3mb",
-                  "maximumError": "6.5mb"
+                  "maximumError": "6.8mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -178,6 +179,5 @@
         }
       }
     }
-  },
-  "defaultProject": "joc-cockpit"
+  }
 }

@@ -33,8 +33,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     this.filters = this.coreService.getDashboardTab().dailyplan;
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
@@ -140,7 +140,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.router.navigate(['/daily_plan']).then();
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'DailyPlanUpdated') {

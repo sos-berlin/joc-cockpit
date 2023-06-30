@@ -45,7 +45,7 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
 
   previewCalendar(calendar): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: CalendarModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -61,8 +61,8 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
   private init(): void {
     this.name = this.route.snapshot.queryParamMap.get('name');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getCalendarsList({
@@ -274,7 +274,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   previewCalendar(calendar): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: CalendarModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -290,13 +290,13 @@ export class CalendarComponent implements OnInit, OnDestroy {
   private init(): void {
     this.calendarFilters = this.coreService.getResourceTab().calendars;
     this.coreService.getResourceTab().state = 'calendars';
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).calendar;
+    if (localStorage['views']) {
+      this.pageView = JSON.parse(localStorage['views']).calendar;
     }
     this.initTree();
   }

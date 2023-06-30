@@ -33,7 +33,7 @@ export class FilterModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     if (this.new) {
@@ -405,14 +405,14 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
   }
 
   private init(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getFileTransferById(this.transferId);
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].objectType === 'OTHER') {
@@ -501,11 +501,11 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.data = this.orderPipe.transform(this.data, this.yadeFilters.filter.sortBy, this.yadeFilters.reverse);
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.yadeFilters.currentPage = $event;
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.yadeFilters.entryPerPage = $event;
   }
 
@@ -789,7 +789,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   /* ---- Customization Begin------ */
   createCustomization(): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: FilterModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -805,7 +805,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   editFilters(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: EditFilterModalComponent,
       nzComponentParams: {
         filterList: this.filterList,
@@ -909,7 +909,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   private init(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.yadeFilters = this.coreService.getYadeTab();
@@ -964,7 +964,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         filterObj.id = filter.id;
       }
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {
@@ -985,7 +985,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     });
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].objectType === 'OTHER') {

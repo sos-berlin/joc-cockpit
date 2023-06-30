@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
 import {CoreService} from "../../services/core.service";
 import {DataService} from "../../services/data.service";
 
-declare const $;
+declare const $:any;
 
 @Component({
   selector: 'app-agent-selection',
@@ -13,18 +13,18 @@ export class AgentSelectionComponent implements OnChanges {
   @Input() agents: any;
   @Input() obj: any = {};
   @Input() data: any = {};
-  @Input() skipSubagents: boolean;
-  @Input() skipStandaloneAgent: boolean;
+  @Input() skipSubagents: boolean = false;
+  @Input() skipStandaloneAgent: boolean = false;
   @Input() required = true;
   @Input() type = 'agentName';
 
-  isReloading: boolean;
+  isReloading: boolean = false;
   favorite: any = {
     list: [],
     agents: []
   };
-  agentList = [];
-  nonExistAgents = [];
+  agentList:any = [];
+  nonExistAgents:any = [];
 
   @Output() selectSubagentCluster: EventEmitter<any> = new EventEmitter();
   @Output() onBlur: EventEmitter<any> = new EventEmitter();
@@ -32,7 +32,7 @@ export class AgentSelectionComponent implements OnChanges {
   constructor(private coreService: CoreService, private dataService: DataService) {
   }
 
-  ngOnChanges(changes): void {
+  ngOnChanges(changes:any): void {
     if (changes.agents) {
       this.agentList = this.coreService.clone(this.agents);
       this.coreService.post('inventory/favorites', {
@@ -41,7 +41,7 @@ export class AgentSelectionComponent implements OnChanges {
       }).subscribe({
         next: (res: any) => {
           this.favorite.list = res.favorites;
-          if (sessionStorage.isFavoriteAgent == true || sessionStorage.isFavoriteAgent == 'true') {
+          if (sessionStorage['isFavoriteAgent'] == true || sessionStorage['isFavoriteAgent'] == 'true') {
             this.favorite.show = true;
             this.generateFavList();
           }
@@ -105,7 +105,7 @@ export class AgentSelectionComponent implements OnChanges {
     }, 2000)
   }
 
-  expandCollapse($event, data, isCluster = false) {
+  expandCollapse($event:any, data:any, isCluster:boolean = false) {
     $event.stopPropagation();
     data.hide = !data.hide;
     if (isCluster) {
@@ -129,11 +129,11 @@ export class AgentSelectionComponent implements OnChanges {
 
   showFav(flag: boolean): void {
     this.favorite.show = flag;
-    sessionStorage.isFavoriteAgent = flag;
+    sessionStorage['isFavoriteAgent'] = flag;
   }
 
   generateFavList(): void {
-    let arr = [];
+    let arr:any = [];
     let flag = false;
     for (let i in this.favorite.list) {
       if (!this.favorite.list[i].content) {
@@ -203,7 +203,7 @@ export class AgentSelectionComponent implements OnChanges {
     this.favorite.agents = arr;
   }
 
-  isFavCheck(agent, cluster): boolean {
+  isFavCheck(agent:any, cluster:any): boolean {
     let flag = false;
     for (let i in this.favorite.list) {
       if (agent == this.favorite.list[i].name && cluster == this.favorite.list[i].content) {
@@ -214,7 +214,7 @@ export class AgentSelectionComponent implements OnChanges {
     return flag;
   }
 
-  setFavorite($event, agent, cluster, isFav): void {
+  setFavorite($event:any, agent:any, cluster:any, isFav:any): void {
     $event.stopPropagation();
     $event.preventDefault();
     if (isFav) {
@@ -248,7 +248,7 @@ export class AgentSelectionComponent implements OnChanges {
     }
   }
 
-  selectAgent(data): void {
+  selectAgent(data:any): void {
     this.selectSubagentCluster.emit(data)
     $('#agentId').blur();
   }

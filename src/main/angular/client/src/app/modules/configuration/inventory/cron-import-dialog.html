@@ -52,7 +52,7 @@
               <app-search-input [isDisplay]="true" [nodes]="calendarTree" [type]="'CALENDAR'" (onBlur)="onBlur()" (onSelect)="onSelect($event)" ></app-search-input>
             </div>
             <div *ngIf="calendarName.invalid && calendarName.errors && (calendarName.dirty || calendarName.touched)" class="text-danger help-block">
-              <div *ngIf="calendarName.errors.required">
+              <div *ngIf="calendarName.errors['required']">
                 <div translate>common.message.requiredError</div>
               </div>
             </div>

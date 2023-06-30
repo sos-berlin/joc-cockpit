@@ -104,7 +104,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  refresh(args): void {
+  refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow
@@ -275,10 +275,10 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.orders) {
+    if (changes['orders']) {
       this.updateOrder();
     }
-    if ((changes.reload || changes.jobs) && this.graph) {
+    if ((changes['reload'] || changes['jobs']) && this.graph) {
       this.vertixMap = new Map();
       this.nodeMap = new Map();
       this.workflowArr = [];
@@ -494,7 +494,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
 
   confirmOrder(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzComponentParams: {
         title: 'confirm',

@@ -345,7 +345,7 @@ export class GitModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -424,7 +424,7 @@ export class UpdateKeyModalComponent implements OnInit {
   ngOnInit(): void {
     this.algorithm.keyAlg = this.securityLevel !== 'HIGH' ? 'RSA' : 'PGP';
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -502,7 +502,7 @@ export class ImportKeyModalComponent implements OnInit {
   ngOnInit(): void {
     this.uploader.options.url = this.type === 'key' ? './api/profile/key/import' : this.type === 'certificate' ? './api/profile/key/ca/import' : './api/profile/ca/import';
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -618,7 +618,7 @@ export class GenerateKeyComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -715,7 +715,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.forceLoging = true;
       this.preferences.auditLog = true;
     }
@@ -786,7 +786,7 @@ export class UserComponent implements OnInit, OnDestroy {
   savePreferences(isThemeReload = false): void {
     if (this.schedulerIds.selected) {
       this.configObj.profileItem = JSON.stringify(this.preferences);
-      sessionStorage.preferences = this.configObj.profileItem;
+      sessionStorage['preferences'] = this.configObj.profileItem;
       if (isThemeReload) {
         this.dataService.isThemeReload.next(true);
       }
@@ -801,13 +801,13 @@ export class UserComponent implements OnInit, OnDestroy {
 
   setPreferences(): void {
     this.username = this.authService.currentUserData;
-    this.securityLevel = sessionStorage.securityLevel;
-    if (this.securityLevel === 'LOW' && sessionStorage.defaultProfile && sessionStorage.defaultProfile === this.username) {
+    this.securityLevel = sessionStorage['securityLevel'];
+    if (this.securityLevel === 'LOW' && sessionStorage['defaultProfile'] && sessionStorage['defaultProfile'] === this.username) {
       this.securityLevel = 'MEDIUM';
     }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.configObj.controllerId = this.schedulerIds.selected;
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
   }
 
@@ -829,7 +829,7 @@ export class UserComponent implements OnInit, OnDestroy {
     if (!this.preferences.licenseExpirationWarning) {
       delete this.preferences.licenseReminderDate;
     }
-    sessionStorage.preferences = JSON.stringify(this.preferences);
+    sessionStorage['preferences'] = JSON.stringify(this.preferences);
     this.dataService.resetProfileSetting.next(true);
     this.savePreferences();
   }
@@ -847,11 +847,11 @@ export class UserComponent implements OnInit, OnDestroy {
       calendar: this.preferences.pageView,
       permission: this.preferences.pageView
     };
-    localStorage.views = JSON.stringify(views);
+    localStorage['views'] = JSON.stringify(views);
   }
 
   setLocale(): void {
-    localStorage.$SOS$LANG = this.preferences.locale;
+    localStorage['$SOS$LANG'] = this.preferences.locale;
     import(`../../../../node_modules/@angular/common/locales/${this.preferences.locale}.mjs`).then(locale => {
       registerLocaleData(locale.default);
     });
@@ -876,7 +876,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   changeTheme(theme): void {
     $('#style-color').attr('href', './styles/' + theme + '-style.css');
-    localStorage.$SOS$THEME = theme;
+    localStorage['$SOS$THEME'] = theme;
     this.savePreferences();
   }
 
@@ -910,7 +910,7 @@ export class UserComponent implements OnInit, OnDestroy {
     const obj = {accounts: [this.username], complete: false};
     this.coreService.post('profiles/delete', obj).subscribe(() => {
       sessionStorage.removeItem('preferences');
-      if (sessionStorage.defaultProfile && sessionStorage.defaultProfile !== this.username) {
+      if (sessionStorage['defaultProfile'] && sessionStorage['defaultProfile'] !== this.username) {
         this.getDefaultUserConfiguration()
       } else {
         this.dataService.isProfileReload.next(true);
@@ -921,7 +921,7 @@ export class UserComponent implements OnInit, OnDestroy {
   private getDefaultUserConfiguration(): void {
     const configObj = {
       controllerId: this.schedulerIds.selected,
-      accountName: sessionStorage.defaultProfile
+      accountName: sessionStorage['defaultProfile']
     };
     this.coreService.post('profile/prefs', configObj).subscribe({
       next: (res: any) => {
@@ -1101,7 +1101,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   deleteCredential(data): void {
-    if (sessionStorage.$SOS$FORCELOGING === 'true' || this.preferences.auditLog) {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true' || this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
         type: 'Git Credential',

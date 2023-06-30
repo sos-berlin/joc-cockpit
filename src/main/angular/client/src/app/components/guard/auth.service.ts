@@ -10,10 +10,10 @@ export class AuthService {
   propsPrefix = '$SOS$';
   rememberMe = false;
   scheduleIds: any;
-  accessTokenId: string;
-  currentUserData: string;
+  accessTokenId = '';
+  currentUserData = '';
   forcePasswordChange: any;
-  currentUserIdentityService: string;
+  currentUserIdentityService = '';
   sessionTimeout: any;
   permission: any;
 
@@ -53,7 +53,7 @@ export class AuthService {
     this.sessionTimeout = null;
     this.permission = null;
     this.scheduleIds = null;
-    sessionStorage.$SOS$URL = null;
+    sessionStorage['$SOS$URL'] = null;
   }
 
   clearStorage(): void {
@@ -68,8 +68,8 @@ export class AuthService {
       url === '/audit_log' ? 'AuditLog' : url.match('order') ? 'Order' : url.match('/resources') ? 'Resource' : url === '/history' ? 'History' :
         url.match('/configuration') ? 'Configuration' : url.match('/users') ? 'ManageAccount' : '';
     let showViews: any = {};
-    if (window.sessionStorage.showViews) {
-      showViews = JSON.parse(window.sessionStorage.showViews);
+    if (window.sessionStorage['showViews']) {
+      showViews = JSON.parse(window.sessionStorage['showViews']);
     }
     const permission = JSON.parse(this.permission);
     if (!permission) {
@@ -258,7 +258,7 @@ export class AuthService {
     const publicKeyObject = window['CBOR'].decode(
       publicKeyBytes.buffer);
 
-    let jwk = {};
+    let jwk: any = {};
     let publicKeyJwk = COSEtoJWK(publicKeyObject);
 
     function convertEcToPEM(curve, x, y) {

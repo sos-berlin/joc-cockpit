@@ -7,13 +7,14 @@ import {
   ViewChild
 } from '@angular/core';
 import {isEmpty, isArray} from 'underscore';
+import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {AuthService} from "../guard";
 import {CoreService} from '../../services/core.service';
 import {POPOUT_MODAL_DATA, POPOUT_MODALS, PopoutData} from "../../services/popup.service";
-import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 
-declare const $;
-export let that;
+
+declare const $: any;
+export let that: any;
 
 @Component({
   selector: 'app-log-view',
@@ -50,16 +51,15 @@ export class LogViewComponent implements OnInit, OnDestroy {
   scrolled = false;
   isExpandCollapse = false;
   taskCount = 1;
-  controllerId: string;
+  controllerId = '';
   lastScrollTop = 0;
   delta = 20;
   dataObject: PopoutData;
-  treeStructure = [];
-  isChildren: boolean;
+  treeStructure: any[] = [];
+  isChildren =  false;
   nodes = [];
 
-
-  @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
+  @ViewChild('dataBody', {static: false}) dataBody!: ElementRef;
 
   constructor(private authService: AuthService, public coreService: CoreService,
               @Inject(POPOUT_MODAL_DATA) public data: PopoutData) {
@@ -67,8 +67,8 @@ export class LogViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
     POPOUT_MODALS['windowInstance'].document.title = this.dataObject.modalName + ' - ' + (this.dataObject.orderId || this.dataObject.job);
     this.controllerId = this.dataObject.controllerId;
@@ -138,11 +138,11 @@ export class LogViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  private onUnload(event) {
+  private onUnload(event: any) {
     that.cancelApiCalls();
-    if (POPOUT_MODALS['windowInstance'].screenX != window.localStorage.log_window_x) {
-      window.localStorage.log_window_x = POPOUT_MODALS['windowInstance'].screenX;
-      window.localStorage.log_window_y = POPOUT_MODALS['windowInstance'].screenY;
+    if (POPOUT_MODALS['windowInstance'].screenX != window.localStorage['log_window_x']) {
+      window.localStorage['log_window_x'] = POPOUT_MODALS['windowInstance'].screenX;
+      window.localStorage['log_window_y'] = POPOUT_MODALS['windowInstance'].screenY;
     }
 
     return null;
@@ -150,10 +150,10 @@ export class LogViewComponent implements OnInit, OnDestroy {
 
   private onResize(): void {
     that.calculateHeight();
-    window.localStorage.log_window_wt = POPOUT_MODALS['windowInstance'].innerWidth;
-    window.localStorage.log_window_ht = POPOUT_MODALS['windowInstance'].innerHeight;
-    window.localStorage.log_window_x = POPOUT_MODALS['windowInstance'].screenX;
-    window.localStorage.log_window_y = POPOUT_MODALS['windowInstance'].screenY;
+    window.localStorage['log_window_wt'] = POPOUT_MODALS['windowInstance'].innerWidth;
+    window.localStorage['log_window_ht'] = POPOUT_MODALS['windowInstance'].innerHeight;
+    window.localStorage['log_window_x'] = POPOUT_MODALS['windowInstance'].screenX;
+    window.localStorage['log_window_y'] = POPOUT_MODALS['windowInstance'].screenY;
   }
 
   private onScroll(): void {
@@ -205,7 +205,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     }
 
     // slight update to account for browsers not supporting e.which
-    function disableF5(e) {
+    function disableF5(e: any) {
       if ((e.which || e.keyCode) == 116) {
         that.reloadLog();
         e.preventDefault();
@@ -276,7 +276,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  private checkDom(res, order): void {
+  private checkDom(res: any, order: any): void {
     this.jsonToString(res);
     this.showHideTask(res.logEvents);
     if (!res.complete && !this.isCancel) {
@@ -286,7 +286,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  showHideTask(logs): void {
+  showHideTask(logs: any[]): void {
     let flag = false;
     for (let i in logs) {
       if (logs[i].logEvent === 'OrderProcessingStarted') {
@@ -314,7 +314,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  private expandTask(i, expand): void {
+  private expandTask(i: number, expand: boolean): void {
     const domId = 'tx_log_' + (i + 1);
     const jobs: any = {};
     jobs.controllerId = this.controllerId;
@@ -394,7 +394,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  runningTaskLog(obj, domId: string): void {
+  runningTaskLog(obj: any, domId: string): void {
     if (obj.eventId) {
       this.runningCanceller = this.coreService.post('task/log/running', obj).subscribe((res: any) => {
         if (res) {
@@ -416,7 +416,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  runningOrderLog(obj): void {
+  runningOrderLog(obj: any): void {
     if (obj.eventId) {
       this.runningCanceller = this.coreService.post('order/log/running', obj).subscribe((res: any) => {
         if (res) {
@@ -465,7 +465,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  jsonToString(json): void {
+  jsonToString(json: any): void {
     if (!json) {
       return;
     }
@@ -478,11 +478,11 @@ export class LogViewComponent implements OnInit, OnDestroy {
       let flag = false;
       if (dt[i].logEvent !== 'OrderForked' && dt[i].logEvent !== 'OrderJoined') {
         for (let x in this.treeStructure) {
-          if (this.treeStructure[x].position == dt[i].position && this.treeStructure[x].job == dt[i].job
-            && (this.treeStructure[x].expectNotices == dt[i].expectNotices && this.treeStructure[x].postNotice == dt[i].postNotice
-              && this.treeStructure[x].consumeNotices == dt[i].consumeNotices && this.treeStructure[x].moved == dt[i].moved
-              && this.treeStructure[x].question == dt[i].question && this.treeStructure[x].cycle == dt[i].cycle && this.treeStructure[x].attached == dt[i].attached)) {
-            if (this.treeStructure[x].orderId == dt[i].orderId) {
+          if (this.treeStructure[x]['position'] == dt[i].position && this.treeStructure[x]['job'] == dt[i].job
+            && (this.treeStructure[x]['expectNotices'] == dt[i].expectNotices && this.treeStructure[x]['postNotice'] == dt[i].postNotice
+              && this.treeStructure[x]['consumeNotices'] == dt[i].consumeNotices && this.treeStructure[x]['moved'] == dt[i].moved
+              && this.treeStructure[x]['question'] == dt[i].question && this.treeStructure[x]['cycle'] == dt[i].cycle && this.treeStructure[x]['attached'] == dt[i].attached)) {
+            if (this.treeStructure[x]['orderId'] == dt[i].orderId) {
               flag = true;
               break;
             }
@@ -687,7 +687,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
       } else if (dt[i].logEvent === 'OrderStarted' && dt[i].arguments) {
         col += ', arguments(';
         let arr: any = Object.entries(dt[i].arguments).map(([k1, v1]) => {
-          if (typeof v1 == 'object') {
+          if (v1 && typeof v1 == 'object') {
             v1 = Object.entries(v1).map(([k1, v1]) => {
               return {name: k1, value: v1};
             });
@@ -734,7 +734,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
       } else if (dt[i].logEvent === 'OrderProcessed' && dt[i].returnValues) {
         col += ', returnValues(';
         let arr: any = Object.entries(dt[i].returnValues).map(([k1, v1]) => {
-          if (typeof v1 == 'object') {
+          if (v1 && typeof v1 == 'object') {
             v1 = Object.entries(v1).map(([k1, v1]) => {
               return {name: k1, value: v1};
             });
@@ -819,7 +819,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
-  renderData(res, domId: string): void {
+  renderData(res: any, domId: string | null): void {
     this.loading = false;
     this.calculateHeight();
     let lastLevel = '';
@@ -1012,7 +1012,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     this.nodes = [...this.nodes];
   }
 
-  private traverseTree(data, isExpand): void {
+  private traverseTree(data: any[], isExpand: boolean): void {
     for(let i in data) {
       if (data[i] && data[i].children && data[i].children.length > 0) {
         data[i].expanded = isExpand;
@@ -1033,7 +1033,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectNode(node): void {
+  selectNode(node: any): void {
     if (node.origin.key) {
       const dom = POPOUT_MODALS['windowInstance'].document.getElementsByClassName(node.origin.position);
       if (dom && dom.length > 0) {
@@ -1075,7 +1075,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
                   if(elem) {
                     let classes = elem[0].classList;
                     if(classes) {
-                      classes.forEach((item) => {
+                      classes.forEach((item: any) => {
                         if(item == 'down'){
                           elem.click();
                           return;
@@ -1141,7 +1141,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     this.coreService.downloadLog(obj, this.controllerId);
   }
 
-  checkLogLevel(type): void {
+  checkLogLevel(type: string): void {
     this.sheetContent = '';
     if (type === 'MAIN') {
       if (!this.object.checkBoxs.main) {
@@ -1242,7 +1242,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     };
 
     this.coreService.post('profile/prefs/store', configObj).subscribe(() => {
-      sessionStorage.preferences = JSON.stringify(this.preferences);
+      sessionStorage['preferences'] = JSON.stringify(this.preferences);
     });
   }
 }

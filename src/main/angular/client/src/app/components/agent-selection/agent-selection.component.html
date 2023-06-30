@@ -85,7 +85,7 @@
     class="fa fa-refresh" [ngClass]="{'fa-spin': isReloading}"></i></a>
   <div *ngIf="obj.agent || agentName.invalid && (agentName.dirty || agentName.touched)"
        class="text-danger help-block">
-    <div *ngIf="(agentName.errors && agentName.errors.required) || obj.agent">
+    <div *ngIf="(agentName.errors && agentName.errors['required']) || obj.agent">
       <div translate>common.message.requiredError</div>
     </div>
   </div>

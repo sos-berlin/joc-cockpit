@@ -43,7 +43,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
     this.subscription2 = dataService.isThemeReload.subscribe(res => {
       if (res) {
-        this.preferences = JSON.parse(sessionStorage.preferences);
+        this.preferences = JSON.parse(sessionStorage['preferences']);
       }
     });
   }
@@ -66,8 +66,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.schedulerIds && this.schedulerIds.selected) {
       this.getEvents();
     }
-    if (sessionStorage.showViews) {
-      const showViews = JSON.parse(sessionStorage.showViews);
+    if (sessionStorage['showViews']) {
+      const showViews = JSON.parse(sessionStorage['showViews']);
       if (!isEmpty(showViews)) {
         this.showViews = showViews;
       }
@@ -79,8 +79,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.authService.scheduleIds) {
       this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     }
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     if (!this.isBackUp) {
@@ -236,7 +236,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private isJocActive(): void {
     this.coreService.post('joc/is_active', {}).subscribe((res: any) => {
       this.isBackUp = res.ok ? 'NO' : 'YES';
-      sessionStorage.$SOS$ISJOCACTIVE = res.ok ? 'YES' : 'NO';
+      sessionStorage['$SOS$ISJOCACTIVE'] = res.ok ? 'YES' : 'NO';
     });
   }
 
@@ -309,7 +309,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   toggle(): void {
-    const dom = document.getElementById('navbarId');
+    const dom:any = document.getElementById('navbarId');
     if (dom && dom.classList.contains('in')) {
       dom.classList.remove('in');
     } else {

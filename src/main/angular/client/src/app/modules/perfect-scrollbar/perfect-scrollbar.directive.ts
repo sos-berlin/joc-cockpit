@@ -1,6 +1,5 @@
 import PerfectScrollbar from 'perfect-scrollbar';
-
-import ResizeObserver from 'resize-observer-polyfill';
+import { ResizeObserver } from '@juggle/resize-observer';
 
 import { Subject, fromEvent } from 'rxjs';
 import { auditTime, takeUntil } from 'rxjs/operators';

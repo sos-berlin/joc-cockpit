@@ -28,7 +28,7 @@ export class NodePositionComponent implements OnChanges {
       this.getNodes(this.position);
     }
 
-    if (changes.reload && changes.reload.currentValue == true) {
+    if (changes['reload'] && changes['reload'].currentValue == true) {
       this.getNodes(this.position);
     }
   }

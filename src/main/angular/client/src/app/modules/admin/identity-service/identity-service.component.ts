@@ -17,6 +17,9 @@ import {OrderPipe} from '../../../pipes/core.pipe';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 
+interface StringMap {
+  [key: string]: any;
+}
 
 @Directive({
   selector: 'img[thumbnail]'
@@ -139,10 +142,10 @@ export class SettingModalComponent implements OnInit {
   imageUploader: FileUploader;
   imageUrl: string;
   preview: boolean;
-  previewRegistration: boolean;
-  fullScreen: boolean;
-  fullScreen2: boolean;
-  fullScreen3: boolean;
+  previewRegistration = false;
+  fullScreen = false;
+  fullScreen2 = false;
+  fullScreen3 = false;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private authService: AuthService,
               private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService, private dataService: DataService) {
@@ -200,7 +203,7 @@ export class SettingModalComponent implements OnInit {
   ngOnInit(): void {
     this.imageUploader.onBeforeUploadItem = (item: any) => {
       const obj: any = {
-        identityServiceName: this.data.identityServiceName
+        identityServiceName: this.data?.['identityServiceName']
       };
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       //item.file.name = encodeURIComponent(item.file.name);
@@ -212,10 +215,10 @@ export class SettingModalComponent implements OnInit {
         this.toasterService.error(res.error.message, res.error.code);
       }
     };
-    const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -230,21 +233,21 @@ export class SettingModalComponent implements OnInit {
       }
     };
     if (this.data && this.saveService.copiedSetting && this.saveService.copiedSetting.type &&
-      (this.saveService.copiedSetting.name !== this.data.identityServiceName || (this.saveService.copiedSetting.name === this.data.identityServiceName &&
-        this.saveService.copiedSetting.type !== this.data.identityServiceType)) &&
-      (this.saveService.copiedSetting.type.indexOf(this.data.identityServiceType) > -1 ||
-        this.data.identityServiceType.indexOf(this.saveService.copiedSetting.type) > -1)) {
+      (this.saveService.copiedSetting.name !== this.data?.['identityServiceName'] || (this.saveService.copiedSetting.name === this.data?.['identityServiceName'] &&
+        this.saveService.copiedSetting.type !== this.data?.['identityServiceType'])) &&
+      (this.saveService.copiedSetting.type.indexOf(this.data?.['identityServiceType']) > -1 ||
+        this.data?.['identityServiceType'].indexOf(this.saveService.copiedSetting.type) > -1)) {
       this.isEnable = true;
     }
-    if (this.data && this.data.identityServiceType === 'OIDC') {
+    if (this.data && this.data?.['identityServiceType'] === 'OIDC') {
       this.getImage();
     }
 
-    this.coreService.post(this.data.identityServiceType == 'FIDO' ? 'iam/fido/configuration' : 'configuration', {
+    this.coreService.post(this.data?.['identityServiceType'] == 'FIDO' ? 'iam/fido/configuration' : 'configuration', {
       id: 0,
-      objectType: this.data ? this.data.identityServiceType : 'GENERAL',
+      objectType: this.data ? this.data?.['identityServiceType'] : 'GENERAL',
       configurationType: 'IAM',
-      name: this.data ? this.data.identityServiceName : undefined
+      name: this.data ? this.data?.['identityServiceName'] : undefined
     }).subscribe((res) => {
       if (res.configuration.objectType && res.configuration.objectType.match('LDAP')) {
         this.getUsersData();
@@ -292,7 +295,7 @@ export class SettingModalComponent implements OnInit {
             this.currentObj.sessionTimeout = SettingModalComponent.convertDurationToString(data.sessionTimeout);
           }
         }
-        if (this.data.identityServiceType == 'FIDO') {
+        if (this.data?.['identityServiceType'] == 'FIDO') {
           if (!this.currentObj.iamFidoEmailSettings) {
             this.currentObj.iamFidoEmailSettings = {};
           }
@@ -314,7 +317,7 @@ export class SettingModalComponent implements OnInit {
     });
   }
 
-  onSelect(name) {
+  onSelect(name: string) {
     this.isTreeShow = false;
     this.currentObj.iamFidoEmailSettings.nameOfJobResource = name;
   }
@@ -323,7 +326,7 @@ export class SettingModalComponent implements OnInit {
     this.isTreeShow = false;
   }
 
-  changeSettings(evt): void {
+  changeSettings(evt: string): void {
     if (evt === 'FIDO2') {
       this.currentObj.iamFidoUserVerification = 'REQUIRED';
       this.currentObj.iamFidoResidentKey = 'REQUIRED';
@@ -343,7 +346,7 @@ export class SettingModalComponent implements OnInit {
     }
   }
 
-  changePswd(type): void {
+  changePswd(type: string): void {
     this.isLengthMatch = true;
     if (type == 'TEXT') {
       if (this.oldPassword !== this.currentObj.initialPassword) {
@@ -359,7 +362,7 @@ export class SettingModalComponent implements OnInit {
   private getUsersData(): void {
     this.allRoles = [];
     this.coreService.post('authentication/auth', {
-      identityServiceName: this.data.identityServiceName
+      identityServiceName: this.data?.['identityServiceName']
     }).subscribe({
       next: res => {
         if (res.roles) {
@@ -371,7 +374,7 @@ export class SettingModalComponent implements OnInit {
     });
   }
 
-  changeConfiguration($event): void {
+  changeConfiguration($event: string): void {
     if ($event === 'SSL' && (!this.userObj.iamLdapPort || this.userObj.iamLdapPort == 389)) {
       this.userObj.iamLdapPort = 636;
     } else if ((!this.userObj.iamLdapPort || this.userObj.iamLdapPort == 636)) {
@@ -385,7 +388,7 @@ export class SettingModalComponent implements OnInit {
     this.currentObj.iamLdapServerUrl = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
   }
 
-  checkConfirmation(isChecked, type): void {
+  checkConfirmation(isChecked: boolean, type: string): void {
     if (type === 'StartTls') {
       this.userObj.iamLdapProtocol = isChecked ? 'STARTTLS' : this.currentObj.iamLdapServerUrl.match('ldaps://') ? 'SSL' : 'PLAIN';
       return;
@@ -417,7 +420,7 @@ export class SettingModalComponent implements OnInit {
     }
   }
 
-  changeInput(type): void {
+  changeInput(type: string): void {
     if (type === 'URL') {
       this.updateUserMode();
     } else {
@@ -502,35 +505,35 @@ export class SettingModalComponent implements OnInit {
       let data;
       try {
         data = JSON.parse(_event.target.result);
-        if (self.data.identityServiceType.match('VAULT')) {
+        if (self.data?.['identityServiceType'].match('VAULT')) {
           for (const prop in data) {
             if (prop && prop.match('iamVault')) {
               self.currentObj = data;
               break;
             }
           }
-        } else if (self.data.identityServiceType.match('KEYCLOAK')) {
+        } else if (self.data?.['identityServiceType'].match('KEYCLOAK')) {
           for (const prop in data) {
             if (prop && prop.match('iamKeycloak')) {
               self.currentObj = data;
               break;
             }
           }
-        } else if (self.data.identityServiceType.match('OIDC')) {
+        } else if (self.data?.['identityServiceType'].match('OIDC')) {
           for (const prop in data) {
             if (prop && prop.match('iamOidc')) {
               self.currentObj = data;
               break;
             }
           }
-        } else if (self.data.identityServiceType.match('FIDO')) {
+        } else if (self.data?.['identityServiceType'].match('FIDO')) {
           for (const prop in data) {
             if (prop && prop.match('iamFido')) {
               self.currentObj = data;
               break;
             }
           }
-        } else if (self.data.identityServiceType.match('LDAP')) {
+        } else if (self.data?.['identityServiceType'].match('LDAP')) {
           if (data.simple) {
             self.userObj = data.simple;
           } else if (data.expert) {
@@ -565,10 +568,10 @@ export class SettingModalComponent implements OnInit {
   }
 
   downloadSetting(): void {
-    const name = this.data.identityServiceName + '.' + this.data.identityServiceType.toLowerCase() + '.json';
+    const name = this.data?.['identityServiceName'] + '.' + this.data?.['identityServiceType'].toLowerCase() + '.json';
     const fileType = 'application/octet-stream';
     let obj = this.currentObj;
-    if (this.data.identityServiceType.match('LDAP')) {
+    if (this.data?.['identityServiceType'].match('LDAP')) {
       obj = {simple: this.userObj, expert: this.currentObj};
     }
     const data = JSON.stringify(obj, undefined, 2);
@@ -576,25 +579,25 @@ export class SettingModalComponent implements OnInit {
     saveAs(blob, name);
   }
 
-  removeGroupRoles(index): void {
+  removeGroupRoles(index: number): void {
     this.currentObj.iamLdapGroupRolesMap.items.splice(index, 1);
   }
 
   deleteImage(): void {
     this.coreService.post('documentations/delete', {
-      documentations: ['/sos/.images/' + this.data.identityServiceName]
-    }).subscribe(res => {
+      documentations: ['/sos/.images/' + this.data?.['identityServiceName']]
+    }).subscribe(() => {
       this.imageUrl = '';
     });
   }
 
   private getImage(): void {
     this.coreService.post('documentations', {
-      documentations: ['/sos/.images/' + this.data.identityServiceName]
+      documentations: ['/sos/.images/' + this.data?.['identityServiceName']]
     }).subscribe({
       next: (res: any) => {
         if (res.documentations && res.documentations.length > 0) {
-          this.imageUrl = './api/iam/icon/' + this.data.identityServiceName;
+          this.imageUrl = './api/iam/icon/' + this.data?.['identityServiceName'];
         }
       }
     });
@@ -611,16 +614,16 @@ export class SettingModalComponent implements OnInit {
     this.submitted = true;
     this.imageUploader.uploadAll();
     let obj: any = {};
-    if (this.data && this.data.identityServiceType) {
-      if (this.data.identityServiceType.match('VAULT')) {
+    if (this.data && this.data?.['identityServiceType']) {
+      if (this.data?.['identityServiceType'].match('VAULT')) {
         obj.vault = this.currentObj;
-      } else if (this.data.identityServiceType.match('KEYCLOAK')) {
+      } else if (this.data?.['identityServiceType'].match('KEYCLOAK')) {
         obj.keycloak = this.currentObj;
-      } else if (this.data.identityServiceType.match('LDAP')) {
+      } else if (this.data?.['identityServiceType'].match('LDAP')) {
         obj.ldap = {expert: this.coreService.clone(this.currentObj), simple: this.userObj};
-      } else if (this.data.identityServiceType.match('OIDC')) {
+      } else if (this.data?.['identityServiceType'].match('OIDC')) {
         obj.oidc = this.currentObj;
-      } else if (this.data.identityServiceType == 'FIDO') {
+      } else if (this.data?.['identityServiceType'] == 'FIDO') {
         obj.fido = this.currentObj;
       }
     } else {
@@ -632,9 +635,9 @@ export class SettingModalComponent implements OnInit {
     }
     const request: any = {
       id: 0,
-      objectType: this.data ? this.data.identityServiceType : 'GENERAL',
+      objectType: this.data ? this.data?.['identityServiceType'] : 'GENERAL',
       configurationType: 'IAM',
-      name: this.data ? this.data.identityServiceName : undefined,
+      name: this.data ? this.data?.['identityServiceName'] : undefined,
       configurationItem: JSON.stringify(obj),
       auditLog: {}
     };
@@ -652,8 +655,8 @@ export class SettingModalComponent implements OnInit {
   copySetting(): void {
     if (this.currentObj && !isEmpty(this.currentObj)) {
       this.saveService.copiedSetting = {
-        type: this.data ? this.data.identityServiceType : 'GENERAL',
-        name: this.data ? this.data.identityServiceName : undefined,
+        type: this.data ? this.data?.['identityServiceType'] : 'GENERAL',
+        name: this.data ? this.data?.['identityServiceName'] : undefined,
         data: this.currentObj
       };
       this.coreService.showCopyMessage(this.message);
@@ -694,18 +697,18 @@ export class IdentityServiceModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     } else {
-      const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+      const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
       this.display = preferences.auditLog;
     }
     if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
       this.display = false;
     }
-    this.currentObj.ordering = this.identityServices.length + 1 || 1;
+    this.currentObj.ordering = this.identityServices ? (this.identityServices.length + 1) : 1;
     if (this.identityService) {
       this.currentObj = clone(this.identityService);
     } else {
@@ -725,8 +728,8 @@ export class IdentityServiceModalComponent implements OnInit {
 
   private getCertList(): void {
     this.coreService.post('iam/identityservices', {
-      "identityServiceType": "CERTIFICATE",
-      "secondFactor": true
+      identityServiceType: "CERTIFICATE",
+      secondFactor: true
     }).subscribe({
       next: (res) => {
         this.certList = res.identityServiceItems;
@@ -736,27 +739,29 @@ export class IdentityServiceModalComponent implements OnInit {
 
   checkService(): void {
     this.isUnique = true;
-    for (const i in this.identityServices) {
-      if (this.identityServices[i].identityServiceName === this.currentObj.identityServiceName && (!this.identityService || this.currentObj.identityServiceName !== this.identityService.identityServiceName)) {
-        this.isUnique = false;
-        break;
+    if (this.identityServices) {
+      for (let i = 0; i < this.identityServices.length; i++) {
+        if (this.identityServices[i].identityServiceName === this.currentObj.identityServiceName && (!this.identityService || this.currentObj.identityServiceName !== this.identityService.identityServiceName)) {
+          this.isUnique = false;
+          break;
+        }
       }
     }
   }
 
-  changeType($event): void {
+  changeType($event: any): void {
     if (this.identityService) {
       this.getSettings($event);
     }
   }
 
-  checkTwoFactor($event): void {
+  checkTwoFactor($event: any): void {
     if ($event) {
       this.currentObj.serviceAuthenticationScheme = 'SINGLE-FACTOR';
     }
   }
 
-  private getSettings(type): void {
+  private getSettings(type: string): void {
     if (this.identityService.identityServiceType === type || this.identityService.identityServiceType === 'JOC' ||
       type === 'JOC') {
       this.removeSettingId = -1;
@@ -835,7 +840,7 @@ export class IdentityServiceModalComponent implements OnInit {
     this.submitted = true;
     if (this.identityService) {
       if (this.identityService.identityServiceName !== this.currentObj.identityServiceName) {
-        this.rename(this.identityService.identityServiceName, this.currentObj.identityServiceName, (res) => {
+        this.rename(this.identityService.identityServiceName, this.currentObj.identityServiceName, (res: any) => {
           if (res) {
             this.store();
           } else {
@@ -882,7 +887,6 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   identityServices: any = [];
   roles: any = [];
   filter: any = {};
-  userDetail: any = {};
   temp: any = 0;
   searchKey = '';
   subscription1: Subscription;
@@ -903,7 +907,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.adminFilter = this.coreService.getAdminTab();
     this.filter = this.adminFilter.identityService;
@@ -927,10 +931,10 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
 
   showUser(identityService): void {
     if (identityService.identityServiceType !== 'UNKNOWN' && identityService.identityServiceType !== 'CERTIFICATE') {
-      sessionStorage.identityServiceName = identityService.identityServiceName;
-      sessionStorage.identityServiceType = identityService.identityServiceType;
+      sessionStorage['identityServiceName'] = identityService.identityServiceName;
+      sessionStorage['identityServiceType'] = identityService.identityServiceType;
       if (identityService.secondFactor) {
-        sessionStorage.secondFactor = identityService.secondFactor;
+        sessionStorage['secondFactor'] = identityService.secondFactor;
         this.router.navigate(['/users/identity_service/account']).then();
       } else {
         sessionStorage.removeItem('secondFactor');
@@ -1075,7 +1079,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
 
     this.identityServices = list;
     let comments = {};
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
         comments = {comment: translatedValue};
       });
@@ -1086,7 +1090,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     }).subscribe();
   }
 
-  private enableDisable(identityService, flag, comments): void {
+  private enableDisable(identityService: any, flag: boolean, comments: any): void {
     identityService.disabled = flag;
     if (comments) {
       identityService.auditLog = {};
@@ -1162,7 +1166,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     }
   }
 
-  sort(key): void {
+  sort(key: string): void {
     this.filter.filter.reverse = !this.filter.filter.reverse;
     this.filter.filter.sortBy = key;
   }

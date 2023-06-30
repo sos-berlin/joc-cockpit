@@ -6,12 +6,11 @@ import {Observable} from 'rxjs';
 import * as moment from 'moment-timezone';
 import {ToastrService} from "ngx-toastr";
 import {TranslateService} from '@ngx-translate/core';
-import {isEmpty, sortBy, isNumber, object, isArray, groupBy} from 'underscore';
+import {isEmpty, sortBy, isNumber, object, isArray} from 'underscore';
 import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
 import {POPOUT_MODALS, PopoutData, PopupService} from "./popup.service";
 
-declare const diff_match_patch: any;
 declare const $: any;
 
 @Injectable({
@@ -21,7 +20,7 @@ export class CoreService {
   tabs: any = {};
   dashboard: any = {};
   locales: any = [];
-  expertMode;
+  expertMode: string | undefined | null;
 
   preferences: any = {};
   xmlEditorPreferences: any = {};
@@ -38,7 +37,7 @@ export class CoreService {
     deployment: {width: 270, show: true}
   };
 
-  searchResults = {};
+  searchResults: any = {};
 
   windowProperties: any = ',scrollbars=1,resizable=1,status=0,toolbar=0,menubar=0,location=0toolbar=0';
 
@@ -59,9 +58,9 @@ export class CoreService {
     this.dashboard._dashboard.file.date = '0d';
     this.dashboard._dashboard.file.label = 'today';
 
-    if (localStorage.$SOS$DASHBOARDTABS) {
+    if (localStorage['$SOS$DASHBOARDTABS']) {
       try {
-        const obj = JSON.parse(localStorage.$SOS$DASHBOARDTABS);
+        const obj = JSON.parse(localStorage['$SOS$DASHBOARDTABS']);
         if (obj && obj.order) {
           this.dashboard = obj;
         }
@@ -70,10 +69,10 @@ export class CoreService {
       }
     }
 
-    if (!sessionStorage.$SOS$SIDEVIEW || typeof JSON.parse(sessionStorage.$SOS$SIDEVIEW) !== 'object') {
-      sessionStorage.$SOS$SIDEVIEW = JSON.stringify(this.sideView);
+    if (!sessionStorage['$SOS$SIDEVIEW'] || typeof JSON.parse(sessionStorage['$SOS$SIDEVIEW']) !== 'object') {
+      sessionStorage['$SOS$SIDEVIEW'] = JSON.stringify(this.sideView);
     } else {
-      let sideView = JSON.parse(sessionStorage.$SOS$SIDEVIEW);
+      let sideView = JSON.parse(sessionStorage['$SOS$SIDEVIEW']);
       if (sideView && sideView.workflow) {
         this.sideView = sideView;
       }
@@ -381,11 +380,11 @@ export class CoreService {
     this.tabs._deployment = {};
   }
 
-  setSearchResult(type, result): void {
+  setSearchResult(type: string, result: any): void {
     this.searchResults[type] = result;
   }
 
-  getSearchResult(type): any {
+  getSearchResult(type: string): any {
     return this.searchResults[type];
   }
 
@@ -467,7 +466,7 @@ export class CoreService {
 
   getLocale(): any {
     const arr = this.locales.filter((item: any) => {
-      return localStorage.$SOS$LANG === item.lang;
+      return localStorage['$SOS$LANG'] === item.lang;
     });
     if (arr.length > 0) {
       return arr[0];
@@ -484,11 +483,11 @@ export class CoreService {
     return this.http.post(url, options);
   }
 
-  log(url: string, options: any, headers: any): Observable<any> {
+  log(url: string | undefined, options: any, headers: any): Observable<any> {
     return this.http.post(url, options, headers);
   }
 
-  getAgents(data, controllerId, cb?): void {
+  getAgents(data: any, controllerId: string, cb?: any): void {
     this.post('agents/names', {controllerId}).subscribe({
       next: (res: any) => {
         data.agentList = [{
@@ -497,7 +496,7 @@ export class CoreService {
           children: res.agentNames
         }];
         if (res.clusterAgentNames && res.clusterAgentNames.length > 0) {
-          let obj = {
+          let obj: any = {
             title: 'agentGroups',
             hide: false,
             children: []
@@ -522,13 +521,13 @@ export class CoreService {
     });
   }
 
-  getFilterAgentList(list, value: string, skip = false): any {
-    return !value ? list : list.filter(option => {
+  getFilterAgentList(list: any[], value: string, skip = false): any {
+    return !value ? list : list.filter((option: any) => {
       let flag = false;
-      option.children = option.children.filter(option2 => {
+      option.children = option.children.filter((option2: any) => {
         let isCheck = false;
         if (option2.children && !skip) {
-          option2.children = option2.children.filter(option3 => {
+          option2.children = option2.children.filter((option3: any) => {
             let isCheck2 = option3.toLowerCase().indexOf(value.toLowerCase()) > -1;
             if (isCheck2) {
               flag = true;
@@ -687,10 +686,10 @@ export class CoreService {
 
   setSideView(view: any): void {
     if (view) {
-      window.sessionStorage.$SOS$SIDEVIEW = JSON.stringify(view);
+      window.sessionStorage['$SOS$SIDEVIEW'] = JSON.stringify(view);
       this.sideView = view;
     } else {
-      window.sessionStorage.$SOS$SIDEVIEW = JSON.stringify(this.sideView);
+      window.sessionStorage['$SOS$SIDEVIEW'] = JSON.stringify(this.sideView);
     }
   }
 
@@ -784,7 +783,7 @@ export class CoreService {
   }
 
   showOrderLogWindow(orderId: string, controllerId: string, workflow: string): void {
-    const preferenceObj = JSON.parse(sessionStorage.preferences);
+    const preferenceObj = JSON.parse(sessionStorage['preferences']);
     const self = this;
     let url;
 
@@ -884,9 +883,9 @@ export class CoreService {
         historyId: (order && order.historyId) ? order.historyId : undefined,
         job: (task && task.taskId) ? (task.job ? task.job : job) : undefined
       };
-      this.openPopout(modalData, 'top=' + window.localStorage.log_window_y + ',' +
-        'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +
-        'innerheight=' + window.localStorage.log_window_ht + this.windowProperties);
+      this.openPopout(modalData, 'top=' + window.localStorage['log_window_y'] + ',' +
+        'left=' + window.localStorage['log_window_x'] + ',innerwidth=' + window.localStorage['log_window_wt'] + ',' +
+        'innerheight=' + window.localStorage['log_window_ht'] + this.windowProperties);
     } else if (preferenceObj.isNewWindow === 'newTab') {
       window.open('#/log' + url, '_blank');
     } else {
@@ -1009,7 +1008,10 @@ export class CoreService {
     function recursion(): void {
       for (let j = 0; j < list.length; j++) {
         if (list[j].name == temp) {
-          temp = temp.replace(/\(\d+\)$/, '(' + (parseInt(/\((\d+)\)$/.exec(temp)[1], 10) + 1) + ')');
+          const regArr = /\((\d+)\)$/.exec(temp);
+          if(regArr && regArr.length > 0) {
+            temp = temp.replace(/\(\d+\)$/, '(' + (+(regArr[1]) + 1) + ')');
+          }
           recursion();
         }
       }
@@ -1182,15 +1184,6 @@ export class CoreService {
       || /^((?:2[0-5]{2}|1\d{2}|[1-9]\d|[1-9])\.(?:(?:2[0-5]{2}|1\d{2}|[1-9]\d|\d)\.){2}(?:2[0-5]{2}|1\d{2}|[1-9]\d|\d))(:((\d|[1-9]\d|[1-9]\d{2,3}|[1-5]\d{4}|6[0-4]\d{3}|654\d{2}|655[0-2]\d|6553[0-5]))|(\d{0}))$/.test(value)
       || /^(((..\/){0,1})([A-Za-z0-9é\%]+)(\.([a-zA-Z]+((\#{0,1})([a-zA-Z]{0,})))))$/.test(value)
       || /^((mailto:){0,1}([A-Za-z0-9]{0,}(\@){0,1}([a-zA-Z0-9]{0,})(\.{0,1}(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk))))$/.test(value);
-  }
-
-  diff(data1: any, data2: any): any {
-    const dmp = new diff_match_patch();
-    const a = dmp.diff_main(data1, data2, false);
-    let b = dmp.diff_prettyHtml(a);
-    b = b.replace(/(&para;)+/gi, '');
-    b = b.replace(/<br>(\s+&lt;)/gi, '$1');
-    return b;
   }
 
   downloadLog(data: any, id: string): void {
@@ -1678,7 +1671,7 @@ export class CoreService {
   saveValueInLocker(body, cb): void {
     this.post('iam/locker/put', body).subscribe({
       next: (res) => {
-        sessionStorage.$SOS$KEY = res.key;
+        sessionStorage['$SOS$KEY'] = res.key;
         cb();
       }, error: () => {
         cb();
@@ -1686,7 +1679,7 @@ export class CoreService {
     })
   }
 
-  getValueFromLocker(key, cb) {
+  getValueFromLocker(key: string, cb: any) {
     if (key) {
       this.post('iam/locker/get', {key}).subscribe({
         next: (res) => {
@@ -1698,13 +1691,13 @@ export class CoreService {
     }
   }
 
-  renewLocker(key) {
-    let miliseconds = (new Date().getTime() < parseInt(sessionStorage.$SOS$RENEW)) ? (parseInt(sessionStorage.$SOS$RENEW) - new Date().getTime()) : (new Date().getTime() - parseInt(sessionStorage.$SOS$RENEW));
+  renewLocker(key: string) {
+    let miliseconds = (new Date().getTime() < parseInt(sessionStorage['$SOS$RENEW'])) ? (parseInt(sessionStorage['$SOS$RENEW']) - new Date().getTime()) : (new Date().getTime() - parseInt(sessionStorage['$SOS$RENEW']));
     setTimeout(() => {
-      if (key && sessionStorage.$SOS$KEY && (sessionStorage.$SOS$KEY == key)) {
+      if (key && sessionStorage['$SOS$KEY'] && (sessionStorage['$SOS$KEY'] == key)) {
         this.post('iam/locker/renew', {key}).subscribe({
           next: (res) => {
-            sessionStorage.$SOS$RENEW = (new Date().getTime() + 1800000) - 30000;
+            sessionStorage['$SOS$RENEW'] = (new Date().getTime() + 1800000) - 30000;
             this.renewLocker(res.key);
           }
         })
@@ -1715,9 +1708,9 @@ export class CoreService {
 
   /** -------- Log View --------- */
 
-  createTreeStructure(mainObj): any {
-    let nodes = [];
-    mainObj.treeStructure.forEach(item => {
+  createTreeStructure(mainObj: any): any {
+    let nodes: any = [];
+    mainObj.treeStructure.forEach((item: any) => {
       if (item.name1) {
         item.position += '.' + item.name1
       }
@@ -1924,7 +1917,7 @@ export class CoreService {
                 let isCheck = false;
                 if (/(try\+)(\d)/gm.test(item.position)) {
                   let arr = /(try\+)(\d)/gm.exec(item.position);
-                  if (arr.length > 1) {
+                  if (arr && arr.length > 1) {
                     let regex = arr[1] + arr[2];
                     let pos = item.position.replace(regex, (arr[1] + 0));
                     if (pos == (nodes[i].position + ':0') && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question)) {
@@ -1962,7 +1955,7 @@ export class CoreService {
       }
     });
 
-    function recursion(node, item, obj, data, parentNode, lastPos) {
+    function recursion(node: any, item: any, obj: any, data: any, parentNode: any, lastPos: any) {
       for (let i in node.children) {
         let arr = item.position.split('/');
         arr.splice(arr.length - 1, 1);
@@ -2036,7 +2029,7 @@ export class CoreService {
       }
     }
 
-    function tryCatchRecursion(nodes, item, data) {
+    function tryCatchRecursion(nodes: any, item: any, data: any) {
       for (let i in nodes) {
         if (data.title == 'Catch' && (nodes[i].title == 'Try' || nodes[i].title == 'Retry')) {
           if (nodes[i].position == (item.position.substring(0, item.position.lastIndexOf('/')) + '/try+0')) {
@@ -2060,7 +2053,7 @@ export class CoreService {
       }
     }
 
-    function ifInstructionRecursion(nodes, item, data) {
+    function ifInstructionRecursion(nodes: any, item: any, data: any) {
       let _tempArr = data.position.split('/');
       _tempArr.splice(_tempArr.length - 1, 1);
       let flag = false;
@@ -2091,7 +2084,7 @@ export class CoreService {
         }
       }
 
-      function recursion(list, item, data) {
+      function recursion(list: any[], item: any, data: any) {
         for (let i in list) {
           if (_tempArr.join('/') == list[i].position) {
             checkAndUpdate(list[i], data);
@@ -2104,7 +2097,7 @@ export class CoreService {
       }
     }
 
-    function checkAndUpdate(node, data) {
+    function checkAndUpdate(node: any, data: any) {
       let flag = false;
       for (let i in node.children) {
         if (node.children[i].logEvent == 'OrderNoticesConsumptionStarted') {

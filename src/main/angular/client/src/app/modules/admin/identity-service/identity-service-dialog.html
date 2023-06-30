@@ -23,7 +23,7 @@
         <input type="text" class="form-control" name="name" [(ngModel)]="currentObj.identityServiceName" required
                #name="ngModel" [appAutofocus]="true" autocomplete="off" (blur)="checkService()"/>
         <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-          <div *ngIf="name.errors.required">
+          <div *ngIf="name.errors['required']">
             <div translate>common.message.requiredError</div>
           </div>
         </div>
@@ -43,7 +43,7 @@
           <nz-option *ngFor="let option of identityServiceTypes | orderBy" [nzLabel]="option" [nzValue]="option"></nz-option>
         </nz-select>
         <div *ngIf="type.invalid && (type.dirty || type.touched)" class="text-danger help-block">
-          <div *ngIf="type.errors.required">
+          <div *ngIf="type.errors['required']">
             <div translate>common.message.requiredError</div>
           </div>
         </div>

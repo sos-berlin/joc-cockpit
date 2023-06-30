@@ -19,7 +19,7 @@ export class CommentModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] == 'true') {
       this.required = true;
     }
   }

@@ -68,7 +68,7 @@ export class TableComponent implements OnChanges, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/Inventory/)) {
@@ -89,7 +89,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       return;
     }
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: CreateObjectModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
@@ -267,7 +267,7 @@ export class TableComponent implements OnChanges, OnDestroy {
           name: object ? object.name : ''
         };
         const modal = this.modal.create({
-          nzTitle: null,
+          nzTitle: undefined,
           nzContent: CommentModalComponent,
           nzClassName: 'lg',
           nzComponentParams: {
@@ -299,7 +299,7 @@ export class TableComponent implements OnChanges, OnDestroy {
           param.count = this.mapOfCheckedId.size;
         }
         const modal = this.modal.create({
-          nzTitle: null,
+          nzTitle: undefined,
           nzContent: ConfirmModalComponent,
           nzComponentParams: param,
           nzFooter: null,
@@ -413,7 +413,7 @@ export class TableComponent implements OnChanges, OnDestroy {
         name: object ? object.name : ''
       };
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {
@@ -444,7 +444,7 @@ export class TableComponent implements OnChanges, OnDestroy {
         param.count = this.mapOfCheckedId.size;
       }
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzComponentParams: param,
         nzFooter: null,

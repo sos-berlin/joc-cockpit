@@ -1377,7 +1377,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.selectedNode) {
+    if (changes['selectedNode']) {
       this.history = [];
       this.indexOfNextAdd = 0;
       this.isRuntimeVisible = false;
@@ -1386,7 +1386,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.presentObj.obj = JSON.stringify(this.selectedNode.obj);
       this.presentObj.job = JSON.stringify(this.selectedNode.job);
     }
-    if (changes.orderPreparation) {
+    if (changes['orderPreparation']) {
       this.updateVariableList();
     }
   }
@@ -2202,7 +2202,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private init(): void {
-    this.hasLicense = sessionStorage.hasLicense == 'true';
+    this.hasLicense = sessionStorage['hasLicense'] == 'true';
     this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
     this.getJobInfo();
     this.getJobTemplate();
@@ -2427,16 +2427,16 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
         this.cm.codeMirror.setSize((x.size.width - 2), (x.size.height - 2));
         dom.style.setProperty('width', (x.size.width + 32) + 'px', 'important');
       }, stop: (e, x) => {
-        localStorage.$SOS$SCRIPTWINDOWWIDTH = x.size.width;
-        localStorage.$SOS$SCRIPTWINDOWHIGHT = x.size.height;
+        localStorage['$SOS$SCRIPTWINDOWWIDTH'] = x.size.width;
+        localStorage['$SOS$SCRIPTWINDOWHIGHT'] = x.size.height;
       }
     });
 
     setTimeout(() => {
       if (this.cm && this.cm.codeMirror) {
-        if (localStorage.$SOS$SCRIPTWINDOWWIDTH) {
-          const wt = parseInt(localStorage.$SOS$SCRIPTWINDOWWIDTH, 10);
-          this.cm.codeMirror.setSize(wt - 2, (parseInt(localStorage.$SOS$SCRIPTWINDOWHIGHT, 10) - 2));
+        if (localStorage['$SOS$SCRIPTWINDOWWIDTH']) {
+          const wt = parseInt(localStorage['$SOS$SCRIPTWINDOWWIDTH'], 10);
+          this.cm.codeMirror.setSize(wt - 2, (parseInt(localStorage['$SOS$SCRIPTWINDOWHIGHT'], 10) - 2));
           $('.ant-modal').css('cssText', 'width : ' + (wt + 32) + 'px !important');
         }
       }
@@ -2787,7 +2787,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   constructor(public coreService: CoreService, private translate: TranslateService, private modal: NzModalService, public inventoryService: InventoryService,
               private toasterService: ToastrService, public workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService,
               private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
-    this.hasLicense = sessionStorage.hasLicense == 'true';
+    this.hasLicense = sessionStorage['hasLicense'] == 'true';
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.workflow.actual) {
@@ -2870,11 +2870,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.copyObj && !changes.data) {
+    if (changes['copyObj'] && !changes['data']) {
       return;
     }
-    if (changes.reload) {
-      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+    if (changes['reload']) {
+      if (changes['reload'].previousValue === true && changes['reload'].currentValue === false) {
         return;
       }
       if (this.reload) {
@@ -2889,7 +2889,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       this.saveJSON(false);
       this.selectedNode = null;
     }
-    if (changes.data) {
+    if (changes['data']) {
       if (this.data.type) {
         if (this.workflowTree.length > 0) {
           this.recursiveTreeUpdate(this.workflowTree);
@@ -2930,7 +2930,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].path) {
@@ -3861,7 +3861,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     this.fullScreen = false;
     this.inventoryConf = this.coreService.getConfigurationTab();
     if (!this.dummyXml) {
-      this.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 460;
+      this.propertyPanelWidth = localStorage['propertyPanelWidth'] ? parseInt(localStorage['propertyPanelWidth'], 10) : 460;
       this.loadConfig();
       this.dummyXml = true;
       this.createEditor(() => {
@@ -4947,7 +4947,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     const panel = $('.property-panel');
     $('.sidebar-open', panel).click(() => {
-      self.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 460;
+      self.propertyPanelWidth = localStorage['propertyPanelWidth'] ? parseInt(localStorage['propertyPanelWidth'], 10) : 460;
       $('#outlineContainer').css({right: self.propertyPanelWidth + 10 + 'px'});
       $('.graph-container').css({'margin-right': self.propertyPanelWidth + 'px'});
       $('.toolbar').css({'margin-right': (self.propertyPanelWidth - 12) + 'px'});
@@ -5348,7 +5348,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             let val = attr[j].value;
             if ((attr[j].name === 'arguments' || attr[j].name === 'defaultArguments' || attr[j].name === 'outcome' || attr[j].name === 'result')) {
               val = val ? JSON.parse(val) : attr[j].name === 'outcome' ? {returnCode: 0} : {};
-            } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'stopOnFailure' || attr[j].name === 'joinIfFailed' || attr[j].name === 'uncatchable' || attr[j].name === 'unsuccessful') {
+            } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'forceJobAdmission' || attr[j].name === 'stopOnFailure' || attr[j].name === 'joinIfFailed' || attr[j].name === 'uncatchable' || attr[j].name === 'unsuccessful') {
               val = val == 'true';
             } else if (obj.TYPE === 'PostNotices' && attr[j].name === 'noticeBoardNames') {
               val = val ? val.split(',') : '';
@@ -6212,6 +6212,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 count = 0;
                 lastClickId = 0;
               }
+            } else {
+              count = 0;
+              lastClickId = 0;
             }
           } else {
             count = 0;
@@ -7907,6 +7910,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 obj.cell, 'endPositions', JSON.stringify(arr));
               graph.getModel().execute(edit6);
             }
+            const edit7 = new mxCellAttributeChange(
+              obj.cell, 'forceJobAdmission', self.selectedNode.newObj.forceJobAdmission);
+            graph.getModel().execute(edit7);
           } else if (self.selectedNode.type === 'If') {
             const predicate = self.selectedNode.newObj.predicate;
             self.validatePredicate(predicate, null, false);
@@ -8346,6 +8352,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
           const val1 = cell.getAttribute('remainWhenTerminated');
           obj.remainWhenTerminated = val1 == 'true';
+          const val2 = cell.getAttribute('forceJobAdmission');
+          obj.forceJobAdmission = val2 == 'true';
         } else if (cell.value.tagName === 'If') {
           obj.predicate = cell.getAttribute('predicate');
         } else if (cell.value.tagName === 'Retry') {
@@ -10746,15 +10754,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const argu = clone(json.instructions[x].arguments);
             const startPosition = clone(json.instructions[x].startPosition);
             const remainWhenTerminated = clone(json.instructions[x].remainWhenTerminated);
+            const forceJobAdmission = clone(json.instructions[x].forceJobAdmission);
             const endPositions = clone(json.instructions[x].endPositions);
             delete json.instructions[x].workflowName;
             delete json.instructions[x].arguments;
             delete json.instructions[x].remainWhenTerminated;
             delete json.instructions[x].startPosition;
             delete json.instructions[x].endPositions;
+            delete json.instructions[x].forceJobAdmission;
             json.instructions[x].workflowName = workflowName;
             json.instructions[x].arguments = argu;
             json.instructions[x].remainWhenTerminated = remainWhenTerminated;
+            json.instructions[x].forceJobAdmission = forceJobAdmission;
             json.instructions[x].startPosition = startPosition;
             json.instructions[x].endPositions = endPositions;
           } else if (json.instructions[x].TYPE === 'Lock') {
@@ -11174,7 +11185,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       objectType: this.objectType
     };
 
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
         request.auditLog = {comment: translatedValue};
       });

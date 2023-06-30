@@ -899,6 +899,13 @@
                                    [position]="selectedNode.obj.startPosition" [workflow]="selectedNode.obj.workflow" [positions]="positions"></app-node-position>
               </div>
             </div>
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 block-ellipsis-job" translate>order.label.ignoreAdmissionTimes</label>
+              <div class="col-md-8 col-lg-9">
+                <label nz-checkbox  [(ngModel)]="selectedNode.obj.forceJobAdmission"  name="ignoreAdmissionTimes">
+                </label>
+              </div>
+            </div>
             <div class="form-group row" *ngIf="(selectedNode.obj.arguments && selectedNode.obj.arguments.length > 0) || (selectedNode.obj.forkListArguments && selectedNode.obj.forkListArguments.length > 0)
               || (selectedNode.obj.argumentList && selectedNode.obj.argumentList.length > 0)">
               <div class="col-md-12">

@@ -59,7 +59,7 @@ export class GraphicalViewModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.workFlowJson = this.coreService.clone(this.workflow);
     this.convertTryToRetry(this.workFlowJson);
   }

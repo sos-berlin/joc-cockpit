@@ -51,7 +51,7 @@ export class OrderListSidebarComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.orders && changes.orders.currentValue) {
+    if (changes['orders'] && changes['orders'].currentValue) {
       this.refreshView();
       this.resetAction();
     }
@@ -227,7 +227,7 @@ export class OrderListSidebarComponent implements OnChanges {
       workflowId: this.orders[0].workflowId
     }).subscribe((res: any) => {
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ChangeParameterModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {
@@ -252,7 +252,7 @@ export class OrderListSidebarComponent implements OnChanges {
 
   modifyAllStartTime(): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -331,7 +331,7 @@ export class OrderListSidebarComponent implements OnChanges {
         name: ''
       };
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {

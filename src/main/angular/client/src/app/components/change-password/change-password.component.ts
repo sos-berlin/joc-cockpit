@@ -9,8 +9,8 @@ import {CoreService} from '../../services/core.service';
   templateUrl: './change-password-dialog.html'
 })
 export class ChangePasswordComponent implements OnInit {
-  @Input() username: string;
-  @Input() identityServiceName: string;
+  @Input() username: string = '';
+  @Input() identityServiceName: string = '';
   submitted = false;
   passwordObj: any = {
     accountName: '',
@@ -28,7 +28,7 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
         this.comments = {comment: translatedValue};
       });

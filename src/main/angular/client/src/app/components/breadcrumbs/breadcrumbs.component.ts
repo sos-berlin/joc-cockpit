@@ -30,7 +30,7 @@ export class BreadcrumbsComponent implements OnInit, OnDestroy {
 
   private createBreadcrumbs(route: ActivatedRoute, url: string = '', breadcrumbs: any = []): any {
     const children: ActivatedRoute[] = route.children;
-    this.identityServiceName = sessionStorage.identityServiceName;
+    this.identityServiceName = sessionStorage['identityServiceName'];
 
     if (children.length === 0) {
       return breadcrumbs;

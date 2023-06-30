@@ -189,7 +189,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   addWidgetDialog(): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: AddWidgetModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -221,7 +221,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     }
     this.preferences.dashboardLayout = this.dashboardLayout;
-    sessionStorage.preferences = JSON.stringify(this.preferences);
+    sessionStorage['preferences'] = JSON.stringify(this.preferences);
     const configObj: any = {
       controllerId: this.schedulerIds.selected,
       accountName: this.authService.currentUserData,
@@ -231,10 +231,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private init(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    this.hasLicense = sessionStorage.hasLicense == 'true';
+    this.hasLicense = sessionStorage['hasLicense'] == 'true';
     this.checkPermission();
   }
 

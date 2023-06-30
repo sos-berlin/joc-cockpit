@@ -19,7 +19,7 @@
       <nz-option *ngFor="let list of messageList" [nzLabel]="list" [nzValue]="list"></nz-option>
     </nz-select>
     <div *ngIf="comment.invalid && (comment.dirty || comment.touched)" class="text-danger m-t-xs">
-      <div *ngIf="comment.errors.required" translate>
+      <div *ngIf="comment.errors && comment.errors['required']" translate>
         common.message.requiredError
       </div>
     </div>
@@ -38,7 +38,7 @@
     ></textarea>
     <div *ngIf="textComment.invalid && (textComment.dirty || textComment.touched)"
          class="text-danger help-block">
-      <div *ngIf="textComment.errors.required" translate>
+      <div *ngIf="textComment.errors && textComment.errors['required']" translate>
         common.message.requiredError
       </div>
     </div>

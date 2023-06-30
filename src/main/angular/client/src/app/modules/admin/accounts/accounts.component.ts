@@ -19,20 +19,20 @@ import {AddBlocklistModalComponent} from '../blocklist/blocklist.component';
   templateUrl: './confirmation-dialog.html'
 })
 export class ConfirmationModalComponent implements OnInit {
-  @Input() delete;
-  @Input() cancel: boolean;
-  @Input() reset;
-  @Input() forceChange;
-  @Input() accounts;
-  @Input() account;
-  @Input() approve: boolean;
-  @Input() reject: boolean;
-  @Input() deleteRequest;
-  @Input() isRole;
-  @Input() blocklist;
-  @Input() activeSession;
-  @Input() identityServiceName: string;
-  @Input() deleteDevices: boolean;
+  @Input() delete: any;
+  @Input() cancel = false;
+  @Input() reset: any;
+  @Input() forceChange: any;
+  @Input() accounts: any;
+  @Input() account: any;
+  @Input() approve  = false;
+  @Input() reject  = false;
+  @Input() deleteRequest: any;
+  @Input() isRole: any;
+  @Input() blocklist: any;
+  @Input() activeSession: any;
+  @Input() identityServiceName = '';
+  @Input() deleteDevices  = false;
   submitted = false;
   display: any;
   required = false;
@@ -42,10 +42,10 @@ export class ConfirmationModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    let preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -71,7 +71,7 @@ export class ConfirmationModalComponent implements OnInit {
         accountNames.push(this.account.accountName);
       }
     } else {
-      this.accounts.forEach((value, key) => {
+      this.accounts.forEach((value: any, key: any) => {
         if (this.approve || this.reject || this.deleteRequest) {
           accountNames.push({
             accountName: key,
@@ -125,8 +125,8 @@ export class AccountModalComponent implements OnInit {
   @Input() userDetail: any;
   @Input() accountList: any = [];
   @Input() oldUser: any;
-  @Input() identityServiceType: string;
-  @Input() identityServiceName: string;
+  @Input() identityServiceType = '';
+  @Input() identityServiceName = '';
 
   submitted = false;
   isUnique = true;
@@ -135,7 +135,7 @@ export class AccountModalComponent implements OnInit {
   isPasswordMatch = true;
   minimumPasswordLength = true;
   settings: any = {};
-  allRoles = [];
+  allRoles: any = [];
   display: any;
   required = false;
   comments: any = {};
@@ -146,12 +146,12 @@ export class AccountModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    this.secondFactor = !!sessionStorage.secondFactor;
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    this.secondFactor = !!sessionStorage['secondFactor'];
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     } else {
-      let preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+      let preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
       this.display = preferences.auditLog;
     }
     this.getRoles();
@@ -159,7 +159,7 @@ export class AccountModalComponent implements OnInit {
       this.comments = this.dataService.comments;
       this.display = false;
     }
-    const type = sessionStorage.identityServiceType || '';
+    const type = sessionStorage['identityServiceType'] || '';
     this.getConfiguration();
     if (this.oldUser) {
       this.currentUser = clone(this.oldUser);
@@ -210,7 +210,7 @@ export class AccountModalComponent implements OnInit {
     });
   }
 
-  checkUser(newUser, existingUser): void {
+  checkUser(newUser: string, existingUser: string): void {
     this.isUnique = true;
     for (let i = 0; i < this.accountList.length; i++) {
       if (this.accountList[i].accountName === newUser && newUser !== existingUser) {
@@ -244,7 +244,7 @@ export class AccountModalComponent implements OnInit {
     }
   }
 
-  private rename(cb): void {
+  private rename(cb: any): void {
     if (this.oldUser.accountName !== this.currentUser.accountName) {
       const obj: any = {
         identityServiceName: this.identityServiceName,
@@ -268,7 +268,7 @@ export class AccountModalComponent implements OnInit {
     }
   }
 
-  onSubmit(obj): void {
+  onSubmit(obj: any): void {
     this.submitted = true;
     this.isUnique = true;
     if (obj.fakePassword !== '********') {
@@ -278,7 +278,7 @@ export class AccountModalComponent implements OnInit {
     if (this.newUser || this.copy) {
       this.store(obj);
     } else {
-      this.rename((result) => {
+      this.rename((result: any) => {
         if (result) {
           this.store(obj);
         }
@@ -286,7 +286,7 @@ export class AccountModalComponent implements OnInit {
     }
   }
 
-  private store(obj) {
+  private store(obj: any) {
     const request: any = {
       identityServiceName: this.identityServiceName,
       auditLog: {}
@@ -325,10 +325,10 @@ export class AccountsComponent implements OnInit, OnDestroy {
   data: any = [];
   userDetail: any = {};
   temp: any = 0;
-  searchKey: string;
-  username: string;
-  userIdentityService: string;
-  selectedIdentityService: string;
+  searchKey = '';
+  username = '';
+  userIdentityService = '';
+  selectedIdentityService = '';
   usr: any = {};
   object = {
     checked: false,
@@ -337,9 +337,9 @@ export class AccountsComponent implements OnInit, OnDestroy {
   };
 
   searchableProperties = ['accountName', 'email', 'roles'];
-  identityServiceName: string;
-  identityServiceType: string;
-  secondFactor: boolean;
+  identityServiceName = '';
+  identityServiceType = '';
+  secondFactor = false;
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -377,14 +377,14 @@ export class AccountsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.data = [];
     this.usr = {currentPage: 1, sortBy: 'accountName', reverse: false};
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.username = this.authService.currentUserData;
-    this.selectedIdentityService = sessionStorage.identityServiceType + ':' + sessionStorage.identityServiceName;
+    this.selectedIdentityService = sessionStorage['identityServiceType'] + ':' + sessionStorage['identityServiceName'];
     this.userIdentityService = this.authService.currentUserIdentityService;
-    this.identityServiceName = sessionStorage.identityServiceName;
-    this.identityServiceType = sessionStorage.identityServiceType;
-    this.secondFactor = sessionStorage.secondFactor;
+    this.identityServiceName = sessionStorage['identityServiceName'];
+    this.identityServiceType = sessionStorage['identityServiceType'];
+    this.secondFactor = sessionStorage['secondFactor'];
     this.getList();
   }
 
@@ -402,13 +402,13 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('IS_ACCOUNT_PROFILES_FALSE');
   }
 
-  showRole(account): void {
+  showRole(account: any): void {
     this.router.navigate(['/users/identity_service/role'], {queryParams: {account}}).then();
   }
 
   /* ---------------------------- Action ----------------------------------*/
 
-  showPermission(account): void {
+  showPermission(account: any): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ShowPermissionComponent,
@@ -533,13 +533,13 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private storeUser(account, auditLog, isEnable): void {
-    let accounts = [];
+  private storeUser(account: any, auditLog: any, isEnable: boolean): void {
+    let accounts: any = [];
     if (!account && this.object.mapOfCheckedId.size > 0) {
-      this.accounts.forEach((item) => {
+      this.accounts.forEach((item: any) => {
         if (this.object.mapOfCheckedId.has(item.accountName)) {
           accounts.push(item.accountName);
-          return true;
+          return;
         }
       });
     }
@@ -822,7 +822,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         operation: 'Paste',
         name: ''
       };
-      this.dataService.copiedObject.accounts.forEach((value, key) => {
+      this.dataService.copiedObject.accounts.forEach((value: any, key: string) => {
         comments.name = comments.name + key + ', ';
       });
       const modal = this.modal.create({
@@ -847,9 +847,9 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private pasteUser(comments): void {
-    const arr = [];
-    this.dataService.copiedObject.accounts.forEach((value, key) => {
+  private pasteUser(comments: any): void {
+    const arr: any = [];
+    this.dataService.copiedObject.accounts.forEach((value: any, key: string) => {
       let flag = false;
       for (const i in this.userDetail.accounts) {
         if (this.userDetail.accounts[i]) {
@@ -868,8 +868,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.pasteUsers(arr, comments);
   }
 
-  private pasteUsers(accounts, comments): void {
-    accounts.forEach((account, index) => {
+  private pasteUsers(accounts: any, comments: any): void {
+    accounts.forEach((account: any, index: number) => {
       account.auditLog = comments;
       this.coreService.post('iam/account/store', account).subscribe({
         next: () => {
@@ -882,10 +882,10 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   private exportAccount(): void {
-    const json = {
+    const json: any = {
       accounts: []
     };
-    this.object.mapOfCheckedId.forEach((value) => {
+    this.object.mapOfCheckedId.forEach((value: any) => {
       delete value.identityServiceName;
       json.accounts.push(value);
     });
@@ -1010,7 +1010,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   /* ----------------------FIDO--------------------- */
-  addDevice(account): void {
+  addDevice(account: any): void {
     if (this.coreService.checkConnection()) {
       this.coreService.post('iam/identity_fido_client', {
         identityServiceName: this.identityServiceName
@@ -1020,7 +1020,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private createRequestObject(fidoProperties, account): void {
+  private createRequestObject(fidoProperties: any, account: any): void {
     const challenge = new Uint8Array(32);
     window.crypto.getRandomValues(challenge);
     let publicKeyCredentialCreationOptions = this.authService.createPublicKeyCredentialRequest(challenge,
@@ -1041,7 +1041,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  removeDevice(account): void {
+  removeDevice(account: any): void {
     // Remove Authenticator Device
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
@@ -1090,7 +1090,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private deleteDevices(account, comments: any = {}) {
+  private deleteDevices(account: any, comments: any = {}) {
     const obj: any = {
       accountName: account.accountName,
       identityServiceName: this.identityServiceName,

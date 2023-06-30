@@ -67,7 +67,7 @@ export class SearchInputComponent implements OnInit {
   openFolder(node: NzTreeNode): void {
     if (node instanceof NzTreeNode) {
       node.isExpanded = !node.isExpanded;
-      if (node.isExpanded && !node.origin.type) {
+      if (node.isExpanded && !node.origin['type']) {
         this.loadData(node, null);
       }
     }
