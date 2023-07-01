@@ -208,7 +208,7 @@
     "label.exportAgentConfiguration": "Exporter la configuration des Agents",
     "label.importAgentConfiguration": "Importer la configuration des Agents",
     "label.clusterState": "État du Cluster",
-    "label.lostDirector": "Directeur perdu",
+    "label.lostDirector": "Agent Directeur perdu",
     "label.primary": "Primaire",
     "label.secondary": "Secondaire",
     "button.createToken": "Créer un Jeton à usage unique",

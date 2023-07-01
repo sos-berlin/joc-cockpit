@@ -234,7 +234,7 @@
     "button.show": "Show",
     "button.exportAgentConfiguration": "Export Agent Configuration",
     "button.importAgentConfiguration": "Import Agent Configuration",
-    "button.confirmNodeLoss": "Confirm loss of a Director instance",
+    "button.confirmNodeLoss": "Confirm loss of a Director Agent instance",
     "message.dropHereToDetach": "Drop here to remove Subagent",
     "message.noClusterFound": "No Cluster Found",
     "message.clickHereToAdd": "Click here to add",
