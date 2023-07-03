@@ -78,7 +78,7 @@ export class OrderNotificationComponent implements OnInit, OnDestroy {
     this.pendingHTTPRequests$.complete();
   }
 
-  refresh(args): void {
+  refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].objectType === 'MONITORINGNOTIFICATION') {
@@ -162,14 +162,14 @@ export class OrderNotificationComponent implements OnInit, OnDestroy {
     }
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.filters.filter.currentPage = $event;
     if (this.filters.mapOfCheckedId.size !== this.totalNotification) {
       this.resetCheckBox();
     }
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.filters.filter.entryPerPage = $event;
     if (this.filters.mapOfCheckedId.size !== this.totalNotification) {
       if (this.object.checked) {

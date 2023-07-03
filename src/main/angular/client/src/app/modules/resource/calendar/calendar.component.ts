@@ -43,7 +43,7 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
 
   /* ---------------------------- Action ----------------------------------*/
 
-  previewCalendar(calendar): void {
+  previewCalendar(calendar: any): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: CalendarModalComponent,
@@ -209,11 +209,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.loadCalendar(null, true);
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.calendarFilters.currentPage = $event;
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.calendarFilters.entryPerPage = $event;
   }
 
@@ -272,7 +272,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.getCalendarsList(obj);
   }
 
-  previewCalendar(calendar): void {
+  previewCalendar(calendar: any): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: CalendarModalComponent,

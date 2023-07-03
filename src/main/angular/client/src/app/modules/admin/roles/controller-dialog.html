@@ -43,7 +43,7 @@
               </ng-container>
             </nz-select>
             <div *ngIf="controllerName.invalid && (controllerName.dirty || controllerName.touched)" class= "text-danger help-block">
-              <div *ngIf="controllerName.errors.required" translate>
+              <div *ngIf="controllerName.errors['required']" translate>
                 common.message.requiredError
               </div>
             </div>

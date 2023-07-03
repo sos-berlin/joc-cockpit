@@ -27,13 +27,13 @@ export interface PopoutData {
 
 export const POPOUT_MODAL_DATA = new InjectionToken<PopoutData>('POPOUT_MODAL_DATA');
 
-export let POPOUT_MODALS = {};
+export let POPOUT_MODALS: any = {};
 
 @Injectable({
   providedIn: 'root'
 })
 export class PopupService implements OnDestroy {
-  styleSheetElement;
+  styleSheetElement: any;
 
   constructor(
     private injector: Injector,
@@ -45,7 +45,7 @@ export class PopupService implements OnDestroy {
   ngOnDestroy() {
   }
 
-  openPopoutModal(data, properties) {
+  openPopoutModal(data: any, properties: any) {
     const windowInstance = this.openOnce(
       'assets/log.html',
       properties
@@ -54,7 +54,7 @@ export class PopupService implements OnDestroy {
     this.checkAndCall(data, windowInstance);
   }
 
-  private checkAndCall(data, windowInstance){
+  private checkAndCall(data: any, windowInstance:any){
     // Wait for window instance to be created
     setTimeout(() => {
       if(this.isPopupInitialized(windowInstance)) {
@@ -66,14 +66,14 @@ export class PopupService implements OnDestroy {
   }
 
   // Check if the popup window is initialized
-  private isPopupInitialized(popupWindow) {
+  private isPopupInitialized(popupWindow:any) {
     return popupWindow !== null && popupWindow.document && popupWindow.document.body && popupWindow.document.body.getAttribute('id');
   }
 
-  openOnce(url, options?) {
+  openOnce(url:string, options?:string) {
     // Open a blank "target" window
     // or get the reference to the existing "target" window
-    const winRef = window.open('', '', options);
+    const winRef:any = window.open('', '', options);
     // If the "target" window was just opened, change its url
     if (winRef.location.href === 'about:blank') {
       winRef.location.href = url;
@@ -81,7 +81,7 @@ export class PopupService implements OnDestroy {
     return winRef;
   }
 
-  createCDKPortal(data, windowInstance) {
+  createCDKPortal(data:any, windowInstance:any) {
     if (windowInstance) {
       // Create a PortalOutlet with the body of the new window document
       const outlet = new DomPortalOutlet(
@@ -126,7 +126,7 @@ export class PopupService implements OnDestroy {
     }
   }
 
-  attachLogContainer(outlet, injector) {
+  attachLogContainer(outlet:any, injector:any) {
     const containerPortal = new ComponentPortal(
       LogViewComponent,
       null,
@@ -137,7 +137,7 @@ export class PopupService implements OnDestroy {
     return containerRef.instance;
   }
 
-  createInjector(data): PortalInjector {
+  createInjector(data:any): PortalInjector {
     const injectionTokens = new WeakMap();
     injectionTokens.set(POPOUT_MODAL_DATA, data);
     return new PortalInjector(this.injector, injectionTokens);

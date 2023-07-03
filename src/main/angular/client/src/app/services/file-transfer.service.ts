@@ -7,17 +7,24 @@ export class FileTransferService {
   constructor(public coreService: CoreService) {
   }
 
-  private parseProcessExecuted(regex, obj): any {
-    let fromDate, toDate, date, arr;
+  private parseProcessExecuted(regex: string, obj: any): any {
+    let fromDate: any;
+    let toDate;
+    let date;
+    let arr;
 
     if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
-
+      const regArr = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      if(regArr && regArr[0]) {
+        fromDate = regArr[0];
+      }
     } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
       fromDate = new Date();
       toDate = new Date();
-      const seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
-      fromDate.setSeconds(toDate.getSeconds() - seconds);
+      const regArr = /^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex);
+      if(regArr && regArr[2]) {
+        fromDate.setSeconds(toDate.getSeconds() - (+regArr[2]));
+      }
     } else if (/^\s*(Today)\s*$/i.test(regex)) {
       fromDate = '0d';
       toDate = '0d';
@@ -29,45 +36,52 @@ export class FileTransferService {
       toDate = new Date();
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
       date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
+      if(date) {
+        arr = date[0].split('to');
+        fromDate = arr[0].trim();
+        toDate = arr[1].trim();
+      }
 
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
       date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
+      if(date) {
+        arr = date[0].split('to');
+        fromDate = arr[0].trim();
+        toDate = arr[1].trim();
+      }
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
       date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
+      if(date) {
+        arr = date[0].split('to');
+        fromDate = arr[0].trim();
+        toDate = arr[1].trim();
+      }
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
       date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
+      if(date) {
+        arr = date[0].split('to');
+        fromDate = arr[0].trim();
+        toDate = arr[1].trim();
+      }
     } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
       const time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
       fromDate = new Date();
-      if (/(pm)/i.test(time[3]) && parseInt(time[1], 10) != 12) {
-        fromDate.setHours(parseInt(time[1], 10) - 12);
-      } else {
-        fromDate.setHours(parseInt(time[1], 10));
-      }
+      if (time) {
+        if (/(pm)/i.test(time[3]) && parseInt(time[1], 10) != 12) {
+          fromDate.setHours(parseInt(time[1], 10) - 12);
+        } else {
+          fromDate.setHours(parseInt(time[1], 10));
+        }
 
-      fromDate.setMinutes(parseInt(time[2], 10));
-      toDate = new Date();
-      if (/(pm)/i.test(time[6]) && parseInt(time[4], 10) != 12) {
-        toDate.setHours(parseInt(time[4], 10) - 12);
-      } else {
-        toDate.setHours(parseInt(time[4], 10));
+        fromDate.setMinutes(parseInt(time[2], 10));
+        toDate = new Date();
+        if (/(pm)/i.test(time[6]) && parseInt(time[4], 10) != 12) {
+          toDate.setHours(parseInt(time[4], 10) - 12);
+        } else {
+          toDate.setHours(parseInt(time[4], 10));
+        }
+        toDate.setMinutes(parseInt(time[5], 10));
       }
-      toDate.setMinutes(parseInt(time[5], 10));
     }
 
     if (fromDate) {
@@ -130,7 +144,7 @@ export class FileTransferService {
     return arr;
   }
 
-  getRequestForSearch(data, filter, preferences): void {
+  getRequestForSearch(data: any, filter: any, preferences: any): void {
     if (data.states && data.states.length > 0) {
       filter.states = data.states;
     }
@@ -142,8 +156,8 @@ export class FileTransferService {
       filter.mandator = data.mandator;
     }
     if (data.profiles && data.profiles.length > 0) {
-      let profiles = [];
-      data.profiles.forEach((item) => {
+      let profiles: string[] = [];
+      data.profiles.forEach((item: any) => {
         if (item.name || typeof item === "string") {
           profiles.push(item.name || item);
         }
@@ -151,8 +165,8 @@ export class FileTransferService {
       filter.profiles = profiles;
     }
     if (data.sourceFiles && data.sourceFiles.length > 0) {
-      let sourceFiles = [];
-      data.sourceFiles.forEach((item) => {
+      let sourceFiles: string[] = [];
+      data.sourceFiles.forEach((item: any) => {
         if (item.name || typeof item === "string") {
           sourceFiles.push(item.name || item);
         }
@@ -160,8 +174,8 @@ export class FileTransferService {
       filter.sourceFiles = sourceFiles;
     }
     if (data.targetFiles && data.targetFiles.length > 0) {
-      let targetFiles = [];
-      data.targetFiles.forEach((item) => {
+      let targetFiles: string[] = [];
+      data.targetFiles.forEach((item: any) => {
         if (item.name || typeof item === "string") {
           targetFiles.push(item.name || item);
         }

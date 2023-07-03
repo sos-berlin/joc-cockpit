@@ -12,7 +12,7 @@
     </label>
     <div *ngIf="label.invalid && (label.dirty || label.touched)"
          class="text-danger help-block">
-      <div *ngIf="label.errors && label.errors.invalidIdentifier" translate>common.message.invalid</div>
+      <div *ngIf="label.errors && label.errors['invalidIdentifier']" translate>common.message.invalid</div>
     </div>
   </div>
 </div>

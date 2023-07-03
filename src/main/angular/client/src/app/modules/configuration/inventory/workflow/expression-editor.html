@@ -13,7 +13,7 @@
     </div>
     <div *ngIf="error || (cm.invalid && (cm.dirty || cm.touched))"
          class="text-danger help-block">
-      <div *ngIf="(cm.errors && cm.errors.required) || error">
+      <div *ngIf="(cm.errors && cm.errors['required']) || error">
         <div translate>common.message.requiredError</div>
       </div>
     </div>

@@ -163,8 +163,8 @@ export class SettingComponent implements OnInit {
   ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
     this.zones = this.coreService.getTimeZoneList();
     this.loadSetting();
@@ -189,6 +189,7 @@ export class SettingComponent implements OnInit {
       e.stopPropagation();
       return false;
     }
+    return true;
   }
 
   changeConfiguration(form, value, isJoc): void {
@@ -204,7 +205,7 @@ export class SettingComponent implements OnInit {
       value.value.value = SettingComponent.checkTime(value.value.value);
     }
     if (value?.name === 'force_comments_for_audit_log') {
-      sessionStorage.$SOS$FORCELOGING = value.value.value;
+      sessionStorage['$SOS$FORCELOGING'] = value.value.value;
     }
     if (value?.name === 'time_zone') {
       sessionStorage.setItem('$SOS$DAILYPLANTIMEZONE', value.value.value);
@@ -229,11 +230,11 @@ export class SettingComponent implements OnInit {
     }
   }
 
-  removeValInArr(val, index): void {
+  removeValInArr(val: any, index: number): void {
     val.value.value.splice(index, 1);
   }
 
-  removeValue(val, isJoc): void {
+  removeValue(val: any, isJoc: any): void {
     val.value.edit = false;
     val.value.value = undefined;
     if (val?.name === 'time_zone') {
@@ -244,7 +245,7 @@ export class SettingComponent implements OnInit {
 
   importSetting(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ImportSettingComponent,
       nzClassName: 'lg',
       nzFooter: null,
@@ -301,7 +302,7 @@ export class SettingComponent implements OnInit {
     }
   }
 
-  private mergeData(defaultGlobals): void {
+  private mergeData(defaultGlobals: any): void {
     for (let prop in defaultGlobals) {
       let isExist = false;
       for (let setProp in this.settings) {
@@ -399,9 +400,9 @@ export class SettingComponent implements OnInit {
     this.coreService.showCopyMessage(this.message)
   }
 
-  private savePreferences(tempSetting, isJoc): void {
+  private savePreferences(tempSetting: any, isJoc: any): void {
     if (this.permission.joc.administration.settings.manage) {
-      if ((this.preferences.auditLog || sessionStorage.$SOS$FORCELOGING == 'true') && !this.auditLog.comment) {
+      if ((this.preferences.auditLog || sessionStorage['$SOS$FORCELOGING'] == 'true') && !this.auditLog.comment) {
         let comments = {
           radio: 'predefined',
           type: 'Settings',
@@ -436,7 +437,7 @@ export class SettingComponent implements OnInit {
     }
   }
 
-  private _savePreferences(tempSetting, isJoc, auditLog): void {
+  private _savePreferences(tempSetting: any, isJoc: any, auditLog: any): void {
     if (this.schedulerIds.selected) {
       this.coreService.post('configuration/save', {
         controllerId: this.schedulerIds.selected,
@@ -456,17 +457,7 @@ export class SettingComponent implements OnInit {
 
   private getProperties(): void {
     this.coreService.post('joc/properties', {}).subscribe((result: any) => {
-      sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
-      sessionStorage.comments = JSON.stringify(result.comments);
-      sessionStorage.showViews = JSON.stringify(result.showViews);
-      sessionStorage.securityLevel = result.securityLevel;
-      sessionStorage.defaultProfile = result.defaultProfileAccount;
-      sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
-      sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
-      sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
-      sessionStorage.welcomeDoNotRemindMe = result.welcomeDoNotRemindMe;
-      sessionStorage.welcomeGotIt = result.welcomeGotIt;
-      sessionStorage.allowEmptyArguments = result.allowEmptyArguments;
+      this.coreService.setProperties(result);
       this.dataService.isProfileReload.next(true);
     });
   }

@@ -23,7 +23,7 @@
           <input type="text" class="form-control" required name="name" [appAutofocus]="true" #name="ngModel" (blur)="checkFileName()" (focus)="inValid=false"
                  placeholder="{{'inventory.placeholder.enterFileName' | translate}}" [(ngModel)]="exportObj.filename" />
           <div *ngIf="inValid || (name.invalid && name.errors && (name.dirty || name.touched))" class="text-danger help-block">
-            <div *ngIf="name.errors && name.errors.required">
+            <div *ngIf="name.errors && name.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
             <div *ngIf="inValid">

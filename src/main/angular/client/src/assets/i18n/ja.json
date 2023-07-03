@@ -1870,7 +1870,11 @@
         "title": "スケジュールのタイトル",
         "workflowName": "ワークフロー名",
         "planOrderAutomatically": "実行計画自動作成",
-        "submitOrderToControllerWhenPlanned": "実行計画作成後オーダー登録"
+        "submitOrderToControllerWhenPlanned": "実行計画作成後オーダー登録",
+        "orderName": "Order Name",
+        "startNode": "Start Position before Instruction",
+        "endNode": "End Positions before Instructions",
+        "ignoreAdmissionTimes": "Ignore Job Admission Times"
       },
       "script": {
         "name": "スクリプトインクルードは、定期的に発生するコードスニペットをジョブスクリプトに含めるために使用します。スクリプトインクルード名は、インベントリー内で一意です。スクリプトインクルード名には、ドットやハイフンなど、ほとんどのユニコード文字を使用できますが、先頭や末尾のドットやハイフンは使用できません。",
@@ -2879,6 +2883,11 @@
     "label.iamOidcTruststorePassword": "OIDCトラストストアパスワード",
     "label.iamOidcImage": "OIDCイメージ",
     "label.iamOidcUserAttribute": "OIDCユーザー属性",
+    "label.iamOidcGroupClaims": "OIDC Group Claims",
+    "label.iamOidcGroupRolesMap": "OIDC Group Roles Map",
+    "label.iamOidcAuthenticationCodeFlow" : "Authentication Code Flow",
+    "label.iamOidcImplicitFlow" : "Implicit Flow",
+    "label.iamOidcFlowType" : "Flow Type",
     "label.iamFidoTimeout": "タイムアウト",
     "label.iamFidoTransports": "Transports",
     "label.iamFidoUserVerification": "User Verification",
@@ -3012,6 +3021,7 @@
     "placeholder.iamOidcTruststoreType": "OIDCトラストストアタイプ入力",
     "placeholder.iamOidcTruststorePassword": "OIDCトラストストアパスワード入力",
     "placeholder.iamOidcUserAttribute": "OIDCユーザー属性入力",
+    "placeholder.iamOidcGroupClaims": "Enter OIDC Group Claims",
     "placeholder.iamFidoTimeout": "ミリ秒でタイムアウト入力",
     "placeholder.iamFidoTransports": "Transport選択",
     "placeholder.iamFidoUserVerification": "User Verification選択",
@@ -3119,7 +3129,9 @@
         "iamOidcTruststoreType": "OIDCトラストストアタイプ",
         "iamOidcTruststorePassword": "OIDCトラストストアパスワード",
         "iamOidcUserAttribute": "OIDCユーザー属性",
-        "iamOidcImage": "OIDCイメージ"
+        "iamOidcImage": "OIDCイメージ",
+        "iamOidcGroupClaims": "OIDC Group Claims",
+        "iamOidcGroupRolesMap": "OIDC Group Roles Map"
       },
       "webauthn" : {
         "iamTimeout" : "タイムアウト",

@@ -43,7 +43,7 @@ export class PostModalComponent implements OnInit {
     this.postObj.timeZone = this.coreService.getTimeZone();
     this.postObj.at = 'later';
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     } else {
@@ -114,8 +114,8 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.name = this.route.snapshot.queryParamMap.get('name');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getBoardsList({
@@ -141,9 +141,9 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
     });
   }
 
-  post(board, notice = null): void {
+  post(board: any, notice = null): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: PostModalComponent,
       nzAutofocus: null,
       nzClassName: 'lg',
@@ -168,7 +168,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
         name: notice.id
       };
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzComponentParams: {
           comments,
@@ -184,7 +184,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
       });
     } else {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           type: 'Delete',
@@ -221,7 +221,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
     });
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'NoticeBoardStateChanged' && args.eventSnapshots[j].path && args.eventSnapshots[j].path.indexOf(this.name) > -1) {
@@ -382,12 +382,12 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.loadBoards(true);
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.boardsFilters.currentPage = $event;
     this.reset();
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.boardsFilters.entryPerPage = $event;
   }
 
@@ -407,7 +407,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.pageView = $event;
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       let flag = false;
       const noticeBoardPaths = [];
@@ -474,16 +474,16 @@ export class BoardComponent implements OnInit, OnDestroy {
   private init(): void {
     this.boardsFilters = this.coreService.getResourceTab().boards;
     this.coreService.getResourceTab().state = 'boards';
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).board;
+    if (localStorage['views']) {
+      this.pageView = JSON.parse(localStorage['views']).board;
     }
     if (!this.pageView) {
-      if (sessionStorage.preferences) {
-        if (JSON.parse(sessionStorage.preferences).pageView) {
-          this.pageView = JSON.parse(sessionStorage.preferences).pageView;
+      if (sessionStorage['preferences']) {
+        if (JSON.parse(sessionStorage['preferences']).pageView) {
+          this.pageView = JSON.parse(sessionStorage['preferences']).pageView;
         }
       }
     }
@@ -784,9 +784,9 @@ export class BoardComponent implements OnInit, OnDestroy {
     }
   }
 
-  post(board, notice = null): void {
+  post(board: any, notice = null): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: PostModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
@@ -815,7 +815,7 @@ export class BoardComponent implements OnInit, OnDestroy {
         name: notice?.id
       };
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzComponentParams: {
           comments,
@@ -831,7 +831,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       });
     } else {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           type: 'Delete',

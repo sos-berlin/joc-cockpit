@@ -24,8 +24,7 @@ export class AddRestrictionComponent implements OnInit {
   _temp: any;
   frequency: any = {};
   calendarTitle: any;
-  isRuntimeEdit: boolean;
-  isCalendarDisplay = false;
+  isRuntimeEdit = false;
   editor: any = {isEnable: false};
   calendar: any = {};
   updateFrequency: any = {};
@@ -33,8 +32,8 @@ export class AddRestrictionComponent implements OnInit {
   frequencyList: any = [];
   dateFormat: any;
   dateFormatM: any;
-  str: string;
-  isVisible: boolean;
+  str = '';
+  isVisible = false;
   countArr = [0, 1, 2, 3, 4];
   countArrU = [1, 2, 3, 4];
   daysOptions = [

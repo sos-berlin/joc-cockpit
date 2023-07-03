@@ -44,11 +44,11 @@ export class RoleModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     } else {
-      const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+      const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
       this.display = preferences.auditLog;
     }
     if (this.dataService.comments && this.dataService.comments.comment) {
@@ -217,11 +217,11 @@ export class ControllerModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     } else {
-      const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+      const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
       this.display = preferences.auditLog;
     }
 
@@ -270,7 +270,7 @@ export class ControllerModalComponent implements OnInit {
     if (this.currentController.roleName) {
       this.submitted = true;
       const request: any = {
-        identityServiceName: sessionStorage.identityServiceName,
+        identityServiceName: sessionStorage['identityServiceName'],
         auditLog: {}
       };
       if (this.comments) {
@@ -368,9 +368,9 @@ export class RolesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.identityServiceName = sessionStorage.identityServiceName;
-    this.identityServiceType = sessionStorage.identityServiceType;
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+    this.identityServiceName = sessionStorage['identityServiceName'];
+    this.identityServiceType = sessionStorage['identityServiceType'];
     this.getList();
   }
 
@@ -887,7 +887,7 @@ export class RolesComponent implements OnInit, OnDestroy {
   drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.controllerRoles, event.previousIndex, event.currentIndex);
     let comments = {};
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
         comments = {comment: translatedValue};
       });
@@ -1050,7 +1050,7 @@ export class RolesComponent implements OnInit, OnDestroy {
   private checkUrl(val, skip = false): void {
     if ((val && val.url) || skip) {
       this.activeRoute.queryParams
-        .subscribe(params => {
+        .subscribe((params: any) => {
           this.selectUser(params.account);
         });
     }

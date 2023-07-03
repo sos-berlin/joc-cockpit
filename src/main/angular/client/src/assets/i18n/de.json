@@ -1870,7 +1870,11 @@
         "title": "Der Titel des Zeitplans kann nach Belieben angegeben werden.",
         "workflowName": "Ein Verweis auf einen oder mehrere Arbeitsabläufe muss angegeben werden, für den Aufträge erzeugt werden.",
         "planOrderAutomatically": "Aufträge werden automatisch geplant, d.h. in Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus geplant.",
-        "submitOrderToControllerWhenPlanned": "Geplante Aufträge werden automatisch an den Controller übermittelt. In Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt."
+        "submitOrderToControllerWhenPlanned": "Geplante Aufträge werden automatisch an den Controller übermittelt. In Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt.",
+        "orderName": "Order Name",
+        "startNode": "Start Position before Instruction",
+        "endNode": "End Positions before Instructions",
+        "ignoreAdmissionTimes": "Ignore Job Admission Times"
       },
       "script": {
         "name": "Ein Skript Baustein wird verwendet, um wiederkehrend verwendeten Code in Job-Skripte einzufügen. Der Name eines Skript Bausteins ist eindeutig im Inventar. Für den Namen des Skript Bausteins können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
@@ -2879,6 +2883,11 @@
     "label.iamOidcTruststorePassword": "OIDC Truststore Password",
     "label.iamOidcImage": "OIDC Bild",
     "label.iamOidcUserAttribute": "OIDC User Name Attribute",
+    "label.iamOidcGroupClaims": "OIDC Group Claims",
+    "label.iamOidcGroupRolesMap": "OIDC Group Roles Map",
+    "label.iamOidcAuthenticationCodeFlow" : "Authentication Code Flow",
+    "label.iamOidcImplicitFlow" : "Implicit Flow",
+    "label.iamOidcFlowType" : "Flow Type",
     "label.iamFidoTimeout": "Timeout",
     "label.iamFidoTransports": "Transports",
     "label.iamFidoUserVerification": "User Verification",
@@ -3012,6 +3021,7 @@
     "placeholder.iamOidcTruststoreType": "OIDC Truststore Type angeben",
     "placeholder.iamOidcTruststorePassword": "OIDC Truststore Password angeben",
     "placeholder.iamOidcUserAttribute": "OIDC User Name Attribute angeben",
+    "placeholder.iamOidcGroupClaims": "Enter OIDC Group Claims",
     "placeholder.iamFidoTimeout": "Timeout in Sekunden angeben",
     "placeholder.iamFidoTransports": "Transport angeben",
     "placeholder.iamFidoUserVerification": "User Verification angeben",
@@ -3119,7 +3129,9 @@
         "iamOidcTruststoreType": "Der Typ des OIDC Truststore kann PKCS12 sein oder JKS (deprecated).",
         "iamOidcTruststorePassword": "Ist der OIDC Truststore mit einem Kennwort geschützt, dann wird hier das Kennwort angegeben.",
         "iamOidcUserAttribute": "Das OIDC User Attribute ist spezifisch für einen Identity Provider und gibt den Namen des Attributs an, das die eindeutige Kennung eines Anwenders enthält, die zur Anmeldung verwendet wird, z.B. vereinbart das Attribut 'email' die E-Mail Adresse des Anwenders zur Anmeldung.",
-        "iamOidcImage": "Wenn ein OIDC Bild angegeben ist, wird es im Anmeldefenster angezeigt. Bilddateien des Typs .png mit einer maximalen Größe von 1 MB können verwendet werden. Bilder werden am besten mit einer Breite und Höhe von 64 Pixel dargestellt."
+        "iamOidcImage": "Wenn ein OIDC Bild angegeben ist, wird es im Anmeldefenster angezeigt. Bilddateien des Typs .png mit einer maximalen Größe von 1 MB können verwendet werden. Bilder werden am besten mit einer Breite und Höhe von 64 Pixel dargestellt.",
+        "iamOidcGroupClaims": "OIDC Group Claims",
+        "iamOidcGroupRolesMap": "OIDC Group Roles Map"
       },
       "webauthn" : {
         "iamTimeout" : "Die für die Anwenderverifizierung geltende Zeitüberschreitung. Wird diese Periode überschritten, dann wird der Registrierungs-/Authentifizierungsvorgang abgebrochen.",

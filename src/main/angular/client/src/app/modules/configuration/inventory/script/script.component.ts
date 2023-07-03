@@ -70,11 +70,11 @@ export class ScriptComponent implements OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.copyObj && !changes.data) {
+    if (changes['copyObj'] && !changes['data']) {
       return;
     }
-    if (changes.reload) {
-      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+    if (changes['reload']) {
+      if (changes['reload'].previousValue === true && changes['reload'].currentValue === false) {
         return;
       }
       if (this.reload) {
@@ -86,7 +86,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
     if (this.script.actual) {
       this.saveJSON();
     }
-    if (changes.data) {
+    if (changes['data']) {
       if (this.data.type) {
         this.getObject();
       } else {
@@ -237,7 +237,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
         objectType: this.objectType
       };
 
-      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
           request.auditLog = {comment: translatedValue};
         });

@@ -33,10 +33,10 @@
                #period="ngModel" [(ngModel)]="repeatObject.period"
                placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
         <div *ngIf="period.invalid && (period.dirty || period.touched)" class="text-danger help-block">
-          <div *ngIf="period.errors.required">
+          <div *ngIf="period.errors['required']">
             <div translate>common.message.requiredError</div>
           </div>
-          <div *ngIf="period.errors.invalidDuration" translate>common.message.invalid</div>
+          <div *ngIf="period.errors['invalidDuration']" translate>common.message.invalid</div>
         </div>
       </div>
     </div>
@@ -51,10 +51,10 @@
                #offsets="ngModel" [(ngModel)]="repeatObject.offsets"
                placeholder="{{'workflow.placeholder.offset' | translate}}" type="text">
         <div *ngIf="offsets.invalid && (offsets.dirty || offsets.touched)" class="text-danger help-block">
-          <div *ngIf="offsets.errors.required">
+          <div *ngIf="offsets.errors['required']">
             <div translate>common.message.requiredError</div>
           </div>
-          <div *ngIf="offsets.errors.invalidOffset" translate>common.message.invalid</div>
+          <div *ngIf="offsets.errors['invalidOffset']" translate>common.message.invalid</div>
         </div>
       </div>
     </div>
@@ -69,10 +69,10 @@
                #pause="ngModel" [(ngModel)]="repeatObject.pause"
                placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
         <div *ngIf="pause.invalid && (pause.dirty || pause.touched)" class="text-danger help-block">
-          <div *ngIf="pause.errors.required">
+          <div *ngIf="pause.errors['required']">
             <div translate>common.message.requiredError</div>
           </div>
-          <div *ngIf="pause.errors.invalidDuration" translate>common.message.invalid</div>
+          <div *ngIf="pause.errors['invalidDuration']" translate>common.message.invalid</div>
         </div>
       </div>
     </div>
@@ -96,10 +96,10 @@
                #interval="ngModel" [(ngModel)]="repeatObject.interval"
                placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
         <div *ngIf="interval.invalid && (interval.dirty || interval.touched)" class="text-danger help-block">
-          <div *ngIf="interval.errors.required">
+          <div *ngIf="interval.errors['required']">
             <div translate>common.message.requiredError</div>
           </div>
-          <div *ngIf="interval.errors.invalidDuration" translate>common.message.invalid</div>
+          <div *ngIf="interval.errors['invalidDuration']" translate>common.message.invalid</div>
         </div>
       </div>
     </div>
@@ -274,7 +274,7 @@
             <nz-time-picker [nzAllowEmpty]="false" (keydown.Tab)="onTab()" (ngModelChange)="selectTime($event)" [(ngModel)]="object.startTime1" name="fromTimeIcon"></nz-time-picker>
           </div>
           <div *ngIf="timePicker.invalid && (timePicker.dirty || timePicker.touched)" class="text-danger help-block">
-            <div *ngIf="timePicker.errors.required">
+            <div *ngIf="timePicker.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -291,10 +291,10 @@
                  #duration="ngModel" [(ngModel)]="object.duration"
                  placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
           <div *ngIf="duration.invalid && (duration.dirty || duration.touched)" class="text-danger help-block">
-            <div *ngIf="duration.errors.required">
+            <div *ngIf="duration.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
-            <div *ngIf="duration.errors.invalidDuration" translate>common.message.invalid</div>
+            <div *ngIf="duration.errors['invalidDuration']" translate>common.message.invalid</div>
           </div>
         </div>
       </div>

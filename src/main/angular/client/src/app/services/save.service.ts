@@ -17,14 +17,14 @@ export class SaveService {
   copiedSetting: any;
 
   constructor() {
-    const self = this;
+    const self: any = this;
     for (let i = 0; i < this.props.length; i++) {
       self[this.props[i]] = this.load(this.props[i]);
     }
   }
 
   save(): void {
-    const self = this;
+    const self: any = this;
     for (let i = 0; i < this.props.length; i++) {
       this._save(localStorage, this.props[i], self[this.props[i]]);
     }

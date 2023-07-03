@@ -17,15 +17,15 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   permission: any = {};
   profiles: any = [];
   users: any;
-  searchKey: string;
+  searchKey = '';
   prof: any = {currentPage: 1};
   order = 'user';
   loading = true;
   reverse = false;
   checked = false;
   indeterminate = false;
-  identityServiceName: string;
-  identityServiceType: string;
+  identityServiceName = '';
+  identityServiceType = '';
   setOfCheckedId = new Set<string>();
 
   subscription1: Subscription;
@@ -43,10 +43,10 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    this.identityServiceName = sessionStorage.identityServiceName;
-    this.identityServiceType = sessionStorage.identityServiceType;
+    this.identityServiceName = sessionStorage['identityServiceName'];
+    this.identityServiceType = sessionStorage['identityServiceType'];
     this.getList();
   }
 
@@ -81,15 +81,15 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   }
 
   onAllChecked(value: boolean): void {
-    this.profiles.forEach(item => this.updateCheckedSet(item.account, value));
+    this.profiles.forEach((item: any) => this.updateCheckedSet(item.account, value));
     this.checkCheckBoxState();
   }
 
   checkCheckBoxState(): void {
-    this.checked = this.profiles.every(item => {
+    this.checked = this.profiles.every((item: any) => {
       return this.setOfCheckedId.has(item.account);
     });
-    this.indeterminate = this.profiles.some(item => this.setOfCheckedId.has(item.account)) && !this.checked;
+    this.indeterminate = this.profiles.some((item: any) => this.setOfCheckedId.has(item.account)) && !this.checked;
     if (this.setOfCheckedId.size > 0) {
       this.dataService.announceFunction('IS_RESET_PROFILES_TRUE');
     } else {
@@ -97,7 +97,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteProfile(profile, complete): void {
+  deleteProfile(profile: any, complete: boolean): void {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
@@ -151,15 +151,15 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     }
   }
 
-  showMaster(account): void {
-    if (sessionStorage.identityServiceType !== 'VAULT') {
+  showMaster(account: any): void {
+    if (sessionStorage['identityServiceType'] !== 'VAULT') {
       this.router.navigate(['/users/identity_service/role'], {queryParams: {account}}).then();
     } else {
       this.router.navigate(['/users/identity_service/role']).then();
     }
   }
 
-  sort(key): void {
+  sort(key: string): void {
     this.order = key;
     this.reverse = !this.reverse;
   }
@@ -177,7 +177,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     });
   }
 
-  private resetDeleteProfile(profile, comments, complete): void {
+  private resetDeleteProfile(profile: any, comments: any, complete: boolean): void {
     const obj: any = {accounts: [], auditLog: {}};
     if (profile) {
       obj.accounts.push(profile.account);
@@ -201,7 +201,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
         }
       } else {
         if (this.setOfCheckedId.size > 0) {
-          this.profiles = this.profiles.filter((item) => {
+          this.profiles = this.profiles.filter((item: any) => {
             return !this.setOfCheckedId.has(item.account);
           });
         }

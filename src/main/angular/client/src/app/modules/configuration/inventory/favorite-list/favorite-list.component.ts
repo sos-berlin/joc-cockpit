@@ -26,7 +26,7 @@ export class FavoriteListComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.list || changes.value) {
+    if (changes['list'] || changes['value']) {
       for (let i in this.list) {
         this.isFavorite = false;
         this.obj.name = '';

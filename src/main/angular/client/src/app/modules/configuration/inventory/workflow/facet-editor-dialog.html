@@ -40,7 +40,7 @@
           <input identifierValidation #name="ngModel" autocomplete="off" type="text"
                  class="form-control" name="list{{j}}" [(ngModel)]="param.name" placeholder="{{'common.placeholder.name' | translate}}">
           <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
-            <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+            <div *ngIf="name.errors['invalidIdentifier']" translate>common.message.invalid</div>
           </div>
         </div>
         <div class="col-md-1 col-lg-1">

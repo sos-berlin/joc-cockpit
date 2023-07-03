@@ -1870,7 +1870,11 @@
         "title": "The Title of the Schedule can be specified as desired.",
         "workflowName": "A reference to one or more workflows has to be added for which orders are created.",
         "planOrderAutomatically": "Orders are planned automatically, i.e. based on the Daily Plan Service settings orders are created for the next few days in advance.",
-        "submitOrderToControllerWhenPlanned": "Orders are automatically submitted to a Controller when planned. Based on the settings of the Daily Plan Service orders are submitted a number of days in advance."
+        "submitOrderToControllerWhenPlanned": "Orders are automatically submitted to a Controller when planned. Based on the settings of the Daily Plan Service orders are submitted a number of days in advance.",
+        "orderName": "Order Name",
+        "startNode": "Start Position before Instruction",
+        "endNode": "End Positions before Instructions",
+        "ignoreAdmissionTimes": "Ignore Job Admission Times"
       },
       "script": {
         "name": "A Script Include is used to include recurring code snippets into a job script. The name of a Script Include is unique in the inventory. For the name of the Script Include most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -2879,6 +2883,11 @@
     "label.iamOidcTruststorePassword": "OIDC Truststore Password",
     "label.iamOidcImage": "OIDC Image",
     "label.iamOidcUserAttribute": "OIDC User Name Attribute",
+    "label.iamOidcGroupClaims": "OIDC Group Claims",
+    "label.iamOidcGroupRolesMap": "OIDC Group Roles Map",
+    "label.iamOidcAuthenticationCodeFlow" : "Authentication Code Flow",
+    "label.iamOidcImplicitFlow" : "Implicit Flow",
+    "label.iamOidcFlowType" : "Flow Type",
     "label.iamFidoTimeout": "Timeout",
     "label.iamFidoTransports": "Transports",
     "label.iamFidoUserVerification": "User Verification",
@@ -3012,6 +3021,7 @@
     "placeholder.iamOidcTruststoreType": "Enter OIDC Truststore Type",
     "placeholder.iamOidcTruststorePassword": "Enter OIDC Truststore Password",
     "placeholder.iamOidcUserAttribute": "Enter OIDC User Name Attribute",
+    "placeholder.iamOidcGroupClaims": "Enter OIDC Group Claims",
     "placeholder.iamFidoTimeout": "Enter Timeout in seconds",
     "placeholder.iamFidoTransports": "Select Transport",
     "placeholder.iamFidoUserVerification": "Select User Verification",
@@ -3119,7 +3129,9 @@
         "iamOidcTruststoreType": "The OIDC Truststore Type can be PKCS12 or JKS (deprecated).",
         "iamOidcTruststorePassword": "If the OIDC Truststore is protected by a password, then the password has to be specified.",
         "iamOidcUserAttribute": "The OIDC User Attribute is specific for an Identity Provider and indicates the name of the attribute that holds the unique identifier of a user that is used for login, for example the attribute 'email' specifies the user's e-mail address to be used for login.",
-        "iamOidcImage": "If an OIDC Image is specified then it is displayed with the login screen. Image files of type .png are allowed with a maximum size of 1 MB. Images are best displayed using a width and height of 96 pixels."
+        "iamOidcImage": "If an OIDC Image is specified then it is displayed with the login screen. Image files of type .png are allowed with a maximum size of 1 MB. Images are best displayed using a width and height of 96 pixels.",
+        "iamOidcGroupClaims": "OIDC Group Claims",
+        "iamOidcGroupRolesMap": "OIDC Group Roles Map"
       },
       "webauthn" : {
         "iamTimeout" : "The Timeout applied for User Verification. If the timeout is exceeded then the registration/authentication flow will be cancelled.",

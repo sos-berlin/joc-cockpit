@@ -12,7 +12,7 @@ import {EditFilterModalComponent} from '../../../components/filter-modal/filter.
 import {SaveService} from '../../../services/save.service';
 
 @Component({
-  selector: 'app-filter-content',
+  selector: 'app-filter-agent-content',
   templateUrl: './filter-dialog.html'
 })
 export class FilterModalComponent implements OnInit {
@@ -30,7 +30,7 @@ export class FilterModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     if (this.new) {
@@ -310,7 +310,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   private init(): void {
     this.agentFilters = this.coreService.getResourceTab().agentJobExecution;
     this.coreService.getResourceTab().state = 'agentJobExecutions';
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
@@ -563,11 +563,11 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
 
   /* ---------------------------- Action ----------------------------------*/
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.agentFilters.currentPage = $event;
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.agentFilters.entryPerPage = $event;
   }
 
@@ -614,7 +614,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     this.excelService.exportAsExcelFile(data, 'JS7-agent-job-execution');
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'JobStateChanged') {

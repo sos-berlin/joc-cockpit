@@ -25,7 +25,7 @@
                #remoteUrl="ngModel" [(ngModel)]="object.remoteUrl" [appAutofocus]="true" autocomplete="off">
         <div *ngIf="remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)"
              class="text-danger help-block">
-          <div *ngIf="(remoteUrl.errors && remoteUrl.errors.required)">
+          <div *ngIf="(remoteUrl.errors && remoteUrl.errors['required'])">
             <div translate>common.message.requiredError</div>
           </div>
         </div>
@@ -40,10 +40,10 @@
                #folderName="ngModel" [(ngModel)]="object.folderName"  autocomplete="off">
         <div *ngIf="folderName.invalid && folderName.errors && (folderName.dirty || folderName.touched)"
              class="text-danger help-block">
-          <div *ngIf="(folderName.errors.required)">
+          <div *ngIf="(folderName.errors['required'])">
             <div translate>common.message.requiredError</div>
           </div>
-          <div *ngIf="folderName.errors.invalidIdentifier" translate>common.message.invalid</div>
+          <div *ngIf="folderName.errors['invalidIdentifier']" translate>common.message.invalid</div>
         </div>
       </div>
     </div>

@@ -113,7 +113,7 @@ export class PieArcComponent implements OnChanges {
   }
 
   loadAnimation(): void {
-    const node = select(this.element)
+    const node: any = select(this.element)
       .selectAll('.arc')
       .data([{ startAngle: this.startAngle, endAngle: this.endAngle }]);
 
@@ -144,7 +144,7 @@ export class PieArcComponent implements OnChanges {
   }
 
   updateAnimation(): void {
-    const node = select(this.element)
+    const node: any = select(this.element)
       .selectAll('.arc')
       .data([{ startAngle: this.startAngle, endAngle: this.endAngle }]);
 

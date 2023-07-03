@@ -39,8 +39,8 @@ import { ViewDimensions } from '../common/types/view-dimension.interface';
       ></svg:g>
       <svg:g
         ngx-charts-pie-arc
-        [startAngle]="arc.startAngle"
-        [endAngle]="arc.endAngle"
+        [startAngle]="arc['startAngle']"
+        [endAngle]="arc['endAngle']"
         [innerRadius]="innerRadius"
         [outerRadius]="outerRadius"
         [fill]="color(arc)"

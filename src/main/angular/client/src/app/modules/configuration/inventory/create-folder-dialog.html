@@ -22,10 +22,10 @@
                #name="ngModel" [(ngModel)]="folder.name" [appAutofocus]="true" autocomplete="off">
         <div *ngIf="name.invalid && (name.dirty || name.touched)"
              class="text-danger help-block">
-          <div *ngIf="(name.errors && name.errors.required)">
+          <div *ngIf="(name.errors && name.errors['required'])">
             <div translate>common.message.requiredError</div>
           </div>
-          <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+          <div *ngIf="name.errors['invalidIdentifier']" translate>common.message.invalid</div>
         </div>
         <div class="help-block text-danger" *ngIf="!isUnique">
           <div translate>common.message.uniqueError</div>
@@ -53,7 +53,7 @@
                  #name="ngModel" (blur)="isValidObject(folder.name)" [(ngModel)]="folder.name" [appAutofocus]="true" autocomplete="off">
           <div *ngIf="name.invalid && (name.dirty || name.touched)"
                class="text-danger help-block">
-            <div *ngIf="(name.errors && name.errors.required)">
+            <div *ngIf="(name.errors && name.errors['required'])">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -71,7 +71,7 @@
                  #name="ngModel" [(ngModel)]="folder.name" autocomplete="off">
           <div *ngIf="name.invalid && (name.dirty || name.touched)"
                class="text-danger help-block">
-            <div *ngIf="(name.errors && name.errors.required)">
+            <div *ngIf="(name.errors && name.errors['required'])">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -86,7 +86,7 @@
                  #search="ngModel" [(ngModel)]="folder.search" autocomplete="off">
           <div *ngIf="search.invalid && (search.dirty || search.touched)"
                class="text-danger help-block">
-            <div *ngIf="(search.errors && search.errors.required)">
+            <div *ngIf="(search.errors && search.errors['required'])">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
