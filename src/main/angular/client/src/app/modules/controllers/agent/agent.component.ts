@@ -57,12 +57,12 @@ export class SubagentModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -121,10 +121,10 @@ export class AddClusterModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -210,12 +210,12 @@ export class AgentModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -227,10 +227,10 @@ export class AgentModalComponent implements OnInit {
       delete this.agent.show;
     }
     if (!this.agent.agentNameAliases || this.agent.agentNameAliases.length === 0) {
-      this.agentNameAliases = [{name: ''}];
+      this.agentNameAliases = [{ name: '' }];
     } else {
       this.agent.agentNameAliases.filter((val) => {
-        this.agentNameAliases.push({name: val});
+        this.agentNameAliases.push({ name: val });
       });
     }
   }
@@ -443,7 +443,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     }
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'AgentChanged' || args.eventSnapshots[j].eventType === 'AgentInventoryUpdated' || args.eventSnapshots[j].eventType === 'AgentStateChanged'
@@ -471,11 +471,11 @@ export class AgentComponent implements OnInit, OnDestroy {
     this.agentId = this.route.snapshot.paramMap.get('agentId');
     this.clusterFilter = this.coreService.getAgentClusterTab();
     this.permission = JSON.parse(this.authService.permission) || {};
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).agentCluster;
+    if (localStorage['views']) {
+      this.pageView = JSON.parse(localStorage['views']).agentCluster;
     }
     if (this.editor && !isEmpty(this.editor)) {
       this.editor.destroy();
@@ -555,11 +555,11 @@ export class AgentComponent implements OnInit, OnDestroy {
     }
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.clusterFilter.currentPage = $event;
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.clusterFilter.entryPerPage = $event;
   }
 
@@ -921,7 +921,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     const obj: any = {
       subagentClusters: []
     }
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
         obj.auditLog = {comment: translatedValue};
       });
@@ -961,7 +961,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     const obj: any = {
       subagentClusters: []
     }
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
         obj.auditLog = {comment: translatedValue};
       });

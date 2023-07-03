@@ -77,7 +77,7 @@ export class AreaComponent implements OnChanges {
   }
 
   updatePathEl(): void {
-    const node = select(this.element).select('.area');
+    const node: any = select(this.element).select('.area');
 
     if (this.animations) {
       node.transition().duration(750).attr('d', this.path);

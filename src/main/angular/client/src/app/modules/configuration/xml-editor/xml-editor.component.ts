@@ -635,7 +635,7 @@ export class ShowModalComponent implements AfterViewInit {
       obj.name = this.activeTab.name;
 
     } else {
-      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
           obj.auditLog = {comment: translatedValue};
         });
@@ -960,7 +960,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   private init(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.sideView = this.coreService.getSideView();
@@ -1092,9 +1092,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (data instanceof NzTreeNode) {
       if (!data.isExpanded) {
         if (data.origin.children.length > 20) {
-          data.origin.loading = true;
+          data.origin['loading'] = true;
           setTimeout(() => {
-            delete data.origin.loading;
+            delete data.origin['loading'];
           }, 100);
         }
       }
@@ -1365,7 +1365,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       objectType: res.objectType,
       auditLog: {}
     };
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
         request.auditLog = {comment: translatedValue};
       });
@@ -1634,7 +1634,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   // submit xsd to open
   submit(): void {
     if (this.selectedXsd !== '') {
-      sessionStorage.$SOS$XSD = this.selectedXsd;
+      sessionStorage['$SOS$XSD'] = this.selectedXsd;
       this.readXML();
       this.submitXsd = true;
       // this.getInitTree(false);
@@ -3153,7 +3153,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   // autoValidate
-  autoValidate() {
+  autoValidate(): void {
     this.validConfig = true;
     if (this.nodes[0] && this.nodes[0].attributes && this.nodes[0].attributes.length > 0) {
       for (let i = 0; i < this.nodes[0].attributes.length; i++) {
@@ -3162,7 +3162,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             this.nonValidattribute = this.nodes[0].attributes[i];
             this.errorLocation = this.nodes[0];
             this.validConfig = false;
-            return false;
           }
         }
       }
@@ -3172,15 +3171,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.nonValidattribute = this.nodes[0].values[0];
         this.errorLocation = this.nodes[0];
         this.validConfig = false;
-        return false;
       }
     }
     if (this.nodes[0] && this.nodes[0].children && this.nodes[0].children.length > 0) {
       for (let i = 0; i < this.nodes[0].children.length; i++) {
-        let x = this.autoValidateRecursion(this.nodes[0].children[i]);
-        if (x === false) {
-          return x;
-        }
+        this.autoValidateRecursion(this.nodes[0].children[i]);
       }
     }
     this.nonValidattribute = {};
@@ -3215,13 +3210,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         }
       }
     }
+    return true;
   }
 
   dragEnter(arg: NzFormatEmitEvent): void {
     arg.event.preventDefault();
     arg.event.stopPropagation();
-    const dropNode = arg.node.origin;
-    const dragNode = arg.dragNode.origin;
+    const dropNode: any = arg.node.origin;
+    const dragNode: any = arg.dragNode.origin;
     this.dropCheck = {status: false};
     if (dragNode && dropNode) {
       if (dropNode.ref === dragNode.parent) {
@@ -3231,19 +3227,19 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         } else if (dragNode.maxOccurs !== 'unbounded' && dragNode.maxOccurs !== undefined) {
           if (dropNode.children.length > 0) {
             for (let i = 0; i < dropNode.children.length; i++) {
-              if (dragNode.ref === dropNode.children[i].ref) {
+              if (dragNode['ref'] === dropNode.children[i].ref) {
                 count++;
               }
             }
-            this.dropCheck = {status: dragNode.maxOccurs != count, dropNode: dropNode.ref};
+            this.dropCheck = {status: dragNode['maxOccurs'] != count, dropNode: dropNode.ref};
           } else if (dropNode.children.length === 0) {
             this.dropCheck = {status: true, dropNode: dropNode.ref};
           }
-        } else if (dragNode.maxOccurs === undefined) {
+        } else if (dragNode['maxOccurs'] === undefined) {
           if (dropNode.children.length > 0) {
             let flag = true;
             for (let i = 0; i < dropNode.children.length; i++) {
-              if (dragNode.ref === dropNode.children[i].ref) {
+              if (dragNode['ref'] === dropNode.children[i].ref) {
                 flag = false;
                 break;
               }
@@ -3261,9 +3257,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   dropData(arg: NzFormatEmitEvent): void {
     const dragNode = arg.dragNode.origin;
     const dropNode = arg.node.origin;
-    if (this.dropCheck.status && this.dropCheck.dropNode === dropNode.ref) {
+    if (this.dropCheck.status && this.dropCheck.dropNode === dropNode['ref']) {
       this.removeNode(this.coreService.clone(dragNode));
-      dragNode.parentId = dropNode.uuid;
+      dragNode['parentId'] = dropNode['uuid'];
       dropNode.children.push(dragNode);
     }
     arg.event.preventDefault();
@@ -5872,7 +5868,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           configuration: this.mainXml,
           auditLog
         };
-        if (!auditLog && sessionStorage.$SOS$FORCELOGING === 'true') {
+        if (!auditLog && sessionStorage['$SOS$FORCELOGING'] === 'true') {
           this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
             request.auditLog = {comment: translatedValue};
           });

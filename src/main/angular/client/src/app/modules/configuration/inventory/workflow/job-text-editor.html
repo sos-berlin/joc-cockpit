@@ -59,11 +59,11 @@
             </label>
             <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
                  class="text-danger help-block">
-              <div *ngIf="name.errors.required">
+              <div *ngIf="name.errors['required']">
                 <div translate>common.message.requiredError</div>
               </div>
-              <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
-              <div *ngIf="!name.errors.invalidIdentifier && invalidName">{{invalidName | translate}}</div>
+              <div *ngIf="name.errors['invalidIdentifier']" translate>common.message.invalid</div>
+              <div *ngIf="!name.errors['invalidIdentifier'] && invalidName">{{invalidName | translate}}</div>
             </div>
           </div>
         </div>
@@ -84,8 +84,8 @@
             </label>
             <div *ngIf="obj.label || errorMsg || label.invalid && (label.dirty || label.touched)"
                  class="text-danger help-block">
-              <div *ngIf="label.errors && label.errors.invalidIdentifier" translate>common.message.invalid</div>
-              <div *ngIf="(label.errors && label.errors.required) || obj.label">
+              <div *ngIf="label.errors && label.errors['invalidIdentifier']" translate>common.message.invalid</div>
+              <div *ngIf="(label.errors && label.errors['required']) || obj.label">
                 <div translate>common.message.requiredError</div>
               </div>
               <div *ngIf="!label.errors && errorMsg">{{errorMsg | translate}}</div>

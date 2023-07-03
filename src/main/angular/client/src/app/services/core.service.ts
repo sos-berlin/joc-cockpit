@@ -6,7 +6,7 @@ import {Observable} from 'rxjs';
 import * as moment from 'moment-timezone';
 import {ToastrService} from "ngx-toastr";
 import {TranslateService} from '@ngx-translate/core';
-import {isEmpty, sortBy, isNumber, object, isArray} from 'underscore';
+import {isEmpty, sortBy, isNumber, object, isArray, clone} from 'underscore';
 import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
 import {POPOUT_MODALS, PopoutData, PopupService} from "./popup.service";
@@ -538,7 +538,7 @@ export class CoreService {
             return isCheck2;
           });
         } else {
-          let isCheck3 = false;
+          let isCheck3;
           if (option2.title) {
             isCheck3 = option2.title.toLowerCase().indexOf(value.toLowerCase()) > -1
           } else {
@@ -754,7 +754,7 @@ export class CoreService {
 
   prepareTree(actualData: any, isLeaf: boolean): any {
     if (actualData.folders && actualData.folders.length > 0) {
-      const output = [];
+      const output: any = [];
       for (const i in actualData.folders) {
         if (actualData.folders[i]) {
           output.push({
@@ -785,7 +785,7 @@ export class CoreService {
   showOrderLogWindow(orderId: string, controllerId: string, workflow: string): void {
     const preferenceObj = JSON.parse(sessionStorage['preferences']);
     const self = this;
-    let url;
+    let url = '';
 
     function openWindow() {
       if (url) {
@@ -794,12 +794,11 @@ export class CoreService {
             modalName: 'Order Log',
             controllerId,
             orderId: orderId,
-            historyId: url,
             workflow: workflow
           };
-          self.openPopout(modalData, 'top=' + window.localStorage.log_window_y + ',' +
-            'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +
-            'innerheight=' + window.localStorage.log_window_ht + self.windowProperties);
+          self.openPopout(modalData, 'top=' + window.localStorage['log_window_y'] + ',' +
+            'left=' + window.localStorage['log_window_x'] + ',innerwidth=' + window.localStorage['log_window_wt'] + ',' +
+            'innerheight=' + window.localStorage['log_window_ht'] + self.windowProperties);
         } else if (preferenceObj.isNewWindow === 'newTab') {
           window.open(url, '_blank');
         }
@@ -844,7 +843,7 @@ export class CoreService {
       return;
     }
 
-    const preferenceObj = JSON.parse(sessionStorage.preferences);
+    const preferenceObj = JSON.parse(sessionStorage['preferences']);
     const controllerId = id || JSON.parse(this.authService.scheduleIds).selected;
     let url = '';
 
@@ -894,7 +893,7 @@ export class CoreService {
     }
   }
 
-  private openPopout(modalData: PopoutData, properties) {
+  private openPopout(modalData: PopoutData, properties: any) {
     if (!this.popupService.isPopoutWindowOpen()) {
       this.popupService.openPopoutModal(modalData, properties);
     } else {
@@ -934,7 +933,7 @@ export class CoreService {
     return date;
   }
 
-  parseProcessExecutedRegex(regex: string, obj: any, completedDate?): any {
+  parseProcessExecutedRegex(regex: string, obj: any, completedDate?: any): any {
     let fromDate;
     let toDate;
     let date;
@@ -1009,7 +1008,7 @@ export class CoreService {
       for (let j = 0; j < list.length; j++) {
         if (list[j].name == temp) {
           const regArr = /\((\d+)\)$/.exec(temp);
-          if(regArr && regArr.length > 0) {
+          if (regArr && regArr.length > 0) {
             temp = temp.replace(/\(\d+\)$/, '(' + (+(regArr[1]) + 1) + ')');
           }
           recursion();
@@ -1259,8 +1258,8 @@ export class CoreService {
     return moment(date).tz(preferences.zone);
   }
 
-  getDate(date: any, format?): any {
-    if(format){
+  getDate(date: any, format?: string): any {
+    if (format) {
       return moment(date, format);
     }
     return moment(date);
@@ -1330,17 +1329,17 @@ export class CoreService {
     setTimeout(() => {
       const arr = currentView != null ? [53] : [];
       if (!currentView) {
-        $('#orderTable').find('thead th.dynamic-thead-o').each(function () {
+        $('#orderTable').find('thead th.dynamic-thead-o').each(function (this: any) {
           const w = $(this).outerWidth();
           arr.push(w);
         });
       }
-      $('#orderTable').find('thead th.dynamic-thead').each(function () {
+      $('#orderTable').find('thead th.dynamic-thead').each(function (this: any) {
         const w = $(this).outerWidth();
         arr.push(w);
       });
       let count = -1;
-      $('tr.tr-border').find('td').each(function (i) {
+      $('tr.tr-border').find('td').each(function (this: any, i: any) {
         count = count + 1;
         if (arr.length === count) {
           count = 0;
@@ -1354,7 +1353,7 @@ export class CoreService {
     const arr: Array<number> = [];
     const arr2 = [];
     const dom = $('#fileTransferTable');
-    dom.find('thead tr.sub-header th.dynamic-thead').each(function () {
+    dom.find('thead tr.sub-header th.dynamic-thead').each(function (this: any) {
       arr.push($(this).outerWidth());
     });
 
@@ -1403,7 +1402,7 @@ export class CoreService {
   }
 
   keyValuePair(argu: any): any {
-    return object(argu.map((val) => {
+    return object(argu.map((val: any) => {
       return [val.name, val.value];
     }));
   }
@@ -1417,7 +1416,7 @@ export class CoreService {
     }
     const dates = [];
     let currentDate = startDate;
-    const addDays = function (days) {
+    const addDays = function (this: any, days: any) {
       const date = new Date(this.valueOf());
       date.setDate(date.getDate() + days);
       return date.setHours(0, 0, 0, 0);
@@ -1471,7 +1470,7 @@ export class CoreService {
   }
 
   addSlashToStringForEvn(obj: any): void {
-    obj.env.forEach((env) => {
+    obj.env.forEach((env: any) => {
       if (env.value) {
         if (!(/[$+]/.test(env.value)) || (/\s/g.test(env.value) && !/[+]/.test(env.value))) {
           const startChar = env.value.substring(0, 1);
@@ -1548,7 +1547,7 @@ export class CoreService {
         dom.text('Search all:');
       }
       if (text.match(/Replace/)) {
-        $('.CodeMirror-search-field').on('keydown', (e) => {
+        $('.CodeMirror-search-field').on('keydown', (e: any) => {
           if (e.keyCode === 13) {
             const dom2 = $('.CodeMirror-dialog .CodeMirror-search-label');
             if (dom2.text().match(/With:/)) {
@@ -1565,7 +1564,7 @@ export class CoreService {
       '<a target="_blank" href="' + (link || '$1') + '" class="text-primary text-u-l">$1</a>');
   }
 
-  getDateAndTime(data, val = 'from'): any {
+  getDateAndTime(data: any, val = 'from'): any {
     if (data[val + 'Date'] && data[val + 'Time']) {
       const arr = data[val + 'Time'].split(':');
       if (arr[0] && arr[0].length === 2) {
@@ -1587,7 +1586,7 @@ export class CoreService {
     }
   }
 
-  selectTime(time, isEditor = false, data, val = 'from'): void {
+  selectTime(time: any, isEditor = false, data: any, val = 'from'): void {
     if (time && !isEditor) {
       const h = time.getHours() + '';
       const m = time.getMinutes() + '';
@@ -1613,15 +1612,15 @@ export class CoreService {
     }
   }
 
-  getUnixTime(date) {
+  getUnixTime(date: any) {
     return moment(date).unix();
   }
 
-  getUTCTime(time) {
+  getUTCTime(time: any) {
     return moment.utc(time);
   }
 
-  getAuditLogObj(comments, auditLog): void {
+  getAuditLogObj(comments: any, auditLog: any): void {
     if (comments.comment) {
       auditLog.comment = comments.comment;
     }
@@ -1633,10 +1632,10 @@ export class CoreService {
     }
   }
 
-  getHtml(exp, permission): string {
+  getHtml(exp: string, permission: any): string {
     const arr = exp.split(' ');
     let str = '';
-    arr.forEach(item => {
+    arr.forEach((item: string) => {
       item = item.trim();
       let firstStr = '';
       let lastStr = '';
@@ -1668,7 +1667,7 @@ export class CoreService {
 
   //Locker store and retrive
 
-  saveValueInLocker(body, cb): void {
+  saveValueInLocker(body: any, cb: any): void {
     this.post('iam/locker/put', body).subscribe({
       next: (res) => {
         sessionStorage['$SOS$KEY'] = res.key;
@@ -2181,4 +2180,355 @@ export class CoreService {
     return false;
   }
 
+  create_UUID(): string {
+    let dt = new Date().getTime();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = (dt + Math.random() * 16) % 16 | 0;
+      dt = Math.floor(dt / 16);
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+  }
+
+  convertExpToArray(exp: any): Array<string> {
+    let arr: any[] = [];
+    exp.split(' ').forEach((item: any) => {
+      let x = item.trim();
+      if (x !== '&&' && x !== '||') {
+        if (x.substring(0, 1) == '(') {
+          x = x.substring(1, x.length - 1);
+        }
+        if (x.substring(0, 1) == '"' || x.substring(0, 1) == "'") {
+          x = x.substring(1, x.length - 1);
+        }
+        arr.push(x);
+      }
+    });
+    return arr;
+  }
+
+  convertTryToRetry(mainJson: any, positions?: any,
+                    startNode?: string, isMap = false, order?: any, workflowObj?: any): void {
+    const self = this;
+    let count = 1
+    let isChecked = false;
+    let map: Map<string, any>;
+    let jobMap: Map<string, any>;
+    let flag = false;
+    if (isMap) {
+      map = new Map();
+    }
+
+    if (workflowObj) {
+      jobMap = new Map();
+    }
+
+    function recursive(json: any, parent = null) {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+          if (workflowObj.countObj.setObj) {
+            if (workflowObj.countObj.setObj.has(json.instructions[x].positionString)) {
+              json.instructions[x].show = true;
+            }
+          }
+          if (!isMap && !workflowObj) {
+            json.instructions[x].id = ++count;
+            if (positions && !positions.has(json.instructions[x].positionString)) {
+              json.instructions[x].position = undefined;
+            } else {
+              if (startNode) {
+                if (!isChecked) {
+                  json.instructions[x].position = undefined;
+                }
+                if (startNode === json.instructions[x].positionString) {
+                  isChecked = true;
+                }
+              }
+            }
+          }
+          if (workflowObj) {
+            if ((!workflowObj.cb || workflowObj.isSkip)) {
+              json.instructions[x].id = ++workflowObj.countObj.count;
+              if (json.instructions[x].TYPE === 'ImplicitEnd' && (json.TYPE || parent)) {
+                if (json.TYPE === 'ForkList') {
+                  json.instructions[x].TYPE = 'ForkListEnd';
+                } else if (json.TYPE === 'Cycle') {
+                  json.instructions[x].TYPE = 'CycleEnd';
+                } else if (parent) {
+                  let positions = [];
+                  if (!parent.join) {
+                    parent.join = {};
+                  } else {
+                    positions = clone(parent.join.positionStrings);
+                  }
+                  positions.push(json.instructions[x].position);
+                  parent.join.positionStrings = positions;
+                  json.instructions[x].TYPE = 'Join';
+                }
+              }
+            }
+          } else {
+            if (json.instructions[x].TYPE === 'ImplicitEnd' && (json.TYPE || parent)) {
+              if (json.TYPE === 'ForkList') {
+                json.instructions[x].TYPE = 'ForkListEnd';
+              } else if (json.TYPE === 'Cycle') {
+                json.instructions[x].TYPE = 'CycleEnd';
+              } else if (parent) {
+                let arr = [];
+                if (isMap) {
+
+                  if (map.has(parent.positionString)) {
+                    arr = JSON.parse(map.get(parent.positionString));
+                  }
+                  arr.push(json.instructions[x].positionString);
+                  map.set(parent.positionString, JSON.stringify(arr));
+                }
+
+                let positionArr = [];
+                if (!parent.join) {
+                  parent.join = {};
+                } else {
+                  positionArr = self.clone(parent.join.positionStrings);
+                }
+                if (order && order.positionString && order.positionString == json.instructions[x].positionString) {
+                  parent.join.order = order;
+                }
+                positionArr.push(json.instructions[x].position);
+                parent.join.positionStrings = positionArr;
+                if (order) {
+                  parent.join.unique = arr.join('$');
+                  if (positions.indexOf(json.instructions[x].positionString) > -1) {
+                    parent.join.enabled = true;
+                  }
+                }
+                if (positions && positions.has(parent.join.positionStrings)) {
+                  parent.join.position = positions.get(parent.join.positionString);
+                }
+                json.instructions[x].TYPE = 'Join';
+
+              }
+            }
+          }
+          if (json.instructions[x].TYPE === 'Execute.Named') {
+            if (workflowObj) {
+              if (jobMap.has(json.instructions[x].jobName)) {
+                jobMap.set(json.instructions[x].jobName, 2)
+              } else {
+                jobMap.set(json.instructions[x].jobName, 1)
+              }
+              if (!isEmpty(workflowObj.jobs) && !json.instructions[x].documentationName) {
+                const job = workflowObj.jobs[json.instructions[x].jobName];
+                json.instructions[x].documentationName = job ? job.documentationName : null;
+              }
+            }
+            json.instructions[x].TYPE = 'Job';
+          }
+          if (order) {
+            if (!flag) {
+              json.instructions[x].show = true;
+            }
+            if (json.instructions[x].positionString) {
+              if (positions.indexOf(json.instructions[x].positionString) > -1) {
+                json.instructions[x].enabled = true;
+              }
+              if (order.positionString && order.positionString == json.instructions[x].positionString) {
+                flag = true;
+                json.instructions[x].order = order;
+              }
+            }
+          }
+
+          if (json.instructions[x].TYPE === 'Try') {
+            let isRetry = false;
+            if (json.instructions[x].catch) {
+              if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length === 1
+                && json.instructions[x].catch.instructions[0].TYPE === 'Retry') {
+                json.instructions[x].TYPE = 'Retry';
+                json.instructions[x].instructions = json.instructions[x].try.instructions;
+                isRetry = true;
+                delete json.instructions[x].try;
+                delete json.instructions[x].catch;
+              }
+            }
+            if (!isRetry) {
+              if (json.instructions[x].try) {
+                json.instructions[x].instructions = json.instructions[x].try.instructions || [];
+                delete json.instructions[x].try;
+              }
+              if (json.instructions[x].catch) {
+                if (!json.instructions[x].catch.instructions) {
+                  json.instructions[x].catch.instructions = [];
+                }
+              } else {
+                json.instructions[x].catch = {instructions: []};
+              }
+            }
+          }
+          if (json.instructions[x].TYPE === 'StickySubagent' || json.instructions[x].TYPE === 'ConsumeNotices') {
+            if (json.instructions[x].subworkflow) {
+              json.instructions[x].instructions = json.instructions[x].subworkflow.instructions;
+              delete json.instructions[x].subworkflow;
+            }
+          }
+          if (json.instructions[x].TYPE === 'Lock') {
+            if (json.instructions[x].lockedWorkflow) {
+              json.instructions[x].instructions = json.instructions[x].lockedWorkflow.instructions;
+              delete json.instructions[x].lockedWorkflow;
+            }
+          }
+          if (json.instructions[x].TYPE === 'Options') {
+            if (json.instructions[x].block) {
+              json.instructions[x].instructions = json.instructions[x].block.instructions;
+              delete json.instructions[x].block;
+            }
+          }
+          if (json.instructions[x].TYPE === 'Cycle') {
+            if (json.instructions[x].cycleWorkflow) {
+              json.instructions[x].instructions = json.instructions[x].cycleWorkflow.instructions;
+              delete json.instructions[x].cycleWorkflow;
+            }
+          }
+          if (json.instructions[x].TYPE === 'ForkList') {
+            if (json.instructions[x].workflow) {
+              json.instructions[x].instructions = json.instructions[x].workflow.instructions;
+              json.instructions[x].result = json.instructions[x].workflow.result;
+              delete json.instructions[x].workflow;
+            }
+          }
+
+          if (workflowObj && mainJson.compressData && (json.instructions[x].TYPE === 'PostNotices' || json.instructions[x].TYPE === 'ExpectNotices' || json.instructions[x].TYPE === 'ConsumeNotices')) {
+            let arr = [];
+            if (json.instructions[x].TYPE === 'ExpectNotices' || json.instructions[x].TYPE === 'ConsumeNotices') {
+              arr = self.convertExpToArray(json.instructions[x].noticeBoardNames);
+            } else {
+              arr = json.instructions[x].noticeBoardNames;
+            }
+            arr = Array.from(new Set(arr));
+            for (const key in mainJson.compressData) {
+              for (let m = 0; m < arr.length; m++) {
+                if ((mainJson.compressData[key].name == arr[m])) {
+                  if (!json.instructions[x].uuid) {
+                    json.instructions[x].uuid = self.create_UUID();
+                  }
+                  mainJson.compressData[key].instructions.push(json.instructions[x]);
+                  arr.splice(m, 1);
+                  break;
+                }
+              }
+            }
+            if (arr.length > 0) {
+              for (const m in arr) {
+                if (!json.instructions[x].uuid) {
+                  json.instructions[x].uuid = self.create_UUID();
+                }
+                mainJson.compressData.push({
+                  name: arr[m],
+                  instructions: [json.instructions[x]]
+                });
+              }
+            }
+          }
+
+          if (json.instructions[x].instructions) {
+            recursive(json.instructions[x]);
+          }
+          if (json.instructions[x].catch) {
+            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+              if (!flag && order) {
+                json.instructions[x].catch.show = true;
+              }
+              recursive(json.instructions[x].catch);
+              if (order) {
+                if (json.instructions[x].catch.positionString) {
+                  if (order.positionString && order.positionString == json.instructions[x].catch.positionString) {
+                    flag = true;
+                    json.instructions[x].catch.order = order;
+                  }
+                }
+              }
+            }
+          }
+
+          if (json.instructions[x].then && json.instructions[x].then.instructions) {
+            if (!flag && order) {
+              json.instructions[x].then.show = true;
+            }
+            recursive(json.instructions[x].then);
+            if (json.instructions[x].then.positionString && order) {
+              if (order.positionString && order.positionString == json.instructions[x].then.positionString) {
+                flag = true;
+                json.instructions[x].then.order = order;
+              }
+            }
+          }
+          if (json.instructions[x].else && json.instructions[x].else.instructions) {
+            if (!flag && order) {
+              json.instructions[x].else.show = true;
+            }
+            recursive(json.instructions[x].else);
+            if (json.instructions[x].else.positionString && order) {
+              if (order.positionString && order.positionString == json.instructions[x].else.positionString) {
+                flag = true;
+                json.instructions[x].else.order = order;
+              }
+            }
+          }
+          if (json.instructions[x].branches) {
+            json.instructions[x].branches = json.instructions[x].branches.filter((branch: any, index: number) => {
+
+              if (workflowObj?.countObj?.setObj) {
+                if (workflowObj.countObj.setObj.has(json.instructions[x].positionString + '_branch' + index)) {
+                  branch.show = true;
+                }
+              }
+
+              if (branch.workflow) {
+                branch.instructions = branch.workflow.instructions;
+                branch.result = branch.workflow.result;
+                delete branch.workflow;
+              }
+              return (branch.instructions && branch.instructions.length > 0);
+            });
+            for (let i = 0; i < json.instructions[x].branches.length; i++) {
+              if (json.instructions[x].branches[i]) {
+                if (!flag && order) {
+                  json.instructions[x].branches[i].show = true;
+                }
+                recursive(json.instructions[x].branches[i], json.instructions[x]);
+                if (order && json.instructions[x].branches[i].positionString) {
+                  if (order.positionString && order.positionString == json.instructions[x].branches[i].positionString) {
+                    flag = true;
+                    json.instructions[x].branches[i].order = order;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    recursive(mainJson);
+    if (workflowObj?.cb) {
+      workflowObj.cb(jobMap);
+    }
+  }
+
+  setProperties(result: any): void {
+    sessionStorage['$SOS$FORCELOGING'] = result.forceCommentsForAuditLog;
+    sessionStorage['comments'] = JSON.stringify(result.comments);
+    sessionStorage['showViews'] = JSON.stringify(result.showViews);
+    sessionStorage['securityLevel'] = result.securityLevel;
+    sessionStorage['defaultProfile'] = result.defaultProfileAccount;
+    sessionStorage['$SOS$COPY'] = JSON.stringify(result.copy);
+    sessionStorage['$SOS$RESTORE'] = JSON.stringify(result.restore);
+    sessionStorage['$SOS$IMPORT'] = JSON.stringify(result.import);
+    sessionStorage['welcomeDoNotRemindMe'] = result.welcomeDoNotRemindMe;
+    sessionStorage['welcomeGotIt'] = result.welcomeGotIt;
+    sessionStorage['hasLicense'] = result.clusterLicense;
+    sessionStorage['licenseType'] = result.licenseType;
+    sessionStorage['allowEmptyArguments'] = result.allowEmptyArguments;
+    if (result.licenseValidFrom) {
+      sessionStorage['licenseValidFrom'] = result.licenseValidFrom;
+    }
+  }
 }

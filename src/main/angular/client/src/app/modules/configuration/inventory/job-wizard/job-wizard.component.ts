@@ -35,7 +35,7 @@ export class JobWizardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.getJitlJobs();
   }
 

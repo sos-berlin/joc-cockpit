@@ -74,11 +74,11 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.copyObj && !changes.data) {
+    if (changes['copyObj'] && !changes['data']) {
       return;
     }
-    if (changes.reload) {
-      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+    if (changes['reload']) {
+      if (changes['reload'].previousValue === true && changes['reload'].currentValue === false) {
         return;
       }
       if (this.reload) {
@@ -91,7 +91,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       this.cutOperation();
       this.saveJSON();
     }
-    if (changes.data) {
+    if (changes['data']) {
       if (this.data.type) {
         this.getObject();
       } else {

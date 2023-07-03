@@ -43,10 +43,10 @@
             <input type="text" required identifierValidation class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" [appAutofocus]="!isTrash"
                    name="name" [(ngModel)]="board.name" #name="ngModel" autocomplete="off" (blur)="rename(name.invalid)">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-              <div *ngIf="name.errors.required">
+              <div *ngIf="name.errors['required']">
                 <div translate>common.message.requiredError</div>
               </div>
-              <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+              <div *ngIf="name.errors['invalidIdentifier']" translate>common.message.invalid</div>
             </div>
           </div>
         </div>
@@ -85,7 +85,7 @@
               </nz-select>
             </ng-template>
             <div *ngIf="toNotice.invalid && (toNotice.dirty || toNotice.touched)" class="text-danger help-block">
-              <div *ngIf="toNotice.errors.required">
+              <div *ngIf="toNotice.errors['required']">
                 <div translate>common.message.requiredError</div>
               </div>
             </div>
@@ -111,7 +111,7 @@
               </nz-select>
             </ng-template>
             <div *ngIf="readingOrderToNoticeId.invalid && (readingOrderToNoticeId.dirty || readingOrderToNoticeId.touched)" class="text-danger help-block">
-              <div *ngIf="readingOrderToNoticeId.errors.required">
+              <div *ngIf="readingOrderToNoticeId.errors['required']">
                 <div translate>common.message.requiredError</div>
               </div>
             </div>
@@ -141,7 +141,7 @@
               </nz-select>
             </ng-template>
             <div *ngIf="endOfLife.invalid && (endOfLife.dirty || endOfLife.touched)" class="text-danger help-block">
-              <div *ngIf="endOfLife.errors.required">
+              <div *ngIf="endOfLife.errors['required']">
                 <div translate>common.message.requiredError</div>
               </div>
             </div>

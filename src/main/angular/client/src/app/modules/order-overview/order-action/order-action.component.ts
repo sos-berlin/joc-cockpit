@@ -16,7 +16,7 @@ export class OrderActionComponent {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
-  @Input() isDisabled: boolean;
+  @Input() isDisabled = false;
 
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
   @Output() isDropdownOpen: EventEmitter<boolean> = new EventEmitter();
@@ -133,7 +133,7 @@ export class OrderActionComponent {
 
   confirmOrder(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzComponentParams: {
         title: 'confirm',

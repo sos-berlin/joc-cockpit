@@ -969,7 +969,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
             const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
             if (cell) {
               if (mainJson.postNoticeBoards) {
-                let arr = self.workflowService.convertExpToArray(json.instructions[x].noticeBoardNames);
+                let arr = self.coreService.convertExpToArray(json.instructions[x].noticeBoardNames);
                 for (const prop in mainJson.postNoticeBoards) {
                   if (arr.length > 0 && arr.indexOf(mainJson.postNoticeBoards[prop].name) > -1) {
                     const incomingEdges = graph.getIncomingEdges(cell);
@@ -994,7 +994,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
             const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
             if (cell) {
               if (mainJson.postNoticeBoards) {
-                let arr = self.workflowService.convertExpToArray(json.instructions[x].noticeBoardNames);
+                let arr = self.coreService.convertExpToArray(json.instructions[x].noticeBoardNames);
                 for (const prop in mainJson.postNoticeBoards) {
                   if (arr.length > 0 && arr.indexOf(mainJson.postNoticeBoards[prop].name) > -1) {
                     const incomingEdges = graph.getIncomingEdges(cell);

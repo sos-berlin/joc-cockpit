@@ -16,7 +16,7 @@ declare const $: any;
 @Injectable()
 export class WorkflowService {
   preferences: any = {};
-  theme: string;
+  theme = '';
   private jobPath = '';
 
   constructor(public translate: TranslateService, public coreService: CoreService,
@@ -36,13 +36,13 @@ export class WorkflowService {
     layout.execute(graph.getDefaultParent());
   }
 
-  static svgToImageURL(svgString): any {
+  static svgToImageURL(svgString: string): string {
     const base64Data = window.btoa(svgString);
     return 'data:image/svg+xml;base64,' + base64Data;
   }
 
-  static setStyleToSymbol(name, colorCode, theme, graph = null): any {
-    let svg;
+  static setStyleToSymbol(name: string, colorCode: string, theme: string, graph: any = null): any {
+    let svg: any;
     let color = '#333333';
     let color2 = '#ffffff';
     if (theme === 'dark') {
@@ -178,7 +178,7 @@ export class WorkflowService {
     }
   }
 
-  static setStyleToVertex(name, colorCode, theme, graph = null): any {
+  static setStyleToVertex(name: string, colorCode: string, theme: string, graph: any = null): any {
     const vertexStyle: any = {};
     vertexStyle[mxConstants.STYLE_ROUNDED] = true;
     if (name === 'if' || name === 'cycle' || name.match('try')) {
@@ -246,7 +246,7 @@ export class WorkflowService {
     }
   }
 
-  getStyleOfSymbol(name, image): any {
+  getStyleOfSymbol(name: string, image: string): any {
     let svg;
     let color = '#333333';
     if (this.theme === 'dark') {
@@ -287,7 +287,7 @@ export class WorkflowService {
   }
 
   // given a color value, return an array of ten tints in 10% increments
-  calculateShades(colorValue) {
+  calculateShades(colorValue: string) {
     if (this.theme !== 'dark') {
       return this.calculate(colorValue, this.rgbShade).concat("000000");
     } else {
@@ -298,7 +298,7 @@ export class WorkflowService {
   // take a hex color string and produce a list of 10 tints or shades of that color
   // shadeOrTint should be either `rgbShade` or `rgbTint`, as defined above
   // this allows us to use `calculate` for both shade and tint
-  private calculate(colorValue, shadeOrTint) {
+  private calculate(colorValue: string, shadeOrTint: any) {
     let color = this.hexToRGB(colorValue);
     let shadeValues = [];
     for (let i = 1; i < 9; i++) {
@@ -309,7 +309,7 @@ export class WorkflowService {
 
   // convert a hex string into an object with red, green, blue numeric properties
   // '501214' => { red: 80, green: 18, blue: 20 }
-  private hexToRGB(colorValue) {
+  private hexToRGB(colorValue: any) {
     return {
       red: parseInt(colorValue.substr(0, 2), 16),
       green: parseInt(colorValue.substr(2, 2), 16),
@@ -319,19 +319,19 @@ export class WorkflowService {
 
   // convert one of our rgb color objects to a full hex color string
   // { red: 80, green: 18, blue: 20 } => '501214'
-  private rgbToHex(rgb) {
+  private rgbToHex(rgb: any) {
     return this.intToHex(rgb.red) + this.intToHex(rgb.green) + this.intToHex(rgb.blue);
   }
 
   // convert an integer to a 2-char hex string
   // for sanity, round it and ensure it is between 0 and 255
   // 43 => '2b'
-  private intToHex(rgbint) {
+  private intToHex(rgbint: any) {
     return this.pad(Math.min(Math.max(Math.round(rgbint), 0), 255).toString(16), 2);
   }
 
   // pad a hexadecimal string with zeros if it needs it
-  private pad(number, length) {
+  private pad(number: string, length: number) {
     let str = '' + number;
     while (str.length < length) {
       str = '0' + str;
@@ -341,7 +341,7 @@ export class WorkflowService {
 
   // shade one of our rgb color objects to a distance of i*10%
   // ({ red: 80, green: 18, blue: 20 }, 1) => { red: 72, green: 16, blue: 18 }
-  private rgbShade(rgb, i) {
+  private rgbShade(rgb: any, i: any) {
     return {
       red: rgb.red * (1 - 0.1 * i),
       green: rgb.green * (1 - 0.1 * i),
@@ -351,7 +351,7 @@ export class WorkflowService {
 
   // tint one of our rgb color objects to a distance of i*10%
   // ({ red: 80, green: 18, blue: 20 }, 1) => { red: 98, green: 42, blue: 44 }
-  private rgbTint(rgb, i) {
+  private rgbTint(rgb: any, i: any) {
     return {
       red: rgb.red + (255 - rgb.red) * i * 0.1,
       green: rgb.green + (255 - rgb.green) * i * 0.1,
@@ -359,9 +359,9 @@ export class WorkflowService {
     }
   }
 
-  init(theme: string, graph, colorCode = null): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+  init(theme: string, graph: any, colorCode: any = null): void {
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     this.theme = theme;
     WorkflowService.setStyleToSymbol('fork', colorCode, theme, graph);
@@ -483,15 +483,6 @@ export class WorkflowService {
     graph.getStylesheet().putCellStyle('edgeStyle', style2);
   }
 
-  create_UUID(): string {
-    let dt = new Date().getTime();
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      const r = (dt + Math.random() * 16) % 16 | 0;
-      dt = Math.floor(dt / 16);
-      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
-  }
-
   convertTryInstruction(instruction: any): void {
     const catchObj = clone(instruction.catch);
     const label = clone(instruction.label);
@@ -517,8 +508,10 @@ export class WorkflowService {
       ]
     };
     if (typeof instruction.retryDelays === 'string') {
-      instruction.retryDelays = instruction.retryDelays.split(',').map(Number);
-      instruction.retryDelays = instruction.retryDelays.filter(num => !isNaN(num));
+      instruction.retryDelays = instruction.retryDelays.split(',').map((num: number) => {
+        return Number(num);
+      });
+      instruction.retryDelays = instruction.retryDelays.filter((num: number) => !isNaN(num));
     }
     const catchObj = clone(instruction.catch);
     const retryDelays = clone(instruction.retryDelays);
@@ -679,7 +672,7 @@ export class WorkflowService {
     return true;
   }
 
-  checkReturnCodes(obj): void {
+  checkReturnCodes(obj: any): void {
     if (obj.executable && obj.executable.returnCodeMeaning) {
       if (obj.executable.TYPE === 'ShellScriptExecutable') {
         if (obj.executable.returnCodeMeaning.success === '') {
@@ -765,181 +758,10 @@ export class WorkflowService {
     }
   }
 
-  convertTryToRetry(mainJson: any, cb: any, jobs = {}, countObj, isSkip = false): void {
-    const self = this;
-    const jobMap = new Map();
-    function recursive(json: any, parent = null) {
-      if (json.instructions) {
-        for (let x = 0; x < json.instructions.length; x++) {
-          if(countObj.setObj){
-            if (countObj.setObj.has(json.instructions[x].positionString)){
-              json.instructions[x].show = true;
-            }
-          }
-          if (!cb || isSkip) {
-            json.instructions[x].id = ++countObj.count;
-            if (json.instructions[x].TYPE === 'ImplicitEnd' && (json.TYPE || parent)) {
-              if (json.TYPE === 'ForkList') {
-                json.instructions[x].TYPE = 'ForkListEnd';
-              } else if (json.TYPE === 'Cycle') {
-                json.instructions[x].TYPE = 'CycleEnd';
-              } else if (parent) {
-                let positions = [];
-                if (!parent.join) {
-                  parent.join = {};
-                } else {
-                  positions = clone(parent.join.positionStrings);
-                }
-                positions.push(json.instructions[x].position);
-                parent.join.positionStrings = positions;
-                json.instructions[x].TYPE = 'Join';
-              }
-            }
-          }
-          if (json.instructions[x].TYPE === 'Execute.Named') {
-            if (jobMap.has(json.instructions[x].jobName)) {
-              jobMap.set(json.instructions[x].jobName, 2)
-            } else {
-              jobMap.set(json.instructions[x].jobName, 1)
-            }
-            json.instructions[x].TYPE = 'Job';
-            if (!isEmpty(jobs) && !json.instructions[x].documentationName) {
-              const job = jobs[json.instructions[x].jobName];
-              json.instructions[x].documentationName = job ? job.documentationName : null;
-            }
-          }
-          if (json.instructions[x].TYPE === 'Try') {
-            let isRetry = false;
-            if (json.instructions[x].catch) {
-              if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length === 1
-                && json.instructions[x].catch.instructions[0].TYPE === 'Retry') {
-                json.instructions[x].TYPE = 'Retry';
-                json.instructions[x].instructions = json.instructions[x].try.instructions;
-                isRetry = true;
-                delete json.instructions[x].try;
-                delete json.instructions[x].catch;
-              }
-            }
-            if (!isRetry) {
-              if (json.instructions[x].try) {
-                json.instructions[x].instructions = json.instructions[x].try.instructions || [];
-                delete json.instructions[x].try;
-              }
-              if (json.instructions[x].catch) {
-                if (!json.instructions[x].catch.instructions) {
-                  json.instructions[x].catch.instructions = [];
-                }
-              } else {
-                json.instructions[x].catch = {instructions: []};
-              }
-            }
-          }
-          if (json.instructions[x].TYPE === 'Lock') {
-            if (json.instructions[x].lockedWorkflow) {
-              json.instructions[x].instructions = json.instructions[x].lockedWorkflow.instructions;
-              delete json.instructions[x].lockedWorkflow;
-            }
-          }
-          if (json.instructions[x].TYPE === 'StickySubagent' || json.instructions[x].TYPE === 'ConsumeNotices') {
-            if (json.instructions[x].subworkflow) {
-              json.instructions[x].instructions = json.instructions[x].subworkflow.instructions;
-              delete json.instructions[x].subworkflow;
-            }
-          }
-
-          if (json.instructions[x].TYPE === 'Cycle') {
-            if (json.instructions[x].cycleWorkflow) {
-              json.instructions[x].instructions = json.instructions[x].cycleWorkflow.instructions;
-              delete json.instructions[x].cycleWorkflow;
-            }
-          }
-          if (json.instructions[x].TYPE === 'Options') {
-            if (json.instructions[x].block) {
-              json.instructions[x].instructions = json.instructions[x].block.instructions;
-              delete json.instructions[x].block;
-            }
-          }
-          if (json.instructions[x].TYPE === 'ForkList') {
-            if (json.instructions[x].workflow) {
-              json.instructions[x].instructions = json.instructions[x].workflow.instructions;
-              json.instructions[x].result = json.instructions[x].workflow.result;
-              delete json.instructions[x].workflow;
-            }
-          }
-          if (mainJson.compressData && (json.instructions[x].TYPE === 'PostNotices' || json.instructions[x].TYPE === 'ExpectNotices' || json.instructions[x].TYPE === 'ConsumeNotices')) {
-            let arr = [];
-            if (json.instructions[x].TYPE === 'ExpectNotices' || json.instructions[x].TYPE === 'ConsumeNotices') {
-              arr = self.convertExpToArray(json.instructions[x].noticeBoardNames);
-            } else {
-              arr = json.instructions[x].noticeBoardNames;
-            }
-            arr = Array.from(new Set(arr));
-            for (const key in mainJson.compressData) {
-              for (let m = 0; m < arr.length; m++) {
-                if ((mainJson.compressData[key].name == arr[m])) {
-                  if (!json.instructions[x].uuid) {
-                    json.instructions[x].uuid = self.create_UUID();
-                  }
-                  mainJson.compressData[key].instructions.push(json.instructions[x]);
-                  arr.splice(m, 1);
-                  break;
-                }
-              }
-            }
-            if (arr.length > 0) {
-              for (const m in arr) {
-                if (!json.instructions[x].uuid) {
-                  json.instructions[x].uuid = self.create_UUID();
-                }
-                mainJson.compressData.push({
-                  name: arr[m],
-                  instructions: [json.instructions[x]]
-                });
-              }
-            }
-          }
-          if (json.instructions[x].instructions) {
-            recursive(json.instructions[x]);
-          }
-          if (json.instructions[x].catch) {
-            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-              recursive(json.instructions[x].catch);
-            }
-          }
-          if (json.instructions[x].then && json.instructions[x].then.instructions) {
-            recursive(json.instructions[x].then);
-          }
-          if (json.instructions[x].else && json.instructions[x].else.instructions) {
-            recursive(json.instructions[x].else);
-          }
-          if (json.instructions[x].branches) {
-            json.instructions[x].branches = json.instructions[x].branches.filter((branch: any, index) => {
-              if(countObj.setObj){
-                if (countObj.setObj.has(json.instructions[x].positionString + '_branch'+ index)){
-                  branch.show = true;
-                }
-              }
-              if (branch.workflow) {
-                branch.instructions = branch.workflow.instructions;
-                branch.result = branch.workflow.result;
-                delete branch.workflow;
-                return (branch.instructions && branch.instructions.length > 0);
-              }
-            });
-            for (let i = 0; i < json.instructions[x].branches.length; i++) {
-              if (json.instructions[x].branches[i]) {
-                recursive(json.instructions[x].branches[i], json.instructions[x]);
-              }
-            }
-          }
-        }
-      }
-    }
-
-    recursive(mainJson);
-    if (cb) {
-      cb(jobMap);
-    }
+  convertTryToRetry(mainJson: any, cb: any, jobs: any = {}, countObj: any, isSkip = false): void {
+    this.coreService.convertTryToRetry(mainJson, null, '', false, null, {
+      cb, jobs, countObj, isSkip
+    });
   }
 
   createWorkflow(mainJson: any, editor: any, mapObj: any): void {
@@ -950,9 +772,9 @@ export class WorkflowService {
     const isGraphView = mapObj.graphView;
     const colorCode = mapObj.colorCode;
     const useString = mapObj.useString;
-    let boardType;
-    let boardNames;
-    let objectName;
+    let boardType: any;
+    let boardNames: any;
+    let objectName: any;
     if (mapObj.cell) {
       boardType = mapObj.cell.value.tagName;
       objectName = mapObj.cell.getAttribute('noticeBoardNames') || mapObj.workflowName;
@@ -960,7 +782,7 @@ export class WorkflowService {
         if (mapObj.cell.value.tagName === 'PostNotices') {
           boardNames = objectName.split(',');
         } else if (mapObj.cell.value.tagName === 'ExpectNotices' || mapObj.cell.value.tagName === 'ConsumeNotices') {
-          boardNames = this.convertExpToArray(objectName);
+          boardNames = this.coreService.convertExpToArray(objectName);
         }
       }
     }
@@ -981,7 +803,7 @@ export class WorkflowService {
         _node.setAttribute('title', 'start');
         const v1 = graph.insertVertex(defaultParent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));
 
-        let wf;
+        let wf: any;
         if (isGraphView && colorCode && colorCode !== '#90C7F5') {
           const node1 = doc.createElement('Workflow');
           const workflowName = mainJson.path.substring(mainJson.path.lastIndexOf('/') + 1);
@@ -992,7 +814,7 @@ export class WorkflowService {
           if (mapObj.addOrderdMap && mapObj.addOrderdMap.has(workflowName)) {
             let arr = mapObj.addOrderdMap.get(workflowName);
             arr = JSON.parse(arr);
-            arr.forEach(id => {
+            arr.forEach((id: any) => {
               const vert = graph.getModel().getCell(id);
               if (vert && vert.value.tagName === 'AddOrder') {
                 connectInstruction(vert, wf, '', '', defaultParent);
@@ -1051,7 +873,7 @@ export class WorkflowService {
           _node.setAttribute('versionId', versionId);
           _node.setAttribute('path', path);
           if (!json.instructions[x].uuid) {
-            json.instructions[x].uuid = self.create_UUID();
+            json.instructions[x].uuid = self.coreService.create_UUID();
           }
           if (json.instructions[x].label !== undefined) {
             _node.setAttribute('label', json.instructions[x].label);
@@ -1128,7 +950,7 @@ export class WorkflowService {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
             if (mapObj.addOrderdMap) {
-              let arr = [];
+              let arr: any = [];
               if (mapObj.addOrderdMap.has(json.instructions[x].workflowName)) {
                 arr = arr.concat(JSON.parse(mapObj.addOrderdMap.get(json.instructions[x].workflowName)));
               } else {
@@ -1152,7 +974,7 @@ export class WorkflowService {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
             if ((boardType === 'ConsumeNotices' || boardType === 'ExpectNotices') && (json.instructions[x].noticeBoardNames && objectName === json.instructions[x].noticeBoardNames.join(',') ||
-              (json.instructions[x].noticeBoardNames.filter(o1 => boardNames.some(o2 => o1 === o2))))) {
+              (json.instructions[x].noticeBoardNames.filter((o1: any) => boardNames.some((o2: any) => o1 === o2))))) {
               connectInstruction(v1, mapObj.cell, objectName, '', mapObj.cell.parent);
             }
           } else if (json.instructions[x].TYPE === 'Prompt') {
@@ -1184,8 +1006,8 @@ export class WorkflowService {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
             if (json.instructions[x].noticeBoardNames) {
-              let arr = self.convertExpToArray(json.instructions[x].noticeBoardNames);
-              if (boardType === 'PostNotices' && (objectName === json.instructions[x].noticeBoardNames || (arr.filter(o1 => boardNames.some(o2 => o1 === o2))))) {
+              let arr = self.coreService.convertExpToArray(json.instructions[x].noticeBoardNames);
+              if (boardType === 'PostNotices' && (objectName === json.instructions[x].noticeBoardNames || (arr.filter(o1 => boardNames.some((o2: any) => o1 === o2))))) {
                 connectInstruction(mapObj.cell, v1, objectName, '', mapObj.cell.parent);
               }
             }
@@ -1206,8 +1028,8 @@ export class WorkflowService {
               v2 = closingNode(v1, v1.id, parent, 'ConsumeNotices');
             }
             if (json.instructions[x].noticeBoardNames) {
-              let arr = self.convertExpToArray(json.instructions[x].noticeBoardNames);
-              if (boardType === 'PostNotices' && (objectName === json.instructions[x].noticeBoardNames || (arr.filter(o1 => boardNames.some(o2 => o1 === o2))))) {
+              let arr = self.coreService.convertExpToArray(json.instructions[x].noticeBoardNames);
+              if (boardType === 'PostNotices' && (objectName === json.instructions[x].noticeBoardNames || (arr.filter(o1 => boardNames.some((o2: any) => o1 === o2))))) {
                 connectInstruction(mapObj.cell, v1, objectName, '', mapObj.cell.parent);
               }
             }
@@ -1492,7 +1314,7 @@ export class WorkflowService {
                   mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
                 }
                 if ((boardType === 'ExpectNotices' || boardType === 'ConsumeNotices') && json.compressData[i].instructions[x].noticeBoardNames && (objectName === json.compressData[i].instructions[x].noticeBoardNames.join(',') ||
-                  (json.compressData[i].instructions[x].noticeBoardNames.filter(o1 => boardNames.some(o2 => o1 === o2))))) {
+                  (json.compressData[i].instructions[x].noticeBoardNames.filter((o1: any) => boardNames.some((o2: any) => o1 === o2))))) {
                   connectInstruction(v1, mapObj.cell, objectName, '', parent);
                 }
               }
@@ -1509,8 +1331,8 @@ export class WorkflowService {
                 if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
                   mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
                 }
-                let arr = self.convertExpToArray(json.compressData[i].instructions[x].noticeBoardNames);
-                if (boardType === 'PostNotices' && (objectName === json.compressData[i].instructions[x].noticeBoardNames || arr.filter(o1 => boardNames.some(o2 => o1 === o2)))) {
+                let arr = self.coreService.convertExpToArray(json.compressData[i].instructions[x].noticeBoardNames);
+                if (boardType === 'PostNotices' && (objectName === json.compressData[i].instructions[x].noticeBoardNames || arr.filter(o1 => boardNames.some((o2: any) => o1 === o2)))) {
                   connectInstruction(mapObj.cell, v1, objectName, '', parent);
                 }
               }
@@ -1528,8 +1350,8 @@ export class WorkflowService {
                 if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
                   mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
                 }
-                let arr = self.convertExpToArray(json.compressData[i].instructions[x].noticeBoardNames);
-                if (boardType === 'PostNotices' && (objectName === json.compressData[i].instructions[x].noticeBoardNames || arr.filter(o1 => boardNames.some(o2 => o1 === o2)))) {
+                let arr = self.coreService.convertExpToArray(json.compressData[i].instructions[x].noticeBoardNames);
+                if (boardType === 'PostNotices' && (objectName === json.compressData[i].instructions[x].noticeBoardNames || arr.filter(o1 => boardNames.some((o2: any) => o1 === o2)))) {
                   connectInstruction(mapObj.cell, v1, objectName, '', parent);
                 }
               }
@@ -1554,7 +1376,7 @@ export class WorkflowService {
       if (mapObj.addOrderdMap.has(workflowName)) {
         let arr = mapObj.addOrderdMap.get(workflowName);
         arr = JSON.parse(arr);
-        arr.forEach(id => {
+        arr.forEach((id: number) => {
           connectInstruction(graph.getModel().getCell(id), w1, '', '', parent);
         });
       } else if (mapObj.cell && mapObj.cell.value.tagName !== 'ExpectNotices' && mapObj.cell.value.tagName !== 'ConsumeNotices' && mapObj.cell.value.tagName !== 'PostNotices') {
@@ -1672,7 +1494,7 @@ export class WorkflowService {
       return v1;
     }
 
-    function closingNode(branches: any, targetId: any, parent: any, type): any {
+    function closingNode(branches: any, targetId: any, parent: any, type: any): any {
       const _node = doc.createElement(type === 'Lock' ? 'EndLock' : type === 'StickySubagent' ? 'EndStickySubagent' : type === 'Options' ? 'EndOptions' : type === 'Retry' ? 'EndRetry' : type === 'ConsumeNotices' ? 'EndConsumeNotices' : 'EndCycle');
       _node.setAttribute('displayLabel', type === 'Lock' ? 'lockEnd' : type === 'StickySubagent' ? 'stickySubagentEnd' : type === 'Options' ? 'optionsEnd' : type === 'Retry' ? 'retryEnd' : type === 'ConsumeNotices' ? 'consumeNoticesEnd' : 'cycleEnd');
       if (targetId) {
@@ -1710,13 +1532,13 @@ export class WorkflowService {
       return v1;
     }
 
-    function joinForkListAndCycle(branches: any, targetId: any, parent: any, type): any {
+    function joinForkListAndCycle(branches: any, targetId: any, parent: any, type: any): any {
       const _node = doc.createElement('End' + type);
       _node.setAttribute('displayLabel', type === 'Cycle' ? 'cycleEnd' : 'forkListEnd');
       if (targetId) {
         _node.setAttribute('targetId', targetId);
       }
-      let closeTag =  type === 'Cycle' ? 'cycle' : 'close' +type;
+      let closeTag = type === 'Cycle' ? 'cycle' : 'close' + type;
       const v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol(closeTag, colorCode, self.theme) : closeTag);
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
@@ -2204,11 +2026,11 @@ export class WorkflowService {
   }
 
   convertStringToDuration(str: string, isDuration = false): number {
-    function durationSeconds(timeExpr) {
-      const units = {h: 3600, m: 60, s: 1};
+    function durationSeconds(timeExpr: string) {
+      const units: any = {h: 3600, m: 60, s: 1};
       const regex = /(\d+)([hms])/g;
       let seconds = 0;
-      let match;
+      let match: any[] | null;
       while ((match = regex.exec(timeExpr))) {
         seconds += parseInt(match[1], 10) * units[match[2]];
       }
@@ -2272,7 +2094,7 @@ export class WorkflowService {
   }
 
   getLabelName(tagName: string): string {
-    return  tagName === 'Fork' ? 'join' : tagName === 'Retry' ? 'endRetry' : tagName === 'ConsumeNotices' ? 'endConsumeNotices'
+    return tagName === 'Fork' ? 'join' : tagName === 'Retry' ? 'endRetry' : tagName === 'ConsumeNotices' ? 'endConsumeNotices'
       : tagName === 'Lock' ? 'endLock' : tagName === 'StickySubagent' ? 'endStickySubagent' : tagName === 'ForkList' ? 'endForkList'
         : tagName === 'Catch' ? 'catch' : tagName === 'If' ? 'endIf' : tagName === 'Cycle' ? 'endCycle' : tagName === 'Options' ? 'endOptions' : 'try';
   }
@@ -2287,7 +2109,7 @@ export class WorkflowService {
       || tagName === 'EndRetry' || tagName === 'EndCycle' || tagName === 'EndLock' || tagName === 'EndConsumeNotices' || tagName === 'EndOptions';
   }
 
-  exportInPng(name, isModal = false): void {
+  exportInPng(name: string, isModal = false): void {
     const dom = isModal ? $('.graph2 #graph') : $('#graph');
     let ht = $(document).height();
     let wt = $(document).width();
@@ -2308,12 +2130,12 @@ export class WorkflowService {
     });
   }
 
-  sortPeriodList(periods): any {
-    let specificDates = [];
-    let weekdayPeriods = [];
-    let monthPeriods = [];
-    let specificDaysPeriods = [];
-    periods.forEach((period) => {
+  sortPeriodList(periods: any): any {
+    let specificDates: any[] = [];
+    let weekdayPeriods: any[] = [];
+    let monthPeriods: any[] = [];
+    let specificDaysPeriods: any[] = [];
+    periods.forEach((period: any) => {
       if (period.TYPE === 'SpecificDatePeriod') {
         specificDates.push(period);
       } else if (period.TYPE === 'MonthlyDatePeriod' || period.TYPE === 'MonthlyLastDatePeriod') {
@@ -2324,6 +2146,7 @@ export class WorkflowService {
         weekdayPeriods.push(period);
       }
     });
+
     return sortBy(weekdayPeriods, (i: any) => {
       return i.secondOfWeek;
     }).concat(sortBy(specificDaysPeriods, (i: any) => {
@@ -2337,9 +2160,9 @@ export class WorkflowService {
     );
   }
 
-  convertSecondIntoWeek(data, periodList, days, frequency): void {
+  convertSecondIntoWeek(data: any, periodList: any, days: any, frequency: any): void {
     const hour = 3600;
-    this.sortPeriodList(data.periods).forEach((period) => {
+    this.sortPeriodList(data.periods).forEach((period: any) => {
       const p: any = {
         startTime: 0,
         duration: period.duration
@@ -2479,7 +2302,7 @@ export class WorkflowService {
     });
   }
 
-  convertRepeatObject(data): any {
+  convertRepeatObject(data: any): any {
     const obj: any = {
       TYPE: data.TYPE
     };
@@ -2487,7 +2310,7 @@ export class WorkflowService {
       if (data.offsets) {
         const arr = data.offsets.split(',');
         obj.offsets = [];
-        arr.forEach(val => {
+        arr.forEach((val: any) => {
           const time = this.convertStringToDuration(val, true);
           if (obj.offsets.indexOf(time) === -1) {
             obj.offsets.push(time);
@@ -2512,7 +2335,7 @@ export class WorkflowService {
     return obj;
   }
 
-  getTextOfRepeatObject(obj): any {
+  getTextOfRepeatObject(obj: any): any {
     let str = '';
     const returnObj: any = {
       TYPE: obj.TYPE
@@ -2525,7 +2348,7 @@ export class WorkflowService {
       let offsets = '';
       if (obj.offsets) {
         returnObj.offsets = '';
-        obj.offsets.forEach((offset, index) => {
+        obj.offsets.forEach((offset: number, index: number) => {
           if (offset === 0) {
             returnObj.offsets += '0';
             isZero = true;
@@ -2574,10 +2397,10 @@ export class WorkflowService {
     return returnObj;
   }
 
-  getText(startTime, dur): string {
+  getText(startTime: any, dur: any): string {
     const time = this.convertSecondToTime(startTime);
     const duration = this.convertDurationToHour(dur);
-    let str;
+    let str: any;
     this.translate.get('workflow.admissionTime.label.periodBeginText', {
       time,
       duration
@@ -2587,7 +2410,7 @@ export class WorkflowService {
     return str;
   }
 
-  setJobValue(val): void {
+  setJobValue(val: string): void {
     this.jobPath = val;
   }
 
@@ -2595,28 +2418,12 @@ export class WorkflowService {
     return this.jobPath;
   }
 
-  convertExpToArray(exp): Array<string> {
-    let arr = [];
-    exp.split(' ').forEach((item) => {
-      let x = item.trim();
-      if (x !== '&&' && x !== '||') {
-        if (x.substring(0, 1) == '(') {
-          x = x.substring(1, x.length - 1);
-        }
-        if (x.substring(0, 1) == '"' || x.substring(0, 1) == "'") {
-          x = x.substring(1, x.length - 1);
-        }
-        arr.push(x);
-      }
-    });
-    return arr;
-  }
 
-  getStringDay(day): string {
+  getStringDay(day: any): string {
     return (day == 0 ? 'Monday' : day == 1 ? 'Tuesday' : day == 2 ? 'Wednesday' : day == 3 ? 'Thursday' : day == 4 ? 'Friday' : day == 5 ? 'Saturday' : 'Sunday') + ' of a month';
   }
 
-  getSpecificDay(day): string {
+  getSpecificDay(day: any): string {
     if (!day) {
       return '';
     }
@@ -2641,7 +2448,7 @@ export class WorkflowService {
     }
   }
 
-  getMonthDays(month, isLast): string {
+  getMonthDays(month: any, isLast: any): string {
     let str = isLast ? 'last ' : '';
     if (month == 0 && isLast) {
 
@@ -2658,11 +2465,11 @@ export class WorkflowService {
     return str + ' day of a month';
   }
 
-  convertListToAdmissionTime(list): Array<any> {
-    const arr = [];
-    list.forEach((item) => {
+  convertListToAdmissionTime(list: any): Array<any> {
+    let arr: any[] = [];
+    list.forEach((item: any) => {
       if (item.periods) {
-        item.periods.forEach((period) => {
+        item.periods.forEach((period: any) => {
           if (!period.startTime) {
             period.startTime = 0;
           }
@@ -2697,7 +2504,7 @@ export class WorkflowService {
     return arr;
   }
 
-  updatePeriod(temp, obj, period): void {
+  updatePeriod(temp: any, obj: any, period: any): void {
     if (temp.length > 0) {
       for (const i in temp) {
         if (temp[i] && temp[i].frequency == obj.frequency) {
@@ -2710,7 +2517,7 @@ export class WorkflowService {
     if (period) {
       let isCheck = true;
       if (obj.periods.length > 0) {
-        obj.periods.forEach((_period) => {
+        obj.periods.forEach((_period: any) => {
           if (_period.text === period.text) {
             isCheck = false;
           }
@@ -2722,7 +2529,7 @@ export class WorkflowService {
     }
   }
 
-  compareAndMergeInstructions(sour, targ): void {
+  compareAndMergeInstructions(sour: any, targ: any): void {
     if (isArray(sour)) {
       for (let i in sour) {
         sour[i].state = targ[i].state
@@ -2734,7 +2541,7 @@ export class WorkflowService {
             this.compareAndMergeInstructions(sour[i].else.instructions, targ[i].else.instructions);
           }
           if (sour[i].branches && sour[i].branches.length > 0) {
-            sour[i].branches.forEach((branch, index) => {
+            sour[i].branches.forEach((branch: any, index: number) => {
               this.compareAndMergeInstructions(sour[i].branches[index].instructions, targ[i].branches[index].instructions);
             })
           }
@@ -2749,7 +2556,7 @@ export class WorkflowService {
     }
   }
 
-  convertJobObject(job, isJobTemplate = true): any {
+  convertJobObject(job: any, isJobTemplate = true): any {
     if (isEmpty(job.admissionTimeScheme)) {
       delete job.admissionTimeScheme;
     }
@@ -2777,7 +2584,7 @@ export class WorkflowService {
       }
       if (job.defaultArguments) {
         if (job.executable.v1Compatible && job.executable.TYPE === 'ShellScriptExecutable') {
-          job.defaultArguments.forEach((argu) => {
+          job.defaultArguments.forEach((argu: any) => {
             this.coreService.addSlashToString(argu, 'value');
           });
           this.coreService.convertArrayToObject(job, 'defaultArguments', true);
@@ -2788,7 +2595,7 @@ export class WorkflowService {
       if (job.executable.arguments) {
         if (job.executable.TYPE === 'InternalExecutable') {
           if (isArray(job.executable.arguments)) {
-            job.executable.arguments.forEach((argu) => {
+            job.executable.arguments.forEach((argu: any) => {
               this.coreService.addSlashToString(argu, 'value');
             });
             this.coreService.convertArrayToObject(job.executable, 'arguments', true);
@@ -2810,7 +2617,7 @@ export class WorkflowService {
     if (job.executable && job.executable.jobArguments) {
       if (job.executable.TYPE === 'InternalExecutable') {
         if (job.executable.jobArguments && isArray(job.executable.jobArguments)) {
-          job.executable.jobArguments.forEach((argu) => {
+          job.executable.jobArguments.forEach((argu: any) => {
             this.coreService.addSlashToString(argu, 'value');
           });
           this.coreService.convertArrayToObject(job.executable, 'jobArguments', true);
@@ -2847,7 +2654,7 @@ export class WorkflowService {
 
     if (job.arguments && job.arguments.length > 0) {
       let temp = this.coreService.clone(job.arguments);
-      job.arguments = temp.filter((value) => {
+      job.arguments = temp.filter((value: any) => {
         delete value.value.invalid;
         if (value.value.type !== 'String') {
           delete value.value.facet;
@@ -2862,8 +2669,8 @@ export class WorkflowService {
         }
 
         if (value.value.list) {
-          let list = [];
-          value.value.list.forEach((obj) => {
+          let list: string[] = [];
+          value.value.list.forEach((obj: { name: string }) => {
             this.coreService.addSlashToString(obj, 'name');
             list.push(obj.name);
           });
@@ -2875,7 +2682,7 @@ export class WorkflowService {
     }
     if (job.arguments) {
       if (job.arguments && isArray(job.arguments)) {
-        job.arguments.forEach((argu) => {
+        job.arguments.forEach((argu: any) => {
           this.coreService.addSlashToString(argu, 'value');
         });
         this.coreService.convertArrayToObject(job, 'arguments', true);

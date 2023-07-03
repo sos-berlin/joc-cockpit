@@ -24,7 +24,7 @@
                 <input type="text" class="form-control" name="roleName" placeholder="{{'user.placeholder.role' | translate}}" [(ngModel)]="currentRole.roleName" required [appAutofocus]="true" autocomplete="off" #roleName="ngModel"
                        (blur)="checkRole(currentRole.roleName)"/>
                 <div *ngIf="roleName.invalid && (roleName.dirty || roleName.touched)" class= "text-danger help-block">
-                    <div *ngIf="roleName.errors.required" translate>
+                    <div *ngIf="roleName.errors['required']" translate>
                       common.message.requiredError
                     </div>
                 </div>

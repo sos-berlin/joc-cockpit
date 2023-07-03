@@ -1132,11 +1132,11 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     if (this.data.objectType || this.data.type) {
       this.objectType = this.data.objectType || this.data.type;
     }
-    if (changes.copyObj && !changes.data) {
+    if (changes['copyObj'] && !changes['data']) {
       return;
     }
-    if (changes.reload) {
-      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+    if (changes['reload']) {
+      if (changes['reload'].previousValue === true && changes['reload'].currentValue === false) {
         return;
       }
       if (this.reload) {
@@ -1149,7 +1149,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     if (this.calendar.actual) {
       this.saveJSON();
     }
-    if (changes.data) {
+    if (changes['data']) {
       if (this.data.type) {
         this.editor.frequencyType = 'INCLUDE';
         this.getObject();
@@ -1279,7 +1279,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   showYearView(): void {
     this.editor.showYearView = true;
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: FrequencyModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -1308,7 +1308,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     };
     this.editor.showYearView = true;
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: FrequencyModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -1397,7 +1397,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         objectType: obj.type
       };
 
-      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
           request.auditLog = {comment: translatedValue};
         });
@@ -1434,7 +1434,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     this.editor.update = !!data;
 
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: FrequencyModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,

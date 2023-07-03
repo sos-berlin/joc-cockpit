@@ -40,7 +40,7 @@ export class PermissionModalComponent implements OnInit {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -83,7 +83,7 @@ export class PermissionModalComponent implements OnInit {
     delete _obj.permissionLabel;
     this.submitted = true;
     const request: any = {
-      identityServiceName: sessionStorage.identityServiceName,
+      identityServiceName: sessionStorage['identityServiceName'],
       auditLog: {}
     };
     this.coreService.getAuditLogObj(this.comments, request.auditLog);
@@ -140,11 +140,11 @@ export class FolderModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     } else {
-      const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+      const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
       this.display = preferences.auditLog;
     }
     if (this.dataService.comments && this.dataService.comments.comment) {
@@ -163,7 +163,7 @@ export class FolderModalComponent implements OnInit {
   onSubmit(obj): void {
     this.submitted = true;
     const request: any = {
-      identityServiceName: sessionStorage.identityServiceName,
+      identityServiceName: sessionStorage['identityServiceName'],
       auditLog: {}
     };
     this.coreService.getAuditLogObj(this.comments, request.auditLog);
@@ -314,7 +314,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       } else if (res === 'ADD_PERMISSION') {
         this.addPermission();
       } else if (res === 'CHANGE_VIEW') {
-        this.pageView = JSON.parse(localStorage.views).permission;
+        this.pageView = JSON.parse(localStorage['views']).permission;
         if (this.pageView === 'grid') {
           setTimeout(() => {
             this.drawTree(this.permissionNodes[0][0], '');
@@ -325,11 +325,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.pageView = JSON.parse(localStorage.views).permission;
+    this.pageView = JSON.parse(localStorage['views']).permission;
     this.userPermission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.identityServiceName = sessionStorage.identityServiceName;
-    this.identityServiceType = sessionStorage.identityServiceType;
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+    this.identityServiceName = sessionStorage['identityServiceName'];
+    this.identityServiceType = sessionStorage['identityServiceType'];
     this.subscription2 = this.route.params.subscribe(params => {
       this.controllerName = params['controller.controller'];
       if (this.controllerName === 'default') {

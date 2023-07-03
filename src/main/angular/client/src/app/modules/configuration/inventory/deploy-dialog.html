@@ -53,7 +53,7 @@
           <nz-date-picker required [nzFormat]="dateFormat"
                           #date="ngModel" name="date" [(ngModel)]="dateObj.fromDate"></nz-date-picker>
           <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
-            <div *ngIf="date.errors.required">
+            <div *ngIf="date.errors['required']">
               <div translate>common.message.requiredError</div>
             </div>
           </div>

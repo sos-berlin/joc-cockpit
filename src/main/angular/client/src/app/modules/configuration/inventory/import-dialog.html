@@ -99,10 +99,10 @@
                    #suffix="ngModel" [(ngModel)]="requestObj.suffix" [appAutofocus]="requestObj.type === 'suffix'" autocomplete="off">
             <div *ngIf="suffix.invalid && (suffix.dirty || suffix.touched)"
                  class="text-danger help-block">
-              <div *ngIf="(suffix.errors && suffix.errors.required)">
+              <div *ngIf="(suffix.errors && suffix.errors['required'])">
                 <div translate>common.message.requiredError</div>
               </div>
-              <div *ngIf="suffix.errors.invalidIdentifier" translate>common.message.invalid</div>
+              <div *ngIf="suffix.errors['invalidIdentifier']" translate>common.message.invalid</div>
             </div>
           </div>
         </div>
@@ -113,10 +113,10 @@
                    #prefix="ngModel" [(ngModel)]="requestObj.prefix" [appAutofocus]="requestObj.type === 'prefix'" autocomplete="off">
             <div *ngIf="prefix.invalid && (prefix.dirty || prefix.touched)"
                  class="text-danger help-block">
-              <div *ngIf="(prefix.errors && prefix.errors.required)">
+              <div *ngIf="(prefix.errors && prefix.errors['required'])">
                 <div translate>common.message.requiredError</div>
               </div>
-              <div *ngIf="prefix.errors.invalidIdentifier" translate>common.message.invalid</div>
+              <div *ngIf="prefix.errors['invalidIdentifier']" translate>common.message.invalid</div>
             </div>
           </div>
         </div>

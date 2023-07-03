@@ -71,7 +71,7 @@ export class BarComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.roundEdges) {
+    if (changes['roundEdges']) {
       this.loadAnimation();
     }
     this.update();
@@ -98,7 +98,7 @@ export class BarComponent implements OnChanges {
   }
 
   updatePathEl(): void {
-    const node = select(this.element).select('.bar');
+    const node: any = select(this.element).select('.bar');
     const path = this.getPath();
     if (this.animations) {
       node.transition().duration(500).attr('d', path);

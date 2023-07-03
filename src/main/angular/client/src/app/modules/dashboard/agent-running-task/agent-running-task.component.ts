@@ -41,7 +41,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     });
   }
 
-  refresh(args): void {
+  refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'JobStateChanged' || args.eventSnapshots[j].eventType === 'JOCStateChanged' ||

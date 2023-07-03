@@ -9,7 +9,7 @@
                name="name" maxlength="30" [(ngModel)]="filter.name" #name="ngModel"
                (blur)="checkFilterName()">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-          <div *ngIf="name.errors.required">
+          <div *ngIf="name.errors['required']">
             <div translate>common.message.requiredError</div>
           </div>
         </div>

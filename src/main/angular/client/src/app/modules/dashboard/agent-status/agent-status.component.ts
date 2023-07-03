@@ -73,7 +73,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     } else {
       this.isLoaded = true;
     }
-    if (!localStorage.$SOS$THEME || localStorage.$SOS$THEME.match(/light/)) {
+    if (!localStorage['$SOS$THEME'] || localStorage['$SOS$THEME'].match(/light/)) {
        this.pieChartOptions.plugins.legend.labels.color = '#3d464d';
     }
   }
@@ -82,7 +82,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     this.subscription1.unsubscribe();
   }
 
-  refresh(args): void {
+  refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (((args.eventSnapshots[j].eventType === 'ItemAdded' || args.eventSnapshots[j].eventType === 'ItemDeleted'

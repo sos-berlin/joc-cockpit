@@ -42,10 +42,10 @@
                        placeholder="{{'inventory.placeholder.enterCalendarName' | translate}}"
                        [(ngModel)]="calendar.name" (blur)="rename(cname.invalid)">
                 <div *ngIf="cname.invalid && (cname.dirty || cname.touched)" class="text-danger help-block">
-                  <div *ngIf="cname.errors.required">
+                  <div *ngIf="cname.errors['required']">
                     <div translate>common.message.requiredError</div>
                   </div>
-                  <div *ngIf="cname.errors.invalidIdentifier" translate>common.message.invalid</div>
+                  <div *ngIf="cname.errors['invalidIdentifier']" translate>common.message.invalid</div>
                 </div>
               </div>
             </div>

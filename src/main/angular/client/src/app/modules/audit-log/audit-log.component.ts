@@ -28,13 +28,13 @@ export class FilterModalComponent implements OnInit {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
-  name: string;
+  name = '';
 
   constructor(private authService: AuthService, public activeModal: NzModalRef) {
   }
 
   ngOnInit(): void {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     if (this.new) {
@@ -51,7 +51,7 @@ export class FilterModalComponent implements OnInit {
     }
   }
 
-  cancel(obj): void {
+  cancel(obj: any): void {
     if (obj) {
       this.activeModal.close(obj);
     } else {
@@ -72,7 +72,7 @@ export class SearchComponent implements OnInit {
   @Input() preferences: any;
   @Input() allFilter: any;
   @Input() permission: any;
-  @Input() isSearch: boolean;
+  @Input() isSearch = false;
 
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
@@ -121,11 +121,11 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  selectTime(time, isEditor = false, val = 'from'): void {
+  selectTime(time: any, isEditor = false, val = 'from'): void {
     this.coreService.selectTime(time, isEditor, this.filter, val);
   }
 
-  onSubmit(result): void {
+  onSubmit(result: any): void {
     this.submitted = true;
     const configObj = {
       controllerId: this.schedulerIds.selected,
@@ -216,7 +216,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   savedFilter: any = {};
   filterList: any = [];
   data = [];
-  loginHistory = [];
+  loginHistory: any = [];
   auditLog: any = {
     type: 'AUDITLOG'
   };
@@ -239,18 +239,24 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     });
   }
 
-  static parseProcessExecuted(regex, obj): any {
-    let fromDate;
+  static parseProcessExecuted(regex: string, obj: any): any {
+    let fromDate: string | Date = '';
     let toDate;
 
     if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
-
+      let regArr = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      if (regArr && regArr[0]) {
+        fromDate = regArr[0];
+      }
     } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
       fromDate = new Date();
       toDate = new Date();
-      const seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
-      fromDate.setSeconds(toDate.getSeconds() - seconds);
+      let regArr = /^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex);
+      if (regArr && regArr[2]) {
+        const seconds = +regArr;
+        fromDate.setSeconds(toDate.getSeconds() - seconds);
+      }
+
     } else if (/^\s*(Today)\s*$/i.test(regex)) {
       fromDate = '0d';
       toDate = '0d';
@@ -261,46 +267,52 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       fromDate = new Date();
       toDate = new Date();
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      const arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
+      const date: string[] | null = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      if (date) {
+        const arr = date[0].split('to');
+        fromDate = arr[0].trim();
+        toDate = arr[1].trim();
+      }
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      const arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
+      const date: string[] | null = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      if (date) {
+        const arr: string[] = date[0].split('to');
+        fromDate = arr[0].trim();
+        toDate = arr[1].trim();
+      }
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      const arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
+      const date: string[] | null = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      if (date) {
+        const arr = date[0].split('to');
+        fromDate = arr[0].trim();
+        toDate = arr[1].trim();
+      }
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      const arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
+      const date: string[] | null = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      if (date) {
+        const arr = date[0].split('to');
+        fromDate = arr[0].trim();
+        toDate = arr[1].trim();
+      }
     } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
-      const time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
+      const time: string[] | null = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
       fromDate = new Date();
-      if (/(pm)/i.test(time[3]) && parseInt(time[1], 10) != 12) {
-        fromDate.setHours(parseInt(time[1], 10) - 12);
-      } else {
-        fromDate.setHours(parseInt(time[1], 10));
-      }
+      if (time) {
+        if (/(pm)/i.test(time[3]) && parseInt(time[1], 10) != 12) {
+          fromDate.setHours(parseInt(time[1], 10) - 12);
+        } else {
+          fromDate.setHours(parseInt(time[1], 10));
+        }
 
-      fromDate.setMinutes(parseInt(time[2], 10));
-      toDate = new Date();
-      if (/(pm)/i.test(time[6]) && parseInt(time[4], 10) != 12) {
-        toDate.setHours(parseInt(time[4], 10) - 12);
-      } else {
-        toDate.setHours(parseInt(time[4], 10));
+        fromDate.setMinutes(parseInt(time[2], 10));
+        toDate = new Date();
+        if (/(pm)/i.test(time[6]) && parseInt(time[4], 10) != 12) {
+          toDate.setHours(parseInt(time[4], 10) - 12);
+        } else {
+          toDate.setHours(parseInt(time[4], 10));
+        }
+        toDate.setMinutes(parseInt(time[5], 10));
       }
-      toDate.setMinutes(parseInt(time[5], 10));
     }
 
     if (fromDate) {
@@ -390,7 +402,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
         if (this.savedFilter.selected) {
           let flag = true;
-          this.filterList.forEach((value) => {
+          this.filterList.forEach((value: any) => {
             if (value.id === this.savedFilter.selected) {
               flag = false;
               this.coreService.post('configuration', {
@@ -423,7 +435,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     });
   }
 
-  isCustomizationSelected(flag): void {
+  isCustomizationSelected(flag: boolean): void {
     if (flag) {
       this.temp_filter = clone(this.adtLog.filter.date);
       this.adtLog.filter.date = '';
@@ -436,7 +448,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
   }
 
-  load(date): void {
+  load(date: string | null): void {
     if (date) {
       this.adtLog.filter.date = date;
       this.isLoaded = false;
@@ -461,7 +473,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         }
         this.auditLogs = res.auditLog;
         if (!date) {
-          this.data.forEach((item) => {
+          this.data.forEach((item: any) => {
             if (item.show) {
               for (const i in this.auditLogs) {
                 if (item.id === this.auditLogs[i].id) {
@@ -483,7 +495,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadLoginHistory(date?): void {
+  loadLoginHistory(date?: string): void {
     if (date) {
       this.historyLogin.filter.date = date;
       this.isLoaded = false;
@@ -515,7 +527,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   private init(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
 
@@ -536,7 +548,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
   }
 
-  private generateRequestObj(object, filter): any {
+  private generateRequestObj(object: any, filter: any): any {
     if (object.objectName) {
       filter.objectName = object.objectName;
     }
@@ -571,7 +583,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
 
-  private parseDate(auditSearch, filter): any {
+  private parseDate(auditSearch: any, filter: any): any {
     if (auditSearch.fromDate) {
       this.coreService.getDateAndTime(auditSearch);
       filter.dateFrom = new Date(auditSearch.fromDate);
@@ -583,7 +595,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'AuditLogChanged' || args.eventSnapshots[j].eventType === 'InventoryUpdated'
@@ -601,7 +613,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setDateRange(filter): any {
+  private setDateRange(filter: any): any {
     if (this.adtLog.filter.date == 'all') {
 
     } else if (this.adtLog.filter.date == 'today') {
@@ -628,7 +640,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     });
   }
 
-  action(type, obj, self): void {
+  action(type: string, obj: any, self: any): void {
     if (type === 'DELETE') {
       if (self.savedFilter.selected == obj.id) {
         self.savedFilter.selected = undefined;
@@ -664,7 +676,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.load(null);
   }
 
-  navToDeploymentHistory(auditLog): void {
+  navToDeploymentHistory(auditLog: any): void {
     if (auditLog.commitId) {
       this.router.navigate(['/history/deployment'], {
         queryParams: {
@@ -682,7 +694,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
   }
 
-  showDetail(auditLog): void {
+  showDetail(auditLog: any): void {
     auditLog.show = true;
     if (!auditLog.isLoaded) {
       this.coreService.post('audit_log/details', {
@@ -696,7 +708,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
   }
 
-  sort(propertyName): void {
+  sort(propertyName: string): void {
     if (this.auditLog.type === 'AUDITLOG') {
       this.adtLog.reverse = !this.adtLog.reverse;
       this.adtLog.filter.sortBy = propertyName;
@@ -708,7 +720,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     if (this.auditLog.type === 'AUDITLOG') {
       this.adtLog.currentPage = $event;
     } else {
@@ -716,7 +728,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     if (this.auditLog.type === 'AUDITLOG') {
       this.adtLog.entryPerPage = $event;
     } else {
@@ -724,7 +736,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
   }
 
-  getCurrentData(list, filter): Array<any> {
+  getCurrentData(list: any[], filter: any): Array<any> {
     const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
     return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
   }
@@ -934,7 +946,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeFilter(filter): void {
+  changeFilter(filter: any): void {
     if (filter) {
       this.savedFilter.selected = filter.id;
       this.adtLog.selectedView = true;
@@ -959,15 +971,15 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.saveService.save();
   }
 
-  private editFilter(filter): void {
+  private editFilter(filter: any): void {
     this.openFilterModal(filter, false);
   }
 
-  private copyFilter(filter): void {
+  private copyFilter(filter: any): void {
     this.openFilterModal(filter, true);
   }
 
-  private openFilterModal(filter, isCopy): void {
+  private openFilterModal(filter: any, isCopy: boolean): void {
     if (this.schedulerIds.selected) {
       let filterObj: any = {};
       this.coreService.post('configuration', {

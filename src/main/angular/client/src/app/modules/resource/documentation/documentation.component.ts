@@ -54,7 +54,7 @@ export class ImportModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -92,11 +92,11 @@ export class ImportModalComponent implements OnInit {
     this.activeModal.destroy();
   }
 
-  displayWith(data): string {
+  displayWith(data: any): string {
     return data.key;
   }
 
-  selectPath(node): void {
+  selectPath(node: any): void {
     if (!node || !node.origin) {
       return;
     }
@@ -122,7 +122,7 @@ export class EditModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -159,7 +159,7 @@ export class SingleDocumentationComponent implements OnInit {
   preferences: any = {};
   permission: any = {};
   documents: any = [];
-  path: string;
+  path?: string | null;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
               private modal: NzModalService, private route: ActivatedRoute) {
@@ -168,8 +168,8 @@ export class SingleDocumentationComponent implements OnInit {
   ngOnInit(): void {
     this.path = this.route.snapshot.queryParamMap.get('name');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getDocumentationsList({
@@ -180,9 +180,9 @@ export class SingleDocumentationComponent implements OnInit {
 
   /* ---------------------------- Action ----------------------------------*/
 
-  editDocument(document): void {
+  editDocument(document: any): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: EditModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -209,14 +209,14 @@ export class SingleDocumentationComponent implements OnInit {
     }
   }
 
-  showDocumentUsage(document): void {
+  showDocumentUsage(document: any): void {
     const documentObj = this.coreService.clone(document);
     this.coreService.post('documentation/used', {
       documentation: document.path
     }).subscribe((res: any) => {
       documentObj.usedIn = res.objects || [];
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ShowModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {

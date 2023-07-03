@@ -38,7 +38,7 @@ declare const $: any;
 })
 export class ShowObjectsComponent implements OnInit{
   @Input() data: any;
-  panels = [];
+  panels: any = [];
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
@@ -61,7 +61,7 @@ export class ShowObjectsComponent implements OnInit{
     });
   }
 
-  navToObject(data): void {
+  navToObject(data: any): void {
     this.activeModal.close(data);
   }
 }
@@ -83,7 +83,7 @@ export class NewDraftComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -102,7 +102,7 @@ export class NewDraftComponent implements OnInit {
     }
   }
 
-  private getSingleObject(obj): void {
+  private getSingleObject(obj: any): void {
     this.coreService.post('inventory/deployable', obj).subscribe({
       next: (res: any) => {
         const result = res.deployable;
@@ -144,7 +144,7 @@ export class NewDraftComponent implements OnInit {
     }
   }
 
-  private store(obj): void {
+  private store(obj: any): void {
     this.coreService.post('inventory/store', obj).subscribe({
       next: (res) => {
         this.activeModal.close(res);
@@ -168,12 +168,12 @@ export class SingleDeployComponent implements OnInit {
   @Input() data;
   @Input() type;
   @Input() display: any;
-  @Input() releasable: boolean;
-  @Input() isRevoke: boolean;
-  @Input() isChecked: boolean;
-  @Input() isRemoved: boolean;
-  selectedSchedulerIds = [];
-  deployablesObject = [];
+  @Input() releasable = false;
+  @Input() isRevoke = false;
+  @Input() isChecked = false;
+  @Input() isRemoved = false;
+  selectedSchedulerIds: any = [];
+  deployablesObject: any = [];
   loading = true;
   submitted = false;
   required = false;
@@ -193,12 +193,12 @@ export class SingleDeployComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
-    const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.dateFormat = this.coreService.getDateFormat(preferences.dateFormat);
     this.init();
   }
@@ -408,12 +408,12 @@ export class DeployComponent implements OnInit {
   @Input() releasable: boolean;
   @Input() display: any;
   @Input() data: any;
-  @Input() operation: string;
+  @Input() operation = '';
   @Input() isRemove: any;
-  @Input() isRevoke: boolean;
-  @Input() isChecked: boolean;
-  @Input() isSelectedObjects: boolean;
-  selectedSchedulerIds = [];
+  @Input() isRevoke = false;
+  @Input() isChecked = false;
+  @Input() isSelectedObjects = false;
+  selectedSchedulerIds: any = [];
   loading = true;
   nodes: any = [];
   checkedObject = new Set();
@@ -444,7 +444,7 @@ export class DeployComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -473,7 +473,7 @@ export class DeployComponent implements OnInit {
     this.buildTree(this.path, null, () => {
       const self = this;
 
-      function recursive(node): void {
+      function recursive(node: any): void {
         for (const i in node) {
           if (!node[i].isLeaf) {
             node[i].expanded = true;
@@ -493,7 +493,7 @@ export class DeployComponent implements OnInit {
     }, true);
   }
 
-  private expandCollapseRec(node): void {
+  private expandCollapseRec(node: any): void {
     for (const i in node) {
       if (!node[i].isLeaf) {
         node[i].expanded = false;
@@ -510,7 +510,7 @@ export class DeployComponent implements OnInit {
     this.ref.detectChanges();
   }
 
-  private recursiveCheck(node, isUpdate = false): void {
+  private recursiveCheck(node: any, isUpdate = false): void {
     for (const i in node) {
       if (!isUpdate) {
         if (node[i].checked && !node[i].disableCheckbox) {
@@ -535,8 +535,8 @@ export class DeployComponent implements OnInit {
 
   checkBoxChange(e: NzFormatEmitEvent): void {
     if (!this.object.isRecursive) {
-      const node = e.node;
-      if (node.origin.type && node.parentNode) {
+      const node: any = e.node;
+      if (node.origin['type'] && node.parentNode) {
         node.parentNode.isHalfChecked = true;
         let flag;
         if (!node.isChecked) {
@@ -548,12 +548,12 @@ export class DeployComponent implements OnInit {
         }
         node.parentNode.isHalfChecked = !flag;
       }
-      if (!node.origin.type) {
+      if (!node.origin['type']) {
         for (let i = 0; i < node.children.length; i++) {
-          if (node.children[i].origin.type) {
+          if (node.children[i].origin['type']) {
             node.children[i].isChecked = node.isChecked;
           }
-          if (!node.children[i].origin.object && !node.children[i].origin.type) {
+          if (!node.children[i].origin['object'] && !node.children[i].origin['type']) {
             break;
           }
         }
@@ -561,7 +561,7 @@ export class DeployComponent implements OnInit {
     }
   }
 
-  buildTree(path, merge = null, cb = null, flag = false): void {
+  buildTree(path: string, merge?: any, cb?: any, flag = false): void {
     const obj: any = {
       folder: path || '/',
       recursive: !!cb,
@@ -609,7 +609,7 @@ export class DeployComponent implements OnInit {
         if (this.isSelectedObjects) {
           res.folders = [];
           if (res.deployables) {
-            res.deployables = res.deployables.filter((item) => {
+            res.deployables = res.deployables.filter((item: any) => {
               let flag = false;
               item.checked = true;
               for (let i in this.data.list) {
@@ -622,7 +622,7 @@ export class DeployComponent implements OnInit {
             });
           }
           if (res.releasables) {
-            res.releasables = res.releasables.filter((item) => {
+            res.releasables = res.releasables.filter((item: any) => {
               let flag = false;
               for (let i in this.data.list) {
                 if (this.data.list[i].name == item.objectName) {
@@ -703,10 +703,10 @@ export class DeployComponent implements OnInit {
 
   getDeploymentVersion(e: NzFormatEmitEvent): void {
     const node = e.node;
-    if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
-      if (!node.origin.type && !node.origin.object && !this.releasable) {
-        node.origin.loading = true;
-        this.buildTree(node.origin.path, node.origin);
+    if (node && node.origin && node.origin.expanded && !node.origin['isCall']) {
+      if (!node.origin['type'] && !node.origin['object'] && !this.releasable) {
+        node.origin['loading'] = true;
+        this.buildTree(node.origin['path'], node.origin);
       }
       this.inventoryService.checkAndUpdateVersionList(node.origin);
     }
@@ -721,7 +721,7 @@ export class DeployComponent implements OnInit {
       selectFolder = false;
     }
 
-    function recursive(nodes): void {
+    function recursive(nodes: any): void {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].object && nodes[i].checked) {
           const objDep: any = {};
@@ -826,7 +826,7 @@ export class DeployComponent implements OnInit {
     this.object.releasables = [];
     const self = this;
 
-    function recursive(nodes) {
+    function recursive(nodes: any) {
       for (let i = 0; i < nodes.length; i++) {
         if ((!nodes[i].object) && nodes[i].checked) {
           if (nodes[i].type) {
@@ -982,7 +982,7 @@ export class DeployComponent implements OnInit {
 export class CronImportModalComponent implements OnInit {
   @Input() preferences: any;
   @Input() display: any;
-  @Input() controllerId;
+  @Input() controllerId = '';
   @Input() agents: any = [];
   nodes: any = [];
   calendarTree: any = [];
@@ -1000,7 +1000,7 @@ export class CronImportModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -1049,7 +1049,7 @@ export class CronImportModalComponent implements OnInit {
     };
   }
 
-  selectSubagentCluster(cluster): void {
+  selectSubagentCluster(cluster: any): void {
     if (cluster) {
       this.requestObj.agentName1 = cluster.title;
     } else {
@@ -1082,7 +1082,7 @@ export class CronImportModalComponent implements OnInit {
     });
   }
 
-  onSelect(name) {
+  onSelect(name: string) {
     this.isTreeShow = false;
     this.requestObj.calendarName = name;
   }
@@ -1099,11 +1099,11 @@ export class CronImportModalComponent implements OnInit {
     this.uploader.queue[0].upload();
   }
 
-  displayWith(data): string {
+  displayWith(data: any): string {
     return data.key;
   }
 
-  selectPath(node): void {
+  selectPath(node: any): void {
     if (!node || !node.origin) {
       return;
     }
@@ -1135,8 +1135,8 @@ export class ExportComponent implements OnInit {
   comments: any = {radio: 'predefined'};
   inValid = false;
   exportType = 'BOTH';
-  path: string;
-  securityLevel: string;
+  path = '';
+  securityLevel = '';
   exportObj = {
     isRecursive: false,
     controllerId: '',
@@ -1154,7 +1154,7 @@ export class ExportComponent implements OnInit {
     release: true,
     valid: false,
   };
-  objectTypes = [];
+  objectTypes: string[] = [];
   object: any = {
     draftConfigurations: [],
     releaseDraftConfigurations: [],
@@ -1167,12 +1167,12 @@ export class ExportComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
     this.exportObj.controllerId = this.schedulerIds.selected;
-    this.securityLevel = sessionStorage.securityLevel;
+    this.securityLevel = sessionStorage['securityLevel'];
     if (this.origin) {
       if (this.origin.object) {
         this.exportObj.exportType = '';
@@ -1227,7 +1227,7 @@ export class ExportComponent implements OnInit {
     }
   }
 
-  buildTree(path, merge = null, cb = null, flag = false): void {
+  buildTree(path: string, merge?: any, cb?: any, flag = false): void {
     const obj: any = {
       folder: path || '/',
       onlyValidObjects: this.filter.valid,
@@ -1352,8 +1352,8 @@ export class ExportComponent implements OnInit {
     })
   }
 
-  private mergeDeep(deployables, releasables): any {
-    function recursive(sour, dest): void {
+  private mergeDeep(deployables: any, releasables: any): any {
+    function recursive(sour: any, dest: any): void {
       if (!sour.deployables) {
         sour.deployables = [];
       }
@@ -1384,7 +1384,7 @@ export class ExportComponent implements OnInit {
     }
   }
 
-  private recursiveCheck(node, isUpdate = false): void {
+  private recursiveCheck(node: any, isUpdate = false): void {
     for (const i in node) {
       if (!isUpdate) {
         if (node[i].checked && !node[i].disableCheckbox) {
@@ -1429,7 +1429,7 @@ export class ExportComponent implements OnInit {
     this.buildTree(this.path, null, () => {
       const self = this;
 
-      function recursive(node): void {
+      function recursive(node: any): void {
         for (const i in node) {
           if (!node[i].isLeaf) {
             node[i].expanded = true;
@@ -1448,7 +1448,7 @@ export class ExportComponent implements OnInit {
     }, true);
   }
 
-  private expandCollapseRec(node): void {
+  private expandCollapseRec(node: any): void {
     for (let i = 0; i < node.length; i++) {
       if (!node[i].isLeaf) {
         node[i].expanded = false;
@@ -1466,10 +1466,10 @@ export class ExportComponent implements OnInit {
 
   getDeploymentVersion(e: NzFormatEmitEvent): void {
     const node = e.node;
-    if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
-      if (!node.origin.type && !node.origin.object) {
-        node.origin.loading = true;
-        this.buildTree(node.origin.path, node.origin);
+    if (node && node.origin && node.origin.expanded && !node.origin['isCall']) {
+      if (!node.origin['type'] && !node.origin['object']) {
+        node.origin['loading'] = true;
+        this.buildTree(node.origin['path'], node.origin);
       }
       this.inventoryService.checkAndUpdateVersionList(node.origin, this.exportObj.exportType === 'folders');
     }
@@ -1477,8 +1477,8 @@ export class ExportComponent implements OnInit {
 
   checkBoxChange(e: NzFormatEmitEvent): void {
     if (!this.exportObj.isRecursive) {
-      const node = e.node;
-      if (node.origin.type && node.parentNode) {
+      const node: any = e.node;
+      if (node.origin['type'] && node.parentNode) {
         node.parentNode.isHalfChecked = true;
         let flag;
         if (!node.isChecked) {
@@ -1509,7 +1509,7 @@ export class ExportComponent implements OnInit {
       selectFolder = false;
     }
 
-    function recursive(nodes): void {
+    function recursive(nodes: any): void {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].object && nodes[i].checked) {
           const objDep: any = {};
@@ -1667,7 +1667,7 @@ export class ExportComponent implements OnInit {
     }
   }
 
-  private exportFolder(obj): void {
+  private exportFolder(obj: any): void {
     if (this.exportObj.forSigning) {
       obj.forSigning = {
         controllerId: this.exportObj.controllerId,
@@ -1713,11 +1713,11 @@ export class RepositoryComponent implements OnInit {
   @Input() controllerId;
   @Input() preferences;
   @Input() origin: any;
-  @Input() operation: string;
-  @Input() category: string;
-  @Input() display: boolean;
+  @Input() operation = '';
+  @Input() category = '';
+  @Input() display = false
   loading = true;
-  path: string;
+  path = '';
   type = 'ALL';
   nodes: any = [];
   submitted = false;
@@ -1741,8 +1741,8 @@ export class RepositoryComponent implements OnInit {
     releasedConfigurations: []
   };
 
-  listOfDeployables = [];
-  listOfReleaseables = [];
+  listOfDeployables: any = [];
+  listOfReleaseables: any = [];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
               private inventoryService: InventoryService) {
@@ -1750,7 +1750,7 @@ export class RepositoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadSetting();
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -1942,8 +1942,8 @@ export class RepositoryComponent implements OnInit {
     }
   }
 
-  private mergeDeep(deployables, releasables): any {
-    function recursive(sour, dest): void {
+  private mergeDeep(deployables: any, releasables: any): any {
+    function recursive(sour: any, dest: any): void {
       if (!sour.deployables) {
         sour.deployables = [];
       }
@@ -1968,7 +1968,7 @@ export class RepositoryComponent implements OnInit {
     return deployables;
   }
 
-  private readFileSystem(path, merge = null, cb = null, flag = false): void {
+  private readFileSystem(path: string, merge?: any, cb?: any, flag = false): void {
     this.coreService.post('inventory/repository/read', {
       folder: path || '/',
       recursive: flag,
@@ -1978,16 +1978,16 @@ export class RepositoryComponent implements OnInit {
       if (res.folders && res.folders.length > 0 || res.items && res.items.length > 0) {
         if (this.type !== 'ALL') {
           if (res.folders && res.folders.length > 0) {
-            res.folders.forEach((folder) => {
+            res.folders.forEach((folder: any) => {
               if (folder.items && folder.items.length > 0) {
-                folder.items = folder.items.filter((item) => {
+                folder.items = folder.items.filter((item: any) => {
                   return item.objectType === this.type;
                 })
               }
             })
           }
           if (res.items && res.items.length > 0) {
-            res.items = res.items.filter((item) => {
+            res.items = res.items.filter((item: any) => {
               return item.objectType === this.type;
             })
           }
@@ -2099,13 +2099,13 @@ export class RepositoryComponent implements OnInit {
 
   getDeploymentVersion(e: NzFormatEmitEvent): void {
     const node = e.node;
-    if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
-      if (!node.origin.type && !node.origin.object) {
-        node.origin.loading = true;
+    if (node && node.origin && node.origin.expanded && !node.origin['isCall']) {
+      if (!node.origin['type'] && !node.origin['object']) {
+        node.origin['loading'] = true;
         if (this.operation === 'store') {
-          this.buildTree(node.origin.path, node.origin);
+          this.buildTree(node.origin['path'], node.origin);
         } else {
-          this.readFileSystem(node.origin.path, node.origin);
+          this.readFileSystem(node.origin['path'], node.origin);
         }
       }
       if (this.operation === 'store') {
@@ -2117,7 +2117,7 @@ export class RepositoryComponent implements OnInit {
   checkBoxChange(e: NzFormatEmitEvent): void {
     if (!this.exportObj.isRecursive) {
       const node = e.node;
-      if (node.origin.type && node.parentNode) {
+      if (node.origin['type'] && node.parentNode) {
         node.parentNode.isHalfChecked = true;
         let flag;
         if (!node.isChecked) {
@@ -2129,12 +2129,12 @@ export class RepositoryComponent implements OnInit {
         }
         node.parentNode.isHalfChecked = !flag;
       }
-      if (!node.origin.type) {
+      if (!node.origin['type']) {
         for (let i = 0; i < node.children.length; i++) {
-          if (node.children[i].origin.type) {
+          if (node.children[i].origin['type']) {
             node.children[i].isChecked = node.isChecked;
           }
-          if (!node.children[i].origin.type && !node.children[i].origin.object) {
+          if (!node.children[i].origin['type'] && !node.children[i].origin['object']) {
             break;
           }
         }
@@ -2402,7 +2402,7 @@ export class GitComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -2530,7 +2530,7 @@ export class ImportWorkflowModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -2544,8 +2544,8 @@ export class ImportWorkflowModalComponent implements OnInit {
       }]
     });
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$IMPORT && sessionStorage.$SOS$IMPORT !== 'undefined') {
-      this.settings = JSON.parse(sessionStorage.$SOS$IMPORT);
+    if (sessionStorage['$SOS$IMPORT'] && sessionStorage['$SOS$IMPORT'] !== 'undefined') {
+      this.settings = JSON.parse(sessionStorage['$SOS$IMPORT']);
       if (this.settings) {
         this.requestObj.suffix = this.settings.suffix;
         this.requestObj.prefix = this.settings.prefix;
@@ -2642,11 +2642,11 @@ export class ImportWorkflowModalComponent implements OnInit {
     this.uploader.queue[0].upload();
   }
 
-  displayWith(data): string {
+  displayWith(data: any): string {
     return data.key;
   }
 
-  selectPath(node): void {
+  selectPath(node: any): void {
     if (!node || !node.origin) {
       return;
     }
@@ -2666,19 +2666,19 @@ export class ImportWorkflowModalComponent implements OnInit {
   templateUrl: './json-editor-dialog.html'
 })
 export class JsonEditorModalComponent implements OnInit {
-  @Input() name: string;
-  @Input() objectType: string;
+  @Input() name = '';
+  @Input() objectType = '';
   @Input() object: any;
-  @Input() edit: boolean;
+  @Input() edit = false;
   @Input() schedulerId: any;
   @Input() preferences: any;
   submitted = false;
   isError = false;
   data: any;
-  errorMsg: string;
-  options = new JsonEditorOptions();
+  errorMsg = '';
+  options: any = new JsonEditorOptions();
 
-  @ViewChild('editor', {static: false}) editor: JsonEditorComponent;
+  @ViewChild('editor', {static: false}) editor!: JsonEditorComponent;
 
   constructor(public coreService: CoreService, private clipboardService: ClipboardService, public activeModal: NzModalRef,
               private message: NzMessageService, private ref: ChangeDetectorRef) {
@@ -2720,7 +2720,7 @@ export class JsonEditorModalComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    this.validateByURL(this.editor.get(), (isValid) => {
+    this.validateByURL(this.editor.get(), (isValid: boolean) => {
       if (isValid) {
         this.activeModal.close(this.editor.get());
       }
@@ -2729,7 +2729,7 @@ export class JsonEditorModalComponent implements OnInit {
     });
   }
 
-  private parseErrorMsg(res, cb): void {
+  private parseErrorMsg(res: any, cb: any): void {
     let flag = true;
     if (!res.valid) {
       flag = false;
@@ -2740,10 +2740,10 @@ export class JsonEditorModalComponent implements OnInit {
     cb(flag);
   }
 
-  private validateByURL(json, cb): void {
+  private validateByURL(json: any, cb: any): void {
     this.coreService.post('inventory/' + this.objectType + '/validate', json).subscribe({
       next: (res: any) => {
-        this.parseErrorMsg(res, (flag) => {
+        this.parseErrorMsg(res, (flag: boolean) => {
           cb(flag);
         });
       }, error: (err) => {
@@ -2760,8 +2760,8 @@ export class JsonEditorModalComponent implements OnInit {
 })
 export class UploadModalComponent implements OnInit {
   @Input() object: any;
-  @Input() name: string;
-  @Input() objectType: string;
+  @Input() name = '';
+  @Input() objectType = '';
   submitted = false;
   uploader: FileUploader;
   data: any;
@@ -2806,15 +2806,15 @@ export class UploadModalComponent implements OnInit {
       reader.onload = onLoadFile;
     }
 
-    function onLoadFile(_event): void {
-      let data;
+    function onLoadFile(_event: any): void {
+      let data: any;
       try {
         data = JSON.parse(_event.target.result);
       } catch (e) {
 
       }
       if (data) {
-        self.validateByURL(data, (res) => {
+        self.validateByURL(data, (res: any) => {
           if (!res.valid) {
             self.showErrorMsg(res.invalidMsg);
           } else {
@@ -2834,7 +2834,7 @@ export class UploadModalComponent implements OnInit {
     }, 100);
   }
 
-  private validateByURL(json, cb): void {
+  private validateByURL(json: any, cb: any): void {
     this.coreService.post('inventory/' + this.objectType + '/validate', json).subscribe({
       next: (res: any) => {
         cb(res);
@@ -2844,7 +2844,7 @@ export class UploadModalComponent implements OnInit {
     });
   }
 
-  private showErrorMsg(errorMsg): void {
+  private showErrorMsg(errorMsg: string): void {
     let msg = errorMsg;
     if (!errorMsg) {
       this.translate.get('inventory.message.invalidFile', {objectType: this.object.objectType}).subscribe(translatedValue => {
@@ -2866,9 +2866,9 @@ export class CreateObjectModalComponent implements OnInit {
   @Input() preferences: any;
   @Input() obj: any;
   @Input() copy: any;
-  @Input() restore: boolean;
-  @Input() allowPath: boolean;
-  @Input() type: string;
+  @Input() restore = false;
+  @Input() allowPath = false;
+  @Input() type = '';
   isValid = true;
   submitted = false;
   settings: any = {};
@@ -2883,14 +2883,14 @@ export class CreateObjectModalComponent implements OnInit {
   ngOnInit(): void {
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
     if (this.restore) {
-      this.settings = JSON.parse(sessionStorage.$SOS$RESTORE);
+      this.settings = JSON.parse(sessionStorage['$SOS$RESTORE']);
     } else if (this.copy) {
-      this.settings = JSON.parse(sessionStorage.$SOS$COPY);
+      this.settings = JSON.parse(sessionStorage['$SOS$COPY']);
     }
     if (this.copy) {
       this.object.originalName = this.copy.name;
@@ -2944,7 +2944,7 @@ export class CreateObjectModalComponent implements OnInit {
     }
   }
 
-  private paste(obj, data): void {
+  private paste(obj: any, data: any): void {
     const request: any = {
       shallowCopy: this.copy.shallowCopy,
       suffix: data.suffix,
@@ -2976,7 +2976,7 @@ export class CreateObjectModalComponent implements OnInit {
     });
   }
 
-  private restoreFunc(obj, data): void {
+  private restoreFunc(obj: any, data: any): void {
     const request: any = {
       suffix: data.suffix,
       prefix: data.prefix
@@ -3045,7 +3045,7 @@ export class CreateFolderModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -3166,11 +3166,11 @@ export class CreateFolderModalComponent implements OnInit {
     this.ref.detectChanges();
   }
 
-  private getObjectArr(object): any {
+  private getObjectArr(object: any): any {
     const obj: any = {objects: []};
-    object.children.forEach((item) => {
+    object.children.forEach((item: any) => {
       if (item.children) {
-        item.children.forEach((data) => {
+        item.children.forEach((data: any) => {
           obj.objects.push({objectType: data.objectType, path: data.path + (data.path === '/' ? '' : '/') + data.name});
         });
       } else {
@@ -3201,8 +3201,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   selectedObj: any = {};
   selectedData: any = {};
   sideView: any = {};
-  securityLevel: string;
-  type: string;
+  securityLevel = '';
+  type = '';
   inventoryConfig: any;
   isTreeLoaded = false;
   isTrash = false;
@@ -3210,8 +3210,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   isNavigationComplete = true;
   revalidating = false;
   tempObjSelection: any = {};
-  objectType: string;
-  path: string;
+  objectType: string | null = '';
+  path: string | null = '';
   indexOfNextAdd = 0;
 
   allObjects: any = [];
@@ -3230,7 +3230,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   subscription3: Subscription;
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
-  @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
+  @ViewChild('menu', {static: true}) menu!: NzDropdownMenuComponent;
 
   constructor(
     private authService: AuthService,
@@ -3345,7 +3345,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.coreService.getAgents(this.inventoryService, this.schedulerIds.selected);
   }
 
-  initTree(path, mainPath, redirect = false): void {
+  initTree(path: string, mainPath: string, redirect = false): void {
     if (!path) {
       this.isLoading = true;
     }
@@ -3360,7 +3360,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         const tree = this.coreService.prepareTree(res, false);
         if (path) {
           this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
-          this.updateFolders(path, false, (response) => {
+          this.updateFolders(path, false, (response: any) => {
             this.updateTree(false);
             if (redirect) {
               if (response) {
@@ -3381,7 +3381,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             this.selectedObj = this.inventoryConfig.selectedObj || {};
             this.copyObj = this.inventoryConfig.copyObj;
             if (this.inventoryConfig.selectedObj && this.inventoryConfig.selectedObj.path) {
-              this.updateFolders(this.inventoryConfig.selectedObj.path, false, (response) => {
+              this.updateFolders(this.inventoryConfig.selectedObj.path, false, (response: any) => {
                 this.isLoading = false;
                 this.type = this.inventoryConfig.selectedObj.type;
                 if (response) {
@@ -3406,7 +3406,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           } else {
             this.tree = tree;
             if (this.tree.length > 0) {
-              this.updateObjects(this.tree[0], false, (children) => {
+              this.updateObjects(this.tree[0], false, (children: any) => {
                 this.isLoading = false;
                 if (children.length > 0) {
                   this.tree[0].children.splice(0, 0, children[0]);
@@ -3425,7 +3425,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  initTrashTree(path): void {
+  initTrashTree(path: string): void {
     this.coreService.post('tree', {
       forInventoryTrash: true,
       types: ['INVENTORY']
@@ -3480,9 +3480,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private findObjectByPath(path): void {
+  private findObjectByPath(path: string): void {
     this.selectedObj.path = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
-    const pathArr = [];
+    const pathArr: any = [];
     const arr = this.selectedObj.path.split('/');
     const len = arr.length;
     if (len > 1) {
@@ -3501,7 +3501,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
     const self = this;
     if (this.tree.length > 0) {
-      function traverseTree(data) {
+      function traverseTree(data: any) {
         let flag = false;
         for (let i = 0; i < pathArr.length; i++) {
           if (pathArr[i] === data.path) {
@@ -3514,7 +3514,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
         if (flag) {
           if (!data.controller && !data.dailyPlan) {
-            self.updateObjects(data, self.isTrash, (children) => {
+            self.updateObjects(data, self.isTrash, (children: any) => {
               if (children.length > 0) {
                 const index = data.children[0] && data.children[0].controller ? 1 : 0;
                 data.children.splice(0, index, children[0]);
@@ -3555,11 +3555,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  recursiveTreeUpdate(scr, dest, isTrash): any {
+  recursiveTreeUpdate(scr: any, dest: any, isTrash: boolean): any {
     const self = this;
     let isFound = false;
 
-    function recursive(scrTree, destTree) {
+    function recursive(scrTree: any, destTree: any) {
       if (scrTree && destTree) {
         for (let j = 0; j < scrTree.length; j++) {
           if (isTrash === self.isTrash && self.type) {
@@ -3619,9 +3619,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.dataService.reloadTree.next({reloadFolder: isChecked + ''});
     if (!this.isTrash && isChecked) {
       if (this.tree.length > 0) {
-        const paths = [];
+        const paths: any = [];
 
-        function traverseTree(data): void {
+        function traverseTree(data: any): void {
           if (data.children && data.children.length > 0 && data.expanded) {
             paths.push(data.path);
             for (const i in data.children) {
@@ -3633,7 +3633,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
 
         traverseTree(this.tree[0]);
-        paths.forEach((path, index) => {
+        paths.forEach((path: string, index: number) => {
           this.updateFolders(path, false, () => {
             if (index == paths.length - 1) {
               this.updateTree(false);
@@ -3644,13 +3644,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateFolders(path, isTrash, cb, redirect = false): void {
+  updateFolders(path: string, isTrash: boolean, cb: any, redirect = false): void {
     const self = this;
     let matchData: any;
     if ((!isTrash && this.tree.length > 0) || (isTrash && this.trashTree.length > 0)) {
-      function traverseTree(data) {
+      function traverseTree(data: any) {
         if (path && data.path && (path === data.path)) {
-          self.updateObjects(data, isTrash, (children) => {
+          self.updateObjects(data, isTrash, (children: any) => {
             if (children.length > 0) {
               let folders = data.children;
               if (data.children.length > 1 && data.children[0].controller) {
@@ -3714,7 +3714,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  openMenu(node, evt): void {
+  openMenu(node: any, evt: any): void {
     if (this.menu) {
       this.node = node;
       setTimeout(() => {
@@ -3726,7 +3726,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   openFolder(node: NzTreeNode): void {
     if (node instanceof NzTreeNode) {
       node.isExpanded = !node.isExpanded;
-      if (node.isExpanded && !node.origin.controller && !node.origin.dailyPlan && !node.origin.type && !node.origin.object) {
+      if (node.isExpanded && !node.origin['controller'] && !node.origin['dailyPlan'] && !node.origin['type'] && !node.origin['object']) {
         this.expandFolder(node);
       }
     }
@@ -3734,27 +3734,27 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   selectNode(node: NzTreeNode | NzFormatEmitEvent): void {
     if (node instanceof NzTreeNode) {
-      if ((!node.origin.object && !node.origin.type)) {
-        if (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan) {
+      if ((!node.origin['object'] && !node.origin['type'])) {
+        if (!node.origin['type'] && !node.origin['object'] && !node.origin['controller'] && !node.origin['dailyPlan']) {
           node.isExpanded = !node.isExpanded;
           if (node.isExpanded) {
             this.expandFolder(node);
           }
-        } else if (node.origin.controller || node.origin.dailyPlan) {
+        } else if (node.origin['controller'] || node.origin['dailyPlan']) {
           node.isExpanded = !node.isExpanded;
         }
         return;
       }
-      if (this.preferences.expandOption === 'both' && !node.origin.type) {
+      if (this.preferences.expandOption === 'both' && !node.origin['type']) {
         node.isExpanded = !node.isExpanded;
       }
-      this.type = node.origin.objectType || node.origin.object || node.origin.type;
+      this.type = node.origin['objectType'] || node.origin['object'] || node.origin['type'];
       this.selectedData = node.origin;
-      this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, node.origin.objectType ? '$ID' : undefined);
+      this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, node.origin['objectType'] ? '$ID' : undefined);
     }
   }
 
-  updateObjects(data, isTrash, cb, isExpandConfiguration): void {
+  updateObjects(data: any, isTrash: boolean, cb: any, isExpandConfiguration: boolean): void {
     if (!data.permitted) {
       cb([]);
       return;
@@ -4039,7 +4039,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.allObjects = [];
     }
 
-    function getReturnType(qualifier) {
+    function getReturnType(qualifier: string): string {
       qualifier = qualifier.toLowerCase();
       if (qualifier === 'w') {
         return "WORKFLOW";
@@ -4060,6 +4060,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       } else if (qualifier === 't') {
         return "JOBTEMPLATE";
       }
+      return '';
     }
   }
 
@@ -4117,7 +4118,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     $('.editor-tree > a').removeClass('hide-on-focus');
   }
 
-  selectObject(item): void {
+  selectObject(item: any): void {
     this.isNavigationComplete = false;
     if (item.objectType && item.path && item.objectType !== 'FOLDER') {
       this.selectedObj = {
@@ -4140,7 +4141,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.isTrash = !this.isTrash;
     if (this.isTrash) {
       this.isTreeLoaded = false;
-      this.initTrashTree(null);
+      this.initTrashTree('');
       if (this.type) {
         this.tempObjSelection = {
           type: clone(this.type),
@@ -4160,8 +4161,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  mergeTree(scr, dest): any {
-    function checkPath(obj) {
+  mergeTree(scr: any, dest: any): any {
+    function checkPath(obj: any) {
       for (let i = 0; i < dest.length; i++) {
         if (dest[i].name === obj.name && dest[i].path === obj.path) {
           obj.expanded = dest[i].expanded;
@@ -4175,7 +4176,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }
     }
 
-    function recursive(scrTree) {
+    function recursive(scrTree: any) {
       if (scrTree) {
         for (let j = 0; j < scrTree.length; j++) {
           checkPath(scrTree[j]);
@@ -4199,7 +4200,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  addObject(data, type): void {
+  addObject(data: any, type: string): void {
     if (data instanceof NzTreeNode) {
       data.isExpanded = true;
     }
@@ -4238,7 +4239,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.createObject(type, list, node.origin.path);
     } else {
       const data = node.origin.children;
-      this.updateObjects(node.origin, false, (children) => {
+      this.updateObjects(node.origin, false, (children: any) => {
         if (children.length > 0) {
           if ((type.match('CALENDAR') || type === InventoryObject.SCHEDULE || type === InventoryObject.JOBTEMPLATE || type === InventoryObject.INCLUDESCRIPT)) {
             children[1].expanded = true;
@@ -4302,18 +4303,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
             if (this.selectedData.path && (origin.path.indexOf(this.selectedData.path) > -1 || origin.path === this.selectedData.path)) {
               this.selectedData.reload = true;
             }
-            this.initTree(origin.path, null);
+            this.initTree(origin.path, '');
           }
         }, 750);
       }
     });
   }
 
-  gitClone(data, category): void {
+  gitClone(data: any, category: string): void {
     this.openGitModal(data, category, 'clone');
   }
 
-  gitPull(data, category): void {
+  gitPull(data: any, category: string): void {
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
@@ -4346,7 +4347,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _gitPull(data, category, auditLog): void {
+  private _gitPull(data: any, category: string, auditLog: any): void {
     this.coreService.post('inventory/repository/git/pull', {
       folder: data.path,
       category,
@@ -4358,7 +4359,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private showResult(result): void {
+  private showResult(result: any): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: NotificationComponent,
@@ -4372,11 +4373,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  gitPush(data, category): void {
+  gitPush(data: any, category: string): void {
     this.openGitModal(data, category, 'push');
   }
 
-  private openGitModal(data, category, operation): void {
+  private openGitModal(data: any, category: string, operation: string): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: GitComponent,
@@ -4394,12 +4395,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
       if (result && operation === 'clone' && data.path == '/') {
-        this.initTree(data.path, null);
+        this.initTree(data.path, '');
       }
     })
   }
 
-  exportObject(node): void {
+  exportObject(node: any): void {
     let origin = null;
     if (node) {
       origin = node.origin ? node.origin : node;
@@ -4473,7 +4474,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (path) {
         setTimeout(() => {
           if (this.tree && this.tree.length > 0) {
-            this.initTree(path, null, true);
+            this.initTree(path, '', true);
           }
         }, 700);
       }
@@ -4496,14 +4497,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(path => {
       if (path) {
-        this.initTree(node.origin.path, null);
+        this.initTree(node.origin.path, '');
       }
     });
   }
 
   private getAllowedControllerOnly(): any {
     const obj = clone(this.schedulerIds);
-    obj.controllerIds = obj.controllerIds.filter((id) => {
+    obj.controllerIds = obj.controllerIds.filter((id: any) => {
       let flag = true;
       if (this.permission.controllers) {
         if (this.permission.controllers[id]) {
@@ -5371,8 +5372,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           nzFooter: null,
           nzClosable: false,
           nzMaskClosable: false
-        }).afterClose.subscribe((result) =>{
-          if(result){
+        }).afterClose.subscribe((result) => {
+          if (result) {
             this.onNavigate(result)
           }
         })
@@ -5419,7 +5420,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private initConf(isReload): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     if (!this.permission.joc) {
@@ -5432,7 +5433,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.coreService.expertMode = this.preferences.showMoreOptions;
     }
     this.getAgents();
-    this.securityLevel = sessionStorage.securityLevel;
+    this.securityLevel = sessionStorage['securityLevel'];
     if (isReload) {
       this.sideView = this.coreService.getSideView();
       if (this.sideView.inventory && !this.sideView.inventory.show) {
@@ -5576,7 +5577,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       request.objectType = result.type || 'WORKINGDAYSCALENDAR';
     }
 
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
         request.auditLog = {comment: translatedValue};
       });
@@ -5705,7 +5706,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     let loadTree = false;
     let _isNormal = false;
     let _isTrash = false;
@@ -5870,7 +5871,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     dest.children = sortBy(dest.children, 'name');
   }
 
-  private createObject(type, list, path): void {
+  private createObject(type: string, list: any[], path: string): void {
     if (!path) {
       return;
     }
@@ -5907,7 +5908,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private storeObject(obj, list, configuration, comments: any = {}): void {
+  private storeObject(obj: any, list: any[], configuration: any, comments: any = {}): void {
     if (obj.type === InventoryObject.WORKFLOW && !configuration.timeZone) {
       configuration.timeZone = this.preferences.zone;
     }
@@ -5945,7 +5946,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private deleteObject(path, object, node, auditLog, cancelOrdersDateFrom = undefined): void {
+  private deleteObject(path: string, object: any, node: any, auditLog: any, cancelOrdersDateFrom = undefined): void {
     object.expanded = false;
     object.deleted = true;
     object.loading = true;
@@ -5953,7 +5954,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       next: () => {
         object.loading = false;
         if (node && node.parentNode && node.parentNode.origin) {
-          node.parentNode.origin.children = node.parentNode.origin.children.filter((child) => {
+          node.parentNode.origin.children = node.parentNode.origin.children.filter((child: any) => {
             return child.path !== path;
           });
         }
@@ -5969,13 +5970,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getObjectArr(object, isDraft): any {
+  private getObjectArr(object: any, isDraft: boolean): any {
     let obj: any = {objects: []};
     if (!object.type) {
       if (object.object || object.controller || object.dailyPlan) {
-        object.children.forEach((item) => {
+        object.children.forEach((item: any) => {
           if (item.children) {
-            item.children.forEach((data) => {
+            item.children.forEach((data: any) => {
               if (!isDraft || (!data.deployed && !data.released)) {
                 obj.objects.push({
                   objectType: data.objectType,
@@ -6002,7 +6003,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  private updateTree(isTrash): void {
+  private updateTree(isTrash: boolean): void {
     this.isNavigationComplete = true;
     if (isTrash) {
       this.trashTree = [...this.trashTree];
@@ -6017,7 +6018,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private clearCopyObject(obj): void {
+  private clearCopyObject(obj: any): void {
     if ((this.selectedData && this.selectedData.type === obj.type && this.selectedData.name === obj.name
       && this.selectedData.path === obj.path)) {
       this.clearSelection();
@@ -6028,7 +6029,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private clearSelection(): void {
-    this.type = undefined;
+    this.type = '';
     this.selectedData = {};
     this.selectedObj = {};
   }

@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, HostListener, OnDestroy} from '@angular/core';
-import {NavigationEnd, Router, RouterEvent} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
-import {filter} from 'rxjs/operators';
 
 declare const $: any;
 
@@ -14,13 +13,14 @@ export class ConfigurationComponent implements AfterViewInit, OnDestroy {
   flag = true;
 
   constructor(private router: Router) {
-    this.subscription = router.events
-      .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e) => {
+    this.subscription = router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
         setTimeout(() => {
           this.flag = false;
           this.calcHeight();
         }, 5);
-      });
+      }
+    });
   }
 
   ngAfterViewInit(): void {

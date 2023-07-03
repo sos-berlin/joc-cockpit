@@ -1781,14 +1781,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.resetCheckBox();
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.dailyPlanFilters.currentPage = $event;
     if (this.object.mapOfCheckedId.size !== this.planOrders.length) {
       this.resetCheckBox();
     }
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.dailyPlanFilters.entryPerPage = $event;
     if (this.object.mapOfCheckedId.size !== this.planOrders.length) {
       if (this.object.checked) {
@@ -2148,7 +2148,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private initConf(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.dailyPlanFilters = this.coreService.getDailyPlanTab();

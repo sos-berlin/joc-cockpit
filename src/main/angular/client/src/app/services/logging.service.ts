@@ -23,7 +23,7 @@ export class LoggingService {
 
   static shouldLog(level: LogLevel): boolean {
     let ret = false;
-    const clientLogFilter = sessionStorage.clientLogFilter ? JSON.parse(sessionStorage.clientLogFilter) : {};
+    const clientLogFilter = sessionStorage['clientLogFilter'] ? JSON.parse(sessionStorage['clientLogFilter']) : {};
     if (clientLogFilter.isEnable) {
       if (clientLogFilter.status.indexOf(LogLevel[level].toLowerCase()) !== -1) {
         ret = true;
@@ -65,7 +65,7 @@ export class LoggingService {
       let values = [];
       try {
         // Get previous values from local storage
-        values = localStorage.getItem(this.location) ? JSON.parse(localStorage.getItem(this.location)) || [] : [];
+        values = localStorage.getItem(this.location) ? JSON.parse(localStorage.getItem(this.location) || '') || [] : [];
         // Add new log entry to array
         values.push(entry);
         if (values.length > 20 && (((1000 * 150) - decodeURIComponent(encodeURIComponent(JSON.stringify(values))).length) < 0)) {

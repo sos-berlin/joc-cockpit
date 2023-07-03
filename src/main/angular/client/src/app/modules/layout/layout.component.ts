@@ -76,17 +76,19 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.preferences = JSON.parse(sessionStorage['preferences']) || {};
       }
     });
-    this.subscription5 = router.events
-      .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe(() => {
+
+    this.subscription5 = router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
         if (!this.isChangePasswordPopupOpen && this.authService.currentUserData && (this.authService.forcePasswordChange == true || this.authService.forcePasswordChange == 'true')) {
           this.isChangePasswordPopupOpen = true;
           this.changePassword();
         }
-
         if (this.loading) {
           LayoutComponent.calculateHeight();
         }
-      });
+      }
+    });
+
     this.subscription6 = dataService.reloadLicenseCheck.subscribe(res => {
       if (res == true) {
         this.checkLicenseExpireDate();
@@ -379,22 +381,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.isPropertiesLoaded = true;
       this.coreService.post('joc/properties', {}).subscribe({
         next: (result: any) => {
-          sessionStorage['$SOS$FORCELOGING'] = result.forceCommentsForAuditLog;
-          sessionStorage['comments'] = JSON.stringify(result.comments);
-          sessionStorage['showViews'] = JSON.stringify(result.showViews);
-          sessionStorage['securityLevel'] = result.securityLevel;
-          sessionStorage['defaultProfile'] = result.defaultProfileAccount;
-          sessionStorage['$SOS$COPY'] = JSON.stringify(result.copy);
-          sessionStorage['$SOS$RESTORE'] = JSON.stringify(result.restore);
-          sessionStorage['$SOS$IMPORT'] = JSON.stringify(result.import);
-          sessionStorage['welcomeDoNotRemindMe'] = result.welcomeDoNotRemindMe;
-          sessionStorage['welcomeGotIt'] = result.welcomeGotIt;
-          sessionStorage['hasLicense'] = result.clusterLicense;
-          sessionStorage['licenseType'] = result.licenseType;
-          sessionStorage['allowEmptyArguments'] = result.allowEmptyArguments;
-          if (result.licenseValidFrom) {
-            sessionStorage['licenseValidFrom'] = result.licenseValidFrom;
-          }
+          this.coreService.setProperties(result);
           if (result.title) {
             document.title = 'JS7: ' + result.title;
           }

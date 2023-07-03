@@ -133,7 +133,7 @@ export class SettingModalComponent implements OnInit {
     third: false,
     fourth: false
   };
-  oldPassword: string;
+  oldPassword = '';
   display: any;
   required = false;
   comments: any = {};
@@ -260,6 +260,17 @@ export class SettingModalComponent implements OnInit {
             if (data.fido) {
               if (!this.currentObj.iamFidoProtocolType) {
                 this.currentObj.iamFidoProtocolType = 'FIDO2';
+              }
+            } else if (data.oidc) {
+              this.currentObj.iamOidcFlowType = this.currentObj.iamOidcClientId ? 'AUTHENTICATION' : 'IMPLICIT';
+            }
+            if (this.data['identityServiceType'] == 'OIDC') {
+              if (!this.currentObj.iamOidcGroupClaims || this.currentObj.iamOidcGroupClaims.length === 0) {
+                this.currentObj.iamOidcGroupClaims = [{name: ''}];
+              } else {
+                this.currentObj.iamOidcGroupClaims = this.currentObj.iamOidcGroupClaims.map((item: string) => {
+                  return {name: item};
+                })
               }
             }
             if (data.ldap || (res.configuration.objectType && res.configuration.objectType.match(/LDAP/))) {
@@ -459,6 +470,20 @@ export class SettingModalComponent implements OnInit {
     }
   }
 
+  addOidcGroupRoles(): void {
+    const param = {
+      oidcGroup: '',
+      roles: []
+    };
+    if (!this.currentObj.iamOidcGroupRolesMap) {
+      this.currentObj.iamOidcGroupRolesMap = {items: []};
+    }
+    if (!this.coreService.isLastEntryEmpty(this.currentObj.iamOidcGroupRolesMap.items, 'oidcGroup', '')) {
+      this.currentObj.iamOidcGroupRolesMap.items.push(param);
+    }
+  }
+
+
   onImageSelected(event: any): void {
     const self = this;
     let item = event['0'];
@@ -583,6 +608,10 @@ export class SettingModalComponent implements OnInit {
     this.currentObj.iamLdapGroupRolesMap.items.splice(index, 1);
   }
 
+  removeOidcGroupRoles(index: number): void {
+    this.currentObj.iamOidcGroupRolesMap.items.splice(index, 1);
+  }
+
   deleteImage(): void {
     this.coreService.post('documentations/delete', {
       documentations: ['/sos/.images/' + this.data?.['identityServiceName']]
@@ -623,6 +652,17 @@ export class SettingModalComponent implements OnInit {
         obj.ldap = {expert: this.coreService.clone(this.currentObj), simple: this.userObj};
       } else if (this.data?.['identityServiceType'].match('OIDC')) {
         obj.oidc = this.currentObj;
+        if (this.currentObj.iamOidcFlowType == 'IMPLICIT') {
+          obj.oidc.iamOidcClientId = '';
+          obj.oidc.iamOidcClientSecret = '';
+        }
+        if (this.data['identityServiceType'] == 'OIDC') {
+          if (obj.oidc.iamOidcGroupClaims && obj.oidc.iamOidcGroupClaims.length > 0) {
+            obj.oidc.iamOidcGroupClaims = obj.oidc.iamOidcGroupClaims.map((item: any) => {
+              return item.name;
+            });
+          }
+        }
       } else if (this.data?.['identityServiceType'] == 'FIDO') {
         obj.fido = this.currentObj;
       }

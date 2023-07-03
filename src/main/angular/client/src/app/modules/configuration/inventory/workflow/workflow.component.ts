@@ -340,7 +340,7 @@ export class TimeEditorComponent implements OnInit {
   @Input() period;
   @Input() isTooltipVisible;
   @Input() isCycle;
-  isNew: boolean;
+ 
   isExist: boolean;
 
   object: any = {};
@@ -413,7 +413,7 @@ export class CycleInstructionComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.selectedNode) {
+    if (changes['selectedNode']) {
       this.init();
     }
   }
@@ -3478,34 +3478,35 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
         let job = this.coreService.clone(data.job);
         if (!job.executable) {
-          return false;
-        }
-        if (job.executable.TYPE === 'ShellScriptExecutable') {
-          if (data.cell) {
-            let parameters = data.cell.getAttribute('defaultArguments')
-            if (parameters) {
-              job.parameters = JSON.parse(parameters)
+
+        } else {
+          if (job.executable.TYPE === 'ShellScriptExecutable') {
+            if (data.cell) {
+              let parameters = data.cell.getAttribute('defaultArguments')
+              if (parameters) {
+                job.parameters = JSON.parse(parameters)
+              }
+            } else {
+              job.parameters = data.obj.defaultArguments;
             }
           } else {
-            job.parameters = data.obj.defaultArguments;
+            job.parameters = job.executable.arguments;
           }
-        } else {
-          job.parameters = job.executable.arguments;
-        }
-        if (job.parameters) {
-          job.arguments = {};
-          for (let i in job.parameters) {
-            job.arguments[i] = {
-              type: (job.parameters[i] == 'true' || job.parameters[i] == 'false') ? 'Boolean' :
-                (/^\d+$/.test(job.parameters[i])) ? 'Number' : 'String',
-              default: job.parameters[i]
+          if (job.parameters) {
+            job.arguments = {};
+            for (let i in job.parameters) {
+              job.arguments[i] = {
+                type: (job.parameters[i] == 'true' || job.parameters[i] == 'false') ? 'Boolean' :
+                  (/^\d+$/.test(job.parameters[i])) ? 'Number' : 'String',
+                default: job.parameters[i]
+              }
             }
           }
+          delete job.parameters;
+          delete job.jobName;
+          request.configuration = job;
+          this.coreService.post('inventory/store', request).subscribe();
         }
-        delete job.parameters;
-        delete job.jobName;
-        request.configuration = job;
-        this.coreService.post('inventory/store', request).subscribe();
       }
     });
   }
@@ -7703,7 +7704,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       graph.getModel().beginUpdate();
       try {
         const uuid = new mxCellAttributeChange(
-          cell, 'uuid', self.workflowService.create_UUID()
+          cell, 'uuid', self.coreService.create_UUID()
         );
         graph.getModel().execute(uuid);
       } finally {
@@ -9106,95 +9107,95 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (title.match('job')) {
           _node = doc.createElement('Job');
           _node.setAttribute('jobName', 'job');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 180, 40, 'job');
         } else if (title.match('finish')) {
           _node = doc.createElement('Finish');
           _node.setAttribute('displayLabel', 'finish');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'finish');
         } else if (title.match('fail')) {
           _node = doc.createElement('Fail');
           _node.setAttribute('displayLabel', 'fail');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'fail');
         } else if (title.match('break')) {
           _node = doc.createElement('Break');
           _node.setAttribute('displayLabel', 'break');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'break');
         } else if (title.match('addOrder')) {
           _node = doc.createElement('AddOrder');
           _node.setAttribute('displayLabel', 'addOrder');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'addOrder');
         } else if (title.match('fork-list')) {
           _node = doc.createElement('ForkList');
           _node.setAttribute('displayLabel', 'forkList');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'forkList');
         } else if (title.match('fork')) {
           _node = doc.createElement('Fork');
           _node.setAttribute('displayLabel', 'fork');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'fork');
         } else if (title.match('if')) {
           _node = doc.createElement('If');
           _node.setAttribute('displayLabel', 'if');
           _node.setAttribute('predicate', '$returnCode > 0');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'if');
         } else if (title.match('retry')) {
           _node = doc.createElement('Retry');
           _node.setAttribute('displayLabel', 'retry');
           _node.setAttribute('maxTries', '10');
           _node.setAttribute('retryDelays', '0s');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'retry');
         } else if (title.match('cycle')) {
           _node = doc.createElement('Cycle');
           _node.setAttribute('displayLabel', 'cycle');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'cycle');
         } else if (title.match('lock')) {
           _node = doc.createElement('Lock');
           _node.setAttribute('displayLabel', 'lock');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'lock');
         } else if (title.match('sticky')) {
           _node = doc.createElement('StickySubagent');
           _node.setAttribute('displayLabel', 'stickySubagent');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'stickySubagent');
         } else if (title.match('consume')) {
           _node = doc.createElement('ConsumeNotices');
           _node.setAttribute('displayLabel', 'consumeNotices');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'consumeNotices');
         } else if (title.match('options')) {
           _node = doc.createElement('Options');
           _node.setAttribute('displayLabel', 'options');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'options');
         } else if (title.match('try')) {
           _node = doc.createElement('Try');
           _node.setAttribute('displayLabel', 'try');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'try');
         } else if (title.match('await')) {
           _node = doc.createElement('ExpectNotices');
           _node.setAttribute('displayLabel', 'expectNotices');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'expectNotices');
         } else if (title.match('publish')) {
           _node = doc.createElement('PostNotices');
           _node.setAttribute('displayLabel', 'postNotices');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'postNotices');
         } else if (title.match('prompt')) {
           _node = doc.createElement('Prompt');
           _node.setAttribute('displayLabel', 'prompt');
-          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'prompt');
         }
         if (targetCell.value.tagName !== 'Connection') {
