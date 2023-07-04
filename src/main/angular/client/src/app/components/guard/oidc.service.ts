@@ -60,16 +60,17 @@ export class OIDCAuthService {
   nonceStateSeparator: string = ';';
   state = '';
   grantTypesSupported = [];
+  tokenEndMethodsSupported = [];
   discoveryDocumentLoaded = false;
-  access_token: string;
-  id_token: string;
-  refresh_token: string;
+  access_token: string | undefined;
+  id_token: string | undefined;
+  refresh_token: string | undefined;
 
   constructor(private coreService: CoreService, private toasterService: ToastrService, private authService: AuthService,
               private router: Router) {
-    if (sessionStorage.$SOS$KEY) {
-      this.coreService.renewLocker(sessionStorage.$SOS$KEY);
-      if (sessionStorage.$SOS$TOKENEXPIRETIME) {
+    if (sessionStorage['$SOS$KEY']) {
+      this.coreService.renewLocker(sessionStorage['$SOS$KEY']);
+      if (sessionStorage['$SOS$TOKENEXPIRETIME']) {
         this.renewToken();
       }
     }
@@ -107,6 +108,7 @@ export class OIDCAuthService {
           this.grantTypesSupported = doc.grant_types_supported;
           this.issuer = doc.issuer;
           this.tokenEndpoint = doc.token_endpoint;
+          this.tokenEndMethodsSupported = doc.token_endpoint_auth_methods_supported || ['client_secret_post'];
           this.discoveryDocumentLoaded = true;
           const result = {
             discoveryDocument: doc,
@@ -121,8 +123,8 @@ export class OIDCAuthService {
     });
   }
 
-  private validateDiscoveryDocument(doc) {
-    let errors;
+  private validateDiscoveryDocument(doc: any) {
+    let errors: any;
     if (!this.skipIssuerCheck && doc.issuer !== this.issuer) {
       this.toasterService.error('invalid issuer in discovery document, expected: ' + this.issuer, 'current: ' + doc.issuer);
       return false;
@@ -154,7 +156,7 @@ export class OIDCAuthService {
     return true;
   }
 
-  validateUrlFromDiscoveryDocument(url) {
+  validateUrlFromDiscoveryDocument(url: string) {
     const errors = [];
     const httpsCheck = this.validateUrlForHttps(url);
     if (!httpsCheck) {
@@ -261,18 +263,37 @@ export class OIDCAuthService {
         return;
       }
 
-      let params = new HttpParams({encoder: new WebHttpUrlEncodingCodec()});
+      let params = new HttpParams();
       let headers = new HttpHeaders().set(
         'Content-Type',
         'application/x-www-form-urlencoded'
       );
 
-      params = params.set('client_id', content.clientId);
-      params = params.set('client_secret', content.clientSecret);
+        let flag = true;
+        let basicAuth = false;
+        if (this.tokenEndMethodsSupported.length > 0) {
+          if (this.tokenEndMethodsSupported.length > 1) {
+            this.tokenEndMethodsSupported.forEach((method) => {
+              if (method == 'none') {
+                flag = false;
+              } else if (method == 'client_secret_basic' && content.clientSecret) {
+                basicAuth = true;
+                flag = false;
+                headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(content.clientId + ':' + content.clientSecret))));
+              }
+            })
+          }
+        }
+        if (flag && content.clientSecret) {
+          params = params.set('client_secret', content.clientSecret);
+        }
+        if (!basicAuth) {
+          params = params.set('client_id', content.clientId);
+        }
       return new Promise((resolve, reject) => {
         let revokeAccessToken: Observable<void>;
         let revokeRefreshToken: Observable<void>;
-        if (content.token && content.token != 'undefined' && content.token != 'null') {
+        if (logoutUrl && content.token && content.token != 'undefined' && content.token != 'null') {
           let revokationParams = params
             .set('token', content.token)
             .set('token_type_hint', 'access_token');
@@ -290,18 +311,18 @@ export class OIDCAuthService {
           revokeAccessToken = of(null);
         }
 
-        if (content.refreshToken && content.refreshToken != 'undefined' && content.refreshToken != 'null') {
-          let revokationParams = params
-            .set('token', content.refreshToken)
-            .set('token_type_hint', 'refresh_token');
-          revokeRefreshToken = this.coreService.log(
-            logoutUrl,
-            revokationParams,
-            {headers}
-          );
-        } else {
-          revokeRefreshToken = of(null);
-        }
+          if (logoutUrl && content.refreshToken && content.refreshToken != 'undefined' && content.refreshToken != 'null') {
+            let revokationParams = params
+              .set('token', content.refreshToken)
+              .set('token_type_hint', 'refresh_token');
+            revokeRefreshToken = this.coreService.log(
+              logoutUrl,
+              revokationParams,
+              {headers}
+            );
+          } else {
+            revokeRefreshToken = of(null);
+          }
 
         combineLatest([revokeAccessToken, revokeRefreshToken]).subscribe({
             next: (res: any) => {
@@ -423,8 +444,8 @@ export class OIDCAuthService {
   /**
    * Get token using an intermediate code. Works for the Authorization Code flow.
    */
-  getTokenFromCode(code, options) {
-    let params = new HttpParams({encoder: new WebHttpUrlEncodingCodec()})
+  getTokenFromCode(code: any, options: any) {
+    let params = new HttpParams()
       .set('grant_type', 'authorization_code')
       .set('code', code)
       .set('redirect_uri', options.customRedirectUri || this.redirectUri);
@@ -438,40 +459,61 @@ export class OIDCAuthService {
     return this.fetchAndProcessToken(params);
   }
 
-  fetchAndProcessToken(params) {
+  fetchAndProcessToken(params: any): any {
     this.assertUrlNotNullAndCorrectProtocol(this.tokenEndpoint, 'tokenEndpoint');
     let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
     const clientId = sessionStorage.getItem('clientId');
     const clientSecret = sessionStorage.getItem('clientSecret');
-    params = params.set('client_id', this.clientId || clientId);
-    params = params.set('client_secret', this.clientSecret || clientSecret);
-    return new Promise((resolve, reject) => {
-      this.coreService
-        .log(this.tokenEndpoint, params, {headers})
-        .subscribe({
-          next: (tokenResponse) => {
-            this.access_token = tokenResponse.access_token;
-            this.id_token = tokenResponse.id_token;
-            this.refresh_token = tokenResponse.refresh_token;
-
-            sessionStorage.$SOS$TOKENEXPIRETIME = (new Date().getTime() + (tokenResponse.expires_in * 1000)) - 20000;
-            this.renewToken();
-            resolve(tokenResponse);
-          }, error: (err) => {
-            this.toasterService.error('Error getting token', err);
-            reject(err);
+    let flag = true;
+    let basicAuth = false;
+    if (this.tokenEndMethodsSupported.length > 0) {
+      if (this.tokenEndMethodsSupported.length > 1) {
+        this.tokenEndMethodsSupported.forEach((method) => {
+          if (method == 'none') {
+            flag = false;
+          } else if (method == 'client_secret_basic' && (this.clientSecret || clientSecret)) {
+            basicAuth = true;
+            flag = false;
+            headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((this.clientId || clientId) + ':' + (this.clientSecret || clientSecret)))));
           }
-        });
-    });
+        })
+      }
+    }
+    if (flag && (this.clientSecret || clientSecret)) {
+      params = params.set('client_secret', this.clientSecret || clientSecret);
+    }
+    if (!basicAuth) {
+      params = params.set('client_id', this.clientId || clientId);
+    }
+    if (this.tokenEndpoint) {
+      return new Promise((resolve, reject) => {
+        this.coreService
+          .log(this.tokenEndpoint, params, {headers})
+          .subscribe({
+            next: (tokenResponse) => {
+              this.access_token = tokenResponse.access_token;
+              this.id_token = tokenResponse.id_token;
+              this.refresh_token = tokenResponse.refresh_token;
+
+              sessionStorage['$SOS$TOKENEXPIRETIME'] = (new Date().getTime() + (tokenResponse.expires_in * 1000)) - 20000;
+              this.renewToken();
+              resolve(tokenResponse);
+            }, error: (err) => {
+              this.toasterService.error('Error getting token', err);
+              reject(err);
+            }
+          });
+      });
+    }
   }
 
-  getCodePartsFromUrl(queryString) {
+  getCodePartsFromUrl(queryString: any) {
     if (!queryString || queryString.length === 0) {
       return this.getHashFragmentParams();
     }
     // normalize query string
     if (queryString.charAt(0) === '?') {
-      queryString = queryString.substr(1);
+      queryString = queryString.substring(1);
     }
     return this.parseQueryString(queryString);
   }
@@ -484,15 +526,15 @@ export class OIDCAuthService {
     }
     const questionMarkPosition = hash.indexOf('?');
     if (questionMarkPosition > -1) {
-      hash = hash.substr(questionMarkPosition + 1);
+      hash = hash.substring(questionMarkPosition + 1);
     } else {
-      hash = hash.substr(1);
+      hash = hash.substring(1);
     }
     return this.parseQueryString(hash);
   }
 
-  private parseQueryString(queryString) {
-    const data = {};
+  private parseQueryString(queryString: any) {
+    const data: any = {};
     let pairs, pair, separatorIndex, escapedKey, escapedValue, key, value;
     if (queryString === null) {
       return data;
@@ -505,33 +547,33 @@ export class OIDCAuthService {
         escapedKey = pair;
         escapedValue = null;
       } else {
-        escapedKey = pair.substr(0, separatorIndex);
-        escapedValue = pair.substr(separatorIndex + 1);
+        escapedKey = pair.substring(0, separatorIndex);
+        escapedValue = pair.substring(separatorIndex + 1);
       }
       key = decodeURIComponent(escapedKey);
       value = decodeURIComponent(escapedValue);
-      if (key.substr(0, 1) === '/') {
-        key = key.substr(1);
+      if (key.substring(0, 1) === '/') {
+        key = key.substring(1);
       }
       data[key] = value;
     }
     return data;
   }
 
-  parseState(state) {
+  parseState(state: any) {
     let nonce = state;
     let userState = '';
     if (state) {
       const idx = state.indexOf(this.nonceStateSeparator);
       if (idx > -1) {
-        nonce = state.substr(0, idx);
-        userState = state.substr(idx + this.nonceStateSeparator.length);
+        nonce = state.substring(0, idx);
+        userState = state.substring(idx + this.nonceStateSeparator.length);
       }
     }
     return [nonce, userState];
   }
 
-  validateNonce(nonceInState) {
+  validateNonce(nonceInState: any) {
     let savedNonce = sessionStorage.getItem('nonce');
     if (savedNonce !== nonceInState) {
       const err = 'Validating access_token failed, wrong state/nonce.';
@@ -556,11 +598,11 @@ export class OIDCAuthService {
   }
 
   private renewToken(): void {
-    let miliseconds = (new Date().getTime() < parseInt(sessionStorage.$SOS$TOKENEXPIRETIME)) ? (parseInt(sessionStorage.$SOS$TOKENEXPIRETIME) - new Date().getTime()) : (new Date().getTime() - parseInt(sessionStorage.$SOS$TOKENEXPIRETIME));
+    let miliseconds = (new Date().getTime() < parseInt(sessionStorage['$SOS$TOKENEXPIRETIME'])) ? (parseInt(sessionStorage["$SOS$TOKENEXPIRETIME"]) - new Date().getTime()) : (new Date().getTime() - parseInt(sessionStorage['$SOS$TOKENEXPIRETIME']));
     setTimeout(() => {
-      const key = sessionStorage.$SOS$KEY;
+      const key = sessionStorage['$SOS$KEY'];
       if (key) {
-        this.coreService.getValueFromLocker(key, (content) => {
+        this.coreService.getValueFromLocker(key, (content: any) => {
           this.refreshToken(content).then((res) => {
             this.coreService.saveValueInLocker({
               content: {
@@ -572,7 +614,7 @@ export class OIDCAuthService {
             }, () => {
               this.renewToken();
             });
-          }).catch((err) => {
+          }).catch(() => {
             this._logout();
           })
 
@@ -589,30 +631,48 @@ export class OIDCAuthService {
    * A solution for this is provided by the
    * method silentRefresh.
    */
-  public refreshToken(data): Promise<any> {
+  public refreshToken(data: any): Promise<any> {
     this.assertUrlNotNullAndCorrectProtocol(
       this.tokenEndpoint,
       'tokenEndpoint'
     );
     return new Promise((resolve, reject) => {
-      let params = new HttpParams({encoder: new WebHttpUrlEncodingCodec()})
+      let params = new HttpParams()
         .set('grant_type', 'refresh_token')
         .set('scope', this.scope)
-        .set('refresh_token', data.refreshToken)
-        .set('client_id', data.clientId)
-        .set('client_secret', data.clientSecret);
+        .set('refresh_token', data.refreshToken);
 
       let headers = new HttpHeaders().set(
         'Content-Type',
         'application/x-www-form-urlencoded'
       );
-
+      let flag = true;
+      let basicAuth = false;
+      if (this.tokenEndMethodsSupported.length > 0) {
+        if (this.tokenEndMethodsSupported.length > 1) {
+          this.tokenEndMethodsSupported.forEach((method) => {
+            if (method == 'none') {
+              flag = false;
+            } else if (method == 'client_secret_basic' && data.clientSecret) {
+              basicAuth = true;
+              flag = false;
+              headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((data.clientId + ':' + this.clientSecret)))));
+            }
+          })
+        }
+      }
+      if (flag && data.clientSecret) {
+        params = params.set('client_secret', data.clientSecret);
+      }
+      if (!basicAuth) {
+        params = params.set('client_id', data.clientId);
+      }
       this.coreService
         .log(this.tokenEndpoint, params, {headers})
         .subscribe({
           next:
             (tokenResponse) => {
-              sessionStorage.$SOS$TOKENEXPIRETIME = (new Date().getTime() + (tokenResponse.expires_in * 1000)) - 30000;
+              sessionStorage['$SOS$TOKENEXPIRETIME'] = (new Date().getTime() + (tokenResponse.expires_in * 1000)) - 30000;
               resolve(tokenResponse);
             },
           error: (err) => {
