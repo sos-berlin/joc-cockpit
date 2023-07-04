@@ -900,10 +900,11 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 block-ellipsis-job" translate>order.label.ignoreAdmissionTimes</label>
+              <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'order.label.ignoreAdmissionTimes' | translate}}"
+                     [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.ignoreAdmissionTimes' | translate) : ''"
+                     [nzTooltipMouseEnterDelay]="0.5" translate>order.label.ignoreAdmissionTimes</label>
               <div class="col-md-8 col-lg-9">
-                <label nz-checkbox  [(ngModel)]="selectedNode.obj.forceJobAdmission"  name="ignoreAdmissionTimes">
-                </label>
+                <label nz-checkbox [(ngModel)]="selectedNode.obj.forceJobAdmission" name="ignoreAdmissionTimes"></label>
               </div>
             </div>
             <div class="form-group row" *ngIf="(selectedNode.obj.arguments && selectedNode.obj.arguments.length > 0) || (selectedNode.obj.forkListArguments && selectedNode.obj.forkListArguments.length > 0)

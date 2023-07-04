@@ -13,8 +13,8 @@ export class AgentSelectionComponent implements OnChanges {
   @Input() agents: any;
   @Input() obj: any = {};
   @Input() data: any = {};
-  @Input() skipSubagents: boolean = false;
-  @Input() skipStandaloneAgent: boolean = false;
+  @Input() skipSubagents = false;
+  @Input() skipStandaloneAgent = false;
   @Input() required = true;
   @Input() type = 'agentName';
 

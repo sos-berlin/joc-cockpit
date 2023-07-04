@@ -712,35 +712,37 @@
         </div>
       </div>
       <div class="m-b-12 row">
-        <label class="col-sm-4" [nz-tooltip]="'user.tooltips.oidc.iamOidcFlowType' | translate" [nzTooltipMouseEnterDelay]="0.5"
+        <label class="col-sm-4" [nz-tooltip]="'user.tooltips.oidc.iamOidcFlowType' | translate"
+               [nzTooltipMouseEnterDelay]="0.5"
                translate>user.label.iamOidcFlowType
         </label>
         <div class="col-sm-6">
           <nz-radio-group name="type" [(ngModel)]="currentObj.iamOidcFlowType">
-            <label nz-radio nzValue="AUTHENTICATION"><span translate>user.label.iamOidcAuthenticationCodeFlow</span></label>
+            <label nz-radio nzValue="AUTHENTICATION"><span
+              translate>user.label.iamOidcAuthenticationCodeFlow</span></label>
             <label nz-radio nzValue="IMPLICIT"><span translate>user.label.iamOidcImplicitFlow</span></label>
           </nz-radio-group>
         </div>
       </div>
-      <ng-container *ngIf="currentObj.iamOidcFlowType == 'AUTHENTICATION'">
-        <div class="form-group row">
-          <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.oidc.iamOidcClientId' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcClientId
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-sm-6"
-               [ngClass]="{'has-error' : ((iamOidcClientId.dirty || iamOidcClientId.touched) && iamOidcClientId.invalid)}">
-            <input type="text" class="form-control" required #iamOidcClientId="ngModel" name="iamOidcClientId"
-                   [placeholder]="'user.placeholder.iamOidcClientId' | translate"
-                   [(ngModel)]="currentObj.iamOidcClientId">
-            <div *ngIf="iamOidcClientId.invalid && (iamOidcClientId.dirty || iamOidcClientId.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="iamOidcClientId.errors['required']">
-                <div translate>common.message.requiredError</div>
-              </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.oidc.iamOidcClientId' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcClientId
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6"
+             [ngClass]="{'has-error' : ((iamOidcClientId.dirty || iamOidcClientId.touched) && iamOidcClientId.invalid)}">
+          <input type="text" class="form-control" required #iamOidcClientId="ngModel" name="iamOidcClientId"
+                 [placeholder]="'user.placeholder.iamOidcClientId' | translate"
+                 [(ngModel)]="currentObj.iamOidcClientId">
+          <div *ngIf="iamOidcClientId.invalid && (iamOidcClientId.dirty || iamOidcClientId.touched)"
+               class="text-danger help-block">
+            <div *ngIf="iamOidcClientId.errors['required']">
+              <div translate>common.message.requiredError</div>
             </div>
           </div>
         </div>
+      </div>
+      <ng-container *ngIf="currentObj.iamOidcFlowType == 'AUTHENTICATION'">
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.oidc.iamOidcClientSecret' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcClientSecret
@@ -781,15 +783,19 @@
         </div>
       </div>
       <ng-container *ngIf="data['identityServiceType'] === 'OIDC'">
-        <div class="form-group row">
-          <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.oidc.iamOidcGroupClaims' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcGroupClaims</label>
+        <div class="form-group row" *ngFor="let groupClaim of currentObj.iamOidcGroupClaims; let i = index">
+          <div class="col-sm-4 form-control-label">
+            <label *ngIf="i == 0"  [nz-tooltip]="'user.tooltips.oidc.iamOidcGroupClaims' | translate"
+                   [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcGroupClaims</label>
+          </div>
           <div class="col-sm-6">
-            <div *ngFor="let groupClaim of currentObj.iamOidcGroupClaims; let i = index">
               <input type="text" class="form-control" name="iamOidcGroupClaims{{i}}"
                      [placeholder]="'user.placeholder.iamOidcGroupClaims' | translate"
                      [(ngModel)]="groupClaim.name" autocomplete="off">
-            </div>
+              <i (click)="addGroup(currentObj.iamOidcGroupClaims)"
+                 class="fa fa-plus pos-abt t-10 text-hover-primary" style="right: -10px;"></i>
+              <i *ngIf="i != 0" (click)="removeGroup(currentObj.iamOidcGroupClaims, i)"
+                 class="fa fa-times pos-abt t-10 text-hover-color cursor" style="right: -28px;"></i>
           </div>
         </div>
         <div class="form-group row">

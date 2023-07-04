@@ -18,7 +18,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   permission: any = {};
   username = '';
   showViews: any = {};
-  eventId: string;
+  eventId: string | undefined;
   eventLoading = false;
   switchScheduler = false;
   isLogout = false;
@@ -132,7 +132,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.colorOfSystemEvent = 0;
   }
 
-  navToOrderNoti(index, data): void {
+  navToOrderNoti(index: number, data: any): void {
     let filter = this.coreService.getMonitorTab();
     filter.tabIndex = index;
     if (index == 2) {

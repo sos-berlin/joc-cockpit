@@ -22,8 +22,8 @@ declare const $: any;
 export class GraphicalViewModalComponent implements OnInit {
   @Input() workflow: any;
   @Input() positions: any;
-  @Input() operation: string;
-  @Input() startNode: string;
+  @Input() operation = '';
+  @Input() startNode = '';
   @Input() data: any;
   isLoading = true;
   position: any;
@@ -61,7 +61,7 @@ export class GraphicalViewModalComponent implements OnInit {
   ngOnInit(): void {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.workFlowJson = this.coreService.clone(this.workflow);
-    this.convertTryToRetry(this.workFlowJson);
+    this.coreService.convertTryToRetry(this.workFlowJson, this.positions, this.startNode);
   }
 
   ngAfterViewInit(): void {
@@ -89,136 +89,6 @@ export class GraphicalViewModalComponent implements OnInit {
         }
       }
     });
-  }
-
-  convertTryToRetry(mainJson: any): void {
-    const self = this;
-    let count = 1
-    let isChecked = false;
-
-    function recursive(json: any, parent = null) {
-      if (json.instructions) {
-        for (let x = 0; x < json.instructions.length; x++) {
-          json.instructions[x].id = ++count;
-          if (self.positions && !self.positions.has(json.instructions[x].positionString)) {
-            json.instructions[x].position = undefined;
-          } else {
-            if (self.startNode) {
-              if (!isChecked) {
-                json.instructions[x].position = undefined;
-              }
-              if (self.startNode === json.instructions[x].positionString) {
-                isChecked = true;
-              }
-            }
-          }
-          if (json.instructions[x].TYPE === 'ImplicitEnd' && (json.TYPE || parent)) {
-            if (json.TYPE === 'ForkList') {
-              json.instructions[x].TYPE = 'ForkListEnd';
-            } else if (json.TYPE === 'Cycle') {
-              json.instructions[x].TYPE = 'CycleEnd';
-            } else if (parent) {
-              let positions = [];
-              if (!parent.join) {
-                parent.join = {};
-              } else {
-                positions = self.coreService.clone(parent.join.positionStrings);
-              }
-              positions.push(json.instructions[x].position);
-              parent.join.positionStrings = positions;
-              if (self.positions && self.positions.has(parent.join.positionStrings)) {
-                parent.join.position = self.positions.get(parent.join.positionString);
-              }
-              json.instructions[x].TYPE = 'Join';
-            }
-          }
-
-          if (json.instructions[x].TYPE === 'Execute.Named') {
-            json.instructions[x].TYPE = 'Job';
-          }
-          if (json.instructions[x].TYPE === 'Try') {
-            let isRetry = false;
-            if (json.instructions[x].catch) {
-              if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length === 1
-                && json.instructions[x].catch.instructions[0].TYPE === 'Retry') {
-                json.instructions[x].TYPE = 'Retry';
-                json.instructions[x].instructions = json.instructions[x].try.instructions;
-                isRetry = true;
-                delete json.instructions[x].try;
-                delete json.instructions[x].catch;
-              }
-            }
-            if (!isRetry) {
-              if (json.instructions[x].try) {
-                json.instructions[x].instructions = json.instructions[x].try.instructions || [];
-                delete json.instructions[x].try;
-              }
-              if (json.instructions[x].catch) {
-                if (!json.instructions[x].catch.instructions) {
-                  json.instructions[x].catch.instructions = [];
-                }
-              } else {
-                json.instructions[x].catch = {instructions: []};
-              }
-            }
-          }
-          if (json.instructions[x].TYPE === 'Lock') {
-            if (json.instructions[x].lockedWorkflow) {
-              json.instructions[x].instructions = json.instructions[x].lockedWorkflow.instructions;
-              delete json.instructions[x].lockedWorkflow;
-            }
-          }
-          if (json.instructions[x].TYPE === 'Options') {
-            if (json.instructions[x].block) {
-              json.instructions[x].instructions = json.instructions[x].block.instructions;
-              delete json.instructions[x].block;
-            }
-          }
-          if (json.instructions[x].TYPE === 'Cycle') {
-            if (json.instructions[x].cycleWorkflow) {
-              json.instructions[x].instructions = json.instructions[x].cycleWorkflow.instructions;
-              delete json.instructions[x].cycleWorkflow;
-            }
-          }
-          if (json.instructions[x].TYPE === 'ForkList') {
-            if (json.instructions[x].workflow) {
-              json.instructions[x].instructions = json.instructions[x].workflow.instructions;
-              delete json.instructions[x].workflow;
-            }
-          }
-          if (json.instructions[x].instructions) {
-            recursive(json.instructions[x]);
-          }
-          if (json.instructions[x].catch) {
-            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-              recursive(json.instructions[x].catch);
-            }
-          }
-          if (json.instructions[x].then && json.instructions[x].then.instructions) {
-            recursive(json.instructions[x].then);
-          }
-          if (json.instructions[x].else && json.instructions[x].else.instructions) {
-            recursive(json.instructions[x].else);
-          }
-          if (json.instructions[x].branches) {
-            json.instructions[x].branches = json.instructions[x].branches.filter((branch: any) => {
-              if(branch.workflow) {
-                branch.instructions = branch.workflow.instructions;
-                delete branch.workflow;
-              }
-              return (branch.instructions && branch.instructions.length > 0);
-            });
-            for (let i = 0; i < json.instructions[x].branches.length; i++) {
-              if (json.instructions[x].branches[i]) {
-                recursive(json.instructions[x].branches[i], json.instructions[x]);
-              }
-            }
-          }
-        }
-      }
-    }
-
-    recursive(mainJson);
   }
 
   onSubmit(): void {

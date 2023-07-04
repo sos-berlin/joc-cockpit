@@ -229,8 +229,8 @@ export class SingleDocumentationComponent implements OnInit {
     });
   }
 
-  exportDocument(document): void {
-    const obj = {documentations: []};
+  exportDocument(document: any): void {
+    const obj: any = {documentations: []};
     if (document) {
       obj.documentations.push(document.path);
     }
@@ -239,7 +239,7 @@ export class SingleDocumentationComponent implements OnInit {
     });
   }
 
-  deleteDocumentation(document): void {
+  deleteDocumentation(document: any): void {
     this.coreService.post('documentation/used', {
       documentation: document.path
     }).subscribe((res: any) => {
@@ -251,13 +251,13 @@ export class SingleDocumentationComponent implements OnInit {
     });
   }
 
-  deleteDocument(obj): void {
-    this.coreService.post('documentations/delete', obj).subscribe(res => {
+  deleteDocument(obj: any): void {
+    this.coreService.post('documentations/delete', obj).subscribe(() => {
       this.documents = [];
     });
   }
 
-  private getDocumentationsList(obj): void {
+  private getDocumentationsList(obj: any): void {
     this.coreService.post('documentations', obj).subscribe({
       next: (res: any) => {
         this.loading = false;
@@ -266,7 +266,7 @@ export class SingleDocumentationComponent implements OnInit {
     });
   }
 
-  private deleteDocumentFn(obj, document): void {
+  private deleteDocumentFn(obj: any, document: any): void {
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
@@ -275,7 +275,7 @@ export class SingleDocumentationComponent implements OnInit {
         name: document ? document.path : ''
       };
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzComponentParams: {
           comments,
@@ -293,7 +293,7 @@ export class SingleDocumentationComponent implements OnInit {
       });
     } else {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           type: 'Delete',
@@ -322,7 +322,7 @@ export class SingleDocumentationComponent implements OnInit {
 })
 export class DocumentationComponent implements OnInit, OnDestroy {
   isLoading = false;
-  loading: boolean;
+  loading = false;
   schedulerIds: any = {};
   tree: any = [];
   preferences: any = {};
@@ -339,7 +339,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   sideView: any = {};
   documentTypes = ['PDF', 'HTML', 'XML', 'XSL', 'XSD', 'JAVASCRIPT', 'JSON', 'CSS', 'MARKDOWN', 'GIF', 'JPEG', 'PNG'];
   reloadState = 'no';
-  selectedPath: string;
+  selectedPath = '';
   isProcessing = false;
   searchableProperties = ['name', 'type', 'assignReference', 'path'];
 
@@ -347,7 +347,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
 
-  @ViewChild(TreeComponent, {static: false}) child;
+  @ViewChild(TreeComponent, {static: false}) child!: any;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private searchPipe: SearchPipe,
               private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
@@ -380,7 +380,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     $('.scroll-y').remove();
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       let flag = false;
       for (let j = 0; j < args.eventSnapshots.length; j++) {
@@ -419,7 +419,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   loadDocument(path = null, skipChild = false): void {
-    const obj = {folders: [], types: [], controllerId: this.schedulerIds.selected};
+    const obj: any = {folders: [], types: [], controllerId: this.schedulerIds.selected};
     this.documents = [];
     let paths = [];
     if (this.child && !skipChild) {
@@ -440,7 +440,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.getDocumentationsList(obj);
   }
 
-  receiveAction($event): void {
+  receiveAction($event: any): void {
     this.getDocumentations($event, $event.action !== 'NODE');
   }
 
@@ -452,7 +452,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteFolder(folder): void {
+  deleteFolder(folder: any): void {
     const obj = {
       folder: folder.path
     };
@@ -464,7 +464,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
         name: folder.path
       };
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzComponentParams: {
           comments,
@@ -482,7 +482,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       });
     } else {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           type: 'Delete',
@@ -538,14 +538,14 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.documentFilters.currentPage = $event;
     if (this.object.mapOfCheckedId.size !== this.data.length) {
       this.reset();
     }
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.documentFilters.entryPerPage = $event;
     if (this.object.mapOfCheckedId.size !== this.data.length) {
       if (this.object.checked) {
@@ -554,14 +554,14 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     }
   }
 
-  sort(propertyName): void {
+  sort(propertyName: string): void {
     this.documentFilters.reverse = !this.documentFilters.reverse;
     this.documentFilters.filter.sortBy = propertyName;
     this.data = this.orderPipe.transform(this.data, this.documentFilters.filter.sortBy, this.documentFilters.reverse);
     this.reset();
   }
 
-  getCurrentData(list, filter): Array<any> {
+  getCurrentData(list: any[], filter: any): Array<any> {
     const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
     return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
   }
@@ -571,12 +571,12 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.data = [...this.data];
   }
 
-  receiveMessage($event): void {
+  receiveMessage($event: string): void {
     this.pageView = $event;
   }
 
   selectAll(): void {
-    this.data.forEach(item => {
+    this.data.forEach((item: any) => {
       this.object.mapOfCheckedId.add(item.path);
     });
   }
@@ -617,9 +617,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
   }
 
-  editDocument(document): void {
+  editDocument(document: any): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: EditModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -637,7 +637,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
-  previewDocument(document): void {
+  previewDocument(document: any): void {
     const link = API_URL + 'documentation/show?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId;
     if (this.preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
@@ -646,14 +646,14 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     }
   }
 
-  showDocumentUsage(document): void {
+  showDocumentUsage(document: any): void {
     const documentObj = this.coreService.clone(document);
     this.coreService.post('documentation/used', {
       documentation: document.path
     }).subscribe((res: any) => {
       documentObj.usedIn = res.objects || [];
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ShowModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {
@@ -666,8 +666,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
-  exportDocument(document): void {
-    const obj = {documentations: []};
+  exportDocument(document: any): void {
+    const obj: any = {documentations: []};
     if (document) {
       obj.documentations.push(document.path);
     } else {
@@ -684,7 +684,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   importDocument(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ImportModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -706,7 +706,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteDocumentations(document): void {
+  deleteDocumentations(document: any): void {
     const obj: any = {
       controllerId: this.schedulerIds.selected,
       documentations: []
@@ -744,28 +744,30 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteDocument(obj, document): void {
+  deleteDocument(obj: any, document: any): void {
     this.isProcessing = true;
-    this.coreService.post('documentations/delete', obj).subscribe(res => {
-      if (document) {
-        for (let i = 0; i < this.documents.length; i++) {
-          if (this.documents[i].path === document.path) {
-            this.documents.splice(i, 1);
-            break;
+    this.coreService.post('documentations/delete', obj).subscribe({
+      next: () => {
+        if (document) {
+          for (let i = 0; i < this.documents.length; i++) {
+            if (this.documents[i].path === document.path) {
+              this.documents.splice(i, 1);
+              break;
+            }
+          }
+        } else {
+          if (this.object.mapOfCheckedId.size > 0) {
+            this.documents = this.documents.filter((item) => {
+              return !this.object.mapOfCheckedId.has(item.path);
+            });
           }
         }
-      } else {
-        if (this.object.mapOfCheckedId.size > 0) {
-          this.documents = this.documents.filter((item) => {
-            return !this.object.mapOfCheckedId.has(item.path);
-          });
-        }
+        this.reset();
+        this.searchInResult();
+        this.resetAction(5000);
+      }, error: () => {
+        this.resetAction();
       }
-      this.reset();
-      this.searchInResult();
-      this.resetAction(5000);
-    }, () => {
-      this.resetAction();
     });
   }
 
@@ -780,34 +782,36 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   private init(): void {
     this.documentFilters = this.coreService.getResourceTab().documents;
     this.coreService.getResourceTab().state = 'documentations';
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).documentation;
+    if (localStorage['views']) {
+      this.pageView = JSON.parse(localStorage['views']).documentation;
     }
     this.initTree();
   }
 
-  private getDocumentationsList(obj): void {
+  private getDocumentationsList(obj: any): void {
     this.reset();
-    this.coreService.post('documentations', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      if (res.documentations && res.documentations.length === 0) {
-        this.documentFilters.currentPage = 1;
+    this.coreService.post('documentations', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        if (res.documentations && res.documentations.length === 0) {
+          this.documentFilters.currentPage = 1;
+        }
+        this.loading = false;
+        res.documentations.forEach((value: { path: string, path1: string }) => {
+          value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
+        });
+        res.documentations = this.orderPipe.transform(res.documentations, this.documentFilters.filter.sortBy, this.documentFilters.reverse);
+        this.documents = res.documentations;
+        this.searchInResult();
+      }, error: () => {
+        this.loading = false;
       }
-      this.loading = false;
-      res.documentations.forEach((value) => {
-        value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
-      });
-      res.documentations = this.orderPipe.transform(res.documentations, this.documentFilters.filter.sortBy, this.documentFilters.reverse);
-      this.documents = res.documentations;
-      this.searchInResult();
-    }, () => {
-      this.loading = false;
     });
   }
 
-  private deleteDocumentFn(obj, document, arr): void {
+  private deleteDocumentFn(obj: any, document: any, arr: any): void {
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
@@ -825,7 +829,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
         });
       }
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzComponentParams: {
           comments,
@@ -843,7 +847,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       });
     } else {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           type: 'Delete',

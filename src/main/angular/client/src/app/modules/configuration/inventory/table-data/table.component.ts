@@ -107,8 +107,10 @@ export class TableComponent implements OnChanges, OnDestroy {
         obj.name = res.name;
         if (obj.type === InventoryObject.SCHEDULE) {
           configuration = {controllerId: this.schedulerId};
-        } else if (obj.type === 'LOCK') {
+        } else if (obj.type === InventoryObject.LOCK) {
           configuration = {limit: 1, id: res.name};
+        } else if (obj.type === InventoryObject.FILEORDERSOURCE) {
+          configuration = {delay: 2};
         } else if (obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR') {
           configuration = {type: obj.type};
         }
@@ -120,14 +122,14 @@ export class TableComponent implements OnChanges, OnDestroy {
 
   /* ---------------------------- Action ----------------------------------*/
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.filter.currentPage = $event;
     if (this.mapOfCheckedId.size !== this.data.length) {
       this.reset();
     }
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.filter.entryPerPage = $event;
     if (this.mapOfCheckedId.size !== this.data.length) {
       if (this.checked) {
@@ -399,11 +401,11 @@ export class TableComponent implements OnChanges, OnDestroy {
     this.deleteDraft(null);
   }
 
-  private removeApiCall(object, auditLog): void {
+  private removeApiCall(object: any, auditLog: any): void {
     this.deleteAPICall('remove', object, auditLog);
   }
 
-  deleteDraft(object): void {
+  deleteDraft(object: any): void {
     const _path = object ? object.path + (object.path === '/' ? '' : '/') + object.name : '';
     if (this.preferences.auditLog) {
       const comments = {

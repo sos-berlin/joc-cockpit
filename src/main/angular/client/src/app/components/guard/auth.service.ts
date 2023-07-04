@@ -306,6 +306,8 @@ export class AuthService {
       } else if (algorithm === -257) {
         // RSASSA-PKCS1-v1_5 algorithm
         return convertRsaToPEM(parsedCoseKey[-1], parsedCoseKey[-2]);
+      } else {
+        return jwk;
       }
     }
 

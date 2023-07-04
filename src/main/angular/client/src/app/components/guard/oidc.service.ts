@@ -9,46 +9,28 @@ import {AuthService} from "./auth.service";
 
 
 // GENERATING CODE CHALLENGE FROM VERIFIER
-function generateCodeChallengeFromVerifier(v) {
-  return base64URL(CryptoJS.SHA256(v));
+function generateCodeChallengeFromVerifier(v: any) {
+  return base64URL({string: CryptoJS.SHA256(v)});
 }
 
-function base64URL(string) {
+function base64URL({string}: { string: any }) {
   return string.toString(CryptoJS.enc.Base64).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')
 }
 
-function base64UrlEncode(str) {
+function base64UrlEncode(str: string) {
   const base64 = btoa(str);
   return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
 
-class WebHttpUrlEncodingCodec {
-  encodeKey(k) {
-    return encodeURIComponent(k);
-  }
-
-  encodeValue(v) {
-    return encodeURIComponent(v);
-  }
-
-  decodeKey(k) {
-    return decodeURIComponent(k);
-  }
-
-  decodeValue(v) {
-    return decodeURIComponent(v);
-  }
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class OIDCAuthService {
-  clientId?: string;
+  clientId?: string = '';
   redirectUri?: string;
-  loginUrl?: string;
+  loginUrl?: string = '';
   scope = 'openid profile email';
-
   issuer?: string;
   logoutUrl?: string;
   tokenEndpoint?: string;
@@ -59,31 +41,31 @@ export class OIDCAuthService {
   skipIssuerCheck?: boolean;
   nonceStateSeparator: string = ';';
   state = '';
+  responseTypesSupported = [];
   grantTypesSupported = [];
   tokenEndMethodsSupported = [];
   discoveryDocumentLoaded = false;
-  access_token: string;
-  id_token: string;
-  refresh_token: string;
+  access_token: string | undefined;
+  id_token: string | undefined;
+  refresh_token: string | undefined;
 
   constructor(private coreService: CoreService, private toasterService: ToastrService, private authService: AuthService,
               private router: Router) {
-    if (sessionStorage.$SOS$KEY) {
-      this.coreService.renewLocker(sessionStorage.$SOS$KEY);
-      if (sessionStorage.$SOS$TOKENEXPIRETIME) {
+    if (sessionStorage['$SOS$KEY']) {
+      this.coreService.renewLocker(sessionStorage['$SOS$KEY']);
+      if (sessionStorage['$SOS$TOKENEXPIRETIME']) {
         this.renewToken();
       }
     }
   }
 
-  configure(config) {
+  configure(config: any) {
     this.issuer = config.iamOidcAuthenticationUrl;
     this.redirectUri = window.location.origin + '/joc';
-    this.responseType = 'code';
     this.showDebugInformation = true;
   }
 
-  loadDiscoveryDocument(fullUrl = null) {
+  loadDiscoveryDocument(fullUrl: string | null) {
     return new Promise((resolve, reject) => {
       if (!fullUrl) {
         fullUrl = this.issuer || '';
@@ -95,36 +77,38 @@ export class OIDCAuthService {
       if (!this.validateUrlForHttps(fullUrl)) {
         reject("issuer  must use HTTPS (with TLS), or config value for property 'requireHttps' must be set to 'false' and allow HTTP (without TLS).");
         return;
-      }
-      this.coreService.get(fullUrl).subscribe({
-        next: (doc) => {
-          if (!this.validateDiscoveryDocument(doc)) {
-            this.toasterService.error('discovery_document_validation_error');
-            return;
+      } else {
+        this.coreService.get(fullUrl).subscribe({
+          next: (doc) => {
+            if (!this.validateDiscoveryDocument(doc)) {
+              this.toasterService.error('discovery_document_validation_error');
+              return;
+            }
+            this.loginUrl = doc.authorization_endpoint;
+            this.logoutUrl = doc.revocation_endpoint || doc.end_session_endpoint || '';
+            this.issuer = doc.issuer;
+            sessionStorage['logoutUrl'] = this.logoutUrl;
+            this.grantTypesSupported = doc.grant_types_supported;
+            this.tokenEndpoint = doc.token_endpoint;
+            this.responseTypesSupported = doc.response_types_supported || ['code'];
+            this.tokenEndMethodsSupported = doc.token_endpoint_auth_methods_supported || ['client_secret_post'];
+            this.discoveryDocumentLoaded = true;
+            const result = {
+              discoveryDocument: doc,
+
+            };
+            resolve(result);
+
+          }, error: (err) => {
+            reject(err);
           }
-          this.loginUrl = doc.authorization_endpoint;
-          this.logoutUrl = doc.revocation_endpoint || doc.end_session_endpoint || '';
-          sessionStorage.logoutUrl = this.logoutUrl;
-          this.grantTypesSupported = doc.grant_types_supported;
-          this.issuer = doc.issuer;
-          this.tokenEndpoint = doc.token_endpoint;
-          this.tokenEndMethodsSupported = doc.token_endpoint_auth_methods_supported || ['client_secret_post'];
-          this.discoveryDocumentLoaded = true;
-          const result = {
-            discoveryDocument: doc,
-
-          };
-          resolve(result);
-
-        }, error: (err) => {
-          reject(err);
-        }
-      });
+        });
+      }
     });
   }
 
-  private validateDiscoveryDocument(doc) {
-    let errors;
+  private validateDiscoveryDocument(doc: any) {
+    let errors: any;
     if (!this.skipIssuerCheck && doc.issuer !== this.issuer) {
       this.toasterService.error('invalid issuer in discovery document, expected: ' + this.issuer, 'current: ' + doc.issuer);
       return false;
@@ -156,7 +140,7 @@ export class OIDCAuthService {
     return true;
   }
 
-  validateUrlFromDiscoveryDocument(url) {
+  validateUrlFromDiscoveryDocument(url: string) {
     const errors = [];
     const httpsCheck = this.validateUrlForHttps(url);
     if (!httpsCheck) {
@@ -165,7 +149,7 @@ export class OIDCAuthService {
     return errors;
   }
 
-  validateUrlForHttps(url) {
+  validateUrlForHttps(url: string | undefined) {
     if (!url) {
       return true;
     }
@@ -192,7 +176,7 @@ export class OIDCAuthService {
   }
 
 
-  assertUrlNotNullAndCorrectProtocol(url, description) {
+  assertUrlNotNullAndCorrectProtocol(url: string | undefined, description: string) {
     if (!url) {
       throw new Error(`'${description}' should not be null`);
     }
@@ -202,8 +186,8 @@ export class OIDCAuthService {
   }
 
   async createLoginUrl(state = '', noPrompt = false) {
-    let redirectUri = this.redirectUri;
-    const nonce = await this.createAndSaveNonce();
+    let redirectUri: string | undefined = this.redirectUri;
+    const nonce: any = await this.createAndSaveNonce();
     if (state) {
       state = nonce + this.nonceStateSeparator + encodeURIComponent(state);
     } else {
@@ -211,34 +195,41 @@ export class OIDCAuthService {
     }
 
     this.responseType = 'code';
-
-    const seperationChar = this.loginUrl.indexOf('?') > -1 ? '&' : '?';
-    let scope = this.scope;
-    if (!scope.match(/(^|\s)openid($|\s)/)) {
-      scope = 'openid ' + scope;
-    }
-    let url = this.loginUrl +
-      seperationChar +
-      'response_type=' +
-      encodeURIComponent(this.responseType) +
-      '&client_id=' +
-      encodeURIComponent(this.clientId) +
-      '&state=' +
-      encodeURIComponent(state) +
-      '&redirect_uri=' +
-      encodeURIComponent(redirectUri) +
-      '&scope=' +
-      encodeURIComponent(scope);
-    if (this.responseType.includes('code')) {
-      const [challenge, verifier] = await this.createChallangeVerifierPairForPKCE();
-      if (verifier) {
-        sessionStorage.setItem('PKCE_verifier', verifier.toString());
+    let url = '';
+    if (this.loginUrl) {
+      const seperationChar = this.loginUrl.indexOf('?') > -1 ? '&' : '?';
+      let scope = this.scope;
+      if (!scope.match(/(^|\s)openid($|\s)/)) {
+        scope = 'openid ' + scope;
       }
-      url += '&code_challenge=' + challenge;
-      url += '&code_challenge_method=S256';
+      if(this.responseTypesSupported?.length > 1) {
+        this.responseTypesSupported.forEach((type: string) => {
+          if (type.includes('id_token')) {
+            this.responseType = type;
+          }
+        })
+      }
+     
+      url = this.loginUrl +
+        seperationChar +
+        'response_type=' +
+        encodeURIComponent(this.responseType) + (this.clientId ? '&client_id=' +  encodeURIComponent(this.clientId) : '') +
+        '&state=' +
+        encodeURIComponent(state) +
+        '&redirect_uri=' +
+        encodeURIComponent(redirectUri || '') +
+        '&scope=' +
+        encodeURIComponent(scope);
+      if (this.responseType.includes('code')) {
+        const [challenge, verifier] = await this.createChallangeVerifierPairForPKCE();
+        if (verifier) {
+          sessionStorage.setItem('PKCE_verifier', verifier.toString());
+        }
+        url += '&code_challenge=' + challenge;
+        url += '&code_challenge_method=S256';
+      }
+      url += '&nonce=' + encodeURIComponent(nonce);
     }
-    url += '&nonce=' + encodeURIComponent(nonce);
-
     if (noPrompt) {
       url += '&prompt=none';
     }
@@ -247,98 +238,99 @@ export class OIDCAuthService {
     return url;
   }
 
-  logOut(key) {
+  logOut(key: string) {
     if (!key) {
       return;
     }
-    let logoutUrl = sessionStorage.getItem('logoutUrl') || this.logoutUrl;
+    let logoutUrl: string | undefined = sessionStorage.getItem('logoutUrl') || this.logoutUrl;
 
     sessionStorage.clear();
 
-    this.coreService.getValueFromLocker(key, (content) => {
+    this.coreService.getValueFromLocker(key, (content: any) => {
       if (!this.validateUrlForHttps(this.logoutUrl)) {
         this.toasterService.error(
           "logoutUrl  must use HTTPS (with TLS), or config value for property 'requireHttps' must be set to 'false' and allow HTTP (without TLS)."
         );
-        return;
-      }
+        return null;
+      } else {
 
-      let params = new HttpParams({encoder: new WebHttpUrlEncodingCodec()});
-      let headers = new HttpHeaders().set(
-        'Content-Type',
-        'application/x-www-form-urlencoded'
-      );
-
-      let flag = true;
-      let basicAuth = false;
-      if (this.tokenEndMethodsSupported.length > 0) {
-        if (this.tokenEndMethodsSupported.length > 1) {
-          this.tokenEndMethodsSupported.forEach((method) => {
-            if (method == 'none') {
-              flag = false;
-            } else if (method == 'client_secret_basic' && content.clientSecret) {
-              basicAuth = true;
-              flag = false;
-              headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(content.clientId + ':' + content.clientSecret))));
-            }
-          })
-        }
-      }
-      if (flag && content.clientSecret) {
-        params = params.set('client_secret', content.clientSecret);
-      }
-      if (!basicAuth) {
-        params = params.set('client_id', content.clientId);
-      }
-      return new Promise((resolve, reject) => {
-        let revokeAccessToken: Observable<void>;
-        let revokeRefreshToken: Observable<void>;
-        if (content.token && content.token != 'undefined' && content.token != 'null') {
-          let revokationParams = params
-            .set('token', content.token)
-            .set('token_type_hint', 'access_token');
-          if (logoutUrl.includes('login.windows.net')) {
-            // navigate to the logout URL
-            window.location.replace(logoutUrl + '?post_logout_redirect_uri=' + window.location.href);
-            return
-          }
-          revokeAccessToken = this.coreService.log(
-            logoutUrl,
-            revokationParams,
-            headers
-          );
-        } else {
-          revokeAccessToken = of(null);
-        }
-
-        if (content.refreshToken && content.refreshToken != 'undefined' && content.refreshToken != 'null') {
-          let revokationParams = params
-            .set('token', content.refreshToken)
-            .set('token_type_hint', 'refresh_token');
-          revokeRefreshToken = this.coreService.log(
-            logoutUrl,
-            revokationParams,
-            {headers}
-          );
-        } else {
-          revokeRefreshToken = of(null);
-        }
-
-        combineLatest([revokeAccessToken, revokeRefreshToken]).subscribe({
-            next: (res: any) => {
-              resolve(res);
-            }, error: (err) => {
-              reject(err);
-            }
-          }
+        let params = new HttpParams();
+        let headers = new HttpHeaders().set(
+          'Content-Type',
+          'application/x-www-form-urlencoded'
         );
-      });
+
+        let flag = true;
+        let basicAuth = false;
+        if (this.tokenEndMethodsSupported.length > 0) {
+          if (this.tokenEndMethodsSupported.length > 1) {
+            this.tokenEndMethodsSupported.forEach((method) => {
+              if (method == 'none') {
+                flag = false;
+              } else if (method == 'client_secret_basic' && content.clientSecret) {
+                basicAuth = true;
+                flag = false;
+                headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(content.clientId + ':' + content.clientSecret))));
+              }
+            })
+          }
+        }
+        if (flag && content.clientSecret) {
+          params = params.set('client_secret', content.clientSecret);
+        }
+        if (!basicAuth) {
+          params = params.set('client_id', content.clientId);
+        }
+        return new Promise((resolve, reject) => {
+          let revokeAccessToken: Observable<null>;
+          let revokeRefreshToken: Observable<null>;
+          if (logoutUrl && content.token && content.token != 'undefined' && content.token != 'null') {
+            let revokationParams = params
+              .set('token', content.token)
+              .set('token_type_hint', 'access_token');
+            if (logoutUrl.includes('login.windows.net')) {
+              // navigate to the logout URL
+              window.location.replace(logoutUrl + '?post_logout_redirect_uri=' + window.location.href);
+              return
+            }
+            revokeAccessToken = this.coreService.log(
+              logoutUrl,
+              revokationParams,
+              headers
+            );
+          } else {
+            revokeAccessToken = of(null);
+          }
+
+          if (logoutUrl && content.refreshToken && content.refreshToken != 'undefined' && content.refreshToken != 'null') {
+            let revokationParams = params
+              .set('token', content.refreshToken)
+              .set('token_type_hint', 'refresh_token');
+            revokeRefreshToken = this.coreService.log(
+              logoutUrl,
+              revokationParams,
+              {headers}
+            );
+          } else {
+            revokeRefreshToken = of(null);
+          }
+
+          combineLatest([revokeAccessToken, revokeRefreshToken]).subscribe({
+              next: (res: any) => {
+                resolve(res);
+              }, error: (err) => {
+                reject(err);
+              }
+            }
+          );
+        });
+      }
     });
 
   }
 
   createAndSaveNonce() {
-    return this.createNonce().then(function (nonce: string) {
+    return this.createNonce().then((nonce: any) => {
       sessionStorage.setItem('nonce', nonce);
       return nonce;
     });
@@ -351,10 +343,10 @@ export class OIDCAuthService {
       let id = '';
 
       if (crypto) {
-        let bytes = new Uint8Array(size);
+        let bytes: any = new Uint8Array(size);
         window.crypto.getRandomValues(bytes);
 
-        bytes = bytes.map((x) => unreserved.charCodeAt(x % unreserved.length));
+        bytes = bytes.map((x: any) => unreserved.charCodeAt(x % unreserved.length));
         id = String.fromCharCode.apply(null, bytes);
       } else {
         while (0 < size--) {
@@ -373,7 +365,7 @@ export class OIDCAuthService {
     return [challenge, verifier];
   }
 
-  async tryLoginCodeFlow(options = null) {
+  async tryLoginCodeFlow(options?: any) {
     options = options || {};
     const querySource = options.customHashFragment
       ? options.customHashFragment.substring(1)
@@ -383,6 +375,8 @@ export class OIDCAuthService {
     sessionStorage.setItem('code', code);
     const state = parts['state'];
     const sessionState = parts['session_state'];
+    const idToken = parts['id_token'];
+    const accessToken = parts['access_token'];
     if (!options.preventClearHashAfterLogin) {
       const href = location.origin +
         location.pathname +
@@ -409,6 +403,10 @@ export class OIDCAuthService {
       //  const err = new OAuthErrorEvent('code_error', {}, parts);
       //  this.eventsSubject.next(err);
       return Promise.reject({code_error: parts});
+    } else if(idToken){
+      this.access_token = accessToken;
+      this.id_token = idToken;
+      return Promise.resolve();
     }
     if (!options.disableNonceCheck) {
       if (!nonceInState) {
@@ -444,8 +442,8 @@ export class OIDCAuthService {
   /**
    * Get token using an intermediate code. Works for the Authorization Code flow.
    */
-  getTokenFromCode(code, options) {
-    let params = new HttpParams({encoder: new WebHttpUrlEncodingCodec()})
+  getTokenFromCode(code: any, options: any) {
+    let params = new HttpParams()
       .set('grant_type', 'authorization_code')
       .set('code', code)
       .set('redirect_uri', options.customRedirectUri || this.redirectUri);
@@ -459,7 +457,7 @@ export class OIDCAuthService {
     return this.fetchAndProcessToken(params);
   }
 
-  fetchAndProcessToken(params) {
+  fetchAndProcessToken(params: any): any {
     this.assertUrlNotNullAndCorrectProtocol(this.tokenEndpoint, 'tokenEndpoint');
     let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
     const clientId = sessionStorage.getItem('clientId');
@@ -485,33 +483,35 @@ export class OIDCAuthService {
     if (!basicAuth) {
       params = params.set('client_id', this.clientId || clientId);
     }
-    return new Promise((resolve, reject) => {
-      this.coreService
-        .log(this.tokenEndpoint, params, {headers})
-        .subscribe({
-          next: (tokenResponse) => {
-            this.access_token = tokenResponse.access_token;
-            this.id_token = tokenResponse.id_token;
-            this.refresh_token = tokenResponse.refresh_token;
+    if (this.tokenEndpoint) {
+      return new Promise((resolve, reject) => {
+        this.coreService
+          .log(this.tokenEndpoint, params, {headers})
+          .subscribe({
+            next: (tokenResponse) => {
+              this.access_token = tokenResponse.access_token;
+              this.id_token = tokenResponse.id_token;
+              this.refresh_token = tokenResponse.refresh_token;
 
-            sessionStorage.$SOS$TOKENEXPIRETIME = (new Date().getTime() + (tokenResponse.expires_in * 1000)) - 20000;
-            this.renewToken();
-            resolve(tokenResponse);
-          }, error: (err) => {
-            this.toasterService.error('Error getting token', err);
-            reject(err);
-          }
-        });
-    });
+              sessionStorage['$SOS$TOKENEXPIRETIME'] = (new Date().getTime() + (tokenResponse.expires_in * 1000)) - 20000;
+              this.renewToken();
+              resolve(tokenResponse);
+            }, error: (err) => {
+              this.toasterService.error('Error getting token', err);
+              reject(err);
+            }
+          });
+      });
+    }
   }
 
-  getCodePartsFromUrl(queryString) {
+  getCodePartsFromUrl(queryString: any) {
     if (!queryString || queryString.length === 0) {
       return this.getHashFragmentParams();
     }
     // normalize query string
     if (queryString.charAt(0) === '?') {
-      queryString = queryString.substr(1);
+      queryString = queryString.substring(1);
     }
     return this.parseQueryString(queryString);
   }
@@ -524,15 +524,15 @@ export class OIDCAuthService {
     }
     const questionMarkPosition = hash.indexOf('?');
     if (questionMarkPosition > -1) {
-      hash = hash.substr(questionMarkPosition + 1);
+      hash = hash.substring(questionMarkPosition + 1);
     } else {
-      hash = hash.substr(1);
+      hash = hash.substring(1);
     }
     return this.parseQueryString(hash);
   }
 
-  private parseQueryString(queryString) {
-    const data = {};
+  private parseQueryString(queryString: any) {
+    const data: any = {};
     let pairs, pair, separatorIndex, escapedKey, escapedValue, key, value;
     if (queryString === null) {
       return data;
@@ -545,33 +545,33 @@ export class OIDCAuthService {
         escapedKey = pair;
         escapedValue = null;
       } else {
-        escapedKey = pair.substr(0, separatorIndex);
-        escapedValue = pair.substr(separatorIndex + 1);
+        escapedKey = pair.substring(0, separatorIndex);
+        escapedValue = pair.substring(separatorIndex + 1);
       }
       key = decodeURIComponent(escapedKey);
       value = decodeURIComponent(escapedValue);
-      if (key.substr(0, 1) === '/') {
-        key = key.substr(1);
+      if (key.substring(0, 1) === '/') {
+        key = key.substring(1);
       }
       data[key] = value;
     }
     return data;
   }
 
-  parseState(state) {
+  parseState(state: any) {
     let nonce = state;
     let userState = '';
     if (state) {
       const idx = state.indexOf(this.nonceStateSeparator);
       if (idx > -1) {
-        nonce = state.substr(0, idx);
-        userState = state.substr(idx + this.nonceStateSeparator.length);
+        nonce = state.substring(0, idx);
+        userState = state.substring(idx + this.nonceStateSeparator.length);
       }
     }
     return [nonce, userState];
   }
 
-  validateNonce(nonceInState) {
+  validateNonce(nonceInState: any) {
     let savedNonce = sessionStorage.getItem('nonce');
     if (savedNonce !== nonceInState) {
       const err = 'Validating access_token failed, wrong state/nonce.';
@@ -596,11 +596,11 @@ export class OIDCAuthService {
   }
 
   private renewToken(): void {
-    let miliseconds = (new Date().getTime() < parseInt(sessionStorage.$SOS$TOKENEXPIRETIME)) ? (parseInt(sessionStorage.$SOS$TOKENEXPIRETIME) - new Date().getTime()) : (new Date().getTime() - parseInt(sessionStorage.$SOS$TOKENEXPIRETIME));
+    let miliseconds = (new Date().getTime() < parseInt(sessionStorage['$SOS$TOKENEXPIRETIME'])) ? (parseInt(sessionStorage["$SOS$TOKENEXPIRETIME"]) - new Date().getTime()) : (new Date().getTime() - parseInt(sessionStorage['$SOS$TOKENEXPIRETIME']));
     setTimeout(() => {
-      const key = sessionStorage.$SOS$KEY;
+      const key = sessionStorage['$SOS$KEY'];
       if (key) {
-        this.coreService.getValueFromLocker(key, (content) => {
+        this.coreService.getValueFromLocker(key, (content: any) => {
           this.refreshToken(content).then((res) => {
             this.coreService.saveValueInLocker({
               content: {
@@ -612,7 +612,7 @@ export class OIDCAuthService {
             }, () => {
               this.renewToken();
             });
-          }).catch((err) => {
+          }).catch(() => {
             this._logout();
           })
 
@@ -629,13 +629,13 @@ export class OIDCAuthService {
    * A solution for this is provided by the
    * method silentRefresh.
    */
-  public refreshToken(data): Promise<any> {
+  public refreshToken(data: any): Promise<any> {
     this.assertUrlNotNullAndCorrectProtocol(
       this.tokenEndpoint,
       'tokenEndpoint'
     );
     return new Promise((resolve, reject) => {
-      let params = new HttpParams({encoder: new WebHttpUrlEncodingCodec()})
+      let params = new HttpParams()
         .set('grant_type', 'refresh_token')
         .set('scope', this.scope)
         .set('refresh_token', data.refreshToken);

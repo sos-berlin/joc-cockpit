@@ -5898,8 +5898,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
         obj.name = res.name;
         if (type === InventoryObject.SCHEDULE) {
           configuration = {controllerId: this.schedulerIds.selected};
-        } else if (type === 'LOCK') {
+        } else if (type === InventoryObject.LOCK) {
           configuration = {limit: 1, id: res.name};
+        } else if (type === InventoryObject.FILEORDERSOURCE) {
+          configuration = {delay: 2};
         } else if (type === InventoryObject.WORKINGDAYSCALENDAR || type === InventoryObject.NONWORKINGDAYSCALENDAR) {
           configuration = {type};
         }

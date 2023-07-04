@@ -10,10 +10,10 @@ export class EditFilterModalComponent {
 
   @Input() permission: any;
   @Input() filterList: any;
-  @Input() username: any;
+  @Input() username = '';
   @Input() favorite: any;
   @Input() action: any;
-  @Input() self;
+  @Input() self: any;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }

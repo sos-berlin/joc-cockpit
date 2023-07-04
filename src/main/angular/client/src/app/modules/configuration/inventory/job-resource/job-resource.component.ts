@@ -426,7 +426,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   openEditor(data): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -477,7 +477,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         objectType: this.objectType
       };
 
-      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
           request.auditLog = { comment: translatedValue };
         });
@@ -586,7 +586,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   navToYade(title): void {
-    sessionStorage.tabName = title.split(':')[1];
+    sessionStorage['tabName'] = title.split(':')[1];
     this.router.navigate(['/configuration/file_transfer']).then();
   }
 }

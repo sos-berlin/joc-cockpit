@@ -827,7 +827,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private getOrder(order, cb): void {
-    let ids = [];
+    let ids: any;
     if (order.value) {
       ids = order.value.map((val) => val.orderId);
     } else if (order.state && order.state._text === 'SUBMITTED') {
@@ -1323,15 +1323,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       }).subscribe((res: any) => {
         this.convertObjectToArray(res.variables, plan);
       });
-    }
-  }
-
-  expandCollapseTable(plan): void {
-    plan.show = plan.show === undefined || plan.show === false;
-    if (plan.show) {
-      this.expandedPaths.add(plan.key);
-    } else {
-      this.expandedPaths.delete(plan.key);
     }
   }
 
@@ -2229,7 +2220,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/DailyPlanUpdated/)) {

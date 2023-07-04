@@ -27,14 +27,14 @@ export class WorkflowTreeStructureComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.expandAll) {
+    if (changes['expandAll']) {
       if (this.expandAll) {
         this.recursiveUpdate(this.configuration, true);
       } else if (this.expandAll === false) {
         this.recursiveUpdate(this.configuration, false);
       }
     }
-    if (changes.configuration) {
+    if (changes['configuration']) {
       if (this.configuration.TYPE === 'Workflow') {
         for (let i = 0; i < this.configuration.instructions.length; i++) {
           this.configuration.instructions[i].show = true;

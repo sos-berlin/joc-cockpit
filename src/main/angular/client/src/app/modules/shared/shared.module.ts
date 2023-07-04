@@ -66,6 +66,7 @@ import {NodePositionComponent} from "../../components/node-position/node-positio
 import {GraphicalViewModalComponent} from '../../components/graphical-view-modal/graphical-view-modal.component';
 import {MultiSelectComponent} from "../../components/multi-select/multi-select.component";
 import {SearchInputComponent} from "../../components/search-input/search-input.component";
+import {SelectInputComponent} from "../../components/select-input/select-input.component";
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzTagModule,
@@ -79,7 +80,7 @@ const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, 
   ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, FacetValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
   StartUpModalComponent, TreeComponent, AgentSelectionComponent, ValueEditorComponent, WorkflowTreeStructureComponent, NodePositionComponent, SearchComponent,
-  SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent];
+  SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent];
 
 @NgModule({
   imports: [

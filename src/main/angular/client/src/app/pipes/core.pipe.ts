@@ -276,16 +276,17 @@ export class SearchPipe implements PipeTransform {
       if (typeof item === 'string' && item.toString().toLowerCase().includes(toCompare)) {
         return true;
       }
-      for (let property in item) {
+      let property: any;
+      for (property in item) {
         if (Array.isArray(item)) {
           if (item[property] && item[property].toString().toLowerCase().includes(toCompare)) {
             return true;
           }
         }
-        if (item[property] === null || item[property] == undefined || !includes.includes(property)) {
+        if (typeof property == 'string' && item[property] === null || item[property] == undefined || !includes.includes(property)) {
           continue;
         }
-        if (typeof property === 'string' && (property.match(/date/i) || property.match(/created/i))) {
+        if ((property.match(/date/i) || property.match(/created/i))) {
           if (n.zone) {
             const d = moment(item[property]).tz(n.zone).format(n.dateFormat);
             if (typeof d === 'string' && d.toString().toLowerCase().includes(toCompare)) {
@@ -418,7 +419,7 @@ export class OrderPipe implements PipeTransform {
   transform(
     value: any | any[],
     expression?: any,
-    reverse?: boolean,
+    reverse?: boolean | undefined,
     isCaseInsensitive: boolean = false,
     comparator?: Function
   ): any {
@@ -513,7 +514,7 @@ export class OrderPipe implements PipeTransform {
     isCaseInsensitive?: boolean
   ): any {
     const parsedExpression = OrderPipe.parseExpression(expression);
-    let lastPredicate = parsedExpression.pop();
+    let lastPredicate: any = parsedExpression.pop();
     let oldValue = OrderPipe.getValue(value, parsedExpression);
 
     if (!Array.isArray(oldValue)) {
@@ -537,7 +538,7 @@ export class OrderPipe implements PipeTransform {
   private multiExpressionTransform(
     value: any,
     expressions: any[],
-    reverse: boolean,
+    reverse: boolean | undefined,
     isCaseInsensitive: boolean = false,
     comparator?: Function
   ): any {
@@ -557,7 +558,7 @@ export class OrderPipe implements PipeTransform {
   name: 'stringToLink'
 })
 export class StringToLinkPipe implements PipeTransform {
-  transform(text): string {
+  transform(text: string): string {
     if (!text) {
       return text;
     }

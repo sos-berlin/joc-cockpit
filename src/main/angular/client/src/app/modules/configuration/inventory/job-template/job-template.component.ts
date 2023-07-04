@@ -82,7 +82,7 @@ export class UpdateJobTemplatesComponent implements OnInit {
   ngOnInit(): void {
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -426,11 +426,11 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.copyObj && !changes.data) {
+    if (changes['copyObj'] && !changes['data']) {
       return;
     }
-    if (changes.reload) {
-      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+    if (changes['reload']) {
+      if (changes['reload'].previousValue === true && changes['reload'].currentValue === false) {
         return;
       }
       if (this.reload) {
@@ -442,7 +442,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
     if (this.job.actual) {
       this.saveJSON();
     }
-    if (changes.data) {
+    if (changes['data']) {
       if (this.data.type) {
         this.getObject();
       } else {
@@ -863,6 +863,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
           } else if (this.copiedParamObjects.type === 'env') {
             return !this.object.setOfCheckedEnv.has(item.name);
           }
+          return false;
         });
         if (this.copiedParamObjects.type === 'arguments') {
           this.job.configuration.arguments = list;
@@ -921,6 +922,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       } else if (type === 'env') {
         return this.object.setOfCheckedEnv.has(item.name);
       }
+      return false;
     });
     this.copiedParamObjects = {operation, type, data: arr, name: this.job.name};
     this.coreService.tabs._configuration.copiedParamObjects = this.coreService.clone(this.copiedParamObjects);
@@ -936,6 +938,8 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       return this.job.configuration.executable.jobArguments;
     } else if (type === 'env') {
       return this.job.configuration.executable.env;
+    } else{
+      return [];
     }
   }
 
@@ -1225,7 +1229,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
         objectType: this.objectType
       };
 
-      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
           request.auditLog = {comment: translatedValue};
         });

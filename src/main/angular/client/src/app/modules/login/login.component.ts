@@ -172,7 +172,7 @@ export class LoginComponent implements OnInit {
     sessionStorage['authConfig'] = JSON.stringify(config);
     // Tweak config for code flow
     this.oAuthService.configure(config);
-    this.oAuthService.loadDiscoveryDocument().then((_) => {
+    this.oAuthService.loadDiscoveryDocument('').then((_) => {
       sessionStorage.setItem('authConfig', JSON.stringify(config));
       sessionStorage.setItem('providerName', config.identityServiceName);
       if (this.returnUrl) {
@@ -184,11 +184,15 @@ export class LoginComponent implements OnInit {
 
   private getIdAndSecret(identityServiceName): void {
     this.coreService.post('iam/identityclient', {identityServiceName}).subscribe({
-      next: (data) => {
-        this.oAuthService.clientId = data.iamOidcClientId;
-        this.oAuthService.clientSecret = data.iamOidcClientSecret;
-        sessionStorage.setItem('clientId', data.iamOidcClientId);
-        sessionStorage.setItem('clientSecret', data.iamOidcClientSecret);
+      next: (res) => {
+        if (res.iamOidcClientId) {
+          this.oAuthService.clientId = res.iamOidcClientId;
+          sessionStorage.setItem('clientId', res.iamOidcClientId);
+        }
+        if (res.iamOidcClientSecret) {
+          this.oAuthService.clientSecret = res.iamOidcClientSecret;
+          sessionStorage.setItem('clientSecret', res.iamOidcClientSecret);
+        }
         this.oAuthService.initLoginFlow();
       }
     });

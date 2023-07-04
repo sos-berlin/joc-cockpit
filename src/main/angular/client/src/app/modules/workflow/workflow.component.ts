@@ -18,7 +18,7 @@ import {WorkflowService} from '../../services/workflow.service';
 import {ExcelService} from '../../services/excel.service';
 import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
 
-declare const $;
+declare const $: any;
 
 @Component({
   selector: 'app-filter-modal-content',
@@ -28,12 +28,12 @@ export class FilterModalComponent implements OnInit {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
-  name: string;
+  name = '';
 
-  @Input() allFilter;
-  @Input() new;
-  @Input() edit;
-  @Input() filter;
+  @Input() allFilter: any;
+  @Input() new: any;
+  @Input() edit: any;
+  @Input() filter: any;
   @Input() listOfAgents: any = [];
 
   constructor(private authService: AuthService, public activeModal: NzModalRef) {
@@ -1409,14 +1409,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.resetCheckBox();
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.workflowFilters.currentPage = $event;
     if (this.object.mapOfCheckedId.size !== this.data.length) {
       this.resetCheckBox();
     }
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.workflowFilters.entryPerPage = $event;
     if (this.object.mapOfCheckedId.size !== this.data.length) {
       if (this.object.checked) {

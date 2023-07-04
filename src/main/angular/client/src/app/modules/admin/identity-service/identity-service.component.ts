@@ -126,7 +126,7 @@ export class SettingModalComponent implements OnInit {
   jobResourcesTree: any = [];
   currentObj: any = {};
   userObj: any = {};
-  allRoles = [];
+  allRoles: string[] = [];
   passwordFields: any = {
     first: false,
     second: false,
@@ -261,8 +261,12 @@ export class SettingModalComponent implements OnInit {
               if (!this.currentObj.iamFidoProtocolType) {
                 this.currentObj.iamFidoProtocolType = 'FIDO2';
               }
-            } else if (data.oidc) {
-              this.currentObj.iamOidcFlowType = this.currentObj.iamOidcClientId ? 'AUTHENTICATION' : 'IMPLICIT';
+            } else if (this.data['identityServiceType'] === 'OIDC' || this.data['identityServiceType'] == 'OIDC-JOC') {
+              if (this.currentObj.iamOidcClientId) {
+                this.currentObj.iamOidcFlowType = this.currentObj.iamOidcClientSecret ? 'AUTHENTICATION' : 'IMPLICIT';
+              } else {
+                this.currentObj.iamOidcFlowType = 'AUTHENTICATION';
+              }
             }
             if (this.data['identityServiceType'] == 'OIDC') {
               if (!this.currentObj.iamOidcGroupClaims || this.currentObj.iamOidcGroupClaims.length === 0) {
@@ -604,6 +608,14 @@ export class SettingModalComponent implements OnInit {
     saveAs(blob, name);
   }
 
+  addGroup(list): void {
+    list.push({name: ''});
+  }
+
+  removeGroup(list, index): void {
+    list.splice(index, 1);
+  }
+
   removeGroupRoles(index: number): void {
     this.currentObj.iamLdapGroupRolesMap.items.splice(index, 1);
   }
@@ -653,7 +665,6 @@ export class SettingModalComponent implements OnInit {
       } else if (this.data?.['identityServiceType'].match('OIDC')) {
         obj.oidc = this.currentObj;
         if (this.currentObj.iamOidcFlowType == 'IMPLICIT') {
-          obj.oidc.iamOidcClientId = '';
           obj.oidc.iamOidcClientSecret = '';
         }
         if (this.data['identityServiceType'] == 'OIDC') {
@@ -726,7 +737,7 @@ export class IdentityServiceModalComponent implements OnInit {
   currentObj: any = {};
   settingObj: any = {};
   removeSettingId = -1;
-  display: any;
+  display: boolean;
   required = false;
   comments: any = {};
   fidoList = [];
