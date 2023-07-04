@@ -1871,10 +1871,10 @@
         "workflowName": "Ein Verweis auf einen oder mehrere Arbeitsabläufe muss angegeben werden, für den Aufträge erzeugt werden.",
         "planOrderAutomatically": "Aufträge werden automatisch geplant, d.h. in Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus geplant.",
         "submitOrderToControllerWhenPlanned": "Geplante Aufträge werden automatisch an den Controller übermittelt. In Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt.",
-        "orderName": "Order Name",
-        "startNode": "Start Position before Instruction",
-        "endNode": "End Positions before Instructions",
-        "ignoreAdmissionTimes": "Ignore Job Admission Times"
+        "orderName": "Der Auftragsname ist ein nicht-qualifizierender Bestandteil der Auftragskennung. Anwender können den Auftragsnamen bei der Anlage von Zeitplänen und beim Hinzufügen von Ad hoc Aufträgen frei angeben.",
+        "startNode": "Die Start-Position eines Auftrags kann vor der angegeben Anweisung im Arbeitsablauf liegen. Der Auftrag startet ab der angegebenen Position.",
+        "endNode": "Die End-Position eines Auftrags kann vor der anggegebenen Anweisung im Arbeitsablauf liegen. Der Auftrag endet vor der angegebenen Position.",
+        "ignoreAdmissionTimes": "Die Ausführung von Jobs im Arbeitslauf kann durch Zutrittszeiten der Jobs eingeschränkt sein. Diese Option ignoriert Zutrittszeiten und forciert den Start der Jobs."
       },
       "script": {
         "name": "Ein Skript Baustein wird verwendet, um wiederkehrend verwendeten Code in Job-Skripte einzufügen. Der Name eines Skript Bausteins ist eindeutig im Inventar. Für den Namen des Skript Bausteins können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
@@ -1997,7 +1997,7 @@
           "remainWhenTerminated": "Nach Terminierung soll der Auftrag im Arbeitsablauf verbleiben. Dies erfordert die manuelle Ausführung der Funktion 'Arbeitsablauf verlassen', die z.B. in der Sicht ARBEITSABLAUF verfügbar ist.",
           "startPosition": "Erlaubt die Auwahl der Start-Position des Auftrags im Arbeitsablauf. Ohen Start-Position startet der Aufrag ab Beginn des Arbeitsablaufs.",
           "endPositions": "Erlabut die Auswahl einer oder mehrerer Ende-Positionen des Auftrags im Arbeitsablauf. Ohne Ende-Position endet der Auftrag mit dem Ende des Arbeitsablaufs.",
-          "ignoreAdmissionTimes": "Ignore Job Admission Times"
+          "ignoreAdmissionTimes": "Die Ausführung von Jobs im Arbeitslauf kann durch Zutrittszeiten der Jobs eingeschränkt sein. Diese Option ignoriert Zutrittszeiten und forciert den Start der Jobs."
         },
         "lock": {
           "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in Arbeitsabläufen können durch Ressourcen-Sperren für die parallele Ausführung limitiert werden.",
@@ -2885,7 +2885,7 @@
     "label.iamOidcImage": "OIDC Bild",
     "label.iamOidcUserAttribute": "OIDC User Name Attribute",
     "label.iamOidcGroupClaims": "OIDC Group Claims",
-    "label.iamOidcGroupRolesMap": "OIDC Group Roles Map",
+    "label.iamOidcGroupRolesMap": "OIDC Group Roles Mapping",
     "label.iamOidcAuthenticationCodeFlow" : "Authentication Code Flow",
     "label.iamOidcImplicitFlow" : "Implicit Flow",
     "label.iamOidcFlowType" : "Flow Type",
@@ -3022,7 +3022,7 @@
     "placeholder.iamOidcTruststoreType": "OIDC Truststore Type angeben",
     "placeholder.iamOidcTruststorePassword": "OIDC Truststore Password angeben",
     "placeholder.iamOidcUserAttribute": "OIDC User Name Attribute angeben",
-    "placeholder.iamOidcGroupClaims": "Enter OIDC Group Claims",
+    "placeholder.iamOidcGroupClaims": "OIDC Group Claims angeben",
     "placeholder.iamFidoTimeout": "Timeout in Sekunden angeben",
     "placeholder.iamFidoTransports": "Transport angeben",
     "placeholder.iamFidoUserVerification": "User Verification angeben",
@@ -3131,8 +3131,8 @@
         "iamOidcTruststorePassword": "Ist der OIDC Truststore mit einem Kennwort geschützt, dann wird hier das Kennwort angegeben.",
         "iamOidcUserAttribute": "Das OIDC User Attribute ist spezifisch für einen Identity Provider und gibt den Namen des Attributs an, das die eindeutige Kennung eines Anwenders enthält, die zur Anmeldung verwendet wird, z.B. vereinbart das Attribut 'email' die E-Mail Adresse des Anwenders zur Anmeldung.",
         "iamOidcImage": "Wenn ein OIDC Bild angegeben ist, wird es im Anmeldefenster angezeigt. Bilddateien des Typs .png mit einer maximalen Größe von 1 MB können verwendet werden. Bilder werden am besten mit einer Breite und Höhe von 64 Pixel dargestellt.",
-        "iamOidcGroupClaims": "OIDC Group Claims",
-        "iamOidcGroupRolesMap": "OIDC Group Roles Map"
+        "iamOidcGroupClaims": "OIDC Group Claims geben die Gruppen an, in denen das betreffende Benutzerkonto Mitglied ist. Jede Gruppe kann einer oder mehreren Rollen in JS7 zugewiesen werden." ,
+        "iamOidcGroupRolesMap": "OIDC Gruppenmitgliedschaften werden jeweils auf eine oder mehrere JS7 Rollen abgebildet."
       },
       "webauthn" : {
         "iamTimeout" : "Die für die Anwenderverifizierung geltende Zeitüberschreitung. Wird diese Periode überschritten, dann wird der Registrierungs-/Authentifizierungsvorgang abgebrochen.",
