@@ -1996,7 +1996,8 @@
           "arguments": "Argumente müssen dem Auftrag hinzugefügt werden sofern diese vom Arbeitsablauf verlangt werden. Optionale Argumente können entfallen.",
           "remainWhenTerminated": "Nach Terminierung soll der Auftrag im Arbeitsablauf verbleiben. Dies erfordert die manuelle Ausführung der Funktion 'Arbeitsablauf verlassen', die z.B. in der Sicht ARBEITSABLAUF verfügbar ist.",
           "startPosition": "Erlaubt die Auwahl der Start-Position des Auftrags im Arbeitsablauf. Ohen Start-Position startet der Aufrag ab Beginn des Arbeitsablaufs.",
-          "endPositions": "Erlabut die Auswahl einer oder mehrerer Ende-Positionen des Auftrags im Arbeitsablauf. Ohne Ende-Position endet der Auftrag mit dem Ende des Arbeitsablaufs."
+          "endPositions": "Erlabut die Auswahl einer oder mehrerer Ende-Positionen des Auftrags im Arbeitsablauf. Ohne Ende-Position endet der Auftrag mit dem Ende des Arbeitsablaufs.",
+          "ignoreAdmissionTimes": "Ignore Job Admission Times"
         },
         "lock": {
           "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in Arbeitsabläufen können durch Ressourcen-Sperren für die parallele Ausführung limitiert werden.",

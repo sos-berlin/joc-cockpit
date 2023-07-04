@@ -9,7 +9,7 @@ import {CoreService} from '../../services/core.service';
 export class CommentModalComponent implements OnInit {
   @Input() comments: any;
   @Input() obj: any;
-  @Input() url: any;
+  @Input() url: string = '';
 
   submitted = false;
   required = false;

@@ -1996,7 +1996,8 @@
           "arguments": "Des arguments doivent être ajoutés à l'ordre si le workflow cible l'exige. Les arguments facultatifs peuvent être omis.",
           "remainWhenTerminated": "Après la fin des exécutions des tâches, l'ordre reste dans le workflow. Pour cela, il faut effectuer manuellement l'opération 'Quitter le Workflow 'qui est disponible dans la vue WORKFLOW",
           "startPosition": "Permet de sélectionner la position de départ de l'Ordere le Workflow. Sans position de départ, l'ordre va démarrer dès le début du Workflow.",
-          "endPositions": "Permet de sélectionner une ou plusieurs positions de fin de l'Ordre dans le Workflow. Sans position de fin, l'Ordre va se terminer à la fin du Workflow."
+          "endPositions": "Permet de sélectionner une ou plusieurs positions de fin de l'Ordre dans le Workflow. Sans position de fin, l'Ordre va se terminer à la fin du Workflow.",
+          "ignoreAdmissionTimes": "Ignore Job Admission Times"
         },
         "lock": {
           "name": "Les noms des Verrous de Ressources sont uniques dans l'inventaire. Les sections des workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressources.",

@@ -1996,7 +1996,8 @@
           "arguments": "引数",
           "remainWhenTerminated": "終了時は留まる",
           "startPosition": "開始位置",
-          "endPositions": "終了位置"
+          "endPositions": "終了位置",
+          "ignoreAdmissionTimes": "Ignore Job Admission Times"
         },
         "lock": {
           "name": "リソースロック名前はインベントリー内で一意です。リソースロックを使用することで、ワークフローのセクションの並列処理を制限できます。",

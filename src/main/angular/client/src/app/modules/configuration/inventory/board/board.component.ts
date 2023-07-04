@@ -57,11 +57,11 @@ export class BoardComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.copyObj && !changes.data) {
+    if (changes['copyObj'] && !changes['data']) {
       return;
     }
-    if (changes.reload) {
-      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+    if (changes['reload']) {
+      if (changes['reload'].previousValue === true && changes['reload'].currentValue === false) {
         return;
       }
       if (this.reload) {
@@ -70,7 +70,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
         return;
       }
     }
-    if (changes.data) {
+    if (changes['data']) {
       if (this.data.type) {
         this.getObject();
       } else {
@@ -480,7 +480,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
         objectType: this.objectType
       };
 
-      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
           request.auditLog = { comment: translatedValue };
         });

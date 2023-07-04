@@ -21,7 +21,7 @@ export class AuthGuard implements CanActivate {
         this.router.navigate(['/error']).then();
         return false;
       } else if (state.url.match('/users')) {
-        if (state.url.match('/users/identity_service/') && !sessionStorage.identityServiceType) {
+        if (state.url.match('/users/identity_service/') && !sessionStorage['identityServiceType']) {
           this.router.navigate(['/users/identity_service/']).then();
           return false;
         }

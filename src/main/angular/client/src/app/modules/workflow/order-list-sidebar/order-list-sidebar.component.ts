@@ -62,14 +62,14 @@ export class OrderListSidebarComponent implements OnChanges {
     this.filter.sortBy = key;
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.filter.currentPage = $event;
     if (this.setOfCheckedId.size !== this.data.length) {
       this.resetCheckBox();
     }
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.filter.entryPerPage = $event;
     if (this.setOfCheckedId.size !== this.data.length) {
       if (this.checked) {

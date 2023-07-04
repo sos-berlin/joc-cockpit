@@ -360,10 +360,11 @@ export class RolesComponent implements OnInit, OnDestroy {
         this.importRole();
       }
     });
-    this.subscription3 = router.events
-      .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
-        this.checkUrl(e);
-      });
+    this.subscription3 = router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.checkUrl(event);
+      }
+    });
   }
 
   ngOnInit(): void {

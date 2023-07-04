@@ -559,11 +559,11 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private disableList(flag): void {
+  private disableList(flag: boolean): void {
     this.disabledUser(null, flag);
   }
 
-  deleteUser(account): void {
+  deleteUser(account: any): void {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
@@ -659,7 +659,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private deleteAccount(account, comments: any = {}) {
+  private deleteAccount(account: any, comments: any = {}) {
     const obj: any = {
       accountNames: [],
       identityServiceName: this.identityServiceName,
@@ -682,7 +682,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  resetPassword(account): void {
+  resetPassword(account: any): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmationModalComponent,
@@ -704,7 +704,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  forcePasswordChange(account): void {
+  forcePasswordChange(account: any): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmationModalComponent,
@@ -726,7 +726,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  addToBlocklist(obj) {
+  addToBlocklist(obj: any) {
     this.modal.create({
       nzTitle: undefined,
       nzAutofocus: null,
@@ -745,7 +745,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  removeBlockAcc(acc): void {
+  removeBlockAcc(acc?: any): void {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
@@ -798,8 +798,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeFromBlocklist(account, object?): void {
-    const obj = {accountNames: [], auditLog: object};
+  removeFromBlocklist(account: any, object?: any): void {
+    const obj: any = {accountNames: [], auditLog: object};
     if (account) {
       obj.accountNames.push(account.accountName);
     } else {
@@ -930,7 +930,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('IS_ACCOUNT_PROFILES_FALSE');
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.usr.currentPage = $event;
     if (this.object.mapOfCheckedId.size !== this.data.length) {
       if (this.object.checked) {
@@ -941,7 +941,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.usr.entryPerPage = $event;
     if (this.object.mapOfCheckedId.size !== this.data.length) {
       if (this.object.checked) {
@@ -956,14 +956,14 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.data = [...this.data];
   }
 
-  sort(key): void {
+  sort(key: string): void {
     this.usr.reverse = !this.usr.reverse;
     this.usr.sortBy = key;
     this.data = this.orderPipe.transform(this.data, this.usr.sortBy, this.usr.reverse);
     this.reset();
   }
 
-  private getCurrentData(list, filter): Array<any> {
+  private getCurrentData(list: any[], filter: any): Array<any> {
     const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
     return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
   }

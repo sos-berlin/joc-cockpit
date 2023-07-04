@@ -20,10 +20,10 @@
         <i class="pos-abt cursor fa fa-info-circle" *ngIf="object.message" [nz-tooltip]="object.message" style="right: 22px;top:9px;"></i>
         <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
              class="text-danger help-block">
-          <div *ngIf="value.errors.required">
+          <div *ngIf="value.errors['required']">
             <div translate>common.message.requiredError</div>
           </div>
-          <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>
+          <div *ngIf="value.errors['invalidFacet']" translate>common.message.invalid</div>
         </div>
       </div>
     </div>

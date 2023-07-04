@@ -90,7 +90,6 @@ export class SettingComponent implements OnInit {
   preferences: any = {};
   object: any = {};
   schedulerIds: any = {};
-  selectedController: any = {};
   orignalSetting: any = {};
   defaultGlobals: any = {};
   settings: any = {};

@@ -403,8 +403,8 @@ export class TimeEditorComponent implements OnInit {
 })
 export class CycleInstructionComponent implements OnChanges {
   @Input() selectedNode: any;
-  @Input() isTooltipVisible: boolean;
-  @Input() timeZone;
+  @Input() isTooltipVisible = false;
+  @Input() timeZone: string;
   schemeList = [];
   days = [];
 

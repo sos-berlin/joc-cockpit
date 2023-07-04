@@ -14,7 +14,7 @@ export class SignupCompleteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const token = this.route.snapshot.queryParams.token;
+    const token = this.route.snapshot.queryParams['token'];
     this.confirmToken(token);
   }
 

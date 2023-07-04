@@ -74,8 +74,8 @@ export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
     if (this.sideView && !this.sideView.show) {
       this.hidePanel();

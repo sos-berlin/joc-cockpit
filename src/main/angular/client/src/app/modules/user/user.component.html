@@ -59,120 +59,24 @@
                 <div class="row">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.language</div>
                   <div class="col-md-8 col-lg-9">
-                    <nz-select name="language" class="w-xl"
-                               [(ngModel)]="preferences.locale" (ngModelChange)="setLocale()">
-                      <nz-option *ngFor="let option of coreService.locales" [nzLabel]="option.name"
-                                 [nzValue]="option.lang"></nz-option>
-                    </nz-select>
+                    <app-select-input [name]="'language'" [classNames]="'w-xl'" [object]="preferences" [attributeName]="'locale'" [optionValue]="'lang'"  [optionLabel]="'name'"  (modelChange)="setLocale()" [listArray]="coreService.locales"></app-select-input>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.timeZone</div>
                   <div class="col-md-8 col-lg-9">
-                    <nz-select nzShowSearch name="timeZone" class="w-xl"
-                               [(ngModel)]="preferences.zone" (ngModelChange)="changeConfiguration()">
-                      <nz-option [nzValue]="timeZone" [nzLabel]="'local '+timeZone"></nz-option>
-                      <!-- <nz-option [nzValue]="selectedController.timeZone" [nzLabel]="'Controller ('+ selectedController.timeZone + ')'"></nz-option>-->
-                      <nz-option nzDisabled [nzLabel]="'-----------------------------'"></nz-option>
-                      <nz-option *ngFor="let option of zones" [nzLabel]="option" [nzValue]="option"></nz-option>
-                    </nz-select>
+                   <app-select-input [isSearchable]="true" [name]="'timeZone'" [classNames]="'w-xl'" [object]="preferences" [attributeName]="'zone'"
+                                    (modelChange)="changeConfiguration()" [listArray]="zones" [extraLabelText]="'local '"></app-select-input>
+
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.dateTimeFormat
                   </div>
                   <div class="col-md-8 col-lg-9">
-                    <nz-select nzShowSearch class="w-xl" [(ngModel)]="preferences.dateFormat"
-                               (ngModelChange)="changeConfiguration()">
-                      <nz-option nzValue="DD.MM.YYYY HH:mm:ss" nzLabel="Default (DD.MM.YYYY HH:mm:ss)"></nz-option>
-                      <nz-option nzDisabled nzLabel="---------------------------------------------------"></nz-option>
-                      <nz-option nzValue="HH:mm | DD.MM.YYYY" nzLabel="HH:mm | DD.MM.YYYY"></nz-option>
-                      <nz-option nzValue="hh:mm A | DD.MM.YYYY" nzLabel="hh:mm A | DD.MM.YYYY"></nz-option>
-                      <nz-option nzValue="YYYY/DD/MM HH:mm" nzLabel="YYYY/DD/MM HH:mm"></nz-option>
-                      <nz-option nzValue="YYYY/DD/MM hh:mm A" nzLabel="YYYY/DD/MM hh:mm A"></nz-option>
-                      <nz-option nzValue="YYYY/DD/MM HH:mm:ss" nzLabel="YYYY/DD/MM HH:mm:ss"></nz-option>
-                      <nz-option nzValue="YYYY/DD/MM hh:mm:ss A" nzLabel="YYYY/DD/MM hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="YYYY-MM-DD HH:mm" nzLabel="YYYY-MM-DD HH:mm"></nz-option>
-                      <nz-option nzValue="YYYY-MM-DD hh:mm A" nzLabel="YYYY-MM-DD hh:mm A"></nz-option>
-                      <nz-option nzValue="YYYY-MM-DD HH:mm:ss" nzLabel="YYYY-MM-DD HH:mm:ss"></nz-option>
-                      <nz-option nzValue="YYYY-MM-DD hh:mm:ss A" nzLabel="YYYY-MM-DD hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="YYYY.MM.DD HH:mm" nzLabel="YYYY.MM.DD HH:mm"></nz-option>
-                      <nz-option nzValue="YYYY.MM.DD hh:mm A" nzLabel="YYYY.MM.DD hh:mm A"></nz-option>
-                      <nz-option nzValue="YYYY.MM.DD HH:mm:ss" nzLabel="YYYY.MM.DD HH:mm:ss"></nz-option>
-                      <nz-option nzValue="YYYY.MM.DD hh:mm:ss A" nzLabel="YYYY.MM.DD hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="YYYY MM DD HH:mm" nzLabel="YYYY MM DD HH:mm"></nz-option>
-                      <nz-option nzValue="YYYY MM DD hh:mm A" nzLabel="YYYY MM DD hh:mm A"></nz-option>
-                      <nz-option nzValue="YYYY MM DD HH:mm:ss" nzLabel="YYYY MM DD HH:mm:ss"></nz-option>
-                      <nz-option nzValue="YYYY MM DD hh:mm:ss A" nzLabel="YYYY MM DD hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="DD/MM/YYYY HH:mm" nzLabel="DD/MM/YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="DD/MM/YYYY hh:mm A" nzLabel="DD/MM/YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="DD/MM/YYYY HH:mm:ss" nzLabel="DD/MM/YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="DD/MM/YYYY hh:mm:ss A" nzLabel="DD/MM/YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="DD-MM-YYYY HH:mm" nzLabel="DD-MM-YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="DD-MM-YYYY hh:mm A" nzLabel="DD-MM-YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="DD-MM-YYYY HH:mm:ss" nzLabel="DD-MM-YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="DD-MM-YYYY hh:mm:ss A" nzLabel="DD-MM-YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="DD.MM.YYYY HH:mm" nzLabel="DD.MM.YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="DD.MM.YYYY hh:mm A" nzLabel="DD.MM.YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="DD.MM.YYYY HH:mm:ss" nzLabel="DD.MM.YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="DD.MM.YYYY hh:mm:ss A" nzLabel="DD.MM.YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="DD MM YYYY HH:mm" nzLabel="DD MM YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="DD MM YYYY hh:mm A" nzLabel="DD MM YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="DD MM YYYY HH:mm:ss" nzLabel="DD MM YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="DD MM YYYY hh:mm:ss A" nzLabel="DD MM YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="DD.MMM YYYY HH:mm" nzLabel="DD.MMM YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="DD.MMM YYYY hh:mm A" nzLabel="DD.MMM YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="DD.MMM YYYY HH:mm:ss" nzLabel="DD.MMM YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="DD.MMM YYYY hh:mm:ss A" nzLabel="DD.MMM YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="MM/DD/YYYY HH:mm" nzLabel="MM/DD/YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="MM/DD/YYYY hh:mm A" nzLabel="MM/DD/YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="MM/DD/YYYY HH:mm:ss" nzLabel="MM/DD/YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="MM/DD/YYYY hh:mm:ss A" nzLabel="MM/DD/YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="MMM/DD/YYYY HH:mm" nzLabel="MMM/DD/YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="MMM/DD/YYYY hh:mm A" nzLabel="MMM/DD/YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="MMM/DD/YYYY HH:mm:ss" nzLabel="MMM/DD/YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="MMM/DD/YYYY hh:mm:ss A" nzLabel="MMM/DD/YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="MM-DD-YYYY HH:mm" nzLabel="MM-DD-YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="MM-DD-YYYY hh:mm A" nzLabel="MM-DD-YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="MM-DD-YYYY HH:mm:ss" nzLabel="MM-DD-YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="MM-DD-YYYY hh:mm:ss A" nzLabel="MM-DD-YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="MM.DD.YYYY HH:mm" nzLabel="MM.DD.YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="MM.DD.YYYY hh:mm A" nzLabel="MM.DD.YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="MM.DD.YYYY HH:mm:ss" nzLabel="MM.DD.YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="MM.DD.YYYY hh:mm:ss A" nzLabel="MM.DD.YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="MM DD YYYY HH:mm" nzLabel="MM DD YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="MM DD YYYY hh:mm A" nzLabel="MM DD YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="MM DD YYYY HH:mm:ss" nzLabel="MM DD YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="MM DD YYYY hh:mm:ss A" nzLabel="MM DD YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="MMM.DD YYYY HH:mm" nzLabel="MMM.DD YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="MMM.DD YYYY hh:mm A" nzLabel="MMM.DD YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="MMM.DD YYYY HH:mm:ss" nzLabel="MMM.DD YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="MMM.DD YYYY hh:mm:ss A" nzLabel="MMM.DD YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="D.M.YYYY HH:mm" nzLabel="D.M.YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="D.M.YYYY hh:mm A" nzLabel="D.M.YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="D.M.YYYY HH:mm:ss" nzLabel="D.M.YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="D.M.YYYY hh:mm:ss A" nzLabel="D.M.YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="D.MMMM YYYY HH:mm" nzLabel="D.MMMM YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="D.MMMM YYYY hh:mm A" nzLabel="D.MMMM YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="D.MMMM YYYY HH:mm:ss" nzLabel="D.MMMM YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="D.MMMM YYYY hh:mm:ss A" nzLabel="D.MMMM YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="D/M/YY HH:mm" nzLabel="D/M/YY HH:mm"></nz-option>
-                      <nz-option nzValue="D/M/YY hh:mm A" nzLabel="D/M/YY hh:mm A"></nz-option>
-                      <nz-option nzValue="D/M/YY HH:mm:ss" nzLabel="D/M/YY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="D/M/YY hh:mm:ss A" nzLabel="D/M/YY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="M/D/YYYY HH:mm" nzLabel="M/D/YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="M/D/YYYY hh:mm A" nzLabel="M/D/YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="M/D/YYYY HH:mm:ss" nzLabel="M/D/YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="M/D/YYYY hh:mm:ss A" nzLabel="M/D/YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="MMM DD, YYYY HH:mm" nzLabel="MMM DD, YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="MMM DD, YYYY hh:mm A" nzLabel="MMM DD, YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="MMM DD, YYYY HH:mm:ss" nzLabel="MMM DD, YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="MMM DD, YYYY hh:mm:ss A" nzLabel="MMM DD, YYYY hh:mm:ss A"></nz-option>
-                      <nz-option nzValue="MMMM DD, YYYY HH:mm" nzLabel="MMMM DD, YYYY HH:mm"></nz-option>
-                      <nz-option nzValue="MMMM DD, YYYY hh:mm A" nzLabel="MMMM DD, YYYY hh:mm A"></nz-option>
-                      <nz-option nzValue="MMMM DD, YYYY HH:mm:ss" nzLabel="MMMM DD, YYYY HH:mm:ss"></nz-option>
-                      <nz-option nzValue="MMMM DD, YYYY hh:mm:ss A" nzLabel="MMMM DD, YYYY hh:mm:ss A"></nz-option>
-                    </nz-select>
+                    <app-select-input  [classNames]="'w-xl'"  (modelChange)="changeConfiguration()" [object]="preferences" [attributeName]="'dateFormat'"
+                                       [optionLabel]="'name'" [listArray]="dateTimeFormat"
+                                       [optionValue]="'value'"></app-select-input>
                     <div class="help-block">YYYY - 4 digit year, YY - 2 digit year, M / MM - month number, MMM / MMMM -
                       month name, D / DD - day of month
                     </div>
@@ -336,66 +240,32 @@
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.maxEntryPerPage
                   </div>
                   <div class="col-md-6">
-                    <nz-select nzShowSearch class="w-xl" [(ngModel)]="preferences.maxEntryPerPage"
-                               (ngModelChange)="changeConfiguration()">
-                      <nz-option nzValue="500" nzLabel="500"></nz-option>
-                      <nz-option nzValue="1000" nzLabel="1000"></nz-option>
-                      <nz-option nzValue="1500" nzLabel="1500"></nz-option>
-                      <nz-option nzValue="2000" nzLabel="2000"></nz-option>
-                      <nz-option nzValue="2500" nzLabel="2500"></nz-option>
-                      <nz-option nzValue="3000" nzLabel="3000"></nz-option>
-                      <nz-option nzValue="3500" nzLabel="3500"></nz-option>
-                      <nz-option nzValue="4000" nzLabel="4000"></nz-option>
-                      <nz-option nzValue="4500" nzLabel="4500"></nz-option>
-                      <nz-option nzValue="5000" nzLabel="5000"></nz-option>
-                    </nz-select>
+                    <app-select-input  [classNames]="'w-xl'" [object]="preferences" [attributeName]="'maxEntryPerPage'" [optionValue]="'value'"
+                                      [optionLabel]="'name'"   (ngModelChange)="changeConfiguration()" [listArray]="maxEntryPerPage"></app-select-input>
+
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.entryPerPage</div>
                   <div class="col-md-6">
-                    <nz-select class="w-xl" [(ngModel)]="preferences.entryPerPage"
-                               (ngModelChange)="changeConfiguration()">
-                      <nz-option nzValue="10" nzLabel="10"></nz-option>
-                      <nz-option nzValue="25" nzLabel="25"></nz-option>
-                      <nz-option nzValue="50" nzLabel="50"></nz-option>
-                      <nz-option nzValue="100" nzLabel="100"></nz-option>
-                      <nz-option [nzValue]="preferences.maxEntryPerPage"
-                                 [nzLabel]="preferences.maxEntryPerPage"></nz-option>
-                    </nz-select>
+                    <app-select-input [classNames]="'w-xl'" [object]="preferences" [attributeName]="'entryPerPage'" [optionValue]="'value'"
+                                      [optionLabel]="'name'"  (modelChange)="changeConfiguration()" [listArray]="entryPerPage"></app-select-input>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.theme</div>
                   <div class="col-md-6">
-                    <nz-select class="w-xl" [(ngModel)]="preferences.theme"
-                               (ngModelChange)="changeTheme(preferences.theme)">
-                      <nz-option [nzValue]="'lighter'" [nzLabel]="'profile.label.white' | translate"></nz-option>
-                      <nz-option [nzValue]="'light'" [nzLabel]="'profile.label.light' | translate"></nz-option>
-                      <nz-option [nzValue]="'blue-lt'" [nzLabel]="'profile.label.blueGrey' | translate"></nz-option>
-                      <nz-option [nzValue]="'blue'" [nzLabel]="'profile.label.blue' | translate"></nz-option>
-                      <nz-option [nzValue]="'cyan'" [nzLabel]="'profile.label.petrol' | translate"></nz-option>
-                      <nz-option [nzValue]="'grey'" [nzLabel]="'profile.label.grey' | translate"></nz-option>
-                      <nz-option [nzValue]="'dark'" [nzLabel]="'profile.label.dark' | translate"></nz-option>
-                    </nz-select>
+                    <app-select-input  [classNames]="'w-xl'" [object]="preferences" [attributeName]="'theme'"
+                                       [optionLabel]="'name'" [listArray]="themeArray"  (modelChange)="changeTheme(preferences.theme)"
+                                       [optionValue]="'value'"></app-select-input>
                   </div>
                 </div>
                 <div class="row m-t" *ngIf="this.preferences.theme === 'light'">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.menuBarTheme</div>
                   <div class="col-md-6">
-                    <nz-select nzShowSearch class="w-xl" [(ngModel)]="preferences.headerColor"
-                               (ngModelChange)="changeMenuTheme()">
-                      <nz-option nzValue="" nzLabel="Default"></nz-option>
-                      <nz-option nzValue="header-blackcurrant" nzLabel="Blackcurrant"></nz-option>
-                      <nz-option nzValue="header-Dodger-Blue" nzLabel="Dodger-Blue"></nz-option>
-                      <nz-option nzValue="header-eggplant" nzLabel="Eggplant"></nz-option>
-                      <nz-option nzValue="header-Pine-Green" nzLabel="Pine Green"></nz-option>
-                      <nz-option nzValue="header-light-sea-green" nzLabel="Light Sea Green"></nz-option>
-                      <nz-option nzValue="header-nordic" nzLabel="Nordic"></nz-option>
-                      <nz-option nzValue="header-prussian-blue" nzLabel="Prussian Blue"></nz-option>
-                      <nz-option nzValue="header-radical-red" nzLabel="Radical Red"></nz-option>
-                      <nz-option nzValue="header-toledo" nzLabel="Toledo"></nz-option>
-                    </nz-select>
+                    <app-select-input [isSearchable]="true"  [classNames]="'w-xl'" [object]="preferences" [attributeName]="'headerColor'"
+                                       [optionLabel]="'name'" [listArray]="headerColor" (modelChange)="changeMenuTheme()"
+                                       [optionValue]="'value'"></app-select-input>
                   </div>
                 </div>
                 <div class="row m-t">

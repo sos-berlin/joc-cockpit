@@ -102,7 +102,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
     this.groupPadding = this.statisticsData.length > 10 ? 4 : 16;
   }
 
-  refresh(args): void {
+  refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].objectType === 'CONTROLLER') {

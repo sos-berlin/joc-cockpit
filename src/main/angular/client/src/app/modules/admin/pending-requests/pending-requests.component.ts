@@ -19,9 +19,9 @@ export class PendingRequestsComponent implements OnInit {
   permission: any = {};
   loading = true;
   pendingRequests: any = [];
-  identityServiceType: string;
-  searchKey: string;
-  identityServiceName: string;
+  identityServiceType = '';
+  searchKey = '';
+  identityServiceName = '';
   searchableProperties = ['accountName', 'email', 'origin'];
   object = {
     checked: false,
@@ -53,10 +53,10 @@ export class PendingRequestsComponent implements OnInit {
 
   ngOnInit(): void {
     this.requests = {currentPage: 1, sortBy: 'name', reverse: false};
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    this.identityServiceName = sessionStorage.identityServiceName;
-    this.identityServiceType = sessionStorage.identityServiceType;
+    this.identityServiceName = sessionStorage['identityServiceName'];
+    this.identityServiceType = sessionStorage['identityServiceType'];
     this.getList();
   }
 
@@ -83,7 +83,7 @@ export class PendingRequestsComponent implements OnInit {
     this.data = [...this.data];
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.requests.currentPage = $event;
     if (this.object.mapOfCheckedId.size !== this.data.length) {
       if (this.object.checked) {
@@ -94,7 +94,7 @@ export class PendingRequestsComponent implements OnInit {
     }
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: any): void {
     this.requests.entryPerPage = $event;
     if (this.object.mapOfCheckedId.size !== this.data.length) {
       if (this.object.checked) {
@@ -103,14 +103,14 @@ export class PendingRequestsComponent implements OnInit {
     }
   }
 
-  sort(key): void {
+  sort(key: string): void {
     this.requests.reverse = !this.requests.reverse;
     this.requests.sortBy = key;
     this.data = this.orderPipe.transform(this.data, this.requests.sortBy, this.requests.reverse);
     this.reset();
   }
 
-  private getCurrentData(list, filter): Array<any> {
+  private getCurrentData(list: any[], filter: any): Array<any> {
     const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
     return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
   }
@@ -158,19 +158,19 @@ export class PendingRequestsComponent implements OnInit {
     this.checkCheckBoxState();
   }
 
-  deleteList(account?): void {
+  deleteList(account?: any): void {
     this.openConfirmation('DELETE', account);
   }
 
-  rejectList(account?) {
+  rejectList(account?: any) {
     this.openConfirmation('REJECT', account);
   }
 
-  approveList(account?) {
+  approveList(account?: any) {
     this.openConfirmation('APPROVE', account);
   }
 
-  private openConfirmation(type: string, account?): void{
+  private openConfirmation(type: string, account?: any): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmationModalComponent,

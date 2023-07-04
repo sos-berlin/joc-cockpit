@@ -56,11 +56,11 @@ export class UpdateObjectComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
     }
     this.selectedSchedulerIds.push(this.controllerId);
@@ -497,9 +497,9 @@ export class UpdateObjectComponent implements OnInit {
   }
 
 
-  openEditor(data): void {
+  openEditor(data: any): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -573,7 +573,7 @@ export class UpdateObjectComponent implements OnInit {
     if (this.type === 'CALENDAR') {
       request.objectType = data.configuration.type;
     }
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
         request.auditLog = {comment: translatedValue};
       });

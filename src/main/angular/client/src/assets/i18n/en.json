@@ -1996,7 +1996,8 @@
           "arguments": "Arguments have to be added to the Order if required by the target workflow. Optional arguments can be omitted.",
           "remainWhenTerminated": "After termination the Order remains with the workflow. This requires to manually perform the operation 'Leave Workflow' that is available from the WORKFLOWS view.",
           "startPosition": "Allows to select the start position of the order in the workflow. Without a start position, the orders starts from the beginning of the workflow.",
-          "endPositions": "Allows the selection of one or more end positions of the order in the workflow. Without an end position, the order ends with the end of the workflow."
+          "endPositions": "Allows the selection of one or more end positions of the order in the workflow. Without an end position, the order ends with the end of the workflow.",
+          "ignoreAdmissionTimes": "Ignore Job Admission Times"
         },
         "lock": {
           "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parallelism by using Resource Locks.",

@@ -58,14 +58,14 @@
 <ng-template #itemTemplate2 let-orders let-currentOrder="currentOrder">
   <ng-template #contentTemplate2>
     <div class="p-l-sm" *ngFor="let order of orders | keyvalue;">
-      <ng-container *ngIf="order.value.orderId !== currentOrder.orderId">
-        <i class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.value.state.severity, 'text')"></i>
-        {{order.value.orderId}} <i *ngIf="order.value.cyclicOrder" class="fa fa-repeat p-l-xs p-r-xs"
+      <ng-container *ngIf="order.value['orderId'] !== currentOrder.orderId">
+        <i class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.value['state'].severity, 'text')"></i>
+        {{order.value['orderId']}} <i *ngIf="order.value['cyclicOrder']" class="fa fa-repeat p-l-xs p-r-xs"
           aria-hidden="true"></i>
         <i class="text-sm text-muted"
-          *ngIf="order.value.scheduledFor && !order.value.scheduledNever">{{order.value.scheduledFor |
+          *ngIf="order.value['scheduledFor'] && !order.value['scheduledNever']">{{order.value['scheduledFor'] |
           stringToDate}}</i>
-        <i class="text-sm text-muted" *ngIf="order.value.scheduledNever" translate>common.label.never</i>
+        <i class="text-sm text-muted" *ngIf="order.value['scheduledNever']" translate>common.label.never</i>
       </ng-container>
     </div>
   </ng-template>

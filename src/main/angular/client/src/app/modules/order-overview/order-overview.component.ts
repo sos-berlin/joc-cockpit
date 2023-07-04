@@ -101,7 +101,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.loading) {
-      if (changes.schedulerId || changes.date || changes.state) {
+      if (changes['schedulerId'] || changes['date'] || changes['state']) {
         this.init();
       }
     }
@@ -111,7 +111,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
     this.subscription.unsubscribe();
   }
 
-  refresh(args): void {
+  refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
@@ -309,8 +309,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     if (this.authService.permission) {
       this.permission = JSON.parse(this.authService.permission) || {};
     }
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
 
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
@@ -318,8 +318,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     if (this.sideView.orderOverview && !this.sideView.orderOverview.show) {
       this.hidePanel();
     }
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).order || this.preferences.orderOverviewPageView;
+    if (localStorage['views']) {
+      this.pageView = JSON.parse(localStorage['views']).order || this.preferences.orderOverviewPageView;
     } else {
       this.pageView = this.preferences.orderOverviewPageView;
     }
@@ -430,7 +430,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     return state;
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       let flag = false;
       let flag1 = false;
@@ -792,14 +792,14 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.resetCheckBox();
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.orderFilters.currentPage = $event;
     if (this.object.mapOfCheckedId.size !== this.data.length) {
       this.resetCheckBox();
     }
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.orderFilters.entryPerPage = $event;
     if (this.object.mapOfCheckedId.size !== this.data.length) {
       if (this.object.checked) {
@@ -983,7 +983,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }).subscribe((res: any) => {
       order.requirements = res.workflow.orderPreparation;
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ChangeParameterModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {
@@ -1001,7 +1001,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   modifyAllStartTime(): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -1077,7 +1077,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
           name: ''
         };
         const modal = this.modal.create({
-          nzTitle: null,
+          nzTitle: undefined,
           nzContent: CommentModalComponent,
           nzClassName: 'lg',
           nzComponentParams: {
@@ -1143,7 +1143,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         name: ''
       };
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {

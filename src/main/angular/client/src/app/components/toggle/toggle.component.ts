@@ -29,8 +29,8 @@ export class ToggleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.preferences) {
-      const preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      const preferences = JSON.parse(sessionStorage['preferences']);
       if (preferences.pageView) {
         this.view = preferences.pageView;
       }
@@ -51,10 +51,10 @@ export class ToggleComponent implements OnInit {
       agentCluster: this.view,
       permission: 'grid'
     };
-    if (!localStorage.views) {
-      localStorage.views = JSON.stringify(this.views);
+    if (!localStorage['views']) {
+      localStorage['views'] = JSON.stringify(this.views);
     } else {
-      this.views = JSON.parse(localStorage.views);
+      this.views = JSON.parse(localStorage['views']);
       if (!this.views.order) {
         this.views.order = this.orderView;
       }
@@ -111,7 +111,7 @@ export class ToggleComponent implements OnInit {
     } else if (this.router.url.match('/controllers/cluster_agent/')) {
       this.views.agentCluster = view;
     }
-    localStorage.views = JSON.stringify(this.views);
+    localStorage['views'] = JSON.stringify(this.views);
     this.messageEvent.emit(this.pageView);
   }
 }

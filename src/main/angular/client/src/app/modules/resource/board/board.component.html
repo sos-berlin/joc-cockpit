@@ -134,10 +134,6 @@
                         <span class="text-black-dk" [innerHtml]="board.expectOrderToNoticeId | highlight : boardsFilters.searchText"></span>
                       </div>
                       <div class="text-sm text-left text-muted p-t-sm">
-                        <span translate>resource.board.label.endOfLifeOfNotices </span>:
-                        <span class="text-black-dk" [innerHtml]="board.endOfLife | highlight : boardsFilters.searchText"></span>
-                      </div>
-                      <div class="text-sm text-left text-muted p-t-sm">
                         <span translate>resource.board.label.numOfNotices </span>:
                         <span class="text-black-dk" [innerHtml]="board.numOfNotices"></span>
                       </div>
@@ -200,12 +196,6 @@
                            class="fa fa-caret-up "></i>
                         <i *ngIf="boardsFilters.filter.sortBy == 'state._text' && boardsFilters.reverse"
                            class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th nzWidth="10%" (click)="sort('endOfLife')"><a><span class="p-r-xs" translate>resource.board.label.endOfLifeOfNotices</span>
-                      <i *ngIf="boardsFilters.filter.sortBy == 'endOfLife' && !boardsFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="boardsFilters.filter.sortBy == 'endOfLife' && boardsFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
                     </th>
                     <th nzWidth="100px" (click)="sort('numOfNotices')"><a><span class="p-r-xs" translate>resource.board.label.numOfNotices</span>
                       <i *ngIf="boardsFilters.filter.sortBy == 'numOfNotices' && !boardsFilters.reverse"
@@ -275,9 +265,6 @@
                         <span class="label" *ngIf="board.state" [ngClass]="coreService.getColor(board.state.severity, 'bg')"
                            [innerHtml]="board.state._text | translate | highlight : boardsFilters.searchText"></span>
                       </td>
-                      <td>
-                        <span [innerHtml]="board.endOfLife | highlight : boardsFilters.searchText"></span>
-                      </td>
                       <td><span [innerHtml]="board.numOfNotices"></span></td>
                       <td><span [innerHtml]="board.numOfExpectingOrders"></span></td>
                     </tr>
@@ -324,7 +311,6 @@
                               ></th>
                               <th *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)" nzWidth="55px"><span translate>common.label.action</span></th>
                               <th><span translate>resource.board.label.id</span></th>
-                              <th><span translate>resource.board.label.endOfLife</span></th>
                               <th><span translate>common.label.state</span></th>
                               <th><span translate>resource.board.label.expectingOrders</span></th>
                             </tr>
@@ -353,7 +339,6 @@
                                     </div>
                                   </td>
                                   <td>{{notice.id}}</td>
-                                  <td>{{notice.endOfLife | stringToDate}}</td>
                                   <td><span class="label" [ngClass]="coreService.getColor(notice.state.severity, 'bg')"
                                             [innerHtml]="notice.state._text | translate"></span></td>
                                   <td>{{notice.expectingOrders?.length}}</td>

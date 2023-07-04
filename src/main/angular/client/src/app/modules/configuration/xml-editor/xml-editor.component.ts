@@ -1034,7 +1034,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (this.objectType === 'NOTIFICATION') {
       this.extraInfo.released = false;
     } else {
-      this.checkJobReource($event);
+      this.checkJobResource($event);
       this.extraInfo.sync = false;
       this.autoValidate();
     }
@@ -1045,7 +1045,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.isTreeShow = false;
   }
 
-  private checkJobReource(name): void {
+  private checkJobResource(name): void {
     this.extraInfo.isExist = false;
     const obj: any = {
       path: name,
@@ -1746,10 +1746,34 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         forInventory: true
       }).subscribe((res) => {
         this.jobResourcesTree = this.coreService.prepareTree(res, true);
+        this.matchJobResourceList(node);
       });
+    } else {
+      this.matchJobResourceList(node);
     }
   }
 
+  private matchJobResourceList(node): void {
+    if (node) {
+      if (this.objectType === 'NOTIFICATION') {
+        if (typeof node.data === 'string') {
+          let val = node.data;
+          node.data = [val];
+        } else if (!node.data || !isArray(node.data)) {
+          node.data = [];
+        }
+      } else {
+        if (node.data) {
+          this.checkJobResource(node.data);
+        }
+      }
+      if (node.data) {
+        if (typeof node.data == 'string') {
+          this.checkJobResource(node.data);
+        }
+      }
+    }
+  }
 
   getIndividualData(node, scroll) {
     let flag = false;
@@ -3181,7 +3205,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.nonValidattribute = {};
   }
 
-  autoValidateRecursion(child): boolean {
+  autoValidateRecursion(child): any {
     if (child && child.attributes && child.attributes.length > 0) {
       for (let i = 0; i < child.attributes.length; i++) {
         if (child.attributes[i].use === 'required') {
@@ -3210,7 +3234,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         }
       }
     }
-    return true;
+    return;
   }
 
   dragEnter(arg: NzFormatEmitEvent): void {

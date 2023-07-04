@@ -12,7 +12,7 @@ export class ConfirmModalComponent {
   @Input() message: any;
   @Input() message2: any;
   @Input() countMessage: any;
-  @Input() count: number;
+  @Input() count: number | undefined;
   @Input() type: any;
   @Input() objectName: any;
   @Input() document: any;

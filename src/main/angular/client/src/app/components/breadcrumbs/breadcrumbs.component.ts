@@ -11,7 +11,7 @@ import {Subscription} from 'rxjs';
 export class BreadcrumbsComponent implements OnInit, OnDestroy {
   static readonly ROUTE_DATA_BREADCRUMB = 'breadcrumb';
   breadcrumbs: any;
-  identityServiceName: string;
+  identityServiceName: string | undefined;
   subscription: Subscription;
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {

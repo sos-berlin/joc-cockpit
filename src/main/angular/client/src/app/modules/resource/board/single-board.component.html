@@ -33,7 +33,6 @@
                 <th><span translate>common.label.path</span></th>
                 <th nzWidth="130px"><span translate>resource.board.label.deploymentDate</span></th>
                 <th nzWidth="100px"><span translate>common.label.status</span></th>
-                <th nzWidth="10%"><span translate>resource.board.label.endOfLifeOfNotices</span></th>
                 <th nzWidth="100px"><span translate>resource.board.label.numOfNotices</span></th>
                 <th nzWidth="120px"><span translate>resource.board.label.numOfExpectingOrders</span></th>
               </tr>
@@ -81,7 +80,6 @@
                     <a class="label" *ngIf="board.state" [ngClass]="coreService.getColor(board.state.severity, 'bg')"
                        [innerHtml]="board.state._text | translate"></a>
                   </td>
-                  <td>{{board.endOfLife}}</td>
                   <td>{{board.numOfNotices}}</td>
                   <td><span [innerHtml]="board.numOfExpectingOrders"></span></td>
                 </tr>
@@ -119,7 +117,6 @@
                         <tr>
                           <th *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)" nzWidth="55px"><span translate>common.label.action</span></th>
                           <th><span translate>resource.board.label.id</span></th>
-                          <th><span translate>resource.board.label.endOfLife</span></th>
                           <th><span translate>common.label.state</span></th>
                           <th><span translate>resource.board.label.expectingOrders</span></th>
                         </tr>
@@ -146,7 +143,7 @@
                               </div>
                             </td>
                             <td>{{notice.id}}</td>
-                            <td>{{notice.endOfLife | stringToDate}}</td>
+                          
                             <td><span class="label" [ngClass]="coreService.getColor(notice.state.severity, 'bg')"
                                       [innerHtml]="notice.state._text | translate"></span></td>
                             <td>{{notice.expectingOrders?.length}}</td>

@@ -1,0 +1,9 @@
+<nz-select [name]="name" [(ngModel)]="object[attributeName]" [nzDropdownClassName]="dropdownClassName"
+           [ngClass]="ngClassName" [class]="classNames" (ngModelChange)="modelChange.emit($event)"
+           [nzShowSearch]="isSearchable" [required]="isRequired" [nzPlaceHolder]="placeholder | translate">
+  <nz-option *ngFor="let option of listArray;let i = index"
+             [nzLabel]="(optionLabel ? option[optionLabel] : i == 0 ? (extraLabelText +  option) : option) | translate"
+             [nzValue]="optionValue ? option[optionValue] : option"
+             [nzDisabled]="option === '-----------------------------' || option.disable">
+  </nz-option>
+</nz-select>
