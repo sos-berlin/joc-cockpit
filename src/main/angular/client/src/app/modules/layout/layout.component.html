@@ -1,7 +1,7 @@
 <ng-template #customTpl>
   <app-empty-data></app-empty-data>
 </ng-template>
-<div class="app-content" id="content" *ngIf="loading">
+<div *ngIf="loading" class="app-content" id="content">
   <div class="fixed-top">
     <div class="w-full text-right top-header-bar white fa-fa-color">
       <span *ngIf="preferences.themeTitle" class="pull-left p-l-3 backup-text">
@@ -9,20 +9,21 @@
               class="_600 m-l-sm text-shadow _500 backup-text"></span> </span>
       <span class="m-r-sm"><span class="text-muted" translate>common.label.time</span>:
               <i [innerHtml]="currentTime" class="text-dark _500"></i></span>
-      <i class="fa fa-circle-o circle" *ngIf="sessionTimeout >= 0"></i>
-      <span class="m-r-sm" *ngIf="sessionTimeout >= 0"><span class="text-muted" translate>common.label.remainingSessionTime</span>:
+      <i *ngIf="sessionTimeout >= 0" class="fa fa-circle-o circle"></i>
+      <span *ngIf="sessionTimeout >= 0" class="m-r-sm"><span class="text-muted" translate>common.label.remainingSessionTime</span>:
               <span [innerHtml]="remainingSessionTime" class="text-orange"></span></span>
       <i *ngIf="schedulerIds.selected" class="fa fa-circle-o circle"></i>
       <span *ngIf="schedulerIds.selected" class="dropdown">
-        <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" nzPlacement="bottomRight">
+        <a [nzDropdownMenu]="option" nz-dropdown nzPlacement="bottomRight" nzTrigger="click">
           <span class="backup-text text-muted" translate>common.label.controllerId</span>:
           <span [innerHtml]="schedulerIds.selected" class="_500 text-orange"></span><i
           class="fa fa-caret-down p-l-xs"></i>
         </a>
         <nz-dropdown-menu #option="nzDropdownMenu">
-          <ul nz-menu >
-            <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active':schedulerIds.selected == controller}"
-                *ngFor="let controller of schedulerIds.controllerIds" (click)="changeScheduler(controller);$event.stopPropagation()">
+          <ul nz-menu>
+            <li (click)="changeScheduler(controller);$event.stopPropagation()" *ngFor="let controller of schedulerIds.controllerIds"
+                [ngClass]="{'ant-select-dropdown-menu-item-active':schedulerIds.selected == controller}"
+                nz-menu-item>
               <a>
                 {{controller}}
               </a>
@@ -35,18 +36,18 @@
   </div>
   <div class="app-body">
     <div *ngIf="warningMessage || warningMessage2">
-      <div class="license-box card" [ngClass]="warningMessage ? '' : 'license-box-danger'">
+      <div [ngClass]="warningMessage ? '' : 'license-box-danger'" class="license-box card">
         <div class="pl-1 pr-1 row">
           <div class="col-1">
-            <i class="fa fa-exclamation-triangle text-18" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fa fa-exclamation-triangle text-18"></i>
           </div>
-          <div class="p-0 col-10" *ngIf="warningMessage">
-            <p class="p-2 p-b-0 m-b-sm _400" [innerHTML]="warningMessage"></p>
-            <a *ngIf="!warningMessage2" (click)="gotIt()" class="btn-text text-primary m-l-xs p-l-xxs" translate>info.button.gotIt</a>
-            <a *ngIf="!warningMessage2" (click)="remindLater()" class="btn-text text-primary m-l-12" translate>info.button.remindMeLater</a>
+          <div *ngIf="warningMessage" class="p-0 col-10">
+            <p [innerHTML]="warningMessage" class="p-2 p-b-0 m-b-sm _400"></p>
+            <a (click)="gotIt()" *ngIf="!warningMessage2" class="btn-text text-primary m-l-xs p-l-xxs" translate>info.button.gotIt</a>
+            <a (click)="remindLater()" *ngIf="!warningMessage2" class="btn-text text-primary m-l-12" translate>info.button.remindMeLater</a>
           </div>
-          <div class="p-0 col-10" *ngIf="!warningMessage && warningMessage2">
-            <p class="p-2 p-b-0 m-b-sm _500" [innerHTML]="warningMessage2"></p>
+          <div *ngIf="!warningMessage && warningMessage2" class="p-0 col-10">
+            <p [innerHTML]="warningMessage2" class="p-2 p-b-0 m-b-sm _500"></p>
           </div>
         </div>
       </div>
@@ -54,8 +55,8 @@
     <router-outlet></router-outlet>
   </div>
 </div>
-<iframe name="tmpFrame" id="tmpFrame" width="1" height="1" class="iframe"></iframe>
-<div class="spinner" *ngIf="!loading">
+<iframe class="iframe" height="1" id="tmpFrame" name="tmpFrame" width="1"></iframe>
+<div *ngIf="!loading" class="spinner">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {NzI18nService} from 'ng-zorro-antd/i18n';
 import {Router} from '@angular/router';
@@ -12,7 +12,7 @@ declare const $: any;
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   locales: any = [];
 
   constructor(public translate: TranslateService, private i18n: NzI18nService, public coreService: CoreService,
@@ -130,7 +130,7 @@ export class AppComponent implements OnInit {
             this.authService.save();
             if (returnUrl) {
               if (returnUrl.indexOf('?') > -1) {
-                this.router.navigateByUrl(returnUrl);
+                this.router.navigateByUrl(returnUrl).then();
               } else {
                 this.router.navigate([returnUrl]).then();
               }

@@ -11,7 +11,7 @@ import {UpdateObjectComponent} from '../../modules/configuration/inventory/updat
   selector: 'app-inventory-search',
   templateUrl: './search.component.html'
 })
-export class SearchComponent implements OnInit, OnDestroy {
+export class SearchComponent {
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
   @Output() onNavigate: EventEmitter<any> = new EventEmitter();
   @Input() controllerId: any;
@@ -100,13 +100,13 @@ export class SearchComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         if (this.searchObj.selectedPath) {
           const elem = document.getElementById(this.searchObj.selectedPath);
-          if(elem) {
+          if (elem) {
             elem.scrollIntoView({block: 'center'});
           }
         }
       }, 10);
     } else {
-      if(savedObj.request?.selectedPath) {
+      if (savedObj.request?.selectedPath) {
         delete savedObj.request.selectedPath;
       }
       if (!this.isWorkflow && !this.isBoard && !this.isLock && !this.isCalendar) {
@@ -235,7 +235,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   checkAll(value: boolean): void {
     if (value && this.results.length > 0) {
-      this.results.forEach((item: {name: string}) => {
+      this.results.forEach((item: { name: string }) => {
         this.object.mapOfCheckedId.add(item.name);
       });
     } else {
@@ -322,7 +322,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.object.type = obj.returnType;
         this.results = res.results;
-        this.results.forEach((item: {path: string, path1: string}) => {
+        this.results.forEach((item: { path: string, path1: string }) => {
           item.path1 = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
         })
         this.isControllerId = false;
@@ -367,7 +367,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           onlyUpdate,
           exactMatch: this.searchObj.advanced.jobNameExactMatch,
           jobName: this.searchObj.advanced.jobName,
-          workflows: this.results.filter((item: {name: string}) => {
+          workflows: this.results.filter((item: { name: string }) => {
             return this.object.mapOfCheckedId.has(item.name);
           })
         }
@@ -394,7 +394,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         controllerId: this.controllerId,
         type: this.object.type,
-        data: this.results.filter((item: {name: string}) => {
+        data: this.results.filter((item: { name: string }) => {
           return this.object.mapOfCheckedId.has(item.name);
         })
       },

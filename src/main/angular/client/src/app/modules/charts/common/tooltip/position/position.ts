@@ -1,4 +1,4 @@
-import { PlacementTypes } from './placement-type.enum';
+import {PlacementTypes} from './placement-type.enum';
 
 const caretOffset = 7;
 
@@ -207,7 +207,7 @@ export class PositionHelper {
       left = PositionHelper.calculateHorizontalCaret(hostDim, elmDim, caretDimensions, alignment);
     }
 
-    return { top, left };
+    return {top, left};
   }
 
   /**
@@ -233,7 +233,7 @@ export class PositionHelper {
       left = PositionHelper.calculateHorizontalAlignment(hostDim, elmDim, alignment);
     }
 
-    return { top, left };
+    return {top, left};
   }
 
   /**

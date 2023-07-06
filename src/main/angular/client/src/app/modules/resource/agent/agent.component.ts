@@ -1,17 +1,66 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from "@angular/router";
+import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {SearchPipe} from '../../../pipes/core.pipe';
+import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
+
+@Component({
+  selector: 'app-confirm-node-modal',
+  templateUrl: './confirm-node-dialog.html'
+})
+export class ConfirmNodeModalComponent {
+  @Input() agent: any;
+
+  submitted = false;
+  display: any;
+  required = false;
+  comments: any = {};
+  data = {
+    lostDirector: 'PRIMARY_DIRECTOR'
+  };
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.comments.radio = 'predefined';
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.required = true;
+      this.display = true;
+    } else {
+      let preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+      this.display = preferences.auditLog;
+    }
+  }
+
+  onSubmit(): void {
+    const request: any = {
+      auditLog: {},
+      controllerId: this.agent.controllerId,
+      agentId: this.agent.agentId,
+      lostDirector: this.data.lostDirector
+    };
+    this.coreService.getAuditLogObj(this.comments, request.auditLog);
+    this.coreService.post('agent/cluster/confirm_node_loss', request).subscribe({
+      next: () => {
+        this.activeModal.close('DONE');
+      }, error: () => {
+        this.submitted = false;
+      }
+    });
+  }
+}
 
 // Main Component
 @Component({
   selector: 'app-agent-cluster',
   templateUrl: 'agent.component.html'
 })
-export class AgentComponent implements OnInit, OnDestroy {
+export class AgentComponent {
   loading: boolean;
   schedulerIds: any = {};
   preferences: any = {};
@@ -27,7 +76,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private router: Router,
-              private searchPipe: SearchPipe, private dataService: DataService) {
+              private searchPipe: SearchPipe, private dataService: DataService, public modal: NzModalService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -51,11 +100,11 @@ export class AgentComponent implements OnInit, OnDestroy {
       this.agentsFilters.expandedObjects = [];
     }
     this.coreService.getResourceTab().state = 'agent';
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).agent;
+    if (localStorage['views']) {
+      this.pageView = JSON.parse(localStorage['views']).agent;
     }
     if (this.schedulerIds.selected) {
       this.loadAgents(null);
@@ -161,7 +210,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     }
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'AgentAdded' || args.eventSnapshots[j].eventType === 'AgentUpdated' || args.eventSnapshots[j].eventType === 'AgentInventoryUpdated' ||
@@ -177,11 +226,11 @@ export class AgentComponent implements OnInit, OnDestroy {
 
   /* ---------------------------- Action ----------------------------------*/
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.agentsFilters.currentPage = $event;
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.agentsFilters.entryPerPage = $event;
   }
 
@@ -244,6 +293,50 @@ export class AgentComponent implements OnInit, OnDestroy {
   backToList(): void {
     this.selectedAgentId = '';
     this.searchInResult();
+  }
+
+  switchOver(cluster): void {
+    const obj = {
+      controllerId: this.schedulerIds.selected,
+      agentId: cluster.agentId,
+      auditLog: {}
+    };
+
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        name: obj.agentId,
+        operation: 'Switch Over'
+      };
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzData: {
+          comments,
+          url: 'agent/cluster/switchover',
+          obj,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+
+    } else {
+      this.coreService.post('agent/cluster/switchover', obj).subscribe();
+    }
+  }
+
+  confirmNodeLoss(agent: any): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmNodeModalComponent,
+      nzData: {
+        agent,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
   showAgents(cluster, isSubagent = false): void {

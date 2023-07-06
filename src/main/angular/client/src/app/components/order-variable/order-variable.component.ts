@@ -10,7 +10,7 @@ import {CoreService} from '../../services/core.service';
   selector: 'app-order-variable',
   templateUrl: './order-variable.component.html'
 })
-export class OrderVariableComponent implements OnInit {
+export class OrderVariableComponent {
   @Input() order;
   @Input() type;
   @Input() history: boolean;
@@ -33,8 +33,8 @@ export class OrderVariableComponent implements OnInit {
                 });
               }
             });
-          } else  if (this.history) {
-            if(typeof v == 'object'){
+          } else if (this.history) {
+            if (typeof v == 'object') {
               v = Object.entries(v).map(([k1, v1]) => {
                 return {name: k1, value: v1};
               });
@@ -65,7 +65,7 @@ export class OrderVariableComponent implements OnInit {
         nzTitle: undefined,
         nzContent: ChangeParameterModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           schedulerId: this.schedulerId,
           variable,
           order,

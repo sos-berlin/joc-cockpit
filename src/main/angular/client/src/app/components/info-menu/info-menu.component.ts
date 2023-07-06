@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../services/core.service';
@@ -83,7 +83,7 @@ import {DataService} from "../../services/data.service";
     </div>
   `
 })
-export class AboutModalComponent implements OnInit {
+export class AboutModalComponent {
   versionData: any = {};
   isLoading = false;
   isLoaded = false;
@@ -98,7 +98,7 @@ export class AboutModalComponent implements OnInit {
               private ref: ChangeDetectorRef) {
   }
 
-  private stringToDate(date:any): any{
+  private stringToDate(date: any): any {
     if (sessionStorage['preferences']) {
       const n = JSON.parse(sessionStorage['preferences']);
       if (!n.zone) {
@@ -158,7 +158,7 @@ export class AboutModalComponent implements OnInit {
     }
   }
 
-  private formatDate(validFrom:any, validUntil:any): void {
+  private formatDate(validFrom: any, validUntil: any): void {
     this.isLoaded = true;
     if (validFrom) {
       this.validFrom = this.stringToDate(validFrom);
@@ -178,7 +178,7 @@ export class AboutModalComponent implements OnInit {
   selector: 'app-step-guide',
   templateUrl: './step-guide-dialog.component.html'
 })
-export class StepGuideComponent implements OnInit {
+export class StepGuideComponent {
   line1: string = '';
   line2: string = '';
 

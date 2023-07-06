@@ -46,9 +46,9 @@
 }
 
 .deployment.bg-white {
-  .a-1{
+  .a-1 {
     right: 24px;
-    top:20px
+    top: 20px
   }
 }
 
@@ -62,6 +62,7 @@
   .a-1, a-2 {
     z-index: 999;
   }
+
   &:hover {
     .trash {
       display: block;

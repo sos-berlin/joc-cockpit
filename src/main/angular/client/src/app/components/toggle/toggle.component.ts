@@ -1,4 +1,4 @@
-import {Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
+import {Component, Output, EventEmitter, Input} from '@angular/core';
 import {Router} from '@angular/router';
 
 @Component({
@@ -17,7 +17,7 @@ import {Router} from '@angular/router';
     </div>
   `
 })
-export class ToggleComponent implements OnInit {
+export class ToggleComponent {
   @Input() type: string;
   orderView = 'list';
   view = 'list';

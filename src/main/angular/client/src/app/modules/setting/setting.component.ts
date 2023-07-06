@@ -1,13 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
-import {FileUploader} from 'ng2-file-upload';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {saveAs} from 'file-saver';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {isEmpty} from 'underscore';
-import SHA512 from 'crypto-js/sha512';
+import * as SHA512 from 'crypto-js/sha512';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
@@ -15,76 +14,10 @@ import {OrderPipe} from "../../pipes/core.pipe";
 import {CommentModalComponent} from "../../components/comment-modal/comment.component";
 
 @Component({
-  selector: 'app-import-setting-content',
-  templateUrl: './import-dialog.html'
-})
-export class ImportSettingComponent implements OnInit {
-  setting: any;
-  submitted = false;
-  uploader: FileUploader;
-
-  constructor(public activeModal: NzModalRef, public translate: TranslateService, public toasterService: ToastrService) {
-    this.uploader = new FileUploader({
-      url: '',
-      queueLimit: 1
-    });
-  }
-
-  ngOnInit(): void {
-    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
-      const res = typeof response === 'string' ? JSON.parse(response) : response;
-      if (res.error) {
-        this.toasterService.error(res.error.code, res.error.message);
-      }
-    };
-  }
-
-  // CALLBACKS
-  onFileSelected(event: any): void {
-    const self = this;
-    let item = event['0'];
-
-    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
-    if (fileExt != 'JSON') {
-      let msg = '';
-      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
-        msg = translatedValue;
-      });
-      this.toasterService.error(fileExt + ' ' + msg);
-      this.uploader.clearQueue();
-    } else {
-      let reader = new FileReader();
-      reader.readAsText(item, 'UTF-8');
-      reader.onload = onLoadFile;
-    }
-
-    function onLoadFile(_event) {
-      let data;
-      try {
-        data = JSON.parse(_event.target.result);
-        self.setting = data;
-      } catch (e) {
-        self.translate.get('error.message.invalidJSON').subscribe(translatedValue => {
-          self.toasterService.error(translatedValue);
-        });
-        self.uploader.clearQueue();
-      }
-    }
-  }
-
-  onSubmit(): void {
-    this.submitted = true;
-    setTimeout(() => {
-      this.activeModal.close(this.setting);
-    }, 100);
-  }
-}
-
-@Component({
   selector: 'app-setting',
   templateUrl: './setting.component.html'
 })
-export class SettingComponent implements OnInit {
+export class SettingComponent {
   zones: any = {};
   permission: any = {};
   preferences: any = {};
@@ -243,22 +176,22 @@ export class SettingComponent implements OnInit {
   }
 
   importSetting(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ImportSettingComponent,
-      nzClassName: 'lg',
-      nzFooter: null,
-      nzClosable: false,
-      nzAutofocus: null,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.settings = result;
-        this.changeConfiguration(null, null, null);
-        this.loadSetting();
-      }
-    });
+    // const modal = this.modal.create({
+    //   nzTitle: undefined,
+    //   nzContent: ImportSettingComponent,
+    //   nzClassName: 'lg',
+    //   nzFooter: null,
+    //   nzClosable: false,
+    //   nzAutofocus: null,
+    //   nzMaskClosable: false
+    // });
+    // modal.afterClose.subscribe(result => {
+    //   if (result) {
+    //     this.settings = result;
+    //     this.changeConfiguration(null, null, null);
+    //     this.loadSetting();
+    //   }
+    // });
   }
 
   exportSetting(): void {
@@ -411,7 +344,7 @@ export class SettingComponent implements OnInit {
           nzTitle: undefined,
           nzContent: CommentModalComponent,
           nzClassName: 'lg',
-          nzComponentParams: {
+          nzData: {
             comments
           },
           nzFooter: null,

@@ -15,7 +15,7 @@ import {ExcelService} from "../../../services/excel.service";
   selector: 'app-order-notification',
   templateUrl: './order-notification.component.html'
 })
-export class OrderNotificationComponent implements OnInit, OnDestroy {
+export class OrderNotificationComponent {
   @Input() permission: any;
   @Input() preferences: any = {};
   @Input() schedulerIds: any = {};
@@ -53,7 +53,7 @@ export class OrderNotificationComponent implements OnInit, OnDestroy {
           this.getData();
         } else if (res === 'ACKNOWLEDGE') {
           this.acknowledge(null);
-        } else if(res == 'EXPORT'){
+        } else if (res == 'EXPORT') {
           this.exportXLS();
         }
       }

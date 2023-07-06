@@ -7,9 +7,9 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
-import { TooltipService } from '../tooltip/tooltip.service';
-import { LegendOptions, LegendType, LegendPosition } from '../types/legend.model';
-import { ScaleType } from '../types/scale-type.enum';
+import {TooltipService} from '../tooltip/tooltip.service';
+import {LegendOptions, LegendType, LegendPosition} from '../types/legend.model';
+import {ScaleType} from '../types/scale-type.enum';
 
 @Component({
   providers: [TooltipService],

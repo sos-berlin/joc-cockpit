@@ -9,9 +9,9 @@ import {
   ChangeDetectionStrategy
 } from '@angular/core';
 
-import { XAxisTicksComponent } from './x-axis-ticks.component';
-import { Orientation } from '../types/orientation.enum';
-import { ViewDimensions } from '../types/view-dimension.interface';
+import {XAxisTicksComponent} from './x-axis-ticks.component';
+import {Orientation} from '../types/orientation.enum';
+import {ViewDimensions} from '../types/view-dimension.interface';
 
 @Component({
   selector: 'g[ngx-charts-x-axis]',
@@ -92,12 +92,12 @@ export class XAxisComponent implements OnChanges {
     }
   }
 
-  emitTicksHeight({ height }): void {
+  emitTicksHeight({height}): void {
     const newLabelOffset = height + 25 + 5;
     if (newLabelOffset !== this.labelOffset) {
       this.labelOffset = newLabelOffset;
       setTimeout(() => {
-        this.dimensionsChanged.emit({ height });
+        this.dimensionsChanged.emit({height});
       }, 0);
     }
   }

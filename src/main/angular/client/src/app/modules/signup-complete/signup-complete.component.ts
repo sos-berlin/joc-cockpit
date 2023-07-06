@@ -7,7 +7,7 @@ import {CoreService} from "../../services/core.service";
   templateUrl: './signup-complete.component.html',
   styleUrls: ['./signup-complete.component.scss']
 })
-export class SignupCompleteComponent implements OnInit {
+export class SignupCompleteComponent {
   isVerified = false;
 
   constructor(private coreService: CoreService, private router: Router, private route: ActivatedRoute) {

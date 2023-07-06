@@ -1,23 +1,27 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span class="drag-text" *ngIf="!isList" translate>workflow.label.facetEditor</span>
-    <span class="drag-text" *ngIf="isList" translate>workflow.label.listEditor</span>:
+    <span *ngIf="!isList" class="drag-text" translate>workflow.label.facetEditor</span>
+    <span *ngIf="isList" class="drag-text" translate>workflow.label.listEditor</span>:
     {{data.name}}
   </h4>
-  <button type="button" class="close" aria-label="Close"
-          (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close"
+          type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
-    <div class="form-group row" *ngIf="!isList">
+    <div *ngIf="!isList" class="form-group row">
       <label class="col-md-4 col-lg-3 form-control-label"
              translate>workflow.label.facet</label>
-      <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((facet.dirty || facet.touched) && facet.invalid) || variable.value.invalid}">
-        <textarea class="z-index" #facet="ngModel" name="facet" autofocus (keydown)="checkRegularExp(variable.value)" (blur)="checkRegularExp(variable.value)"
-                  [(ngModel)]="variable.value.facet" nz-input placeholder="{{'common.placeholder.regex' | translate}}" nzAutosize></textarea>
-        <app-favorite-list [list]="favList" [data]="variable.value" [value]="variable.value.facet" [type]="'facet'"></app-favorite-list>
+      <div [ngClass]="{'has-error' : ((facet.dirty || facet.touched) && facet.invalid) || variable.value.invalid}"
+           class="col-md-8 col-lg-9">
+        <textarea #facet="ngModel" (blur)="checkRegularExp(variable.value)" (keydown)="checkRegularExp(variable.value)" [(ngModel)]="variable.value.facet" autofocus
+                  class="z-index"
+                  name="facet" nz-input nzAutosize
+                  placeholder="{{'common.placeholder.regex' | translate}}"></textarea>
+        <app-favorite-list [data]="variable.value" [list]="favList" [type]="'facet'"
+                           [value]="variable.value.facet"></app-favorite-list>
         <div *ngIf="(facet.invalid && facet.errors && (facet.dirty || facet.touched)) || variable.value.invalid"
              class="text-danger help-block">
           <div *ngIf="variable.value.invalid">
@@ -26,40 +30,44 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="!isList">
+    <div *ngIf="!isList" class="form-group row">
       <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.message</label>
       <div class="col-md-8 col-lg-9">
-        <textarea rows="3" class="form-control" name="message"
-               [(ngModel)]="variable.value.message" placeholder="{{'workflow.placeholder.enterMessage' | translate}}">
+        <textarea [(ngModel)]="variable.value.message" class="form-control" name="message"
+                  placeholder="{{'workflow.placeholder.enterMessage' | translate}}"
+                  rows="3">
         </textarea>
       </div>
     </div>
     <div *ngIf="isList">
-      <div class="form-group row" *ngFor="let param of variable.value.list; let j = index">
-        <div class="col-md-11 col-lg-11 p-r-0" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-          <input identifierValidation #name="ngModel" autocomplete="off" type="text"
-                 class="form-control" name="list{{j}}" [(ngModel)]="param.name" placeholder="{{'common.placeholder.name' | translate}}">
+      <div *ngFor="let param of variable.value.list; let j = index" class="form-group row">
+        <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
+             class="col-md-11 col-lg-11 p-r-0">
+          <input #name="ngModel" [(ngModel)]="param.name" autocomplete="off" class="form-control"
+                 identifierValidation name="list{{j}}" placeholder="{{'common.placeholder.name' | translate}}"
+                 type="text">
           <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
             <div *ngIf="name.errors['invalidIdentifier']" translate>common.message.invalid</div>
           </div>
         </div>
         <div class="col-md-1 col-lg-1">
-          <a><i (click)="removeVariableFromArray(variable.value.list, j)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+          <a><i (click)="removeVariableFromArray(variable.value.list, j)"
+                class="fa fa-times m-t-sm text-hover-color"></i></a>
         </div>
       </div>
       <div class="form-group row">
         <div class="col-md-12">
-          <a class="text-u-l" (click)="addVariableToArray(variable.value)" translate>workflow.button.addValueToList</a>
+          <a (click)="addVariableToArray(variable.value)" class="text-u-l" translate>workflow.button.addValueToList</a>
         </div>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid" translate>
+    <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" translate type="submit">
       common.button.submit
     </button>
-    <button type="button" class="btn btn-grey btn-sm"
-            (click)="activeModal.destroy()" translate>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
+            translate type="button">
       common.button.cancel
     </button>
   </div>

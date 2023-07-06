@@ -9,7 +9,7 @@ import {DataService} from '../../../services/data.service';
   selector: 'app-order-overview',
   templateUrl: './order-overview.component.html'
 })
-export class OrderOverviewComponent implements OnInit, OnDestroy {
+export class OrderOverviewComponent {
   @Input('sizeX') xbody: number;
   @Input('sizeY') ybody: number;
   orders: any = {};

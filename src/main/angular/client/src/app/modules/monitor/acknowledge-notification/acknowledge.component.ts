@@ -6,7 +6,7 @@ import {CoreService} from '../../../services/core.service';
   selector: 'app-acknowledge-modal',
   templateUrl: './acknowledge.dialog.html'
 })
-export class AcknowledgeModalComponent implements OnInit {
+export class AcknowledgeModalComponent {
   @Input() data: any;
   @Input() type: any;
   submitted = false;

@@ -1,88 +1,96 @@
 <div class="modal-header">
-  <h4 class="modal-title" >
+  <h4 class="modal-title">
     <span translate>inventory.label.newDraft</span>
     <span *ngIf="deployablesObject.length===0 && !loading">:
       {{data.name}}
     </span>
   </h4>
-  <button type="button" class="close" (click)="cancel()" aria-label="Close">
+  <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div *ngIf="deployablesObject.length > 0 && !loading">
-      <div class="row" *ngIf="deployablesObject.length > 0">
+      <div *ngIf="deployablesObject.length > 0" class="row">
         <div class="col-md-12">
-            <div class="m-b-sm">
-              <i nz-icon nzType="folder"
-                 nzTheme="outline"></i>
-              <span class="p-l-sm">{{data.path}}</span>
+          <div class="m-b-sm">
+            <i nz-icon nzTheme="outline"
+               nzType="folder"></i>
+            <span class="p-l-sm">{{data.path}}</span>
+          </div>
+          <div *ngFor="let child of deployablesObject" class="m-l-md node-wrapper" style="width: 90%">
+            <div>
+                <span [ngClass]="{'fa-circle-o': !child.valid, 'fa-circle dark-blue' :child.deployed}"
+                      class="fa fa-check-circle-o orange text-xs"
+                      style="margin-top: 4px"></span>
+              <span class="p-l-sm">{{child.objectName | translate}}</span>
             </div>
-            <div class="m-l-md node-wrapper" style="width: 90%" *ngFor="let child of deployablesObject">
-              <div>
-                <span  class="fa fa-check-circle-o orange text-xs"
-                       [ngClass]="{'fa-circle-o': !child.valid, 'fa-circle dark-blue' :child.deployed}" style="margin-top: 4px"></span>
-                <span class="p-l-sm">{{child.objectName | translate}}</span>
-              </div>
-              <div class="m-l"
-                   *ngIf="child.deployablesVersions && child.deployablesVersions.length >0">
-                <nz-select
-                  name="'version-' + {{child.id}}"
-                  [nzSize]="'small'"
-                  [(ngModel)]="child.deployId">
-                  <ng-container>
-                    <nz-option nzCustomContent nzValue="new" [nzLabel]="'inventory.button.new' | translate">
-                      <div>
-                        <span class="fa fa-circle-o text-xs p-r-xs"></span>{{'inventory.button.new' | translate}}
-                      </div>
-                    </nz-option>
-                  </ng-container>
-                  <ng-container *ngIf="!child.valid" >
-                    <nz-option nzCustomContent nzValue="" [nzLabel]="'workflow.label.draft' | translate">
-                      <div>
-                        <span class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' | translate}} - <span class="label bg-gold" translate>inventory.label.notValid</span>
-                      </div>
-                    </nz-option>
-                  </ng-container>
-                  <ng-container *ngFor="let version of child.deployablesVersions">
-                    <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
-                      <div *ngIf="version.versions && version.versions.length>0">
-                        <span class="fa fa-circle-o text-xs p-r-xs" [ngClass]="version.deploymentId ? ' dark-blue': ''"></span>
-                        {{version.versionDate | stringToDate}} <span class="p-l-sm" [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''">{{version.deploymentOperation}}</span> <i *ngIf="version.deploymentPath" class="text-muted p-l-sm">{{version.deploymentPath}}</i></div>
-                      <div class="version-inner-list" *ngFor="let ver of version.versions">
-                        {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
-                      </div>
-                      <div *ngIf="!version.versions || version.versions.length === 0">
-                        <span class="fa fa-circle-o text-xs p-r-xs"></span>{{'workflow.label.draft' | translate}}
-                      </div>
-                    </nz-option>
-                  </ng-container>
-                </nz-select>
-              </div>
-              <div class="m-l"
-                   *ngIf="(!child.deployablesVersions || child.deployablesVersions.length ===0)">
-                <i class="text-muted" translate>workflow.label.draft</i>
-              </div>
+            <div *ngIf="child.deployablesVersions && child.deployablesVersions.length >0"
+                 class="m-l">
+              <nz-select
+                [(ngModel)]="child.deployId"
+                [nzSize]="'small'"
+                name="'version-' + {{child.id}}">
+                <ng-container>
+                  <nz-option [nzLabel]="'inventory.button.new' | translate" nzCustomContent nzValue="new">
+                    <div>
+                      <span class="fa fa-circle-o text-xs p-r-xs"></span>{{'inventory.button.new' | translate}}
+                    </div>
+                  </nz-option>
+                </ng-container>
+                <ng-container *ngIf="!child.valid">
+                  <nz-option [nzLabel]="'workflow.label.draft' | translate" nzCustomContent nzValue="">
+                    <div>
+                      <span
+                        class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' | translate}}
+                      - <span class="label bg-gold" translate>inventory.label.notValid</span>
+                    </div>
+                  </nz-option>
+                </ng-container>
+                <ng-container *ngFor="let version of child.deployablesVersions">
+                  <nz-option [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)" [nzValue]="version.deploymentId"
+                             nzCustomContent>
+                    <div *ngIf="version.versions && version.versions.length>0">
+                      <span [ngClass]="version.deploymentId ? ' dark-blue': ''"
+                            class="fa fa-circle-o text-xs p-r-xs"></span>
+                      {{version.versionDate | stringToDate}} <span [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''"
+                                                                   class="p-l-sm">{{version.deploymentOperation}}</span>
+                      <i *ngIf="version.deploymentPath" class="text-muted p-l-sm">{{version.deploymentPath}}</i></div>
+                    <div *ngFor="let ver of version.versions" class="version-inner-list">
+                      {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
+                    </div>
+                    <div *ngIf="!version.versions || version.versions.length === 0">
+                      <span class="fa fa-circle-o text-xs p-r-xs"></span>{{'workflow.label.draft' | translate}}
+                    </div>
+                  </nz-option>
+                </ng-container>
+              </nz-select>
             </div>
+            <div *ngIf="(!child.deployablesVersions || child.deployablesVersions.length ===0)"
+                 class="m-l">
+              <i class="text-muted" translate>workflow.label.draft</i>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="row text-center" *ngIf="deployablesObject.length===0 && !loading">
+    <div *ngIf="deployablesObject.length===0 && !loading" class="row text-center">
       <div class="col-sm-12 m-t m-b">
         <span class="text" translate>inventory.message.deleteCurrentDraftObject</span>
       </div>
     </div>
-    <div class="text-center m-t-md" *ngIf="loading">
+    <div *ngIf="loading" class="text-center m-t-md">
       <nz-spin nzSimple></nz-spin>
     </div>
   </div>
   <div class="modal-footer text-left">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" translate>
+    <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+            translate type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       <span *ngIf="deployablesObject.length > 0">{{'common.button.submit' | translate}}</span>
       <span *ngIf="deployablesObject.length === 0">{{'common.button.confirm' | translate}}</span>
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>common.button.cancel</button>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
   </div>
 </form>

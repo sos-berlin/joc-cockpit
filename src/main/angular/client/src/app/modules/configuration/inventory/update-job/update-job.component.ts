@@ -11,7 +11,7 @@ import {AuthService} from '../../../../components/guard';
   selector: 'app-update-job',
   templateUrl: './update-job.component.html'
 })
-export class UpdateJobComponent implements OnInit {
+export class UpdateJobComponent {
   @Input() data: any = {};
   @Input() controllerId: any;
 
@@ -33,7 +33,7 @@ export class UpdateJobComponent implements OnInit {
     job: {}
   };
 
-  checkboxObjects: any ={};
+  checkboxObjects: any = {};
 
   required = false;
 
@@ -74,7 +74,7 @@ export class UpdateJobComponent implements OnInit {
     }
     if (this.agents.agentList.length === 0 && this.permission.joc.inventory.view) {
       this.coreService.getAgents(this.agents, this.controllerId, () => {
-         if (this.data.onlyUpdate) {
+        if (this.data.onlyUpdate) {
           this.selectedNode.job = {};
           this.step = 2;
         }
@@ -133,7 +133,7 @@ export class UpdateJobComponent implements OnInit {
     };
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        request.auditLog = { comment: translatedValue };
+        request.auditLog = {comment: translatedValue};
       });
     }
     this.coreService.post('inventory/store', request).subscribe({
@@ -151,6 +151,7 @@ export class UpdateJobComponent implements OnInit {
 
   private recursivelyUpdateJobInstruction(mainJson): void {
     const self = this;
+
     function recursive(json: any) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -200,7 +201,7 @@ export class UpdateJobComponent implements OnInit {
                 res.configuration.jobs[prop] = this.updateProperties(res.configuration.jobs[prop], job);
               }
             }
-          } else{
+          } else {
             res.configuration.jobs[this.data.jobName] = this.updateProperties(res.configuration.jobs[this.data.jobName], job);
           }
         } else {
@@ -228,7 +229,7 @@ export class UpdateJobComponent implements OnInit {
     if (this.checkboxObjects.documentation) {
       obj.documentationName = job.documentationName;
     }
-    if(this.checkboxObjects.radio) {
+    if (this.checkboxObjects.radio) {
       obj.withSubagentClusterIdExpr = this.selectedNode.radio == 'expression';
       if (job.agentName1) {
         obj.subagentClusterId = job.agentName;
@@ -238,7 +239,7 @@ export class UpdateJobComponent implements OnInit {
         delete obj.subagentClusterId;
       }
     }
-    if(this.checkboxObjects.subagentClusterIdExpr) {
+    if (this.checkboxObjects.subagentClusterIdExpr) {
       obj.subagentClusterIdExpr = job.subagentClusterIdExpr;
     }
 
@@ -278,13 +279,13 @@ export class UpdateJobComponent implements OnInit {
         obj.executable.script = job.executable.script;
       }
       if (this.checkboxObjects.credentialKey) {
-        if(!obj.executable.login){
+        if (!obj.executable.login) {
           obj.executable.login = {};
         }
         obj.executable.login.credentialKey = job.executable.login?.credentialKey;
       }
       if (this.checkboxObjects.withUserProfile) {
-        if(!obj.executable.login){
+        if (!obj.executable.login) {
           obj.executable.login = {};
         }
         obj.executable.login.withUserProfile = job.executable.login?.withUserProfile;
@@ -346,7 +347,7 @@ export class UpdateJobComponent implements OnInit {
       job.agentName = job.agentName1;
       delete job.agentName1
     } else {
-       delete job.subagentClusterId
+      delete job.subagentClusterId
     }
     if (!job.executable.v1Compatible) {
       if (job.executable.TYPE === 'ShellScriptExecutable') {

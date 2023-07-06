@@ -14,7 +14,7 @@ declare const $;
   selector: 'app-script-modal',
   templateUrl: './script-modal.component.html'
 })
-export class ScriptModalComponent implements OnInit, AfterViewInit {
+export class ScriptModalComponent {
   @Input() workflowPath: string;
   @Input() jobName: string;
   @Input() isScript: boolean;

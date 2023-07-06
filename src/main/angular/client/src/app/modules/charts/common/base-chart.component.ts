@@ -1,4 +1,4 @@
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import {isPlatformBrowser, isPlatformServer} from '@angular/common';
 import {
   ElementRef,
   NgZone,
@@ -16,13 +16,13 @@ import {
   OnInit
 } from '@angular/core';
 
-import { fromEvent as observableFromEvent } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-import { VisibilityObserver } from '../utils/visibility-observer';
-import { isDate } from '../utils/types';
-import { Color } from '../utils/color-sets';
-import { ScaleType } from './types/scale-type.enum';
-import { ViewDimensions } from './types/view-dimension.interface';
+import {fromEvent as observableFromEvent} from 'rxjs';
+import {debounceTime} from 'rxjs/operators';
+import {VisibilityObserver} from '../utils/visibility-observer';
+import {isDate} from '../utils/types';
+import {Color} from '../utils/color-sets';
+import {ScaleType} from './types/scale-type.enum';
+import {ViewDimensions} from './types/view-dimension.interface';
 
 @Component({
   selector: 'base-chart',
@@ -48,7 +48,8 @@ export class BaseChartComponent implements OnChanges, AfterViewInit, OnDestroy, 
     protected zone: NgZone,
     protected cd: ChangeDetectorRef,
     @Inject(PLATFORM_ID) public platformId: any
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     if (isPlatformServer(this.platformId)) {
@@ -124,7 +125,7 @@ export class BaseChartComponent implements OnChanges, AfterViewInit, OnDestroy, 
     }
 
     if (width && height) {
-      return { width, height };
+      return {width, height};
     }
 
     return null;

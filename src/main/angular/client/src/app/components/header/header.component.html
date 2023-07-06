@@ -1,26 +1,26 @@
-<div class="app-header white box-shadow bg-blue-color {{preferences.headerColor}}"
-     [ngClass]="{'backup': (isBackUp === 'YES')}">
+<div [ngClass]="{'backup': (isBackUp === 'YES')}"
+     class="app-header white box-shadow bg-blue-color {{preferences.headerColor}}">
   <div class="navbar box-shadow-z0 p-l-0 p-r-20">
     <a (click)="toggle()" class="navbar-item pull-right hide-menubar m-a-0 m-l">
       <i class="fa fa-navicon text-white"></i>
     </a>
     <!-- brand -->
     <a class="navbar-brand white">
-      <img class="cursor logo-for-light" (click)="about()" src="./assets/images/JS7-logo-with-type-light-theme.png"
-           alt="JS7">
-      <img class="cursor logo-for-default" (click)="about()" src="./assets/images/JS7-logo-with-type-default-theme.png"
-           alt="JS7">
-      <img class="cursor logo-for-dark" (click)="about()" src="./assets/images/JS7-log-with-type-dark-theme.png"
-           alt="JS7">
-      <img class="cursor logo-for-grey" (click)="about()" src="./assets/images/JS7-log-with-type-dark-theme.png"
-           alt="JS7">
+      <img (click)="about()" alt="JS7" class="cursor logo-for-light"
+           src="./assets/images/JS7-logo-with-type-light-theme.png">
+      <img (click)="about()" alt="JS7" class="cursor logo-for-default"
+           src="./assets/images/JS7-logo-with-type-default-theme.png">
+      <img (click)="about()" alt="JS7" class="cursor logo-for-dark"
+           src="./assets/images/JS7-log-with-type-dark-theme.png">
+      <img (click)="about()" alt="JS7" class="cursor logo-for-grey"
+           src="./assets/images/JS7-log-with-type-dark-theme.png">
     </a>
     <!-- / brand -->
     <!-- navbar right -->
     <ul class="nav navbar-nav pull-right ">
       <ng-template #problemEventTemp>
         <div class="pos-abt" style="top:16px;right: 16px">
-          <a class="primary-text-hover-color cursor" (click)="clearProblemEvent()" translate>common.button.clear</a>
+          <a (click)="clearProblemEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
         </div>
         <div class="notification">
           <div>
@@ -30,11 +30,11 @@
       </ng-template>
       <ng-template #jocMonitorEvent>
         <div *ngIf="jocMonitor.length > 0" class="pos-abt" style="top:16px;right: 16px">
-          <a class="primary-text-hover-color cursor" (click)="clearJocEvent()" translate>common.button.clear</a>
+          <a (click)="clearJocEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
         </div>
         <div class="notification">
           <div *ngFor="let log of jocMonitor | orderBy: 'timestamp' : true">
-            <span class="cursor primary-text-hover-color" (click)="navToOrderNoti(2, log)">
+            <span (click)="navToOrderNoti(2, log)" class="cursor primary-text-hover-color">
               <span class="inline w-182">{{log.timestamp}}</span>
               <span class="inline w-64">[{{log.level}}]</span>
               {{log.workflowName}} {{log.orderId}} {{log.jobName}} {{log.message}}
@@ -47,11 +47,11 @@
       </ng-template>
       <ng-template #systemMonitorEvent>
         <div *ngIf="systemMonitor.length > 0" class="pos-abt" style="top:16px;right: 16px">
-          <a class="primary-text-hover-color cursor" (click)="clearSystemEvent()" translate>common.button.clear</a>
+          <a (click)="clearSystemEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
         </div>
         <div class="notification">
           <div *ngFor="let log of systemMonitor | orderBy: 'timestamp' : true">
-            <span class="cursor primary-text-hover-color" (click)="navToOrderNoti(3,log)">
+            <span (click)="navToOrderNoti(3,log)" class="cursor primary-text-hover-color">
               <span class="inline w-182">{{log.timestamp}}</span>
               <span class="inline w-64">[{{log.level}}]</span>
               {{log.category}}
@@ -64,28 +64,36 @@
         </div>
       </ng-template>
       <li class="nav-item">
-        <a class="nav-link pointer text-danger" style="top: 3px" *ngIf="problemEvent?.message">
-          <span class="p-l-xs cursor" nz-popover
-                nzPopoverTitle="{{'info.label.notification' | translate}}" nzPopoverTrigger="click" [nzPopoverContent]="problemEventTemp"
-                nzPopoverPlacement="bottomRight">
+        <a *ngIf="problemEvent?.message" class="nav-link pointer text-danger" style="top: 3px">
+          <span [nzPopoverContent]="problemEventTemp" class="p-l-xs cursor"
+                nz-popover nzPopoverPlacement="bottomRight"
+                nzPopoverTitle="{{'info.label.notification' | translate}}"
+                nzPopoverTrigger="click">
             <i class="fa fa-bell bell text-18" style="line-height: 0"></i>
           </span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link pointer" style="top: 3px" [ngClass]="{'text-white': colorOfJOCEvent == 0, 'text-warning': colorOfJOCEvent == 1, 'text-danger': colorOfJOCEvent == 2}">
-          <span (click)="resetJOCEvent()" class="p-l-xs cursor" nz-popover [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'info.tooltip.jocMonitorEvent' | translate" nzTooltipPlacement="bottom"
-                nzPopoverTitle="{{'info.label.jocMonitorEvent' | translate}}" nzPopoverTrigger="click" [nzPopoverContent]="jocMonitorEvent"
-                nzPopoverPlacement="bottomRight">
+        <a [ngClass]="{'text-white': colorOfJOCEvent == 0, 'text-warning': colorOfJOCEvent == 1, 'text-danger': colorOfJOCEvent == 2}" class="nav-link pointer"
+           style="top: 3px">
+          <span (click)="resetJOCEvent()" [nz-tooltip]="'info.tooltip.jocMonitorEvent' | translate" [nzPopoverContent]="jocMonitorEvent" [nzTooltipMouseEnterDelay]="0.5"
+                class="p-l-xs cursor" nz-popover
+                nzPopoverPlacement="bottomRight" nzPopoverTitle="{{'info.label.jocMonitorEvent' | translate}}"
+                nzPopoverTrigger="click"
+                nzTooltipPlacement="bottom">
             <i class="fa fa-flag text-18" style="line-height: 0"></i>
           </span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link pointer" [ngClass]="{'text-white': colorOfSystemEvent == 0, 'text-warning': colorOfSystemEvent == 1, 'text-danger': colorOfSystemEvent == 2}" style="top: 3px" >
-          <span (click)="resetSystemEvent()" class="p-l-xs cursor" nz-popover [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'info.tooltip.systemMonitorEvent' | translate" nzTooltipPlacement="bottom"
-                nzPopoverTitle="{{'info.label.systemMonitorEvent' | translate}}" nzPopoverTrigger="click" [nzPopoverContent]="systemMonitorEvent"
-                nzPopoverPlacement="bottomRight">
+        <a [ngClass]="{'text-white': colorOfSystemEvent == 0, 'text-warning': colorOfSystemEvent == 1, 'text-danger': colorOfSystemEvent == 2}"
+           class="nav-link pointer"
+           style="top: 3px">
+          <span (click)="resetSystemEvent()" [nz-tooltip]="'info.tooltip.systemMonitorEvent' | translate" [nzPopoverContent]="systemMonitorEvent" [nzTooltipMouseEnterDelay]="0.5"
+                class="p-l-xs cursor" nz-popover
+                nzPopoverPlacement="bottomRight" nzPopoverTitle="{{'info.label.systemMonitorEvent' | translate}}"
+                nzPopoverTrigger="click"
+                nzTooltipPlacement="bottom">
             <i class="fa fa-flag text-16 t-1 pos-rel" style="line-height: 0"></i>
             <i class="fa fa-cog text-xs pos-abt" style="top:14px;right: -1px"></i>
           </span>
@@ -94,37 +102,37 @@
       <li class="nav-item dropdown">
         <app-info-menu [isHeader]="true"></app-info-menu>
       </li>
-      <li class="nav-item dropdown"
-            *ngIf="permission.joc && (permission.joc.administration.accounts.view || permission.joc.inventory.view || permission.joc.administration.controllers.view || permission.joc.administration.settings.view)">
+      <li *ngIf="permission.joc && (permission.joc.administration.accounts.view || permission.joc.inventory.view || permission.joc.administration.controllers.view || permission.joc.administration.settings.view)"
+          class="nav-item dropdown">
         <a class="nav-link text-white pointer" style="top: 6px">
-          <span class="p-l-xs cursor" nzTrigger="click" nz-dropdown [nzDropdownMenu]="submenu">
+          <span [nzDropdownMenu]="submenu" class="p-l-xs cursor" nz-dropdown nzTrigger="click">
             <i class="icon3-administration-icon text-20" style="line-height: 0"></i>
           </span>
           <nz-dropdown-menu #submenu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item routerLink="/controllers" [routerLinkActive]="['active']"
-                  *ngIf="permission && permission.joc && permission.joc.administration.controllers.view">
+              <li *ngIf="permission && permission.joc && permission.joc.administration.controllers.view" [routerLinkActive]="['active']" nz-menu-item
+                  routerLink="/controllers">
                 <a>
                   <i class="wd-14 fa fa-id-card-o"></i>
                   {{'header.button.manageControllersAndAgents' | translate}}
                 </a>
               </li>
-              <li nz-menu-item routerLink="/deployment_service" [routerLinkActive]="['active']"
-                  *ngIf="(showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && permission.joc.inventory.view)">
+              <li *ngIf="(showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && permission.joc.inventory.view)" [routerLinkActive]="['active']" nz-menu-item
+                  routerLink="/deployment_service">
                 <a>
                   <i class="wd-14 fa fa-rocket"></i>
                   {{'header.button.manageDeployment' | translate}}
                 </a>
               </li>
-              <li nz-menu-item routerLink="/users/identity_service" [routerLinkActive]="['active']"
-                  *ngIf="permission && permission.joc && permission.joc.administration.accounts.view">
+              <li *ngIf="permission && permission.joc && permission.joc.administration.accounts.view" [routerLinkActive]="['active']" nz-menu-item
+                  routerLink="/users/identity_service">
                 <a>
                   <i class="wd-14 fa fa-users"></i>
                   {{'header.button.manageAccount' | translate}}
                 </a>
               </li>
-              <li nz-menu-item routerLink="/settings" [routerLinkActive]="['active']"
-                  *ngIf="permission && permission.joc && permission.joc.administration.settings.view">
+              <li *ngIf="permission && permission.joc && permission.joc.administration.settings.view" [routerLinkActive]="['active']" nz-menu-item
+                  routerLink="/settings">
                 <a>
                   <i class="wd-14 fa fa-cog font14"></i>
                   {{'header.button.settings' | translate}}
@@ -136,33 +144,34 @@
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link text-white pointer">
-          <span class="cursor avatar" nz-dropdown nzTrigger="click" [nzDropdownMenu]="user" [innerHtml]="username | slice:0:1"></span>
-          <span class="cursor text-left p-l-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="user">
+          <span [innerHtml]="username | slice:0:1" [nzDropdownMenu]="user" class="cursor avatar" nz-dropdown
+                nzTrigger="click"></span>
+          <span [nzDropdownMenu]="user" class="cursor text-left p-l-sm" nz-dropdown nzTrigger="click">
             <span class="_500 text-md">{{username | decodeSpace}}</span>
             <i class="fa fa-caret-down p-l-xs"></i>
           </span>
           <nz-dropdown-menu #user="nzDropdownMenu">
-          <ul nz-menu>
-            <li nz-menu-item routerLink="/user">
-              <a>
-                <i class="wd-14 fa fa-user"></i>
-                {{'header.button.profile' | translate}}
-              </a>
-            </li>
-            <li nz-menu-item  routerLink="/logging">
-              <a>
-                <i class="wd-14 fa fa-file"></i>
-                {{'header.button.logging' | translate}}
-              </a>
-            </li>
-            <li nz-menu-item (click)="logout()">
-              <a>
-                <i class="fa fa-sign-out wd-14"></i>
-                {{'header.button.logOut' | translate}}
-              </a>
-            </li>
-          </ul>
-        </nz-dropdown-menu>
+            <ul nz-menu>
+              <li nz-menu-item routerLink="/user">
+                <a>
+                  <i class="wd-14 fa fa-user"></i>
+                  {{'header.button.profile' | translate}}
+                </a>
+              </li>
+              <li nz-menu-item routerLink="/logging">
+                <a>
+                  <i class="wd-14 fa fa-file"></i>
+                  {{'header.button.logging' | translate}}
+                </a>
+              </li>
+              <li (click)="logout()" nz-menu-item>
+                <a>
+                  <i class="fa fa-sign-out wd-14"></i>
+                  {{'header.button.logOut' | translate}}
+                </a>
+              </li>
+            </ul>
+          </nz-dropdown-menu>
         </a>
       </li>
     </ul>
@@ -170,82 +179,82 @@
     <div class="navbar-toggleable-custom collapse" id="navbarId">
       <!-- link -->
       <ul class="nav navbar-nav navbar-nav-inline text-center pull-left nav-active-border b-orange">
-        <li class="nav-item" *ngIf="(showViews && showViews.dashboard != undefined) ? showViews.dashboard : true">
-          <a class="nav-link" routerLink="/dashboard" [routerLinkActive]="['active']">
+        <li *ngIf="(showViews && showViews.dashboard != undefined) ? showViews.dashboard : true" class="nav-item">
+          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/dashboard">
             <span class="nav-text">
               <i class="icon2-dashboard text-white"></i>
               <span class="ico text-white _600" translate>header.label.dashboard</span>
             </span>
           </a>
         </li>
-        <li class="nav-item" *ngIf="(showViews && showViews.monitor != undefined) ? showViews.monitor : (permission.currentController && (permission.currentController.view ||
-        permission.currentController.agents.view || permission.currentController.orders.view))">
-          <a class="nav-link" routerLink="/monitor" [routerLinkActive]="['active']">
+        <li *ngIf="(showViews && showViews.monitor != undefined) ? showViews.monitor : (permission.currentController && (permission.currentController.view ||
+        permission.currentController.agents.view || permission.currentController.orders.view))" class="nav-item">
+          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/monitor">
             <span class="nav-text">
               <i class="icon-dashboard-icon text-white"></i>
               <span class="ico text-white _600" translate>header.label.monitor</span>
             </span>
           </a>
         </li>
-        <li class="nav-item"
-            *ngIf="((showViews && showViews.dailyPlan != undefined) ? showViews.dailyPlan : (permission.joc && permission.joc.dailyPlan.view && permission.currentController.orders.view))">
-          <a class="nav-link" routerLink="/daily_plan" [routerLinkActive]="['active']">
+        <li *ngIf="((showViews && showViews.dailyPlan != undefined) ? showViews.dailyPlan : (permission.joc && permission.joc.dailyPlan.view && permission.currentController.orders.view))"
+            class="nav-item">
+          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/daily_plan">
             <span class="nav-text">
               <i class="icon-daily-plan-icon text-white"></i>
               <span class="ico text-white _600" translate>header.label.dailyPlan</span>
             </span>
           </a>
         </li>
-        <li class="nav-item"
-            *ngIf="((showViews && showViews.workflows != undefined) ? showViews.workflows : (permission.currentController && permission.currentController.workflows.view))">
-          <a class="nav-link" routerLink="/workflows" [routerLinkActive]="['active']">
+        <li *ngIf="((showViews && showViews.workflows != undefined) ? showViews.workflows : (permission.currentController && permission.currentController.workflows.view))"
+            class="nav-item">
+          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/workflows">
             <span class="nav-text">
               <i class="icon-workflows-icon text-white"></i>
               <span class="ico text-white _600" translate>header.label.workflows</span>
             </span>
           </a>
         </li>
-        <li class="nav-item"
-            *ngIf="((showViews && showViews.fileTransfers != undefined) ? showViews.fileTransfers : (permission.joc && permission.joc.fileTransfer.view))">
-          <a class="nav-link" routerLink="/file_transfer" [routerLinkActive]="['active']">
+        <li *ngIf="((showViews && showViews.fileTransfers != undefined) ? showViews.fileTransfers : (permission.joc && permission.joc.fileTransfer.view))"
+            class="nav-item">
+          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/file_transfer">
             <span class="nav-text">
               <i class="icon-file-transfers-icon text-white"></i>
               <span class="ico text-white _600" translate>header.label.fileTransfers</span>
             </span>
           </a>
         </li>
-        <li class="nav-item" *ngIf="((showViews && showViews.resources != undefined) ? showViews.resources :
+        <li *ngIf="((showViews && showViews.resources != undefined) ? showViews.resources :
         (permission.currentController && (permission.currentController.agents.view || permission.currentController.locks.view || permission.currentController.noticeBoards.view ||
-                    permission.joc.documentations.view  || permission.joc.calendars.view)))">
-          <a class="nav-link" routerLink="/resources" [routerLinkActive]="['active']" (click)="navigateToResource()">
+                    permission.joc.documentations.view  || permission.joc.calendars.view)))" class="nav-item">
+          <a (click)="navigateToResource()" [routerLinkActive]="['active']" class="nav-link" routerLink="/resources">
             <span class="nav-text">
               <i class="icon-resources-icon text-white"></i>
               <span class="ico text-white _600" translate>header.label.resources</span>
             </span>
           </a>
         </li>
-        <li class="nav-item"
-            *ngIf="((showViews && showViews.history != undefined) ? showViews.history : (permission.currentController && (permission.currentController.orders.view || permission.joc.fileTransfer.view || permission.currentController.deployments.view || permission.joc.dailyPlan.view)))">
-          <a class="nav-link" routerLink="/history" [routerLinkActive]="['active']">
+        <li *ngIf="((showViews && showViews.history != undefined) ? showViews.history : (permission.currentController && (permission.currentController.orders.view || permission.joc.fileTransfer.view || permission.currentController.deployments.view || permission.joc.dailyPlan.view)))"
+            class="nav-item">
+          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/history">
             <span class="nav-text">
               <i class="icon-alarm-icon text-white"></i>
               <span class="ico text-white _600" translate>header.label.history</span>
             </span>
           </a>
         </li>
-        <li class="nav-item"
-            *ngIf="((showViews && showViews.auditLog != undefined) ? showViews.auditLog : (permission.joc && permission.joc.auditLog.view))">
-          <a class="nav-link" routerLink="/audit_log" [routerLinkActive]="['active']">
+        <li *ngIf="((showViews && showViews.auditLog != undefined) ? showViews.auditLog : (permission.joc && permission.joc.auditLog.view))"
+            class="nav-item">
+          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/audit_log">
             <span class="nav-text">
               <i class="icon-audit-log-icon text-white"></i>
               <span class="ico text-white _600" translate>header.label.auditLog</span>
             </span>
           </a>
         </li>
-        <li class="nav-item"
-            *ngIf="((showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && (permission.joc.inventory.view || permission.joc.fileTransfer.view || permission.joc.notification.view || permission.joc.others.view)))">
-          <a class="nav-link" routerLink="/configuration" [routerLinkActive]="['active']"
-             (click)="navigateToConfiguration()">
+        <li *ngIf="((showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && (permission.joc.inventory.view || permission.joc.fileTransfer.view || permission.joc.notification.view || permission.joc.others.view)))"
+            class="nav-item">
+          <a (click)="navigateToConfiguration()" [routerLinkActive]="['active']" class="nav-link"
+             routerLink="/configuration">
             <span class="nav-text">
               <i class="icon-configuration-icon text-white"></i>
               <span class="ico text-white _600" translate>header.label.configuration</span>

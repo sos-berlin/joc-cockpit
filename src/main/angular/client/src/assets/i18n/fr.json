@@ -1867,10 +1867,10 @@
         "workflowName": "Il faut ajouter une référence à un ou plusieurs workflows pour lesquels des ordres sont crées.",
         "planOrderAutomatically": "Les ordres sont planifiées automatiquement, c'est-à-dire qu'en fonction des paramètres du service du plan quotidien, les ordres sont créées pour les prochains jours à l'avance.",
         "submitOrderToControllerWhenPlanned": "Les ordres sont automatiquement soumis à un contrôleur au moment prévu. Sur la base des paramètres des ordres du Daily Plan Service sont soumis un certain nombre de jours à l'avance.",
-        "orderName": "Order Name",
-        "startNode": "Start Position before Instruction",
-        "endNode": "End Positions before Instructions",
-        "ignoreAdmissionTimes": "Ignore Job Admission Times"
+        "orderName": "Le nom de l'ordre est un élément non qualifiant de l'identifiant de la ID ordre. Les utilisateurs peuvent indiquer librement le nom de l'ordre lors de la création des planifiations et de l'ajout des ordres ad hoc.",
+        "startNode": "La position de départ d'une tâche peut être antérieure à l'instruction indiquée dans le Workflow. L'ordre commence à partir de la position indiquée.",
+        "endNode": "La position finale d'un ordre peut être antérieure à l'instruction indiquée dans le Workflow. L'ordre va se terminer avant la position indiquée.",
+        "ignoreAdmissionTimes": "L'exécution des tâches en cours peut être limitée par les heures d'admission des tâches. Cette option ignore les heures d'admission et force le lancement des tâches."
       },
       "script": {
         "name": "Un Script Élément est utilisé pour inclure des extraits de code récurrents dans un script job. Le nom d'un Script Élément est unique dans l'inventaire. Pour le nom du Script Élément, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
@@ -1993,7 +1993,7 @@
           "remainWhenTerminated": "Après la fin des exécutions des tâches, l'ordre reste dans le workflow. Pour cela, il faut effectuer manuellement l'opération 'Quitter le Workflow 'qui est disponible dans la vue WORKFLOW",
           "startPosition": "Permet de sélectionner la position de départ de l'Ordere le Workflow. Sans position de départ, l'ordre va démarrer dès le début du Workflow.",
           "endPositions": "Permet de sélectionner une ou plusieurs positions de fin de l'Ordre dans le Workflow. Sans position de fin, l'Ordre va se terminer à la fin du Workflow.",
-          "ignoreAdmissionTimes": "Ignore Job Admission Times"
+          "ignoreAdmissionTimes": "L'exécution des tâches en cours peut être limitée par les heures d'admission des tâches. Cette option ignore les heures d'admission et force le lancement des tâches."
         },
         "lock": {
           "name": "Les noms des Verrous de Ressources sont uniques dans l'inventaire. Les sections des workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressources.",
@@ -2881,7 +2881,7 @@
     "label.iamOidcImage": "OIDC Image",
     "label.iamOidcUserAttribute": "OIDC User Name Attribute",
     "label.iamOidcGroupClaims": "OIDC Group Claims",
-    "label.iamOidcGroupRolesMap": "OIDC Group Roles Map",
+    "label.iamOidcGroupRolesMap": "OIDC Group Roles Mapping",
     "label.iamOidcAuthenticationCodeFlow" : "Authentication Code Flow",
     "label.iamOidcImplicitFlow" : "Implicit Flow",
     "label.iamOidcFlowType" : "Flow Type",
@@ -3127,8 +3127,8 @@
         "iamOidcTruststorePassword": "Si le OIDC Truststore est protégé par un mot de passe, alors le mot de passe doit être spécifié.",
         "iamOidcUserAttribute": "Le OIDC User Attribute est spécifique à un Identity Provider et indique le nom de l'attribut qui contient l'identifiant unique d'un utilisateur utilisé pour la connexion, par exemple l'attribut 'email' spécifie l'adresse e-mail de l'utilisateur pour se connecter.",
         "iamOidcImage": "Si une Image OIDC est spécifiée, elle s'affiche sur l'écran de connexion. Les fichiers image de type .png sont autorisés avec une taille maximale de 1 Mo. Les images sont affichées de manière optimale avec une largeur et une hauteur de 96 pixels.",
-        "iamOidcGroupClaims": "OIDC Group Claims",
-        "iamOidcGroupRolesMap": "OIDC Group Roles Map"
+        "iamOidcGroupClaims": "Les OIDC Group Claims spécifient les groupes auxquels le compte d'utilisateur en question appartient. Chaque groupe peut être associé à un ou plusieurs rôles dans le JS7.",
+        "iamOidcGroupRolesMap": "Les appartenances à des groupes OIDC sont respectivement mappées sur un ou plusieurs rôles JS7."
       },
       "webauthn" : {
         "iamTimeout" : "Le Timeout appliqué à la vérification de l'utilisateur. Si le délai est dépassé, le flux d'enregistrement/authentification est annulé.",

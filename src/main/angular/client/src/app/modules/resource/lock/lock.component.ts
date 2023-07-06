@@ -14,7 +14,7 @@ declare const $: any;
   selector: 'app-single-lock',
   templateUrl: './single-lock.component.html'
 })
-export class SingleLockComponent implements OnInit, OnDestroy {
+export class SingleLockComponent {
   loading = false;
   controllerId: any = {};
   preferences: any = {};
@@ -95,7 +95,7 @@ export class SingleLockComponent implements OnInit, OnDestroy {
   selector: 'app-lock',
   templateUrl: 'lock.component.html'
 })
-export class LockComponent implements OnInit, OnDestroy {
+export class LockComponent {
   isLoading = false;
   loading: boolean;
   schedulerIds: any = {};
@@ -223,6 +223,7 @@ export class LockComponent implements OnInit, OnDestroy {
     this.locksFilters.expandedObjects = [item.path];
     this.loadLocks(true);
   }
+
   pageIndexChange($event: number): void {
     this.locksFilters.currentPage = $event;
   }

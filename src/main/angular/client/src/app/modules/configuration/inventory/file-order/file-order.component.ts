@@ -269,7 +269,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
             nzTitle: undefined,
             nzContent: CommentModalComponent,
             nzClassName: 'lg',
-            nzComponentParams: {
+            nzData: {
               comments
             },
             nzFooter: null,

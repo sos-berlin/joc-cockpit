@@ -4,17 +4,17 @@
 
     <span *ngIf="controllerID">: {{controllerID}}</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(comments,obj)">
   <div class="modal-body container">
-    <div class="form-group row" *ngIf="comments.name">
+    <div *ngIf="comments.name" class="form-group row">
       <label class="col-sm-4" translate>common.label.controllerId</label>
       <label class="col-sm-8">{{comments.name}}</label>
     </div>
-    <div class="form-group row" *ngIf="comments.operation">
+    <div *ngIf="comments.operation" class="form-group row">
       <label class="col-sm-4" translate>common.label.operation</label>
       <label class="col-sm-8">{{comments.operation}}</label>
     </div>
@@ -23,11 +23,12 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm">
+    <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+            type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.destroy()" translate>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

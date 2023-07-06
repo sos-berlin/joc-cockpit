@@ -20,7 +20,7 @@ declare const $;
     '</div>',
   styles: ['::ng-deep body { overflow: auto !important;}.log-state {font-family:\'Courier New\';color: #009933;white-space:nowrap;} .log-msg {display:inline;background: transparent;font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;} .log-level {width: 47px;display: inline-block}']
 })
-export class Logging2Component implements OnInit, OnDestroy {
+export class Logging2Component {
   clientLogs = [];
   subscription: Subscription;
   clientLogFilter: any = {};
@@ -29,11 +29,11 @@ export class Logging2Component implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.clientLogFilter = JSON.parse(sessionStorage.clientLogFilter);
-    this.clientLogs = JSON.parse(localStorage.logging);
+    this.clientLogFilter = JSON.parse(sessionStorage['clientLogFilter']);
+    this.clientLogs = JSON.parse(localStorage['logging']);
     // Create an Observable that will publish a value on an interval
-    this.subscription = interval(3000).subscribe(x => {
-      this.clientLogs = JSON.parse(localStorage.logging);
+    this.subscription = interval(3000).subscribe(() => {
+      this.clientLogs = JSON.parse(localStorage['logging']);
     });
   }
 
@@ -51,23 +51,23 @@ export class Logging2Component implements OnInit, OnDestroy {
   selector: 'app-logging',
   templateUrl: './logging.component.html'
 })
-export class LoggingComponent implements OnInit, OnDestroy {
+export class LoggingComponent {
   clientLogs = [];
   clientLogFilter: any = {};
   schedulerIds: any = {};
   permission: any = {};
   subscription: Subscription;
   checkOptions = [
-    { label: 'info', value: 'info', checked: false },
-    { label: 'error', value: 'error', checked: false },
-    { label: 'warn', value: 'warn', checked: false },
-    { label: 'debug', value: 'debug', checked: false }
+    {label: 'info', value: 'info', checked: false},
+    {label: 'error', value: 'error', checked: false},
+    {label: 'warn', value: 'warn', checked: false},
+    {label: 'debug', value: 'debug', checked: false}
   ];
 
   constructor(private coreService: CoreService, private authService: AuthService,
               private clipboardService: ClipboardService, private message: NzMessageService) {
-    if (sessionStorage.clientLogFilter) {
-      this.clientLogFilter = JSON.parse(sessionStorage.clientLogFilter);
+    if (sessionStorage['clientLogFilter']) {
+      this.clientLogFilter = JSON.parse(sessionStorage['clientLogFilter']);
     } else {
       this.clientLogFilter = {status: ['info', 'debug', 'error', 'warn'], isEnable: true};
     }
@@ -82,15 +82,17 @@ export class LoggingComponent implements OnInit, OnDestroy {
     }
     if (this.clientLogFilter.isEnable) {
       try {
-        this.clientLogs = localStorage.logging ? JSON.parse(localStorage.logging) : [];
-      } catch (e) {}
+        this.clientLogs = localStorage['logging'] ? JSON.parse(localStorage['logging']) : [];
+      } catch (e) {
+      }
     }
     // Create an Observable that will publish a value on an interval
     this.subscription = interval(2500).subscribe(() => {
       if (this.clientLogFilter.isEnable) {
         try {
-          this.clientLogs = localStorage.logging ? JSON.parse(localStorage.logging) : [];
-        } catch (e) {}
+          this.clientLogs = localStorage['logging'] ? JSON.parse(localStorage['logging']) : [];
+        } catch (e) {
+        }
       }
     });
     if (this.clientLogFilter.status && this.clientLogFilter.status.length > 0) {
@@ -122,11 +124,11 @@ export class LoggingComponent implements OnInit, OnDestroy {
         controllerId: this.schedulerIds.selected,
         account: this.permission.user,
         configurationType: 'SETTING',
-        id: parseInt(sessionStorage.settingId, 10),
+        id: parseInt(sessionStorage['settingId'], 10),
         configurationItem: JSON.stringify(this.clientLogFilter)
       };
-      this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-        sessionStorage.clientLogFilter = JSON.stringify(this.clientLogFilter);
+      this.coreService.post('configuration/save', configObj).subscribe(() => {
+        sessionStorage['clientLogFilter'] = JSON.stringify(this.clientLogFilter);
       });
     }
   }

@@ -1,4 +1,4 @@
-<div class="operation-status-info" *ngIf="isProcessing">
+<div *ngIf="isProcessing" class="operation-status-info">
   <div id='prog-bar-cont'>
     <div id="prog-bar">
       <div id="background"></div>
@@ -14,31 +14,42 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <button *ngIf="object.mapOfCheckedId.size>0 && permission.joc && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="exportDocument(null)"><i class="fa fa-download"></i>&nbsp; {{'resource.documentation.button.exportDocument' | translate}}</button>
-            <button *ngIf="object.mapOfCheckedId.size>0 && permission.joc && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="deleteDocumentations(null)"><i class="fa fa-trash"></i>&nbsp; {{'resource.documentation.button.deleteDocument' | translate}}</button>
-            <div class="inline" [ngClass]="{'hide':object.mapOfCheckedId.size>0}">
+            <button (click)="exportDocument(null)"
+                    *ngIf="object.mapOfCheckedId.size>0 && permission.joc && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-download"></i>&nbsp; {{'resource.documentation.button.exportDocument' | translate}}
+            </button>
+            <button (click)="deleteDocumentations(null)"
+                    *ngIf="object.mapOfCheckedId.size>0 && permission.joc && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash"></i>&nbsp; {{'resource.documentation.button.deleteDocument' | translate}}
+            </button>
+            <div [ngClass]="{'hide':object.mapOfCheckedId.size>0}" class="inline">
               <div class="btn-group dropdown m-l-12">
-                <button class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="type" [nzPlacement]="'bottomRight'" >
+                <button [nzDropdownMenu]="type" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm" nz-dropdown
+                        nzTrigger="click">
                   <span translate>common.label.type</span>&nbsp;
-                  <span class="text-primary" *ngIf="documentFilters.filter.type === 'ALL'" translate>common.label.all</span>
-                  <span class="text-primary" *ngIf="documentFilters.filter.type !== 'ALL'" [innerHTML]="documentFilters.filter.type"></span>&nbsp;
+                  <span *ngIf="documentFilters.filter.type === 'ALL'" class="text-primary"
+                        translate>common.label.all</span>
+                  <span *ngIf="documentFilters.filter.type !== 'ALL'" [innerHTML]="documentFilters.filter.type"
+                        class="text-primary"></span>&nbsp;
                   <span>
-                    <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                    <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                   </span>
                 </button>
-                <nz-dropdown-menu #type="nzDropdownMenu" >
+                <nz-dropdown-menu #type="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item (click)="documentFilters.filter.type = 'ALL';loadDocument();" [ngClass]="{'ant-select-dropdown-menu-item-active': documentFilters.filter.type == 'ALL'}">
+                    <li (click)="documentFilters.filter.type = 'ALL';loadDocument();" [ngClass]="{'ant-select-dropdown-menu-item-active': documentFilters.filter.type == 'ALL'}"
+                        nz-menu-item>
                       <a translate>common.label.all</a>
                     </li>
-                    <li nz-menu-item (click)="documentFilters.filter.type = type;loadDocument();" *ngFor="let type of documentTypes" [ngClass]="{'ant-select-dropdown-menu-item-active': documentFilters.filter.type == type}">
+                    <li (click)="documentFilters.filter.type = type;loadDocument();" *ngFor="let type of documentTypes"
+                        [ngClass]="{'ant-select-dropdown-menu-item-active': documentFilters.filter.type == type}"
+                        nz-menu-item>
                       <a>{{type}}</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
               <div class="btn-group dropdown">
-                <a class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
+                <a [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
+                   nzTrigger="click">
                   <span translate>common.label.sortBy</span>
                   <span class="text-primary">
                       <span *ngIf="documentFilters.filter.sortBy =='name'">
@@ -58,21 +69,23 @@
                     </span>
                   </span>
                 </a>
-                <nz-dropdown-menu #sortBy="nzDropdownMenu" >
+                <nz-dropdown-menu #sortBy="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item (click)="sort('name')">
+                    <li (click)="sort('name')" nz-menu-item>
                       <a translate>common.label.name</a>
                     </li>
-                    <li nz-menu-item (click)="sort('path1')">
+                    <li (click)="sort('path1')" nz-menu-item>
                       <a translate>common.label.path</a>
                     </li>
-                    <li nz-menu-item (click)="sort('type')">
+                    <li (click)="sort('type')" nz-menu-item>
                       <a translate>common.label.type</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
-              <button *ngIf="permission.joc && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="importDocument()"><i class="fa fa-upload"></i>&nbsp; {{'resource.documentation.button.importDocument' | translate}}</button>
+              <button (click)="importDocument()" *ngIf="permission.joc && permission.joc.documentations.manage"
+                      class="btn btn-grey btn-sm m-l-12"><i
+                class="fa fa-upload"></i>&nbsp; {{'resource.documentation.button.importDocument' | translate}}</button>
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
             </div>
           </div>
@@ -82,46 +95,50 @@
   </div>
 </div>
 <div class="sub-link">
-    <div class="row">
-      <div class="col-md-8">
-        <app-links></app-links>
-      </div>
-      <div class="col-md-4 text-right">
-        <div class="search-box-field pull-right">
-          <label>
-            <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
-                   [(ngModel)]="documentFilters.searchText">
-          </label>
-          <i [hidden]="!documentFilters.searchText" class="fa fa-times search-close"
-             (click)="documentFilters.searchText = '';searchInResult()"></i>
-        </div>
+  <div class="row">
+    <div class="col-md-8">
+      <app-links></app-links>
+    </div>
+    <div class="col-md-4 text-right">
+      <div class="search-box-field pull-right">
+        <label>
+          <input (keyup)="searchInResult()" [(ngModel)]="documentFilters.searchText" placeholder="{{'common.placeholder.search' | translate}}"
+                 type="search">
+        </label>
+        <i (click)="documentFilters.searchText = '';searchInResult()" [hidden]="!documentFilters.searchText"
+           class="fa fa-times search-close"></i>
       </div>
     </div>
+  </div>
 </div>
 <div class="scroll-y max-ht2">
   <div class="padding p-b-0">
     <div class="row">
       <div class="col-sm-12">
-        <div appResizable [sideView]="sideView.documentation" id="leftPanel" class="sticky leftPanel resource">
+        <div [sideView]="sideView.documentation" appResizable class="sticky leftPanel resource" id="leftPanel">
           <div *ngIf="tree.length>0">
-            <app-tree-navigation [isAction]="!!(permission.joc && permission.joc.documentations.manage)" [type]="'DOCUMENTATION'" [tree]="tree" [sideView]="sideView.documentation" [defaultSelectedKeys]="documentFilters.selectedkeys" [defaultExpandedKeys]="documentFilters.expandedKeys"
-                                 (messageEvent)="receiveAction($event)" (actionEvent)="deleteFolder($event)" (selectObjectEvent)="selectObject($event)"></app-tree-navigation>
-           </div>
+            <app-tree-navigation (actionEvent)="deleteFolder($event)"
+                                 (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)" [defaultExpandedKeys]="documentFilters.expandedKeys"
+                                 [defaultSelectedKeys]="documentFilters.selectedkeys"
+                                 [isAction]="!!(permission.joc && permission.joc.documentations.manage)"
+                                 [sideView]="sideView.documentation" [tree]="tree"
+                                 [type]="'DOCUMENTATION'"></app-tree-navigation>
+          </div>
         </div>
         <div id="rightPanel">
-          <div class="hide" [ngClass]="{'show': isLoading}">
-            <div class="row" *ngIf="pageView=='grid' && data.length>0" [hidden]="loading">
-              <div class="w-full" *ngFor="let item of data  | groupBy: 'path1'">
+          <div [ngClass]="{'show': isLoading}" class="hide">
+            <div *ngIf="pageView=='grid' && data.length>0" [hidden]="loading" class="row">
+              <div *ngFor="let item of data  | groupBy: 'path1'" class="w-full">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                   <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
                 </div>
-                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
-                     *ngFor="let document of item.value">
+                <div *ngFor="let document of item.value"
+                     class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
                   <div class="box card">
                     <div class="box-body">
                       <label class="pos-abt" style="margin-top: -2px">
-                        <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(document.path)"
-                               (nzCheckedChange)="onItemChecked(document, $event)"></label>
+                        <label (nzCheckedChange)="onItemChecked(document, $event)" [nzChecked]="object.mapOfCheckedId.has(document.path)"
+                               nz-checkbox></label>
                       </label>
                       <div class="text-left block-ellipsis m-l-md">
                         <span class="text-left">
@@ -130,28 +147,31 @@
                         </span>
                       </div>
                       <div class="btn-group dropdown pull-right abt-dropdown">
-                        <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
+                        <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
                                 type="button">
                           <i class="fa fa-ellipsis-h"></i>
                         </button>
                         <nz-dropdown-menu #option="nzDropdownMenu">
                           <ul nz-menu>
-                            <li nz-menu-item (click)="editDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage">
+                            <li (click)="editDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage"
+                                nz-menu-item>
                               <a translate>resource.documentation.button.editDocument</a>
                             </li>
-                            <li nz-menu-item (click)="previewDocument(document)">
+                            <li (click)="previewDocument(document)" nz-menu-item>
                               <a translate>resource.documentation.button.previewDocument</a>
                             </li>
-                            <li nz-menu-item (click)="exportDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage">
+                            <li (click)="exportDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage"
+                                nz-menu-item>
                               <a translate>common.button.export</a>
                             </li>
-                            <li nz-menu-item (click)="deleteDocumentations(document)" class="bg-hover-color" *ngIf="permission.joc && permission.joc.documentations.manage">
+                            <li (click)="deleteDocumentations(document)" *ngIf="permission.joc && permission.joc.documentations.manage" class="bg-hover-color"
+                                nz-menu-item>
                               <a translate>common.button.delete</a>
                             </li>
-                            <li nz-menu-item (click)="showDocumentUsage(document)">
+                            <li (click)="showDocumentUsage(document)" nz-menu-item>
                               <a translate>resource.button.showUsage</a>
                             </li>
-                            <li nz-menu-item (click)="coreService.copyLink('document',document.name)">
+                            <li (click)="coreService.copyLink('document',document.name)" nz-menu-item>
                               <a translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>
@@ -170,12 +190,16 @@
                         <span [innerHtml]="document.modified | stringToDate"></span>
                       </div>
                     </div>
-                    <div class="box-footer b-t" >
-                      <a class="text-left primary-text-hover-color " *ngIf="permission.joc && permission.joc.documentations.manage" (click)="exportDocument(document)">
+                    <div class="box-footer b-t">
+                      <a (click)="exportDocument(document)"
+                         *ngIf="permission.joc && permission.joc.documentations.manage"
+                         class="text-left primary-text-hover-color ">
                         <i class="fa fa-download text-black-lt p-r-xs"></i>
                         <span class="text-black-lt" translate>common.button.export</span>
                       </a>
-                      <a class="pull-right text-hover-color " *ngIf="permission.joc && permission.joc.documentations.manage" (click)="deleteDocumentations(document)">
+                      <a (click)="deleteDocumentations(document)"
+                         *ngIf="permission.joc && permission.joc.documentations.manage"
+                         class="pull-right text-hover-color ">
                         <i class="fa fa-trash text-black-lt p-r-xs"></i>
                         <span class="text-black-lt" translate>common.button.delete</span>
                       </a>
@@ -184,35 +208,40 @@
                 </div>
               </div>
             </div>
-            <div class="text-center font14 box p-a-10 m-b-12" *ngIf="object.checked && object.mapOfCheckedId.size > 0 && data.length > (documentFilters.entryPerPage || preferences.entryPerPage)">
-              <span translate *ngIf="object.mapOfCheckedId.size !== data.length" [translateParams]="{count: object.mapOfCheckedId.size}">common.label.selectAllEntriesOfCurrentPage</span>
-              <span translate *ngIf="object.mapOfCheckedId.size === data.length" [translateParams]="{count: data.length}">common.label.allEntriesSelected</span>
-              <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size !== data.length" (click)="selectAll()" translate [translateParams]="{count: data.length}">common.label.selectAllEntries</a>
-              <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size === data.length" (click)="reset()" translate>common.label.clearSelection</a>
+            <div *ngIf="object.checked && object.mapOfCheckedId.size > 0 && data.length > (documentFilters.entryPerPage || preferences.entryPerPage)"
+                 class="text-center font14 box p-a-10 m-b-12">
+              <span *ngIf="object.mapOfCheckedId.size !== data.length" [translateParams]="{count: object.mapOfCheckedId.size}"
+                    translate>common.label.selectAllEntriesOfCurrentPage</span>
+              <span *ngIf="object.mapOfCheckedId.size === data.length" [translateParams]="{count: data.length}"
+                    translate>common.label.allEntriesSelected</span>
+              <a (click)="selectAll()" *ngIf="object.mapOfCheckedId.size !== data.length" [translateParams]="{count: data.length}"
+                 class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
+              <a (click)="reset()" *ngIf="object.mapOfCheckedId.size === data.length" class="text-primary p-l-xs"
+                 translate>common.label.clearSelection</a>
             </div>
-            <div class="box p-a" *ngIf="pageView=='list' && tree.length > 0">
+            <div *ngIf="pageView=='list' && tree.length > 0" class="box p-a">
               <div class="table-responsive" id="documentDivId">
                 <nz-table
                   #ajaxTable
-                  [nzSize]="'small'"
-                  [nzPageSize]="documentFilters.entryPerPage || preferences.entryPerPage"
-                  [nzPageIndex]="documentFilters.currentPage"
-                  [nzBordered]="true"
-                  [nzShowPagination]="data.length > 0"
-                  [nzData]="data"
-                  [nzLoading]="loading"
-                  [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
                   (nzPageSizeChange)="pageSizeChange($event)"
+                  [nzBordered]="true"
+                  [nzData]="data"
+                  [nzLoading]="loading"
+                  [nzPageIndex]="documentFilters.currentPage"
                   [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+                  [nzPageSize]="documentFilters.entryPerPage || preferences.entryPerPage"
+                  [nzShowPagination]="data.length > 0"
+                  [nzShowSizeChanger]="true"
+                  [nzSize]="'small'"
                 >
-                <thead>
+                  <thead>
                   <tr>
-                    <th class="chk"
-                        [nzShowCheckbox]="true"
+                    <th (nzCheckedChange)="checkAll($event)"
                         [(nzChecked)]="object.checked"
                         [nzIndeterminate]="object.indeterminate"
-                        (nzCheckedChange)="checkAll($event)"
+                        [nzShowCheckbox]="true"
+                        class="chk"
                     ></th>
                     <th class="menu"><span translate>common.label.action</span></th>
                     <th (click)="sort('name')"><a><span class="p-r-xs" translate>resource.documentation.label.documentName</span>
@@ -249,29 +278,35 @@
                   </thead>
                   <tbody>
                   <tr *ngFor="let document of ajaxTable.data">
-                    <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(document.path)" (nzCheckedChange)="onItemChecked(document, $event)"></td>
+                    <td (nzCheckedChange)="onItemChecked(document, $event)" [nzChecked]="object.mapOfCheckedId.has(document.path)"
+                        [nzShowCheckbox]="true"></td>
                     <td>
                       <div class="btn-group dropdown">
-                        <button type="button" class="btn-drop more-option-h" [nzDisabled]="object.checked || object.indeterminate" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2">
+                        <button [nzDisabled]="object.checked || object.indeterminate" [nzDropdownMenu]="option2"
+                                class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                                type="button">
                           <i class="fa fa-ellipsis-h"></i></button>
-                        <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
+                        <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
                           <ul nz-menu>
-                            <li nz-menu-item (click)="editDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage">
+                            <li (click)="editDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage"
+                                nz-menu-item>
                               <a translate>resource.documentation.button.editDocument</a>
                             </li>
-                            <li nz-menu-item (click)="previewDocument(document)">
+                            <li (click)="previewDocument(document)" nz-menu-item>
                               <a translate>resource.documentation.button.previewDocument</a>
                             </li>
-                            <li nz-menu-item (click)="exportDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage">
+                            <li (click)="exportDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage"
+                                nz-menu-item>
                               <a translate>common.button.export</a>
                             </li>
-                            <li nz-menu-item (click)="deleteDocumentations(document)" class="bg-hover-color" *ngIf="permission.joc && permission.joc.documentations.manage">
+                            <li (click)="deleteDocumentations(document)" *ngIf="permission.joc && permission.joc.documentations.manage" class="bg-hover-color"
+                                nz-menu-item>
                               <a translate>common.button.delete</a>
                             </li>
-                            <li nz-menu-item (click)="showDocumentUsage(document)">
+                            <li (click)="showDocumentUsage(document)" nz-menu-item>
                               <a translate>resource.button.showUsage</a>
                             </li>
-                            <li nz-menu-item (click)="coreService.copyLink('document',document.name)">
+                            <li (click)="coreService.copyLink('document',document.name)" nz-menu-item>
                               <a translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>
@@ -286,10 +321,12 @@
                   </tr>
                   </tbody>
                 </nz-table>
-                <div class="w-half label-top"
-                     *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{data.length}}
-                  <span translate *ngIf="ajaxTable.data.length >1">resource.documentation.label.documentationsFound</span>
-                  <span translate *ngIf="ajaxTable.data.length ==1">resource.documentation.label.documentationFound</span>
+                <div *ngIf="ajaxTable.data.length >0"
+                     class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+                  <span *ngIf="ajaxTable.data.length >1"
+                        translate>resource.documentation.label.documentationsFound</span>
+                  <span *ngIf="ajaxTable.data.length ==1"
+                        translate>resource.documentation.label.documentationFound</span>
                 </div>
               </div>
             </div>
@@ -306,13 +343,13 @@
     </div>
   </div>
 </div>
-<div class="spinner" *ngIf="(loading && pageView === 'grid') || !isLoading">
+<div *ngIf="(loading && pageView === 'grid') || !isLoading" class="spinner">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
 </div>
 <div *ngIf="loading || reloadState == 'yes'">
-  <div class="bottom-btn" (click)="reload()">
+  <div (click)="reload()" class="bottom-btn">
     <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
     <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
   </div>

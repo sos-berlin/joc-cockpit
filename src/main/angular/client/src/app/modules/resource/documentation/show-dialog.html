@@ -4,7 +4,7 @@
     : &nbsp;
     {{document.path}}
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -12,13 +12,13 @@
 <div class="modal-body p-a">
   <div class="row">
     <div class="col-sm-12">
-      <div class="p-l-sm" *ngIf="document.usedIn.length>0">
+      <div *ngIf="document.usedIn.length>0" class="p-l-sm">
         <div class="row m-b">
           <div class="col-md-12">
             <span class="text _600" translate>resource.documentation.label.documentationUsedIn</span> : -
           </div>
         </div>
-        <div class="row" *ngFor="let doc of document.usedIn">
+        <div *ngFor="let doc of document.usedIn" class="row">
           <label class="col-md-3 _600">
             {{doc.type | translate}} :
           </label>
@@ -27,14 +27,14 @@
           </div>
         </div>
       </div>
-      <div class="text-center text" *ngIf="!document.usedIn || document.usedIn.length ==0" translate>
+      <div *ngIf="!document.usedIn || document.usedIn.length ==0" class="text-center text" translate>
         resource.documentation.message.documentNotUsed
       </div>
     </div>
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()"
-          translate>common.button.close
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate
+          type="button">common.button.close
   </button>
 </div>

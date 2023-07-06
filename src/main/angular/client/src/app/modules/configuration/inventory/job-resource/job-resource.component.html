@@ -1,46 +1,55 @@
 <div class="row">
-  <div class="col-md-12" *ngIf="data.type">
+  <div *ngIf="data.type" class="col-md-12">
     <div class="box p-a p-r-md m-t-n-xs">
       <div class="b-b p-b m-b">
         <span class="text-left">
-          <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
+          <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
+                                           nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
-          <span class="text-dark text-sm _400" *ngIf="lastModified"> -
+          <span *ngIf="lastModified" class="text-dark text-sm _400"> -
             <b translate>inventory.label.lastModified</b>
             <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
           </span>
         </span>
-        <div class="inline pull-right" *ngIf="!isTrash">
-          <span class="badge badge-success m-r-12" *ngIf="jobResource.configuration" [ngClass]="!jobResource.valid ? 'badge-danger':'badge-success'">
+        <div *ngIf="!isTrash" class="inline pull-right">
+          <span *ngIf="jobResource.configuration" [ngClass]="!jobResource.valid ? 'badge-danger':'badge-success'"
+                class="badge badge-success m-r-12">
               <span *ngIf="jobResource.valid" translate>inventory.label.valid</span>
               <span *ngIf="!jobResource.valid">
                 <span translate>inventory.label.notValid</span>
-                <i nz-tooltip="{{invalidMsg | translate}}" class="fa fa-info-circle p-l-xs"></i>
+                <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
               </span>
           </span>
-          <span class="badge" [ngClass]="!data.deployed ? 'badge-danger':'badge-success'">
+          <span [ngClass]="!data.deployed ? 'badge-danger':'badge-success'" class="badge">
             <span *ngIf="!data.deployed" translate>inventory.label.notDeployed</span>
             <span *ngIf="data.deployed" translate>inventory.label.deployed</span>
           </span>
-          <span *ngIf="data.syncState && inventoryService.checkDeploymentStatus.isChecked" [hidden]="(data.syncState._text == 'NOT_DEPLOYED' && !data.deployed)"
-                class="badge badge-sync m-l-12" [ngClass]="coreService.getColor(data.syncState.severity, 'bg')" >
+          <span *ngIf="data.syncState && inventoryService.checkDeploymentStatus.isChecked"
+                [hidden]="(data.syncState._text == 'NOT_DEPLOYED' && !data.deployed)"
+                [ngClass]="coreService.getColor(data.syncState.severity, 'bg')" class="badge badge-sync m-l-12">
             {{data.syncState._text | translate}}
           </span>
-          <button *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" type="button" [disabled]="!jobResource.valid && !jobResource.hasDeployments" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="deploy()" >
+          <button
+            (click)="deploy()"
+            *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [disabled]="!jobResource.valid && !jobResource.hasDeployments"
+            class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.deploy</span>
           </button>
         </div>
       </div>
       <div *ngIf="jobResource.configuration">
-        <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.jobResource.name' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>common.label.name
+        <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="form-group row">
+          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.jobResource.name' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label" translate>common.label.name
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <input type="text" class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" [appAutofocus]="!isTrash" identifierValidation required name="name" #name="ngModel" autocomplete="off"
-                   [(ngModel)]="jobResource.name" (blur)="rename(name.invalid)">
+            <input #name="ngModel" (blur)="rename(name.invalid)" [(ngModel)]="jobResource.name"
+                   [appAutofocus]="!isTrash" [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" class="form-control" identifierValidation
+                   name="name"
+                   required type="text">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">
                 <div translate>common.message.requiredError</div>
@@ -50,21 +59,27 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.jobResource.title' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>common.label.title</label>
+          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.jobResource.title' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <input type="text" class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
-                   name="title" [(ngModel)]="jobResource.configuration.title" (blur)="saveJSON()">
-            <div *ngIf="jobResource.configuration.title && jobResource.configuration.title.match('Job Resource for File Transfer:')" class="pos-abt r-n-8 m-t-n-25">
-                <i (click)="navToYade(jobResource.configuration.title)" class="fa fa-pencil cursor"></i>
+            <input (blur)="saveJSON()" [(ngModel)]="jobResource.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
+                   autocomplete="off" class="form-control"
+                   name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
+            <div
+              *ngIf="jobResource.configuration.title && jobResource.configuration.title.match('Job Resource for File Transfer:')"
+              class="pos-abt r-n-8 m-t-n-25">
+              <i (click)="navToYade(jobResource.configuration.title)" class="fa fa-pencil cursor"></i>
             </div>
           </div>
         </div>
-        <div class="form-group row" *ngIf="coreService.expertMode">
-          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.jobResource.documentation' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.documentation</label>
+        <div *ngIf="coreService.expertMode" class="form-group row">
+          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.jobResource.documentation' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-select-document [documentationTree]="documentationTree" [data]="jobResource.configuration" (funcCall)="saveJSON($event)"></app-select-document>
+            <app-select-document (funcCall)="saveJSON($event)" [data]="jobResource.configuration"
+                                 [documentationTree]="documentationTree"></app-select-document>
           </div>
         </div>
         <div class="form-group row">
@@ -72,63 +87,77 @@
             <nz-tabset>
               <nz-tab [nzTitle]="'workflow.label.arguments' | translate">
                 <div class="pos-abt r-t-12">
-                  <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedArgu.size === 0"
-                          nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('arguments')" translate>
+                  <button (click)="cutParam('arguments')" [disabled]="object.setOfCheckedArgu.size === 0" class="btn btn-grey btn-sm"
+                          nz-tooltip="{{'common.button.cut' | translate}}" translate type="button">
                     <i class="fa fa-scissors"></i>
                   </button>
-                  <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedArgu.size === 0"
-                          nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('arguments')" translate>
+                  <button (click)="copyParam('arguments')" [disabled]="object.setOfCheckedArgu.size === 0"
+                          class="btn btn-grey btn-sm m-l-sm"
+                          nz-tooltip="{{'common.button.copy' | translate}}" translate type="button">
                     <i class="fa fa-copy"></i>
                   </button>
-                  <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data || object.setOfCheckedArgu.size > 0"
-                          nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam('arguments')" translate>
+                  <button (click)="pasteParam('arguments')" [disabled]="!copiedParamObjects.data || object.setOfCheckedArgu.size > 0"
+                          class="btn btn-grey btn-sm m-l-sm"
+                          nz-tooltip="{{'common.button.paste' | translate}}" translate
+                          type="button">
                     <i class="fa fa-paste"></i>
                   </button>
                 </div>
                 <div class="row">
                   <div class="col-md-12">
-                    <div class="pos-abt m-t-n-xxs m-l-11" *ngIf="jobResource.configuration.arguments.length > 0">
-                      <label nz-checkbox [(nzChecked)]="object.checked1" [nzIndeterminate]="object.indeterminate1" (nzCheckedChange)="onAllChecked('arguments', $event)"></label>
+                    <div *ngIf="jobResource.configuration.arguments.length > 0" class="pos-abt m-t-n-xxs m-l-11">
+                      <label (nzCheckedChange)="onAllChecked('arguments', $event)" [(nzChecked)]="object.checked1" [nzIndeterminate]="object.indeterminate1"
+                             nz-checkbox></label>
                     </div>
-                    <div class="form-group row m-b-0 m-l-md" *ngIf="jobResource.configuration.arguments.length > 0">
+                    <div *ngIf="jobResource.configuration.arguments.length > 0" class="form-group row m-b-0 m-l-md">
                       <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
                       <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm" translate>common.label.value</div>
                     </div>
                   </div>
                   <div class="col-md-12 max-ht-n-522">
-                    <div class="mr-lg" cdkDropList (cdkDropListDropped)="drop($event, jobResource.configuration.arguments)">
-                      <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argu of jobResource.configuration.arguments; let i = index" cdkDrag>
-                        <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>
-                          <i class="fa fa-bars" aria-hidden="true"></i>
+                    <div (cdkDropListDropped)="drop($event, jobResource.configuration.arguments)" cdkDropList
+                         class="mr-lg">
+                      <div *ngFor="let argu of jobResource.configuration.arguments; let i = index"
+                           cdkDrag class="form-group row m-b-0 m-l-md move-on-hover">
+                        <div cdkDragHandle class="pos-abt move-icon drag-move-icon">
+                          <i aria-hidden="true" class="fa fa-bars"></i>
                         </div>
                         <div class="pos-abt m-l-n-13">
-                          <label class="m-t-xs" nz-checkbox [nzDisabled]="!argu.name" [nzChecked]="object.setOfCheckedArgu.has(argu.name)"
-                                 (nzCheckedChange)="onItemChecked('arguments', argu.name, $event)" ></label>
+                          <label (nzCheckedChange)="onItemChecked('arguments', argu.name, $event)" [nzChecked]="object.setOfCheckedArgu.has(argu.name)" [nzDisabled]="!argu.name"
+                                 class="m-t-xs"
+                                 nz-checkbox></label>
                         </div>
-                        <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm"
-                             [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
-                          <input autocomplete="off" identifierValidation type="text" class="form-control" [(ngModel)]="argu.name"
-                                 #aname="ngModel" (blur)="isStringValid(argu, aname.invalid);"
-                                 placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
+                        <div [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}"
+                             class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm">
+                          <input #aname="ngModel" (blur)="isStringValid(argu, aname.invalid);" [(ngModel)]="argu.name" autocomplete="off"
+                                 class="form-control"
+                                 identifierValidation placeholder="{{'common.placeholder.name' | translate}} {{i+1}}"
+                                 type="text">
                           <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)"
                                class="text-danger help-block">
                             <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
                           </div>
                         </div>
                         <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                          <input type="text" autocomplete="off" class="form-control" [(ngModel)]="argu.value" (keydown)="onKeyPress($event, 'ARGU')" (blur)="saveJSON()"
-                                 placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
-                          <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argu)"></i>
+                          <input (blur)="saveJSON()" (keydown)="onKeyPress($event, 'ARGU')" [(ngModel)]="argu.value" autocomplete="off"
+                                 class="form-control" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
+                                 type="text"/>
+                          <i (click)="openEditor(argu)" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
+                             nzType="form"></i>
                           <div class="pos-abt r-t-n-6">
-                            <i *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name)" class="fa fa-scissors"></i>
-                            <a *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name))"><i (click)="removeArgu(i)" class="fa fa-times text-hover-color"></i></a>
+                            <i
+                              *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name)"
+                              class="fa fa-scissors"></i>
+                            <a
+                              *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name))"><i
+                              (click)="removeArgu(i)" class="fa fa-times text-hover-color"></i></a>
                           </div>
                         </div>
                       </div>
                     </div>
                     <div class="form-group row">
                       <div class="col-sm-12">
-                        <a class="text-u-l m-l-11" (click)="addArgu()" translate>workflow.button.addArgument</a>
+                        <a (click)="addArgu()" class="text-u-l m-l-11" translate>workflow.button.addArgument</a>
                       </div>
                     </div>
                   </div>
@@ -136,23 +165,26 @@
               </nz-tab>
               <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate">
                 <div class="pos-abt r-t-12">
-                  <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedEnv.size === 0"
-                          nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('env')" translate>
+                  <button (click)="cutParam('env')" [disabled]="object.setOfCheckedEnv.size === 0" class="btn btn-grey btn-sm"
+                          nz-tooltip="{{'common.button.cut' | translate}}" translate type="button">
                     <i class="fa fa-scissors"></i>
                   </button>
-                  <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedEnv.size === 0"
-                          nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('env')" translate>
+                  <button (click)="copyParam('env')" [disabled]="object.setOfCheckedEnv.size === 0"
+                          class="btn btn-grey btn-sm m-l-sm"
+                          nz-tooltip="{{'common.button.copy' | translate}}" translate type="button">
                     <i class="fa fa-copy"></i>
                   </button>
-                  <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data || object.setOfCheckedEnv.size > 0"
-                          nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam('env')" translate>
+                  <button (click)="pasteParam('env')" [disabled]="!copiedParamObjects.data || object.setOfCheckedEnv.size > 0"
+                          class="btn btn-grey btn-sm m-l-sm"
+                          nz-tooltip="{{'common.button.paste' | translate}}" translate type="button">
                     <i class="fa fa-paste"></i>
                   </button>
                 </div>
                 <div class="row">
-                  <div class="col-md-12" *ngIf="jobResource.configuration.env.length > 0">
+                  <div *ngIf="jobResource.configuration.env.length > 0" class="col-md-12">
                     <div class="pos-abt m-t-n-xxs m-l-11">
-                      <label nz-checkbox [(nzChecked)]="object.checked2" [nzIndeterminate]="object.indeterminate2" (nzCheckedChange)="onAllChecked('env', $event)"></label>
+                      <label (nzCheckedChange)="onAllChecked('env', $event)" [(nzChecked)]="object.checked2" [nzIndeterminate]="object.indeterminate2"
+                             nz-checkbox></label>
                     </div>
                     <div class="form-group row m-b-0 m-l-md">
                       <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
@@ -160,39 +192,48 @@
                     </div>
                   </div>
                   <div class="col-md-12 max-ht-n-522">
-                    <div class="mr-lg" cdkDropList (cdkDropListDropped)="drop($event, jobResource.configuration.env)">
-                      <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let env of jobResource.configuration.env; let i = index" cdkDrag>
-                        <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>
-                          <i class="fa fa-bars" aria-hidden="true"></i>
+                    <div (cdkDropListDropped)="drop($event, jobResource.configuration.env)" cdkDropList class="mr-lg">
+                      <div *ngFor="let env of jobResource.configuration.env; let i = index"
+                           cdkDrag class="form-group row m-b-0 m-l-md move-on-hover">
+                        <div cdkDragHandle class="pos-abt move-icon drag-move-icon">
+                          <i aria-hidden="true" class="fa fa-bars"></i>
                         </div>
                         <div class="pos-abt m-l-n-13">
-                          <label class="m-t-xs" nz-checkbox [nzDisabled]="!env.name" [nzChecked]="object.setOfCheckedEnv.has(env.name)"
-                                 (nzCheckedChange)="onItemChecked('env', env.name, $event)" ></label>
+                          <label (nzCheckedChange)="onItemChecked('env', env.name, $event)" [nzChecked]="object.setOfCheckedEnv.has(env.name)" [nzDisabled]="!env.name"
+                                 class="m-t-xs"
+                                 nz-checkbox></label>
                         </div>
-                        <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm"
-                             [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
-                          <input type="text" envVariableValidation class="form-control" [(ngModel)]="env.name" (blur)="isStringValid(env, ename.invalid);upperCase(env)"
-                                 #ename="ngModel"
-                                 placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
+                        <div [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}"
+                             class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm">
+                          <input #ename="ngModel" (blur)="isStringValid(env, ename.invalid);upperCase(env)" [(ngModel)]="env.name" class="form-control"
+                                 envVariableValidation
+                                 placeholder="{{'common.placeholder.name' | translate}} {{i+1}}"
+                                 type="text">
                           <div *ngIf="ename.invalid && ename.errors && (ename.dirty || ename.touched)"
                                class="text-danger help-block">
                             <div *ngIf="ename.errors.invalidIdentifier" translate>common.message.invalid</div>
                           </div>
                         </div>
                         <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                          <input type="text" autocomplete="off" class="form-control" [(ngModel)]="env.value" (keydown)="onKeyPress($event, 'ENV')" (blur)="saveJSON()"
-                                 placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
-                          <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(env)"></i>
+                          <input (blur)="saveJSON()" (keydown)="onKeyPress($event, 'ENV')" [(ngModel)]="env.value" autocomplete="off"
+                                 class="form-control" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
+                                 type="text"/>
+                          <i (click)="openEditor(env)" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
+                             nzType="form"></i>
                           <div class="pos-abt r-t-n-6">
-                            <i *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name)" class="fa fa-scissors"></i>
-                            <a *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name))"><i (click)="removeEnv(i)" class="fa fa-times text-hover-color"></i></a>
+                            <i
+                              *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name)"
+                              class="fa fa-scissors"></i>
+                            <a
+                              *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name))"><i
+                              (click)="removeEnv(i)" class="fa fa-times text-hover-color"></i></a>
                           </div>
                         </div>
                       </div>
                     </div>
                     <div class="form-group row">
                       <div class="col-sm-12">
-                        <a class="text-u-l m-l-11" (click)="addEnv()" translate>order.button.addVariable</a>
+                        <a (click)="addEnv()" class="text-u-l m-l-11" translate>order.button.addVariable</a>
                       </div>
                     </div>
                   </div>
@@ -204,14 +245,14 @@
       </div>
     </div>
   </div>
-  <div class="col-md-12" *ngIf="data.object">
+  <div *ngIf="data.object" class="col-md-12">
     <app-table
-      [schedulerId]="schedulerId"
-      [preferences]="preferences"
-      [permission]="permission"
       [copyObj]="copyObj"
+      [dataObj]="data"
       [isTrash]="isTrash"
       [objectType]="objectType"
-      [dataObj]="data"></app-table>
+      [permission]="permission"
+      [preferences]="preferences"
+      [schedulerId]="schedulerId"></app-table>
   </div>
 </div>

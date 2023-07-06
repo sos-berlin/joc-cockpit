@@ -1,10 +1,9 @@
-import {Component, HostListener, OnInit, OnDestroy, ViewChild} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
+import {Component, HostListener, ViewChild} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
-import {filter} from 'rxjs/operators';
 import {isEmpty} from 'underscore';
 import {NzConfigService} from 'ng-zorro-antd/core/config';
 import {CoreService} from '../../services/core.service';
@@ -21,7 +20,7 @@ declare const $: any;
   selector: 'app-layout',
   templateUrl: './layout.component.html',
 })
-export class LayoutComponent implements OnInit, OnDestroy {
+export class LayoutComponent {
   preferences: any = {};
   schedulerIds: any;
   permission: any;
@@ -571,7 +570,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ChangePasswordComponent,
-      nzComponentParams: {
+      nzData: {
         username: this.authService.currentUserData,
         identityServiceName: this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':') + 1)
       },

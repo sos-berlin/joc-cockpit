@@ -1,8 +1,7 @@
-import {AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, HostListener, Input, ViewChild} from '@angular/core';
 import {NzFormatBeforeDropEvent, NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
-import {FileUploader} from 'ng2-file-upload';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Observable, of, Subscription, take} from 'rxjs';
 import {Router} from '@angular/router';
@@ -15,6 +14,7 @@ import {AuthService} from '../../../components/guard';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
+import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
 
 declare const require: any;
 declare const $: any;
@@ -27,7 +27,7 @@ const convert = require('xml-js');
   selector: 'app-show-child-modal',
   templateUrl: './show-child-dialog.html'
 })
-export class ShowChildModalComponent implements OnInit {
+export class ShowChildModalComponent {
   @Input() doc: any;
   @Input() showAllChild: any;
 
@@ -682,106 +682,6 @@ export class ShowModalComponent implements AfterViewInit {
 }
 
 @Component({
-  selector: 'app-import-modal',
-  templateUrl: './import-dialog.html'
-})
-export class ImportModalComponent implements OnInit {
-  @Input() schedulerId: any;
-  @Input() display: any;
-  @Input() selectedPath: any;
-  @Input() importObj;
-  @Input() otherSchema;
-  @Input() importXsd;
-  uploader: FileUploader;
-  fileLoading = false;
-  submitted = false;
-  comments: any = {};
-  hasBaseDropZoneOver: any;
-  uploadData: any;
-
-  constructor(public activeModal: NzModalRef,
-              public translate: TranslateService,
-              public toasterService: ToastrService
-  ) {
-    this.uploader = new FileUploader({
-      url: ''
-    });
-  }
-
-  ngOnInit(): void {
-    this.comments.radio = 'predefined';
-
-    this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
-      if (status === 200) {
-        this.activeModal.close('success');
-      }
-    };
-
-    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
-      if (response.error) {
-        this.toasterService.error(response.error.message, response.error.code);
-      }
-    };
-  }
-
-  fileOverBase(e: any): void {
-    this.hasBaseDropZoneOver = e;
-  }
-
-  // import xml
-  onFileSelected(event: any): void {
-    let item = event['0'];
-    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
-    if (!this.importXsd) {
-      if (fileExt !== 'XML') {
-        this.toasterService.error(fileExt + ' ' + 'invalid file type', '');
-        event.remove();
-      } else {
-        this.fileLoading = false;
-        let reader = new FileReader();
-        reader.readAsText(item, 'UTF-8');
-        reader.onload = (_event: any) => {
-          this.uploadData = _event.target.result;
-          if (this.uploadData !== undefined && this.uploadData !== '') {
-          } else {
-            this.toasterService.error('Invalid xml file or file must be empty', '');
-          }
-        };
-      }
-    } else if (this.importXsd) {
-      if (fileExt !== 'XSD') {
-        this.toasterService.error(fileExt + ' ' + 'invalid file type', '');
-        event.remove();
-      } else {
-        this.fileLoading = false;
-        let reader = new FileReader();
-        reader.readAsText(item, 'UTF-8');
-        reader.onload = (_event: any) => {
-          this.uploadData = _event.target.result;
-          if (this.uploadData !== undefined && this.uploadData !== '') {
-          } else {
-            this.toasterService.error('Invalid xml file or file must be empty', '');
-          }
-        };
-      }
-    }
-  }
-
-  // submit data
-  onSubmit(): void {
-    if (!this.importXsd) {
-      this.activeModal.close({uploadData: this.uploadData, importObj: this.importObj});
-    } else {
-      this.activeModal.close({uploadData: this.uploadData, _file: {name: this.uploader.queue[0]._file.name}});
-    }
-  }
-
-  cancel(): void {
-    this.activeModal.close('');
-  }
-}
-
-@Component({
   selector: 'app-confirmation-modal',
   templateUrl: './confirmation-dialog.html'
 })
@@ -826,7 +726,7 @@ export class ConfirmationModalComponent {
   templateUrl: './xml-editor.component.html',
   styleUrls: ['./xml-editor.component.scss']
 })
-export class XmlEditorComponent implements OnInit, OnDestroy {
+export class XmlEditorComponent {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -1121,7 +1021,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -1177,7 +1077,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -1247,7 +1147,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         const modal = this.modal.create({
           nzTitle: undefined,
           nzContent: CommentModalComponent,
-          nzComponentParams: {
+          nzData: {
             comments,
           },
           nzFooter: null,
@@ -1740,6 +1640,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   private getJobResourceTree(node): void {
+    console.log(this.extraInfo, 'extraInfo')
+    console.log(node)
     if (this.jobResourcesTree.length === 0) {
       this.coreService.post('tree', {
         types: ['JOBRESOURCE'],
@@ -4854,9 +4756,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
     const modal = this.modal.create({
       nzTitle: undefined,
-      nzContent: ImportModalComponent,
+      nzContent: FileUploaderComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
+        type: 'XML_EDITOR',
         importObj,
         otherSchema: this.otherSchema,
         importXsd: false
@@ -4972,7 +4875,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         const modal = this.modal.create({
           nzTitle: undefined,
           nzContent: CommentModalComponent,
-          nzComponentParams: {
+          nzData: {
             comments,
           },
           nzFooter: null,
@@ -5035,9 +4938,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.importXSDFile = true;
     const modal = this.modal.create({
       nzTitle: undefined,
-      nzContent: ImportModalComponent,
+      nzContent: FileUploaderComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
+        type: 'XML_EDITOR',
         importXsd: true
       },
       nzFooter: null,

@@ -1,4 +1,12 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges
+} from '@angular/core';
 import {isArray, isEmpty, isEqual} from 'underscore';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
@@ -125,7 +133,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
             nzTitle: undefined,
             nzContent: CommentModalComponent,
             nzClassName: 'lg',
-            nzComponentParams: {
+            nzData: {
               comments
             },
             nzFooter: null,
@@ -189,11 +197,11 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   deploy(): void {
-    this.dataService.reloadTree.next({ deploy: this.jobResource });
+    this.dataService.reloadTree.next({deploy: this.jobResource});
   }
 
   backToListView(): void {
-    this.dataService.reloadTree.next({ back: this.jobResource });
+    this.dataService.reloadTree.next({back: this.jobResource});
   }
 
   /**
@@ -277,8 +285,8 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   isStringValid(data, notValid): void {
     if (notValid) {
-     // data.name = '';
-     // data.value = '';
+      // data.name = '';
+      // data.value = '';
     } else {
       setTimeout(() => {
         this.saveJSON();
@@ -424,12 +432,12 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     return temp;
   }
 
-  openEditor(data): void {
+  openEditor(data: any): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         data: data.value
       },
       nzFooter: null,
@@ -479,7 +487,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
       if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-          request.auditLog = { comment: translatedValue };
+          request.auditLog = {comment: translatedValue};
         });
       }
       this.coreService.post('inventory/store', request).subscribe({

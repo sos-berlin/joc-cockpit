@@ -13,7 +13,7 @@ import {ValueEditorComponent} from "../../../../components/value-editor/value.co
   selector: 'app-update-object',
   templateUrl: './update-object.component.html'
 })
-export class UpdateObjectComponent implements OnInit {
+export class UpdateObjectComponent {
   @Input() data: any;
   @Input() type: string;
   @Input() controllerId: any;
@@ -502,7 +502,7 @@ export class UpdateObjectComponent implements OnInit {
       nzTitle: undefined,
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         data: data.value
       },
       nzFooter: null,
@@ -686,7 +686,7 @@ export class UpdateObjectComponent implements OnInit {
       if (this.checkboxObjects.planOrderAutomatically) {
         obj.planOrderAutomatically = object.planOrderAutomatically;
       }
-      if (this.checkboxObjects.submitOrderToControllerWhenPlanned ) {
+      if (this.checkboxObjects.submitOrderToControllerWhenPlanned) {
         obj.submitOrderToControllerWhenPlanned = object.submitOrderToControllerWhenPlanned;
       }
       if (object.workflowName) {

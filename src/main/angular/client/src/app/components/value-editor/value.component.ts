@@ -1,5 +1,13 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
-import { NzModalRef } from 'ng-zorro-antd/modal';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  inject,
+  ViewChild
+} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 
 declare const $;
 
@@ -9,12 +17,19 @@ declare const $;
   templateUrl: './value-editor.html'
 })
 export class ValueEditorComponent implements AfterViewInit {
-  @ViewChild('myinput') myInputField: ElementRef;
-  @Input() data: any;
-  @Input() object: any = {};
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  data: any;
+  object: any = {};
   height = 10;
 
+  @ViewChild('myinput') myInputField: ElementRef;
+
   constructor(public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    this.data = this.modalData.data;
+    this.object = this.modalData.object;
   }
 
   ngAfterViewInit(): void {

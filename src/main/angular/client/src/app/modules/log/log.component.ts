@@ -13,7 +13,7 @@ declare const $;
   selector: 'app-log',
   templateUrl: './log.component.html'
 })
-export class LogComponent implements OnInit {
+export class LogComponent {
   preferences: any = {};
   loading = false;
   isLoading = false;
@@ -220,7 +220,7 @@ export class LogComponent implements OnInit {
           }
         }
 
-        dom[dom.length > 2 ? 1 : dom.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center'  });
+        dom[dom.length > 2 ? 1 : dom.length - 1].scrollIntoView({behavior: 'smooth', block: 'center'});
         if (dom.length > 0) {
           for (let x in dom) {
             if (dom[x] && dom[x].style) {
@@ -228,11 +228,11 @@ export class LogComponent implements OnInit {
                 let arrow = $(dom[x]).find('.tx_order');
                 if (arrow && arrow.length > 0) {
                   const elem = arrow.find('i');
-                  if(elem) {
+                  if (elem) {
                     let classes = elem[0].classList;
-                    if(classes) {
+                    if (classes) {
                       classes.forEach((item) => {
-                        if(item == 'fa-caret-down'){
+                        if (item == 'fa-caret-down') {
                           elem.click();
                           return;
                         }
@@ -306,7 +306,7 @@ export class LogComponent implements OnInit {
 
     if (x && x.length > 0) {
       const dom = x[x.length - 1].childNodes[0];
-      if(dom) {
+      if (dom) {
         dom.click();
       }
     }
@@ -476,7 +476,7 @@ export class LogComponent implements OnInit {
       }
 
       let flag = false;
-      if(dt[i].logEvent !== 'OrderForked' && dt[i].logEvent !== 'OrderJoined') {
+      if (dt[i].logEvent !== 'OrderForked' && dt[i].logEvent !== 'OrderJoined') {
         for (let x in this.treeStructure) {
           if (this.treeStructure[x].position == dt[i].position && this.treeStructure[x].orderId == dt[i].orderId && this.treeStructure[x].job == dt[i].job
             && (this.treeStructure[x].expectNotices == dt[i].expectNotices && this.treeStructure[x].postNotice == dt[i].postNotice
@@ -487,10 +487,10 @@ export class LogComponent implements OnInit {
           }
         }
       }
-      if(!flag) {
-        if(/\d+[.]\w/gm.test(dt[i].orderId) && !/\d+[.]\w/gm.test(dt[i].position)){
+      if (!flag) {
+        if (/\d+[.]\w/gm.test(dt[i].orderId) && !/\d+[.]\w/gm.test(dt[i].position)) {
           const pos = dt[i].orderId.substring(dt[i].orderId.lastIndexOf('.') + 1);
-          if(pos) {
+          if (pos) {
             dt[i].name1 = pos;
           }
         }
@@ -498,7 +498,7 @@ export class LogComponent implements OnInit {
       }
 
       const div = window.document.createElement('div');
-      div.className = (dt[i].name1 ? (dt[i].position +'.'+dt[i].name1) : dt[i].position ) + ' log_line';
+      div.className = (dt[i].name1 ? (dt[i].position + '.' + dt[i].name1) : dt[i].position) + ' log_line';
       if (dt[i].logLevel === 'INFO') {
         div.className += ' log_info';
         if (!this.object.checkBoxs.info) {
@@ -688,42 +688,7 @@ export class LogComponent implements OnInit {
           }
           return {name: k1, value: v1};
         });
-        for (let i = 0; i < arr.length; i++) {
-          if (isArray(arr[i].value)) {
-            col += arr[i].name + '={';
-            for (let j = 0; j < arr[i].value.length; j++) {
-              if (isArray(arr[i].value[j].value)) {
-                col += arr[i].value[j].name + '={';
-                for (let k = 0; k < arr[i].value[j].value.length; k++) {
-                  if (arr[i].value[j].value[k].name) {
-                    col += arr[i].value[j].value[k].name + '=' + arr[i].value[j].value[k].value;
-                  } else if (arr[i].value[j].value[k].key) {
-                    if (arr[i].value[j].value[k].value.value || arr[i].value[j].value[k].value.value == 0 || arr[i].value[j].value[k].value.value == false) {
-                      col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value.value;
-                    } else {
-                      col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value;
-                    }
-                  }
-                  if (arr[i].value[j].value.length - 1 != k) {
-                    col += ', ';
-                  }
-                }
-                col += '}';
-              } else {
-                col += arr[i].value[j].name + '=' + arr[i].value[j].value;
-              }
-              if (arr[i].value.length - 1 != j) {
-                col += ', ';
-              }
-            }
-            col += '}';
-          } else {
-            col += arr[i].name + '=' + arr[i].value;
-          }
-          if (arr.length - 1 != i) {
-            col += ', ';
-          }
-        }
+        col = this.coreService.createLogOutputString(arr, col);
         col += ')';
       } else if (dt[i].logEvent === 'OrderProcessed' && dt[i].returnValues) {
         col += ', returnValues(';
@@ -735,42 +700,7 @@ export class LogComponent implements OnInit {
           }
           return {name: k1, value: v1};
         });
-        for (let i = 0; i < arr.length; i++) {
-          if (isArray(arr[i].value)) {
-            col += arr[i].name + '={';
-            for (let j = 0; j < arr[i].value.length; j++) {
-              if (isArray(arr[i].value[j].value)) {
-                col += arr[i].value[j].name + '={';
-                for (let k = 0; k < arr[i].value[j].value.length; k++) {
-                  if (arr[i].value[j].value[k].name) {
-                    col += arr[i].value[j].value[k].name + '=' + arr[i].value[j].value[k].value;
-                  } else if (arr[i].value[j].value[k].key) {
-                    if (arr[i].value[j].value[k].value.value || arr[i].value[j].value[k].value.value == 0 || arr[i].value[j].value[k].value.value == false) {
-                      col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value.value;
-                    } else {
-                      col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value;
-                    }
-                  }
-                  if (arr[i].value[j].value.length - 1 != k) {
-                    col += ', ';
-                  }
-                }
-                col += '}';
-              } else {
-                col += arr[i].value[j].name + '=' + arr[i].value[j].value;
-              }
-              if (arr[i].value.length - 1 != j) {
-                col += ', ';
-              }
-            }
-            col += '}';
-          } else {
-            col += arr[i].name + '=' + arr[i].value;
-          }
-          if (arr.length - 1 != i) {
-            col += ', ';
-          }
-        }
+        col = this.coreService.createLogOutputString(arr, col);
         col += ')';
       } else if (dt[i].logEvent === 'OrderAttached' && dt[i].attached?.waitingForAdmission?.entries) {
         col += ', waitingForAdmission(' + dt[i].attached.waitingForAdmission.entries + ')';

@@ -1,15 +1,12 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, inject,
   Input,
-  OnDestroy,
-  OnInit,
   ViewChild
 } from '@angular/core';
 import {forkJoin, of, Subject, Subscription} from 'rxjs';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {FileUploader} from 'ng2-file-upload';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ToastrService} from 'ngx-toastr';
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {TranslateService} from '@ngx-translate/core';
@@ -29,6 +26,7 @@ import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.c
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../models/enums';
 import {UpdateJobTemplatesComponent} from "./job-template/job-template.component";
+import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
 
 declare const $: any;
 
@@ -36,14 +34,16 @@ declare const $: any;
   selector: 'app-show-objects',
   templateUrl: './show-objects-dialog.html'
 })
-export class ShowObjectsComponent implements OnInit{
-  @Input() data: any;
+export class ShowObjectsComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  data: any;
   panels: any = [];
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
+    this.data = this.modalData.data;
     this.panels.push({
       active: true,
       name: 'inventory.label.validityDenied',
@@ -70,9 +70,10 @@ export class ShowObjectsComponent implements OnInit{
   selector: 'app-new-draft-modal',
   templateUrl: './new-draft-dialog.html'
 })
-export class NewDraftComponent implements OnInit {
-  @Input() data;
-  deployablesObject = [];
+export class NewDraftComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  data: any;
+  deployablesObject: any = [];
   loading = true;
   submitted = false;
   display = false;
@@ -83,6 +84,7 @@ export class NewDraftComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.data = this.modalData.data;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -163,10 +165,11 @@ export class NewDraftComponent implements OnInit {
   selector: 'app-single-deploy-modal',
   templateUrl: './single-deploy-dialog.html'
 })
-export class SingleDeployComponent implements OnInit {
-  @Input() schedulerIds;
-  @Input() data;
-  @Input() type;
+export class SingleDeployComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  @Input() schedulerIds: any;
+  @Input() data: any;
+  @Input() type = '';
   @Input() display: any;
   @Input() releasable = false;
   @Input() isRevoke = false;
@@ -400,12 +403,13 @@ export class SingleDeployComponent implements OnInit {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './deploy-dialog.html'
 })
-export class DeployComponent implements OnInit {
-  @ViewChild('treeCtrl', {static: false}) treeCtrl;
-  @Input() schedulerIds;
-  @Input() preferences;
-  @Input() path: string;
-  @Input() releasable: boolean;
+export class DeployComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
+  @Input() schedulerIds: any;
+  @Input() preferences: any;
+  @Input() path = '';
+  @Input() releasable = false;
   @Input() display: any;
   @Input() data: any;
   @Input() operation = '';
@@ -976,157 +980,16 @@ export class DeployComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-cron-import-modal-content',
-  templateUrl: './cron-import-dialog.html'
-})
-export class CronImportModalComponent implements OnInit {
-  @Input() preferences: any;
-  @Input() display: any;
-  @Input() controllerId = '';
-  @Input() agents: any = [];
-  nodes: any = [];
-  calendarTree: any = [];
-  uploader: FileUploader;
-  comments: any = {};
-  required = false;
-  isTreeShow = false;
-  hasBaseDropZoneOver: any;
-  requestObj: any = {
-    systemCrontab: false,
-    folder: '/'
-  };
-
-  constructor(public activeModal: NzModalRef, private toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
-  }
-
-  ngOnInit(): void {
-    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
-      this.required = true;
-      this.display = true;
-    }
-
-    this.getTree();
-    this.getCalendars();
-    this.uploader = new FileUploader({
-      url: './api/inventory/convert/cron',
-      queueLimit: 1,
-      headers: [{
-        name: 'X-Access-Token',
-        value: this.authService.accessTokenId
-      }]
-    });
-    this.comments.radio = 'predefined';
-
-    this.uploader.onBeforeUploadItem = (item: any) => {
-      const obj: any = {};
-      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-      if (this.requestObj.folder && this.requestObj.folder.substring(0, 1) !== '/') {
-        this.requestObj.folder = '/' + this.requestObj.folder;
-      }
-      obj.folder = this.requestObj.folder || '/';
-      obj.systemCrontab = this.requestObj.systemCrontab;
-      obj.agentName = this.requestObj.agentName;
-      obj.calendarName = this.requestObj.calendarName;
-      if (this.requestObj.agentName1) {
-        obj.subagentClusterId = this.requestObj.agentName;
-        obj.agentName = this.requestObj.agentName1;
-      }
-      //item.file.name = encodeURIComponent(item.file.name);
-      this.uploader.options.additionalParameter = obj;
-    };
-
-    this.uploader.onCompleteItem = (fileItem: any, response, status) => {
-      if (status === 200) {
-        this.activeModal.close(this.requestObj.folder || '/');
-      }
-    };
-
-    this.uploader.onErrorItem = (fileItem, response: any) => {
-      const res = typeof response === 'string' ? JSON.parse(response) : response;
-      if (res.error) {
-        this.toasterService.error(res.error.message, res.error.code);
-      }
-    };
-  }
-
-  selectSubagentCluster(cluster: any): void {
-    if (cluster) {
-      this.requestObj.agentName1 = cluster.title;
-    } else {
-      delete this.requestObj.agentName1;
-    }
-  }
-
-  private getTree(): void {
-    this.coreService.post('tree', {
-      forInventory: true,
-      types: ['INVENTORY']
-    }).subscribe({
-      next: (res: any) => {
-        if (res.folders.length === 0) {
-          res.folders.push({name: '', path: '/'});
-        }
-        this.nodes = this.coreService.prepareTree(res, true);
-      }
-    });
-  }
-
-  private getCalendars(): void {
-    this.coreService.post('tree', {
-      forInventory: true,
-      types: ['WORKINGDAYSCALENDAR']
-    }).subscribe({
-      next: (res: any) => {
-        this.calendarTree = this.coreService.prepareTree(res, false);
-      }
-    });
-  }
-
-  onSelect(name: string) {
-    this.isTreeShow = false;
-    this.requestObj.calendarName = name;
-  }
-
-  onBlur(): void {
-    this.isTreeShow = false;
-  }
-
-  fileOverBase(e: any): void {
-    this.hasBaseDropZoneOver = e;
-  }
-
-  import(): void {
-    this.uploader.queue[0].upload();
-  }
-
-  displayWith(data: any): string {
-    return data.key;
-  }
-
-  selectPath(node: any): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (this.requestObj.folder !== node.key) {
-      this.requestObj.folder = node.key;
-    }
-  }
-
-  cancel(): void {
-    this.activeModal.destroy();
-  }
-}
-
-@Component({
   selector: 'app-export-modal',
   templateUrl: './export-dialog.html'
 })
-export class ExportComponent implements OnInit {
-  @ViewChild('treeCtrl', {static: false}) treeCtrl;
-  @Input() schedulerIds;
-  @Input() preferences;
-  @Input() origin: any;
-  @Input() display: any;
+export class ExportComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  @ViewChild('treeCtrl', {static: false}) treeCtrl!: any;
+  schedulerIds: any;
+  preferences: any;
+  origin: any;
+  display: any;
   loading = true;
   nodes: any = [];
   checkedObject = new Set();
@@ -1167,6 +1030,10 @@ export class ExportComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // this.schedulerIds: any;
+    // this.preferences: any;
+    // this.origin: any;
+    // this.display: any;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -1708,14 +1575,15 @@ export class ExportComponent implements OnInit {
   selector: 'app-repository-modal',
   templateUrl: './repository-dialog.html'
 })
-export class RepositoryComponent implements OnInit {
-  @ViewChild('treeCtrl', {static: false}) treeCtrl;
-  @Input() controllerId;
-  @Input() preferences;
-  @Input() origin: any;
-  @Input() operation = '';
-  @Input() category = '';
-  @Input() display = false
+export class RepositoryComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  @ViewChild('treeCtrl', {static: false}) treeCtrl!: any;
+  controllerId = '';
+  preferences: any;
+  origin: any;
+  operation = '';
+  category = '';
+  display = false
   loading = true;
   path = '';
   type = 'ALL';
@@ -1749,6 +1617,12 @@ export class RepositoryComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // this.controllerId = '';
+    // this.preferences: any;
+    // this.origin: any;
+    // this.operation = '';
+    // this.category = '';
+    // this.display = false
     this.loadSetting();
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -2381,13 +2255,14 @@ export class RepositoryComponent implements OnInit {
   selector: 'app-git-modal',
   templateUrl: './git-dialog.html'
 })
-export class GitComponent implements OnInit {
-  @Input() controllerId;
-  @Input() preferences;
-  @Input() data: any;
-  @Input() operation: string;
-  @Input() category: string;
-  @Input() display: boolean;
+export class GitComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  controllerId = '';
+  preferences: any;
+  data: any;
+  operation = '';
+  category = '';
+  display = false;
   submitted = false;
   required = false;
   comments: any = {radio: 'predefined'};
@@ -2402,6 +2277,12 @@ export class GitComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.controllerId = this.modalData.controllerId;
+    this.preferences = this.modalData.preferences;
+    this.data = this.modalData.data;
+    this.operation = this.modalData.operation;
+    this.category = this.modalData.category;
+    this.display = this.modalData.display;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -2493,166 +2374,14 @@ export class GitComponent implements OnInit {
   templateUrl: './notification-dialog.html'
 })
 export class NotificationComponent {
-  @Input() results: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  results: any;
 
   constructor(public activeModal: NzModalRef) {
   }
 
-  cancel(): void {
-    this.activeModal.destroy();
-  }
-}
-
-@Component({
-  selector: 'app-import-modal-content',
-  templateUrl: './import-dialog.html'
-})
-export class ImportWorkflowModalComponent implements OnInit {
-  @Input() display: any;
-  @Input() isDeploy: any;
-  @Input() schedulerIds;
-  nodes: any = [];
-  uploader: FileUploader;
-  signatureAlgorithm: string;
-  required = false;
-  comments: any = {};
-  settings: any = {};
-  hasBaseDropZoneOver: any;
-  requestObj: any = {
-    overwrite: false,
-    format: 'ZIP',
-    targetFolder: '',
-    type: 'ignore'
-  };
-
-  constructor(public activeModal: NzModalRef, private modal: NzModalService, private translate: TranslateService,
-              public toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
-  }
-
   ngOnInit(): void {
-    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
-      this.required = true;
-      this.display = true;
-    }
-    this.getTree();
-    this.uploader = new FileUploader({
-      url: this.isDeploy ? './api/inventory/deployment/import_deploy' : './api/inventory/import',
-      queueLimit: 1,
-      headers: [{
-        name: 'X-Access-Token',
-        value: this.authService.accessTokenId
-      }]
-    });
-    this.comments.radio = 'predefined';
-    if (sessionStorage['$SOS$IMPORT'] && sessionStorage['$SOS$IMPORT'] !== 'undefined') {
-      this.settings = JSON.parse(sessionStorage['$SOS$IMPORT']);
-      if (this.settings) {
-        this.requestObj.suffix = this.settings.suffix;
-        this.requestObj.prefix = this.settings.prefix;
-      }
-    }
-
-    this.uploader.onBeforeUploadItem = (item: any) => {
-      const obj: any = {};
-      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-      if (!this.isDeploy) {
-        if (this.requestObj.targetFolder) {
-          this.requestObj.targetFolder = this.requestObj.targetFolder.trimEnd();
-          if (this.requestObj.targetFolder.substring(0, 1) !== '/') {
-            this.requestObj.targetFolder = '/' + this.requestObj.targetFolder;
-          }
-          obj.targetFolder = this.requestObj.targetFolder;
-        }
-        obj.overwrite = this.requestObj.overwrite;
-      }
-      if (this.isDeploy) {
-        obj.signatureAlgorithm = this.signatureAlgorithm;
-        obj.controllerId = this.schedulerIds.selected;
-      }
-      if (!this.requestObj.overwrite) {
-        if (this.requestObj.type === 'suffix') {
-          obj.suffix = this.requestObj.suffix;
-        } else if (this.requestObj.type === 'prefix') {
-          obj.prefix = this.requestObj.prefix;
-        }
-      }
-      obj.format = this.requestObj.format;
-      //item.file.name = encodeURIComponent(item.file.name);
-      this.uploader.options.additionalParameter = obj;
-    };
-
-    this.uploader.onCompleteItem = (fileItem: any, response, status) => {
-      if (status === 200) {
-        this.activeModal.close(this.requestObj.targetFolder || '/');
-      }
-    };
-
-    this.uploader.onErrorItem = (fileItem, response: any) => {
-      try {
-        const res = typeof response === 'string' ? JSON.parse(response) : response;
-        if (res.error) {
-          this.toasterService.error(res.error.message, res.error.code);
-        }
-      } catch (e) {
-      }
-      this.uploader.isUploading = false;
-    };
-  }
-
-  private getTree(): void {
-    this.coreService.post('tree', {
-      forInventory: true,
-      types: ['INVENTORY']
-    }).subscribe((res: any) => {
-      if (res.folders.length === 0) {
-        res.folders.push({name: '', path: '/'});
-      }
-      this.nodes = this.coreService.prepareTree(res, true);
-    });
-  }
-
-  fileOverBase(e: any): void {
-    this.hasBaseDropZoneOver = e;
-  }
-
-  // CALLBACKS
-  onFileSelected(event: any): void {
-    const item = event['0'];
-    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
-    if (fileExt) {
-      fileExt = fileExt.toLowerCase();
-    }
-    if (fileExt && (fileExt === 'zip' || fileExt.match(/tar/) || fileExt.match(/gz/))) {
-      if (fileExt === 'zip') {
-        this.requestObj.format = 'ZIP';
-      } else {
-        this.requestObj.format = 'TAR_GZ';
-      }
-    } else {
-      let msg = '';
-      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
-        msg = translatedValue;
-      });
-      this.toasterService.error(fileExt + ' ' + msg);
-      this.uploader.clearQueue();
-    }
-  }
-
-  import(): void {
-    this.uploader.queue[0].upload();
-  }
-
-  displayWith(data: any): string {
-    return data.key;
-  }
-
-  selectPath(node: any): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (this.requestObj.targetFolder !== node.key) {
-      this.requestObj.targetFolder = node.key;
-    }
+    this.results = this.modalData.results;
   }
 
   cancel(): void {
@@ -2665,7 +2394,7 @@ export class ImportWorkflowModalComponent implements OnInit {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './json-editor-dialog.html'
 })
-export class JsonEditorModalComponent implements OnInit {
+export class JsonEditorModalComponent {
   @Input() name = '';
   @Input() objectType = '';
   @Input() object: any;
@@ -2755,113 +2484,11 @@ export class JsonEditorModalComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-upload-json',
-  templateUrl: './upload-json-dialog.html'
-})
-export class UploadModalComponent implements OnInit {
-  @Input() object: any;
-  @Input() name = '';
-  @Input() objectType = '';
-  submitted = false;
-  uploader: FileUploader;
-  data: any;
-
-  constructor(public coreService: CoreService, public activeModal: NzModalRef, public translate: TranslateService, public toasterService: ToastrService) {
-    this.uploader = new FileUploader({
-      url: '',
-      queueLimit: 1
-    });
-  }
-
-  ngOnInit(): void {
-    this.uploader.onCompleteItem = (fileItem: any, response, status) => {
-      if (status === 200) {
-        this.activeModal.close('success');
-      }
-    };
-
-    this.uploader.onErrorItem = (fileItem, response: any) => {
-      const res = typeof response === 'string' ? JSON.parse(response) : response;
-      if (res.error) {
-        this.toasterService.error(res.error.message, res.error.code);
-      }
-    };
-  }
-
-  // CALLBACKS
-  onFileSelected(event: any): void {
-    const self = this;
-    const item = event['0'];
-    const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
-    if (fileExt != 'JSON') {
-      let msg = '';
-      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
-        msg = translatedValue;
-      });
-      this.toasterService.error(fileExt + ' ' + msg);
-      this.uploader.clearQueue();
-    } else {
-      const reader = new FileReader();
-      reader.readAsText(item, 'UTF-8');
-      reader.onload = onLoadFile;
-    }
-
-    function onLoadFile(_event: any): void {
-      let data: any;
-      try {
-        data = JSON.parse(_event.target.result);
-      } catch (e) {
-
-      }
-      if (data) {
-        self.validateByURL(data, (res: any) => {
-          if (!res.valid) {
-            self.showErrorMsg(res.invalidMsg);
-          } else {
-            self.data = data;
-          }
-        });
-      } else {
-        self.showErrorMsg(null);
-      }
-    }
-  }
-
-  onSubmit(): void {
-    this.submitted = true;
-    setTimeout(() => {
-      this.activeModal.close(this.data);
-    }, 100);
-  }
-
-  private validateByURL(json: any, cb: any): void {
-    this.coreService.post('inventory/' + this.objectType + '/validate', json).subscribe({
-      next: (res: any) => {
-        cb(res);
-      }, error: (err) => {
-        cb(err);
-      }
-    });
-  }
-
-  private showErrorMsg(errorMsg: string): void {
-    let msg = errorMsg;
-    if (!errorMsg) {
-      this.translate.get('inventory.message.invalidFile', {objectType: this.object.objectType}).subscribe(translatedValue => {
-        msg = translatedValue;
-      });
-    }
-    this.toasterService.error(msg);
-    this.uploader.queue[0].remove();
-  }
-}
-
-@Component({
   selector: 'app-create-object-template',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './create-object-dialog.html'
 })
-export class CreateObjectModalComponent implements OnInit {
+export class CreateObjectModalComponent {
   @Input() schedulerId: any;
   @Input() preferences: any;
   @Input() obj: any;
@@ -3025,7 +2652,7 @@ export class CreateObjectModalComponent implements OnInit {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './create-folder-dialog.html'
 })
-export class CreateFolderModalComponent implements OnInit {
+export class CreateFolderModalComponent {
   @Input() schedulerId: any;
   @Input() origin: any;
   @Input() type: any;
@@ -3186,7 +2813,7 @@ export class CreateFolderModalComponent implements OnInit {
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.scss']
 })
-export class InventoryComponent implements OnInit, OnDestroy {
+export class InventoryComponent {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -4326,7 +3953,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -4425,10 +4052,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
   import(): void {
     this.modal.create({
       nzTitle: undefined,
-      nzContent: ImportWorkflowModalComponent,
+      nzContent: FileUploaderComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
+        type: 'INVENTORY',
         display: this.preferences.auditLog
       },
       nzFooter: null,
@@ -4440,10 +4068,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
   importDeploy(): void {
     this.modal.create({
       nzTitle: undefined,
-      nzContent: ImportWorkflowModalComponent,
+      nzContent: FileUploaderComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
+        type: 'INVENTORY',
         schedulerIds: this.schedulerIds,
         display: this.preferences.auditLog,
         isDeploy: true
@@ -4457,10 +4086,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
   convertJob(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
-      nzContent: CronImportModalComponent,
+      nzContent: FileUploaderComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
+        type: 'CRON',
         preferences: this.preferences,
         display: this.preferences.auditLog,
         agents: this.inventoryService.agentList,
@@ -4547,7 +4177,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.modal.create({
         nzTitle: undefined,
         nzContent: SingleDeployComponent,
-        nzComponentParams: {
+        nzData: {
           schedulerIds: this.getAllowedControllerOnly(),
           display: this.preferences.auditLog,
           data: origin,
@@ -4577,7 +4207,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: DeployComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           schedulerIds: this.getAllowedControllerOnly(),
           preferences: this.preferences,
           display: this.preferences.auditLog,
@@ -4628,7 +4258,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.modal.create({
         nzTitle: undefined,
         nzContent: SingleDeployComponent,
-        nzComponentParams: {
+        nzData: {
           schedulerIds: this.getAllowedControllerOnly(),
           display: this.preferences.auditLog,
           data: origin,
@@ -4643,7 +4273,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: DeployComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           schedulerIds: this.getAllowedControllerOnly(),
           preferences: this.preferences,
           display: this.preferences.auditLog,
@@ -4671,7 +4301,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -4705,7 +4335,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -4750,7 +4380,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: obj,
+        nzData: obj,
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
@@ -4795,7 +4425,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzContent: JsonEditorModalComponent,
         nzAutofocus: null,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           schedulerId: this.schedulerIds.selected,
           preferences: this.preferences,
           object: res.configuration,
@@ -4819,7 +4449,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.modal.create({
       nzTitle: undefined,
       nzContent: NewDraftComponent,
-      nzComponentParams: {
+      nzData: {
         data
       },
       nzFooter: null,
@@ -4845,7 +4475,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: UpdateJobTemplatesComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         preferences: this.preferences,
         treeObj: workflow
       },
@@ -4878,9 +4508,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
   importJSON(obj: any): void {
     const modal = this.modal.create({
       nzTitle: undefined,
-      nzContent: UploadModalComponent,
+      nzContent: FileUploaderComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
+        type: 'INVENTORY_OBJECT',
         object: obj,
         objectType: obj.objectType || obj.type
       },
@@ -4927,7 +4558,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CreateFolderModalComponent,
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           display: this.preferences.auditLog,
           schedulerId: this.schedulerIds.selected,
           origin: node.renameObject || node.origin,
@@ -4975,7 +4606,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             nzTitle: undefined,
             nzContent: CommentModalComponent,
             nzClassName: 'lg',
-            nzComponentParams: {
+            nzData: {
               comments,
             },
             nzFooter: null,
@@ -5077,7 +4708,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           nzTitle: undefined,
           nzContent: CommentModalComponent,
           nzClassName: 'lg',
-          nzComponentParams: {
+          nzData: {
             comments,
           },
           nzFooter: null,
@@ -5118,7 +4749,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         const modal = this.modal.create({
           nzTitle: undefined,
           nzContent: ConfirmModalComponent,
-          nzComponentParams: {
+          nzData: {
             title: 'remove',
             message: 'removeObject',
             type: 'Remove',
@@ -5178,7 +4809,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
           obj,
         },
@@ -5200,7 +4831,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title: 'delete',
           message: 'deleteDraftObject',
           type: 'Delete',
@@ -5280,7 +4911,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -5302,7 +4933,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title: 'delete',
           message: 'deleteObject',
           type: 'Delete',
@@ -5335,7 +4966,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -5366,7 +4997,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           nzTitle: undefined,
           nzContent: ShowObjectsComponent,
           nzClassName: 'lg',
-          nzComponentParams: {
+          nzData: {
             data: res,
           },
           nzFooter: null,
@@ -5393,7 +5024,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzContent: CreateObjectModalComponent,
       nzAutofocus: null,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerIds.selected,
         preferences: this.preferences,
         obj: object,
@@ -5536,7 +5167,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -5668,7 +5299,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: CreateObjectModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerIds.selected,
         preferences: this.preferences,
         obj,
@@ -5883,7 +5514,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: CreateObjectModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerIds.selected,
         preferences: this.preferences,
         obj

@@ -92,7 +92,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: CreateObjectModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerId,
         preferences: this.preferences,
         obj
@@ -272,7 +272,7 @@ export class TableComponent implements OnChanges, OnDestroy {
           nzTitle: undefined,
           nzContent: CommentModalComponent,
           nzClassName: 'lg',
-          nzComponentParams: {
+          nzData: {
             comments,
           },
           nzFooter: null,
@@ -303,7 +303,7 @@ export class TableComponent implements OnChanges, OnDestroy {
         const modal = this.modal.create({
           nzTitle: undefined,
           nzContent: ConfirmModalComponent,
-          nzComponentParams: param,
+          nzData: param,
           nzFooter: null,
           nzClosable: false,
           nzMaskClosable: false
@@ -321,7 +321,7 @@ export class TableComponent implements OnChanges, OnDestroy {
         this.modal.create({
           nzTitle: undefined,
           nzContent: SingleDeployComponent,
-          nzComponentParams: {
+          nzData: {
             schedulerIds: [],
             display: this.preferences.auditLog,
             data: {
@@ -354,7 +354,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: DeployComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerIds: this.getAllowedControllerOnly(),
         display: this.preferences.auditLog,
         path: this.dataObj.path,
@@ -370,7 +370,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe((result) => {
-      if(result) {
+      if (result) {
         this.reset();
       }
     });
@@ -418,7 +418,7 @@ export class TableComponent implements OnChanges, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -448,7 +448,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: param,
+        nzData: param,
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false

@@ -74,7 +74,7 @@ export class OrderTemplateComponent {
   selector: 'app-filter-modal-content',
   templateUrl: './filter-dialog.html'
 })
-export class FilterModalComponent implements OnInit {
+export class FilterModalComponent {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -126,7 +126,7 @@ export class FilterModalComponent implements OnInit {
   selector: 'app-order-form-template',
   templateUrl: './order-form-template.html',
 })
-export class OrderSearchComponent implements OnInit {
+export class OrderSearchComponent {
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
@@ -143,9 +143,9 @@ export class OrderSearchComponent implements OnInit {
   submitted = false;
   isUnique = true;
   checkOptions = [
-    { label: 'successful', value: 'SUCCESSFUL', checked: false },
-    { label: 'failed', value: 'FAILED', checked: false },
-    { label: 'incomplete', value: 'INCOMPLETE', checked: false }
+    {label: 'successful', value: 'SUCCESSFUL', checked: false},
+    {label: 'failed', value: 'FAILED', checked: false},
+    {label: 'incomplete', value: 'INCOMPLETE', checked: false}
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService) {
@@ -153,7 +153,7 @@ export class OrderSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    if(this.filter.name){
+    if (this.filter.name) {
       this.existingName = this.coreService.clone(this.filter.name);
     }
     this.getFolderTree();
@@ -196,7 +196,9 @@ export class OrderSearchComponent implements OnInit {
   }
 
   selectFolder(node, $event): void {
-    if (!node.origin.isLeaf) { node.isExpanded = !node.isExpanded; }
+    if (!node.origin.isLeaf) {
+      node.isExpanded = !node.isExpanded;
+    }
     $event.stopPropagation();
   }
 
@@ -326,7 +328,7 @@ export class OrderSearchComponent implements OnInit {
   selector: 'app-task-form-template',
   templateUrl: './task-form-template.html',
 })
-export class TaskSearchComponent implements OnInit {
+export class TaskSearchComponent {
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
@@ -343,14 +345,14 @@ export class TaskSearchComponent implements OnInit {
   submitted = false;
   isUnique = true;
   checkOptions = [
-    { label: 'successful', value: 'SUCCESSFUL', checked: false },
-    { label: 'failed', value: 'FAILED', checked: false },
-    { label: 'incomplete', value: 'INCOMPLETE', checked: false }
+    {label: 'successful', value: 'SUCCESSFUL', checked: false},
+    {label: 'failed', value: 'FAILED', checked: false},
+    {label: 'incomplete', value: 'INCOMPLETE', checked: false}
   ];
   criticalities = [
-    { label: 'normal', value: 'NORMAL', checked: false },
-    { label: 'minor', value: 'MINOR', checked: false },
-    { label: 'major', value: 'MAJOR', checked: false }
+    {label: 'normal', value: 'NORMAL', checked: false},
+    {label: 'minor', value: 'MINOR', checked: false},
+    {label: 'major', value: 'MAJOR', checked: false}
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService) {
@@ -358,7 +360,7 @@ export class TaskSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    if(this.filter.name){
+    if (this.filter.name) {
       this.existingName = this.coreService.clone(this.filter.name);
     }
     this.getFolderTree();
@@ -414,7 +416,9 @@ export class TaskSearchComponent implements OnInit {
   }
 
   selectFolder(node, $event): void {
-    if (!node.origin.isLeaf) { node.isExpanded = !node.isExpanded; }
+    if (!node.origin.isLeaf) {
+      node.isExpanded = !node.isExpanded;
+    }
     $event.stopPropagation();
   }
 
@@ -544,7 +548,7 @@ export class TaskSearchComponent implements OnInit {
   selector: 'app-deployment-form-template',
   templateUrl: './deployment-form-template.html',
 })
-export class DeploymentSearchComponent implements OnInit {
+export class DeploymentSearchComponent {
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
@@ -567,7 +571,7 @@ export class DeploymentSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    if(this.filter.name){
+    if (this.filter.name) {
       this.existingName = this.coreService.clone(this.filter.name);
     }
     this.deployTypes = Object.keys(InventoryForHistory).filter(key => isNaN(+key));
@@ -659,7 +663,7 @@ export class DeploymentSearchComponent implements OnInit {
   selector: 'app-submission-form-template',
   templateUrl: './submission-form-template.html',
 })
-export class SubmissionSearchComponent implements OnInit {
+export class SubmissionSearchComponent {
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
@@ -685,7 +689,7 @@ export class SubmissionSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    if(this.filter.name){
+    if (this.filter.name) {
       this.existingName = this.coreService.clone(this.filter.name);
     }
     if (this.filter.type && this.filter.type.length > 0) {
@@ -789,7 +793,7 @@ export class SubmissionSearchComponent implements OnInit {
   selector: 'app-single-history',
   templateUrl: './single-history.component.html'
 })
-export class SingleHistoryComponent implements OnInit, OnDestroy {
+export class SingleHistoryComponent {
   loading = true;
   controllerId: any = {};
   preferences: any = {};
@@ -1040,7 +1044,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   selector: 'app-history',
   templateUrl: './history.component.html'
 })
-export class HistoryComponent implements OnInit, OnDestroy {
+export class HistoryComponent {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -1157,7 +1161,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.selectedFiltered1.paths && this.selectedFiltered1.paths.length > 0) {
       obj.folders = [];
       this.selectedFiltered1.paths.forEach((value) => {
-        obj.folders.push({ folder: value, recursive: false });
+        obj.folders.push({folder: value, recursive: false});
       });
     }
     if (this.selectedFiltered1.workflowPath) {
@@ -1299,7 +1303,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.selectedFiltered2.paths && this.selectedFiltered2.paths.length > 0) {
       obj.folders = [];
       this.selectedFiltered2.paths.forEach((value) => {
-        obj.folders.push({ folder: value, recursive: false });
+        obj.folders.push({folder: value, recursive: false});
       });
     }
     if (this.selectedFiltered2.workflowPath) {
@@ -1753,7 +1757,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
         obj.paths.forEach((value) => {
-          filter.folders.push({ folder: value, recursive: false });
+          filter.folders.push({folder: value, recursive: false});
         });
       }
       if (obj.workflowPath) {
@@ -1818,7 +1822,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
         obj.paths.forEach((value) => {
-          filter.folders.push({ folder: value, recursive: false });
+          filter.folders.push({folder: value, recursive: false});
         });
       }
       if (obj.workflowPath) {
@@ -1861,7 +1865,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
         obj.paths.forEach((value) => {
-          filter.folders.push({ folder: value, recursive: false });
+          filter.folders.push({folder: value, recursive: false});
         });
       }
 
@@ -3260,7 +3264,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (this.order.workflow) {
           this.advancedSearch();
           this.orderSearch.workflowPath = this.order.workflow;
-          if(this.order.fromDate) {
+          if (this.order.fromDate) {
             this.orderSearch.fromDate = this.order.fromDate;
             delete this.order.fromDate
           }
@@ -3270,18 +3274,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
           this.orderHistory(obj, flag);
         }
       } else if (this.historyFilters.type === 'TASK') {
-         if (this.task.workflow) {
+        if (this.task.workflow) {
           this.advancedSearch();
           this.jobSearch.workflowPath = this.task.workflow;
-           if(this.task.fromDate) {
+          if (this.task.fromDate) {
             this.jobSearch.fromDate = this.task.fromDate;
             delete this.task.fromDate
           }
           delete this.task.workflow;
           this.search(this.jobSearch);
         } else {
-           this.taskHistory(obj, flag);
-         }
+          this.taskHistory(obj, flag);
+        }
       } else if (this.historyFilters.type === 'YADE') {
         this.yadeHistory(obj, flag);
       } else if (this.historyFilters.type === 'DEPLOYMENT') {
@@ -3351,7 +3355,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: EditFilterModalComponent,
-      nzComponentParams: obj,
+      nzData: obj,
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false

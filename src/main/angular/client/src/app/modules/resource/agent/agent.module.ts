@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {ResourceSharedModule} from '../resource-shared.module';
 import {AgentRoutingModule} from './agent-routing.module';
-import {AgentComponent} from './agent.component';
+import {AgentComponent, ConfirmNodeModalComponent} from './agent.component';
 import {SharedModule} from '../../shared/shared.module';
 
 @NgModule({
@@ -10,7 +10,7 @@ import {SharedModule} from '../../shared/shared.module';
     ResourceSharedModule,
     AgentRoutingModule
   ],
-  declarations: [AgentComponent]
+  declarations: [AgentComponent, ConfirmNodeModalComponent]
 })
 export class AgentModule {
 }

@@ -4,7 +4,10 @@ import {isArray} from 'underscore';
 import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
-import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../../components/modify-modal/modify.component';
+import {
+  ChangeParameterModalComponent,
+  ModifyStartTimeModalComponent
+} from '../../../components/modify-modal/modify.component';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 
 @Component({
@@ -36,7 +39,7 @@ export class OrderActionComponent {
         nzTitle: undefined,
         nzContent: ResumeOrderModalComponent,
         nzClassName: 'x-lg',
-        nzComponentParams: {
+        nzData: {
           preferences: this.preferences,
           schedulerId: this.schedulerId,
           order: this.coreService.clone(this.order)
@@ -92,7 +95,7 @@ export class OrderActionComponent {
     const obj: any = {
       controllerId: this.schedulerId, orderIds: [order.orderId], kill: isKill
     };
-    if(deep){
+    if (deep) {
       obj.deep = true;
     }
     if (this.preferences.auditLog) {
@@ -135,7 +138,7 @@ export class OrderActionComponent {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmModalComponent,
-      nzComponentParams: {
+      nzData: {
         title: 'confirm',
         question: this.order.question
       },
@@ -155,7 +158,7 @@ export class OrderActionComponent {
       nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerId,
         preferences: this.preferences,
         order
@@ -200,7 +203,7 @@ export class OrderActionComponent {
         nzTitle: undefined,
         nzContent: ChangeParameterModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           schedulerId: this.schedulerId,
           orderPreparation: order.requirements,
           order: this.coreService.clone(order),

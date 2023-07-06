@@ -8,7 +8,7 @@ import {DataService} from '../../../services/data.service';
   selector: 'app-inventory-statistics',
   templateUrl: './inventory-statistics.component.html'
 })
-export class InventoryStatisticsComponent implements OnInit, OnDestroy {
+export class InventoryStatisticsComponent {
   @Input('sizeX') xbody: number;
   @Input('sizeY') ybody: number;
   statistics: any = {};
@@ -19,7 +19,7 @@ export class InventoryStatisticsComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService, private coreService: CoreService, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
-      if(res) {
+      if (res) {
         this.refresh(res);
       }
     });

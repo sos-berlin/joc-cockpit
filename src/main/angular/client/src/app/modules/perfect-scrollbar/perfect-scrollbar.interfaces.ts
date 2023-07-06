@@ -1,4 +1,4 @@
-import { InjectionToken } from '@angular/core';
+import {InjectionToken} from '@angular/core';
 
 export const PERFECT_SCROLLBAR_CONFIG = new InjectionToken('PERFECT_SCROLLBAR_CONFIG');
 
@@ -27,7 +27,7 @@ export class Position {
   }
 }
 
-export type PerfectScrollbarEvent = 'psScrollY' | 'psScrollX' | 'psScrollUp'| 'psScrollDown' |
+export type PerfectScrollbarEvent = 'psScrollY' | 'psScrollX' | 'psScrollUp' | 'psScrollDown' |
   'psScrollLeft' | 'psScrollRight' | 'psYReachEnd' | 'psYReachStart' | 'psXReachEnd' | 'psXReachStart';
 
 export const PerfectScrollbarEvents: PerfectScrollbarEvent[] = [

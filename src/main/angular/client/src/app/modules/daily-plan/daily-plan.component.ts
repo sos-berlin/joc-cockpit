@@ -1,11 +1,8 @@
 import {
   Component,
   ElementRef,
-  EventEmitter,
+  EventEmitter, inject,
   Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -13,7 +10,7 @@ import {
 } from '@angular/core';
 import {forkJoin, of, Subject, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {isEmpty, groupBy, sortBy, clone, isArray} from 'underscore';
 import {Router} from '@angular/router';
 import {catchError, takeUntil} from 'rxjs/operators';
@@ -39,11 +36,12 @@ declare const $: any;
   selector: 'app-create-plan-modal-content',
   templateUrl: './create-plan-dialog.html'
 })
-export class CreatePlanModalComponent implements OnInit {
-  @Input() schedulerId;
-  @Input() selectedDate;
-  @Input() dateRanges;
-  @Input() preferences: any;
+export class CreatePlanModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerId = ''
+  selectedDate: Date | string | undefined;
+  dateRanges: any = [];
+  preferences: any;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   objects: any = [];
   object: any = {at: 'all', overwrite: false, submitWith: false, workflowPaths: [], paths: []};
@@ -61,6 +59,10 @@ export class CreatePlanModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId;
+    this.selectedDate = this.modalData.selectedDate;
+    this.dateRanges = this.modalData.dateRanges;
+    this.preferences = this.modalData.preferences;
     this.display = this.preferences.auditLog;
     this.getWorkflowTree();
     this.getScheduleTree();
@@ -174,7 +176,7 @@ export class CreatePlanModalComponent implements OnInit {
   selector: 'app-remove-plan-modal',
   templateUrl: './remove-plan-dialog.html',
 })
-export class RemovePlanModalComponent implements OnInit {
+export class RemovePlanModalComponent {
   @Input() schedulerId: string;
   @Input() orders;
   @Input() order;
@@ -332,7 +334,7 @@ export class RemovePlanModalComponent implements OnInit {
   template: `
     <div #jsgantt class='jsgantt-chart'></div>`,
 })
-export class GanttComponent implements OnInit, OnDestroy, OnChanges {
+export class GanttComponent {
   @ViewChild('jsgantt', {static: true}) editor: ElementRef;
 
   @Input() data: any;
@@ -349,7 +351,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     this.initConfig();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     JSGantt();
     this.init();
   }
@@ -483,7 +485,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   selector: 'app-ngbd-modal-content',
   templateUrl: './filter-dialog.html',
 })
-export class FilterModalComponent implements OnInit {
+export class FilterModalComponent {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -537,7 +539,7 @@ export class FilterModalComponent implements OnInit {
   selector: 'app-form-template',
   templateUrl: './form-template.html',
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent {
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
@@ -570,7 +572,7 @@ export class SearchComponent implements OnInit {
     if (!this.filter.workflowFolders) {
       this.filter.workflowFolders = [];
     }
-    if(this.filter.name){
+    if (this.filter.name) {
       this.existingName = this.coreService.clone(this.filter.name);
     }
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
@@ -686,7 +688,7 @@ export class SearchComponent implements OnInit {
   templateUrl: './daily-plan.component.html',
   styleUrls: ['./daily-plan.component.css']
 })
-export class DailyPlanComponent implements OnInit, OnDestroy {
+export class DailyPlanComponent {
   objectType = 'DAILYPLAN';
   schedulerIds: any = {};
   preferences: any = {};
@@ -1019,7 +1021,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: ModifyStartTimeModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           schedulerId: self.schedulerIds.selected,
           orders: self.object.mapOfCheckedId,
           isDailyPlan: true,
@@ -1078,7 +1080,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: ChangeParameterModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           schedulerId: self.schedulerIds.selected,
           orders: self.object.mapOfCheckedId,
           orderPreparation: requirements,
@@ -1696,7 +1698,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           nzTitle: undefined,
           nzContent: ModifyStartTimeModalComponent,
           nzClassName: 'lg',
-          nzComponentParams: {
+          nzData: {
             schedulerId: this.schedulerIds.selected,
             order,
             plan,
@@ -2083,7 +2085,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerIds.selected,
         order,
         plan,
@@ -2426,7 +2428,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: EditFilterModalComponent,
-      nzComponentParams: {
+      nzData: {
         filterList: this.filterList,
         favorite: this.savedFilter.favorite,
         permission: this.permission,

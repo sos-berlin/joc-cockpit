@@ -13,7 +13,9 @@ import {SchedulerInstanceComponent} from './scheduler-instance/scheduler-instanc
 import {ActionComponent, CommentModalComponent} from './action/action.component';
 import {ControllerClusterComponent} from './controller-cluster/controller-cluster.component';
 import {InventoryStatisticsComponent} from './inventory-statistics/inventory-statistics.component';
-import {FileTransferHistorySummaryComponent} from './file-transfer-history-summary/file-transfer-history-summary.component';
+import {
+  FileTransferHistorySummaryComponent
+} from './file-transfer-history-summary/file-transfer-history-summary.component';
 import {AgentClusterStatusComponent} from "./agent-cluster-status/agent-cluster-status.component";
 import {APIServerStatusComponent} from './api-server-status/api-server-status.component';
 

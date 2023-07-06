@@ -1,9 +1,9 @@
-import {Component, OnInit, Renderer2} from '@angular/core';
+import {Component, Renderer2} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
-import AES from 'crypto-js/aes';
-import Utf8 from 'crypto-js/enc-utf8';
+import * as AES from 'crypto-js/aes';
+import * as Utf8 from 'crypto-js/enc-utf8';
 import {isArray} from "underscore";
 import {HttpHeaders} from "@angular/common/http";
 import {CoreService} from '../../services/core.service';
@@ -14,7 +14,7 @@ import {AuthService, OIDCAuthService} from '../../components/guard';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   user: any = {};
   schedulerIds: any = {};
   submitted = false;
@@ -39,8 +39,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadProviders();
-    this.getDefaultConfiguration();
     if (localStorage['$SOS$REMEMBER'] === 'true' || localStorage['$SOS$REMEMBER'] === true) {
       if (localStorage['$SOS$FOO']) {
         const urs = AES.decrypt(localStorage['$SOS$FOO'].toString(), '$SOSJS7');
@@ -58,6 +56,9 @@ export class LoginComponent implements OnInit {
     }
     if (this.authService.accessTokenId) {
       this.router.navigate(['/dashboard']).then();
+    } else {
+      this.loadProviders();
+      this.getDefaultConfiguration();
     }
   }
 
@@ -84,12 +85,14 @@ export class LoginComponent implements OnInit {
           const elem: any = document.getElementsByClassName('login-box');
           if (elem.length > 0) {
             let logHt = (res.customLogo.height || '140px').replace(/^\D+/g, '');
-            let ht = (window.innerHeight - document.getElementById('center-block')?.clientHeight);
-
-            if (ht < parseInt(logHt)) {
-              elem[0].style.height = 'calc(100% + ' + (parseInt(logHt)) + 'px)';
-            }
+            setTimeout(() => {
+              let ht = (window.innerHeight - document.getElementById('center-block')?.clientHeight);
+              if (ht < parseInt(logHt)) {
+                elem[0].style.height = 'calc(100% + ' + (parseInt(logHt) + 64) + 'px)';
+              }
+            }, 200)
           }
+
           const dom = document.getElementById(res.customLogo.position && res.customLogo.position.match('top') ? 'logo-top' : 'logo-bottom');
           if (dom) {
             // Append the created div to the body element
@@ -197,7 +200,6 @@ export class LoginComponent implements OnInit {
       }
     });
   }
-
 
   registerDevice(identityServiceName) {
     if (this.coreService.checkConnection()) {
@@ -386,7 +388,7 @@ export class LoginComponent implements OnInit {
         } else {
           this.router.navigate([this.returnUrl]).then();
         }
-      }, error: (err) => {
+      }, error: () => {
         this.submitted = false;
         this.errorMsg = true;
       }

@@ -1,47 +1,47 @@
 <div class="modal-header">
-  <h4 class="modal-title" *ngIf="!orders">
+  <h4 *ngIf="!orders" class="modal-title">
     <span translate> order.label.resumeOrder</span>
     :
     <i class="text-muted p-l-xs text">{{order.orderId}}</i>
   </h4>
-  <h4 class="modal-title" *ngIf="orders">
+  <h4 *ngIf="orders" class="modal-title">
     <span translate> order.label.resumeAllSelectedOrder</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="cancel()">
+  <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a min-ht-300">
-    <div class="hide" [ngClass]="{'show': display}">
+    <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     </div>
     <div *ngIf="workflow">
       <div class="form-group row m-b-0">
         <div class="col-md-12 m-b-sm _600" translate>order.label.listOfConstants</div>
-        <div class="col-md-12 m-b-sm" *ngIf="constants.length == 0"><span><</span>empty></div>
+        <div *ngIf="constants.length == 0" class="col-md-12 m-b-sm"><span><</span>empty></div>
       </div>
-      <div class="form-group row m-b-0" *ngIf="constants.length > 0">
+      <div *ngIf="constants.length > 0" class="form-group row m-b-0">
         <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
         <div class="col-md-4 col-lg-7 m-b-sm" translate>common.label.value</div>
       </div>
-      <div class="row" *ngFor="let argument of constants; let i=index">
-        <div class="col-sm-4 m-b-sm" [ngClass]="{'col-sm-10' : argument.type == 'list'}">
-          <input readonly type="text" class="form-control"
-                 name="wname_{{i}}" [(ngModel)]="argument.name">
+      <div *ngFor="let argument of constants; let i=index" class="row">
+        <div [ngClass]="{'col-sm-10' : argument.type == 'list'}" class="col-sm-4 m-b-sm">
+          <input [(ngModel)]="argument.name" class="form-control" name="wname_{{i}}"
+                 readonly type="text">
         </div>
-        <div class="col-md-6 col-lg-6 m-b-sm" *ngIf="argument.type != 'list'">
-          <input readonly type="text" class="form-control" name="wvalue{{i}}" [(ngModel)]="argument.value" >
+        <div *ngIf="argument.type != 'list'" class="col-md-6 col-lg-6 m-b-sm">
+          <input [(ngModel)]="argument.value" class="form-control" name="wvalue{{i}}" readonly type="text">
         </div>
-        <ng-container class="m-b-sm" *ngIf="argument.type == 'list'">
-          <div class="col-md-12" *ngFor="let val of argument.value; let j = index" [ngClass]="{'b-t p-t-sm': j > 0}">
-            <div class="row" *ngFor="let item of val;let k = index">
-              <div class="col-md-4 p-l-md m-b-sm" >
-                <input readonly type="text" class="form-control" name="wlname{{i}}{{j}}{{k}}" [(ngModel)]="item.name" >
+        <ng-container *ngIf="argument.type == 'list'" class="m-b-sm">
+          <div *ngFor="let val of argument.value; let j = index" [ngClass]="{'b-t p-t-sm': j > 0}" class="col-md-12">
+            <div *ngFor="let item of val;let k = index" class="row">
+              <div class="col-md-4 p-l-md m-b-sm">
+                <input [(ngModel)]="item.name" class="form-control" name="wlname{{i}}{{j}}{{k}}" readonly type="text">
               </div>
               <div class="col-md-6 m-b-sm">
-                <input readonly type="text" class="form-control" name="wlvalue{{i}}{{j}}{{k}}" [(ngModel)]="item.value" >
+                <input [(ngModel)]="item.value" class="form-control" name="wlvalue{{i}}{{j}}{{k}}" readonly type="text">
               </div>
             </div>
           </div>
@@ -49,104 +49,111 @@
       </div>
       <div class="form-group row m-b-0 m-t-sm">
         <div class="col-md-12 m-b-sm _600" translate>order.label.listOfDynamicallyVariables</div>
-        <div class="col-md-12 m-b-sm" *ngIf="variables.length == 0"><span><</span>empty></div>
+        <div *ngIf="variables.length == 0" class="col-md-12 m-b-sm"><span><</span>empty></div>
       </div>
-      <div class="form-group row m-b-0" *ngIf="variables.length > 0">
+      <div *ngIf="variables.length > 0" class="form-group row m-b-0">
         <div class="pos-abt m-l-12">
-          <label nz-checkbox [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
-                 (nzCheckedChange)="onAllChecked($event)"></label>
+          <label (nzCheckedChange)="onAllChecked($event)" [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
+                 nz-checkbox></label>
         </div>
         <div class="col-md-4 col-lg-4 m-b-sm" style="padding-left: 36px" translate>common.label.name</div>
         <div class="col-md-4 col-lg-7 m-b-sm" translate>common.label.value</div>
       </div>
-      <div class="form-group row m-b-0" *ngFor="let argument of variables; let i=index">
+      <div *ngFor="let argument of variables; let i=index" class="form-group row m-b-0">
         <div class="pos-abt m-l-12">
-          <label nz-checkbox style="position: relative;top:5px" [nzDisabled]="!argument.name"
-                 [nzChecked]="object.setOfCheckedValue.has(argument.name)"
-                 (nzCheckedChange)="onItemChecked(argument, $event)"></label>
+          <label (nzCheckedChange)="onItemChecked(argument, $event)" [nzChecked]="object.setOfCheckedValue.has(argument.name)" [nzDisabled]="!argument.name"
+                 nz-checkbox
+                 style="position: relative;top:5px"></label>
         </div>
-        <div class="col-sm-4 m-b-sm" style="padding-left: 36px" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid), 'col-sm-10' : argument.isArray}">
-          <input #name="ngModel" required autocomplete="off" type="text" class="form-control"
-                 name="name_{{i}}"
-                 [(ngModel)]="argument.name" placeholder="{{'common.placeholder.name' | translate}}">
+        <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid), 'col-sm-10' : argument.isArray}" class="col-sm-4 m-b-sm"
+             style="padding-left: 36px">
+          <input #name="ngModel" [(ngModel)]="argument.name" autocomplete="off" class="form-control" name="name_{{i}}"
+                 placeholder="{{'common.placeholder.name' | translate}}"
+                 required type="text">
         </div>
-        <div class="col-sm-1 p-l-0" *ngIf="argument.isArray">
+        <div *ngIf="argument.isArray" class="col-sm-1 p-l-0">
           <a><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-muted"></i></a>
         </div>
         <ng-container *ngIf="argument.isArray">
           <ng-container *ngFor="let item of argument.value; let j=index">
-            <div class="col-sm-10 m-b-sm p-l-lg"
-                 [ngClass]="{'has-error' : ((item.dirty || item.touched) && item.invalid)}">
-              <input #item="ngModel" autocomplete="off" type="text"
-                     class="form-control" name="item{{i}}{{j}}" (keydown)="onKeyPress($event)"
-                     [(ngModel)]="item.value" placeholder="{{'common.placeholder.value' | translate}}">
-              <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline"
-                 (click)="openEditor(item)"></i>
+            <div [ngClass]="{'has-error' : ((item.dirty || item.touched) && item.invalid)}"
+                 class="col-sm-10 m-b-sm p-l-lg">
+              <input #item="ngModel" (keydown)="onKeyPress($event,argument)" [(ngModel)]="item.value"
+                     autocomplete="off" class="form-control" name="item{{i}}{{j}}"
+                     placeholder="{{'common.placeholder.value' | translate}}" type="text">
+              <i (click)="openEditor(item)" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
+                 nzType="form"></i>
             </div>
             <div class="col-sm-1 p-l-0">
-              <a *ngIf="j == argument.value.length-1" class="text-primary-hover"><i (click)="addArgumentVal(argument.value)" class="fa fa-plus m-r-sm text-muted"></i></a>
+              <a *ngIf="j == argument.value.length-1" class="text-primary-hover"><i
+                (click)="addArgumentVal(argument.value)" class="fa fa-plus m-r-sm text-muted"></i></a>
               <a><i (click)="removeArgumentVal(argument.value, j)" class="fa fa-times m-t-sm text-muted"></i></a>
             </div>
           </ng-container>
         </ng-container>
         <ng-container *ngIf="!argument.isArray">
-          <div class="col-md-6 col-lg-6 m-b-sm"
-               [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-            <input #value="ngModel" autocomplete="off" type="text"
-                   class="form-control" name="value{{i}}" (keydown)="onKeyPress($event, argument)"
-                   [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
-            <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline"
-               (click)="openEditor(argument)"></i>
+          <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+               class="col-md-6 col-lg-6 m-b-sm">
+            <input #value="ngModel" (keydown)="onKeyPress($event, argument)" [(ngModel)]="argument.value"
+                   autocomplete="off" class="form-control" name="value{{i}}"
+                   placeholder="{{'common.placeholder.value' | translate}}" type="text">
+            <i (click)="openEditor(argument)" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
+               nzType="form"></i>
           </div>
           <div class="col-sm-1 p-l-0">
             <a><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-muted"></i></a>
           </div>
         </ng-container>
       </div>
-      <div class="form-group row" *ngIf="allowVariable">
+      <div *ngIf="allowVariable" class="form-group row">
         <div class="col-sm-12">
-          <a class="text-u-l" (click)="addArgument()" translate>order.button.addVariable</a>
+          <a (click)="addArgument()" class="text-u-l" translate>order.button.addVariable</a>
         </div>
       </div>
     </div>
-    <div class="text-center" *ngIf="!workflow">
+    <div *ngIf="!workflow" class="text-center">
       <nz-spin nzSimple></nz-spin>
     </div>
     <div *ngIf="workflow">
-      <div class="form-group row" *ngIf="withCyclePosition">
+      <div *ngIf="withCyclePosition" class="form-group row">
         <label class="col-sm-4 form-control-label" translate>
           order.label.cycleEndTime
-          <i [nz-tooltip]="'order.tooltip.cycleEndTime' | translate"  class=" p-l-xs fa fa-info-circle"></i>
+          <i [nz-tooltip]="'order.tooltip.cycleEndTime' | translate" class=" p-l-xs fa fa-info-circle"></i>
         </label>
-        <div class="col-sm-6"
-             [ngClass]="{'has-error' : ((cycleEndTime.dirty || cycleEndTime.touched) && cycleEndTime.invalid)}">
+        <div [ngClass]="{'has-error' : ((cycleEndTime.dirty || cycleEndTime.touched) && cycleEndTime.invalid)}"
+             class="col-sm-6">
           <label class="w-full">
-            <input autocomplete="off" #cycleEndTime="ngModel" type="text" class="form-control" name="cycleEndTime"
+            <input #cycleEndTime="ngModel" [(ngModel)]="order.cycleEndTime" autocomplete="off" class="form-control" name="cycleEndTime"
                    placeholder="{{'order.placeholder.enterCycleEndTime' | translate}}"
-                   validTimeReqex [(ngModel)]="order.cycleEndTime">
-            <div *ngIf="cycleEndTime.invalid && (cycleEndTime.dirty || cycleEndTime.touched)" class="text-danger help-block">
+                   type="text" validTimeReqex>
+            <div *ngIf="cycleEndTime.invalid && (cycleEndTime.dirty || cycleEndTime.touched)"
+                 class="text-danger help-block">
               <div *ngIf="cycleEndTime.errors['validTimeReqex']" translate>common.message.invalid</div>
             </div>
           </label>
         </div>
       </div>
 
-      <div class="hover" >
-        <a class="text-primary noExl" translate >workflow.label.start</a>
+      <div class="hover">
+        <a class="text-primary noExl" translate>workflow.label.start</a>
         <span class="expand-collapse-btn">
-          <i class="cursor fa fa-lg fa-angle-double-down" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="workflow.isExpand = true;"></i>
-          <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;"></i>
+          <i (click)="workflow.isExpand = true;" [nz-tooltip]="'common.tooltip.expandAll' | translate"
+             class="cursor fa fa-lg fa-angle-double-down"></i>
+          <i (click)="workflow.isExpand = false;" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+             class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
         </span>
       </div>
-      <app-workflow-tree-structure [disabledDrag]="disabledDrag" [jobs]="workflow.jobs" [configuration]="workflow.configuration" [orders]="orders" (onDrop)="onDrop($event)"
-                                   [expandAll]="workflow.isExpand"></app-workflow-tree-structure>
+      <app-workflow-tree-structure (onDrop)="onDrop($event)" [configuration]="workflow.configuration"
+                                   [disabledDrag]="disabledDrag" [expandAll]="workflow.isExpand" [jobs]="workflow.jobs"
+                                   [orders]="orders"></app-workflow-tree-structure>
     </div>
   </div>
   <div class="modal-footer text-left">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)">
+    <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+            type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>common.button.cancel</button>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
   </div>
 </form>

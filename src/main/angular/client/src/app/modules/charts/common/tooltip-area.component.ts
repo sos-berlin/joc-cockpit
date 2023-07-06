@@ -9,14 +9,14 @@ import {
   PLATFORM_ID,
   Inject
 } from '@angular/core';
-import { trigger, style, animate, transition } from '@angular/animations';
-import { createMouseEvent } from '../events';
-import { isPlatformBrowser } from '@angular/common';
-import { ColorHelper } from './color.helper';
-import { PlacementTypes } from './tooltip/position';
-import { StyleTypes } from './tooltip/style.type';
-import { ViewDimensions } from './types/view-dimension.interface';
-import { ScaleType } from './types/scale-type.enum';
+import {trigger, style, animate, transition} from '@angular/animations';
+import {createMouseEvent} from '../events';
+import {isPlatformBrowser} from '@angular/common';
+import {ColorHelper} from './color.helper';
+import {PlacementTypes} from './tooltip/position';
+import {StyleTypes} from './tooltip/style.type';
+import {ViewDimensions} from './types/view-dimension.interface';
+import {ScaleType} from './types/scale-type.enum';
 
 export interface Tooltip {
   color: string;
@@ -79,13 +79,13 @@ export interface Tooltip {
         style({
           opacity: 0
         }),
-        animate(250, style({ opacity: 0.7 }))
+        animate(250, style({opacity: 0.7}))
       ]),
       transition('active => inactive', [
         style({
           opacity: 0.7
         }),
-        animate(250, style({ opacity: 0 }))
+        animate(250, style({opacity: 0}))
       ])
     ])
   ]
@@ -111,9 +111,10 @@ export class TooltipArea {
 
   @Output() hover: EventEmitter<{ value: any }> = new EventEmitter();
 
-  @ViewChild('tooltipAnchor', { static: false }) tooltipAnchor;
+  @ViewChild('tooltipAnchor', {static: false}) tooltipAnchor;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: any) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: any) {
+  }
 
   getValues(xVal): Tooltip[] {
     const results = [];

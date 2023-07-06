@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+import {isPlatformBrowser} from '@angular/common';
 import {
   Component,
   Input,
@@ -13,10 +13,10 @@ import {
   Inject,
   PLATFORM_ID
 } from '@angular/core';
-import { trimLabel } from '../trim-label.helper';
-import { reduceTicks } from './ticks.helper';
-import { Orientation } from '../types/orientation.enum';
-import { TextAnchor } from '../types/text-anchor.enum';
+import {trimLabel} from '../trim-label.helper';
+import {reduceTicks} from './ticks.helper';
+import {Orientation} from '../types/orientation.enum';
+import {TextAnchor} from '../types/text-anchor.enum';
 
 @Component({
   selector: 'g[ngx-charts-x-axis-ticks]',
@@ -87,7 +87,8 @@ export class XAxisTicksComponent implements OnChanges, AfterViewInit {
 
   @ViewChild('ticksel') ticksElement: ElementRef;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: any) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: any) {
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.update();
@@ -100,14 +101,14 @@ export class XAxisTicksComponent implements OnChanges, AfterViewInit {
   updateDims(): void {
     if (!isPlatformBrowser(this.platformId)) {
       // for SSR, use approximate value instead of measured
-      this.dimensionsChanged.emit({ height: this.approxHeight });
+      this.dimensionsChanged.emit({height: this.approxHeight});
       return;
     }
 
     const height = parseInt(this.ticksElement.nativeElement.getBoundingClientRect().height, 10);
     if (height !== this.height) {
       this.height = height;
-      this.dimensionsChanged.emit({ height: 16 });
+      this.dimensionsChanged.emit({height: 16});
       setTimeout(() => this.updateDims());
     }
   }
@@ -133,9 +134,9 @@ export class XAxisTicksComponent implements OnChanges, AfterViewInit {
     const angle = this.rotateTicks ? this.getRotationAngle(this.ticks) : null;
 
     this.adjustedScale = this.scale.bandwidth
-      ?  (d) => {
-          return this.scale(d) + this.scale.bandwidth() * 0.5;
-        }
+      ? (d) => {
+        return this.scale(d) + this.scale.bandwidth() * 0.5;
+      }
       : this.scale;
 
     this.textTransform = '';
@@ -213,7 +214,7 @@ export class XAxisTicksComponent implements OnChanges, AfterViewInit {
   }
 
   tickTransformTop(tick: number): string {
-    return 'translate(' + this.adjustedScale(tick) + ',-' + (this.gridLineHeight + 6)  + ')';
+    return 'translate(' + this.adjustedScale(tick) + ',-' + (this.gridLineHeight + 6) + ')';
   }
 
 

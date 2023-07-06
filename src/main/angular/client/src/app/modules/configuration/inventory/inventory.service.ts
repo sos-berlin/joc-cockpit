@@ -32,7 +32,7 @@ export class InventoryService {
           arr[i].level = 6;
         } else if (arr[i].objectType === InventoryObject.INCLUDESCRIPT) {
           arr[i].level = 7;
-        }  else if (arr[i].objectType === InventoryObject.WORKINGDAYSCALENDAR) {
+        } else if (arr[i].objectType === InventoryObject.WORKINGDAYSCALENDAR) {
           arr[i].level = 8;
         } else if (arr[i].objectType === InventoryObject.NONWORKINGDAYSCALENDAR) {
           arr[i].level = 9;
@@ -123,7 +123,7 @@ export class InventoryService {
   }
 
   checkAndUpdateVersionList(data: any, flag = false): void {
-    if(data.children) {
+    if (data.children) {
       data.isCall = true;
       for (let i = 0; i < data.children.length; i++) {
         if (flag && data.children[i].type) {

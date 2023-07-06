@@ -1,25 +1,26 @@
 <div class="box p-a">
   <nz-table
     #ajaxTable
-    [nzSize]="'small'"
-    [nzPageSize]="preferences.entryPerPage || 25"
-    [nzPageIndex]="prof.currentPage"
     [nzBordered]="true"
     [nzData]="profiles"
     [nzLoading]="loading"
-    [nzShowSizeChanger]="true"
+    [nzPageIndex]="prof.currentPage"
     [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 500]"
+    [nzPageSize]="preferences.entryPerPage || 25"
+    [nzShowSizeChanger]="true"
+    [nzSize]="'small'"
   >
     <thead>
     <tr>
-      <th *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-        class="chk"
-        [nzShowCheckbox]="true"
-        [(nzChecked)]="checked"
-        [nzIndeterminate]="indeterminate"
-        (nzCheckedChange)="onAllChecked($event)"
+      <th (nzCheckedChange)="onAllChecked($event)"
+          *ngIf="permission.joc && permission.joc.administration.accounts.manage"
+          [(nzChecked)]="checked"
+          [nzIndeterminate]="indeterminate"
+          [nzShowCheckbox]="true"
+          class="chk"
       ></th>
-      <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span></th>
+      <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span>
+      </th>
       <th (click)="sort('account')">
         <a><span class="p-r-xs" translate>user.label.user</span>
           <i *ngIf="order == 'account' && !reverse"
@@ -38,33 +39,36 @@
     </thead>
     <tbody>
     <tr *ngFor="let profile of ajaxTable.data  | orderBy: order:reverse:false; let i = index">
-      <td *ngIf="permission.joc && permission.joc.administration.accounts.manage" [nzShowCheckbox]="true" [nzChecked]="setOfCheckedId.has(profile.account)" (nzCheckedChange)="onItemChecked(profile.account, $event)"></td>
+      <td (nzCheckedChange)="onItemChecked(profile.account, $event)" *ngIf="permission.joc && permission.joc.administration.accounts.manage"
+          [nzChecked]="setOfCheckedId.has(profile.account)"
+          [nzShowCheckbox]="true"></td>
       <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
         <div class="btn-group dropdown">
-          <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option">
+          <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" type="button">
             <i class="fa fa-ellipsis-h"></i></button>
           <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-            <ul nz-menu >
-              <li (click)="deleteProfile(profile, false)" nz-menu-item >
+            <ul nz-menu>
+              <li (click)="deleteProfile(profile, false)" nz-menu-item>
                 <a translate>user.button.deleteProfile</a>
               </li>
-              <li (click)="deleteProfile(profile, true)" nz-menu-item >
+              <li (click)="deleteProfile(profile, true)" nz-menu-item>
                 <a translate>user.button.deleteProfileAndCustomization</a>
               </li>
             </ul>
           </nz-dropdown-menu>
         </div>
       </td>
-      <td> <a (click)="showMaster(profile.account)" class="text-hover-primary" [innerHTML]="profile.account | decodeSpace"></a></td>
+      <td><a (click)="showMaster(profile.account)" [innerHTML]="profile.account | decodeSpace"
+             class="text-hover-primary"></a></td>
       <td>
         <span [innerHTML]="profile.lastLogin | stringToDate"></span>
       </td>
     </tr>
     </tbody>
   </nz-table>
-  <div class="w-half label-top" *ngIf="profiles.length >0">
+  <div *ngIf="profiles.length >0" class="w-half label-top">
     <span translate>common.label.total</span><span> {{profiles.length}} </span>
-    <span translate *ngIf="profiles.length >1">user.label.usersFound</span>
-    <span translate *ngIf="profiles.length ==1">user.label.usersFound</span>
+    <span *ngIf="profiles.length >1" translate>user.label.usersFound</span>
+    <span *ngIf="profiles.length ==1" translate>user.label.usersFound</span>
   </div>
 </div>

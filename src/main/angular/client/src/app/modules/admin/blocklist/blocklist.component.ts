@@ -1,7 +1,6 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {Component, inject} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
-
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ConfirmationModalComponent} from '../accounts/accounts.component';
 import {CoreService} from '../../../services/core.service';
@@ -12,10 +11,11 @@ import {DataService} from '../data.service';
   selector: 'app-add-to-blocklist',
   templateUrl: './add-to-blocklist-dialog.html'
 })
-export class AddBlocklistModalComponent implements OnInit {
-  @Input() bulkBlock = false;
-  @Input() obj: any;
-  @Input() existingComments: any;
+export class AddBlocklistModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  bulkBlock = false;
+  obj: any;
+  existingComments: any;
   submitted = false;
   accountName = '';
   display: any;
@@ -27,6 +27,9 @@ export class AddBlocklistModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.bulkBlock = this.modalData.bulkBlock;
+    this.obj = this.modalData.obj;
+    this.existingComments = this.modalData.existingComments;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -69,8 +72,9 @@ export class AddBlocklistModalComponent implements OnInit {
   selector: 'app-blocklist',
   templateUrl: './blocklist.component.html'
 })
-export class BlocklistComponent implements OnInit, OnDestroy {
-  @Input() permission: any = {};
+export class BlocklistComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  permission: any = {};
   isLoaded = false;
   blocklist = [];
   data = [];
@@ -99,6 +103,7 @@ export class BlocklistComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.permission = this.modalData.permission;
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.blocklistFilter = this.coreService.getAdminTab().blocklist;
     if (this.preferences.entryPerPage) {
@@ -194,7 +199,7 @@ export class BlocklistComponent implements OnInit, OnDestroy {
     this.checkCheckBoxState();
   }
 
-  onItemChecked(account:any, checked: boolean): void {
+  onItemChecked(account: any, checked: boolean): void {
     if (!checked && this.object.mapOfCheckedId.size > (this.blocklistFilter.entryPerPage || this.preferences.entryPerPage)) {
       const users = this.getCurrentData(this.data, this.blocklistFilter);
       if (users.length < this.data.length) {
@@ -228,7 +233,7 @@ export class BlocklistComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzAutofocus: null,
       nzContent: AddBlocklistModalComponent,
-      nzComponentParams: {
+      nzData: {
         existingComments: this.dataService.comments,
         bulkBlock: true
       },
@@ -257,7 +262,7 @@ export class BlocklistComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -278,7 +283,7 @@ export class BlocklistComponent implements OnInit, OnDestroy {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmationModalComponent,
-        nzComponentParams: {
+        nzData: {
           delete: true,
           account: acc,
           blocklist: true

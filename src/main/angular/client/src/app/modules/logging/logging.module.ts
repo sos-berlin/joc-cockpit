@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 import {Logging2Component, LoggingComponent} from './logging.component';
 import {LoggingRoutingModule} from './logging-routing.module';
 import {SharedModule} from '../shared/shared.module';
@@ -10,4 +10,5 @@ import {SharedModule} from '../shared/shared.module';
     SharedModule
   ]
 })
-export class LoggingModule { }
+export class LoggingModule {
+}

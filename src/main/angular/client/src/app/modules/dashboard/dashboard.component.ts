@@ -31,7 +31,7 @@ export class AddWidgetModalComponent {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent {
   options: GridsterConfig = {};
   dashboard: Array<any> = [];
   editLayoutObj = false;
@@ -146,7 +146,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmModalComponent,
-      nzComponentParams: {
+      nzData: {
         title: 'resetLayout',
         message: 'resetLayout',
         type: 'Reset',
@@ -369,7 +369,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'name': 'agentClusterStatus',
         'visible': false,
         'message': 'message.agentClusterStatus'
-      } , {
+      }, {
         'cols': 12,
         'rows': 3,
         'y': 12,

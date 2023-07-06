@@ -1,6 +1,6 @@
 <ng-container>
-  <a class="nav-link pointer top-14" [ngClass]="{'text-white' : isHeader}">
-  <span class="cursor text-left p-l-xs" nz-dropdown nzTrigger="click" [nzDropdownMenu]="help" nzPlacement="bottomRight">
+  <a [ngClass]="{'text-white' : isHeader}" class="nav-link pointer top-14">
+  <span [nzDropdownMenu]="help" class="cursor text-left p-l-xs" nz-dropdown nzPlacement="bottomRight" nzTrigger="click">
     <i class="fa fa-question-circle text-20"></i>
   </span>
   </a>
@@ -10,82 +10,82 @@
       <li nz-submenu nzTitle="{{'info.button.featuresAndDownload' | translate}} ">
         <ul>
           <li nz-menu-item>
-            <a target="_blank"
-               href="https://www.sos-berlin.com/jobscheduler">{{'info.button.js7Features' | translate}}</a>
+            <a href="https://www.sos-berlin.com/jobscheduler"
+               target="_blank">{{'info.button.js7Features' | translate}}</a>
           </li>
           <li nz-menu-item>
-            <a target="_blank"
-               href="https://www.sos-berlin.com/jobscheduler-downloads">{{'info.button.js7Download' | translate}}</a>
+            <a href="https://www.sos-berlin.com/jobscheduler-downloads"
+               target="_blank">{{'info.button.js7Download' | translate}}</a>
           </li>
         </ul>
       </li>
       <li nz-submenu nzTitle="{{'info.button.examples' | translate}} ">
         <ul>
           <li nz-menu-item>
-            <a target="_blank" [nz-tooltip]="'info.tooltip.globalVariablesAndEmailSettings' | translate"
-               href="https://download.sos-berlin.com/JobScheduler.2.0/Defaults.zip">{{'info.button.jobResourceDefaults' | translate}}</a>
+            <a [nz-tooltip]="'info.tooltip.globalVariablesAndEmailSettings' | translate" href="https://download.sos-berlin.com/JobScheduler.2.0/Defaults.zip"
+               target="_blank">{{'info.button.jobResourceDefaults' | translate}}</a>
           </li>
           <li nz-menu-item>
-            <a target="_blank" [nz-tooltip]="'info.tooltip.workflowExampleForUnix' | translate"
-               href="https://download.sos-berlin.com/JobScheduler.2.0/Examples.tar.gz">{{'info.button.examplesForUnix' | translate}}</a>
+            <a [nz-tooltip]="'info.tooltip.workflowExampleForUnix' | translate" href="https://download.sos-berlin.com/JobScheduler.2.0/Examples.tar.gz"
+               target="_blank">{{'info.button.examplesForUnix' | translate}}</a>
           </li>
           <li nz-menu-item>
-            <a target="_blank" [nz-tooltip]="'info.tooltip.workflowExampleForWindows' | translate"
-               href="https://download.sos-berlin.com/JobScheduler.2.0/Examples.zip">{{'info.button.examplesForWindows' | translate}}</a>
+            <a [nz-tooltip]="'info.tooltip.workflowExampleForWindows' | translate" href="https://download.sos-berlin.com/JobScheduler.2.0/Examples.zip"
+               target="_blank">{{'info.button.examplesForWindows' | translate}}</a>
           </li>
         </ul>
       </li>
       <li nz-submenu nzTitle="{{'info.button.announcements' | translate}}">
         <ul>
           <li nz-menu-item>
-            <a target="_blank" href="https://www.sos-berlin.com/news">{{'info.button.js7News' | translate}}</a>
+            <a href="https://www.sos-berlin.com/news" target="_blank">{{'info.button.js7News' | translate}}</a>
           </li>
           <li nz-menu-item>
-            <a target="_blank"
-               href="https://kb.sos-berlin.com/x/s4BB">{{'info.button.releaseNotes' | translate}}</a>
+            <a href="https://kb.sos-berlin.com/x/s4BB"
+               target="_blank">{{'info.button.releaseNotes' | translate}}</a>
           </li>
           <li nz-menu-item>
-            <a target="_blank"
-               href="https://change.sos-berlin.com/">{{'info.button.changeManagementSystem' | translate}}</a>
+            <a href="https://change.sos-berlin.com/"
+               target="_blank">{{'info.button.changeManagementSystem' | translate}}</a>
           </li>
         </ul>
       </li>
       <li nz-submenu nzTitle="{{'info.button.documentation' | translate}}">
         <ul>
           <li nz-menu-item>
-            <a target="_blank"
-               href="https://js7.sh">{{'info.button.js7Documentation' | translate}}</a>
+            <a href="https://js7.sh"
+               target="_blank">{{'info.button.js7Documentation' | translate}}</a>
           </li>
           <li nz-menu-item>
-            <a target="_blank"
-               href="https://kb.sos-berlin.com/x/0RSGAw">{{'info.button.gettingStarted' | translate}}</a>
+            <a href="https://kb.sos-berlin.com/x/0RSGAw"
+               target="_blank">{{'info.button.gettingStarted' | translate}}</a>
           </li>
           <li nz-menu-item>
-            <a target="_blank"
-               href="https://www.youtube.com/channel/UCNd4RP5ep59Xqb0guNG9YIA">{{'info.button.videosOnYouTube' | translate}}</a>
+            <a href="https://www.youtube.com/channel/UCNd4RP5ep59Xqb0guNG9YIA"
+               target="_blank">{{'info.button.videosOnYouTube' | translate}}</a>
           </li>
         </ul>
       </li>
       <li nz-submenu nzTitle="{{'info.button.resources' | translate}}">
         <ul>
           <li nz-menu-item>
-            <a target="_blank" href="https://kb.sos-berlin.com/x/tYOyAw">{{'info.button.js7FAQ' | translate}}</a>
+            <a href="https://kb.sos-berlin.com/x/tYOyAw" target="_blank">{{'info.button.js7FAQ' | translate}}</a>
           </li>
           <li nz-menu-item>
-            <a target="_blank"
-               href="https://sourceforge.net/p/jobscheduler/discussion/">{{'info.button.js7Forum' | translate}}</a>
+            <a href="https://sourceforge.net/p/jobscheduler/discussion/"
+               target="_blank">{{'info.button.js7Forum' | translate}}</a>
           </li>
         </ul>
       </li>
       <li nz-submenu nzTitle="{{'info.button.supportRequests' | translate}}">
         <ul>
           <li nz-menu-item>
-            <a target="_blank"
-               href="https://sourceforge.net/p/jobscheduler/_list/tickets">{{'info.button.openSourceUserTicketSystem' | translate}}</a>
+            <a href="https://sourceforge.net/p/jobscheduler/_list/tickets"
+               target="_blank">{{'info.button.openSourceUserTicketSystem' | translate}}</a>
           </li>
           <li nz-menu-item>
-            <a target="_blank"
-               href="https://support.sos-berlin.com/otrs/customer.pl?Lang=en">{{'info.button.customerTicketSystem' | translate}}</a>
+            <a href="https://support.sos-berlin.com/otrs/customer.pl?Lang=en"
+               target="_blank">{{'info.button.customerTicketSystem' | translate}}</a>
           </li>
         </ul>
       </li>

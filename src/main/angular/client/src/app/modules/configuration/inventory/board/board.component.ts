@@ -1,14 +1,22 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
-import { clone, isEmpty, isEqual } from 'underscore';
-import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { CoreService } from '../../../../services/core.service';
-import { DataService } from '../../../../services/data.service';
-import { InventoryObject } from '../../../../models/enums';
-import { InventoryService } from '../inventory.service';
-import { CommentModalComponent } from '../../../../components/comment-modal/comment.component';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges
+} from '@angular/core';
+import {clone, isEmpty, isEqual} from 'underscore';
+import {Subscription} from 'rxjs';
+import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {CoreService} from '../../../../services/core.service';
+import {DataService} from '../../../../services/data.service';
+import {InventoryObject} from '../../../../models/enums';
+import {InventoryService} from '../inventory.service';
+import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-board',
@@ -39,7 +47,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private translate: TranslateService, public inventoryService: InventoryService,
-    private dataService: DataService, private ref: ChangeDetectorRef, private router: Router, private modal: NzModalService) {
+              private dataService: DataService, private ref: ChangeDetectorRef, private router: Router, private modal: NzModalService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.board.actual) {
@@ -226,7 +234,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
             nzTitle: undefined,
             nzContent: CommentModalComponent,
             nzClassName: 'lg',
-            nzComponentParams: {
+            nzData: {
               comments
             },
             nzFooter: null,
@@ -270,7 +278,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
           this.data.name = name;
         }
         data.name1 = name;
-        this.dataService.reloadTree.next({ rename: data });
+        this.dataService.reloadTree.next({rename: data});
       }, error: () => {
         this.board.name = this.data.name;
         this.board.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
@@ -291,11 +299,11 @@ export class BoardComponent implements OnChanges, OnDestroy {
   }
 
   deploy(): void {
-    this.dataService.reloadTree.next({ deploy: this.board });
+    this.dataService.reloadTree.next({deploy: this.board});
   }
 
   backToListView(): void {
-    this.dataService.reloadTree.next({ back: this.board });
+    this.dataService.reloadTree.next({back: this.board});
   }
 
   navToBoardTab(): void {
@@ -482,7 +490,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
 
       if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-          request.auditLog = { comment: translatedValue };
+          request.auditLog = {comment: translatedValue};
         });
       }
       this.coreService.post('inventory/store', request).subscribe({

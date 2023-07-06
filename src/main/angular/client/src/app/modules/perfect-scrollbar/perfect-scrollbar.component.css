@@ -149,10 +149,9 @@ perfect-scrollbar > .ps.ps--active-y > .ps__rail-y {
 
   cursor: default;
 
-  transition:
-    width 200ms linear,
-    opacity 200ms linear,
-    background-color 200ms linear;
+  transition: width 200ms linear,
+  opacity 200ms linear,
+  background-color 200ms linear;
 }
 
 perfect-scrollbar > .ps.ps--active-y > .ps__rail-y:hover,
@@ -169,10 +168,9 @@ perfect-scrollbar > .ps.ps--active-x > .ps__rail-x {
 
   cursor: default;
 
-  transition:
-    height 200ms linear,
-    opacity 200ms linear,
-    background-color 200ms linear;
+  transition: height 200ms linear,
+  opacity 200ms linear,
+  background-color 200ms linear;
 }
 
 perfect-scrollbar > .ps.ps--active-x > .ps__rail-x:hover,

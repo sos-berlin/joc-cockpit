@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import {TestBed} from '@angular/core/testing';
+import {Component} from '@angular/core';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 
-import { ChartCommonModule } from '../chart-common.module';
+import {ChartCommonModule} from '../chart-common.module';
 
 @Component({
   selector: 'test-component',

@@ -1867,10 +1867,10 @@
         "workflowName": "A reference to one or more workflows has to be added for which orders are created.",
         "planOrderAutomatically": "Orders are planned automatically, i.e. based on the Daily Plan Service settings orders are created for the next few days in advance.",
         "submitOrderToControllerWhenPlanned": "Orders are automatically submitted to a Controller when planned. Based on the settings of the Daily Plan Service orders are submitted a number of days in advance.",
-        "orderName": "Order Name",
-        "startNode": "Start Position before Instruction",
-        "endNode": "End Positions before Instructions",
-        "ignoreAdmissionTimes": "Ignore Job Admission Times"
+        "orderName": "The order name is a non-qualifying part of the order identifier. Users can freely specify the job name when creating schedules and adding on demand orders.",
+        "startNode": "The start position of a job can be before the specified instruction in the workflow. The job starts from the specified position.",
+        "endNode": "The end position of a job can be before the specified instruction in the workflow. The job ends before the specified position.",
+        "ignoreAdmissionTimes": "The execution of jobs can be restricted by Admission Times of the jobs. This option ignores Admission Times and forces the start of jobs."
       },
       "script": {
         "name": "A Script Include is used to include recurring code snippets into a job script. The name of a Script Include is unique in the inventory. For the name of the Script Include most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -1993,7 +1993,7 @@
           "remainWhenTerminated": "After termination the Order remains with the workflow. This requires to manually perform the operation 'Leave Workflow' that is available from the WORKFLOWS view.",
           "startPosition": "Allows to select the start position of the order in the workflow. Without a start position, the orders starts from the beginning of the workflow.",
           "endPositions": "Allows the selection of one or more end positions of the order in the workflow. Without an end position, the order ends with the end of the workflow.",
-          "ignoreAdmissionTimes": "Ignore Job Admission Times"
+          "ignoreAdmissionTimes": "The execution of jobs can be restricted by Admission Times of the jobs. This option ignores Admission Times and forces the start of jobs."
         },
         "lock": {
           "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parallelism by using Resource Locks.",
@@ -2881,7 +2881,7 @@
     "label.iamOidcImage": "OIDC Image",
     "label.iamOidcUserAttribute": "OIDC User Name Attribute",
     "label.iamOidcGroupClaims": "OIDC Group Claims",
-    "label.iamOidcGroupRolesMap": "OIDC Group Roles Map",
+    "label.iamOidcGroupRolesMap": "OIDC Group Roles Mapping",
     "label.iamOidcAuthenticationCodeFlow" : "Authentication Code Flow",
     "label.iamOidcImplicitFlow" : "Implicit Flow",
     "label.iamOidcFlowType" : "Flow Type",
@@ -3127,8 +3127,8 @@
         "iamOidcTruststorePassword": "If the OIDC Truststore is protected by a password, then the password has to be specified.",
         "iamOidcUserAttribute": "The OIDC User Attribute is specific for an Identity Provider and indicates the name of the attribute that holds the unique identifier of a user that is used for login, for example the attribute 'email' specifies the user's e-mail address to be used for login.",
         "iamOidcImage": "If an OIDC Image is specified then it is displayed with the login screen. Image files of type .png are allowed with a maximum size of 1 MB. Images are best displayed using a width and height of 96 pixels.",
-        "iamOidcGroupClaims": "OIDC Group Claims",
-        "iamOidcGroupRolesMap": "OIDC Group Roles Map"
+        "iamOidcGroupClaims": "OIDC Group Claims specify the groups for which the user account in question has membership. Each group can be mapped to one or more roles in JS7.",
+        "iamOidcGroupRolesMap": "OIDC group memberships are each mapped to one or more JS7 roles."
       },
       "webauthn" : {
         "iamTimeout" : "The Timeout applied for User Verification. If the timeout is exceeded then the registration/authentication flow will be cancelled.",

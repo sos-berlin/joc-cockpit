@@ -1,8 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {differenceInCalendarDays} from 'date-fns';
-import {isEmpty, isArray, object} from 'underscore';
-import {NzModalRef} from 'ng-zorro-antd/modal';
+import {isArray, isEmpty, object} from 'underscore';
+import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from "../guard";
 
@@ -10,15 +10,16 @@ import {AuthService} from "../guard";
   selector: 'app-change-parameter',
   templateUrl: './change-parameter-dialog.html'
 })
-export class ChangeParameterModalComponent implements OnInit {
-  @Input() schedulerId: any;
-  @Input() variable: any;
-  @Input() order: any;
-  @Input() plan: any;
-  @Input() orders: any;
-  @Input() orderIds: any;
-  @Input() orderPreparation: any;
-  @Input() workflow: any;
+export class ChangeParameterModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerId: any;
+  variable: any;
+  order: any;
+  plan: any;
+  orders: any;
+  orderIds: any;
+  orderPreparation: any;
+  workflow: any;
 
   permission: any = {};
   removeVariables = [];
@@ -41,6 +42,14 @@ export class ChangeParameterModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId;
+    this.variable = this.modalData.variable;
+    this.order = this.modalData.order;
+    this.plan = this.modalData.plan;
+    this.orders = this.modalData.orders;
+    this.orderIds = this.modalData.orderIds;
+    this.orderPreparation = this.modalData.orderPreparation;
+    this.workflow = this.modalData.workflow;
     const preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     this.display = preferences.auditLog;
@@ -110,14 +119,26 @@ export class ChangeParameterModalComponent implements OnInit {
           if (!isExist && !this.variable) {
             if (!val.final) {
               if (!val.default && val.default !== false && val.default !== 0) {
-                this.variables.push({name: k, type: val.type, isRequired: true, facet: val.facet, message: val.message});
+                this.variables.push({
+                  name: k,
+                  type: val.type,
+                  isRequired: true,
+                  facet: val.facet,
+                  message: val.message
+                });
               } else {
                 if (val.type === 'String') {
                   this.coreService.removeSlashToString(val, 'default');
                 } else if (val.type === 'Boolean') {
                   val.default = (val.default === 'true' || val.default === true);
                 }
-                this.variables.push({name: k, value: val.default, default: val.default, facet: val.facet, message: val.message});
+                this.variables.push({
+                  name: k,
+                  value: val.default,
+                  default: val.default,
+                  facet: val.facet,
+                  message: val.message
+                });
               }
             }
           }
@@ -178,7 +199,7 @@ export class ChangeParameterModalComponent implements OnInit {
                 }
                 return {name: k1, value: v1, type};
               });
-            } else{
+            } else {
               for (const j in sour.value[i]) {
                 for (const prop in target[x].list) {
                   if (target[x].list[prop].name === sour.value[i].name) {
@@ -379,16 +400,17 @@ export class ChangeParameterModalComponent implements OnInit {
   selector: 'app-start-time',
   templateUrl: './start-time-dialog.html'
 })
-export class ModifyStartTimeModalComponent implements OnInit {
-  @Input() schedulerId;
-  @Input() order: any;
-  @Input() orders: any;
-  @Input() plan: any;
-  @Input() preferences: any;
-  @Input() isDailyPlan: boolean;
+export class ModifyStartTimeModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerId = '';
+  order: any;
+  orders: any;
+  plan: any;
+  preferences: any;
+  isDailyPlan = false;
   submitted = false;
   dateFormat: any;
-  errorMsg: boolean;
+  errorMsg = false;
   dateType: any = {at: 'date', forceJobAdmission: false};
   zones = [];
   period: any = {};
@@ -402,6 +424,12 @@ export class ModifyStartTimeModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId;
+    this.order = this.modalData.order;
+    this.orders = this.modalData.orders;
+    this.plan = this.modalData.plan;
+    this.preferences = this.modalData.preferences;
+    this.isDailyPlan = this.modalData.isDailyPlan;
     if (this.orders) {
       this.n1 = this.orders.size;
     }
@@ -444,7 +472,7 @@ export class ModifyStartTimeModalComponent implements OnInit {
           isStandalone = true;
         }
       });
-      if(this.n1 == 0 && this.n2 > 0){
+      if (this.n1 == 0 && this.n2 > 0) {
         this.n1 = this.orders.size;
       }
     }
@@ -500,9 +528,9 @@ export class ModifyStartTimeModalComponent implements OnInit {
       this.plan.value.forEach((order) => {
         obj.orderIds.push(order.orderId);
       });
-    } else if(this.order.orderId){
+    } else if (this.order.orderId) {
       obj.orderIds.push(this.order.orderId);
-    } else if(this.orders){
+    } else if (this.orders) {
       this.orders.forEach((order, k) => {
         obj.orderIds.push(k);
       });

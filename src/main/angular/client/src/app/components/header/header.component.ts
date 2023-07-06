@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core';
+import {Component, Output, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -12,7 +12,7 @@ import {AboutModalComponent} from '../info-menu/info-menu.component';
   selector: 'app-header',
   templateUrl: './header.component.html'
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent {
   preferences: any = {};
   schedulerIds: any = {};
   permission: any = {};
@@ -137,8 +137,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     filter.tabIndex = index;
     if (index == 2) {
       filter.orderNotification.filter.types = [data.level];
-    }
-    else {
+    } else {
       filter.systemNotification.filter.categories = data.category;
       filter.systemNotification.filter.types = [data.level];
     }
@@ -309,7 +308,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   toggle(): void {
-    const dom:any = document.getElementById('navbarId');
+    const dom: any = document.getElementById('navbarId');
     if (dom && dom.classList.contains('in')) {
       dom.classList.remove('in');
     } else {

@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
+import {ToastrService} from 'ngx-toastr';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
@@ -12,7 +12,7 @@ declare const $;
   selector: 'app-start-up-modal',
   templateUrl: './start-up.dialog.html'
 })
-export class StartUpModalComponent implements OnInit {
+export class StartUpModalComponent {
   @Input() isModal: boolean;
   @Input() new: boolean;
   @Input() modalRef: boolean;
@@ -39,12 +39,12 @@ export class StartUpModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
     this.agent.asStandaloneAgent =  false;
-    this.hasLicense = sessionStorage.hasLicense == 'true';
+    this.hasLicense = sessionStorage['hasLicense'] == 'true';
     this.controller = {
       url: '',
       type: 'STANDALONE',
@@ -103,8 +103,8 @@ export class StartUpModalComponent implements OnInit {
       }
     }
     let preferences: any = {};
-    if (sessionStorage.preferences) {
-      preferences = JSON.parse(sessionStorage.preferences);
+    if (sessionStorage['preferences']) {
+      preferences = JSON.parse(sessionStorage['preferences']);
     }
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
@@ -231,7 +231,7 @@ export class StartUpModalComponent implements OnInit {
   selector: 'app-start-up-component',
   templateUrl: './start-up.component.html'
 })
-export class StartUpComponent implements OnInit {
+export class StartUpComponent {
   controller: any = {};
   schedulerIds: any = {};
   error: any;

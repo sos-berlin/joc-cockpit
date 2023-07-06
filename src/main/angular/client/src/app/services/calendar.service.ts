@@ -135,7 +135,7 @@ export class CalendarService {
       return '3rd last';
     } else if (day == -4) {
       return '4th last';
-    } else{
+    } else {
       return '';
     }
   }
@@ -529,7 +529,7 @@ export class CalendarService {
     return toArray(datesObj);
   }
 
-  getTimeInString(time:any): string {
+  getTimeInString(time: any): string {
     if (time.toString().substring(0, 2) === '00' && time.toString().substring(3, 5) === '00') {
       return time.toString().substring(6, time.length) + ' seconds';
     } else if (time.toString().substring(0, 2) === '00') {
@@ -563,7 +563,7 @@ export class CalendarService {
     return time;
   }
 
-  compareNumbers(a:any, b:any): any {
+  compareNumbers(a: any, b: any): any {
     return a - b;
   }
 

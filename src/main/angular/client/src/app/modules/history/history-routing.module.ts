@@ -7,16 +7,16 @@ const routes: Routes = [
     path: '', component: HistoryComponent
   },
   {
-    path: 'order', component: SingleHistoryComponent,  data: {breadcrumb: 'breadcrumb.label.order'}
+    path: 'order', component: SingleHistoryComponent, data: {breadcrumb: 'breadcrumb.label.order'}
   },
   {
-    path: 'task', component: SingleHistoryComponent,  data: {breadcrumb: 'breadcrumb.label.task'}
+    path: 'task', component: SingleHistoryComponent, data: {breadcrumb: 'breadcrumb.label.task'}
   },
   {
-    path: 'deployment', component: SingleHistoryComponent,  data: {breadcrumb: 'breadcrumb.label.deployment'}
+    path: 'deployment', component: SingleHistoryComponent, data: {breadcrumb: 'breadcrumb.label.deployment'}
   },
   {
-    path: 'daily_plan', component: SingleHistoryComponent,  data: {breadcrumb: 'breadcrumb.label.dailyPlan'}
+    path: 'daily_plan', component: SingleHistoryComponent, data: {breadcrumb: 'breadcrumb.label.dailyPlan'}
   }
 ];
 

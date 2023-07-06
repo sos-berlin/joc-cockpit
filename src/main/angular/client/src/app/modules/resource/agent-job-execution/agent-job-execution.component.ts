@@ -15,7 +15,7 @@ import {SaveService} from '../../../services/save.service';
   selector: 'app-filter-agent-content',
   templateUrl: './filter-dialog.html'
 })
-export class FilterModalComponent implements OnInit {
+export class FilterModalComponent {
   @Input() allFilter;
   @Input() new;
   @Input() edit;
@@ -61,7 +61,7 @@ export class FilterModalComponent implements OnInit {
   selector: 'app-form-template',
   templateUrl: './form-template.html',
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent {
 
   @Input() schedulerIds: any;
   @Input() filter: any;
@@ -84,7 +84,7 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    if(this.filter.name){
+    if (this.filter.name) {
       this.existingName = this.coreService.clone(this.filter.name);
     }
     this.getAgentIds();
@@ -188,7 +188,7 @@ export class SearchComponent implements OnInit {
   selector: 'app-agent-job-execution',
   templateUrl: 'agent-job-execution.component.html'
 })
-export class AgentJobExecutionComponent implements OnInit, OnDestroy {
+export class AgentJobExecutionComponent {
   objectType = 'AGENTCLUSTER';
   isLoading = false;
   configLoading = true;
@@ -215,7 +215,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, public coreService: CoreService, private searchPipe: SearchPipe, private saveService: SaveService,
               private dataService: DataService, private modal: NzModalService, private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
-      if(!this.configLoading) {
+      if (!this.configLoading) {
         this.refresh(res);
       }
     });
@@ -685,7 +685,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: EditFilterModalComponent,
-      nzComponentParams: {
+      nzData: {
         filterList: this.filterList,
         favorite: this.savedFilter.favorite,
         permission: this.permission,

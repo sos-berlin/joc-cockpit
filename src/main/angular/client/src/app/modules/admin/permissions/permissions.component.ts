@@ -1,13 +1,13 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { isEqual, clone } from 'underscore';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
-import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
-import { AuthService } from '../../../components/guard';
-import { CoreService } from '../../../services/core.service';
-import { DataService } from '../data.service';
+import {Component, inject, ViewChild} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {isEqual, clone} from 'underscore';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
+import {AuthService} from '../../../components/guard';
+import {CoreService} from '../../../services/core.service';
+import {DataService} from '../data.service';
 
 declare var $: any;
 declare var d3: any;
@@ -17,15 +17,16 @@ declare var d3: any;
   selector: 'app-permission-modal-content',
   templateUrl: 'permission-modal.html'
 })
-export class PermissionModalComponent implements OnInit {
-  @Input() rolePermissions: any;
-  @Input() userDetail: any;
-  @Input() controllerName: any;
-  @Input() roleName: any;
-  @Input() oldPermission: any;
-  @Input() currentPermission: any;
-  @Input() permissionOptions: any;
-  @Input() add;
+export class PermissionModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  rolePermissions: any;
+  userDetail: any;
+  controllerName: any;
+  roleName: any;
+  oldPermission: any;
+  currentPermission: any;
+  permissionOptions: any;
+  add: any;
 
   submitted = false;
   isCovered = false;
@@ -37,7 +38,15 @@ export class PermissionModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.rolePermissions = this.modalData.rolePermissions;
+    this.userDetail = this.modalData.userDetail;
+    this.controllerName = this.modalData.controllerName;
+    this.roleName = this.modalData.roleName;
+    this.oldPermission = this.modalData.oldPermission;
+    this.currentPermission = this.modalData.currentPermission;
+    this.permissionOptions = this.modalData.permissionOptions;
+    this.add = this.modalData.add;
+    const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
@@ -115,14 +124,15 @@ export class PermissionModalComponent implements OnInit {
   selector: 'app-folder-modal-content',
   templateUrl: 'folder-modal.html'
 })
-export class FolderModalComponent implements OnInit {
-  @Input() userDetail: any;
-  @Input() currentFolder: any;
-  @Input() controllerName: any;
-  @Input() roleName: any;
-  @Input() folderArr: any;
-  @Input() oldFolder: any;
-  @Input() newFolder = false;
+export class FolderModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  userDetail: any;
+  currentFolder: any;
+  controllerName: any;
+  roleName: any;
+  folderArr: any;
+  oldFolder: any;
+  newFolder = false;
 
   nodes = [];
   submitted = false;
@@ -139,6 +149,13 @@ export class FolderModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.userDetail = this.modalData.userDetail;
+    this.currentFolder = this.modalData.currentFolder;
+    this.controllerName = this.modalData.controllerName;
+    this.roleName = this.modalData.roleName;
+    this.folderArr = this.modalData.folderArr;
+    this.oldFolder = this.modalData.oldFolder;
+    this.newFolder = this.modalData.newFolder;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -269,7 +286,7 @@ export class FolderModalComponent implements OnInit {
   selector: 'app-permissions',
   templateUrl: './permissions.component.html'
 })
-export class PermissionsComponent implements OnInit, OnDestroy {
+export class PermissionsComponent {
   controllerName;
   roleName;
   roles: any = [];
@@ -306,7 +323,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute,
-    private modal: NzModalService, private dataService: DataService, private authService: AuthService) {
+              private modal: NzModalService, private dataService: DataService, private authService: AuthService) {
 
     this.subscription1 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'ADD_FOLDER') {
@@ -388,7 +405,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: FolderModalComponent,
-      nzComponentParams: {
+      nzData: {
         currentFolder: folder,
         userDetail: this.userDetail,
         newFolder: true,
@@ -419,7 +436,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: FolderModalComponent,
-      nzComponentParams: {
+      nzData: {
         currentFolder: tempFolder,
         userDetail: this.userDetail,
         controllerName: this.controllerName,
@@ -455,7 +472,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -473,7 +490,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title: 'delete',
           message: 'deleteFolder',
           type: 'Delete',
@@ -516,7 +533,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: PermissionModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         currentPermission: permission,
         permissionOptions: this.permissionOptions,
         rolePermissions: this.rolePermissions,
@@ -543,7 +560,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: PermissionModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         currentPermission: tempPermission,
         oldPermission: permission,
         permissionOptions: this.permissionOptions,
@@ -575,7 +592,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -595,7 +612,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title: 'delete',
           message: 'deletePermission',
           type: 'Delete',
@@ -932,7 +949,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -970,7 +987,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -1472,7 +1489,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
             nzTitle: undefined,
             nzContent: CommentModalComponent,
             nzClassName: 'lg',
-            nzComponentParams: {
+            nzData: {
               comments
             },
             nzFooter: null,
@@ -1531,7 +1548,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
             nzTitle: undefined,
             nzContent: CommentModalComponent,
             nzClassName: 'lg',
-            nzComponentParams: {
+            nzData: {
               comments
             },
             nzFooter: null,

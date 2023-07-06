@@ -12,7 +12,7 @@ import {AuthService} from '../../../components/guard';
   selector: 'app-agent-status',
   templateUrl: './agent-status.component.html'
 })
-export class AgentStatusComponent implements OnInit, OnDestroy {
+export class AgentStatusComponent {
   @Input('layout') layout: any;
   schedulerIds: any = {};
   agentClusters: any = [];
@@ -57,7 +57,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     labels: [],
     datasets: []
   };
-  public pieChartPlugins = [ DatalabelsPlugin ];
+  public pieChartPlugins = [DatalabelsPlugin];
 
   constructor(private coreService: CoreService, private authService: AuthService, public translate: TranslateService,
               private router: Router, private dataService: DataService) {
@@ -74,7 +74,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
       this.isLoaded = true;
     }
     if (!localStorage['$SOS$THEME'] || localStorage['$SOS$THEME'].match(/light/)) {
-       this.pieChartOptions.plugins.legend.labels.color = '#3d464d';
+      this.pieChartOptions.plugins.legend.labels.color = '#3d464d';
     }
   }
 
@@ -87,8 +87,8 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (((args.eventSnapshots[j].eventType === 'ItemAdded' || args.eventSnapshots[j].eventType === 'ItemDeleted'
             || args.eventSnapshots[j].eventType === 'ItemChanged') && args.eventSnapshots[j].objectType === 'AGENT')
-            || args.eventSnapshots[j].eventType === 'JOCStateChanged' || args.eventSnapshots[j].eventType === 'AgentStateChanged'
-            || args.eventSnapshots[j].eventType === 'ProxyCoupled' || args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
+          || args.eventSnapshots[j].eventType === 'JOCStateChanged' || args.eventSnapshots[j].eventType === 'AgentStateChanged'
+          || args.eventSnapshots[j].eventType === 'ProxyCoupled' || args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
           this.getStatus();
           break;
         }
@@ -149,7 +149,12 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   }
 
   getStatus(): void {
-    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, compact: true, onlyVisibleAgents: true, flat: true}).subscribe({
+    this.coreService.post('agents', {
+      controllerId: this.schedulerIds.selected,
+      compact: true,
+      onlyVisibleAgents: true,
+      flat: true
+    }).subscribe({
       next: res => {
         this.prepareAgentClusterData(res);
         this.isLoaded = true;
@@ -158,7 +163,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   }
 
   // events
-  onChartClick({ active }: { active: any }): void {
+  onChartClick({active}: { active: any }): void {
     this.navToAgentView(this.pieChartData.labels[active[0].index]);
   }
 

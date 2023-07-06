@@ -5,9 +5,16 @@ import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {FilterModalComponent, SearchComponent, SingleWorkflowComponent, WorkflowComponent} from './workflow.component';
 import {SharedModule} from '../shared/shared.module';
 import {WorkflowRoutingModule} from './workflow-routing.module';
-import {AddOrderModalComponent, ShowDependencyComponent, WorkflowActionComponent} from './workflow-action/workflow-action.component';
+import {
+  AddOrderModalComponent,
+  ShowDependencyComponent,
+  WorkflowActionComponent
+} from './workflow-action/workflow-action.component';
 import {WorkflowDetailComponent} from './workflow-detail/workflow-detail.component';
-import {DependentWorkflowComponent, WorkflowGraphicalComponent} from './workflow-graphical/workflow-graphical.component';
+import {
+  DependentWorkflowComponent,
+  WorkflowGraphicalComponent
+} from './workflow-graphical/workflow-graphical.component';
 import {WorkflowHistoryComponent, WorkflowTemplateComponent} from './workflow-history/workflow-history.component';
 import {OrderListSidebarComponent} from './order-list-sidebar/order-list-sidebar.component';
 import {TypeComponent} from './workflow-type/type.component';

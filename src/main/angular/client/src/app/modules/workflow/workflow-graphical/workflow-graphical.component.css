@@ -47,7 +47,8 @@
   height: 150px;
   border: 1px solid var(--border-color);
 }
-.graph2 #outlineContainer{
+
+.graph2 #outlineContainer {
   top: 54px;
   right: 16px;
 }

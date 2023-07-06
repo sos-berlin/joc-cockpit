@@ -19,12 +19,12 @@
           <div class="table-responsive">
             <nz-table
               #ajaxTable
-              [nzSize]="'small'"
               [nzBordered]="true"
-              [nzShowPagination]="false"
               [nzData]="locks"
               [nzLoading]="loading"
+              [nzShowPagination]="false"
               [nzShowSizeChanger]="false"
+              [nzSize]="'small'"
             >
               <thead>
               <tr>
@@ -39,23 +39,26 @@
               </tr>
               </thead>
               <tbody>
-              <ng-template ngFor let-lock [ngForOf]="ajaxTable.data">
+              <ng-template [ngForOf]="ajaxTable.data" let-lock ngFor>
                 <tr [ngClass]="{'light-bg':lock.show}">
                   <td>
                     <span class="w-full">
-                      <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                         *ngIf="!lock.show" (click)="lock.show = true;"></i>
-                      <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
-                         *ngIf="lock.show" (click)="lock.show = false;"></i>
-                      <i *ngIf="lock.documentationName" (click)="coreService.showDocumentation(lock.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                      <i (click)="lock.show = true;"
+                         *ngIf="!lock.show" class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+                      <i (click)="lock.show = false;"
+                         *ngIf="lock.show" class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
+                      <i (click)="coreService.showDocumentation(lock.documentationName, preferences)"
+                         *ngIf="lock.documentationName"
+                         class="cursor fa fa-book p-l-xs p-r-xs"></i>
                       <span [innerHtml]="lock.id"></span>
                       <i *ngIf="lock.title"> - </i>
-                      <i class="text-muted" [innerHtml]="lock.title"></i>
+                      <i [innerHtml]="lock.title" class="text-muted"></i>
                     </span>
                   </td>
                   <td>
                     <span class="show-in-single-line">
-                      <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(lock.path, 'LOCK');"
+                      <i (click)="coreService.navToInventoryTab(lock.path, 'LOCK');"
+                         *ngIf="permission.joc && permission.joc.inventory.view"
                          class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                       <span [innerHtml]="lock.path"></span>
                     </span>
@@ -64,8 +67,8 @@
                     <span [innerHtml]="lock.versionDate | stringToDate"></span>
                   </td>
                   <td>
-                    <a class="label" *ngIf="lock.state" [ngClass]="coreService.getColor(lock.state.severity, 'bg')"
-                       [innerHtml]="lock.state._text | translate"></a>
+                    <a *ngIf="lock.state" [innerHtml]="lock.state._text | translate" [ngClass]="coreService.getColor(lock.state.severity, 'bg')"
+                       class="label"></a>
                   </td>
                   <td>{{lock.acquiredLockCount || '0'}}</td>
                   <td>{{lock.ordersHoldingLocksCount || '0'}}</td>
@@ -73,41 +76,42 @@
                   <td [innerHtml]="lock.limit"></td>
                 </tr>
                 <tr *ngIf="lock.show">
-                  <td colspan="8" style="padding:0 !important;" class="order-history-template0">
-                    <nz-table class="m-a-0 inner-table" #nestedWorkflowsTable [nzSize]="'small'"
-                              [nzData]="lock.workflows" [nzShowPagination]="false">
+                  <td class="order-history-template0" colspan="8" style="padding:0 !important;">
+                    <nz-table #nestedWorkflowsTable [nzData]="lock.workflows" [nzShowPagination]="false"
+                              [nzSize]="'small'" class="m-a-0 inner-table">
               <thead>
               <tr>
-                <th colspan="8" class="text-left"><span translate>order.label.workflow</span></th>
+                <th class="text-left" colspan="8"><span translate>order.label.workflow</span></th>
               </tr>
               </thead>
               <tbody>
-              <ng-template ngFor let-workflow
-                           [ngForOf]="nestedWorkflowsTable.data">
+              <ng-template [ngForOf]="nestedWorkflowsTable.data" let-workflow
+                           ngFor>
                 <tr>
                   <td colspan="8">
-                    <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                    <i (click)="workflow.show = true;"
                        *ngIf="!workflow.show"
-                       (click)="workflow.show = true;"></i>
-                    <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                       class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+                    <i (click)="workflow.show = false;"
                        *ngIf="workflow.show"
-                       (click)="workflow.show = false;"></i>
-                    <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
+                       class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
+                    <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
+                       *ngIf="permission.joc && permission.joc.inventory.view"
                        class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-                    <a class="text-hover-primary"
-                       (click)="coreService.showWorkflow(workflow.path, workflow.versionId);">{{workflow.path}} </a>
+                    <a (click)="coreService.showWorkflow(workflow.path, workflow.versionId);"
+                       class="text-hover-primary">{{workflow.path}} </a>
                   </td>
                 </tr>
                 <ng-container *ngIf="workflow.show">
                   <ng-container *ngIf="workflow.ordersWaitingForLocks && workflow.ordersWaitingForLocks.length > 0">
                     <tr>
-                      <td colspan="8" class="custom-th">
+                      <td class="custom-th" colspan="8">
                         <span class="p-l">{{'resource.lock.label.ordersWaitingForLocks' | translate}}</span>
                       </td>
                     </tr>
                     <tr>
-                      <td colspan="3" class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
-                      <td colspan="3" class="custom-th"><span translate>order.label.position</span></td>
+                      <td class="custom-th" colspan="3"><span class="p-l" translate>order.label.orderId</span></td>
+                      <td class="custom-th" colspan="3"><span translate>order.label.position</span></td>
                       <td class="custom-th"><span translate>order.label.state</span></td>
                       <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
                     </tr>
@@ -118,21 +122,21 @@
                           {{item.order.positionString}}
                         </span>
                       </td>
-                      <td><span class="label"
-                                [ngClass]="coreService.getColor(item.order.state.severity,'bg')">{{item.order.state._text | translate}}</span>
+                      <td><span [ngClass]="coreService.getColor(item.order.state.severity,'bg')"
+                                class="label">{{item.order.state._text | translate}}</span>
                       </td>
                       <td>{{item.order.scheduledFor | stringToDate}}</td>
                     </tr>
                   </ng-container>
                   <ng-container *ngIf="workflow.ordersHoldingLocks && workflow.ordersHoldingLocks.length > 0">
                     <tr>
-                      <td colspan="8" class="custom-th">
+                      <td class="custom-th" colspan="8">
                         <span class="p-l">{{'resource.lock.label.ordersHoldingLocks' | translate}}</span>
                       </td>
                     </tr>
                     <tr>
-                      <td colspan="3" class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
-                      <td colspan="3" class="custom-th"><span translate>order.label.position</span></td>
+                      <td class="custom-th" colspan="3"><span class="p-l" translate>order.label.orderId</span></td>
+                      <td class="custom-th" colspan="3"><span translate>order.label.position</span></td>
                       <td class="custom-th"><span translate>order.label.state</span></td>
                       <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
                     </tr>
@@ -143,8 +147,8 @@
                           {{item.order.positionString}}
                         </span>
                       </td>
-                      <td><span class="label"
-                                [ngClass]="coreService.getColor(item.order.state.severity,'bg')">{{item.order.state._text | translate}}</span>
+                      <td><span [ngClass]="coreService.getColor(item.order.state.severity,'bg')"
+                                class="label">{{item.order.state._text | translate}}</span>
                       </td>
                       <td>{{item.order.scheduledFor | stringToDate}}</td>
                     </tr>

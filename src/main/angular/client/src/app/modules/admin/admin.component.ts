@@ -1,8 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Router, RouterEvent, NavigationEnd} from '@angular/router';
+import {Component} from '@angular/core';
+import {Router, NavigationEnd} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {Subscription} from 'rxjs';
-import {filter} from 'rxjs/operators';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from './data.service';
@@ -11,7 +10,7 @@ import {DataService} from './data.service';
   selector: 'app-admin',
   templateUrl: './admin.component.html'
 })
-export class AdminComponent implements OnInit, OnDestroy {
+export class AdminComponent {
   schedulerIds: any = {};
   permission: any;
   isPaste = false;
@@ -19,7 +18,6 @@ export class AdminComponent implements OnInit, OnDestroy {
   isBlockButtonShow = false;
   isSessionButtonShow = false;
   isSelected = false;
-  isApproveButtonShow = false;
   selectedUser: string;
   accounts: any = [];
   route: string;
@@ -38,10 +36,11 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService, private router: Router, public coreService: CoreService,
               private dataService: DataService, private message: NzMessageService) {
-    this.subscription1 = router.events
-      .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
+    this.subscription1 = router.events.subscribe((e) => {
+      if (e instanceof NavigationEnd) {
         this.checkUrl(e);
-      });
+      }
+    });
     this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'IS_RESET_PROFILES_TRUE') {
         this.isButtonShow = true;

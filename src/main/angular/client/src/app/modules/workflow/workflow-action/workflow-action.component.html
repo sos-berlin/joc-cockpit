@@ -1,33 +1,40 @@
 <div class="btn-group dropdown">
-  <button [disabled]="isDisabled"  class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
+  <button [disabled]="isDisabled" [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
           type="button">
     <i class="fa fa-ellipsis-h"></i>
   </button>
   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
     <ul nz-menu>
-      <li nz-menu-item (click)="navToDetailView('list')">
+      <li (click)="navToDetailView('list')" nz-menu-item>
         <a translate>workflow.button.showTabularView</a>
       </li>
-      <li nz-menu-item (click)="navToDetailView('grid')">
+      <li (click)="navToDetailView('grid')" nz-menu-item>
         <a translate>workflow.button.showGraphicalView</a>
       </li>
       <li nz-menu-divider></li>
-      <li nz-menu-item *ngIf="permission.currentController.orders.create" [nzDisabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'" (click)="addOrder(workflow);" >
+      <li (click)="addOrder(workflow);" *ngIf="permission.currentController.orders.create"
+          [nzDisabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
+          nz-menu-item>
         <a>{{'workflow.button.addOrder' | translate}} ..</a>
       </li>
-      <li nz-menu-item *ngIf="!workflow.suspended" [nzDisabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'" (click)="suspend(workflow);" >
+      <li (click)="suspend(workflow);" *ngIf="!workflow.suspended"
+          [nzDisabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
+          nz-menu-item>
         <a>{{'order.button.suspend' | translate}}</a>
       </li>
-      <li nz-menu-item *ngIf="workflow.suspended" [nzDisabled]="!workflow.isCurrentVersion" (click)="resume(workflow);" >
+      <li (click)="resume(workflow);" *ngIf="workflow.suspended" [nzDisabled]="!workflow.isCurrentVersion" nz-menu-item>
         <a>{{'order.button.resume' | translate}}</a>
       </li>
-      <li nz-menu-item *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies" (click)="showDependency(workflow);" >
+      <li (click)="showDependency(workflow);"
+          *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies"
+          nz-menu-item>
         <a>{{'workflow.button.showDependency' | translate}} ..</a>
       </li>
-      <li nz-menu-item [nzDisabled]="workflow.state._text === 'NOT_IN_SYNC'" *ngIf="!workflow.isCurrentVersion" (click)="transitionOrders(workflow);" >
+      <li (click)="transitionOrders(workflow);" *ngIf="!workflow.isCurrentVersion" [nzDisabled]="workflow.state._text === 'NOT_IN_SYNC'"
+          nz-menu-item>
         <a>{{'workflow.button.transitionOrders' | translate}}</a>
       </li>
-      <li nz-menu-item (click)="coreService.copyLink('workflow',workflow.name)" >
+      <li (click)="coreService.copyLink('workflow',workflow.name)" nz-menu-item>
         <a translate>common.button.copyLinkToObject</a>
       </li>
     </ul>

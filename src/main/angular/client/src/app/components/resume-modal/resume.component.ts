@@ -1,6 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {isArray, isEmpty} from "underscore";
+import {Component, inject} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {isArray} from "underscore";
 import {CoreService} from '../../services/core.service';
 import {ValueEditorComponent} from '../value-editor/value.component';
 import {WorkflowService} from "../../services/workflow.service";
@@ -9,11 +9,12 @@ import {WorkflowService} from "../../services/workflow.service";
   selector: 'app-resume-order',
   templateUrl: './resume-order-dialog.html',
 })
-export class ResumeOrderModalComponent implements OnInit {
-  @Input() schedulerId: any;
-  @Input() preferences: any;
-  @Input() order: any;
-  @Input() orders: any;
+export class ResumeOrderModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerId: any;
+  preferences: any;
+  order: any;
+  orders: any;
   workflow: any;
   display: any;
   submitted = false;
@@ -37,6 +38,10 @@ export class ResumeOrderModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId;
+    this.preferences = this.modalData.preferences;
+    this.order = this.modalData.order;
+    this.orders = this.modalData.orders;
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
@@ -198,7 +203,7 @@ export class ResumeOrderModalComponent implements OnInit {
   }
 
   updateCheckedSet(data: any, checked: boolean): void {
-    if (data.name && (data.value || data.value == 0 || data.value ==  false)) {
+    if (data.name && (data.value || data.value == 0 || data.value == false)) {
       if (checked) {
         this.object.setOfCheckedValue.add(data.name);
       } else {
@@ -237,7 +242,7 @@ export class ResumeOrderModalComponent implements OnInit {
       nzTitle: undefined,
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         data: data.value
       },
       nzFooter: null,

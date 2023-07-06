@@ -1,10 +1,10 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-permission-view',
   templateUrl: './permission-view.component.html'
 })
-export class PermissionViewComponent implements OnInit {
+export class PermissionViewComponent {
   @Input() permission: any = {};
   @Input() schedulerIds: any = {};
   selectedController: string;

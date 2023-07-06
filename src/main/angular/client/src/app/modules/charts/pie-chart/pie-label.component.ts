@@ -1,4 +1,4 @@
-import { isPlatformServer } from '@angular/common';
+import {isPlatformServer} from '@angular/common';
 import {
   Component,
   Input,
@@ -8,11 +8,11 @@ import {
   PLATFORM_ID,
   Inject
 } from '@angular/core';
-import { arc, DefaultArcObject } from 'd3-shape';
+import {arc, DefaultArcObject} from 'd3-shape';
 
-import { trimLabel } from '../common/trim-label.helper';
-import { TextAnchor } from '../common/types/text-anchor.enum';
-import { DataItem } from '../models/chart-data.model';
+import {trimLabel} from '../common/trim-label.helper';
+import {TextAnchor} from '../common/types/text-anchor.enum';
+import {DataItem} from '../models/chart-data.model';
 
 export interface PieData extends DefaultArcObject {
   data: DataItem;

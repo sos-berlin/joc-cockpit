@@ -14,7 +14,7 @@ import {GroupByPipe} from '../../../pipes/core.pipe';
   templateUrl: './controller-monitor.component.html',
   styleUrls: ['./controller-monitor.component.scss']
 })
-export class ControllerMonitorComponent implements OnInit, OnDestroy {
+export class ControllerMonitorComponent {
   @Input() permission: any;
   @Input() preferences: any = {};
   @Input() schedulerIds: any = {};
@@ -84,7 +84,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   init(): void {
     if (this.filters.filter.view !== 'Custom') {
       this.renderTimeSheetHeader();
-    } else{
+    } else {
       this.getData();
     }
   }
@@ -258,7 +258,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         if (dur > 86400) {
           dur = dur - 86400;
         }
-        if(dur < 0){
+        if (dur < 0) {
           dur = 0;
         }
 
@@ -435,7 +435,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
             if (map && map.size > 0) {
               if (map.has(date)) {
                 let val = JSON.parse(map.get(date));
-                if(groupData[j].value.length > 0){
+                if (groupData[j].value.length > 0) {
                   val = val.filter((item) => {
                     return item.lastKnownTime;
                   });

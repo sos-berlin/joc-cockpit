@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 import {ScriptModalComponent} from '../../modules/workflow/script-modal/script-modal.component';
@@ -9,7 +9,7 @@ import {AuthService} from "../guard";
   templateUrl: './workflow-tree-structure.component.html',
   styleUrls: ['./workflow-tree-structure.component.scss']
 })
-export class WorkflowTreeStructureComponent implements OnChanges {
+export class WorkflowTreeStructureComponent {
   @Input() configuration;
   @Input() jobs;
   @Input() timezone;
@@ -121,12 +121,12 @@ export class WorkflowTreeStructureComponent implements OnChanges {
   /* --------- Job action menu operations ----------------*/
 
   showConfiguration(instruction): void {
-    let nzComponentParams;
+    let nzData;
     if (instruction.TYPE === 'Job') {
       const job = this.jobs[instruction.jobName];
       const data = job.executable.TYPE === 'ShellScriptExecutable' ? job.executable.script : job.executable.className;
       if (job && job.executable) {
-        nzComponentParams = {
+        nzData = {
           data,
           agentName: job.agentName,
           subagentClusterId: job.subagentClusterId,
@@ -138,25 +138,25 @@ export class WorkflowTreeStructureComponent implements OnChanges {
         };
       }
     } else if (instruction.TYPE === 'If') {
-      nzComponentParams = {
+      nzData = {
         predicate: true,
         data: instruction.predicate,
         isScript: true,
         readonly: true
       };
     } else if (instruction.TYPE === 'Cycle') {
-      nzComponentParams = {
+      nzData = {
         schedule: instruction.schedule,
         workflowPath: this.configuration.path,
         timezone: this.timezone
       };
     }
-    if (nzComponentParams) {
+    if (nzData) {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ScriptModalComponent,
         nzClassName: 'lg script-editor2',
-        nzComponentParams,
+        nzData,
         nzFooter: null,
         nzAutofocus: null,
         nzClosable: false,
@@ -176,7 +176,7 @@ export class WorkflowTreeStructureComponent implements OnChanges {
     let data = event.target.getAttribute('class');
     if (data && data.match('drop-area')) {
       let position = event.target.getAttribute('id');
-      if(data.match('drop-area-text')){
+      if (data.match('drop-area-text')) {
         position = position.substring(0, position.length - 1);
       }
       this.position = position;

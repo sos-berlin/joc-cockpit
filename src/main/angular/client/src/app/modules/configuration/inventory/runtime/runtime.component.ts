@@ -11,7 +11,7 @@ declare const $;
   selector: 'app-restriction',
   templateUrl: './add-restriction-dialog.html'
 })
-export class AddRestrictionComponent implements OnInit {
+export class AddRestrictionComponent {
   @Input() schedulerId: any;
   @Input() preferences: any;
   @Input() data: any = {};
@@ -593,7 +593,7 @@ export class AddRestrictionComponent implements OnInit {
   selector: 'app-period',
   templateUrl: './period-editor-dialog.html',
 })
-export class PeriodComponent implements OnInit {
+export class PeriodComponent {
   @Input() isNew: boolean;
   @Input() data: any = {};
   period: any = {period: {}};
@@ -709,7 +709,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: TreeModalComponent,
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerId,
         type: 'WORKINGDAYSCALENDAR',
         object: 'Calendar'
@@ -730,7 +730,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: TreeModalComponent,
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerId,
         type: 'NONWORKINGDAYSCALENDAR',
         object: 'Calendar'
@@ -824,7 +824,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: PeriodComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         isNew: true,
         data: {}
       },
@@ -855,7 +855,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: PeriodComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         data: period
       },
       nzFooter: null,
@@ -968,7 +968,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzClassName: 'lg',
       nzContent: AddRestrictionComponent,
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerId,
         preferences: this.preferences,
         data: {calendar: this.coreService.clone(data)}
@@ -990,7 +990,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: AddRestrictionComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerId,
         preferences: this.preferences,
         data: {

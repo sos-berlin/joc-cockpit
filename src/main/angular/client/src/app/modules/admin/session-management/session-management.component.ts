@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {DataService} from '../data.service';
@@ -8,12 +8,11 @@ import {CoreService} from "../../../services/core.service";
 import {OrderPipe, SearchPipe} from "../../../pipes/core.pipe";
 import {AddBlocklistModalComponent} from '../blocklist/blocklist.component';
 
-
 @Component({
   selector: 'app-session-management',
   templateUrl: './session-management.component.html'
 })
-export class SessionManagementComponent implements OnInit, OnDestroy {
+export class SessionManagementComponent {
   @Input() permission: any = {};
   preferences: any;
   sessionFilter: any = {};
@@ -39,7 +38,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.sessionFilter = this.coreService.getAdminTab().sessionManagement;
     if (this.preferences.entryPerPage) {
       this.sessionFilter.entryPerPage = this.preferences.entryPerPage;
@@ -87,7 +86,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
     }
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.sessionFilter.currentPage = $event;
     if (this.object.mapOfCheckedId.size !== this.sessions.length) {
       if (this.object.checked) {
@@ -98,7 +97,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
     }
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.sessionFilter.entryPerPage = $event;
     if (this.object.checked) {
       this.checkAll(true);
@@ -185,7 +184,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -206,7 +205,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmationModalComponent,
-        nzComponentParams: {
+        nzData: {
           cancel: true,
           account: acc,
           activeSession: true
@@ -224,7 +223,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
   }
 
   removeFromSession(account, flag?, object?): void {
-    const obj: any = { auditLog: object };
+    const obj: any = {auditLog: object};
     if (flag) {
       obj.accountNames = [account.accountName];
     } else {
@@ -250,13 +249,13 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
   removeSessionByAccount(acc): void {
     this.removeSessions(acc, true);
   }
-  
+
   addToBlocklist(obj): void {
     this.modal.create({
       nzTitle: undefined,
       nzAutofocus: null,
       nzContent: AddBlocklistModalComponent,
-      nzComponentParams: {
+      nzData: {
         existingComments: this.dataService.comments,
         obj
       },

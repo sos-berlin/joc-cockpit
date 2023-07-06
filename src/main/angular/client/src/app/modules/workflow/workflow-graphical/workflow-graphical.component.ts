@@ -20,7 +20,10 @@ import {WorkflowService} from '../../../services/workflow.service';
 import {DataService} from '../../../services/data.service';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
-import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../../components/modify-modal/modify.component';
+import {
+  ChangeParameterModalComponent,
+  ModifyStartTimeModalComponent
+} from '../../../components/modify-modal/modify.component';
 import {ScriptModalComponent} from '../script-modal/script-modal.component';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 
@@ -42,7 +45,7 @@ declare const $: any;
   selector: 'app-workflow-graphical-dialog',
   templateUrl: './dependent-workflow-dialog.html'
 })
-export class DependentWorkflowComponent implements OnInit, OnDestroy {
+export class DependentWorkflowComponent {
   @Input() workflow: any = {};
   @Input() permission: any = {};
   @Input() preferences: any = {};
@@ -68,7 +71,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     let flag = false;
-    if(this.view){
+    if (this.view) {
       this.pageView = this.view;
     }
     for (let i = 0; i < this.recursiveCals.length; i++) {
@@ -126,7 +129,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
     }).subscribe((res) => {
       this.workflow = res.workflow;
       this.workFlowJson = this.coreService.clone(this.workflow);
-      this.workflowService.convertTryToRetry(this.workFlowJson, (jobMap)=>{
+      this.workflowService.convertTryToRetry(this.workFlowJson, (jobMap) => {
         this.jobMap = jobMap;
       }, this.workflow.jobs, {count: 0}, true);
       this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
@@ -152,7 +155,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
       timeZone: this.preferences.zone,
       limit: this.preferences.maxWorkflowRecords
     };
-    if (this.workflowFilters.date === '2d'){
+    if (this.workflowFilters.date === '2d') {
       obj.dateFrom = '1d';
     }
     this.coreService.post('orders', obj).subscribe((res: any) => {
@@ -251,27 +254,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     if (this.workflowFilters && this.workflowFilters.panelSize > 0) {
       ht = this.workflowFilters.panelSize + 'px';
     }
-    dom.slimscroll({height: ht});
-    /**
-     * Changes the zoom on mouseWheel events
-     */
-    $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
-      if (this.graph) {
-        if (event.ctrlKey) {
-          event.preventDefault();
-          if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-            this.graph.zoomIn();
-          } else {
-            this.graph.zoomOut();
-          }
-        } else {
-          const bounds = this.graph.getGraphBounds();
-          if (bounds.y < -0.05 && bounds.height > dom.height()) {
-            this.graph.center(true, true, 0.5, -0.02);
-          }
-        }
-      }
-    });
+    this.coreService.slimscrollFunc(dom, ht, this.graph);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -393,7 +376,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       if (!this.workflowObjects) {
         const cells = this.graph.getChildVertices();
         this.graph.foldCells(false, true, cells, null, null);
-      } else{
+      } else {
         this.expandCollapseWorkflow(true);
       }
     }
@@ -437,7 +420,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.controllerId,
         preferences: this.preferences,
         order: this.order
@@ -473,7 +456,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         nzTitle: undefined,
         nzContent: ResumeOrderModalComponent,
         nzClassName: 'x-lg',
-        nzComponentParams: {
+        nzData: {
           preferences: this.preferences,
           schedulerId: this.controllerId,
           order: this.coreService.clone(this.order)
@@ -496,7 +479,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmModalComponent,
-      nzComponentParams: {
+      nzData: {
         title: 'confirm',
         question: this.order.question
       },
@@ -574,10 +557,10 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
 
     mxUtils.extend(OffPageConnectorShape, mxActor);
     OffPageConnectorShape.prototype.size = 3 / 8;
-    OffPageConnectorShape.prototype.isRoundable = function() {
+    OffPageConnectorShape.prototype.isRoundable = function () {
       return true;
     };
-    OffPageConnectorShape.prototype.redrawPath = function(c, x, y, w, h) {
+    OffPageConnectorShape.prototype.redrawPath = function (c, x, y, w, h) {
       let s = h * Math.max(0, Math.min(1, parseFloat(mxUtils.getValue(this.style, 'size', this.size))));
       let arcSize = mxUtils.getValue(this.style, mxConstants.STYLE_ARCSIZE, mxConstants.LINE_ARCSIZE) / 2;
       this.addPoints(c, [new mxPoint(0, 0), new mxPoint(w, 0), new mxPoint(w, h - s), new mxPoint(w / 2, h),
@@ -591,11 +574,11 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
      * Overrides method to provide a cell label in the display
      * @param cell
      */
-    graph.convertValueToString = function(cell) {
+    graph.convertValueToString = function (cell) {
       return self.workflowService.convertValueToString(cell, graph);
     };
 
-    graph.getTooltipForCell = function(cell) {
+    graph.getTooltipForCell = function (cell) {
       if (cell.value.tagName === 'Order') {
         let order = cell.getAttribute('order');
         if (order) {
@@ -612,14 +595,14 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     graph.addMouseListener({
       currentState: null,
       currentIconSet: null,
-      mouseDown: function(sender, me) {
+      mouseDown: function (sender, me) {
         // Hides icons on mouse down
         if (this.currentState != null) {
           this.dragLeave(me.getEvent(), this.currentState);
           this.currentState = null;
         }
       },
-      mouseMove: function(sender, me) {
+      mouseMove: function (sender, me) {
         if (this.currentState != null && me.getState() == this.currentState) {
           return;
         }
@@ -638,14 +621,14 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           }
         }
       },
-      mouseUp: function() {
+      mouseUp: function () {
       },
-      dragEnter: function(evt, state) {
+      dragEnter: function (evt, state) {
         if (this.currentIconSet == null) {
           this.currentIconSet = new mxIconSet(state);
         }
       },
-      dragLeave: function() {
+      dragLeave: function () {
         if (this.currentIconSet != null) {
           this.currentIconSet.destroy();
           this.currentIconSet = null;
@@ -657,7 +640,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     /**
      * Function: foldCells to collapse/expand
      */
-    mxGraph.prototype.foldCells = function(collapse, recurse, cells, checkFoldable) {
+    mxGraph.prototype.foldCells = function (collapse, recurse, cells, checkFoldable) {
       recurse = (recurse != null) ? recurse : true;
       if (cells == null) {
         cells = this.getFoldableCells(this.getSelectionCells(), collapse);
@@ -682,7 +665,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     /**
      * Function: handle a click event
      */
-    graph.addListener(mxEvent.CLICK, function(sender, evt) {
+    graph.addListener(mxEvent.CLICK, function (sender, evt) {
       const cell = evt.getProperty('cell'); // cell may be null
       if (cell != null) {
         if (cell.value.tagName === 'Count') {
@@ -706,19 +689,20 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           const event = evt.getProperty('event');
           if (event && event.target && event.target.getAttribute('id')) {
             const order = cell.value.getAttribute('order');
-            if(order) {
+            if (order) {
               self.showLog(JSON.parse(order));
             }
           }
         } else if (cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'ConsumeNotices' || cell.value.tagName === 'PostNotices') {
           let noticeNames = cell.value.getAttribute('noticeBoardNames');
-          if(noticeNames && cell.value.tagName === 'PostNotices') {
-            if(typeof noticeNames == 'string'){
+          if (noticeNames && cell.value.tagName === 'PostNotices') {
+            if (typeof noticeNames == 'string') {
               noticeNames = noticeNames.split(',');
             }
             self.showConfiguration({noticeNames, type: cell.value.tagName});
           }
-        } if (cell.value.tagName === 'Workflow') {
+        }
+        if (cell.value.tagName === 'Workflow') {
           const data = cell.value.getAttribute('data');
           if (data) {
             const workflow = JSON.parse(data);
@@ -726,7 +710,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
               nzTitle: undefined,
               nzContent: DependentWorkflowComponent,
               nzClassName: 'x-lg',
-              nzComponentParams: {
+              nzData: {
                 workflow,
                 permission: self.permission,
                 preferences: self.preferences,
@@ -758,11 +742,11 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     /**
      * Overrides method to provide a cell collapse/expandable on double click
      */
-    graph.addListener(mxEvent.DOUBLE_CLICK, function(sender, evt) {
+    graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
       let cell = evt.getProperty('cell');
       self.sideBar = {};
       if (cell != null && cell.vertex == 1) {
-        if (self.workflowService.isInstructionCollapsible(cell.value.tagName) || cell.value.tagName === 'Catch' ) {
+        if (self.workflowService.isInstructionCollapsible(cell.value.tagName) || cell.value.tagName === 'Catch') {
           const flag = cell.collapsed != true;
           graph.foldCells(flag, false, null, null, evt);
         }
@@ -773,7 +757,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     function mxIconSet(state) {
       this.images = [];
       let img;
-      if (state.cell && state.cell.value && ((state.cell.getAttribute('path') == self.workFlowJson.path) || state.cell.value.tagName === 'Order') && (state.cell.value.tagName === 'Order' || self.workflowService.isSingleInstruction(state.cell.value.tagName)  || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
+      if (state.cell && state.cell.value && ((state.cell.getAttribute('path') == self.workFlowJson.path) || state.cell.value.tagName === 'Order') && (state.cell.value.tagName === 'Order' || self.workflowService.isSingleInstruction(state.cell.value.tagName) || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
         img = mxUtils.createImage('./assets/images/menu.svg');
         let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
         if (state.cell.value.tagName !== 'Job') {
@@ -844,7 +828,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       }
     }
 
-    mxIconSet.prototype.destroy = function() {
+    mxIconSet.prototype.destroy = function () {
       if (this.images != null) {
         for (let i = 0; i < this.images.length; i++) {
           let img = this.images[i];
@@ -866,6 +850,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     let workflows = new Map();
     const graph = this.graph;
     let isCall = true;
+
     function createWorkflowNode(workflow, cell, type): void {
       if (!self.workflowObjects) {
         if (workflow.path !== self.workFlowJson.path) {
@@ -886,7 +871,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
 
           if (type === 'expect' || type == 'addOrder') {
             graph.insertEdge(cell.parent, null, doc.createElement('Connection'), w1, cell);
-            if(isCall) {
+            if (isCall) {
               isCall = false;
               setTimeout(() => {
                 let outLen = graph.getIncomingEdges(w1);
@@ -1333,7 +1318,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       };
       if (mapObj.graphView) {
         mapObj.colorCode = this.colors[0];
-        if(!isRemove) {
+        if (!isRemove) {
           this.workflowArr.push({
             path: this.workFlowJson.path,
             color: mapObj.colorCode
@@ -1361,7 +1346,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.controllerId,
         order,
         orderPreparation: this.orderPreparation
@@ -1377,7 +1362,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     const obj: any = {
       controllerId: this.controllerId, orderIds: [order.orderId], kill: isKill
     };
-    if(deep){
+    if (deep) {
       obj.deep = true;
     }
     if (this.preferences.auditLog) {
@@ -1391,7 +1376,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
           obj,
           url: 'orders/' + url
@@ -1432,7 +1417,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzAutofocus: null,
@@ -1456,7 +1441,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     }
   }
 
-  private skipOrStop(data,operation, auditLog?): void {
+  private skipOrStop(data, operation, auditLog?): void {
     let obj: any = {
       controllerId: this.controllerId,
       auditLog
@@ -1477,66 +1462,66 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     });
   }
 
-  skip(job): void{
+  skip(job): void {
     this.skipOperation(job, 'Skip');
   }
 
-  unskip(job): void{
+  unskip(job): void {
     this.skipOperation(job, 'Unskip');
   }
 
-  stop(job): void{
+  stop(job): void {
     this.skipOperation(job, 'Stop');
   }
 
-  unstop(job): void{
+  unstop(job): void {
     this.skipOperation(job, 'Unstop');
   }
 
   showConfiguration(argu): void {
-    let nzComponentParams;
+    let nzData;
     if (argu.jobName) {
       const job = this.jobs[argu.jobName];
       const data = job.executable.TYPE === 'ShellScriptExecutable' ? job.executable.script : job.executable.className;
       if (job && job.executable) {
-        nzComponentParams = {
+        nzData = {
           data,
           agentName: job.agentName,
           subagentClusterId: job.subagentClusterId,
           jobName: argu.jobName,
-          workflowPath:this.workFlowJson.path,
+          workflowPath: this.workFlowJson.path,
           admissionTime: job.admissionTimeScheme,
           timezone: this.workFlowJson.timeZone,
           isScript: job.executable.TYPE === 'ShellScriptExecutable',
           readonly: true
         };
       }
-    } else if (argu.predicate){
-      nzComponentParams = {
+    } else if (argu.predicate) {
+      nzData = {
         predicate: true,
-        workflowPath:this.workFlowJson.path,
+        workflowPath: this.workFlowJson.path,
         data: argu.predicate,
         isScript: true,
         readonly: true
       };
-    } else if (argu.schedule){
-      nzComponentParams = {
+    } else if (argu.schedule) {
+      nzData = {
         schedule: JSON.parse(argu.schedule),
-        workflowPath:this.workFlowJson.path,
+        workflowPath: this.workFlowJson.path,
         timezone: this.workFlowJson.timeZone
       };
-    } else if(argu.noticeNames){
-      nzComponentParams = {
+    } else if (argu.noticeNames) {
+      nzData = {
         noticeBoardNames: argu.noticeNames,
         type: argu.type
       };
     }
-    if (nzComponentParams) {
+    if (nzData) {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ScriptModalComponent,
         nzClassName: argu.noticeNames ? '' : 'lg script-editor2',
-        nzComponentParams,
+        nzData,
         nzFooter: null,
         nzAutofocus: null,
         nzClosable: !!argu.noticeNames,
@@ -1545,7 +1530,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     }
   }
 
-  viewHistory(job): void{
+  viewHistory(job): void {
     this.onClick.emit({jobName: job.jobName});
   }
 

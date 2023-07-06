@@ -1,16 +1,17 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {isEqual} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
-import {NzModalRef} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password-dialog.html'
 })
-export class ChangePasswordComponent implements OnInit {
-  @Input() username: string = '';
-  @Input() identityServiceName: string = '';
+export class ChangePasswordComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  username = '';
+  identityServiceName = '';
   submitted = false;
   passwordObj: any = {
     accountName: '',
@@ -28,6 +29,8 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.username = this.modalData.username;
+    this.identityServiceName = this.modalData.identityServiceName;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
         this.comments = {comment: translatedValue};

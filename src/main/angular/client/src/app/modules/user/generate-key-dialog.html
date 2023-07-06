@@ -2,35 +2,35 @@
   <h4 class="modal-title">
     <span translate>profile.keyManagement.label.generateKey</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm">
   <div class="modal-body p-a">
-    <div class="hide" [ngClass]="{'show': display}">
+    <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
     </div>
     <div *ngIf="type === 'key'">
       <div class="form-group row">
         <label class="col-md-4 col-lg-3" translate>profile.keyManagement.label.setExpiryDate</label>
         <div class="col-md-8 col-lg-9">
-          <nz-radio-group name="expireDate" [(ngModel)]="expiry.dateValue">
+          <nz-radio-group [(ngModel)]="expiry.dateValue" name="expireDate">
             <label nz-radio nzValue="date"><span translate>profile.keyManagement.label.expire</span></label>
             <label nz-radio nzValue="0"><span translate>profile.keyManagement.label.neverExpire</span></label>
           </nz-radio-group>
         </div>
       </div>
-      <div class="form-group row" *ngIf="expiry.dateValue === 'date'">
+      <div *ngIf="expiry.dateValue === 'date'" class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.date</label>
         <div class="col-md-8 col-lg-6">
-          <nz-date-picker name="date" [(ngModel)]="key.validUntil" (ngModelChange)="onChange($event)"></nz-date-picker>
+          <nz-date-picker (ngModelChange)="onChange($event)" [(ngModel)]="key.validUntil" name="date"></nz-date-picker>
         </div>
       </div>
       <div class="form-group row">
         <div class="col-md-4 col-lg-3" translate>profile.keyManagement.label.keyAlgorithm</div>
         <div class="col-md-8 col-lg-9">
-          <nz-radio-group name="alg" [(ngModel)]="key.keyAlg">
+          <nz-radio-group [(ngModel)]="key.keyAlg" name="alg">
             <label nz-radio nzValue="PGP"><span translate>profile.keyManagement.label.pgp</span></label>
             <label nz-radio nzValue="RSA"><span translate>profile.keyManagement.label.rsa</span></label>
             <label nz-radio nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
@@ -43,9 +43,9 @@
         <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.distinguishedName
           <sup class="text-danger text-sm">*</sup>
         </label>
-        <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (dn.dirty || dn.touched) && dn.invalid}">
-          <input [appAutofocus]="true" autocomplete="off" required class="form-control"
-                 name="dn" [(ngModel)]="caObj.dn" #dn="ngModel">
+        <div [ngClass]="{ 'has-error' : (dn.dirty || dn.touched) && dn.invalid}" class="col-md-8 col-lg-6">
+          <input #dn="ngModel" [(ngModel)]="caObj.dn" [appAutofocus]="true" autocomplete="off"
+                 class="form-control" name="dn" required>
           <div *ngIf="dn.invalid && (dn.dirty || dn.touched)" class="text-danger help-block">
             <div *ngIf="dn.errors.required">
               <div translate>common.message.requiredError</div>
@@ -56,11 +56,12 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" (click)="generateKey()" class="btn btn-primary btn-sm">
+    <button (click)="generateKey()" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)"
+            class="btn btn-primary btn-sm" type="button">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()">
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
       <span translate>common.button.cancel</span>
     </button>
   </div>

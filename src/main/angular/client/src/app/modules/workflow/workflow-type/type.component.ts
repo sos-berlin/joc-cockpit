@@ -359,7 +359,7 @@ export class TypeComponent implements OnChanges {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -381,7 +381,7 @@ export class TypeComponent implements OnChanges {
     }
   }
 
-  private skipOrStop(data,operation, auditLog?): void {
+  private skipOrStop(data, operation, auditLog?): void {
     let obj: any = {
       controllerId: this.schedulerId,
       auditLog
@@ -402,19 +402,19 @@ export class TypeComponent implements OnChanges {
     });
   }
 
-  skip(job): void{
+  skip(job): void {
     this.skipOperation(job, 'Skip');
   }
 
-  unskip(job): void{
+  unskip(job): void {
     this.skipOperation(job, 'Unskip');
   }
 
-  stop(job): void{
+  stop(job): void {
     this.skipOperation(job, 'Stop');
   }
 
-  unstop(job): void{
+  unstop(job): void {
     this.skipOperation(job, 'Unstop');
   }
 
@@ -465,7 +465,7 @@ export class TypeComponent implements OnChanges {
     }
   }
 
-  viewHistory(instruction): void{
+  viewHistory(instruction): void {
     this.onClick.emit({jobName: instruction.jobName, path: this.workflowObj.path});
   }
 

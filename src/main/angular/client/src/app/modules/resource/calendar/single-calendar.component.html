@@ -19,12 +19,12 @@
           <div class="table-responsive">
             <nz-table
               #ajaxTable
-              [nzSize]="'small'"
               [nzBordered]="true"
-              [nzShowPagination]="false"
               [nzData]="calendars"
               [nzLoading]="loading"
+              [nzShowPagination]="false"
               [nzShowSizeChanger]="false"
+              [nzSize]="'small'"
             >
               <thead>
               <tr>
@@ -41,7 +41,7 @@
                 *ngFor="let calendar of ajaxTable.data">
                 <td>
                   <div class="btn-group dropdown">
-                    <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
+                    <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
                             type="button">
                       <i class="fa fa-ellipsis-h"></i>
                     </button>
@@ -55,14 +55,16 @@
                   </div>
                 </td>
                 <td>
-                  <i *ngIf="calendar.documentationName" (click)="coreService.showDocumentation(calendar.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                  <i (click)="coreService.showDocumentation(calendar.documentationName, preferences)"
+                     *ngIf="calendar.documentationName"
+                     class="cursor fa fa-book p-l-xs p-r-xs"></i>
                   <a (click)="previewCalendar(calendar)" class="text-primary-hover text-dark">{{calendar.name}}</a>
                   <span *ngIf="calendar.title">-</span>
                   <i class="text-muted">{{calendar.title}}</i>
                 </td>
                 <td [innerHtml]="calendar.path"></td>
-                <td><span class="label " [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'"
-                          [innerHtml]="calendar.type | translate"></span></td>
+                <td><span [innerHtml]="calendar.type | translate" [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'"
+                          class="label "></span></td>
                 <td [innerHtml]="calendar.from | stringToDate1:true"></td>
                 <td [innerHtml]="calendar.to | stringToDate1:true"></td>
               </tr>

@@ -8,13 +8,13 @@ import {
   ContentChild,
   TemplateRef
 } from '@angular/core';
-import { calculateViewDimensions } from '../common/view-dimensions.helper';
-import { ColorHelper } from '../common/color.helper';
-import { BaseChartComponent } from '../common/base-chart.component';
-import { DataItem } from '../models/chart-data.model';
-import { LegendOptions, LegendPosition } from '../common/types/legend.model';
-import { ViewDimensions } from '../common/types/view-dimension.interface';
-import { ScaleType } from '../common/types/scale-type.enum';
+import {calculateViewDimensions} from '../common/view-dimensions.helper';
+import {ColorHelper} from '../common/color.helper';
+import {BaseChartComponent} from '../common/base-chart.component';
+import {DataItem} from '../models/chart-data.model';
+import {LegendOptions, LegendPosition} from '../common/types/legend.model';
+import {ViewDimensions} from '../common/types/view-dimension.interface';
+import {ScaleType} from '../common/types/scale-type.enum';
 
 @Component({
   selector: 'ngx-charts-pie-chart',
@@ -177,7 +177,7 @@ export class PieChartComponent extends BaseChartComponent {
     }
 
     this.activeEntries = [item, ...this.activeEntries];
-    this.activate.emit({ value: item, entries: this.activeEntries });
+    this.activate.emit({value: item, entries: this.activeEntries});
   }
 
   onDeactivate(item, fromLegend = false): void {
@@ -196,7 +196,7 @@ export class PieChartComponent extends BaseChartComponent {
     this.activeEntries.splice(idx, 1);
     this.activeEntries = [...this.activeEntries];
 
-    this.deactivate.emit({ value: item, entries: this.activeEntries });
+    this.deactivate.emit({value: item, entries: this.activeEntries});
   }
 
   private hasNoOptionalMarginsSet(): boolean {

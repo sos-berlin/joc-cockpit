@@ -12,7 +12,7 @@ import {AuthService} from '../../../components/guard';
   selector: 'app-agent-cluster-status',
   templateUrl: './agent-cluster-status.component.html'
 })
-export class AgentClusterStatusComponent implements OnInit, OnDestroy {
+export class AgentClusterStatusComponent {
   @Input('layout') layout: any;
   schedulerIds: any = {};
   agentClusters: any = [];
@@ -57,7 +57,7 @@ export class AgentClusterStatusComponent implements OnInit, OnDestroy {
     labels: [],
     datasets: []
   };
-  public pieChartPlugins = [ DatalabelsPlugin ];
+  public pieChartPlugins = [DatalabelsPlugin];
 
   constructor(private coreService: CoreService, private authService: AuthService, public translate: TranslateService,
               private router: Router, private dataService: DataService) {
@@ -74,7 +74,7 @@ export class AgentClusterStatusComponent implements OnInit, OnDestroy {
       this.isLoaded = true;
     }
     if (!localStorage['$SOS$THEME'] || localStorage['$SOS$THEME'].match(/light/)) {
-       this.pieChartOptions.plugins.legend.labels.color = '#3d464d';
+      this.pieChartOptions.plugins.legend.labels.color = '#3d464d';
     }
   }
 
@@ -87,8 +87,8 @@ export class AgentClusterStatusComponent implements OnInit, OnDestroy {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (((args.eventSnapshots[j].eventType === 'ItemAdded' || args.eventSnapshots[j].eventType === 'ItemDeleted'
             || args.eventSnapshots[j].eventType === 'ItemChanged') && args.eventSnapshots[j].objectType === 'AGENT')
-            || args.eventSnapshots[j].eventType === 'AgentStateChanged' || args.eventSnapshots[j].eventType === 'ProxyCoupled'
-            || args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
+          || args.eventSnapshots[j].eventType === 'AgentStateChanged' || args.eventSnapshots[j].eventType === 'ProxyCoupled'
+          || args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
           this.getStatus();
           break;
         }
@@ -162,7 +162,7 @@ export class AgentClusterStatusComponent implements OnInit, OnDestroy {
   }
 
   // events
-  onChartClick({ active }: { active: any }): void {
+  onChartClick({active}: { active: any }): void {
     this.navToAgentView();
   }
 

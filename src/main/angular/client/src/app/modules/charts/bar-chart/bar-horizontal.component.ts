@@ -8,14 +8,14 @@ import {
   ContentChild,
   TemplateRef
 } from '@angular/core';
-import { scaleBand, scaleLinear } from 'd3-scale';
+import {scaleBand, scaleLinear} from 'd3-scale';
 
-import { calculateViewDimensions } from '../common/view-dimensions.helper';
-import { ColorHelper } from '../common/color.helper';
-import { BaseChartComponent } from '../common/base-chart.component';
-import { LegendOptions, LegendPosition } from '../common/types/legend.model';
-import { ScaleType } from '../common/types/scale-type.enum';
-import { ViewDimensions } from '../common/types/view-dimension.interface';
+import {calculateViewDimensions} from '../common/view-dimensions.helper';
+import {ColorHelper} from '../common/color.helper';
+import {BaseChartComponent} from '../common/base-chart.component';
+import {LegendOptions, LegendPosition} from '../common/types/legend.model';
+import {ScaleType} from '../common/types/scale-type.enum';
+import {ViewDimensions} from '../common/types/view-dimension.interface';
 
 @Component({
   selector: 'ngx-charts-bar-horizontal',
@@ -139,13 +139,13 @@ export class BarHorizontalComponent extends BaseChartComponent {
   xAxisHeight: number = 0;
   yAxisWidth: number = 0;
   legendOptions: LegendOptions;
-  dataLabelMaxWidth: any = { negative: 0, positive: 0 };
+  dataLabelMaxWidth: any = {negative: 0, positive: 0};
 
   override update(): void {
     super.update();
 
     if (!this.showDataLabel) {
-      this.dataLabelMaxWidth = { negative: 0, positive: 0 };
+      this.dataLabelMaxWidth = {negative: 0, positive: 0};
     }
 
     this.margin = [10, 20 + this.dataLabelMaxWidth.positive, 10, 20 + this.dataLabelMaxWidth.negative];
@@ -238,12 +238,12 @@ export class BarHorizontalComponent extends BaseChartComponent {
     return opts;
   }
 
-  updateYAxisWidth({ width }: { width: number }): void {
+  updateYAxisWidth({width}: { width: number }): void {
     this.yAxisWidth = width;
     this.update();
   }
 
-  updateXAxisHeight({ height }: { height: number }): void {
+  updateXAxisHeight({height}: { height: number }): void {
     this.xAxisHeight = height;
     this.update();
   }
@@ -276,7 +276,7 @@ export class BarHorizontalComponent extends BaseChartComponent {
     }
 
     this.activeEntries = [item, ...this.activeEntries];
-    this.activate.emit({ value: item, entries: this.activeEntries });
+    this.activate.emit({value: item, entries: this.activeEntries});
   }
 
   onDeactivate(item, fromLegend: boolean = false) {
@@ -295,6 +295,6 @@ export class BarHorizontalComponent extends BaseChartComponent {
     this.activeEntries.splice(idx, 1);
     this.activeEntries = [...this.activeEntries];
 
-    this.deactivate.emit({ value: item, entries: this.activeEntries });
+    this.deactivate.emit({value: item, entries: this.activeEntries});
   }
 }

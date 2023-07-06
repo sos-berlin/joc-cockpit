@@ -1,5 +1,5 @@
-import { Component, Input, ElementRef, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
-import { Orientation } from '../types/orientation.enum';
+import {Component, Input, ElementRef, OnChanges, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
+import {Orientation} from '../types/orientation.enum';
 
 @Component({
   selector: 'g[ngx-charts-axis-label]',

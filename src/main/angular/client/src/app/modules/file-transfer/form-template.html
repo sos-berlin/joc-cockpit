@@ -1,188 +1,221 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit(filter)">
-  <div [ngClass]="{'modal-body p-a' : !isSearch }" >
-    <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName
+  <div [ngClass]="{'modal-body p-a' : !isSearch }">
+    <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
+         class="form-group row">
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>customization.label.customizationName
         <sup *ngIf="!isSearch" class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <input autocomplete="off" [appAutofocus]="!isSearch" type="text" required class="form-control" placeholder="{{'customization.placeholder.enterName' | translate}}"
-               name="name" maxlength="30" [(ngModel)]="filter.name" #name="ngModel"
-               (blur)="checkFilterName()">
+        <input #name="ngModel" (blur)="checkFilterName()" [(ngModel)]="filter.name" [appAutofocus]="!isSearch" autocomplete="off"
+               class="form-control"
+               maxlength="30" name="name" placeholder="{{'customization.placeholder.enterName' | translate}}" required
+               type="text">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
           <div *ngIf="name.errors.required">
             <div translate>common.message.requiredError</div>
           </div>
         </div>
-        <div class="help-block text-danger" *ngIf="!isUnique">
+        <div *ngIf="!isUnique" class="help-block text-danger">
           <div translate>common.message.uniqueError</div>
         </div>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.profileNames</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.profileNames</label>
       <div class=" col-sm-6">
         <div *ngFor="let profile of filter.profiles;let i = index">
-          <input class="form-control" [ngClass]="{'m-b-sm': i != filter.profiles.length - 1}" placeholder="{{'fileTransfer.search.placeholder.enterProfileName' | translate}} {{i + 1}}" name="profileId{{i}}" [(ngModel)]="profile.name">
-          <i class="text-hover-color fa fa-trash pos-abt" *ngIf="i != filter.profiles.length - 1" style="margin-top: -29px;right: -10px;" (click)="removeProfile(i)"></i>
+          <input [(ngModel)]="profile.name" [ngClass]="{'m-b-sm': i != filter.profiles.length - 1}"
+                 class="form-control"
+                 name="profileId{{i}}" placeholder="{{'fileTransfer.search.placeholder.enterProfileName' | translate}} {{i + 1}}">
+          <i (click)="removeProfile(i)" *ngIf="i != filter.profiles.length - 1"
+             class="text-hover-color fa fa-trash pos-abt" style="margin-top: -29px;right: -10px;"></i>
         </div>
-        <i class="text-hover-primary fa fa-plus pos-abt" style="margin-top: -20px;right: -10px;" (click)="addProfile()"></i>
+        <i (click)="addProfile()" class="text-hover-primary fa fa-plus pos-abt"
+           style="margin-top: -20px;right: -10px;"></i>
       </div>
     </div>
-    <div class="form-group row" *ngIf="isSearch">
+    <div *ngIf="isSearch" class="form-group row">
       <label class="col-md-2 col-sm-4" translate>common.label.dateRange</label>
       <div class="col-md-6">
-        <nz-radio-group name="radio" [(ngModel)]="filter.radio">
+        <nz-radio-group [(ngModel)]="filter.radio" name="radio">
           <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
           <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
         </nz-radio-group>
       </div>
     </div>
-    <div class="form-group row" *ngIf="filter.radio == 'current'">
+    <div *ngIf="filter.radio == 'current'" class="form-group row">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.from</label>
       <div class="col-sm-6">
-        <nz-date-picker [nzFormat]="dateFormat" [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
-                        name="from" [(ngModel)]="filter.fromDate"></nz-date-picker>
-        <div class="time-picker" [ngClass]="{'has-error': (fromTime.dirty || fromTime.touched) && fromTime.invalid}">
-            <input timevalidator validTimeReqex [disabled]="!filter.fromDate" type="text" #fromTime="ngModel" class="form-control"
-                name="fromTime" [(ngModel)]="filter.fromTime" (ngModelChange)="selectTime(filter.fromTime, true)" placeholder="HH:MM:SS">
-            <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)" [(ngModel)]="filter.fromTime1" name="fromTimeIcon"></nz-time-picker>
+        <nz-date-picker [(ngModel)]="filter.fromDate"
+                        [nzFormat]="dateFormat"
+                        [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" name="from"></nz-date-picker>
+        <div [ngClass]="{'has-error': (fromTime.dirty || fromTime.touched) && fromTime.invalid}" class="time-picker">
+          <input #fromTime="ngModel" (ngModelChange)="selectTime(filter.fromTime, true)" [(ngModel)]="filter.fromTime" [disabled]="!filter.fromDate" class="form-control"
+                 name="fromTime"
+                 placeholder="HH:MM:SS" timevalidator type="text"
+                 validTimeReqex>
+          <nz-time-picker (ngModelChange)="selectTime($event)" [(ngModel)]="filter.fromTime1" [nzAllowEmpty]="false"
+                          name="fromTimeIcon"></nz-time-picker>
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="filter.radio == 'current'">
+    <div *ngIf="filter.radio == 'current'" class="form-group row">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.to</label>
       <div class="col-sm-6">
-        <nz-date-picker [nzFormat]="dateFormat" [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
-               [(ngModel)]="filter.toDate" name="to" ></nz-date-picker>
-        <div class="time-picker" [ngClass]="{'has-error': (toDate.dirty || toDate.touched) && toDate.invalid}">
-          <input timevalidator validTimeReqex [disabled]="!filter.toDate" type="text" #toDate="ngModel" class="form-control"
-              name="toTime" [(ngModel)]="filter.toTime" (ngModelChange)="selectTime(filter.toTime, true, 'to')" placeholder="HH:MM:SS">
-          <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event, false, 'to')" [(ngModel)]="filter.toTime1" name="toTimeIcon"></nz-time-picker>
+        <nz-date-picker [(ngModel)]="filter.toDate"
+                        [nzFormat]="dateFormat"
+                        [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" name="to"></nz-date-picker>
+        <div [ngClass]="{'has-error': (toDate.dirty || toDate.touched) && toDate.invalid}" class="time-picker">
+          <input #toDate="ngModel" (ngModelChange)="selectTime(filter.toTime, true, 'to')" [(ngModel)]="filter.toTime" [disabled]="!filter.toDate" class="form-control"
+                 name="toTime"
+                 placeholder="HH:MM:SS" timevalidator type="text"
+                 validTimeReqex>
+          <nz-time-picker (ngModelChange)="selectTime($event, false, 'to')" [(ngModel)]="filter.toTime1"
+                          [nzAllowEmpty]="false" name="toTimeIcon"></nz-time-picker>
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="filter.radio == 'planned'" [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}">
-        <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.processExecuted</label>
-        <div class=" col-sm-6" >
-          <input validateReqex type="text" name="planned" #processExc1="ngModel" class="form-control"
-                 placeholder="{{'common.placeholder.processExecuted' | translate}}" [(ngModel)]="filter.planned">
-          <div *ngIf="processExc1.errors && (processExc1.dirty || processExc1.touched)" class="help-block text-danger">
-            <div translate *ngIf="!processExc1.valid">common.message.invalid</div>
-          </div>
+    <div *ngIf="filter.radio == 'planned'" [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}"
+         class="form-group row">
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.processExecuted</label>
+      <div class=" col-sm-6">
+        <input #processExc1="ngModel" [(ngModel)]="filter.planned" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
+               type="text" validateReqex>
+        <div *ngIf="processExc1.errors && (processExc1.dirty || processExc1.touched)" class="help-block text-danger">
+          <div *ngIf="!processExc1.valid" translate>common.message.invalid</div>
         </div>
       </div>
-    <div class="form-group row" *ngIf="isSearch">
+    </div>
+    <div *ngIf="isSearch" class="form-group row">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
       <div class=" col-sm-6">
-        <nz-select nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}" [(ngModel)]="filter.controllerId" name="id">
-          <nz-option *ngFor="let controller of schedulerIds.controllerIds" [nzLabel]="controller" [nzValue]="controller"></nz-option>
+        <nz-select [(ngModel)]="filter.controllerId" name="id"
+                   nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}">
+          <nz-option *ngFor="let controller of schedulerIds.controllerIds" [nzLabel]="controller"
+                     [nzValue]="controller"></nz-option>
         </nz-select>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.workflows</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
+             translate>dailyPlan.label.workflows</label>
       <div class="col-sm-6">
-        <app-multi-select [type]="'WORKFLOW'" [list]="filter" [attribute]="'workflowNames'" [nodes]="workflowTree"></app-multi-select>
+        <app-multi-select [attribute]="'workflowNames'" [list]="filter" [nodes]="workflowTree"
+                          [type]="'WORKFLOW'"></app-multi-select>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.status</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>fileTransfer.label.status</label>
       <div class="col-sm-8">
         <nz-checkbox-wrapper (nzOnChange)="stateChange($event)">
           <ng-container *ngFor="let option of stateOptions">
-            <label nz-checkbox [nzValue]="option.status" [ngModel]="option.checked" [name]="option.text"><span translate>common.label.{{option.text}}</span></label>
+            <label [name]="option.text" [ngModel]="option.checked" [nzValue]="option.status" nz-checkbox><span
+              translate>common.label.{{option.text}}</span></label>
           </ng-container>
         </nz-checkbox-wrapper>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 " [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.operations</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 " translate>fileTransfer.search.label.operations</label>
       <div class="col-sm-8">
         <nz-checkbox-wrapper (nzOnChange)="operationChange($event)">
           <ng-container *ngFor="let option of operationOptions">
-            <label nz-checkbox [nzValue]="option.status" [ngModel]="option.checked" [name]="option.text"><span translate>fileTransfer.search.label.{{option.text}}</span></label>
+            <label [name]="option.text" [ngModel]="option.checked" [nzValue]="option.status" nz-checkbox><span
+              translate>fileTransfer.search.label.{{option.text}}</span></label>
           </ng-container>
         </nz-checkbox-wrapper>
       </div>
     </div>
     <div class="form-group row b-t p-t-12">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.sourceFilePaths</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.sourceFilePaths</label>
       <div class=" col-sm-6">
         <div *ngFor="let sourceFile of filter.sourceFiles;let i = index">
-          <input class="form-control" [ngClass]="{'m-b-sm': i != filter.sourceFiles.length - 1}" placeholder="{{'fileTransfer.search.placeholder.sourceFilePath' | translate}} {{i + 1}}" name="sourceFile{{i}}" [(ngModel)]="sourceFile.name">
-          <i class="text-hover-color fa fa-trash pos-abt" *ngIf="i != filter.sourceFiles.length - 1" style="margin-top: -29px;right: -10px;" (click)="removeSourcePath(i)"></i>
+          <input [(ngModel)]="sourceFile.name" [ngClass]="{'m-b-sm': i != filter.sourceFiles.length - 1}"
+                 class="form-control"
+                 name="sourceFile{{i}}" placeholder="{{'fileTransfer.search.placeholder.sourceFilePath' | translate}} {{i + 1}}">
+          <i (click)="removeSourcePath(i)" *ngIf="i != filter.sourceFiles.length - 1"
+             class="text-hover-color fa fa-trash pos-abt" style="margin-top: -29px;right: -10px;"></i>
         </div>
-        <i class="text-hover-primary fa fa-plus pos-abt" style="margin-top: -20px;right: -10px;" (click)="addSourcePath()"></i>
+        <i (click)="addSourcePath()" class="text-hover-primary fa fa-plus pos-abt"
+           style="margin-top: -20px;right: -10px;"></i>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.sourceHost</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.sourceHost</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.sourceHost' | translate}}" name="sourceHost" [(ngModel)]="filter.sourceHost">
+        <input [(ngModel)]="filter.sourceHost" class="form-control"
+               name="sourceHost" placeholder="{{'fileTransfer.search.placeholder.sourceHost' | translate}}">
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.sourceProtocol</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.sourceProtocol</label>
       <div class="col-sm-6">
-        <nz-select name="sourceProtocol"
-                   nzMode="multiple"
+        <nz-select [(ngModel)]="filter.sourceProtocol"
+                   name="sourceProtocol"
                    nzAllowClear
-                   nzShowSearch
+                   nzMode="multiple"
                    nzPlaceHolder="{{'fileTransfer.search.placeholder.sourceProtocol' | translate}}"
-                   [(ngModel)]="filter.sourceProtocol">
+                   nzShowSearch>
           <nz-option *ngFor="let option of allhosts" [nzLabel]="option" [nzValue]="option"></nz-option>
         </nz-select>
       </div>
     </div>
     <div class="form-group row b-t p-t-12">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.targetFilePaths</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.targetFilePaths</label>
       <div class=" col-sm-6">
         <div *ngFor="let targetFile of filter.targetFiles;let i = index">
-          <input class="form-control" [ngClass]="{'m-b-sm': i != filter.targetFiles.length - 1}" placeholder="{{'fileTransfer.search.placeholder.targetFilePath' | translate}} {{i + 1}}" name="targetFile{{i}}" [(ngModel)]="targetFile.name">
-          <i class="text-hover-color fa fa-trash pos-abt" *ngIf="i != filter.targetFiles.length - 1" style="margin-top: -29px;right: -10px;" (click)="removeTargetPath(i)"></i>
+          <input [(ngModel)]="targetFile.name" [ngClass]="{'m-b-sm': i != filter.targetFiles.length - 1}"
+                 class="form-control"
+                 name="targetFile{{i}}" placeholder="{{'fileTransfer.search.placeholder.targetFilePath' | translate}} {{i + 1}}">
+          <i (click)="removeTargetPath(i)" *ngIf="i != filter.targetFiles.length - 1"
+             class="text-hover-color fa fa-trash pos-abt" style="margin-top: -29px;right: -10px;"></i>
         </div>
-        <i class="text-hover-primary fa fa-plus pos-abt" style="margin-top: -20px;right: -10px;" (click)="addTargetPath()"></i>
+        <i (click)="addTargetPath()" class="text-hover-primary fa fa-plus pos-abt"
+           style="margin-top: -20px;right: -10px;"></i>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.targetHost</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.targetHost</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.targetHost' | translate}}" name="targetHost" [(ngModel)]="filter.targetHost">
+        <input [(ngModel)]="filter.targetHost" class="form-control"
+               name="targetHost" placeholder="{{'fileTransfer.search.placeholder.targetHost' | translate}}">
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.targetProtocol</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.targetProtocol</label>
       <div class=" col-sm-6">
-        <nz-select name="targetProtocol"
-                   nzMode="multiple"
+        <nz-select [(ngModel)]="filter.targetProtocol"
+                   name="targetProtocol"
                    nzAllowClear
-                   nzShowSearch
+                   nzMode="multiple"
                    nzPlaceHolder="{{'fileTransfer.search.placeholder.targetProtocol' | translate}}"
-                   [(ngModel)]="filter.targetProtocol">
+                   nzShowSearch>
           <nz-option *ngFor="let option of allhosts" [nzLabel]="option" [nzValue]="option"></nz-option>
         </nz-select>
       </div>
     </div>
-    <div class="form-group row" *ngIf="permission.joc.administration.customization.share && !isSearch">
+    <div *ngIf="permission.joc.administration.customization.share && !isSearch" class="form-group row">
       <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
       <div class="col-sm-6">
-        <label nz-checkbox [(ngModel)]="filter.shared" name="shared"></label>
+        <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
       </div>
     </div>
-    <div class="form-group m-t m-b-xs" *ngIf="isSearch">
-      <button type="button" class="btn btn-primary btn-sm" (click)="search();" translate>common.button.search</button>
-      <button type="submit" class="btn btn-default btn-sm m-l-sm" [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted">
-         <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+    <div *ngIf="isSearch" class="form-group m-t m-b-xs">
+      <button (click)="search();" class="btn btn-primary btn-sm" translate type="button">common.button.search</button>
+      <button [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted" class="btn btn-default btn-sm m-l-sm"
+              type="submit">
+        <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
         {{'customization.button.saveAsCustomization' | translate}}
       </button>
-      <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>common.button.cancel</button>
+      <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">common.button.cancel
+      </button>
     </div>
   </div>
-  <div class="modal-footer" *ngIf="!isSearch">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+  <div *ngIf="!isSearch" class="modal-footer">
+    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm" type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>common.button.cancel</button>
+    <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">common.button.cancel</button>
   </div>
 </form>

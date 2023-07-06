@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-empty-data',
@@ -15,7 +15,7 @@ import {Component, OnInit, Input} from '@angular/core';
     </nz-empty>
   `,
 })
-export class EmptyDataComponent implements OnInit {
+export class EmptyDataComponent {
   @Input() title: string;
 
   ngOnInit(): void {

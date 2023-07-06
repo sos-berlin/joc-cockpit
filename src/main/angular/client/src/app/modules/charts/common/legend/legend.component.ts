@@ -9,8 +9,8 @@ import {
   ChangeDetectorRef,
   ViewEncapsulation
 } from '@angular/core';
-import { formatLabel } from '../label.helper';
-import { ColorHelper } from '../color.helper';
+import {formatLabel} from '../label.helper';
+import {ColorHelper} from '../color.helper';
 
 export interface LegendEntry {
   color: string;
@@ -62,7 +62,8 @@ export class LegendComponent implements OnChanges {
 
   legendEntries: LegendEntry[] = [];
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef) {
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.update();

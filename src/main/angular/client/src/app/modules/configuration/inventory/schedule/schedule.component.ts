@@ -24,7 +24,7 @@ import {CommentModalComponent} from '../../../../components/comment-modal/commen
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './schedule.component.html',
 })
-export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
+export class ScheduleComponent {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
@@ -618,7 +618,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
             nzTitle: undefined,
             nzContent: CommentModalComponent,
             nzClassName: 'lg',
-            nzComponentParams: {
+            nzData: {
               comments
             },
             nzFooter: null,
@@ -780,7 +780,12 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     });
 
     obj.orderParameterisations = obj.orderParameterisations.map(item => {
-      return {orderName: item.orderName, variables: item.variables, positions: item.positions, forceJobAdmission: item.forceJobAdmission};
+      return {
+        orderName: item.orderName,
+        variables: item.variables,
+        positions: item.positions,
+        forceJobAdmission: item.forceJobAdmission
+      };
     });
 
     if (obj.nonWorkingDayCalendars.length === 0) {
@@ -1020,12 +1025,12 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       this.saveJSON();
     }
     if (data.add) {
-      this.getWorkflowInfo(data.add, false, () =>{
-        if(this.schedule.configuration.workflowNames.length > 1) {
+      this.getWorkflowInfo(data.add, false, () => {
+        if (this.schedule.configuration.workflowNames.length > 1) {
           this.saveJSON();
         }
       });
-    } else if (this.schedule.configuration.workflowNames.length > 0){
+    } else if (this.schedule.configuration.workflowNames.length > 0) {
       this.saveJSON();
     }
   }

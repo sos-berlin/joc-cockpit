@@ -14,7 +14,7 @@ import {GroupByPipe} from '../../../pipes/core.pipe';
   templateUrl: './agent-monitor.component.html',
   styleUrls: ['./agent-monitor.component.scss']
 })
-export class AgentMonitorComponent implements OnInit, OnDestroy {
+export class AgentMonitorComponent {
   @Input() permission: any;
   @Input() preferences: any = {};
   @Input() schedulerIds: any = {};

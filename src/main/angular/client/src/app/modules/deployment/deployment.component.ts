@@ -1,11 +1,10 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, ViewChild} from '@angular/core';
 import {isEmpty, isArray, isEqual} from 'underscore';
 import {saveAs} from 'file-saver';
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
 import {ClipboardService} from "ngx-clipboard";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {FileUploader} from "ng2-file-upload";
 import {TranslateService} from "@ngx-translate/core";
 import {ToastrService} from "ngx-toastr";
 import {Subscription} from "rxjs";
@@ -17,100 +16,15 @@ import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.comp
 import {CoreService} from '../../services/core.service';
 import {AuthService} from "../../components/guard";
 import {DataService} from "../../services/data.service";
+import {FileUploaderComponent} from "../../components/file-uploader/file-uploader.component";
 
 declare const $: any;
-
-@Component({
-  selector: 'app-upload-json',
-  templateUrl: './upload-json-dialog.html'
-})
-export class UploadModalComponent implements OnInit {
-
-  submitted = false;
-  uploader: FileUploader;
-  data: any;
-
-  constructor(public coreService: CoreService, public activeModal: NzModalRef, public translate: TranslateService, public toasterService: ToastrService) {
-    this.uploader = new FileUploader({
-      url: '',
-      queueLimit: 1
-    });
-  }
-
-  ngOnInit(): void {
-    this.uploader.onCompleteItem = (fileItem: any, response, status) => {
-      if (status === 200) {
-        this.activeModal.close('success');
-      }
-    };
-
-    this.uploader.onErrorItem = (fileItem, response: any) => {
-      const res = typeof response === 'string' ? JSON.parse(response) : response;
-      if (res.error) {
-        this.toasterService.error(res.error.message, res.error.code);
-      }
-    };
-  }
-
-  // CALLBACKS
-  onFileSelected(event: any): void {
-    const self = this;
-    const item = event['0'];
-    const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
-    if (fileExt != 'JSON') {
-      let msg = '';
-      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
-        msg = translatedValue;
-      });
-      this.toasterService.error(fileExt + ' ' + msg);
-      this.uploader.clearQueue();
-    } else {
-      const reader = new FileReader();
-      reader.readAsText(item, 'UTF-8');
-      reader.onload = onLoadFile;
-    }
-
-    function onLoadFile(_event): void {
-      let data;
-      try {
-        data = JSON.parse(_event.target.result);
-      } catch (e) {
-
-      }
-      if (data) {
-        if (!data.descriptor) {
-          self.showErrorMsg();
-        } else {
-          self.data = data;
-        }
-      } else {
-        self.showErrorMsg();
-      }
-    }
-  }
-
-  onSubmit(): void {
-    this.submitted = true;
-    setTimeout(() => {
-      this.activeModal.close(this.data);
-    }, 100);
-  }
-
-  private showErrorMsg(): void {
-    let msg = '';
-    this.translate.get('deploymentService.message.invalidFile').subscribe(translatedValue => {
-      msg = translatedValue;
-    });
-    this.toasterService.error(msg);
-    this.uploader.queue[0].remove();
-  }
-}
 
 @Component({
   selector: 'app-bulk-update',
   templateUrl: './bulk-update-dialog.html'
 })
-export class BulkUpdateModalComponent implements OnInit {
+export class BulkUpdateModalComponent {
   @Input() listOfObjects: any;
   @Input() securityLevel: Array<string>;
   @Input() dbmsInit: Array<string>;
@@ -192,7 +106,7 @@ export class BulkUpdateModalComponent implements OnInit {
   selector: 'app-show-json',
   templateUrl: './show-json-dialog.html'
 })
-export class ShowJsonModalComponent implements OnInit {
+export class ShowJsonModalComponent {
   @Input() object: any;
   @Input() name: string;
   @Input() isEdit: any;
@@ -237,7 +151,7 @@ export class ShowJsonModalComponent implements OnInit {
   }
 
   copyToClipboard(): void {
-    this.validateByURL(this.editor.get(), (isValid) => {
+    this.validateByURL(this.editor.get(), () => {
     });
     this.coreService.showCopyMessage(this.message);
     this.clipboardService.copyFromContent(this.editor.getText());
@@ -282,9 +196,9 @@ export class ShowJsonModalComponent implements OnInit {
   templateUrl: './deployment.component.html',
   styleUrls: ['./deployment.component.scss']
 })
-export class DeploymentComponent implements OnInit, OnDestroy {
+export class DeploymentComponent {
   isLoading = true;
-  loading  = false;
+  loading = false;
   isTrash = false;
   isTreeLoaded = false;
   tree: any = [];
@@ -473,7 +387,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         const tree = this.coreService.prepareTree(res, false);
         if (path) {
           this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
-          this.updateFolders(path, false, (response) => {
+          this.updateFolders(path, false, () => {
             this.updateTree(false);
           }, redirect);
           if (mainPath && path !== mainPath) {
@@ -1288,12 +1202,12 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   private navToField(id, index1, index2, type): void {
     if (type == 'joc') {
       this.data.joc[index1].isJOCExpanded = true;
-      if(index2 > -1) {
+      if (index2 > -1) {
         this.data.joc[index1].members.instances[index2].isJOCPropertiesExpanded = true;
       }
     } else if (type == 'agents') {
       this.data.agents.controllerRefs[index1].isAgentExpanded = true;
-      if(index2 > -1) {
+      if (index2 > -1) {
         this.data.agents.controllerRefs[index1].members[index2].isAgentPropertiesExpanded = true;
       }
     } else if (type == 'controllers') {
@@ -1798,9 +1712,11 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   upload(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
-      nzContent: UploadModalComponent,
+      nzContent: FileUploaderComponent,
       nzClassName: 'lg',
-      nzComponentParams: {},
+      nzData: {
+        type: 'DEPLOYMENT'
+      },
       nzFooter: null,
       nzAutofocus: null,
       nzClosable: false,
@@ -1818,7 +1734,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
     this.data.descriptor = this.deploymentData.mainObj.descriptor || {};
     this.data.license = this.deploymentData.mainObj.license;
     this.data.certificates = this.deploymentData.mainObj.certificates;
-    if(this.data.certificates && !isEmpty(this.data.certificates)) {
+    if (this.data.certificates && !isEmpty(this.data.certificates)) {
       if (!this.data.certificates.controller) {
         this.data.certificates.controller = {};
       }
@@ -2040,7 +1956,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
             nzTitle: undefined,
             nzContent: CommentModalComponent,
             nzClassName: 'lg',
-            nzComponentParams: {
+            nzData: {
               comments,
             },
             nzFooter: null,
@@ -2138,7 +2054,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -2167,7 +2083,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title: 'remove',
           message: 'removeObject',
           type: 'Remove',
@@ -2248,7 +2164,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -2270,7 +2186,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title: 'delete',
           message: 'deleteObject',
           type: 'Delete',
@@ -2356,9 +2272,11 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   importJSON(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
-      nzContent: UploadModalComponent,
+      nzContent: FileUploaderComponent,
       nzClassName: 'lg',
-      nzComponentParams: {},
+      nzData: {
+        type: 'DEPLOYMENT'
+      },
       nzFooter: null,
       nzAutofocus: null,
       nzClosable: false,

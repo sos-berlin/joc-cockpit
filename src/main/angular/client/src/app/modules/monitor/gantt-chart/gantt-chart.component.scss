@@ -86,9 +86,11 @@ table {
 
   tr {
     white-space: nowrap;
-    th{
+
+    th {
       font-weight: bold;
     }
+
     th,
     td {
       text-align: left;
@@ -112,6 +114,7 @@ table {
 .timeline {
   border-collapse: collapse;
   border-top: 1px solid var(--border-color);
+
   tr,
   .row {
     white-space: nowrap;
@@ -148,6 +151,7 @@ table {
       color: #fff;
       text-align: center;
     }
+
     span {
       border-radius: 7px;
     }

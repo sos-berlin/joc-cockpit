@@ -1,16 +1,20 @@
-import { Subject, merge, fromEvent } from 'rxjs';
-import { mapTo, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import {Subject, merge, fromEvent} from 'rxjs';
+import {mapTo, takeUntil, distinctUntilChanged} from 'rxjs/operators';
 
-import { PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { NgZone, Inject, Component,
+import {PLATFORM_ID} from '@angular/core';
+import {isPlatformBrowser} from '@angular/common';
+import {
+  NgZone, Inject, Component,
   OnInit, OnDestroy, DoCheck, Input, Output, EventEmitter, HostBinding,
-  ViewChild, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+  ViewChild, ViewEncapsulation, ChangeDetectorRef
+} from '@angular/core';
 
-import { PerfectScrollbarDirective } from './perfect-scrollbar.directive';
+import {PerfectScrollbarDirective} from './perfect-scrollbar.directive';
 
-import { PerfectScrollbarEvent, PerfectScrollbarEvents,
-  PerfectScrollbarConfigInterface } from './perfect-scrollbar.interfaces';
+import {
+  PerfectScrollbarEvent, PerfectScrollbarEvents,
+  PerfectScrollbarConfigInterface
+} from './perfect-scrollbar.interfaces';
 
 @Component({
   selector: 'perfect-scrollbar',
@@ -20,7 +24,7 @@ import { PerfectScrollbarEvent, PerfectScrollbarEvents,
   ],
   encapsulation: ViewEncapsulation.None
 })
-export class PerfectScrollbarComponent implements OnInit, OnDestroy, DoCheck {
+export class PerfectScrollbarComponent {
   public states: any = {};
 
   public indicatorX: boolean = false;
@@ -71,10 +75,11 @@ export class PerfectScrollbarComponent implements OnInit, OnDestroy, DoCheck {
   @Output() psXReachEnd: EventEmitter<any> = new EventEmitter<any>();
   @Output() psXReachStart: EventEmitter<any> = new EventEmitter<any>();
 
-  @ViewChild(PerfectScrollbarDirective, { static: true }) directiveRef?: PerfectScrollbarDirective;
+  @ViewChild(PerfectScrollbarDirective, {static: true}) directiveRef?: PerfectScrollbarDirective;
 
   constructor(private zone: NgZone, private cdRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) private platformId: Object) {}
+              @Inject(PLATFORM_ID) private platformId: Object) {
+  }
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -112,7 +117,7 @@ export class PerfectScrollbarComponent implements OnInit, OnDestroy, DoCheck {
                 this.allowPropagationY = false;
               }
             }
-          } else {
+          } else {
             if (state === 'left' || state === 'right') {
               this.states.left = false;
               this.states.right = false;
@@ -193,20 +198,20 @@ export class PerfectScrollbarComponent implements OnInit, OnDestroy, DoCheck {
               }
             });
 
-            merge(
-              fromEvent(element, 'ps-scroll-x')
-                .pipe(mapTo('x')),
-              fromEvent(element, 'ps-scroll-y')
-                .pipe(mapTo('y')),
-              fromEvent(element, 'ps-x-reach-end')
-                .pipe(mapTo('right')),
-              fromEvent(element, 'ps-y-reach-end')
-                .pipe(mapTo('bottom')),
-              fromEvent(element, 'ps-x-reach-start')
-                .pipe(mapTo('left')),
-              fromEvent(element, 'ps-y-reach-start')
-                .pipe(mapTo('top')),
-            )
+          merge(
+            fromEvent(element, 'ps-scroll-x')
+              .pipe(mapTo('x')),
+            fromEvent(element, 'ps-scroll-y')
+              .pipe(mapTo('y')),
+            fromEvent(element, 'ps-x-reach-end')
+              .pipe(mapTo('right')),
+            fromEvent(element, 'ps-y-reach-end')
+              .pipe(mapTo('bottom')),
+            fromEvent(element, 'ps-x-reach-start')
+              .pipe(mapTo('left')),
+            fromEvent(element, 'ps-y-reach-start')
+              .pipe(mapTo('top')),
+          )
             .pipe(
               takeUntil(this.ngDestroy)
             )
@@ -251,18 +256,17 @@ export class PerfectScrollbarComponent implements OnInit, OnDestroy, DoCheck {
     }
   }
 
-  private checkPropagation(event: any, deltaX: number, deltaY: number): void {
+  private checkPropagation(event: any, deltaX: number, deltaY: number): void {
     this.interaction = true;
 
     const scrollDirectionX = (deltaX < 0) ? -1 : 1;
     const scrollDirectionY = (deltaY < 0) ? -1 : 1;
 
     if ((this.usePropagationX && this.usePropagationY) ||
-        (this.usePropagationX && (!this.allowPropagationX ||
+      (this.usePropagationX && (!this.allowPropagationX ||
         (this.scrollDirectionX !== scrollDirectionX))) ||
-        (this.usePropagationY && (!this.allowPropagationY ||
-        (this.scrollDirectionY !== scrollDirectionY))))
-    {
+      (this.usePropagationY && (!this.allowPropagationY ||
+        (this.scrollDirectionY !== scrollDirectionY)))) {
       event.preventDefault();
       event.stopPropagation();
     }

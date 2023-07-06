@@ -6,7 +6,7 @@ import {AuthService} from '../../../components/guard';
   selector: 'app-links',
   templateUrl: './sub-link.component.html'
 })
-export class SubLinkComponent implements OnInit {
+export class SubLinkComponent {
   permission: any = {};
 
   constructor(private coreService: CoreService, private authService: AuthService) {
@@ -14,7 +14,7 @@ export class SubLinkComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.authService.permission) {
-       this.permission = JSON.parse(this.authService.permission);
+      this.permission = JSON.parse(this.authService.permission);
     }
   }
 }

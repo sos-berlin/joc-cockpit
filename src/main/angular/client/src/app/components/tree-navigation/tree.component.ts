@@ -12,7 +12,7 @@ declare const $: any;
   selector: 'app-tree-navigation',
   templateUrl: './tree.component.html'
 })
-export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
+export class TreeComponent {
   preferences: any;
   @Input() tree;
   @Input() sideView;
@@ -236,7 +236,7 @@ export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
         }
         this.coreService.post((this.type == 'WORKFLOW' ? 'workflows' : this.type == 'NOTICEBOARD' ? 'notice/boards' :
           this.type == 'DOCUMENTATION' ? 'documentations' : this.type == 'LOCK' ? 'locks' :
-            this.type == 'CALENDAR' ? 'calendars' :  'inventory') + '/quick/search', request).subscribe({
+            this.type == 'CALENDAR' ? 'calendars' : 'inventory') + '/quick/search', request).subscribe({
           next: (res: any) => {
             this.allObjects = res.results;
             this.searchNode.token = res.token;

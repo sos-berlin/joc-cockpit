@@ -1,75 +1,81 @@
-<div class="operation-status-info" *ngIf="isProcessing">
+<div *ngIf="isProcessing" class="operation-status-info">
   <div id='prog-bar-cont'>
     <div id="prog-bar">
       <div id="background"></div>
     </div>
   </div>
 </div>
-<div class="pos-abt" style="top:12px;right:8px" *ngIf="setOfCheckedId.size > 0">
-  <button class="btn btn-grey btn-sm m-l-12"
+<div *ngIf="setOfCheckedId.size > 0" class="pos-abt" style="top:12px;right:8px">
+  <button (click)="modifyAllStartTime()"
           *ngIf="permission.currentController.orders.modify" [ngClass]="{'disable-link': !object.isModify }"
-          (click)="modifyAllStartTime()"><i
+          class="btn btn-grey btn-sm m-l-12"><i
     class="fa fa-calendar"></i>&nbsp;
     <span class="hidden-sm-down" translate>dailyPlan.button.setStartTime</span>
   </button>
-  <button class="btn btn-grey btn-sm m-l-12"
+  <button (click)="modifyAllOrder()"
           *ngIf="permission.currentController.orders.modify" [ngClass]="{'disable-link': !object.isModify }"
-          (click)="modifyAllOrder()"><i class="fa fa-edit p-r-xs"></i>
+          class="btn btn-grey btn-sm m-l-12"><i class="fa fa-edit p-r-xs"></i>
     <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span></button>
-  <button class="btn btn-grey btn-sm m-l-12"  *ngIf="!object.isCancel && permission.currentController.orders.cancel"
-          (click)="cancelAllOrder()"><i class="fa fa-times p-r-xs"></i>
+  <button (click)="cancelAllOrder()" *ngIf="!object.isCancel && permission.currentController.orders.cancel"
+          class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times p-r-xs"></i>
     <span class="hidden-sm-down" translate>order.button.cancel</span></button>
-  <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.isCancelWithKill && permission.currentController.orders.cancel"
-          (click)="cancelAllOrder(true)"><i class="fa fa-times"></i>&nbsp;
+  <button (click)="cancelAllOrder(true)"
+          *ngIf="object.isCancelWithKill && permission.currentController.orders.cancel"
+          class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times"></i>&nbsp;
     <span class="hidden-sm-down" translate>order.button.cancelAndKillTask</span>
   </button>
-  <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.isTerminate && permission.currentController.orders"
-          (click)="terminateAllOrder()"><i class="fa fa-trash p-r-xs"></i>
+  <button (click)="terminateAllOrder()" *ngIf="object.isTerminate && permission.currentController.orders"
+          class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash p-r-xs"></i>
     <span class="hidden-sm-down" translate>order.button.leaveWorkflow</span></button>
-  <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.isSuspend && permission.currentController.orders.suspendResume"
-          (click)="suspendAllOrder()"><i class="fa fa-stop p-r-xs"></i>
+  <button (click)="suspendAllOrder()"
+          *ngIf="object.isSuspend && permission.currentController.orders.suspendResume"
+          class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop p-r-xs"></i>
     <span class="hidden-sm-down" translate>order.button.suspend</span></button>
-  <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.isSuspendWithKill && permission.currentController.orders.suspendResume"
-          (click)="suspendAllOrder(true)"><i class="fa fa-stop"></i>&nbsp;
+  <button (click)="suspendAllOrder(true)"
+          *ngIf="object.isSuspendWithKill && permission.currentController.orders.suspendResume"
+          class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop"></i>&nbsp;
     <span class="hidden-sm-down" translate>order.button.suspendAndKillTask</span>
   </button>
-  <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.isResume && permission.currentController.orders.suspendResume"
-          (click)="resumeAllOrder()"><i
+  <button (click)="resumeAllOrder()"
+          *ngIf="object.isResume && permission.currentController.orders.suspendResume"
+          class="btn btn-grey btn-sm m-l-12"><i
     class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.resume</span>
   </button>
 </div>
 <div class="text-center m-t-md m-b text"><i class="tree-icon icon-orders-icon"></i>&nbsp;
   <span class="_600 b-b p-b-sm m-l-sm" translate>order.label.orders</span>
 </div>
-<div class="text-center font14 box bg-box p-a-10 m-b-12" *ngIf="checked && setOfCheckedId.size > 0 && data.length > (filter.entryPerPage || preferences.entryPerPage)">
-  <span translate *ngIf="setOfCheckedId.size !== data.length" [translateParams]="{count: setOfCheckedId.size}">common.label.selectAllEntriesOfCurrentPage</span>
-  <span translate *ngIf="setOfCheckedId.size === data.length" [translateParams]="{count: data.length}">common.label.allEntriesSelected</span>
-  <a class="text-primary p-l-xs" *ngIf="setOfCheckedId.size !== data.length" (click)="selectAll()" translate [translateParams]="{count: data.length}">common.label.selectAllEntries</a>
-  <a class="text-primary p-l-xs" *ngIf="setOfCheckedId.size === data.length" (click)="resetCheckBox()" translate>common.label.clearSelection</a>
+<div *ngIf="checked && setOfCheckedId.size > 0 && data.length > (filter.entryPerPage || preferences.entryPerPage)"
+     class="text-center font14 box bg-box p-a-10 m-b-12">
+  <span *ngIf="setOfCheckedId.size !== data.length" [translateParams]="{count: setOfCheckedId.size}" translate>common.label.selectAllEntriesOfCurrentPage</span>
+  <span *ngIf="setOfCheckedId.size === data.length" [translateParams]="{count: data.length}" translate>common.label.allEntriesSelected</span>
+  <a (click)="selectAll()" *ngIf="setOfCheckedId.size !== data.length" [translateParams]="{count: data.length}" class="text-primary p-l-xs"
+     translate>common.label.selectAllEntries</a>
+  <a (click)="resetCheckBox()" *ngIf="setOfCheckedId.size === data.length" class="text-primary p-l-xs" translate>common.label.clearSelection</a>
 </div>
 <div class="p-a-sm">
   <perfect-scrollbar class="table-responsive" style="max-height: 84vh; overflow: auto;height: 100vh">
     <nz-table
       #ajaxTable
-      [nzSize]="'small'"
-      [nzPageSize]="filter.entryPerPage || preferences.entryPerPage"
-      [nzPageIndex]="filter.currentPage"
-      [nzLoading]="loading"
-      [nzBordered]="true"
-      [nzShowPagination]="true"
-      [nzData]="data | orderBy: filter.sortBy: filter.reverse"
-      [nzShowSizeChanger]="true"
       (nzPageIndexChange)="pageIndexChange($event)"
       (nzPageSizeChange)="pageSizeChange($event)"
+      [nzBordered]="true"
+      [nzData]="data | orderBy: filter.sortBy: filter.reverse"
+      [nzLoading]="loading"
+      [nzPageIndex]="filter.currentPage"
       [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+      [nzPageSize]="filter.entryPerPage || preferences.entryPerPage"
+      [nzShowPagination]="true"
+      [nzShowSizeChanger]="true"
+      [nzSize]="'small'"
     >
       <thead>
       <tr>
         <th
-          [nzShowCheckbox]="true"
+          (nzCheckedChange)="onAllChecked($event)"
           [(nzChecked)]="checked"
           [nzIndeterminate]="indeterminate"
-          (nzCheckedChange)="onAllChecked($event)"
+          [nzShowCheckbox]="true"
         ></th>
         <th class="menu"><span translate>common.label.action</span></th>
         <th (click)="sort('orderId')">
@@ -124,27 +130,34 @@
       </tr>
       </thead>
       <tbody (click)="$event.preventDefault()">
-      <ng-template ngFor let-order
-                   [ngForOf]="ajaxTable.data" [ngForTrackBy]="trackByFn">
+      <ng-template [ngForOf]="ajaxTable.data" [ngForTrackBy]="trackByFn"
+                   let-order ngFor>
         <tr>
-          <td [nzShowCheckbox]="true" [nzDisabled]="order.positionIsImplicitEnd" [nzChecked]="setOfCheckedId.has(order.orderId)" (nzCheckedChange)="onItemChecked(order.orderId, $event)"></td>
+          <td (nzCheckedChange)="onItemChecked(order.orderId, $event)" [nzChecked]="setOfCheckedId.has(order.orderId)"
+              [nzDisabled]="order.positionIsImplicitEnd"
+              [nzShowCheckbox]="true"></td>
           <td>
-            <app-order-action [isDisabled]="checked || indeterminate" [order]="order" [schedulerId]="schedulerId" [permission]="permission" (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)"
-                              [preferences]="preferences"></app-order-action>
+            <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)" [isDisabled]="checked || indeterminate"
+                              [order]="order" [permission]="permission"
+                              [preferences]="preferences"
+                              [schedulerId]="schedulerId"></app-order-action>
           </td>
           <td>
             <span class="show-in-single-line">
-              <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs" *ngIf="!order.show"
-                 (click)="showPanelFuc(order)"></i>
-              <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="order.show" (click)="order.show = false"></i>
-              <a *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')" class="text-hover-primary" (click)="showLog(order)">{{order.orderId}}</a>
-              <span *ngIf="!order.state || (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING')">{{order.orderId}}</span>
+              <i (click)="showPanelFuc(order)" *ngIf="!order.show"
+                 class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+              <i (click)="order.show = false" *ngIf="order.show" class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
+              <a (click)="showLog(order)"
+                 *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')" class="text-hover-primary">{{order.orderId}}</a>
+              <span
+                *ngIf="!order.state || (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING')">{{order.orderId}}</span>
               <span *ngIf="order.title">-</span>
               <i class="text-muted">{{order.title}}</i>
-              <i *ngIf="order.cyclicOrder" nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'" class="fa fa-repeat p-l-xs" aria-hidden="true"></i>
+              <i *ngIf="order.cyclicOrder" [nzTooltipPlacement]="'left'" [nzTooltipTitle]="tooltipTemplate" aria-hidden="true"
+                 class="fa fa-repeat p-l-xs" nz-tooltip></i>
             </span>
             <ng-template #tooltipTemplate>
-              <div class="m-a-sm" *ngIf="order.cyclicOrder">
+              <div *ngIf="order.cyclicOrder" class="m-a-sm">
                 <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
                 <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
                 {{order.cyclicOrder.firstStart | stringToDate}}
@@ -159,8 +172,11 @@
           </td>
           <td *ngIf="!isSingleWorkflow">
             <span class="show-in-single-line">
-              <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-              <a class="text-hover-primary" (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);">
+              <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');"
+                 *ngIf="permission.joc && permission.joc.inventory.view"
+                 class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+              <a (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);"
+                 class="text-hover-primary">
                 <span [innerHtml]="order.workflowId.path"></span>
               </a>
             </span>
@@ -169,48 +185,54 @@
             <span [innerHtml]="order.positionString"></span>
           </td>
           <td *ngIf="isSingleWorkflow"><span>{{order.label}}</span></td>
-          <td nowrap class="combine-two-label" (mouseover)="getObstacles(order)">
-            <span [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''" class="label" *ngIf="order.state" [ngClass]="[coreService.getColor(order.state.severity, 'bg'),order.marked ? 'label1' : '']"
-               [innerHtml]="order.state._text | translate"></span>
-            <span class="label label2" *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"
-               [innerHtml]="order.marked._text | translate"></span>
-            <span *ngIf="order.state._text === 'PROMPTING' && order.question" class="p-l-xs"><i [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
+          <td (mouseover)="getObstacles(order)" class="combine-two-label" nowrap>
+            <span
+              *ngIf="order.state"
+              [innerHtml]="order.state._text | translate" [ngClass]="[coreService.getColor(order.state.severity, 'bg'),order.marked ? 'label1' : '']"
+              [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"
+              class="label"></span>
+            <span *ngIf="order.marked" [innerHtml]="order.marked._text | translate"
+                  [ngClass]="coreService.getColor(order.marked.severity, 'bg')"
+                  class="label label2"></span>
+            <span *ngIf="order.state._text === 'PROMPTING' && order.question" class="p-l-xs"><i
+              [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
             <ng-template #tooltipTemplate1>
               <div class="p-l-sm">
                 <span translate> order.label.state </span>:
-                <span class="_600" [ngClass]="coreService.getColor(order.state.severity, 'text')"> {{order.state._text |  translate}}</span>
-                <span class="_600" *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'text')">/{{order.marked._text | translate}}</span>
+                <span [ngClass]="coreService.getColor(order.state.severity, 'text')"
+                      class="_600"> {{order.state._text |  translate}}</span>
+                <span *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'text')" class="_600">/{{order.marked._text | translate}}</span>
               </div>
-              <div class="p-l-sm" *ngIf="order.state._reason">
+              <div *ngIf="order.state._reason" class="p-l-sm">
                 <span translate> common.label.comment </span>:
                 <span class="_600"> {{order.state._reason}}</span>
               </div>
-              <div class="p-l-sm" *ngIf="order.question">
+              <div *ngIf="order.question" class="p-l-sm">
                 <span translate> workflow.label.prompt </span>:
                 <span class="_600"> {{order.question}}</span>
               </div>
-              <div class="p-l-sm" *ngIf="order.obstacles && order.obstacles.length > 0">
+              <div *ngIf="order.obstacles && order.obstacles.length > 0" class="p-l-sm">
                 <div *ngFor="let obstacle of order.obstacles">
                   <span translate> {{obstacle.type | translate}} </span>
-                  <span class="_600" *ngIf="obstacle.until">:&nbsp;{{obstacle.until | stringToDate}}</span>
+                  <span *ngIf="obstacle.until" class="_600">:&nbsp;{{obstacle.until | stringToDate}}</span>
                 </div>
               </div>
-              <div class="p-l-sm" *ngIf="order.lastOutcome">
+              <div *ngIf="order.lastOutcome" class="p-l-sm">
                 <span translate> order.label.lastOutcome </span>:
-                <span class="_600" >{{order.lastOutcome.TYPE}}</span>
+                <span class="_600">{{order.lastOutcome.TYPE}}</span>
               </div>
-              <div class="p-l-sm" *ngIf="!order.cyclicOrder">
+              <div *ngIf="!order.cyclicOrder" class="p-l-sm">
                 <span translate> order.label.scheduledFor </span>:
-                <span class="_600" *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
-                <span class="_600" *ngIf="order.scheduledNever" translate>common.label.never</span>
+                <span *ngIf="!order.scheduledNever" class="_600">{{order.scheduledFor | stringToDate}}</span>
+                <span *ngIf="order.scheduledNever" class="_600" translate>common.label.never</span>
               </div>
-              <div class="p-l-sm" *ngIf="order.expectedNotices">
+              <div *ngIf="order.expectedNotices" class="p-l-sm">
                 <div class="_600 m-b-xxs">{{'order.label.expectedNotices' | translate}} :</div>
-                <div class="p-l-sm" *ngFor="let notice of order.expectedNotices">
+                <div *ngFor="let notice of order.expectedNotices" class="p-l-sm">
                   {{notice.boardName}}
                 </div>
               </div>
-              <div class="m-a-sm m-t-0" *ngIf="order.cyclicOrder">
+              <div *ngIf="order.cyclicOrder" class="m-a-sm m-t-0">
                 <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
                 <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
                 {{order.cyclicOrder.firstStart | stringToDate}}
@@ -221,7 +243,7 @@
                 <span class="_600 p-l-sm" translate>order.label.orders</span>:
                 {{order.cyclicOrder.count}}
               </div>
-              <div class="m-a-sm m-t-0" *ngIf="order.cycleState">
+              <div *ngIf="order.cycleState" class="m-a-sm m-t-0">
                 <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
                 <span *ngIf="order.cycleState.since">
                   <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
@@ -250,16 +272,16 @@
         <tr *ngIf="order.show">
           <td colspan="2"></td>
           <td colspan="7">
-            <app-order-variable [order]="order" [type]="'arguments'" [schedulerId]="schedulerId"></app-order-variable>
+            <app-order-variable [order]="order" [schedulerId]="schedulerId" [type]="'arguments'"></app-order-variable>
           </td>
         </tr>
       </ng-template>
       </tbody>
     </nz-table>
-    <div class="w-half label-top"
-         *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{data.length}}
-      <span translate *ngIf="ajaxTable.data.length >1">order.label.ordersFound</span>
-      <span translate *ngIf="ajaxTable.data.length ==1">order.label.orderFound</span>
+    <div *ngIf="ajaxTable.data.length >0"
+         class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+      <span *ngIf="ajaxTable.data.length >1" translate>order.label.ordersFound</span>
+      <span *ngIf="ajaxTable.data.length ==1" translate>order.label.orderFound</span>
     </div>
   </perfect-scrollbar>
 </div>

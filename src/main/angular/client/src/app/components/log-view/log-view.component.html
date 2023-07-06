@@ -1,42 +1,53 @@
-<div class="hide" [ngClass]="{'show-block' : !loading && !error}">
-  <div id="upper-header" *ngIf="!error">
+<div [ngClass]="{'show-block' : !loading && !error}" class="hide">
+  <div *ngIf="!error" id="upper-header">
     <div class="inline w-full">
       <label class="_600 m-l-sm m-r-sm">{{'log.label.modifyLogCriteria' | translate}} -</label>
-      <span class="m-r" *ngIf="isExpandCollapse">
-        <a class="text" title="{{'common.tooltip.expandAll' | translate}}" (click)="expandAll();">
-          <i class="icon rotate" nz-icon nzType="double-right" nzTheme="outline"></i>
+      <span *ngIf="isExpandCollapse" class="m-r">
+        <a (click)="expandAll();" class="text" title="{{'common.tooltip.expandAll' | translate}}">
+          <i class="icon rotate" nz-icon nzTheme="outline" nzType="double-right"></i>
         </a>
-        <a class="text m-l-sm" title="{{'common.tooltip.collapseAll' | translate}}" (click)="collapseAll();">
-          <i class="icon rotate" nz-icon nzType="double-left" nzTheme="outline"></i>
+        <a (click)="collapseAll();" class="text m-l-sm" title="{{'common.tooltip.collapseAll' | translate}}">
+          <i class="icon rotate" nz-icon nzTheme="outline" nzType="double-left"></i>
         </a>
       </span>
 
-      <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.main" (ngModelChange)="checkLogLevel('MAIN')"><span translate>log.label.main</span></label>
-      <label *ngIf="isStdSuccessLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.success" (ngModelChange)="checkLogLevel('SUCCESS')"><span translate>log.label.success</span></label>
-      <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.stdout" (ngModelChange)="checkLogLevel('STDOUT')"><span translate>log.label.stdout</span></label>
-      <label *ngIf="isStdErrLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.stderr" (ngModelChange)="checkLogLevel('STDERR')"><span translate>log.label.stderr</span></label>
-      <label *ngIf="isInfoLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.info" (ngModelChange)="checkLogLevel('INFO')"><span translate>log.label.info</span></label>
-      <label *ngIf="isFatalLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.fatal" (ngModelChange)="checkLogLevel('FATAL')"><span translate>log.label.fatal</span></label>
-      <label *ngIf="isErrorLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.error" (ngModelChange)="checkLogLevel('ERROR')"><span translate>log.label.error</span></label>
-      <label *ngIf="isWarnLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.warn" (ngModelChange)="checkLogLevel('WARN')"><span translate>log.label.warn</span></label>
-      <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.debug" (ngModelChange)="checkLogLevel('DEBUG')"><span translate>log.label.debug</span></label>
-      <label *ngIf="isTraceLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.trace" (ngModelChange)="checkLogLevel('TRACE')"><span translate>log.label.trace</span></label>
-      <label *ngIf="isDetailLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.detail" (ngModelChange)="checkLogLevel('DETAIL')"><span translate>log.label.detail</span></label>
+      <label (ngModelChange)="checkLogLevel('MAIN')" [(ngModel)]="object.checkBoxs.main" class="m-r" nz-checkbox><span
+        translate>log.label.main</span></label>
+      <label (ngModelChange)="checkLogLevel('SUCCESS')" *ngIf="isStdSuccessLevel" [(ngModel)]="object.checkBoxs.success" class="m-r"
+             nz-checkbox><span translate>log.label.success</span></label>
+      <label (ngModelChange)="checkLogLevel('STDOUT')" [(ngModel)]="object.checkBoxs.stdout" class="m-r"
+             nz-checkbox><span translate>log.label.stdout</span></label>
+      <label (ngModelChange)="checkLogLevel('STDERR')" *ngIf="isStdErrLevel" [(ngModel)]="object.checkBoxs.stderr" class="m-r"
+             nz-checkbox><span translate>log.label.stderr</span></label>
+      <label (ngModelChange)="checkLogLevel('INFO')" *ngIf="isInfoLevel" [(ngModel)]="object.checkBoxs.info" class="m-r"
+             nz-checkbox><span translate>log.label.info</span></label>
+      <label (ngModelChange)="checkLogLevel('FATAL')" *ngIf="isFatalLevel" [(ngModel)]="object.checkBoxs.fatal" class="m-r"
+             nz-checkbox><span translate>log.label.fatal</span></label>
+      <label (ngModelChange)="checkLogLevel('ERROR')" *ngIf="isErrorLevel" [(ngModel)]="object.checkBoxs.error" class="m-r"
+             nz-checkbox><span translate>log.label.error</span></label>
+      <label (ngModelChange)="checkLogLevel('WARN')" *ngIf="isWarnLevel" [(ngModel)]="object.checkBoxs.warn" class="m-r"
+             nz-checkbox><span translate>log.label.warn</span></label>
+      <label (ngModelChange)="checkLogLevel('DEBUG')" [(ngModel)]="object.checkBoxs.debug" class="m-r" nz-checkbox><span
+        translate>log.label.debug</span></label>
+      <label (ngModelChange)="checkLogLevel('TRACE')" *ngIf="isTraceLevel" [(ngModel)]="object.checkBoxs.trace" class="m-r"
+             nz-checkbox><span translate>log.label.trace</span></label>
+      <label (ngModelChange)="checkLogLevel('DETAIL')" *ngIf="isDetailLevel" [(ngModel)]="object.checkBoxs.detail" class="m-r"
+             nz-checkbox><span translate>log.label.detail</span></label>
 
-      <a class="m-r m-l pull-right" *ngIf="!isCancel && !finished" (click)="cancel()">
-        <i class="icon" nz-icon nzType="close" nzTheme="outline"></i>
+      <a (click)="cancel()" *ngIf="!isCancel && !finished" class="m-r m-l pull-right">
+        <i class="icon" nz-icon nzTheme="outline" nzType="close"></i>
         <span translate>common.button.cancel</span>
       </a>
-      <a class="m-r m-l pull-right" *ngIf="finished || isCancel" (click)="reloadLog()">
-        <i class="icon" nz-icon nzType="reload" nzTheme="outline"></i>
+      <a (click)="reloadLog()" *ngIf="finished || isCancel" class="m-r m-l pull-right">
+        <i class="icon" nz-icon nzTheme="outline" nzType="reload"></i>
         <span translate>workflow.button.reload</span>
       </a>
-      <a class="m-l pull-right" (click)="downloadLog()">
-        <i class="icon" nz-icon nzType="download" nzTheme="outline"></i>
+      <a (click)="downloadLog()" class="m-l pull-right">
+        <i class="icon" nz-icon nzTheme="outline" nzType="download"></i>
         <span translate>common.button.download</span>
       </a>
-      <a class="m-l pull-right" (click)="copy()">
-        <i class="icon" nz-icon nzType="copy" nzTheme="outline"></i>
+      <a (click)="copy()" class="m-l pull-right">
+        <i class="icon" nz-icon nzTheme="outline" nzType="copy"></i>
         <span translate>log.button.copyToClipboard</span>
       </a>
     </div>
@@ -44,46 +55,52 @@
   <!-- BEGIN SLIDER -->
   <div class="property-panel hidden-sm">
     <div class="sidebar-open">
-      <i nz-icon nzType="caret-left" nzTheme="outline"></i>
+      <i nz-icon nzTheme="outline" nzType="caret-left"></i>
     </div>
     <div class="sidebar-close">
-      <i nz-icon nzType="caret-right" nzTheme="outline"></i>
+      <i nz-icon nzTheme="outline" nzType="caret-right"></i>
     </div>
     <div class="sidebar sidebar-property-panel bg-white" id="property-panel">
       <div style="margin-top: 26px">
-        <div  style="padding: 12px">
+        <div style="padding: 12px">
           <div *ngIf="isChildren" class="m-l m-b-sm">
             <a>
-              <i class="icon rotate" (click)="expandAllTree();" nz-icon nzType="double-right" nzTheme="outline"></i>
+              <i (click)="expandAllTree();" class="icon rotate" nz-icon nzTheme="outline" nzType="double-right"></i>
             </a>
             <a>
-              <i class="icon rotate m-l-sm" (click)="collapseAllTree();" nz-icon nzType="double-left" nzTheme="outline"></i>
+              <i (click)="collapseAllTree();" class="icon rotate m-l-sm" nz-icon nzTheme="outline"
+                 nzType="double-left"></i>
             </a>
           </div>
 
           <div class="fade-in">
             <nz-tree
-              [nzShowExpand]="false"
               [nzData]="nodes"
+              [nzShowExpand]="false"
               [nzTreeTemplate]="nzTreeTemplate"
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
               <div class="node-wrapper" id="{{node.origin.key}}">
-                <span (click)="openFolder(node)"  *ngIf="(node.origin.children && node.origin.children.length > 0)"
-                      [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                <span (click)="openFolder(node)" *ngIf="(node.origin.children && node.origin.children.length > 0)"
                       [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                      [class.toggle-children-wrapper-expanded]="node.isExpanded"
                       class="cursor w-14 m-l-xxs m-t-n-1">
-                  <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzType="caret-right" nzTheme="outline"></i>
-                  <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzType="caret-down" nzTheme="outline"></i>
+                  <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzTheme="outline"
+                     nzType="caret-right"></i>
+                  <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </span>
-                <span *ngIf="node.origin.isLeaf || !node.origin.children || node.origin.children.length === 0" class="w-16" style="visibility: hidden">.</span>
-                <div class="node-content-wrapper" (click)="selectNode(node)">
+                <span *ngIf="node.origin.isLeaf || !node.origin.children || node.origin.children.length === 0"
+                      class="w-16" style="visibility: hidden">.</span>
+                <div (click)="selectNode(node)" class="node-content-wrapper">
                   <span *ngIf="node.origin.name">{{node.origin.name}}</span>
-                  <span class="_600" *ngIf="node.origin.end">{{node.origin.end | translate}}</span>
-                  <span class="_600" *ngIf="!node.origin.end && !node.origin.name">{{node.origin.title | translate}}</span>
-                  <span class="text-muted" *ngIf="!node.origin.end && !node.origin.name && !node.origin.title">{{node.origin.logEvent}}</span>
-                  <i class="text-primary" *ngIf="node.origin.name1">&nbsp;({{node.origin.name1}})</i>
-                  <i class="text-primary" *ngIf="node.origin.retryCount > 1 && node.origin.title == 'Retry'">&nbsp;(Total Tries {{node.origin.retryCount}})</i>
+                  <span *ngIf="node.origin.end" class="_600">{{node.origin.end | translate}}</span>
+                  <span *ngIf="!node.origin.end && !node.origin.name"
+                        class="_600">{{node.origin.title | translate}}</span>
+                  <span *ngIf="!node.origin.end && !node.origin.name && !node.origin.title"
+                        class="text-muted">{{node.origin.logEvent}}</span>
+                  <i *ngIf="node.origin.name1" class="text-primary">&nbsp;({{node.origin.name1}})</i>
+                  <i *ngIf="node.origin.retryCount > 1 && node.origin.title == 'Retry'" class="text-primary">&nbsp;(Total
+                    Tries {{node.origin.retryCount}})</i>
                   <span *ngIf="node.origin.logLevel == 'ERROR'">
                     - (<i class="text-sm log_error">Failed</i>)
                   </span>
@@ -95,16 +112,16 @@
       </div>
     </div>
   </div>
-  <pre id="logs" #dataBody *ngIf="!error" class="log p-t-sm p-r-sm p-b-sm"></pre>
+  <pre #dataBody *ngIf="!error" class="log p-t-sm p-r-sm p-b-sm" id="logs"></pre>
 </div>
-<div class="text-center" *ngIf="error && !loading">
+<div *ngIf="error && !loading" class="text-center">
   <div class="text-dark p-t text-38 m-b-n-8"><span [innerHtml]="errStatus"></span></div>
-  <div class="hide text-lg text-muted" [ngClass]="{'show' : errStatus}">{{'log.label.error' | translate}}!</div>
-  <div class="text m-t" [innerHtml]="error"></div>
+  <div [ngClass]="{'show' : errStatus}" class="hide text-lg text-muted">{{'log.label.error' | translate}}!</div>
+  <div [innerHtml]="error" class="text m-t"></div>
 </div>
-<iframe name="tmpFrame" id="tmpFrame" width="1" height="1"
-  class="iframe"></iframe>
-<div class="spinner" *ngIf="loading || isLoading">
+<iframe class="iframe" height="1" id="tmpFrame" name="tmpFrame"
+        width="1"></iframe>
+<div *ngIf="loading || isLoading" class="spinner">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>

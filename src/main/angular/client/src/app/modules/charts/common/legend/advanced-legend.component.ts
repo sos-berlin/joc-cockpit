@@ -8,10 +8,10 @@ import {
   SimpleChanges,
   ViewEncapsulation
 } from '@angular/core';
-import { trimLabel } from '../trim-label.helper';
-import { formatLabel } from '../label.helper';
-import { DataItem, StringOrNumberOrDate } from '../../models/chart-data.model';
-import { ColorHelper } from '../color.helper';
+import {trimLabel} from '../trim-label.helper';
+import {formatLabel} from '../label.helper';
+import {DataItem, StringOrNumberOrDate} from '../../models/chart-data.model';
+import {ColorHelper} from '../color.helper';
 
 export interface AdvancedLegendItem {
   value: StringOrNumberOrDate;

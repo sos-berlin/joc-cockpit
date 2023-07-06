@@ -109,13 +109,17 @@ const routes: Routes = [
         path: 'log',
         loadChildren: () => import('./../log/log.module').then(m => m.LogModule),
         canActivate: [AuthGuard],
-        data: {breadcrumb: 'breadcrumb.label.log'}},
+        data: {breadcrumb: 'breadcrumb.label.log'}
+      },
       {
         path: 'users',
         loadChildren: () => import('./../admin/admin.module').then(m => m.AdminModule),
         canActivate: [AuthGuard]
       },
-      {path: 'error', loadChildren: () => import('./../page-not-found/page-not-found.module').then(m => m.PageNotFoundModule)},
+      {
+        path: 'error',
+        loadChildren: () => import('./../page-not-found/page-not-found.module').then(m => m.PageNotFoundModule)
+      },
     ]
   }
 ];

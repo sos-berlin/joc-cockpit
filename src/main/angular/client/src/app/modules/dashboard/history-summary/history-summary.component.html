@@ -1,90 +1,91 @@
 <div id="ordersSummary1">
-    <div class="box-header b-b remove">
-        <h3 translate>dashboard.label.history</h3>
-    </div>
-    <div class="row m-b-sm box-tool t-10">
-        <div class="col-md-12 container-fluid">
-            <div class="pull-right" *ngIf="!notAuthenticate1 && !notAuthenticate2">
-                <div class="btn-group">
-                    <div class="btn-group dropdown ">
-                        <button class="btn btn-grey btn-sm m-l-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="order"  nzPlacement="bottomRight">
-                            <span>  {{filters.label | translate}} </span>
-                            <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
-                        </button>
-                        <nz-dropdown-menu #order="nzDropdownMenu">
-                            <ul nz-menu>
-                                <li nz-menu-item (click)="getSummaryByDate('0d');filters.label='filters.button.today'"
-                                    [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='0d'}">
-                                    <a translate>filters.button.today</a>
-                                </li>
-                                <li nz-menu-item (click)="getSummaryByDate('-1h');filters.label='filters.button.last1'"
-                                    [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-1h'}">
-                                    <a translate>filters.button.last1</a>
-                                </li>
-                                <li nz-menu-item (click)="getSummaryByDate('-12h');filters.label='filters.button.last12'"
-                                    [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-12h'}">
-                                    <a translate>filters.button.last12</a>
-                                </li>
-                                <li nz-menu-item (click)="getSummaryByDate('-24h');filters.label='filters.button.last24'"
-                                    [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-24h'}">
-                                    <a translate>filters.button.last24</a>
-                                </li>
-                                <li nz-menu-item (click)="getSummaryByDate('-7d');filters.label='filters.button.lastWeak'"
-                                    [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-7d'}">
-                                    <a translate>filters.button.lastWeak</a>
-                                </li>
-                            </ul>
-                        </nz-dropdown-menu>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="box-body">
-        <table class="w-full" *ngIf="!notAuthenticate1 && !notAuthenticate2 && isLoaded">
-            <tr class="text-center">
-                <td style="width: 25%">
-                    <div translate>dashboard.label.successfulOrders</div>
-                </td>
-                <td style="width: 25%">
-                    <div translate>dashboard.label.failedOrders</div>
-                </td>
-                <td style="width: 25%">
-                  <div translate>dashboard.label.successfulJobs</div>
-                </td>
-                <td style="width: 25%">
-                  <div translate>dashboard.label.failedJobs</div>
-                </td>
-            </tr>
-            <tr class="text-center">
-                <td style="width: 25%">
-                    <a (click)="showOrderSummary('SUCCESSFUL')" class="text-lg _600"
-                       [ngClass]="{'dark-blue':orderSummary.successful >0}"
-                       [innerHtml]="orderSummary.successful || 0"></a>
-                </td>
-                <td style="width: 25%">
-                    <a (click)="showOrderSummary('FAILED')" class="text-lg _600"
-                       [ngClass]="{'red':orderSummary.failed  >0}" [innerHtml]="orderSummary.failed || 0"></a>
-                </td>
-              <td style="width: 25%">
-                <a (click)="showTaskSummary('SUCCESSFUL')" class="text-lg _600"
-                   [ngClass]="{'dark-blue':taskSummary.successful >0}"
-                   [innerHtml]="taskSummary.successful || 0"></a>
-              </td>
-              <td style="width: 25%">
-                <a (click)="showTaskSummary('FAILED')" class="text-lg _600"
-                   [ngClass]="{'red':taskSummary.failed  >0}" [innerHtml]="taskSummary.failed || 0"></a>
-              </td>
-            </tr>
-        </table>
-        <div *ngIf="notAuthenticate1 && notAuthenticate2">
-          <div>
-            <app-empty-data></app-empty-data>
+  <div class="box-header b-b remove">
+    <h3 translate>dashboard.label.history</h3>
+  </div>
+  <div class="row m-b-sm box-tool t-10">
+    <div class="col-md-12 container-fluid">
+      <div *ngIf="!notAuthenticate1 && !notAuthenticate2" class="pull-right">
+        <div class="btn-group">
+          <div class="btn-group dropdown ">
+            <button [nzDropdownMenu]="order" class="btn btn-grey btn-sm m-l-sm" nz-dropdown nzPlacement="bottomRight"
+                    nzTrigger="click">
+              <span>  {{filters.label | translate}} </span>
+              <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
+            </button>
+            <nz-dropdown-menu #order="nzDropdownMenu">
+              <ul nz-menu>
+                <li (click)="getSummaryByDate('0d');filters.label='filters.button.today'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='0d'}"
+                    nz-menu-item>
+                  <a translate>filters.button.today</a>
+                </li>
+                <li (click)="getSummaryByDate('-1h');filters.label='filters.button.last1'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-1h'}"
+                    nz-menu-item>
+                  <a translate>filters.button.last1</a>
+                </li>
+                <li (click)="getSummaryByDate('-12h');filters.label='filters.button.last12'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-12h'}"
+                    nz-menu-item>
+                  <a translate>filters.button.last12</a>
+                </li>
+                <li (click)="getSummaryByDate('-24h');filters.label='filters.button.last24'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-24h'}"
+                    nz-menu-item>
+                  <a translate>filters.button.last24</a>
+                </li>
+                <li (click)="getSummaryByDate('-7d');filters.label='filters.button.lastWeak'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-7d'}"
+                    nz-menu-item>
+                  <a translate>filters.button.lastWeak</a>
+                </li>
+              </ul>
+            </nz-dropdown-menu>
           </div>
         </div>
-        <div [hidden]="notAuthenticate1" class="hide text-center text-primary text m-t-md m-b"
-             [ngClass]="{'show': !isLoaded}">
-            <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
-        </div>
+      </div>
     </div>
+  </div>
+  <div class="box-body">
+    <table *ngIf="!notAuthenticate1 && !notAuthenticate2 && isLoaded" class="w-full">
+      <tr class="text-center">
+        <td style="width: 25%">
+          <div translate>dashboard.label.successfulOrders</div>
+        </td>
+        <td style="width: 25%">
+          <div translate>dashboard.label.failedOrders</div>
+        </td>
+        <td style="width: 25%">
+          <div translate>dashboard.label.successfulJobs</div>
+        </td>
+        <td style="width: 25%">
+          <div translate>dashboard.label.failedJobs</div>
+        </td>
+      </tr>
+      <tr class="text-center">
+        <td style="width: 25%">
+          <a (click)="showOrderSummary('SUCCESSFUL')" [innerHtml]="orderSummary.successful || 0"
+             [ngClass]="{'dark-blue':orderSummary.successful >0}"
+             class="text-lg _600"></a>
+        </td>
+        <td style="width: 25%">
+          <a (click)="showOrderSummary('FAILED')" [innerHtml]="orderSummary.failed || 0"
+             [ngClass]="{'red':orderSummary.failed  >0}" class="text-lg _600"></a>
+        </td>
+        <td style="width: 25%">
+          <a (click)="showTaskSummary('SUCCESSFUL')" [innerHtml]="taskSummary.successful || 0"
+             [ngClass]="{'dark-blue':taskSummary.successful >0}"
+             class="text-lg _600"></a>
+        </td>
+        <td style="width: 25%">
+          <a (click)="showTaskSummary('FAILED')" [innerHtml]="taskSummary.failed || 0"
+             [ngClass]="{'red':taskSummary.failed  >0}" class="text-lg _600"></a>
+        </td>
+      </tr>
+    </table>
+    <div *ngIf="notAuthenticate1 && notAuthenticate2">
+      <div>
+        <app-empty-data></app-empty-data>
+      </div>
+    </div>
+    <div [hidden]="notAuthenticate1" [ngClass]="{'show': !isLoaded}"
+         class="hide text-center text-primary text m-t-md m-b">
+      <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+    </div>
+  </div>
 </div>

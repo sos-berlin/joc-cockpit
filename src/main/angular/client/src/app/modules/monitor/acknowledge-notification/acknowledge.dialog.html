@@ -2,31 +2,31 @@
   <h4 class="modal-title">
     <span translate>monitor.notification.label.acknowledge</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
-    <div class="hide" [ngClass]="{'show': display}">
+    <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
     </div>
     <div class="form-group row">
       <label class="col-sm-3 form-control-label" translate>monitor.notification.label.comment</label>
       <div class=" col-sm-8">
-        <textarea [appAutofocus]="true" rows="5" class="form-control" maxlength="2000" name="textComment"
-                  [(ngModel)]="comment"
+        <textarea [(ngModel)]="comment" [appAutofocus]="true" class="form-control" maxlength="2000" name="textComment"
                   placeholder="{{'common.placeholder.enterComment' | translate}}"
+                  rows="5"
         ></textarea>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm" type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

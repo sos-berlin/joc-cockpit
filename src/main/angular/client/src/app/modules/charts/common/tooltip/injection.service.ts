@@ -8,7 +8,7 @@ import {
   EmbeddedViewRef,
   Type
 } from '@angular/core';
-import { DomPortalOutlet, ComponentPortal } from '@angular/cdk/portal';
+import {DomPortalOutlet, ComponentPortal} from '@angular/cdk/portal';
 
 function isViewContainerRef(x: any): x is ViewContainerRef {
   return x.element;
@@ -41,7 +41,8 @@ export class InjectionService {
     private applicationRef: ApplicationRef,
     private componentFactoryResolver: ComponentFactoryResolver,
     private injector: Injector
-  ) {}
+  ) {
+  }
 
   /**
    * Gets the root view container to inject the component to.

@@ -8,15 +8,15 @@
     <span *ngIf="forceChange" translate>user.label.forcePasswordChange</span>
     <span *ngIf="account">: {{account.accountName}}</span>?
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <div class="modal-body p-a">
-  <div class="hide" [ngClass]="{'show': display}">
+  <div [ngClass]="{'show': display}" class="hide">
     <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
   </div>
-  <div class="row text-center" *ngIf="!display">
+  <div *ngIf="!display" class="row text-center">
     <div class="col-sm-12 text m-t m-b">
       <span *ngIf="delete">
         <span *ngIf="blocklist">
@@ -56,13 +56,13 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-danger btn-sm" [disabled]="submitted || (required && !comments.comment)"
-          [ngClass]="{'btn-primary' : (!delete || !deleteRequest)}" (click)="confirm()">
+  <button (click)="confirm()" [disabled]="submitted || (required && !comments.comment)" [ngClass]="{'btn-primary' : (!delete || !deleteRequest)}"
+          class="btn btn-danger btn-sm" type="button">
     <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
     <span *ngIf="delete || deleteRequest">{{'common.button.delete' | translate}}</span>
     <span *ngIf="!delete && !deleteRequest">{{'common.button.confirm' | translate}}</span>
   </button>
-  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()"
-          translate>common.button.cancel
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate
+          type="button">common.button.cancel
   </button>
 </div>

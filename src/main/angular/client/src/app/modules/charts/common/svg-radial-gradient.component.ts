@@ -1,5 +1,5 @@
-import { Component, Input, OnChanges, ChangeDetectionStrategy, SimpleChanges } from '@angular/core';
-import { Gradient } from './types/gradient.interface';
+import {Component, Input, OnChanges, ChangeDetectionStrategy, SimpleChanges} from '@angular/core';
+import {Gradient} from './types/gradient.interface';
 
 @Component({
   selector: 'g[ngx-charts-svg-radial-gradient]',

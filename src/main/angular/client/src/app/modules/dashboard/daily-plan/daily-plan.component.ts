@@ -9,7 +9,7 @@ import {DataService} from '../../../services/data.service';
   selector: 'app-daily-plan',
   templateUrl: './daily-plan.component.html'
 })
-export class DailyPlanComponent implements OnInit, OnDestroy {
+export class DailyPlanComponent {
   schedulerIds: any = {};
   filters: any = {};
   preferences: any = {};

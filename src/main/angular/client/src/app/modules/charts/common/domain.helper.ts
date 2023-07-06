@@ -1,5 +1,6 @@
-import { ScaleType } from './types/scale-type.enum';
-import { StringOrNumberOrDate } from '../models/chart-data.model';
+import {ScaleType} from './types/scale-type.enum';
+import {StringOrNumberOrDate} from '../models/chart-data.model';
+
 /**
  * Based on the data, return an array with unique values.
  *
@@ -75,5 +76,5 @@ export function getXDomainArray(
     xSet = values;
   }
 
-  return { domain, xSet, scaleType };
+  return {domain, xSet, scaleType};
 }

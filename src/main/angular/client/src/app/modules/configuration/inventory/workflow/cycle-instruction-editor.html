@@ -1,14 +1,14 @@
-<div class="form-group row" *ngIf="!selectedNode.obj.show">
-  <label class="col-md-4 col-lg-3 form-control-label"
-         [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
+<div *ngIf="!selectedNode.obj.show" class="form-group row">
+  <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
          [nzTooltipMouseEnterDelay]="0.5"
+         class="col-md-4 col-lg-3 form-control-label"
          translate>workflow.label.label
   </label>
   <div class="col-md-8 col-lg-9">
     <label class="w-full">
-      <input type="text" labelValidation required autocomplete="off"
-             maxlength="30" class="form-control"
-             name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label">
+      <input #label="ngModel" [(ngModel)]="selectedNode.obj.label" autocomplete="off" class="form-control"
+             labelValidation maxlength="30"
+             name="label" required type="text">
     </label>
     <div *ngIf="label.invalid && (label.dirty || label.touched)"
          class="text-danger help-block">
@@ -16,7 +16,7 @@
     </div>
   </div>
 </div>
-<div class="form-group row" *ngIf="!selectedNode.obj.show">
+<div *ngIf="!selectedNode.obj.show" class="form-group row">
   <div class="col-md-12 m-b text-center">
     <label class="_600 b-b" translate>workflow.label.listOfSchemes</label>
   </div>
@@ -31,18 +31,18 @@
           <th><span translate>workflow.label.repeat</span></th>
         </tr>
         </thead>
-        <tbody >
+        <tbody>
         <tr *ngFor="let list of schemeList;let i = index">
           <td class="menu">
             <div class="btn-group dropdown">
-              <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu"
+              <button [nzDropdownMenu]="exportMenu" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
                       type="button">
                 <i class="fa fa-ellipsis-h"></i>
               </button>
               <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
                 <ul nz-menu>
-<!--                  <li nz-menu-item (click)="editFrequency(list, i);"><a translate>common.button.edit</a></li>-->
-                  <li nz-menu-item (click)="removeRepeat(i)"><a translate>inventory.button.delete</a></li>
+                  <!--                  <li nz-menu-item (click)="editFrequency(list, i);"><a translate>common.button.edit</a></li>-->
+                  <li (click)="removeRepeat(i)" nz-menu-item><a translate>inventory.button.delete</a></li>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -51,10 +51,10 @@
             <div *ngFor="let item of list.periodList; let j = index">
               <div class="row">
                 <div class="col-sm-5">
-                  <span class="cursor" (click)="editFrequency(list, i, j);" *ngIf="item.frequency"><span translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
-                  <span class="cursor" (click)="editFrequency(list, i, j);" *ngIf="!item.frequency" translate>workflow.admissionTime.label.everyDay</span>
-                  <a class="text-xs text-hover-color m-l-sm"
-                     (click)="removeFrequency(j , list, i)"><i class="fa fa-times"></i></a>
+                  <span (click)="editFrequency(list, i, j);" *ngIf="item.frequency" class="cursor"><span translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
+                  <span (click)="editFrequency(list, i, j);" *ngIf="!item.frequency" class="cursor" translate>workflow.admissionTime.label.everyDay</span>
+                  <a (click)="removeFrequency(j , list, i)"
+                     class="text-xs text-hover-color m-l-sm"><i class="fa fa-times"></i></a>
                 </div>
                 <div class="col-sm-7">
                   <div *ngFor="let p of item.periods;">
@@ -93,12 +93,14 @@
     </div>
     <div class="form-group row ">
       <div class="col-sm-12 p-t-xs">
-        <button class="btn btn-sm btn-primary"
-                (click)="addScheme(selectedNode.obj)" translate>workflow.button.addScheme
+        <button (click)="addScheme(selectedNode.obj)"
+                class="btn btn-sm btn-primary" translate>workflow.button.addScheme
         </button>
       </div>
     </div>
   </div>
 </div>
-<app-admission-time *ngIf="selectedNode.obj.show" [index]="selectedNode.obj.listIndex" [isEdit]="selectedNode.isEdit" [timeZone]="timeZone" [repeatObject]="selectedNode.repeatObject" [isTooltipVisible]="isTooltipVisible" [job]="selectedNode.data.schedule" [data]="selectedNode.data"
-                    (close)="closeScheme(selectedNode.obj)"></app-admission-time>
+<app-admission-time (close)="closeScheme(selectedNode.obj)" *ngIf="selectedNode.obj.show" [data]="selectedNode.data"
+                    [index]="selectedNode.obj.listIndex" [isEdit]="selectedNode.isEdit"
+                    [isTooltipVisible]="isTooltipVisible" [job]="selectedNode.data.schedule" [repeatObject]="selectedNode.repeatObject"
+                    [timeZone]="timeZone"></app-admission-time>

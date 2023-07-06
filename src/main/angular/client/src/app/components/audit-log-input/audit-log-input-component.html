@@ -1,21 +1,21 @@
 <div class="form-group row">
   <label class="col-sm-{{sizeX}}" translate>common.label.selectComments</label>
   <div class="col-sm-8">
-    <nz-radio-group name="radio" [(ngModel)]="comments.radio" (ngModelChange)="onChange($event)">
+    <nz-radio-group (ngModelChange)="onChange($event)" [(ngModel)]="comments.radio" name="radio">
       <label nz-radio nzValue="predefined"><span translate>common.label.predefined</span></label>
       <label nz-radio nzValue="new"><span translate>common.label.individual</span></label>
     </nz-radio-group>
   </div>
 </div>
-<div class="form-group row" *ngIf="comments.radio=='predefined'"
-     [ngClass]="{'has-error' : ((comment.dirty || comment.touched) && comment.invalid)}">
+<div *ngIf="comments.radio=='predefined'" [ngClass]="{'has-error' : ((comment.dirty || comment.touched) && comment.invalid)}"
+     class="form-group row">
   <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.selectComment
     <sup *ngIf="required" class="text-danger text-sm">*</sup>
   </label>
   <div class="col-sm-{{sizeY}}">
-    <nz-select [nzAllowClear]="!required" nzPlaceHolder="{{'common.label.selectPredefinedReason' | translate}}"
-               [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
-               [required]="required">
+    <nz-select #comment="ngModel" [(ngModel)]="comments.comment"
+               [nzAllowClear]="!required" [required]="required" name="comment"
+               nzPlaceHolder="{{'common.label.selectPredefinedReason' | translate}}">
       <nz-option *ngFor="let list of messageList" [nzLabel]="list" [nzValue]="list"></nz-option>
     </nz-select>
     <div *ngIf="comment.invalid && (comment.dirty || comment.touched)" class="text-danger m-t-xs">
@@ -25,16 +25,16 @@
     </div>
   </div>
 </div>
-<div class="form-group row" *ngIf="comments.radio=='new'"
-     [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}">
+<div *ngIf="comments.radio=='new'" [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}"
+     class="form-group row">
   <label class="col-sm-{{sizeX}} " translate>common.label.comment
     <sup *ngIf="required" class="text-danger text-sm">*</sup>
   </label>
   <div class="col-sm-{{sizeY}}">
-    <textarea rows="3" class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
-              [required]="required"
-              [(ngModel)]="comments.comment"
+    <textarea #textComment="ngModel" [(ngModel)]="comments.comment" [required]="required" class="form-control" maxlength="2000"
+              name="textComment"
               placeholder="{{'common.placeholder.enterComment' | translate}}"
+              rows="3"
     ></textarea>
     <div *ngIf="textComment.invalid && (textComment.dirty || textComment.touched)"
          class="text-danger help-block">
@@ -47,20 +47,22 @@
 <div class="form-group row">
   <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.timeSpend</label>
   <div class="col-sm-{{sizeY}}">
-    <nz-input-number [nzPlaceHolder]="'common.placeholder.timeSpend' | translate" [nzMin]="0" [nzStep]="1" [(ngModel)]="comments.timeSpent"></nz-input-number>
+    <nz-input-number [(ngModel)]="comments.timeSpent" [nzMin]="0" [nzPlaceHolder]="'common.placeholder.timeSpend' | translate"
+                     [nzStep]="1"></nz-input-number>
   </div>
 </div>
 <div class="form-group row">
   <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.ticketLink</label>
   <div class="col-sm-{{sizeY}}">
-    <input type="text" class="form-control" name="ticketLink" placeholder="{{'common.placeholder.ticketLink' | translate}}"
-           [(ngModel)]="comments.ticketLink">
+    <input [(ngModel)]="comments.ticketLink" class="form-control" name="ticketLink"
+           placeholder="{{'common.placeholder.ticketLink' | translate}}"
+           type="text">
   </div>
 </div>
-<div class="form-group row" *ngIf="router.url.match('/users/') || router.url.match('/settings')">
+<div *ngIf="router.url.match('/users/') || router.url.match('/settings')" class="form-group row">
   <label class="col-sm-{{sizeX}}" translate>user.label.reuseReason</label>
   <div class="col-sm-{{sizeY}}">
-    <label nz-checkbox [(ngModel)]="comments.isChecked"
-           name="reuseReason"></label>
+    <label [(ngModel)]="comments.isChecked" name="reuseReason"
+           nz-checkbox></label>
   </div>
 </div>

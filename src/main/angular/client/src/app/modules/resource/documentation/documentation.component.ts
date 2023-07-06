@@ -1,9 +1,6 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {FileUploader} from 'ng2-file-upload';
-import {TranslateService} from '@ngx-translate/core';
-import {ToastrService} from 'ngx-toastr';
 import {Subject, Subscription} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {CoreService} from '../../../services/core.service';
@@ -13,6 +10,7 @@ import {TreeComponent} from '../../../components/tree-navigation/tree.component'
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
+import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
 
 declare const $: any;
 
@@ -30,87 +28,10 @@ export class ShowModalComponent {
 }
 
 @Component({
-  selector: 'app-import-modal-content',
-  templateUrl: './import-dialog.html'
-})
-export class ImportModalComponent implements OnInit {
-  @Input() display: any;
-  @Input() selectedPath: any;
-  @Input() nodes: any;
-
-  uploader: FileUploader;
-  submitted = false;
-  hasBaseDropZoneOver: any;
-  required = false;
-  comments: any = {};
-  document = {path: '', path1: ''};
-
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,
-              public translate: TranslateService, public toasterService: ToastrService) {
-    this.uploader = new FileUploader({
-      url: API_URL + 'documentations/import'
-    });
-  }
-
-  ngOnInit(): void {
-    this.comments.radio = 'predefined';
-    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
-      this.required = true;
-      this.display = true;
-    }
-    this.document.path = this.selectedPath;
-    this.uploader.onBeforeUploadItem = (item: any) => {
-      const obj: any = {
-        folder: this.document.path,
-        accessToken: this.authService.accessTokenId,
-        name: item.file.name
-      };
-      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-      //item.file.name = encodeURIComponent(item.file.name);
-      this.uploader.options.additionalParameter = obj;
-    };
-
-    this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
-      if (status === 200) {
-        this.activeModal.close(this.document.path);
-      }
-    };
-
-    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
-      const res = typeof response === 'string' ? JSON.parse(response) : response;
-      if (res.error) {
-        this.toasterService.error(res.error.code, res.error.message);
-      }
-    };
-  }
-
-  fileOverBase(e: any): void {
-    this.hasBaseDropZoneOver = e;
-  }
-
-  cancel(): void {
-    this.activeModal.destroy();
-  }
-
-  displayWith(data: any): string {
-    return data.key;
-  }
-
-  selectPath(node: any): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (this.document.path !== node.key) {
-      this.document.path = node.key;
-    }
-  }
-}
-
-@Component({
   selector: 'app-edit-modal-content',
   templateUrl: './edit-dialog.html'
 })
-export class EditModalComponent implements OnInit {
+export class EditModalComponent {
   @Input() display: any;
   @Input() document: any;
   submitted = false;
@@ -153,8 +74,8 @@ export class EditModalComponent implements OnInit {
   selector: 'app-single-document',
   templateUrl: './single-documentation.component.html'
 })
-export class SingleDocumentationComponent implements OnInit {
-  loading: boolean;
+export class SingleDocumentationComponent {
+  loading = false;
   controllerId: any = {};
   preferences: any = {};
   permission: any = {};
@@ -200,7 +121,7 @@ export class SingleDocumentationComponent implements OnInit {
     });
   }
 
-  previewDocument(document): void {
+  previewDocument(document: any): void {
     const link = API_URL + 'documentation/show?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId;
     if (this.preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
@@ -320,7 +241,7 @@ export class SingleDocumentationComponent implements OnInit {
   selector: 'app-document',
   templateUrl: 'documentation.component.html'
 })
-export class DocumentationComponent implements OnInit, OnDestroy {
+export class DocumentationComponent {
   isLoading = false;
   loading = false;
   schedulerIds: any = {};
@@ -484,7 +405,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           type: 'Delete',
           title: 'delete',
           message: 'deleteDocumentFolder',
@@ -685,9 +606,10 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   importDocument(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
-      nzContent: ImportModalComponent,
+      nzContent: FileUploaderComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
+        type: 'DOCUMENTATION',
         display: this.preferences.auditLog,
         selectedPath: this.selectedPath || '/',
         nodes: this.tree
@@ -831,7 +753,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
-        nzComponentParams: {
+        nzData: {
           comments,
           obj,
           url: 'documentations/delete'
@@ -849,7 +771,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           type: 'Delete',
           title: document ? 'delete' : 'deleteAllDocument',
           message: document ? 'deleteDocument' : 'deleteAllDocument',

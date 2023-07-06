@@ -7,7 +7,7 @@ import {AuthService} from '../../../components/guard';
   selector: 'app-comment-modal',
   templateUrl: './dialog.html',
 })
-export class CommentModalComponent implements OnInit {
+export class CommentModalComponent {
   @Input() action;
   @Input() comments: any;
   @Input() obj: any;
@@ -42,7 +42,7 @@ export class CommentModalComponent implements OnInit {
   selector: 'app-action',
   templateUrl: './action.component.html'
 })
-export class ActionComponent implements OnInit {
+export class ActionComponent {
   @Input() controller: any;
   @Input() permission: any;
   preferences: any = {};
@@ -82,12 +82,12 @@ export class ActionComponent implements OnInit {
       this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
-        nzComponentParams: {
+        nzData: {
           comments,
           action,
-          show : true,
+          show: true,
           obj,
-          performAction : this.performAction
+          performAction: this.performAction
         },
         nzFooter: null,
         nzClosable: false,

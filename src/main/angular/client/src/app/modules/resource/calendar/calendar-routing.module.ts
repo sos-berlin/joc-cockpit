@@ -6,7 +6,7 @@ const routes: Routes = [
   {
     path: '', component: CalendarComponent
   },
-   {
+  {
     path: 'calendar',
     component: SingleCalendarComponent,
     data: {breadcrumb: 'breadcrumb.label.calendar'}

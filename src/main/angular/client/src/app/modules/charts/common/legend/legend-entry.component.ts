@@ -1,4 +1,4 @@
-import { Component, Input, Output, ChangeDetectionStrategy, HostListener, EventEmitter } from '@angular/core';
+import {Component, Input, Output, ChangeDetectionStrategy, HostListener, EventEmitter} from '@angular/core';
 
 @Component({
   selector: 'ngx-charts-legend-entry',
@@ -29,11 +29,11 @@ export class LegendEntryComponent {
 
   @HostListener('mouseenter')
   onMouseEnter(): void {
-    this.activate.emit({ name: this.label });
+    this.activate.emit({name: this.label});
   }
 
   @HostListener('mouseleave')
   onMouseLeave(): void {
-    this.deactivate.emit({ name: this.label });
+    this.deactivate.emit({name: this.label});
   }
 }

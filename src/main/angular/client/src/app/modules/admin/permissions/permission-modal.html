@@ -3,13 +3,13 @@
     <span *ngIf="add" translate>user.label.addPermission</span>
     <span *ngIf="!add"><span translate>user.label.editPermission</span> : {{currentPermission.permissionLabel}} </span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentPermission)">
   <div class="modal-body p-a">
-    <div class="hide" [ngClass]="{'show': display}">
+    <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
     </div>
     <div class="form-group row">
@@ -17,13 +17,14 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <nz-select nzShowSearch [(ngModel)]="currentPermission.permissionPath" name="path1" required nzPlaceHolder="{{'user.placeholder.enterOrSelectPermission' | translate}}"
-                   (ngModelChange)="checkCovered(currentPermission)">
-          <nz-option *ngFor="let per of permissionOptions" [nzLabel]="per" [nzValue]="per"
-                     [nzDisabled]="per.indexOf('-----')!=-1">
+        <nz-select (ngModelChange)="checkCovered(currentPermission)" [(ngModel)]="currentPermission.permissionPath" name="path1" nzPlaceHolder="{{'user.placeholder.enterOrSelectPermission' | translate}}"
+                   nzShowSearch
+                   required>
+          <nz-option *ngFor="let per of permissionOptions" [nzDisabled]="per.indexOf('-----')!=-1" [nzLabel]="per"
+                     [nzValue]="per">
           </nz-option>
         </nz-select>
-        <div class="help-block text-danger" [ngClass]="{'m-b-sm':isCovered}" *ngIf="isCovered">
+        <div *ngIf="isCovered" [ngClass]="{'m-b-sm':isCovered}" class="help-block text-danger">
           <div translate>user.message.permissionIsAlreadyCovered</div>
         </div>
       </div>
@@ -31,17 +32,18 @@
     <div class="form-group row">
       <label class="col-sm-3" translate>user.label.excluded</label>
       <div class=" col-sm-6">
-        <label nz-checkbox [(ngModel)]="currentPermission.excluded"
-               name="excluded" (ngModelChange)="checkCovered(currentPermission)"></label>
+        <label (ngModelChange)="checkCovered(currentPermission)" [(ngModel)]="currentPermission.excluded"
+               name="excluded" nz-checkbox></label>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || isCovered || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm">
+    <button [disabled]="!myForm.form.valid || isCovered || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+            type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

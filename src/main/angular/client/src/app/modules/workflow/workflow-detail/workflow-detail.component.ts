@@ -31,7 +31,7 @@ declare const $;
     box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
   }`]
 })
-export class WorkflowDetailComponent implements OnInit, OnDestroy {
+export class WorkflowDetailComponent {
   path: string;
   versionId: string;
   workFlowJson: any = {};
@@ -122,7 +122,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.isDropdownOpen = isOpen;
   }
 
-  viewHistory(data): any{
+  viewHistory(data): any {
     this.workFlowJson.jobName = data.jobName;
     this.scrollBottom()
   }
@@ -354,7 +354,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   transitionOrders(): void {
     let obj: any = {
       controllerId: this.schedulerIds.selected,
-      workflowId:{
+      workflowId: {
         path: this.workFlowJson.path,
         versionId: this.workFlowJson.versionId
       }
@@ -371,7 +371,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -424,7 +424,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           comments,
           obj,
           url: 'workflows/' + (type === 'Resume' ? 'resume' : 'suspend')
@@ -483,7 +483,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           this.workflowObjects = new Map();
           this.countObj = {count: 0};
           this.workFlowJson = res.workflow;
-          this.workflowService.convertTryToRetry(res.workflow, (jobMap)=>{
+          this.workflowService.convertTryToRetry(res.workflow, (jobMap) => {
             this.jobMap = jobMap;
           }, res.workflow.jobs, this.countObj, true);
           this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
@@ -493,7 +493,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             this.getOrders(res.workflow, flag);
           }
         } else {
-          this.workflowService.convertTryToRetry(res.workflow, (jobMap)=>{
+          this.workflowService.convertTryToRetry(res.workflow, (jobMap) => {
             this.jobMap = jobMap;
           }, {}, {count: 0}, true);
           this.workflowService.compareAndMergeInstructions(this.workFlowJson.instructions, res.workflow.instructions);

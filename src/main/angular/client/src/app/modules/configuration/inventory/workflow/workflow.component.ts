@@ -12,7 +12,6 @@ import {
   ViewChild
 } from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
@@ -34,6 +33,7 @@ import {InventoryService} from '../inventory.service';
 import {CreateObjectModalComponent} from "../inventory.component";
 import {UpdateJobTemplatesComponent} from "../job-template/job-template.component";
 import {CalendarService} from "../../../../services/calendar.service";
+import {FileUploaderComponent} from "../../../../components/file-uploader/file-uploader.component";
 
 // Mx-Graph Objects
 declare const mxEditor;
@@ -233,7 +233,7 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
   selector: 'app-facet-editor-modal',
   templateUrl: './facet-editor-dialog.html'
 })
-export class FacetEditorComponent implements OnInit {
+export class FacetEditorComponent {
   @Input() preferences: any = {};
   @Input() data: any = {};
   @Input() isList: boolean;
@@ -301,7 +301,7 @@ export class FacetEditorComponent implements OnInit {
   selector: 'app-repeat-editor-modal',
   templateUrl: './repeat-editor-dialog.html'
 })
-export class RepeatEditorComponent implements OnInit {
+export class RepeatEditorComponent {
   @Input() data;
   @Input() isTooltipVisible;
   isNew: boolean;
@@ -335,13 +335,13 @@ export class RepeatEditorComponent implements OnInit {
   selector: 'app-time-editor-modal',
   templateUrl: './time-editor-dialog.html'
 })
-export class TimeEditorComponent implements OnInit {
-  @Input() data;
-  @Input() period;
-  @Input() isTooltipVisible;
-  @Input() isCycle;
- 
-  isExist: boolean;
+export class TimeEditorComponent {
+  @Input() data: any;
+  @Input() period: any;
+  @Input() isTooltipVisible: boolean;
+  @Input() isCycle: boolean;
+
+  isExist = false;
 
   object: any = {};
 
@@ -523,7 +523,7 @@ export class CycleInstructionComponent implements OnChanges {
       nzTitle: undefined,
       nzContent: RepeatEditorComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         data: data.repeat,
         isTooltipVisible: this.isTooltipVisible
       },
@@ -642,7 +642,7 @@ export class CycleInstructionComponent implements OnChanges {
   selector: 'app-admission-time',
   templateUrl: './admission-time-dialog.html'
 })
-export class AdmissionTimeComponent implements OnInit, OnDestroy {
+export class AdmissionTimeComponent {
   @Input() job: any;
   @Input() data: any;
   @Input() timeZone: any;
@@ -1125,7 +1125,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   selector: 'app-find-replace-modal',
   templateUrl: './find-replace-dialog.html'
 })
-export class FindAndReplaceComponent implements OnInit {
+export class FindAndReplaceComponent {
   @Input() agents: any = [];
   @Input() preferences: any = {};
 
@@ -1185,7 +1185,7 @@ export class FindAndReplaceComponent implements OnInit {
   selector: 'app-show-reference',
   templateUrl: './show-reference-dialog.html'
 })
-export class ShowReferenceComponent implements OnInit {
+export class ShowReferenceComponent {
   @Input() type: string;
   @Input() obj: any;
   @Input() preferences: any;
@@ -1248,7 +1248,7 @@ export class ShowReferenceComponent implements OnInit {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './job-text-editor.html'
 })
-export class JobComponent implements OnInit, OnChanges, OnDestroy {
+export class JobComponent {
   @Input() schedulerId: any;
   @Input() selectedNode: any;
   @Input() jobs: any;
@@ -2529,7 +2529,7 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './expression-editor.html'
 })
-export class ExpressionComponent implements OnInit, AfterViewInit {
+export class ExpressionComponent {
   @Input() selectedNode: any;
   @Input() error: any;
   @Input() isTooltipVisible: boolean;
@@ -2612,89 +2612,6 @@ export class ExpressionComponent implements OnInit, AfterViewInit {
     cursor.ch = cursor.ch + data.length;
     this.cm.codeMirror.focus();
     doc.setCursor(cursor);
-  }
-}
-
-@Component({
-  selector: 'app-import-content',
-  templateUrl: './import-dialog.html'
-})
-export class ImportComponent implements OnInit {
-  workflow: any;
-  submitted = false;
-  hasBaseDropZoneOver: any;
-  uploader: FileUploader;
-
-  constructor(public activeModal: NzModalRef, private translate: TranslateService, private toasterService: ToastrService) {
-    this.uploader = new FileUploader({
-      url: '',
-      queueLimit: 1
-    });
-  }
-
-  ngOnInit(): void {
-    this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
-      if (status === 200) {
-        this.activeModal.close('success');
-      }
-    };
-
-    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
-      const res = typeof response === 'string' ? JSON.parse(response) : response;
-      if (res.error) {
-        this.toasterService.error(res.error.message, res.error.code);
-      }
-    };
-  }
-
-  fileOverBase(e: any): void {
-    this.hasBaseDropZoneOver = e;
-  }
-
-  // CALLBACKS
-  onFileSelected(event: any): void {
-    const self = this;
-    const item = event['0'];
-
-    const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
-    if (fileExt != 'JSON') {
-      let msg = '';
-      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
-        msg = translatedValue;
-      });
-      this.toasterService.error(fileExt + ' ' + msg);
-      this.uploader.clearQueue();
-    } else {
-      const reader = new FileReader();
-      reader.readAsText(item, 'UTF-8');
-      reader.onload = onLoadFile;
-    }
-
-    function onLoadFile(_event) {
-      let data;
-      try {
-        data = JSON.parse(_event.target.result);
-        self.workflow = data;
-      } catch (e) {
-
-      }
-      if (!data || !data.instructions || data.instructions.length == 0) {
-        let msg = '';
-        self.translate.get('workflow.message.inValidWorkflow').subscribe(translatedValue => {
-          msg = translatedValue;
-        });
-        self.toasterService.error(msg);
-        self.uploader.queue[0].remove();
-        return;
-      }
-    }
-  }
-
-  onSubmit(): void {
-    this.submitted = true;
-    setTimeout(() => {
-      this.activeModal.close(this.workflow);
-    }, 100);
   }
 }
 
@@ -3424,7 +3341,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzContent: UpdateJobTemplatesComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         preferences: this.preferences,
         job: {
           jobName: data.cell.getAttribute('jobName'),
@@ -3450,7 +3367,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: CreateObjectModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         preferences: this.preferences,
         allowPath: true,
         obj: {
@@ -3686,7 +3603,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   importJSON(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
-      nzContent: ImportComponent,
+      nzContent: FileUploaderComponent,
       nzClassName: 'lg',
       nzFooter: null,
       nzAutofocus: null,
@@ -3988,7 +3905,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ShowReferenceComponent,
-      nzComponentParams: {
+      nzData: {
         obj,
         preferences: this.preferences,
         type
@@ -4469,7 +4386,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: FacetEditorComponent,
       nzClassName: isList ? 'sm' : 'lg',
-      nzComponentParams: {
+      nzData: {
         data,
         isList,
         preferences: this.preferences
@@ -4507,7 +4424,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         nzTitle: undefined,
         nzContent: NoticeBoardEditorComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           boardTree: this.boardTree,
           data: data[type],
           object: data,
@@ -4522,7 +4439,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         nzTitle: undefined,
         nzContent: ValueEditorComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           data: data[type],
           object: data,
         },
@@ -4560,7 +4477,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             nzTitle: undefined,
             nzContent: CommentModalComponent,
             nzClassName: 'lg',
-            nzComponentParams: {
+            nzData: {
               comments
             },
             nzFooter: null,
@@ -11218,7 +11135,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: FindAndReplaceComponent,
-      nzComponentParams: {
+      nzData: {
         agents: this.inventoryService.agentList,
         preferences: this.preferences
       },

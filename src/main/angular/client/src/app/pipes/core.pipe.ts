@@ -136,7 +136,7 @@ export class TimeInStringFormatPipe implements PipeTransform {
         }
       }
       return '1sec';
-    } else{
+    } else {
       return '';
     }
   }
@@ -206,7 +206,7 @@ export class DurationFromCurrentPipe implements PipeTransform {
         return 0 == u && 0 != f1 ? f1 + ':' + s1 + ':' + a1 + 'h' : 0 == f1 && 0 != s1 ? s1 + ':' + a1 + 'min' : 0 == u && 0 == f1 && 0 == s1 ? a1 + 'sec' : u > 1 ? u + 'days' : u + 'day';
       }
       return 'never';
-    } else{
+    } else {
       return '';
     }
   }

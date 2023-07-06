@@ -4,20 +4,20 @@
     <span *ngIf="!edit" translate>inventory.label.showJson</span>:
     <span class="text-muted">{{name}}</span>
   </h4>
-  <a class="max-btn" appMaximum>
+  <a appMaximum class="max-btn">
     <i class="fa fa-window-maximize"></i>
   </a>
-  <button type="button" class="close" (click)="activeModal.destroy()" aria-label="Close">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="row">
-      <div class="col-md-12" [ngClass]="{'error-input': isError, 'json-editor-readonly': !edit}">
-        <json-editor [options]="options" [data]="data" #editor></json-editor>
+      <div [ngClass]="{'error-input': isError, 'json-editor-readonly': !edit}" class="col-md-12">
+        <json-editor #editor [data]="data" [options]="options"></json-editor>
       </div>
-      <div class="col-md-12" *ngIf="isError">
+      <div *ngIf="isError" class="col-md-12">
         <div class="help-block text-danger">
           {{errorMsg}}
         </div>
@@ -25,14 +25,14 @@
     </div>
   </div>
   <div class="modal-footer">
-   <button type="submit" *ngIf="edit" [disabled]="submitted || isError" class="btn btn-primary btn-sm">
+    <button *ngIf="edit" [disabled]="submitted || isError" class="btn btn-primary btn-sm" type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-default btn-sm"
-            (click)="copyToClipboard()" translate>log.button.copyToClipboard
+    <button (click)="copyToClipboard()" class="btn btn-default btn-sm"
+            translate type="button">log.button.copyToClipboard
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()">
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
       <span *ngIf="edit" translate>common.button.cancel</span>
       <span *ngIf="!edit" translate>common.button.close</span>
     </button>

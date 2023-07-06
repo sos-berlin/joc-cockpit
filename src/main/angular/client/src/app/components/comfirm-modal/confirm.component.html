@@ -20,7 +20,7 @@
     </span>
     <span *ngIf="lossNode || title == 'confirm'">{{'common.label.confirm' | translate}}</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -45,8 +45,8 @@
         <app-empty-data [title]="'common.message.noObjectFoundToDelete'"></app-empty-data>
       </span>
     </div>
-    <div class="col-sm-12 text-left m-t" *ngIf="document">
-      <div class="row" *ngFor="let doc of document.usedIn">
+    <div *ngIf="document" class="col-sm-12 text-left m-t">
+      <div *ngFor="let doc of document.usedIn" class="row">
         <label class="col-md-3 _600">
           {{doc.type | translate}} :
         </label>
@@ -55,14 +55,14 @@
         </div>
       </div>
     </div>
-    <div class="col-sm-12 text-left m-t" *ngIf="documentArr && documentArr.length>0">
-      <div class="row" *ngFor="let document of documentArr; let i = index" [ngClass]="{'b-t p-t': i !=0}">
+    <div *ngIf="documentArr && documentArr.length>0" class="col-sm-12 text-left m-t">
+      <div *ngFor="let document of documentArr; let i = index" [ngClass]="{'b-t p-t': i !=0}" class="row">
         <div class="col-sm-12">
           <span class="col-md-3" translate>resource.documentation.label.documentation</span>
           <label class="col-md-9">{{document.name}}</label>
         </div>
         <div class="col-sm-12">
-          <div class="row" *ngFor="let doc of document.usedIn">
+          <div *ngFor="let doc of document.usedIn" class="row">
             <label class="col-md-3 _600">
               {{doc.type | translate}} :
             </label>
@@ -73,7 +73,7 @@
         </div>
       </div>
     </div>
-    <div class="col-sm-12 text-left m-t-sm" *ngIf="resetProfiles && resetProfiles.length>0">
+    <div *ngIf="resetProfiles && resetProfiles.length>0" class="col-sm-12 text-left m-t-sm">
       <div class="row">
         <label class="col-md-3 col-md-offset-3" translate>
           user.label.account
@@ -88,14 +88,14 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" [ngClass]="{'btn-primary' : type !== 'Delete' && type !== 'Remove'}"
-          class="btn btn-danger btn-sm" [disabled]="count == 0"
-          (click)="activeModal.close('close')">
+  <button (click)="activeModal.close('close')" [disabled]="count == 0"
+          [ngClass]="{'btn-primary' : type !== 'Delete' && type !== 'Remove'}" class="btn btn-danger btn-sm"
+          type="button">
     <span *ngIf="type === 'Delete'">{{'common.button.delete' | translate}}</span>
     <span *ngIf="type === 'Remove'">{{'common.button.remove' | translate}}</span>
     <span *ngIf="type !== 'Delete' && type !== 'Remove'">{{'common.button.confirm' | translate}}</span>
   </button>
-  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
     common.button.cancel
   </button>
 </div>

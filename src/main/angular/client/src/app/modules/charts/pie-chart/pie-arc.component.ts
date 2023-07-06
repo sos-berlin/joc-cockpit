@@ -8,12 +8,12 @@ import {
   OnChanges,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { interpolate } from 'd3-interpolate';
-import { select } from 'd3-selection';
-import { arc } from 'd3-shape';
-import { id } from '../utils/id';
-import { DataItem } from '../models/chart-data.model';
-import { BarOrientation } from '../common/types/bar-orientation.enum';
+import {interpolate} from 'd3-interpolate';
+import {select} from 'd3-selection';
+import {arc} from 'd3-shape';
+import {id} from '../utils/id';
+import {DataItem} from '../models/chart-data.model';
+import {BarOrientation} from '../common/types/bar-orientation.enum';
 
 @Component({
   selector: 'g[ngx-charts-pie-arc]',
@@ -115,7 +115,7 @@ export class PieArcComponent implements OnChanges {
   loadAnimation(): void {
     const node: any = select(this.element)
       .selectAll('.arc')
-      .data([{ startAngle: this.startAngle, endAngle: this.endAngle }]);
+      .data([{startAngle: this.startAngle, endAngle: this.endAngle}]);
 
     const calc = this.calculateArc();
 
@@ -146,7 +146,7 @@ export class PieArcComponent implements OnChanges {
   updateAnimation(): void {
     const node: any = select(this.element)
       .selectAll('.arc')
-      .data([{ startAngle: this.startAngle, endAngle: this.endAngle }]);
+      .data([{startAngle: this.startAngle, endAngle: this.endAngle}]);
 
     const calc = this.calculateArc();
 

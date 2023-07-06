@@ -1,16 +1,16 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NzModalRef} from 'ng-zorro-antd/modal';
+import {Component, inject} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
 @Component({
   selector: 'app-comment-modal-content',
   templateUrl: './comment.component.html'
 })
-export class CommentModalComponent implements OnInit {
-  @Input() comments: any;
-  @Input() obj: any;
-  @Input() url: string = '';
-
+export class CommentModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  comments: any;
+  obj: any;
+  url: string = '';
   submitted = false;
   required = false;
 
@@ -18,6 +18,9 @@ export class CommentModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.comments = this.modalData.comments;
+    this.obj = this.modalData.obj;
+    this.url = this.modalData.url;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] == 'true') {
       this.required = true;

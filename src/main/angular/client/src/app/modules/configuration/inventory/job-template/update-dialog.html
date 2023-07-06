@@ -1,18 +1,18 @@
 <ng-template #jobTemplate let-item>
-  <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-     *ngIf="!item.show && item.value.actions" (click)="item.show = true;"></i>
-  <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
-     *ngIf="item.show && item.value.actions" (click)="item.show = false"></i>
+  <i (click)="item.show = true;"
+     *ngIf="!item.show && item.value.actions" class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+  <i (click)="item.show = false"
+     *ngIf="item.show && item.value.actions" class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
   <i class="icon-jobs-icon icon-color tree-icon p-l-xs p-r-xs"></i>
   {{item.name}}
-  <span *ngIf="item.value" class="label m-l" [ngClass]="coreService.getColor(item.value.state.severity,'bg')"
-        [innerHtml]="item.value.state._text | translate"></span>
-  <i *ngIf="item.value.state.message" class="fa fa-info-circle p-l-sm" [nz-tooltip]="item.value.state.message"></i>
-  <div class="m-l m-t-xs" *ngIf="item.show">
+  <span *ngIf="item.value" [innerHtml]="item.value.state._text | translate" [ngClass]="coreService.getColor(item.value.state.severity,'bg')"
+        class="label m-l"></span>
+  <i *ngIf="item.value.state.message" [nz-tooltip]="item.value.state.message" class="fa fa-info-circle p-l-sm"></i>
+  <div *ngIf="item.show" class="m-l m-t-xs">
     <div *ngIf="item.value.actions?.changes">
       <ul class="m-b-sm p-t-xxs">
         <li class="m-b-xs"><span class="_600 text" translate>workflow.label.changedProperties</span>:</li>
-        <li class="m-l-sm p-l-xs" *ngFor="let item of item.value.actions.changes">
+        <li *ngFor="let item of item.value.actions.changes" class="m-l-sm p-l-xs">
           {{item}}
         </li>
       </ul>
@@ -50,7 +50,7 @@
       {{data.name}}
     </span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="cancel()">
+  <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -58,28 +58,28 @@
   <div class="modal-body p-a min-ht-128">
     <div *ngIf="!isUpdated">
       <div *ngIf="(isloaded && listOfWorkflows.length) || treeObj || job">
-        <div class="hide" [ngClass]="{'show': display}">
+        <div [ngClass]="{'show': display}" class="hide">
           <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
         </div>
-        <div class="form-group row" *ngIf="data">
+        <div *ngIf="data" class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.export.label.filter</label>
           </div>
           <div class="col-md-9">
-            <label nz-checkbox name="draft" [(ngModel)]="object.draft" (ngModelChange)="filterList()">
+            <label (ngModelChange)="filterList()" [(ngModel)]="object.draft" name="draft" nz-checkbox>
               {{'inventory.export.label.draft'| translate}}
             </label>
-            <label class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="object.deploy" (ngModelChange)="filterList()">
+            <label (ngModelChange)="filterList()" [(ngModel)]="object.deploy" class="m-l-md" name="deploy" nz-checkbox>
               {{'inventory.export.label.deployed'| translate}}
             </label>
           </div>
         </div>
-        <div class="form-group row" *ngIf="treeObj && !treeObj.object && !treeObj.controller && !treeObj.type">
+        <div *ngIf="treeObj && !treeObj.object && !treeObj.controller && !treeObj.type" class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.label.handleRecursively</label>
           </div>
           <div class="col-md-9">
-            <label nz-checkbox name="recursive" [(ngModel)]="object.recursive"></label>
+            <label [(ngModel)]="object.recursive" name="recursive" nz-checkbox></label>
           </div>
         </div>
         <div class="form-group row">
@@ -87,7 +87,7 @@
             <label translate>inventory.label.overwriteNotification</label>
           </div>
           <div class="col-md-9">
-            <label nz-checkbox name="overwriteNotification" [(ngModel)]="object.overwriteNotification"></label>
+            <label [(ngModel)]="object.overwriteNotification" name="overwriteNotification" nz-checkbox></label>
           </div>
         </div>
         <div class="form-group row">
@@ -95,24 +95,24 @@
             <label translate>inventory.label.overwriteAdmissionTime</label>
           </div>
           <div class="col-md-9">
-            <label nz-checkbox name="overwriteAdmissionTime" [(ngModel)]="object.overwriteAdmissionTime"></label>
+            <label [(ngModel)]="object.overwriteAdmissionTime" name="overwriteAdmissionTime" nz-checkbox></label>
           </div>
         </div>
-        <div class="form-group row" *ngIf="nodes.length && data">
+        <div *ngIf="nodes.length && data" class="form-group row">
           <div class="col-md-12">
-            <label nz-checkbox [(nzChecked)]="object.checked"
-                   [nzIndeterminate]="object.indeterminate" (nzCheckedChange)="selectAll($event)"></label>
+            <label (nzCheckedChange)="selectAll($event)" [(nzChecked)]="object.checked"
+                   [nzIndeterminate]="object.indeterminate" nz-checkbox></label>
             <label class="p-l-sm _600" translate>runtime.label.selectAll</label>
           </div>
         </div>
-        <div class="row" *ngIf="data">
-          <div class="col-md-12 m-b-sm" *ngFor="let item of nodes">
-            <label nz-checkbox [nzChecked]="object.setOfCheckedPath.has(item.path)"
-                   (nzCheckedChange)="onItemChecked(item, $event)"></label>
-            <i nz-icon nzType="apartment" class="icon-color p-l-sm p-r-sm"
-               nzTheme="outline"></i>
-            <span class="fa fa-check-circle-o orange text-xs w-11 m-t-xs p-r-sm"
-                  [ngClass]="{'fa-circle dark-blue' : item.deployed}"></span>
+        <div *ngIf="data" class="row">
+          <div *ngFor="let item of nodes" class="col-md-12 m-b-sm">
+            <label (nzCheckedChange)="onItemChecked(item, $event)" [nzChecked]="object.setOfCheckedPath.has(item.path)"
+                   nz-checkbox></label>
+            <i class="icon-color p-l-sm p-r-sm" nz-icon nzTheme="outline"
+               nzType="apartment"></i>
+            <span [ngClass]="{'fa-circle dark-blue' : item.deployed}"
+                  class="fa fa-check-circle-o orange text-xs w-11 m-t-xs p-r-sm"></span>
             <span *ngIf="item.state" [nz-tooltip]="item.state._text | translate" class="p-l-xs p-r-sm">
               <i *ngIf="item.state._text === 'IN_SYNC'"
                  class="fa fa-refresh font11"></i>
@@ -125,10 +125,10 @@
           </div>
         </div>
       </div>
-      <div class="m-t-md" *ngIf="nodes.length===0 && isloaded && data">
+      <div *ngIf="nodes.length===0 && isloaded && data" class="m-t-md">
         <app-empty-data></app-empty-data>
       </div>
-      <div class="text-center m-t-md" *ngIf="!isloaded && data">
+      <div *ngIf="!isloaded && data" class="text-center m-t-md">
         <nz-spin nzSimple></nz-spin>
       </div>
     </div>
@@ -136,20 +136,20 @@
       <ul *ngIf="updatedList.length > 0">
         <li class="m-b-xs"><span class="_600 text" translate>inventory.label.workflows</span>:</li>
         <li *ngFor="let workflow of updatedList" class="p-l-sm">
-          <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-             *ngIf="!workflow.show" (click)="workflow.show = true;"></i>
-          <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
-             *ngIf="workflow.show" (click)="workflow.show = false"></i>
-          <i nz-icon nzType="apartment" class="icon-color p-l-sm p-r-sm"
-             nzTheme="outline"></i>
+          <i (click)="workflow.show = true;"
+             *ngIf="!workflow.show" class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+          <i (click)="workflow.show = false"
+             *ngIf="workflow.show" class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
+          <i class="icon-color p-l-sm p-r-sm" nz-icon nzTheme="outline"
+             nzType="apartment"></i>
           <span>{{workflow.path}}</span>
-          <span class="label m-l" [ngClass]="coreService.getColor(workflow.state.severity,'bg')"
-                [innerHtml]="workflow.state._text | translate"></span>
+          <span [innerHtml]="workflow.state._text | translate" [ngClass]="coreService.getColor(workflow.state.severity,'bg')"
+                class="label m-l"></span>
           <ul *ngIf="workflow.jobs && workflow.show" class="m-b-sm p-t-xxs">
             <li class="m-b-xs"><span class="_600 text" translate>dashboard.label.jobs</span>:</li>
-            <li class="m-l-sm p-l-xs" *ngFor="let job of workflow.jobs">
-              <ng-container [ngTemplateOutlet]="jobTemplate"
-                            [ngTemplateOutletContext]="{ $implicit: job}"></ng-container>
+            <li *ngFor="let job of workflow.jobs" class="m-l-sm p-l-xs">
+              <ng-container [ngTemplateOutletContext]="{ $implicit: job}"
+                            [ngTemplateOutlet]="jobTemplate"></ng-container>
             </li>
           </ul>
         </li>
@@ -157,23 +157,23 @@
       <div *ngIf="jobStatus">
         <ul>
           <li>
-            <ng-container [ngTemplateOutlet]="jobTemplate"
-                          [ngTemplateOutletContext]="{ $implicit: jobStatus}"></ng-container>
+            <ng-container [ngTemplateOutletContext]="{ $implicit: jobStatus}"
+                          [ngTemplateOutlet]="jobTemplate"></ng-container>
           </li>
         </ul>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary btn-sm" *ngIf="!isUpdated"
-            [disabled]="submitted || (object.setOfCheckedPath.size == 0 && data)">
-      <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="submitted"></i>
+    <button *ngIf="!isUpdated" [disabled]="submitted || (object.setOfCheckedPath.size == 0 && data)" class="btn btn-primary btn-sm"
+            type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       <span translate>common.button.submit</span>
     </button>
-    <button type="button" *ngIf="!isUpdated" class="btn btn-grey btn-sm" (click)="cancel()" translate>
+    <button (click)="cancel()" *ngIf="!isUpdated" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
-    <button type="button" *ngIf="isUpdated" class="btn btn-grey btn-sm" (click)="close()" translate>
+    <button (click)="close()" *ngIf="isUpdated" class="btn btn-grey btn-sm" translate type="button">
       common.button.close
     </button>
   </div>

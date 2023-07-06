@@ -9,20 +9,20 @@ import {
   TemplateRef,
   TrackByFunction
 } from '@angular/core';
-import { trigger, style, animate, transition } from '@angular/animations';
+import {trigger, style, animate, transition} from '@angular/animations';
 
-import { scaleBand, scaleLinear } from 'd3-scale';
+import {scaleBand, scaleLinear} from 'd3-scale';
 
-import { calculateViewDimensions } from '../common/view-dimensions.helper';
-import { ColorHelper } from '../common/color.helper';
-import { Series } from '../models/chart-data.model';
+import {calculateViewDimensions} from '../common/view-dimensions.helper';
+import {ColorHelper} from '../common/color.helper';
+import {Series} from '../models/chart-data.model';
 
-import { BaseChartComponent } from '../common/base-chart.component';
-import { BarChartType } from './types/bar-chart-type.enum';
-import { ScaleType } from '../common/types/scale-type.enum';
-import { LegendOptions, LegendPosition } from '../common/types/legend.model';
-import { ViewDimensions } from '../common/types/view-dimension.interface';
-import { isPlatformServer } from '@angular/common';
+import {BaseChartComponent} from '../common/base-chart.component';
+import {BarChartType} from './types/bar-chart-type.enum';
+import {ScaleType} from '../common/types/scale-type.enum';
+import {LegendOptions, LegendPosition} from '../common/types/legend.model';
+import {ViewDimensions} from '../common/types/view-dimension.interface';
+import {isPlatformServer} from '@angular/common';
 
 @Component({
   selector: 'ngx-charts-bar-horizontal-normalized',
@@ -129,7 +129,7 @@ import { isPlatformServer } from '@angular/common';
           opacity: 1,
           transform: '*'
         }),
-        animate(500, style({ opacity: 0, transform: 'scale(0)' }))
+        animate(500, style({opacity: 0, transform: 'scale(0)'}))
       ])
     ])
   ]
@@ -304,12 +304,12 @@ export class BarHorizontalNormalizedComponent extends BaseChartComponent {
     return opts;
   }
 
-  updateYAxisWidth({ width }: { width: number }): void {
+  updateYAxisWidth({width}: { width: number }): void {
     this.yAxisWidth = width;
     this.update();
   }
 
-  updateXAxisHeight({ height }: { height: number }): void {
+  updateXAxisHeight({height}: { height: number }): void {
     this.xAxisHeight = height;
     this.update();
   }
@@ -332,7 +332,7 @@ export class BarHorizontalNormalizedComponent extends BaseChartComponent {
       });
 
     this.activeEntries = [...items];
-    this.activate.emit({ value: item, entries: this.activeEntries });
+    this.activate.emit({value: item, entries: this.activeEntries});
   }
 
   onDeactivate(event, group: Series, fromLegend: boolean = false) {
@@ -349,6 +349,6 @@ export class BarHorizontalNormalizedComponent extends BaseChartComponent {
       }
     });
 
-    this.deactivate.emit({ value: item, entries: this.activeEntries });
+    this.deactivate.emit({value: item, entries: this.activeEntries});
   }
 }

@@ -54,26 +54,26 @@ export class PopupService implements OnDestroy {
     this.checkAndCall(data, windowInstance);
   }
 
-  private checkAndCall(data: any, windowInstance:any){
+  private checkAndCall(data: any, windowInstance: any) {
     // Wait for window instance to be created
     setTimeout(() => {
-      if(this.isPopupInitialized(windowInstance)) {
+      if (this.isPopupInitialized(windowInstance)) {
         this.createCDKPortal(data, windowInstance);
-      } else{
+      } else {
         this.checkAndCall(data, windowInstance);
       }
     }, 400);
   }
 
   // Check if the popup window is initialized
-  private isPopupInitialized(popupWindow:any) {
+  private isPopupInitialized(popupWindow: any) {
     return popupWindow !== null && popupWindow.document && popupWindow.document.body && popupWindow.document.body.getAttribute('id');
   }
 
-  openOnce(url:string, options?:string) {
+  openOnce(url: string, options?: string) {
     // Open a blank "target" window
     // or get the reference to the existing "target" window
-    const winRef:any = window.open('', '', options);
+    const winRef: any = window.open('', '', options);
     // If the "target" window was just opened, change its url
     if (winRef.location.href === 'about:blank') {
       winRef.location.href = url;
@@ -81,7 +81,7 @@ export class PopupService implements OnDestroy {
     return winRef;
   }
 
-  createCDKPortal(data:any, windowInstance:any) {
+  createCDKPortal(data: any, windowInstance: any) {
     if (windowInstance) {
       // Create a PortalOutlet with the body of the new window document
       const outlet = new DomPortalOutlet(
@@ -126,7 +126,7 @@ export class PopupService implements OnDestroy {
     }
   }
 
-  attachLogContainer(outlet:any, injector:any) {
+  attachLogContainer(outlet: any, injector: any) {
     const containerPortal = new ComponentPortal(
       LogViewComponent,
       null,
@@ -137,7 +137,7 @@ export class PopupService implements OnDestroy {
     return containerRef.instance;
   }
 
-  createInjector(data:any): PortalInjector {
+  createInjector(data: any): PortalInjector {
     const injectionTokens = new WeakMap();
     injectionTokens.set(POPOUT_MODAL_DATA, data);
     return new PortalInjector(this.injector, injectionTokens);

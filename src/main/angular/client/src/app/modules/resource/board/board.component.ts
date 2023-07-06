@@ -1,16 +1,16 @@
-import { Component, OnInit, OnDestroy, ViewChild, Input } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
-import { differenceInCalendarDays } from 'date-fns';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard';
-import { DataService } from '../../../services/data.service';
-import { TreeComponent } from '../../../components/tree-navigation/tree.component';
-import { SearchPipe, OrderPipe } from '../../../pipes/core.pipe';
-import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
-import { CommentModalComponent } from "../../../components/comment-modal/comment.component";
+import {Component, OnInit, OnDestroy, ViewChild, Input} from '@angular/core';
+import {Subject, Subscription} from 'rxjs';
+import {ActivatedRoute} from '@angular/router';
+import {takeUntil} from 'rxjs/operators';
+import {differenceInCalendarDays} from 'date-fns';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {CoreService} from '../../../services/core.service';
+import {AuthService} from '../../../components/guard';
+import {DataService} from '../../../services/data.service';
+import {TreeComponent} from '../../../components/tree-navigation/tree.component';
+import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 
 declare const $: any;
 
@@ -19,7 +19,7 @@ declare const $: any;
   selector: 'app-post-notice-modal',
   templateUrl: './post-notice-dialog.html'
 })
-export class PostModalComponent implements OnInit {
+export class PostModalComponent {
   @Input() controllerId: string;
   @Input() preferences: any;
   @Input() board: any;
@@ -95,7 +95,7 @@ export class PostModalComponent implements OnInit {
   selector: 'app-single-board',
   templateUrl: './single-board.component.html'
 })
-export class SingleBoardComponent implements OnInit, OnDestroy {
+export class SingleBoardComponent {
   loading: boolean;
   controllerId: any = {};
   preferences: any = {};
@@ -105,7 +105,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService,
-    private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
+              private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -186,7 +186,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           type: 'Delete',
           title: 'delete',
           message: 'deleteNotice',
@@ -247,7 +247,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
   selector: 'app-board',
   templateUrl: 'board.component.html'
 })
-export class BoardComponent implements OnInit, OnDestroy {
+export class BoardComponent {
   isLoading = false;
   loading: boolean;
   schedulerIds: any = {};
@@ -273,10 +273,10 @@ export class BoardComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
 
-  @ViewChild(TreeComponent, { static: false }) child;
+  @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
-    private searchPipe: SearchPipe, private dataService: DataService, private orderPipe: OrderPipe) {
+              private searchPipe: SearchPipe, private dataService: DataService, private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -343,7 +343,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       paths = this.boardsFilters.selectedkeys;
     }
     for (let x = 0; x < paths.length; x++) {
-      obj.folders.push({ folder: paths[x], recursive: false });
+      obj.folders.push({folder: paths[x], recursive: false});
     }
     this.getBoardsList(obj);
   }
@@ -357,7 +357,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     data.isSelected = true;
     this.loading = true;
     const obj = {
-      folders: [{ folder: data.path, recursive }],
+      folders: [{folder: data.path, recursive}],
       controllerId: this.schedulerIds.selected
     };
     this.getBoardsList(obj);
@@ -564,7 +564,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.boardsFilters.expandedObjects = [data.path];
     const obj = {
       controllerId: this.schedulerIds.selected,
-      folders: [{ folder: PATH, recursive: false }]
+      folders: [{folder: PATH, recursive: false}]
     };
     this.boards = [];
     this.loading = true;
@@ -833,7 +833,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           type: 'Delete',
           title: 'delete',
           message: notice ? 'deleteNotice' : 'deleteSelectedNotice',

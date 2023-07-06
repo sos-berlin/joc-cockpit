@@ -1,4 +1,4 @@
-import { Output, EventEmitter, NgZone, Directive, ElementRef } from '@angular/core';
+import {Output, EventEmitter, NgZone, Directive, ElementRef} from '@angular/core';
 
 /**
  * Visibility Observer
@@ -35,7 +35,7 @@ export class VisibilityObserver {
       }
 
       // https://davidwalsh.name/offsetheight-visibility
-      const { offsetHeight, offsetWidth } = this.element.nativeElement;
+      const {offsetHeight, offsetWidth} = this.element.nativeElement;
 
       if (offsetHeight && offsetWidth) {
         clearTimeout(this.timeout);

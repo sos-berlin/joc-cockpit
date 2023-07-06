@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Router} from '@angular/router';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 
@@ -6,7 +6,7 @@ import {NzModalRef} from 'ng-zorro-antd/modal';
   selector: 'app-audit-log-input',
   templateUrl: './audit-log-input-component.html'
 })
-export class AuditLogInputComponent implements OnInit {
+export class AuditLogInputComponent {
   @Input() comments: any;
   @Input() sizeX: any;
   @Input() sizeY: any;
@@ -24,10 +24,10 @@ export class AuditLogInputComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.comments.isChecked =  false;
+    this.comments.isChecked = false;
   }
 
-  onChange(value:string): void {
+  onChange(value: string): void {
     if (value === 'new') {
       this.oldValue = this.comments.comment;
       this.comments.comment = '';

@@ -27,7 +27,7 @@ import {FacetEditorComponent} from '../workflow/workflow.component';
   selector: 'app-update-modal',
   templateUrl: './update-dialog.html'
 })
-export class UpdateJobTemplatesComponent implements OnInit {
+export class UpdateJobTemplatesComponent {
   @Input() preferences: any = {};
   @Input() data: any;
   @Input() treeObj: any;
@@ -641,7 +641,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
             nzTitle: undefined,
             nzContent: CommentModalComponent,
             nzClassName: 'lg',
-            nzComponentParams: {
+            nzData: {
               comments
             },
             nzFooter: null,
@@ -684,7 +684,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
           this.data.name = name;
         }
         data.name1 = name;
-        this.dataService.reloadTree.next({ rename: data });
+        this.dataService.reloadTree.next({rename: data});
       }, error: () => {
         this.job.name = this.data.name;
         this.job.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
@@ -703,6 +703,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       });
     }
   }
+
   release(): void {
     this.dataService.reloadTree.next({release: this.job});
   }
@@ -721,7 +722,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: UpdateJobTemplatesComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         preferences: this.preferences,
         data: this.job
       },
@@ -741,7 +742,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: JobWizardComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         existingJob: this.job.configuration
       },
       nzFooter: null,
@@ -938,7 +939,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       return this.job.configuration.executable.jobArguments;
     } else if (type === 'env') {
       return this.job.configuration.executable.env;
-    } else{
+    } else {
       return [];
     }
   }
@@ -1002,7 +1003,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         data: data[type]
       },
       nzFooter: null,
@@ -1087,7 +1088,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: FacetEditorComponent,
       nzClassName: isList ? 'sm' : 'lg',
-      nzComponentParams: {
+      nzData: {
         data,
         isList,
         preferences: this.preferences

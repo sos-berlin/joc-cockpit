@@ -14,7 +14,7 @@ $shadow-key-umbra-opacity: 0.2;
 $shadow-key-penumbra-opacity: 0.14;
 $shadow-ambient-shadow-opacity: 0.12;
 $shadow: 0 1px 3px 0 rgba(0, 0, 0, $shadow-key-umbra-opacity), 0 1px 1px 0 rgba(0, 0, 0, $shadow-key-penumbra-opacity),
-  0 2px 1px -1px rgba(0, 0, 0, $shadow-ambient-shadow-opacity);
+0 2px 1px -1px rgba(0, 0, 0, $shadow-ambient-shadow-opacity);
 
 .ngx-charts-tooltip-content {
   position: fixed;

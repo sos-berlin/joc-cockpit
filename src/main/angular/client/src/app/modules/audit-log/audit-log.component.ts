@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subject, Subscription} from 'rxjs';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {isEmpty, clone} from 'underscore';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {clone, isEmpty} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {takeUntil} from 'rxjs/operators';
 import {ToastrService} from 'ngx-toastr';
@@ -12,18 +12,19 @@ import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
-import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
+import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 import {AddBlocklistModalComponent} from '../admin/blocklist/blocklist.component';
 
 @Component({
-  selector: 'app-filter-content',
+  selector: 'app-filter-log-content',
   templateUrl: './filter-dialog.html'
 })
-export class FilterModalComponent implements OnInit {
-  @Input() allFilter;
-  @Input() new;
-  @Input() edit;
-  @Input() filter;
+export class FilterModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  allFilter: any;
+  new = false;
+  edit: any;
+  filter: any;
 
   schedulerIds: any = {};
   preferences: any = {};
@@ -34,6 +35,10 @@ export class FilterModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.allFilter = this.modalData.allFilter;
+    this.new = this.modalData.new;
+    this.edit = this.modalData.edit;
+    this.filter = this.modalData.filter;
     this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
@@ -65,8 +70,7 @@ export class FilterModalComponent implements OnInit {
   selector: 'app-form-template',
   templateUrl: './form-template.html',
 })
-export class SearchComponent implements OnInit {
-
+export class SearchComponent {
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
@@ -107,7 +111,7 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    if(this.filter.name){
+    if (this.filter.name) {
       this.existingName = this.coreService.clone(this.filter.name);
     }
   }
@@ -199,7 +203,7 @@ export class SearchComponent implements OnInit {
   selector: 'app-audit-log',
   templateUrl: './audit-log.component.html'
 })
-export class AuditLogComponent implements OnInit, OnDestroy {
+export class AuditLogComponent {
   objectType = 'AUDITLOG';
   schedulerIds: any = {};
   preferences: any = {};
@@ -626,11 +630,11 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   /* ----------------------Action --------------------- */
-  addBlockedAccounts(obj) {
-    const modal = this.modal.create({
+  addBlockedAccounts(obj: any) {
+    this.modal.create({
       nzTitle: undefined,
       nzContent: AddBlocklistModalComponent,
-      nzComponentParams: {
+      nzData: {
         obj
       },
       nzFooter: null,
@@ -690,7 +694,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
           auditLogId: auditLog.id,
           controllerId: (!auditLog.controllerId || auditLog.controllerId === '-') ? this.schedulerIds.selected : auditLog.controllerId
         }
-      });
+      }).then();
     }
   }
 
@@ -905,7 +909,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           permission: this.permission,
           allFilter: this.filterList,
           new: true
@@ -922,7 +926,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: EditFilterModalComponent,
-      nzComponentParams: {
+      nzData: {
         filterList: this.filterList,
         favorite: this.savedFilter.favorite,
         permission: this.permission,
@@ -997,7 +1001,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
           nzTitle: undefined,
           nzContent: FilterModalComponent,
           nzClassName: 'lg',
-          nzComponentParams: {
+          nzData: {
             permission: this.permission,
             allFilter: this.filterList,
             filter: filterObj,

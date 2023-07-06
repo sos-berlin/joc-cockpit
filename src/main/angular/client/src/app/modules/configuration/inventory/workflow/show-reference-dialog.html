@@ -2,14 +2,14 @@
   <h4 class="modal-title">
     <span class="drag-text" translate>workflow.label.references</span>
   </h4>
-  <button type="button" class="close" aria-label="Close"
-          (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close"
+          type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 
 <div class="modal-body p-a">
-  <div class="form-group row" *ngIf="type==='FILEORDERSOURCE'">
+  <div *ngIf="type==='FILEORDERSOURCE'" class="form-group row">
     <label class="col-md-12 _600">{{'inventory.label.fileOrderSources' | translate}}:</label>
     <div class="col-md-12 m-t-sm">
       <div class="table-responsive">
@@ -34,7 +34,7 @@
           <tr *ngFor="let item of data.fileOrderSources">
             <td>
               <i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
-                &nbsp;{{item.path}}
+              &nbsp;{{item.path}}
             </td>
             <td>
               <span>{{item.agentName}}</span>
@@ -51,15 +51,15 @@
       </div>
     </div>
   </div>
-  <div class="form-group row" *ngIf="type==='SCHEDULE'">
+  <div *ngIf="type==='SCHEDULE'" class="form-group row">
     <label class="col-md-12 _600">{{'inventory.label.orders' | translate}}:</label>
     <div class="col-md-12 m-t-sm">
-      <div class="p-l" *ngFor="let item of data.schedules">
+      <div *ngFor="let item of data.schedules" class="p-l">
         <div>
           <i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
           &nbsp;{{item.path}}
         </div>
-        <div class="table-responsive m-t-sm" *ngIf="item.calendars">
+        <div *ngIf="item.calendars" class="table-responsive m-t-sm">
           <table class="table table-hover ">
             <thead>
             <tr>
@@ -101,16 +101,16 @@
       </div>
     </div>
   </div>
-  <div class="form-group row" *ngIf="type==='WORKFLOW'">
+  <div *ngIf="type==='WORKFLOW'" class="form-group row">
     <label class="col-md-12 _600">{{'inventory.label.workflows' | translate}}:</label>
     <div class="col-md-12 m-t-sm">
-      <div class="p-l" *ngFor="let item of data.workflows">
+      <div *ngFor="let item of data.workflows" class="p-l">
         <i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
-          &nbsp;{{item.path}}
+        &nbsp;{{item.path}}
       </div>
     </div>
   </div>
-  <div class="form-group row" *ngIf="!data.fileOrderSources && !data.schedules && !data.workflows">
+  <div *ngIf="!data.fileOrderSources && !data.schedules && !data.workflows" class="form-group row">
     <div class="col-md-12 m-t-xs text-center">
       <i>
         <nz-spin nzSimple></nz-spin>
@@ -119,8 +119,8 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-grey btn-sm"
-          (click)="activeModal.destroy()" translate>
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
+          translate type="button">
     common.button.close
   </button>
 </div>

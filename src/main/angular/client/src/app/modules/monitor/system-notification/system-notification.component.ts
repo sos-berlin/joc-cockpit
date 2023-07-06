@@ -15,7 +15,7 @@ import {ExcelService} from "../../../services/excel.service";
   selector: 'app-system-notification',
   templateUrl: './system-notification.component.html'
 })
-export class SystemNotificationComponent implements OnInit, OnDestroy {
+export class SystemNotificationComponent {
   @Input() permission: any;
   @Input() preferences: any = {};
   @Input() filters: any = {};
@@ -52,7 +52,7 @@ export class SystemNotificationComponent implements OnInit, OnDestroy {
           this.getData();
         } else if (res === 'ACKNOWLEDGE') {
           this.acknowledge(null);
-        } else if(res == 'EXPORT'){
+        } else if (res == 'EXPORT') {
           this.exportXLS();
         }
       }
@@ -77,7 +77,7 @@ export class SystemNotificationComponent implements OnInit, OnDestroy {
     this.pendingHTTPRequests$.complete();
   }
 
-  refresh(args): void {
+  refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].objectType === 'MONITORINGNOTIFICATION') {
@@ -161,14 +161,14 @@ export class SystemNotificationComponent implements OnInit, OnDestroy {
     }
   }
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.filters.filter.currentPage = $event;
     if (this.filters.mapOfCheckedId.size !== this.totalNotification) {
       this.resetCheckBox();
     }
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.filters.filter.entryPerPage = $event;
     if (this.filters.mapOfCheckedId.size !== this.totalNotification) {
       if (this.object.checked) {

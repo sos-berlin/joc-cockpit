@@ -2,11 +2,11 @@
   <h4 class="modal-title">
     <span class="drag-text" translate>workflow.label.scriptEditor</span>
   </h4>
-  <a class="max-btn" appMaximum [codeMirror]="codeMirror">
+  <a [codeMirror]="codeMirror" appMaximum class="max-btn">
     <i class="fa fa-window-maximize"></i>
   </a>
-  <button type="button" class="close" aria-label="Close"
-          (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close"
+          type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -17,17 +17,17 @@
         <div class="inline">
           <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
             <li class="nav-item" nz-tooltip="Ctrl-F">
-              <a class="nav-link" (click)="execCommand('find')">
+              <a (click)="execCommand('find')" class="nav-link">
                 <span class="nav-text" translate>workflow.button.find</span>
               </a>
             </li>
             <li class="nav-item" nz-tooltip="Ctrl-G">
-              <a class="nav-link" (click)="execCommand('findNext')">
+              <a (click)="execCommand('findNext')" class="nav-link">
                 <span class="nav-text" translate>workflow.button.findNext</span>
               </a>
             </li>
             <li class="nav-item" nz-tooltip="Shift-Ctrl-G">
-              <a class="nav-link" (click)="execCommand('findPrev');">
+              <a (click)="execCommand('findPrev');" class="nav-link">
                 <span class="nav-text" translate>workflow.button.findPrevious</span>
               </a>
             </li>
@@ -35,12 +35,12 @@
               <span class="separator"></span>
             </li>
             <li class="nav-item" nz-tooltip="Shift-Ctrl-F">
-              <a class="nav-link" (click)="execCommand('replace')">
+              <a (click)="execCommand('replace')" class="nav-link">
                 <span class="nav-text" translate>workflow.button.replace</span>
               </a>
             </li>
             <li class="nav-item" nz-tooltip="Shift-Ctrl-R">
-              <a class="nav-link" (click)="execCommand('replaceAll')">
+              <a (click)="execCommand('replaceAll')" class="nav-link">
                 <span class="nav-text" translate>workflow.button.replaceAll</span>
               </a>
             </li>
@@ -48,7 +48,7 @@
               <span class="separator"></span>
             </li>
             <li class="nav-item" nz-tooltip="Alt-G">
-              <a class="nav-link" (click)="execCommand('jumpToLine');">
+              <a (click)="execCommand('jumpToLine');" class="nav-link">
                 <span class="nav-text" translate>workflow.button.jumpToLine</span>
               </a>
             </li>
@@ -56,12 +56,12 @@
               <span class="separator"></span>
             </li>
             <li class="nav-item" nz-tooltip="Ctrl-Z">
-              <a class="nav-link" (click)="execCommand('undo');">
+              <a (click)="execCommand('undo');" class="nav-link">
                 <span class="nav-text" translate>workflow.button.undo</span>
               </a>
             </li>
             <li class="nav-item" nz-tooltip="Ctrl-Y">
-              <a class="nav-link" (click)="execCommand('redo');">
+              <a (click)="execCommand('redo');" class="nav-link">
                 <span class="nav-text" translate>workflow.button.redo</span>
               </a>
             </li>
@@ -69,12 +69,13 @@
         </div>
       </div>
       <div class="col-md-12">
-        <div id="show-tree-editor" *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" style="min-width: 150px;">
-          <app-search-input [nodes]="scriptTree" [type]="'INCLUDESCRIPT'" (onSelect)="checkExpectNoticeExp($event)" (onBlur)="onBlur($event)"></app-search-input>
+        <div *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" id="show-tree-editor" style="min-width: 150px;">
+          <app-search-input (onBlur)="onBlur($event)" (onSelect)="checkExpectNoticeExp($event)" [nodes]="scriptTree"
+                            [type]="'INCLUDESCRIPT'"></app-search-input>
         </div>
-        <div id="resizable" class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}">
-          <ngx-codemirror [appAutofocus]="true" required #codeMirror
-                          #cm="ngModel" name="cm" [(ngModel)]="scriptObj.data" [options]="cmOption"
+        <div [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}" class="b-a" id="resizable">
+          <ngx-codemirror #cm="ngModel" #codeMirror [(ngModel)]="scriptObj.data"
+                          [appAutofocus]="true" [options]="cmOption" name="cm" required
           ></ngx-codemirror>
           <div class="rg-right" style="background: transparent; margin-right: -16px"><span style="top:48%"></span></div>
           <div class="rg-bottom" style="bottom: -16px;background: transparent"><span></span></div>
@@ -90,11 +91,11 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary btn-sm" *ngIf="!disabled" [disabled]="!myForm.form.valid" translate>
+    <button *ngIf="!disabled" [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" translate type="submit">
       common.button.submit
     </button>
-    <button type="button" class="btn btn-grey btn-sm"
-            (click)="activeModal.destroy()" translate>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
+            translate type="button">
       common.button.cancel
     </button>
   </div>

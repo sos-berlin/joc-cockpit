@@ -1,5 +1,5 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {Component, ElementRef, inject, ViewChild} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {WorkflowService} from '../../services/workflow.service';
 import {CoreService} from '../../services/core.service';
 
@@ -19,12 +19,13 @@ declare const $: any;
   templateUrl: './graphical-view-modal.component.html',
   styleUrls: ['./graphical-view-modal.component.css']
 })
-export class GraphicalViewModalComponent implements OnInit {
-  @Input() workflow: any;
-  @Input() positions: any;
-  @Input() operation = '';
-  @Input() startNode = '';
-  @Input() data: any;
+export class GraphicalViewModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  workflow: any;
+  positions: any;
+  operation = '';
+  startNode = '';
+  data: any;
   isLoading = true;
   position: any;
   preferences: any = {};
@@ -59,6 +60,11 @@ export class GraphicalViewModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.workflow = this.modalData.workflow;
+    this.positions = this.modalData.positions;
+    this.operation = this.modalData.operation;
+    this.startNode = this.modalData.startNode;
+    this.data = this.modalData.data;
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.workFlowJson = this.coreService.clone(this.workflow);
     this.coreService.convertTryToRetry(this.workFlowJson, this.positions, this.startNode);
@@ -68,27 +74,7 @@ export class GraphicalViewModalComponent implements OnInit {
     this.createEditor();
     const dom = $('.graph2 #graph');
     let ht = 'calc(100vh - 150px)';
-    dom.slimscroll({height: ht});
-    /**
-     * Changes the zoom on mouseWheel events
-     */
-    $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
-      if (this.graph) {
-        if (event.ctrlKey) {
-          event.preventDefault();
-          if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-            this.graph.zoomIn();
-          } else {
-            this.graph.zoomOut();
-          }
-        } else {
-          const bounds = this.graph.getGraphBounds();
-          if (bounds.y < -0.05 && bounds.height > dom.height()) {
-            this.graph.center(true, true, 0.5, -0.02);
-          }
-        }
-      }
-    });
+    this.coreService.slimscrollFunc(dom, ht, this.graph);
   }
 
   onSubmit(): void {
@@ -139,7 +125,7 @@ export class GraphicalViewModalComponent implements OnInit {
         new mxOutline(this.graph, this.outlineContainer.nativeElement);
         setTimeout(() => {
           this.createWorkflowGraph();
-        },0);
+        }, 0);
       }
     } catch (e) {
       mxUtils.alert('Cannot start application: ' + e.message);
@@ -259,7 +245,7 @@ export class GraphicalViewModalComponent implements OnInit {
   private updateWorkflow(): void {
     this.graph.getModel().beginUpdate();
     try {
-     // this.graph.removeCells(this.graph.getChildCells(this.graph.getDefaultParent()), true);
+      // this.graph.removeCells(this.graph.getChildCells(this.graph.getDefaultParent()), true);
       const mapObj = {nodeMap: new Map(), graphView: true, vertixMap: new Map(), useString: true};
       this.workflowService.createWorkflow(this.workFlowJson, {graph: this.graph}, mapObj);
 

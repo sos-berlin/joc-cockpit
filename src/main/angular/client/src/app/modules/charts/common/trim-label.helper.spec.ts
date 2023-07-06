@@ -1,4 +1,4 @@
-import { trimLabel } from './trim-label.helper';
+import {trimLabel} from './trim-label.helper';
 
 describe('trimLabel', () => {
   it('converts a number to a string when passed', () => {
