@@ -8,8 +8,8 @@ import {
   Output,
   EventEmitter
 } from '@angular/core';
-import { formatLabel } from '../common/label.helper';
-import { BarOrientation } from '../common/types/bar-orientation.enum';
+import {formatLabel} from '../common/label.helper';
+import {BarOrientation} from '../common/types/bar-orientation.enum';
 
 @Component({
   selector: 'g[ngx-charts-bar-label]',
@@ -59,7 +59,7 @@ export class BarLabelComponent implements OnChanges {
   getSize(): any {
     const h = this.element.getBoundingClientRect().height;
     const w = this.element.getBoundingClientRect().width;
-    return { height: h, width: w, negative: this.value < 0 };
+    return {height: h, width: w, negative: this.value < 0};
   }
 
   ngAfterViewInit() {

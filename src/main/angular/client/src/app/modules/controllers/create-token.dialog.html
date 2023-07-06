@@ -2,37 +2,42 @@
   <h4 class="modal-title">
     <span translate>agent.button.createToken</span>
     <i *ngIf="agent || controllerId">:</i>
-    <i class="text-muted p-l-xs text" *ngIf="!agent">{{controllerId}}</i>
-    <i class="text-muted p-l-xs text" *ngIf="agent">{{agent.agentId}}</i>
+    <i *ngIf="!agent" class="text-muted p-l-xs text">{{controllerId}}</i>
+    <i *ngIf="agent" class="text-muted p-l-xs text">{{agent.agentId}}</i>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
-    <div class="hide" [ngClass]="{'show': display}">
+    <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
     </div>
     <div class="form-group row">
       <label class="col-sm-3" translate>common.label.startTime</label>
       <div class="col-md-8">
-        <nz-radio-group name="at" [(ngModel)]="token.at">
+        <nz-radio-group [(ngModel)]="token.at" name="at">
           <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
           <label nz-radio nzValue="relative"><span translate>common.label.relativeDate</span></label>
         </nz-radio-group>
       </div>
     </div>
-    <div class="form-group row" >
+    <div class="form-group row">
       <label class="col-sm-3 form-control-label" translate>agent.label.validUntil
-       <sup class="text-danger text-sm">*</sup>
+        <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-sm-8" *ngIf="token.at === 'date'" [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}">
-        <nz-date-picker [nzAutoFocus]="true" [nzDisabledDate]="disabledDate" [nzFormat]="dateFormat" name="date" #date="ngModel" required [(ngModel)]="token.fromDate"></nz-date-picker>
+      <div *ngIf="token.at === 'date'" [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}"
+           class="col-sm-8">
+        <nz-date-picker #date="ngModel" [(ngModel)]="token.fromDate" [nzAutoFocus]="true" [nzDisabledDate]="disabledDate"
+                        [nzFormat]="dateFormat" name="date" required></nz-date-picker>
         <div class="time-picker">
-          <input timevalidator validTimeReqex [disabled]="!token.fromDate" type="text" #time="ngModel" class="form-control"
-              name="fromTime" [(ngModel)]="token.fromTime" (ngModelChange)="selectTime(token.fromTime, true)" placeholder="HH:MM:SS">
-          <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)" [(ngModel)]="token.fromTime1" name="fromTimeIcon"></nz-time-picker>
+          <input #time="ngModel" (ngModelChange)="selectTime(token.fromTime, true)" [(ngModel)]="token.fromTime" [disabled]="!token.fromDate" class="form-control"
+                 name="fromTime"
+                 placeholder="HH:MM:SS" timevalidator type="text"
+                 validTimeReqex>
+          <nz-time-picker (ngModelChange)="selectTime($event)" [(ngModel)]="token.fromTime1" [nzAllowEmpty]="false"
+                          name="fromTimeIcon"></nz-time-picker>
         </div>
         <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
           <div *ngIf="date.errors.required">
@@ -40,11 +45,12 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-8" *ngIf="token.at !== 'date'" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
-        <input relativeDateValidator type="text" #time="ngModel" class="form-control" required
-               name="atTime" [(ngModel)]="token.atTime" placeholder="+1(h|d|w|M|y)">
+      <div *ngIf="token.at !== 'date'" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}"
+           class="col-sm-8">
+        <input #time="ngModel" [(ngModel)]="token.atTime" class="form-control" name="atTime" placeholder="+1(h|d|w|M|y)"
+               relativeDateValidator required type="text">
         <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
-          <div translate *ngIf="!time.valid && !time.errors.required">common.message.invalid</div>
+          <div *ngIf="!time.valid && !time.errors.required" translate>common.message.invalid</div>
           <div *ngIf="time.errors.required">
             <div translate>common.message.requiredError</div>
           </div>
@@ -53,21 +59,22 @@
     </div>
     <div class="form-group row">
       <div class="col-sm-3 form-control-label" translate>common.label.timeZone
-       <sup class="text-danger text-sm">*</sup>
+        <sup class="text-danger text-sm">*</sup>
       </div>
       <div class="col-sm-8">
-        <nz-select required nzShowSearch name="timeZone" [(ngModel)]="token.timezone">
-          <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
+        <nz-select [(ngModel)]="token.timezone" name="timeZone" nzShowSearch required>
+          <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
         </nz-select>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm">
+    <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+            type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

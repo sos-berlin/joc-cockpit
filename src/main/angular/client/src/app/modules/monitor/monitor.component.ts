@@ -7,7 +7,7 @@ import {CoreService} from '../../services/core.service';
   selector: 'app-monitor',
   templateUrl: './monitor.component.html'
 })
-export class MonitorComponent implements OnInit, OnDestroy {
+export class MonitorComponent {
   monitor: Array<any> = [];
   schedulerIds: any = {};
   preferences: any = {};
@@ -107,7 +107,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('ACKNOWLEDGE');
   }
 
-  exportToExcel(){
+  exportToExcel() {
     this.dataService.announceFunction('EXPORT');
   }
 }

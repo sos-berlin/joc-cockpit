@@ -11,13 +11,13 @@ import {
   ComponentRef
 } from '@angular/core';
 
-import { PlacementTypes } from './position';
-import { StyleTypes } from './style.type';
-import { ShowTypes } from './show.type';
+import {PlacementTypes} from './position';
+import {StyleTypes} from './style.type';
+import {ShowTypes} from './show.type';
 
-import { TooltipService } from './tooltip.service';
+import {TooltipService} from './tooltip.service';
 
-@Directive({ selector: '[ngx-tooltip]' })
+@Directive({selector: '[ngx-tooltip]'})
 export class TooltipDirective implements OnDestroy {
   @Input() tooltipCssClass: string = '';
   @Input() tooltipTitle?: string;
@@ -58,7 +58,8 @@ export class TooltipDirective implements OnDestroy {
     private tooltipService: TooltipService,
     private viewContainerRef: ViewContainerRef,
     private renderer: Renderer2
-  ) {}
+  ) {
+  }
 
   ngOnDestroy(): void {
     this.hideTooltip(true);

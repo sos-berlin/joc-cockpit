@@ -2,40 +2,42 @@
   <ng-template #contentTemplate>
     <div class="p-l-sm">
       <span translate> order.label.state </span>:
-      <span class="_600" [ngClass]="coreService.getColor(order.state.severity, 'text')"> {{order.state._text |  translate}}</span>
-      <span class="_600" *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'text')">/{{order.marked._text | translate}}</span>
+      <span [ngClass]="coreService.getColor(order.state.severity, 'text')"
+            class="_600"> {{order.state._text |  translate}}</span>
+      <span *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'text')"
+            class="_600">/{{order.marked._text | translate}}</span>
     </div>
-    <div class="p-l-sm" *ngIf="order.state._reason">
+    <div *ngIf="order.state._reason" class="p-l-sm">
       <span translate> common.label.comment </span>:
       <span class="_600"> {{order.state._reason}}</span>
     </div>
-    <div class="p-l-sm" *ngIf="order.question">
+    <div *ngIf="order.question" class="p-l-sm">
       <span translate> workflow.label.prompt </span>:
       <span class="_600"> {{order.question}}</span>
     </div>
-    <div class="p-l-sm" *ngIf="order.obstacles && order.obstacles.length > 0">
+    <div *ngIf="order.obstacles && order.obstacles.length > 0" class="p-l-sm">
       <div *ngFor="let obstacle of order.obstacles">
         <span translate> {{obstacle.type | translate}} </span>
-        <span class="_600" *ngIf="obstacle.until">:&nbsp;{{obstacle.until | stringToDate}}</span>
+        <span *ngIf="obstacle.until" class="_600">:&nbsp;{{obstacle.until | stringToDate}}</span>
       </div>
     </div>
-    <div class="p-l-sm" *ngIf="order.lastOutcome">
+    <div *ngIf="order.lastOutcome" class="p-l-sm">
       <span translate> order.label.lastOutcome </span>:
-      <span class="_600" >{{order.lastOutcome.TYPE}}</span>
+      <span class="_600">{{order.lastOutcome.TYPE}}</span>
     </div>
-    <div class="p-l-sm" *ngIf="!order.cyclicOrder">
+    <div *ngIf="!order.cyclicOrder" class="p-l-sm">
       <span translate> order.label.scheduledFor </span>:
-      <span class="_600" *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
-      <span class="_600" *ngIf="order.scheduledNever" translate>common.label.never</span>
+      <span *ngIf="!order.scheduledNever" class="_600">{{order.scheduledFor | stringToDate}}</span>
+      <span *ngIf="order.scheduledNever" class="_600" translate>common.label.never</span>
     </div>
-    <div class="p-l-sm" *ngIf="order.expectedNotices">
+    <div *ngIf="order.expectedNotices" class="p-l-sm">
       <div class="_600 m-b-xxs">{{'order.label.expectedNotices' | translate}} :</div>
-      <div class="p-l-sm" *ngFor="let notice of order.expectedNotices">
+      <div *ngFor="let notice of order.expectedNotices" class="p-l-sm">
         {{notice.boardName}}
       </div>
     </div>
 
-    <div class="m-a-sm m-t-0" *ngIf="order.cyclicOrder">
+    <div *ngIf="order.cyclicOrder" class="m-a-sm m-t-0">
       <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
       <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
       {{order.cyclicOrder.firstStart | stringToDate}}
@@ -46,7 +48,7 @@
       <span class="_600 p-l-sm" translate>order.label.orders</span>:
       {{order.cyclicOrder.count}}
     </div>
-    <div class="m-a-sm m-t-0" *ngIf="order.cycleState">
+    <div *ngIf="order.cycleState" class="m-a-sm m-t-0">
       <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
       <span *ngIf="order.cycleState.since">
         <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
@@ -62,38 +64,50 @@
     </div>
   </ng-template>
   <div class="d-inline-block m-r">
-    <app-order-action [order]="order" [schedulerId]="schedulerId" [permission]="permission" (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)"
-                      [preferences]="preferences"></app-order-action>
-    <span [nz-tooltip]="contentTemplate" (mouseover)="getObstacles(order)" style="position: relative;top:2px">
-      <i *ngIf="!order.marked" class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.state.severity, 'text')"></i>
-      <span *ngIf="order.marked" class="half-circle half-circle-left" [ngClass]="coreService.getColor(order.state.severity, 'bg')"></span>
-      <span *ngIf="order.marked" class="half-circle half-circle-right" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"></span>
-      <a *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')" class="text-hover-primary p-l-xs p-r-sm" (click)="showLog(order)">{{order.orderId}}</a>
-      <span class="p-l-xs p-r-sm" *ngIf="!order.state || (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING')">{{order.orderId}}</span>
-      <i *ngIf="order.cyclicOrder" class="fa fa-repeat p-l-xs p-r-xs" aria-hidden="true"></i>
-      <i class="text-sm text-muted" *ngIf="order.scheduledFor && !order.scheduledNever">{{order.scheduledFor | stringToDate}}</i>
-      <i class="text-sm text-muted" *ngIf="order.scheduledNever" translate>common.label.never</i>
+    <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)" [order]="order"
+                      [permission]="permission" [preferences]="preferences"
+                      [schedulerId]="schedulerId"></app-order-action>
+    <span (mouseover)="getObstacles(order)" [nz-tooltip]="contentTemplate" style="position: relative;top:2px">
+      <i *ngIf="!order.marked" [ngClass]="coreService.getColor(order.state.severity, 'text')"
+         class="fa fa-circle p-r-s"></i>
+      <span *ngIf="order.marked" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
+            class="half-circle half-circle-left"></span>
+      <span *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"
+            class="half-circle half-circle-right"></span>
+      <a (click)="showLog(order)"
+         *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')" class="text-hover-primary p-l-xs p-r-sm">{{order.orderId}}</a>
+      <span *ngIf="!order.state || (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING')"
+            class="p-l-xs p-r-sm">{{order.orderId}}</span>
+      <i *ngIf="order.cyclicOrder" aria-hidden="true" class="fa fa-repeat p-l-xs p-r-xs"></i>
+      <i *ngIf="order.scheduledFor && !order.scheduledNever"
+         class="text-sm text-muted">{{order.scheduledFor | stringToDate}}</i>
+      <i *ngIf="order.scheduledNever" class="text-sm text-muted" translate>common.label.never</i>
     </span>
   </div>
 </ng-template>
 <div *ngFor="let instruction of configuration.instructions">
   <ul class="m-b-0">
-    <li >
-      <a class="hover"
-        *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock' || instruction.TYPE === 'Options' || instruction.TYPE === 'StickySubagent' || instruction.TYPE === 'ConsumeNotices'">
-        <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE !== 'If' && instruction.TYPE !== 'Cycle'">
-          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
+    <li>
+      <a *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock' || instruction.TYPE === 'Options' || instruction.TYPE === 'StickySubagent' || instruction.TYPE === 'ConsumeNotices'"
+         class="hover">
+        <div *ngIf="instruction.TYPE !== 'If' && instruction.TYPE !== 'Cycle'" class="btn-group dropdown"
+             style="margin-left: -10px">
+          <button [nzDropdownMenu]="menu" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
                   type="button">
             <i class="fa fa-ellipsis-h"></i>
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
-              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))" (click)="stop(instruction);">
+              <li (click)="stop(instruction);"
+                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
                 <a>
                   <span translate>workflow.button.stop</span>
                 </a>
               </li>
-              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))" (click)="unstop(instruction);">
+              <li (click)="unstop(instruction);"
+                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
                 <a>
                   <span translate>workflow.button.unstop</span>
                 </a>
@@ -101,19 +115,24 @@
             </ul>
           </nz-dropdown-menu>
         </div>
-        <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'">
-          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
+        <div *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'" class="btn-group dropdown"
+             style="margin-left: -10px">
+          <button [nzDropdownMenu]="menu" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
                   type="button">
             <i class="fa fa-ellipsis-h"></i>
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
-              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))" (click)="stop(instruction);">
+              <li (click)="stop(instruction);"
+                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
                 <a>
                   <span translate>workflow.button.stop</span>
                 </a>
               </li>
-              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))" (click)="unstop(instruction);">
+              <li (click)="unstop(instruction);"
+                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
                 <a>
                   <span translate>workflow.button.unstop</span>
                 </a>
@@ -126,89 +145,108 @@
             </ul>
           </nz-dropdown-menu>
         </div>
-        <i (click)="collapse(instruction)" class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.show)}"></i>
+        <i (click)="collapse(instruction)" [ngClass]="{'fa-minus' : (instruction.show)}" class="fa fa-plus pr-2"></i>
         <span class="_600">
           <span *ngIf="instruction.TYPE !== 'If' && instruction.TYPE !== 'Cycle'">{{instruction.TYPE}}</span>
-          <a class="cursor" (click)="showConfiguration(instruction);" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'">{{instruction.TYPE}}</a><span *ngIf="instruction.TYPE === 'Lock'">:</span>
-          <span class="p-l-xs  _400" *ngIf="instruction.label">(</span>
-          <i class="text-muted _400" *ngIf="instruction.label">{{instruction.label}}</i>
-          <span class="p-r-xs _400" *ngIf="instruction.label">)</span>
-          <span class="text-muted" *ngIf="instruction.TYPE === 'Lock'">
-            <span class="text-muted" *ngFor="let item of instruction.demands">
-              <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(item.lockName, 'LOCK');$event.stopPropagation();"
+          <a (click)="showConfiguration(instruction);" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'"
+             class="cursor">{{instruction.TYPE}}</a><span
+          *ngIf="instruction.TYPE === 'Lock'">:</span>
+          <span *ngIf="instruction.label" class="p-l-xs  _400">(</span>
+          <i *ngIf="instruction.label" class="text-muted _400">{{instruction.label}}</i>
+          <span *ngIf="instruction.label" class="p-r-xs _400">)</span>
+          <span *ngIf="instruction.TYPE === 'Lock'" class="text-muted">
+            <span *ngFor="let item of instruction.demands" class="text-muted">
+              <i (click)="coreService.navToInventoryTab(item.lockName, 'LOCK');$event.stopPropagation();"
+                 *ngIf="permission.joc && permission.joc.inventory.view"
                  class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
-              <a class="text-hover-primary" [nz-tooltip]="lockItemTemplate" (click)="coreService.showLock(item.lockName);$event.stopPropagation();" >{{item.lockName}}</a>
+              <a (click)="coreService.showLock(item.lockName);$event.stopPropagation();" [nz-tooltip]="lockItemTemplate"
+                 class="text-hover-primary">{{item.lockName}}</a>
               <ng-template #lockItemTemplate>
                 <div>
                   <div class="p-l-sm">
                     <span translate> workflow.label.count </span>:
-                    <span class="_600" >{{item.count}}</span>
+                    <span class="_600">{{item.count}}</span>
                   </div>
                 </div>
               </ng-template>
             </span>
           </span>
-          <span class="text-muted" *ngIf="(instruction.TYPE === 'ConsumeNotices') && instruction.noticeBoardNames"
-          [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"></span>
+          <span *ngIf="(instruction.TYPE === 'ConsumeNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"
+                class="text-muted"></span>
         </span>
-        <i class="p-l-xxs p-r-xs" *ngIf="instruction.state && instruction.state._text">-</i>
-        <span *ngIf="instruction.state && instruction.state._text" class="label" [ngClass]="coreService.getColor(instruction.state.severity, 'bg')">{{instruction.state._text | translate}}</span>
+        <i *ngIf="instruction.state && instruction.state._text" class="p-l-xxs p-r-xs">-</i>
+        <span *ngIf="instruction.state && instruction.state._text" [ngClass]="coreService.getColor(instruction.state.severity, 'bg')"
+              class="label">{{instruction.state._text | translate}}</span>
 
         <span class="expand-collapse-btn">
-          <i class="fa fa-lg fa-angle-double-down" (click)="expandNode(instruction)"></i>
-          <i class="fa fa-lg fa-angle-double-up p-l-xs" (click)="collapseNode(instruction)"></i>
+          <i (click)="expandNode(instruction)" class="fa fa-lg fa-angle-double-down"></i>
+          <i (click)="collapseNode(instruction)" class="fa fa-lg fa-angle-double-up p-l-xs"></i>
         </span>
-        <span class="m-l" *ngIf="instruction.orders && instruction.orders.length> 0">
-          <ng-template ngFor let-order [ngForOf]="instruction.orders | orderBy : 'scheduledFor': true | slice:0:3">
-            <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
+        <span *ngIf="instruction.orders && instruction.orders.length> 0" class="m-l">
+          <ng-template [ngForOf]="instruction.orders | orderBy : 'scheduledFor': true | slice:0:3" let-order ngFor>
+            <ng-container [ngTemplateOutletContext]="{ $implicit: order}"
+                          [ngTemplateOutlet]="itemTemplate"></ng-container>
           </ng-template>
-          <span class="remaining-order-count" (click)="showOrders(instruction)" *ngIf="instruction.orders.length > 3">
+          <span (click)="showOrders(instruction)" *ngIf="instruction.orders.length > 3" class="remaining-order-count">
             <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
             <span class="remaining-order-count-span">{{instruction.orders.length - 3}}</span>
           </span>
         </span>
-        <span class="order-count" (click)="showOrders(instruction)" *ngIf="instruction.orderCount > 0 && (!instruction.show && !expandAll)">{{instruction.orderCount}}</span>
+        <span (click)="showOrders(instruction)" *ngIf="instruction.orderCount > 0 && (!instruction.show && !expandAll)"
+              class="order-count">{{instruction.orderCount}}</span>
       </a>
       <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'AddOrder' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Break' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
-       || instruction.TYPE === 'PostNotices' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'ExpectNotices'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd'}">
-        <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'Job'">
-          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
+       || instruction.TYPE === 'PostNotices' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'ExpectNotices'"
+           [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd'}">
+        <div *ngIf="instruction.TYPE === 'Job'" class="btn-group dropdown" style="margin-left: -10px">
+          <button [nzDropdownMenu]="menu" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
                   type="button">
             <i class="fa fa-ellipsis-h"></i>
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
-              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))" (click)="skip(instruction);">
+              <li (click)="skip(instruction);"
+                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
                 <a>
                   <span translate>workflow.button.skip</span>
                 </a>
               </li>
-              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))" (click)="unskip(instruction);">
+              <li (click)="unskip(instruction);"
+                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
                 <a>
                   <span translate>workflow.button.unskip</span>
                 </a>
               </li>
-              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))" (click)="stop(instruction);">
+              <li (click)="stop(instruction);"
+                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
                 <a>
                   <span translate>workflow.button.stop</span>
                 </a>
               </li>
-              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))" (click)="unstop(instruction);">
+              <li (click)="unstop(instruction);"
+                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
                 <a>
                   <span translate>workflow.button.unstop</span>
                 </a>
               </li>
-              <li nz-menu-item (click)="showConfiguration(instruction);">
+              <li (click)="showConfiguration(instruction);" nz-menu-item>
                 <a>
                   <span translate>common.button.showConfiguration</span>
                 </a>
               </li>
-              <li nz-menu-item [nzDisabled]="!instruction.documentationName" (click)="coreService.showDocumentation(instruction.documentationName, preferences)">
+              <li (click)="coreService.showDocumentation(instruction.documentationName, preferences)" [nzDisabled]="!instruction.documentationName"
+                  nz-menu-item>
                 <a>
                   <span translate>common.button.viewDocumentation</span>
                 </a>
               </li>
-              <li nz-menu-item *ngIf="instruction.TYPE === 'Job' && permission.currentController && permission.currentController.orders.view" (click)="viewHistory(instruction)">
+              <li (click)="viewHistory(instruction)"
+                  *ngIf="instruction.TYPE === 'Job' && permission.currentController && permission.currentController.orders.view"
+                  nz-menu-item>
                 <a>
                   <span translate>common.button.showHistory</span>
                 </a>
@@ -216,19 +254,24 @@
             </ul>
           </nz-dropdown-menu>
         </div>
-        <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE !== 'Job' && instruction.TYPE !== 'ImplicitEnd'">
-          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
+        <div *ngIf="instruction.TYPE !== 'Job' && instruction.TYPE !== 'ImplicitEnd'" class="btn-group dropdown"
+             style="margin-left: -10px">
+          <button [nzDropdownMenu]="menu" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
                   type="button">
             <i class="fa fa-ellipsis-h"></i>
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
-              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))" (click)="stop(instruction);">
+              <li (click)="stop(instruction);"
+                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
                 <a>
                   <span translate>workflow.button.stop</span>
                 </a>
               </li>
-              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))" (click)="unstop(instruction);">
+              <li (click)="unstop(instruction);"
+                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
                 <a>
                   <span translate>workflow.button.unstop</span>
                 </a>
@@ -236,46 +279,59 @@
             </ul>
           </nz-dropdown-menu>
         </div>
-        <i *ngIf="instruction.TYPE === 'Job' && permission.currentController && permission.currentController.orders.view" (click)="viewHistory(instruction)" class="cursor fa fa-history p-l-xs p-r-xs"></i>
-        <i *ngIf="instruction.TYPE === 'Job' && instruction.documentationName" (click)="coreService.showDocumentation(instruction.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
-        <span class="cursor" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">
+        <i
+          (click)="viewHistory(instruction)"
+          *ngIf="instruction.TYPE === 'Job' && permission.currentController && permission.currentController.orders.view" class="cursor fa fa-history p-l-xs p-r-xs"></i>
+        <i (click)="coreService.showDocumentation(instruction.documentationName, preferences)"
+           *ngIf="instruction.TYPE === 'Job' && instruction.documentationName"
+           class="cursor fa fa-book p-l-xs p-r-xs"></i>
+        <span (click)="showConfiguration(instruction)" *ngIf="instruction.TYPE === 'Job'" class="cursor">
           {{instruction.jobName}}
         </span>
         <span *ngIf="instruction.TYPE === 'Job'">
-          - <span class="text-muted" [innerHTML]="jobs[instruction.jobName].title | stringToLink"></span>
-           <span class="p-l-xs  _400" *ngIf="instruction.label">(</span>
-           <i class="text-muted _400" *ngIf="instruction.label">{{instruction.label}}</i>
-           <span class="p-r-xs _400" *ngIf="instruction.label">)</span>
+          - <span [innerHTML]="jobs[instruction.jobName].title | stringToLink" class="text-muted"></span>
+           <span *ngIf="instruction.label" class="p-l-xs  _400">(</span>
+           <i *ngIf="instruction.label" class="text-muted _400">{{instruction.label}}</i>
+           <span *ngIf="instruction.label" class="p-r-xs _400">)</span>
         </span>
-        <span (click)="openWorkflowDependency(instruction);" [ngClass]="{'cursor' : (instruction.TYPE === 'PostNotices' || instruction.TYPE === 'AddOrder')}" *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
+        <span (click)="openWorkflowDependency(instruction);"
+              *ngIf="instruction.TYPE !== 'Job'"
+              [ngClass]="{'cursor' : (instruction.TYPE === 'PostNotices' || instruction.TYPE === 'AddOrder')}" [nz-tooltip]="instruction.question || instruction.message">
           {{instruction.TYPE | translate}}
-          <span class="p-l-xs  _400" *ngIf="instruction.label">(</span>
-           <i class="text-muted _400" *ngIf="instruction.label">{{instruction.label}}</i>
-           <span class="p-r-xs _400" *ngIf="instruction.label">)</span>
-          <span *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices' || instruction.TYPE === 'AddOrder')">: </span>
+          <span *ngIf="instruction.label" class="p-l-xs  _400">(</span>
+           <i *ngIf="instruction.label" class="text-muted _400">{{instruction.label}}</i>
+           <span *ngIf="instruction.label" class="p-r-xs _400">)</span>
+          <span
+            *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices' || instruction.TYPE === 'AddOrder')">: </span>
           <span *ngIf="instruction.TYPE === 'PostNotices' && instruction.noticeBoardNames">
-            <span class="text-muted" *ngFor="let board of instruction.noticeBoardNames">
-              <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(board, 'NOTICEBOARD');$event.stopPropagation();"
-                   class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
-              <a class="text-hover-primary" (click)="coreService.showBoard(board);$event.stopPropagation();" >{{board}}</a>
+            <span *ngFor="let board of instruction.noticeBoardNames" class="text-muted">
+              <i (click)="coreService.navToInventoryTab(board, 'NOTICEBOARD');$event.stopPropagation();"
+                 *ngIf="permission.joc && permission.joc.inventory.view"
+                 class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
+              <a (click)="coreService.showBoard(board);$event.stopPropagation();"
+                 class="text-hover-primary">{{board}}</a>
             </span>
           </span>
-          <span class="text-muted" *ngIf="(instruction.TYPE === 'ExpectNotices') && instruction.noticeBoardNames"
-                [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"></span>
-          <span class="text-muted" *ngIf="instruction.TYPE === 'AddOrder'">
-            <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(instruction.workflowName, 'WORKFLOW');$event.stopPropagation();"
+          <span *ngIf="(instruction.TYPE === 'ExpectNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"
+                class="text-muted"></span>
+          <span *ngIf="instruction.TYPE === 'AddOrder'" class="text-muted">
+            <i (click)="coreService.navToInventoryTab(instruction.workflowName, 'WORKFLOW');$event.stopPropagation();"
+               *ngIf="permission.joc && permission.joc.inventory.view"
                class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
-            <a class="text-hover-primary" (click)="coreService.showWorkflow(instruction.workflowName);$event.stopPropagation();" >{{instruction.workflowName}}</a>
+            <a (click)="coreService.showWorkflow(instruction.workflowName);$event.stopPropagation();"
+               class="text-hover-primary">{{instruction.workflowName}}</a>
           </span>
         </span>
 
-        <i class="p-l-xxs p-r-xs" *ngIf="instruction.state && instruction.state._text">-</i>
-        <span *ngIf="instruction.state && instruction.state._text" class="label" [ngClass]="coreService.getColor(instruction.state.severity, 'bg')">{{instruction.state._text | translate}}</span>
-        <span class="m-l-md" *ngIf="instruction.orders && instruction.orders.length> 0">
-         <ng-template ngFor let-order [ngForOf]="instruction.orders | orderBy : 'scheduledFor': true | slice:0:3">
-            <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
+        <i *ngIf="instruction.state && instruction.state._text" class="p-l-xxs p-r-xs">-</i>
+        <span *ngIf="instruction.state && instruction.state._text" [ngClass]="coreService.getColor(instruction.state.severity, 'bg')"
+              class="label">{{instruction.state._text | translate}}</span>
+        <span *ngIf="instruction.orders && instruction.orders.length> 0" class="m-l-md">
+         <ng-template [ngForOf]="instruction.orders | orderBy : 'scheduledFor': true | slice:0:3" let-order ngFor>
+            <ng-container [ngTemplateOutletContext]="{ $implicit: order}"
+                          [ngTemplateOutlet]="itemTemplate"></ng-container>
           </ng-template>
-          <span class="remaining-order-count" (click)="showOrders(instruction)" *ngIf="instruction.orders.length > 3">
+          <span (click)="showOrders(instruction)" *ngIf="instruction.orders.length > 3" class="remaining-order-count">
             <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
             <span class="remaining-order-count-span">{{instruction.orders.length - 3}}</span>
           </span>
@@ -283,14 +339,16 @@
       </div>
       <div *ngIf="instruction.TYPE === 'ForkListEnd' || instruction.TYPE === 'CycleEnd'" class="m-l-n-40">
         <span>
-          <span class="_600" *ngIf="instruction.TYPE === 'ForkListEnd'">{{'workflow.label.forkListEnd' | translate}}</span>
-          <span class="_600" *ngIf="instruction.TYPE === 'CycleEnd'">{{'workflow.label.cycleEnd' | translate}}</span>
+          <span *ngIf="instruction.TYPE === 'ForkListEnd'"
+                class="_600">{{'workflow.label.forkListEnd' | translate}}</span>
+          <span *ngIf="instruction.TYPE === 'CycleEnd'" class="_600">{{'workflow.label.cycleEnd' | translate}}</span>
         </span>
-        <span class="m-l-md" *ngIf="instruction.orders && instruction.orders.length> 0">
-         <ng-template ngFor let-order [ngForOf]="instruction.orders | orderBy : 'scheduledFor': true | slice:0:3">
-            <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
+        <span *ngIf="instruction.orders && instruction.orders.length> 0" class="m-l-md">
+         <ng-template [ngForOf]="instruction.orders | orderBy : 'scheduledFor': true | slice:0:3" let-order ngFor>
+            <ng-container [ngTemplateOutletContext]="{ $implicit: order}"
+                          [ngTemplateOutlet]="itemTemplate"></ng-container>
           </ng-template>
-          <span class="remaining-order-count" (click)="showOrders(instruction)" *ngIf="instruction.orders.length > 3">
+          <span (click)="showOrders(instruction)" *ngIf="instruction.orders.length > 3" class="remaining-order-count">
             <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
             <span class="remaining-order-count-span">{{instruction.orders.length - 3}}</span>
           </span>
@@ -299,92 +357,143 @@
       <div *ngIf="instruction.TYPE === 'Fork' && (instruction.show)">
         <div *ngFor="let branch of instruction.branches">
           <div class="p-l-md">
-            <a class="m-l" (click)="collapse(branch)">
-              <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (branch.show)}"></i>
+            <a (click)="collapse(branch)" class="m-l">
+              <i [ngClass]="{'fa-minus' : (branch.show)}" class="fa fa-plus pr-2"></i>
               <i class="_600">{{branch.id}}</i>
             </a>
-            <span class="m-l-md" *ngIf="branch.orders && branch.orders.length> 0">
-              <ng-template ngFor let-order [ngForOf]="branch.orders | orderBy : 'scheduledFor': true | slice:0:3">
-                  <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
+            <span *ngIf="branch.orders && branch.orders.length> 0" class="m-l-md">
+              <ng-template [ngForOf]="branch.orders | orderBy : 'scheduledFor': true | slice:0:3" let-order ngFor>
+                  <ng-container [ngTemplateOutletContext]="{ $implicit: order}"
+                                [ngTemplateOutlet]="itemTemplate"></ng-container>
               </ng-template>
-              <span class="remaining-order-count" (click)="showOrders(branch)" *ngIf="branch.orders.length > 3">
+              <span (click)="showOrders(branch)" *ngIf="branch.orders.length > 3" class="remaining-order-count">
                 <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
                 <span class="remaining-order-count-span">{{branch.orders.length - 3}}</span>
               </span>
             </span>
-            <span class="order-count" (click)="showOrders(branch)" *ngIf="branch.orderCount > 0 && (!branch.show && !expandAll)"> {{branch.orderCount}}</span>
-            <div class="p-l" *ngIf="branch.instructions && (branch.show)">
-              <app-type [timezone]="timezone" [workflowObj]="workflowObj" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
-                        [workflowFilters]="workflowFilters" [configuration]="branch" [jobs]="jobs" (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)" (onClick)="viewHistory($event)" [orderPreparation]="orderPreparation" [expandAll]="expandAll"></app-type>
+            <span (click)="showOrders(branch)" *ngIf="branch.orderCount > 0 && (!branch.show && !expandAll)"
+                  class="order-count"> {{branch.orderCount}}</span>
+            <div *ngIf="branch.instructions && (branch.show)" class="p-l">
+              <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)"
+                        (onClick)="viewHistory($event)" [addOrderToWorkflows]="addOrderToWorkflows"
+                        [configuration]="branch" [expandAll]="expandAll" [expectedNoticeBoards]="expectedNoticeBoards"
+                        [jobs]="jobs"
+                        [orderPreparation]="orderPreparation" [permission]="permission" [postNoticeBoards]="postNoticeBoards"
+                        [preferences]="preferences" [recursiveCals]="recursiveCals"
+                        [schedulerId]="schedulerId" [timezone]="timezone"
+                        [workflowFilters]="workflowFilters" [workflowObj]="workflowObj"></app-type>
             </div>
           </div>
         </div>
       </div>
       <div *ngIf="instruction.TYPE === 'If' && (instruction.show)">
         <div *ngIf="instruction.then && instruction.then.instructions">
-          <app-type [timezone]="timezone" [workflowObj]="workflowObj" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
-                    [workflowFilters]="workflowFilters" [configuration]="instruction.then" [jobs]="jobs" (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)" (onClick)="viewHistory($event)" [orderPreparation]="orderPreparation" [expandAll]="expandAll"></app-type>
+          <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)"
+                    (onClick)="viewHistory($event)" [addOrderToWorkflows]="addOrderToWorkflows"
+                    [configuration]="instruction.then" [expandAll]="expandAll" [expectedNoticeBoards]="expectedNoticeBoards"
+                    [jobs]="jobs"
+                    [orderPreparation]="orderPreparation" [permission]="permission" [postNoticeBoards]="postNoticeBoards"
+                    [preferences]="preferences" [recursiveCals]="recursiveCals"
+                    [schedulerId]="schedulerId" [timezone]="timezone"
+                    [workflowFilters]="workflowFilters" [workflowObj]="workflowObj"></app-type>
           <div class="p-l-md">
-            <a class="m-l" *ngIf="instruction.else" (click)="collapse(instruction.else)">
-              <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.else.show)}"></i>
+            <a (click)="collapse(instruction.else)" *ngIf="instruction.else" class="m-l">
+              <i [ngClass]="{'fa-minus' : (instruction.else.show)}" class="fa fa-plus pr-2"></i>
               <span class="_600">Else</span>
             </a>
-            <span class="m-l-md" *ngIf="instruction.else && instruction.else.orders && instruction.else.orders.length>0">
-              <ng-template ngFor let-order [ngForOf]="instruction.else.orders | orderBy : 'scheduledFor': true | slice:0:3">
-                  <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order }"></ng-container>
+            <span *ngIf="instruction.else && instruction.else.orders && instruction.else.orders.length>0"
+                  class="m-l-md">
+              <ng-template [ngForOf]="instruction.else.orders | orderBy : 'scheduledFor': true | slice:0:3" let-order
+                           ngFor>
+                  <ng-container [ngTemplateOutletContext]="{ $implicit: order }"
+                                [ngTemplateOutlet]="itemTemplate"></ng-container>
               </ng-template>
-              <span class="remaining-order-count" (click)="showOrders(instruction.else)" *ngIf="instruction.else.orders.length > 3">
+              <span (click)="showOrders(instruction.else)" *ngIf="instruction.else.orders.length > 3"
+                    class="remaining-order-count">
                 <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
                 <span class="remaining-order-count-span">{{instruction.else.orders.length - 3}}</span>
               </span>
             </span>
-            <span class="order-count" (click)="showOrders(instruction.else)" *ngIf="instruction.else && instruction.else.orderCount > 0 && (!instruction.else.show && !expandAll)">{{instruction.else.orderCount}}</span>
-            <div class="p-l" *ngIf="instruction.else && (instruction.else.show)">
-              <app-type [timezone]="timezone" [workflowObj]="workflowObj" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
-                        [workflowFilters]="workflowFilters" [configuration]="instruction.else" [jobs]="jobs" (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)" (onClick)="viewHistory($event)" [expandAll]="expandAll" *ngIf="instruction.else.instructions"></app-type>
+            <span (click)="showOrders(instruction.else)" *ngIf="instruction.else && instruction.else.orderCount > 0 && (!instruction.else.show && !expandAll)"
+                  class="order-count">{{instruction.else.orderCount}}</span>
+            <div *ngIf="instruction.else && (instruction.else.show)" class="p-l">
+              <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)"
+                        (onClick)="viewHistory($event)" *ngIf="instruction.else.instructions"
+                        [addOrderToWorkflows]="addOrderToWorkflows" [configuration]="instruction.else" [expandAll]="expandAll"
+                        [expectedNoticeBoards]="expectedNoticeBoards" [jobs]="jobs"
+                        [orderPreparation]="orderPreparation" [permission]="permission" [postNoticeBoards]="postNoticeBoards"
+                        [preferences]="preferences" [recursiveCals]="recursiveCals"
+                        [schedulerId]="schedulerId" [timezone]="timezone"
+                        [workflowFilters]="workflowFilters" [workflowObj]="workflowObj"></app-type>
             </div>
           </div>
         </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Try' && (instruction.show)">
-          <app-type [timezone]="timezone" [workflowObj]="workflowObj" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
-                    [workflowFilters]="workflowFilters" [configuration]="instruction" [jobs]="jobs" (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)" (onClick)="viewHistory($event)" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
-          <div class="p-l-md">
-            <a class="m-l" *ngIf="instruction.catch" (click)="collapse(instruction.catch)">
-              <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.catch.show)}"></i>
-              <span class="_600" translate>workflow.label.catch</span>
-            </a>
-            <span class="m-l-md" *ngIf="instruction.catch && instruction.catch.orders && instruction.catch.orders.length>0">
-              <ng-template ngFor let-order [ngForOf]="instruction.catch.orders | orderBy  : 'scheduledFor': true | slice:0:3">
-                  <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
+        <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)"
+                  (onClick)="viewHistory($event)" *ngIf="instruction.instructions"
+                  [addOrderToWorkflows]="addOrderToWorkflows" [configuration]="instruction" [expandAll]="expandAll"
+                  [expectedNoticeBoards]="expectedNoticeBoards" [jobs]="jobs"
+                  [orderPreparation]="orderPreparation" [permission]="permission" [postNoticeBoards]="postNoticeBoards"
+                  [preferences]="preferences" [recursiveCals]="recursiveCals"
+                  [schedulerId]="schedulerId" [timezone]="timezone" [workflowFilters]="workflowFilters"
+                  [workflowObj]="workflowObj"></app-type>
+        <div class="p-l-md">
+          <a (click)="collapse(instruction.catch)" *ngIf="instruction.catch" class="m-l">
+            <i [ngClass]="{'fa-minus' : (instruction.catch.show)}" class="fa fa-plus pr-2"></i>
+            <span class="_600" translate>workflow.label.catch</span>
+          </a>
+          <span *ngIf="instruction.catch && instruction.catch.orders && instruction.catch.orders.length>0"
+                class="m-l-md">
+              <ng-template [ngForOf]="instruction.catch.orders | orderBy  : 'scheduledFor': true | slice:0:3" let-order
+                           ngFor>
+                  <ng-container [ngTemplateOutletContext]="{ $implicit: order}"
+                                [ngTemplateOutlet]="itemTemplate"></ng-container>
               </ng-template>
-              <span class="remaining-order-count" (click)="showOrders(instruction.catch)" *ngIf="instruction.catch.orders.length > 3">
+              <span (click)="showOrders(instruction.catch)" *ngIf="instruction.catch.orders.length > 3"
+                    class="remaining-order-count">
                 <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
                 <span class="remaining-order-count-span">{{instruction.catch.orders.length - 3}}</span>
               </span>
             </span>
-            <span class="order-count" (click)="showOrders(instruction.catch)" *ngIf="instruction.catch && instruction.catch.orderCount > 0 && (!instruction.catch.show && !expandAll)">{{instruction.catch.orderCount}}</span>
-            <div class="m-l" *ngIf="instruction.catch && (instruction.catch.show)">
-              <app-type [timezone]="timezone" [workflowObj]="workflowObj" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
-                        [workflowFilters]="workflowFilters" [configuration]="instruction.catch" [jobs]="jobs" (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)" (onClick)="viewHistory($event)" [expandAll]="expandAll" *ngIf="instruction.catch.instructions"></app-type>
-            </div>
+          <span (click)="showOrders(instruction.catch)" *ngIf="instruction.catch && instruction.catch.orderCount > 0 && (!instruction.catch.show && !expandAll)"
+                class="order-count">{{instruction.catch.orderCount}}</span>
+          <div *ngIf="instruction.catch && (instruction.catch.show)" class="m-l">
+            <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)"
+                      (onClick)="viewHistory($event)" *ngIf="instruction.catch.instructions"
+                      [addOrderToWorkflows]="addOrderToWorkflows" [configuration]="instruction.catch" [expandAll]="expandAll"
+                      [expectedNoticeBoards]="expectedNoticeBoards" [jobs]="jobs"
+                      [orderPreparation]="orderPreparation" [permission]="permission" [postNoticeBoards]="postNoticeBoards"
+                      [preferences]="preferences" [recursiveCals]="recursiveCals"
+                      [schedulerId]="schedulerId" [timezone]="timezone" [workflowFilters]="workflowFilters"
+                      [workflowObj]="workflowObj"></app-type>
           </div>
+        </div>
       </div>
-      <div *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Options' || instruction.TYPE === 'Lock' || instruction.TYPE === 'StickySubagent' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'ConsumeNotices') && (instruction.show)">
+      <div
+        *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Options' || instruction.TYPE === 'Lock' || instruction.TYPE === 'StickySubagent' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'ConsumeNotices') && (instruction.show)">
         <div>
-          <app-type [timezone]="timezone" [workflowObj]="workflowObj" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
-                    [workflowFilters]="workflowFilters" [configuration]="instruction" [jobs]="jobs" (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)" (onClick)="viewHistory($event)" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
+          <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)"
+                    (onClick)="viewHistory($event)" *ngIf="instruction.instructions"
+                    [addOrderToWorkflows]="addOrderToWorkflows" [configuration]="instruction" [expandAll]="expandAll"
+                    [expectedNoticeBoards]="expectedNoticeBoards" [jobs]="jobs"
+                    [orderPreparation]="orderPreparation" [permission]="permission" [postNoticeBoards]="postNoticeBoards"
+                    [preferences]="preferences" [recursiveCals]="recursiveCals"
+                    [schedulerId]="schedulerId" [timezone]="timezone" [workflowFilters]="workflowFilters"
+                    [workflowObj]="workflowObj"></app-type>
         </div>
       </div>
       <div *ngIf="instruction.join">
         <span>
           <span class="_600">{{'workflow.label.join' | translate}}</span>
         </span>
-        <span class="m-l-md" *ngIf="instruction.join.orders && instruction.join.orders.length> 0">
-         <ng-template ngFor let-order [ngForOf]="instruction.join.orders | orderBy : 'scheduledFor': true | slice:0:3">
-            <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
+        <span *ngIf="instruction.join.orders && instruction.join.orders.length> 0" class="m-l-md">
+         <ng-template [ngForOf]="instruction.join.orders | orderBy : 'scheduledFor': true | slice:0:3" let-order ngFor>
+            <ng-container [ngTemplateOutletContext]="{ $implicit: order}"
+                          [ngTemplateOutlet]="itemTemplate"></ng-container>
           </ng-template>
-          <span class="remaining-order-count" (click)="showOrders(instruction)" *ngIf="instruction.join.orders.length > 3">
+          <span (click)="showOrders(instruction)" *ngIf="instruction.join.orders.length > 3"
+                class="remaining-order-count">
             <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
             <span class="remaining-order-count-span">{{instruction.join.orders.length - 3}}</span>
           </span>
@@ -394,11 +503,12 @@
   </ul>
 </div>
 <div *ngIf="isFirst">
-  <nz-drawer [nzVisible]="sideBar.isVisible" nzPlacement="right" (nzOnClose)="sideBar.isVisible = false">
+  <nz-drawer (nzOnClose)="sideBar.isVisible = false" [nzVisible]="sideBar.isVisible" nzPlacement="right">
     <ng-container *nzDrawerContent>
-      <div class="close-btn" (click)="sideBar.isVisible = false"></div>
+      <div (click)="sideBar.isVisible = false" class="close-btn"></div>
       <div class="p-l-sm p-r-sm">
-        <app-order-list-sidebar [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId" [orders]="sideBar.orders"></app-order-list-sidebar>
+        <app-order-list-sidebar [orders]="sideBar.orders" [permission]="permission" [preferences]="preferences"
+                                [schedulerId]="schedulerId"></app-order-list-sidebar>
       </div>
     </ng-container>
   </nz-drawer>

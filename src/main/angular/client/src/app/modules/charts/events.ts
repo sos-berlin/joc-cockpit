@@ -12,7 +12,7 @@ if (typeof window !== 'undefined') {
 // tslint:disable-next-line:variable-name
 export const MouseEvent = root.MouseEvent as any & {
   prototype?: MouseEvent;
-  new (typeArg: string, eventInitDict?: MouseEventInit): MouseEvent;
+  new(typeArg: string, eventInitDict?: MouseEventInit): MouseEvent;
 };
 
 export function createMouseEvent(name: string, bubbles: boolean = false, cancelable: boolean = true): MouseEvent {
@@ -20,7 +20,7 @@ export function createMouseEvent(name: string, bubbles: boolean = false, cancela
   // See https://stackoverflow.com/questions/27176983/dispatchevent-not-working-in-ie11
   if (typeof MouseEvent === 'function') {
     // Sane browsers
-    return new MouseEvent(name, { bubbles, cancelable });
+    return new MouseEvent(name, {bubbles, cancelable});
   } else {
     // IE
     const event = document.createEvent('MouseEvent');

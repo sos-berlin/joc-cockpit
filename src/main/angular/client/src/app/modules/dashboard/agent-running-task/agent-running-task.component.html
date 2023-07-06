@@ -1,33 +1,33 @@
 <div id="agentClusterRunningTasks1">
-    <div class="box-header b-b remove">
-        <h3 translate>dashboard.label.agentRunningJobs</h3>
-    </div>
-    <div class="row overflow-y" [hidden]="!isLoaded"
-    [ngStyle]="{'max-height':(layout.rows * 55 +((layout.rows -1) * 20 -50)) + 4 +'px'}">
-      <div class="col-md-12">
-        <div class="p-a-sm" *ngIf="data.length>0">
-          <ngx-charts-bar-horizontal
-            (window:resize)="onResize($event)"
-            [view]="view"
-            [scheme]="colorScheme"
-            [results]="data"
-            [gradient]="true"
-            [xAxis]="true"
-            [yAxis]="true"
-            [showGridLines]="true"
-            [roundDomains]="true"
-            [barPadding]="5"
-            [roundEdges]="false">
-          </ngx-charts-bar-horizontal>
-        </div>
+  <div class="box-header b-b remove">
+    <h3 translate>dashboard.label.agentRunningJobs</h3>
+  </div>
+  <div [hidden]="!isLoaded" [ngStyle]="{'max-height':(layout.rows * 55 +((layout.rows -1) * 20 -50)) + 4 +'px'}"
+       class="row overflow-y">
+    <div class="col-md-12">
+      <div *ngIf="data.length>0" class="p-a-sm">
+        <ngx-charts-bar-horizontal
+          (window:resize)="onResize($event)"
+          [barPadding]="5"
+          [gradient]="true"
+          [results]="data"
+          [roundDomains]="true"
+          [roundEdges]="false"
+          [scheme]="colorScheme"
+          [showGridLines]="true"
+          [view]="view"
+          [xAxis]="true"
+          [yAxis]="true">
+        </ngx-charts-bar-horizontal>
       </div>
     </div>
-    <div *ngIf="!isLoaded" class="loading-center text-primary text" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}">
-      <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+  </div>
+  <div *ngIf="!isLoaded" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}" class="loading-center text-primary text">
+    <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+  </div>
+  <div *ngIf="data.length==0 && isLoaded" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}" class="vert-middle">
+    <div>
+      <app-empty-data></app-empty-data>
     </div>
-    <div *ngIf="data.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}">
-      <div>
-        <app-empty-data></app-empty-data>
-      </div>
-    </div>
+  </div>
 </div>

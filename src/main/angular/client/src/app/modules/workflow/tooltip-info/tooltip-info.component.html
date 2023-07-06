@@ -5,13 +5,13 @@
         <span translate> workflow.label.outstandingAgents </span>:
         <span class="_600"> {{workflow.info.notConfirmedAgentNames.length}}</span>
       </div>
-      <div class="p-l m-l-xs" *ngFor="let agent of workflow.info.notConfirmedAgentNames">
+      <div *ngFor="let agent of workflow.info.notConfirmedAgentNames" class="p-l m-l-xs">
         {{agent}}
       </div>
     </div>
   </div>
 </ng-template>
 <span [nz-tooltip]="contentTemplate" nzTooltipPlacement="top">
-    <i class="fa fa-info-circle p-l-xs" (mouseenter)="getTooltipInfo(workflow)"></i>
+    <i (mouseenter)="getTooltipInfo(workflow)" class="fa fa-info-circle p-l-xs"></i>
 </span>
 

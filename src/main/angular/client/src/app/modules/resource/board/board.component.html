@@ -7,10 +7,14 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <button *ngIf="(object.setOfCheckedId.size>0 || object.mapOfCheckedId.size>0) && permission.currentController.noticeBoards.delete" class="btn btn-grey btn-sm m-l-12" (click)="deleteAllNotices()"><i class="fa fa-trash"></i>&nbsp; {{'resource.board.button.deleteAll' | translate}}</button>
-            <div class="inline" [ngClass]="{'hide': (object.setOfCheckedId.size>0 || object.mapOfCheckedId.size>0)}">
+            <button
+              (click)="deleteAllNotices()"
+              *ngIf="(object.setOfCheckedId.size>0 || object.mapOfCheckedId.size>0) && permission.currentController.noticeBoards.delete" class="btn btn-grey btn-sm m-l-12"><i
+              class="fa fa-trash"></i>&nbsp; {{'resource.board.button.deleteAll' | translate}}</button>
+            <div [ngClass]="{'hide': (object.setOfCheckedId.size>0 || object.mapOfCheckedId.size>0)}" class="inline">
               <div class="btn-group dropdown">
-                <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
+                <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
+                        nzTrigger="click">
                   <span translate>common.label.sortBy</span>
                   <span class="text-primary">
                     <span *ngIf="boardsFilters.filter.sortBy =='name'">
@@ -25,12 +29,12 @@
                     </span>
                   </span>
                 </button>
-                <nz-dropdown-menu #sortBy="nzDropdownMenu" >
+                <nz-dropdown-menu #sortBy="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item (click)="sort('name')">
+                    <li (click)="sort('name')" nz-menu-item>
                       <a translate>resource.board.label.name</a>
                     </li>
-                    <li nz-menu-item (click)="sort('path1')">
+                    <li (click)="sort('path1')" nz-menu-item>
                       <a translate>common.label.path</a>
                     </li>
                   </ul>
@@ -45,73 +49,85 @@
   </div>
 </div>
 <div class="sub-link">
-    <div class="row">
-      <div class="col-md-8">
-        <app-links></app-links>
-      </div>
-      <div class="col-md-4 text-right">
-        <button class="hide btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" [ngClass]="{'show-block':boards.length>0 && pageView!='grid'}" (click)="collapseDetails()">
-          <i class="fa fa-compress text"></i>
-        </button>
-        <button class="hide btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" [ngClass]="{'show-block':boards.length>0 && pageView!='grid'}" (click)="expandDetails()" >
-          <i class="fa fa-expand text" ></i>
-        </button>
-        <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="search()">
-          <i class="fa fa-search"></i>&nbsp;
-          <span translate>common.button.search</span>
-        </button>
-        <div class="search-box-field pull-right">
-          <label>
-            <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
-                   [(ngModel)]="boardsFilters.searchText">
-          </label>
-          <i [hidden]="!boardsFilters.searchText" class="fa fa-times search-close"
-             (click)="boardsFilters.searchText = '';searchInResult()"></i>
-        </div>
+  <div class="row">
+    <div class="col-md-8">
+      <app-links></app-links>
+    </div>
+    <div class="col-md-4 text-right">
+      <button (click)="collapseDetails()"
+              [ngClass]="{'show-block':boards.length>0 && pageView!='grid'}"
+              class="hide btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
+        <i class="fa fa-compress text"></i>
+      </button>
+      <button (click)="expandDetails()"
+              [ngClass]="{'show-block':boards.length>0 && pageView!='grid'}"
+              class="hide btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
+        <i class="fa fa-expand text"></i>
+      </button>
+      <button (click)="search()" class="btn btn-sm inline pull-right m-l btn-grey">
+        <i class="fa fa-search"></i>&nbsp;
+        <span translate>common.button.search</span>
+      </button>
+      <div class="search-box-field pull-right">
+        <label>
+          <input (keyup)="searchInResult()" [(ngModel)]="boardsFilters.searchText" placeholder="{{'common.placeholder.search' | translate}}"
+                 type="search">
+        </label>
+        <i (click)="boardsFilters.searchText = '';searchInResult()" [hidden]="!boardsFilters.searchText"
+           class="fa fa-times search-close"></i>
       </div>
     </div>
+  </div>
 </div>
 <div class="scroll-y max-ht2">
   <div class="padding p-b-0">
     <div class="row">
       <div class="col-sm-12">
-        <div appResizable [sideView]="sideView.board" id="leftPanel" class="sticky leftPanel resource">
+        <div [sideView]="sideView.board" appResizable class="sticky leftPanel resource" id="leftPanel">
           <div *ngIf="tree.length>0">
-            <app-tree-navigation [schedulerId]="schedulerIds.selected" [type]="'NOTICEBOARD'" [tree]="tree" [sideView]="sideView.board" [defaultSelectedKeys]="boardsFilters.selectedkeys" [defaultExpandedKeys]="boardsFilters.expandedKeys"
-                                 (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)"></app-tree-navigation>
-           </div>
+            <app-tree-navigation (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)" [defaultExpandedKeys]="boardsFilters.expandedKeys"
+                                 [defaultSelectedKeys]="boardsFilters.selectedkeys" [schedulerId]="schedulerIds.selected"
+                                 [sideView]="sideView.board"
+                                 [tree]="tree"
+                                 [type]="'NOTICEBOARD'"></app-tree-navigation>
+          </div>
         </div>
         <div id="rightPanel">
-          <div class="hide" [ngClass]="{'show': isLoading}">
-            <div class="row " *ngIf="pageView=='grid' && data.length > 0" [hidden]="loading">
-              <div class="w-full" *ngFor="let item of data  | groupBy: 'path1'">
+          <div [ngClass]="{'show': isLoading}" class="hide">
+            <div *ngIf="pageView=='grid' && data.length > 0" [hidden]="loading" class="row ">
+              <div *ngFor="let item of data  | groupBy: 'path1'" class="w-full">
                 <div class="col-sm-12 m-b-10">
                   <span class="text inline"><i class="fa fa-folder-o"></i>&nbsp; {{item.key}}</span>
                 </div>
-                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
-                     *ngFor="let board of item.value">
+                <div *ngFor="let board of item.value"
+                     class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
                   <div class="box card">
                     <div class="box-body">
                       <div class="text-left block-ellipsis">
                         <span class="text-left">
-                          <i nz-icon nzType="pushpin" class="text-sm"
-                              nzTheme="outline"></i>&nbsp;
-                          <i *ngIf="board.documentationName" (click)="coreService.showDocumentation(board.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                          <i class="text-sm" nz-icon nzTheme="outline"
+                             nzType="pushpin"></i>&nbsp;
+                          <i (click)="coreService.showDocumentation(board.documentationName, preferences)"
+                             *ngIf="board.documentationName"
+                             class="cursor fa fa-book p-l-xs p-r-xs"></i>
                           <span [innerHtml]="board.name | highlight : boardsFilters.searchText"></span>
                         </span>
                       </div>
                       <div class="btn-group dropdown pull-right abt-dropdown ">
-                        <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2" nzPlacement="bottomRight">
+                        <a [nzDropdownMenu]="option2" class=" more-option text-black-lt" nz-dropdown nzPlacement="bottomRight"
+                           nzTrigger="click">
                           <i class="text fa fa-ellipsis-h"></i></a>
-                        <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
+                        <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
                           <ul nz-menu>
-                            <li nz-menu-item (click)="post(board)" *ngIf="permission.currentController && permission.currentController.noticeBoards.post">
+                            <li (click)="post(board)" *ngIf="permission.currentController && permission.currentController.noticeBoards.post"
+                                nz-menu-item>
                               <a translate>resource.board.button.post</a>
                             </li>
-                            <li nz-menu-item (click)="delete(board, null)" *ngIf="permission.currentController.noticeBoards.delete && board.numOfNotices !== board.numOfExpectingOrders">
+                            <li (click)="delete(board, null)" *ngIf="permission.currentController.noticeBoards.delete && board.numOfNotices !== board.numOfExpectingOrders"
+                                nz-menu-item>
                               <a translate>resource.board.button.deleteAll</a>
                             </li>
-                            <li nz-menu-item (click)="coreService.copyLink('board',board.name)">
+                            <li (click)="coreService.copyLink('board',board.name)" nz-menu-item>
                               <a translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>
@@ -119,56 +135,61 @@
                       </div>
                       <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
                         <span translate>resource.board.label.deploymentDate </span>:
-                        <span class="text-black-dk" [innerHtml]="board.versionDate | stringToDate | highlight : boardsFilters.searchText"></span>
+                        <span [innerHtml]="board.versionDate | stringToDate | highlight : boardsFilters.searchText"
+                              class="text-black-dk"></span>
                       </div>
                       <div class="text-sm text-left text-muted p-t-xs">
                         <span translate>common.label.status </span>:
-                        <span [ngClass]="coreService.getColor(board.state.severity, 'text')" [innerHtml]="board.state._text | translate | highlight : boardsFilters.searchText"></span>
+                        <span [innerHtml]="board.state._text | translate | highlight : boardsFilters.searchText"
+                              [ngClass]="coreService.getColor(board.state.severity, 'text')"></span>
                       </div>
                       <div class="text-sm text-left text-muted p-t-sm">
                         <span translate>resource.board.label.postOrderToNoticeId </span>:
-                        <span class="text-black-dk" [innerHtml]="board.postOrderToNoticeId | highlight : boardsFilters.searchText"></span>
+                        <span [innerHtml]="board.postOrderToNoticeId | highlight : boardsFilters.searchText"
+                              class="text-black-dk"></span>
                       </div>
                       <div class="text-sm text-left text-muted p-t-sm">
                         <span translate>resource.board.label.expectOrderToNoticeId </span>:
-                        <span class="text-black-dk" [innerHtml]="board.expectOrderToNoticeId | highlight : boardsFilters.searchText"></span>
+                        <span [innerHtml]="board.expectOrderToNoticeId | highlight : boardsFilters.searchText"
+                              class="text-black-dk"></span>
                       </div>
                       <div class="text-sm text-left text-muted p-t-sm">
                         <span translate>resource.board.label.numOfNotices </span>:
-                        <span class="text-black-dk" [innerHtml]="board.numOfNotices"></span>
+                        <span [innerHtml]="board.numOfNotices" class="text-black-dk"></span>
                       </div>
                       <div class="text-sm text-left text-muted p-t-sm">
                         <span translate>resource.board.label.numOfExpectingOrders </span>:
-                        <span class="text-black-dk" [innerHtml]="board.numOfExpectingOrders"></span>
+                        <span [innerHtml]="board.numOfExpectingOrders" class="text-black-dk"></span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="box p-a" *ngIf="pageView=='list' && tree.length > 0">
+            <div *ngIf="pageView=='list' && tree.length > 0" class="box p-a">
               <div class="table-responsive">
                 <nz-table
                   #ajaxTable
-                  [nzSize]="'small'"
-                  [nzPageSize]="boardsFilters.entryPerPage ||  preferences.entryPerPage"
-                  [nzPageIndex]="boardsFilters.currentPage"
-                  [nzBordered]="true"
-                  [nzShowPagination]="data.length > 0"
-                  [nzData]="data"
-                  [nzLoading]="loading"
-                  [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
                   (nzPageSizeChange)="pageSizeChange($event)"
+                  [nzBordered]="true"
+                  [nzData]="data"
+                  [nzLoading]="loading"
+                  [nzPageIndex]="boardsFilters.currentPage"
                   [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+                  [nzPageSize]="boardsFilters.entryPerPage ||  preferences.entryPerPage"
+                  [nzShowPagination]="data.length > 0"
+                  [nzShowSizeChanger]="true"
+                  [nzSize]="'small'"
                 >
                   <thead>
                   <tr>
-                    <th *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" class="chk"
-                        [nzShowCheckbox]="true"
+                    <th (nzCheckedChange)="checkAll($event)"
+                        *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
                         [(nzChecked)]="object.checked"
                         [nzIndeterminate]="object.indeterminate"
-                        (nzCheckedChange)="checkAll($event)"
+                        [nzShowCheckbox]="true"
+                        class="chk"
                     ></th>
                     <th nzWidth="55px"><span translate>common.label.action</span></th>
                     <th (click)="sort('name')"><a><span class="p-r-xs" translate>resource.board.label.name</span>
@@ -183,27 +204,27 @@
                       <i *ngIf="boardsFilters.filter.sortBy == 'path1' && boardsFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                     <th nzWidth="130px" (click)="sort('versionDate')" rowspan="2">
+                    <th (click)="sort('versionDate')" nzWidth="130px" rowspan="2">
                       <a><span class="p-r-xs" translate>resource.board.label.deploymentDate</span>
                         <i *ngIf="boardsFilters.filter.sortBy == 'versionDate' && !boardsFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="boardsFilters.filter.sortBy == 'versionDate' && boardsFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th nzWidth="100px" (click)="sort('state._text')" rowspan="2">
+                    <th (click)="sort('state._text')" nzWidth="100px" rowspan="2">
                       <a><span class="p-r-xs" translate>common.label.status</span>
                         <i *ngIf="boardsFilters.filter.sortBy == 'state._text' && !boardsFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="boardsFilters.filter.sortBy == 'state._text' && boardsFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th nzWidth="100px" (click)="sort('numOfNotices')"><a><span class="p-r-xs" translate>resource.board.label.numOfNotices</span>
+                    <th (click)="sort('numOfNotices')" nzWidth="100px"><a><span class="p-r-xs" translate>resource.board.label.numOfNotices</span>
                       <i *ngIf="boardsFilters.filter.sortBy == 'numOfNotices' && !boardsFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="boardsFilters.filter.sortBy == 'numOfNotices' && boardsFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th nzWidth="120px" (click)="sort('numOfExpectingOrders')"><a><span class="p-r-xs" translate>resource.board.label.numOfExpectingOrders</span>
+                    <th (click)="sort('numOfExpectingOrders')" nzWidth="120px"><a><span class="p-r-xs" translate>resource.board.label.numOfExpectingOrders</span>
                       <i *ngIf="boardsFilters.filter.sortBy == 'numOfExpectingOrders' && !boardsFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="boardsFilters.filter.sortBy == 'numOfExpectingOrders' && boardsFilters.reverse"
@@ -212,26 +233,30 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <ng-template ngFor let-board
-                               [ngForOf]="ajaxTable.data">
+                  <ng-template [ngForOf]="ajaxTable.data" let-board
+                               ngFor>
                     <tr [ngClass]="{'light-bg':board.show}">
-                      <td  [nzDisabled]="board.numOfNotices === board.numOfExpectingOrders"
-                      *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
-                      [nzShowCheckbox]="true" [nzChecked]="object.setOfCheckedId.has(board.path)" (nzCheckedChange)="onItemChecked(board, null, $event)"></td>
+                      <td (nzCheckedChange)="onItemChecked(board, null, $event)"
+                          *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
+                          [nzChecked]="object.setOfCheckedId.has(board.path)" [nzDisabled]="board.numOfNotices === board.numOfExpectingOrders"
+                          [nzShowCheckbox]="true"></td>
                       <td>
                         <div class="btn-group dropdown">
-                          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
+                          <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                                  type="button">
                             <i class="fa fa-ellipsis-h"></i>
                           </button>
-                          <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
+                          <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                             <ul nz-menu>
-                              <li nz-menu-item (click)="post(board)" *ngIf="permission.currentController && permission.currentController.noticeBoards.post">
+                              <li (click)="post(board)" *ngIf="permission.currentController && permission.currentController.noticeBoards.post"
+                                  nz-menu-item>
                                 <a translate>resource.board.button.post</a>
                               </li>
-                              <li nz-menu-item (click)="delete(board, null)" *ngIf="permission.currentController.noticeBoards.delete && board.numOfNotices !== board.numOfExpectingOrders">
+                              <li (click)="delete(board, null)" *ngIf="permission.currentController.noticeBoards.delete && board.numOfNotices !== board.numOfExpectingOrders"
+                                  nz-menu-item>
                                 <a translate>resource.board.button.deleteAll</a>
                               </li>
-                              <li nz-menu-item (click)="coreService.copyLink('board',board.name)">
+                              <li (click)="coreService.copyLink('board',board.name)" nz-menu-item>
                                 <a translate>common.button.copyLinkToObject</a>
                               </li>
                             </ul>
@@ -240,141 +265,163 @@
                       </td>
                       <td>
                         <span class="w-full">
-                          <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                          <i (click)="showDetail(board)"
                              *ngIf="!board.show"
-                             (click)="showDetail(board)"></i>
-                          <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                             class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+                          <i (click)="board.show = false;"
                              *ngIf="board.show"
-                             (click)="board.show = false;"></i>
-                          <i *ngIf="board.documentationName" (click)="coreService.showDocumentation(board.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                             class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
+                          <i (click)="coreService.showDocumentation(board.documentationName, preferences)"
+                             *ngIf="board.documentationName"
+                             class="cursor fa fa-book p-l-xs p-r-xs"></i>
                           <span [innerHtml]="board.name | highlight : boardsFilters.searchText"></span>
                           <i *ngIf="board.title"> - </i>
-                          <i class="text-muted" [innerHtml]="board.title | stringToLink"></i>
+                          <i [innerHtml]="board.title | stringToLink" class="text-muted"></i>
                         </span>
                       </td>
                       <td>
                         <span class="show-in-single-line">
-                          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(board.path, 'NOTICEBOARD');"
+                          <i (click)="coreService.navToInventoryTab(board.path, 'NOTICEBOARD');"
+                             *ngIf="permission.joc && permission.joc.inventory.view"
                              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                           <span [innerHtml]="board.path | highlight : boardsFilters.searchText"></span>
                         </span>
-                       <td>
-                        <span [innerHtml]="board.versionDate | stringToDate | highlight : boardsFilters.searchText"></span>
+                      <td>
+                        <span
+                          [innerHtml]="board.versionDate | stringToDate | highlight : boardsFilters.searchText"></span>
                       </td>
                       <td>
-                        <span class="label" *ngIf="board.state" [ngClass]="coreService.getColor(board.state.severity, 'bg')"
-                           [innerHtml]="board.state._text | translate | highlight : boardsFilters.searchText"></span>
+                        <span *ngIf="board.state" [innerHtml]="board.state._text | translate | highlight : boardsFilters.searchText"
+                              [ngClass]="coreService.getColor(board.state.severity, 'bg')"
+                              class="label"></span>
                       </td>
                       <td><span [innerHtml]="board.numOfNotices"></span></td>
                       <td><span [innerHtml]="board.numOfExpectingOrders"></span></td>
                     </tr>
                     <ng-container *ngIf="board.show">
                       <tr>
-                        <td class="chk" *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"></td>
+                        <td *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
+                            class="chk"></td>
                         <td class="menu"></td>
                         <td colspan="8" style="padding:0 !important;">
-                          <nz-table class="m-a-0 inner-table" #innerTable [nzSize]="'small'"
-                                    [nzData]="['']" [nzShowPagination]="false">
-                            <thead>
-                            <tr>
-                              <th><span translate>resource.board.label.postOrderToNoticeId</span></th>
-                              <th><span translate>resource.board.label.expectOrderToNoticeId</span></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>
-                                  <span [innerHtml]="board.postOrderToNoticeId"></span>
-                                </td>
-                                <td>
-                                  <span [innerHtml]="board.expectOrderToNoticeId"></span>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </nz-table>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="chk" *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"></td>
-                        <td class="menu"></td>
-                        <td colspan="8" style="padding:0 !important;" class="order-history-template0">
-                          <nz-table class="m-a-0 inner-table" #nestedTable [nzSize]="'small'"
-                                    [nzData]="board.notices" [nzLoading]="board.loading" [nzShowPagination]="false">
-                            <thead>
-                            <tr>
-                              <th *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" class="chk"
-                                  [nzDisabled]="board.numOfNotices === board.numOfExpectingOrders"
-                                  [nzShowCheckbox]="true"
-                                  [(nzChecked)]="board.checked"
-                                  [nzIndeterminate]="board.indeterminate"
-                                  (nzCheckedChange)="checkAll($event, board)"
-                              ></th>
-                              <th *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)" nzWidth="55px"><span translate>common.label.action</span></th>
-                              <th><span translate>resource.board.label.id</span></th>
-                              <th><span translate>common.label.state</span></th>
-                              <th><span translate>resource.board.label.expectingOrders</span></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                              <ng-template ngFor let-notice
-                                           [ngForOf]="nestedTable.data">
-                                <tr>
-                                  <td
-                                  *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" [nzDisabled]="notice.state._text === 'EXPECTED'" [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(notice.id +'__' + board.path)" (nzCheckedChange)="onItemChecked(board, notice, $event)"></td>
-                                  <td *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)">
-                                    <div class="btn-group dropdown">
-                                      <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
-                                        <i class="fa fa-ellipsis-h"></i>
-                                      </button>
-                                      <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                                        <ul nz-menu>
-                                          <li nz-menu-item (click)="post(board, notice)" [nzDisabled]="notice.state._text !== 'EXPECTED'" *ngIf="permission.currentController.noticeBoards.post">
-                                            <a translate>resource.board.button.post</a>
-                                          </li>
-                                          <li nz-menu-item (click)="delete(board, notice)" [nzDisabled]="notice.state._text === 'EXPECTED'" *ngIf="permission.currentController.noticeBoards.delete">
-                                            <a translate>resource.board.button.delete</a>
-                                          </li>
-                                        </ul>
-                                      </nz-dropdown-menu>
-                                    </div>
-                                  </td>
-                                  <td>{{notice.id}}</td>
-                                  <td><span class="label" [ngClass]="coreService.getColor(notice.state.severity, 'bg')"
-                                            [innerHtml]="notice.state._text | translate"></span></td>
-                                  <td>{{notice.expectingOrders?.length}}</td>
-                                </tr>
-                                <ng-container *ngIf="notice.expectingOrders && notice.expectingOrders.length > 0">
-                                  <tr>
-                                    <td class="custom-th"></td>
-                                    <td class="custom-th"></td>
-                                    <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
-                                    <td colspan="2" class="custom-th"><span translate>order.label.workflow</span></td>
-                                    <td class="custom-th"><span translate>order.label.position</span></td>
-                                  </tr>
-                                  <tr *ngFor="let order of notice.expectingOrders">
-                                    <td></td>
-                                    <td></td>
-                                    <td><span class="p-l">{{order.orderId}}</span></td>
-                                    <td colspan="2">
-                                      <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-                                      <a class="text-hover-primary" (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);">{{order.workflowId.path}} </a>
-                                    </td>
-                                    <td><span>{{order.positionString}}</span></td>
-                                  </tr>
-                                </ng-container>
-                              </ng-template>
-                            </tbody>
-                          </nz-table>
-                        </td>
-                      </tr>
-                    </ng-container>
-                  </ng-template>
+                          <nz-table #innerTable [nzData]="['']" [nzShowPagination]="false"
+                                    [nzSize]="'small'" class="m-a-0 inner-table">
+                  <thead>
+                  <tr>
+                    <th><span translate>resource.board.label.postOrderToNoticeId</span></th>
+                    <th><span translate>resource.board.label.expectOrderToNoticeId</span></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>
+                      <span [innerHtml]="board.postOrderToNoticeId"></span>
+                    </td>
+                    <td>
+                      <span [innerHtml]="board.expectOrderToNoticeId"></span>
+                    </td>
+                  </tr>
                   </tbody>
                 </nz-table>
-                <div class="w-half label-top"
-                     *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{data.length}}
-                  <span translate *ngIf="ajaxTable.data.length >1">resource.board.label.boardsFound</span>
-                  <span translate *ngIf="ajaxTable.data.length ==1">resource.board.label.boardFound</span>
+                </td>
+                </tr>
+                <tr>
+                  <td *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
+                      class="chk"></td>
+                  <td class="menu"></td>
+                  <td class="order-history-template0" colspan="8" style="padding:0 !important;">
+                    <nz-table #nestedTable [nzData]="board.notices" [nzLoading]="board.loading"
+                              [nzShowPagination]="false" [nzSize]="'small'" class="m-a-0 inner-table">
+                      <thead>
+                      <tr>
+                        <th (nzCheckedChange)="checkAll($event, board)"
+                            *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
+                            [(nzChecked)]="board.checked"
+                            [nzDisabled]="board.numOfNotices === board.numOfExpectingOrders"
+                            [nzIndeterminate]="board.indeterminate"
+                            [nzShowCheckbox]="true"
+                            class="chk"
+                        ></th>
+                        <th
+                          *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)"
+                          nzWidth="55px"><span translate>common.label.action</span></th>
+                        <th><span translate>resource.board.label.id</span></th>
+                        <th><span translate>common.label.state</span></th>
+                        <th><span translate>resource.board.label.expectingOrders</span></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <ng-template [ngForOf]="nestedTable.data" let-notice
+                                   ngFor>
+                        <tr>
+                          <td
+                            (nzCheckedChange)="onItemChecked(board, notice, $event)"
+                            *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" [nzChecked]="object.mapOfCheckedId.has(notice.id +'__' + board.path)"
+                            [nzDisabled]="notice.state._text === 'EXPECTED'"
+                            [nzShowCheckbox]="true"></td>
+                          <td
+                            *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)">
+                            <div class="btn-group dropdown">
+                              <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown
+                                      nzTrigger="click" type="button">
+                                <i class="fa fa-ellipsis-h"></i>
+                              </button>
+                              <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                                <ul nz-menu>
+                                  <li (click)="post(board, notice)" *ngIf="permission.currentController.noticeBoards.post"
+                                      [nzDisabled]="notice.state._text !== 'EXPECTED'"
+                                      nz-menu-item>
+                                    <a translate>resource.board.button.post</a>
+                                  </li>
+                                  <li (click)="delete(board, notice)" *ngIf="permission.currentController.noticeBoards.delete"
+                                      [nzDisabled]="notice.state._text === 'EXPECTED'"
+                                      nz-menu-item>
+                                    <a translate>resource.board.button.delete</a>
+                                  </li>
+                                </ul>
+                              </nz-dropdown-menu>
+                            </div>
+                          </td>
+                          <td>{{notice.id}}</td>
+                          <td><span [innerHtml]="notice.state._text | translate" [ngClass]="coreService.getColor(notice.state.severity, 'bg')"
+                                    class="label"></span></td>
+                          <td>{{notice.expectingOrders?.length}}</td>
+                        </tr>
+                        <ng-container *ngIf="notice.expectingOrders && notice.expectingOrders.length > 0">
+                          <tr>
+                            <td class="custom-th"></td>
+                            <td class="custom-th"></td>
+                            <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
+                            <td class="custom-th" colspan="2"><span translate>order.label.workflow</span></td>
+                            <td class="custom-th"><span translate>order.label.position</span></td>
+                          </tr>
+                          <tr *ngFor="let order of notice.expectingOrders">
+                            <td></td>
+                            <td></td>
+                            <td><span class="p-l">{{order.orderId}}</span></td>
+                            <td colspan="2">
+                              <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');"
+                                 *ngIf="permission.joc && permission.joc.inventory.view"
+                                 class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                              <a (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);"
+                                 class="text-hover-primary">{{order.workflowId.path}} </a>
+                            </td>
+                            <td><span>{{order.positionString}}</span></td>
+                          </tr>
+                        </ng-container>
+                      </ng-template>
+                      </tbody>
+                    </nz-table>
+                  </td>
+                </tr>
+                </ng-container>
+                </ng-template>
+                </tbody>
+                </nz-table>
+                <div *ngIf="ajaxTable.data.length >0"
+                     class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+                  <span *ngIf="ajaxTable.data.length >1" translate>resource.board.label.boardsFound</span>
+                  <span *ngIf="ajaxTable.data.length ==1" translate>resource.board.label.boardFound</span>
                 </div>
               </div>
             </div>
@@ -391,22 +438,24 @@
     </div>
   </div>
 </div>
-<nz-drawer [nzVisible]="isSearchVisible" nzPlacement="right" (nzOnClose)="closeSearch()">
+<nz-drawer (nzOnClose)="closeSearch()" [nzVisible]="isSearchVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
-    <div class="close-btn" (click)="closeSearch()"></div>
+    <div (click)="closeSearch()" class="close-btn"></div>
     <div *ngIf="isSearchVisible">
-      <div class="text-center m-b-sm text" ><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span></div>
-      <app-inventory-search [controllerId]="schedulerIds.selected" [isBoard]="true" (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)"></app-inventory-search>
+      <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>
+      </div>
+      <app-inventory-search (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)" [controllerId]="schedulerIds.selected"
+                            [isBoard]="true"></app-inventory-search>
     </div>
   </ng-container>
 </nz-drawer>
-<div class="spinner" *ngIf="(loading && pageView === 'grid') || !isLoading">
+<div *ngIf="(loading && pageView === 'grid') || !isLoading" class="spinner">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
 </div>
 <div *ngIf="loading || reloadState == 'yes'">
-  <div class="bottom-btn" (click)="reload()">
+  <div (click)="reload()" class="bottom-btn">
     <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
     <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
   </div>

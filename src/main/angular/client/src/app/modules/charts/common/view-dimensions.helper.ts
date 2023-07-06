@@ -1,22 +1,22 @@
-import { LegendPosition } from './types/legend.model';
-import { ScaleType } from './types/scale-type.enum';
-import { ViewDimensions } from './types/view-dimension.interface';
+import {LegendPosition} from './types/legend.model';
+import {ScaleType} from './types/scale-type.enum';
+import {ViewDimensions} from './types/view-dimension.interface';
 
 export function calculateViewDimensions({
-  width,
-  height,
-  margins,
-  showXAxis = false,
-  showYAxis = false,
-  xAxisHeight = 0,
-  yAxisWidth = 0,
-  showXLabel = false,
-  showYLabel = false,
-  showLegend = false,
-  legendType = ScaleType.Ordinal,
-  legendPosition = LegendPosition.Right,
-  columns = 12
-}): ViewDimensions {
+                                          width,
+                                          height,
+                                          margins,
+                                          showXAxis = false,
+                                          showYAxis = false,
+                                          xAxisHeight = 0,
+                                          yAxisWidth = 0,
+                                          showXLabel = false,
+                                          showYLabel = false,
+                                          showLegend = false,
+                                          legendType = ScaleType.Ordinal,
+                                          legendPosition = LegendPosition.Right,
+                                          columns = 12
+                                        }): ViewDimensions {
   let xOffset = margins[3];
   let chartWidth = width;
   let chartHeight = height - margins[0] - margins[2];

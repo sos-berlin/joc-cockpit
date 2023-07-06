@@ -1,6 +1,6 @@
-import { Component, SimpleChanges, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
-import { BarOrientation } from './types/bar-orientation.enum';
-import { ViewDimensions } from './types/view-dimension.interface';
+import {Component, SimpleChanges, Input, OnChanges, ChangeDetectionStrategy} from '@angular/core';
+import {BarOrientation} from './types/bar-orientation.enum';
+import {ViewDimensions} from './types/view-dimension.interface';
 
 interface GridPanel {
   class: ClassEnum;

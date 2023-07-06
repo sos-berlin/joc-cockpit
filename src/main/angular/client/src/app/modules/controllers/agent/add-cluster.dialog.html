@@ -7,48 +7,54 @@
     </span>
     <span *ngIf="new" translate>agent.label.createCluster</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
-    <div class="hide" [ngClass]="{'show': display}">
+    <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label"  [nz-tooltip]="'agent.cluster.subagent.tooltip.clusterName' | translate" translate>agent.label.clusterName
+      <label [nz-tooltip]="'agent.cluster.subagent.tooltip.clusterName' | translate" class="col-sm-3 form-control-label"
+             translate>agent.label.clusterName
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-sm-8" [ngClass]="{'has-error' : ((subagentClusterId.dirty || subagentClusterId.touched) && subagentClusterId.invalid) || !isUniqueId}">
-        <input type="text" identifierValidation [appAutofocus]="true" class="form-control" name="subagentClusterId" [readOnly]="!new && !isCopy"
-               required [(ngModel)]="cluster.subagentClusterId" #subagentClusterId="ngModel"
-               placeholder="{{'agent.placeholder.enterClusterName' | translate}}" (blur)="checkUnique()">
-        <div *ngIf="subagentClusterId.invalid && (subagentClusterId.dirty || subagentClusterId.touched)" class="text-danger help-block">
+      <div [ngClass]="{'has-error' : ((subagentClusterId.dirty || subagentClusterId.touched) && subagentClusterId.invalid) || !isUniqueId}"
+           class="col-sm-8">
+        <input #subagentClusterId="ngModel" (blur)="checkUnique()" [(ngModel)]="cluster.subagentClusterId" [appAutofocus]="true" [readOnly]="!new && !isCopy"
+               class="form-control"
+               identifierValidation name="subagentClusterId" placeholder="{{'agent.placeholder.enterClusterName' | translate}}"
+               required type="text">
+        <div *ngIf="subagentClusterId.invalid && (subagentClusterId.dirty || subagentClusterId.touched)"
+             class="text-danger help-block">
           <div *ngIf="subagentClusterId.errors.required">
             <div translate>common.message.requiredError</div>
           </div>
           <div *ngIf="subagentClusterId.errors.invalidIdentifier" translate>common.message.invalid</div>
         </div>
-        <div class="help-block text-danger" *ngIf="!isUniqueId">
+        <div *ngIf="!isUniqueId" class="help-block text-danger">
           <div translate>common.message.uniqueError</div>
         </div>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label"  [nz-tooltip]="'agent.cluster.subagent.tooltip.title' | translate" translate>common.label.title</label>
+      <label [nz-tooltip]="'agent.cluster.subagent.tooltip.title' | translate" class="col-sm-3 form-control-label"
+             translate>common.label.title</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" [(ngModel)]="cluster.title"
-               [maxLength]="255" name="title" placeholder="{{'common.placeholder.title' | translate}}">
+        <input [(ngModel)]="cluster.title" [maxLength]="255" class="form-control"
+               name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || !isUniqueId || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm">
+    <button [disabled]="!myForm.form.valid || !isUniqueId || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+            type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

@@ -8,9 +8,8 @@ import {
   FavoriteListComponent,
   EditFavoriteModalComponent
 } from './user.component';
-import {FileUploadModule} from 'ng2-file-upload';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
-import { SharedModule } from '../shared/shared.module';
+import {SharedModule} from '../shared/shared.module';
 import {UserRoutingModule} from './user-routing.module';
 
 @NgModule({
@@ -26,8 +25,7 @@ import {UserRoutingModule} from './user-routing.module';
   imports: [
     SharedModule,
     NzTabsModule,
-    UserRoutingModule,
-    FileUploadModule
+    UserRoutingModule
   ]
 })
 export class UserModule {

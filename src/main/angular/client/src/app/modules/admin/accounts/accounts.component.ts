@@ -1,9 +1,9 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {isEqual, clone} from 'underscore';
 import {saveAs} from 'file-saver';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../data.service';
@@ -11,28 +11,29 @@ import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.c
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {ShowPermissionComponent} from "../show-permission/show-permission.component";
-import {UploadModalComponent} from "../upload/upload.component";
 import {AddBlocklistModalComponent} from '../blocklist/blocklist.component';
+import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
 
 @Component({
   selector: 'app-confirmation-modal',
   templateUrl: './confirmation-dialog.html'
 })
-export class ConfirmationModalComponent implements OnInit {
-  @Input() delete: any;
-  @Input() cancel = false;
-  @Input() reset: any;
-  @Input() forceChange: any;
-  @Input() accounts: any;
-  @Input() account: any;
-  @Input() approve  = false;
-  @Input() reject  = false;
-  @Input() deleteRequest: any;
-  @Input() isRole: any;
-  @Input() blocklist: any;
-  @Input() activeSession: any;
-  @Input() identityServiceName = '';
-  @Input() deleteDevices  = false;
+export class ConfirmationModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  delete: any;
+  cancel = false;
+  reset: any;
+  forceChange: any;
+  accounts: any;
+  account: any;
+  approve = false;
+  reject = false;
+  deleteRequest: any;
+  isRole: any;
+  blocklist: any;
+  activeSession: any;
+  identityServiceName = '';
+  deleteDevices = false;
   submitted = false;
   display: any;
   required = false;
@@ -42,6 +43,20 @@ export class ConfirmationModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.delete = this.modalData.delete;
+    this.cancel = this.modalData.cancel;
+    this.reset = this.modalData.reset;
+    this.forceChange = this.modalData.forceChange;
+    this.accounts = this.modalData.accounts;
+    this.account = this.modalData.account;
+    this.approve = this.modalData.approve;
+    this.reject = this.modalData.reject;
+    this.deleteRequest = this.modalData.deleteRequest;
+    this.isRole = this.modalData.isRole;
+    this.blocklist = this.modalData.blocklist;
+    this.activeSession = this.modalData.activeSession;
+    this.identityServiceName = this.modalData.identityServiceName;
+    this.deleteDevices = this.modalData.deleteDevices;
     let preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
@@ -119,14 +134,15 @@ export class ConfirmationModalComponent implements OnInit {
   selector: 'app-user-modal-content',
   templateUrl: './user-dialog.html'
 })
-export class AccountModalComponent implements OnInit {
-  @Input() newUser = false;
-  @Input() copy = false;
-  @Input() userDetail: any;
-  @Input() accountList: any = [];
-  @Input() oldUser: any;
-  @Input() identityServiceType = '';
-  @Input() identityServiceName = '';
+export class AccountModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  newUser = false;
+  copy = false;
+  userDetail: any;
+  accountList: any = [];
+  oldUser: any;
+  identityServiceType = '';
+  identityServiceName = '';
 
   submitted = false;
   isUnique = true;
@@ -145,6 +161,13 @@ export class AccountModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.newUser = this.modalData.newUser;
+    this.copy = this.modalData.copy;
+    this.userDetail = this.modalData.userDetail;
+    this.accountList = this.modalData.accountList;
+    this.oldUser = this.modalData.oldUser;
+    this.identityServiceType = this.modalData.identityServiceType;
+    this.identityServiceName = this.modalData.identityServiceName;
     this.comments.radio = 'predefined';
     this.secondFactor = !!sessionStorage['secondFactor'];
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
@@ -317,7 +340,7 @@ export class AccountModalComponent implements OnInit {
   selector: 'app-accounts-all',
   templateUrl: 'accounts.component.html'
 })
-export class AccountsComponent implements OnInit, OnDestroy {
+export class AccountsComponent {
   loading = true;
   preferences: any = {};
   permission: any = {};
@@ -413,7 +436,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: ShowPermissionComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         identityServiceName: this.identityServiceName,
         account
       },
@@ -430,7 +453,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: AccountModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         userDetail: this.userDetail,
         identityServiceType: this.identityServiceType,
         identityServiceName: this.identityServiceName,
@@ -448,12 +471,12 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  editUser(account): void {
+  editUser(account: any): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AccountModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         userDetail: this.userDetail,
         identityServiceType: this.identityServiceType,
         identityServiceName: this.identityServiceName,
@@ -471,12 +494,12 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  copyUser(account): void {
+  copyUser(account: any): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AccountModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         userDetail: this.userDetail,
         identityServiceType: this.identityServiceType,
         identityServiceName: this.identityServiceName,
@@ -495,7 +518,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  disabledUser(account, isEnable) {
+  disabledUser(account: any, isEnable: boolean) {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
@@ -510,7 +533,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -575,7 +598,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -592,7 +615,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title: 'delete',
           message: 'deleteUser',
           type: 'Delete',
@@ -626,7 +649,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -643,7 +666,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmationModalComponent,
-        nzComponentParams: {
+        nzData: {
           delete: true,
           identityServiceName: this.identityServiceName
         },
@@ -686,7 +709,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmationModalComponent,
-      nzComponentParams: {
+      nzData: {
         identityServiceName: this.identityServiceName,
         reset: true,
         account,
@@ -708,7 +731,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmationModalComponent,
-      nzComponentParams: {
+      nzData: {
         identityServiceName: this.identityServiceName,
         forceChange: true,
         account,
@@ -731,7 +754,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzAutofocus: null,
       nzContent: AddBlocklistModalComponent,
-      nzComponentParams: {
+      nzData: {
         existingComments: this.dataService.comments,
         obj
       },
@@ -760,7 +783,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -781,7 +804,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmationModalComponent,
-        nzComponentParams: {
+        nzData: {
           delete: true,
           account: acc,
           blocklist: true
@@ -829,7 +852,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -901,10 +924,11 @@ export class AccountsComponent implements OnInit, OnDestroy {
   private importAccount(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
-      nzContent: UploadModalComponent,
+      nzContent: FileUploaderComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
+        type: 'USER',
         identityServiceType: this.identityServiceType,
         identityServiceName: this.identityServiceName,
         display: this.preferences.auditLog,
@@ -1057,7 +1081,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -1074,7 +1098,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmationModalComponent,
-        nzComponentParams: {
+        nzData: {
           deleteDevices: true,
           account: account
         },

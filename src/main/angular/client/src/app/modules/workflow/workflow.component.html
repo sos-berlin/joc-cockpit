@@ -1,4 +1,4 @@
-<div class="operation-status-info" *ngIf="isProcessing">
+<div *ngIf="isProcessing" class="operation-status-info">
   <div id='prog-bar-cont'>
     <div id="prog-bar">
       <div id="background"></div>
@@ -14,53 +14,59 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline m-b-xs" [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}">
+          <div [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}" class="inline m-b-xs">
             <div class="btn-group dropdown">
-              <button [disabled]="savedFilter.selected" (click)="openSelectbox()" class="btn btn-grey btn-sm m-l-12 z-index" [ngClass]="{ 'btn-primary' : workflowFilters.filter.agentNames?.length > 0}">
+              <button (click)="openSelectbox()" [disabled]="savedFilter.selected"
+                      [ngClass]="{ 'btn-primary' : workflowFilters.filter.agentNames?.length > 0}"
+                      class="btn btn-grey btn-sm m-l-12 z-index">
                 {{'deploymentService.label.agents' | translate}}
-                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
-              <nz-select id="agent-select" [disabled]="savedFilter.selected" (ngModelChange)="selectAgents($event)" nzMode="multiple" class="multi-select-dropdown cursor" name="agentNames" [nzDropdownClassName]="'multi-select-dropdown-list'"
-                         [nzAllowClear]="false"
-                         [(ngModel)]="workflowFilters.filter.agentNames" >
+              <nz-select (ngModelChange)="selectAgents($event)" [(ngModel)]="workflowFilters.filter.agentNames" [disabled]="savedFilter.selected"
+                         [nzAllowClear]="false" [nzDropdownClassName]="'multi-select-dropdown-list'" class="multi-select-dropdown cursor"
+                         id="agent-select"
+                         name="agentNames"
+                         nzMode="multiple">
                 <ng-container *ngFor="let item of listOfAgents; let i = index">
-                    <nz-option-group *ngFor="let group of [item]" [nzLabel]="groupTitle">
-                      <ng-template #groupTitle>
+                  <nz-option-group *ngFor="let group of [item]" [nzLabel]="groupTitle">
+                    <ng-template #groupTitle>
                         <span class="_600">
                           {{ 'agent.label.' + group?.title | translate }}
                         </span>
-                        <span *ngIf="i == 0" class="cursor text-primary-hover pos-rel pull-right font14 t-xs" (click)="selectAgents([])" nz-icon nzType="close-circle" nzTheme="outline"></span>
-                      </ng-template>
-                      <ng-container *ngIf="item.title == 'agents'">
-                          <nz-option *ngFor="let agent of group.children" [nzLabel]="agent"
-                                     [nzValue]="agent"></nz-option>
-                      </ng-container>
-                      <ng-container *ngIf="item.title !== 'agents'">
-                          <nz-option *ngFor="let agent of group?.children" [nzLabel]="agent.title" [nzValue]="agent.title">
-                          </nz-option>
-                      </ng-container>
-                    </nz-option-group>
+                      <span (click)="selectAgents([])" *ngIf="i == 0"
+                            class="cursor text-primary-hover pos-rel pull-right font14 t-xs" nz-icon nzTheme="outline" nzType="close-circle"></span>
+                    </ng-template>
+                    <ng-container *ngIf="item.title == 'agents'">
+                      <nz-option *ngFor="let agent of group.children" [nzLabel]="agent"
+                                 [nzValue]="agent"></nz-option>
+                    </ng-container>
+                    <ng-container *ngIf="item.title !== 'agents'">
+                      <nz-option *ngFor="let agent of group?.children" [nzLabel]="agent.title" [nzValue]="agent.title">
+                      </nz-option>
+                    </ng-container>
+                  </nz-option-group>
                 </ng-container>
               </nz-select>
             </div>
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterState">
-                <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                <button (click)="loadWorkflow(btn.state)" [disabled]="savedFilter.selected"
                         [ngClass]="{'btn-primary': workflowFilters.filter.states.includes(btn.state)}"
-                        (click)="loadWorkflow(btn.state)" translate>filters.button.{{btn.text}}
+                        class="btn btn-grey btn-sm button-group-ellipsis" translate>filters.button.{{btn.text}}
                 </button>
               </ng-container>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
-              <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" type="button" translate>
+              <button [disabled]="savedFilter.selected" [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12"
+                      nz-dropdown nzTrigger="click" translate type="button">
                 common.label.status
-                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
-              <nz-dropdown-menu #anyState="nzDropdownMenu" >
+              <nz-dropdown-menu #anyState="nzDropdownMenu">
                 <ul nz-menu>
                   <ng-container *ngFor="let btn of filterState">
-                    <li nz-menu-item (click)="loadWorkflow(btn.state)"
-                        [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.filter.status=== btn.state}">
+                    <li (click)="loadWorkflow(btn.state)" [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.filter.status=== btn.state}"
+                        nz-menu-item>
                       <a translate>filters.button.{{btn.text}}</a>
                     </li>
                   </ng-container>
@@ -68,33 +74,35 @@
               </nz-dropdown-menu>
             </div>
           </div>
-          <div class="inline m-b-xs" [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}">
+          <div [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}" class="inline m-b-xs">
             <div class="btn-group dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button">
-                <span translate>workflow.label.orderFilter</span>: <span class="text-primary">{{'filters.button.'+ workflowFilters.filter.label | translate}}</span>
-                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              <button [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
+                      nzTrigger="click" type="button">
+                <span translate>workflow.label.orderFilter</span>: <span
+                class="text-primary">{{'filters.button.' + workflowFilters.filter.label | translate}}</span>
+                <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
-              <nz-dropdown-menu #anyDate="nzDropdownMenu" >
+              <nz-dropdown-menu #anyDate="nzDropdownMenu">
                 <ul nz-menu>
                   <ng-container *ngFor="let btn of filterBtn">
-                    <li nz-menu-item (click)="loadOrders(btn.date);workflowFilters.filter.label = btn.text;"
-                        [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.filter.date=== btn.date}">
+                    <li (click)="loadOrders(btn.date);workflowFilters.filter.label = btn.text;" [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.filter.date=== btn.date}"
+                        nz-menu-item>
                       <a translate>filters.button.{{btn.text}}</a>
                     </li>
                   </ng-container>
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <button class="btn btn-grey btn-sm m-l-12" (click)="suspendAll(true)"><i
+            <button (click)="suspendAll(true)" class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-stop p-r-xs"></i>
               <span class="hidden-sm-down" translate>workflow.button.suspendAll</span></button>
-            <button class="btn btn-grey btn-sm m-l-12" (click)="resumeAll(true)"><i
+            <button (click)="resumeAll(true)" class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
                                                            translate>workflow.button.resumeAll</span>
             </button>
             <div class="btn-group dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy"
-                      [nzPlacement]="'bottomRight'">
+              <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
+                      nzTrigger="click">
                 <span translate>common.label.sortBy</span>
                 <span class="text-primary">
                   <span *ngIf="workflowFilters.filter.sortBy ==='name'">
@@ -111,54 +119,56 @@
               </button>
               <nz-dropdown-menu #sortBy="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item (click)="sort('name')">
+                  <li (click)="sort('name')" nz-menu-item>
                     <a translate>common.label.name</a>
                   </li>
-                  <li nz-menu-item (click)="sort('path1')">
+                  <li (click)="sort('path1')" nz-menu-item>
                     <a translate>common.label.path</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
-              <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button">
+            <div *ngIf="permission.joc && permission.joc.administration.customization.view" class="btn-group dropdown">
+              <button [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+                      class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" type="button">
                 {{'customization.label.customizations' | translate}}
-                <span class="text-primary" [innerHtml]="selectedFiltered.name"></span>
-                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                <span [innerHtml]="selectedFiltered.name" class="text-primary"></span>
+                <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item  *ngIf="permission.joc && permission.joc.administration.customization.manage" (click)="createCustomization()">
+                  <li (click)="createCustomization()" *ngIf="permission.joc && permission.joc.administration.customization.manage"
+                      nz-menu-item>
                     <a translate>customization.label.createCustomization</a>
                   </li>
-                  <li nz-menu-item  *ngIf="filterList.length>0" (click)="editFilters()">
+                  <li (click)="editFilters()" *ngIf="filterList.length>0" nz-menu-item>
                     <a translate>customization.label.editExistingCustomizations</a>
                   </li>
-                  <li nz-menu-divider *ngIf="filterList.length>0"></li>
-                  <li nz-menu-item  (click)="changeFilter(filter)" *ngFor="let filter of filterList | orderBy: 'name'"
-                      [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}">
+                  <li *ngIf="filterList.length>0" nz-menu-divider></li>
+                  <li (click)="changeFilter(filter)" *ngFor="let filter of filterList | orderBy: 'name'" [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}"
+                      nz-menu-item>
                     <a>
                       <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
-                         *ngIf="savedFilter.selected == filter.id" class="fa fa-times-circle-o remove"
-                         [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"></i>
+                         *ngIf="savedFilter.selected == filter.id" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                         class="fa fa-times-circle-o remove"></i>
                     </a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
-                    [disabled]="data.length===0" (click)="exportToExcel()">
+            <button (click)="exportToExcel()" [disabled]="data.length===0"
+                    [nz-tooltip]="'common.tooltip.exportInXLS' | translate" class="btn btn-grey btn-sm m-l-12">
               <i class="fa fa-share-square-o"></i></button>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
-          <div class="hide" [ngClass]="{'show-block':object.mapOfCheckedId.size > 0}">
-            <button class="btn btn-grey btn-sm m-l-12" (click)="suspendAll()" [disabled]="!object.isSuspend"><i
-                class="fa fa-stop p-r-xs"></i>
+          <div [ngClass]="{'show-block':object.mapOfCheckedId.size > 0}" class="hide">
+            <button (click)="suspendAll()" [disabled]="!object.isSuspend" class="btn btn-grey btn-sm m-l-12"><i
+              class="fa fa-stop p-r-xs"></i>
               <span class="hidden-sm-down" translate>order.button.suspend</span></button>
-            <button class="btn btn-grey btn-sm m-l-12" (click)="resumeAll()" [disabled]="!object.isResume"><i
-                class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
-                translate>order.button.resume</span>
+            <button (click)="resumeAll()" [disabled]="!object.isResume" class="btn btn-grey btn-sm m-l-12"><i
+              class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
+                                                           translate>order.button.resume</span>
             </button>
           </div>
         </div>
@@ -170,72 +180,78 @@
   <div class="padding p-b-0">
     <div class="row m-t-xs">
       <div class="col-lg-12">
-        <div appResizable [sideView]="sideView" id="leftPanel" class="sticky leftPanel workflow">
+        <div [sideView]="sideView" appResizable class="sticky leftPanel workflow" id="leftPanel">
           <div *ngIf="tree.length>0">
             <div class="editor-tree">
-              <app-tree-navigation [schedulerId]="schedulerIds.selected" [type]="'WORKFLOW'" [tree]="tree" [sideView]="sideView.workflow"
+              <app-tree-navigation (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)" [defaultExpandedKeys]="workflowFilters.expandedKeys"
                                    [defaultSelectedKeys]="workflowFilters.selectedkeys"
-                                   [defaultExpandedKeys]="workflowFilters.expandedKeys"
-                                   (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)"></app-tree-navigation>
+                                   [schedulerId]="schedulerIds.selected"
+                                   [sideView]="sideView.workflow"
+                                   [tree]="tree"
+                                   [type]="'WORKFLOW'"></app-tree-navigation>
             </div>
-        </div>
+          </div>
         </div>
         <div id="rightPanel">
-          <div class="row m-b-12" *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && data.length > (workflowFilters.entryPerPage || preferences.entryPerPage))">
+          <div *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && data.length > (workflowFilters.entryPerPage || preferences.entryPerPage))"
+               class="row m-b-12">
             <div class="col-lg-12">
-              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'common.button.expandDetails' | translate}}"
-                      [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="expandDetails()">
+              <button (click)="expandDetails()" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}"
+                      class="hide btn btn-sm btn-grey" nz-tooltip="{{'common.button.expandDetails' | translate}}">
                 <i class="fa fa-expand text"></i>
               </button>
-              <button class="hide btn btn-sm btn-grey m-l-sm"
-                      nz-tooltip="{{'common.button.collapseDetails' | translate}}"
-                      [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="collapseDetails()">
+              <button (click)="collapseDetails()"
+                      [ngClass]="{'show-block':data.length>0 && pageView!='grid'}"
+                      class="hide btn btn-sm btn-grey m-l-sm" nz-tooltip="{{'common.button.collapseDetails' | translate}}">
                 <i class="fa fa-compress text"></i>
               </button>
-              <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm"
-                      nz-tooltip="{{'common.button.resetPanel' | translate}}"
-                      [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="resetPanel()">
+              <button (click)="resetPanel()"
+                      [ngClass]="{'show-block':data.length>0 && pageView!='grid'}"
+                      class="hide btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'common.button.resetPanel' | translate}}">
                 <i class="fa fa-repeat text"></i>
               </button>
-              <button class="hide btn btn-grey btn-sm" nz-tooltip="{{'common.button.compactView' | translate}}"
-                      [ngClass]="{'btn-primary': workflowFilters.isCompact == true, 'show-block':data.length>0}"
-                      (click)="toggleCompactView()">
+              <button (click)="toggleCompactView()" [ngClass]="{'btn-primary': workflowFilters.isCompact == true, 'show-block':data.length>0}"
+                      class="hide btn btn-grey btn-sm"
+                      nz-tooltip="{{'common.button.compactView' | translate}}">
                 <i class="fa fa-th-list text"></i>
               </button>
-              <button class="btn btn-sm inline pull-right m-l-12 btn-grey" (click)="inventorySearch()">
+              <button (click)="inventorySearch()" class="btn btn-sm inline pull-right m-l-12 btn-grey">
                 <i class="fa fa-search"></i>&nbsp;
                 <span translate>common.button.search</span>
               </button>
-              <button class="btn btn-sm inline pull-right m-l-12 btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
+              <button (click)="advancedSearch()" *ngIf="!showSearchPanel"
+                      class="btn btn-sm inline pull-right m-l-12 btn-grey">
                 <span translate>common.button.advancedSearch</span>
                 <i class="fa fa-caret-down p-l-xs"></i>
               </button>
-              <button class="btn btn-sm inline pull-right m-l-12 btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
+              <button (click)="cancel()" *ngIf="showSearchPanel" class="btn btn-sm inline pull-right m-l-12 btn-grey">
                 <span translate>common.button.advancedSearch</span>
                 <i class="fa fa-caret-down p-l-xs"></i>
               </button>
               <div class="search-box-field pull-right">
                 <label>
-                  <input type="search" placeholder="{{'common.placeholder.search' | translate}}"
-                         (keyup)="searchInResult()"
-                         [(ngModel)]="workflowFilters.searchText">
+                  <input (keyup)="searchInResult()" [(ngModel)]="workflowFilters.searchText"
+                         placeholder="{{'common.placeholder.search' | translate}}"
+                         type="search">
                 </label>
-                <i [hidden]="!workflowFilters.searchText" class="fa fa-times search-close"
-                   (click)="workflowFilters.searchText = '';searchInResult()"></i>
+                <i (click)="workflowFilters.searchText = '';searchInResult()" [hidden]="!workflowFilters.searchText"
+                   class="fa fa-times search-close"></i>
               </div>
             </div>
           </div>
-          <div class="row m-b" *ngIf="showSearchPanel">
+          <div *ngIf="showSearchPanel" class="row m-b">
             <div class="col-md-12">
               <div class="box p-a m-b-xs">
-                <app-form-template [filter]="searchFilter" [listOfAgents]="listOfAgents" [preferences]="preferences" [schedulerIds]="schedulerIds"
-                                   [permission]="permission" [allFilter]="filterList" [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-form-template>
+                <app-form-template (onCancel)="cancel()" (onSearch)="search()" [allFilter]="filterList"
+                                   [filter]="searchFilter"
+                                   [isSearch]="true" [listOfAgents]="listOfAgents" [permission]="permission"
+                                   [preferences]="preferences" [schedulerIds]="schedulerIds"></app-form-template>
               </div>
             </div>
           </div>
-          <div class="hide" [ngClass]="{'show': isLoading}">
+          <div [ngClass]="{'show': isLoading}" class="hide">
             <h3 *ngIf="data.length>0" class="orders"><span translate>dashboard.label.orders</span></h3>
-            <div  *ngIf="data.length>0" class="box p-t-sm p-b-6 text-overflow m-b-12">
+            <div *ngIf="data.length>0" class="box p-t-sm p-b-6 text-overflow m-b-12">
               <div class="table-responsive">
                 <table class="w-full">
                   <tr class="text-center text-sm">
@@ -272,125 +288,155 @@
                   </tr>
                   <tr class="text-center">
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600 cursor " (click)="viewOrderState('PENDING')" [ngClass]="{'light-yellow' : numOfAllOrders.pending > 0}" [innerHtml]="numOfAllOrders.pending || 0"></span>
+                      <span (click)="viewOrderState('PENDING')" [innerHtml]="numOfAllOrders.pending || 0"
+                            [ngClass]="{'light-yellow' : numOfAllOrders.pending > 0}"
+                            class="font14 _600 cursor "></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600 cursor"  (click)="viewOrderState('SCHEDULED')" [ngClass]="{'gold' : numOfAllOrders.scheduled > 0}" [innerHtml]="numOfAllOrders.scheduled || 0"></span>
+                      <span (click)="viewOrderState('SCHEDULED')" [innerHtml]="numOfAllOrders.scheduled || 0"
+                            [ngClass]="{'gold' : numOfAllOrders.scheduled > 0}"
+                            class="font14 _600 cursor"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600 cursor" (click)="viewOrderState('INPROGRESS')" [ngClass]="{'light-blue' : numOfAllOrders.inProgress > 0}" [innerHtml]="numOfAllOrders.inProgress || 0"></span>
+                      <span (click)="viewOrderState('INPROGRESS')" [innerHtml]="numOfAllOrders.inProgress || 0"
+                            [ngClass]="{'light-blue' : numOfAllOrders.inProgress > 0}"
+                            class="font14 _600 cursor"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600 cursor"  (click)="viewOrderState('RUNNING')" [ngClass]="{'green' : numOfAllOrders.running > 0}" [innerHtml]="numOfAllOrders.running || 0"></span>
+                      <span (click)="viewOrderState('RUNNING')" [innerHtml]="numOfAllOrders.running || 0"
+                            [ngClass]="{'green' : numOfAllOrders.running > 0}"
+                            class="font14 _600 cursor"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600 cursor"  (click)="viewOrderState('SUSPENDED')" [ngClass]="{'orange' : numOfAllOrders.suspended > 0}" [innerHtml]="numOfAllOrders.suspended || 0"></span>
+                      <span (click)="viewOrderState('SUSPENDED')" [innerHtml]="numOfAllOrders.suspended || 0"
+                            [ngClass]="{'orange' : numOfAllOrders.suspended > 0}"
+                            class="font14 _600 cursor"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600 cursor"  (click)="viewOrderState('COMPLETED')" [ngClass]="{'dark-blue' : numOfAllOrders.terminated > 0}" [innerHtml]="numOfAllOrders.terminated || 0"></span>
+                      <span (click)="viewOrderState('COMPLETED')" [innerHtml]="numOfAllOrders.terminated || 0"
+                            [ngClass]="{'dark-blue' : numOfAllOrders.terminated > 0}"
+                            class="font14 _600 cursor"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600 cursor " (click)="viewOrderState('PROMPTING')" [ngClass]="{'light-green' : numOfAllOrders.prompting > 0}" [innerHtml]="numOfAllOrders.prompting || 0"></span>
+                      <span (click)="viewOrderState('PROMPTING')" [innerHtml]="numOfAllOrders.prompting || 0"
+                            [ngClass]="{'light-green' : numOfAllOrders.prompting > 0}"
+                            class="font14 _600 cursor "></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600 cursor"  (click)="viewOrderState('WAITING')" [ngClass]="{'yellow-green' : numOfAllOrders.waiting > 0}" [innerHtml]="numOfAllOrders.waiting || 0"></span>
+                      <span (click)="viewOrderState('WAITING')" [innerHtml]="numOfAllOrders.waiting || 0"
+                            [ngClass]="{'yellow-green' : numOfAllOrders.waiting > 0}"
+                            class="font14 _600 cursor"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600 cursor"  (click)="viewOrderState('BLOCKED')" [ngClass]="{'mangenta' : numOfAllOrders.blocked > 0}" [innerHtml]="numOfAllOrders.blocked || 0"></span>
+                      <span (click)="viewOrderState('BLOCKED')" [innerHtml]="numOfAllOrders.blocked || 0"
+                            [ngClass]="{'mangenta' : numOfAllOrders.blocked > 0}"
+                            class="font14 _600 cursor"></span>
                     </td>
                     <td [width]="'10%'" style="padding:0 !important;">
-                      <span class="font14 _600 cursor"  (click)="viewOrderState('FAILED')" [ngClass]="{'red' : numOfAllOrders.failed > 0}" [innerHtml]="numOfAllOrders.failed || 0"></span>
+                      <span (click)="viewOrderState('FAILED')" [innerHtml]="numOfAllOrders.failed || 0"
+                            [ngClass]="{'red' : numOfAllOrders.failed > 0}"
+                            class="font14 _600 cursor"></span>
                     </td>
                   </tr>
                 </table>
               </div>
             </div>
-            <div class="row" *ngIf="pageView=='grid' && data.length>0" [hidden]="loading">
-              <div class="w-full" *ngFor="let item of data | groupBy: 'path1'">
+            <div *ngIf="pageView=='grid' && data.length>0" [hidden]="loading" class="row">
+              <div *ngFor="let item of data | groupBy: 'path1'" class="w-full">
                 <div class="col-sm-12 m-b-10">
                   <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
                 </div>
-                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
-                     *ngFor="let workflow of item.value">
+                <div *ngFor="let workflow of item.value"
+                     class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
                   <div class="box card">
                     <div class="box-body">
                       <div>
                         <label class="pos-abt">
-                          <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(workflow.path)" (nzCheckedChange)="onItemChecked(workflow, $event)"></label>
+                          <label (nzCheckedChange)="onItemChecked(workflow, $event)" [nzChecked]="object.mapOfCheckedId.has(workflow.path)"
+                                 nz-checkbox></label>
                         </label>
                         <div class="text-left block-ellipsis m-l-md">
                           <i class="icon-workflows-icon"></i>&nbsp;
-                          <i class="cursor fa fa-list" (click)="navToDetailView('list', workflow)"></i>
-                          <i class="cursor fa fa-th p-l-xs p-r-xs" (click)="navToDetailView('grid', workflow)"></i>
-                          <i *ngIf="workflow.documentationName" (click)="coreService.showDocumentation(workflow.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
-                          <span [nz-tooltip]="workflow.title" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
+                          <i (click)="navToDetailView('list', workflow)" class="cursor fa fa-list"></i>
+                          <i (click)="navToDetailView('grid', workflow)" class="cursor fa fa-th p-l-xs p-r-xs"></i>
+                          <i (click)="coreService.showDocumentation(workflow.documentationName, preferences)"
+                             *ngIf="workflow.documentationName"
+                             class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                          <span [innerHtml]="workflow.name | highlight : workflowFilters.searchText"
+                                [nz-tooltip]="workflow.title"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
-                          <app-workflow-action [isDisabled]="object.checked || object.indeterminate" [schedulerId]="schedulerIds.selected" [permission]="permission" (isChanged)="changedHandler($event)"
-                                               [preferences]="preferences" [workflow]="workflow"></app-workflow-action>
+                          <app-workflow-action (isChanged)="changedHandler($event)"
+                                               [isDisabled]="object.checked || object.indeterminate" [permission]="permission"
+                                               [preferences]="preferences"
+                                               [schedulerId]="schedulerIds.selected" [workflow]="workflow"></app-workflow-action>
                         </div>
                       </div>
                       <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
                         <span translate>inventory.label.deploymentDate </span>:
-                        <span class="text-black-dk" [innerHtml]="workflow.versionDate | stringToDate | highlight : workflowFilters.searchText"></span>
+                        <span [innerHtml]="workflow.versionDate | stringToDate | highlight : workflowFilters.searchText"
+                              class="text-black-dk"></span>
                       </div>
                       <div class="text-sm text-left text-muted p-t-xs">
                         <span translate>common.label.status </span>:
-                        <span *ngIf="workflow.state" [ngClass]="coreService.getColor(workflow.state.severity, 'text')" [innerHtml]="workflow.state._text | translate | highlight : workflowFilters.searchText"></span>
-                        <app-tooltip-info *ngIf="workflow.state && (workflow.state._text === 'OUTSTANDING')" [workflow]="workflow" [controllerId]="schedulerIds.selected"></app-tooltip-info>
+                        <span *ngIf="workflow.state" [innerHtml]="workflow.state._text | translate | highlight : workflowFilters.searchText"
+                              [ngClass]="coreService.getColor(workflow.state.severity, 'text')"></span>
+                        <app-tooltip-info *ngIf="workflow.state && (workflow.state._text === 'OUTSTANDING')"
+                                          [controllerId]="schedulerIds.selected"
+                                          [workflow]="workflow"></app-tooltip-info>
                       </div>
                       <div class="text-sm text-left text-muted p-t-xs">
                         <span>
-                          <a class="text-black _600 m-l text-hover-primary p-r-xs"
-                                (click)="viewOrders(workflow)"
-                                [innerHtml]="workflow.numOfOrders || 0"></a>
+                          <a (click)="viewOrders(workflow)"
+                             [innerHtml]="workflow.numOfOrders || 0"
+                             class="text-black _600 m-l text-hover-primary p-r-xs"></a>
                           <span *ngIf="workflow.numOfOrders>1" translate>order.label.orders</span>
                           <span *ngIf="!workflow.numOfOrder || workflow.numOfOrders < 2"
                                 translate>workflow.label.order</span>
                         </span>
                       </div>
-                      <div class="text-sm text-left text-muted m-l p-t-xs" *ngIf="!workflowFilters.isCompact">
-                        <span class="text-black _600 p-r-xs"
-                           [innerHtml]="workflow.ordersSummary.pending || 0"></span>
+                      <div *ngIf="!workflowFilters.isCompact" class="text-sm text-left text-muted m-l p-t-xs">
+                        <span [innerHtml]="workflow.ordersSummary.pending || 0"
+                              class="text-black _600 p-r-xs"></span>
                         <span [innerHtml]="'common.label.pending' | translate"></span>
-                        <span class="text-black _600 m-l p-r-xs"
-                              [innerHtml]="workflow.ordersSummary.scheduled || 0"></span>
+                        <span [innerHtml]="workflow.ordersSummary.scheduled || 0"
+                              class="text-black _600 m-l p-r-xs"></span>
                         <span [innerHtml]="'common.label.scheduled' | translate"></span>
-                        <span class="text-black _600 m-l p-r-xs"
-                           [innerHtml]="workflow.ordersSummary.inProgress || 0"></span>
+                        <span [innerHtml]="workflow.ordersSummary.inProgress || 0"
+                              class="text-black _600 m-l p-r-xs"></span>
                         <span [innerHtml]="'common.label.incomplete' | translate"></span>
-                        <span class="text-black _600 m-l p-r-xs"
-                              [innerHtml]="workflow.ordersSummary.running || 0"></span>
+                        <span [innerHtml]="workflow.ordersSummary.running || 0"
+                              class="text-black _600 m-l p-r-xs"></span>
                         <span [innerHtml]="'common.label.running' | translate"></span>
                       </div>
-                      <div class="text-sm text-left text-muted m-l p-t-xs" *ngIf="!workflowFilters.isCompact">
-                        <span class="text-black _600 p-r-xs"
-                           [innerHtml]="workflow.ordersSummary.suspended || 0"></span>
+                      <div *ngIf="!workflowFilters.isCompact" class="text-sm text-left text-muted m-l p-t-xs">
+                        <span [innerHtml]="workflow.ordersSummary.suspended || 0"
+                              class="text-black _600 p-r-xs"></span>
                         <span [innerHtml]="'common.label.suspended' | translate"></span>
-                        <span class="text-black _600 m-l p-r-xs"
-                              [innerHtml]="workflow.ordersSummary.prompting || 0"></span>
+                        <span [innerHtml]="workflow.ordersSummary.prompting || 0"
+                              class="text-black _600 m-l p-r-xs"></span>
                         <span [innerHtml]="'common.label.prompting' | translate"></span>
-                        <span class="text-black _600 m-l p-r-xs"
-                           [innerHtml]="workflow.ordersSummary.waiting || 0"></span>
+                        <span [innerHtml]="workflow.ordersSummary.waiting || 0"
+                              class="text-black _600 m-l p-r-xs"></span>
                         <span [innerHtml]="'common.label.waiting' | translate"></span>
-                        <span class="text-black _600 m-l p-r-xs"
-                                 [innerHtml]="workflow.ordersSummary.blocked || 0"></span>
+                        <span [innerHtml]="workflow.ordersSummary.blocked || 0"
+                              class="text-black _600 m-l p-r-xs"></span>
                         <span [innerHtml]="'common.label.blocked' | translate"></span>
                       </div>
-                      <div class="text-sm text-left text-muted m-l p-t-xs" *ngIf="!workflowFilters.isCompact">
-                        <span class="text-black _600 p-r-xs"
-                              [innerHtml]="workflow.ordersSummary.failed || 0"></span>
+                      <div *ngIf="!workflowFilters.isCompact" class="text-sm text-left text-muted m-l p-t-xs">
+                        <span [innerHtml]="workflow.ordersSummary.failed || 0"
+                              class="text-black _600 p-r-xs"></span>
                         <span [innerHtml]="'common.label.failed' | translate"></span>
-                        <span class="text-black _600 m-l p-r-xs"
-                              [innerHtml]="workflow.ordersSummary.terminated || 0"></span>
+                        <span [innerHtml]="workflow.ordersSummary.terminated || 0"
+                              class="text-black _600 m-l p-r-xs"></span>
                         <span [innerHtml]="'common.label.completed' | translate"></span>
                       </div>
                     </div>
                     <div class="box-footer b-t">
                       <div>
-                        <a class="hide text-left primary-text-hover-color"
+                        <a (click)="actionChild.addOrder(workflow);"
                            [ngClass]="{'show-block':permission.currentController && permission.currentController.orders.create, 'disable-link': (!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC')}"
-                           (click)="actionChild.addOrder(workflow);">
+                           class="hide text-left primary-text-hover-color">
                           <i class="fa fa-plus-square-o text-black-lt p-r-xs"></i>
                           <span class="text-black-lt" translate>workflow.button.addOrder</span>
                         </a>
@@ -400,63 +446,72 @@
                 </div>
               </div>
             </div>
-            <div class="text-center font14 box p-a-10 m-b-12" *ngIf="object.checked && object.mapOfCheckedId.size > 0 && data.length > (workflowFilters.entryPerPage || preferences.entryPerPage)">
-              <span translate *ngIf="object.mapOfCheckedId.size !== data.length" [translateParams]="{count: object.mapOfCheckedId.size}">common.label.selectAllEntriesOfCurrentPage</span>
-              <span translate *ngIf="object.mapOfCheckedId.size === data.length" [translateParams]="{count: data.length}">common.label.allEntriesSelected</span>
-              <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size !== data.length" (click)="selectAll()" translate [translateParams]="{count: data.length}">common.label.selectAllEntries</a>
-              <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size === data.length" (click)="resetCheckBox()" translate>common.label.clearSelection</a>
+            <div *ngIf="object.checked && object.mapOfCheckedId.size > 0 && data.length > (workflowFilters.entryPerPage || preferences.entryPerPage)"
+                 class="text-center font14 box p-a-10 m-b-12">
+              <span *ngIf="object.mapOfCheckedId.size !== data.length" [translateParams]="{count: object.mapOfCheckedId.size}"
+                    translate>common.label.selectAllEntriesOfCurrentPage</span>
+              <span *ngIf="object.mapOfCheckedId.size === data.length" [translateParams]="{count: data.length}"
+                    translate>common.label.allEntriesSelected</span>
+              <a (click)="selectAll()" *ngIf="object.mapOfCheckedId.size !== data.length" [translateParams]="{count: data.length}"
+                 class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
+              <a (click)="resetCheckBox()" *ngIf="object.mapOfCheckedId.size === data.length"
+                 class="text-primary p-l-xs" translate>common.label.clearSelection</a>
             </div>
-            <div class="box p-a m-t-xs m-b-0" *ngIf="pageView!=='grid' && tree.length > 0">
-              <perfect-scrollbar appResizable class="resizable pos-init" [height]="resizerHeight"
-                   [type]="'workflow'" [path]="currentPath" id="workflowTableId" (psScrollY)="scrollEnd($event)">
+            <div *ngIf="pageView!=='grid' && tree.length > 0" class="box p-a m-t-xs m-b-0">
+              <perfect-scrollbar (psScrollY)="scrollEnd($event)" [height]="resizerHeight" [path]="currentPath"
+                                 [type]="'workflow'" appResizable class="resizable pos-init"
+                                 id="workflowTableId">
                 <nz-table
                   #ajaxTable
-                  [nzSize]="'small'"
-                  [nzPageSize]="workflowFilters.entryPerPage || preferences.entryPerPage"
-                  [nzPageIndex]="workflowFilters.currentPage"
-                  [nzBordered]="true"
-                  [nzShowPagination]="data.length > 0"
-                  [nzData]="data"
-                  [nzLoading]="loading"
-                  [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
                   (nzPageSizeChange)="pageSizeChange($event)"
+                  [nzBordered]="true"
+                  [nzData]="data"
+                  [nzLoading]="loading"
+                  [nzPageIndex]="workflowFilters.currentPage"
                   [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+                  [nzPageSize]="workflowFilters.entryPerPage || preferences.entryPerPage"
+                  [nzShowPagination]="data.length > 0"
+                  [nzShowSizeChanger]="true"
+                  [nzSize]="'small'"
                 >
                   <thead>
                   <tr>
-        	          <th class="chk" [nzShowCheckbox]="true" [(nzChecked)]="object.checked"
-                        [nzIndeterminate]="object.indeterminate" (nzCheckedChange)="checkAll($event)" rowspan="2"></th>
+                    <th (nzCheckedChange)="checkAll($event)" [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
+                        [nzShowCheckbox]="true" class="chk" rowspan="2"></th>
                     <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
-                    <th [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" (click)="sort('name')" rowspan="2">
+                    <th (click)="sort('name')" [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" rowspan="2">
                       <a><span class="p-r-xs" translate>common.label.name</span>
                         <i *ngIf="workflowFilters.filter.sortBy == 'name' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="workflowFilters.filter.sortBy == 'name' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" (click)="sort('path1')" rowspan="2">
+                    <th (click)="sort('path1')" [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" rowspan="2">
                       <a><span class="p-r-xs" translate>common.label.path</span>
                         <i *ngIf="workflowFilters.filter.sortBy == 'path1' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="workflowFilters.filter.sortBy == 'path1' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th [nzWidth]="workflowFilters.isCompact ? '150px' : 'auto'" (click)="sort('versionDate')" rowspan="2">
+                    <th (click)="sort('versionDate')" [nzWidth]="workflowFilters.isCompact ? '150px' : 'auto'"
+                        rowspan="2">
                       <a><span class="p-r-xs" translate>inventory.label.deploymentDate</span>
                         <i *ngIf="workflowFilters.filter.sortBy == 'versionDate' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="workflowFilters.filter.sortBy == 'versionDate' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th [nzWidth]="workflowFilters.isCompact ? '100px' : 'auto'" (click)="sort('state._text')" rowspan="2">
+                    <th (click)="sort('state._text')" [nzWidth]="workflowFilters.isCompact ? '100px' : 'auto'"
+                        rowspan="2">
                       <a><span class="p-r-xs" translate>common.label.status</span>
                         <i *ngIf="workflowFilters.filter.sortBy == 'state._text' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="workflowFilters.filter.sortBy == 'state._text' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th [nzWidth]="workflowFilters.isCompact ? '100px' : 'auto'" (click)="sort('numOfOrders')" rowspan="2">
+                    <th (click)="sort('numOfOrders')" [nzWidth]="workflowFilters.isCompact ? '100px' : 'auto'"
+                        rowspan="2">
                       <a><span class="p-r-xs" translate>workflow.label.noOfOrders</span>
                         <i *ngIf="workflowFilters.filter.sortBy == 'numOfOrders' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
@@ -475,17 +530,20 @@
                     </th>
                     <th (click)="sort('ordersSummary.scheduled')">
                       <a><span class="p-r-xs" translate>common.label.scheduled</span>
-                        <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.scheduled' && !workflowFilters.reverse"
-                           class="fa fa-caret-up "></i>
+                        <i
+                          *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.scheduled' && !workflowFilters.reverse"
+                          class="fa fa-caret-up "></i>
                         <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.scheduled' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
                     <th (click)="sort('ordersSummary.inprogress')">
                       <a><span class="p-r-xs" translate>common.label.incomplete</span>
-                        <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.inprogress' && !workflowFilters.reverse"
-                           class="fa fa-caret-up "></i>
-                        <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.inprogress' && workflowFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
+                        <i
+                          *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.inprogress' && !workflowFilters.reverse"
+                          class="fa fa-caret-up "></i>
+                        <i
+                          *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.inprogress' && workflowFilters.reverse"
+                          class="fa fa-caret-down "></i></a>
                     </th>
                     <th (click)="sort('ordersSummary.running')">
                       <a><span class="p-r-xs" translate>common.label.running</span>
@@ -536,62 +594,87 @@
                         <i
                           *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.terminated' && !workflowFilters.reverse"
                           class="fa fa-caret-up "></i>
-                        <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.terminated' && workflowFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
+                        <i
+                          *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.terminated' && workflowFilters.reverse"
+                          class="fa fa-caret-down "></i></a>
                     </th>
                   </tr>
                   </thead>
                   <tbody>
-                  <ng-template ngFor let-workflow
-                               [ngForOf]="ajaxTable.data">
+                  <ng-template [ngForOf]="ajaxTable.data" let-workflow
+                               ngFor>
                     <tr [ngClass]="{'light-bg':workflow.show}">
-			                <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(workflow.path)"
-                          (nzCheckedChange)="onItemChecked(workflow,$event)"></td>
+                      <td (nzCheckedChange)="onItemChecked(workflow,$event)" [nzChecked]="object.mapOfCheckedId.has(workflow.path)"
+                          [nzShowCheckbox]="true"></td>
                       <td>
                         <div class="btn-group dropdown">
-                          <app-workflow-action [isDisabled]="object.checked || object.indeterminate" [schedulerId]="schedulerIds.selected" [permission]="permission" (isChanged)="changedHandler($event)"
-                                               [preferences]="preferences" [workflow]="workflow"></app-workflow-action>
+                          <app-workflow-action (isChanged)="changedHandler($event)"
+                                               [isDisabled]="object.checked || object.indeterminate" [permission]="permission"
+                                               [preferences]="preferences"
+                                               [schedulerId]="schedulerIds.selected" [workflow]="workflow"></app-workflow-action>
                         </div>
                       </td>
                       <td>
                         <span class="show-in-single-line">
-                          <i *ngIf="!workflow.show" class="cursor fa fa-chevron-down p-l-xs p-r-xs t-n-1 pos-rel" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="workflow.isExpand = true;showPanelFuc(workflow)"></i>
-                          <i *ngIf="workflow.show" class="cursor fa fa-chevron-up p-l-xs p-r-xs t-n-1 pos-rel" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;hidePanelFuc(workflow)"></i>
-                          <i class="cursor fa fa-caret-down fa-lg p-l-xxs t-n-1 pos-rel"
-                             *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
-                          <i class="cursor fa fa-caret-up fa-lg p-l-xxs t-n-1 pos-rel" *ngIf="workflow.show"
-                             (click)="hidePanelFuc(workflow)"></i>
-                          <i *ngIf="permission.currentController && permission.currentController.orders.create && workflow.isCurrentVersion && workflow.state._text !== 'NOT_IN_SYNC'" class="cursor fa fa-plus p-l-xs"
-                             [nz-tooltip]="'workflow.button.addOrder' | translate" (click)="addOrder(workflow)"></i>
-                          <i class="cursor fa fa-list p-l-xs" [nz-tooltip]="'workflow.button.showTabularView' | translate" (click)="navToDetailView('list', workflow)"></i>
-                          <i class="cursor fa fa-th p-l-xs p-r-xs" [nz-tooltip]="'workflow.button.showGraphicalView' | translate" (click)="navToDetailView('grid', workflow)"></i>
-                          <i *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies" class="cursor fa fa-codepen p-l-xs p-r-xs"
-                             [nz-tooltip]="'workflow.button.showDependency' | translate" (click)="showDependency(workflow)"></i>
-                          <i *ngIf="workflow.documentationName" (click)="coreService.showDocumentation(workflow.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
-                          <a class="text-dark noExl" >
-                            <span class="cursor primary-text-hover-color" (click)="showPanelFunc(workflow)" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
+                          <i (click)="workflow.isExpand = true;showPanelFuc(workflow)" *ngIf="!workflow.show"
+                             [nz-tooltip]="'common.tooltip.expandAll' | translate"
+                             class="cursor fa fa-chevron-down p-l-xs p-r-xs t-n-1 pos-rel"></i>
+                          <i (click)="workflow.isExpand = false;hidePanelFuc(workflow)" *ngIf="workflow.show"
+                             [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+                             class="cursor fa fa-chevron-up p-l-xs p-r-xs t-n-1 pos-rel"></i>
+                          <i (click)="showPanelFuc(workflow)"
+                             *ngIf="!workflow.show" class="cursor fa fa-caret-down fa-lg p-l-xxs t-n-1 pos-rel"></i>
+                          <i (click)="hidePanelFuc(workflow)" *ngIf="workflow.show"
+                             class="cursor fa fa-caret-up fa-lg p-l-xxs t-n-1 pos-rel"></i>
+                          <i
+                            (click)="addOrder(workflow)"
+                            *ngIf="permission.currentController && permission.currentController.orders.create && workflow.isCurrentVersion && workflow.state._text !== 'NOT_IN_SYNC'"
+                            [nz-tooltip]="'workflow.button.addOrder' | translate" class="cursor fa fa-plus p-l-xs"></i>
+                          <i (click)="navToDetailView('list', workflow)"
+                             [nz-tooltip]="'workflow.button.showTabularView' | translate"
+                             class="cursor fa fa-list p-l-xs"></i>
+                          <i (click)="navToDetailView('grid', workflow)"
+                             [nz-tooltip]="'workflow.button.showGraphicalView' | translate"
+                             class="cursor fa fa-th p-l-xs p-r-xs"></i>
+                          <i
+                            (click)="showDependency(workflow)"
+                            *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies"
+                            [nz-tooltip]="'workflow.button.showDependency' | translate"
+                            class="cursor fa fa-codepen p-l-xs p-r-xs"></i>
+                          <i (click)="coreService.showDocumentation(workflow.documentationName, preferences)"
+                             *ngIf="workflow.documentationName"
+                             class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                          <a class="text-dark noExl">
+                            <span (click)="showPanelFunc(workflow)" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"
+                                  class="cursor primary-text-hover-color"></span>
                             <i *ngIf="workflow.title"> - </i>
-                            <i class="text-muted" [innerHtml]="workflow.title | stringToLink"></i>
+                            <i [innerHtml]="workflow.title | stringToLink" class="text-muted"></i>
                           </a>
                         </span>
                       </td>
                       <td>
                         <span class="show-in-single-line">
-                          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
-                            class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                          <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
+                             *ngIf="permission.joc && permission.joc.inventory.view"
+                             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                           <span [innerHtml]="workflow.path | highlight : workflowFilters.searchText"></span>
                         </span>
                       </td>
                       <td>
-                        <span [innerHtml]="workflow.versionDate | stringToDate | highlight : workflowFilters.searchText"></span>
+                        <span
+                          [innerHtml]="workflow.versionDate | stringToDate | highlight : workflowFilters.searchText"></span>
                       </td>
                       <td>
-                        <a class="label" *ngIf="workflow.state" [ngClass]="coreService.getColor(workflow.state.severity, 'bg')"
-                           [innerHtml]="workflow.state._text | translate | highlight : workflowFilters.searchText"></a>
-                        <app-tooltip-info *ngIf="workflow.state && (workflow.state._text === 'OUTSTANDING')" [workflow]="workflow" [controllerId]="schedulerIds.selected"></app-tooltip-info>
+                        <a *ngIf="workflow.state" [innerHtml]="workflow.state._text | translate | highlight : workflowFilters.searchText"
+                           [ngClass]="coreService.getColor(workflow.state.severity, 'bg')"
+                           class="label"></a>
+                        <app-tooltip-info *ngIf="workflow.state && (workflow.state._text === 'OUTSTANDING')"
+                                          [controllerId]="schedulerIds.selected"
+                                          [workflow]="workflow"></app-tooltip-info>
                       </td>
                       <td>
-                        <span class="remaining-order-count" (click)="viewOrders(workflow)" [innerHtml]="workflow.numOfOrders || 0"></span>
+                        <span (click)="viewOrders(workflow)" [innerHtml]="workflow.numOfOrders || 0"
+                              class="remaining-order-count"></span>
                       </td>
                       <td *ngIf="!workflowFilters.isCompact">
                         <span [innerHtml]="workflow.ordersSummary.pending || 0"></span>
@@ -620,33 +703,37 @@
                       <td *ngIf="!workflowFilters.isCompact">
                         <span [innerHtml]="workflow.ordersSummary.failed || 0"></span>
                       </td>
-                       <td *ngIf="!workflowFilters.isCompact">
+                      <td *ngIf="!workflowFilters.isCompact">
                         <span [innerHtml]="workflow.ordersSummary.terminated || 0"></span>
                       </td>
                     </tr>
-                    <ng-container *ngIf="workflow.show && workflow.fileOrderSources && workflow.fileOrderSources.length>0">
+                    <ng-container
+                      *ngIf="workflow.show && workflow.fileOrderSources && workflow.fileOrderSources.length>0">
                       <tr>
                         <td class="menu"></td>
                         <td [colSpan]="!workflowFilters.isCompact ? 17 : 5" style="padding:0 !important;">
-                          <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
-                                    [nzData]="workflow.fileOrderSources" [nzShowPagination]="false" [nzFrontPagination]="false">
-                            <thead>
-                            <tr>
-                              <th><span class="m-l-sm" translate>common.label.path</span></th>
-                              <th><span translate>inventory.label.deploymentDate</span></th>
-                              <th><span translate>common.label.status</span></th>
-                              <th><span translate>workflow.label.agent</span></th>
-                              <th><span translate>inventory.label.directory</span></th>
-                              <th><span translate>inventory.label.pattern</span></th>
-                              <th><span translate>common.label.timeZone</span></th>
-                              <th><span translate>workflow.label.delay</span></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                              <tr *ngFor="let order of innerChildTable.data">
-                                <td>
+                          <nz-table #innerChildTable [nzData]="workflow.fileOrderSources" [nzFrontPagination]="false"
+                                    [nzShowPagination]="false" class="m-a-0 inner-table"
+                                    nzSize="small">
+                  <thead>
+                  <tr>
+                    <th><span class="m-l-sm" translate>common.label.path</span></th>
+                    <th><span translate>inventory.label.deploymentDate</span></th>
+                    <th><span translate>common.label.status</span></th>
+                    <th><span translate>workflow.label.agent</span></th>
+                    <th><span translate>inventory.label.directory</span></th>
+                    <th><span translate>inventory.label.pattern</span></th>
+                    <th><span translate>common.label.timeZone</span></th>
+                    <th><span translate>workflow.label.delay</span></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let order of innerChildTable.data">
+                    <td>
                                   <span class="show-in-single-line m-l-sm">
-                                    <i *ngIf="order.documentationName" (click)="coreService.showDocumentation(order.documentationName, preferences)" class="cursor fa fa-book p-r-xs"></i>
+                                    <i (click)="coreService.showDocumentation(order.documentationName, preferences)"
+                                       *ngIf="order.documentationName"
+                                       class="cursor fa fa-book p-r-xs"></i>
                                     <span class="text-dark">
                                       <i (click)="coreService.navToInventoryTab(order.path, 'FILEORDERSOURCE')"
                                          class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
@@ -655,48 +742,61 @@
                                       <i class="text-muted">{{order.title}}</i>
                                     </span>
                                   </span>
-                                </td>
-                                <td>
-                                  <span [innerHtml]="order.versionDate | stringToDate"></span>
-                                </td>
-                                <td>
-                                  <span class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
-                                        [innerHtml]="order.state._text | translate"></span>
-                                </td>
-                                <td>{{order.agentName}}</td>
-                                <td>{{order.directoryExpr || order.directory}}</td>
-                                <td>{{order.pattern}}</td>
-                                <td>{{order.timeZone}}</td>
-                                <td>{{order.delay}}</td>
-                              </tr>
-                            </tbody>
-                          </nz-table>
-                        </td>
-                      </tr>
-                    </ng-container>
-                    <tr id="{{workflow.path + workflow.versionId}}" *ngIf="workflow.show">
-                      <td colspan="17">
-                        <div class="m-a-sm">
-                          <div class="hover" >
-                            <a class="text-primary noExl" translate >workflow.label.start</a>
-                            <span class="expand-collapse-btn">
-                              <i class="cursor fa fa-lg fa-angle-double-down" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="workflow.isExpand = true;"></i>
-                              <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;"></i>
-                            </span>
-                          </div>
-                          <app-type (onClick)="viewHistory($event)" [timezone]="workflow.configuration.timeZone" [workflowObj]="{path: workflow.configuration.path, versionId: workflow.configuration.versionId}" [configuration]="workflow.configuration" [orderReload]="workflow.orderReload" [jobs]="workflow.configuration.jobs" [orderPreparation]="workflow.configuration.orderPreparation" [permission]="permission" [preferences]="preferences"
-                                    [schedulerId]="schedulerIds.selected" [expandAll]="workflow.isExpand" (update)="updatePanelHeight()"
-                                    (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)" [orders]="workflow.orders"></app-type>
-                        </div>
-                      </td>
-                    </tr>
-                  </ng-template>
+                    </td>
+                    <td>
+                      <span [innerHtml]="order.versionDate | stringToDate"></span>
+                    </td>
+                    <td>
+                                  <span *ngIf="order.state" [innerHtml]="order.state._text | translate"
+                                        [ngClass]="coreService.getColor(order.state.severity, 'bg')"
+                                        class="label"></span>
+                    </td>
+                    <td>{{order.agentName}}</td>
+                    <td>{{order.directoryExpr || order.directory}}</td>
+                    <td>{{order.pattern}}</td>
+                    <td>{{order.timeZone}}</td>
+                    <td>{{order.delay}}</td>
+                  </tr>
                   </tbody>
                 </nz-table>
-                <div class="w-half label-top"
-                     *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{data.length}}
-                  <span translate *ngIf="ajaxTable.data.length >1">workflow.label.workflowsFound</span>
-                  <span translate *ngIf="ajaxTable.data.length ==1">workflow.label.workflowFound</span>
+                </td>
+                </tr>
+                </ng-container>
+                <tr *ngIf="workflow.show" id="{{workflow.path + workflow.versionId}}">
+                  <td colspan="17">
+                    <div class="m-a-sm">
+                      <div class="hover">
+                        <a class="text-primary noExl" translate>workflow.label.start</a>
+                        <span class="expand-collapse-btn">
+                              <i (click)="workflow.isExpand = true;"
+                                 [nz-tooltip]="'common.tooltip.expandAll' | translate"
+                                 class="cursor fa fa-lg fa-angle-double-down"></i>
+                              <i (click)="workflow.isExpand = false;"
+                                 [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+                                 class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
+                            </span>
+                      </div>
+                      <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)"
+                                (isProcessing)="processingHandler($event)"
+                                (onClick)="viewHistory($event)" (update)="updatePanelHeight()"
+                                [configuration]="workflow.configuration"
+                                [expandAll]="workflow.isExpand" [jobs]="workflow.configuration.jobs"
+                                [orderPreparation]="workflow.configuration.orderPreparation"
+                                [orderReload]="workflow.orderReload" [orders]="workflow.orders"
+                                [permission]="permission"
+                                [preferences]="preferences"
+                                [schedulerId]="schedulerIds.selected"
+                                [timezone]="workflow.configuration.timeZone" [workflowObj]="{path: workflow.configuration.path, versionId: workflow.configuration.versionId}"></app-type>
+                    </div>
+                  </td>
+                </tr>
+                </ng-template>
+                </tbody>
+                </nz-table>
+                <div *ngIf="ajaxTable.data.length >0"
+                     class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+                  <span *ngIf="ajaxTable.data.length >1" translate>workflow.label.workflowsFound</span>
+                  <span *ngIf="ajaxTable.data.length ==1" translate>workflow.label.workflowFound</span>
                 </div>
               </perfect-scrollbar>
               <div class="rg-bottom"><span></span></div>
@@ -705,8 +805,8 @@
                  class="text-center m-t h6">
               <app-empty-data></app-empty-data>
             </div>
-            <div class="row m-t hide" *ngIf="showPanel" [ngClass]="{'show': pageView!=='grid'}">
-              <div class="col-md-12" [hidden]="loading">
+            <div *ngIf="showPanel" [ngClass]="{'show': pageView!=='grid'}" class="row m-t hide">
+              <div [hidden]="loading" class="col-md-12">
                 <div class="box white">
                   <div class="box-header">
                     <span class="text">{{showPanel.path}} <i *ngIf="showPanel.title">-</i> <i
@@ -720,7 +820,8 @@
                     </ul>
                   </div>
                   <div class="box-body p-t-0 b-t">
-                    <app-workflow-history [jobName]="showPanel.jobName" [workflow]="{name: showPanel.name, path: showPanel.path}"></app-workflow-history>
+                    <app-workflow-history [jobName]="showPanel.jobName"
+                                          [workflow]="{name: showPanel.name, path: showPanel.path}"></app-workflow-history>
                   </div>
                 </div>
               </div>
@@ -734,30 +835,34 @@
     </div>
   </div>
 </div>
-<nz-drawer [nzVisible]="sideBar.isVisible" nzPlacement="right" (nzOnClose)="sideBar.isVisible = false">
+<nz-drawer (nzOnClose)="sideBar.isVisible = false" [nzVisible]="sideBar.isVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
-  <div class="close-btn" (click)="sideBar.isVisible = false"></div>
-  <div class="p-l-sm p-r-sm">
-    <app-order-list-sidebar [permission]="permission" [loading]="sideBar.loading" [preferences]="preferences" [schedulerId]="schedulerIds.selected" [orderPreparation]="sideBar.orderPreparation" [isSingleWorkflow]="!sideBar.state" [orders]="sideBar.orders"></app-order-list-sidebar>
-  </div>
-  </ng-container>
-</nz-drawer>
-<nz-drawer [nzVisible]="isSearchVisible" nzPlacement="right" (nzOnClose)="closeSearch()">
-  <ng-container *nzDrawerContent>
-    <div class="close-btn" (click)="closeSearch()"></div>
-    <div *ngIf="isSearchVisible">
-      <div class="text-center m-b-sm text" ><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span></div>
-      <app-inventory-search [controllerId]="schedulerIds.selected" [isWorkflow]="true" (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)"></app-inventory-search>
+    <div (click)="sideBar.isVisible = false" class="close-btn"></div>
+    <div class="p-l-sm p-r-sm">
+      <app-order-list-sidebar [isSingleWorkflow]="!sideBar.state" [loading]="sideBar.loading" [orderPreparation]="sideBar.orderPreparation"
+                              [orders]="sideBar.orders" [permission]="permission"
+                              [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order-list-sidebar>
     </div>
   </ng-container>
 </nz-drawer>
-<div class="spinner" *ngIf="(loading && pageView === 'grid') || !isLoading">
+<nz-drawer (nzOnClose)="closeSearch()" [nzVisible]="isSearchVisible" nzPlacement="right">
+  <ng-container *nzDrawerContent>
+    <div (click)="closeSearch()" class="close-btn"></div>
+    <div *ngIf="isSearchVisible">
+      <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>
+      </div>
+      <app-inventory-search (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)" [controllerId]="schedulerIds.selected"
+                            [isWorkflow]="true"></app-inventory-search>
+    </div>
+  </ng-container>
+</nz-drawer>
+<div *ngIf="(loading && pageView === 'grid') || !isLoading" class="spinner">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
 </div>
 <div *ngIf="loading || reloadState == 'yes'">
-  <div class="bottom-btn" (click)="reload()">
+  <div (click)="reload()" class="bottom-btn">
     <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
     <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
   </div>

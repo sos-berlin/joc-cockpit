@@ -1,6 +1,7 @@
 .graph-container {
   margin-left: 66px;
   overflow: auto;
+
   &:hover {
     #toolbar-icons {
       opacity: 1;
@@ -119,8 +120,8 @@
 
 ::ng-deep nz-tree-select.input-search > div.ant-select-selector {
   border: 1px solid transparent !important;
-    border-bottom: 1px solid var(--primary) !important;
-    margin-top: -5px !important;
+  border-bottom: 1px solid var(--primary) !important;
+  margin-top: -5px !important;
 }
 
 .search-icon {
@@ -133,6 +134,6 @@
   z-index: 999;
 }
 
-.input-search.ant-select-focused ~ .search-icon{
+.input-search.ant-select-focused ~ .search-icon {
   display: inline-block;
 }

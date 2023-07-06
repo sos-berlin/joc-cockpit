@@ -1,10 +1,10 @@
-import { TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import {TestBed} from '@angular/core/testing';
+import {Component} from '@angular/core';
 
-import { ChartCommonModule } from '../chart-common.module';
-import { ColorHelper } from '../color.helper';
-import { Color } from '../../utils/color-sets';
-import { ScaleType } from '../types/scale-type.enum';
+import {ChartCommonModule} from '../chart-common.module';
+import {ColorHelper} from '../color.helper';
+import {Color} from '../../utils/color-sets';
+import {ScaleType} from '../types/scale-type.enum';
 
 // some test data (includes just enough data to run the tests)
 const seriesData = ['complete', 'not complete'];

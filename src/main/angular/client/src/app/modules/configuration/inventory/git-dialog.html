@@ -6,23 +6,23 @@
     <span *ngIf="operation === 'push' && category !== 'LOCAL'" translate>inventory.label.pushToRollout</span>:
     {{data.path}}
   </h4>
-  <button type="button" class="close" (click)="activeModal.destroy()" aria-label="Close">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
-    <div class="hide" [ngClass]="{'show': display}">
+    <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
     </div>
-    <div class="form-group row" *ngIf="operation === 'clone'">
+    <div *ngIf="operation === 'clone'" class="form-group row">
       <label class="col-md-3 form-control-label" translate>inventory.label.gitUri
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-md-8" [ngClass]="{'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}">
-        <input type="text" required class="form-control" name="remoteUrl"
-               placeholder="{{'inventory.placeholder.enterRemoteUri' | translate}}"
-               #remoteUrl="ngModel" [(ngModel)]="object.remoteUrl" [appAutofocus]="true" autocomplete="off">
+      <div [ngClass]="{'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}" class="col-md-8">
+        <input #remoteUrl="ngModel" [(ngModel)]="object.remoteUrl" [appAutofocus]="true" autocomplete="off"
+               class="form-control"
+               name="remoteUrl" placeholder="{{'inventory.placeholder.enterRemoteUri' | translate}}" required type="text">
         <div *ngIf="remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)"
              class="text-danger help-block">
           <div *ngIf="(remoteUrl.errors && remoteUrl.errors['required'])">
@@ -31,13 +31,14 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="operation === 'clone' && data.path === '/'">
+    <div *ngIf="operation === 'clone' && data.path === '/'" class="form-group row">
       <label class="col-md-3 form-control-label" translate>inventory.label.folderName
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-md-8" [ngClass]="{'has-error' : ((folderName.dirty || folderName.touched) && folderName.invalid)}">
-        <input identifierValidation type="text" required class="form-control" name="folderName"
-               #folderName="ngModel" [(ngModel)]="object.folderName"  autocomplete="off">
+      <div [ngClass]="{'has-error' : ((folderName.dirty || folderName.touched) && folderName.invalid)}"
+           class="col-md-8">
+        <input #folderName="ngModel" [(ngModel)]="object.folderName" autocomplete="off" class="form-control" identifierValidation
+               name="folderName" required type="text">
         <div *ngIf="folderName.invalid && folderName.errors && (folderName.dirty || folderName.touched)"
              class="text-danger help-block">
           <div *ngIf="(folderName.errors['required'])">
@@ -47,23 +48,23 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="operation === 'push'">
+    <div *ngIf="operation === 'push'" class="form-group row">
       <label class="col-sm-3 form-control-label" translate>inventory.label.gitMessage</label>
       <div class="col-sm-8">
-        <textarea rows="5" class="form-control" maxlength="255" name="message"
-                  [(ngModel)]="message"
+        <textarea [(ngModel)]="message" class="form-control" maxlength="255" name="message"
                   placeholder="{{'inventory.placeholder.enterGitMessage' | translate}}"
+                  rows="5"
         ></textarea>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)"
-            class="btn btn-primary btn-sm">
+    <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+            type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

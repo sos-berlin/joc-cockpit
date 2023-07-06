@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { AuditLogComponent } from './audit-log.component';
+import {AuditLogComponent} from './audit-log.component';
 
 describe('ErrorComponent', () => {
   let component: AuditLogComponent;
@@ -8,9 +8,9 @@ describe('ErrorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AuditLogComponent ]
+      declarations: [AuditLogComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

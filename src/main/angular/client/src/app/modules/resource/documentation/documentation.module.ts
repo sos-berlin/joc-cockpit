@@ -1,10 +1,8 @@
 import {NgModule} from '@angular/core';
-import {FileUploadModule} from 'ng2-file-upload';
 import {ResourceSharedModule} from '../resource-shared.module';
 import {
   DocumentationComponent,
   EditModalComponent,
-  ImportModalComponent,
   ShowModalComponent,
   SingleDocumentationComponent
 } from './documentation.component';
@@ -15,10 +13,9 @@ import {SharedModule} from '../../shared/shared.module';
   imports: [
     SharedModule,
     ResourceSharedModule,
-    DocumentationRoutingModule,
-    FileUploadModule
+    DocumentationRoutingModule
   ],
-  declarations: [DocumentationComponent, SingleDocumentationComponent, EditModalComponent, ImportModalComponent, ShowModalComponent]
+  declarations: [DocumentationComponent, SingleDocumentationComponent, EditModalComponent, ShowModalComponent]
 })
 export class DocumentationModule {
 }

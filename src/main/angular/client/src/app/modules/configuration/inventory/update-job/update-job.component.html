@@ -3,17 +3,17 @@
     <span class="drag-text" translate>inventory.updateJob.label.updateJob</span>:
     {{data.jobName || '*'}}
   </h4>
-  <button type="button" class="close" aria-label="Close"
-          (click)="step === 3 ? activeModal.close('Close') : activeModal.destroy()">
+  <button (click)="step === 3 ? activeModal.close('Close') : activeModal.destroy()" aria-label="Close" class="close"
+          type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a min-ht-400">
     <div class="row">
-      <div class="col-md-12" *ngIf="step === 1">
-        <div class="text-center m-t-lg" *ngIf="data.onlyUpdate">
-          <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
+      <div *ngIf="step === 1" class="col-md-12">
+        <div *ngIf="data.onlyUpdate" class="text-center m-t-lg">
+          <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
         </div>
         <div *ngIf="!data.onlyUpdate">
           <div class="m-l font14 _600" translate>
@@ -22,31 +22,38 @@
           <div class="m-t">
             <ul>
               <li *ngFor="let item of data.workflows">
-                <a class="text-hover-primary" (click)="getObject(item.id)"><i class="icon-workflows-icon p-r-xs"></i> {{item.path}}</a>
+                <a (click)="getObject(item.id)" class="text-hover-primary"><i
+                  class="icon-workflows-icon p-r-xs"></i> {{item.path}}</a>
               </li>
             </ul>
           </div>
         </div>
       </div>
-      <div class="col-md-12" *ngIf="step === 2">
-        <app-job-content [checkboxObjects]="checkboxObjects" [selectedNode]="selectedNode" [isModal]="true" [exactMatch]="data.exactMatch" [preferences]="preferences" [isTooltipVisible]="!preferences.showTooltipInfo" [agents]="agents.agentList"
-                         [jobResourcesTree]="jobResourcesTree" [documentationTree]="documentationTree" [schedulerId]="controllerId"></app-job-content>
+      <div *ngIf="step === 2" class="col-md-12">
+        <app-job-content [agents]="agents.agentList" [checkboxObjects]="checkboxObjects" [documentationTree]="documentationTree"
+                         [exactMatch]="data.exactMatch" [isModal]="true"
+                         [isTooltipVisible]="!preferences.showTooltipInfo" [jobResourcesTree]="jobResourcesTree"
+                         [preferences]="preferences" [schedulerId]="controllerId"
+                         [selectedNode]="selectedNode"></app-job-content>
       </div>
-      <div class="col-md-12 min-ht-400" *ngIf="step === 3">
-        <div style="display: flex;justify-content: center;align-items: center;" [ngStyle]="{'height': renameFailedJobs.length > 0 ? '100px' : '100%'}">
+      <div *ngIf="step === 3" class="col-md-12 min-ht-400">
+        <div [ngStyle]="{'height': renameFailedJobs.length > 0 ? '100px' : '100%'}"
+             style="display: flex;justify-content: center;align-items: center;">
           <div class="text-md">
-            <span class="_600" translate [translateParams]="{workflowsCount: data.workflows.length}">inventory.updateJob.message.updateSuccessfully</span>
-            <a class="text-primary p-l-xs" (click)="step = 4;" translate>inventory.updateJob.button.clickHereToDeploy</a>
+            <span [translateParams]="{workflowsCount: data.workflows.length}" class="_600" translate>inventory.updateJob.message.updateSuccessfully</span>
+            <a (click)="step = 4;" class="text-primary p-l-xs"
+               translate>inventory.updateJob.button.clickHereToDeploy</a>
           </div>
         </div>
-        <div class="font14 m-t text-center" *ngIf="renameFailedJobs.length > 0">
-          <span class="_600" translate>Renaming of job '{{data.jobName}}' to '{{selectedNode.obj.jobName}}' is failed in {{renameFailedJobs.length}} workflows</span>
+        <div *ngIf="renameFailedJobs.length > 0" class="font14 m-t text-center">
+          <span class="_600" translate>Renaming of job '{{data.jobName}}' to '{{selectedNode.obj.jobName}}
+            ' is failed in {{renameFailedJobs.length}} workflows</span>
           <div *ngFor="let workflow of renameFailedJobs">
             <i class="icon-workflows-icon p-r-xs"></i> {{workflow}}
           </div>
         </div>
       </div>
-      <div class="col-md-12" *ngIf="step === 4">
+      <div *ngIf="step === 4" class="col-md-12">
         <div *ngIf="preferences.auditLog">
           <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
         </div>
@@ -56,12 +63,12 @@
           </label>
           <div class="col-md-8">
             <nz-select
-              nzMode="multiple"
-              nzShowSearch
+              [(ngModel)]="selectedSchedulerIds"
               name="schedulerIds"
-              [(ngModel)]="selectedSchedulerIds">
+              nzMode="multiple"
+              nzShowSearch>
               <ng-container *ngFor="let id of schedulerIds.controllerIds">
-                <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
+                <nz-option [nzLabel]="id" [nzValue]="id"></nz-option>
               </ng-container>
             </nz-select>
           </div>
@@ -70,22 +77,26 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted" *ngIf="step === 2" translate>
+    <button *ngIf="step === 2" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm" translate
+            type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" (click)="deploy()" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" *ngIf="step === 4" translate>
+    <button (click)="deploy()" *ngIf="step === 4" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)"
+            class="btn btn-primary btn-sm" translate
+            type="button">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'inventory.button.deploy' | translate}}
     </button>
-    <button type="button" class="btn btn-secondary btn-sm" (click)="step = 1" *ngIf="step == 2 && !data.onlyUpdate" translate>
+    <button (click)="step = 1" *ngIf="step == 2 && !data.onlyUpdate" class="btn btn-secondary btn-sm" translate
+            type="button">
       common.button.back
     </button>
-    <button type="button" class="btn btn-grey btn-sm" *ngIf="step === 3" (click)="activeModal.close('Close')" translate>
+    <button (click)="activeModal.close('Close')" *ngIf="step === 3" class="btn btn-grey btn-sm" translate type="button">
       common.button.close
     </button>
-    <button type="button" class="btn btn-grey btn-sm" [disabled]="submitted" *ngIf="step !== 3"
-            (click)="activeModal.destroy()" translate>
+    <button (click)="activeModal.destroy()" *ngIf="step !== 3" [disabled]="submitted" class="btn btn-grey btn-sm"
+            translate type="button">
       common.button.cancel
     </button>
   </div>

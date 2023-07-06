@@ -5,49 +5,50 @@
     <i *ngIf="order" class="text-muted p-l-xs text">{{order.orderId}}</i>
     <i *ngIf="plan" class="text-muted p-l-xs text">{{plan.key}}</i>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="cancel()">
+  <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
-    <div class="hide" [ngClass]="{'show': display}">
+    <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
     </div>
     <div class="row">
       <div class="col-sm-12">
-        <div class="form-group row" *ngIf="(plan && !errorMsg) || orders">
+        <div *ngIf="(plan && !errorMsg) || orders" class="form-group row">
           <div class="col-md-12 font14">
-            <span *ngIf="n2 === 0" translate [translateParams]="{n1}">dailyPlan.popup.modifyOrdersCount</span>
-            <span *ngIf="n2>0" translate [translateParams]="{n1, n2}">dailyPlan.popup.modifyCyclicOrdersCount</span>
+            <span *ngIf="n2 === 0" [translateParams]="{n1}" translate>dailyPlan.popup.modifyOrdersCount</span>
+            <span *ngIf="n2>0" [translateParams]="{n1, n2}" translate>dailyPlan.popup.modifyCyclicOrdersCount</span>
           </div>
         </div>
-        <div class="form-group row" *ngIf="order && order.orderId">
+        <div *ngIf="order && order.orderId" class="form-group row">
           <label class="col-md-3" translate>dailyPlan.label.plannedStart</label>
           <div class="col-md-9">
             <span *ngIf="order.plannedStartTime">{{order.plannedStartTime}}</span>
             <span *ngIf="!order.plannedStartTime && !order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
           </div>
         </div>
-        <div class="form-group row" *ngIf="plan && !errorMsg">
+        <div *ngIf="plan && !errorMsg" class="form-group row">
           <label class="col-md-3" translate>dailyPlan.label.plannedStart</label>
           <div class="col-md-9">
-            <span *ngIf="plan.value.length ==1 && plan.value[0].plannedStartTime">{{plan.value[0].plannedStartTime}}</span>
-            <span *ngIf="plan.value.length > 1" translate [translateParams]="{n1}">dailyPlan.popup.differentModifyStartTime</span>
+            <span
+              *ngIf="plan.value.length ==1 && plan.value[0].plannedStartTime">{{plan.value[0].plannedStartTime}}</span>
+            <span *ngIf="plan.value.length > 1" [translateParams]="{n1}" translate>dailyPlan.popup.differentModifyStartTime</span>
           </div>
         </div>
         <ng-container *ngIf="order && !order.cyclicOrder">
           <div class="form-group row">
             <label class="col-md-3 " translate>order.label.ignoreAdmissionTimes</label>
             <div class="col-md-8">
-              <label nz-checkbox [(ngModel)]="dateType.forceJobAdmission" name="ignoreAdmissionTimes">
+              <label [(ngModel)]="dateType.forceJobAdmission" name="ignoreAdmissionTimes" nz-checkbox>
               </label>
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-3" translate>common.label.startTime</label>
             <div class="col-md-9">
-              <nz-radio-group name="at" [(ngModel)]="dateType.at">
+              <nz-radio-group [(ngModel)]="dateType.at" name="at">
                 <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
                 <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
                 <label nz-radio nzValue="later"><span translate>common.label.relativeDate</span></label>
@@ -55,34 +56,41 @@
               </nz-radio-group>
             </div>
           </div>
-          <div class="form-group row" *ngIf="dateType.at == 'later'">
+          <div *ngIf="dateType.at == 'later'" class="form-group row">
             <label class="col-md-3 form-control-label" translate>common.label.time
-             <sup class="text-danger text-sm">*</sup>
+              <sup class="text-danger text-sm">*</sup>
             </label>
-            <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
-              <input validTimeReqex type="text" #time="ngModel" class="form-control" required
-                     name="atTime" [(ngModel)]="order.atTime" placeholder="{{'common.placeholder.enterSecond' | translate}}">
+            <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
+              <input #time="ngModel" [(ngModel)]="order.atTime" class="form-control" name="atTime" placeholder="{{'common.placeholder.enterSecond' | translate}}"
+                     required type="text"
+                     validTimeReqex>
               <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
-                <div translate *ngIf="!time.valid">common.message.invalid</div>
+                <div *ngIf="!time.valid" translate>common.message.invalid</div>
               </div>
             </div>
           </div>
-          <div class="form-group row" *ngIf="dateType.at == 'date'">
+          <div *ngIf="dateType.at == 'date'" class="form-group row">
             <label class="col-md-3 form-control-label" translate>workflow.label.enterDateAndTime
               <sup class="text-danger text-sm">*</sup>
             </label>
-            <div class="col-sm-6" [ngClass]="{ 'has-error' : (((from.dirty || from.touched) && from.invalid))}">
-              <nz-date-picker [nzDisabledDate]="disabledDate" required #from="ngModel" [nzPlaceHolder]="dateFormat | uppercase" [nzFormat]="dateFormat" [(ngModel)]="order.fromDate"
-                  name="from"></nz-date-picker>
+            <div [ngClass]="{ 'has-error' : (((from.dirty || from.touched) && from.invalid))}" class="col-sm-6">
+              <nz-date-picker #from="ngModel" [(ngModel)]="order.fromDate" [nzDisabledDate]="disabledDate"
+                              [nzFormat]="dateFormat" [nzPlaceHolder]="dateFormat | uppercase"
+                              name="from"
+                              required></nz-date-picker>
               <div *ngIf="from.invalid && (from.dirty || from.touched)" class="text-danger help-block">
                 <div *ngIf="from.errors.required">
                   <div translate>common.message.requiredError</div>
                 </div>
               </div>
-              <div class="time-picker" [ngClass]="{ 'has-error' : (((fromTime.dirty || fromTime.touched) && fromTime.invalid))}">
-                <input timevalidator validTimeReqex [disabled]="!order.fromDate" type="text" #fromTime="ngModel" class="form-control"
-                    name="fromTime" [(ngModel)]="order.fromTime" (ngModelChange)="selectTime(order.fromTime, true)" placeholder="HH:MM:SS">
-                <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)" [(ngModel)]="order.fromTime1" name="fromTimeIcon"></nz-time-picker>
+              <div [ngClass]="{ 'has-error' : (((fromTime.dirty || fromTime.touched) && fromTime.invalid))}"
+                   class="time-picker">
+                <input #fromTime="ngModel" (ngModelChange)="selectTime(order.fromTime, true)" [(ngModel)]="order.fromTime" [disabled]="!order.fromDate" class="form-control"
+                       name="fromTime"
+                       placeholder="HH:MM:SS" timevalidator type="text"
+                       validTimeReqex>
+                <nz-time-picker (ngModelChange)="selectTime($event)" [(ngModel)]="order.fromTime1"
+                                [nzAllowEmpty]="false" name="fromTimeIcon"></nz-time-picker>
               </div>
             </div>
           </div>
@@ -91,7 +99,7 @@
           <div class="form-group row">
             <label class="col-md-3 " translate>order.label.ignoreAdmissionTimes</label>
             <div class="col-md-8">
-              <label nz-checkbox [(ngModel)]="order.forceJobAdmission" name="ignoreAdmissionTimes">
+              <label [(ngModel)]="order.forceJobAdmission" name="ignoreAdmissionTimes" nz-checkbox>
               </label>
             </div>
           </div>
@@ -99,41 +107,43 @@
             <label class="col-md-3 form-control-label" translate>runtime.label.repeatTime
               <sup class="text-danger text-sm">*</sup>
             </label>
-            <div class="col-md-2" [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}">
-              <input timevalidator validTimeReqex required maxlength="8" class="form-control" name="repeat" #repeat="ngModel"
-                     [(ngModel)]="period.repeat"
-                     placeholder="HH:MM:SS" type="text">
+            <div [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}" class="col-md-2">
+              <input #repeat="ngModel" [(ngModel)]="period.repeat" class="form-control" maxlength="8" name="repeat" placeholder="HH:MM:SS"
+                     required
+                     timevalidator
+                     type="text" validTimeReqex>
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label" translate>runtime.label.begin
               <sup class="text-danger text-sm">*</sup>
             </label>
-            <div class="col-md-2" [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}">
-              <input timevalidator validTimeReqex required maxlength="8" class="form-control" name="begin" #begin="ngModel"
-                     [(ngModel)]="period.begin"
-                     placeholder="HH:MM:SS" type="text">
+            <div [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}" class="col-md-2">
+              <input #begin="ngModel" [(ngModel)]="period.begin" class="form-control" maxlength="8" name="begin" placeholder="HH:MM:SS"
+                     required
+                     timevalidator
+                     type="text" validTimeReqex>
             </div>
             <label class="col-md-2 form-control-label text-right" translate>runtime.label.end
               <sup class="text-danger text-sm">*</sup>
             </label>
-            <div class="col-md-2" [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}">
-              <input timevalidator validTimeReqex required maxlength="8" class="form-control" name="end" #end="ngModel"
-                     [(ngModel)]="period.end"
-                     placeholder="HH:MM:SS" type="text">
+            <div [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}" class="col-md-2">
+              <input #end="ngModel" [(ngModel)]="period.end" class="form-control" maxlength="8" name="end" placeholder="HH:MM:SS" required
+                     timevalidator
+                     type="text" validTimeReqex>
             </div>
           </div>
         </ng-container>
-        <div class="form-group row" *ngIf="errorMsg">
-          <div class="col-md-12 text-center p-a" translate [translateParams]="{n1, n2}">
+        <div *ngIf="errorMsg" class="form-group row">
+          <div [translateParams]="{n1, n2}" class="col-md-12 text-center p-a" translate>
             dailyPlan.popup.cannotModifyStartTime
           </div>
         </div>
-        <div class="form-group row" *ngIf="!errorMsg" [hidden]="!(dateType.at =='date')">
+        <div *ngIf="!errorMsg" [hidden]="!(dateType.at =='date')" class="form-group row">
           <div class="col-md-3 form-control-label" translate>common.label.timeZone</div>
           <div class="col-sm-6">
-            <nz-select nzShowSearch name="timeZone" nzAllowClear [(ngModel)]="dateType.timeZone">
-              <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
+            <nz-select [(ngModel)]="dateType.timeZone" name="timeZone" nzAllowClear nzShowSearch>
+              <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
             </nz-select>
           </div>
         </div>
@@ -141,11 +151,12 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" *ngIf="order" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm">
+    <button *ngIf="order" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+            type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

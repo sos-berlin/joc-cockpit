@@ -1,4 +1,4 @@
-import { timeFormat } from 'd3-time-format';
+import {timeFormat} from 'd3-time-format';
 
 export function tickFormat(fieldType, groupByType): (label: string) => string {
   return function (label: string): string {

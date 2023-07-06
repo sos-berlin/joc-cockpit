@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {NzModalRef} from 'ng-zorro-antd/modal';
+import {Component, inject} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
 @Component({
@@ -7,15 +7,24 @@ import {CoreService} from '../../services/core.service';
   templateUrl: './filter.component.html'
 })
 export class EditFilterModalComponent {
-
-  @Input() permission: any;
-  @Input() filterList: any;
-  @Input() username = '';
-  @Input() favorite: any;
-  @Input() action: any;
-  @Input() self: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  permission: any;
+  filterList: any;
+  username: string = '';
+  favorite: any;
+  action: any;
+  self: any;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.permission = this.modalData.permission;
+    this.filterList = this.modalData.filterList;
+    this.username = this.modalData.username;
+    this.favorite = this.modalData.favorite;
+    this.action = this.modalData.action;
+    this.self = this.modalData.self;
   }
 
   editFilter(filter): void {

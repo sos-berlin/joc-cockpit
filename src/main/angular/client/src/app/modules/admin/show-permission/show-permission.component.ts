@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NzModalRef} from "ng-zorro-antd/modal";
+import {Component, inject} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef} from "ng-zorro-antd/modal";
 import {AuthService} from "../../../components/guard";
 import {CoreService} from "../../../services/core.service";
 
@@ -7,9 +7,10 @@ import {CoreService} from "../../../services/core.service";
   selector: 'app-show-permission-view',
   templateUrl: './show-permission.component.html'
 })
-export class ShowPermissionComponent implements OnInit {
-  @Input() identityServiceName: string;
-  @Input() account: any = {};
+export class ShowPermissionComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  identityServiceName: string;
+  account: any = {};
   isLoaded = false;
   permission: any = {};
   schedulerIds: any = {};
@@ -18,6 +19,8 @@ export class ShowPermissionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.identityServiceName = this.modalData.identityServiceName;
+    this.account = this.modalData.account;
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.getPermission();
   }

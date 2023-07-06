@@ -1,10 +1,10 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {Component, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
-import {isEmpty, clone} from 'underscore';
+import {clone, isEmpty} from 'underscore';
 import {takeUntil} from 'rxjs/operators';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
@@ -16,7 +16,7 @@ import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
 import {ExcelService} from '../../services/excel.service';
-import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
+import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 
 declare const $: any;
 
@@ -24,22 +24,27 @@ declare const $: any;
   selector: 'app-filter-modal-content',
   templateUrl: './filter-dialog.html',
 })
-export class FilterModalComponent implements OnInit {
+export class FilterModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  allFilter: any;
+  new = false;
+  edit: any;
+  filter: any;
+  listOfAgents: any = [];
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
   name = '';
 
-  @Input() allFilter: any;
-  @Input() new: any;
-  @Input() edit: any;
-  @Input() filter: any;
-  @Input() listOfAgents: any = [];
-
   constructor(private authService: AuthService, public activeModal: NzModalRef) {
   }
 
   ngOnInit(): void {
+    this.allFilter = this.modalData.allFilter;
+    this.new = this.modalData.new;
+    this.edit = this.modalData.edit;
+    this.filter = this.modalData.filter;
+    this.listOfAgents = this.modalData.listOfAgents;
     this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
@@ -67,7 +72,7 @@ export class FilterModalComponent implements OnInit {
   selector: 'app-form-template',
   templateUrl: './form-template.html',
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent {
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
@@ -117,7 +122,7 @@ export class SearchComponent implements OnInit {
     this.filter.instructionStates = this.filter.instructionStates ? this.filter.instructionStates : [];
     this.filter.states = this.filter.states ? this.filter.states : [];
 
-    this.filter.instructionStates.forEach((item:any) => {
+    this.filter.instructionStates.forEach((item: any) => {
       for (let i in this.jobAvailabilityStatusOptions) {
         if (this.jobAvailabilityStatusOptions[i].value == item) {
           this.jobAvailabilityStatusOptions[i].checked = true;
@@ -125,7 +130,7 @@ export class SearchComponent implements OnInit {
         }
       }
     });
-    this.filter.states.forEach((item:any) => {
+    this.filter.states.forEach((item: any) => {
       for (let i in this.synchronizationStatusOptions) {
         if (this.synchronizationStatusOptions[i].value == item) {
           this.synchronizationStatusOptions[i].checked = true;
@@ -157,7 +162,7 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  displayWith(data:any): string {
+  displayWith(data: any): string {
     return data.key;
   }
 
@@ -187,7 +192,7 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  remove(path:string): void {
+  remove(path: string): void {
     this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
     this.filter.paths = [...this.filter.paths];
   }
@@ -258,7 +263,7 @@ export class SearchComponent implements OnInit {
   selector: 'app-single-workflow',
   templateUrl: './single-workflow.component.html'
 })
-export class SingleWorkflowComponent implements OnInit, OnDestroy {
+export class SingleWorkflowComponent {
   loading = true;
   controllerId: any;
   preferences: any = {};
@@ -466,7 +471,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   selector: 'app-workflow',
   templateUrl: './workflow.component.html'
 })
-export class WorkflowComponent implements OnInit, OnDestroy {
+export class WorkflowComponent {
   isLoading = false;
   loading: boolean;
   isSearchHit: boolean;
@@ -1294,7 +1299,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           permission: this.permission,
           allFilter: this.filterList,
           listOfAgents: this.listOfAgents,
@@ -1324,7 +1329,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: EditFilterModalComponent,
-      nzComponentParams: {
+      nzData: {
         filterList: this.filterList,
         favorite: this.savedFilter.favorite,
         permission: this.permission,
@@ -1958,7 +1963,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           nzTitle: undefined,
           nzContent: FilterModalComponent,
           nzClassName: 'lg',
-          nzComponentParams: {
+          nzData: {
             permission: this.permission,
             allFilter: this.filterList,
             listOfAgents: this.listOfAgents,

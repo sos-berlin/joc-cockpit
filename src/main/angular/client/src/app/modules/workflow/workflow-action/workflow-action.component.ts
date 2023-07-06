@@ -15,7 +15,7 @@ import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.c
   selector: 'app-show-dependency',
   templateUrl: './show-dependency-dialog.html'
 })
-export class ShowDependencyComponent implements OnInit {
+export class ShowDependencyComponent {
   @Input() workflow: any;
   @Input() schedulerId: any;
   permission: any = {}
@@ -29,7 +29,7 @@ export class ShowDependencyComponent implements OnInit {
     this.getDependencies();
   }
 
-  private getDependencies(): void{
+  private getDependencies(): void {
     if (!this.workflow.expectedNoticeBoards && this.schedulerId) {
       this.coreService.post('workflow/dependencies', {
         controllerId: this.schedulerId,
@@ -78,7 +78,7 @@ export class ShowDependencyComponent implements OnInit {
   selector: 'app-add-order',
   templateUrl: './add-order-dialog.html',
 })
-export class AddOrderModalComponent implements OnInit {
+export class AddOrderModalComponent {
   @Input() schedulerId: any;
   @Input() permission: any;
   @Input() preferences: any;
@@ -276,7 +276,11 @@ export class AddOrderModalComponent implements OnInit {
       orders: []
     };
 
-    const order: any = {workflowPath: this.workflow.path, orderName: this.order.orderId, forceJobAdmission: this.order.forceJobAdmission};
+    const order: any = {
+      workflowPath: this.workflow.path,
+      orderName: this.order.orderId,
+      forceJobAdmission: this.order.forceJobAdmission
+    };
     if (this.order.at === 'now') {
       order.scheduledFor = 'now';
     } else if (this.order.at === 'never') {
@@ -411,7 +415,7 @@ export class AddOrderModalComponent implements OnInit {
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         data: data.value,
         object: data
       },
@@ -591,10 +595,10 @@ export class WorkflowActionComponent {
     this.router.navigate(['/workflows/workflow_detail', this.workflow.path, this.workflow.versionId]).then();
   }
 
-  transitionOrders(workflow): void{
+  transitionOrders(workflow): void {
     let obj: any = {
       controllerId: this.schedulerId,
-      workflowId:{
+      workflowId: {
         path: workflow.path,
         versionId: workflow.versionId
       }
@@ -610,7 +614,7 @@ export class WorkflowActionComponent {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -671,7 +675,7 @@ export class WorkflowActionComponent {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
           obj,
           url: 'workflows/' + (type === 'Resume' ? 'resume' : 'suspend')
@@ -696,7 +700,7 @@ export class WorkflowActionComponent {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title2: type === 'Resume' ? 'resumeAll' : 'suspendAll',
           message2: type === 'Resume' ? 'resumeAllWarning' : 'suspendAllWarning'
         },
@@ -731,7 +735,7 @@ export class WorkflowActionComponent {
       nzContent: AddOrderModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         preferences: this.preferences,
         permission: this.permission,
         schedulerId: this.schedulerId,
@@ -764,7 +768,7 @@ export class WorkflowActionComponent {
       nzTitle: undefined,
       nzContent: ShowDependencyComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         workflow,
         schedulerId: this.schedulerId
       },

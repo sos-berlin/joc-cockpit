@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="show-inline">
-            <button type="button" class="btn btn-sm btn-grey" (click)="resetProfile();">
+            <button (click)="resetProfile();" class="btn btn-sm btn-grey" type="button">
               <i class="fa fa-refresh"></i>
               {{'profile.button.resetPreferences' | translate}}
             </button>
@@ -26,20 +26,21 @@
           <div class="row m-t">
             <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.userName</span></div>
             <div class="col-md-8 col-lg-9">
-              <span class="text-black-lt" [innerHtml]="authService.currentUserData | decodeSpace"></span>
+              <span [innerHtml]="authService.currentUserData | decodeSpace" class="text-black-lt"></span>
             </div>
           </div>
-          <div class="row m-t" *ngIf="identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE'">
+          <div *ngIf="identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE'" class="row m-t">
             <div class="col-md-4 col-lg-3"><span class="text-dark" translate>user.label.password</span></div>
             <div class="col-md-8 col-lg-9">
-              <a class="text-u-l text-hover-primary" (click)="changePassword()"
+              <a (click)="changePassword()" class="text-u-l text-hover-primary"
                  translate>profile.button.changePassword</a>
             </div>
           </div>
-          <div class="row m-t" *ngIf="identityServiceType == 'FIDO'">
-            <div class="col-md-4 col-lg-3"><span class="text-dark" translate>user.button.addAuthenticatorDevice</span></div>
+          <div *ngIf="identityServiceType == 'FIDO'" class="row m-t">
+            <div class="col-md-4 col-lg-3"><span class="text-dark" translate>user.button.addAuthenticatorDevice</span>
+            </div>
             <div class="col-md-8 col-lg-9">
-              <a class="text-u-l text-hover-primary" (click)="addDevice()"
+              <a (click)="addDevice()" class="text-u-l text-hover-primary"
                  translate><i class="fa fa-plus"></i></a>
             </div>
           </div>
@@ -47,7 +48,7 @@
           <h5 translate>profile.label.roles</h5>
           <div class="row m-t-sm">
             <div class="col-sm-6">
-              <div class="m-t-sm" *ngFor="let role of permission.roles">
+              <div *ngFor="let role of permission.roles" class="m-t-sm">
                 <div class="col-sm-12 text-black-lt">{{role}}</div>
               </div>
             </div>
@@ -59,14 +60,18 @@
                 <div class="row">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.language</div>
                   <div class="col-md-8 col-lg-9">
-                    <app-select-input [name]="'language'" [classNames]="'w-xl'" [object]="preferences" [attributeName]="'locale'" [optionValue]="'lang'"  [optionLabel]="'name'"  (modelChange)="setLocale()" [listArray]="coreService.locales"></app-select-input>
+                    <app-select-input (modelChange)="setLocale()" [attributeName]="'locale'" [classNames]="'w-xl'"
+                                      [listArray]="coreService.locales" [name]="'language'" [object]="preferences"
+                                      [optionLabel]="'name'" [optionValue]="'lang'"></app-select-input>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.timeZone</div>
                   <div class="col-md-8 col-lg-9">
-                   <app-select-input [isSearchable]="true" [name]="'timeZone'" [classNames]="'w-xl'" [object]="preferences" [attributeName]="'zone'"
-                                    (modelChange)="changeConfiguration()" [listArray]="zones" [extraLabelText]="'local '"></app-select-input>
+                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'zone'" [classNames]="'w-xl'"
+                                      [extraLabelText]="'local '" [isSearchable]="true"
+                                      [listArray]="zones" [name]="'timeZone'"
+                                      [object]="preferences"></app-select-input>
 
                   </div>
                 </div>
@@ -74,9 +79,10 @@
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.dateTimeFormat
                   </div>
                   <div class="col-md-8 col-lg-9">
-                    <app-select-input  [classNames]="'w-xl'"  (modelChange)="changeConfiguration()" [object]="preferences" [attributeName]="'dateFormat'"
-                                       [optionLabel]="'name'" [listArray]="dateTimeFormat"
-                                       [optionValue]="'value'"></app-select-input>
+                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'dateFormat'" [classNames]="'w-xl'"
+                                      [listArray]="dateTimeFormat"
+                                      [object]="preferences" [optionLabel]="'name'"
+                                      [optionValue]="'value'"></app-select-input>
                     <div class="help-block">YYYY - 4 digit year, YY - 2 digit year, M / MM - month number, MMM / MMMM -
                       month name, D / DD - day of month
                     </div>
@@ -90,10 +96,10 @@
                     profile.label.maxNumberOfHistoryEntries
                   </div>
                   <div class="col-md-6">
-                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxRecords"
-                                     (nzBlur)="changeConfiguration(isGroupBtnActive)"></nz-input-number>
-                    <i *ngIf="isGroupBtnActive" (click)="isGroupBtnActive = false" class="fa fa-times p-l-sm"></i>
-                    <a class="text-hover-primary p-l-sm" *ngIf="!isGroupBtnActive" (click)="groupLimit()" translate>profile.button.groupLimit</a>
+                    <nz-input-number (nzBlur)="changeConfiguration(isGroupBtnActive)" [(ngModel)]="preferences.maxRecords" [nzMin]="1" [nzStep]="5"
+                                     class="w-xl"></nz-input-number>
+                    <i (click)="isGroupBtnActive = false" *ngIf="isGroupBtnActive" class="fa fa-times p-l-sm"></i>
+                    <a (click)="groupLimit()" *ngIf="!isGroupBtnActive" class="text-hover-primary p-l-sm" translate>profile.button.groupLimit</a>
                   </div>
                 </div>
                 <div class="row m-t">
@@ -101,11 +107,11 @@
                        translate>profile.label.maxNumberOfAuditLogEntries
                   </div>
                   <div class="col-md-6">
-                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5"
-                                     [(ngModel)]="preferences.maxAuditLogRecords"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
-                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled
-                                     [(ngModel)]="preferences.maxRecords"
+                    <nz-input-number (nzBlur)="changeConfiguration()" *ngIf="!isGroupBtnActive" [(ngModel)]="preferences.maxAuditLogRecords" [nzMin]="1"
+                                     [nzStep]="5"
+                                     class="w-xl"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                     nzDisabled
                     ></nz-input-number>
                   </div>
                 </div>
@@ -114,11 +120,11 @@
                        translate>profile.label.maxNumberOfNotificationEntries
                   </div>
                   <div class="col-md-6">
-                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5"
-                                     [(ngModel)]="preferences.maxNotificationRecords"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
-                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled
-                                     [(ngModel)]="preferences.maxRecords"
+                    <nz-input-number (nzBlur)="changeConfiguration()" *ngIf="!isGroupBtnActive" [(ngModel)]="preferences.maxNotificationRecords" [nzMin]="1"
+                                     [nzStep]="5"
+                                     class="w-xl"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                     nzDisabled
                     ></nz-input-number>
                   </div>
                 </div>
@@ -127,11 +133,11 @@
                        translate>profile.label.maxNumberOfOverviewEntries
                   </div>
                   <div class="col-md-6">
-                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5"
-                                     [(ngModel)]="preferences.maxOrderRecords"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
-                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled
-                                     [(ngModel)]="preferences.maxRecords"
+                    <nz-input-number (nzBlur)="changeConfiguration()" *ngIf="!isGroupBtnActive" [(ngModel)]="preferences.maxOrderRecords" [nzMin]="1"
+                                     [nzStep]="5"
+                                     class="w-xl"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                     nzDisabled
                     ></nz-input-number>
                   </div>
                 </div>
@@ -140,11 +146,11 @@
                        translate>profile.label.maxNumberOfDailyPlanEntries
                   </div>
                   <div class="col-md-6">
-                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5"
-                                     [(ngModel)]="preferences.maxDailyPlanRecords"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
-                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled
-                                     [(ngModel)]="preferences.maxRecords"
+                    <nz-input-number (nzBlur)="changeConfiguration()" *ngIf="!isGroupBtnActive" [(ngModel)]="preferences.maxDailyPlanRecords" [nzMin]="1"
+                                     [nzStep]="5"
+                                     class="w-xl"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                     nzDisabled
                     ></nz-input-number>
                   </div>
                 </div>
@@ -153,11 +159,11 @@
                        translate>profile.label.maxNumberOfWorkflowEntries
                   </div>
                   <div class="col-md-6">
-                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5"
-                                     [(ngModel)]="preferences.maxWorkflowRecords"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
-                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled
-                                     [(ngModel)]="preferences.maxRecords"
+                    <nz-input-number (nzBlur)="changeConfiguration()" *ngIf="!isGroupBtnActive" [(ngModel)]="preferences.maxWorkflowRecords" [nzMin]="1"
+                                     [nzStep]="5"
+                                     class="w-xl"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                     nzDisabled
                     ></nz-input-number>
                   </div>
                 </div>
@@ -166,11 +172,11 @@
                        translate>profile.label.maxNumberOfFileTransferEntries
                   </div>
                   <div class="col-md-6">
-                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5"
-                                     [(ngModel)]="preferences.maxFileTransferRecords"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
-                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled
-                                     [(ngModel)]="preferences.maxRecords"
+                    <nz-input-number (nzBlur)="changeConfiguration()" *ngIf="!isGroupBtnActive" [(ngModel)]="preferences.maxFileTransferRecords" [nzMin]="1"
+                                     [nzStep]="5"
+                                     class="w-xl"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                     nzDisabled
                     ></nz-input-number>
                   </div>
                 </div>
@@ -179,11 +185,11 @@
                        translate>profile.label.maxNumberOfResourceLockEntries
                   </div>
                   <div class="col-md-6">
-                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5"
-                                     [(ngModel)]="preferences.maxLockRecords"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
-                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled
-                                     [(ngModel)]="preferences.maxRecords"
+                    <nz-input-number (nzBlur)="changeConfiguration()" *ngIf="!isGroupBtnActive" [(ngModel)]="preferences.maxLockRecords" [nzMin]="1"
+                                     [nzStep]="5"
+                                     class="w-xl"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                     nzDisabled
                     ></nz-input-number>
                   </div>
                 </div>
@@ -192,11 +198,11 @@
                        translate>profile.label.maxNumberOfNoticeBoardEntries
                   </div>
                   <div class="col-md-6">
-                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5"
-                                     [(ngModel)]="preferences.maxBoardRecords"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
-                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled
-                                     [(ngModel)]="preferences.maxRecords"
+                    <nz-input-number (nzBlur)="changeConfiguration()" *ngIf="!isGroupBtnActive" [(ngModel)]="preferences.maxBoardRecords" [nzMin]="1"
+                                     [nzStep]="5"
+                                     class="w-xl"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                     nzDisabled
                     ></nz-input-number>
                   </div>
                 </div>
@@ -205,8 +211,8 @@
                        translate>profile.label.maxNumberOfHistoryEntriesPerOrder
                   </div>
                   <div class="col-md-6">
-                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxHistoryPerOrder"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
+                    <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxHistoryPerOrder" [nzMin]="1" [nzStep]="5"
+                                     class="w-xl"></nz-input-number>
                   </div>
                 </div>
                 <div class="row m-t">
@@ -214,8 +220,8 @@
                        translate>profile.label.maxNumberOfHistoryEntriesPerTask
                   </div>
                   <div class="col-md-6">
-                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxHistoryPerTask"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
+                    <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxHistoryPerTask" [nzMin]="1" [nzStep]="5"
+                                     class="w-xl"></nz-input-number>
                   </div>
                 </div>
                 <div class="row m-t">
@@ -223,62 +229,70 @@
                        translate>profile.label.maxNumberOfAuditLogPerObject
                   </div>
                   <div class="col-md-6">
-                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                                     [(ngModel)]="preferences.maxAuditLogPerObject"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
+                    <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxAuditLogPerObject" [nzMin]="1"
+                                     [nzStep]="5"
+                                     class="w-xl"></nz-input-number>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.maxNumberOfFavoriteEntries</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
+                    profile.label.maxNumberOfFavoriteEntries
+                  </div>
                   <div class="col-md-6">
-                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                                     [(ngModel)]="preferences.maxFavoriteEntries"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
+                    <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxFavoriteEntries" [nzMin]="1"
+                                     [nzStep]="5"
+                                     class="w-xl"></nz-input-number>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.maxEntryPerPage
                   </div>
                   <div class="col-md-6">
-                    <app-select-input  [classNames]="'w-xl'" [object]="preferences" [attributeName]="'maxEntryPerPage'" [optionValue]="'value'"
-                                      [optionLabel]="'name'"   (ngModelChange)="changeConfiguration()" [listArray]="maxEntryPerPage"></app-select-input>
+                    <app-select-input (ngModelChange)="changeConfiguration()" [attributeName]="'maxEntryPerPage'" [classNames]="'w-xl'"
+                                      [listArray]="maxEntryPerPage"
+                                      [object]="preferences" [optionLabel]="'name'"
+                                      [optionValue]="'value'"></app-select-input>
 
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.entryPerPage</div>
                   <div class="col-md-6">
-                    <app-select-input [classNames]="'w-xl'" [object]="preferences" [attributeName]="'entryPerPage'" [optionValue]="'value'"
-                                      [optionLabel]="'name'"  (modelChange)="changeConfiguration()" [listArray]="entryPerPage"></app-select-input>
+                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'entryPerPage'" [classNames]="'w-xl'"
+                                      [listArray]="entryPerPage"
+                                      [object]="preferences" [optionLabel]="'name'"
+                                      [optionValue]="'value'"></app-select-input>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.theme</div>
                   <div class="col-md-6">
-                    <app-select-input  [classNames]="'w-xl'" [object]="preferences" [attributeName]="'theme'"
-                                       [optionLabel]="'name'" [listArray]="themeArray"  (modelChange)="changeTheme(preferences.theme)"
-                                       [optionValue]="'value'"></app-select-input>
+                    <app-select-input (modelChange)="changeTheme(preferences.theme)" [attributeName]="'theme'" [classNames]="'w-xl'"
+                                      [listArray]="themeArray" [object]="preferences"
+                                      [optionLabel]="'name'"
+                                      [optionValue]="'value'"></app-select-input>
                   </div>
                 </div>
-                <div class="row m-t" *ngIf="this.preferences.theme === 'light'">
+                <div *ngIf="this.preferences.theme === 'light'" class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.menuBarTheme</div>
                   <div class="col-md-6">
-                    <app-select-input [isSearchable]="true"  [classNames]="'w-xl'" [object]="preferences" [attributeName]="'headerColor'"
-                                       [optionLabel]="'name'" [listArray]="headerColor" (modelChange)="changeMenuTheme()"
-                                       [optionValue]="'value'"></app-select-input>
+                    <app-select-input (modelChange)="changeMenuTheme()" [attributeName]="'headerColor'" [classNames]="'w-xl'"
+                                      [isSearchable]="true"
+                                      [listArray]="headerColor" [object]="preferences" [optionLabel]="'name'"
+                                      [optionValue]="'value'"></app-select-input>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.themeTitle</div>
                   <div class="col-md-6">
-                    <input type="text" class="form-control w-xl" [(ngModel)]="preferences.themeTitle"
-                           (blur)="changeConfiguration()">
+                    <input (blur)="changeConfiguration()" [(ngModel)]="preferences.themeTitle" class="form-control w-xl"
+                           type="text">
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showLogs</div>
                   <div class="col-md-6">
-                    <nz-radio-group [(ngModel)]="preferences.isNewWindow" (ngModelChange)="changeConfiguration()">
+                    <nz-radio-group (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.isNewWindow">
                       <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
                       <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
                       <label nz-radio nzValue="download"><span translate>profile.label.download</span></label>
@@ -288,7 +302,7 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showDocumentations</div>
                   <div class="col-md-6">
-                    <nz-radio-group [(ngModel)]="preferences.isDocNewWindow" (ngModelChange)="changeConfiguration()">
+                    <nz-radio-group (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.isDocNewWindow">
                       <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
                       <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
                     </nz-radio-group>
@@ -297,7 +311,7 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showSubFolderAndFolderContents</div>
                   <div class="col-md-6">
-                    <nz-radio-group [(ngModel)]="preferences.expandOption" (ngModelChange)="changeConfiguration()">
+                    <nz-radio-group (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.expandOption">
                       <label nz-radio nzValue="single"><span translate>profile.label.folderContents</span></label>
                       <label nz-radio nzValue="both"><span
                         translate>profile.label.subFolderAndFolderContents</span></label>
@@ -307,22 +321,22 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showFilesImmediately</div>
                   <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.showFiles"
-                           (ngModelChange)="changeConfiguration()"></label>
+                    <label (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.showFiles"
+                           nz-checkbox></label>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.enableCommentsForAuditLog</div>
                   <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.auditLog" [disabled]="forceLoging"
-                           (ngModelChange)="changeConfiguration()"></label>
+                    <label (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.auditLog" [disabled]="forceLoging"
+                           nz-checkbox></label>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.useTimezoneForLog</div>
                   <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.logTimezone"
-                           (ngModelChange)="changeConfiguration()"></label>
+                    <label (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.logTimezone"
+                           nz-checkbox></label>
                   </div>
                 </div>
                 <div class="row m-t">
@@ -330,8 +344,8 @@
                     profile.label.currentController
                   </div>
                   <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.currentController"
-                           (ngModelChange)="changeConfiguration()"></label>
+                    <label (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.currentController"
+                           nz-checkbox></label>
                   </div>
                 </div>
                 <div class="row m-t">
@@ -339,8 +353,8 @@
                     profile.label.showTooltipInfo
                   </div>
                   <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.showTooltipInfo"
-                           (ngModelChange)="changeConfiguration()"></label>
+                    <label (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.showTooltipInfo"
+                           nz-checkbox></label>
                   </div>
                 </div>
                 <div class="row m-t">
@@ -348,8 +362,8 @@
                     profile.label.licenseWarningGotIt
                   </div>
                   <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.licenseExpirationWarning"
-                           (ngModelChange)="changeConfiguration()"></label>
+                    <label (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.licenseExpirationWarning"
+                           nz-checkbox></label>
                   </div>
                 </div>
                 <div class="row m-t">
@@ -357,15 +371,15 @@
                     profile.label.showMoreOptions
                   </div>
                   <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.showMoreOptions"
-                           (ngModelChange)="changeConfiguration()"></label>
+                    <label (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.showMoreOptions"
+                           nz-checkbox></label>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showView</div>
                   <div class="col-md-6">
-                    <nz-radio-group [(ngModel)]="preferences.pageView"
-                                    (ngModelChange)="changeConfiguration();changeView()">
+                    <nz-radio-group (ngModelChange)="changeConfiguration();changeView()"
+                                    [(ngModel)]="preferences.pageView">
                       <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
                       <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
                     </nz-radio-group>
@@ -374,8 +388,8 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.orderOverviewPageView</div>
                   <div class="col-md-6">
-                    <nz-radio-group [(ngModel)]="preferences.orderOverviewPageView"
-                                    (ngModelChange)="changeConfiguration();changeView()">
+                    <nz-radio-group (ngModelChange)="changeConfiguration();changeView()"
+                                    [(ngModel)]="preferences.orderOverviewPageView">
                       <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
                       <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
                       <label nz-radio nzValue="bulk"><span translate>profile.label.asBulk</span></label>
@@ -384,19 +398,19 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'profile.label.permissions' | translate"
-                    *ngIf="permission.joc">
+            <nz-tab *ngIf="permission.joc"
+                    [nzTitle]="'profile.label.permissions' | translate">
               <div class="m-l-12">
                 <app-permission-view [permission]="permission" [schedulerIds]="schedulerIds"></app-permission-view>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'profile.label.keyManagement' | translate"
-                    *ngIf="securityLevel !== 'LOW' && permission.joc && permission.joc.administration.certificates.view">
+            <nz-tab *ngIf="securityLevel !== 'LOW' && permission.joc && permission.joc.administration.certificates.view"
+                    [nzTitle]="'profile.label.keyManagement' | translate">
               <div class="m-l-12">
                 <div class="row m-t-sm p-b-xs">
                   <div class="col-sm-12">
-                    <div class="m-t-xs m-b-md"
-                         *ngIf="caCertificates && permission.joc.administration.certificates.manage">
+                    <div *ngIf="caCertificates && permission.joc.administration.certificates.manage"
+                         class="m-t-xs m-b-md">
                       <div class="row">
                         <div class="col-md-2">
                           <span class="text-dark _600" translate>profile.keyManagement.label.caCertificate</span>
@@ -406,8 +420,8 @@
                             <span class="text-dark _600" style="padding-right: 10%"
                                   translate>{{caCertificates.keyID}}</span>
                             <span class="text-black-lt">
-                              <i class="fa fa-check text-success"
-                                 [ngClass]="{'fa-times text-danger': caCertificates.isKeyExpired}"></i>&nbsp;
+                              <i [ngClass]="{'fa-times text-danger': caCertificates.isKeyExpired}"
+                                 class="fa fa-check text-success"></i>&nbsp;
                               <span *ngIf="!caCertificates.isKeyExpired"
                                     translate>profile.keyManagement.label.valid</span>
                               <span *ngIf="caCertificates.isKeyExpired"
@@ -420,29 +434,29 @@
                                 <span class="m-l" translate>profile.keyManagement.label.noValidDate</span>
                               </span>
                             </span>
-                            <a class="text-hover-primary m-l-12"
+                            <a (click)="showKey('certificate')"
                                [nz-tooltip]="'profile.keyManagement.label.showCertificate' | translate"
-                               (click)="showKey('certificate')"><i class="fa fa-television"></i></a>
+                               class="text-hover-primary m-l-12"><i class="fa fa-television"></i></a>
                           </span>
                           <span *ngIf="!caCertificates.keyID" translate>
                             profile.keyManagement.message.noCertificatePresent
                           </span>
                           <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px">
-                            <button *ngIf="permission.joc.administration.certificates.manage"
-                                    class="btn btn-sm btn-grey m-l-12" (click)="pasteKey('certificate')"
-                                    [nz-tooltip]="'profile.keyManagement.tooltip.updateCertificate' | translate">
+                            <button (click)="pasteKey('certificate')"
+                                    *ngIf="permission.joc.administration.certificates.manage" [nz-tooltip]="'profile.keyManagement.tooltip.updateCertificate' | translate"
+                                    class="btn btn-sm btn-grey m-l-12">
                               <i class="fa fa-paste"></i>
                             </button>
-                            <button *ngIf="permission.joc.administration.certificates.manage"
-                                    class="btn btn-sm btn-grey m-l-12" (click)="importKey('certificate')"
-                                    [nz-tooltip]="'profile.keyManagement.tooltip.importCertificate' | translate">
-                              <i nz-icon nzType="upload" nzTheme="outline"></i>
+                            <button (click)="importKey('certificate')"
+                                    *ngIf="permission.joc.administration.certificates.manage" [nz-tooltip]="'profile.keyManagement.tooltip.importCertificate' | translate"
+                                    class="btn btn-sm btn-grey m-l-12">
+                              <i nz-icon nzTheme="outline" nzType="upload"></i>
                             </button>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="m-t-xs" *ngIf="keys">
+                    <div *ngIf="keys" class="m-t-xs">
                       <div class="row">
                         <div class="col-md-2">
                           <span class="text-dark _600" translate>profile.keyManagement.label.keysAndCertificates</span>
@@ -451,8 +465,8 @@
                           <span *ngIf="keys.keyID || keys.keyAlgorithm">
                             <span class="text-dark _600" style="padding-right: 10%" translate>{{keys.keyID}}</span>
                             <span class="text-black-lt">
-                              <i class="fa fa-check text-success"
-                                 [ngClass]="{'fa-times text-danger': keys.isKeyExpired}"></i>&nbsp;
+                              <i [ngClass]="{'fa-times text-danger': keys.isKeyExpired}"
+                                 class="fa fa-check text-success"></i>&nbsp;
                               <span *ngIf="!keys.isKeyExpired" translate>profile.keyManagement.label.valid</span>
                               <span *ngIf="keys.isKeyExpired" translate>profile.keyManagement.label.expiredKey</span>
                               <span *ngIf="keys.validUntil">
@@ -463,30 +477,30 @@
                                 <span class="m-l" translate>profile.keyManagement.label.noValidDate</span>
                               </span>
                             </span>
-                            <a class="text-hover-primary m-l-12"
+                            <a (click)="showKey()"
                                [nz-tooltip]="'profile.keyManagement.label.showKey' | translate"
-                               (click)="showKey()"><i class="fa fa-television"></i></a>
+                               class="text-hover-primary m-l-12"><i class="fa fa-television"></i></a>
                           </span>
                           <span *ngIf="!keys.keyID && !keys.keyAlgorithm" translate>
                             profile.keyManagement.message.noKeyFound
                           </span>
                           <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px">
-                            <button *ngIf="permission.joc.administration.certificates.manage"
-                                    class="btn btn-sm btn-grey m-l-12" (click)="pasteKey()"
-                                    [nz-tooltip]="'profile.keyManagement.tooltip.updateKey' | translate">
+                            <button (click)="pasteKey()"
+                                    *ngIf="permission.joc.administration.certificates.manage" [nz-tooltip]="'profile.keyManagement.tooltip.updateKey' | translate"
+                                    class="btn btn-sm btn-grey m-l-12">
                               <i class="fa fa-paste"></i>
                             </button>
-                            <button *ngIf="permission.joc.administration.certificates.manage"
-                                    class="btn btn-sm btn-grey m-l-12" (click)="importKey()"
-                                    [nz-tooltip]="'profile.keyManagement.tooltip.import' | translate">
-                              <i nz-icon nzType="upload" nzTheme="outline"></i>
+                            <button (click)="importKey()"
+                                    *ngIf="permission.joc.administration.certificates.manage" [nz-tooltip]="'profile.keyManagement.tooltip.import' | translate"
+                                    class="btn btn-sm btn-grey m-l-12">
+                              <i nz-icon nzTheme="outline" nzType="upload"></i>
                             </button>
                             <button
-                              *ngIf="securityLevel ==='MEDIUM' && permission.joc.administration.certificates.manage"
-                              class="btn btn-sm btn-grey m-l-12"
                               (click)="showGenerateKeyModal()"
-                              [nz-tooltip]="'profile.keyManagement.tooltip.generate' | translate">
-                              <i nz-icon nzType="file-protect" nzTheme="outline"></i>
+                              *ngIf="securityLevel ==='MEDIUM' && permission.joc.administration.certificates.manage"
+                              [nz-tooltip]="'profile.keyManagement.tooltip.generate' | translate"
+                              class="btn btn-sm btn-grey m-l-12">
+                              <i nz-icon nzTheme="outline" nzType="file-protect"></i>
                             </button>
                           </div>
                         </div>
@@ -496,12 +510,12 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'profile.label.caManagement' | translate"
-                    *ngIf="permission.joc && permission.joc.administration.certificates.view">
+            <nz-tab *ngIf="permission.joc && permission.joc.administration.certificates.view"
+                    [nzTitle]="'profile.label.caManagement' | translate">
               <div class="m-l-12">
                 <div class="row m-t-sm p-b-xs">
                   <div class="col-sm-12">
-                    <div class="m-t-xs" *ngIf="certificates">
+                    <div *ngIf="certificates" class="m-t-xs">
                       <div class="row">
                         <div class="col-md-2">
                           <span class="text-dark _600" translate>profile.keyManagement.label.keysAndCertificates</span>
@@ -511,8 +525,8 @@
                             <span class="text-dark _600" style="padding-right: 10%"
                                   translate>{{certificates.keyID}}</span>
                             <span class="text-black-lt">
-                              <i class="fa fa-check text-success"
-                                 [ngClass]="{'fa-times text-danger': certificates.isKeyExpired}"></i>&nbsp;
+                              <i [ngClass]="{'fa-times text-danger': certificates.isKeyExpired}"
+                                 class="fa fa-check text-success"></i>&nbsp;
                               <span *ngIf="!certificates.isKeyExpired"
                                     translate>profile.keyManagement.label.valid</span>
                               <span *ngIf="certificates.isKeyExpired"
@@ -525,27 +539,27 @@
                                 <span class="m-l" translate>profile.keyManagement.label.noValidDate</span>
                               </span>
                             </span>
-                            <a class="text-hover-primary m-l-12"
+                            <a (click)="showKey('ca')"
                                [nz-tooltip]="'profile.keyManagement.label.showKey' | translate"
-                               (click)="showKey('ca')"><i class="fa fa-television"></i></a>
+                               class="text-hover-primary m-l-12"><i class="fa fa-television"></i></a>
                           </span>
                           <span *ngIf="!certificates.keyID && !certificates.keyAlgorithm" translate>
                             profile.keyManagement.message.noCAFound
                           </span>
-                          <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px"
-                               *ngIf="permission.joc.administration.certificates.manage">
-                            <button class="btn btn-sm btn-grey m-l-12" (click)="pasteKey('ca')"
-                                    [nz-tooltip]="'profile.keyManagement.tooltip.updateKey' | translate">
+                          <div *ngIf="permission.joc.administration.certificates.manage" class="inline pull-right m-t-n-xs"
+                               style="margin-bottom: 2px">
+                            <button (click)="pasteKey('ca')" [nz-tooltip]="'profile.keyManagement.tooltip.updateKey' | translate"
+                                    class="btn btn-sm btn-grey m-l-12">
                               <i class="fa fa-paste"></i>
                             </button>
-                            <button class="btn btn-sm btn-grey m-l-12" (click)="importKey('ca')"
-                                    [nz-tooltip]="'profile.keyManagement.tooltip.import' | translate">
-                              <i nz-icon nzType="upload" nzTheme="outline"></i>
+                            <button (click)="importKey('ca')" [nz-tooltip]="'profile.keyManagement.tooltip.import' | translate"
+                                    class="btn btn-sm btn-grey m-l-12">
+                              <i nz-icon nzTheme="outline" nzType="upload"></i>
                             </button>
-                            <button class="btn btn-sm btn-grey m-l-12"
-                                    (click)="showGenerateKeyModal('ca')"
-                                    [nz-tooltip]="'profile.keyManagement.tooltip.generate' | translate">
-                              <i nz-icon nzType="file-protect" nzTheme="outline"></i>
+                            <button (click)="showGenerateKeyModal('ca')"
+                                    [nz-tooltip]="'profile.keyManagement.tooltip.generate' | translate"
+                                    class="btn btn-sm btn-grey m-l-12">
+                              <i nz-icon nzTheme="outline" nzType="file-protect"></i>
                             </button>
                           </div>
                         </div>
@@ -555,8 +569,8 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'profile.label.gitManagement' | translate"
-                    *ngIf="securityLevel !== 'LOW' && permission.joc && permission.joc.inventory.view">
+            <nz-tab *ngIf="securityLevel !== 'LOW' && permission.joc && permission.joc.inventory.view"
+                    [nzTitle]="'profile.label.gitManagement' | translate">
               <div class="m-l-12">
                 <div class="row m-t-xs p-b-xs">
                   <div class="col-sm-12">
@@ -564,55 +578,61 @@
                       <div class="row">
                         <div class="col-md-12">
                           <div class="pos-abt r-12 t-n-xs z-index-99">
-                            <button class="btn btn-sm btn-grey" (click)="addGitCredential()">
-                              <i nz-icon nzType="plus" nzTheme="outline"></i>
+                            <button (click)="addGitCredential()" class="btn btn-sm btn-grey">
+                              <i nz-icon nzTheme="outline" nzType="plus"></i>
                             </button>
                           </div>
                         </div>
                         <div class="col-md-12">
                           <span class="text-dark _600 font14" translate>profile.gitManagement.label.credentials</span>
                         </div>
-                        <div class="col-md-12 m-t-sm" *ngIf="gitCredentials.credentials">
+                        <div *ngIf="gitCredentials.credentials" class="col-md-12 m-t-sm">
                           <div class="table-responsive m-t-xs">
                             <table class="table table-hover">
                               <thead>
                               <tr>
-                                <th class="no-borders" style="width: 60px"><span translate>common.label.action</span></th>
-                                <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.gitServer</span></th>
-                                <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.gitAccount</span></th>
-                                <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.userName</span></th>
-                                <th class="no-borders"><span translate>profile.gitManagement.label.emailAddress</span></th>
+                                <th class="no-borders" style="width: 60px"><span translate>common.label.action</span>
+                                </th>
+                                <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.gitServer</span>
+                                </th>
+                                <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.gitAccount</span>
+                                </th>
+                                <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.userName</span>
+                                </th>
+                                <th class="no-borders"><span translate>profile.gitManagement.label.emailAddress</span>
+                                </th>
                               </tr>
                               </thead>
                               <tbody>
                               <tr *ngFor="let cred of gitCredentials.credentials | orderBy:'gitAccount'; let i = index">
                                 <td>
                                   <div class="btn-group dropdown">
-                                    <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i
+                                    <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                                            type="button"><i
                                       class="fa fa-ellipsis-h"></i></button>
                                     <nz-dropdown-menu #option="nzDropdownMenu">
-                                      <ul nz-menu >
-                                        <li nz-menu-item (click)="editCredential(cred)">
+                                      <ul nz-menu>
+                                        <li (click)="editCredential(cred)" nz-menu-item>
                                           <a translate>common.button.edit</a>
                                         </li>
-                                        <li nz-menu-item (click)="deleteCredential(cred)" class="bg-hover-color">
+                                        <li (click)="deleteCredential(cred)" class="bg-hover-color" nz-menu-item>
                                           <a translate>common.button.delete</a>
                                         </li>
                                       </ul>
                                     </nz-dropdown-menu>
                                   </div>
                                 </td>
-                                <td class="cursor" (click)="editCredential(cred)">{{cred.gitServer}}</td>
-                                <td class="cursor" (click)="editCredential(cred)">{{cred.gitAccount}}</td>
-                                <td class="cursor" (click)="editCredential(cred)">{{cred.username}}</td>
-                                <td class="cursor" (click)="editCredential(cred)">{{cred.email}}</td>
+                                <td (click)="editCredential(cred)" class="cursor">{{cred.gitServer}}</td>
+                                <td (click)="editCredential(cred)" class="cursor">{{cred.gitAccount}}</td>
+                                <td (click)="editCredential(cred)" class="cursor">{{cred.username}}</td>
+                                <td (click)="editCredential(cred)" class="cursor">{{cred.email}}</td>
                               </tr>
                               </tbody>
                             </table>
                           </div>
                         </div>
-                        <div class="col-md-12"
-                             *ngIf="!gitCredentials.credentials || gitCredentials.credentials.length === 0" translate>
+                        <div *ngIf="!gitCredentials.credentials || gitCredentials.credentials.length === 0"
+                             class="col-md-12" translate>
                           <div class="text-center">
                             <app-empty-data title="profile.gitManagement.message.noCredentialFound"></app-empty-data>
                           </div>
@@ -627,12 +647,16 @@
               <div class="p-l-sm p-r-rm m-t-n-sm">
                 <nz-tabset (nzSelectChange)="innnerTabChange($event)">
                   <nz-tab [nzTitle]="'profile.favoriteManagement.tab.agents' | translate">
-                  	<app-manage-favorite-list [favList]="favList" [sharedList]="sharedList" [type]="'AGENT'" [filter]="favFilter.agent" [schedulerId]="schedulerIds"
-                                              (reload)="reload($event)" [account]="authService.currentUserData"></app-manage-favorite-list>
+                    <app-manage-favorite-list (reload)="reload($event)" [account]="authService.currentUserData" [favList]="favList"
+                                              [filter]="favFilter.agent" [schedulerId]="schedulerIds"
+                                              [sharedList]="sharedList"
+                                              [type]="'AGENT'"></app-manage-favorite-list>
                   </nz-tab>
                   <nz-tab [nzTitle]="'profile.favoriteManagement.tab.facets' | translate">
-                  	<app-manage-favorite-list [favList]="favList" [sharedList]="sharedList" [type]="'FACET'" [filter]="favFilter.facet" [schedulerId]="schedulerIds"
-                                              (reload)="reload($event)" [account]="authService.currentUserData"></app-manage-favorite-list>
+                    <app-manage-favorite-list (reload)="reload($event)" [account]="authService.currentUserData" [favList]="favList"
+                                              [filter]="favFilter.facet" [schedulerId]="schedulerIds"
+                                              [sharedList]="sharedList"
+                                              [type]="'FACET'"></app-manage-favorite-list>
                   </nz-tab>
                 </nz-tabset>
               </div>

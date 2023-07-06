@@ -1,27 +1,29 @@
 <div id="agentClusterStatus1">
-    <div class="box-header b-b remove">
-        <h3 translate>dashboard.label.agentStatus</h3>
-    </div>
-    <div class="row" [hidden]="!isLoaded">
-      <div class="col-md-12">
-        <div class="p-a" [ngStyle]="{'height':(layout.rows * 55 +((layout.rows -1) *20 -50)) + 4 +'px', 'width': '90%'}" *ngIf="pieChartData.datasets.length > 0">
-          <canvas baseChart
-                  [data]="pieChartData"
-                  [type]="'pie'"
-                  [options]="pieChartOptions"
-                  [plugins]="pieChartPlugins"
-                  [legend]="true"
-                  (chartClick)="onChartClick($event)">
-          </canvas>
-        </div>
+  <div class="box-header b-b remove">
+    <h3 translate>dashboard.label.agentStatus</h3>
+  </div>
+  <div [hidden]="!isLoaded" class="row">
+    <div class="col-md-12">
+      <div *ngIf="pieChartData.datasets.length > 0" [ngStyle]="{'height':(layout.rows * 55 +((layout.rows -1) *20 -50)) + 4 +'px', 'width': '90%'}"
+           class="p-a">
+        <canvas (chartClick)="onChartClick($event)"
+                [data]="pieChartData"
+                [legend]="true"
+                [options]="pieChartOptions"
+                [plugins]="pieChartPlugins"
+                [type]="'pie'"
+                baseChart>
+        </canvas>
       </div>
     </div>
-    <div *ngIf="!isLoaded" class="loading-center text-primary text" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}">
-      <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+  </div>
+  <div *ngIf="!isLoaded" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}" class="loading-center text-primary text">
+    <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+  </div>
+  <div *ngIf="pieChartData.datasets.length==0 && isLoaded" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}"
+       class="vert-middle">
+    <div>
+      <app-empty-data></app-empty-data>
     </div>
-    <div *ngIf="pieChartData.datasets.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}">
-      <div>
-        <app-empty-data></app-empty-data>
-      </div>
-    </div>
+  </div>
 </div>

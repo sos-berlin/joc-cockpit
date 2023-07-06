@@ -15,66 +15,68 @@
   <div class="padding p-b-0">
     <div class="row">
       <div class="col-sm-12">
-          <div class=" box p-a m-t-xs">
-            <div class="table-responsive" id="documentDivId">
-              <nz-table
-                #ajaxTable
-                [nzSize]="'small'"
-                [nzBordered]="true"
-                [nzShowPagination]="false"
-                [nzData]="documents"
-                [nzLoading]="loading"
-                [nzShowSizeChanger]="false"
-              >
-                <thead>
-                <tr>
-                  <th class="menu"><span translate>common.label.action</span></th>
-                  <th><span translate>resource.documentation.label.documentName</span></th>
-                  <th><span translate>common.label.path</span></th>
-                  <th><span translate>resource.documentation.label.reference</span></th>
-                  <th><span translate>common.label.type</span></th>
-                  <th><span translate>resource.documentation.label.lastUpdateTime</span></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr
-                  *ngFor="let document of ajaxTable.data">
-                  <td>
-                    <div class="btn-group dropdown">
-                      <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                              [nzDropdownMenu]="option2">
-                        <i class="fa fa-ellipsis-h"></i></button>
-                      <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
-                        <ul nz-menu>
-                          <li nz-menu-item *ngIf="permission.joc && permission.joc.documentations.manage">
-                            <a (click)="editDocument(document)" translate>resource.documentation.button.editDocument</a>
-                          </li>
-                          <li nz-menu-item >
-                            <a (click)="previewDocument(document)" translate>resource.documentation.button.previewDocument</a>
-                          </li>
-                          <li nz-menu-item  *ngIf="permission.joc && permission.joc.documentations.manage">
-                            <a (click)="exportDocument(document)" translate>common.button.export</a>
-                          </li>
-                          <li nz-menu-item class="bg-hover-color" *ngIf="permission.joc && permission.joc.documentations.manage">
-                            <a (click)="deleteDocumentation(document)" translate>common.button.delete</a>
-                          </li>
-                          <li nz-menu-item  >
-                            <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
-                          </li>
-                        </ul>
-                      </nz-dropdown-menu>
-                    </div>
-                  </td>
-                  <td [innerHtml]="document.name || '-'"></td>
-                  <td>{{document.path}}</td>
-                  <td>{{document.assignReference}}</td>
-                  <td [innerHtml]="document.type"></td>
-                  <td [innerHtml]="document.modified | stringToDate"></td>
-                </tr>
-                </tbody>
-              </nz-table>
-            </div>
+        <div class=" box p-a m-t-xs">
+          <div class="table-responsive" id="documentDivId">
+            <nz-table
+              #ajaxTable
+              [nzBordered]="true"
+              [nzData]="documents"
+              [nzLoading]="loading"
+              [nzShowPagination]="false"
+              [nzShowSizeChanger]="false"
+              [nzSize]="'small'"
+            >
+              <thead>
+              <tr>
+                <th class="menu"><span translate>common.label.action</span></th>
+                <th><span translate>resource.documentation.label.documentName</span></th>
+                <th><span translate>common.label.path</span></th>
+                <th><span translate>resource.documentation.label.reference</span></th>
+                <th><span translate>common.label.type</span></th>
+                <th><span translate>resource.documentation.label.lastUpdateTime</span></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr
+                *ngFor="let document of ajaxTable.data">
+                <td>
+                  <div class="btn-group dropdown">
+                    <button [nzDropdownMenu]="option2" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                            type="button">
+                      <i class="fa fa-ellipsis-h"></i></button>
+                    <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
+                      <ul nz-menu>
+                        <li *ngIf="permission.joc && permission.joc.documentations.manage" nz-menu-item>
+                          <a (click)="editDocument(document)" translate>resource.documentation.button.editDocument</a>
+                        </li>
+                        <li nz-menu-item>
+                          <a (click)="previewDocument(document)"
+                             translate>resource.documentation.button.previewDocument</a>
+                        </li>
+                        <li *ngIf="permission.joc && permission.joc.documentations.manage" nz-menu-item>
+                          <a (click)="exportDocument(document)" translate>common.button.export</a>
+                        </li>
+                        <li *ngIf="permission.joc && permission.joc.documentations.manage" class="bg-hover-color"
+                            nz-menu-item>
+                          <a (click)="deleteDocumentation(document)" translate>common.button.delete</a>
+                        </li>
+                        <li nz-menu-item>
+                          <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                </td>
+                <td [innerHtml]="document.name || '-'"></td>
+                <td>{{document.path}}</td>
+                <td>{{document.assignReference}}</td>
+                <td [innerHtml]="document.type"></td>
+                <td [innerHtml]="document.modified | stringToDate"></td>
+              </tr>
+              </tbody>
+            </nz-table>
           </div>
+        </div>
       </div>
     </div>
   </div>

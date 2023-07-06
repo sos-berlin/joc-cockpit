@@ -5,7 +5,7 @@ import {Router} from '@angular/router';
   selector: 'app-error',
   templateUrl: './page-not-found.component.html'
 })
-export class PageNotFoundComponent implements OnInit {
+export class PageNotFoundComponent {
   code = '403';
 
   constructor(private router: Router) {

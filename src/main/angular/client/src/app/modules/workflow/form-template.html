@@ -1,53 +1,62 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit(filter)">
-  <div [ngClass]="{'modal-body p-a' : !isSearch }" >
-    <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName
+  <div [ngClass]="{'modal-body p-a' : !isSearch }">
+    <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
+         class="form-group row">
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>customization.label.customizationName
         <sup *ngIf="!isSearch" class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <input autocomplete="off" [appAutofocus]="!isSearch" type="text" required class="form-control" placeholder="{{'customization.placeholder.enterName' | translate}}"
-               name="name" maxlength="30" [(ngModel)]="filter.name" #name="ngModel"
-               (blur)="checkFilterName()">
+        <input #name="ngModel" (blur)="checkFilterName()" [(ngModel)]="filter.name" [appAutofocus]="!isSearch" autocomplete="off"
+               class="form-control"
+               maxlength="30" name="name" placeholder="{{'customization.placeholder.enterName' | translate}}" required
+               type="text">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
           <div *ngIf="name.errors['required']">
             <div translate>common.message.requiredError</div>
           </div>
         </div>
-        <div class="help-block text-danger" *ngIf="!isUnique">
+        <div *ngIf="!isUnique" class="help-block text-danger">
           <div translate>common.message.uniqueError</div>
         </div>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>workflow.label.regex</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
+             translate>workflow.label.regex</label>
       <div class="col-sm-6">
-        <input type="text" class="form-control" name="regex"
-	       placeholder="{{'common.placeholder.regex' | translate}}" [(ngModel)]="filter.regex">
+        <input [(ngModel)]="filter.regex" class="form-control" name="regex"
+               placeholder="{{'common.placeholder.regex' | translate}}" type="text">
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.folders</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
+             translate>common.label.folders</label>
       <div class=" col-sm-6">
         <nz-tree-select
+          [(ngModel)]="filter.paths"
+          [nzAllowClear]="true"
+          [nzAsyncData]="true"
+          [nzDisplayWith]="displayWith"
+          [nzDropdownStyle]="{ 'max-height': '300px' }"
+          [nzHideUnMatched]="true"
+          [nzNodes]="folders"
+          [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
           name="folders"
           nzMultiple
-          [nzAllowClear]="true"
-          [nzNodes]="folders"
-          [nzAsyncData]="true"
-          [nzHideUnMatched]="true"
-          [nzDropdownStyle]="{ 'max-height': '300px' }"
           nzShowSearch
-          [nzDisplayWith]="displayWith"
-          [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
-          [(ngModel)]="filter.paths"
         >
           <ng-template #nzTreeTemplate let-node>
-            <div class="node-wrapper w-93" (click)="selectFolder(node, $event);">
-              <div class="node-content-wrapper" [class.node-content-wrapper-active]="filter.paths && filter.paths.indexOf(node.origin.path) > -1">
-                <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+            <div (click)="selectFolder(node, $event);" class="node-wrapper w-93">
+              <div [class.node-content-wrapper-active]="filter.paths && filter.paths.indexOf(node.origin.path) > -1"
+                   class="node-content-wrapper">
+                <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
                 {{node.origin.name}}
-                <i *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path);$event.stopPropagation()" [nz-tooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
-                <i *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path);$event.stopPropagation()" nz-icon [nzType]="'delete'" class="p-l-sm"></i>
+                <i (click)="addFolder(node.origin.path);$event.stopPropagation()"
+                   *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) === -1"
+                   [nz-tooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
+                <i (click)="remove(node.origin.path);$event.stopPropagation()"
+                   *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) > -1" [nzType]="'delete'" class="p-l-sm"
+                   nz-icon></i>
               </div>
             </div>
           </ng-template>
@@ -55,11 +64,11 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>deploymentService.label.agents</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>deploymentService.label.agents</label>
       <div class=" col-sm-6">
-        <nz-select nzMode="multiple" nzAllowClear nzShowSearch name="find" [nzDropdownClassName]="'group-list'"
+        <nz-select [(ngModel)]="filter.agentNames" [nzDropdownClassName]="'group-list'" name="find" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectFind' | translate}}"
-                   [(ngModel)]="filter.agentNames" >
+                   nzShowSearch>
           <ng-container *ngFor="let item of listOfAgents">
             <ng-container *ngIf="item.title == 'agents'">
               <nz-option-group *ngFor="let group of [item]" [nzLabel]="groupTitle">
@@ -89,61 +98,65 @@
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-4 block-ellipsis" [ngClass]="{'col-md-2': isSearch}" translate>inventory.search.label.workflowAvailabilityStatus</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis" translate>inventory.search.label.workflowAvailabilityStatus</label>
       <div class="col-sm-8">
         <nz-checkbox-wrapper (nzOnChange)="synchronizationStatusChange($event)">
           <ng-container *ngFor="let option of synchronizationStatusOptions">
-            <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>filters.button.{{option.label}}</span></label>
+            <label [name]="option.label" [ngModel]="option.checked" [nzValue]="option.value" nz-checkbox><span
+              translate>filters.button.{{option.label}}</span></label>
           </ng-container>
         </nz-checkbox-wrapper>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 block-ellipsis" [ngClass]="{'col-md-2': isSearch}"></label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis"></label>
       <div class="col-sm-8">
         <nz-checkbox-wrapper (nzOnChange)="availabilityStatusChange($event)">
           <ng-container *ngFor="let option of availabilityStatusOptions">
-            <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>filters.button.{{option.label}}</span></label>
+            <label [name]="option.label" [ngModel]="option.checked" [nzValue]="option.value" nz-checkbox><span
+              translate>filters.button.{{option.label}}</span></label>
           </ng-container>
         </nz-checkbox-wrapper>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 block-ellipsis" [ngClass]="{'col-md-2': isSearch}" translate>inventory.search.label.jobAvailabilityStatus</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis" translate>inventory.search.label.jobAvailabilityStatus</label>
       <div class="col-sm-8">
         <nz-checkbox-wrapper (nzOnChange)="jobAvailabilityStatusChange($event)">
           <ng-container *ngFor="let option of jobAvailabilityStatusOptions">
-            <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>filters.button.{{option.label}}</span></label>
+            <label [name]="option.label" [ngModel]="option.checked" [nzValue]="option.value" nz-checkbox><span
+              translate>filters.button.{{option.label}}</span></label>
           </ng-container>
         </nz-checkbox-wrapper>
       </div>
     </div>
-    <div class="form-group row" *ngIf="permission && permission.joc && permission.joc.administration.customization.share && !isSearch">
+    <div *ngIf="permission && permission.joc && permission.joc.administration.customization.share && !isSearch"
+         class="form-group row">
       <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
       <div class="col-sm-8">
-        <label nz-checkbox [(ngModel)]="filter.shared" name="shared"></label>
+        <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
       </div>
     </div>
-    <div class="form-group m-t m-b-xs" *ngIf="isSearch">
-      <button type="button" class="btn btn-primary btn-sm" (click)="search()" translate>
+    <div *ngIf="isSearch" class="form-group m-t m-b-xs">
+      <button (click)="search()" class="btn btn-primary btn-sm" translate type="button">
         common.button.search
       </button>
-      <button type="submit" class="btn btn-default btn-sm m-l-sm"
-              [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted">
-         <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+      <button [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted" class="btn btn-default btn-sm m-l-sm"
+              type="submit">
+        <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
         {{'customization.button.saveAsCustomization' | translate}}
       </button>
-      <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
+      <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
         common.button.cancel
       </button>
     </div>
   </div>
-  <div class="modal-footer" *ngIf="!isSearch">
-    <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm">
+  <div *ngIf="!isSearch" class="modal-footer">
+    <button [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm" type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

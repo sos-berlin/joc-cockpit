@@ -9,20 +9,20 @@ import {
   TemplateRef,
   TrackByFunction
 } from '@angular/core';
-import { isPlatformServer } from '@angular/common';
-import { trigger, style, animate, transition } from '@angular/animations';
+import {isPlatformServer} from '@angular/common';
+import {trigger, style, animate, transition} from '@angular/animations';
 
-import { scaleBand, scaleLinear } from 'd3-scale';
+import {scaleBand, scaleLinear} from 'd3-scale';
 
-import { calculateViewDimensions } from '../common/view-dimensions.helper';
-import { ColorHelper } from '../common/color.helper';
-import { DataItem } from '../models/chart-data.model';
+import {calculateViewDimensions} from '../common/view-dimensions.helper';
+import {ColorHelper} from '../common/color.helper';
+import {DataItem} from '../models/chart-data.model';
 
-import { BaseChartComponent } from '../common/base-chart.component';
-import { ScaleType } from '../common/types/scale-type.enum';
-import { LegendOptions, LegendPosition } from '../common/types/legend.model';
-import { ViewDimensions } from '../common/types/view-dimension.interface';
-import { BarOrientation } from '../common/types/bar-orientation.enum';
+import {BaseChartComponent} from '../common/base-chart.component';
+import {ScaleType} from '../common/types/scale-type.enum';
+import {LegendOptions, LegendPosition} from '../common/types/legend.model';
+import {ViewDimensions} from '../common/types/view-dimension.interface';
+import {BarOrientation} from '../common/types/bar-orientation.enum';
 
 @Component({
   selector: 'ngx-charts-bar-horizontal-2d',
@@ -148,7 +148,7 @@ import { BarOrientation } from '../common/types/bar-orientation.enum';
           opacity: 1,
           transform: '*'
         }),
-        animate(500, style({ opacity: 0, transform: 'scale(0)' }))
+        animate(500, style({opacity: 0, transform: 'scale(0)'}))
       ])
     ])
   ]
@@ -204,7 +204,7 @@ export class BarHorizontal2DComponent extends BaseChartComponent {
   xAxisHeight: number = 0;
   yAxisWidth: number = 0;
   legendOptions: LegendOptions;
-  dataLabelMaxWidth: any = { negative: 0, positive: 0 };
+  dataLabelMaxWidth: any = {negative: 0, positive: 0};
   isSSR = false;
 
   barOrientation = BarOrientation;
@@ -219,7 +219,7 @@ export class BarHorizontal2DComponent extends BaseChartComponent {
     super.update();
 
     if (!this.showDataLabel) {
-      this.dataLabelMaxWidth = { negative: 0, positive: 0 };
+      this.dataLabelMaxWidth = {negative: 0, positive: 0};
     }
 
     this.margin = [10, 20 + this.dataLabelMaxWidth.positive, 10, 20 + this.dataLabelMaxWidth.negative];
@@ -367,12 +367,12 @@ export class BarHorizontal2DComponent extends BaseChartComponent {
     return opts;
   }
 
-  updateYAxisWidth({ width }: { width: number }): void {
+  updateYAxisWidth({width}: { width: number }): void {
     this.yAxisWidth = width;
     this.update();
   }
 
-  updateXAxisHeight({ height }: { height: number }): void {
+  updateXAxisHeight({height}: { height: number }): void {
     this.xAxisHeight = height;
     this.update();
   }
@@ -406,7 +406,7 @@ export class BarHorizontal2DComponent extends BaseChartComponent {
       });
 
     this.activeEntries = [...items];
-    this.activate.emit({ value: item, entries: this.activeEntries });
+    this.activate.emit({value: item, entries: this.activeEntries});
   }
 
   onDeactivate(event, group: DataItem, fromLegend: boolean = false): void {
@@ -423,6 +423,6 @@ export class BarHorizontal2DComponent extends BaseChartComponent {
       }
     });
 
-    this.deactivate.emit({ value: item, entries: this.activeEntries });
+    this.deactivate.emit({value: item, entries: this.activeEntries});
   }
 }

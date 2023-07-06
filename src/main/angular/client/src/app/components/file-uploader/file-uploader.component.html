@@ -1,0 +1,210 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span *ngIf="type === 'DOCUMENTATION'" translate>resource.documentation.label.importDocument</span>
+    <span *ngIf="type === 'DEPLOYMENT' || type === 'USER' || (type == 'INVENTORY' && !isDeploy)" translate>inventory.label.import</span>
+    <span *ngIf="isDeploy" translate>inventory.label.importAndDeploy</span>
+    <span *ngIf="type === 'XML_EDITOR'">
+      <span *ngIf="!importXsd" translate>xml.label.importXML</span>
+      <span *ngIf="importXsd" translate>xml.label.importXSD</span>
+    </span>
+    <span *ngIf="type === 'INVENTORY_OBJECT'">
+      <span translate>inventory.label.uploadJSON</span>
+      <span class="text-muted">{{name}}</span>
+    </span>
+  </h4>
+  <button (click)="cancel()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm">
+  <div class="modal-body p-a min-ht-300">
+    <div class="row">
+      <div [ngClass]="{'show': display}" class="col-md-12 hide">
+        <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
+      </div>
+      <div *ngIf="type === 'DOCUMENTATION'" class="col-md-12">
+        <div class="form-group row">
+          <label class="col-sm-3 form-control-label" translate>common.label.path</label>
+          <div class="col-sm-9">
+            <input [(ngModel)]="document.path" autocomplete="off" class="form-control pos-abt input-path-with-select"
+                   name="path"
+                   placeholder="{{'common.placeholder.selectFromTree' | translate}}" type="text">
+            <nz-tree-select
+              [(ngModel)]="document.path1"
+              [nzAllowClear]="false"
+              [nzDisplayWith]="displayWith"
+              [nzDropdownStyle]="{ 'max-height': '260px' }"
+              [nzNodes]="nodes"
+              class="custom-select-box"
+              name="path1">
+              <ng-template #nzTreeTemplate let-node>
+                <div (click)="selectPath(node);" class="node-wrapper">
+                  <div [class.node-content-wrapper-active]="node.isSelected" class="node-content-wrapper">
+                    <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
+                    {{node.title}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="type === 'INVENTORY'">
+        <div *ngIf="isDeploy" class="col-md-12">
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">
+              <label translate>inventory.label.signatureAlgorithm
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+            </label>
+            <div class="col-md-9">
+              <input [(ngModel)]="signatureAlgorithm" class="form-control" name="signature" placeholder="{{'inventory.placeholder.signatureAlgorithm' | translate}}" required
+                     type="text">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">
+              <label translate>inventory.label.fileFormat</label>
+            </label>
+            <div class="col-md-9">
+              <nz-select [(ngModel)]="requestObj.format" name="format">
+                <nz-option nzLabel="ZIP" nzValue="ZIP"></nz-option>
+                <nz-option nzLabel="TAR_GZ" nzValue="TAR_GZ"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!isDeploy" class="col-md-12">
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">
+              <label translate>inventory.label.folder</label>
+            </label>
+            <div class="col-md-9">
+              <input [(ngModel)]="requestObj.targetFolder" [appAutofocus]="true" autocomplete="off" class="form-control pos-abt input-path-with-select"
+                     name="folder" placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}"
+                     type="text">
+              <nz-tree-select
+                [(ngModel)]="requestObj.targetFolder1"
+                [nzAllowClear]="false"
+                [nzDisplayWith]="displayWith"
+                [nzDropdownStyle]="{ 'max-height': '260px' }"
+                [nzNodes]="nodes"
+                class="custom-select-box"
+                name="path1"
+              >
+                <ng-template #nzTreeTemplate let-node>
+                  <div (click)="selectPath(node);" class="node-wrapper">
+                    <div [class.node-content-wrapper-active]="node.isSelected" class="node-content-wrapper">
+                      <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
+                      {{node.title}}
+                    </div>
+                  </div>
+                </ng-template>
+              </nz-tree-select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">
+              <label translate>inventory.label.fileFormat</label>
+            </label>
+            <div class="col-md-9">
+              <nz-select [(ngModel)]="requestObj.format" name="format">
+                <nz-option nzLabel="ZIP" nzValue="ZIP"></nz-option>
+                <nz-option nzLabel="TAR_GZ" nzValue="TAR_GZ"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3">
+              <label translate>inventory.label.overwrite</label>
+            </label>
+            <div class="col-md-9">
+              <label [(ngModel)]="requestObj.overwrite" name="overwrite" nz-checkbox></label>
+            </div>
+          </div>
+          <div *ngIf="!requestObj.overwrite" class="form-group row">
+            <label class="col-md-3" translate>inventory.label.objectName</label>
+            <div class="col-md-9">
+              <nz-radio-group [(ngModel)]="requestObj.type" name="type">
+                <label nz-radio nzValue="ignore"><span translate>inventory.label.ignoreIfExist</span></label>
+                <label nz-radio nzValue="prefix"><span translate>inventory.label.prefix</span></label>
+                <label nz-radio nzValue="suffix"><span translate>inventory.label.suffix</span></label>
+              </nz-radio-group>
+            </div>
+          </div>
+          <div *ngIf="!requestObj.overwrite && requestObj.type === 'suffix'" class="form-group row">
+            <label class="col-md-3"></label>
+            <div [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid)}" class="col-md-9">
+              <input #suffix="ngModel" [(ngModel)]="requestObj.suffix" [appAutofocus]="requestObj.type === 'suffix'" autocomplete="off" class="form-control"
+                     identifierValidation
+                     name="suffix" placeholder="{{'inventory.placeholder.suffix' | translate}}" required
+                     type="text">
+              <div *ngIf="suffix.invalid && (suffix.dirty || suffix.touched)"
+                   class="text-danger help-block">
+                <div *ngIf="(suffix.errors && suffix.errors['required'])">
+                  <div translate>common.message.requiredError</div>
+                </div>
+                <div *ngIf="suffix.errors['invalidIdentifier']" translate>common.message.invalid</div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!requestObj.overwrite && requestObj.type === 'prefix'" class="form-group row">
+            <label class="col-md-3"></label>
+            <div [ngClass]="{'has-error' : ((prefix.dirty || prefix.touched) && prefix.invalid)}" class="col-md-9">
+              <input #prefix="ngModel" [(ngModel)]="requestObj.prefix" [appAutofocus]="requestObj.type === 'prefix'" autocomplete="off" class="form-control"
+                     identifierValidation
+                     name="prefix" placeholder="{{'inventory.placeholder.prefix' | translate}}" required
+                     type="text">
+              <div *ngIf="prefix.invalid && (prefix.dirty || prefix.touched)"
+                   class="text-danger help-block">
+                <div *ngIf="(prefix.errors && prefix.errors['required'])">
+                  <div translate>common.message.requiredError</div>
+                </div>
+                <div *ngIf="prefix.errors['invalidIdentifier']" translate>common.message.invalid</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <nz-upload
+      [(nzFileList)]="fileList"
+      [nzAccept]="fileType"
+      [nzBeforeUpload]="beforeUpload"
+      [nzShowButton]="fileList.length < 1"
+      [nzType]="fileList.length === 1 ? null : 'drag'"
+      nzListType="picture"
+      [ngClass]="{'upload-error': uploadError}"
+    >
+      <div *ngIf="fileList.length === 0">
+        <i class="icon-upload-icon"></i>
+        <div class="upload-text" translate>common.button.dragAndDropFileToUpload</div>
+      </div>
+    </nz-upload>
+    <div class="process-container" *ngIf="showProgressBar">
+      <div class="upload-progress-bar">
+        <div class="progress-bar-value" [ngClass]="{'success': !uploading}"></div>
+      </div>
+    </div>
+    <nz-upload *ngIf="fileList.length === 0" [nzAccept]="fileType" [nzBeforeUpload]="beforeUpload">
+      <div class="p-t-sm">
+        <button class="btn btn-default btn-sm" type="button">
+          <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
+          <span translate>common.button.chooseFileToUpload</span>
+        </button>
+      </div>
+    </nz-upload>
+  </div>
+  <div *ngIf="fileList.length > 0" class="modal-footer">
+    <button (click)="handleUpload();" [disabled]="!myForm.form.valid || uploading || (required && !comments.comment)"
+            class="btn btn-primary btn-sm" type="submit">
+      <i *ngIf="uploading" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.import' | translate}}
+    </button>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
+      common.button.cancel
+    </button>
+  </div>
+</form>
+
+

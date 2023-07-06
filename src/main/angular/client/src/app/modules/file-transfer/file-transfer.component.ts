@@ -1,7 +1,7 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {isEmpty, extend, clone, sortBy} from 'underscore';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ActivatedRoute, Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
@@ -18,11 +18,12 @@ declare const $;
   selector: 'app-modal-content',
   templateUrl: './filter-dialog.html',
 })
-export class FilterModalComponent implements OnInit {
-  @Input() allFilter;
-  @Input() new;
-  @Input() edit;
-  @Input() filter;
+export class FilterModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  allFilter: any;
+  new: any;
+  edit = false
+  filter: any
 
   schedulerIds: any = {};
   preferences: any = {};
@@ -33,6 +34,10 @@ export class FilterModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.allFilter = this.modalData.allFilter;
+    this.new = this.modalData.new;
+    this.edit = this.modalData.edit;
+    this.filter = this.modalData.filter;
     this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
@@ -61,7 +66,7 @@ export class FilterModalComponent implements OnInit {
   selector: 'app-file-transfer-form-template',
   templateUrl: './form-template.html',
 })
-export class FileTransferSearchComponent implements OnInit {
+export class FileTransferSearchComponent {
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
@@ -100,7 +105,7 @@ export class FileTransferSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    if(this.filter.name){
+    if (this.filter.name) {
       this.existingName = this.coreService.clone(this.filter.name);
     }
     this.allhosts = this.coreService.getProtocols();
@@ -321,7 +326,7 @@ export class FileTransferSearchComponent implements OnInit {
   selector: 'app-single-file-transfer',
   templateUrl: './single-file-transfer.component.html'
 })
-export class SingleFileTransferComponent implements OnInit, OnDestroy {
+export class SingleFileTransferComponent {
   controllerId: any;
   transferId: any;
   preferences: any = {};
@@ -445,7 +450,7 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
   selector: 'app-file-transfer',
   templateUrl: './file-transfer.component.html'
 })
-export class FileTransferComponent implements OnInit, OnDestroy {
+export class FileTransferComponent {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -807,7 +812,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: EditFilterModalComponent,
-      nzComponentParams: {
+      nzData: {
         filterList: this.filterList,
         favorite: this.savedFilter.favorite,
         permission: this.permission,
@@ -967,7 +972,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           permission: this.permission,
           allFilter: this.filterList,
           filter: filterObj,

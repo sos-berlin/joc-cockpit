@@ -10,99 +10,104 @@
         </span>
     <span *ngIf="newUser && !copy" translate>user.label.addUser</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentUser)">
   <div class="modal-body p-a">
-    <div class="hide" [ngClass]="{'show': display}">
+    <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div class="form-group row"
-         [ngClass]="{'has-error' : ((account.dirty || account.touched) && account.invalid) || !isUnique}">
+    <div [ngClass]="{'has-error' : ((account.dirty || account.touched) && account.invalid) || !isUnique}"
+         class="form-group row">
       <label class="col-sm-4 form-control-label" translate>user.label.user
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <input type="text" class="form-control" name="name" [(ngModel)]="currentUser.accountName" required
-               #account="ngModel" [appAutofocus]="true" autocomplete="off"
-               (blur)="checkUser(account.value, currentUser.userName)"/>
+        <input #account="ngModel" (blur)="checkUser(account.value, currentUser.userName)" [(ngModel)]="currentUser.accountName" [appAutofocus]="true" autocomplete="off"
+               class="form-control" name="name" required
+               type="text"/>
 
         <div *ngIf="account.invalid && (account.dirty || account.touched)" class="text-danger help-block">
           <div *ngIf="account.errors['required']">
             <div translate>common.message.requiredError</div>
           </div>
         </div>
-        <div class="help-block text-danger" *ngIf="!isUnique">
+        <div *ngIf="!isUnique" class="help-block text-danger">
           <div translate>common.message.uniqueError</div>
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="isPasswordVisible">
+    <div *ngIf="isPasswordVisible" class="form-group row">
       <label class="col-sm-4 form-control-label" translate>user.label.password</label>
-      <div class="col-sm-6" [ngClass]="{'has-error' : !minimumPasswordLength}">
-        <input type="password" class="form-control" placeholder="{{'user.placeholder.password' | translate}}"
-               [(ngModel)]="currentUser.fakePassword"
-               name="password" autocomplete="off" (focus)="minimumPasswordLength = true; isPasswordMatch = true" (blur)="checkPwdLength()"/>
+      <div [ngClass]="{'has-error' : !minimumPasswordLength}" class="col-sm-6">
+        <input (blur)="checkPwdLength()" (focus)="minimumPasswordLength = true; isPasswordMatch = true" [(ngModel)]="currentUser.fakePassword"
+               autocomplete="off"
+               class="form-control" name="password" placeholder="{{'user.placeholder.password' | translate}}"
+               type="password"/>
         <div *ngIf="!minimumPasswordLength && currentUser.fakePassword" class="text-danger help-block">
           <div translate>profile.message.minimumPasswordLength</div>
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="isPasswordVisible && !copy">
+    <div *ngIf="isPasswordVisible && !copy" class="form-group row">
       <label class="col-sm-4 form-control-label" translate>profile.label.confirmPassword</label>
-      <div class="col-sm-6" [ngClass]="{'has-error' : !isPasswordMatch}">
-        <input type="password" [required]="(currentUser.fakePassword && currentUser.fakePassword !== '********' && currentUser.fakePassword.length > 0) ? true : false" class="form-control" [(ngModel)]="currentUser.repeatedPassword"
-               name="repeatedPassword" autocomplete="off"  (blur)="checkPassword()"/>
+      <div [ngClass]="{'has-error' : !isPasswordMatch}" class="col-sm-6">
+        <input (blur)="checkPassword()"
+               [(ngModel)]="currentUser.repeatedPassword"
+               [required]="(currentUser.fakePassword && currentUser.fakePassword !== '********' && currentUser.fakePassword.length > 0) ? true : false" autocomplete="off"
+               class="form-control" name="repeatedPassword" type="password"/>
         <div *ngIf="!isPasswordMatch && currentUser.repeatedPassword" class="text-danger help-block">
           <div translate>profile.message.passwordNotMatch</div>
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="!copy && !secondFactor">
+    <div *ngIf="!copy && !secondFactor" class="form-group row">
       <label class="col-sm-4 form-control-label" translate>user.label.roles</label>
       <div class="col-sm-6">
         <nz-select
-          name="roles"
           #roles="ngModel"
-          nzShowSearch
+          [(ngModel)]="currentUser.roles"
+          name="roles"
           nzMode="multiple"
           nzPlaceHolder="{{'user.placeholder.selectRoles' | translate}}"
-          [(ngModel)]="currentUser.roles">
+          nzShowSearch>
           <nz-option *ngFor="let option of allRoles" [nzLabel]="option" [nzValue]="option"></nz-option>
         </nz-select>
       </div>
     </div>
-    <div class="form-group row" *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')">
+    <div *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')" class="form-group row">
       <label class="col-sm-4" translate>user.label.forcePasswordChange</label>
       <div class="col-sm-6">
-        <label nz-checkbox [(ngModel)]="currentUser.forcePasswordChange" [nzDisabled]="currentUser.isDisabled || newUser"
-               name="forcePasswordChange"></label>
+        <label [(ngModel)]="currentUser.forcePasswordChange" [nzDisabled]="currentUser.isDisabled || newUser"
+               name="forcePasswordChange"
+               nz-checkbox></label>
       </div>
     </div>
-    <div class="form-group row" *ngIf="!newUser && !copy && identityServiceType">
+    <div *ngIf="!newUser && !copy && identityServiceType" class="form-group row">
       <label class="col-sm-4" translate>common.label.blocked</label>
       <div class="col-sm-6">
-        <label nz-checkbox [(ngModel)]="currentUser.blocked"
-               name="blocked"></label>
+        <label [(ngModel)]="currentUser.blocked" name="blocked"
+               nz-checkbox></label>
       </div>
     </div>
-    <div class="form-group row" *ngIf="!newUser && !copy">
+    <div *ngIf="!newUser && !copy" class="form-group row">
       <label class="col-sm-4" translate>user.label.disabled</label>
       <div class="col-sm-6">
-        <label nz-checkbox [(ngModel)]="currentUser.disabled"
-               name="disabled"></label>
+        <label [(ngModel)]="currentUser.disabled" name="disabled"
+               nz-checkbox></label>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted || !minimumPasswordLength || !isPasswordMatch || (required && !comments.comment)"
-            class="btn btn-primary btn-sm">
+    <button [disabled]="!myForm.form.valid || !isUnique || submitted || !minimumPasswordLength || !isPasswordMatch || (required && !comments.comment)"
+            class="btn btn-primary btn-sm"
+            type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel
     </button>
   </div>
 </form>

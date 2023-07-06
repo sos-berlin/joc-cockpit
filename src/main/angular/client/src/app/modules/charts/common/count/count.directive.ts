@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectorRef, OnDestroy, ElementRef } from '@angular/core';
-import { count, decimalChecker } from './count.helper';
+import {Component, Input, Output, EventEmitter, ChangeDetectorRef, OnDestroy, ElementRef} from '@angular/core';
+import {count, decimalChecker} from './count.helper';
 
 /**
  * Count up component
@@ -78,11 +78,11 @@ export class CountUpDirective implements OnDestroy {
     const valueFormatting =
       this.valueFormatting || (value => `${this.countPrefix}${value.toLocaleString()}${this.countSuffix}`);
 
-    const callback = ({ value, progress, finished }) => {
+    const callback = ({value, progress, finished}) => {
       this.value = valueFormatting(value);
       this.cd.markForCheck();
-      if (!finished) this.countChange.emit({ value: this.value, progress });
-      if (finished) this.countFinish.emit({ value: this.value, progress });
+      if (!finished) this.countChange.emit({value: this.value, progress});
+      if (finished) this.countFinish.emit({value: this.value, progress});
     };
 
     this.animationReq = count(this.countFrom, this.countTo, this.countDecimals, this.countDuration, callback);

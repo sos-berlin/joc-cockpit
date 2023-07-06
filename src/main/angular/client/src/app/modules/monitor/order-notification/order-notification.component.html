@@ -1,64 +1,72 @@
-<div class="row m-b-sm m-t-n-xs" *ngIf="!(object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage))">
+<div *ngIf="!(object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage))"
+     class="row m-b-sm m-t-n-xs">
   <div class="col-lg-offset-6 col-lg-6 col-md-offset-0 col-md-12">
     <div class="notify-tool">
-      <button class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}"
-              (click)="collapseDetails()">
+      <button (click)="collapseDetails()"
+              class="btn btn-sm btn-grey m-l-12 pull-right"
+              nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
         <i class="fa fa-compress text"></i>
       </button>
-      <button class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}"
-              (click)="expandDetails()">
+      <button (click)="expandDetails()" class="btn btn-sm btn-grey m-l-12 pull-right"
+              nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
         <i class="fa fa-expand text"></i>
       </button>
       <div class="search-box-field pull-right">
         <label>
-          <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
-                 [(ngModel)]="filters.filter.searchText">
+          <input (keyup)="searchInResult()" [(ngModel)]="filters.filter.searchText" placeholder="{{'common.placeholder.search' | translate}}"
+                 type="search">
         </label>
-        <i [hidden]="!filters.filter.searchText" class="fa fa-times search-close"
-           (click)="filters.filter.searchText = '';searchInResult()"></i>
+        <i (click)="filters.filter.searchText = '';searchInResult()" [hidden]="!filters.filter.searchText"
+           class="fa fa-times search-close"></i>
       </div>
     </div>
   </div>
 </div>
-<div class="text-center font14 box p-a-sm m-b-12" *ngIf="object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage)">
-  <span translate *ngIf="filters.mapOfCheckedId.size !== totalNotification" [translateParams]="{count: filters.mapOfCheckedId.size}">common.label.selectAllEntriesOfCurrentPage</span>
-  <span translate *ngIf="filters.mapOfCheckedId.size === totalNotification" [translateParams]="{count: totalNotification}">common.label.allEntriesSelected</span>
-  <a class="text-primary p-l-xs" *ngIf="filters.mapOfCheckedId.size !== totalNotification" (click)="selectAll()" translate [translateParams]="{count: totalNotification}">common.label.selectAllEntries</a>
-  <a class="text-primary p-l-xs" *ngIf="filters.mapOfCheckedId.size === totalNotification" (click)="resetCheckBox()" translate>common.label.clearSelection</a>
+<div *ngIf="object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage)"
+     class="text-center font14 box p-a-sm m-b-12">
+  <span *ngIf="filters.mapOfCheckedId.size !== totalNotification" [translateParams]="{count: filters.mapOfCheckedId.size}"
+        translate>common.label.selectAllEntriesOfCurrentPage</span>
+  <span *ngIf="filters.mapOfCheckedId.size === totalNotification" [translateParams]="{count: totalNotification}"
+        translate>common.label.allEntriesSelected</span>
+  <a (click)="selectAll()" *ngIf="filters.mapOfCheckedId.size !== totalNotification" [translateParams]="{count: totalNotification}"
+     class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
+  <a (click)="resetCheckBox()" *ngIf="filters.mapOfCheckedId.size === totalNotification" class="text-primary p-l-xs"
+     translate>common.label.clearSelection</a>
 </div>
 <div>
   <div class="m-t-sm box p-a">
     <div class="table-responsive">
       <nz-table
         #ajaxTable
-        [nzSize]="'small'"
-        [nzPageSize]="filters.filter.entryPerPage || preferences.entryPerPage"
-        [nzPageIndex]="filters.filter.currentPage"
-        [nzBordered]="true"
-        [nzShowPagination]="data.length > 0"
-        [nzData]="data"
-        [nzLoading]="!isLoaded"
-        [nzShowSizeChanger]="true"
         (nzPageIndexChange)="pageIndexChange($event)"
         (nzPageSizeChange)="pageSizeChange($event)"
+        [nzBordered]="true"
+        [nzData]="data"
+        [nzLoading]="!isLoaded"
+        [nzPageIndex]="filters.filter.currentPage"
         [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+        [nzPageSize]="filters.filter.entryPerPage || preferences.entryPerPage"
+        [nzShowPagination]="data.length > 0"
+        [nzShowSizeChanger]="true"
+        [nzSize]="'small'"
       >
         <thead>
         <tr>
-          <th *ngIf="permission.currentController && permission.currentController.orders.modify" class="chk"
-              [nzShowCheckbox]="true"
+          <th (nzCheckedChange)="checkAll($event)" *ngIf="permission.currentController && permission.currentController.orders.modify"
               [(nzChecked)]="object.checked"
               [nzIndeterminate]="object.indeterminate"
-              (nzCheckedChange)="checkAll($event)"
+              [nzShowCheckbox]="true"
+              class="chk"
           ></th>
-          <th *ngIf="permission.currentController && permission.currentController.orders.modify" class="menu"><span translate>common.label.action</span></th>
+          <th *ngIf="permission.currentController && permission.currentController.orders.modify" class="menu"><span
+            translate>common.label.action</span></th>
           <th nzWidth="35px"><span translate>#</span></th>
-          <th *ngIf="!filters.current" (click)="sort('controllerId')">
+          <th (click)="sort('controllerId')" *ngIf="!filters.current">
             <a><span class="p-r-xs" translate>common.label.controllerId</span>
-            <i *ngIf="filters.filter.sortBy == 'controllerId' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'controllerId' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
+              <i *ngIf="filters.filter.sortBy == 'controllerId' && !filters.filter.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="filters.filter.sortBy == 'controllerId' && filters.filter.reverse"
+                 class="fa fa-caret-down "></i></a>
           </th>
           <th (click)="sort('workflow')"><a><span class="p-r-xs" translate>monitor.notification.label.workflow</span>
             <i *ngIf="filters.filter.sortBy == 'workflow' && !filters.filter.reverse"
@@ -84,39 +92,44 @@
             <i *ngIf="filters.filter.sortBy == 'type' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th nowrap (click)="sort('job.exitCode')"><a><span class="p-r-xs" translate>monitor.notification.label.jobReturnCode</span>
+          <th (click)="sort('job.exitCode')" nowrap><a><span class="p-r-xs" translate>monitor.notification.label.jobReturnCode</span>
             <i *ngIf="filters.filter.sortBy == 'job.exitCode' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'job.exitCode' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th nzWidth="20%" (click)="sort('message')"><a><span class="p-r-xs" translate>monitor.notification.label.message</span>
+          <th (click)="sort('message')" nzWidth="20%"><a><span class="p-r-xs" translate>monitor.notification.label.message</span>
             <i *ngIf="filters.filter.sortBy == 'message' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'message' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th nzWidth="150px" (click)="sort('created')"><a><span class="p-r-xs" translate>monitor.notification.label.created</span>
-          <i *ngIf="filters.filter.sortBy == 'created' && !filters.filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="filters.filter.sortBy == 'created' && filters.filter.reverse"
-             class="fa fa-caret-down "></i></a>
-        </th>
+          <th (click)="sort('created')" nzWidth="150px"><a><span class="p-r-xs" translate>monitor.notification.label.created</span>
+            <i *ngIf="filters.filter.sortBy == 'created' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'created' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
         </tr>
         </thead>
         <tbody>
-        <ng-template ngFor let-notify
-                     [ngForOf]="ajaxTable.data">
+        <ng-template [ngForOf]="ajaxTable.data" let-notify
+                     ngFor>
           <tr>
-            <td *ngIf="permission.currentController && permission.currentController.orders.modify" [nzShowCheckbox]="true" [nzDisabled]="notify.type !== 'ERROR'" [nzChecked]="filters.mapOfCheckedId.has(notify.notificationId)" (nzCheckedChange)="onItemChecked(notify, $event)"></td>
+            <td (nzCheckedChange)="onItemChecked(notify, $event)"
+                *ngIf="permission.currentController && permission.currentController.orders.modify" [nzChecked]="filters.mapOfCheckedId.has(notify.notificationId)"
+                [nzDisabled]="notify.type !== 'ERROR'"
+                [nzShowCheckbox]="true"></td>
             <td *ngIf="permission.currentController && permission.currentController.orders.modify">
               <div class="btn-group dropdown">
-                <button class="btn-drop more-option-h" [nzDisabled]="notify.type !== 'ERROR' || object.checked || object.indeterminate" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
+                <button [nzDisabled]="notify.type !== 'ERROR' || object.checked || object.indeterminate"
+                        [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                        nz-dropdown nzTrigger="click" type="button">
                   <i class="fa fa-ellipsis-h"></i>
                 </button>
-                <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
+                <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                   <ul nz-menu>
-                    <li nz-menu-item (click)="acknowledge(notify)">
+                    <li (click)="acknowledge(notify)" nz-menu-item>
                       <a translate>monitor.notification.menu.acknowledge</a>
                     </li>
                   </ul>
@@ -124,37 +137,45 @@
               </div>
             </td>
             <td class="text-center">
-              <i class="fa fa-stop" [ngClass]="{'green' : notify.type === 'SUCCESS', 'gold' : notify.type === 'WARNING', 'red' : notify.type === 'ERROR'}"></i>
+              <i [ngClass]="{'green' : notify.type === 'SUCCESS', 'gold' : notify.type === 'WARNING', 'red' : notify.type === 'ERROR'}"
+                 class="fa fa-stop"></i>
             </td>
-            <td *ngIf="!filters.current" (click)="$event.stopPropagation()">
-              <i class="cursor fa fa-caret-down fa-lg" *ngIf="!notify.show && notify.hasMonitors"
-                 (click)="showDetail(notify);$event.stopPropagation()"></i>
-              <i class="cursor fa fa-caret-up fa-lg" *ngIf="notify.show && notify.hasMonitors"
-                 (click)="notify.show = false;$event.stopPropagation()"></i>&nbsp;
+            <td (click)="$event.stopPropagation()" *ngIf="!filters.current">
+              <i (click)="showDetail(notify);$event.stopPropagation()" *ngIf="!notify.show && notify.hasMonitors"
+                 class="cursor fa fa-caret-down fa-lg"></i>
+              <i (click)="notify.show = false;$event.stopPropagation()" *ngIf="notify.show && notify.hasMonitors"
+                 class="cursor fa fa-caret-up fa-lg"></i>&nbsp;
               <span [innerHtml]="notify.controllerId | highlight : filters.filter.searchText"></span>
             </td>
-            <td nowrap (click)="$event.stopPropagation()">
+            <td (click)="$event.stopPropagation()" nowrap>
               <span class="show-in-single-line w-full">
-                <i class="cursor fa fa-caret-down fa-lg"
-                    *ngIf="!notify.show && filters.current && notify.hasMonitors"
-                    (click)="showDetail(notify);$event.stopPropagation()"></i>
-                 <i class="cursor fa fa-caret-up fa-lg"
-                 *ngIf="notify.show && filters.current && notify.hasMonitors"
-                 (click)="notify.show = false;$event.stopPropagation()"></i>&nbsp;
-                  <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToWorkflowTab(notify.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                <i (click)="showDetail(notify);$event.stopPropagation()"
+                   *ngIf="!notify.show && filters.current && notify.hasMonitors"
+                   class="cursor fa fa-caret-down fa-lg"></i>
+                 <i (click)="notify.show = false;$event.stopPropagation()"
+                    *ngIf="notify.show && filters.current && notify.hasMonitors"
+                    class="cursor fa fa-caret-up fa-lg"></i>&nbsp;
+                  <i (click)="navToWorkflowTab(notify.workflow);$event.stopPropagation()"
+                     *ngIf="permission.joc && permission.joc.inventory.view"
+                     class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                   <span (click)="coreService.showWorkflow(notify.workflow);$event.stopPropagation()"
-                        class="text-hover-primary" [innerHtml]="notify.workflow | highlight : filters.filter.searchText"></span>
+                        [innerHtml]="notify.workflow | highlight : filters.filter.searchText"
+                        class="text-hover-primary"></span>
               </span>
             </td>
             <td>
-              <a class="text-hover-primary"
-                 (click)="navToOrderHistory(notify)" [innerHtml]="notify.orderId | highlight : filters.filter.searchText"></a>
+              <a (click)="navToOrderHistory(notify)"
+                 [innerHtml]="notify.orderId | highlight : filters.filter.searchText"
+                 class="text-hover-primary"></a>
             </td>
-            <td><span *ngIf="notify.job" [innerHtml]="notify.job.job | highlight : filters.filter.searchText"></span></td>
+            <td><span *ngIf="notify.job" [innerHtml]="notify.job.job | highlight : filters.filter.searchText"></span>
+            </td>
             <td>
-              <span *ngIf="!notify.acknowledgement" [innerHtml]="notify.type | translate | highlight : filters.filter.searchText"></span>
-              <span class="cursor" *ngIf="notify.acknowledgement" nz-popover
-                    [nzPopoverContent]="contentTemplate" [innerHtml]="notify.type | translate | highlight : filters.filter.searchText"></span>
+              <span *ngIf="!notify.acknowledgement"
+                    [innerHtml]="notify.type | translate | highlight : filters.filter.searchText"></span>
+              <span *ngIf="notify.acknowledgement" [innerHtml]="notify.type | translate | highlight : filters.filter.searchText" [nzPopoverContent]="contentTemplate"
+                    class="cursor"
+                    nz-popover></span>
               <ng-template #contentTemplate>
                 <div>
                   <b translate>common.label.account</b> :
@@ -170,7 +191,8 @@
                 </div>
               </ng-template>
             </td>
-            <td><span *ngIf="notify.job" [innerHtml]="notify.job.exitCode | highlight : filters.filter.searchText"></span></td>
+            <td><span *ngIf="notify.job"
+                      [innerHtml]="notify.job.exitCode | highlight : filters.filter.searchText"></span></td>
             <td>
               <span [innerHtml]="notify.message | highlight : filters.filter.searchText"></span>
               <div *ngIf="notify.acknowledgement">
@@ -182,53 +204,54 @@
           </tr>
           <ng-container *ngIf="notify.show">
             <tr *ngIf="!notify.isLoaded">
-              <td colspan="11" class="text-center">
-                <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
+              <td class="text-center" colspan="11">
+                <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
               </td>
             </tr>
             <tr *ngIf="notify.monitors && notify.monitors.length> 0">
               <td></td>
               <td colspan="10" style="padding:0 !important;">
-                <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
-                          [nzData]="notify.monitors" [nzShowPagination]="false" [nzFrontPagination]="false">
-                  <thead>
-                  <tr>
-                    <th nzWidth="89px"><span translate>monitor.notification.label.type</span></th>
-                    <th nzWidth="150px"><span translate>monitor.notification.label.name</span></th>
-                    <th><span translate>monitor.notification.label.message</span></th>
-                    <th><span translate>monitor.notification.label.configuration</span></th>
-                    <th nzWidth="20%"><span translate>monitor.notification.label.errorText</span></th>
-                    <th nzWidth="150px"><span translate>monitor.notification.label.created</span></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let monitor of innerChildTable.data">
-                    <td>
-                      <span [innerHtml]="monitor.type | translate"></span>
-                    </td>
-                    <td><span [innerHtml]="monitor.name"></span></td>
-                    <td>
-                      <ng-template #htmlContent>
-                        <div style="padding: 3px;" [innerHTML]="monitor.message | safeHtml"></div>
-                      </ng-template>
-                      <span *ngIf="monitor.message && monitor.message.length < 100">{{monitor.message }}</span>
-                      <span *ngIf="monitor.message && monitor.message.length >= 100" [nz-tooltip]="htmlContent">{{monitor.message.substring(0, 99)}}...</span>
-                    </td>
-                    <td><span [innerHtml]="monitor.configuration"></span></td>
-                    <td><span [innerHtml]="monitor.error"></span></td>
-                    <td><span [innerHtml]="monitor.created | stringToDate"></span></td>
-                  </tr>
-                  </tbody>
-                </nz-table>
-              </td>
-            </tr>
-          </ng-container>
-        </ng-template>
+                <nz-table #innerChildTable [nzData]="notify.monitors" [nzFrontPagination]="false"
+                          [nzShowPagination]="false" class="m-a-0 inner-table" nzSize="small">
+        <thead>
+        <tr>
+          <th nzWidth="89px"><span translate>monitor.notification.label.type</span></th>
+          <th nzWidth="150px"><span translate>monitor.notification.label.name</span></th>
+          <th><span translate>monitor.notification.label.message</span></th>
+          <th><span translate>monitor.notification.label.configuration</span></th>
+          <th nzWidth="20%"><span translate>monitor.notification.label.errorText</span></th>
+          <th nzWidth="150px"><span translate>monitor.notification.label.created</span></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let monitor of innerChildTable.data">
+          <td>
+            <span [innerHtml]="monitor.type | translate"></span>
+          </td>
+          <td><span [innerHtml]="monitor.name"></span></td>
+          <td>
+            <ng-template #htmlContent>
+              <div [innerHTML]="monitor.message | safeHtml" style="padding: 3px;"></div>
+            </ng-template>
+            <span *ngIf="monitor.message && monitor.message.length < 100">{{monitor.message }}</span>
+            <span *ngIf="monitor.message && monitor.message.length >= 100"
+                  [nz-tooltip]="htmlContent">{{monitor.message.substring(0, 99)}}...</span>
+          </td>
+          <td><span [innerHtml]="monitor.configuration"></span></td>
+          <td><span [innerHtml]="monitor.error"></span></td>
+          <td><span [innerHtml]="monitor.created | stringToDate"></span></td>
+        </tr>
         </tbody>
       </nz-table>
+      </td>
+      </tr>
+      </ng-container>
+      </ng-template>
+      </tbody>
+      </nz-table>
     </div>
-    <div class="w-half label-top"
-         *ngIf="ajaxTable.data.length >0"><span
+    <div *ngIf="ajaxTable.data.length >0"
+         class="w-half label-top"><span
       translate>common.label.total</span> {{data.length}}
       <span *ngIf="ajaxTable.data.length >1" translate>monitor.notification.label.notificationsFound</span>
       <span *ngIf="ajaxTable.data.length ==1" translate>monitor.notification.label.notificationFound</span>
@@ -236,7 +259,7 @@
   </div>
 </div>
 <div *ngIf="!isLoaded || reloadState == 'yes'">
-  <div class="bottom-btn" (click)="reload()">
+  <div (click)="reload()" class="bottom-btn">
     <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
     <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
   </div>

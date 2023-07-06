@@ -1,56 +1,57 @@
-import { Injectable } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
-import { isEmpty } from 'underscore';
-import { AuthService } from './auth.service';
-import { LoggingService } from '../../services/logging.service';
+import {Injectable} from '@angular/core';
+import {HttpEvent, HttpInterceptor, HttpHandler, HttpHeaders} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {tap} from 'rxjs/operators';
+import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
+import {ToastrService} from 'ngx-toastr';
+import {isEmpty} from 'underscore';
+import {AuthService} from './auth.service';
+import {LoggingService} from '../../services/logging.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
   constructor(private router: Router, private authService: AuthService,
-    private logService: LoggingService, private translate: TranslateService, private toasterService: ToastrService) {
+              private logService: LoggingService, private translate: TranslateService, private toasterService: ToastrService) {
   }
 
   intercept(req: any, next: HttpHandler): Observable<HttpEvent<any>> {
     const re = new RegExp("^(http|https)://", "i");
     if (req.method === 'POST') {
       if (!re.test(req.url)) {
-        req = req.clone({
-          url: 'api/' + req.url,
-          headers: req.headers.set('Content-Type', req.url.match('validate/predicate') ? 'text/plain' : 'application/json')
-        });
-        if (req.url.match('authentication/login')) {
-          const user = req.body;
-          if (user.idToken) {
-            const headerOptions: any = {
-              'X-ID-TOKEN': user.idToken,
-              'X-IDENTITY-SERVICE': user.identityServiceName,
-              'X-OPENID-CONFIGURATION': user.oidcDocument
-            };
-            const headers = new HttpHeaders(headerOptions);
-
-            req = req.clone({ headers });
-          } else if(!user.fido){
-            req = req.clone({
-              headers: req.headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((user.userName || '') + ':' + (user.password || ''))))),
-              body: {}
-            });
-          } else{
-            delete user.fido;
-          }
-        } else if (this.authService.accessTokenId) {
+        if (!(req.body instanceof FormData && req.body.has('file'))) { // Exclude condition for FormData with file
           req = req.clone({
-            headers: req.headers.set('X-Access-Token', this.authService.accessTokenId)
+            url: 'api/' + req.url,
+            headers: req.headers.set('Content-Type', req.url.match('validate/predicate') ? 'text/plain' : 'application/json')
           });
-        }
-        if (!req.url.match('touch')) {
-          req.requestTimeStamp = new Date().getTime();
-          this.logService.debug('START LOADING ' + req.url);
+          if (req.url.match('authentication/login')) {
+            const user = req.body;
+            if (user.idToken) {
+              const headerOptions: any = {
+                'X-ID-TOKEN': user.idToken,
+                'X-IDENTITY-SERVICE': user.identityServiceName,
+                'X-OPENID-CONFIGURATION': user.oidcDocument
+              };
+              const headers = new HttpHeaders(headerOptions);
+              req = req.clone({headers});
+            } else if (!user.fido) {
+              req = req.clone({
+                headers: req.headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((user.userName || '') + ':' + (user.password || ''))))),
+                body: {}
+              });
+            } else {
+              delete user.fido;
+            }
+          } else if (this.authService.accessTokenId) {
+            req = req.clone({
+              headers: req.headers.set('X-Access-Token', this.authService.accessTokenId)
+            });
+          }
+          if (!req.url.match('touch')) {
+            req.requestTimeStamp = new Date().getTime();
+            this.logService.debug('START LOADING ' + req.url);
+          }
         }
       }
       return next.handle(req).pipe(
@@ -61,10 +62,10 @@ export class AuthInterceptor implements HttpInterceptor {
               this.logService.debug(message);
             }
           }, error: (err: any) => {
-            if(req.url.match('iam/fido') && this.router.url.match('/login')){
+            if (req.url.match('iam/fido') && this.router.url.match('/login')) {
               return;
             }
-            if(err.status === 200){
+            if (err.status === 200) {
 
             } else {
               if (re.test(req.url) && err.error && !isEmpty(err.error)) {

@@ -1,44 +1,71 @@
 <div class="modal-header">
   <h4 class="modal-title" translate>dashboard.label.addWidget</h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <div class="modal-body p-a-md min-ht-200">
-  <div class="form-group row p-b b-b" *ngFor="let widget of widgets" [hidden]="widget.visible">
-    <img class="pull-left m-l" src="./assets/images/{{widget.name == 'agentStatus' ? 'agentClusterStatus' : widget.name}}.png" alt="" width="120px" height="60px">
+  <div *ngFor="let widget of widgets" [hidden]="widget.visible" class="form-group row p-b b-b">
+    <img alt=""
+         class="pull-left m-l" height="60px"
+         src="./assets/images/{{widget.name == 'agentStatus' ? 'agentClusterStatus' : widget.name}}.png" width="120px">
     <div class="col-sm-6">
-      <label class="font14 text-dark m-b-0" [innerHtml]="'dashboard.label.'+widget.name | translate"></label>
-      <p class="text-sm text-muted" >{{'dashboard.'+widget.message | translate}}</p>
+      <label [innerHtml]="'dashboard.label.'+widget.name | translate" class="font14 text-dark m-b-0"></label>
+      <p class="text-sm text-muted">{{'dashboard.' + widget.message | translate}}</p>
     </div>
     <div class="col-sm-4 text-right">
       <div>
-        <button type="button" class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="size" translate>
-        <i class="fa fa-cog"></i> dashboard.button.changeSize
+        <button [nzDropdownMenu]="size" class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" translate
+                type="button">
+          <i class="fa fa-cog"></i> dashboard.button.changeSize
         </button>
         <nz-dropdown-menu #size="nzDropdownMenu">
-          <ul nz-menu class="text-overflow max-ht-120 max-w-110">
-            <li nz-menu-item class="w-xs" (click)="widget.cols= 4;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 2}"><a>1 <i class="fa fa-times"></i> 2</a></li>
-            <li nz-menu-item class="w-xs" (click)="widget.cols= 4;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 3}"><a>1 <i class="fa fa-times"></i> 3</a></li>
-            <li nz-menu-item class="w-xs" (click)="widget.cols= 4;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 4}"><a>1 <i class="fa fa-times"></i> 4</a></li>
-            <li nz-menu-item class="w-xs" (click)="widget.cols= 4;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 5}"><a>1 <i class="fa fa-times"></i> 5</a></li>
-            <li nz-menu-item class="w-xs" (click)="widget.cols= 8;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 2}"><a>2 <i class="fa fa-times"></i> 2</a></li>
-            <li nz-menu-item class="w-xs" (click)="widget.cols= 8;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 3}"><a>2 <i class="fa fa-times"></i> 3</a></li>
-            <li nz-menu-item class="w-xs" (click)="widget.cols= 8;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 4}"><a>2 <i class="fa fa-times"></i> 4</a></li>
-            <li nz-menu-item class="w-xs" (click)="widget.cols= 8;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 5}"><a>2 <i class="fa fa-times"></i> 5</a></li>
-            <li nz-menu-item class="w-xs" (click)="widget.cols= 12;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 2}"><a>3 <i class="fa fa-times"></i> 2</a></li>
-            <li nz-menu-item class="w-xs" (click)="widget.cols= 12;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 3}"><a>3 <i class="fa fa-times"></i> 3</a></li>
-            <li nz-menu-item class="w-xs" (click)="widget.cols= 12;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 4}"><a>3 <i class="fa fa-times"></i> 4</a></li>
-            <li nz-menu-item class="w-xs" (click)="widget.cols= 12;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 5}"><a>3 <i class="fa fa-times"></i> 5</a></li>
+          <ul class="text-overflow max-ht-120 max-w-110" nz-menu>
+            <li (click)="widget.cols= 4;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 2}" class="w-xs"
+                nz-menu-item><a>1 <i
+              class="fa fa-times"></i> 2</a></li>
+            <li (click)="widget.cols= 4;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 3}" class="w-xs"
+                nz-menu-item><a>1 <i
+              class="fa fa-times"></i> 3</a></li>
+            <li (click)="widget.cols= 4;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 4}" class="w-xs"
+                nz-menu-item><a>1 <i
+              class="fa fa-times"></i> 4</a></li>
+            <li (click)="widget.cols= 4;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 5}" class="w-xs"
+                nz-menu-item><a>1 <i
+              class="fa fa-times"></i> 5</a></li>
+            <li (click)="widget.cols= 8;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 2}" class="w-xs"
+                nz-menu-item><a>2 <i
+              class="fa fa-times"></i> 2</a></li>
+            <li (click)="widget.cols= 8;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 3}" class="w-xs"
+                nz-menu-item><a>2 <i
+              class="fa fa-times"></i> 3</a></li>
+            <li (click)="widget.cols= 8;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 4}" class="w-xs"
+                nz-menu-item><a>2 <i
+              class="fa fa-times"></i> 4</a></li>
+            <li (click)="widget.cols= 8;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 5}" class="w-xs"
+                nz-menu-item><a>2 <i
+              class="fa fa-times"></i> 5</a></li>
+            <li (click)="widget.cols= 12;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 2}" class="w-xs"
+                nz-menu-item><a>3 <i
+              class="fa fa-times"></i> 2</a></li>
+            <li (click)="widget.cols= 12;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 3}" class="w-xs"
+                nz-menu-item><a>3 <i
+              class="fa fa-times"></i> 3</a></li>
+            <li (click)="widget.cols= 12;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 4}" class="w-xs"
+                nz-menu-item><a>3 <i
+              class="fa fa-times"></i> 4</a></li>
+            <li (click)="widget.cols= 12;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 5}" class="w-xs"
+                nz-menu-item><a>3 <i
+              class="fa fa-times"></i> 5</a></li>
           </ul>
         </nz-dropdown-menu>
-        <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="addWidgetFunc(widget)" translate>
+        <button (click)="addWidgetFunc(widget)" class="btn btn-grey btn-sm m-l-sm" translate type="button">
           <i class="fa fa-plus"></i> dashboard.button.widget
         </button>
       </div>
     </div>
   </div>
-  <div class="m-t-lg hide" [ngClass]="{'show':dashboard.length === widgets.length}">
+  <div [ngClass]="{'show':dashboard.length === widgets.length}" class="m-t-lg hide">
     <app-empty-data [title]="'dashboard.message.noWidgetFound'"></app-empty-data>
   </div>
 </div>

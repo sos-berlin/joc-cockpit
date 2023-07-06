@@ -15,14 +15,14 @@ export class FileTransferService {
 
     if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
       const regArr = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      if(regArr && regArr[0]) {
+      if (regArr && regArr[0]) {
         fromDate = regArr[0];
       }
     } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
       fromDate = new Date();
       toDate = new Date();
       const regArr = /^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex);
-      if(regArr && regArr[2]) {
+      if (regArr && regArr[2]) {
         fromDate.setSeconds(toDate.getSeconds() - (+regArr[2]));
       }
     } else if (/^\s*(Today)\s*$/i.test(regex)) {
@@ -36,7 +36,7 @@ export class FileTransferService {
       toDate = new Date();
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
       date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      if(date) {
+      if (date) {
         arr = date[0].split('to');
         fromDate = arr[0].trim();
         toDate = arr[1].trim();
@@ -44,21 +44,21 @@ export class FileTransferService {
 
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
       date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      if(date) {
+      if (date) {
         arr = date[0].split('to');
         fromDate = arr[0].trim();
         toDate = arr[1].trim();
       }
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
       date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      if(date) {
+      if (date) {
         arr = date[0].split('to');
         fromDate = arr[0].trim();
         toDate = arr[1].trim();
       }
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
       date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      if(date) {
+      if (date) {
         arr = date[0].split('to');
         fromDate = arr[0].trim();
         toDate = arr[1].trim();

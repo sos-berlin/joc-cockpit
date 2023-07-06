@@ -12,12 +12,12 @@ import {
   PLATFORM_ID,
   Inject
 } from '@angular/core';
-import { trimLabel } from '../trim-label.helper';
-import { reduceTicks } from './ticks.helper';
-import { roundedRect } from '../shape.helper';
-import { isPlatformBrowser } from '@angular/common';
-import { Orientation } from '../types/orientation.enum';
-import { TextAnchor } from '../types/text-anchor.enum';
+import {trimLabel} from '../trim-label.helper';
+import {reduceTicks} from './ticks.helper';
+import {roundedRect} from '../shape.helper';
+import {isPlatformBrowser} from '@angular/common';
+import {Orientation} from '../types/orientation.enum';
+import {TextAnchor} from '../types/text-anchor.enum';
 
 @Component({
   selector: 'g[ngx-charts-y-axis-ticks]',
@@ -128,7 +128,8 @@ export class YAxisTicksComponent implements OnChanges, AfterViewInit {
 
   @ViewChild('ticksel') ticksElement: ElementRef;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: any) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: any) {
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.update();
@@ -142,14 +143,14 @@ export class YAxisTicksComponent implements OnChanges, AfterViewInit {
     if (!isPlatformBrowser(this.platformId)) {
       // for SSR, use approximate value instead of measured
       this.width = this.getApproximateAxisWidth();
-      this.dimensionsChanged.emit({ width: this.width });
+      this.dimensionsChanged.emit({width: this.width});
       return;
     }
 
     const width = parseInt(this.ticksElement.nativeElement.getBoundingClientRect().width, 10);
     if (width !== this.width) {
       this.width = width;
-      this.dimensionsChanged.emit({ width });
+      this.dimensionsChanged.emit({width});
       setTimeout(() => this.updateDims());
     }
   }
@@ -177,8 +178,8 @@ export class YAxisTicksComponent implements OnChanges, AfterViewInit {
 
     this.adjustedScale = scale.bandwidth
       ? function (d) {
-          return scale(d) + scale.bandwidth() * 0.5;
-        }
+        return scale(d) + scale.bandwidth() * 0.5;
+      }
       : scale;
 
     if (this.showRefLines && this.referenceLines) {

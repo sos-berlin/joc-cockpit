@@ -35,7 +35,7 @@ declare const mxCellOverlay;
   selector: 'app-sub-agent-modal',
   templateUrl: './sub-agent.dialog.html'
 })
-export class SubagentModalComponent implements OnInit {
+export class SubagentModalComponent {
   @Input() clusterAgent: any;
   @Input() data: any;
   @Input() new: boolean;
@@ -103,7 +103,7 @@ export class SubagentModalComponent implements OnInit {
   selector: 'add-cluster-agent-modal',
   templateUrl: './add-cluster.dialog.html'
 })
-export class AddClusterModalComponent implements OnInit {
+export class AddClusterModalComponent {
   @Input() subagentClusters: any;
   @Input() agentId: any;
   @Input() data: any;
@@ -192,7 +192,7 @@ export class AddClusterModalComponent implements OnInit {
   selector: 'app-agent-modal',
   templateUrl: './agent.dialog.html'
 })
-export class AgentModalComponent implements OnInit {
+export class AgentModalComponent {
   @Input() data: any;
   @Input() new: boolean;
   @Input() isCluster: boolean;
@@ -227,10 +227,10 @@ export class AgentModalComponent implements OnInit {
       delete this.agent.show;
     }
     if (!this.agent.agentNameAliases || this.agent.agentNameAliases.length === 0) {
-      this.agentNameAliases = [{ name: '' }];
+      this.agentNameAliases = [{name: ''}];
     } else {
       this.agent.agentNameAliases.filter((val) => {
-        this.agentNameAliases.push({ name: val });
+        this.agentNameAliases.push({name: val});
       });
     }
   }
@@ -370,7 +370,7 @@ export class AgentModalComponent implements OnInit {
   templateUrl: './agent.component.html',
   styleUrls: ['./agent.component.scss']
 })
-export class AgentComponent implements OnInit, OnDestroy {
+export class AgentComponent {
   isLoading = true;
   isVisible = false;
   isActionMenuVisible = false;
@@ -576,7 +576,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzContent: AddClusterModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         agentId: this.agentId,
         subagentClusters: this.clusters,
         new: true
@@ -600,7 +600,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzContent: AddClusterModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         agentId: this.agentId,
         subagentClusters: this.clusters,
         data: cluster,
@@ -640,7 +640,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -663,7 +663,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         this.modal.create({
           nzTitle: undefined,
           nzContent: ConfirmModalComponent,
-          nzComponentParams: {
+          nzData: {
             title: 'delete',
             message: 'deleteSubagentCluster',
             type: 'Delete',
@@ -701,7 +701,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -720,7 +720,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         const modal = this.modal.create({
           nzTitle: undefined,
           nzContent: ConfirmModalComponent,
-          nzComponentParams: {
+          nzData: {
             title: 'delete',
             message: 'deleteSelectedClusterAgents',
             type: 'Delete',
@@ -745,7 +745,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       subagentClusterIds: Array.from(this.object.mapOfCheckedId),
       auditLog
     };
-    this.coreService.post(isRevoke ? 'agents/cluster/revoke' : 'agents/cluster/delete', obj).subscribe(()=>this.reset());
+    this.coreService.post(isRevoke ? 'agents/cluster/revoke' : 'agents/cluster/delete', obj).subscribe(() => this.reset());
   }
 
   deployAll(): void {
@@ -764,7 +764,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -777,11 +777,11 @@ export class AgentComponent implements OnInit, OnDestroy {
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
           };
-          this.coreService.post('agents/cluster/deploy', obj).subscribe(()=>this.reset());
+          this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.reset());
         }
       });
     } else {
-      this.coreService.post('agents/cluster/deploy', obj).subscribe(()=>this.reset());
+      this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.reset());
     }
   }
 
@@ -802,7 +802,7 @@ export class AgentComponent implements OnInit, OnDestroy {
           nzTitle: undefined,
           nzContent: CommentModalComponent,
           nzClassName: 'lg',
-          nzComponentParams: {
+          nzData: {
             comments,
           },
           nzFooter: null,
@@ -815,11 +815,11 @@ export class AgentComponent implements OnInit, OnDestroy {
               timeSpent: result.timeSpent,
               ticketLink: result.ticketLink
             };
-            this.coreService.post('agents/cluster/deploy', obj).subscribe(()=>this.reset());
+            this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.reset());
           }
         });
       } else {
-        this.coreService.post('agents/cluster/deploy', obj).subscribe(()=>this.reset());
+        this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.reset());
       }
     }
   }
@@ -1646,7 +1646,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     const graph = this.editor.graph;
     const scrollValue: any = {};
     const element = document.getElementById('graph');
-    if(!element || !graph){
+    if (!element || !graph) {
       return;
     }
     scrollValue.scrollTop = element.scrollTop;
@@ -1703,7 +1703,7 @@ export class AgentComponent implements OnInit, OnDestroy {
             colorIndex++;
           }
         }
-        if(this.colors.length - 1 === colorIndex){
+        if (this.colors.length - 1 === colorIndex) {
           colorIndex = 0;
         }
         colorCode = this.colors[colorIndex];

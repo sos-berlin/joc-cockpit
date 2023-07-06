@@ -1,18 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {DataService} from '../data.service';
-import {OrderPipe, SearchPipe} from 'src/app/pipes/core.pipe';
-import {AuthService} from 'src/app/components/guard';
-import {CoreService} from 'src/app/services/core.service';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmationModalComponent} from '../accounts/accounts.component';
+import {OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
+import {AuthService} from '../../../components/guard';
+import {CoreService} from '../../../services/core.service';
+import {DataService} from '../data.service';
 
 @Component({
   selector: 'app-pending-requests',
   templateUrl: './pending-requests.component.html',
   styleUrls: ['./pending-requests.component.scss']
 })
-export class PendingRequestsComponent implements OnInit {
+export class PendingRequestsComponent {
   requests: any = {};
   preferences: any = {};
   data: any = [];
@@ -174,7 +174,7 @@ export class PendingRequestsComponent implements OnInit {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmationModalComponent,
-      nzComponentParams: {
+      nzData: {
         approve: type === 'APPROVE',
         reject: type === 'REJECT',
         deleteRequest: type === 'DELETE',

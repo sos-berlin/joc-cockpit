@@ -2,11 +2,12 @@
 .tree-block {
   margin-top: 0;
 }
+
 .a-3 {
   top: 56px;
 }
 
-.trash, .rollback{
+.trash, .rollback {
   padding: 4px 6px;
   border-radius: 50%;
   background: var(--menu-hover);
@@ -14,37 +15,44 @@
   position: absolute;
   cursor: pointer;
   right: 48px;
-  top:-2px;
-  z-index:99;
-  &:hover{
+  top: -2px;
+  z-index: 99;
+
+  &:hover {
     color: var(--primary);
   }
-  i{
+
+  i {
     color: var(--text-color);
   }
 }
-.rollback{
+
+.rollback {
   top: 16px;
   right: 16px;
   display: block;
   background: var(--background-color);
 }
-.editor{
-  &:hover{
-    .trash{
+
+.editor {
+  &:hover {
+    .trash {
       display: block;
     }
   }
-  .r-82{
+
+  .r-82 {
     right: 82px;;
   }
 }
-.sidebar-hover-effect{
-  .trash{
+
+.sidebar-hover-effect {
+  .trash {
     right: 16px;
-    top:16px;
+    top: 16px;
   }
-  .r-82{
+
+  .r-82 {
     right: 52px;;
   }
 }
@@ -83,6 +91,6 @@
   z-index: 999;
 }
 
-.input-tree-search:focus ~ .tree-search-icon{
+.input-tree-search:focus ~ .tree-search-icon {
   display: inline-block;
 }

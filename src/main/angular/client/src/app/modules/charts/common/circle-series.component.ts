@@ -10,17 +10,17 @@ import {
   PLATFORM_ID,
   Inject
 } from '@angular/core';
-import { trigger, style, animate, transition } from '@angular/animations';
-import { formatLabel, escapeLabel } from './label.helper';
-import { id } from '../utils/id';
-import { ColorHelper } from './color.helper';
-import { DataItem, Series, StringOrNumberOrDate } from '../models/chart-data.model';
-import { PlacementTypes } from './tooltip/position';
-import { StyleTypes } from './tooltip/style.type';
-import { BarOrientation } from './types/bar-orientation.enum';
-import { Gradient } from './types/gradient.interface';
-import { ScaleType } from './types/scale-type.enum';
-import { isPlatformServer } from '@angular/common';
+import {trigger, style, animate, transition} from '@angular/animations';
+import {formatLabel, escapeLabel} from './label.helper';
+import {id} from '../utils/id';
+import {ColorHelper} from './color.helper';
+import {DataItem, Series, StringOrNumberOrDate} from '../models/chart-data.model';
+import {PlacementTypes} from './tooltip/position';
+import {StyleTypes} from './tooltip/style.type';
+import {BarOrientation} from './types/bar-orientation.enum';
+import {Gradient} from './types/gradient.interface';
+import {ScaleType} from './types/scale-type.enum';
+import {isPlatformServer} from '@angular/common';
 
 export enum SeriesType {
   Standard = 'standard',
@@ -107,7 +107,7 @@ export interface Circle {
         style({
           opacity: 0
         }),
-        animate(250, style({ opacity: 1 }))
+        animate(250, style({opacity: 1}))
       ])
     ])
   ]
@@ -140,7 +140,8 @@ export class CircleSeriesComponent implements OnChanges, OnInit {
 
   isSSR = false;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: any) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: any) {
+  }
 
   ngOnInit() {
     this.gradientId = 'grad' + id().toString();
@@ -231,12 +232,12 @@ export class CircleSeriesComponent implements OnChanges, OnInit {
   }
 
   getTooltipText({
-    tooltipLabel,
-    value,
-    seriesName,
-    min,
-    max
-  }: {
+                   tooltipLabel,
+                   value,
+                   seriesName,
+                   min,
+                   max
+                 }: {
     tooltipLabel: string;
     value: any;
     seriesName: string;
@@ -302,12 +303,12 @@ export class CircleSeriesComponent implements OnChanges, OnInit {
 
   activateCircle(): void {
     this.barVisible = true;
-    this.activate.emit({ name: this.data.name });
+    this.activate.emit({name: this.data.name});
   }
 
   deactivateCircle(): void {
     this.barVisible = false;
     this.circle.opacity = 0;
-    this.deactivate.emit({ name: this.data.name });
+    this.deactivate.emit({name: this.data.name});
   }
 }

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { APIServerStatusComponent } from './api-server-status.component';
+import {APIServerStatusComponent} from './api-server-status.component';
 
 describe('APIServerStatusComponent', () => {
   let component: APIServerStatusComponent;
@@ -8,9 +8,9 @@ describe('APIServerStatusComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ APIServerStatusComponent ]
+      declarations: [APIServerStatusComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(APIServerStatusComponent);
     component = fixture.componentInstance;

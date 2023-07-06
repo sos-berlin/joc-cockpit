@@ -13,6 +13,7 @@ import {NzAutocompleteModule} from "ng-zorro-antd/auto-complete";
 import {NzRadioModule} from 'ng-zorro-antd/radio';
 import {NzTagModule} from "ng-zorro-antd/tag";
 import {NzTimePickerModule} from 'ng-zorro-antd/time-picker';
+import {NzUploadModule} from 'ng-zorro-antd/upload';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {Shared2Module} from './shared2.module';
 import {ChartsModule} from "../charts/charts.module";
@@ -67,11 +68,12 @@ import {GraphicalViewModalComponent} from '../../components/graphical-view-modal
 import {MultiSelectComponent} from "../../components/multi-select/multi-select.component";
 import {SearchInputComponent} from "../../components/search-input/search-input.component";
 import {SelectInputComponent} from "../../components/select-input/select-input.component";
+import {FileUploaderComponent} from '../../components/file-uploader/file-uploader.component';
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
-  NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzTagModule,
-  NzSelectModule, NzInputModule, NzMessageModule, NzRadioModule, ChartsModule,
-  NzTreeSelectModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule];
+  NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzTagModule, NzSelectModule,
+  NzInputModule, NzMessageModule, NzRadioModule, ChartsModule, NzTreeSelectModule,
+  NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, TreeModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
   ModifyStartTimeModalComponent];
@@ -80,7 +82,7 @@ const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, 
   ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, FacetValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
   StartUpModalComponent, TreeComponent, AgentSelectionComponent, ValueEditorComponent, WorkflowTreeStructureComponent, NodePositionComponent, SearchComponent,
-  SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent];
+  SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent];
 
 @NgModule({
   imports: [

@@ -5,27 +5,32 @@
     <span *ngIf="!new && !edit" translate>customization.label.copyCustomization</span>
     <span *ngIf="name">: {{name}}</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <div *ngIf="type === 'ORDER'">
-  <app-order-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
-                           (onCancel)="cancel($event)"></app-order-form-template>
+  <app-order-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
+                           [permission]="permission" [preferences]="preferences"
+                           [schedulerIds]="schedulerIds"></app-order-form-template>
 </div>
 <div *ngIf="type === 'TASK'">
-  <app-task-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
-                          (onCancel)="cancel($event)"></app-task-form-template>
+  <app-task-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
+                          [permission]="permission" [preferences]="preferences"
+                          [schedulerIds]="schedulerIds"></app-task-form-template>
 </div>
 <div *ngIf="type === 'YADE'">
-  <app-file-transfer-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
-                          [isHistory]="true" (onCancel)="cancel($event)"></app-file-transfer-form-template>
+  <app-file-transfer-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
+                                   [isHistory]="true" [permission]="permission"
+                                   [preferences]="preferences" [schedulerIds]="schedulerIds"></app-file-transfer-form-template>
 </div>
 <div *ngIf="type === 'DEPLOYMENT'">
-  <app-deployment-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
-                          (onCancel)="cancel($event)"></app-deployment-form-template>
+  <app-deployment-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
+                                [permission]="permission" [preferences]="preferences"
+                                [schedulerIds]="schedulerIds"></app-deployment-form-template>
 </div>
 <div *ngIf="type === 'SUBMISSION'">
-  <app-submission-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
-                                (onCancel)="cancel($event)"></app-submission-form-template>
+  <app-submission-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
+                                [permission]="permission" [preferences]="preferences"
+                                [schedulerIds]="schedulerIds"></app-submission-form-template>
 </div>

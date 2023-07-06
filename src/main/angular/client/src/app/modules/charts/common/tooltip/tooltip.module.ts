@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { TooltipDirective } from './tooltip.directive';
-import { TooltipContentComponent } from './tooltip.component';
-import { TooltipService } from './tooltip.service';
-import { InjectionService } from './injection.service';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {TooltipDirective} from './tooltip.directive';
+import {TooltipContentComponent} from './tooltip.component';
+import {TooltipService} from './tooltip.service';
+import {InjectionService} from './injection.service';
 
 @NgModule({
   declarations: [TooltipContentComponent, TooltipDirective],
@@ -11,4 +11,5 @@ import { InjectionService } from './injection.service';
   exports: [TooltipContentComponent, TooltipDirective],
   imports: [CommonModule]
 })
-export class TooltipModule {}
+export class TooltipModule {
+}

@@ -1,4 +1,12 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges
+} from '@angular/core';
 import {isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
@@ -136,7 +144,7 @@ export class LockComponent implements OnChanges, OnDestroy {
             nzTitle: undefined,
             nzContent: CommentModalComponent,
             nzClassName: 'lg',
-            nzComponentParams: {
+            nzData: {
               comments
             },
             nzFooter: null,
@@ -179,7 +187,7 @@ export class LockComponent implements OnChanges, OnDestroy {
           this.data.name = name;
         }
         data.name1 = name;
-        this.dataService.reloadTree.next({ rename: data });
+        this.dataService.reloadTree.next({rename: data});
       }, error: () => {
         this.lock.name = this.data.name;
         this.lock.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
@@ -270,7 +278,7 @@ export class LockComponent implements OnChanges, OnDestroy {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
-    if(this.lock.configuration.limit === ''){
+    if (this.lock.configuration.limit === '') {
       this.lock.configuration.limit = 1;
     }
     if (!isEqual(this.lock.actual, JSON.stringify(this.lock.configuration))) {

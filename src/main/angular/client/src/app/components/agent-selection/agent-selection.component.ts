@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
 import {CoreService} from "../../services/core.service";
 import {DataService} from "../../services/data.service";
 
-declare const $:any;
+declare const $: any;
 
 @Component({
   selector: 'app-agent-selection',
@@ -23,8 +23,8 @@ export class AgentSelectionComponent implements OnChanges {
     list: [],
     agents: []
   };
-  agentList:any = [];
-  nonExistAgents:any = [];
+  agentList: any = [];
+  nonExistAgents: any = [];
 
   @Output() selectSubagentCluster: EventEmitter<any> = new EventEmitter();
   @Output() onBlur: EventEmitter<any> = new EventEmitter();
@@ -32,7 +32,7 @@ export class AgentSelectionComponent implements OnChanges {
   constructor(private coreService: CoreService, private dataService: DataService) {
   }
 
-  ngOnChanges(changes:any): void {
+  ngOnChanges(changes: any): void {
     if (changes.agents) {
       this.agentList = this.coreService.clone(this.agents);
       this.coreService.post('inventory/favorites', {
@@ -105,7 +105,7 @@ export class AgentSelectionComponent implements OnChanges {
     }, 2000)
   }
 
-  expandCollapse($event:any, data:any, isCluster:boolean = false) {
+  expandCollapse($event: any, data: any, isCluster: boolean = false) {
     $event.stopPropagation();
     data.hide = !data.hide;
     if (isCluster) {
@@ -133,7 +133,7 @@ export class AgentSelectionComponent implements OnChanges {
   }
 
   generateFavList(): void {
-    let arr:any = [];
+    let arr: any = [];
     let flag = false;
     for (let i in this.favorite.list) {
       if (!this.favorite.list[i].content) {
@@ -203,7 +203,7 @@ export class AgentSelectionComponent implements OnChanges {
     this.favorite.agents = arr;
   }
 
-  isFavCheck(agent:any, cluster:any): boolean {
+  isFavCheck(agent: any, cluster: any): boolean {
     let flag = false;
     for (let i in this.favorite.list) {
       if (agent == this.favorite.list[i].name && cluster == this.favorite.list[i].content) {
@@ -214,7 +214,7 @@ export class AgentSelectionComponent implements OnChanges {
     return flag;
   }
 
-  setFavorite($event:any, agent:any, cluster:any, isFav:any): void {
+  setFavorite($event: any, agent: any, cluster: any, isFav: any): void {
     $event.stopPropagation();
     $event.preventDefault();
     if (isFav) {
@@ -243,17 +243,17 @@ export class AgentSelectionComponent implements OnChanges {
     let temp = this.coreService.clone(this.agents);
     this.agentList = this.coreService.getFilterAgentList(temp, value);
     this.agentList = [...this.agentList];
-    if(!value){
+    if (!value) {
       this.onBlur.emit();
     }
   }
 
-  selectAgent(data:any): void {
+  selectAgent(data: any): void {
     this.selectSubagentCluster.emit(data)
     $('#agentId').blur();
   }
 
-  checkClick(){
+  checkClick() {
     $('#agentId').blur();
   }
 

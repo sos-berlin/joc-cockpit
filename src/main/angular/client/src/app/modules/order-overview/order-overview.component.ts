@@ -41,8 +41,10 @@ declare const $;
 })
 export class RelativeDateValidator implements Validator {
   @Input('appValidateRelativeDate') appValidateRelativeDate: string;
+
   constructor(private coreService: CoreService) {
   }
+
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
     if (v != null) {
@@ -69,7 +71,7 @@ export class RelativeDateValidator implements Validator {
   selector: 'app-pie-chart',
   templateUrl: './chart-template.component.html',
 })
-export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
+export class OrderPieChartComponent {
   @Input() schedulerId: any;
   @Input() state: any;
   @Input() date: any;
@@ -152,7 +154,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
   private preparePieData(res): void {
     const ordersData = [];
     this.colorScheme.domain = [];
-    this.setObj =  new Map();
+    this.setObj = new Map();
     for (let prop in res) {
       if (res[prop] > 0) {
         let obj: any = {};
@@ -199,7 +201,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
   templateUrl: './order-overview.component.html',
   styleUrls: ['./order-overview.component.css']
 })
-export class OrderOverviewComponent implements OnInit, OnDestroy {
+export class OrderOverviewComponent {
   loading: boolean;
   isLoaded: boolean;
   schedulerIds: any = {};
@@ -328,7 +330,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         controllerId: this.schedulerIds.selected,
         states: this.getState()
       });
-    } else{
+    } else {
       this.initTree();
     }
   }
@@ -498,7 +500,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
     obj.limit = this.preferences.maxOrderRecords;
     obj.compact = true;
-    if(this.orderFilters.filter.state === 'INPROGRESS' || this.orderFilters.filter.state === 'FAILED'
+    if (this.orderFilters.filter.state === 'INPROGRESS' || this.orderFilters.filter.state === 'FAILED'
       || this.orderFilters.filter.state === 'RUNNING' || this.orderFilters.filter.state === 'COMPLETED') {
       if (this.orderFilters.filter.stateDateFrom) {
         if (/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(this.orderFilters.filter.stateDateFrom)) {
@@ -628,7 +630,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.resetCheckBox();
     }
     this.pageView = $event;
-    if(this.pageView === 'list'){
+    if (this.pageView === 'list') {
       this.updatePanelHeight();
     }
   }
@@ -893,7 +895,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  selectAll(): void{
+  selectAll(): void {
     this.data.forEach(item => {
       this.object.mapOfCheckedId.set(item.orderId, item);
     });
@@ -986,7 +988,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: ChangeParameterModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           schedulerId: this.schedulerIds.selected,
           orders: this.object.mapOfCheckedId,
           orderPreparation: order.requirements,
@@ -1004,7 +1006,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerIds.selected,
         preferences: this.preferences,
         orders: this.object.mapOfCheckedId,
@@ -1045,7 +1047,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: ResumeOrderModalComponent,
         nzClassName: 'x-lg',
-        nzComponentParams: {
+        nzData: {
           preferences: this.preferences,
           schedulerId: this.schedulerIds.selected,
           orders: this.object.mapOfCheckedId
@@ -1080,7 +1082,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
           nzTitle: undefined,
           nzContent: CommentModalComponent,
           nzClassName: 'lg',
-          nzComponentParams: {
+          nzData: {
             comments,
             obj,
             url: 'orders/resume'
@@ -1146,7 +1148,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
           obj,
           url: 'orders/' + url

@@ -1,11 +1,11 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {Component, inject} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
 import {clone, isArray} from 'underscore';
-import {catchError, filter} from 'rxjs/operators';
+import {catchError} from 'rxjs/operators';
 import {forkJoin, of, Subscription} from 'rxjs';
 import {saveAs} from 'file-saver';
 import {DataService} from '../data.service';
@@ -14,21 +14,23 @@ import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.c
 import {AuthService} from '../../../components/guard';
 import {ConfirmationModalComponent} from '../accounts/accounts.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
-import {UploadModalComponent} from "../upload/upload.component";
+import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
+
 
 // Role Actions
 @Component({
   selector: 'app-role-modal-content',
   templateUrl: './role-dialog.html'
 })
-export class RoleModalComponent implements OnInit {
-  @Input() userDetail: any;
-  @Input() oldRole: any;
-  @Input() allRoles: any;
-  @Input() newRole: boolean;
-  @Input() copy: boolean;
-  @Input() identityServiceType: string;
-  @Input() identityServiceName: string;
+export class RoleModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  userDetail: any;
+  oldRole: any;
+  allRoles: any;
+  newRole: boolean;
+  copy: boolean;
+  identityServiceType: string;
+  identityServiceName: string;
 
   submitted = false;
   isUnique = true;
@@ -43,6 +45,13 @@ export class RoleModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.userDetail = this.modalData.userDetail;
+    this.oldRole = this.modalData.oldRole;
+    this.allRoles = this.modalData.allRoles;
+    this.newRole = this.modalData.newRole;
+    this.copy = this.modalData.copy;
+    this.identityServiceType = this.modalData.identityServiceType;
+    this.identityServiceName = this.modalData.identityServiceName;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -196,12 +205,13 @@ export class RoleModalComponent implements OnInit {
   selector: 'app-controller-modal-content',
   templateUrl: 'controller-dialog.html'
 })
-export class ControllerModalComponent implements OnInit {
-  @Input() allRoles: any;
-  @Input() oldController: any;
-  @Input() copy: boolean;
-  @Input() userDetail: any;
-  @Input() role: any;
+export class ControllerModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  allRoles: any;
+  oldController: any;
+  copy: boolean;
+  userDetail: any;
+  role: any;
 
   submitted = false;
   isUnique = true;
@@ -216,6 +226,11 @@ export class ControllerModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.allRoles = this.modalData.allRoles;
+    this.oldController = this.modalData.oldController;
+    this.copy = this.modalData.copy;
+    this.userDetail = this.modalData.userDetail;
+    this.role = this.modalData.role;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -314,7 +329,7 @@ export class ControllerModalComponent implements OnInit {
   templateUrl: 'roles.component.html',
   styleUrls: ['./roles.component.css']
 })
-export class RolesComponent implements OnInit, OnDestroy {
+export class RolesComponent {
   accounts: any = [];
   userDetail: any = {};
   showMsg: any;
@@ -433,7 +448,7 @@ export class RolesComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: RoleModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         identityServiceType: this.identityServiceType,
         identityServiceName: this.identityServiceName,
         allRoles: this.controllerRoles,
@@ -456,7 +471,7 @@ export class RolesComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: RoleModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         identityServiceType: this.identityServiceType,
         identityServiceName: this.identityServiceName,
         allRoles: this.controllerRoles,
@@ -479,7 +494,7 @@ export class RolesComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: RoleModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         identityServiceType: this.identityServiceType,
         identityServiceName: this.identityServiceName,
         allRoles: this.controllerRoles,
@@ -524,7 +539,7 @@ export class RolesComponent implements OnInit, OnDestroy {
           nzTitle: undefined,
           nzContent: CommentModalComponent,
           nzClassName: 'lg',
-          nzComponentParams: {
+          nzData: {
             comments
           },
           nzFooter: null,
@@ -545,7 +560,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         const modal = this.modal.create({
           nzTitle: undefined,
           nzContent: ConfirmModalComponent,
-          nzComponentParams: {
+          nzData: {
             title: 'delete',
             message: 'deleteRole',
             type: 'Delete',
@@ -595,7 +610,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ControllerModalComponent,
-      nzComponentParams: {
+      nzData: {
         allRoles: this.controllerRoles,
         userDetail: this.userDetail
       },
@@ -615,7 +630,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ControllerModalComponent,
-      nzComponentParams: {
+      nzData: {
         allRoles: this.controllerRoles,
         oldController: controller,
         role,
@@ -646,7 +661,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -663,7 +678,7 @@ export class RolesComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title: 'delete',
           message: 'deleteController',
           type: 'Delete',
@@ -737,7 +752,7 @@ export class RolesComponent implements OnInit, OnDestroy {
           nzTitle: undefined,
           nzContent: CommentModalComponent,
           nzClassName: 'lg',
-          nzComponentParams: {
+          nzData: {
             comments
           },
           nzFooter: null,
@@ -754,7 +769,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         this.modal.create({
           nzTitle: undefined,
           nzContent: ConfirmationModalComponent,
-          nzComponentParams: {
+          nzData: {
             delete: true,
             isRole: true
           },
@@ -864,10 +879,11 @@ export class RolesComponent implements OnInit, OnDestroy {
   private importRole() {
     const modal = this.modal.create({
       nzTitle: undefined,
-      nzContent: UploadModalComponent,
+      nzContent: FileUploaderComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
+        type: 'USER',
         identityServiceType: this.identityServiceType,
         identityServiceName: this.identityServiceName,
         display: this.preferences.auditLog,
@@ -915,7 +931,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,

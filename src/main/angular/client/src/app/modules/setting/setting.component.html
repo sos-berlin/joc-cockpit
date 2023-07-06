@@ -7,12 +7,13 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="show-inline">
-            <button type="button" class="btn btn-sm btn-grey" [disabled]="settingArr.length === 0"
-                    (click)="exportSetting();">
+            <button (click)="exportSetting();" [disabled]="settingArr.length === 0" class="btn btn-sm btn-grey"
+                    type="button">
               <i class="fa fa-download"></i>
               {{'settings.button.exportSetting' | translate}}
             </button>
-            <button type="button" *ngIf="permission.joc.administration.settings.manage" class="btn btn-sm btn-grey m-l-12" (click)="importSetting();">
+            <button (click)="importSetting();" *ngIf="permission.joc.administration.settings.manage"
+                    class="btn btn-sm btn-grey m-l-12" type="button">
               <i class="fa fa-upload"></i>
               {{'settings.button.importSetting' | translate}}
             </button>
@@ -26,241 +27,275 @@
   <div class="padding p-b-0">
     <div class="row m-t-sm">
       <div class="col-sm-12">
-        <div class="box p-a" *ngIf="settingArr.length > 0 && loading">
-          <form #myForm="ngForm" cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-            <div class="p-b-sm p-l-sm" *ngFor="let setting of settingArr;let i = index" cdkDrag>
-              <div class="pos-abt drag-handler m-t-n-xxs" cdkDragHandle>
-                <i class="fa fa-bars" aria-hidden="true"></i>
+        <div *ngIf="settingArr.length > 0 && loading" class="box p-a">
+          <form #myForm="ngForm" (cdkDropListDropped)="drop($event)" cdkDropList class="example-list">
+            <div *ngFor="let setting of settingArr;let i = index" cdkDrag class="p-b-sm p-l-sm">
+              <div cdkDragHandle class="pos-abt drag-handler m-t-n-xxs">
+                <i aria-hidden="true" class="fa fa-bars"></i>
               </div>
               <h5 class="m-l p-l-sm">
                 {{setting.name}}
                 <i (click)="setting.show = true;" *ngIf="!setting.show" class="cursor fa fa-caret-up m-l-xs"></i>
-                  <i (click)="setting.show = false" *ngIf="setting.show"
-                     class="cursor fa fa-caret-down m-l-xs"></i>
+                <i (click)="setting.show = false" *ngIf="setting.show"
+                   class="cursor fa fa-caret-down m-l-xs"></i>
               </h5>
-              <div class="m-l-md" *ngIf="setting.show">
-              <div class="row m-t m-b">
-                <div class="col-sm-4 col-lg-3 _600 font14">
-                  <span class="p-l" translate>settings.label.name</span>
+              <div *ngIf="setting.show" class="m-l-md">
+                <div class="row m-t m-b">
+                  <div class="col-sm-4 col-lg-3 _600 font14">
+                    <span class="p-l" translate>settings.label.name</span>
+                  </div>
+                  <div class="col-sm-2 col-lg-2 _600 font14" translate>settings.label.default</div>
+                  <div class="col-sm-4 col-lg-3 _600 font14" translate>settings.label.value</div>
                 </div>
-                <div class="col-sm-2 col-lg-2 _600 font14" translate>settings.label.default</div>
-                <div class="col-sm-4 col-lg-3 _600 font14" translate>settings.label.value</div>
-              </div>
-              <div class="row m-t-sm" *ngFor="let val of setting.value | orderBy: 'ordering': false">
-                <ng-container *ngIf="val.value">
-                  <div class="col-sm-4 col-lg-3 form-control-label"><span class="p-l">
-                    <label class="_600">{{val.name}}</label> <i class="p-l-sm fa fa-info-circle"
-                                                                [nz-tooltip]="'settings.' + setting.name +'.' + val.name | translate"></i>
+                <div *ngFor="let val of setting.value | orderBy: 'ordering': false" class="row m-t-sm">
+                  <ng-container *ngIf="val.value">
+                    <div class="col-sm-4 col-lg-3 form-control-label"><span class="p-l">
+                    <label class="_600">{{val.name}}</label> <i [nz-tooltip]="'settings.' + setting.name +'.' + val.name | translate"
+                                                                class="p-l-sm fa fa-info-circle"></i>
                   </span></div>
-                  <div class="col-sm-2 col-lg-2 form-control-label">
+                    <div class="col-sm-2 col-lg-2 form-control-label">
                     <span *ngIf="val.value.type !== 'ARRAY'">
                       {{val.value.default || '  -  '}}
-                        <i *ngIf="permission.joc.administration.settings.manage && !val.value.edit && (!val.value.value && val.value.value !== 0 && val.value.value !== false)" class="p-l-sm text-hover-primary fa fa-pencil"
-                         (click)="openEditField(val)"></i>
-                      <a *ngIf="val.value.type === 'PASSWORD' && !val.value.edit && !val.value.value" (click)="showHashValue(val)" nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate" class="text-hover-primary m-l" translate>settings.button.showHashValue</a>
+                      <i
+                        (click)="openEditField(val)"
+                        *ngIf="permission.joc.administration.settings.manage && !val.value.edit && (!val.value.value && val.value.value !== 0 && val.value.value !== false)"
+                        class="p-l-sm text-hover-primary fa fa-pencil"></i>
+                      <a (click)="showHashValue(val)"
+                         *ngIf="val.value.type === 'PASSWORD' && !val.value.edit && !val.value.value" [nzPopoverContent]="contentTemplate" class="text-hover-primary m-l"
+                         nz-popover nzPopoverTrigger="click" translate>settings.button.showHashValue</a>
                       <ng-template #contentTemplate>
                         <div>
                           <b translate>settings.label.hash</b> :
-                          <span>{{val.value.hash}} <i ngxClipboard [cbContent]="val.value.hash" (click)="showCopyMessage()" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
+                          <span>{{val.value.hash}} <i (click)="showCopyMessage()" [cbContent]="val.value.hash"
+                                                      class="cursor primary-text-hover-color p-l-sm fa fa-copy"
+                                                      ngxClipboard></i></span>
                         </div>
                       </ng-template>
                     </span>
-                    <div *ngIf="val.value.type == 'ARRAY'">
-                      <div class="m-b-xs" *ngFor="let arr of val.value.default;let x=index">
-                        {{arr || '  -  '}}
-                        <i *ngIf="permission.joc.administration.settings.manage && !val.value.edit && (!val.value.value && val.value.value !== 0 && val.value.value !== false) && x === 0" class="p-l-sm text-hover-primary fa fa-pencil"
-                         (click)="openEditField(val)"></i>
+                      <div *ngIf="val.value.type == 'ARRAY'">
+                        <div *ngFor="let arr of val.value.default;let x=index" class="m-b-xs">
+                          {{arr || '  -  '}}
+                          <i
+                            (click)="openEditField(val)"
+                            *ngIf="permission.joc.administration.settings.manage && !val.value.edit && (!val.value.value && val.value.value !== 0 && val.value.value !== false) && x === 0"
+                            class="p-l-sm text-hover-primary fa fa-pencil"></i>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <ng-container *ngIf="val.value.edit || (val.value.value || val.value.value === 0 || val.value.value === false || (val.value.value === '' && val.value.type === 'PASSWORD'))">
-                    <ng-container [ngSwitch]="val.value.type">
-                      <ng-container *ngSwitchCase="'TIMEZONE'">
-                        <div class="col-sm-4 col-lg-3">
-                          <nz-select nzShowSearch name="{{val.name}}{{i}}" class="w-xxxl"
-                                     [(ngModel)]="val.value.value" (ngModelChange)="changeConfiguration(null, val, setting.name === 'joc')">
-                            <nz-option *ngFor="let option of zones" [nzLabel]="option" [nzValue]="option"></nz-option>
-                          </nz-select>
-                          <i *ngIf="permission.joc.administration.settings.manage"
-                             class="text-hover-color fa fa-times setting-cancel-btn"
-                             (click)="removeValue(val, setting.name === 'joc')"></i>
-                        </div>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="'DURATION'">
-                        <div class="col-sm-4 col-lg-3"
-                             [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
-                          <input autocomplete="off" #timeout="ngModel" validateDurtionReqex type="text"
-                                 class="form-control w-xxxl" required name="{{val.name}}{{i}}"
-                                 (blur)="changeConfiguration(timeout, val, setting.name === 'joc')"
-                                 placeholder="{{'workflow.placeholder.duration' | translate}}"
-                                 [(ngModel)]="val.value.value">
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-color fa fa-times setting-cancel-btn"
-                             (click)="removeValue(val, setting.name === 'joc')"></i>
-                        </div>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="'WEEKDAYS'">
-                        <div class="col-sm-4 col-lg-3"
-                             [ngClass]="{'has-error' : ((wkday.dirty || wkday.touched) && wkday.invalid)}">
-                          <nz-select nzMode="multiple" required name="{{val.name}}{{i}}" class="w-xxxl"
-                                     #wkday="ngModel" [(ngModel)]="val.value.value"
-                                     (ngModelChange)="changeConfiguration(wkday, val, setting.name === 'joc')">
-                            <nz-option *ngFor="let option of daysOptions"
-                                       [nzLabel]="'runtime.label.'+ option.label | translate"
-                                       [nzValue]="option.value"></nz-option>
-                          </nz-select>
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-color fa fa-times setting-cancel-btn"
-                             (click)="removeValue(val, setting.name === 'joc')"></i>
-                        </div>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="'LIST'">
-                        <div class="col-sm-4 col-lg-3"
-                             [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}">
-                          <nz-select required name="{{val.name}}{{i}}" class="w-xxxl"
-                                     #list="ngModel" [(ngModel)]="val.value.value"
-                                     (ngModelChange)="changeConfiguration(list, val, setting.name === 'joc')">
-                            <nz-option *ngFor="let option of val.value.values"
-                                       [nzLabel]="option" [nzValue]="option"></nz-option>
-                          </nz-select>
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-color fa fa-times setting-cancel-btn"
-                             (click)="removeValue(val, setting.name === 'joc')"></i>
-                        </div>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="'TIME'">
-                        <div class="col-sm-4 col-lg-3"
-                             [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
-                          <input autocomplete="off" type="text" timevalidator validTimeReqex class="form-control w-xxxl"
-                                 #startTime="ngModel" required name="{{val.name}}{{i}}" [maxLength]="8"
-                                 (blur)="changeConfiguration(startTime, val, setting.name === 'joc')"
-                                 [(ngModel)]="val.value.value" placeholder="HH:MM:SS">
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-color fa fa-times setting-cancel-btn"
-                             (click)="removeValue(val, setting.name === 'joc')"></i>
-                        </div>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="'POSITIVENUMBER'">
-                        <div class="col-sm-4 col-lg-3"
-                             [ngClass]="{ 'has-error' : (((pnum.dirty || pnum.touched) && pnum.invalid))}">
-                          <nz-input-number class="w-xxxl" required
-                                           nzPlaceHolder="{{'settings.placeholder.enterPositiveNumber' | translate}}"
-                                           [nzMin]="1"
-                                           [nzStep]="1" name="value{{i}}"
-                                           #pnum="ngModel" [(ngModel)]="val.value.value"
-                                           (nzBlur)="changeConfiguration(pnum, val, setting.name === 'joc')"></nz-input-number>
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-color fa fa-times setting-cancel-btn"
-                             (click)="removeValue(val, setting.name === 'joc')"></i>
-                        </div>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="'NONNEGATIVENUMBER'">
-                        <div class="col-sm-4 col-lg-3"
-                             [ngClass]="{ 'has-error' : (((nonnegnum.dirty || nonnegnum.touched) && nonnegnum.invalid))}">
-                          <nz-input-number class="w-xxxl" required
-                                           nzPlaceHolder="{{'settings.placeholder.enterNonNegativeNumber' | translate}}"
-                                           [nzMin]="0"
-                                           [nzStep]="1" name="value{{i}}"
-                                           #nonnegnum="ngModel" [(ngModel)]="val.value.value"
-                                           (nzBlur)="changeConfiguration(nonnegnum, val, setting.name === 'joc')"></nz-input-number>
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-color fa fa-times setting-cancel-btn"
-                             (click)="removeValue(val, setting.name === 'joc')"></i>
-                        </div>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="'POSITIVEINTEGER'">
-                        <div class="col-sm-4 col-lg-3"
-                             [ngClass]="{ 'has-error' : (((positiveNum.dirty || positiveNum.touched) && positiveNum.invalid))}">
-                          <input autocomplete="off" type="text" class="form-control w-xxxl"
-                                 placeholder="{{'settings.placeholder.enterPositiveInteger' | translate}}"
-                                 name="{{val.name}}{{i}}" pattern="[1-9]+[0-9]*" #positiveNum="ngModel"
-                                 (blur)="changeConfiguration(positiveNum, val, setting.name === 'joc')" required
-                                 [(ngModel)]="val.value.value">
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-color fa fa-times setting-cancel-btn"
-                             (click)="removeValue(val, setting.name === 'joc')"></i>
-                        </div>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="'NONNEGATIVEINTEGER'">
-                        <div class="col-sm-4 col-lg-3"
-                             [ngClass]="{ 'has-error' : (((nonNegNum.dirty || nonNegNum.touched) && nonNegNum.invalid))}">
-                          <input autocomplete="off" type="text" class="form-control w-xxxl"
-                                 placeholder="{{'settings.placeholder.enterNonNegativeInteger' | translate}}"
-                                 name="{{val.name}}{{i}}" pattern="[0-9]+" #nonNegNum="ngModel"
-                                 (blur)="changeConfiguration(nonNegNum, val, setting.name === 'joc')" required
-                                 [(ngModel)]="val.value.value">
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-color fa fa-times setting-cancel-btn"
-                             (click)="removeValue(val, setting.name === 'joc')"></i>
-                        </div>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="'BOOLEAN'">
-                        <div class="col-sm-4 col-lg-3"
-                             [ngClass]="{ 'has-error' : (((booleanVal.dirty || booleanVal.touched) && booleanVal.invalid))}">
-                          <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate" name="{{val.name}}{{i}}" [(ngModel)]="val.value.value" #booleanVal="ngModel"
-                                     class="w-xxxl" (ngModelChange)="changeConfiguration(booleanVal, val, setting.name === 'joc')">
-                            <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                            <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                          </nz-select>
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-color fa fa-times setting-cancel-btn"
-                             (click)="removeValue(val, setting.name === 'joc')"></i>
-                        </div>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="'ARRAY'">
-                        <div class="col-sm-4 col-lg-3">
-                          <div class="m-b-n-8" *ngFor="let item of val.value.value;let m = index"
-                             [ngClass]="{ 'has-error' : (((arr.dirty || arr.touched) && arr.invalid))}">
-                            <input autocomplete="off" type="text" class="form-control w-xxxl" required placeholder="{{'common.placeholder.value' | translate}}{{m + 1}}"
-                                   name="{{val.name}}{{i}}{{m + 1}}" (keydown)="checkSemicolon($event, val)" (blur)="changeConfiguration(arr, val, setting.name === 'joc')" #arr="ngModel"
-                                   [(ngModel)]="item.name">
-                            <i class="text-hover-color fa fa-trash setting-cancel-btn-390"
-                               (click)="removeValInArr(val, m)"></i>
+                    <ng-container
+                      *ngIf="val.value.edit || (val.value.value || val.value.value === 0 || val.value.value === false || (val.value.value === '' && val.value.type === 'PASSWORD'))">
+                      <ng-container [ngSwitch]="val.value.type">
+                        <ng-container *ngSwitchCase="'TIMEZONE'">
+                          <div class="col-sm-4 col-lg-3">
+                            <nz-select (ngModelChange)="changeConfiguration(null, val, setting.name === 'joc')" [(ngModel)]="val.value.value" class="w-xxxl"
+                                       name="{{val.name}}{{i}}"
+                                       nzShowSearch>
+                              <nz-option *ngFor="let option of zones" [nzLabel]="option" [nzValue]="option"></nz-option>
+                            </nz-select>
+                            <i (click)="removeValue(val, setting.name === 'joc')"
+                               *ngIf="permission.joc.administration.settings.manage"
+                               class="text-hover-color fa fa-times setting-cancel-btn"></i>
                           </div>
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-color fa fa-times setting-cancel-btn-422"
-                             (click)="removeValue(val, setting.name === 'joc')"></i>
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-plus"
-                             (click)="addValInArr(val)"></i>
-                        </div>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="'PASSWORD'">
-                        <div class="col-sm-4 col-lg-3">
-                          <input autocomplete="off"  type="{{!val.value.show ? 'password' : 'text'}}" class="form-control w-xxxl"
-                                 name="{{val.name}}{{i}}" (blur)="changeConfiguration(pswd, val, setting.name === 'joc')" #pswd="ngModel"
-                                 [(ngModel)]="val.value.value">
-                          <i class="fa pswd-hide-icon" [ngClass]="!val.value.show ? 'fa-eye' : 'fa-eye-slash'"
-                             (click)="val.value.show = !val.value.show"></i>
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-color fa fa-times setting-cancel-btn"
-                             (click)="removeValue(val, setting.name === 'joc')"></i>
-                          <div class="pos-abt w-full" style="top: 0; left: 420px">
-                            <a (click)="showHashValue(val)" nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate" class="text-hover-primary pos-rel t-xs" translate>settings.button.showHashValue</a>
-                            <ng-template #contentTemplate>
-                              <div>
-                                <b translate>settings.label.hash</b> :
-                                <span>{{val.value.hash}} <i ngxClipboard [cbContent]="val.value.hash" (click)="showCopyMessage()" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
-                              </div>
-                            </ng-template>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'DURATION'">
+                          <div [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}"
+                               class="col-sm-4 col-lg-3">
+                            <input #timeout="ngModel" (blur)="changeConfiguration(timeout, val, setting.name === 'joc')" [(ngModel)]="val.value.value" autocomplete="off"
+                                   class="form-control w-xxxl" name="{{val.name}}{{i}}" placeholder="{{'workflow.placeholder.duration' | translate}}"
+                                   required
+                                   type="text"
+                                   validateDurtionReqex>
+                            <i (click)="removeValue(val, setting.name === 'joc')"
+                               *ngIf="permission.joc.administration.settings.manage"
+                               class="text-hover-color fa fa-times setting-cancel-btn"></i>
                           </div>
-                        </div>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="'STRING'">
-                        <div class="col-sm-4 col-lg-3"
-                             [ngClass]="{ 'has-error' : (((common.dirty || common.touched) && common.invalid))}">
-                          <input autocomplete="off" type="text" class="form-control w-xxxl" required
-                                 name="{{val.name}}{{i}}" (blur)="changeConfiguration(common, val, setting.name === 'joc')" #common="ngModel"
-                                 [(ngModel)]="val.value.value">
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-color fa fa-times setting-cancel-btn"
-                             (click)="removeValue(val, setting.name === 'joc')"></i>
-                        </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'WEEKDAYS'">
+                          <div [ngClass]="{'has-error' : ((wkday.dirty || wkday.touched) && wkday.invalid)}"
+                               class="col-sm-4 col-lg-3">
+                            <nz-select #wkday="ngModel" (ngModelChange)="changeConfiguration(wkday, val, setting.name === 'joc')" [(ngModel)]="val.value.value" class="w-xxxl"
+                                       name="{{val.name}}{{i}}" nzMode="multiple"
+                                       required>
+                              <nz-option *ngFor="let option of daysOptions"
+                                         [nzLabel]="'runtime.label.'+ option.label | translate"
+                                         [nzValue]="option.value"></nz-option>
+                            </nz-select>
+                            <i (click)="removeValue(val, setting.name === 'joc')"
+                               *ngIf="permission.joc.administration.settings.manage"
+                               class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                          </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'LIST'">
+                          <div [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}"
+                               class="col-sm-4 col-lg-3">
+                            <nz-select #list="ngModel" (ngModelChange)="changeConfiguration(list, val, setting.name === 'joc')" [(ngModel)]="val.value.value"
+                                       class="w-xxxl" name="{{val.name}}{{i}}"
+                                       required>
+                              <nz-option *ngFor="let option of val.value.values"
+                                         [nzLabel]="option" [nzValue]="option"></nz-option>
+                            </nz-select>
+                            <i (click)="removeValue(val, setting.name === 'joc')"
+                               *ngIf="permission.joc.administration.settings.manage"
+                               class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                          </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'TIME'">
+                          <div [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
+                               class="col-sm-4 col-lg-3">
+                            <input #startTime="ngModel" (blur)="changeConfiguration(startTime, val, setting.name === 'joc')" [(ngModel)]="val.value.value" [maxLength]="8"
+                                   autocomplete="off"
+                                   class="form-control w-xxxl" name="{{val.name}}{{i}}" placeholder="HH:MM:SS" required
+                                   timevalidator
+                                   type="text" validTimeReqex>
+                            <i (click)="removeValue(val, setting.name === 'joc')"
+                               *ngIf="permission.joc.administration.settings.manage"
+                               class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                          </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'POSITIVENUMBER'">
+                          <div [ngClass]="{ 'has-error' : (((pnum.dirty || pnum.touched) && pnum.invalid))}"
+                               class="col-sm-4 col-lg-3">
+                            <nz-input-number #pnum="ngModel" (nzBlur)="changeConfiguration(pnum, val, setting.name === 'joc')"
+                                             [(ngModel)]="val.value.value"
+                                             [nzMin]="1"
+                                             [nzStep]="1" class="w-xxxl"
+                                             name="value{{i}}" nzPlaceHolder="{{'settings.placeholder.enterPositiveNumber' | translate}}"
+                                             required></nz-input-number>
+                            <i (click)="removeValue(val, setting.name === 'joc')"
+                               *ngIf="permission.joc.administration.settings.manage"
+                               class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                          </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'NONNEGATIVENUMBER'">
+                          <div [ngClass]="{ 'has-error' : (((nonnegnum.dirty || nonnegnum.touched) && nonnegnum.invalid))}"
+                               class="col-sm-4 col-lg-3">
+                            <nz-input-number #nonnegnum="ngModel" (nzBlur)="changeConfiguration(nonnegnum, val, setting.name === 'joc')"
+                                             [(ngModel)]="val.value.value"
+                                             [nzMin]="0"
+                                             [nzStep]="1" class="w-xxxl"
+                                             name="value{{i}}" nzPlaceHolder="{{'settings.placeholder.enterNonNegativeNumber' | translate}}"
+                                             required></nz-input-number>
+                            <i (click)="removeValue(val, setting.name === 'joc')"
+                               *ngIf="permission.joc.administration.settings.manage"
+                               class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                          </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'POSITIVEINTEGER'">
+                          <div [ngClass]="{ 'has-error' : (((positiveNum.dirty || positiveNum.touched) && positiveNum.invalid))}"
+                               class="col-sm-4 col-lg-3">
+                            <input #positiveNum="ngModel" (blur)="changeConfiguration(positiveNum, val, setting.name === 'joc')" [(ngModel)]="val.value.value"
+                                   autocomplete="off"
+                                   class="form-control w-xxxl" name="{{val.name}}{{i}}" pattern="[1-9]+[0-9]*"
+                                   placeholder="{{'settings.placeholder.enterPositiveInteger' | translate}}" required
+                                   type="text">
+                            <i (click)="removeValue(val, setting.name === 'joc')"
+                               *ngIf="permission.joc.administration.settings.manage"
+                               class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                          </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'NONNEGATIVEINTEGER'">
+                          <div [ngClass]="{ 'has-error' : (((nonNegNum.dirty || nonNegNum.touched) && nonNegNum.invalid))}"
+                               class="col-sm-4 col-lg-3">
+                            <input #nonNegNum="ngModel" (blur)="changeConfiguration(nonNegNum, val, setting.name === 'joc')" [(ngModel)]="val.value.value"
+                                   autocomplete="off"
+                                   class="form-control w-xxxl" name="{{val.name}}{{i}}" pattern="[0-9]+"
+                                   placeholder="{{'settings.placeholder.enterNonNegativeInteger' | translate}}" required
+                                   type="text">
+                            <i (click)="removeValue(val, setting.name === 'joc')"
+                               *ngIf="permission.joc.administration.settings.manage"
+                               class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                          </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'BOOLEAN'">
+                          <div [ngClass]="{ 'has-error' : (((booleanVal.dirty || booleanVal.touched) && booleanVal.invalid))}"
+                               class="col-sm-4 col-lg-3">
+                            <nz-select #booleanVal="ngModel" (ngModelChange)="changeConfiguration(booleanVal, val, setting.name === 'joc')"
+                                       [(ngModel)]="val.value.value" [nzPlaceHolder]="'common.placeholder.selectValue' | translate" class="w-xxxl"
+                                       name="{{val.name}}{{i}}"
+                                       nzAllowClear>
+                              <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                              <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                            </nz-select>
+                            <i (click)="removeValue(val, setting.name === 'joc')"
+                               *ngIf="permission.joc.administration.settings.manage"
+                               class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                          </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'ARRAY'">
+                          <div class="col-sm-4 col-lg-3">
+                            <div *ngFor="let item of val.value.value;let m = index" [ngClass]="{ 'has-error' : (((arr.dirty || arr.touched) && arr.invalid))}"
+                                 class="m-b-n-8">
+                              <input #arr="ngModel" (blur)="changeConfiguration(arr, val, setting.name === 'joc')" (keydown)="checkSemicolon($event, val)" [(ngModel)]="item.name"
+                                     autocomplete="off"
+                                     class="form-control w-xxxl" name="{{val.name}}{{i}}{{m + 1}}"
+                                     placeholder="{{'common.placeholder.value' | translate}}{{m + 1}}" required
+                                     type="text">
+                              <i (click)="removeValInArr(val, m)"
+                                 class="text-hover-color fa fa-trash setting-cancel-btn-390"></i>
+                            </div>
+                            <i (click)="removeValue(val, setting.name === 'joc')"
+                               *ngIf="permission.joc.administration.settings.manage"
+                               class="text-hover-color fa fa-times setting-cancel-btn-422"></i>
+                            <i (click)="addValInArr(val)"
+                               *ngIf="permission.joc.administration.settings.manage"
+                               class="text-hover-primary fa fa-plus"></i>
+                          </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'PASSWORD'">
+                          <div class="col-sm-4 col-lg-3">
+                            <input #pswd="ngModel" (blur)="changeConfiguration(pswd, val, setting.name === 'joc')"
+                                   [(ngModel)]="val.value.value"
+                                   autocomplete="off"
+                                   class="form-control w-xxxl" name="{{val.name}}{{i}}"
+                                   type="{{!val.value.show ? 'password' : 'text'}}">
+                            <i (click)="val.value.show = !val.value.show" [ngClass]="!val.value.show ? 'fa-eye' : 'fa-eye-slash'"
+                               class="fa pswd-hide-icon"></i>
+                            <i (click)="removeValue(val, setting.name === 'joc')"
+                               *ngIf="permission.joc.administration.settings.manage"
+                               class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                            <div class="pos-abt w-full" style="top: 0; left: 420px">
+                              <a (click)="showHashValue(val)" [nzPopoverContent]="contentTemplate" class="text-hover-primary pos-rel t-xs"
+                                 nz-popover nzPopoverTrigger="click" translate>settings.button.showHashValue</a>
+                              <ng-template #contentTemplate>
+                                <div>
+                                  <b translate>settings.label.hash</b> :
+                                  <span>{{val.value.hash}} <i (click)="showCopyMessage()" [cbContent]="val.value.hash"
+                                                              class="cursor primary-text-hover-color p-l-sm fa fa-copy"
+                                                              ngxClipboard></i></span>
+                                </div>
+                              </ng-template>
+                            </div>
+                          </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'STRING'">
+                          <div [ngClass]="{ 'has-error' : (((common.dirty || common.touched) && common.invalid))}"
+                               class="col-sm-4 col-lg-3">
+                            <input #common="ngModel" (blur)="changeConfiguration(common, val, setting.name === 'joc')" [(ngModel)]="val.value.value" autocomplete="off"
+                                   class="form-control w-xxxl"
+                                   name="{{val.name}}{{i}}" required
+                                   type="text">
+                            <i (click)="removeValue(val, setting.name === 'joc')"
+                               *ngIf="permission.joc.administration.settings.manage"
+                               class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                          </div>
+                        </ng-container>
                       </ng-container>
                     </ng-container>
                   </ng-container>
-                </ng-container>
+                </div>
               </div>
-              </div>
-              <hr [ngClass]="{'m-t-0': setting.show}" *ngIf="i !== (settingArr.length - 1)">
+              <hr *ngIf="i !== (settingArr.length - 1)" [ngClass]="{'m-t-0': setting.show}">
             </div>
           </form>
         </div>
-        <div class="m-t-lg" *ngIf="settingArr.length === 0 && loading">
+        <div *ngIf="settingArr.length === 0 && loading" class="m-t-lg">
           <app-empty-data></app-empty-data>
         </div>
       </div>
     </div>
   </div>
 </div>
-<div class="spinner" *ngIf="!loading">
+<div *ngIf="!loading" class="spinner">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>

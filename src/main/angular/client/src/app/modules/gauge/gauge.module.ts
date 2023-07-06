@@ -1,6 +1,6 @@
-import { NgModule, InjectionToken, ModuleWithProviders } from '@angular/core';
-import { GaugeComponent } from './gauge.component';
-import { GaugeDefaults, GaugeOptions } from './gauge-defaults.service';
+import {NgModule, InjectionToken, ModuleWithProviders} from '@angular/core';
+import {GaugeComponent} from './gauge.component';
+import {GaugeDefaults, GaugeOptions} from './gauge-defaults.service';
 
 export const USER_DEFAULTS: InjectionToken<string> = new InjectionToken(
   'gauge defaults'

@@ -111,7 +111,7 @@ export class OrderListSidebarComponent implements OnChanges {
   }
 
   dropdownChangedHandler(isOpen: boolean): void {
-   this.isDropdownOpen = isOpen;
+    this.isDropdownOpen = isOpen;
   }
 
   private resetAction(time = 100): void {
@@ -147,7 +147,7 @@ export class OrderListSidebarComponent implements OnChanges {
     return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
   }
 
-  selectAll(): void{
+  selectAll(): void {
     this.data.forEach(item => {
       this.setOfCheckedId.add(item.orderId);
     });
@@ -230,7 +230,7 @@ export class OrderListSidebarComponent implements OnChanges {
         nzTitle: undefined,
         nzContent: ChangeParameterModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           schedulerId: this.schedulerId,
           orderPreparation: this.coreService.clone(this.orderPreparation),
           orderIds: Array.from(this.setOfCheckedId),
@@ -255,7 +255,7 @@ export class OrderListSidebarComponent implements OnChanges {
       nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerId,
         preferences: this.preferences,
         orders: this.setOfCheckedId,
@@ -292,7 +292,7 @@ export class OrderListSidebarComponent implements OnChanges {
       nzTitle: undefined,
       nzContent: ResumeOrderModalComponent,
       nzClassName: 'x-lg',
-      nzComponentParams: {
+      nzData: {
         preferences: this.preferences,
         schedulerId: this.schedulerId,
         orders: map
@@ -334,7 +334,7 @@ export class OrderListSidebarComponent implements OnChanges {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
           obj,
           url: 'orders/' + url

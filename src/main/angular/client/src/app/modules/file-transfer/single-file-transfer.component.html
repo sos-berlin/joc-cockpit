@@ -17,12 +17,12 @@
       <div class="table-responsive" id="fileTransferMainTable">
         <nz-table
           #ajaxTable
-          [nzSize]="'small'"
           [nzBordered]="true"
-          [nzShowPagination]="false"
           [nzData]="fileTransfers"
           [nzLoading]="!loading"
+          [nzShowPagination]="false"
           [nzShowSizeChanger]="false"
+          [nzSize]="'small'"
         >
           <thead>
           <tr class="main-header-row">
@@ -31,7 +31,9 @@
             <th width="90px"><span class="p-r-xs" translate>fileTransfer.label.operation</span></th>
             <th><span class="p-r-xs" translate>fileTransfer.label.workflow</span></th>
             <th><span class="p-r-xs" translate>fileTransfer.label.order</span></th>
-            <th width="60px" [nz-tooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate"><span class="p-r-xs" translate>fileTransfer.label.total</span></th>
+            <th [nz-tooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate" width="60px"><span class="p-r-xs"
+                                                                                                        translate>fileTransfer.label.total</span>
+            </th>
             <th width="20%"><span class="p-r-xs" translate>fileTransfer.label.lastErrorMessage</span></th>
             <th><span class="p-r-xs" translate>fileTransfer.label.startTime</span></th>
             <th><span class="p-r-xs" translate>fileTransfer.label.endTime</span></th>
@@ -39,19 +41,19 @@
           </tr>
           </thead>
           <tbody>
-          <ng-template ngFor let-transfer
-                       [ngForOf]="ajaxTable.data">
+          <ng-template [ngForOf]="ajaxTable.data" let-transfer
+                       ngFor>
             <tr>
               <td noWrap>
                 <span>
-                  <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                     *ngIf="!transfer.show" (click)="showTransferFuc(transfer);"></i>
-                  <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
-                     *ngIf="transfer.show" (click)="transfer.show = false;"></i>&nbsp;
-                  <span class="label cursor"
-                        (click)="coreService.showLogWindow(null, transfer, null, transfer.controllerId, null);$event.stopPropagation()"
+                  <i (click)="showTransferFuc(transfer);"
+                     *ngIf="!transfer.show" class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+                  <i (click)="transfer.show = false;"
+                     *ngIf="transfer.show" class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>&nbsp;
+                  <span (click)="coreService.showLogWindow(null, transfer, null, transfer.controllerId, null);$event.stopPropagation()"
+                        [innerHtml]="transfer.state._text | translate"
                         [ngClass]="coreService.getColor(transfer.state.severity,'bg')"
-                        [innerHtml]="transfer.state._text | translate"></span>
+                        class="label cursor"></span>
                 </span>
               </td>
               <td [innerHtml]="transfer.profile"></td>
@@ -69,80 +71,85 @@
             <tr *ngIf="transfer.show">
               <td></td>
               <td colspan="12" style="padding: 0 !important;border-bottom: none!important;">
-                <nz-table class="m-a-0 inner-table" id="fileTransferTable" [nzData]="['']" [nzSize]="'small'" [nzShowPagination]="false">
-                  <thead>
-                    <tr>
-                      <th class="order-history-template0" style="border-bottom: 1px solid #eee;" colspan="4"><span translate>fileTransfer.label.source</span></th>
-                      <th class="order-history-template1" style="border-bottom: 1px solid #eee;" colspan="4"><span translate>fileTransfer.label.target</span></th>
-                      <th class="order-history-template2" style="border-bottom: 1px solid #eee;" colspan="4"><span translate>fileTransfer.label.jump</span></th>
-                    </tr>
-                    <tr class="sub-header">
-                      <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.host</span></th>
-                      <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.account</span></th>
-                      <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.port</span></th>
-                      <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.protocol</span></th>
-                      <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.host</span></th>
-                      <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.account</span></th>
-                      <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.port</span></th>
-                      <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.protocol</span></th>
-                      <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.host</span></th>
-                      <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.account</span></th>
-                      <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.port</span></th>
-                      <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.protocol</span></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.host"></span></td>
-                    <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.account"></span></td>
-                    <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.port"></span></td>
-                    <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.protocol"></span></td>
-                    <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.host"></span></td>
-                    <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.account"></span></td>
-                    <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.port"></span></td>
-                    <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.protocol"></span></td>
-                    <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.host"></span></td>
-                    <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.account"></span></td>
-                    <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.port"></span></td>
-                    <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.protocol"></span></td>
-                  </tr>
-                  </tbody>
-                </nz-table>
-                <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small" [nzLoading]="transfer.loading"
-                          [nzData]="transfer.files" [nzFrontPagination]="false" [nzShowPagination]="false" [nzWidthConfig]="transfer.widthArr">
-                  <thead>
-                  <tr>
-                    <th><span translate>fileTransfer.label.sourceFileName</span></th>
-                    <th><span translate>fileTransfer.label.sourceFilePath</span></th>
-                    <th><span translate>fileTransfer.label.targetFileName</span></th>
-                    <th><span translate>fileTransfer.label.targetFilePath</span></th>
-                    <th><span translate>fileTransfer.label.status</span></th>
-                    <th><span translate>fileTransfer.label.size</span></th>
-                    <th><span translate>fileTransfer.label.integrityHash</span></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <ng-template ngFor let-file [ngForOf]="innerChildTable.data">
-                    <tr>
-                      <td>{{file.sourceName}}</td>
-                      <td>{{file.sourcePath}}</td>
-                      <td>{{file.targetName}}</td>
-                      <td>{{file.targetPath}}</td>
-                      <td><span *ngIf="file.state" class="label" [ngClass]="coreService.getColor(file.state.severity,'bg')"
-                                [innerHtml]="file.state._text | translate"></span></td>
-                      <td>{{file.size | byteToSize}}</td>
-                      <td>{{file.integrityHash}}</td>
-                    </tr>
-                    <tr *ngIf="file.error">
-                      <td colspan="7" class="text-danger"><span>{{file.error.message}}</span></td>
-                    </tr>
-                  </ng-template>
-                  </tbody>
-                </nz-table>
-              </td>
+                <nz-table [nzData]="['']" [nzShowPagination]="false" [nzSize]="'small'" class="m-a-0 inner-table"
+                          id="fileTransferTable">
+          <thead>
+          <tr>
+            <th class="order-history-template0" colspan="4" style="border-bottom: 1px solid #eee;"><span translate>fileTransfer.label.source</span>
+            </th>
+            <th class="order-history-template1" colspan="4" style="border-bottom: 1px solid #eee;"><span translate>fileTransfer.label.target</span>
+            </th>
+            <th class="order-history-template2" colspan="4" style="border-bottom: 1px solid #eee;"><span translate>fileTransfer.label.jump</span>
+            </th>
+          </tr>
+          <tr class="sub-header">
+            <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.host</span></th>
+            <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.account</span></th>
+            <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.port</span></th>
+            <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.protocol</span></th>
+            <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.host</span></th>
+            <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.account</span></th>
+            <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.port</span></th>
+            <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.protocol</span></th>
+            <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.host</span></th>
+            <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.account</span></th>
+            <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.port</span></th>
+            <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.protocol</span></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.host"></span></td>
+            <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.account"></span></td>
+            <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.port"></span></td>
+            <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.protocol"></span></td>
+            <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.host"></span></td>
+            <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.account"></span></td>
+            <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.port"></span></td>
+            <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.protocol"></span></td>
+            <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.host"></span></td>
+            <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.account"></span></td>
+            <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.port"></span></td>
+            <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.protocol"></span></td>
+          </tr>
+          </tbody>
+        </nz-table>
+        <nz-table #innerChildTable [nzData]="transfer.files" [nzFrontPagination]="false" [nzLoading]="transfer.loading"
+                  [nzShowPagination]="false" [nzWidthConfig]="transfer.widthArr" class="m-a-0 inner-table"
+                  nzSize="small">
+          <thead>
+          <tr>
+            <th><span translate>fileTransfer.label.sourceFileName</span></th>
+            <th><span translate>fileTransfer.label.sourceFilePath</span></th>
+            <th><span translate>fileTransfer.label.targetFileName</span></th>
+            <th><span translate>fileTransfer.label.targetFilePath</span></th>
+            <th><span translate>fileTransfer.label.status</span></th>
+            <th><span translate>fileTransfer.label.size</span></th>
+            <th><span translate>fileTransfer.label.integrityHash</span></th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-template [ngForOf]="innerChildTable.data" let-file ngFor>
+            <tr>
+              <td>{{file.sourceName}}</td>
+              <td>{{file.sourcePath}}</td>
+              <td>{{file.targetName}}</td>
+              <td>{{file.targetPath}}</td>
+              <td><span *ngIf="file.state" [innerHtml]="file.state._text | translate" [ngClass]="coreService.getColor(file.state.severity,'bg')"
+                        class="label"></span></td>
+              <td>{{file.size | byteToSize}}</td>
+              <td>{{file.integrityHash}}</td>
+            </tr>
+            <tr *ngIf="file.error">
+              <td class="text-danger" colspan="7"><span>{{file.error.message}}</span></td>
             </tr>
           </ng-template>
           </tbody>
+        </nz-table>
+        </td>
+        </tr>
+        </ng-template>
+        </tbody>
         </nz-table>
       </div>
     </div>

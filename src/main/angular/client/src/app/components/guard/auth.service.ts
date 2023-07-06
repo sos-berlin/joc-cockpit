@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import jwkToPem from "jwk-to-pem";
+import * as jwkToPem from "jwk-to-pem";
 
 @Injectable({
   providedIn: 'root'

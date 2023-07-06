@@ -1,12 +1,13 @@
-<div style="position: static;" [class.ps]="usePSClass" [perfectScrollbar]="config" [disabled]="disabled">
+<div [class.ps]="usePSClass" [disabled]="disabled" [perfectScrollbar]="config" style="position: static;">
   <div class="ps-content">
     <ng-content></ng-content>
   </div>
 
-  <div *ngIf="scrollIndicators" class="ps-overlay" [class.ps-at-top]="states.top" [class.ps-at-left]="states.left" [class.ps-at-right]="states.right" [class.ps-at-bottom]="states.bottom">
-    <div class="ps-indicator-top" [class.ps-indicator-show]="indicatorY && interaction"></div>
-    <div class="ps-indicator-left" [class.ps-indicator-show]="indicatorX && interaction"></div>
-    <div class="ps-indicator-right" [class.ps-indicator-show]="indicatorX && interaction"></div>
-    <div class="ps-indicator-bottom" [class.ps-indicator-show]="indicatorY && interaction"></div>
+  <div *ngIf="scrollIndicators" [class.ps-at-bottom]="states.bottom" [class.ps-at-left]="states.left" [class.ps-at-right]="states.right"
+       [class.ps-at-top]="states.top" class="ps-overlay">
+    <div [class.ps-indicator-show]="indicatorY && interaction" class="ps-indicator-top"></div>
+    <div [class.ps-indicator-show]="indicatorX && interaction" class="ps-indicator-left"></div>
+    <div [class.ps-indicator-show]="indicatorX && interaction" class="ps-indicator-right"></div>
+    <div [class.ps-indicator-show]="indicatorY && interaction" class="ps-indicator-bottom"></div>
   </div>
 </div>

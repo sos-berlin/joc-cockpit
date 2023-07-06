@@ -209,7 +209,7 @@ export class NodePositionComponent implements OnChanges {
       nzTitle: undefined,
       nzContent: GraphicalViewModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         workflow: this.workflow,
         positions: this.positions,
         data: this.obj,

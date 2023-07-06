@@ -1,4 +1,4 @@
-import { range } from 'd3-array';
+import {range} from 'd3-array';
 import {
   scaleBand,
   ScaleLinear,
@@ -9,10 +9,10 @@ import {
   scaleQuantile
 } from 'd3-scale';
 
-import { Color, colorSets } from '../utils/color-sets';
-import { StringOrNumberOrDate } from '../models/chart-data.model';
-import { ScaleType } from './types/scale-type.enum';
-import { Gradient } from './types/gradient.interface';
+import {Color, colorSets} from '../utils/color-sets';
+import {StringOrNumberOrDate} from '../models/chart-data.model';
+import {ScaleType} from './types/scale-type.enum';
+import {Gradient} from './types/gradient.interface';
 
 export class ColorHelper {
   scale: any;
@@ -54,19 +54,18 @@ export class ColorHelper {
           .range(scheme.domain)
           .domain(domain as string[]);
         break;
-      case ScaleType.Linear:
-        {
-          const colorDomain = [...scheme.domain];
-          if (colorDomain.length === 1) {
-            colorDomain.push(colorDomain[0]);
-            this.colorDomain = colorDomain;
-          }
-
-          const points = range(0, 1, 1.0 / colorDomain.length);
-          colorScale = scaleLinear()
-            .range(colorDomain as any)
-            .domain(points);
+      case ScaleType.Linear: {
+        const colorDomain = [...scheme.domain];
+        if (colorDomain.length === 1) {
+          colorDomain.push(colorDomain[0]);
+          this.colorDomain = colorDomain;
         }
+
+        const points = range(0, 1, 1.0 / colorDomain.length);
+        colorScale = scaleLinear()
+          .range(colorDomain as any)
+          .domain(points);
+      }
         break;
       default:
         break;

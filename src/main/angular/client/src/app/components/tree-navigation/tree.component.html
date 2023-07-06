@@ -1,22 +1,22 @@
-<a class="tree-search" (click)="objectTreeSearch()">
-  <i nz-icon [nzType]="'search'" nzTheme="outline"></i>
+<a (click)="objectTreeSearch()" class="tree-search">
+  <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
 </a>
 <div>
-  <input id="objectTreeSearch" class="input-tree-search"
-         [placeholder]="'workflow.placeholder.findNode' | translate"
-         nz-input [(ngModel)]="searchNode.text"
-         (blur)="clearSearchInput()"
-         (ngModelChange)="onSearchInput($event)"
-         [nzAutocomplete]="auto"
+  <input (blur)="clearSearchInput()" (ngModelChange)="onSearchInput($event)"
+         [(ngModel)]="searchNode.text"
+         [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
+         class="input-tree-search"
+         id="objectTreeSearch"
+         nz-input
   />
 
-  <i class="tree-search-icon" nz-icon [nzType]="searchNode.loading ? 'loading' : 'search'" nzTheme="outline"></i>
+  <i [nzType]="searchNode.loading ? 'loading' : 'search'" class="tree-search-icon" nz-icon nzTheme="outline"></i>
   <nz-autocomplete #auto>
-    <nz-auto-option class="min-ht-opt" *ngFor="let option of allObjects | orderBy: 'name'"
-                    [nzValue]="option.path" (click)="selectObject(option)">
+    <nz-auto-option (click)="selectObject(option)" *ngFor="let option of allObjects | orderBy: 'name'"
+                    [nzValue]="option.path" class="min-ht-opt">
       <div class="node-wrapper p-l-xs">
-        <div class="node-content-wrapper2"
-             [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+        <div [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+             class="node-content-wrapper2"
              nzTooltipPlacement="right">
           <i class="fa fa-circle-o text-xs"></i>
           <span class="p-l-sm">{{option.name}}</span>
@@ -26,52 +26,52 @@
   </nz-autocomplete>
 </div>
 <div class="pl-20">
-<a class="text" (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate">
-  <i class="fa fa-angle-double-down fa-lg"></i>
-</a>
-<a class="text m-l-xs" (click)="collapseAll();" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
-  <i class="fa fa-angle-double-up fa-lg"></i>
-</a>
-<a class="text resize-cursor a-1 pos-abt r-22">
-  <i class="fa fa-angle-double-left fa-lg" (click)="hidePanel()"></i>
-</a>
-<a class="text resize-cursor a-2 pos-abt r-22">
-  <i class="fa fa-angle-double-right fa-lg" (click)="showPanel()"></i>
-</a>
-<perfect-scrollbar class="tree-block">
-  <div class="fade-in" style="margin-left: -2px">
-    <nz-tree
-      [nzExpandedKeys]="defaultExpandedKeys"
-      [nzData]="tree"
-      [nzTreeTemplate]="nzTreeTemplate"
-      (nzExpandChange)="expandChange($event)"
-    ></nz-tree>
-    <ng-template #nzTreeTemplate let-node>
+  <a (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
+    <i class="fa fa-angle-double-down fa-lg"></i>
+  </a>
+  <a (click)="collapseAll();" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+    <i class="fa fa-angle-double-up fa-lg"></i>
+  </a>
+  <a class="text resize-cursor a-1 pos-abt r-22">
+    <i (click)="hidePanel()" class="fa fa-angle-double-left fa-lg"></i>
+  </a>
+  <a class="text resize-cursor a-2 pos-abt r-22">
+    <i (click)="showPanel()" class="fa fa-angle-double-right fa-lg"></i>
+  </a>
+  <perfect-scrollbar class="tree-block">
+    <div class="fade-in" style="margin-left: -2px">
+      <nz-tree
+        (nzExpandChange)="expandChange($event)"
+        [nzData]="tree"
+        [nzExpandedKeys]="defaultExpandedKeys"
+        [nzTreeTemplate]="nzTreeTemplate"
+      ></nz-tree>
+      <ng-template #nzTreeTemplate let-node>
         <div class="node-wrapper">
-          <button class="btn-drop more-option-h p-l-0" *ngIf="isAction"
-                  nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
+          <button *ngIf="isAction" [nzDropdownMenu]="menu"
+                  class="btn-drop more-option-h p-l-0" nz-dropdown nzTrigger="click" type="button">
             <i class="fa fa-ellipsis-h"></i>
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item (click)="deleteFolder(node.origin)">
+              <li (click)="deleteFolder(node.origin)" nz-menu-item>
                 <a translate>common.button.delete</a>
               </li>
             </ul>
           </nz-dropdown-menu>
-          <div class="node-content-wrapper"
+          <div (click)="selectNode(node)"
                [class.node-content-wrapper-active]="defaultSelectedKeys && defaultSelectedKeys.indexOf(node.key) > -1"
-               (click)="selectNode(node)">
-            <i nz-icon [nzType]="node.isExpanded && !node.origin.isLeaf ? 'folder-open' : 'folder'" class="w-14"></i>
+               class="node-content-wrapper">
+            <i [nzType]="node.isExpanded && !node.origin.isLeaf ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
             {{node.origin.name || node.origin.path}}
           </div>
-          <span *ngIf="node.children && node.children.length>0" (click)="expandNode(node.origin);"> <i
+          <span (click)="expandNode(node.origin);" *ngIf="node.children && node.children.length>0"> <i
             class="expand-collapse fa fa-angle-double-down"></i> </span>
-          <span *ngIf="node.children && node.children.length>0" (click)="collapseNode(node.origin);"> <i
+          <span (click)="collapseNode(node.origin);" *ngIf="node.children && node.children.length>0"> <i
             class="expand-collapse fa fa-angle-double-up"></i></span>
         </div>
       </ng-template>
-  </div>
-</perfect-scrollbar>
-<div class="rg-right"><span></span></div>
+    </div>
+  </perfect-scrollbar>
+  <div class="rg-right"><span></span></div>
 </div>

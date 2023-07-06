@@ -8,15 +8,15 @@ import {
   ContentChild,
   TemplateRef
 } from '@angular/core';
-import { scaleBand, scaleLinear } from 'd3-scale';
+import {scaleBand, scaleLinear} from 'd3-scale';
 
-import { calculateViewDimensions } from '../common/view-dimensions.helper';
-import { ColorHelper } from '../common/color.helper';
-import { BaseChartComponent } from '../common/base-chart.component';
-import { DataItem } from '../models/chart-data.model';
-import { LegendOptions, LegendPosition } from '../common/types/legend.model';
-import { ScaleType } from '../common/types/scale-type.enum';
-import { ViewDimensions } from '../common/types/view-dimension.interface';
+import {calculateViewDimensions} from '../common/view-dimensions.helper';
+import {ColorHelper} from '../common/color.helper';
+import {BaseChartComponent} from '../common/base-chart.component';
+import {DataItem} from '../models/chart-data.model';
+import {LegendOptions, LegendPosition} from '../common/types/legend.model';
+import {ScaleType} from '../common/types/scale-type.enum';
+import {ViewDimensions} from '../common/types/view-dimension.interface';
 
 @Component({
   selector: 'ngx-charts-bar-vertical',
@@ -139,13 +139,13 @@ export class BarVerticalComponent extends BaseChartComponent {
   xAxisHeight: number = 0;
   yAxisWidth: number = 0;
   legendOptions: LegendOptions;
-  dataLabelMaxHeight: any = { negative: 0, positive: 0 };
+  dataLabelMaxHeight: any = {negative: 0, positive: 0};
 
   override update(): void {
     super.update();
 
     if (!this.showDataLabel) {
-      this.dataLabelMaxHeight = { negative: 0, positive: 0 };
+      this.dataLabelMaxHeight = {negative: 0, positive: 0};
     }
     this.margin = [10 + this.dataLabelMaxHeight.positive, 20, 10 + this.dataLabelMaxHeight.negative, 20];
 
@@ -243,12 +243,12 @@ export class BarVerticalComponent extends BaseChartComponent {
     return opts;
   }
 
-  updateYAxisWidth({ width }): void {
+  updateYAxisWidth({width}): void {
     this.yAxisWidth = width;
     this.update();
   }
 
-  updateXAxisHeight({ height }): void {
+  updateXAxisHeight({height}): void {
     this.xAxisHeight = height;
     this.update();
   }
@@ -281,7 +281,7 @@ export class BarVerticalComponent extends BaseChartComponent {
     }
 
     this.activeEntries = [item, ...this.activeEntries];
-    this.activate.emit({ value: item, entries: this.activeEntries });
+    this.activate.emit({value: item, entries: this.activeEntries});
   }
 
   onDeactivate(item, fromLegend = false) {
@@ -300,6 +300,6 @@ export class BarVerticalComponent extends BaseChartComponent {
     this.activeEntries.splice(idx, 1);
     this.activeEntries = [...this.activeEntries];
 
-    this.deactivate.emit({ value: item, entries: this.activeEntries });
+    this.deactivate.emit({value: item, entries: this.activeEntries});
   }
 }

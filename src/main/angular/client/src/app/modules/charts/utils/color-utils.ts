@@ -18,7 +18,7 @@ export function hexToRgb(value: string): any {
  */
 export function invertColor(value: string): string {
   const color = d3_color.rgb(value);
-  const { r, g, b, opacity } = color;
+  const {r, g, b, opacity} = color;
   if (opacity === 0) {
     return color.toString();
   }
@@ -35,7 +35,7 @@ export function invertColor(value: string): string {
  * @export
  * @param \{ r, g, b }
  */
-export function shadeRGBColor({ r, g, b }, percent: number): string {
+export function shadeRGBColor({r, g, b}, percent: number): string {
   const t = percent < 0 ? 0 : 255;
   const p = percent < 0 ? percent * -1 : percent;
 

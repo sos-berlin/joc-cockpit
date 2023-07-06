@@ -4,22 +4,23 @@
       <div *ngIf="!editor.showPlanned">
         <div class="row">
           <div class="col-md-12 m-t-n-8">
-            <button [disabled]="isTrash" (click)="assignCalendar()"
+            <button (click)="assignCalendar()" [disabled]="isTrash"
                     class="btn btn-sm btn-grey m-r-sm m-t-sm"
                     translate type="button">runtime.button.assignWorkingDayCalendar
             </button>
-            <button [disabled]="isTrash" (click)="assignHolidayCalendar()"
+            <button (click)="assignHolidayCalendar()" [disabled]="isTrash"
                     class="btn btn-sm btn-grey m-r-sm m-t-sm"
                     translate type="button">runtime.button.assignNonWorkingDayCalendar
             </button>
-            <button [disabled]="(!calendars || calendars.length === 0)" (click)="planFromRuntime()" class="btn btn-sm btn-grey m-t-sm"
+            <button (click)="planFromRuntime()" [disabled]="(!calendars || calendars.length === 0)"
+                    class="btn btn-sm btn-grey m-t-sm"
                     translate type="button">runtime.button.showYearView
             </button>
           </div>
           <div class="row col-md-12 m-t m-b-sm">
             <div class="col-sm-3 form-control-label" translate>runtime.label.timeZone</div>
             <div class="col-sm-6">
-              <nz-select [nzDisabled]="isTrash" [(ngModel)]="timeZone" name="timeZone" nzAllowClear nzShowSearch>
+              <nz-select [(ngModel)]="timeZone" [nzDisabled]="isTrash" name="timeZone" nzAllowClear nzShowSearch>
                 <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
               </nz-select>
             </div>
@@ -72,7 +73,8 @@
                         </div>
                       </td>
                     </tr>
-                    <tr *ngFor="let holiday of nonWorkingDayCalendars; let i =index" [ngClass]="{'disable-link' : isTrash}">
+                    <tr *ngFor="let holiday of nonWorkingDayCalendars; let i =index"
+                        [ngClass]="{'disable-link' : isTrash}">
                       <td>
                         <a (click)="previewCalendar(holiday, 'NONWORKINGDAYSCALENDAR');">
                           <i class="fa fa-calendar text-danger"></i>&nbsp;

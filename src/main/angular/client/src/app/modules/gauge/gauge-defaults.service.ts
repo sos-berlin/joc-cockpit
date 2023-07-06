@@ -55,7 +55,7 @@ export interface GaugeOptions {
   valueDialClass?: string;
 
   /**
-   * 	The CSS class of the gauge's text
+   *  The CSS class of the gauge's text
    */
   valueClass?: string;
 
@@ -132,7 +132,7 @@ export class GaugeDefaults implements GaugeOptions {
   valueDialClass: string = 'value';
 
   /**
-   * 	The CSS class of the gauge's text
+   *  The CSS class of the gauge's text
    */
   valueClass: string = 'value-text';
 

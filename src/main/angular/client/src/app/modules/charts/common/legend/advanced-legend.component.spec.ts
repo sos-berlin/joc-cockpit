@@ -1,10 +1,10 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import {TestBed, ComponentFixture} from '@angular/core/testing';
+import {Component} from '@angular/core';
 
-import { ChartCommonModule } from '../chart-common.module';
-import { ColorHelper } from '../color.helper';
-import { Color } from '../../utils/color-sets';
-import { ScaleType } from '../types/scale-type.enum';
+import {ChartCommonModule} from '../chart-common.module';
+import {ColorHelper} from '../color.helper';
+import {Color} from '../../utils/color-sets';
+import {ScaleType} from '../types/scale-type.enum';
 
 @Component({
   selector: 'test-component',
@@ -25,12 +25,12 @@ class TestComponent {
     };
     this.colors = new ColorHelper(scheme, scheme.group, [], null);
     this.data = [
-      { name: 'a', value: 8 },
-      { name: 'b', value: 12 },
-      { name: 'c', value: 20 },
-      { name: 'd', value: 30 },
-      { name: 'e', value: 46 },
-      { name: 'f', value: 24 }
+      {name: 'a', value: 8},
+      {name: 'b', value: 12},
+      {name: 'c', value: 20},
+      {name: 'd', value: 30},
+      {name: 'e', value: 46},
+      {name: 'f', value: 24}
     ];
   }
 

@@ -1,51 +1,53 @@
 <div *ngIf="permission.currentController">
-    <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-      <li class="nav-item" *ngIf="permission.currentController.agents.view">
-        <a class="nav-link" [routerLink]="['/resources/agents']" [routerLinkActive]="['active']">
-          <span class="nav-text text-dark p-b-sm"><span translate>resource.label.agentView</span></span>
-        </a>
-      </li>
-      <li class="nav-item dropdown-separator" *ngIf="permission.currentController.agents.view">
-        <span class="separator"></span>
-      </li>
-      <li class="nav-item" *ngIf="permission.currentController.agents.view">
-        <a class="nav-link" [routerLink]="['/resources/agent_job_executions']" [routerLinkActive]="['active']">
-          <span class="nav-text text-dark p-b-sm"><span translate>resource.label.agentJobExecution</span></span>
-        </a>
-      </li>
-      <li class="nav-item dropdown-separator"
-          *ngIf="permission.currentController.agents.view && permission.currentController.locks.view">
-        <span class="separator"></span>
-      </li>
-      <li class="nav-item" *ngIf="permission.currentController.locks.view">
-        <a class="nav-link" [routerLink]="['/resources/locks']" [routerLinkActive]="['active']">
-          <span class="nav-text text-dark p-b-sm"><span translate>resource.label.locks</span></span>
-        </a>
-      </li>
-      <li class="nav-item dropdown-separator"
-          *ngIf="permission.currentController.noticeBoards.view && permission.currentController.noticeBoards.view">
-        <span class="separator"></span>
-      </li>
-      <li class="nav-item" *ngIf="permission.currentController.noticeBoards.view">
-        <a class="nav-link" [routerLink]="['/resources/boards']" [routerLinkActive]="['active']">
-          <span class="nav-text text-dark p-b-sm"><span translate>resource.label.boards</span></span>
-        </a>
-      </li>
-      <li class="nav-item dropdown-separator" *ngIf="permission.joc.calendars.view && (permission.currentController.locks.view || permission.currentController.agents.view)">
-        <span class="separator"></span>
-      </li>
-      <li class="nav-item" *ngIf="permission.joc.calendars.view">
-        <a class="nav-link" [routerLink]="['/resources/calendars']" [routerLinkActive]="['active']">
-          <span class="nav-text text-dark p-b-sm"><span translate>resource.label.calendars</span></span>
-        </a>
-      </li>
-      <li class="nav-item dropdown-separator" *ngIf="permission.joc.documentations.view && (permission.joc.calendars.view || permission.currentController.locks.view || permission.currentController.agents.view)">
-        <span class="separator"></span>
-      </li>
-      <li class="nav-item" *ngIf="permission.joc.documentations.view">
-        <a class="nav-link" [routerLink]="['/resources/documentations']" [routerLinkActive]="['active']">
-          <span class="nav-text text-dark p-b-sm"><span translate>resource.label.documentations</span></span>
-        </a>
-      </li>
-    </ul>
+  <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+    <li *ngIf="permission.currentController.agents.view" class="nav-item">
+      <a [routerLinkActive]="['active']" [routerLink]="['/resources/agents']" class="nav-link">
+        <span class="nav-text text-dark p-b-sm"><span translate>resource.label.agentView</span></span>
+      </a>
+    </li>
+    <li *ngIf="permission.currentController.agents.view" class="nav-item dropdown-separator">
+      <span class="separator"></span>
+    </li>
+    <li *ngIf="permission.currentController.agents.view" class="nav-item">
+      <a [routerLinkActive]="['active']" [routerLink]="['/resources/agent_job_executions']" class="nav-link">
+        <span class="nav-text text-dark p-b-sm"><span translate>resource.label.agentJobExecution</span></span>
+      </a>
+    </li>
+    <li *ngIf="permission.currentController.agents.view && permission.currentController.locks.view"
+        class="nav-item dropdown-separator">
+      <span class="separator"></span>
+    </li>
+    <li *ngIf="permission.currentController.locks.view" class="nav-item">
+      <a [routerLinkActive]="['active']" [routerLink]="['/resources/locks']" class="nav-link">
+        <span class="nav-text text-dark p-b-sm"><span translate>resource.label.locks</span></span>
+      </a>
+    </li>
+    <li *ngIf="permission.currentController.noticeBoards.view && permission.currentController.noticeBoards.view"
+        class="nav-item dropdown-separator">
+      <span class="separator"></span>
+    </li>
+    <li *ngIf="permission.currentController.noticeBoards.view" class="nav-item">
+      <a [routerLinkActive]="['active']" [routerLink]="['/resources/boards']" class="nav-link">
+        <span class="nav-text text-dark p-b-sm"><span translate>resource.label.boards</span></span>
+      </a>
+    </li>
+    <li *ngIf="permission.joc.calendars.view && (permission.currentController.locks.view || permission.currentController.agents.view)"
+        class="nav-item dropdown-separator">
+      <span class="separator"></span>
+    </li>
+    <li *ngIf="permission.joc.calendars.view" class="nav-item">
+      <a [routerLinkActive]="['active']" [routerLink]="['/resources/calendars']" class="nav-link">
+        <span class="nav-text text-dark p-b-sm"><span translate>resource.label.calendars</span></span>
+      </a>
+    </li>
+    <li *ngIf="permission.joc.documentations.view && (permission.joc.calendars.view || permission.currentController.locks.view || permission.currentController.agents.view)"
+        class="nav-item dropdown-separator">
+      <span class="separator"></span>
+    </li>
+    <li *ngIf="permission.joc.documentations.view" class="nav-item">
+      <a [routerLinkActive]="['active']" [routerLink]="['/resources/documentations']" class="nav-link">
+        <span class="nav-text text-dark p-b-sm"><span translate>resource.label.documentations</span></span>
+      </a>
+    </li>
+  </ul>
 </div>

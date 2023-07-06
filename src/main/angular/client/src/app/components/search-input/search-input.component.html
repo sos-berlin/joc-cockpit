@@ -1,35 +1,44 @@
 <div class="pos-rel">
   <nz-input-group class="pos-abt" style="z-index: 1;">
-    <input nz-input type="text" placeholder="{{'common.placeholder.search' | translate}}"
-           class="form-control white" id="changeFocus" [ngClass]="{'b-t-0' : !isDisplay}"
-           [value]="obj.name" (input)="onSearchInput($event.target.value)" (blur)="closeDropdown()" #changeFocusInput  />
+    <input #changeFocusInput (blur)="closeDropdown()" (input)="onSearchInput($event.target.value)"
+           [ngClass]="{'b-t-0' : !isDisplay}" [value]="obj.name" class="form-control white"
+           id="changeFocus" nz-input placeholder="{{'common.placeholder.search' | translate}}" type="text"/>
   </nz-input-group>
-  <nz-tree-select nzNoAnimation [nzNodes]="nodes" [nzShowExpand]="false" [nzDropdownStyle]="{ 'max-height': '300px' }"
-    (nzOpenChange)="onDropdownOpenChange($event)" [nzAllowClear]="true" (nzExpandChange)="onExpand($event)">
-  <ng-template #nzTreeTemplate let-node>
-    <div class="node-wrapper w-full">
-      <span *ngIf="node.origin.loading || (!node.origin.type && !node.origin.objectType)"
-        [class.toggle-children-wrapper-expanded]="node.isExpanded"
-        [class.toggle-children-wrapper-collapsed]="!node.isExpanded" (click)="openFolder(node);$event.stopPropagation()"
-        class="cursor w-14 m-l-xxs m-t-n-1" [ngClass]="{'m-l-0': node.origin.path === '/'}">
-        <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzType="caret-right" nzTheme="outline"></i>
-        <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzType="caret-down" nzTheme="outline"></i>
-        <i *ngIf="node.origin.loading"><nz-spin nzSimple [nzSize]="'small'"></nz-spin></i>
+  <nz-tree-select (nzExpandChange)="onExpand($event)" (nzOpenChange)="onDropdownOpenChange($event)" [nzAllowClear]="true" [nzDropdownStyle]="{ 'max-height': '300px' }"
+                  [nzNodes]="nodes" [nzShowExpand]="false"
+                  nzNoAnimation>
+    <ng-template #nzTreeTemplate let-node>
+      <div class="node-wrapper w-full">
+      <span (click)="openFolder(node);$event.stopPropagation()"
+            *ngIf="node.origin.loading || (!node.origin.type && !node.origin.objectType)"
+            [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+            [class.toggle-children-wrapper-expanded]="node.isExpanded"
+            [ngClass]="{'m-l-0': node.origin.path === '/'}" class="cursor w-14 m-l-xxs m-t-n-1">
+        <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzTheme="outline" nzType="caret-right"></i>
+        <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzTheme="outline" nzType="caret-down"></i>
+        <i *ngIf="node.origin.loading"><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
       </span>
-      <span *ngIf="!node.origin.loading && node.origin.type" class="w-16">
+        <span *ngIf="!node.origin.loading && node.origin.type" class="w-16">
         <span class="fa fa-lg p-r-sm"></span>
       </span>
-      <div class="node-content-wrapper p-l-xs w-full" [nz-tooltip]="node.origin.path?.substring(0, node.origin.path?.lastIndexOf('/')) || '/'" nzTooltipPlacement="right" (click)="loadData(node, $event);"
-        [class.node-content-wrapper-active]="list.includes(node.origin.name)">
-        <i *ngIf="!node.origin.type && !node.origin.objectType" nz-icon
-          [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-        <i *ngIf="node.origin.type || node.origin.objectType" class="fa fa-circle-o text-xs w-11 m-t-xs"
-          [ngClass]="{'p-l-xs': node.origin.objectType}"></i>
-        <span class="p-l-sm">{{node.origin.name}}</span>
-        <i *ngIf="addFolderPossible && !node.origin.type && !node.origin.objectType && folders[pathAttribute].indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path);$event.stopPropagation()" [nz-tooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
-        <i *ngIf="addFolderPossible && !node.origin.type && !node.origin.objectType && folders[pathAttribute].indexOf(node.origin.path) > -1" (click)="remove(node.origin.path);$event.stopPropagation()" nz-icon [nzType]="'delete'" class="p-l-sm"></i>
+        <div (click)="loadData(node, $event);"
+             [class.node-content-wrapper-active]="list.includes(node.origin.name)"
+             [nz-tooltip]="node.origin.path?.substring(0, node.origin.path?.lastIndexOf('/')) || '/'" class="node-content-wrapper p-l-xs w-full"
+             nzTooltipPlacement="right">
+          <i *ngIf="!node.origin.type && !node.origin.objectType" [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+             class="w-14" nz-icon></i>
+          <i *ngIf="node.origin.type || node.origin.objectType" [ngClass]="{'p-l-xs': node.origin.objectType}"
+             class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+          <span class="p-l-sm">{{node.origin.name}}</span>
+          <i
+            (click)="addFolder(node.origin.path);$event.stopPropagation()"
+            *ngIf="addFolderPossible && !node.origin.type && !node.origin.objectType && folders[pathAttribute].indexOf(node.origin.path) === -1"
+            [nz-tooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
+          <i
+            (click)="remove(node.origin.path);$event.stopPropagation()"
+            *ngIf="addFolderPossible && !node.origin.type && !node.origin.objectType && folders[pathAttribute].indexOf(node.origin.path) > -1" [nzType]="'delete'" class="p-l-sm" nz-icon></i>
+        </div>
       </div>
-    </div>
-  </ng-template>
-</nz-tree-select>
+    </ng-template>
+  </nz-tree-select>
 </div>

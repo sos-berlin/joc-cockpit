@@ -1,13 +1,16 @@
 span ul li a {
   color: var(--primary);
+
   &:active, &:hover {
     text-decoration: underline;
   }
 }
-span p{
+
+span p {
   padding-left: 32px;
 }
-strong{
+
+strong {
   font-weight: 600;
 }
 
@@ -17,8 +20,8 @@ strong{
 }
 
 .disabled {
-    pointer-events: none !important;
-    cursor: auto !important;
+  pointer-events: none !important;
+  cursor: auto !important;
 }
 
 .childNodeScroll {
@@ -42,7 +45,8 @@ strong{
   right: 15px;
   cursor: pointer;
 }
-.documents{
+
+.documents {
   max-height: calc(100vh - 408px);
   overflow: auto;
 }

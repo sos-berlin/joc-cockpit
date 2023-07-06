@@ -1,113 +1,113 @@
 <div class="order-view">
-    <div style="min-height: 240px">
-        <ngx-charts-pie-chart *ngIf="!loading && ordersData.length>0"
-          [view]="view"
-          [labels]="false"
-          [scheme]="colorScheme"
-          [results]="ordersData"
-          [gradient]="gradient"
-          [doughnut]="isDoughnut"
-          (select)="onSelect($event)"
-        >
-        </ngx-charts-pie-chart>
-      <div *ngIf="loading" class="text-center p-t-3">
-          <span class="fa fa-spinner fa-spin text-lg m-t-3"></span>
-      </div>
-      <div style="padding-top: 90px" *ngIf="!loading && ordersData.length===0">
-        <app-empty-data></app-empty-data>
-      </div>
+  <div style="min-height: 240px">
+    <ngx-charts-pie-chart (select)="onSelect($event)"
+                          *ngIf="!loading && ordersData.length>0"
+                          [doughnut]="isDoughnut"
+                          [gradient]="gradient"
+                          [labels]="false"
+                          [results]="ordersData"
+                          [scheme]="colorScheme"
+                          [view]="view"
+    >
+    </ngx-charts-pie-chart>
+    <div *ngIf="loading" class="text-center p-t-3">
+      <span class="fa fa-spinner fa-spin text-lg m-t-3"></span>
     </div>
-    <div class="order-panel">
-      <div class="all">
-        <span class="text-black-lt _300" [ngClass]="{'_600': state =='ALL'}">
-          <a class="primary-text-hover-color"
-             (click)="setFilter('ALL')"
+    <div *ngIf="!loading && ordersData.length===0" style="padding-top: 90px">
+      <app-empty-data></app-empty-data>
+    </div>
+  </div>
+  <div class="order-panel">
+    <div class="all">
+        <span [ngClass]="{'_600': state =='ALL'}" class="text-black-lt _300">
+          <a (click)="setFilter('ALL')"
+             class="primary-text-hover-color"
              translate>order.label.allOrders</a></span>
-        <a (click)="setFilter('ALL')" class="pull-right text primary-text-hover-color"
-           [ngClass]="{'_600': state =='ALL'}"
-           [innerHtml]="(snapshot.pending || 0) + (snapshot.inProgress || 0) + (snapshot.running || 0) + (snapshot.suspended || 0) + (snapshot.calling || 0)
+      <a (click)="setFilter('ALL')" [innerHtml]="(snapshot.pending || 0) + (snapshot.inProgress || 0) + (snapshot.running || 0) + (snapshot.suspended || 0) + (snapshot.calling || 0)
             + (snapshot.waiting || 0) + (snapshot.scheduled || 0) + (snapshot.prompting || 0) + (snapshot.blocked || 0) + (snapshot.failed || 0)
-              + (snapshot.terminated || 0)"></a>
-      </div>
-      <div class="pending">
-        <span class="text-black-lt _300" [ngClass]="{'_600': state =='PENDING'}">
+              + (snapshot.terminated || 0)"
+         [ngClass]="{'_600': state =='ALL'}"
+         class="pull-right text primary-text-hover-color"></a>
+    </div>
+    <div class="pending">
+        <span [ngClass]="{'_600': state =='PENDING'}" class="text-black-lt _300">
           <a (click)="setFilter('PENDING')"
              class="primary-text-hover-color"
              translate>common.label.pending</a></span>
-        <a (click)="setFilter('PENDING')" class="pull-right text primary-text-hover-color"
-           [ngClass]="{'_600': state =='PENDING'}" [innerHtml]="snapshot.pending || 0"></a>
-      </div>
-      <div class="scheduled">
-        <span class="text-black-lt _300" [ngClass]="{'_600': state =='SCHEDULED'}">
+      <a (click)="setFilter('PENDING')" [innerHtml]="snapshot.pending || 0"
+         [ngClass]="{'_600': state =='PENDING'}" class="pull-right text primary-text-hover-color"></a>
+    </div>
+    <div class="scheduled">
+        <span [ngClass]="{'_600': state =='SCHEDULED'}" class="text-black-lt _300">
           <a (click)="setFilter('SCHEDULED')"
              class="primary-text-hover-color"
              translate>common.label.scheduled</a></span>
-        <a (click)="setFilter('SCHEDULED')" class="pull-right text primary-text-hover-color"
-           [ngClass]="{'_600': state =='SCHEDULED'}" [innerHtml]="snapshot.scheduled || 0"></a>
-      </div>
-      <div class="in-progress">
-        <span class="text-black-lt _300" [ngClass]="{'_600': state =='INPROGRESS'}">
+      <a (click)="setFilter('SCHEDULED')" [innerHtml]="snapshot.scheduled || 0"
+         [ngClass]="{'_600': state =='SCHEDULED'}" class="pull-right text primary-text-hover-color"></a>
+    </div>
+    <div class="in-progress">
+        <span [ngClass]="{'_600': state =='INPROGRESS'}" class="text-black-lt _300">
           <a (click)="setFilter('INPROGRESS')"
              class="primary-text-hover-color"
              translate>common.label.incomplete</a></span>
-        <a (click)="setFilter('INPROGRESS')" class="pull-right text primary-text-hover-color"
-           [ngClass]="{'_600': state =='INPROGRESS'}" [innerHtml]="snapshot.inProgress || 0"></a>
-      </div>
-      <div class="running">
-        <span class="text-black-lt _300" [ngClass]="{'_600': state =='RUNNING'}">
+      <a (click)="setFilter('INPROGRESS')" [innerHtml]="snapshot.inProgress || 0"
+         [ngClass]="{'_600': state =='INPROGRESS'}" class="pull-right text primary-text-hover-color"></a>
+    </div>
+    <div class="running">
+        <span [ngClass]="{'_600': state =='RUNNING'}" class="text-black-lt _300">
           <a (click)="setFilter('RUNNING')"
              class="primary-text-hover-color"
              translate>common.label.running</a></span>
-        <a (click)="setFilter('RUNNING')" class="pull-right text primary-text-hover-color"
-           [ngClass]="{'_600': state =='RUNNING'}" [innerHtml]="snapshot.running || 0"></a>
-      </div>
-      <div class="suspend">
-        <span class="text-black-lt _300" [ngClass]="{'_600': state =='SUSPENDED'}">
+      <a (click)="setFilter('RUNNING')" [innerHtml]="snapshot.running || 0"
+         [ngClass]="{'_600': state =='RUNNING'}" class="pull-right text primary-text-hover-color"></a>
+    </div>
+    <div class="suspend">
+        <span [ngClass]="{'_600': state =='SUSPENDED'}" class="text-black-lt _300">
           <a (click)="setFilter('SUSPENDED')"
              class="primary-text-hover-color"
              translate>common.label.suspended</a></span>
-        <a (click)="setFilter('SUSPENDED')" class="pull-right text primary-text-hover-color"
-           [ngClass]="{'_600': state =='SUSPENDED'}" [innerHtml]="snapshot.suspended || 0"></a>
-      </div>
-      <div class="prompting">
-        <span class="text-black-lt _300" [ngClass]="{'_600': state =='PROMPTING'}">
+      <a (click)="setFilter('SUSPENDED')" [innerHtml]="snapshot.suspended || 0"
+         [ngClass]="{'_600': state =='SUSPENDED'}" class="pull-right text primary-text-hover-color"></a>
+    </div>
+    <div class="prompting">
+        <span [ngClass]="{'_600': state =='PROMPTING'}" class="text-black-lt _300">
           <a (click)="setFilter('PROMPTING')"
              class="primary-text-hover-color"
              translate>common.label.prompting</a></span>
-        <a (click)="setFilter('PROMPTING')" class="pull-right text primary-text-hover-color"
-           [ngClass]="{'_600': state =='PROMPTING'}" [innerHtml]="snapshot.prompting || 0"></a>
-      </div>
-      <div class="waiting">
-        <span class="text-black-lt _300" [ngClass]="{'_600': state =='WAITING'}">
+      <a (click)="setFilter('PROMPTING')" [innerHtml]="snapshot.prompting || 0"
+         [ngClass]="{'_600': state =='PROMPTING'}" class="pull-right text primary-text-hover-color"></a>
+    </div>
+    <div class="waiting">
+        <span [ngClass]="{'_600': state =='WAITING'}" class="text-black-lt _300">
           <a (click)="setFilter('WAITING')"
              class="primary-text-hover-color"
              translate>common.label.waiting</a></span>
-        <a (click)="setFilter('WAITING')" class="pull-right text primary-text-hover-color"
-           [ngClass]="{'_600': state =='WAITING'}" [innerHtml]="snapshot.waiting || 0"></a>
-      </div>
-      <div class="blocked">
-        <span class="text-black-lt _300" [ngClass]="{'_600': state =='BLOCKED'}">
+      <a (click)="setFilter('WAITING')" [innerHtml]="snapshot.waiting || 0"
+         [ngClass]="{'_600': state =='WAITING'}" class="pull-right text primary-text-hover-color"></a>
+    </div>
+    <div class="blocked">
+        <span [ngClass]="{'_600': state =='BLOCKED'}" class="text-black-lt _300">
           <a (click)="setFilter('BLOCKED')"
              class="primary-text-hover-color"
              translate>common.label.blocked</a></span>
-        <a (click)="setFilter('BLOCKED')" class="pull-right text primary-text-hover-color"
-           [ngClass]="{'_600': state =='BLOCKED'}" [innerHtml]="snapshot.blocked || 0"></a>
-      </div>
-      <div class="failed">
-        <span class="text-black-lt _300" [ngClass]="{'_600': state =='FAILED'}">
+      <a (click)="setFilter('BLOCKED')" [innerHtml]="snapshot.blocked || 0"
+         [ngClass]="{'_600': state =='BLOCKED'}" class="pull-right text primary-text-hover-color"></a>
+    </div>
+    <div class="failed">
+        <span [ngClass]="{'_600': state =='FAILED'}" class="text-black-lt _300">
           <a (click)="setFilter('FAILED')"
              class="primary-text-hover-color"
              translate>common.label.failed</a></span>
-        <a (click)="setFilter('FAILED')" class="pull-right text primary-text-hover-color"
-           [ngClass]="{'_600': state =='FAILED'}" [innerHtml]="snapshot.failed || 0"></a>
-      </div>
-      <div class="terminate">
-        <span class="text-black-lt _300" [ngClass]="{'_600': state =='COMPLETED'}">
+      <a (click)="setFilter('FAILED')" [innerHtml]="snapshot.failed || 0"
+         [ngClass]="{'_600': state =='FAILED'}" class="pull-right text primary-text-hover-color"></a>
+    </div>
+    <div class="terminate">
+        <span [ngClass]="{'_600': state =='COMPLETED'}" class="text-black-lt _300">
           <a (click)="setFilter('COMPLETED')"
              class="primary-text-hover-color"
              translate>common.label.completed</a></span>
-        <a (click)="setFilter('COMPLETED')" class="pull-right text primary-text-hover-color"
-           [ngClass]="{'_600': state =='COMPLETED'}" [innerHtml]="snapshot.terminated || 0"></a>
-      </div>
+      <a (click)="setFilter('COMPLETED')" [innerHtml]="snapshot.terminated || 0"
+         [ngClass]="{'_600': state =='COMPLETED'}" class="pull-right text primary-text-hover-color"></a>
     </div>
+  </div>
 </div>

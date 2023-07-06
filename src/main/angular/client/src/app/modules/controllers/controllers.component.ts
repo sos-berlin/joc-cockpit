@@ -1,7 +1,7 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {Subscription} from 'rxjs';
+import {Component, inject} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzMessageService} from 'ng-zorro-antd/message';
+import {Subscription} from 'rxjs';
 import {differenceInCalendarDays} from 'date-fns';
 import {Router} from "@angular/router";
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -12,18 +12,16 @@ import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {AgentModalComponent, SubagentModalComponent} from "./agent/agent.component";
-import {FileUploader} from "ng2-file-upload";
-import {TranslateService} from "@ngx-translate/core";
-import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-export-modal',
   templateUrl: './export-dialog.html'
 })
-export class ExportComponent implements OnInit {
-  @Input() preferences;
-  @Input() display: any;
-  @Input() controller: any;
+export class ExportComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  preferences;
+  display: any;
+  controller: any;
   submitted = false;
   required = false;
   comments: any = {radio: 'predefined'};
@@ -37,7 +35,10 @@ export class ExportComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    this.preferences = this.modalData.preferences;
+    this.display = this.modalData.display;
+    this.controller = this.modalData.controller;
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -47,7 +48,7 @@ export class ExportComponent implements OnInit {
   }
 
   private getAgents(controller): void {
-    if (sessionStorage.hasLicense == 'true') {
+    if (sessionStorage['hasLicense'] == 'true') {
       this.getClusterAgents(controller);
     }
     this.coreService.post('agents/inventory', {
@@ -125,114 +126,18 @@ export class ExportComponent implements OnInit {
 
 }
 
-@Component({
-  selector: 'app-import-modal-content',
-  templateUrl: './import-dialog.html'
-})
-export class ImportModalComponent implements OnInit {
-  @Input() display: any;
-  @Input() controller: any;
-  nodes: any = [];
-  uploader: FileUploader;
-  signatureAlgorithm: string;
-  required = false;
-  comments: any = {};
-  settings: any = {};
-  hasBaseDropZoneOver: any;
-  requestObj = {
-    overwrite: false,
-    format: 'ZIP',
-  };
-
-  constructor(public activeModal: NzModalRef, private modal: NzModalService, private translate: TranslateService,
-              public toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
-  }
-
-  ngOnInit(): void {
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
-      this.required = true;
-      this.display = true;
-    }
-    this.uploader = new FileUploader({
-      url: './api/agents/import',
-      queueLimit: 1,
-      headers: [{
-        name: 'X-Access-Token',
-        value: this.authService.accessTokenId
-      }]
-    });
-    this.comments.radio = 'predefined';
-
-    this.uploader.onBeforeUploadItem = (item: any) => {
-      const obj: any = {};
-      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-      obj.format = this.requestObj.format;
-      obj.overwrite = this.requestObj.overwrite;
-      obj.controllerId = this.controller.controllerId;
-      //item.file.name = encodeURIComponent(item.file.name);
-      this.uploader.options.additionalParameter = obj;
-    };
-
-    this.uploader.onCompleteItem = (fileItem: any, response, status) => {
-      if (status === 200) {
-        this.activeModal.close('DONE');
-      }
-    };
-
-    this.uploader.onErrorItem = (fileItem, response: any) => {
-      const res = typeof response === 'string' ? JSON.parse(response) : response;
-      if (res.error) {
-        this.toasterService.error(res.error.message, res.error.code);
-      }
-    };
-  }
-
-  fileOverBase(e: any): void {
-    this.hasBaseDropZoneOver = e;
-  }
-
-  // CALLBACKS
-  onFileSelected(event: any): void {
-    const item = event['0'];
-    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
-    if(fileExt){
-      fileExt = fileExt.toLowerCase();
-    }
-    if (fileExt === 'zip' || fileExt.match(/tar/) || fileExt.match(/gz/)){
-      if(fileExt === 'zip'){
-        this.requestObj.format = 'ZIP';
-      } else {
-        this.requestObj.format = 'TAR_GZ';
-      }
-    } else {
-      let msg = '';
-      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
-        msg = translatedValue;
-      });
-      this.toasterService.error(fileExt + ' ' + msg);
-      this.uploader.clearQueue();
-    }
-  }
-
-  import(): void {
-    this.uploader.queue[0].upload();
-  }
-
-  cancel(): void {
-    this.activeModal.destroy();
-  }
-}
 
 @Component({
   selector: 'app-create-token-modal',
   templateUrl: './create-token.dialog.html'
 })
-export class CreateTokenModalComponent implements OnInit {
-  @Input() agents: any;
-  @Input() clusterAgents: any;
-  @Input() agent: any;
-  @Input() data: any;
-  @Input() controllerId: any;
+export class CreateTokenModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  agents: any;
+  clusterAgents: any;
+  agent: any;
+  data: any;
+  controllerId: any;
   token: any = {
     at: 'date'
   };
@@ -249,15 +154,20 @@ export class CreateTokenModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.agents = this.modalData.agents;
+    this.clusterAgents = this.modalData.clusterAgents;
+    this.agent = this.modalData.agent;
+    this.data = this.modalData.data;
+    this.controllerId = this.modalData.controllerId;
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
     this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.token.timezone = this.preferences.zone;
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
@@ -315,7 +225,7 @@ export class CreateTokenModalComponent implements OnInit {
   selector: 'app-controllers',
   templateUrl: './controllers.component.html'
 })
-export class ControllersComponent implements OnInit, OnDestroy {
+export class ControllersComponent {
   data: any = [];
   controllers: any = [];
   tokens: any = [];
@@ -355,12 +265,12 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.isJOCActive = sessionStorage.$SOS$ISJOCACTIVE == 'YES';
+    this.isJOCActive = sessionStorage['$SOS$ISJOCACTIVE'] == 'YES';
     this.permission = JSON.parse(this.authService.permission) || {};
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
-    this.hasLicense = sessionStorage.hasLicense == 'true';
+    this.hasLicense = sessionStorage['hasLicense'] == 'true';
     this.getTokens();
   }
 
@@ -369,7 +279,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'AgentChanged' || args.eventSnapshots[j].eventType === 'AgentInventoryUpdated' || args.eventSnapshots[j].eventType === 'AgentStateChanged'
@@ -592,19 +502,19 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   importAgents(controller): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: ImportModalComponent,
-      nzClassName: 'lg',
-      nzAutofocus: null,
-      nzComponentParams: {
-        display: this.preferences.auditLog,
-        controller
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
+    // this.modal.create({
+    //   nzTitle: undefined,
+    //   nzContent: ImportModalComponent,
+    //   nzClassName: 'lg',
+    //   nzAutofocus: null,
+    //   nzComponentParams: {
+    //     display: this.preferences.auditLog,
+    //     controller
+    //   },
+    //   nzFooter: null,
+    //   nzClosable: false,
+    //   nzMaskClosable: false
+    // });
   }
 
   addController(): void {
@@ -663,7 +573,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         title: 'delete',
         message: 'deleteController',
         type: 'Delete',
@@ -722,7 +632,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -739,7 +649,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           title: 'delete',
           message: subagent ? 'deleteSubagent' : 'deleteSelectedAgents',
           type: 'Delete',
@@ -803,7 +713,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -871,7 +781,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -908,7 +818,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -917,7 +827,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          if(subagent){
+          if (subagent) {
             this.object.mapOfCheckedId3.forEach((value, key) => {
               this.coreService.post('agents/inventory/cluster/subagents/disable', {
                 controllerId: value,
@@ -937,7 +847,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      if(subagent){
+      if (subagent) {
         this.object.mapOfCheckedId3.forEach((value, key) => {
           this.coreService.post('agents/inventory/cluster/subagents/disable', {
             controllerId: value,
@@ -956,7 +866,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     this.resetCheckbox();
   }
 
-  disableAllSubAgent(){
+  disableAllSubAgent() {
     this.disableAll(true);
   }
 
@@ -964,7 +874,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     this.resetAll(force, true);
   }
 
-  deleteAllSubagent(): void{
+  deleteAllSubagent(): void {
     this.deleteAll(true);
   }
 
@@ -981,7 +891,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -1019,7 +929,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           title: 'resetForced',
           message: 'resetAgentConfirmation',
           type: 'Reset',
@@ -1160,7 +1070,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           comments,
           obj,
           url: 'agent/delete'
@@ -1173,7 +1083,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title: 'delete',
           message: isCluster ? 'deleteClusterAgent' : 'deleteAgent',
           type: 'Delete',
@@ -1276,7 +1186,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           comments,
           obj,
           url: 'agents/inventory/cluster/subagents/delete'
@@ -1294,7 +1204,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title: 'delete',
           message: 'deleteSubagent',
           type: 'Delete',
@@ -1344,7 +1254,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
           obj,
           url: subagent ? 'agents/inventory/cluster/subagent/reset' : 'agent/reset'
@@ -1357,7 +1267,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title: 'resetForced',
           message: 'resetAgentConfirmation',
           type: 'Reset',
@@ -1403,7 +1313,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -1453,7 +1363,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -1492,7 +1402,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -1534,7 +1444,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -1613,7 +1523,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkAllSubagent(isChecked: boolean, agent): void{
+  checkAllSubagent(isChecked: boolean, agent): void {
     if (isChecked && agent.subagents.length > 0) {
       agent.subagents.forEach(item => {
         if (!item.disabled) {

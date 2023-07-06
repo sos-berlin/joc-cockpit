@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     <span translate>history.label.ignoreListFilters</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -24,11 +24,13 @@
           <tbody>
           <tr *ngFor="let workflow of savedIgnoreList.workflows" [hidden]="historyFilters.type !== 'ORDER'">
             <td>{{workflow}}</td>
-            <td><a class="text-u-l text-danger" (click)="removeWorkflowIgnoreList(workflow)" translate>common.button.remove</a></td>
+            <td><a (click)="removeWorkflowIgnoreList(workflow)" class="text-u-l text-danger" translate>common.button.remove</a>
+            </td>
           </tr>
           <tr *ngFor="let job of savedIgnoreList.jobs" [hidden]="historyFilters.type !== 'TASK'">
             <td>{{job.workflowPath}}<i *ngIf="job.job">,</i> {{job.job}}</td>
-            <td><a class="text-u-l text-danger" (click)="removeJobIgnoreList(job)" translate>common.button.remove</a></td>
+            <td><a (click)="removeJobIgnoreList(job)" class="text-u-l text-danger" translate>common.button.remove</a>
+            </td>
           </tr>
           </tbody>
         </table>

@@ -1,25 +1,25 @@
 <div class="modal-header">
-  <h4 class="modal-title" *ngIf="!rename" translate>inventory.label.createFolder</h4>
-  <h4 class="modal-title" *ngIf="rename && origin">
+  <h4 *ngIf="!rename" class="modal-title" translate>inventory.label.createFolder</h4>
+  <h4 *ngIf="rename && origin" class="modal-title">
     <span translate>inventory.label.rename</span>:
     {{origin.path}}<span *ngIf="origin.type">{{origin.path === '/' ? '' : '/'}}{{origin.name}}</span>
   </h4>
-  <button type="button" class="close" (click)="activeModal.destroy()" aria-label="Close">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
-    <div class="hide" [ngClass]="{'show': display}">
+    <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div class="row" *ngIf="!rename">
+    <div *ngIf="!rename" class="row">
       <label class="col-md-3 form-control-label" translate>inventory.label.folderName
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-md-6" [ngClass]="{'has-error' : !isUnique || ((name.dirty || name.touched) && name.invalid)}">
-        <input type="text" (blur)="checkFolderName()" identifierValidation class="form-control" name="name" required
-               #name="ngModel" [(ngModel)]="folder.name" [appAutofocus]="true" autocomplete="off">
+      <div [ngClass]="{'has-error' : !isUnique || ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
+        <input #name="ngModel" (blur)="checkFolderName()" [(ngModel)]="folder.name" [appAutofocus]="true" autocomplete="off" class="form-control"
+               identifierValidation name="name" required type="text">
         <div *ngIf="name.invalid && (name.dirty || name.touched)"
              class="text-danger help-block">
           <div *ngIf="(name.errors && name.errors['required'])">
@@ -27,48 +27,52 @@
           </div>
           <div *ngIf="name.errors['invalidIdentifier']" translate>common.message.invalid</div>
         </div>
-        <div class="help-block text-danger" *ngIf="!isUnique">
+        <div *ngIf="!isUnique" class="help-block text-danger">
           <div translate>common.message.uniqueError</div>
         </div>
       </div>
     </div>
     <div *ngIf="rename && origin">
-      <div class="form-group row" *ngIf="!origin.type && !origin.object && !origin.controller && !origin.dailyPlan && origin.path !== '/' && type != 'DEPLOYMENTDESCRIPTOR'">
+      <div *ngIf="!origin.type && !origin.object && !origin.controller && !origin.dailyPlan && origin.path !== '/' && type != 'DEPLOYMENTDESCRIPTOR'"
+           class="form-group row">
         <label class="col-md-3" translate>
           inventory.label.rename
         </label>
         <div class="col-md-9">
-          <nz-radio-group name="radio"  [(ngModel)]="folder.deepRename">
+          <nz-radio-group [(ngModel)]="folder.deepRename" name="radio">
             <label nz-radio nzValue="rename"><span translate>inventory.label.renameFolder</span></label>
             <label nz-radio nzValue="replace"><span translate>inventory.label.renameObjectsRecursively</span></label>
           </nz-radio-group>
         </div>
       </div>
-      <div class="form-group row" *ngIf="folder.deepRename === 'rename' && origin.type">
+      <div *ngIf="folder.deepRename === 'rename' && origin.type" class="form-group row">
         <label class="col-md-3 form-control-label" translate>inventory.label.newName
-           <sup class="text-danger text-sm">*</sup>
+          <sup class="text-danger text-sm">*</sup>
         </label>
-        <div class="col-md-6" [ngClass]="{'has-error' :  !isValid || ((name.dirty || name.touched) && name.invalid)}">
-          <input type="text" placeholder="{{'inventory.placeholder.enterNewName' | translate}}" class="form-control" name="name" required
-                 #name="ngModel" (blur)="isValidObject(folder.name)" [(ngModel)]="folder.name" [appAutofocus]="true" autocomplete="off">
+        <div [ngClass]="{'has-error' :  !isValid || ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
+          <input #name="ngModel" (blur)="isValidObject(folder.name)" [(ngModel)]="folder.name"
+                 [appAutofocus]="true" autocomplete="off"
+                 class="form-control" name="name" placeholder="{{'inventory.placeholder.enterNewName' | translate}}" required
+                 type="text">
           <div *ngIf="name.invalid && (name.dirty || name.touched)"
                class="text-danger help-block">
             <div *ngIf="(name.errors && name.errors['required'])">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
-           <div class="help-block text-danger" *ngIf="!isValid">
+          <div *ngIf="!isValid" class="help-block text-danger">
             <div translate>common.message.invalid</div>
           </div>
         </div>
       </div>
-      <div class="form-group row" *ngIf="folder.deepRename === 'rename' && !origin.type">
+      <div *ngIf="folder.deepRename === 'rename' && !origin.type" class="form-group row">
         <label class="col-md-3 form-control-label" translate>inventory.label.newPath
           <sup class="text-danger text-sm">*</sup>
         </label>
-        <div class="col-md-6" [ngClass]="{'has-error' :  ((name.dirty || name.touched) && name.invalid)}">
-          <input type="text" placeholder="{{'inventory.placeholder.enterNewPath' | translate}}" class="form-control" name="name" required
-                 #name="ngModel" [(ngModel)]="folder.name" autocomplete="off">
+        <div [ngClass]="{'has-error' :  ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
+          <input #name="ngModel" [(ngModel)]="folder.name" autocomplete="off"
+                 class="form-control" name="name"
+                 placeholder="{{'inventory.placeholder.enterNewPath' | translate}}" required type="text">
           <div *ngIf="name.invalid && (name.dirty || name.touched)"
                class="text-danger help-block">
             <div *ngIf="(name.errors && name.errors['required'])">
@@ -77,13 +81,14 @@
           </div>
         </div>
       </div>
-      <div class="form-group row" *ngIf="folder.deepRename === 'replace'">
+      <div *ngIf="folder.deepRename === 'replace'" class="form-group row">
         <label class="col-md-3 form-control-label" translate>inventory.label.search
           <sup class="text-danger text-sm">*</sup>
         </label>
-        <div class="col-md-6" [ngClass]="{'has-error' :  ((search.dirty || search.touched) && search.invalid)}">
-          <input type="text" placeholder="{{'inventory.placeholder.valueWhichNeedToReplace' | translate}}" [appAutofocus]="true" class="form-control" name="search" required
-                 #search="ngModel" [(ngModel)]="folder.search" autocomplete="off">
+        <div [ngClass]="{'has-error' :  ((search.dirty || search.touched) && search.invalid)}" class="col-md-6">
+          <input #search="ngModel" [(ngModel)]="folder.search"
+                 [appAutofocus]="true" autocomplete="off" class="form-control" name="search"
+                 placeholder="{{'inventory.placeholder.valueWhichNeedToReplace' | translate}}" required type="text">
           <div *ngIf="search.invalid && (search.dirty || search.touched)"
                class="text-danger help-block">
             <div *ngIf="(search.errors && search.errors['required'])">
@@ -92,21 +97,24 @@
           </div>
         </div>
       </div>
-      <div class="form-group row" *ngIf="folder.deepRename === 'replace'">
+      <div *ngIf="folder.deepRename === 'replace'" class="form-group row">
         <label class="col-md-3 form-control-label" translate>inventory.label.replace</label>
         <div class="col-md-6">
-          <input type="text" placeholder="{{'inventory.placeholder.valueReplaceBy' | translate}}" class="form-control" name="replace"
-                 [(ngModel)]="folder.replace" autocomplete="off">
+          <input [(ngModel)]="folder.replace" autocomplete="off" class="form-control"
+                 name="replace"
+                 placeholder="{{'inventory.placeholder.valueReplaceBy' | translate}}" type="text">
         </div>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted || !isValid || folder.error || (required && !comments.comment)" class="btn btn-primary btn-sm">
+    <button [disabled]="!myForm.form.valid || !isUnique || submitted || !isValid || folder.error || (required && !comments.comment)"
+            class="btn btn-primary btn-sm"
+            type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

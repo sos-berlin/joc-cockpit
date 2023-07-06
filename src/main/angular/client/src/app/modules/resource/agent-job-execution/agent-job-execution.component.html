@@ -8,100 +8,100 @@
           </div>
           <div class="inline">
             <div class="show-block">
-              <label nz-checkbox [(ngModel)]="agentFilters.current" (ngModelChange)="changeController()">
+              <label (ngModelChange)="changeController()" [(ngModel)]="agentFilters.current" nz-checkbox>
                 {{'common.label.currentController' | translate}}
               </label>
               <div class="inline">
                 <div class="btn-group m-l-12 hidden-btn-group">
-                  <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm" (click)="loadAgentTasks('all')"
-                          [ngClass]="{'btn-primary': agentFilters.filter.date=='all'}" translate>filters.button.all
+                  <button (click)="loadAgentTasks('all')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': agentFilters.filter.date=='all'}"
+                          class="btn btn-grey btn-sm" translate>filters.button.all
                   </button>
-                  <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm"
-                          (click)="loadAgentTasks('today')"
-                          [ngClass]="{'btn-primary': agentFilters.filter.date=='today'}" translate>filters.button.today
+                  <button (click)="loadAgentTasks('today')" [disabled]="savedFilter.selected"
+                          [ngClass]="{'btn-primary': agentFilters.filter.date=='today'}"
+                          class="btn btn-grey btn-sm" translate>filters.button.today
                   </button>
-                  <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm" (click)="loadAgentTasks('-1h')"
-                          [ngClass]="{'btn-primary': agentFilters.filter.date=='-1h'}" translate>filters.button.last1
+                  <button (click)="loadAgentTasks('-1h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': agentFilters.filter.date=='-1h'}"
+                          class="btn btn-grey btn-sm" translate>filters.button.last1
                   </button>
-                  <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm" (click)="loadAgentTasks('-12h')"
-                          [ngClass]="{'btn-primary': agentFilters.filter.date=='-12h'}" translate>filters.button.last12
+                  <button (click)="loadAgentTasks('-12h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': agentFilters.filter.date=='-12h'}"
+                          class="btn btn-grey btn-sm" translate>filters.button.last12
                   </button>
-                  <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm" (click)="loadAgentTasks('-24h')"
-                          [ngClass]="{'btn-primary': agentFilters.filter.date=='-24h'}" translate>filters.button.last24
+                  <button (click)="loadAgentTasks('-24h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': agentFilters.filter.date=='-24h'}"
+                          class="btn btn-grey btn-sm" translate>filters.button.last24
                   </button>
-                  <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm" (click)="loadAgentTasks('-7d')"
-                          [ngClass]="{'btn-primary': agentFilters.filter.date=='-7d'}" translate>filters.button.lastWeak
+                  <button (click)="loadAgentTasks('-7d')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': agentFilters.filter.date=='-7d'}"
+                          class="btn btn-grey btn-sm" translate>filters.button.lastWeak
                   </button>
                 </div>
                 <div class="btn-group m-l-12 dropdown hidden-dropdown">
-                  <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="state"
-                          [nzPlacement]="'bottomRight'" translate>
+                  <button [nzDropdownMenu]="state" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
+                          nzTrigger="click" translate>
                     common.label.anyDate
-                    <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                    <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                   </button>
                   <nz-dropdown-menu #state="nzDropdownMenu">
                     <ul nz-menu>
-                      <li nz-menu-item (click)="loadAgentTasks('all')"
-                          [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='all', 'disable-link':savedFilter.selected}">
+                      <li (click)="loadAgentTasks('all')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='all', 'disable-link':savedFilter.selected}"
+                          nz-menu-item>
                         <a translate>filters.button.all</a>
                       </li>
-                      <li nz-menu-item (click)="loadAgentTasks('today')"
-                          [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='today', 'disable-link':savedFilter.selected}">
+                      <li (click)="loadAgentTasks('today')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='today', 'disable-link':savedFilter.selected}"
+                          nz-menu-item>
                         <a translate>filters.button.today</a>
                       </li>
-                      <li nz-menu-item (click)="loadAgentTasks('-1h')"
-                          [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-1h', 'disable-link':savedFilter.selected}">
+                      <li (click)="loadAgentTasks('-1h')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-1h', 'disable-link':savedFilter.selected}"
+                          nz-menu-item>
                         <a translate>filters.button.last1</a>
                       </li>
-                      <li nz-menu-item (click)="loadAgentTasks('-12h')"
-                          [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-12h', 'disable-link':savedFilter.selected}">
+                      <li (click)="loadAgentTasks('-12h')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-12h', 'disable-link':savedFilter.selected}"
+                          nz-menu-item>
                         <a translate>filters.button.last12</a>
                       </li>
-                      <li nz-menu-item (click)="loadAgentTasks('-24h')"
-                          [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-24h', 'disable-link':savedFilter.selected}">
+                      <li (click)="loadAgentTasks('-24h')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-24h', 'disable-link':savedFilter.selected}"
+                          nz-menu-item>
                         <a translate>filters.button.last24</a>
                       </li>
-                      <li nz-menu-item (click)="loadAgentTasks('-7d')"
-                          [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-7d', 'disable-link':savedFilter.selected}">
+                      <li (click)="loadAgentTasks('-7d')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-7d', 'disable-link':savedFilter.selected}"
+                          nz-menu-item>
                         <a translate>filters.button.lastWeak</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
                 </div>
-                <div class="btn-group dropdown"
-                     *ngIf="permission.joc && permission.joc.administration.customization.view">
-                  <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered.account" nz-dropdown
-                          nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+                <div *ngIf="permission.joc && permission.joc.administration.customization.view"
+                     class="btn-group dropdown">
+                  <button [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+                          class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
                           type="button">
                     {{'customization.label.customizations' | translate}}
-                    <span class="text-primary" [innerHtml]="selectedFiltered.name"></span>
-                    <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                    <span [innerHtml]="selectedFiltered.name" class="text-primary"></span>
+                    <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                   </button>
                   <nz-dropdown-menu #customization="nzDropdownMenu">
                     <ul nz-menu>
-                      <li nz-menu-item (click)="createCustomization()"
-                          *ngIf="permission.joc && permission.joc.administration.customization.manage">
+                      <li (click)="createCustomization()" *ngIf="permission.joc && permission.joc.administration.customization.manage"
+                          nz-menu-item>
                         <a translate>customization.label.createCustomization</a>
                       </li>
-                      <li nz-menu-item (click)="editFilters()" *ngIf="filterList.length>0">
+                      <li (click)="editFilters()" *ngIf="filterList.length>0" nz-menu-item>
                         <a translate>customization.label.editExistingCustomizations</a>
                       </li>
-                      <li nz-menu-divider *ngIf="filterList.length>0"></li>
-                      <li nz-menu-item (click)="changeFilter(filter)"
-                          *ngFor="let filter of filterList | orderBy: 'name'"
-                          [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}">
+                      <li *ngIf="filterList.length>0" nz-menu-divider></li>
+                      <li (click)="changeFilter(filter)" *ngFor="let filter of filterList | orderBy: 'name'"
+                          [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}"
+                          nz-menu-item>
                         <a>
                           <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                           <i (click)="changeFilter(null);$event.stopPropagation();"
-                             *ngIf="savedFilter.selected == filter.id" class="fa fa-times-circle-o remove"
-                             [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"></i>
+                             *ngIf="savedFilter.selected == filter.id" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                             class="fa fa-times-circle-o remove"></i>
                         </a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
                 </div>
-                <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
-                        (click)="exportToExcel()"><i class="fa fa fa-share-square-o"></i></button>
+                <button (click)="exportToExcel()" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
+                        class="btn btn-grey btn-sm m-l-12"><i class="fa fa fa-share-square-o"></i></button>
               </div>
             </div>
           </div>
@@ -116,21 +116,21 @@
       <app-links></app-links>
     </div>
     <div class="col-md-4 text-right">
-      <button class="btn btn-sm btn-grey pull-right m-l-12" (click)="advancedSearch()" *ngIf="!showSearchPanel">
+      <button (click)="advancedSearch()" *ngIf="!showSearchPanel" class="btn btn-sm btn-grey pull-right m-l-12">
         <span translate>common.button.advancedSearch</span>&nbsp;
         <i class="fa fa-caret-down p-l-xs"></i>
       </button>
-      <button class="btn btn-sm btn-grey pull-right m-l-12" (click)="cancel()" *ngIf="showSearchPanel">
+      <button (click)="cancel()" *ngIf="showSearchPanel" class="btn btn-sm btn-grey pull-right m-l-12">
         <span translate>common.button.advancedSearch</span>&nbsp;
         <i class="fa fa-caret-down p-l-xs"></i>
       </button>
       <div class="search-box-field pull-right">
         <label>
-          <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
-                 [(ngModel)]="agentFilters.searchText">
+          <input (keyup)="searchInResult()" [(ngModel)]="agentFilters.searchText" placeholder="{{'common.placeholder.search' | translate}}"
+                 type="search">
         </label>
-        <i [hidden]="!agentFilters.searchText" class="fa fa-times search-close"
-           (click)="agentFilters.searchText = '';searchInResult()"></i>
+        <i (click)="agentFilters.searchText = '';searchInResult()" [hidden]="!agentFilters.searchText"
+           class="fa fa-times search-close"></i>
       </div>
     </div>
   </div>
@@ -139,12 +139,12 @@
   <div class="padding p-b-0">
     <div class="row">
       <div class="col-sm-12">
-        <div class="row m-b" *ngIf="showSearchPanel">
+        <div *ngIf="showSearchPanel" class="row m-b">
           <div class="col-md-12">
             <div class="box p-a m-b-xs m-t-xs">
-              <app-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds"
-                                 [permission]="permission" [allFilter]="filterList"
-                                 [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-form-template>
+              <app-form-template (onCancel)="cancel()" (onSearch)="search()" [allFilter]="filterList"
+                                 [filter]="searchFilter" [isSearch]="true"
+                                 [permission]="permission" [preferences]="preferences" [schedulerIds]="schedulerIds"></app-form-template>
             </div>
           </div>
         </div>
@@ -152,21 +152,21 @@
           <div class="table-responsive">
             <nz-table
               #ajaxTable
-              [nzSize]="'small'"
-              [nzPageSize]="agentFilters.entryPerPage ||  preferences.entryPerPage"
-              [nzPageIndex]="agentFilters.currentPage"
-              [nzBordered]="true"
-              [nzShowPagination]="data.length > 0"
-              [nzData]="data | orderBy:agentFilters.filter.sortBy:agentFilters.reverse"
-              [nzLoading]="!isLoading"
-              [nzShowSizeChanger]="true"
               (nzPageIndexChange)="pageIndexChange($event)"
               (nzPageSizeChange)="pageSizeChange($event)"
+              [nzBordered]="true"
+              [nzData]="data | orderBy:agentFilters.filter.sortBy:agentFilters.reverse"
+              [nzLoading]="!isLoading"
+              [nzPageIndex]="agentFilters.currentPage"
               [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+              [nzPageSize]="agentFilters.entryPerPage ||  preferences.entryPerPage"
+              [nzShowPagination]="data.length > 0"
+              [nzShowSizeChanger]="true"
+              [nzSize]="'small'"
             >
               <thead>
               <tr>
-                <th *ngIf="!agentFilters.current" (click)="sort('controllerId')">
+                <th (click)="sort('controllerId')" *ngIf="!agentFilters.current">
                   <a><span class="p-r-xs" translate>common.label.controllerId</span>
                     <i
                       *ngIf="agentFilters.filter.sortBy == 'controllerId' && !agentFilters.reverse"
@@ -204,14 +204,14 @@
               </tr>
               </thead>
               <tbody>
-              <ng-template ngFor let-agentTask
-                           [ngForOf]="ajaxTable.data">
+              <ng-template [ngForOf]="ajaxTable.data" let-agentTask
+                           ngFor>
                 <tr>
                   <td *ngIf="!agentFilters.current"><span
                     [innerHtml]="agentTask.controllerId | highlight : agentFilters.searchText"></span></td>
                   <td><span [innerHtml]="agentTask.agentId | highlight : agentFilters.searchText"></span></td>
-                  <td><a target="_blank" href="{{agentTask.url+'/agent/api'}}" class="text-hover-primary"
-                         [innerHtml]="agentTask.url | highlight : agentFilters.searchText"></a></td>
+                  <td><a [innerHtml]="agentTask.url | highlight : agentFilters.searchText" class="text-hover-primary" href="{{agentTask.url+'/agent/api'}}"
+                         target="_blank"></a></td>
                   <td><span [innerHtml]="agentTask.numOfSuccessfulTasks | highlight : agentFilters.searchText"></span>
                   </td>
                   <td><span [innerHtml]="agentTask.numOfJobs | highlight : agentFilters.searchText"></span></td>
@@ -219,9 +219,9 @@
               </ng-template>
               </tbody>
             </nz-table>
-            <div class="w-half label-top" *ngIf="ajaxTable.data.length >0"> {{data.length}}
-              <span translate *ngIf="ajaxTable.data.length >1">resource.agentJobExecution.label.agentTasksFound</span>
-              <span translate *ngIf="ajaxTable.data.length ==1">resource.agentJobExecution.label.agentTaskFound</span>.
+            <div *ngIf="ajaxTable.data.length >0" class="w-half label-top"> {{data.length}}
+              <span *ngIf="ajaxTable.data.length >1" translate>resource.agentJobExecution.label.agentTasksFound</span>
+              <span *ngIf="ajaxTable.data.length ==1" translate>resource.agentJobExecution.label.agentTaskFound</span>.
               <span translate>resource.agentJobExecution.label.totalNumberOfExecutions</span>: {{totalJobExecution}}.
               <span *ngIf="totalNumOfJobs"
                     translate>resource.agentJobExecution.label.totalNumberOfJobExecutions</span>: {{totalNumOfJobs}}

@@ -1,6 +1,6 @@
-import { scaleBand } from 'd3-scale';
-import { ViewDimensions } from './types/view-dimension.interface';
-import { StringOrNumberOrDate } from '../models/chart-data.model';
+import {scaleBand} from 'd3-scale';
+import {ViewDimensions} from './types/view-dimension.interface';
+import {StringOrNumberOrDate} from '../models/chart-data.model';
 
 export interface GridItem {
   data: GridData;

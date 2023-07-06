@@ -130,7 +130,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
             nzTitle: undefined,
             nzContent: CommentModalComponent,
             nzClassName: 'lg',
-            nzComponentParams: {
+            nzData: {
               comments
             },
             nzFooter: null,

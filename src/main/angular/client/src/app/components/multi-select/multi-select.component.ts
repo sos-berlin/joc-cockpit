@@ -1,11 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 
 @Component({
   selector: 'app-multi-select',
   templateUrl: './multi-select.component.html'
 })
-export class MultiSelectComponent implements OnInit {
+export class MultiSelectComponent {
   @Input() type: string;
   @Input() attribute: string;
   @Input() pathAttribute: string;

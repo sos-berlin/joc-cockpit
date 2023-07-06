@@ -8,7 +8,7 @@ import {isArray, sortBy} from "underscore";
   selector: 'app-job-wizard',
   templateUrl: './job-wizard.component.html'
 })
-export class JobWizardComponent implements OnInit {
+export class JobWizardComponent {
   @Input() existingJob: any;
   @Input() node: any;
 
@@ -282,7 +282,7 @@ export class JobWizardComponent implements OnInit {
             obj.executable.arguments.push({name: this.job.paramList[i].name, value: this.job.paramList[i].newValue});
           } else if (this.node) {
             if (!this.checkAlreadyExistArgu(this.job.paramList[i])) {
-              if(this.job.paramList[i].newValue) {
+              if (this.job.paramList[i].newValue) {
                 this.node.defaultArguments.push({
                   name: this.job.paramList[i].name,
                   value: this.job.paramList[i].newValue + ''
@@ -333,7 +333,7 @@ export class JobWizardComponent implements OnInit {
   }
 
   updateCheckedSet(data: any, checked: boolean): void {
-    if (data.name && (data.newValue || data.newValue == 0 || data.newValue ==  false)) {
+    if (data.name && (data.newValue || data.newValue == 0 || data.newValue == false)) {
       if (checked) {
         this.wizard.setOfCheckedValue.add(data.name);
       } else {
@@ -365,7 +365,13 @@ export class JobWizardComponent implements OnInit {
         if (!isArray(this.job.arguments)) {
           this.job.params = Object.entries(this.job.arguments).map(([k, v]) => {
             const val: any = v;
-            return {name: k, required: val.required, description: val.description, type: val.type, defaultValue: val.default};
+            return {
+              name: k,
+              required: val.required,
+              description: val.description,
+              type: val.type,
+              defaultValue: val.default
+            };
           });
         }
       }

@@ -1,25 +1,25 @@
-<div class="pos-abt" style="top: 8px; right: 22px" *ngIf="!isModal && !isRuntimeVisible">
-  <button class="btn btn-default btn-sm"
-          (click)="openJobWizard()">
+<div *ngIf="!isModal && !isRuntimeVisible" class="pos-abt" style="top: 8px; right: 22px">
+  <button (click)="openJobWizard()"
+          class="btn btn-default btn-sm">
     <i class="fa fa-magic"></i>
     {{'workflow.button.wizard' | translate}}
   </button>
-  <button class="btn btn-default btn-sm m-l-12"
-          (click)="undo()" nz-tooltip="{{'workflow.button.undo' | translate}}">
-    <i nz-icon nzType="undo" nzTheme="outline"></i>
+  <button (click)="undo()"
+          class="btn btn-default btn-sm m-l-12" nz-tooltip="{{'workflow.button.undo' | translate}}">
+    <i nz-icon nzTheme="outline" nzType="undo"></i>
   </button>
-  <button class="btn btn-default btn-sm m-l-12"
-          (click)="redo()" nz-tooltip="{{'workflow.button.redo' | translate}}">
-    <i nz-icon nzType="redo" nzTheme="outline"></i>
+  <button (click)="redo()"
+          class="btn btn-default btn-sm m-l-12" nz-tooltip="{{'workflow.button.redo' | translate}}">
+    <i nz-icon nzTheme="outline" nzType="redo"></i>
   </button>
 </div>
 <div *ngIf="!isRuntimeVisible">
-  <div class="row" *ngIf="selectedNode.job.jobTemplate">
+  <div *ngIf="selectedNode.job.jobTemplate" class="row">
     <div class="col-md-12">
       <div class="p-l-sm p-b-sm m-b-sm b-b">
         <span class="_500" translate>workflow.label.jobTemplateReference</span>:
         <!--          <i class="p-r-xs fa fa-pencil"></i>-->
-        <span *ngIf="state" [ngClass]="coreService.getColor(state.severity, 'text')" (click)="updateFromJobTemplate()"
+        <span (click)="updateFromJobTemplate()" *ngIf="state" [ngClass]="coreService.getColor(state.severity, 'text')"
               [nz-tooltip]="state._text | translate" class="p-l-sm p-r-sm">
             <i *ngIf="state._text === 'IN_SYNC'"
                class="fa fa-refresh font11"></i>
@@ -30,32 +30,34 @@
             <i *ngIf="state._text === 'NOT_IN_SYNC'"
                class="icon3-reload-error font11 pos-rel t-1"></i>
           </span>
-        <a class="text-primary cursor text-hover-primary"
-           (click)="navToJobTemp(selectedNode.job.jobTemplate.name)">{{selectedNode.job.jobTemplate.name}}</a>
+        <a (click)="navToJobTemp(selectedNode.job.jobTemplate.name)"
+           class="text-primary cursor text-hover-primary">{{selectedNode.job.jobTemplate.name}}</a>
         <span class="btn-grey img-circle m-l-sm" style="padding: 3px 6px">
-          <i [nz-tooltip]="'workflow.tooltip.removeJobTemplateReference' | translate"
-             (click)="selectedNode.job.jobTemplate = null" class="fa fa-trash text-hover-color cursor"></i>
+          <i (click)="selectedNode.job.jobTemplate = null"
+             [nz-tooltip]="'workflow.tooltip.removeJobTemplateReference' | translate" class="fa fa-trash text-hover-color cursor"></i>
         </span>
       </div>
     </div>
   </div>
-  <nz-tabset [(nzSelectedIndex)]="index" [nzAnimated]="false" (nzSelectChange)="tabChange($event)">
+  <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="index" [nzAnimated]="false">
     <nz-tab [nzTitle]="'workflow.tab.jobProperties' | translate">
-      <div class="job-property-editor" *ngIf="index === 0">
-        <div class="form-group row" [hidden]="fullScreen || (!exactMatch && isModal)">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.name' | translate) : ''"
+      <div *ngIf="index === 0" class="job-property-editor">
+        <div [hidden]="fullScreen || (!exactMatch && isModal)" class="form-group row">
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.name' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
                  translate>workflow.label.name
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
-          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : (invalidName || ((name.dirty || name.touched) && name.invalid))}">
+          <div [ngClass]="{'has-error' : (invalidName || ((name.dirty || name.touched) && name.invalid))}"
+               class="col-md-8 col-lg-9">
             <label class="w-full">
-              <input type="text" identifierValidation [appAutofocus]="(!error || invalidName)" autocomplete="off" required
+              <input #name="ngModel" (blur)="checkJobInfo();invalidName = ''" [(ngModel)]="selectedNode.obj.jobName" [appAutofocus]="(!error || invalidName)"
+                     autocomplete="off"
                      class="form-control"
-                     placeholder="{{'common.placeholder.name' | translate}}" name="name" #name="ngModel"
-                     (blur)="checkJobInfo();invalidName = ''"
-                     [(ngModel)]="selectedNode.obj.jobName">
+                     identifierValidation name="name" placeholder="{{'common.placeholder.name' | translate}}"
+                     required
+                     type="text">
             </label>
             <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
                  class="text-danger help-block">
@@ -67,20 +69,20 @@
             </div>
           </div>
         </div>
-        <div class="form-group row" *ngIf="!isModal" [hidden]="fullScreen">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
+        <div *ngIf="!isModal" [hidden]="fullScreen" class="form-group row">
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
                  translate>workflow.label.label
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
-          <div class="col-md-8 col-lg-9"
-               [ngClass]="{'has-error' : (obj.label || errorMsg || (label.dirty || label.touched) && label.invalid)}">
+          <div [ngClass]="{'has-error' : (obj.label || errorMsg || (label.dirty || label.touched) && label.invalid)}"
+               class="col-md-8 col-lg-9">
             <label class="w-full">
-              <input type="text" labelValidation required autocomplete="off" (blur)="onBlur();errorMsg=''"
-                     maxlength="30" class="form-control"
-                     name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label"
-                     [appAutofocus]="!!(obj.label || errorMsg)">
+              <input #label="ngModel" (blur)="onBlur();errorMsg=''" [(ngModel)]="selectedNode.obj.label" [appAutofocus]="!!(obj.label || errorMsg)" autocomplete="off"
+                     class="form-control" labelValidation
+                     maxlength="30" name="label" required
+                     type="text">
             </label>
             <div *ngIf="obj.label || errorMsg || label.invalid && (label.dirty || label.touched)"
                  class="text-danger help-block">
@@ -92,43 +94,45 @@
             </div>
           </div>
         </div>
-        <div class="form-group row" [hidden]="fullScreen">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.title' | translate) : ''"
+        <div [hidden]="fullScreen" class="form-group row">
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.title' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
                  translate>workflow.label.title</label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" type="text"
-                     autocomplete="off" [maxLength]="255" class="form-control" [(ngModel)]="selectedNode.job.title"
-                     (blur)="saveToHistory();"
-                     placeholder="{{'common.placeholder.title' | translate}}" name="title">
+              <input (blur)="saveToHistory();" [(ngModel)]="selectedNode.job.title"
+                     [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [maxLength]="255" autocomplete="off" class="form-control"
+                     name="title"
+                     placeholder="{{'common.placeholder.title' | translate}}" type="text">
             </label>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.title" name="ctitle"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.title" class="m-t-xs" name="ctitle" nz-checkbox></label>
           </div>
         </div>
-        <div class="form-group row doc-in-workflow" [hidden]="fullScreen" *ngIf="(coreService.expertMode || isModal)">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'inventory.label.documentation' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+        <div *ngIf="(coreService.expertMode || isModal)" [hidden]="fullScreen" class="form-group row doc-in-workflow">
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.documentation' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
+                 title="{{'inventory.label.documentation' | translate}}"
                  translate>inventory.label.documentation</label>
-          <div class="col-md-6 col-lg-8"
-               [ngClass]="{'disable-link' : (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name), 'col-md-8 col-lg-9': !isModal}">
-            <app-select-document [documentationTree]="documentationTree" [data]="selectedNode.job"
-                                 (funcCall)="saveToHistory()"></app-select-document>
+          <div [ngClass]="{'disable-link' : (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name), 'col-md-8 col-lg-9': !isModal}"
+               class="col-md-6 col-lg-8">
+            <app-select-document (funcCall)="saveToHistory()" [data]="selectedNode.job"
+                                 [documentationTree]="documentationTree"></app-select-document>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.documentation" name="cdocumentation"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.documentation" class="m-t-xs" name="cdocumentation" nz-checkbox></label>
           </div>
         </div>
-        <div class="form-group row" *ngIf="hasLicense && (coreService.expertMode || isModal)"
-             [hidden]="fullScreen">
-          <div class="col-md-4 col-lg-3" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agentAssignment' | translate) : ''"
-               [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.agentAssignment</div>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
-            <nz-radio-group [(ngModel)]="selectedNode.radio" (ngModelChange)="changeAgentSelection($event)">
+        <div *ngIf="hasLicense && (coreService.expertMode || isModal)" [hidden]="fullScreen"
+             class="form-group row">
+          <div [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agentAssignment' | translate) : ''"
+               [nzTooltipMouseEnterDelay]="0.5"
+               class="col-md-4 col-lg-3" translate>workflow.label.agentAssignment
+          </div>
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
+            <nz-radio-group (ngModelChange)="changeAgentSelection($event)" [(ngModel)]="selectedNode.radio">
               <label nz-radio nzValue="agent"><span
                 translate>workflow.label.agentOrSubagentSelectFromList</span></label>
               <label nz-radio nzValue="expression"><span
@@ -136,137 +140,146 @@
             </nz-radio-group>
           </div>
         </div>
-        <div class="form-group row" [hidden]="fullScreen">
-          <label class="col-md-4 col-lg-3 form-control-label"
+        <div [hidden]="fullScreen" class="form-group row">
+          <label *ngIf="selectedNode.radio == 'agent'"
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agent' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" *ngIf="selectedNode.radio == 'agent'">
+                 [nzTooltipMouseEnterDelay]="0.5" class="col-md-4 col-lg-3 form-control-label">
             <span translate>workflow.label.agent</span>
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
-          <label class="col-md-4 col-lg-3 form-control-label" *ngIf="selectedNode.radio == 'expression'"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agentCluster' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5">
+          <label *ngIf="selectedNode.radio == 'expression'" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agentCluster' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label">
             <span translate>workflow.label.agentCluster</span>
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}" *ngIf="selectedNode.radio == 'agent'">
-            <app-agent-selection [obj]="obj" [preferences]="preferences" [agents]="agents"
-                                 (selectSubagentCluster)="selectSubagentCluster($event)"
-                                 [data]="selectedNode.job"></app-agent-selection>
+          <div *ngIf="selectedNode.radio == 'agent'" [ngClass]="{'col-md-8 col-lg-9': !isModal}"
+               class="col-md-6 col-lg-8">
+            <app-agent-selection (selectSubagentCluster)="selectSubagentCluster($event)" [agents]="agents" [data]="selectedNode.job"
+                                 [obj]="obj"
+                                 [preferences]="preferences"></app-agent-selection>
           </div>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}" *ngIf="selectedNode.radio == 'expression'">
-            <app-agent-selection [obj]="obj" [preferences]="preferences" [agents]="agents"
-                                 [skipSubagents]="true" [skipStandaloneAgent]="true"
-                                 [data]="selectedNode.job"></app-agent-selection>
+          <div *ngIf="selectedNode.radio == 'expression'" [ngClass]="{'col-md-8 col-lg-9': !isModal}"
+               class="col-md-6 col-lg-8">
+            <app-agent-selection [agents]="agents" [data]="selectedNode.job" [obj]="obj"
+                                 [preferences]="preferences" [skipStandaloneAgent]="true"
+                                 [skipSubagents]="true"></app-agent-selection>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.radio" name="cradio"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.radio" class="m-t-xs" name="cradio" nz-checkbox></label>
           </div>
         </div>
-        <div class="form-group row" [hidden]="fullScreen" *ngIf="selectedNode.radio == 'expression'">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.subagentClusterIdExpr' | translate) : ''"
+        <div *ngIf="selectedNode.radio == 'expression'" [hidden]="fullScreen" class="form-group row">
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.subagentClusterIdExpr' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
                  translate>workflow.label.subagentClusterIdExpr
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
-              <textarea class="form-control" name="subagentClusterIdExpr"
-                        [attr.placeholder]="'workflow.placeholder.enterSubagentClusterIdExpr' | translate"
-                        [(ngModel)]="selectedNode.job.subagentClusterIdExpr"></textarea>
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
+              <textarea [(ngModel)]="selectedNode.job.subagentClusterIdExpr" [attr.placeholder]="'workflow.placeholder.enterSubagentClusterIdExpr' | translate"
+                        class="form-control"
+                        name="subagentClusterIdExpr"></textarea>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.subagentClusterIdExpr" name="csubagentClusterIdExpr"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.subagentClusterIdExpr" class="m-t-xs" name="csubagentClusterIdExpr"
+                   nz-checkbox></label>
           </div>
         </div>
-        <div class="form-group row" [hidden]="fullScreen">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.jobResourceNames' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+        <div [hidden]="fullScreen" class="form-group row">
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
+                 title="{{'workflow.label.jobResourceNames' | translate}}"
                  translate>workflow.label.jobResourceNames</label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
-            <app-multi-select [type]="'JOBRESOURCE'" [list]="jobresources" [attribute]="'list'" (onSelectCall)="onChangeJobResource($event)" [nodes]="jobResourcesTree"></app-multi-select>
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
+            <app-multi-select (onSelectCall)="onChangeJobResource($event)" [attribute]="'list'" [list]="jobresources"
+                              [nodes]="jobResourcesTree"
+                              [type]="'JOBRESOURCE'"></app-multi-select>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.jobResourceNames" name="cjobResourceNames"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.jobResourceNames" class="m-t-xs" name="cjobResourceNames"
+                   nz-checkbox></label>
           </div>
         </div>
-        <div class="form-group row"
-             *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'"
-             [hidden]="fullScreen">
-          <div class="col-md-4 col-lg-3" translate
-               [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''"
-               [nzTooltipMouseEnterDelay]="0.5">workflow.label.returnCode
+        <div *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'"
+             [hidden]="fullScreen"
+             class="form-group row">
+          <div [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               class="col-md-4 col-lg-3"
+               translate>workflow.label.returnCode
           </div>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
-            <nz-radio-group [(ngModel)]="returnCodes.on" (ngModelChange)="saveToHistory();"
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
+            <nz-radio-group (ngModelChange)="saveToHistory();" [(ngModel)]="returnCodes.on"
                             [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name">
-              <label nz-radio nzValue="success"
-                     (click)="selectedNode.job.executable.returnCodeMeaning.success = selectedNode.job.executable.returnCodeMeaning.failure;selectedNode.job.executable.returnCodeMeaning.failure = ''"><span
+              <label (click)="selectedNode.job.executable.returnCodeMeaning.success = selectedNode.job.executable.returnCodeMeaning.failure;selectedNode.job.executable.returnCodeMeaning.failure = ''" nz-radio
+                     nzValue="success"><span
                 translate>workflow.label.onSuccess</span></label>
-              <label nz-radio nzValue="failure"
-                     (click)="selectedNode.job.executable.returnCodeMeaning.failure = selectedNode.job.executable.returnCodeMeaning.success;selectedNode.job.executable.returnCodeMeaning.success = ''"><span
+              <label (click)="selectedNode.job.executable.returnCodeMeaning.failure = selectedNode.job.executable.returnCodeMeaning.success;selectedNode.job.executable.returnCodeMeaning.success = ''" nz-radio
+                     nzValue="failure"><span
                 translate>workflow.label.onFailure</span></label>
             </nz-radio-group>
           </div>
         </div>
-        <div class="form-group row"
-             *ngIf="(returnCodes.on === 'success' || returnCodes.on === 'failure') && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'"
-             [hidden]="fullScreen">
+        <div *ngIf="(returnCodes.on === 'success' || returnCodes.on === 'failure') && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'"
+             [hidden]="fullScreen"
+             class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label"></label>
-          <div class="col-md-6 col-lg-8"
-               [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid), 'col-md-8 col-lg-9': !isModal}">
+          <div [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid), 'col-md-8 col-lg-9': !isModal}"
+               class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
-                     type="text" class="form-control" validateRangeRegex (blur)="validateReturnCode(selectedNode.job.executable.returnCodeMeaning, success);saveToHistory();"
-                     placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
-                     name="success" #success="ngModel"
-                     [(ngModel)]="selectedNode.job.executable.returnCodeMeaning[returnCodes.on]">
+              <input #success="ngModel" (blur)="validateReturnCode(selectedNode.job.executable.returnCodeMeaning, success);saveToHistory();"
+                     [(ngModel)]="selectedNode.job.executable.returnCodeMeaning[returnCodes.on]" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
+                     class="form-control"
+                     name="success"
+                     placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}" type="text"
+                     validateRangeRegex>
             </label>
             <div *ngIf="success.invalid && (success.dirty || success.touched)"
                  class="text-danger help-block">
               <div *ngIf="success.errors.invalidRange" translate>common.message.invalid</div>
             </div>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.returnCode" name="creturnCode"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.returnCode" class="m-t-xs" name="creturnCode" nz-checkbox></label>
           </div>
         </div>
 
-        <div class="form-group row" [hidden]="fullScreen">
-          <label class="col-md-4 col-lg-3 form-control-label" translate
+        <div [hidden]="fullScreen" class="form-group row">
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.onWarning' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.onWarning' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.onWarning' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5">
+                 translate>
             workflow.label.onWarning
           </label>
-          <div class="col-md-6 col-lg-8"
-               [ngClass]="{'has-error' : ((warning.dirty || warning.touched) && warning.invalid), 'col-md-8 col-lg-9': !isModal}">
+          <div [ngClass]="{'has-error' : ((warning.dirty || warning.touched) && warning.invalid), 'col-md-8 col-lg-9': !isModal}"
+               class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
-                     type="text" class="form-control" validateRangeRegex (blur)="validateReturnCode(selectedNode.job.executable.returnCodeMeaning, warning);saveToHistory();"
-                     placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
-                     #warning="ngModel" name="warning"
-                     [(ngModel)]="selectedNode.job.executable.returnCodeMeaning.warning">
+              <input #warning="ngModel" (blur)="validateReturnCode(selectedNode.job.executable.returnCodeMeaning, warning);saveToHistory();"
+                     [(ngModel)]="selectedNode.job.executable.returnCodeMeaning.warning" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
+                     class="form-control"
+                     name="warning"
+                     placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}" type="text"
+                     validateRangeRegex>
             </label>
             <div *ngIf="warning.invalid && (warning.dirty || warning.touched)"
                  class="text-danger help-block">
               <div *ngIf="warning.errors.invalidRange" translate>common.message.invalid</div>
             </div>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.warningReturnCode" name="cwarningReturnCode"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.warningReturnCode" class="m-t-xs" name="cwarningReturnCode"
+                   nz-checkbox></label>
           </div>
         </div>
-        <div class="form-group row" *ngIf="selectedNode.job.executable" [hidden]="fullScreen">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.jobClass' | translate) : ''"
+        <div *ngIf="selectedNode.job.executable" [hidden]="fullScreen" class="form-group row">
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.jobClass' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
                  translate>workflow.label.jobClass</label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
-            <nz-select [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
-                       name="executableType" [(ngModel)]="selectedNode.job.executable.TYPE"
-                       (ngModelChange)="changeType()">
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
+            <nz-select (ngModelChange)="changeType()"
+                       [(ngModel)]="selectedNode.job.executable.TYPE" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
+                       name="executableType">
               <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ShellScriptExecutable'"></nz-option>
               <nz-option [nzLabel]="'workflow.label.jitl' | translate" [nzValue]="'InternalExecutable'"></nz-option>
             </nz-select>
@@ -275,26 +288,28 @@
         <div class="form-group row">
           <div class="col-md-12">
             <nz-tabset>
-              <nz-tab [nzTitle]="titleTemplate" (nzClick)="reloadScript()"
-                      *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE !== 'InternalExecutable'">
+              <nz-tab (nzClick)="reloadScript()" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE !== 'InternalExecutable'"
+                      [nzTitle]="titleTemplate">
                 <ng-template #titleTemplate>
                   <span translate>workflow.label.script</span>
                   <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
                 </ng-template>
-                <div class="row" *ngIf="isDisplay">
-                  <div class="col-md-11 role" [ngClass]="{'col-md-12': !isModal}">
-                    <div id="show-tree" *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" style="min-width: 150px;">
-                      <app-search-input [nodes]="scriptTree" [type]="'INCLUDESCRIPT'" (onSelect)="checkExpectNoticeExp($event)"
-                       (onBlur)="onBlurTree($event)" [changeDetect]="true"></app-search-input>
+                <div *ngIf="isDisplay" class="row">
+                  <div [ngClass]="{'col-md-12': !isModal}" class="col-md-11 role">
+                    <div *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" id="show-tree"
+                         style="min-width: 150px;">
+                      <app-search-input (onBlur)="onBlurTree($event)" (onSelect)="checkExpectNoticeExp($event)"
+                                        [changeDetect]="true"
+                                        [nodes]="scriptTree" [type]="'INCLUDESCRIPT'"></app-search-input>
                     </div>
-                    <i class="pos-abt z-index-9999 text-20 r-24 t-1" nz-icon nzType="form" nzTheme="outline"
-                       (click)="showEditor()"></i>
-                    <div id="scriptId" class="b-a"
-                         [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}">
-                      <ngx-codemirror #codeMirror required #script="ngModel"
-                        [(ngModel)]="selectedNode.job.executable.script"
-                        [options]="{lineNumbers: true, autoRefresh: true, scrollbarStyle: 'simple', readOnly: (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name),
-                        mode: 'shell'}" (focusChange)="focusChange()" (focusout)="saveToHistory()"
+                    <i (click)="showEditor()" class="pos-abt z-index-9999 text-20 r-24 t-1" nz-icon nzTheme="outline"
+                       nzType="form"></i>
+                    <div [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}" class="b-a"
+                         id="scriptId">
+                      <ngx-codemirror #codeMirror #script="ngModel" (focusChange)="focusChange()"
+                                      (focusout)="saveToHistory()"
+                                      [(ngModel)]="selectedNode.job.executable.script" [options]="{lineNumbers: true, autoRefresh: true, scrollbarStyle: 'simple', readOnly: (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name),
+                        mode: 'shell'}" required
                       ></ngx-codemirror>
                     </div>
                     <div class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
@@ -305,26 +320,26 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-1" *ngIf="isModal">
-                    <label nz-checkbox [(ngModel)]="checkboxObjects.script" name="cscript"></label>
+                  <div *ngIf="isModal" class="col-md-1">
+                    <label [(ngModel)]="checkboxObjects.script" name="cscript" nz-checkbox></label>
                   </div>
                 </div>
               </nz-tab>
-              <nz-tab [nzTitle]="titleTemplate"
-                      *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
+              <nz-tab *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'"
+                      [nzTitle]="titleTemplate">
                 <ng-template #titleTemplate>
                   <span translate>workflow.label.className</span>
                   <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
                 </ng-template>
                 <div class="row">
-                  <div class="col-md-11"
-                       [ngClass]="{'has-error': obj.className || (className.invalid && (className.dirty && className.touched)), 'col-md-12': !isModal}">
+                  <div [ngClass]="{'has-error': obj.className || (className.invalid && (className.dirty && className.touched)), 'col-md-12': !isModal}"
+                       class="col-md-11">
                     <label class="w-full">
-                      <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
-                             autocomplete="off" type="text" class="form-control" name="className" required
-                             (blur)="onBlur();"
-                             [(ngModel)]="selectedNode.job.executable.className" #className="ngModel"
-                             placeholder="{{'workflow.placeholder.className' | translate}}">
+                      <input #className="ngModel"
+                             (blur)="onBlur();" [(ngModel)]="selectedNode.job.executable.className" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" class="form-control"
+                             name="className"
+                             placeholder="{{'workflow.placeholder.className' | translate}}" required
+                             type="text">
                     </label>
                     <div *ngIf="obj.className || (className.invalid && (className.dirty && className.touched))"
                          class="text-danger help-block">
@@ -333,42 +348,42 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-1" *ngIf="isModal">
-                    <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.className" name="cclassName"></label>
+                  <div *ngIf="isModal" class="col-md-1">
+                    <label [(ngModel)]="checkboxObjects.className" class="m-t-xs" name="cclassName" nz-checkbox></label>
                   </div>
                 </div>
               </nz-tab>
-              <nz-tab [nzTitle]="'workflow.label.arguments' | translate"
-                      *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && selectedNode.job.executable.v1Compatible">
+              <nz-tab *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && selectedNode.job.executable.v1Compatible"
+                      [nzTitle]="'workflow.label.arguments' | translate">
                 <div [ngClass]="{'fullScreen': fullScreen}">
-                  <div class="text-right m-t-n-6" *ngIf="!isModal">
-                    <a class="anchor-with-icon"
-                       nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
-                      <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
-                      <i class="fa fa-minus-square-o" *ngIf="fullScreen"></i>
+                  <div *ngIf="!isModal" class="text-right m-t-n-6">
+                    <a (click)="fitToScreen()"
+                       class="anchor-with-icon" nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" translate>
+                      <i *ngIf="!fullScreen" class="fa fa-arrows-alt"></i>
+                      <i *ngIf="fullScreen" class="fa fa-minus-square-o"></i>
                     </a>
-                    <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedDefaultArgu.size === 0}"
-                       nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('defaultArguments')"
+                    <a (click)="cutParam('defaultArguments')" [ngClass]="{'disabled-link':object.setOfCheckedDefaultArgu.size === 0}"
+                       class="anchor-with-icon" nz-tooltip="{{'common.button.cut' | translate}}"
                        translate>
                       <i class="fa fa-scissors"></i>
                     </a>
-                    <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedDefaultArgu.size === 0}"
-                       nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('defaultArguments')"
+                    <a (click)="copyParam('defaultArguments')" [ngClass]="{'disabled-link':object.setOfCheckedDefaultArgu.size === 0}"
+                       class="anchor-with-icon" nz-tooltip="{{'common.button.copy' | translate}}"
                        translate>
                       <i class="fa fa-copy"></i>
                     </a>
-                    <a class="anchor-with-icon p-r-0"
+                    <a (click)="pasteParam(selectedNode.job, 'defaultArguments')"
                        [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedDefaultArgu.size > 0}"
-                       nz-tooltip="{{'common.button.paste' | translate}}"
-                       (click)="pasteParam(selectedNode.job, 'defaultArguments')" translate>
+                       class="anchor-with-icon p-r-0"
+                       nz-tooltip="{{'common.button.paste' | translate}}" translate>
                       <i class="fa fa-paste"></i>
                     </a>
                   </div>
                   <div class="row">
-                    <div class="col-md-12" *ngIf="selectedNode.job.defaultArguments.length > 0">
+                    <div *ngIf="selectedNode.job.defaultArguments.length > 0" class="col-md-12">
                       <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
-                        <label nz-checkbox [(nzChecked)]="object.checked5" [nzIndeterminate]="object.indeterminate5"
-                               (nzCheckedChange)="onAllChecked(selectedNode.job,'defaultArguments', $event)"></label>
+                        <label (nzCheckedChange)="onAllChecked(selectedNode.job,'defaultArguments', $event)" [(nzChecked)]="object.checked5" [nzIndeterminate]="object.indeterminate5"
+                               nz-checkbox></label>
                       </div>
                       <div class="form-group row m-b-0 m-l-md">
                         <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
@@ -377,25 +392,26 @@
                     </div>
                     <div class="col-md-12 tab-ht"
                          style="max-height: calc(100vh - {{selectedNode.job.executable.TYPE === 'ShellScriptExecutable' ? '760px' : '686px'}}); overflow: auto">
-                      <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.defaultArguments)">
-                        <div class="form-group row m-b-0 m-l-md move-on-hover"
-                             *ngFor="let argument of selectedNode.job.defaultArguments; let i = index" cdkDrag>
-                          <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>
-                            <i class="fa fa-bars" aria-hidden="true"></i>
+                      <div (cdkDropListDropped)="drop($event, selectedNode.job.defaultArguments)" cdkDropList>
+                        <div *ngFor="let argument of selectedNode.job.defaultArguments; let i = index"
+                             cdkDrag class="form-group row m-b-0 m-l-md move-on-hover">
+                          <div cdkDragHandle class="pos-abt move-icon drag-move-icon">
+                            <i aria-hidden="true" class="fa fa-bars"></i>
                           </div>
                           <div class="pos-abt" style="margin-left: -13px;">
-                            <label class="m-t-xs" nz-checkbox [nzDisabled]="!argument.name"
-                                   [nzChecked]="object.setOfCheckedDefaultArgu.has(argument.name)"
-                                   (nzCheckedChange)="onItemChecked(selectedNode.job, 'defaultArguments', argument.name, $event)"></label>
+                            <label (nzCheckedChange)="onItemChecked(selectedNode.job, 'defaultArguments', argument.name, $event)" [nzChecked]="object.setOfCheckedDefaultArgu.has(argument.name)" [nzDisabled]="!argument.name"
+                                   class="m-t-xs"
+                                   nz-checkbox></label>
                           </div>
-                          <div class="col-md-5 col-lg-5 m-b-sm p-r-0"
-                               [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
+                          <div [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}"
+                               class="col-md-5 col-lg-5 m-b-sm p-r-0">
                             <label class="w-full">
-                              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" identifierValidation type="text" class="form-control"
-                                     name="name{{i}}" [appAutofocus]="i == selectedNode.job.defaultArguments.length -1"
-                                     [(ngModel)]="argument.name" #aname="ngModel"
+                              <input #aname="ngModel"
+                                     (blur)="isStringValid(argument, aname, selectedNode.job.defaultArguments)" [(ngModel)]="argument.name" [appAutofocus]="i == selectedNode.job.defaultArguments.length -1" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
+                                     autocomplete="off" class="form-control"
+                                     identifierValidation name="name{{i}}"
                                      placeholder="{{'common.placeholder.name' | translate}} {{i+1}}"
-                                     (blur)="isStringValid(argument, aname, selectedNode.job.defaultArguments)">
+                                     type="text">
                             </label>
                             <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)"
                                  class="text-danger help-block">
@@ -404,13 +420,15 @@
                           </div>
                           <div class="col-md-6 col-lg-6 m-b-sm">
                             <label class="w-full">
-                              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [required]="argument.name && argument.name.length > 0" autocomplete="off" type="text" class="form-control" name="value{{i}}"
-                                     (keydown)="onKeyPress($event, 'default')"
-                                     [(ngModel)]="argument.value"
-                                     placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+                              <input (keydown)="onKeyPress($event, 'default')"
+                                     [(ngModel)]="argument.value" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
+                                     [required]="argument.name && argument.name.length > 0" autocomplete="off" class="form-control"
+                                     name="value{{i}}"
+                                     placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
+                                     type="text">
                             </label>
-                            <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
-                               (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
+                            <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline"
+                               nzType="form" style="right: 13px;top:1px;"></i>
                           </div>
                           <div class="col-md-1 col-lg-1 p-l-0">
                             <i
@@ -423,8 +441,8 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <div class="col-sm-12" *ngIf="selectedNode.job.defaultArguments">
-                          <a class="text-u-l" style="margin-left: 11px;" (click)="addVariable();saveToHistory()"
+                        <div *ngIf="selectedNode.job.defaultArguments" class="col-sm-12">
+                          <a (click)="addVariable();saveToHistory()" class="text-u-l" style="margin-left: 11px;"
                              translate>workflow.button.addArgument</a>
                         </div>
                       </div>
@@ -432,35 +450,35 @@
                   </div>
                 </div>
               </nz-tab>
-              <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate"
-                      *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
+              <nz-tab *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'"
+                      [nzTitle]="'workflow.label.environmentVariables' | translate">
                 <div [ngClass]="{'fullScreen': fullScreen}">
-                  <div class="text-right m-t-n-6" *ngIf="!isModal">
-                    <a class="anchor-with-icon"
-                       nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
-                      <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
-                      <i class="fa fa-minus-square-o" *ngIf="fullScreen"></i>
+                  <div *ngIf="!isModal" class="text-right m-t-n-6">
+                    <a (click)="fitToScreen()"
+                       class="anchor-with-icon" nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" translate>
+                      <i *ngIf="!fullScreen" class="fa fa-arrows-alt"></i>
+                      <i *ngIf="fullScreen" class="fa fa-minus-square-o"></i>
                     </a>
-                    <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedEnv.size === 0}"
-                       nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('env')" translate>
+                    <a (click)="cutParam('env')" [ngClass]="{'disabled-link':object.setOfCheckedEnv.size === 0}"
+                       class="anchor-with-icon" nz-tooltip="{{'common.button.cut' | translate}}" translate>
                       <i class="fa fa-scissors"></i>
                     </a>
-                    <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedEnv.size === 0}"
-                       nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('env')" translate>
+                    <a (click)="copyParam('env')" [ngClass]="{'disabled-link':object.setOfCheckedEnv.size === 0}"
+                       class="anchor-with-icon" nz-tooltip="{{'common.button.copy' | translate}}" translate>
                       <i class="fa fa-copy"></i>
                     </a>
-                    <a class="anchor-with-icon p-r-0"
+                    <a (click)="pasteParam(selectedNode.job.executable, 'env')"
                        [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedEnv.size > 0}"
-                       nz-tooltip="{{'common.button.paste' | translate}}"
-                       (click)="pasteParam(selectedNode.job.executable, 'env')" translate>
+                       class="anchor-with-icon p-r-0"
+                       nz-tooltip="{{'common.button.paste' | translate}}" translate>
                       <i class="fa fa-paste"></i>
                     </a>
                   </div>
                   <div class="row">
-                    <div class="col-md-12" *ngIf="selectedNode.job.executable.env.length > 0">
+                    <div *ngIf="selectedNode.job.executable.env.length > 0" class="col-md-12">
                       <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
-                        <label nz-checkbox [(nzChecked)]="object.checked3" [nzIndeterminate]="object.indeterminate3"
-                               (nzCheckedChange)="onAllChecked(selectedNode.job.executable,'env', $event)"></label>
+                        <label (nzCheckedChange)="onAllChecked(selectedNode.job.executable,'env', $event)" [(nzChecked)]="object.checked3" [nzIndeterminate]="object.indeterminate3"
+                               nz-checkbox></label>
                       </div>
                       <div class="form-group row m-b-0 m-l-md">
                         <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
@@ -469,25 +487,26 @@
                     </div>
                     <div class="col-md-12 tab-ht"
                          style="max-height: calc(100vh - {{selectedNode.job.executable.TYPE === 'ShellScriptExecutable' ? '760px' : '686px'}}); overflow: auto">
-                      <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.env)">
-                        <div class="form-group row m-b-0 m-l-md move-on-hover"
-                             *ngFor="let env of selectedNode.job.executable.env; let i = index" cdkDrag>
-                          <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>
-                            <i class="fa fa-bars" aria-hidden="true"></i>
+                      <div (cdkDropListDropped)="drop($event, selectedNode.job.executable.env)" cdkDropList>
+                        <div *ngFor="let env of selectedNode.job.executable.env; let i = index"
+                             cdkDrag class="form-group row m-b-0 m-l-md move-on-hover">
+                          <div cdkDragHandle class="pos-abt move-icon drag-move-icon">
+                            <i aria-hidden="true" class="fa fa-bars"></i>
                           </div>
                           <div class="pos-abt" style="margin-left: -13px;">
-                            <label class="m-t-xs" nz-checkbox [nzDisabled]="!env.name"
-                                   [nzChecked]="object.setOfCheckedEnv.has(env.name)"
-                                   (nzCheckedChange)="onItemChecked(selectedNode.job.executable, 'env', env.name, $event)"></label>
+                            <label (nzCheckedChange)="onItemChecked(selectedNode.job.executable, 'env', env.name, $event)" [nzChecked]="object.setOfCheckedEnv.has(env.name)" [nzDisabled]="!env.name"
+                                   class="m-t-xs"
+                                   nz-checkbox></label>
                           </div>
-                          <div class="col-md-5 col-lg-5 m-b-sm p-r-0"
-                               [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
+                          <div [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}"
+                               class="col-md-5 col-lg-5 m-b-sm p-r-0">
                             <label class="w-full">
-                              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" nz-input envVariableValidation name="name{{i}}"
-                                     class="form-control" [(ngModel)]="env.name" #ename="ngModel"
-                                     (blur)="isStringValid(env, ename, selectedNode.job.executable.env);upperCase(env)"
-                                     placeholder="{{'common.placeholder.name' | translate}} {{i+1}}"
-                                     [nzAutocomplete]="auto" (ngModelChange)="onChange($event)">
+                              <input #ename="ngModel"
+                                     (blur)="isStringValid(env, ename, selectedNode.job.executable.env);upperCase(env)" (ngModelChange)="onChange($event)" [(ngModel)]="env.name" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
+                                     [nzAutocomplete]="auto" autocomplete="off" class="form-control"
+                                     envVariableValidation
+                                     name="name{{i}}"
+                                     nz-input placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
                             </label>
                             <nz-autocomplete #auto>
                               <nz-auto-option *ngFor="let list of filteredOptions"
@@ -499,17 +518,19 @@
                             </div>
                           </div>
                           <div class="col-md-6 col-lg-6 m-b-sm">
-                            <nz-mention [nzSuggestions]="mentionValueList"
-                                        [nzNotFoundContent]="'common.message.noDataAvailable' | translate"
-                                        [nzValueWith]="valueWith" [nzPrefix]="['$']">
+                            <nz-mention [nzNotFoundContent]="'common.message.noDataAvailable' | translate"
+                                        [nzPrefix]="['$']"
+                                        [nzSuggestions]="mentionValueList" [nzValueWith]="valueWith">
                               <label class="w-full">
-                                <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [required]="env.name && env.name.length > 0" nz-input nzMentionTrigger autocomplete="off" class="form-control"
-                                       [(ngModel)]="env.value" name="value{{i}}"
-                                       placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
-                                       (ngModelChange)="checkValue(env)"/>
+                                <input (ngModelChange)="checkValue(env)"
+                                       [(ngModel)]="env.value" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [required]="env.name && env.name.length > 0"
+                                       autocomplete="off" class="form-control"
+                                       name="value{{i}}" nz-input
+                                       nzMentionTrigger
+                                       placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
                               </label>
-                              <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
-                                 (click)="openEditor(env)" style="right: 1px;top:1px;"></i>
+                              <i (click)="openEditor(env)" class="pos-abt cursor" nz-icon nzTheme="outline"
+                                 nzType="form" style="right: 1px;top:1px;"></i>
                               <ng-container *nzMentionSuggestion="let argu">
                                 <span>{{ argu.name }}</span>
                               </ng-container>
@@ -527,42 +548,42 @@
                       </div>
                       <div class="form-group row">
                         <div class="col-sm-12">
-                          <a class="text-u-l" style="margin-left: 11px;" (click)="addEnv();saveToHistory()" translate>order.button.addVariable</a>
+                          <a (click)="addEnv();saveToHistory()" class="text-u-l" style="margin-left: 11px;" translate>order.button.addVariable</a>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </nz-tab>
-              <nz-tab [nzTitle]="'workflow.label.arguments' | translate"
-                      *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
+              <nz-tab *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'"
+                      [nzTitle]="'workflow.label.arguments' | translate">
                 <div [ngClass]="{'fullScreen': fullScreen}">
-                  <div class="text-right m-t-n-6" *ngIf="!isModal">
-                    <a class="anchor-with-icon"
-                       nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
-                      <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
-                      <i class="fa fa-minus-square-o" *ngIf="fullScreen"></i>
+                  <div *ngIf="!isModal" class="text-right m-t-n-6">
+                    <a (click)="fitToScreen()"
+                       class="anchor-with-icon" nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" translate>
+                      <i *ngIf="!fullScreen" class="fa fa-arrows-alt"></i>
+                      <i *ngIf="fullScreen" class="fa fa-minus-square-o"></i>
                     </a>
-                    <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedArgu.size === 0}"
-                       nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('arguments')" translate>
+                    <a (click)="cutParam('arguments')" [ngClass]="{'disabled-link':object.setOfCheckedArgu.size === 0}"
+                       class="anchor-with-icon" nz-tooltip="{{'common.button.cut' | translate}}" translate>
                       <i class="fa fa-scissors"></i>
                     </a>
-                    <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedArgu.size === 0}"
-                       nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('arguments')" translate>
+                    <a (click)="copyParam('arguments')" [ngClass]="{'disabled-link':object.setOfCheckedArgu.size === 0}"
+                       class="anchor-with-icon" nz-tooltip="{{'common.button.copy' | translate}}" translate>
                       <i class="fa fa-copy"></i>
                     </a>
-                    <a class="anchor-with-icon p-r-0"
+                    <a (click)="pasteParam(selectedNode.job.executable, 'arguments')"
                        [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedArgu.size > 0}"
-                       nz-tooltip="{{'common.button.paste' | translate}}"
-                       (click)="pasteParam(selectedNode.job.executable, 'arguments')" translate>
+                       class="anchor-with-icon p-r-0"
+                       nz-tooltip="{{'common.button.paste' | translate}}" translate>
                       <i class="fa fa-paste"></i>
                     </a>
                   </div>
                   <div class="row">
-                    <div class="col-md-12" *ngIf="selectedNode.job.executable.arguments.length > 0">
+                    <div *ngIf="selectedNode.job.executable.arguments.length > 0" class="col-md-12">
                       <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
-                        <label nz-checkbox [(nzChecked)]="object.checked1" [nzIndeterminate]="object.indeterminate1"
-                               (nzCheckedChange)="onAllChecked(selectedNode.job.executable,'arguments', $event)"></label>
+                        <label (nzCheckedChange)="onAllChecked(selectedNode.job.executable,'arguments', $event)" [(nzChecked)]="object.checked1" [nzIndeterminate]="object.indeterminate1"
+                               nz-checkbox></label>
                       </div>
                       <div class="form-group row m-b-0 m-l-md">
                         <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
@@ -571,25 +592,25 @@
                     </div>
                     <div class="col-md-12 tab-ht"
                          style="max-height: calc(100vh - {{selectedNode.job.executable.TYPE === 'ShellScriptExecutable' ? '760px' : '686px'}}); overflow: auto">
-                      <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.arguments)">
-                        <div class="form-group row m-b-0 m-l-md move-on-hover"
-                             *ngFor="let argu of selectedNode.job.executable.arguments; let i = index" cdkDrag>
-                          <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>
-                            <i class="fa fa-bars" aria-hidden="true"></i>
+                      <div (cdkDropListDropped)="drop($event, selectedNode.job.executable.arguments)" cdkDropList>
+                        <div *ngFor="let argu of selectedNode.job.executable.arguments; let i = index"
+                             cdkDrag class="form-group row m-b-0 m-l-md move-on-hover">
+                          <div cdkDragHandle class="pos-abt move-icon drag-move-icon">
+                            <i aria-hidden="true" class="fa fa-bars"></i>
                           </div>
                           <div class="pos-abt" style="margin-left: -13px;">
-                            <label class="m-t-xs" nz-checkbox [nzDisabled]="!argu.name"
-                                   [nzChecked]="object.setOfCheckedArgu.has(argu.name)"
-                                   (nzCheckedChange)="onItemChecked(selectedNode.job.executable,'arguments', argu.name, $event)"></label>
+                            <label (nzCheckedChange)="onItemChecked(selectedNode.job.executable,'arguments', argu.name, $event)" [nzChecked]="object.setOfCheckedArgu.has(argu.name)" [nzDisabled]="!argu.name"
+                                   class="m-t-xs"
+                                   nz-checkbox></label>
                           </div>
-                          <div class="col-md-5 col-lg-5 m-b-sm p-r-0"
-                               [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
+                          <div [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}"
+                               class="col-md-5 col-lg-5 m-b-sm p-r-0">
                             <label class="w-full">
-                              <input nz-input identifierValidation name="name{{i}}" class="form-control"
-                                     [(ngModel)]="argu.name" #ename="ngModel"
-                                     (blur)="isStringValid(argu, ename, selectedNode.job.executable.arguments)"
-                                     placeholder="{{'common.placeholder.name' | translate}} {{i+1}}"
-                                     [nzAutocomplete]="auto" (ngModelChange)="onChange($event)">
+                              <input #ename="ngModel" (blur)="isStringValid(argu, ename, selectedNode.job.executable.arguments)" (ngModelChange)="onChange($event)" [(ngModel)]="argu.name"
+                                     [nzAutocomplete]="auto" class="form-control"
+                                     identifierValidation
+                                     name="name{{i}}"
+                                     nz-input placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
                             </label>
                             <nz-autocomplete #auto>
                               <nz-auto-option *ngFor="let list of filteredOptions"
@@ -602,11 +623,12 @@
                           </div>
                           <div class="col-md-6 col-lg-6 m-b-sm">
                             <label class="w-full">
-                              <input [required]="argu.name && argu.name.length > 0" type="text" class="form-control" [(ngModel)]="argu.value" name="value{{i}}"
-                                     (keydown)="onKeyPress($event, 'argument')"
-                                     placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
+                              <input (keydown)="onKeyPress($event, 'argument')" [(ngModel)]="argu.value" [required]="argu.name && argu.name.length > 0"
+                                     class="form-control" name="value{{i}}"
+                                     placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
+                                     type="text"/>
                             </label>
-                            <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argu)"
+                            <i (click)="openEditor(argu)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
                                style="right: 13px;top:1px;"></i>
                           </div>
                           <div class="col-md-1 col-lg-1 p-l-0">
@@ -621,42 +643,42 @@
                       </div>
                       <div class="form-group row">
                         <div class="col-sm-12">
-                          <a class="text-u-l" style="margin-left: 11px;" (click)="addArgu();saveToHistory()" translate>order.button.addVariable</a>
+                          <a (click)="addArgu();saveToHistory()" class="text-u-l" style="margin-left: 11px;" translate>order.button.addVariable</a>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </nz-tab>
-              <nz-tab [nzTitle]="'workflow.label.jobArguments' | translate"
-                      *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'InternalExecutable')">
+              <nz-tab *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'InternalExecutable')"
+                      [nzTitle]="'workflow.label.jobArguments' | translate">
                 <div [ngClass]="{'fullScreen': fullScreen}">
-                  <div class="text-right m-t-n-6" *ngIf="!isModal">
-                    <a class="anchor-with-icon"
-                       nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
-                      <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
-                      <i class="fa fa-minus-square-o" *ngIf="fullScreen"></i>
+                  <div *ngIf="!isModal" class="text-right m-t-n-6">
+                    <a (click)="fitToScreen()"
+                       class="anchor-with-icon" nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" translate>
+                      <i *ngIf="!fullScreen" class="fa fa-arrows-alt"></i>
+                      <i *ngIf="fullScreen" class="fa fa-minus-square-o"></i>
                     </a>
-                    <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedJobArgu.size === 0}"
-                       nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('jobArguments')" translate>
+                    <a (click)="cutParam('jobArguments')" [ngClass]="{'disabled-link':object.setOfCheckedJobArgu.size === 0}"
+                       class="anchor-with-icon" nz-tooltip="{{'common.button.cut' | translate}}" translate>
                       <i class="fa fa-scissors"></i>
                     </a>
-                    <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedJobArgu.size === 0}"
-                       nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('jobArguments')" translate>
+                    <a (click)="copyParam('jobArguments')" [ngClass]="{'disabled-link':object.setOfCheckedJobArgu.size === 0}"
+                       class="anchor-with-icon" nz-tooltip="{{'common.button.copy' | translate}}" translate>
                       <i class="fa fa-copy"></i>
                     </a>
-                    <a class="anchor-with-icon p-r-0"
+                    <a (click)="pasteParam(selectedNode.job.executable, 'jobArguments')"
                        [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedJobArgu.size > 0}"
-                       nz-tooltip="{{'common.button.paste' | translate}}"
-                       (click)="pasteParam(selectedNode.job.executable, 'jobArguments')" translate>
+                       class="anchor-with-icon p-r-0"
+                       nz-tooltip="{{'common.button.paste' | translate}}" translate>
                       <i class="fa fa-paste"></i>
                     </a>
                   </div>
                   <div class="row">
-                    <div class="col-md-12" *ngIf="selectedNode.job.executable.jobArguments.length > 0">
+                    <div *ngIf="selectedNode.job.executable.jobArguments.length > 0" class="col-md-12">
                       <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
-                        <label nz-checkbox [(nzChecked)]="object.checked2" [nzIndeterminate]="object.indeterminate2"
-                               (nzCheckedChange)="onAllChecked(selectedNode.job.executable,'jobArguments', $event)"></label>
+                        <label (nzCheckedChange)="onAllChecked(selectedNode.job.executable,'jobArguments', $event)" [(nzChecked)]="object.checked2" [nzIndeterminate]="object.indeterminate2"
+                               nz-checkbox></label>
                       </div>
                       <div class="form-group row m-b-0 m-l-md">
                         <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
@@ -665,26 +687,26 @@
                     </div>
                     <div class="col-md-12 tab-ht"
                          style="max-height: calc(100vh - {{selectedNode.job.executable.TYPE === 'ShellScriptExecutable' ? '760px' : '686px'}}); overflow: auto">
-                      <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.jobArguments)">
-                        <div class="form-group row m-b-0 m-l-md move-on-hover"
-                             *ngFor="let argument of selectedNode.job.executable.jobArguments; let i = index" cdkDrag>
-                          <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>
-                            <i class="fa fa-bars" aria-hidden="true"></i>
+                      <div (cdkDropListDropped)="drop($event, selectedNode.job.executable.jobArguments)" cdkDropList>
+                        <div *ngFor="let argument of selectedNode.job.executable.jobArguments; let i = index"
+                             cdkDrag class="form-group row m-b-0 m-l-md move-on-hover">
+                          <div cdkDragHandle class="pos-abt move-icon drag-move-icon">
+                            <i aria-hidden="true" class="fa fa-bars"></i>
                           </div>
                           <div class="pos-abt" style="margin-left: -13px;">
-                            <label class="m-t-xs" nz-checkbox [nzDisabled]="!argument.name"
-                                   [nzChecked]="object.setOfCheckedJobArgu.has(argument.name)"
-                                   (nzCheckedChange)="onItemChecked(selectedNode.job.executable,'jobArguments', argument.name, $event)"></label>
+                            <label (nzCheckedChange)="onItemChecked(selectedNode.job.executable,'jobArguments', argument.name, $event)" [nzChecked]="object.setOfCheckedJobArgu.has(argument.name)" [nzDisabled]="!argument.name"
+                                   class="m-t-xs"
+                                   nz-checkbox></label>
                           </div>
-                          <div class="col-md-5 col-lg-5 m-b-sm p-r-0"
-                               [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
+                          <div [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}"
+                               class="col-md-5 col-lg-5 m-b-sm p-r-0">
                             <label class="w-full">
-                              <input autocomplete="off" identifierValidation type="text" class="form-control"
-                                     name="name{{i}}"
-                                     [appAutofocus]="i == selectedNode.job.executable.jobArguments.length -1"
-                                     [(ngModel)]="argument.name" #aname="ngModel"
+                              <input #aname="ngModel" (blur)="isStringValid(argument, aname, selectedNode.job.executable.jobArguments)" [(ngModel)]="argument.name" [appAutofocus]="i == selectedNode.job.executable.jobArguments.length -1"
+                                     autocomplete="off"
+                                     class="form-control"
+                                     identifierValidation name="name{{i}}"
                                      placeholder="{{'common.placeholder.name' | translate}} {{i+1}}"
-                                     (blur)="isStringValid(argument, aname, selectedNode.job.executable.jobArguments)">
+                                     type="text">
                             </label>
                             <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)"
                                  class="text-danger help-block">
@@ -693,14 +715,15 @@
                           </div>
                           <div class="col-md-6 col-lg-6 m-b-sm">
                             <label class="w-full">
-                              <input [required]="argument.name && argument.name.length > 0" autocomplete="off" type="text" class="form-control" name="value{{i}}"
-                                     (blur)="checkString(argument, 'value')"
-                                     (keydown)="onKeyPress($event, 'jobArgument')"
-                                     [(ngModel)]="argument.value"
-                                     placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+                              <input (blur)="checkString(argument, 'value')" (keydown)="onKeyPress($event, 'jobArgument')"
+                                     [(ngModel)]="argument.value" [required]="argument.name && argument.name.length > 0" autocomplete="off"
+                                     class="form-control"
+                                     name="value{{i}}"
+                                     placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
+                                     type="text">
                             </label>
-                            <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
-                               (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
+                            <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline"
+                               nzType="form" style="right: 13px;top:1px;"></i>
                           </div>
                           <div class="col-md-1 col-lg-1 p-l-0">
                             <i
@@ -713,8 +736,8 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <div class="col-sm-12" *ngIf="selectedNode.job.executable.jobArguments">
-                          <a class="text-u-l" style="margin-left: 11px;" (click)="addJobArgument();saveToHistory()"
+                        <div *ngIf="selectedNode.job.executable.jobArguments" class="col-sm-12">
+                          <a (click)="addJobArgument();saveToHistory()" class="text-u-l" style="margin-left: 11px;"
                              translate>workflow.button.addArgument</a>
                         </div>
                       </div>
@@ -728,17 +751,17 @@
       </div>
     </nz-tab>
     <nz-tab [nzTitle]="'workflow.tab.jobOptions' | translate">
-      <div class="job-property-editor" *ngIf="index === 1">
+      <div *ngIf="index === 1" class="job-property-editor">
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.parallelism' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.parallelism' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.parallelism' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
+                 title="{{'workflow.label.parallelism' | translate}}"
                  translate>workflow.label.parallelism</label>
-          <div class="col-md-6 col-lg-8"
-               [ngClass]="{'has-error' : ((parallelism.dirty || parallelism.touched) && parallelism.invalid), 'col-md-8 col-lg-9': !isModal}">
-            <nz-input-number [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
-                             [nzMin]="0" [appAutofocus]="true" [nzStep]="1" required name="parallelism"
-                             #parallelism="ngModel" [(ngModel)]="selectedNode.job.parallelism"></nz-input-number>
+          <div [ngClass]="{'has-error' : ((parallelism.dirty || parallelism.touched) && parallelism.invalid), 'col-md-8 col-lg-9': !isModal}"
+               class="col-md-6 col-lg-8">
+            <nz-input-number #parallelism="ngModel"
+                             [(ngModel)]="selectedNode.job.parallelism" [appAutofocus]="true" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [nzMin]="0" [nzStep]="1"
+                             name="parallelism" required></nz-input-number>
             <div *ngIf="parallelism.invalid && (parallelism.dirty || parallelism.touched)"
                  class="text-danger help-block">
               <div *ngIf="parallelism.errors.required">
@@ -746,229 +769,231 @@
               </div>
             </div>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.parallelism" name="cparallelism"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.parallelism" class="m-t-xs" name="cparallelism" nz-checkbox></label>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.timeout' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.timeout' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.timeout' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
+                 title="{{'workflow.label.timeout' | translate}}"
                  translate>workflow.label.timeout</label>
-          <div class="col-md-6 col-lg-8"
-               [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid), 'col-md-8 col-lg-9': !isModal}">
+          <div [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid), 'col-md-8 col-lg-9': !isModal}"
+               class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
-                     #timeout="ngModel" type="text" class="form-control" name="timeout"
+              <input #timeout="ngModel" [(ngModel)]="selectedNode.job.timeout1"
+                     [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" class="form-control" name="timeout"
                      placeholder="{{'workflow.placeholder.duration' | translate}}"
-                     validateDurtionReqex [(ngModel)]="selectedNode.job.timeout1">
+                     type="text" validateDurtionReqex>
             </label>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.timeout1" name="ctimeout1"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.timeout1" class="m-t-xs" name="ctimeout1" nz-checkbox></label>
           </div>
         </div>
-        <div class="form-group row" *ngIf="coreService.expertMode || isModal">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.graceTimeout' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.graceTimeout' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+        <div *ngIf="coreService.expertMode || isModal" class="form-group row">
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.graceTimeout' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
+                 title="{{'workflow.label.graceTimeout' | translate}}"
                  translate>workflow.label.graceTimeout</label>
-          <div class="col-md-6 col-lg-8"
-               [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid), 'col-md-8 col-lg-9': !isModal}">
+          <div [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid), 'col-md-8 col-lg-9': !isModal}"
+               class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
-                     #graceTimeout="ngModel" type="text" class="form-control" name="graceTimeout"
+              <input #graceTimeout="ngModel" [(ngModel)]="selectedNode.job.graceTimeout1"
+                     [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" class="form-control" name="graceTimeout"
                      placeholder="{{'workflow.placeholder.duration' | translate}}"
-                     validateDurtionReqex [(ngModel)]="selectedNode.job.graceTimeout1">
+                     type="text" validateDurtionReqex>
             </label>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.graceTimeout1" name="cgraceTimeout1"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.graceTimeout1" class="m-t-xs" name="cgraceTimeout1" nz-checkbox></label>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.warnIfShorter' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfShorter' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfShorter' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
+                 title="{{'workflow.label.warnIfShorter' | translate}}"
                  translate>workflow.label.warnIfShorter</label>
-          <div class="col-md-6 col-lg-8"
-               [ngClass]="{'has-error' : ((warnIfShorter.dirty || warnIfShorter.touched) && warnIfShorter.invalid), 'col-md-8 col-lg-9': !isModal}">
+          <div [ngClass]="{'has-error' : ((warnIfShorter.dirty || warnIfShorter.touched) && warnIfShorter.invalid), 'col-md-8 col-lg-9': !isModal}"
+               class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
-                     #warnIfShorter="ngModel" type="text" class="form-control" name="warnIfShorter"
+              <input #warnIfShorter="ngModel" [(ngModel)]="selectedNode.job.warnIfShorter"
+                     [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" class="form-control" name="warnIfShorter"
                      placeholder="{{'workflow.placeholder.durationWithPercentage' | translate}}"
-                     validateDurtionWithPercentageReqex [(ngModel)]="selectedNode.job.warnIfShorter">
+                     type="text" validateDurtionWithPercentageReqex>
             </label>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.warnIfShorter" name="cwarnIfShorter"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.warnIfShorter" class="m-t-xs" name="cwarnIfShorter" nz-checkbox></label>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.warnIfLonger' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfLonger' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfLonger' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
+                 title="{{'workflow.label.warnIfLonger' | translate}}"
                  translate>workflow.label.warnIfLonger</label>
-          <div class="col-md-6 col-lg-8"
-               [ngClass]="{'has-error' : ((warnIfLonger.dirty || warnIfLonger.touched) && warnIfLonger.invalid), 'col-md-8 col-lg-9': !isModal}">
+          <div [ngClass]="{'has-error' : ((warnIfLonger.dirty || warnIfLonger.touched) && warnIfLonger.invalid), 'col-md-8 col-lg-9': !isModal}"
+               class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
-                     #warnIfLonger="ngModel" type="text" class="form-control" name="warnIfLonger"
+              <input #warnIfLonger="ngModel" [(ngModel)]="selectedNode.job.warnIfLonger"
+                     [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" class="form-control" name="warnIfLonger"
                      placeholder="{{'workflow.placeholder.durationWithPercentage' | translate}}"
-                     validateDurtionWithPercentageReqex [(ngModel)]="selectedNode.job.warnIfLonger">
+                     type="text" validateDurtionWithPercentageReqex>
             </label>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.warnIfLonger" name="cwarnIfLonger"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.warnIfLonger" class="m-t-xs" name="cwarnIfLonger" nz-checkbox></label>
           </div>
         </div>
-        <div class="form-group row"
-             *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.compatibleMode' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+        <div *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)"
+             class="form-group row">
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
+                 title="{{'workflow.label.compatibleMode' | translate}}"
                  translate>workflow.label.compatibleMode</label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
-            <nz-select [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
-                       name="v1Compatible" nzAllowClear [(ngModel)]="selectedNode.job.executable.v1Compatible"
-                       (ngModelChange)="saveToHistory();">
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
+            <nz-select (ngModelChange)="saveToHistory();"
+                       [(ngModel)]="selectedNode.job.executable.v1Compatible" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" name="v1Compatible"
+                       nzAllowClear>
               <nz-option [nzLabel]="'workflow.label.branch1.x' | translate" [nzValue]="true"></nz-option>
             </nz-select>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.v1Compatible" name="cv1Compatible"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.v1Compatible" class="m-t-xs" name="cv1Compatible" nz-checkbox></label>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.criticality' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.criticality' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.criticality' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
+                 title="{{'workflow.label.criticality' | translate}}"
                  translate>workflow.label.criticality</label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
-            <nz-select [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
-                       name="criticality" nzAllowClear class="w-full"
-                       [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
-                       [(ngModel)]="selectedNode.job.criticality">
-              <nz-option [nzValue]="'NORMAL'" [nzLabel]="'common.label.normal' | translate"></nz-option>
-              <nz-option [nzValue]="'CRITICAL'" [nzLabel]="'common.label.critical' | translate"></nz-option>
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
+            <nz-select [(ngModel)]="selectedNode.job.criticality"
+                       [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate" class="w-full"
+                       name="criticality"
+                       nzAllowClear>
+              <nz-option [nzLabel]="'common.label.normal' | translate" [nzValue]="'NORMAL'"></nz-option>
+              <nz-option [nzLabel]="'common.label.critical' | translate" [nzValue]="'CRITICAL'"></nz-option>
             </nz-select>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.criticality" name="ccriticality"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.criticality" class="m-t-xs" name="ccriticality" nz-checkbox></label>
           </div>
         </div>
-        <div class="form-group row"
-             *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.credentialKey' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.credentialKey' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+        <div *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)"
+             class="form-group row">
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.credentialKey' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
+                 title="{{'workflow.label.credentialKey' | translate}}"
                  translate>workflow.label.credentialKey
             <sup *ngIf="selectedNode.job.executable.login.withUserProfile" class="text-danger text-sm">*</sup>
           </label>
-          <div class="col-md-6 col-lg-8"
-               [ngClass]="{'has-error' : ((credentialKey.dirty || credentialKey.touched) && credentialKey.invalid), 'col-md-8 col-lg-9': !isModal}">
+          <div [ngClass]="{'has-error' : ((credentialKey.dirty || credentialKey.touched) && credentialKey.invalid), 'col-md-8 col-lg-9': !isModal}"
+               class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
-                     #credentialKey="ngModel" autocomplete="off"
-                     [required]="selectedNode.job.executable.login.withUserProfile" type="text" class="form-control"
+              <input #credentialKey="ngModel"
+                     [(ngModel)]="selectedNode.job.executable.login.credentialKey" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
+                     [required]="selectedNode.job.executable.login.withUserProfile" autocomplete="off" class="form-control"
                      name="credentialKey" placeholder="{{'workflow.placeholder.enterCredentialKey' | translate}}"
-                     [(ngModel)]="selectedNode.job.executable.login.credentialKey">
+                     type="text">
             </label>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.credentialKey" name="ccredentialKey"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.credentialKey" class="m-t-xs" name="ccredentialKey" nz-checkbox></label>
           </div>
         </div>
-        <div class="form-group row"
-             *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)">
-          <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.loadUserProfile' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.loadUserProfile' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+        <div *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)"
+             class="form-group row">
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.loadUserProfile' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 block-ellipsis-job"
+                 title="{{'workflow.label.loadUserProfile' | translate}}"
                  translate>workflow.label.loadUserProfile</label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
-            <label [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" nz-checkbox
-                   [(ngModel)]="selectedNode.job.executable.login.withUserProfile" name="loadUserProfile"></label>
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
+            <label [(ngModel)]="selectedNode.job.executable.login.withUserProfile" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
+                   name="loadUserProfile" nz-checkbox></label>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.withUserProfile" name="cwithUserProfile"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.withUserProfile" class="m-t-xs" name="cwithUserProfile"
+                   nz-checkbox></label>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.failOnOutputErr' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 block-ellipsis-job"
+                 title="{{'workflow.label.failOnOutputErr' | translate}}"
                  translate>workflow.label.failOnOutputErr</label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
             <label
-              [nzDisabled]="(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) || selectedNode.job.warnOnErrWritten"
-              nz-checkbox [(ngModel)]="selectedNode.job.failOnErrWritten" name="failOnErrWritten"></label>
+              [(ngModel)]="selectedNode.job.failOnErrWritten"
+              [nzDisabled]="(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) || selectedNode.job.warnOnErrWritten" name="failOnErrWritten" nz-checkbox></label>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label nz-checkbox [(ngModel)]="checkboxObjects.failOnErrWritten" name="cfailOnErrWritten"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.failOnErrWritten" name="cfailOnErrWritten" nz-checkbox></label>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.warnOnOutputErr' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnOnOutputErr' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnOnOutputErr' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 block-ellipsis-job"
+                 title="{{'workflow.label.warnOnOutputErr' | translate}}"
                  translate>workflow.label.warnOnOutputErr</label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
             <label
-              [nzDisabled]="(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) || selectedNode.job.failOnErrWritten"
-              nz-checkbox [(ngModel)]="selectedNode.job.warnOnErrWritten" name="warnOnErrWritten"></label>
+              [(ngModel)]="selectedNode.job.warnOnErrWritten"
+              [nzDisabled]="(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) || selectedNode.job.failOnErrWritten" name="warnOnErrWritten" nz-checkbox></label>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label nz-checkbox [(ngModel)]="checkboxObjects.warnOnErrWritten" name="cwarnOnErrWritten"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.warnOnErrWritten" name="cwarnOnErrWritten" nz-checkbox></label>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 block-ellipsis-job"
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDay' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 block-ellipsis-job"
                  title="{{'workflow.label.skipIfNoAdmissionForOrderDay' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDay' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.skipIfNoAdmissionForOrderDay</label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
-            <label nz-checkbox [(ngModel)]="selectedNode.job.skipIfNoAdmissionForOrderDay"
-                   name="skipIfNoAdmissionForOrderDay"></label>
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
+            <label [(ngModel)]="selectedNode.job.skipIfNoAdmissionForOrderDay" name="skipIfNoAdmissionForOrderDay"
+                   nz-checkbox></label>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label nz-checkbox [(ngModel)]="checkboxObjects.skipIfNoAdmissionForOrderDay" name="cskipIfNoAdmissionForOrderDay"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.skipIfNoAdmissionForOrderDay" name="cskipIfNoAdmissionForOrderDay"
+                   nz-checkbox></label>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.admissionTime' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.admissionTime' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.admissionTime' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 block-ellipsis-job"
+                 title="{{'workflow.label.admissionTime' | translate}}"
                  translate>workflow.label.admissionTime</label>
           <div class="col-md-8 col-lg-9">
-            <a class="text-hover-primary" (click)="showRuntime()" translate>workflow.label.showPeriods</a>
+            <a (click)="showRuntime()" class="text-hover-primary" translate>workflow.label.showPeriods</a>
           </div>
         </div>
       </div>
     </nz-tab>
-    <nz-tab [nzTitle]="'workflow.tab.nodeProperties' | translate" *ngIf="!isModal">
+    <nz-tab *ngIf="!isModal" [nzTitle]="'workflow.tab.nodeProperties' | translate">
       <div class="job-property-editor">
         <div class="text-right m-t-n-6">
-          <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedNodeArgu.size === 0}"
-             nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('nodeArguments')" translate>
+          <a (click)="cutParam('nodeArguments')" [ngClass]="{'disabled-link':object.setOfCheckedNodeArgu.size === 0}"
+             class="anchor-with-icon" nz-tooltip="{{'common.button.cut' | translate}}" translate>
             <i class="fa fa-scissors"></i>
           </a>
-          <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedNodeArgu.size === 0}"
-             nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('nodeArguments')" translate>
+          <a (click)="copyParam('nodeArguments')" [ngClass]="{'disabled-link':object.setOfCheckedNodeArgu.size === 0}"
+             class="anchor-with-icon" nz-tooltip="{{'common.button.copy' | translate}}" translate>
             <i class="fa fa-copy"></i>
           </a>
-          <a class="anchor-with-icon p-r-0"
+          <a (click)="pasteParam(selectedNode.obj, 'defaultArguments')"
              [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedNodeArgu.size > 0}"
-             nz-tooltip="{{'common.button.paste' | translate}}"
-             (click)="pasteParam(selectedNode.obj, 'defaultArguments')" translate>
+             class="anchor-with-icon p-r-0"
+             nz-tooltip="{{'common.button.paste' | translate}}" translate>
             <i class="fa fa-paste"></i>
           </a>
         </div>
         <div class="form-group row">
-          <div class="col-md-12" *ngIf="selectedNode.obj.defaultArguments.length > 0">
+          <div *ngIf="selectedNode.obj.defaultArguments.length > 0" class="col-md-12">
             <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
-              <label nz-checkbox [(nzChecked)]="object.checked4" [nzIndeterminate]="object.indeterminate4"
-                     (nzCheckedChange)="onAllChecked(selectedNode.obj,'nodeArguments', $event)"></label>
+              <label (nzCheckedChange)="onAllChecked(selectedNode.obj,'nodeArguments', $event)" [(nzChecked)]="object.checked4" [nzIndeterminate]="object.indeterminate4"
+                     nz-checkbox></label>
             </div>
             <div class="form-group row m-b-0 m-l-md">
               <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
@@ -976,25 +1001,25 @@
             </div>
           </div>
           <div class="col-md-12" style="max-height: calc(100vh - 332px); overflow: auto;">
-            <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.obj.defaultArguments)">
-              <div class="form-group row m-b-0 m-l-md move-on-hover"
-                   *ngFor="let argument of selectedNode.obj.defaultArguments; let i = index" cdkDrag>
-                <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>
-                  <i class="fa fa-bars" aria-hidden="true"></i>
+            <div (cdkDropListDropped)="drop($event, selectedNode.obj.defaultArguments)" cdkDropList>
+              <div *ngFor="let argument of selectedNode.obj.defaultArguments; let i = index"
+                   cdkDrag class="form-group row m-b-0 m-l-md move-on-hover">
+                <div cdkDragHandle class="pos-abt move-icon drag-move-icon">
+                  <i aria-hidden="true" class="fa fa-bars"></i>
                 </div>
                 <div class="pos-abt" style="margin-left: -13px;">
-                  <label class="m-t-xs" nz-checkbox [nzDisabled]="!argument.name"
-                         [nzChecked]="object.setOfCheckedNodeArgu.has(argument.name)"
-                         (nzCheckedChange)="onItemChecked(selectedNode.obj, 'nodeArguments', argument.name, $event)"></label>
+                  <label (nzCheckedChange)="onItemChecked(selectedNode.obj, 'nodeArguments', argument.name, $event)" [nzChecked]="object.setOfCheckedNodeArgu.has(argument.name)" [nzDisabled]="!argument.name"
+                         class="m-t-xs"
+                         nz-checkbox></label>
                 </div>
-                <div class="col-md-5 col-lg-5 m-b-sm p-r-0"
-                     [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
+                <div [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}"
+                     class="col-md-5 col-lg-5 m-b-sm p-r-0">
                   <label class="w-full">
-                    <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}"
-                           [appAutofocus]="i == selectedNode.obj.defaultArguments.length -1"
-                           [(ngModel)]="argument.name" #aname="ngModel"
+                    <input #aname="ngModel" (blur)="isStringValid(argument, aname, selectedNode.obj.defaultArguments)" [(ngModel)]="argument.name" [appAutofocus]="i == selectedNode.obj.defaultArguments.length -1" autocomplete="off"
+                           class="form-control"
+                           identifierValidation name="name{{i}}"
                            placeholder="{{'common.placeholder.name' | translate}} {{i+1}}"
-                           (blur)="isStringValid(argument, aname, selectedNode.obj.defaultArguments)">
+                           type="text">
                   </label>
                   <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)"
                        class="text-danger help-block">
@@ -1002,16 +1027,17 @@
                   </div>
                 </div>
                 <div class="col-md-6 col-lg-6 m-b-sm">
-                  <nz-mention [nzSuggestions]="variableList"
-                              [nzNotFoundContent]="'common.message.noDataAvailable' | translate"
-                              [nzValueWith]="valueWith" [nzPrefix]="['$']">
+                  <nz-mention [nzNotFoundContent]="'common.message.noDataAvailable' | translate"
+                              [nzPrefix]="['$']"
+                              [nzSuggestions]="variableList" [nzValueWith]="valueWith">
                     <label class="w-full">
-                      <input [required]="argument.name && argument.name.length > 0" nz-input nzMentionTrigger autocomplete="off" class="form-control"
-                             [(ngModel)]="argument.value" name="value{{i}}"
-                             (ngModelChange)="checkValue(argument)" (keydown)="onKeyPress($event, 'node')"
+                      <input (keydown)="onKeyPress($event, 'node')" (ngModelChange)="checkValue(argument)" [(ngModel)]="argument.value"
+                             [required]="argument.name && argument.name.length > 0" autocomplete="off"
+                             class="form-control" name="value{{i}}"
+                             nz-input nzMentionTrigger
                              placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
                     </label>
-                    <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)"
+                    <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
                        style="right: 1px;top:1px;"></i>
                     <ng-container *nzMentionSuggestion="let argu">
                       <span>{{ argu.name }}</span>
@@ -1029,8 +1055,8 @@
               </div>
             </div>
             <div class="form-group row">
-              <div class="col-sm-12" *ngIf="selectedNode.obj.defaultArguments">
-                <a class="text-u-l" style="margin-left: 11px" (click)="addArgument();saveToHistory()" translate>workflow.button.addArgument</a>
+              <div *ngIf="selectedNode.obj.defaultArguments" class="col-sm-12">
+                <a (click)="addArgument();saveToHistory()" class="text-u-l" style="margin-left: 11px" translate>workflow.button.addArgument</a>
               </div>
             </div>
           </div>
@@ -1040,72 +1066,72 @@
     <nz-tab [nzTitle]="'workflow.tab.notification' | translate">
       <div class="job-property-editor">
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.mailOn' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
+                 title="{{'workflow.label.mailOn' | translate}}"
                  translate>workflow.label.mailOn</label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
-            <nz-select class="w-full" nzMode="multiple" name="types"
-                       [nzPlaceHolder]="'workflow.placeholder.mailOn' | translate"
-                       [(ngModel)]="selectedNode.job.notification.types">
-              <nz-option [nzValue]="'ERROR'" [nzLabel]="'ERROR'"></nz-option>
-              <nz-option [nzValue]="'WARNING'" [nzLabel]="'WARNING'"></nz-option>
-              <nz-option [nzValue]="'SUCCESS'" [nzLabel]="'SUCCESS'"></nz-option>
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
+            <nz-select [(ngModel)]="selectedNode.job.notification.types" [nzPlaceHolder]="'workflow.placeholder.mailOn' | translate" class="w-full"
+                       name="types"
+                       nzMode="multiple">
+              <nz-option [nzLabel]="'ERROR'" [nzValue]="'ERROR'"></nz-option>
+              <nz-option [nzLabel]="'WARNING'" [nzValue]="'WARNING'"></nz-option>
+              <nz-option [nzLabel]="'SUCCESS'" [nzValue]="'SUCCESS'"></nz-option>
             </nz-select>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.types" name="ctypes"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.types" class="m-t-xs" name="ctypes" nz-checkbox></label>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.mailTo' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailTo' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailTo' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
+                 title="{{'workflow.label.mailTo' | translate}}"
                  translate>workflow.label.mailTo</label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input type="text" (blur)="checkLength()" class="form-control" name="mailTo"
+              <input (blur)="checkLength()" [(ngModel)]="selectedNode.job.notification.mail.to" class="form-control" name="mailTo"
                      placeholder="{{'workflow.placeholder.mailTo' | translate}}"
-                     [(ngModel)]="selectedNode.job.notification.mail.to">
+                     type="text">
             </label>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.mailTo" name="cmailTo"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.mailTo" class="m-t-xs" name="cmailTo" nz-checkbox></label>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.mailCC' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailCC' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailCC' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
+                 title="{{'workflow.label.mailCC' | translate}}"
                  translate>workflow.label.mailCC</label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input type="text" (blur)="checkLength()" class="form-control" name="mailCC"
+              <input (blur)="checkLength()" [(ngModel)]="selectedNode.job.notification.mail.cc" class="form-control" name="mailCC"
                      placeholder="{{'workflow.placeholder.mailCC' | translate}}"
-                     [(ngModel)]="selectedNode.job.notification.mail.cc">
+                     type="text">
             </label>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.mailCC" name="cmailCC"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.mailCC" class="m-t-xs" name="cmailCC" nz-checkbox></label>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.mailBcc' | translate}}"
-                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailBcc' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailBcc' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 class="col-md-4 col-lg-3 form-control-label"
+                 title="{{'workflow.label.mailBcc' | translate}}"
                  translate>workflow.label.mailBcc</label>
-          <div class="col-md-6 col-lg-8" [ngClass]="{'col-md-8 col-lg-9': !isModal}">
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input type="text" (blur)="checkLength()" class="form-control" name="mailBcc"
+              <input (blur)="checkLength()" [(ngModel)]="selectedNode.job.notification.mail.bcc" class="form-control" name="mailBcc"
                      placeholder="{{'workflow.placeholder.mailBcc' | translate}}"
-                     [(ngModel)]="selectedNode.job.notification.mail.bcc">
+                     type="text">
             </label>
             <div *ngIf="isLengthExceed" class="text-danger help-block">
               <div translate>workflow.message.mailLengthExceed</div>
             </div>
           </div>
-          <div class="col-md-1" *ngIf="isModal">
-            <label class="m-t-xs" nz-checkbox [(ngModel)]="checkboxObjects.mailBcc" name="cmailBcc"></label>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.mailBcc" class="m-t-xs" name="cmailBcc" nz-checkbox></label>
           </div>
         </div>
       </div>
@@ -1114,7 +1140,25 @@
 </div>
 
 <div *ngIf="isRuntimeVisible">
-  <app-admission-time [job]="selectedNode.job" [timeZone]="timeZone" [isTooltipVisible]="isTooltipVisible"
-                      [data]="selectedNode"
-                      (close)="closeRuntime()"></app-admission-time>
+  <app-admission-time (close)="closeRuntime()" [data]="selectedNode" [isTooltipVisible]="isTooltipVisible"
+                      [job]="selectedNode.job"
+                      [timeZone]="timeZone"></app-admission-time>
 </div>
+
+<!--<div class="position-fixed text-right floating-action-menu" style="bottom: 12px; right: 10px;" [hidden]="isModal">-->
+<!--  <div class="action-menu">-->
+<!--    <div class="floating-action" *ngIf="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.hash">-->
+<!--      <div class="badge badge-dark" translate>inventory.button.updateFromJobTemplate</div>-->
+<!--      <a class="btn-floating btn-sm" (click)="updateFromJobTemplate()"><i class="fa fa-refresh"></i></a>-->
+<!--    </div>-->
+<!--    <div class="floating-action">-->
+<!--      <div class="badge badge-dark" translate>inventory.button.makeJobTemplate</div>-->
+<!--      <a class="btn-floating btn-sm" (click)="makeJobTemplate();"><i class="fa fa-plus"></i></a>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="d-block action-button">-->
+<!--    <a class="btn-floating" onclick="$(this).closest('div.floating-action-menu').toggleClass('active')">-->
+<!--      <i class="fa fa-plus"></i>-->
+<!--    </a>-->
+<!--  </div>-->
+<!--</div>-->

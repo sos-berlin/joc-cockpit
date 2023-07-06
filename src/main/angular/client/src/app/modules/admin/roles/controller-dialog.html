@@ -1,65 +1,71 @@
 <div class="modal-header">
-    <h4 class="modal-title">
-        <span *ngIf="!copy" translate>user.label.addController</span>
-        <span *ngIf="copy" ><span translate>user.label.copyController</span> : {{currentController.controller || 'default'}}</span>
-    </h4>
-    <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
-      <span aria-hidden="true" class="fa fa-times-circle"></span>
-    </button>
+  <h4 class="modal-title">
+    <span *ngIf="!copy" translate>user.label.addController</span>
+    <span *ngIf="copy"><span translate>user.label.copyController</span> : {{currentController.controller || 'default'}}</span>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-    <div class="modal-body p-a">
-        <div class="hide" [ngClass]="{'show': display}">
-          <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
-        </div>
-        <div class="form-group row" *ngIf="copy">
-          <label class="col-sm-4 form-control-label" translate>user.label.js7Controller</label>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" name="controllerId" [(ngModel)]="currentController.name" readonly>
+  <div class="modal-body p-a">
+    <div [ngClass]="{'show': display}" class="hide">
+      <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
+    </div>
+    <div *ngIf="copy" class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>user.label.js7Controller</label>
+      <div class="col-sm-6">
+        <input [(ngModel)]="currentController.name" class="form-control" name="controllerId" readonly type="text">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>user.label.role
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-6">
+        <nz-select (ngModelChange)="checkRole($event)" [(ngModel)]="currentController.roleName"
+                   name="role"
+                   nzPlaceHolder="{{'user.placeholder.selectRoles' | translate}}" nzShowSearch>
+          <nz-option *ngFor="let option of allRoles" [nzLabel]="option.roleName"
+                     [nzValue]="option.roleName"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div *ngIf="!copy" class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>user.label.js7Controller
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div [ngClass]="{'has-error' : !isUnique || ((controllerName.dirty || controllerName.touched) && controllerName.invalid)}"
+           class="col-sm-6">
+        <nz-select #controllerName="ngModel"
+                   (ngModelChange)="checkController($event, currentController.role)"
+                   [(ngModel)]="currentController.controller" [nzDisabled]="!currentController.roleName" name="schedulerIds"
+                   nzPlaceHolder="{{'user.placeholder.enterController' | translate}}"
+                   required>
+          <ng-container *ngFor="let id of schedulerIds.controllerIds">
+            <nz-option [nzLabel]="id" [nzValue]="id"></nz-option>
+          </ng-container>
+        </nz-select>
+        <div *ngIf="controllerName.invalid && (controllerName.dirty || controllerName.touched)"
+             class="text-danger help-block">
+          <div *ngIf="controllerName.errors['required']" translate>
+            common.message.requiredError
           </div>
         </div>
-        <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.role
-              <sup class="text-danger text-sm">*</sup>
-            </label>
-            <div class="col-sm-6">
-              <nz-select name="role" nzShowSearch
-                         nzPlaceHolder="{{'user.placeholder.selectRoles' | translate}}"
-                         [(ngModel)]="currentController.roleName" (ngModelChange)="checkRole($event)">
-                <nz-option *ngFor="let option of allRoles" [nzLabel]="option.roleName" [nzValue]="option.roleName"></nz-option>
-              </nz-select>
-            </div>
+        <div *ngIf="!isUnique" class="text-danger help-block" translate>
+          common.message.uniqueError
         </div>
-        <div class="form-group row" *ngIf="!copy">
-          <label class="col-sm-4 form-control-label" translate>user.label.js7Controller
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-sm-6" [ngClass]="{'has-error' : !isUnique || ((controllerName.dirty || controllerName.touched) && controllerName.invalid)}">
-            <nz-select [nzDisabled]="!currentController.roleName" nzPlaceHolder="{{'user.placeholder.enterController' | translate}}"
-                       required #controllerName="ngModel" name="schedulerIds" (ngModelChange)="checkController($event, currentController.role)"
-                       [(ngModel)]="currentController.controller">
-              <ng-container *ngFor="let id of schedulerIds.controllerIds">
-                <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
-              </ng-container>
-            </nz-select>
-            <div *ngIf="controllerName.invalid && (controllerName.dirty || controllerName.touched)" class= "text-danger help-block">
-              <div *ngIf="controllerName.errors['required']" translate>
-                common.message.requiredError
-              </div>
-            </div>
-            <div *ngIf="!isUnique" class="text-danger help-block" translate>
-              common.message.uniqueError
-            </div>
-          </div>
-        </div>
+      </div>
     </div>
-    <div class="modal-footer">
-        <button type="submit" [disabled]="!isUnique || !myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm">
-            <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-            {{'common.button.submit' | translate}}
-        </button>
-        <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
-          common.button.cancel
-        </button>
-    </div>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="!isUnique || !myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+            type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+      common.button.cancel
+    </button>
+  </div>
 </form>

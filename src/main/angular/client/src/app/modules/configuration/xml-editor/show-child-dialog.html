@@ -2,75 +2,77 @@
   <h4 class="modal-title">
     <span translate>xml.label.xsdElement</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <div class="modal-body p-a">
-    <div class="row m-b-sm">
-      <div class="col-md-2">
-        <button class="btn btn-sm btn-grey" (click)="expandAll()" [nz-tooltip]="'common.tooltip.expandAll' | translate">
-          <i class="fa fa-expand"></i>
-        </button>
-        <button class="btn btn-sm btn-grey m-l-12" (click)="collapseAll()" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
-          <i class="fa fa-compress"></i>
-        </button>
-      </div>
-      <div class="col-md-4">
-        <input type="search" name="search" (change)="search(data)" [(ngModel)]="data" placeholder="Search">
-      </div>
-      <div class="col-md-3 p-t-sm">
-        <span class="green text-sm m-l-sm" *ngIf="counter>0">
+  <div class="row m-b-sm">
+    <div class="col-md-2">
+      <button (click)="expandAll()" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="btn btn-sm btn-grey">
+        <i class="fa fa-expand"></i>
+      </button>
+      <button (click)="collapseAll()" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+              class="btn btn-sm btn-grey m-l-12">
+        <i class="fa fa-compress"></i>
+      </button>
+    </div>
+    <div class="col-md-4">
+      <input (change)="search(data)" [(ngModel)]="data" name="search" placeholder="Search" type="search">
+    </div>
+    <div class="col-md-3 p-t-sm">
+        <span *ngIf="counter>0" class="green text-sm m-l-sm">
           {{counter}}
           <span class="text-lowercase" translate>xml.label.matchFound</span>
         </span>
-      </div>
     </div>
-    <div class="row">
-      <div class="col-md-5 b-r">
-        <div class="tree-block m-l-0">
-          <nz-tree
-            nzNoAnimation
-            [nzShowExpand]="false"
-            [nzData]="showAllChild"
-            [nzExpandAll]="isExpandAll"
-            [nzTreeTemplate]="nzTreeTemplate"
-          ></nz-tree>
-          <ng-template #nzTreeTemplate let-node>
-              <div class="node-wrapper">
-                <span *ngIf="node.children && node.children.length>0"
-                      [class.toggle-children-wrapper-expanded]="node.isExpanded"
+  </div>
+  <div class="row">
+    <div class="col-md-5 b-r">
+      <div class="tree-block m-l-0">
+        <nz-tree
+          [nzData]="showAllChild"
+          [nzExpandAll]="isExpandAll"
+          [nzShowExpand]="false"
+          [nzTreeTemplate]="nzTreeTemplate"
+          nzNoAnimation
+        ></nz-tree>
+        <ng-template #nzTreeTemplate let-node>
+          <div class="node-wrapper">
+                <span (click)="openFolder(node)"
+                      *ngIf="node.children && node.children.length>0"
                       [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                      (click)="openFolder(node)" class="w-15 cursor">
-                  <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline" class="tree-icon"></i>
-                  <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline" class="tree-icon"></i>
+                      [class.toggle-children-wrapper-expanded]="node.isExpanded" class="w-15 cursor">
+                  <i *ngIf="!node.isExpanded" class="tree-icon" nz-icon nzTheme="outline" nzType="caret-right"></i>
+                  <i *ngIf="node.isExpanded" class="tree-icon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </span>
-                <span *ngIf="node.origin.children && node.origin.children.length === 0" class="w-15">
+            <span *ngIf="node.origin.children && node.origin.children.length === 0" class="w-15">
                   <span class="fa fa-lg"></span>
                 </span>
-                <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' :selectedNode && selectedNode.ref === node.origin.ref && selectedNode.uuid === node.origin.uuid}">
-                  <span (click)="getText(node.origin)"  [ngClass]="{'_600': node.origin.isSearch}">{{node.origin.ref}}
+            <div [ngClass]="{'node-content-wrapper-active' :selectedNode && selectedNode.ref === node.origin.ref && selectedNode.uuid === node.origin.uuid}"
+                 class="node-content-wrapper">
+                  <span (click)="getText(node.origin)" [ngClass]="{'_600': node.origin.isSearch}">{{node.origin.ref}}
                   </span>
-                </div>
-              </div>
-            </ng-template>
-        </div>
+            </div>
+          </div>
+        </ng-template>
       </div>
-      <div class="col-md-7">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="documents" *ngIf="selectedNode && selectedNode.doc">
+    </div>
+    <div class="col-md-7">
+      <div class="row">
+        <div class="col-md-12">
+          <div *ngIf="selectedNode && selectedNode.doc" class="documents">
                 <span id="doc">
                   <div [innerHTML]="selectedNode.doc.doc | safeHtml"></div>
                 </span>
-            </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
     common.button.close
   </button>
 </div>

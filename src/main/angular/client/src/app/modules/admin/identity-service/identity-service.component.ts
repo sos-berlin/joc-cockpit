@@ -1,11 +1,11 @@
-import {Component, Input, OnDestroy, OnInit, Directive, ElementRef, SimpleChanges} from '@angular/core';
+import {Component, Input, Directive, ElementRef, SimpleChanges, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {clone, isEmpty} from 'underscore';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NzUploadFile} from 'ng-zorro-antd/upload';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {NzMessageService} from 'ng-zorro-antd/message';
-import {FileUploader} from 'ng2-file-upload';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
 import {saveAs} from 'file-saver';
@@ -16,10 +16,6 @@ import {SaveService} from '../../../services/save.service';
 import {OrderPipe} from '../../../pipes/core.pipe';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
-
-interface StringMap {
-  [key: string]: any;
-}
 
 @Directive({
   selector: 'img[thumbnail]'
@@ -36,11 +32,11 @@ export class ThumbnailDirective {
     let reader = new FileReader();
     let el = this.el;
 
-    reader.onloadend = (readerEvent) => {
+    reader.onloadend = () => {
       let image = new Image();
-      image.onload = (imageEvent) => {
+      image.onload = () => {
         // Resize the image
-        let canvas = document.createElement('canvas');
+        const canvas: any = document.createElement('canvas');
         let maxSize = 32;
         let width = image.width;
         let height = image.height;
@@ -73,10 +69,11 @@ export class ThumbnailDirective {
   selector: 'app-setting-modal-content',
   templateUrl: './setting-dialog.html'
 })
-export class SettingModalComponent implements OnInit {
-  @Input() data: any;
-
+export class SettingModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  data: any = {};
   keyStoreTypes = ['JKS', 'PKCS12'];
+  fileList: NzUploadFile[] = [];
 
   iamLdapProtocols = [{
     text: 'plainText',
@@ -138,10 +135,10 @@ export class SettingModalComponent implements OnInit {
   required = false;
   comments: any = {};
 
-  uploader: FileUploader;
-  imageUploader: FileUploader;
-  imageUrl: string;
-  preview: boolean;
+  imageUrl = '';
+  preview = false;
+  loading = false;
+  avatarUrl?: string;
   previewRegistration = false;
   fullScreen = false;
   fullScreen2 = false;
@@ -149,18 +146,7 @@ export class SettingModalComponent implements OnInit {
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private authService: AuthService,
               private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService, private dataService: DataService) {
-    this.uploader = new FileUploader({
-      url: '',
-      queueLimit: 1
-    });
-    this.imageUploader = new FileUploader({
-      url: './api/iam/import',
-      queueLimit: 1,
-      headers: [{
-        name: 'X-Access-Token',
-        value: this.authService.accessTokenId
-      }]
-    });
+
   }
 
   static convertDurationToString(time: any): string {
@@ -201,20 +187,8 @@ export class SettingModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.imageUploader.onBeforeUploadItem = (item: any) => {
-      const obj: any = {
-        identityServiceName: this.data?.['identityServiceName']
-      };
-      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-      //item.file.name = encodeURIComponent(item.file.name);
-      this.imageUploader.options.additionalParameter = obj;
-    };
-    this.imageUploader.onErrorItem = (fileItem, response: any) => {
-      const res = typeof response === 'string' ? JSON.parse(response) : response;
-      if (res.error) {
-        this.toasterService.error(res.error.message, res.error.code);
-      }
-    };
+    this.data = this.modalData.data;
+
     const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
@@ -226,12 +200,7 @@ export class SettingModalComponent implements OnInit {
       this.comments = this.dataService.comments;
       this.display = false;
     }
-    this.uploader.onErrorItem = (fileItem, response: any) => {
-      const res = typeof response === 'string' ? JSON.parse(response) : response;
-      if (res.error) {
-        this.toasterService.error(res.error.code, res.error.message);
-      }
-    };
+
     if (this.data && this.saveService.copiedSetting && this.saveService.copiedSetting.type &&
       (this.saveService.copiedSetting.name !== this.data?.['identityServiceName'] || (this.saveService.copiedSetting.name === this.data?.['identityServiceName'] &&
         this.saveService.copiedSetting.type !== this.data?.['identityServiceType'])) &&
@@ -321,6 +290,51 @@ export class SettingModalComponent implements OnInit {
         }
       }
     });
+  }
+
+  beforeUpload = (file: NzUploadFile): boolean => {
+    this.fileList = this.fileList.concat(file);
+    this.onImageSelected(file);
+    return false;
+  };
+
+  beforeUpload2 = (file: NzUploadFile): boolean => {
+    this.onFileSelected(file);
+    return false;
+  };
+
+  private getBase64(img: any, callback: (img: string) => void): void {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result!.toString()));
+    reader.readAsDataURL(img);
+  }
+
+  handlePreview(file: NzUploadFile): void {
+    this.getBase64(file, (img: string) => {
+      this.loading = false;
+      this.avatarUrl = img;
+    });
+  }
+
+  onImageSelected(item: any): void {
+    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
+    if (!fileExt || fileExt.toUpperCase() != 'PNG') {
+      let msg = '';
+      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.toasterService.error(fileExt + ' ' + msg);
+      this.fileList = [];
+    } else if (item.size > (1000 * 1000)) {
+      let msg = '';
+      this.translate.get('error.message.fileSizeExceed').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.toasterService.error(msg);
+      this.fileList = [];
+    } else {
+      this.handlePreview(item);
+    }
   }
 
   private getJobResources(): void {
@@ -487,34 +501,10 @@ export class SettingModalComponent implements OnInit {
     }
   }
 
-
-  onImageSelected(event: any): void {
-    const self = this;
-    let item = event['0'];
-
-    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
-    if (!fileExt || fileExt.toUpperCase() != 'PNG') {
-      let msg = '';
-      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
-        msg = translatedValue;
-      });
-      this.toasterService.error(fileExt + ' ' + msg);
-      this.imageUploader.clearQueue();
-    } else if (item.size > (1000 * 1000)) {
-      let msg = '';
-      this.translate.get('error.message.fileSizeExceed').subscribe(translatedValue => {
-        msg = translatedValue;
-      });
-      this.toasterService.error(msg);
-      this.imageUploader.clearQueue();
-    }
-
-  }
-
   // CALLBACKS
-  onFileSelected(event: any): void {
+  onFileSelected(file: any): void {
     const self = this;
-    let item = event['0'];
+    let item = file;
 
     let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
     if (!fileExt || fileExt.toUpperCase() != 'JSON') {
@@ -523,14 +513,14 @@ export class SettingModalComponent implements OnInit {
         msg = translatedValue;
       });
       this.toasterService.error(fileExt + ' ' + msg);
-      this.uploader.clearQueue();
+      //  this.uploader.clearQueue();
     } else {
       let reader = new FileReader();
       reader.readAsText(item, 'UTF-8');
       reader.onload = onLoadFile;
     }
 
-    function onLoadFile(_event) {
+    function onLoadFile(_event: any) {
       let data;
       try {
         data = JSON.parse(_event.target.result);
@@ -579,11 +569,11 @@ export class SettingModalComponent implements OnInit {
           self.toasterService.error(translatedValue);
         });
       }
-      self.uploader.clearQueue();
+      //   self.uploader.clearQueue();
     }
   }
 
-  private sync(isSimple): void {
+  private sync(isSimple: any): void {
     if (isSimple) {
       this.changeField();
       this.changeConfiguration(this.userObj.iamLdapProtocol);
@@ -644,6 +634,33 @@ export class SettingModalComponent implements OnInit {
     });
   }
 
+  private iconUpload(): void {
+    // if (this.imageUploader && this.data) {
+    //   this.imageUploader.onBeforeUploadItem = (item: any) => {
+    //     const obj: any = {
+    //       identityServiceName: this.data?.['identityServiceName']
+    //     };
+    //     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+    //     //item.file.name = encodeURIComponent(item.file.name);
+    //     this.imageUploader.options.additionalParameter = obj;
+    //   };
+    //   this.imageUploader.onErrorItem = (fileItem, response: any) => {
+    //     const res = typeof response === 'string' ? JSON.parse(response) : response;
+    //     if (res.error) {
+    //       this.toasterService.error(res.error.message, res.error.code);
+    //     }
+    //   };
+    // }
+    // this.imageUploader = new FileUploader({
+    //   url: './api/iam/import',
+    //   queueLimit: 1,
+    //   headers: [{
+    //     name: 'X-Access-Token',
+    //     value: this.authService.accessTokenId
+    //   }]
+    // });
+  }
+
   onSubmit(): void {
     if (!this.data) {
       this.isLengthMatch = true;
@@ -653,7 +670,7 @@ export class SettingModalComponent implements OnInit {
       }
     }
     this.submitted = true;
-    this.imageUploader.uploadAll();
+    this.iconUpload();
     let obj: any = {};
     if (this.data && this.data?.['identityServiceType']) {
       if (this.data?.['identityServiceType'].match('VAULT')) {
@@ -726,10 +743,11 @@ export class SettingModalComponent implements OnInit {
   selector: 'app-identity-service-modal-content',
   templateUrl: './identity-service-dialog.html'
 })
-export class IdentityServiceModalComponent implements OnInit {
-  @Input() identityServices: any[];
-  @Input() identityService: any;
-  @Input() identityServiceTypes: any[];
+export class IdentityServiceModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  identityServices?: any[] | undefined;
+  identityService?: any;
+  identityServiceTypes?: any[];
 
   submitted = false;
   isUnique = true;
@@ -747,6 +765,9 @@ export class IdentityServiceModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.identityServices = this.modalData.identityServices;
+    this.identityService = this.modalData.identityService;
+    this.identityServiceTypes = this.modalData.identityServiceTypes;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -929,7 +950,7 @@ export class IdentityServiceModalComponent implements OnInit {
   selector: 'app-identity-service-all',
   templateUrl: 'identity-service.component.html'
 })
-export class IdentityServiceComponent implements OnInit, OnDestroy {
+export class IdentityServiceComponent {
   loading = true;
   preferences: any = {};
   permission: any = {};
@@ -952,7 +973,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
       if (res === 'ADD') {
         this.add();
       } else if (res === 'MANAGE_SETTING') {
-        this.manageSetting(null);
+        this.manageSetting({data: null});
       }
     });
   }
@@ -980,7 +1001,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
-  showUser(identityService): void {
+  showUser({identityService}: { identityService: any }): void {
     if (identityService.identityServiceType !== 'UNKNOWN' && identityService.identityServiceType !== 'CERTIFICATE') {
       sessionStorage['identityServiceName'] = identityService.identityServiceName;
       sessionStorage['identityServiceType'] = identityService.identityServiceType;
@@ -999,7 +1020,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: IdentityServiceModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         identityServices: this.identityServices,
         identityServiceTypes: this.identityServiceTypes
       },
@@ -1014,12 +1035,12 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     });
   }
 
-  edit(identityService): void {
+  edit({identityService}: { identityService: any }): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: IdentityServiceModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         identityService,
         identityServices: this.identityServices,
         identityServiceTypes: this.identityServiceTypes
@@ -1035,7 +1056,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     });
   }
 
-  disable(identityService): void {
+  disable({identityService}: { identityService: any }): void {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
@@ -1047,7 +1068,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -1064,7 +1085,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     }
   }
 
-  enable(identityService): void {
+  enable({identityService}: { identityService: any }): void {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
@@ -1076,7 +1097,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
           obj: identityService,
           url: 'iam/identityservice/store'
@@ -1095,13 +1116,14 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     }
   }
 
-  manageSetting(data): void {
+  manageSetting({data}: { data: any }): void {
+    console.log(data)
     this.modal.create({
       nzTitle: undefined,
       nzContent: SettingModalComponent,
       nzClassName: data ? 'lg' : '',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         data
       },
       nzFooter: null,
@@ -1157,7 +1179,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     });
   }
 
-  delete(identityService): void {
+  delete({identityService}: { identityService: any }): void {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
@@ -1169,7 +1191,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
           obj: {identityServiceName: identityService.identityServiceName},
           url: 'iam/identityservice/delete'
@@ -1190,7 +1212,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title: 'delete',
           message: 'deleteIdentityService',
           type: 'Delete',

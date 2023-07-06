@@ -1,4 +1,4 @@
-<div class="operation-status-info" *ngIf="isProcessing">
+<div *ngIf="isProcessing" class="operation-status-info">
   <div id='prog-bar-cont'>
     <div id="prog-bar">
       <div id="background"></div>
@@ -15,8 +15,8 @@
               <ol class="breadcrumb p-t-xs">
                 <li>
                   <a (click)="backClicked()">
-                    <i title="back" class="fa fa-arrow-circle-left"
-                       style="font-size: 18px"></i></a>
+                    <i class="fa fa-arrow-circle-left" style="font-size: 18px"
+                       title="back"></i></a>
                 </li>
                 <li>
                   <span>
@@ -34,22 +34,23 @@
           <div class="inline m-b-xs">
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
-                <button class="btn btn-grey btn-sm button-group-ellipsis"
+                <button (click)="loadOrders(btn.date)"
                         [ngClass]="{'btn-primary': workflowFilters.date===btn.date}"
-                        (click)="loadOrders(btn.date)" translate>filters.button.{{btn.text}}
+                        class="btn btn-grey btn-sm button-group-ellipsis" translate>filters.button.{{btn.text}}
                 </button>
               </ng-container>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
+              <button [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
+                      nzTrigger="click" translate type="button">
                 common.label.anyDate
-                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
-              <nz-dropdown-menu #anyDate="nzDropdownMenu" >
+              <nz-dropdown-menu #anyDate="nzDropdownMenu">
                 <ul nz-menu>
                   <ng-container *ngFor="let btn of filterBtn">
-                    <li nz-menu-item (click)="loadOrders(btn.date)"
-                        [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.date=== btn.date}">
+                    <li (click)="loadOrders(btn.date)" [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.date=== btn.date}"
+                        nz-menu-item>
                       <a translate>filters.button.{{btn.text}}</a>
                     </li>
                   </ng-container>
@@ -58,33 +59,43 @@
             </div>
           </div>
           <div class="inline">
-            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="openModal()" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies">
+            <button (click)="openModal()" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies"
+                    class="btn btn-grey btn-sm m-l-12 button-group-ellipsis">
               <i class="fa fa-codepen"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.showDependency</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="addOrder()" [disabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
-                    *ngIf="permission.currentController && permission.currentController.orders.create"><i class="fa fa-plus-square"></i>
+            <button (click)="addOrder()" *ngIf="permission.currentController && permission.currentController.orders.create"
+                    [disabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
+                    class="btn btn-grey btn-sm m-l-12 button-group-ellipsis"><i
+              class="fa fa-plus-square"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.addOrder</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12" (click)="suspend()" *ngIf="!workflow.suspended" [disabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"><i
+            <button (click)="suspend()" *ngIf="!workflow.suspended" [disabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
+                    class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-stop p-r-xs"></i>
               <span class="hidden-sm-down" translate>order.button.suspend</span></button>
-            <button class="btn btn-grey btn-sm m-l-12" (click)="resume()" *ngIf="workflow.suspended" [disabled]="!workflow.isCurrentVersion"><i
+            <button (click)="resume()" *ngIf="workflow.suspended" [disabled]="!workflow.isCurrentVersion"
+                    class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
                                                            translate>order.button.resume</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="transitionOrders()" [disabled]="workflow?.state?._text === 'NOT_IN_SYNC'"
-                    *ngIf="workflow.path && !workflow.isCurrentVersion"><i class="fa fa-exchange"></i>
+            <button (click)="transitionOrders()" *ngIf="workflow.path && !workflow.isCurrentVersion"
+                    [disabled]="workflow?.state?._text === 'NOT_IN_SYNC'"
+                    class="btn btn-grey btn-sm m-l-12 button-group-ellipsis"><i class="fa fa-exchange"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.transitionOrders</span>
             </button>
             <div class="btn-group m-l-12">
-              <button class="btn btn-grey btn-sm" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies"
-                      [ngClass]="{'btn-primary': pageView=='graph'}" (click)="setView('graph')"><i class="fa fa-codepen"></i>
+              <button (click)="setView('graph')"
+                      *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies"
+                      [ngClass]="{'btn-primary': pageView=='graph'}" class="btn btn-grey btn-sm"><i
+                class="fa fa-codepen"></i>
               </button>
-              <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid'}" (click)="setView('grid')"><i
+              <button (click)="setView('grid')" [ngClass]="{'btn-primary': pageView=='grid'}"
+                      class="btn btn-grey btn-sm"><i
                 class="fa fa-sitemap"></i>
               </button>
-              <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='list'}" (click)="setView('list')">
+              <button (click)="setView('list')" [ngClass]="{'btn-primary': pageView=='list'}"
+                      class="btn btn-grey btn-sm">
                 <i class="fa fa-bars"></i>
               </button>
             </div>
@@ -102,12 +113,12 @@
           <div class="table-responsive">
             <nz-table
               #ajaxTable
-              [nzSize]="'small'"
               [nzBordered]="true"
-              [nzShowPagination]="false"
               [nzData]="workflow.path ? [workflow] : []"
               [nzLoading]="!loading"
+              [nzShowPagination]="false"
               [nzShowSizeChanger]="false"
+              [nzSize]="'small'"
             >
               <thead>
               <tr>
@@ -131,18 +142,23 @@
               </tr>
               </thead>
               <tbody>
-              <ng-template ngFor let-item [ngForOf]="ajaxTable.data">
+              <ng-template [ngForOf]="ajaxTable.data" let-item ngFor>
                 <tr>
                   <td>
                     <span class="show-in-single-line">
-                      <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                         *ngIf="item.hide && item.fileOrderSources && item.fileOrderSources.length>0" (click)="item.hide = false"></i>
-                      <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="!item.hide && item.fileOrderSources && item.fileOrderSources.length>0"
-                         (click)="item.hide = true"></i>
-                      <i *ngIf="item.documentationName" (click)="coreService.showDocumentation(item.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                      <i (click)="item.hide = false"
+                         *ngIf="item.hide && item.fileOrderSources && item.fileOrderSources.length>0"
+                         class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+                      <i (click)="item.hide = true"
+                         *ngIf="!item.hide && item.fileOrderSources && item.fileOrderSources.length>0"
+                         class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
+                      <i (click)="coreService.showDocumentation(item.documentationName, preferences)"
+                         *ngIf="item.documentationName"
+                         class="cursor fa fa-book p-l-xs p-r-xs"></i>
                       <span class="text-dark">
-                        <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(item.path, 'WORKFLOW');"
-                             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                        <i (click)="coreService.navToInventoryTab(item.path, 'WORKFLOW');"
+                           *ngIf="permission.joc && permission.joc.inventory.view"
+                           class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                         <span [innerHtml]="item.path"></span>
                         <i *ngIf="item.title"> - </i>
                         <i class="text-muted">{{item.title}}</i>
@@ -153,12 +169,14 @@
                     <span [innerHtml]="item.versionDate | stringToDate"></span>
                   </td>
                   <td>
-                    <span class="label" *ngIf="item.state" [ngClass]="coreService.getColor(item.state.severity, 'bg')"
-                       [innerHtml]="item.state._text | translate"></span>
-                    <app-tooltip-info *ngIf="item.state && (item.state._text === 'OUTSTANDING')" [workflow]="item" [controllerId]="schedulerIds.selected"></app-tooltip-info>
+                    <span *ngIf="item.state" [innerHtml]="item.state._text | translate" [ngClass]="coreService.getColor(item.state.severity, 'bg')"
+                          class="label"></span>
+                    <app-tooltip-info *ngIf="item.state && (item.state._text === 'OUTSTANDING')" [controllerId]="schedulerIds.selected"
+                                      [workflow]="item"></app-tooltip-info>
                   </td>
                   <td>
-                    <span class="remaining-order-count" (click)="viewOrders(workflow)" [innerHtml]="item.numOfOrders || 0"></span>
+                    <span (click)="viewOrders(workflow)" [innerHtml]="item.numOfOrders || 0"
+                          class="remaining-order-count"></span>
                   </td>
                   <td>
                     <span *ngIf="item.ordersSummary" [innerHtml]="item.ordersSummary.pending || 0"></span>
@@ -194,25 +212,27 @@
                 <ng-container *ngIf="!item.hide && item.fileOrderSources">
                   <tr>
                     <td colspan="14" style="padding:0 !important;">
-                      <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
-                                [nzData]="item.fileOrderSources" [nzShowPagination]="false">
-                        <thead>
-                        <tr>
-                          <th><span class="m-l-sm" translate>common.label.path</span></th>
-                          <th><span translate>inventory.label.deploymentDate</span></th>
-                          <th><span translate>common.label.status</span></th>
-                          <th><span translate>workflow.label.agent</span></th>
-                          <th><span translate>inventory.label.directory</span></th>
-                          <th><span translate>inventory.label.pattern</span></th>
-                          <th><span translate>common.label.timeZone</span></th>
-                          <th><span translate>workflow.label.delay</span></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr *ngFor="let order of innerChildTable.data">
-                          <td>
+                      <nz-table #innerChildTable [nzData]="item.fileOrderSources" [nzShowPagination]="false"
+                                class="m-a-0 inner-table" nzSize="small">
+              <thead>
+              <tr>
+                <th><span class="m-l-sm" translate>common.label.path</span></th>
+                <th><span translate>inventory.label.deploymentDate</span></th>
+                <th><span translate>common.label.status</span></th>
+                <th><span translate>workflow.label.agent</span></th>
+                <th><span translate>inventory.label.directory</span></th>
+                <th><span translate>inventory.label.pattern</span></th>
+                <th><span translate>common.label.timeZone</span></th>
+                <th><span translate>workflow.label.delay</span></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let order of innerChildTable.data">
+                <td>
                             <span class="show-in-single-line m-l-sm">
-                              <i *ngIf="order.documentationName" (click)="coreService.showDocumentation(order.documentationName, preferences)" class="cursor fa fa-book p-r-xs"></i>
+                              <i (click)="coreService.showDocumentation(order.documentationName, preferences)"
+                                 *ngIf="order.documentationName"
+                                 class="cursor fa fa-book p-r-xs"></i>
                               <span class="text-dark">
                                 <i (click)="coreService.navToInventoryTab(order.path, 'FILEORDERSOURCE')"
                                    class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
@@ -221,77 +241,98 @@
                                 <i class="text-muted">{{order.title}}</i>
                               </span>
                             </span>
-                          </td>
-                          <td>
-                            <span [innerHtml]="order.versionDate | stringToDate"></span>
-                          </td>
-                          <td>
-                            <span class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
-                            [innerHtml]="order.state._text | translate"></span>
-                          </td>
-                          <td>{{order.agentName}}</td>
-                          <td>{{order.directoryExpr || order.directory}}</td>
-                          <td>{{order.pattern}}</td>
-                          <td>{{order.timeZone}}</td>
-                          <td>{{order.delay}}</td>
-                        </tr>
-                        </tbody>
-                      </nz-table>
-                    </td>
-                  </tr>
-                </ng-container>
-              </ng-template>
+                </td>
+                <td>
+                  <span [innerHtml]="order.versionDate | stringToDate"></span>
+                </td>
+                <td>
+                            <span *ngIf="order.state" [innerHtml]="order.state._text | translate"
+                                  [ngClass]="coreService.getColor(order.state.severity, 'bg')"
+                                  class="label"></span>
+                </td>
+                <td>{{order.agentName}}</td>
+                <td>{{order.directoryExpr || order.directory}}</td>
+                <td>{{order.pattern}}</td>
+                <td>{{order.timeZone}}</td>
+                <td>{{order.delay}}</td>
+              </tr>
               </tbody>
+            </nz-table>
+            </td>
+            </tr>
+            </ng-container>
+            </ng-template>
+            </tbody>
             </nz-table>
           </div>
         </div>
       </div>
       <div class="col-lg-12">
         <div *ngIf="loading">
-          <div class="left-sidebar" *ngIf="recursiveCals.length > 0">
+          <div *ngIf="recursiveCals.length > 0" class="left-sidebar">
             <div class="m-t">
-              <div class="box p-a-sm" *ngFor="let item of recursiveCals;let i = index" [ngClass]="{'active': i === recursiveCals.length-1 }">
+              <div *ngFor="let item of recursiveCals;let i = index" [ngClass]="{'active': i === recursiveCals.length-1 }"
+                   class="box p-a-sm">
                 <div class="block-ellipsis" style="width: 90%">
-                  <a title="{{item.workflow.path}}" class="text-hover-primary" (click)="openWorkflowDependency(item)">
-                    <i nz-icon nzType="gateway" class="p-r-xs"
-                       nzTheme="outline"></i>
+                  <a (click)="openWorkflowDependency(item)" class="text-hover-primary" title="{{item.workflow.path}}">
+                    <i class="p-r-xs" nz-icon nzTheme="outline"
+                       nzType="gateway"></i>
                     <b>{{item.workflow.path.substring(item.workflow.path.lastIndexOf('/') + 1)}}</b>
                   </a>
                 </div>
-                <i class="fa fa-times pull-right cursor" style="margin-top: -15px" (click)="item.modalInstance.destroy()"></i>
+                <i (click)="item.modalInstance.destroy()" class="fa fa-times pull-right cursor"
+                   style="margin-top: -15px"></i>
               </div>
             </div>
           </div>
           <div *ngIf="pageView === 'graph' && workflow.instructions">
             <div *ngIf="isLoading">
-              <app-workflow-graphical [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [reload]="isReload" [permission]="permission" [preferences]="preferences"
-                                      [jobs]="workflow.jobs" [controllerId]="schedulerIds.selected" [workflowObjects]="workflowObjects"
-                                      [workflowFilters]="workflowFilters"></app-workflow-graphical>
+              <app-workflow-graphical [controllerId]="schedulerIds.selected" [jobs]="workflow.jobs" [permission]="permission"
+                                      [preferences]="preferences" [recursiveCals]="recursiveCals"
+                                      [reload]="isReload" [workFlowJson]="workFlowJson"
+                                      [workflowFilters]="workflowFilters"
+                                      [workflowObjects]="workflowObjects"></app-workflow-graphical>
             </div>
-            <div *ngIf="!isLoading" class="box m-b-0" style="height: calc(100vh - 322px);display: flex;align-items: center">
+            <div *ngIf="!isLoading" class="box m-b-0"
+                 style="height: calc(100vh - 322px);display: flex;align-items: center">
               <div class="text-center vert-middle">
                 <nz-spin nzSimple></nz-spin>
               </div>
             </div>
           </div>
           <div *ngIf="pageView === 'grid' && workflow.instructions">
-            <app-workflow-graphical (onClick)="viewHistory($event)" [jobMap]="jobMap" [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [reload]="isReload" [permission]="permission" [preferences]="preferences"
-                                    [jobs]="workflow.jobs" [controllerId]="schedulerIds.selected" [orders]="workflow.orders"
-                                    [workflowFilters]="workflowFilters" [orderPreparation]="orderPreparation"></app-workflow-graphical>
+            <app-workflow-graphical (onClick)="viewHistory($event)" [controllerId]="schedulerIds.selected" [jobMap]="jobMap"
+                                    [jobs]="workflow.jobs" [orderPreparation]="orderPreparation" [orders]="workflow.orders"
+                                    [permission]="permission"
+                                    [preferences]="preferences" [recursiveCals]="recursiveCals"
+                                    [reload]="isReload"
+                                    [workFlowJson]="workFlowJson"
+                                    [workflowFilters]="workflowFilters"></app-workflow-graphical>
           </div>
           <div *ngIf="pageView === 'list' && workFlowJson.instructions">
-            <div class="box m-b-0 p-a-0 resizable" appResizable [height]="workflowFilters.panelSize2" [workflowTab]="workflowFilters" id="workflowTextId">
+            <div [height]="workflowFilters.panelSize2" [workflowTab]="workflowFilters" appResizable
+                 class="box m-b-0 p-a-0 resizable" id="workflowTextId">
               <div class="p-a overflow-y" style="height: 100%">
-                <div class="hover" >
-                  <a class="text-primary noExl" translate >workflow.label.start</a>
+                <div class="hover">
+                  <a class="text-primary noExl" translate>workflow.label.start</a>
                   <span class="expand-collapse-btn">
-                    <i class="cursor fa fa-lg fa-angle-double-down" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="expandAll()"></i>
-                    <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll()"></i>
+                    <i (click)="expandAll()"
+                       [nz-tooltip]="'common.tooltip.expandAll' | translate" class="cursor fa fa-lg fa-angle-double-down"></i>
+                    <i (click)="collapseAll()"
+                       [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
                   </span>
                 </div>
-                <app-type (onClick)="viewHistory($event)" [timezone]="workFlowJson.timeZone" [workflowObj]="{path: path, versionId: versionId}" [recursiveCals]="recursiveCals" [configuration]="workFlowJson" [jobs]="workFlowJson.jobs" [orderPreparation]="orderPreparation" [permission]="permission" [preferences]="preferences"
-                          [schedulerId]="schedulerIds.selected" [expandAll]="isExpandAll" (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="changedHandler($event)" [orders]="workflow.orders"
-                          [workflowFilters]="workflowFilters" [expectedNoticeBoards]="workFlowJson.expectedNoticeBoards" [addOrderToWorkflows]="workFlowJson.addOrderToWorkflows" [postNoticeBoards]="workFlowJson.postNoticeBoards"></app-type>
+                <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)"
+                          (isProcessing)="changedHandler($event)" (onClick)="viewHistory($event)"
+                          [addOrderToWorkflows]="workFlowJson.addOrderToWorkflows" [configuration]="workFlowJson"
+                          [expandAll]="isExpandAll" [expectedNoticeBoards]="workFlowJson.expectedNoticeBoards" [jobs]="workFlowJson.jobs"
+                          [orderPreparation]="orderPreparation" [orders]="workflow.orders"
+                          [permission]="permission"
+                          [postNoticeBoards]="workFlowJson.postNoticeBoards"
+                          [preferences]="preferences" [recursiveCals]="recursiveCals"
+                          [schedulerId]="schedulerIds.selected" [timezone]="workFlowJson.timeZone"
+                          [workflowFilters]="workflowFilters"
+                          [workflowObj]="{path: path, versionId: versionId}"></app-type>
                 <div class="rg-bottom"><span></span></div>
               </div>
             </div>
@@ -310,14 +351,16 @@
       </div>
     </div>
     <div class="row m-t">
-      <div class="col-md-12" *ngIf="loading && workFlowJson && workFlowJson.name && permission && permission.joc && (permission.currentController.orders.view || permission.joc.auditLog.view)">
+      <div *ngIf="loading && workFlowJson && workFlowJson.name && permission && permission.joc && (permission.currentController.orders.view || permission.joc.auditLog.view)"
+           class="col-md-12">
         <div class="box white">
           <div class="box-header">
             <span class="text">{{workFlowJson.path}} <i *ngIf="workFlowJson.title">-</i> <i
-                      class="text-sm text-muted">{{workFlowJson.title}}</i></span>
+              class="text-sm text-muted">{{workFlowJson.title}}</i></span>
           </div>
           <div class="box-body p-t-0 b-t">
-            <app-workflow-history [jobName]="workFlowJson.jobName" [workflow]="{name: workFlowJson.name, path: workFlowJson.path}"></app-workflow-history>
+            <app-workflow-history [jobName]="workFlowJson.jobName"
+                                  [workflow]="{name: workFlowJson.name, path: workFlowJson.path}"></app-workflow-history>
           </div>
         </div>
       </div>
@@ -325,16 +368,18 @@
   </div>
 </div>
 <!-- BEGIN SLIDER -->
-<nz-drawer [nzVisible]="sideBar.isVisible" nzPlacement="right" (nzOnClose)="sideBar.isVisible = false">
+<nz-drawer (nzOnClose)="sideBar.isVisible = false" [nzVisible]="sideBar.isVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
-    <div class="close-btn" (click)="sideBar.isVisible = false"></div>
+    <div (click)="sideBar.isVisible = false" class="close-btn"></div>
     <div class="p-l-sm p-r-sm">
-      <app-order-list-sidebar [permission]="permission" [preferences]="preferences" [orderPreparation]="orderPreparation" [schedulerId]="schedulerIds.selected" [orders]="sideBar.orders"></app-order-list-sidebar>
+      <app-order-list-sidebar [orderPreparation]="orderPreparation" [orders]="sideBar.orders"
+                              [permission]="permission" [preferences]="preferences"
+                              [schedulerId]="schedulerIds.selected"></app-order-list-sidebar>
     </div>
   </ng-container>
 </nz-drawer>
 <!-- END SLIDER -->
-<div class="spinner" *ngIf="!loading">
+<div *ngIf="!loading" class="spinner">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>

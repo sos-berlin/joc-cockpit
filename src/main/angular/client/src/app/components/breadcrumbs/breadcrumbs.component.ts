@@ -8,7 +8,7 @@ import {Subscription} from 'rxjs';
   templateUrl: './breadcrumbs.component.html',
   styleUrls: ['./breadcrumbs.component.scss']
 })
-export class BreadcrumbsComponent implements OnInit, OnDestroy {
+export class BreadcrumbsComponent {
   static readonly ROUTE_DATA_BREADCRUMB = 'breadcrumb';
   breadcrumbs: any;
   identityServiceName: string | undefined;
@@ -24,7 +24,7 @@ export class BreadcrumbsComponent implements OnInit, OnDestroy {
     this.breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root);
   }
 
-  ngOnDestroy(): void{
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 

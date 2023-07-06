@@ -2,35 +2,37 @@
   <h4 class="modal-title">
     <span translate>resource.documentation.label.editDocument</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a" style="min-height: 128px">
-      <div class="hide" [ngClass]="{'show': display}">
-        <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+    <div [ngClass]="{'show': display}" class="hide">
+      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-3" translate>resource.documentation.label.documentName</label>
+      <div class="col-sm-6">
+        {{document.path}}
       </div>
-      <div class="form-group row">
-        <label class="col-sm-3" translate>resource.documentation.label.documentName</label>
-        <div class="col-sm-6">
-          {{document.path}}
-        </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-3 form-control-label" translate>resource.documentation.label.reference</div>
+      <div class="col-sm-6">
+        <input [(ngModel)]="document.assignReference" class="form-control" name="assignReference"
+               placeholder="{{'resource.documentation.placeholder.assignReference' | translate}}"
+               type="text">
       </div>
-      <div class="form-group row">
-        <div class="col-sm-3 form-control-label" translate>resource.documentation.label.reference</div>
-        <div class="col-sm-6">
-          <input type="text" class="form-control" name="assignReference"
-                 placeholder="{{'resource.documentation.placeholder.assignReference' | translate}}" [(ngModel)]="document.assignReference">
-        </div>
-      </div>
+    </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" >
-      <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="submitted"></i>
+    <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+            type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

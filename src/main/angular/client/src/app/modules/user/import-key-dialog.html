@@ -1,91 +1,64 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="type !== 'certificate' && (securityLevel !== 'HIGH' || (securityLevel ==='HIGH' && type === 'ca'))" translate>profile.keyManagement.label.importPrivateKey</span>
+    <span *ngIf="type !== 'certificate' && (securityLevel !== 'HIGH' || (securityLevel ==='HIGH' && type === 'ca'))"
+          translate>profile.keyManagement.label.importPrivateKey</span>
     <span *ngIf="type !== 'certificate' && securityLevel ==='HIGH' && type !== 'ca'" translate>profile.keyManagement.label.importPublicKey</span>
     <span *ngIf="type === 'certificate'" translate>profile.keyManagement.label.importCertificate</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm">
   <div class="modal-body p-a min-ht-300">
     <div class="row">
-      <div class="col-md-12 hide" [ngClass]="{'show': display}">
+      <div [ngClass]="{'show': display}" class="col-md-12 hide">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
       </div>
-      <div class="col-md-12" *ngIf="type !== 'certificate'">
+      <div *ngIf="type !== 'certificate'" class="col-md-12">
         <div class="form-group row">
           <div class="col-md-4 col-lg-3" translate>profile.keyManagement.label.keyAlgorithm</div>
           <div class="col-md-8 col-lg-9">
-            <nz-radio-group name="alg" [(ngModel)]="key.keyAlg">
-              <label nz-radio nzValue="PGP" *ngIf="type === 'key'"><span translate>profile.keyManagement.label.pgp</span></label>
-              <label nz-radio nzValue="RSA" *ngIf="type === 'key'"><span translate>profile.keyManagement.label.rsa</span></label>
+            <nz-radio-group [(ngModel)]="key.keyAlg" name="alg">
+              <label *ngIf="type === 'key'" nz-radio nzValue="PGP"><span
+                translate>profile.keyManagement.label.pgp</span></label>
+              <label *ngIf="type === 'key'" nz-radio nzValue="RSA"><span
+                translate>profile.keyManagement.label.rsa</span></label>
               <label nz-radio nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
             </nz-radio-group>
           </div>
         </div>
       </div>
-      <div class="col-md-12" *ngIf="uploader.queue.length === 0">
-          <div ng2FileDrop [uploader]="uploader" class="drop-box-full" [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)" (onFileDrop)="onFileSelected($event)">
-            <div><i class="icon-upload-icon"></i></div>
-            <div translate>common.button.dragAndDropFileToUpload</div>
-          </div>
-          <div class="p-t-sm" [hidden]="uploader.queue.length>0">
-            <div class="upload-btn-wrapper">
-              <button type="button" class="btn btn-grey btn-sm" >
-                <span translate>common.button.chooseFileToUpload</span>
-              </button>
-              <input type="file" accept=".asc, .crt, .key" (onFileSelected)="onFileSelected($event)" multiple ng2FileSelect [uploader]="uploader">
-            </div>
-          </div>
-      </div>
-      <div class="col-md-12">
-        <div class="table-responsive import-set-table" *ngIf="uploader.queue.length>0">
-          <table class="table table-hover table-bordered  ">
-            <thead>
-            <tr>
-              <th><span translate>common.label.name</span></th>
-              <th><span translate>common.label.size</span></th>
-              <th><span translate>common.label.progress</span></th>
-              <th><span translate>common.label.status</span></th>
-              <th><span translate>common.label.action</span></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let item of uploader.queue">
-              <td><strong>{{item.file.name }}</strong></td>
-              <td nowrap>{{ item.file.size / 1024 / 1024 | number:'.2' }} MB</td>
-              <td nowrap>
-                <div class="progress upload-progress m-b-0">
-                  <div *ngIf="item.progress == 100 || item.isError" class="text-center" [ngStyle]="{'background': !item.isError ? 'rgba(0, 128, 0, 0.2)' : 'rgba(244,68,85, 0.2)'}">
-                    <span *ngIf="uploader.isUploading && !item.isError">Processing...</span>
-                    <span *ngIf="item.isError">Failed</span>
-                  </div>
-                  <div *ngIf="item.progress !== 100" class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
-                </div>
-              </td>
-              <td>
-                <span class="text-success" *ngIf="item.isSuccess"><i class="fa fa-check"></i></span>
-                <span class="text-warn" *ngIf="item.isCancel"><i class="fa fa-ban"></i></span>
-                <span class="text-danger" *ngIf="item.isError"><i class="fa fa-exclamation-triangle"></i></span>
-              </td>
-              <td>
-                <a class="text-hover-color" (click)="item.remove();"><i class="fa fa-remove"></i></a>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+      <nz-upload
+        [(nzFileList)]="fileList"
+        [nzAccept]="'.json'"
+        [nzBeforeUpload]="beforeUpload"
+        [nzShowButton]="fileList.length < 1"
+        [nzType]="fileList.length === 1 ? null : 'drag'"
+        nzListType="picture"
+      >
+        <div *ngIf="fileList.length === 0">
+          <i class="icon-upload-icon"></i>
+          <div class="upload-text" translate>common.button.dragAndDropFileToUpload</div>
         </div>
-      </div>
+      </nz-upload>
+      <nz-upload *ngIf="fileList.length === 0" [nzAccept]="fileType" [nzBeforeUpload]="beforeUpload">
+        <div class="p-t-sm">
+          <button class="btn btn-default btn-sm" type="button">
+            <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
+            <span translate>common.button.chooseFileToUpload</span>
+          </button>
+        </div>
+      </nz-upload>
     </div>
   </div>
-  <div class="modal-footer" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="submitted || uploader.isUploading || (required && !comments.comment)" (click)="import()">
-      <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="uploader.isUploading"></i>
+  <div *ngIf="fileList.length > 0" class="modal-footer">
+    <button (click)="import()" [disabled]="submitted || uploader.isUploading || (required && !comments.comment)"
+            class="btn btn-primary btn-sm" type="submit">
+      <i *ngIf="uploader.isUploading" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.import' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

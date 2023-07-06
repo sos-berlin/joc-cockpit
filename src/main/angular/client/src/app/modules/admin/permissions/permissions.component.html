@@ -1,102 +1,106 @@
 <div class="row">
-    <div class="col-md-12">
-        <div class="text-right ">
-            <div class="text-md text-primary pull-left text-16">
-                <a class="pointer">{{controllerName || 'default'}}</a>
-                <i class="text-black-lt m-l-sm m-r-sm">/</i>
-                <span class="text-muted">{{roleName}}</span>
-            </div>
-            <button class="btn btn-sm btn-grey m-t-n-xs" [nz-tooltip]="'workflow.button.undo' | translate" (click)="undoPermission()"
-                    *ngIf="previousPermission.length>0">
-              <i nz-icon nzType="undo" nzTheme="outline"></i>
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm m-t-n-xs" [nz-tooltip]="'agent.button.reset' | translate" (click)="resetPermission()"
-                    *ngIf="isReset">
-                <i nz-icon nzType="sync" nzTheme="outline"></i>
-            </button>
-        </div>
+  <div class="col-md-12">
+    <div class="text-right ">
+      <div class="text-md text-primary pull-left text-16">
+        <a class="pointer">{{controllerName || 'default'}}</a>
+        <i class="text-black-lt m-l-sm m-r-sm">/</i>
+        <span class="text-muted">{{roleName}}</span>
+      </div>
+      <button (click)="undoPermission()" *ngIf="previousPermission.length>0"
+              [nz-tooltip]="'workflow.button.undo' | translate"
+              class="btn btn-sm btn-grey m-t-n-xs">
+        <i nz-icon nzTheme="outline" nzType="undo"></i>
+      </button>
+      <button (click)="resetPermission()" *ngIf="isReset"
+              [nz-tooltip]="'agent.button.reset' | translate"
+              class="btn btn-sm btn-grey m-l-sm m-t-n-xs">
+        <i nz-icon nzTheme="outline" nzType="sync"></i>
+      </button>
     </div>
+  </div>
 </div>
 <div>
-    <div class="row m-t folder">
-        <div class="col-md-12">
-            <span class="text _600" translate>user.label.folder</span>&nbsp;
-            <i class="cursor fa fa-caret-down m-l-xs" [hidden]="showPanel2" (click)="showPanel2=true"></i>
-            <i class="cursor fa fa-caret-up m-l-xs" *ngIf="showPanel2" (click)="showPanel2=false"></i>
-        </div>
-        <div class="col-sm-12 m-t-sm" *ngIf="!showPanel2">
-            <div class="box p-a m-b-0">
-                <div class="row ">
-                    <div class="col-md-12 role" *ngFor="let f of folderArr">
+  <div class="row m-t folder">
+    <div class="col-md-12">
+      <span class="text _600" translate>user.label.folder</span>&nbsp;
+      <i (click)="showPanel2=true" [hidden]="showPanel2" class="cursor fa fa-caret-down m-l-xs"></i>
+      <i (click)="showPanel2=false" *ngIf="showPanel2" class="cursor fa fa-caret-up m-l-xs"></i>
+    </div>
+    <div *ngIf="!showPanel2" class="col-sm-12 m-t-sm">
+      <div class="box p-a m-b-0">
+        <div class="row ">
+          <div *ngFor="let f of folderArr" class="col-md-12 role">
                         <span>
                           {{f.folder}}<span *ngIf="f.recursive && f.folder != '/'">/*</span><span
-                                *ngIf="f.recursive && f.folder == '/'">*</span>&nbsp;
+                          *ngIf="f.recursive && f.folder == '/'">*</span>&nbsp;
                             <i (click)="editFolder(f)" class="fa fa-pencil m-l-xs"></i>
                             <i (click)="deleteFolder(f)" class="fa fa-times m-l-sm"></i>
                         </span>
-                    </div>
-                    <div class="col-md-12 text-center" *ngIf="folderArr.length == 0">
-                        <span translate>user.message.noFolderFound</span>
-                    </div>
-                </div>
-            </div>
+          </div>
+          <div *ngIf="folderArr.length == 0" class="col-md-12 text-center">
+            <span translate>user.message.noFolderFound</span>
+          </div>
         </div>
+      </div>
     </div>
-    <!-- Folder Container End -->
+  </div>
+  <!-- Folder Container End -->
 
-    <!-- Permission Container Start -->
-    <div class="row m-t" *ngIf="pageView =='list'">
-        <div class="col-md-12">
-            <span class="text _600" translate>user.label.permissions</span>&nbsp;
-            <i class="cursor fa fa-caret-down m-l-xs" [hidden]="showPanel1" (click)="showPanel1=true"></i>
-            <i class="cursor fa fa-caret-up m-l-xs" *ngIf="showPanel1" (click)="showPanel1=false"></i>
-        </div>
-        <div class="col-sm-12 m-t-sm m-b-xs" *ngIf="!showPanel1">
-            <div class="box p-a m-b-0">
-                <div class="row ">
-                    <div class="col-md-12 role" *ngFor="let p of rolePermissions">
+  <!-- Permission Container Start -->
+  <div *ngIf="pageView =='list'" class="row m-t">
+    <div class="col-md-12">
+      <span class="text _600" translate>user.label.permissions</span>&nbsp;
+      <i (click)="showPanel1=true" [hidden]="showPanel1" class="cursor fa fa-caret-down m-l-xs"></i>
+      <i (click)="showPanel1=false" *ngIf="showPanel1" class="cursor fa fa-caret-up m-l-xs"></i>
+    </div>
+    <div *ngIf="!showPanel1" class="col-sm-12 m-t-sm m-b-xs">
+      <div class="box p-a m-b-0">
+        <div class="row ">
+          <div *ngFor="let p of rolePermissions" class="col-md-12 role">
                       <span>
                         <span *ngIf="p.excluded" class="_600">-</span>{{p.permissionPath}}&nbsp;
-                        <i *ngIf="userPermission.joc && userPermission.joc.administration.accounts.manage" (click)="editPermission(p)" class="fa fa-pencil m-l-xs"></i>
-                        <i *ngIf="userPermission.joc && userPermission.joc.administration.accounts.manage" (click)="deletePermission(p)" class="fa fa-times m-l-sm"></i>
+                        <i (click)="editPermission(p)"
+                           *ngIf="userPermission.joc && userPermission.joc.administration.accounts.manage" class="fa fa-pencil m-l-xs"></i>
+                        <i (click)="deletePermission(p)"
+                           *ngIf="userPermission.joc && userPermission.joc.administration.accounts.manage" class="fa fa-times m-l-sm"></i>
                       </span>
-                    </div>
-                    <div class="col-md-12 text-center" *ngIf="rolePermissions.length == 0">
-                        <span translate>user.message.noPermissionFound</span>
-                    </div>
-                </div>
-            </div>
+          </div>
+          <div *ngIf="rolePermissions.length == 0" class="col-md-12 text-center">
+            <span translate>user.message.noPermissionFound</span>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 <!-- Permission Container End -->
 <!-- tree start -->
 <div *ngIf="pageView !=='list'">
-    <div class="m-t">
-        <span class="text _600" [innerHtml]="'user.label.permissions' | translate"></span>&nbsp;
-        <i class="cursor fa fa-caret-down m-l-xs" [hidden]="showPanel1" (click)="showPanel1=true"></i>
-        <i class="cursor fa fa-caret-up m-l-xs" [hidden]="!showPanel1" (click)="showPanel1=false"></i>
+  <div class="m-t">
+    <span [innerHtml]="'user.label.permissions' | translate" class="text _600"></span>&nbsp;
+    <i (click)="showPanel1=true" [hidden]="showPanel1" class="cursor fa fa-caret-down m-l-xs"></i>
+    <i (click)="showPanel1=false" [hidden]="!showPanel1" class="cursor fa fa-caret-up m-l-xs"></i>
+  </div>
+  <div [hidden]="showPanel1" class="box m-t-sm col-md-12">
+    <div>
+      <button (click)="expandAll()" class="btn btn-sm btn-grey show-block m-t m-l-sm">
+        <i class="fa fa fa-caret-down"></i>&nbsp;
+        <span translate>user.button.expandAll</span>
+      </button>
+      <button (click)="collapseAll()" class="btn btn-sm btn-grey show-block m-t m-l-sm">
+        <i class="fa fa fa-caret-up"></i>&nbsp;
+        <span translate>user.button.collapseAll</span>
+      </button>
+      <button (click)="expandSelected()" class="btn btn-sm btn-grey show-block m-t m-l-sm">
+        <i class="fa fa fa-caret-down"></i>&nbsp;
+        <span translate>user.button.expandSelected</span>
+      </button>
+      <button (click)="collapseUnselected()" class="btn btn-sm btn-grey show-block m-t m-l-sm">
+        <i class="fa fa fa-caret-up"></i>&nbsp;
+        <span translate>user.button.collapseUnselected</span>
+      </button>
     </div>
-    <div class="box m-t-sm col-md-12" [hidden]="showPanel1">
-        <div>
-            <button class="btn btn-sm btn-grey show-block m-t m-l-sm" (click)="expandAll()">
-                <i class="fa fa fa-caret-down"></i>&nbsp;
-                <span translate>user.button.expandAll</span>
-            </button>
-            <button class="btn btn-sm btn-grey show-block m-t m-l-sm" (click)="collapseAll()">
-                <i class="fa fa fa-caret-up"></i>&nbsp;
-                <span translate>user.button.collapseAll</span>
-            </button>
-            <button class="btn btn-sm btn-grey show-block m-t m-l-sm" (click)="expandSelected()">
-                <i class="fa fa fa-caret-down"></i>&nbsp;
-                <span translate>user.button.expandSelected</span>
-            </button>
-            <button class="btn btn-sm btn-grey show-block m-t m-l-sm" (click)="collapseUnselected()">
-                <i class="fa fa fa-caret-up"></i>&nbsp;
-                <span translate>user.button.collapseUnselected</span>
-            </button>
-        </div>
-        <div id="mainTree" class="text-overflow m-t-12"></div>
-    </div>
+    <div class="text-overflow m-t-12" id="mainTree"></div>
+  </div>
 </div>
 <!-- tree end -->

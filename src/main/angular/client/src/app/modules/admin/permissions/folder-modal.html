@@ -1,79 +1,89 @@
 <div class="modal-header">
-    <h4 class="modal-title">
+  <h4 class="modal-title">
         <span *ngIf="!newFolder">
             <span translate>user.label.editFolder</span>:
             <span>{{currentFolder.folderName}}</span>
         </span>
-        <span *ngIf="newFolder" translate>user.label.addFolder</span>
-    </h4>
-    <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
-      <span aria-hidden="true" class="fa fa-times-circle"></span>
-    </button>
+    <span *ngIf="newFolder" translate>user.label.addFolder</span>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentFolder)">
-    <div class="modal-body p-a">
-        <div class="hide" [ngClass]="{'show': display}">
-          <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
+  <div class="modal-body p-a">
+    <div [ngClass]="{'show': display}" class="hide">
+      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
+    </div>
+    <div *ngIf="!newFolder" class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>user.label.folders
+        <sup *ngIf="folderObj.paths.length===0" class="text-danger text-sm">*</sup>
+      </label>
+      <div [ngClass]="{'has-error' : ((folder.dirty || folder.touched) && folder.invalid)}" class="col-sm-8">
+        <input #folder="ngModel" [(ngModel)]="currentFolder.folder" [required]="(folderObj.paths.length===0) ? true : false" class="form-control"
+               name="name" placeholder="{{'user.placeholder.folderPath' | translate}}"
+               type="text"/>
+        <div *ngIf="folder.invalid && (folder.dirty || folder.touched) " class="text-danger help-block">
+          <div *ngIf="folder.errors['required']">
+            <div translate>common.message.requiredError</div>
+          </div>
         </div>
-        <div class="form-group row" *ngIf="!newFolder">
-          <label class="col-sm-3 form-control-label" translate>user.label.folders
-            <sup *ngIf="folderObj.paths.length===0" class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-sm-8" [ngClass]="{'has-error' : ((folder.dirty || folder.touched) && folder.invalid)}">
-            <input type="text" class="form-control" name="name" placeholder="{{'user.placeholder.folderPath' | translate}}" [(ngModel)]="currentFolder.folder" [required]="(folderObj.paths.length===0) ? true : false" #folder="ngModel"/>
-            <div *ngIf="folder.invalid && (folder.dirty || folder.touched) " class="text-danger help-block">
-              <div *ngIf="folder.errors['required']">
-                <div translate>common.message.requiredError</div>
+      </div>
+    </div>
+    <div *ngIf="newFolder" class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>user.label.folders</label>
+      <div class="col-sm-8">
+        <nz-tree-select
+          #treeSelectCtrl
+          (keypress)="onKeyPress($event)"
+          [(ngModel)]="folderObj.paths"
+          [nzDisplayWith]="displayWith"
+          [nzDropdownStyle]="{ 'max-height': '300px' }"
+          [nzHideUnMatched]="true"
+          [nzMultiple]="true"
+          [nzNodes]="nodes"
+          [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
+          name="folder"
+          nzShowSearch
+        >
+          <ng-template #nzTreeTemplate let-node>
+            <div (click)="selectFolder(node, $event)" class="node-wrapper w-93">
+              <div [class.node-content-wrapper-active]="folderObj.paths && folderObj.paths.indexOf(node.origin.path) > -1"
+                   class="node-content-wrapper">
+                <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
+                {{node.origin.name}}
+                <span *ngIf="node.origin.notExist" class="m-l-sm label bg-danger"
+                      translate>user.label.folderNotExist</span>
+                <i (click)="addFolder(node.origin.path);$event.stopPropagation()"
+                   *ngIf="folderObj.paths && folderObj.paths.indexOf(node.origin.path) === -1"
+                   [nz-tooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
+                <i (click)="remove(node.origin.path);$event.stopPropagation()"
+                   *ngIf="folderObj.paths && folderObj.paths.indexOf(node.origin.path) > -1" [nzType]="'delete'" class="p-l-sm"
+                   nz-icon></i>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="newFolder">
-          <label class="col-sm-3 form-control-label" translate>user.label.folders</label>
-          <div class="col-sm-8">
-            <nz-tree-select
-              #treeSelectCtrl
-              name="folder"
-              [nzNodes]="nodes"
-              [nzHideUnMatched]="true"
-              [nzDropdownStyle]="{ 'max-height': '300px' }"
-              nzShowSearch
-              [nzMultiple]="true"
-              [nzDisplayWith]="displayWith"
-              [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
-              [(ngModel)]="folderObj.paths"
-              (keypress)="onKeyPress($event)"
-            >
-              <ng-template #nzTreeTemplate let-node>
-                <div class="node-wrapper w-93" (click)="selectFolder(node, $event)">
-                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="folderObj.paths && folderObj.paths.indexOf(node.origin.path) > -1">
-                    <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                    {{node.origin.name}}
-                    <span *ngIf="node.origin.notExist" class="m-l-sm label bg-danger" translate>user.label.folderNotExist</span>
-                    <i *ngIf="folderObj.paths && folderObj.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path);$event.stopPropagation()" [nz-tooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
-                    <i *ngIf="folderObj.paths && folderObj.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path);$event.stopPropagation()" nz-icon [nzType]="'delete'" class="p-l-sm"></i>
-                  </div>
-                </div>
-              </ng-template>
-            </nz-tree-select>
-            <i [nz-tooltip]="'user.tooltip.toAddNonExistFolders' | translate" class="cursor pos-abt m-l-sm m-t-sm fa fa-info-circle" aria-hidden="true"></i>
-          </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-3" translate>user.label.recursive</label>
-            <div class="col-sm-6">
-              <label nz-checkbox [(ngModel)]="currentFolder.recursive"
-                       name="recursive"></label>
-            </div>
-        </div>
+          </ng-template>
+        </nz-tree-select>
+        <i [nz-tooltip]="'user.tooltip.toAddNonExistFolders' | translate"
+           aria-hidden="true" class="cursor pos-abt m-l-sm m-t-sm fa fa-info-circle"></i>
+      </div>
     </div>
-    <div class="modal-footer">
-        <button type="submit" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm">
-            <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-            {{'common.button.submit' | translate}}
-        </button>
-        <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
-          common.button.cancel
-        </button>
+    <div class="form-group row">
+      <label class="col-sm-3" translate>user.label.recursive</label>
+      <div class="col-sm-6">
+        <label [(ngModel)]="currentFolder.recursive" name="recursive"
+               nz-checkbox></label>
+      </div>
     </div>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+            type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+      common.button.cancel
+    </button>
+  </div>
 </form>

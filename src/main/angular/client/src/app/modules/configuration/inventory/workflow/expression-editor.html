@@ -1,14 +1,14 @@
-<div class="form-group row" >
+<div class="form-group row">
   <div class="col-sm-12 m-b-xs">
     <span [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.if.predicate' | translate) : ''"
-                                      [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.predicate
+          [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.predicate
     </span>:
     <sup class="text-danger text-sm">*</sup>
   </div>
   <div class="col-md-12">
-    <div class="b-a p-a-xs" [ngClass]="{'invalid': error || (cm.invalid && (cm.dirty || cm.touched))}">
-      <ngx-codemirror required #codeMirror #cm="ngModel" [(ngModel)]="selectedNode.obj.predicate"
-                      [options]="cmOption"
+    <div [ngClass]="{'invalid': error || (cm.invalid && (cm.dirty || cm.touched))}" class="b-a p-a-xs">
+      <ngx-codemirror #cm="ngModel" #codeMirror [(ngModel)]="selectedNode.obj.predicate" [options]="cmOption"
+                      required
       ></ngx-codemirror>
     </div>
     <div *ngIf="error || (cm.invalid && (cm.dirty || cm.touched))"
@@ -21,12 +21,12 @@
   <div class="m-t col-sm-12">
     <div class="text-center">
       <div>
-        <button *ngFor="let btn of operators" type="button" (click)="generateExpression('returnCode', btn)"
-                class="btn btn-sm btn-grey m-t-xs m-l-xs"> {{btn}} </button>
+        <button (click)="generateExpression('returnCode', btn)" *ngFor="let btn of operators" class="btn btn-sm btn-grey m-t-xs m-l-xs"
+                type="button"> {{btn}} </button>
       </div>
-      <div class="m-t" *ngIf="expression.type === 'variable'">
-        <button *ngFor="let btn of variablesOperators" type="button" (click)="generateExpression('variables', btn)"
-                class="btn btn-sm btn-grey m-t-xs m-l-xs"> {{btn}} </button>
+      <div *ngIf="expression.type === 'variable'" class="m-t">
+        <button (click)="generateExpression('variables', btn)" *ngFor="let btn of variablesOperators" class="btn btn-sm btn-grey m-t-xs m-l-xs"
+                type="button"> {{btn}} </button>
       </div>
     </div>
   </div>
@@ -35,18 +35,18 @@
       <div><span translate>workflow.label.functions</span>:</div>
       <div class="b-a p-a" style="min-height: 220px; max-height: 320px; overflow: auto">
         <div>
-          <a [ngClass]="{'_600' :expression.type === 'returnCode'}"
-             (click)="generateExpression('returnCode', null)">returnCode</a></div>
+          <a (click)="generateExpression('returnCode', null)"
+             [ngClass]="{'_600' :expression.type === 'returnCode'}">returnCode</a></div>
         <div class="m-t-xs">
-          <i *ngIf="expression.open" (click)="expression.open = false" class="fa fa-angle-down m-r-sm"></i>
-          <i *ngIf="!expression.open" (click)="expression.open = true" class="fa fa-angle-right m-r-sm"></i>
-          <a [ngClass]="{'_600' :expression.type === 'variable'}"
-             (click)="generateExpression('variable', null)">Order Variables</a>
-          <ul class="m-t-xs p-l" *ngIf="expression.open">
+          <i (click)="expression.open = false" *ngIf="expression.open" class="fa fa-angle-down m-r-sm"></i>
+          <i (click)="expression.open = true" *ngIf="!expression.open" class="fa fa-angle-right m-r-sm"></i>
+          <a (click)="generateExpression('variable', null)"
+             [ngClass]="{'_600' :expression.type === 'variable'}">Order Variables</a>
+          <ul *ngIf="expression.open" class="m-t-xs p-l">
             <li *ngFor="let func of functions">
               <div class="show-in-single-line">
                 <i class="fa fa-circle text-xs m-r-sm"></i>
-                <a class="text-hover-primary" (click)="generateExpression('function', func)">{{func}}</a>
+                <a (click)="generateExpression('function', func)" class="text-hover-primary">{{func}}</a>
               </div>
             </li>
           </ul>

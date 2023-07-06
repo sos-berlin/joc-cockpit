@@ -9,7 +9,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import Gauge from 'svg-gauge';
-import { GaugeDefaults, GaugeOptions } from './gauge-defaults.service';
+import {GaugeDefaults, GaugeOptions} from './gauge-defaults.service';
 
 @Component({
   selector: 'app-gauge',
@@ -72,7 +72,7 @@ export class GaugeComponent implements AfterViewInit, OnChanges, GaugeOptions {
   @Input() valueDialClass: string;
 
   /**
-   * 	The CSS class of the gauge's text
+   *  The CSS class of the gauge's text
    */
   @Input() valueClass: string;
 
@@ -98,7 +98,8 @@ export class GaugeComponent implements AfterViewInit, OnChanges, GaugeOptions {
 
   private gauge: any;
 
-  constructor(private elm: ElementRef, private defaults: GaugeDefaults) {}
+  constructor(private elm: ElementRef, private defaults: GaugeDefaults) {
+  }
 
   ngAfterViewInit(): void {
     const options: GaugeOptions = {
@@ -131,7 +132,7 @@ export class GaugeComponent implements AfterViewInit, OnChanges, GaugeOptions {
 
     this.gauge = Gauge(this.elm.nativeElement, options);
 
-    this.gaugeCreated.emit({ gauge: this.gauge });
+    this.gaugeCreated.emit({gauge: this.gauge});
 
     this.updateValue();
   }

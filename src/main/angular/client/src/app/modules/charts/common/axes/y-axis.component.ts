@@ -8,9 +8,9 @@ import {
   SimpleChanges,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { YAxisTicksComponent } from './y-axis-ticks.component';
-import { Orientation } from '../types/orientation.enum';
-import { ViewDimensions } from '../types/view-dimension.interface';
+import {YAxisTicksComponent} from './y-axis-ticks.component';
+import {Orientation} from '../types/orientation.enum';
+import {ViewDimensions} from '../types/view-dimension.interface';
 
 @Component({
   selector: 'g[ngx-charts-y-axis]',
@@ -99,16 +99,16 @@ export class YAxisComponent implements OnChanges {
     }
   }
 
-  emitTicksWidth({ width }): void {
+  emitTicksWidth({width}): void {
     if (width !== this.labelOffset && this.yOrient === Orientation.Right) {
       this.labelOffset = width + this.labelOffset;
       setTimeout(() => {
-        this.dimensionsChanged.emit({ width });
+        this.dimensionsChanged.emit({width});
       }, 0);
     } else if (width !== this.labelOffset) {
       this.labelOffset = width;
       setTimeout(() => {
-        this.dimensionsChanged.emit({ width });
+        this.dimensionsChanged.emit({width});
       }, 0);
     }
   }

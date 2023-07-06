@@ -9,7 +9,7 @@ import {DataService} from '../../../services/data.service';
   selector: 'app-file-transfer-history-summary',
   templateUrl: './file-transfer-history-summary.component.html'
 })
-export class FileTransferHistorySummaryComponent implements OnInit, OnDestroy {
+export class FileTransferHistorySummaryComponent {
   summary: any;
   schedulerIds: any;
   preferences: any = {};

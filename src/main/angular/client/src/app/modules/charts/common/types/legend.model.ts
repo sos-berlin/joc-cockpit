@@ -1,4 +1,4 @@
-import { ScaleType } from './scale-type.enum';
+import {ScaleType} from './scale-type.enum';
 
 export interface LegendOptions {
   colors: any;

@@ -1,30 +1,40 @@
 <ng-template #contentTemplate>
   <div class="row">
     <div class="col-md-12 m-b-12 text-md">
-      <b class="text" *ngIf="!isFavorite" translate>favorite.button.addFavorite</b>
-      <b class="text" *ngIf="isFavorite" translate>favorite.button.editFavorite</b>
-      <i aria-hidden="true"  (click)="isVisible = false" class="fa fa-times-circle pos-abt cursor r-12 m-t-n-1 text-20"></i>
+      <b *ngIf="!isFavorite" class="text" translate>favorite.button.addFavorite</b>
+      <b *ngIf="isFavorite" class="text" translate>favorite.button.editFavorite</b>
+      <i (click)="isVisible = false" aria-hidden="true"
+         class="fa fa-times-circle pos-abt cursor r-12 m-t-n-1 text-20"></i>
     </div>
-    <div class="form-group col-md-12" [ngClass]="{'has-error' : ((favorite.dirty || favorite.touched) && favorite.invalid) || !unique}">
-      <input type="text" class="form-control" maxlength="255" [appAutofocus]="true" (blur)="checkName()" #favorite="ngModel" required [(ngModel)]="obj.name" placeholder="{{'common.placeholder.name' | translate}}" name="favorite">
-      <div class="help-block text-danger" *ngIf="!unique">
+    <div [ngClass]="{'has-error' : ((favorite.dirty || favorite.touched) && favorite.invalid) || !unique}"
+         class="form-group col-md-12">
+      <input #favorite="ngModel" (blur)="checkName()" [(ngModel)]="obj.name" [appAutofocus]="true" class="form-control"
+             maxlength="255" name="favorite" placeholder="{{'common.placeholder.name' | translate}}" required
+             type="text">
+      <div *ngIf="!unique" class="help-block text-danger">
         <div translate>common.message.uniqueError</div>
       </div>
     </div>
     <div class="col-md-12">
-      <button type="button" [disabled]="!obj.name || !unique" (click)="addFavorite()" class="btn btn-primary btn-sm" translate>common.button.done</button>
-      <button type="button" *ngIf="isFavorite" (click)="removeFavorite()" class="btn btn-danger btn-sm m-l-12" translate>common.button.remove</button>
+      <button (click)="addFavorite()" [disabled]="!obj.name || !unique" class="btn btn-primary btn-sm" translate
+              type="button">common.button.done
+      </button>
+      <button (click)="removeFavorite()" *ngIf="isFavorite" class="btn btn-danger btn-sm m-l-12" translate
+              type="button">common.button.remove
+      </button>
     </div>
   </div>
 </ng-template>
-<i *ngIf="data[type] && data[type].length > 1" nz-popover [nzPopoverBackdrop]="true"
-   [nzPopoverContent]="contentTemplate" [nzPopoverTrigger]="null" [nzPopoverVisible]="isVisible" nzPopoverPlacement="topRight"
-   class="pos-abt r-18 t-sm cursor text-16 primary-text-hover-color z-index" (click)="isVisible = true"
-   nz-icon nzType="star" [ngClass]="{'text-primary': isFavorite}" [nzTheme]="isFavorite ? 'fill' : 'outline'"></i>
-<div class="text-right" *ngIf="list.length > 0">
-  <a class="primary-text-hover-color text-u-l p-t-xxs cursor" (click)="showList()" translate>favorite.button.addFromFavorite</a>
+<i (click)="isVisible = true" *ngIf="data[type] && data[type].length > 1" [ngClass]="{'text-primary': isFavorite}"
+   [nzPopoverBackdrop]="true" [nzPopoverContent]="contentTemplate" [nzPopoverTrigger]="null"
+   [nzPopoverVisible]="isVisible"
+   [nzTheme]="isFavorite ? 'fill' : 'outline'" class="pos-abt r-18 t-sm cursor text-16 primary-text-hover-color z-index"
+   nz-icon nz-popover nzPopoverPlacement="topRight" nzType="star"></i>
+<div *ngIf="list.length > 0" class="text-right">
+  <a (click)="showList()" class="primary-text-hover-color text-u-l p-t-xxs cursor" translate>favorite.button.addFromFavorite</a>
 </div>
-<nz-select #myinput nzShowSearch class="fav-list-search-box" [(ngModel)]="obj.selected" (ngModelChange)="onChangeValue($event)"
-           [nzPlaceHolder]="'common.placeholder.search' | translate">
-  <nz-option *ngFor="let item of list | orderBy: 'ordering'" [nzValue]="item.name" [nzLabel]="item.name"></nz-option>
+<nz-select #myinput (ngModelChange)="onChangeValue($event)" [(ngModel)]="obj.selected" [nzPlaceHolder]="'common.placeholder.search' | translate"
+           class="fav-list-search-box"
+           nzShowSearch>
+  <nz-option *ngFor="let item of list | orderBy: 'ordering'" [nzLabel]="item.name" [nzValue]="item.name"></nz-option>
 </nz-select>

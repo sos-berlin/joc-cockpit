@@ -4,24 +4,24 @@
       <span translate> order.label.state </span>:
       <span class="_600"> {{order.state._text | translate}}</span>
     </div>
-    <div class="p-l-sm" *ngIf="order.state._reason">
+    <div *ngIf="order.state._reason" class="p-l-sm">
       <span translate> common.label.comment </span>:
       <span class="_600"> {{order.state._reason}}</span>
     </div>
-    <div class="p-l-sm" *ngIf="order.question">
+    <div *ngIf="order.question" class="p-l-sm">
       <span translate> workflow.label.prompt </span>:
       <span class="_600"> {{order.question}}</span>
     </div>
-    <div class="p-l-sm" *ngIf="order.lastOutcome">
+    <div *ngIf="order.lastOutcome" class="p-l-sm">
       <span translate> order.label.lastOutcome </span>:
       <span class="_600">{{order.lastOutcome.TYPE}}</span>
     </div>
-    <div class="p-l-sm" *ngIf="!order.cyclicOrder">
+    <div *ngIf="!order.cyclicOrder" class="p-l-sm">
       <span translate> order.label.scheduledFor </span>:
-      <span class="_600" *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
-      <span class="_600 text-l-c" *ngIf="order.scheduledNever" translate>common.label.never</span>
+      <span *ngIf="!order.scheduledNever" class="_600">{{order.scheduledFor | stringToDate}}</span>
+      <span *ngIf="order.scheduledNever" class="_600 text-l-c" translate>common.label.never</span>
     </div>
-    <div class="m-a-sm m-t-0" *ngIf="order.cyclicOrder">
+    <div *ngIf="order.cyclicOrder" class="m-a-sm m-t-0">
       <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
       <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
       {{order.cyclicOrder.firstStart | stringToDate}}
@@ -32,7 +32,7 @@
       <span class="_600 p-l-sm" translate>order.label.orders</span>:
       {{order.cyclicOrder.count}}
     </div>
-    <div class="m-a-sm m-t-0" *ngIf="order.cycleState">
+    <div *ngIf="order.cycleState" class="m-a-sm m-t-0">
       <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
       <span *ngIf="order.cycleState.since">
         <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
@@ -48,56 +48,56 @@
     </div>
   </ng-template>
   <span [nz-tooltip]="contentTemplate" nzTooltipPlacement="right">
-    <i class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.state.severity, 'text')"></i>
-    {{order.orderId}} <i *ngIf="order.cyclicOrder" class="fa fa-repeat p-l-xs p-r-xs" aria-hidden="true"></i>
-    <i class="text-sm text-muted" *ngIf="order.scheduledFor && !order.scheduledNever">{{order.scheduledFor |
+    <i [ngClass]="coreService.getColor(order.state.severity, 'text')" class="fa fa-circle p-r-s"></i>
+    {{order.orderId}} <i *ngIf="order.cyclicOrder" aria-hidden="true" class="fa fa-repeat p-l-xs p-r-xs"></i>
+    <i *ngIf="order.scheduledFor && !order.scheduledNever" class="text-sm text-muted">{{order.scheduledFor |
       stringToDate}}</i>
-    <i class="text-sm text-muted" *ngIf="order.scheduledNever" translate>common.label.never</i>
+    <i *ngIf="order.scheduledNever" class="text-sm text-muted" translate>common.label.never</i>
   </span>
 </ng-template>
-<ng-template #itemTemplate2 let-orders let-currentOrder="currentOrder">
+<ng-template #itemTemplate2 let-currentOrder="currentOrder" let-orders>
   <ng-template #contentTemplate2>
-    <div class="p-l-sm" *ngFor="let order of orders | keyvalue;">
+    <div *ngFor="let order of orders | keyvalue;" class="p-l-sm">
       <ng-container *ngIf="order.value['orderId'] !== currentOrder.orderId">
-        <i class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.value['state'].severity, 'text')"></i>
-        {{order.value['orderId']}} <i *ngIf="order.value['cyclicOrder']" class="fa fa-repeat p-l-xs p-r-xs"
-          aria-hidden="true"></i>
-        <i class="text-sm text-muted"
-          *ngIf="order.value['scheduledFor'] && !order.value['scheduledNever']">{{order.value['scheduledFor'] |
+        <i [ngClass]="coreService.getColor(order.value['state'].severity, 'text')" class="fa fa-circle p-r-s"></i>
+        {{order.value['orderId']}} <i *ngIf="order.value['cyclicOrder']" aria-hidden="true"
+                                      class="fa fa-repeat p-l-xs p-r-xs"></i>
+        <i *ngIf="order.value['scheduledFor'] && !order.value['scheduledNever']"
+           class="text-sm text-muted">{{order.value['scheduledFor'] |
           stringToDate}}</i>
-        <i class="text-sm text-muted" *ngIf="order.value['scheduledNever']" translate>common.label.never</i>
+        <i *ngIf="order.value['scheduledNever']" class="text-sm text-muted" translate>common.label.never</i>
       </ng-container>
     </div>
   </ng-template>
-  <span class="_600" [nz-tooltip]="contentTemplate2"> {{orders.size - 1}} others</span>
+  <span [nz-tooltip]="contentTemplate2" class="_600"> {{orders.size - 1}} others</span>
 </ng-template>
 <div *ngFor="let instruction of configuration.instructions; let i = index">
   <ul class="m-b-0">
-    <li (dragover)="drag($event);" (dragend)="dragend($event)">
-      <div class="hover"
-        [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}"
-        id="{{instruction.positionString}}"
-        *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'ConsumeNotices' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle'
-         || instruction.TYPE === 'Lock' || instruction.TYPE === 'Options' || instruction.TYPE === 'StickySubagent'">
-        <div class="btn-group dropdown m-l-n-10" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'">
-          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
+    <li (dragend)="dragend($event)" (dragover)="drag($event);">
+      <div *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'ConsumeNotices' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle'
+         || instruction.TYPE === 'Lock' || instruction.TYPE === 'Options' || instruction.TYPE === 'StickySubagent'"
+           [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}"
+           class="hover"
+           id="{{instruction.positionString}}">
+        <div *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'" class="btn-group dropdown m-l-n-10">
+          <button [nzDropdownMenu]="menu" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" type="button">
             <i class="fa fa-ellipsis-h"></i>
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
-              <li nz-menu-item (click)="showConfiguration(instruction);">
+              <li (click)="showConfiguration(instruction);" nz-menu-item>
                 <a translate>common.button.showConfiguration</a>
               </li>
             </ul>
           </nz-dropdown-menu>
         </div>
-        <i (click)="collapse(instruction)" class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.show)}"></i>
+        <i (click)="collapse(instruction)" [ngClass]="{'fa-minus' : (instruction.show)}" class="fa fa-plus pr-2"></i>
         <span class="_600">
           {{instruction.TYPE}}
-          <i class="p-l-xs p-r-xs text-muted _400" *ngIf="instruction.label">({{instruction.label}})</i>
+          <i *ngIf="instruction.label" class="p-l-xs p-r-xs text-muted _400">({{instruction.label}})</i>
           <span *ngIf="instruction.TYPE === 'Lock'">: </span>
           <span *ngIf="(instruction.TYPE === 'Lock')">
-            <span class="text-muted" *ngFor="let item of instruction.demands">
+            <span *ngFor="let item of instruction.demands" class="text-muted">
               <span [nz-tooltip]="lockItemTemplate" class="text-muted">
                 {{item.lockName}}
               </span>
@@ -111,201 +111,220 @@
               </ng-template>
             </span>
           </span>
-          <span class="text-muted" *ngIf="(instruction.TYPE === 'ConsumeNotices') && instruction.noticeBoardNames"
-          [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"></span>
+          <span *ngIf="(instruction.TYPE === 'ConsumeNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"
+                class="text-muted"></span>
         </span>
 
         <span class="expand-collapse-btn">
-          <i class="fa fa-lg fa-angle-double-down" (click)="expandNode(instruction)"></i>
-          <i class="fa fa-lg fa-angle-double-up p-l-xs" (click)="collapseNode(instruction)"></i>
+          <i (click)="expandNode(instruction)" class="fa fa-lg fa-angle-double-down"></i>
+          <i (click)="collapseNode(instruction)" class="fa fa-lg fa-angle-double-up p-l-xs"></i>
         </span>
-        <span class="m-l" *ngIf="instruction.order">
-          <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
+        <span *ngIf="instruction.order" class="m-l">
+          <div [draggable]="!disabledDrag" [ngClass]="disabledDrag ? 'inline' : 'draggable'">
             <span *ngIf="instruction.order">
-              <ng-container [ngTemplateOutlet]="itemTemplate"
-                [ngTemplateOutletContext]="{ $implicit: instruction.order}"></ng-container>
-              <span class="order-count" *ngIf="orders && orders.size - 1 > 0">
-                <ng-container [ngTemplateOutlet]="itemTemplate2"
-                  [ngTemplateOutletContext]="{ $implicit: orders, currentOrder: instruction.order}"></ng-container>
+              <ng-container [ngTemplateOutletContext]="{ $implicit: instruction.order}"
+                            [ngTemplateOutlet]="itemTemplate"></ng-container>
+              <span *ngIf="orders && orders.size - 1 > 0" class="order-count">
+                <ng-container [ngTemplateOutletContext]="{ $implicit: orders, currentOrder: instruction.order}"
+                              [ngTemplateOutlet]="itemTemplate2"></ng-container>
               </span>
             </span>
           </div>
         </span>
       </div>
-      <div id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'AddOrder' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
-       || instruction.TYPE === 'PostNotices' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'Break' || instruction.TYPE === 'ExpectNotices'"
-        [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd', 'drop-area': instruction.enabled}">
-        <div class="btn-group dropdown m-l-n-10" *ngIf="instruction.TYPE === 'Job'">
-          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
+      <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'AddOrder' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
+       || instruction.TYPE === 'PostNotices' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'Break' || instruction.TYPE === 'ExpectNotices'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd', 'drop-area': instruction.enabled}"
+           id="{{instruction.positionString}}">
+        <div *ngIf="instruction.TYPE === 'Job'" class="btn-group dropdown m-l-n-10">
+          <button [nzDropdownMenu]="menu" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" type="button">
             <i class="fa fa-ellipsis-h"></i>
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
-              <li nz-menu-item (click)="showConfiguration(instruction);">
+              <li (click)="showConfiguration(instruction);" nz-menu-item>
                 <a translate>common.button.showConfiguration</a>
               </li>
             </ul>
           </nz-dropdown-menu>
         </div>
-        <span class="cursor inst-text" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}" *ngIf="instruction.TYPE === 'Job'"
-          (click)="showConfiguration(instruction)">{{instruction.jobName}}</span>
-        <i class="p-l-xs p-r-xs text-muted _400" *ngIf="instruction.TYPE === 'Job' && instruction.label">({{instruction.label}})</i>
-        <span class="inst-text" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}" *ngIf="instruction.TYPE !== 'Job'"
-          [nz-tooltip]="(instruction.question || instruction.message)">
+        <span (click)="showConfiguration(instruction)" *ngIf="instruction.TYPE === 'Job'"
+              [ngClass]="{'drop-area-text' : instruction.enabled}" class="cursor inst-text"
+              id="{{instruction.positionString}}$">{{instruction.jobName}}</span>
+        <i *ngIf="instruction.TYPE === 'Job' && instruction.label"
+           class="p-l-xs p-r-xs text-muted _400">({{instruction.label}})</i>
+        <span *ngIf="instruction.TYPE !== 'Job'" [ngClass]="{'drop-area-text' : instruction.enabled}"
+              [nz-tooltip]="(instruction.question || instruction.message)" class="inst-text"
+              id="{{instruction.positionString}}$">
           {{instruction.TYPE | translate}}
-          <i class="p-l-xs p-r-xs text-muted _400" *ngIf="instruction.label">({{instruction.label}})</i>
+          <i *ngIf="instruction.label" class="p-l-xs p-r-xs text-muted _400">({{instruction.label}})</i>
           <span *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices')">: </span>
-          <span class="text-muted" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}"
-            *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices') && instruction.noticeBoardNames">
+          <span *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices') && instruction.noticeBoardNames" [ngClass]="{'drop-area-text' : instruction.enabled}"
+                class="text-muted"
+                id="{{instruction.positionString}}$">
             {{instruction.noticeBoardNames}}
           </span>
         </span>
 
-        <span class="m-l-md" *ngIf="instruction.order">
-          <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
+        <span *ngIf="instruction.order" class="m-l-md">
+          <div [draggable]="!disabledDrag" [ngClass]="disabledDrag ? 'inline' : 'draggable'">
             <span *ngIf="instruction.order">
-              <ng-container [ngTemplateOutlet]="itemTemplate"
-                [ngTemplateOutletContext]="{ $implicit: instruction.order}"></ng-container>
-              <span class="order-count" *ngIf="orders && orders.size - 1 > 0">
-                <ng-container [ngTemplateOutlet]="itemTemplate2"
-                  [ngTemplateOutletContext]="{ $implicit: orders, currentOrder: instruction.order}"></ng-container>
+              <ng-container [ngTemplateOutletContext]="{ $implicit: instruction.order}"
+                            [ngTemplateOutlet]="itemTemplate"></ng-container>
+              <span *ngIf="orders && orders.size - 1 > 0" class="order-count">
+                <ng-container [ngTemplateOutletContext]="{ $implicit: orders, currentOrder: instruction.order}"
+                              [ngTemplateOutlet]="itemTemplate2"></ng-container>
               </span>
             </span>
           </div>
         </span>
       </div>
-      <div id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'ForkListEnd' || instruction.TYPE === 'CycleEnd'" class="m-l-n-40"
-        [ngClass]="{'drop-area': instruction.enabled}">
-        <span class="inst-text _600" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}" *ngIf="instruction.TYPE === 'ForkListEnd'">{{'workflow.label.forkListEnd' |
-            translate}}
-        </span>
-        <span class="inst-text _600" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}" *ngIf="instruction.TYPE === 'CycleEnd'">{{'workflow.label.cycleEnd' |
+      <div *ngIf="instruction.TYPE === 'ForkListEnd' || instruction.TYPE === 'CycleEnd'"
+           [ngClass]="{'drop-area': instruction.enabled}" class="m-l-n-40"
+           id="{{instruction.positionString}}">
+        <span *ngIf="instruction.TYPE === 'ForkListEnd'" [ngClass]="{'drop-area-text' : instruction.enabled}"
+              class="inst-text _600"
+              id="{{instruction.positionString}}$">{{'workflow.label.forkListEnd' |
           translate}}
         </span>
-        <span class="m-l-md" *ngIf="instruction.order">
-          <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
+        <span *ngIf="instruction.TYPE === 'CycleEnd'" [ngClass]="{'drop-area-text' : instruction.enabled}"
+              class="inst-text _600"
+              id="{{instruction.positionString}}$">{{'workflow.label.cycleEnd' |
+          translate}}
+        </span>
+        <span *ngIf="instruction.order" class="m-l-md">
+          <div [draggable]="!disabledDrag" [ngClass]="disabledDrag ? 'inline' : 'draggable'">
             <span *ngIf="instruction.order">
-              <ng-container [ngTemplateOutlet]="itemTemplate"
-                [ngTemplateOutletContext]="{ $implicit: instruction.order}"></ng-container>
-              <span class="order-count" *ngIf="orders && orders.size - 1 > 0">
-                <ng-container [ngTemplateOutlet]="itemTemplate2"
-                  [ngTemplateOutletContext]="{ $implicit: orders, currentOrder: instruction.order}"></ng-container>
+              <ng-container [ngTemplateOutletContext]="{ $implicit: instruction.order}"
+                            [ngTemplateOutlet]="itemTemplate"></ng-container>
+              <span *ngIf="orders && orders.size - 1 > 0" class="order-count">
+                <ng-container [ngTemplateOutletContext]="{ $implicit: orders, currentOrder: instruction.order}"
+                              [ngTemplateOutlet]="itemTemplate2"></ng-container>
               </span>
             </span>
           </div>
         </span>
       </div>
-      <div [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}"
-        id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Fork' && (instruction.show)">
+      <div *ngIf="instruction.TYPE === 'Fork' && (instruction.show)"
+           [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}">
         <div *ngFor="let branch of instruction.branches">
           <div class="p-l-md">
-            <a class="m-l" (click)="collapse(branch)">
-              <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (branch.show)}"></i>
-              <i class="_600 inst-text" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}">{{branch.id}}</i>
+            <a (click)="collapse(branch)" class="m-l">
+              <i [ngClass]="{'fa-minus' : (branch.show)}" class="fa fa-plus pr-2"></i>
+              <i [ngClass]="{'drop-area-text' : instruction.enabled}" class="_600 inst-text"
+                 id="{{instruction.positionString}}$">{{branch.id}}</i>
             </a>
-            <span class="m-l-md" *ngIf="branch.order">
-              <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
+            <span *ngIf="branch.order" class="m-l-md">
+              <div [draggable]="!disabledDrag" [ngClass]="disabledDrag ? 'inline' : 'draggable'">
                 <span *ngIf="branch.order">
-                  <ng-container [ngTemplateOutlet]="itemTemplate"
-                    [ngTemplateOutletContext]="{ $implicit: branch.order}"></ng-container>
-                  <span class="order-count" *ngIf="orders  && orders.size - 1 > 0">
-                    <ng-container [ngTemplateOutlet]="itemTemplate2"
-                      [ngTemplateOutletContext]="{ $implicit: orders, currentOrder: branch.order}"></ng-container>
+                  <ng-container [ngTemplateOutletContext]="{ $implicit: branch.order}"
+                                [ngTemplateOutlet]="itemTemplate"></ng-container>
+                  <span *ngIf="orders  && orders.size - 1 > 0" class="order-count">
+                    <ng-container [ngTemplateOutletContext]="{ $implicit: orders, currentOrder: branch.order}"
+                                  [ngTemplateOutlet]="itemTemplate2"></ng-container>
                   </span>
                 </span>
               </div>
             </span>
-            <div class="p-l" *ngIf="branch.instructions && (branch.show)">
-              <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag" [configuration]="branch"
-                [jobs]="jobs" [orders]="orders" [expandAll]="expandAll"></app-workflow-tree-structure>
+            <div *ngIf="branch.instructions && (branch.show)" class="p-l">
+              <app-workflow-tree-structure [configuration]="branch" [disabledDrag]="disabledDrag" [expandAll]="expandAll"
+                                           [jobs]="jobs" [orders]="orders"
+                                           [timezone]="timezone"></app-workflow-tree-structure>
             </div>
           </div>
         </div>
       </div>
-      <div [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}"
-        id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'If' && (instruction.show)">
+      <div *ngIf="instruction.TYPE === 'If' && (instruction.show)"
+           [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}">
         <div *ngIf="instruction.then && instruction.then.instructions">
-          <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag"
-            [configuration]="instruction.then" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll">
+          <app-workflow-tree-structure [configuration]="instruction.then" [disabledDrag]="disabledDrag"
+                                       [expandAll]="expandAll" [jobs]="jobs" [orders]="orders"
+                                       [timezone]="timezone">
           </app-workflow-tree-structure>
           <div class="p-l-md">
-            <a class="m-l" *ngIf="instruction.else" (click)="collapse(instruction.else)">
-              <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.else.show)}"></i>
-              <span class="_600 inst-text" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}">Else</span>
+            <a (click)="collapse(instruction.else)" *ngIf="instruction.else" class="m-l">
+              <i [ngClass]="{'fa-minus' : (instruction.else.show)}" class="fa fa-plus pr-2"></i>
+              <span [ngClass]="{'drop-area-text' : instruction.enabled}" class="_600 inst-text"
+                    id="{{instruction.positionString}}$">Else</span>
             </a>
-            <span class="m-l-md" *ngIf="instruction.else && (instruction.else.order)">
-              <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
+            <span *ngIf="instruction.else && (instruction.else.order)" class="m-l-md">
+              <div [draggable]="!disabledDrag" [ngClass]="disabledDrag ? 'inline' : 'draggable'">
                 <span *ngIf="instruction.else.order">
-                  <ng-container [ngTemplateOutlet]="itemTemplate"
-                    [ngTemplateOutletContext]="{ $implicit: instruction.else.order }"></ng-container>
-                  <span class="order-count" *ngIf="orders && orders.size - 1 > 0">
-                    <ng-container [ngTemplateOutlet]="itemTemplate2"
-                      [ngTemplateOutletContext]="{ $implicit: orders, currentOrder: instruction.else.order}">
+                  <ng-container [ngTemplateOutletContext]="{ $implicit: instruction.else.order }"
+                                [ngTemplateOutlet]="itemTemplate"></ng-container>
+                  <span *ngIf="orders && orders.size - 1 > 0" class="order-count">
+                    <ng-container [ngTemplateOutletContext]="{ $implicit: orders, currentOrder: instruction.else.order}"
+                                  [ngTemplateOutlet]="itemTemplate2">
                     </ng-container>
                   </span>
                 </span>
               </div>
             </span>
-            <div class="p-l" *ngIf="instruction.else && (instruction.else.show)">
-              <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag"
-                [configuration]="instruction.else" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll"
-                *ngIf="instruction.else.instructions"></app-workflow-tree-structure>
+            <div *ngIf="instruction.else && (instruction.else.show)" class="p-l">
+              <app-workflow-tree-structure *ngIf="instruction.else.instructions" [configuration]="instruction.else"
+                                           [disabledDrag]="disabledDrag" [expandAll]="expandAll" [jobs]="jobs"
+                                           [orders]="orders"
+                                           [timezone]="timezone"></app-workflow-tree-structure>
             </div>
           </div>
         </div>
       </div>
-      <div [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}"
-        id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Try' && (instruction.show)">
-        <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag" [configuration]="instruction"
-          [jobs]="jobs" [orders]="orders" [expandAll]="expandAll" *ngIf="instruction.instructions">
+      <div *ngIf="instruction.TYPE === 'Try' && (instruction.show)"
+           [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}">
+        <app-workflow-tree-structure *ngIf="instruction.instructions" [configuration]="instruction" [disabledDrag]="disabledDrag"
+                                     [expandAll]="expandAll" [jobs]="jobs" [orders]="orders"
+                                     [timezone]="timezone">
         </app-workflow-tree-structure>
-        <div class="p-l-md" *ngIf="instruction.catch && instruction.catch.instructions">
-          <a class="m-l" (click)="collapse(instruction.catch)">
-            <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.catch.show)}"></i>
-            <span class="_600 inst-text" id="{{instruction.positionString}}$" [ngClass]="{'drop-area-text' : instruction.enabled}" translate>workflow.label.catch</span>
+        <div *ngIf="instruction.catch && instruction.catch.instructions" class="p-l-md">
+          <a (click)="collapse(instruction.catch)" class="m-l">
+            <i [ngClass]="{'fa-minus' : (instruction.catch.show)}" class="fa fa-plus pr-2"></i>
+            <span [ngClass]="{'drop-area-text' : instruction.enabled}" class="_600 inst-text"
+                  id="{{instruction.positionString}}$" translate>workflow.label.catch</span>
           </a>
-          <span class="m-l-md" *ngIf="(instruction.catch.order)">
-            <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
+          <span *ngIf="(instruction.catch.order)" class="m-l-md">
+            <div [draggable]="!disabledDrag" [ngClass]="disabledDrag ? 'inline' : 'draggable'">
               <span *ngIf="instruction.catch.order">
-                <ng-container [ngTemplateOutlet]="itemTemplate"
-                  [ngTemplateOutletContext]="{ $implicit: instruction.catch.order}"></ng-container>
-                <span class="order-count" *ngIf="orders && orders.size - 1 > 0">
-                  <ng-container [ngTemplateOutlet]="itemTemplate2"
-                    [ngTemplateOutletContext]="{ $implicit: orders, currentOrder: instruction.catch.order}">
+                <ng-container [ngTemplateOutletContext]="{ $implicit: instruction.catch.order}"
+                              [ngTemplateOutlet]="itemTemplate"></ng-container>
+                <span *ngIf="orders && orders.size - 1 > 0" class="order-count">
+                  <ng-container [ngTemplateOutletContext]="{ $implicit: orders, currentOrder: instruction.catch.order}"
+                                [ngTemplateOutlet]="itemTemplate2">
                   </ng-container>
                 </span>
               </span>
             </div>
           </span>
-          <div class="m-l" *ngIf="(instruction.catch.show)">
-            <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag"
-              [configuration]="instruction.catch" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll"
-              *ngIf="instruction.catch.instructions"></app-workflow-tree-structure>
+          <div *ngIf="(instruction.catch.show)" class="m-l">
+            <app-workflow-tree-structure *ngIf="instruction.catch.instructions" [configuration]="instruction.catch"
+                                         [disabledDrag]="disabledDrag" [expandAll]="expandAll" [jobs]="jobs"
+                                         [orders]="orders"
+                                         [timezone]="timezone"></app-workflow-tree-structure>
           </div>
         </div>
       </div>
-      <div [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}"
-        id="{{instruction.positionString}}"
-        *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock' || instruction.TYPE === 'Options' || instruction.TYPE === 'StickySubagent' || instruction.TYPE === 'ForkList' ||  instruction.TYPE === 'ConsumeNotices') && (instruction.show)">
+      <div *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock' || instruction.TYPE === 'Options' || instruction.TYPE === 'StickySubagent' || instruction.TYPE === 'ForkList' ||  instruction.TYPE === 'ConsumeNotices') && (instruction.show)"
+           [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}"
+           id="{{instruction.positionString}}">
         <div>
-          <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag" [configuration]="instruction"
-            [jobs]="jobs" [orders]="orders" [expandAll]="expandAll" *ngIf="instruction.instructions">
+          <app-workflow-tree-structure *ngIf="instruction.instructions" [configuration]="instruction" [disabledDrag]="disabledDrag"
+                                       [expandAll]="expandAll" [jobs]="jobs" [orders]="orders"
+                                       [timezone]="timezone">
           </app-workflow-tree-structure>
         </div>
       </div>
-      <div id="{{instruction.join.unique}}" *ngIf="instruction.join"
-        [ngClass]="{'drop-area': instruction.join.enabled}">
-        <span class="_600 inst-text" id="{{instruction.join.unique}}$" [ngClass]="{'drop-area-text' : instruction.enabled}">
+      <div *ngIf="instruction.join" [ngClass]="{'drop-area': instruction.join.enabled}"
+           id="{{instruction.join.unique}}">
+        <span [ngClass]="{'drop-area-text' : instruction.enabled}" class="_600 inst-text"
+              id="{{instruction.join.unique}}$">
           {{'workflow.label.join' | translate}}
         </span>
-        <span class="m-l-md" *ngIf="instruction.join.order">
-          <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
+        <span *ngIf="instruction.join.order" class="m-l-md">
+          <div [draggable]="!disabledDrag" [ngClass]="disabledDrag ? 'inline' : 'draggable'">
             <span *ngIf="instruction.join.order">
-              <ng-container [ngTemplateOutlet]="itemTemplate"
-                [ngTemplateOutletContext]="{ $implicit: instruction.join.order}"></ng-container>
-              <span class="order-count" *ngIf="orders && orders.size - 1 > 0">
-                <ng-container [ngTemplateOutlet]="itemTemplate2"
-                  [ngTemplateOutletContext]="{ $implicit: orders, currentOrder: instruction.join.order}"></ng-container>
+              <ng-container [ngTemplateOutletContext]="{ $implicit: instruction.join.order}"
+                            [ngTemplateOutlet]="itemTemplate"></ng-container>
+              <span *ngIf="orders && orders.size - 1 > 0" class="order-count">
+                <ng-container [ngTemplateOutletContext]="{ $implicit: orders, currentOrder: instruction.join.order}"
+                              [ngTemplateOutlet]="itemTemplate2"></ng-container>
               </span>
             </span>
           </div>

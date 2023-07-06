@@ -8,7 +8,7 @@ import {ResourceComponent} from './resource.component';
   ],
   declarations: [
     ResourceComponent
-   ]
+  ]
 })
 export class ResourceModule {
 }

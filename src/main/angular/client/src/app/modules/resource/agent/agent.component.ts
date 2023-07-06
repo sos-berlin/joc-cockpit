@@ -12,7 +12,7 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
   selector: 'app-confirm-node-modal',
   templateUrl: './confirm-node-dialog.html'
 })
-export class ConfirmNodeModalComponent implements OnInit {
+export class ConfirmNodeModalComponent {
   @Input() agent: any;
 
   submitted = false;
@@ -28,11 +28,11 @@ export class ConfirmNodeModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     } else {
-      let preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+      let preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
       this.display = preferences.auditLog;
     }
   }
@@ -60,7 +60,7 @@ export class ConfirmNodeModalComponent implements OnInit {
   selector: 'app-agent-cluster',
   templateUrl: 'agent.component.html'
 })
-export class AgentComponent implements OnInit, OnDestroy {
+export class AgentComponent {
   loading: boolean;
   schedulerIds: any = {};
   preferences: any = {};
@@ -100,11 +100,11 @@ export class AgentComponent implements OnInit, OnDestroy {
       this.agentsFilters.expandedObjects = [];
     }
     this.coreService.getResourceTab().state = 'agent';
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).agent;
+    if (localStorage['views']) {
+      this.pageView = JSON.parse(localStorage['views']).agent;
     }
     if (this.schedulerIds.selected) {
       this.loadAgents(null);
@@ -210,7 +210,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     }
   }
 
-  private refresh(args): void {
+  private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'AgentAdded' || args.eventSnapshots[j].eventType === 'AgentUpdated' || args.eventSnapshots[j].eventType === 'AgentInventoryUpdated' ||
@@ -226,11 +226,11 @@ export class AgentComponent implements OnInit, OnDestroy {
 
   /* ---------------------------- Action ----------------------------------*/
 
-  pageIndexChange($event): void {
+  pageIndexChange($event: number): void {
     this.agentsFilters.currentPage = $event;
   }
 
-  pageSizeChange($event): void {
+  pageSizeChange($event: number): void {
     this.agentsFilters.entryPerPage = $event;
   }
 
@@ -309,9 +309,9 @@ export class AgentComponent implements OnInit, OnDestroy {
         operation: 'Switch Over'
       };
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
-        nzComponentParams: {
+        nzData: {
           comments,
           url: 'agent/cluster/switchover',
           obj,
@@ -326,11 +326,11 @@ export class AgentComponent implements OnInit, OnDestroy {
     }
   }
 
-  confirmNodeLoss(agent): void {
+  confirmNodeLoss(agent: any): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ConfirmNodeModalComponent,
-      nzComponentParams: {
+      nzData: {
         agent,
       },
       nzFooter: null,

@@ -2,8 +2,8 @@
   <h4 class="modal-title">
     <span class="drag-text" translate>workflow.findAndReplace.label.findAndReplace</span>
   </h4>
-  <button type="button" class="close" aria-label="Close"
-          (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close"
+          type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -13,13 +13,14 @@
       <label class="col-md-4 col-lg-3 form-control-label"
              translate>workflow.findAndReplace.label.find</label>
       <div class="col-md-8 col-lg-9">
-        <nz-select #selectBox nzMode="multiple" nzAllowClear nzShowSearch name="find" [nzDropdownClassName]="'group-list'"
-                   nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectFind' | translate}}"
-                   [(ngModel)]="object.finds" (keydown)="onKeyPress($event)" (nzBlur)="focusOut()">
+        <nz-select #selectBox (keydown)="onKeyPress($event)" (nzBlur)="focusOut()" [(ngModel)]="object.finds" [nzDropdownClassName]="'group-list'"
+                   name="find"
+                   nzAllowClear
+                   nzMode="multiple" nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectFind' | translate}}" nzShowSearch>
           <ng-container *ngFor="let item of listOfAgents">
             <ng-container *ngIf="!item.title">
-              <nz-option [nzHide]="item === '*'" nzCustomContent [nzLabel]="item"
-                         [nzValue]="item">
+              <nz-option [nzHide]="item === '*'" [nzLabel]="item" [nzValue]="item"
+                         nzCustomContent>
                 <span class="_600" style="font-size: 12px;">
                   {{item}}
                 </span>
@@ -33,7 +34,7 @@
                   </span>
                 </ng-template>
                 <nz-option *ngFor="let agent of group.children" [nzLabel]="agent"
-                         [nzValue]="agent"></nz-option>
+                           [nzValue]="agent"></nz-option>
               </nz-option-group>
             </ng-container>
             <ng-container
@@ -49,8 +50,8 @@
                     {{ group.title }}
                   </span>
                 </ng-template>
-                <nz-option nzCustomContent *ngFor="let agent of group.children" [nzLabel]="agent"
-                         [nzValue]="agent">
+                <nz-option *ngFor="let agent of group.children" [nzLabel]="agent" [nzValue]="agent"
+                           nzCustomContent>
                   <span class="pl-20">{{ agent }}</span>
                 </nz-option>
               </nz-option-group>
@@ -62,20 +63,21 @@
     <div class="form-group row">
       <label class="col-md-4 col-lg-3 form-control-label"
              translate>workflow.findAndReplace.label.replace
-       <sup class="text-danger text-sm">*</sup>
+        <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-md-8 col-lg-9">
-        <app-agent-selection [obj]="{}" [preferences]="preferences" [type]="'replace'" [agents]="agents"
-                             (selectSubagentCluster)="selectSubagentCluster($event)" [data]="object"></app-agent-selection>
+        <app-agent-selection (selectSubagentCluster)="selectSubagentCluster($event)" [agents]="agents" [data]="object" [obj]="{}"
+                             [preferences]="preferences"
+                             [type]="'replace'"></app-agent-selection>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid" translate>
+    <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" translate type="submit">
       common.button.submit
     </button>
-    <button type="button" class="btn btn-grey btn-sm"
-            (click)="activeModal.destroy()" translate>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
+            translate type="button">
       common.button.cancel
     </button>
   </div>

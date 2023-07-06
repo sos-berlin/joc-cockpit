@@ -18,7 +18,7 @@ declare const $;
   selector: 'app-frequency-modal-content',
   templateUrl: './frequency-dialog.html'
 })
-export class FrequencyModalComponent implements OnInit {
+export class FrequencyModalComponent {
   @Input() schedulerId: any;
   @Input() dateFormat: any;
   @Input() dateFormatM: any;
@@ -1079,7 +1079,7 @@ export class FrequencyModalComponent implements OnInit {
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
 })
-export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
+export class CalendarComponent {
   @Input() schedulerId: any;
   @Input() preferences: any;
   @Input() permission: any;
@@ -1183,7 +1183,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
             nzTitle: undefined,
             nzContent: CommentModalComponent,
             nzClassName: 'lg',
-            nzComponentParams: {
+            nzData: {
               comments
             },
             nzFooter: null,
@@ -1557,7 +1557,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     const TYPE = type === 'includes' ? 'INCLUDE' : 'EXCLUDE';
     if (data[type].dates && data[type].dates.length > 0) {
       obj = {};
-      this.iterateData(obj, data[type].dates,  'specificDays', TYPE, null, 'ultimos');
+      this.iterateData(obj, data[type].dates, 'specificDays', TYPE, null, 'ultimos');
 
     }
     if (data[type].weekdays && data[type].weekdays.length > 0) {
@@ -1577,7 +1577,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
           }
         } else {
           obj = {};
-          this.iterateData(obj, data[type].monthdays[x],  'monthDays', TYPE, null, 'months');
+          this.iterateData(obj, data[type].monthdays[x], 'monthDays', TYPE, null, 'months');
 
         }
       }
@@ -1588,11 +1588,11 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         if (data[type].ultimos[x].weeklyDays && data[type].ultimos[x].weeklyDays.length > 0) {
           for (let y = 0; y < data[type].ultimos[x].weeklyDays.length; y++) {
             obj = {};
-            this.iterateData(obj, data[type].ultimos[x].weeklyDays[y],  'specificWeekDays', TYPE, data[type].ultimos[x], 'ultimos');
+            this.iterateData(obj, data[type].ultimos[x].weeklyDays[y], 'specificWeekDays', TYPE, data[type].ultimos[x], 'ultimos');
           }
         } else {
           obj = {};
-          this.iterateData(obj, data[type].ultimos[x],  'monthDays', TYPE, null, 'ultimos');
+          this.iterateData(obj, data[type].ultimos[x], 'monthDays', TYPE, null, 'ultimos');
         }
 
       }
@@ -1601,13 +1601,13 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       const arr = this.calendarService.groupByDates(data[type].holidays[0].dates);
       for (let x = 0; x < arr.length; x++) {
         obj = {};
-        this.iterateData(obj, arr[x],  'nationalHoliday', TYPE, null, null);
+        this.iterateData(obj, arr[x], 'nationalHoliday', TYPE, null, null);
       }
     }
     if (data[type].repetitions && data[type].repetitions.length > 0) {
       for (let x = 0; x < data[type].repetitions.length; x++) {
         obj = {};
-        this.iterateData(obj, data[type].repetitions[x],  'every', TYPE, null, null);
+        this.iterateData(obj, data[type].repetitions[x], 'every', TYPE, null, null);
       }
     }
   }

@@ -2,82 +2,87 @@
   <h4 class="modal-title">
     <span translate>dailyPlan.label.createPlan</span>
     :
-    <i class="text-muted p-l-xs text" *ngIf="!(dateRanges && dateRanges.length > 0)">{{selectedDate | stringToDate1: true}}</i>
+    <i *ngIf="!(dateRanges && dateRanges.length > 0)"
+       class="text-muted p-l-xs text">{{selectedDate | stringToDate1: true}}</i>
     <span *ngIf="dateRanges && dateRanges.length > 0">
       <i class="text-muted">{{dateRanges[0] | stringToDate1:true}}</i> -
       <i class="text-muted">{{dateRanges[1] | stringToDate1:true}}</i>
     </span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="cancel()">
+  <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a min-ht-200">
-    <div class="hide" [ngClass]="{'show': display}">
+    <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
     </div>
     <div class="form-group row">
       <label class="col-md-3" translate>dailyPlan.label.chooseTemplates</label>
       <div class="col-md-6">
-        <nz-radio-group name="at" [(ngModel)]="object.at">
+        <nz-radio-group [(ngModel)]="object.at" name="at">
           <label nz-radio nzValue="all"><span translate>dailyPlan.label.all</span></label>
           <label nz-radio nzValue="template"><span translate>dailyPlan.label.select</span></label>
         </nz-radio-group>
       </div>
     </div>
-    <div class="form-group row" *ngIf="object.at === 'template'">
+    <div *ngIf="object.at === 'template'" class="form-group row">
       <label class="col-md-3 form-control-label" translate>dailyPlan.label.schedules</label>
       <div class="col-md-6">
-        <app-multi-select [type]="'SCHEDULE'" [isPath]="true" [list]="selectedTemplates" [addFolderPossible]="true" [folders]="selectedTemplates"
-                          [attribute]="'schedules'" [pathAttribute]="'paths'" [nodes]="scheduleTree"></app-multi-select>
+        <app-multi-select [addFolderPossible]="true" [attribute]="'schedules'" [folders]="selectedTemplates" [isPath]="true"
+                          [list]="selectedTemplates"
+                          [nodes]="scheduleTree" [pathAttribute]="'paths'" [type]="'SCHEDULE'"></app-multi-select>
       </div>
     </div>
-    <div class="form-group row" *ngIf="object.at === 'template' && selectedTemplates.paths.length > 0">
+    <div *ngIf="object.at === 'template' && selectedTemplates.paths.length > 0" class="form-group row">
       <label class="col-md-3" translate>common.label.folders</label>
       <div class="col-sm-6" style="max-height: 140px; overflow: auto">
         <div *ngFor="let path of selectedTemplates.paths">
           <span class="">{{path}}</span>
-          <i class="pull-right pos-rel t-xs fa fa-remove text-hover-primary" (click)="remove(path, true)"></i>
+          <i (click)="remove(path, true)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="object.at === 'template'">
+    <div *ngIf="object.at === 'template'" class="form-group row">
       <label class="col-md-3 form-control-label" translate>dailyPlan.label.workflows</label>
       <div class="col-md-6">
-        <app-multi-select [type]="'WORKFLOW'" [isPath]="true" [list]="object" [addFolderPossible]="true" [folders]="object"
-                          [attribute]="'workflowPaths'" [pathAttribute]="'paths'" [nodes]="workflowsTree"></app-multi-select>
+        <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="object" [isPath]="true"
+                          [list]="object"
+                          [nodes]="workflowsTree" [pathAttribute]="'paths'"
+                          [type]="'WORKFLOW'"></app-multi-select>
       </div>
     </div>
-    <div class="form-group row" *ngIf="object.at === 'template' && object.paths.length > 0">
+    <div *ngIf="object.at === 'template' && object.paths.length > 0" class="form-group row">
       <label class="col-md-3" translate>common.label.folders</label>
       <div class="col-sm-6" style="max-height: 140px; overflow: auto">
         <div *ngFor="let path of object.paths">
           <span>{{path}}</span>
-          <i class="pull-right pos-rel t-xs fa fa-remove text-hover-primary" (click)="remove(path)"></i>
+          <i (click)="remove(path)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
         </div>
       </div>
     </div>
     <div class="form-group row">
       <label class="col-md-3" translate>dailyPlan.label.overwrite</label>
       <div class="col-md-6">
-        <label nz-checkbox [(ngModel)]="object.overwrite" name="overwrite"></label>
+        <label [(ngModel)]="object.overwrite" name="overwrite" nz-checkbox></label>
       </div>
     </div>
     <div class="form-group row">
       <label class="col-md-3" translate>dailyPlan.label.submitWith</label>
       <div class="col-md-6">
-        <label nz-checkbox [(ngModel)]="object.submitWith" name="submitWith"></label>
+        <label [(ngModel)]="object.submitWith" name="submitWith" nz-checkbox></label>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || (required && !comments.comment) || submitted || (object.at === 'template' && selectedTemplates.schedules && selectedTemplates.schedules.length ===0
-     && object.workflowPaths && object.workflowPaths.length ===0 && object.paths.length === 0 && selectedTemplates.paths.length === 0)" class="btn btn-primary btn-sm">
+    <button [disabled]="!myForm.form.valid || (required && !comments.comment) || submitted || (object.at === 'template' && selectedTemplates.schedules && selectedTemplates.schedules.length ===0
+     && object.workflowPaths && object.workflowPaths.length ===0 && object.paths.length === 0 && selectedTemplates.paths.length === 0)" class="btn btn-primary btn-sm"
+            type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

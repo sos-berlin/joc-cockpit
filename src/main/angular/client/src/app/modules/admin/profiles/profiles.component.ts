@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -12,7 +12,7 @@ import {AuthService} from '../../../components/guard';
   selector: 'app-profiles',
   templateUrl: './profiles.component.html'
 })
-export class ProfilesComponent implements OnInit, OnDestroy {
+export class ProfilesComponent {
   preferences: any = {};
   permission: any = {};
   profiles: any = [];
@@ -109,7 +109,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -131,7 +131,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title: profile ? (complete ? 'deleteProfileAndCustomizations' : 'deleteProfilePreferences') : (complete ? 'deleteAllProfileAndCustomizations' : 'deleteAllProfilePreferences'),
           message: profile ? (complete ? 'deleteProfileAndCustomizations' : 'deleteProfilePreferences') : (complete ? 'deleteAllProfileAndCustomizations' : 'deleteAllProfilePreferences'),
           type: 'Delete',

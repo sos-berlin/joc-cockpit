@@ -340,7 +340,7 @@ export class TimeRangeRegexValidator implements Validator {
       if (v == '') {
         return null;
       }
-      if (/^-?[0-9]+(\.\.-?[0-9]+)?(, *-?[0-9]+(\.\.-?[0-9]+)?)*$/i.test(v) ||  /^\s*(\d+)\s*$/i.test(v)) {
+      if (/^-?[0-9]+(\.\.-?[0-9]+)?(, *-?[0-9]+(\.\.-?[0-9]+)?)*$/i.test(v) || /^\s*(\d+)\s*$/i.test(v)) {
         return null;
       }
     } else {
@@ -462,7 +462,7 @@ export class LabelValidator implements Validator {
 @Directive({
   selector: '[appResizable]'
 })
-export class ResizableDirective implements OnInit {
+export class ResizableDirective {
   @Input() height: string;
   @Input() type: string;
   @Input() path: string;

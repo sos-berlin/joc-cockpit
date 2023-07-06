@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpHeaders, HttpParams} from "@angular/common/http";
 import {combineLatest, Observable, of} from "rxjs";
-import CryptoJS from 'crypto-js';
+import * as CryptoJS from 'crypto-js';
 import {ToastrService} from "ngx-toastr";
 import {Router} from "@angular/router";
 import {CoreService} from "../../services/core.service";
@@ -202,18 +202,18 @@ export class OIDCAuthService {
       if (!scope.match(/(^|\s)openid($|\s)/)) {
         scope = 'openid ' + scope;
       }
-      if(this.responseTypesSupported?.length > 1) {
+      if (!this.clientSecret) {
         this.responseTypesSupported.forEach((type: string) => {
           if (type.includes('id_token')) {
             this.responseType = type;
           }
         })
       }
-     
+
       url = this.loginUrl +
         seperationChar +
         'response_type=' +
-        encodeURIComponent(this.responseType) + (this.clientId ? '&client_id=' +  encodeURIComponent(this.clientId) : '') +
+        encodeURIComponent(this.responseType) + (this.clientId ? '&client_id=' + encodeURIComponent(this.clientId) : '') +
         '&state=' +
         encodeURIComponent(state) +
         '&redirect_uri=' +
@@ -403,7 +403,7 @@ export class OIDCAuthService {
       //  const err = new OAuthErrorEvent('code_error', {}, parts);
       //  this.eventsSubject.next(err);
       return Promise.reject({code_error: parts});
-    } else if(idToken){
+    } else if (idToken) {
       this.access_token = accessToken;
       this.id_token = idToken;
       return Promise.resolve();

@@ -4,7 +4,7 @@
     <i *ngIf="data">:&nbsp;</i>
     <span *ngIf="data">{{data.name}}</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="close()">
+  <button (click)="close()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -13,23 +13,24 @@
     <div class="form-group row">
       <label class="col-sm-3 form-control-label" translate>common.label.name</label>
       <ng-container *ngIf="type == 'AGENT'">
-        <div class="col-sm-8" [ngClass]="{ 'has-error' : (name.dirty || name.touched) && name.invalid}">
+        <div [ngClass]="{ 'has-error' : (name.dirty || name.touched) && name.invalid}" class="col-sm-8">
           <nz-tree-select
-            required
-            [nzHideUnMatched]="true"
-            [nzDropdownStyle]="{ 'max-height': '300px' }"
-            nzShowSearch
-            name="name"
-            [(ngModel)]="object.name"
-            [nzDropdownClassName]="'custom-tree-select'"
             #name="ngModel"
+            [(ngModel)]="object.name"
+            [nzAllowClear]="false"
+            [nzDropdownClassName]="'custom-tree-select'"
+            [nzDropdownStyle]="{ 'max-height': '300px' }"
+            [nzHideUnMatched]="true"
             [nzNodes]="agents"
             [nzPlaceHolder]="'workflow.placeholder.selectAgentName' | translate"
-            [nzAllowClear]="false"
-            >
+            name="name"
+            nzShowSearch
+            required
+          >
             <ng-template #nzTreeTemplate let-node>
-              <div class="node-wrapper w-93" (click)="onSelect(node);">
-                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.key == object.name && object.name">
+              <div (click)="onSelect(node);" class="node-wrapper w-93">
+                <div [class.node-content-wrapper-active]="node.origin.key == object.name && object.name"
+                     class="node-content-wrapper">
                   <i *ngIf="node.isLeaf" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
                   {{node.origin.title}}
                 </div>
@@ -44,9 +45,10 @@
         </div>
       </ng-container>
       <ng-container *ngIf="type == 'FACET'">
-        <div class="col-sm-8" [ngClass]="{ 'has-error' : (name.dirty || name.touched) && name.invalid}">
-          <input type="text" class="form-control" maxlength="255" [appAutofocus]="true" [placeholder]="'customization.placeholder.enterName' | translate" name="name" [(ngModel)]="object.name"
-                 required #name="ngModel"/>
+        <div [ngClass]="{ 'has-error' : (name.dirty || name.touched) && name.invalid}" class="col-sm-8">
+          <input #name="ngModel" [(ngModel)]="object.name" [appAutofocus]="true" [placeholder]="'customization.placeholder.enterName' | translate"
+                 class="form-control" maxlength="255" name="name"
+                 required type="text"/>
           <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
             <div *ngIf="name.errors.required">
               <div translate>common.message.requiredError</div>
@@ -57,9 +59,11 @@
     </div>
     <div *ngIf="type == 'FACET'" class="form-group row">
       <label class="col-sm-3 form-control-label" translate>workflow.label.facet</label>
-      <div class="col-sm-8" [ngClass]="{ 'has-error' : ((facet.dirty || facet.touched) && facet.invalid) || object.invalid}">
-        <textarea #facet="ngModel" name="facet" (keydown)="checkRegularExp(object)" (blur)="checkRegularExp(object)"
-                  [(ngModel)]="object.content" nz-input placeholder="{{'common.placeholder.regex' | translate}}" nzAutosize></textarea>
+      <div [ngClass]="{ 'has-error' : ((facet.dirty || facet.touched) && facet.invalid) || object.invalid}"
+           class="col-sm-8">
+        <textarea #facet="ngModel" (blur)="checkRegularExp(object)" (keydown)="checkRegularExp(object)" [(ngModel)]="object.content"
+                  name="facet" nz-input nzAutosize
+                  placeholder="{{'common.placeholder.regex' | translate}}"></textarea>
         <div *ngIf="(facet.invalid && facet.errors && (facet.dirty || facet.touched)) || object.invalid"
              class="text-danger help-block">
           <div *ngIf="object.invalid">
@@ -74,7 +78,7 @@
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       common.button.submit
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="close()" translate>
+    <button (click)="close()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

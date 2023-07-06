@@ -1,37 +1,38 @@
 <form #myForm="ngForm" novalidate>
   <div class="form-group row">
-    <div class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.timeZone' | translate}}"
-      [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.timeZone' | translate) : ''"
-      [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.timeZone</div>
+    <div [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.timeZone' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+         class="col-md-4 col-lg-3 form-control-label"
+         title="{{'workflow.label.timeZone' | translate}}" translate>workflow.label.timeZone
+    </div>
     <div class="col-md-8 col-lg-9">
-      <input readonly class="form-control" name="timeZone"
-               [(ngModel)]="timeZone" type="text">
+      <input [(ngModel)]="timeZone" class="form-control" name="timeZone"
+             readonly type="text">
 
     </div>
   </div>
   <div *ngIf="repeatObject">
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" title="{{'workflow.repeat.label.cycleType' | translate}}"
-             [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.cycleType' | translate) : ''"
-             [nzTooltipMouseEnterDelay]="0.5" translate>workflow.repeat.label.cycleType</label>
+      <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.cycleType' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+             class="col-sm-3 form-control-label"
+             title="{{'workflow.repeat.label.cycleType' | translate}}" translate>workflow.repeat.label.cycleType</label>
       <div class="col-sm-9">
-        <nz-select name="_value" [(ngModel)]="repeatObject.TYPE">
+        <nz-select [(ngModel)]="repeatObject.TYPE" name="_value">
           <nz-option [nzLabel]="'workflow.repeat.label.periodical' | translate" nzValue="Periodic"></nz-option>
           <nz-option [nzLabel]="'workflow.repeat.label.continuous' | translate" nzValue="Continuous"></nz-option>
           <nz-option [nzLabel]="'workflow.repeat.label.ticking' | translate" nzValue="Ticking"></nz-option>
         </nz-select>
       </div>
     </div>
-    <div class="form-group row" *ngIf="repeatObject.TYPE === 'Periodic'">
-      <label class="col-sm-3 form-control-label" title="{{'workflow.repeat.label.period' | translate}}"
-             [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.period' | translate) : ''"
-             [nzTooltipMouseEnterDelay]="0.5" translate>workflow.repeat.label.period
-       <sup class="text-danger text-sm">*</sup>
+    <div *ngIf="repeatObject.TYPE === 'Periodic'" class="form-group row">
+      <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.period' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+             class="col-sm-3 form-control-label"
+             title="{{'workflow.repeat.label.period' | translate}}" translate>workflow.repeat.label.period
+        <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-sm-9" [ngClass]="{ 'has-error' : (((period.dirty || period.touched) && period.invalid))}">
-        <input [appAutofocus]="true" appValidateDuration required class="form-control" name="period"
-               #period="ngModel" [(ngModel)]="repeatObject.period"
-               placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
+      <div [ngClass]="{ 'has-error' : (((period.dirty || period.touched) && period.invalid))}" class="col-sm-9">
+        <input #period="ngModel" [(ngModel)]="repeatObject.period" [appAutofocus]="true" appValidateDuration class="form-control"
+               name="period" placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
+               required type="text">
         <div *ngIf="period.invalid && (period.dirty || period.touched)" class="text-danger help-block">
           <div *ngIf="period.errors['required']">
             <div translate>common.message.requiredError</div>
@@ -40,16 +41,16 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="repeatObject.TYPE === 'Periodic'">
-      <label class="col-sm-3 form-control-label" title="{{'workflow.repeat.label.offsets' | translate}}"
-             [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.offsets' | translate) : ''"
-             [nzTooltipMouseEnterDelay]="0.5" translate>workflow.repeat.label.offsets
-       <sup class="text-danger text-sm">*</sup>
+    <div *ngIf="repeatObject.TYPE === 'Periodic'" class="form-group row">
+      <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.offsets' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+             class="col-sm-3 form-control-label"
+             title="{{'workflow.repeat.label.offsets' | translate}}" translate>workflow.repeat.label.offsets
+        <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-sm-9" [ngClass]="{ 'has-error' : (((offsets.dirty || offsets.touched) && offsets.invalid))}">
-        <input appValidateOffset required class="form-control" name="offsets"
-               #offsets="ngModel" [(ngModel)]="repeatObject.offsets"
-               placeholder="{{'workflow.placeholder.offset' | translate}}" type="text">
+      <div [ngClass]="{ 'has-error' : (((offsets.dirty || offsets.touched) && offsets.invalid))}" class="col-sm-9">
+        <input #offsets="ngModel" [(ngModel)]="repeatObject.offsets" appValidateOffset class="form-control"
+               name="offsets" placeholder="{{'workflow.placeholder.offset' | translate}}"
+               required type="text">
         <div *ngIf="offsets.invalid && (offsets.dirty || offsets.touched)" class="text-danger help-block">
           <div *ngIf="offsets.errors['required']">
             <div translate>common.message.requiredError</div>
@@ -58,16 +59,16 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="repeatObject.TYPE === 'Continuous'">
-      <label class="col-sm-3 form-control-label" title="{{'workflow.repeat.label.pause' | translate}}"
-             [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.pause' | translate) : ''"
-             [nzTooltipMouseEnterDelay]="0.5" translate>workflow.repeat.label.pause
-       <sup class="text-danger text-sm">*</sup>
+    <div *ngIf="repeatObject.TYPE === 'Continuous'" class="form-group row">
+      <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.pause' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+             class="col-sm-3 form-control-label"
+             title="{{'workflow.repeat.label.pause' | translate}}" translate>workflow.repeat.label.pause
+        <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-sm-9" [ngClass]="{ 'has-error' : (((pause.dirty || pause.touched) && pause.invalid))}">
-        <input appValidateDuration required class="form-control" name="pause"
-               #pause="ngModel" [(ngModel)]="repeatObject.pause"
-               placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
+      <div [ngClass]="{ 'has-error' : (((pause.dirty || pause.touched) && pause.invalid))}" class="col-sm-9">
+        <input #pause="ngModel" [(ngModel)]="repeatObject.pause" appValidateDuration class="form-control"
+               name="pause" placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
+               required type="text">
         <div *ngIf="pause.invalid && (pause.dirty || pause.touched)" class="text-danger help-block">
           <div *ngIf="pause.errors['required']">
             <div translate>common.message.requiredError</div>
@@ -76,25 +77,25 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="repeatObject.TYPE === 'Continuous'">
-      <label class="col-sm-3 form-control-label" title="{{'workflow.repeat.label.limit' | translate}}"
-             [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.limit' | translate) : ''"
-             [nzTooltipMouseEnterDelay]="0.5" translate>workflow.repeat.label.limit</label>
+    <div *ngIf="repeatObject.TYPE === 'Continuous'" class="form-group row">
+      <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.limit' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+             class="col-sm-3 form-control-label"
+             title="{{'workflow.repeat.label.limit' | translate}}" translate>workflow.repeat.label.limit</label>
       <div class="col-sm-9">
-        <nz-input-number [nzMin]="1" [nzStep]="1" name="limit"
-                         [(ngModel)]="repeatObject.limit"></nz-input-number>
+        <nz-input-number [(ngModel)]="repeatObject.limit" [nzMin]="1" [nzStep]="1"
+                         name="limit"></nz-input-number>
       </div>
     </div>
-    <div class="form-group row" *ngIf="repeatObject.TYPE === 'Ticking'">
-      <label class="col-sm-3 form-control-label" title="{{'workflow.repeat.label.interval' | translate}}"
-             [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.interval' | translate) : ''"
-             [nzTooltipMouseEnterDelay]="0.5" translate>workflow.repeat.label.interval
-       <sup class="text-danger text-sm">*</sup>
+    <div *ngIf="repeatObject.TYPE === 'Ticking'" class="form-group row">
+      <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.interval' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+             class="col-sm-3 form-control-label"
+             title="{{'workflow.repeat.label.interval' | translate}}" translate>workflow.repeat.label.interval
+        <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-sm-9" [ngClass]="{ 'has-error' : (((interval.dirty || interval.touched) && interval.invalid))}">
-        <input appValidateDuration required class="form-control" name="interval"
-               #interval="ngModel" [(ngModel)]="repeatObject.interval"
-               placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
+      <div [ngClass]="{ 'has-error' : (((interval.dirty || interval.touched) && interval.invalid))}" class="col-sm-9">
+        <input #interval="ngModel" [(ngModel)]="repeatObject.interval" appValidateDuration class="form-control"
+               name="interval" placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
+               required type="text">
         <div *ngIf="interval.invalid && (interval.dirty || interval.touched)" class="text-danger help-block">
           <div *ngIf="interval.errors['required']">
             <div translate>common.message.requiredError</div>
@@ -106,112 +107,120 @@
   </div>
   <div class="m-b">
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" title="{{'workflow.label.admissionType' | translate}}"
-             [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.admissionType' | translate) : ''"
-             [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.admissionType</label>
+      <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.admissionType' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+             class="col-sm-3 form-control-label"
+             title="{{'workflow.label.admissionType' | translate}}" translate>workflow.label.admissionType</label>
       <div class="col-sm-9">
-        <nz-select nzShowSearch name="frequencyTab" [(ngModel)]="frequency.tab" (ngModelChange)="changeFrequency()">
-          <nz-option nzValue="weekDays" [nzLabel]="'runtime.label.weekDays' | translate"></nz-option>
-          <nz-option nzValue="specificWeekDays" [nzLabel]="'runtime.label.specificWeekDays' | translate"></nz-option>
-          <nz-option nzValue="specificDays" [nzLabel]="'runtime.label.specificDays' | translate"></nz-option>
-          <nz-option nzValue="monthDays" [nzLabel]="'runtime.label.monthDays' | translate"></nz-option>
+        <nz-select (ngModelChange)="changeFrequency()" [(ngModel)]="frequency.tab" name="frequencyTab" nzShowSearch>
+          <nz-option [nzLabel]="'runtime.label.weekDays' | translate" nzValue="weekDays"></nz-option>
+          <nz-option [nzLabel]="'runtime.label.specificWeekDays' | translate" nzValue="specificWeekDays"></nz-option>
+          <nz-option [nzLabel]="'runtime.label.specificDays' | translate" nzValue="specificDays"></nz-option>
+          <nz-option [nzLabel]="'runtime.label.monthDays' | translate" nzValue="monthDays"></nz-option>
         </nz-select>
       </div>
     </div>
   </div>
-  <div class="tab-content b-t b-l b-r b-b p-a p-b-0 m-b" [ngClass]="{'p-a':frequency.tab !== 'specificDays' }">
-    <div class="tab-pane animated fadeIn" id="tab1" [ngClass]="{'active':frequency.tab == 'weekDays'}">
+  <div [ngClass]="{'p-a':frequency.tab !== 'specificDays' }" class="tab-content b-t b-l b-r b-b p-a p-b-0 m-b">
+    <div [ngClass]="{'active':frequency.tab == 'weekDays'}" class="tab-pane animated fadeIn" id="tab1">
       <div class="form-group row">
-        <label class="col-sm-3" title="{{'workflow.admissionTime.label.weekDays' | translate}}"
-               [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.weekDays' | translate) : ''"
-               [nzTooltipMouseEnterDelay]="0.5" translate>workflow.admissionTime.label.weekDays</label>
+        <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.weekDays' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               class="col-sm-3"
+               title="{{'workflow.admissionTime.label.weekDays' | translate}}" translate>workflow.admissionTime.label.weekDays</label>
         <div class="col-sm-9">
-          <label class="w m-b-xxs" nz-checkbox [(ngModel)]="frequency.all" name="week"
-                 (nzCheckedChange)="selectAllWeek()">
+          <label (nzCheckedChange)="selectAllWeek()" [(ngModel)]="frequency.all" class="w m-b-xxs" name="week"
+                 nz-checkbox>
             <span translate>workflow.admissionTime.label.everyDay</span>
           </label><br>
           <nz-checkbox-wrapper (nzOnChange)="dayChange($event)">
             <ng-container *ngFor="let option of daysOptions">
-              <label nz-checkbox [nzValue]="option.value" [(ngModel)]="option.checked"
-                     name="{{option.label}}"><span translate>runtime.label.{{option.label}}</span></label>
+              <label [(ngModel)]="option.checked" [nzValue]="option.value" name="{{option.label}}"
+                     nz-checkbox><span translate>runtime.label.{{option.label}}</span></label>
             </ng-container>
           </nz-checkbox-wrapper>
         </div>
       </div>
     </div>
-    <div class="tab-pane animated fadeIn" id="tab2" [ngClass]="{'active':frequency.tab == 'specificWeekDays'}">
+    <div [ngClass]="{'active':frequency.tab == 'specificWeekDays'}" class="tab-pane animated fadeIn" id="tab2">
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" title="{{'runtime.label.dayNumber' | translate}}"
-               [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.dayNumber' | translate) : ''"
-               [nzTooltipMouseEnterDelay]="0.5" translate>runtime.label.dayNumber</label>
+        <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.dayNumber' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               class="col-sm-3 form-control-label"
+               title="{{'runtime.label.dayNumber' | translate}}" translate>runtime.label.dayNumber</label>
         <div class="col-sm-9">
-          <nz-select [(ngModel)]="frequency.specificWeek" name="specificWeek" (ngModelChange)="onFrequencyChange()">
-            <nz-option nzValue="1" [nzLabel]="'runtime.label.first' | translate"></nz-option>
-            <nz-option nzValue="2" [nzLabel]="'runtime.label.second' | translate"></nz-option>
-            <nz-option nzValue="3" [nzLabel]="'runtime.label.third' | translate"></nz-option>
-            <nz-option nzValue="4" [nzLabel]="'runtime.label.fourth' | translate"></nz-option>
-            <nz-option nzValue="-1" [nzLabel]="'runtime.label.last' | translate"></nz-option>
-            <nz-option nzValue="-2" [nzLabel]="'runtime.label.secondLast' | translate"></nz-option>
-            <nz-option nzValue="-3" [nzLabel]="'runtime.label.thirdLast' | translate"></nz-option>
-            <nz-option nzValue="-4" [nzLabel]="'runtime.label.fourthLast' | translate"></nz-option>
+          <nz-select (ngModelChange)="onFrequencyChange()" [(ngModel)]="frequency.specificWeek" name="specificWeek">
+            <nz-option [nzLabel]="'runtime.label.first' | translate" nzValue="1"></nz-option>
+            <nz-option [nzLabel]="'runtime.label.second' | translate" nzValue="2"></nz-option>
+            <nz-option [nzLabel]="'runtime.label.third' | translate" nzValue="3"></nz-option>
+            <nz-option [nzLabel]="'runtime.label.fourth' | translate" nzValue="4"></nz-option>
+            <nz-option [nzLabel]="'runtime.label.last' | translate" nzValue="-1"></nz-option>
+            <nz-option [nzLabel]="'runtime.label.secondLast' | translate" nzValue="-2"></nz-option>
+            <nz-option [nzLabel]="'runtime.label.thirdLast' | translate" nzValue="-3"></nz-option>
+            <nz-option [nzLabel]="'runtime.label.fourthLast' | translate" nzValue="-4"></nz-option>
           </nz-select>
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" title="{{'runtime.label.weekDays' | translate}}"
-               [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.weekDays' | translate) : ''"
-               [nzTooltipMouseEnterDelay]="0.5" translate>runtime.label.weekDays</label>
+        <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.weekDays' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               class="col-sm-3 form-control-label"
+               title="{{'runtime.label.weekDays' | translate}}" translate>runtime.label.weekDays</label>
         <div class="col-sm-9">
-          <nz-select [(ngModel)]="frequency.specificWeekDay" name="specificWeekDay" (ngModelChange)="onFrequencyChange()">
-            <nz-option nzValue="0" [nzLabel]="'runtime.label.monday' | translate"></nz-option>
-            <nz-option nzValue="1" [nzLabel]="'runtime.label.tuesday' | translate"></nz-option>
-            <nz-option nzValue="2" [nzLabel]="'runtime.label.wednesday' | translate"></nz-option>
-            <nz-option nzValue="3" [nzLabel]="'runtime.label.thursday' | translate"></nz-option>
-            <nz-option nzValue="4" [nzLabel]="'runtime.label.friday' | translate"></nz-option>
-            <nz-option nzValue="5" [nzLabel]="'runtime.label.saturday' | translate"></nz-option>
-            <nz-option nzValue="6" [nzLabel]="'runtime.label.sunday' | translate"></nz-option>
+          <nz-select (ngModelChange)="onFrequencyChange()" [(ngModel)]="frequency.specificWeekDay"
+                     name="specificWeekDay">
+            <nz-option [nzLabel]="'runtime.label.monday' | translate" nzValue="0"></nz-option>
+            <nz-option [nzLabel]="'runtime.label.tuesday' | translate" nzValue="1"></nz-option>
+            <nz-option [nzLabel]="'runtime.label.wednesday' | translate" nzValue="2"></nz-option>
+            <nz-option [nzLabel]="'runtime.label.thursday' | translate" nzValue="3"></nz-option>
+            <nz-option [nzLabel]="'runtime.label.friday' | translate" nzValue="4"></nz-option>
+            <nz-option [nzLabel]="'runtime.label.saturday' | translate" nzValue="5"></nz-option>
+            <nz-option [nzLabel]="'runtime.label.sunday' | translate" nzValue="6"></nz-option>
           </nz-select>
         </div>
       </div>
     </div>
-    <div class="tab-pane animated fadeIn" id="tab3" [ngClass]="{'active':frequency.tab == 'monthDays'}">
+    <div [ngClass]="{'active':frequency.tab == 'monthDays'}" class="tab-pane animated fadeIn" id="tab3">
       <div class="form-group row">
-        <label class="col-sm-3" title="{{'runtime.label.monthDays' | translate}}"
-               [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.monthDays' | translate) : ''"
-               [nzTooltipMouseEnterDelay]="0.5" translate>runtime.label.monthDays</label>
+        <label [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.monthDays' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               class="col-sm-3"
+               title="{{'runtime.label.monthDays' | translate}}" translate>runtime.label.monthDays</label>
         <div class="col-sm-9">
-          <nz-radio-group name="radio" [(ngModel)]="frequency.isUltimos">
+          <nz-radio-group [(ngModel)]="frequency.isUltimos" name="radio">
             <label nz-radio nzValue="months"><span translate>runtime.label.countFromFirstDay</span></label>
             <label nz-radio nzValue="ultimos"><span translate>runtime.label.countFromTheLastDay</span></label>
           </nz-radio-group>
         </div>
         <div class="col-sm-offset-3 col-sm-6 m-t-sm p-t-xs">
-          <table class="table table-bordered table-striped text-center m-b-xs w "
-                 [hidden]="frequency.isUltimos!=='months'">
+          <table [hidden]="frequency.isUltimos!=='months'"
+                 class="table table-bordered table-striped text-center m-b-xs w ">
             <tbody>
             <tr *ngFor="let count of countArr;">
-              <td (click)="selectMonthDaysFunc(((7 * count) + 1) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 1) +'')}"><a
+              <td (click)="selectMonthDaysFunc(((7 * count) + 1) +'')"
+                  [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 1) +'')}"><a
               >{{(7 * count) + 1 }}</a></td>
-              <td (click)="selectMonthDaysFunc(((7 * count) + 2) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 2) +'')}"><a
+              <td (click)="selectMonthDaysFunc(((7 * count) + 2) +'')"
+                  [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 2) +'')}"><a
               >{{(7 * count) + 2 }}</a></td>
-              <td (click)="selectMonthDaysFunc(((7 * count) + 3) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 3) +'')}"><a
+              <td (click)="selectMonthDaysFunc(((7 * count) + 3) +'')"
+                  [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 3) +'')}"><a
               >{{(7 * count) + 3 }}</a></td>
-              <td (click)="selectMonthDaysFunc(((7 * count) + 4) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 4) +'')}"><a
+              <td (click)="selectMonthDaysFunc(((7 * count) + 4) +'')" *ngIf="count !== 4"
+                  [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 4) +'')}"><a
               >{{(7 * count) + 4 }}</a></td>
-              <td (click)="selectMonthDaysFunc(((7 * count) + 5) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 5) +'')}"><a
+              <td (click)="selectMonthDaysFunc(((7 * count) + 5) +'')" *ngIf="count !== 4"
+                  [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 5) +'')}"><a
               >{{(7 * count) + 5 }}</a></td>
-              <td (click)="selectMonthDaysFunc(((7 * count) + 6) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 6) +'')}"><a
+              <td (click)="selectMonthDaysFunc(((7 * count) + 6) +'')" *ngIf="count !== 4"
+                  [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 6) +'')}"><a
               >{{(7 * count) + 6 }}</a></td>
-              <td (click)="selectMonthDaysFunc(((7 * count) + 7) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 7) +'')}"><a
+              <td (click)="selectMonthDaysFunc(((7 * count) + 7) +'')" *ngIf="count !== 4"
+                  [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 7) +'')}"><a
               >{{(7 * count) + 7 }}</a></td>
             </tr>
             </tbody>
           </table>
-          <table class="table table-bordered table-striped text-center m-b-xs w "
-                 [hidden]="frequency.isUltimos=='months'">
+          <table [hidden]="frequency.isUltimos=='months'"
+                 class="table table-bordered table-striped text-center m-b-xs w ">
             <tbody>
             <tr>
-              <td colspan="2" (click)="selectMonthDaysUFunc('1')" [ngClass]="{'primary': getSelectedMonthDaysU('1')}"><a
+              <td (click)="selectMonthDaysUFunc('1')" [ngClass]="{'primary': getSelectedMonthDaysU('1')}" colspan="2"><a
                 translate>runtime.label.lastDay</a></td>
               <td (click)="selectMonthDaysUFunc('2')" [ngClass]="{'primary': getSelectedMonthDaysU('2')}"><a
               >-1</a></td>
@@ -252,26 +261,29 @@
         </div>
       </div>
     </div>
-    <div class="tab-pane animated fadeIn" id="tab4" [ngClass]="{'active':frequency.tab == 'specificDays'}">
+    <div [ngClass]="{'active':frequency.tab == 'specificDays'}" class="tab-pane animated fadeIn" id="tab4">
       <div [ngClass]="{'specific-day-ht':frequency.tab == 'specificDays' }">
         <div id="calendar"></div>
       </div>
     </div>
   </div>
-  <div class="row" *ngIf="!_temp">
+  <div *ngIf="!_temp" class="row">
     <div class="col-sm-12">
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" title="{{'workflow.admissionTime.label.startTime' | translate}}"
-               [nz-tooltip]="isTooltipVisible ? ((!repeatObject ? 'inventory.tooltips.workflow.admissionTime.periodBeginOfAdmissionTime' : 'inventory.tooltips.workflow.admissionTime.startTime') | translate) : ''"
-               [nzTooltipMouseEnterDelay]="0.5" translate>
+        <label [nz-tooltip]="isTooltipVisible ? ((!repeatObject ? 'inventory.tooltips.workflow.admissionTime.periodBeginOfAdmissionTime' : 'inventory.tooltips.workflow.admissionTime.startTime') | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               class="col-sm-3 form-control-label"
+               title="{{'workflow.admissionTime.label.startTime' | translate}}" translate>
           workflow.admissionTime.label.startTime
           <sup class="text-danger text-sm">*</sup>
         </label>
-        <div class="col-sm-9" [ngClass]="{ 'has-error' : (((timePicker.dirty || timePicker.touched) && timePicker.invalid))}">
+        <div [ngClass]="{ 'has-error' : (((timePicker.dirty || timePicker.touched) && timePicker.invalid))}"
+             class="col-sm-9">
           <div class="time-picker m-l-0">
-            <input required timevalidator type="text" #timePicker="ngModel" class="form-control"
-                name="startTime" [(ngModel)]="object.startTime" (ngModelChange)="selectTime(object.startTime, true)" placeholder="HH:MM:SS">
-            <nz-time-picker [nzAllowEmpty]="false" (keydown.Tab)="onTab()" (ngModelChange)="selectTime($event)" [(ngModel)]="object.startTime1" name="fromTimeIcon"></nz-time-picker>
+            <input #timePicker="ngModel" (ngModelChange)="selectTime(object.startTime, true)" [(ngModel)]="object.startTime" class="form-control" name="startTime"
+                   placeholder="HH:MM:SS" required timevalidator
+                   type="text">
+            <nz-time-picker (keydown.Tab)="onTab()" (ngModelChange)="selectTime($event)" [(ngModel)]="object.startTime1"
+                            [nzAllowEmpty]="false" name="fromTimeIcon"></nz-time-picker>
           </div>
           <div *ngIf="timePicker.invalid && (timePicker.dirty || timePicker.touched)" class="text-danger help-block">
             <div *ngIf="timePicker.errors['required']">
@@ -281,15 +293,15 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" title="{{'common.label.duration' | translate}}"
-               [nz-tooltip]="isTooltipVisible ? ((!repeatObject ? 'inventory.tooltips.workflow.admissionTime.durationOfAdmissionTime' : 'inventory.tooltips.workflow.admissionTime.duration') | translate) : ''"
-               [nzTooltipMouseEnterDelay]="0.5" translate>common.label.duration
-         <sup class="text-danger text-sm">*</sup>
+        <label [nz-tooltip]="isTooltipVisible ? ((!repeatObject ? 'inventory.tooltips.workflow.admissionTime.durationOfAdmissionTime' : 'inventory.tooltips.workflow.admissionTime.duration') | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               class="col-sm-3 form-control-label"
+               title="{{'common.label.duration' | translate}}" translate>common.label.duration
+          <sup class="text-danger text-sm">*</sup>
         </label>
-        <div class="col-sm-9" [ngClass]="{ 'has-error' : (((duration.dirty || duration.touched) && duration.invalid))}">
-          <input appValidateDuration required class="form-control" name="duration"
-                 #duration="ngModel" [(ngModel)]="object.duration"
-                 placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
+        <div [ngClass]="{ 'has-error' : (((duration.dirty || duration.touched) && duration.invalid))}" class="col-sm-9">
+          <input #duration="ngModel" [(ngModel)]="object.duration" appValidateDuration class="form-control"
+                 name="duration" placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
+                 required type="text">
           <div *ngIf="duration.invalid && (duration.dirty || duration.touched)" class="text-danger help-block">
             <div *ngIf="duration.errors['required']">
               <div translate>common.message.requiredError</div>
@@ -302,13 +314,17 @@
   </div>
   <div class="form-group row ">
     <div class="col-sm-12 b-b p-t p-b">
-      <button class="btn btn-sm btn-primary" [disabled]="!myForm.form.valid || !editor.isEnable"
-              (click)="addFrequency(myForm)" >
-        <span translate *ngIf="isEdit">workflow.admissionTime.button.update</span>
-        <span translate *ngIf="!isEdit">runtime.button.addNewFrequency</span>
+      <button (click)="addFrequency(myForm)" [disabled]="!myForm.form.valid || !editor.isEnable"
+              class="btn btn-sm btn-primary">
+        <span *ngIf="isEdit" translate>workflow.admissionTime.button.update</span>
+        <span *ngIf="!isEdit" translate>runtime.button.addNewFrequency</span>
       </button>
-      <button (click)="closeRuntime()" *ngIf="!_temp" type="button" class="btn btn-grey m-l-12 btn-sm" translate>workflow.admissionTime.button.back</button>
-      <button (click)="resetTab()" *ngIf="_temp" type="button" class="btn btn-grey m-l-12 btn-sm" translate>common.button.cancel</button>
+      <button (click)="closeRuntime()" *ngIf="!_temp" class="btn btn-grey m-l-12 btn-sm" translate type="button">
+        workflow.admissionTime.button.back
+      </button>
+      <button (click)="resetTab()" *ngIf="_temp" class="btn btn-grey m-l-12 btn-sm" translate type="button">
+        common.button.cancel
+      </button>
     </div>
   </div>
   <div class="row m-t">
@@ -322,14 +338,16 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let item of data.periodList; let i = index" [ngClass]="{'light-bg': _temp && _temp.frequency == item.frequency}">
+          <tr *ngFor="let item of data.periodList; let i = index"
+              [ngClass]="{'light-bg': _temp && _temp.frequency == item.frequency}">
             <td>
-              <span class="cursor" (click)="editFrequency(item)" *ngIf="item.frequency"><span *ngIf="item.day" translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
-              <span class="cursor" (click)="editFrequency(item)" *ngIf="!item.frequency" translate>workflow.admissionTime.label.everyDay</span>
-              <a class="text-xs primary-text-hover-color m-l-sm"
-                 (click)="editFrequency(item)"><i class="fa fa-pencil"></i></a>
-              <a class="text-xs text-hover-color m-l-sm"
-                 (click)="removeFrequency(item, i)"><i class="fa fa-times"></i></a>
+              <span (click)="editFrequency(item)" *ngIf="item.frequency" class="cursor"><span *ngIf="item.day"
+                                                                                              translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
+              <span (click)="editFrequency(item)" *ngIf="!item.frequency" class="cursor" translate>workflow.admissionTime.label.everyDay</span>
+              <a (click)="editFrequency(item)"
+                 class="text-xs primary-text-hover-color m-l-sm"><i class="fa fa-pencil"></i></a>
+              <a (click)="removeFrequency(item, i)"
+                 class="text-xs text-hover-color m-l-sm"><i class="fa fa-times"></i></a>
             </td>
             <td>
               <div *ngFor="let p of item.periods;">

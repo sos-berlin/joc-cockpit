@@ -2,8 +2,8 @@
   <h4 class="modal-title">
     <span class="drag-text" translate>inventory.label.result</span>
   </h4>
-  <button type="button" class="close" aria-label="Close"
-          (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close"
+          type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -13,10 +13,10 @@
   <nz-collapse nzGhost>
     <nz-collapse-panel
       *ngFor="let panel of panels;let i = index"
-      [nzHeader]="panel.name | translate"
       [nzActive]="panel.active"
+      [nzHeader]="panel.name | translate"
     >
-      <div class="table-responsive m-t-sm" *ngIf="panel.data.length > 0">
+      <div *ngIf="panel.data.length > 0" class="table-responsive m-t-sm">
         <table class="table table-hover">
           <thead>
           <tr>
@@ -37,9 +37,9 @@
           <tbody>
           <tr *ngFor="let item of panel.data">
             <td>
-              <span class="fa fa-check-circle-o text-xs w-11 m-t-xs"
-                    [ngClass]="{'fa-circle-o': !item.valid}"></span>
-              <span class="p-l-xs" [innerHTML]="item.name"></span>
+              <span [ngClass]="{'fa-circle-o': !item.valid}"
+                    class="fa fa-check-circle-o text-xs w-11 m-t-xs"></span>
+              <span [innerHTML]="item.name" class="p-l-xs"></span>
               <i *ngIf="item.title"> - </i>
               <span class="text-muted">{{item.title}}</span>
             </td>
@@ -60,7 +60,7 @@
           </tbody>
         </table>
       </div>
-      <div class="m-t-sm m-b-sm" *ngIf="panel.data.length == 0">
+      <div *ngIf="panel.data.length == 0" class="m-t-sm m-b-sm">
         <app-empty-data></app-empty-data>
       </div>
       <hr *ngIf="i < 2">
@@ -68,8 +68,8 @@
   </nz-collapse>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-grey btn-sm"
-          (click)="activeModal.destroy()" translate>
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
+          translate type="button">
     common.button.close
   </button>
 </div>

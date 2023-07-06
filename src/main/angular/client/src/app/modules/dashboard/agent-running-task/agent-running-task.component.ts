@@ -9,7 +9,7 @@ import {AuthService} from '../../../components/guard';
   templateUrl: './agent-running-task.component.html',
   styleUrls: ['agent-running-task.component.css']
 })
-export class AgentRunningTaskComponent implements OnInit, OnDestroy {
+export class AgentRunningTaskComponent {
   @Input('layout') layout: any;
 
   isLoaded = false;

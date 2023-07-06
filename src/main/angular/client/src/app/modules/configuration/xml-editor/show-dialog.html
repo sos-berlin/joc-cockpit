@@ -2,10 +2,10 @@
   <h4 class="modal-title">
     <span translate>xml.label.xmlEditor</span>
   </h4>
-  <a class="max-btn" appMaximum>
+  <a appMaximum class="max-btn">
     <i class="fa fa-window-maximize"></i>
   </a>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -16,17 +16,17 @@
         <div class="inline">
           <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
             <li class="nav-item" nz-tooltip="Ctrl-F">
-              <a class="nav-link" (click)="execCommand('find')">
+              <a (click)="execCommand('find')" class="nav-link">
                 <span class="nav-text" translate>workflow.button.find</span>
               </a>
             </li>
             <li class="nav-item" nz-tooltip="Ctrl-G">
-              <a class="nav-link" (click)="execCommand('findNext')">
+              <a (click)="execCommand('findNext')" class="nav-link">
                 <span class="nav-text" translate>workflow.button.findNext</span>
               </a>
             </li>
             <li class="nav-item" nz-tooltip="Shift-Ctrl-G">
-              <a class="nav-link" (click)="execCommand('findPrev');">
+              <a (click)="execCommand('findPrev');" class="nav-link">
                 <span class="nav-text" translate>workflow.button.findPrevious</span>
               </a>
             </li>
@@ -34,12 +34,12 @@
               <span class="separator"></span>
             </li>
             <li class="nav-item" nz-tooltip="Shift-Ctrl-F">
-              <a class="nav-link" (click)="execCommand('replace')">
+              <a (click)="execCommand('replace')" class="nav-link">
                 <span class="nav-text" translate>workflow.button.replace</span>
               </a>
             </li>
             <li class="nav-item" nz-tooltip="Shift-Ctrl-R">
-              <a class="nav-link" (click)="execCommand('replaceAll')">
+              <a (click)="execCommand('replaceAll')" class="nav-link">
                 <span class="nav-text" translate>workflow.button.replaceAll</span>
               </a>
             </li>
@@ -47,7 +47,7 @@
               <span class="separator"></span>
             </li>
             <li class="nav-item" nz-tooltip="Alt-G">
-              <a class="nav-link" (click)="execCommand('jumpToLine');">
+              <a (click)="execCommand('jumpToLine');" class="nav-link">
                 <span class="nav-text" translate>workflow.button.jumpToLine</span>
               </a>
             </li>
@@ -55,12 +55,12 @@
               <span class="separator"></span>
             </li>
             <li class="nav-item" nz-tooltip="Ctrl-Z">
-              <a class="nav-link" (click)="execCommand('undo');">
+              <a (click)="execCommand('undo');" class="nav-link">
                 <span class="nav-text" translate>workflow.button.undo</span>
               </a>
             </li>
             <li class="nav-item" nz-tooltip="Ctrl-Y">
-              <a class="nav-link" (click)="execCommand('redo');">
+              <a (click)="execCommand('redo');" class="nav-link">
                 <span class="nav-text" translate>workflow.button.redo</span>
               </a>
             </li>
@@ -68,9 +68,9 @@
         </div>
       </div>
       <div class="col-md-12">
-        <div class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}">
-          <ngx-codemirror required #codeMirror #cm="ngModel" name="cm" [(ngModel)]="obj.xml"
-                          [options]="cmOptions">
+        <div [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}" class="b-a">
+          <ngx-codemirror #cm="ngModel" #codeMirror [(ngModel)]="obj.xml" [options]="cmOptions" name="cm"
+                          required>
           </ngx-codemirror>
         </div>
         <div *ngIf="(cm.invalid && (cm.dirty || cm.touched))"
@@ -83,17 +83,17 @@
     </div>
   </div>
   <div class="modal-footer text-left">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid" translate>
+    <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" translate type="submit">
       common.button.submit
     </button>
-    <button type="button" class="btn btn-default btn-sm" (click)="validateXML()" translate>
-        xml.button.validate
+    <button (click)="validateXML()" class="btn btn-default btn-sm" translate type="button">
+      xml.button.validate
     </button>
-    <button type="button" class="btn btn-default btn-sm" [disabled]="obj.error"
-            (click)="copyToClipboard()" translate>log.button.copyToClipboard
+    <button (click)="copyToClipboard()" [disabled]="obj.error" class="btn btn-default btn-sm"
+            translate type="button">log.button.copyToClipboard
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()">
-        <span translate>common.button.cancel</span>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+      <span translate>common.button.cancel</span>
     </button>
   </div>
 </form>

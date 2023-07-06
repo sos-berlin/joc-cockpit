@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
-import { differenceInHours, set, differenceInMinutes } from 'date-fns';
+import {differenceInHours, set, differenceInMinutes} from 'date-fns';
 
 @Component({
   selector: 'app-gantt-chart',

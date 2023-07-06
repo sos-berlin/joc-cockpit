@@ -1,93 +1,98 @@
 <div class="modal-header">
-    <h4 class="modal-title">
-        <span translate>resource.board.button.post</span>
-      {{board.path}}
-    </h4>
-    <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
-      <span aria-hidden="true" class="fa fa-times-circle"></span>
-    </button>
+  <h4 class="modal-title">
+    <span translate>resource.board.button.post</span>
+    {{board.path}}
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-    <div class="modal-body p-a">
-      <div class="hide" [ngClass]="{'show': display}">
-        <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
-      </div>
-      <div class="form-group row" [ngClass]="{'has-error' : ((noticeId.dirty || noticeId.touched) && noticeId.invalid)}">
-        <label class="col-sm-4 form-control-label" translate>
-          resource.board.label.noticeId
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-sm-6">
-          <input type="text" class="form-control" [readOnly]="notice" name="noticeId" placeholder="{{'resource.board.placeholder.enterNoticeId' | translate}}"
-                 [(ngModel)]="postObj.noticeId" required autocomplete="off" #noticeId="ngModel"/>
-          <div *ngIf="noticeId.invalid && (noticeId.dirty || noticeId.touched)" class="text-danger help-block">
-            <div *ngIf="noticeId.errors['required']" translate>
-              common.message.requiredError
-            </div>
+  <div class="modal-body p-a">
+    <div [ngClass]="{'show': display}" class="hide">
+      <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
+    </div>
+    <div [ngClass]="{'has-error' : ((noticeId.dirty || noticeId.touched) && noticeId.invalid)}" class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>
+        resource.board.label.noticeId
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-6">
+        <input #noticeId="ngModel" [(ngModel)]="postObj.noticeId" [readOnly]="notice" autocomplete="off"
+               class="form-control"
+               name="noticeId" placeholder="{{'resource.board.placeholder.enterNoticeId' | translate}}" required type="text"/>
+        <div *ngIf="noticeId.invalid && (noticeId.dirty || noticeId.touched)" class="text-danger help-block">
+          <div *ngIf="noticeId.errors['required']" translate>
+            common.message.requiredError
           </div>
-        </div>
-        </div>
-      <div class="form-group row">
-        <label class="col-sm-4 " translate>resource.board.label.endOfLife</label>
-        <div class="col-md-8">
-          <nz-radio-group name="at" [(ngModel)]="postObj.at">
-            <label nz-radio nzValue="later"><span translate>common.label.relativeDate</span></label>
-            <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
-          </nz-radio-group>
-        </div>
-      </div>
-      <div class="form-group row" *ngIf="postObj.at == 'later'">
-        <label class="col-sm-4 form-control-label" translate>
-          common.label.time
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
-          <input relativeDateValidatorRegex [appAutofocus]="true"  type="text" #time="ngModel" class="form-control" required
-                 name="atTime" [(ngModel)]="postObj.atTime" placeholder="+1(s|m|h|d|w|M|y)">
-          <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
-            <div translate *ngIf="!time.valid && !time.errors['required']">common.message.invalid</div>
-            <div *ngIf="time.errors['required']" translate>
-              common.message.requiredError
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row" *ngIf="postObj.at == 'date'">
-        <label class="col-sm-4 form-control-label" translate>
-          workflow.label.enterDateAndTime
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-sm-6" [ngClass]="{ 'has-error' : (date.dirty || date.touched) && date.invalid}">
-          <nz-date-picker required [nzDisabledDate]="disabledDate" [nzFormat]="dateFormat" name="date"
-                          #date="ngModel" [(ngModel)]="postObj.fromDate"></nz-date-picker>
-          <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
-            <div *ngIf="date.errors['required']" translate>
-              common.message.requiredError
-            </div>
-          </div>
-          <div class="time-picker" [ngClass]="{'has-error': (time.dirty || time.touched) && time.invalid}">
-            <input timevalidator validTimeReqex [disabled]="!postObj.fromDate" type="text" #time="ngModel" class="form-control"
-                name="fromTime" [(ngModel)]="postObj.fromTime" (ngModelChange)="selectTime(postObj.fromTime, true)" placeholder="HH:MM:SS">
-            <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)" [(ngModel)]="postObj.fromTime1" name="fromTimeIcon"></nz-time-picker>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
-        <div class="col-sm-6">
-          <nz-select nzShowSearch name="timeZone" nzAllowClear [(ngModel)]="postObj.timeZone">
-            <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
-          </nz-select>
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-        <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
-            <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-            {{'common.button.submit' | translate}}
-        </button>
-        <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
-          common.button.cancel
-        </button>
+    <div class="form-group row">
+      <label class="col-sm-4 " translate>resource.board.label.endOfLife</label>
+      <div class="col-md-8">
+        <nz-radio-group [(ngModel)]="postObj.at" name="at">
+          <label nz-radio nzValue="later"><span translate>common.label.relativeDate</span></label>
+          <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
+        </nz-radio-group>
+      </div>
     </div>
+    <div *ngIf="postObj.at == 'later'" class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>
+        common.label.time
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
+        <input #time="ngModel" [(ngModel)]="postObj.atTime" [appAutofocus]="true" class="form-control" name="atTime"
+               placeholder="+1(s|m|h|d|w|M|y)"
+               relativeDateValidatorRegex required type="text">
+        <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
+          <div *ngIf="!time.valid && !time.errors['required']" translate>common.message.invalid</div>
+          <div *ngIf="time.errors['required']" translate>
+            common.message.requiredError
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="postObj.at == 'date'" class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>
+        workflow.label.enterDateAndTime
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div [ngClass]="{ 'has-error' : (date.dirty || date.touched) && date.invalid}" class="col-sm-6">
+        <nz-date-picker #date="ngModel" [(ngModel)]="postObj.fromDate" [nzDisabledDate]="disabledDate" [nzFormat]="dateFormat"
+                        name="date" required></nz-date-picker>
+        <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
+          <div *ngIf="date.errors['required']" translate>
+            common.message.requiredError
+          </div>
+        </div>
+        <div [ngClass]="{'has-error': (time.dirty || time.touched) && time.invalid}" class="time-picker">
+          <input #time="ngModel" (ngModelChange)="selectTime(postObj.fromTime, true)" [(ngModel)]="postObj.fromTime" [disabled]="!postObj.fromDate" class="form-control"
+                 name="fromTime"
+                 placeholder="HH:MM:SS" timevalidator type="text"
+                 validTimeReqex>
+          <nz-time-picker (ngModelChange)="selectTime($event)" [(ngModel)]="postObj.fromTime1" [nzAllowEmpty]="false"
+                          name="fromTimeIcon"></nz-time-picker>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
+      <div class="col-sm-6">
+        <nz-select [(ngModel)]="postObj.timeZone" name="timeZone" nzAllowClear nzShowSearch>
+          <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm" type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+      common.button.cancel
+    </button>
+  </div>
 </form>

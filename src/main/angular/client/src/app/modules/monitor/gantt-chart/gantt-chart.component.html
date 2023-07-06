@@ -1,5 +1,5 @@
 <div class="gantt-chart">
-  <div class="taskTableWrapper" [ngStyle]="{width: isAgent ? 'calc(26% - 6px)' : 'calc(20% - 6px)'}" #scrollOne>
+  <div #scrollOne [ngStyle]="{width: isAgent ? 'calc(26% - 6px)' : 'calc(20% - 6px)'}" class="taskTableWrapper">
     <table class="taskTable">
       <thead>
       <tr>
@@ -16,35 +16,37 @@
         [hidden]="task.isHidden">
         <td *ngIf="groupBy === 'DATE'">
           <span class="show-in-single-line">
-          <i class="fa cursor fa-lg p-r-xs" [ngClass]="{ 'fa-angle-down': !task.active, 'fa-angle-right': task.active }" *ngIf="task.isParent"
-             (click)="onTaskClick(task)" aria-hidden="true"></i>
+          <i (click)="onTaskClick(task)" *ngIf="task.isParent"
+             [ngClass]="{ 'fa-angle-down': !task.active, 'fa-angle-right': task.active }"
+             aria-hidden="true" class="fa cursor fa-lg p-r-xs"></i>
             {{ task.date}}
           </span>
         </td>
         <td *ngIf="groupBy === 'CONTROLLERID'">
           <span class="show-in-single-line">
-          <i class="fa cursor fa-lg p-r-xs" [ngClass]="{ 'fa-angle-down': !task.active, 'fa-angle-right': task.active }" *ngIf="task.isParent"
-             (click)="onTaskClick(task)" aria-hidden="true"></i>
+          <i (click)="onTaskClick(task)" *ngIf="task.isParent"
+             [ngClass]="{ 'fa-angle-down': !task.active, 'fa-angle-right': task.active }"
+             aria-hidden="true" class="fa cursor fa-lg p-r-xs"></i>
             {{ task.controllerId}}
           </span>
         </td>
         <td *ngIf="groupBy !== 'CONTROLLERID'">{{ task.controllerId }}</td>
         <td *ngIf="groupBy !== 'DATE'">
-            {{ task.date}}
+          {{ task.date}}
         </td>
         <td *ngIf="isAgent">{{ task.agentId }}</td>
         <td *ngIf="isAgent">
-          <a class="text-hover-primary" [href]="task.url+'/agent/api'" target="_blank"
-             [innerHtml]="task.url"></a>
+          <a [href]="task.url+'/agent/api'" [innerHtml]="task.url" class="text-hover-primary"
+             target="_blank"></a>
         </td>
       </tr>
       </tbody>
     </table>
   </div>
   <div
-    class="timelineWrapper" [ngStyle]="{width: isAgent ? '74%' : '80%'}"
-    (scroll)="scrollOne.scrollTop = scrollTwo.scrollTop"
-    #scrollTwo
+    #scrollTwo (scroll)="scrollOne.scrollTop = scrollTwo.scrollTop"
+    [ngStyle]="{width: isAgent ? '74%' : '80%'}"
+    class="timelineWrapper"
   >
     <table class="timeline">
       <thead>
@@ -55,22 +57,22 @@
       </tr>
       </thead>
       <tbody>
-      <div class="row" *ngFor="let task of tasks" [hidden]="task.isHidden">
+      <div *ngFor="let task of tasks" [hidden]="task.isHidden" class="row">
         <div
-          class="taskBar"
           [ngStyle]="{
               left: task.offset + 'px',
               width: task.width + 'px'
             }"
+          class="taskBar"
         ></div>
         <span
           *ngFor="let status of task.statusList; let i = index"
-          class="statusBar" [nz-tooltip]="status.start + ' to ' + (status.end === '25:00' ? '24:00:00' : status.end)"
           [ngStyle]="{
               left: status.offset + 'px',
               width: status.width + 'px',
               'background-color': status.color
-            }"
+            }" [nz-tooltip]="status.start + ' to ' + (status.end === '25:00' ? '24:00:00' : status.end)"
+          class="statusBar"
         >
           <i translate>COUPLED</i>
         </span>

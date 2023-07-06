@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subject, Subscription} from 'rxjs';
-import { NzModalService} from 'ng-zorro-antd/modal';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {takeUntil} from 'rxjs/operators';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -17,7 +17,7 @@ declare const $: any;
   selector: 'app-single-calendar',
   templateUrl: 'single-calendar.component.html'
 })
-export class SingleCalendarComponent implements OnInit, OnDestroy {
+export class SingleCalendarComponent {
   loading: boolean;
   preferences: any = {};
   permission: any = {};
@@ -86,7 +86,7 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
   selector: 'app-calendar',
   templateUrl: 'calendar.component.html'
 })
-export class CalendarComponent implements OnInit, OnDestroy {
+export class CalendarComponent {
   isLoading = false;
   loading: boolean;
   schedulerIds: any = {};

@@ -1,9 +1,18 @@
-import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
-import {FileUploader, FileUploaderOptions} from 'ng2-file-upload';
 import {ToastrService} from 'ngx-toastr';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzI18nService} from 'ng-zorro-antd/i18n';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {registerLocaleData} from '@angular/common';
@@ -13,6 +22,7 @@ import {CommentModalComponent} from "../../components/comment-modal/comment.comp
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
+import {NzUploadFile} from "ng-zorro-antd/upload";
 
 declare var $;
 
@@ -20,11 +30,12 @@ declare var $;
   selector: 'app-edit-favorite-modal',
   templateUrl: './edit-favorite-dialog.html'
 })
-export class EditFavoriteModalComponent implements OnInit {
-  @Input() list = [];
-  @Input() data: any;
-  @Input() type: string;
-  @Input() schedulerId: any;
+export class EditFavoriteModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  list = [];
+  data: any;
+  type: string;
+  schedulerId: any;
 
   submitted = false;
   agents = [];
@@ -34,6 +45,10 @@ export class EditFavoriteModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.list = this.modalData.list;
+    this.data = this.modalData.data;
+    this.type = this.modalData.type;
+    this.schedulerId = this.modalData.schedulerId;
     if (this.type === 'AGENT') {
       this.agentList();
     }
@@ -171,7 +186,7 @@ export class EditFavoriteModalComponent implements OnInit {
     }
   `]
 })
-export class FavoriteListComponent implements OnChanges {
+export class FavoriteListComponent {
   @Input() favList = [];
   @Input() sharedList = [];
   @Input() filter: any;
@@ -191,7 +206,7 @@ export class FavoriteListComponent implements OnChanges {
   constructor(public coreService: CoreService, private modal: NzModalService) {
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     this.list = this.filter.sharedWithMe ? this.sharedList : this.favList;
   }
 
@@ -227,7 +242,7 @@ export class FavoriteListComponent implements OnChanges {
     this.modal.create({
       nzTitle: undefined,
       nzContent: EditFavoriteModalComponent,
-      nzComponentParams: {
+      nzData: {
         list: this.favList,
         data,
         type: this.type,
@@ -328,9 +343,10 @@ export class FavoriteListComponent implements OnChanges {
   selector: 'app-git-modal-content',
   templateUrl: './git-dialog.html'
 })
-export class GitModalComponent implements OnInit {
-  @Input() display: any;
-  @Input() data: any;
+export class GitModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  display: any;
+  data: any;
   required = false;
   submitted = false;
   isShow = false;
@@ -344,6 +360,8 @@ export class GitModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.display = this.modalData.display;
+    this.data = this.modalData.data;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -406,12 +424,13 @@ export class GitModalComponent implements OnInit {
   selector: 'app-update-modal-content',
   templateUrl: './update-dialog.html'
 })
-export class UpdateKeyModalComponent implements OnInit {
-  @Input() paste: any;
-  @Input() data: any;
-  @Input() securityLevel: string;
-  @Input() type: string;
-  @Input() display: any;
+export class UpdateKeyModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  paste: any;
+  data: any;
+  securityLevel: string;
+  type: string;
+  display: any;
 
   required = false;
   submitted = false;
@@ -422,6 +441,11 @@ export class UpdateKeyModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.paste = this.modalData.paste;
+    this.data = this.modalData.data;
+    this.securityLevel = this.modalData.securityLevel;
+    this.type = this.modalData.type;
+    this.display = this.modalData.display;
     this.algorithm.keyAlg = this.securityLevel !== 'HIGH' ? 'RSA' : 'PGP';
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
@@ -475,32 +499,25 @@ export class UpdateKeyModalComponent implements OnInit {
   selector: 'app-import-key-modal',
   templateUrl: './import-key-dialog.html'
 })
-export class ImportKeyModalComponent implements OnInit {
+export class ImportKeyModalComponent {
   @Input() schedulerId: any;
   @Input() display: any;
   @Input() securityLevel: string;
   @Input() type: string;
 
-  uploader: FileUploader;
+  fileList: NzUploadFile[] = [];
   submitted = false;
   required = false;
-  hasBaseDropZoneOver: any;
   comments: any = {};
   key = {keyAlg: 'RSA'};
 
   constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService,
               public translate: TranslateService, public toasterService: ToastrService) {
-    this.uploader = new FileUploader({
-      url: '',
-      queueLimit: 2
-    });
-    let uo: FileUploaderOptions = {};
-    uo.headers = [{name: 'X-Access-Token', value: this.authService.accessTokenId}];
-    this.uploader.setOptions(uo);
+
   }
 
   ngOnInit(): void {
-    this.uploader.options.url = this.type === 'key' ? './api/profile/key/import' : this.type === 'certificate' ? './api/profile/key/ca/import' : './api/profile/ca/import';
+    //  this.uploader.options.url = this.type === 'key' ? './api/profile/key/import' : this.type === 'certificate' ? './api/profile/key/ca/import' : './api/profile/ca/import';
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -510,39 +527,13 @@ export class ImportKeyModalComponent implements OnInit {
       this.key.keyAlg = 'ECDSA';
     }
 
-    this.uploader.onBeforeUploadItem = (item: any) => {
-      let obj: any = {
-        name: item.file.name,
-        importKeyFilter: JSON.stringify({keyAlgorithm: this.key.keyAlg})
-      };
-      if (this.type === 'certificate') {
-        obj = {};
-      }
-      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-      //item.file.name = encodeURIComponent(item.file.name);
-      this.uploader.options.additionalParameter = obj;
-    };
-
-    this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
-      if (status === 200) {
-        if (this.uploader.queue.length === 1 || this.uploader.queue[this.uploader.queue.length - 1].file.name === fileItem.file.name) {
-          this.activeModal.close('success');
-        }
-      }
-    };
-
-    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
-      this.submitted = false;
-      const res = typeof response === 'string' ? JSON.parse(response) : response;
-      if (res.error) {
-        this.toasterService.error(res.error.message, res.error.code);
-      }
-    };
   }
 
-  fileOverBase(e: any): void {
-    this.hasBaseDropZoneOver = e;
-  }
+  beforeUpload = (file: NzUploadFile): boolean => {
+    this.fileList.push(file);
+    this.onFileSelected(this.fileList);
+    return false;
+  };
 
   // CALLBACKS
   onFileSelected(event: any): void {
@@ -558,18 +549,18 @@ export class ImportKeyModalComponent implements OnInit {
           const data = _event.target.result;
           if (typeof data === 'string') {
             if (data.match(/private/i)) {
-              self.uploader.queue[i].index = 1;
+              //   self.uploader.queue[i].index = 1;
             } else if (data.match(/public/i)) {
-              self.uploader.queue[i].index = 2;
+              // self.uploader.queue[i].index = 2;
             } else if (data.match(/certificate/i)) {
-              self.uploader.queue[i].index = 3;
+              // self.uploader.queue[i].index = 3;
             } else {
               let msg;
               self.translate.get('profile.message.invalidKeyFileSelected').subscribe(translatedValue => {
                 msg = translatedValue;
               });
               self.toasterService.error(msg);
-              self.uploader.queue[i].remove();
+              self.fileList = [];
             }
           }
         } catch (e) {
@@ -581,14 +572,14 @@ export class ImportKeyModalComponent implements OnInit {
 
   import(): void {
     this.submitted = true;
-    this.uploader.queue = this.uploader.queue.sort((a, b) => {
-      return a.index - b.index;
-    });
-    for (let i = 0; i < this.uploader.queue.length; i++) {
-      setTimeout(() => {
-        this.uploader.queue[i].upload();
-      }, 10 * i);
-    }
+    // this.uploader.queue = this.uploader.queue.sort((a, b) => {
+    //   return a.index - b.index;
+    // });
+    // for (let i = 0; i < this.uploader.queue.length; i++) {
+    //   setTimeout(() => {
+    //     this.uploader.queue[i].upload();
+    //   }, 10 * i);
+    // }
   }
 
   cancel(): void {
@@ -600,9 +591,10 @@ export class ImportKeyModalComponent implements OnInit {
   selector: 'app-generate-key-component',
   templateUrl: './generate-key-dialog.html'
 })
-export class GenerateKeyComponent implements OnInit {
-  @Input() type: string;
-  @Input() display: any;
+export class GenerateKeyComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  type: string;
+  display: any;
   submitted = false;
   expiry: any = {dateValue: 'date'};
   caObj: any = {};
@@ -617,6 +609,8 @@ export class GenerateKeyComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.type = this.modalData.type;
+    this.display = this.modalData.display;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -674,7 +668,7 @@ export class GenerateKeyComponent implements OnInit {
   selector: 'app-user',
   templateUrl: './user.component.html'
 })
-export class UserComponent implements OnInit, OnDestroy {
+export class UserComponent {
   zones: any = {};
   preferences: any = {};
   username = '';
@@ -903,7 +897,7 @@ export class UserComponent implements OnInit, OnDestroy {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ChangePasswordComponent,
-      nzComponentParams: {
+      nzData: {
         username: this.username,
         identityServiceName: this.identityServiceName
       },
@@ -1019,7 +1013,7 @@ export class UserComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmModalComponent,
-      nzComponentParams: {
+      nzData: {
         title: 'resetProfile',
         message: 'resetProfilePreferences',
         type: 'Reset',
@@ -1124,7 +1118,7 @@ export class UserComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: UpdateKeyModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         securityLevel: this.securityLevel,
         display: this.preferences.auditLog,
         paste: true,
@@ -1146,7 +1140,7 @@ export class UserComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: GenerateKeyComponent,
-      nzComponentParams: {
+      nzData: {
         display: this.preferences.auditLog,
         type
       },
@@ -1167,7 +1161,7 @@ export class UserComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: ImportKeyModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         securityLevel: this.securityLevel,
         display: this.preferences.auditLog,
         type
@@ -1188,7 +1182,7 @@ export class UserComponent implements OnInit, OnDestroy {
     this.modal.create({
       nzTitle: undefined,
       nzContent: UpdateKeyModalComponent,
-      nzComponentParams: {
+      nzData: {
         securityLevel: this.securityLevel,
         type,
         data: type === 'key' ? this.keys : type === 'certificate' ? this.caCertificates : this.certificates
@@ -1215,7 +1209,7 @@ export class UserComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: GitModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         display: this.preferences.auditLog,
         data
       },
@@ -1243,7 +1237,7 @@ export class UserComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments
         },
         nzFooter: null,
@@ -1260,7 +1254,7 @@ export class UserComponent implements OnInit, OnDestroy {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           title: 'delete',
           message: 'deleteGitCredentials',
           type: 'Delete',

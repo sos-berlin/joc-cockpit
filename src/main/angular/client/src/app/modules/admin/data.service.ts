@@ -1,8 +1,8 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
 
 @Injectable()
-export class DataService implements OnDestroy {
+export class DataService {
 
   preferences = {
     roles: new Set()

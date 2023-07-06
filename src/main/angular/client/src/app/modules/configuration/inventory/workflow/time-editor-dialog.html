@@ -1,68 +1,75 @@
 <div class="box-shadow-on-modal">
-<div class="modal-header">
-  <h4 class="modal-title">
-    <span *ngIf="!period" translate>runtime.label.addPeriod</span>
-    <span *ngIf="period" translate>runtime.label.editPeriod</span>
-  </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
-    <span aria-hidden="true" class="fa fa-times-circle"></span>
-  </button>
-</div>
-<div class="modal-body p-a">
-  <div class="row">
-    <div class="col-sm-12">
-      <form #myForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
-        <div>
-          <div class="form-group row">
-            <label class="col-sm-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ((!isCycle ? 'inventory.tooltips.workflow.admissionTime.periodBeginOfAdmissionTime'
-             : 'inventory.tooltips.workflow.admissionTime.startTime') | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"translate>workflow.admissionTime.label.startTime
-              <sup class="text-danger text-sm">*</sup>
-            </label>
-            <div class="col-sm-6" [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
-              <div class="time-picker m-l-0">
-                <input [appAutofocus]="true" timevalidator validTimeReqex required type="text" #startTime="ngModel" class="form-control"
-                    name="startTime" [(ngModel)]="object.startTime" (ngModelChange)="selectTime(object.startTime, true)" placeholder="HH:MM:SS">
-                <nz-time-picker [nzAllowEmpty]="false" (keydown.Tab)="onTab()" (ngModelChange)="selectTime($event)" [(ngModel)]="object.startTime1"
-                 name="startTimeIcon"></nz-time-picker>
+  <div class="modal-header">
+    <h4 class="modal-title">
+      <span *ngIf="!period" translate>runtime.label.addPeriod</span>
+      <span *ngIf="period" translate>runtime.label.editPeriod</span>
+    </h4>
+    <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
+    </button>
+  </div>
+  <div class="modal-body p-a">
+    <div class="row">
+      <div class="col-sm-12">
+        <form #myForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
+          <div>
+            <div class="form-group row">
+              <label [nz-tooltip]="isTooltipVisible ? ((!isCycle ? 'inventory.tooltips.workflow.admissionTime.periodBeginOfAdmissionTime'
+             : 'inventory.tooltips.workflow.admissionTime.startTime') | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                     class="col-sm-3 form-control-label" translate>workflow.admissionTime.label.startTime
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
+                   class="col-sm-6">
+                <div class="time-picker m-l-0">
+                  <input #startTime="ngModel" (ngModelChange)="selectTime(object.startTime, true)" [(ngModel)]="object.startTime" [appAutofocus]="true" class="form-control" name="startTime"
+                         placeholder="HH:MM:SS"
+                         required timevalidator
+                         type="text" validTimeReqex>
+                  <nz-time-picker (keydown.Tab)="onTab()" (ngModelChange)="selectTime($event)" [(ngModel)]="object.startTime1"
+                                  [nzAllowEmpty]="false"
+                                  name="startTimeIcon"></nz-time-picker>
+                </div>
+                <div *ngIf="startTime.invalid && (startTime.dirty || startTime.touched)" class="text-danger help-block">
+                  <div *ngIf="startTime.errors.required">
+                    <div translate>common.message.requiredError</div>
+                  </div>
+                </div>
               </div>
-              <div *ngIf="startTime.invalid && (startTime.dirty || startTime.touched)" class="text-danger help-block">
-                <div *ngIf="startTime.errors.required">
-                  <div translate>common.message.requiredError</div>
+            </div>
+            <div class="form-group row">
+              <label [nz-tooltip]="isTooltipVisible ? ((!isCycle ? 'inventory.tooltips.workflow.admissionTime.durationOfAdmissionTime'
+             : 'inventory.tooltips.workflow.admissionTime.duration') | translate) : ''" [nzTooltipMouseEnterDelay]="0.5" class="col-sm-3 form-control-label"
+                     translate>common.label.duration
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div [ngClass]="{ 'has-error' : (((duration.dirty || duration.touched) && duration.invalid))}"
+                   class="col-sm-6">
+                <input #duration="ngModel" [(ngModel)]="object.duration" appValidateDuration class="form-control" name="duration"
+                       placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
+                       required type="text">
+                <div *ngIf="duration.invalid && (duration.dirty || duration.touched)" class="text-danger help-block">
+                  <div *ngIf="duration.errors.required">
+                    <div translate>common.message.requiredError</div>
+                  </div>
+                  <div *ngIf="duration.errors.invalidDuration" translate>common.message.invalid</div>
+                </div>
+                <div *ngIf="isExist" class="text-danger help-block">
+                  <div translate>workflow.admissionTime.message.duplicatePeriod</div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="form-group row">
-            <label class="col-sm-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ((!isCycle ? 'inventory.tooltips.workflow.admissionTime.durationOfAdmissionTime'
-             : 'inventory.tooltips.workflow.admissionTime.duration') | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"translate>common.label.duration
-              <sup class="text-danger text-sm">*</sup>
-            </label>
-            <div class="col-sm-6" [ngClass]="{ 'has-error' : (((duration.dirty || duration.touched) && duration.invalid))}">
-              <input appValidateDuration required class="form-control" name="duration" #duration="ngModel"
-                     [(ngModel)]="object.duration"
-                     placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
-              <div *ngIf="duration.invalid && (duration.dirty || duration.touched)" class="text-danger help-block">
-                <div *ngIf="duration.errors.required">
-                  <div translate>common.message.requiredError</div>
-                </div>
-                <div *ngIf="duration.errors.invalidDuration" translate>common.message.invalid</div>
-              </div>
-              <div *ngIf="isExist" class="text-danger help-block">
-                <div translate>workflow.admissionTime.message.duplicatePeriod</div>
-              </div>
-            </div>
+          <div>
+            <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
+              <span translate>common.button.save</span>
+            </button>
+            <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
+              common.button.cancel
+            </button>
           </div>
-        </div>
-        <div>
-          <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid">
-            <span translate>common.button.save</span>
-          </button>
-          <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
-            common.button.cancel
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
-</div>
 </div>

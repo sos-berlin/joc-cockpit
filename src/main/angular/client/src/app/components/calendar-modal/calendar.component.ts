@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
@@ -9,8 +9,8 @@ declare const $: any;
   template: `
     <div class="modal-header">
       <h4 class="modal-title">
-        <span *ngIf="!calendar" translate>runtime.label.calendarViewFor</span>
-        <span *ngIf="calendar" translate>runtime.label.showPreview</span>
+        <span *ngIf="!calendar" translate="">runtime.label.calendarViewFor</span>
+        <span *ngIf="calendar" translate="">runtime.label.showPreview</span>
         <span *ngIf="calendar">: </span>
         {{path}}
       </h4>
@@ -25,7 +25,7 @@ declare const $: any;
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active' : calendarView=='month'}"
                  (click)="calendarView='month';getPlan()">
-                <span class="nav-text text-dark p-b-sm" translate>runtime.label.monthly</span>
+                <span class="nav-text text-dark p-b-sm" translate="">runtime.label.monthly</span>
               </a>
             </li>
             <li class="nav-item dropdown-separator">
@@ -34,7 +34,7 @@ declare const $: any;
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active' : calendarView=='year'}"
                  (click)="calendarView='year';getPlan()">
-                <span class="nav-text text-dark p-b-sm" translate>runtime.label.yearly</span>
+                <span class="nav-text text-dark p-b-sm" translate="">runtime.label.yearly</span>
               </a>
             </li>
           </ul>
@@ -50,16 +50,18 @@ declare const $: any;
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>common.button.close</button>
+      <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate="">
+        common.button.close
+      </button>
     </div>
   `
 })
-export class CalendarModalComponent implements OnInit {
-  @Input() path: string;
-  @Input() calendar: boolean;
+export class CalendarModalComponent {
+  @Input() path: string | undefined;
+  @Input() calendar = false;
   calendarView = 'year';
   isCalendarLoading = false;
-  planItems = [];
+  planItems: any = [];
   toDate: any;
   calendarTitle = new Date().getFullYear();
 
@@ -109,7 +111,7 @@ export class CalendarModalComponent implements OnInit {
   private showCalendar(): void {
     $('#full-calendar').calendar({
       language: this.coreService.getLocale(),
-      renderEnd: (e) => {
+      renderEnd: (e: any) => {
         this.calendarTitle = e.currentYear;
         if (this.toDate) {
           this.changeDate();
@@ -127,7 +129,7 @@ export class CalendarModalComponent implements OnInit {
     }
   }
 
-  private getDates(obj): void {
+  private getDates(obj: any): void {
     this.planItems = [];
     this.coreService.post('calendar/dates',
       obj).subscribe((result: any) => {
@@ -135,7 +137,7 @@ export class CalendarModalComponent implements OnInit {
     });
   }
 
-  private filterDates(result) {
+  private filterDates(result: any) {
     if (result.dates) {
       for (let i = 0; i < result.dates.length; i++) {
         const x = result.dates[i];

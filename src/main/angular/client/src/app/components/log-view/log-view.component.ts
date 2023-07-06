@@ -1,17 +1,9 @@
-import {
-  Component,
-  ElementRef,
-  Inject,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import {isEmpty, isArray} from 'underscore';
+import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
+import {isArray, isEmpty} from 'underscore';
 import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {AuthService} from "../guard";
 import {CoreService} from '../../services/core.service';
 import {POPOUT_MODAL_DATA, POPOUT_MODALS, PopoutData} from "../../services/popup.service";
-
 
 declare const $: any;
 export let that: any;
@@ -20,7 +12,7 @@ export let that: any;
   selector: 'app-log-view',
   templateUrl: './log-view.component.html'
 })
-export class LogViewComponent implements OnInit, OnDestroy {
+export class LogViewComponent {
   preferences: any = {};
   loading = false;
   isLoading = false;
@@ -56,7 +48,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
   delta = 20;
   dataObject: PopoutData;
   treeStructure: any[] = [];
-  isChildren =  false;
+  isChildren = false;
   nodes = [];
 
   @ViewChild('dataBody', {static: false}) dataBody!: ElementRef;
@@ -418,20 +410,22 @@ export class LogViewComponent implements OnInit, OnDestroy {
 
   runningOrderLog(obj: any): void {
     if (obj.eventId) {
-      this.runningCanceller = this.coreService.post('order/log/running', obj).subscribe((res: any) => {
-        if (res) {
-          if (res.logEvents) {
-            this.jsonToString(res);
-            this.showHideTask(res.logEvents);
-            this.scrollBottom();
-          }
-          if (!res.complete && !this.isCancel) {
-            if (res.eventId) {
-              obj.eventId = res.eventId;
-              this.runningOrderLog(obj);
+      this.runningCanceller = this.coreService.post('order/log/running', obj).subscribe({
+        next: (res: any) => {
+          if (res) {
+            if (res.logEvents) {
+              this.jsonToString(res);
+              this.showHideTask(res.logEvents);
+              this.scrollBottom();
             }
-          } else {
-            this.finished = true;
+            if (!res.complete && !this.isCancel) {
+              if (res.eventId) {
+                obj.eventId = res.eventId;
+                this.runningOrderLog(obj);
+              }
+            } else {
+              this.finished = true;
+            }
           }
         }
       });
@@ -490,9 +484,9 @@ export class LogViewComponent implements OnInit, OnDestroy {
         }
       }
       if (!flag) {
-        if(/\d+[.]\w/gm.test(dt[i].orderId) && !/\d+[.]\w/gm.test(dt[i].position)){
+        if (/\d+[.]\w/gm.test(dt[i].orderId) && !/\d+[.]\w/gm.test(dt[i].position)) {
           const pos = dt[i].orderId.substring(dt[i].orderId.lastIndexOf('.') + 1);
-          if(pos) {
+          if (pos) {
             dt[i].name1 = pos;
           }
         }
@@ -504,7 +498,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
         return;
       }
 
-      div.className = (dt[i].name1 ? (dt[i].position +'.'+dt[i].name1) : dt[i].position ) + ' log_line';
+      div.className = (dt[i].name1 ? (dt[i].position + '.' + dt[i].name1) : dt[i].position) + ' log_line';
       if (dt[i].logLevel === 'INFO') {
         div.className += ' log_info';
         if (!this.object.checkBoxs.info) {
@@ -694,42 +688,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
           }
           return {name: k1, value: v1};
         });
-        for (let i = 0; i < arr.length; i++) {
-          if (isArray(arr[i].value)) {
-            col += arr[i].name + '={';
-            for (let j = 0; j < arr[i].value.length; j++) {
-              if (isArray(arr[i].value[j].value)) {
-                col += arr[i].value[j].name + '={';
-                for (let k = 0; k < arr[i].value[j].value.length; k++) {
-                  if (arr[i].value[j].value[k].name) {
-                    col += arr[i].value[j].value[k].name + '=' + arr[i].value[j].value[k].value;
-                  } else if (arr[i].value[j].value[k].key) {
-                    if (arr[i].value[j].value[k].value.value || arr[i].value[j].value[k].value.value == 0 || arr[i].value[j].value[k].value.value == false) {
-                      col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value.value;
-                    } else {
-                      col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value;
-                    }
-                  }
-                  if (arr[i].value[j].value.length - 1 != k) {
-                    col += ', ';
-                  }
-                }
-                col += '}';
-              } else {
-                col += arr[i].value[j].name + '=' + arr[i].value[j].value;
-              }
-              if (arr[i].value.length - 1 != j) {
-                col += ', ';
-              }
-            }
-            col += '}';
-          } else {
-            col += arr[i].name + '=' + arr[i].value;
-          }
-          if (arr.length - 1 != i) {
-            col += ', ';
-          }
-        }
+        col = this.coreService.createLogOutputString(arr, col);
         col += ')';
       } else if (dt[i].logEvent === 'OrderProcessed' && dt[i].returnValues) {
         col += ', returnValues(';
@@ -741,42 +700,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
           }
           return {name: k1, value: v1};
         });
-        for (let i = 0; i < arr.length; i++) {
-          if (isArray(arr[i].value)) {
-            col += arr[i].name + '={';
-            for (let j = 0; j < arr[i].value.length; j++) {
-              if (isArray(arr[i].value[j].value)) {
-                col += arr[i].value[j].name + '={';
-                for (let k = 0; k < arr[i].value[j].value.length; k++) {
-                  if (arr[i].value[j].value[k].name) {
-                    col += arr[i].value[j].value[k].name + '=' + arr[i].value[j].value[k].value;
-                  } else if (arr[i].value[j].value[k].key) {
-                    if (arr[i].value[j].value[k].value.value || arr[i].value[j].value[k].value.value == 0 || arr[i].value[j].value[k].value.value == false) {
-                      col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value.value;
-                    } else {
-                      col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value;
-                    }
-                  }
-                  if (arr[i].value[j].value.length - 1 != k) {
-                    col += ', ';
-                  }
-                }
-                col += '}';
-              } else {
-                col += arr[i].value[j].name + '=' + arr[i].value[j].value;
-              }
-              if (arr[i].value.length - 1 != j) {
-                col += ', ';
-              }
-            }
-            col += '}';
-          } else {
-            col += arr[i].name + '=' + arr[i].value;
-          }
-          if (arr.length - 1 != i) {
-            col += ', ';
-          }
-        }
+        col = this.coreService.createLogOutputString(arr, col);
         col += ')';
       } else if (dt[i].logEvent === 'OrderAttached' && dt[i].attached?.waitingForAdmission?.entries) {
         col += ', waitingForAdmission(' + dt[i].attached.waitingForAdmission.entries + ')';
@@ -1013,7 +937,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
   }
 
   private traverseTree(data: any[], isExpand: boolean): void {
-    for(let i in data) {
+    for (let i in data) {
       if (data[i] && data[i].children && data[i].children.length > 0) {
         data[i].expanded = isExpand;
         this.traverseTree(data[i].children, isExpand);
@@ -1064,7 +988,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
           }
         }
 
-        dom[dom.length > 2 ? 1 : dom.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center'  });
+        dom[dom.length > 2 ? 1 : dom.length - 1].scrollIntoView({behavior: 'smooth', block: 'center'});
         if (dom.length > 0) {
           for (let x in dom) {
             if (dom[x] && dom[x].style) {
@@ -1072,11 +996,11 @@ export class LogViewComponent implements OnInit, OnDestroy {
                 let arrow = $(dom[x]).find('.tx_order');
                 if (arrow && arrow.length > 0) {
                   const elem = arrow.find('i');
-                  if(elem) {
+                  if (elem) {
                     let classes = elem[0].classList;
-                    if(classes) {
+                    if (classes) {
                       classes.forEach((item: any) => {
-                        if(item == 'down'){
+                        if (item == 'down') {
                           elem.click();
                           return;
                         }

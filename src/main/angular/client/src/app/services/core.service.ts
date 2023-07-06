@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpRequest, HttpResponse} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
-import {Observable} from 'rxjs';
+import {filter, Observable} from 'rxjs';
 import * as moment from 'moment-timezone';
 import {ToastrService} from "ngx-toastr";
 import {TranslateService} from '@ngx-translate/core';
-import {isEmpty, sortBy, isNumber, object, isArray, clone} from 'underscore';
+import {clone, isArray, isEmpty, isNumber, object, sortBy} from 'underscore';
 import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
 import {POPOUT_MODALS, PopoutData, PopupService} from "./popup.service";
@@ -485,6 +485,16 @@ export class CoreService {
 
   log(url: string | undefined, options: any, headers: any): Observable<any> {
     return this.http.post(url, options, headers);
+  }
+
+  request(url: string, formData: any, headers: any): Observable<any> {
+    const req = new HttpRequest('POST', url, formData, {
+      headers,
+      reportProgress: true
+    });
+    return this.http
+      .request(req)
+      .pipe(filter(e => e instanceof HttpResponse))
   }
 
   getAgents(data: any, controllerId: string, cb?: any): void {
@@ -2225,7 +2235,7 @@ export class CoreService {
     function recursive(json: any, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
-          if (workflowObj.countObj.setObj) {
+          if (workflowObj?.countObj && workflowObj.countObj.setObj) {
             if (workflowObj.countObj.setObj.has(json.instructions[x].positionString)) {
               json.instructions[x].show = true;
             }
@@ -2254,14 +2264,14 @@ export class CoreService {
                 } else if (json.TYPE === 'Cycle') {
                   json.instructions[x].TYPE = 'CycleEnd';
                 } else if (parent) {
-                  let positions = [];
+                  let positionArr = [];
                   if (!parent.join) {
                     parent.join = {};
                   } else {
-                    positions = clone(parent.join.positionStrings);
+                    positionArr = clone(parent.join.positionStrings);
                   }
-                  positions.push(json.instructions[x].position);
-                  parent.join.positionStrings = positions;
+                  positionArr.push(json.instructions[x].position);
+                  parent.join.positionStrings = positionArr;
                   json.instructions[x].TYPE = 'Join';
                 }
               }
@@ -2300,7 +2310,7 @@ export class CoreService {
                     parent.join.enabled = true;
                   }
                 }
-                if (positions && positions.has(parent.join.positionStrings)) {
+                if (positions && !isArray(positions) && positions.has(parent.join.positionStrings)) {
                   parent.join.position = positions.get(parent.join.positionString);
                 }
                 json.instructions[x].TYPE = 'Join';
@@ -2531,4 +2541,69 @@ export class CoreService {
       sessionStorage['licenseValidFrom'] = result.licenseValidFrom;
     }
   }
+
+  slimscrollFunc(dom: any, ht: any, graph): void {
+    dom.slimscroll({height: ht});
+    /**
+     * Changes the zoom on mouseWheel events
+     */
+    $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
+      if (graph) {
+        if (event.ctrlKey) {
+          event.preventDefault();
+          if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+            graph.zoomIn();
+          } else {
+            graph.zoomOut();
+          }
+        } else {
+          const bounds = graph.getGraphBounds();
+          if (bounds.y < -0.05 && bounds.height > dom.height()) {
+            graph.center(true, true, 0.5, -0.02);
+          }
+        }
+      }
+    });
+  }
+
+  createLogOutputString(arr: any[], col: string): string {
+    for (let i = 0; i < arr.length; i++) {
+      if (isArray(arr[i].value)) {
+        col += arr[i].name + '={';
+        for (let j = 0; j < arr[i].value.length; j++) {
+          if (isArray(arr[i].value[j].value)) {
+            col += arr[i].value[j].name + '={';
+            for (let k = 0; k < arr[i].value[j].value.length; k++) {
+              if (arr[i].value[j].value[k].name) {
+                col += arr[i].value[j].value[k].name + '=' + arr[i].value[j].value[k].value;
+              } else if (arr[i].value[j].value[k].key) {
+                if (arr[i].value[j].value[k].value.value || arr[i].value[j].value[k].value.value == 0 || arr[i].value[j].value[k].value.value == false) {
+                  col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value.value;
+                } else {
+                  col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value;
+                }
+              }
+              if (arr[i].value[j].value.length - 1 != k) {
+                col += ', ';
+              }
+            }
+            col += '}';
+          } else {
+            col += arr[i].value[j].name + '=' + arr[i].value[j].value;
+          }
+          if (arr[i].value.length - 1 != j) {
+            col += ', ';
+          }
+        }
+        col += '}';
+      } else {
+        col += arr[i].name + '=' + arr[i].value;
+      }
+      if (arr.length - 1 != i) {
+        col += ', ';
+      }
+    }
+    return col;
+  }
+
 }

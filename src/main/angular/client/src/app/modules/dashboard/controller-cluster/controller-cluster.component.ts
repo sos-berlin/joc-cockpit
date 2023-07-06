@@ -25,7 +25,7 @@ declare const $: any;
   selector: 'app-controller-cluster',
   templateUrl: './controller-cluster.component.html'
 })
-export class ControllerClusterComponent implements OnInit, OnDestroy {
+export class ControllerClusterComponent {
   @Input('sizeY') ybody: number;
   @Input() permission: any;
   isLoaded = false;
@@ -129,7 +129,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         mxUtils.error('Browser is not supported!', 200, false);
       } else {
         const xhr = mxUtils.load(this.configXml);
-        xhr.request.onreadystatechange = function()  {
+        xhr.request.onreadystatechange = function () {
           if (this.readyState === this.DONE) {
             const node = xhr.getDocumentElement();
             editor = new mxEditor(node);
@@ -721,7 +721,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
-        nzComponentParams: {
+        nzData: {
           comments,
           action,
           show: true,
@@ -802,11 +802,11 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     this.coreService.post(url, obj).subscribe();
   }
 
-  confirmLossNode(): void{
+  confirmLossNode(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmModalComponent,
-      nzComponentParams: {
+      nzData: {
         lossNode: this.clusterStatusData?.clusterState?.lossNode
       },
       nzFooter: null,

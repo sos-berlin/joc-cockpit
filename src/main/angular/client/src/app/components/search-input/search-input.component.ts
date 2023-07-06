@@ -19,7 +19,7 @@ declare const $: any;
   selector: 'app-search-input',
   templateUrl: './search-input.component.html'
 })
-export class SearchInputComponent implements OnInit {
+export class SearchInputComponent {
   @Input() type: string;
   @Input() nodes: any = [];
   @Input() list: any = []

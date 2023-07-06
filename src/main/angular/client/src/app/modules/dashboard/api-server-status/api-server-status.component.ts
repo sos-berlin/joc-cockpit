@@ -8,7 +8,7 @@ import {DataService} from '../../../services/data.service';
   selector: 'app-api-server-status',
   templateUrl: './api-server-status.component.html'
 })
-export class APIServerStatusComponent implements OnInit, OnDestroy {
+export class APIServerStatusComponent {
   @Input('sizeY') ybody: number;
   @Input() permission: any;
 

@@ -1,36 +1,40 @@
 <div *ngFor="let variable of order[type]"
      class="plan-variables">
-  <span class="btn-group dropdown" *ngIf="order.state && !history">
-    <button class="btn-drop more-option-h" nz-dropdown [nzDisabled]="!(order.state._text === 'PLANNED' || order.state._text === 'SCHEDULED' || order.state._text === 'SUBMITTED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')"
-            nzTrigger="click" [nzDropdownMenu]="export3"
+  <span *ngIf="order.state && !history" class="btn-group dropdown">
+    <button [nzDisabled]="!(order.state._text === 'PLANNED' || order.state._text === 'SCHEDULED' || order.state._text === 'SUBMITTED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')" [nzDropdownMenu]="export3"
+            class="btn-drop more-option-h"
+            nz-dropdown nzTrigger="click"
             type="button">
       <i class="fa fa-ellipsis-h"></i>
     </button>
     <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
       <ul nz-menu>
-        <li nz-menu-item (click)="changeParameter(order, variable)">
+        <li (click)="changeParameter(order, variable)" nz-menu-item>
           <a translate>dailyPlan.button.setParameter</a>
         </li>
-        <li nz-menu-item (click)="removeParameter(order, variable)">
+        <li (click)="removeParameter(order, variable)" nz-menu-item>
           <a translate>dailyPlan.button.removeParameter</a>
         </li>
       </ul>
     </nz-dropdown-menu>
   </span>
-  <span *ngIf="(variable.value || variable.value === false || variable.value === 0) && (!variable.value[0] || !variable.value[0][0] || !variable.value[0][0].name)">{{variable.name}} : {{variable.value}}</span>
+  <span
+    *ngIf="(variable.value || variable.value === false || variable.value === 0) && (!variable.value[0] || !variable.value[0][0] || !variable.value[0][0].name)">{{variable.name}}
+    : {{variable.value}}</span>
   <span *ngIf="variable.value && variable.value[0] && variable.value[0][0] && variable.value[0][0].name">
     <b *ngIf="variable.name">{{variable.name.trimStart()}}</b>
-    <div class="m-l-20" *ngFor="let list of variable.value; let i = index" [ngClass]="{'b-b': i !== variable.value.length - 1}">
+    <div *ngFor="let list of variable.value; let i = index" [ngClass]="{'b-b': i !== variable.value.length - 1}"
+         class="m-l-20">
       <div *ngFor="let item of list" class="plan-variables">
         <span>{{item.name}} : {{item.value}}</span>
       </div>
     </div>
   </span>
 </div>
-<div class="p-l" *ngIf="(order[type] && order[type].length === 0) || (!order[type] && type !== 'variables')">
+<div *ngIf="(order[type] && order[type].length === 0) || (!order[type] && type !== 'variables')" class="p-l">
   <span translate>order.message.noVariableAvailable</span>
 </div>
-<div class="p-l p-t-xs" *ngIf="!order[type] && type === 'variables'">
+<div *ngIf="!order[type] && type === 'variables'" class="p-l p-t-xs">
   <i class="fa fa-spin fa-spinner"></i>
   <span class="p-l-xs" translate>common.label.loading</span>
 </div>

@@ -2,86 +2,92 @@
   <h4 class="modal-title">
     <span translate>workflow.label.showDependency</span> {{workflow.path}}
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="close()">
+  <button (click)="close()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <div class="modal-body p-a">
-  <div class="row" *ngIf="!loading">
-    <div class="col-md-12" *ngFor="let expectedNotices of workflow.expectedNoticeBoards">
+  <div *ngIf="!loading" class="row">
+    <div *ngFor="let expectedNotices of workflow.expectedNoticeBoards" class="col-md-12">
       <div class="p-l-sm m-b">
-        <i nz-icon nzType="gateway" class="p-r-xs"
-           nzTheme="outline"></i>
-        <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToInventoryTab(expectedNotices.name, 'NOTICEBOARD');"
+        <i class="p-r-xs" nz-icon nzTheme="outline"
+           nzType="gateway"></i>
+        <i (click)="navToInventoryTab(expectedNotices.name, 'NOTICEBOARD');"
+           *ngIf="permission.joc && permission.joc.inventory.view"
            class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-        <a (click)="showBoard(expectedNotices.name)" class="text-hover-primary">{{expectedNotices.name}}</a> <i class="fa fa-long-arrow-left p-l-xs" aria-hidden="true"></i>
-        <div class="text-muted m-l-md" *ngFor="let item of expectedNotices.value">
-          <i nz-icon nzType="apartment" class="p-r-xs"
-             nzTheme="outline"></i>
-          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToInventoryTab(item.path, 'WORKFLOW');"
+        <a (click)="showBoard(expectedNotices.name)" class="text-hover-primary">{{expectedNotices.name}}</a> <i
+        aria-hidden="true" class="fa fa-long-arrow-left p-l-xs"></i>
+        <div *ngFor="let item of expectedNotices.value" class="text-muted m-l-md">
+          <i class="p-r-xs" nz-icon nzTheme="outline"
+             nzType="apartment"></i>
+          <i (click)="navToInventoryTab(item.path, 'WORKFLOW');" *ngIf="permission.joc && permission.joc.inventory.view"
              class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
           <a (click)="showWorkflow(item.path)" class="text-hover-primary"> {{item.path}}</a>
         </div>
       </div>
     </div>
-    <div class="col-md-12" *ngFor="let postNotices of workflow.postNoticeBoards">
+    <div *ngFor="let postNotices of workflow.postNoticeBoards" class="col-md-12">
       <div class="p-l-sm m-b">
-        <i nz-icon nzType="gateway" class="p-r-xs"
-           nzTheme="outline"></i>
-        <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToInventoryTab(postNotices.name, 'NOTICEBOARD');"
+        <i class="p-r-xs" nz-icon nzTheme="outline"
+           nzType="gateway"></i>
+        <i (click)="navToInventoryTab(postNotices.name, 'NOTICEBOARD');"
+           *ngIf="permission.joc && permission.joc.inventory.view"
            class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-        <a (click)="showBoard(postNotices.name)" class="text-hover-primary">{{postNotices.name}}</a> <i class="fa fa-long-arrow-right p-l-xs" aria-hidden="true"></i>
-        <div class="text-muted m-l-md" *ngFor="let item of postNotices.value">
-          <i nz-icon nzType="apartment" class="p-r-xs"
-             nzTheme="outline"></i>
-          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToInventoryTab(item.path, 'WORKFLOW');"
+        <a (click)="showBoard(postNotices.name)" class="text-hover-primary">{{postNotices.name}}</a> <i
+        aria-hidden="true" class="fa fa-long-arrow-right p-l-xs"></i>
+        <div *ngFor="let item of postNotices.value" class="text-muted m-l-md">
+          <i class="p-r-xs" nz-icon nzTheme="outline"
+             nzType="apartment"></i>
+          <i (click)="navToInventoryTab(item.path, 'WORKFLOW');" *ngIf="permission.joc && permission.joc.inventory.view"
              class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
           <a (click)="showWorkflow(item.path)" class="text-hover-primary"> {{item.path}}</a>
         </div>
       </div>
     </div>
-    <div class="col-md-12" *ngFor="let postNotices of workflow.consumeNoticeBoards">
+    <div *ngFor="let postNotices of workflow.consumeNoticeBoards" class="col-md-12">
       <div class="p-l-sm m-b">
-        <i nz-icon nzType="gateway" class="p-r-xs"
-           nzTheme="outline"></i>
-        <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToInventoryTab(postNotices.name, 'NOTICEBOARD');"
+        <i class="p-r-xs" nz-icon nzTheme="outline"
+           nzType="gateway"></i>
+        <i (click)="navToInventoryTab(postNotices.name, 'NOTICEBOARD');"
+           *ngIf="permission.joc && permission.joc.inventory.view"
            class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-        <a (click)="showBoard(postNotices.name)" class="text-hover-primary">{{postNotices.name}}</a> <i class="fa fa-long-arrow-left p-l-xs" aria-hidden="true"></i>
-        <div class="text-muted m-l-md" *ngFor="let item of postNotices.value">
-          <i nz-icon nzType="apartment" class="p-r-xs"
-             nzTheme="outline"></i>
-          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToInventoryTab(item.path, 'WORKFLOW');"
+        <a (click)="showBoard(postNotices.name)" class="text-hover-primary">{{postNotices.name}}</a> <i
+        aria-hidden="true" class="fa fa-long-arrow-left p-l-xs"></i>
+        <div *ngFor="let item of postNotices.value" class="text-muted m-l-md">
+          <i class="p-r-xs" nz-icon nzTheme="outline"
+             nzType="apartment"></i>
+          <i (click)="navToInventoryTab(item.path, 'WORKFLOW');" *ngIf="permission.joc && permission.joc.inventory.view"
              class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
           <a (click)="showWorkflow(item.path)" class="text-hover-primary"> {{item.path}}</a>
         </div>
       </div>
     </div>
-    <div class="col-md-12" *ngIf="workflow.addOrderFromWorkflows && workflow.addOrderFromWorkflows.length > 0">
+    <div *ngIf="workflow.addOrderFromWorkflows && workflow.addOrderFromWorkflows.length > 0" class="col-md-12">
       <div class="p-l-sm m-b">
-        <a>AddOrder</a> <i class="fa fa-long-arrow-left p-l-xs" aria-hidden="true"></i>
-        <div class="text-muted m-l-md" *ngFor="let item of workflow.addOrderFromWorkflows">
-          <i nz-icon nzType="apartment" class="p-r-xs"
-             nzTheme="outline"></i>
-          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToInventoryTab(item.path, 'WORKFLOW');"
+        <a>AddOrder</a> <i aria-hidden="true" class="fa fa-long-arrow-left p-l-xs"></i>
+        <div *ngFor="let item of workflow.addOrderFromWorkflows" class="text-muted m-l-md">
+          <i class="p-r-xs" nz-icon nzTheme="outline"
+             nzType="apartment"></i>
+          <i (click)="navToInventoryTab(item.path, 'WORKFLOW');" *ngIf="permission.joc && permission.joc.inventory.view"
              class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
           <a (click)="showWorkflow(item.path)" class="text-hover-primary"> {{item.path}}</a>
         </div>
       </div>
     </div>
-    <div class="col-md-12" *ngIf="workflow.addOrderToWorkflows && workflow.addOrderToWorkflows.length > 0">
+    <div *ngIf="workflow.addOrderToWorkflows && workflow.addOrderToWorkflows.length > 0" class="col-md-12">
       <div class="p-l-sm m-b">
-        <a>AddOrder</a> <i class="fa fa-long-arrow-right p-l-xs" aria-hidden="true"></i>
-        <div class="text-muted m-l-md" *ngFor="let item of workflow.addOrderToWorkflows">
-          <i nz-icon nzType="apartment" class="p-r-xs"
-             nzTheme="outline"></i>
-          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToInventoryTab(item.path, 'WORKFLOW');"
+        <a>AddOrder</a> <i aria-hidden="true" class="fa fa-long-arrow-right p-l-xs"></i>
+        <div *ngFor="let item of workflow.addOrderToWorkflows" class="text-muted m-l-md">
+          <i class="p-r-xs" nz-icon nzTheme="outline"
+             nzType="apartment"></i>
+          <i (click)="navToInventoryTab(item.path, 'WORKFLOW');" *ngIf="permission.joc && permission.joc.inventory.view"
              class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
           <a (click)="showWorkflow(item.path)" class="text-hover-primary"> {{item.path}}</a>
         </div>
       </div>
     </div>
   </div>
-  <div class="form-group row" *ngIf="loading">
+  <div *ngIf="loading" class="form-group row">
     <div class="col-md-12 m-t-xs text-center">
       <i>
         <nz-spin nzSimple></nz-spin>
@@ -90,6 +96,6 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-grey btn-sm" (click)="close()" translate>common.button.close</button>
+  <button (click)="close()" class="btn btn-grey btn-sm" translate type="button">common.button.close</button>
 </div>
 

@@ -2,10 +2,10 @@
   <h4 class="modal-title">
     <span translate>workflow.label.valueEditor</span>
   </h4>
-  <a class="max-btn" appMaximum [codeMirror]="codeMirror">
+  <a [codeMirror]="codeMirror" appMaximum class="max-btn">
     <i class="fa fa-window-maximize"></i>
   </a>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -13,25 +13,27 @@
   <div class="modal-body p-a">
     <div class="row">
       <div class="col-md-12 mono-font">
-        <div id="show-tree-editor" *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" style="min-width: 150px;">
-          <app-search-input [nodes]="boardTree" [type]="'NOTICEBOARD'" (onSelect)="checkExpectNoticeExp($event)" (onBlur)="onBlur($event)"></app-search-input>
+        <div *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" id="show-tree-editor" style="min-width: 150px;">
+          <app-search-input (onBlur)="onBlur($event)" (onSelect)="checkExpectNoticeExp($event)" [nodes]="boardTree"
+                            [type]="'NOTICEBOARD'"></app-search-input>
         </div>
-        <div id="boardId" class="b-a"
-          [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}">
-          <ngx-codemirror [autoFocus]="true" #codeMirror name="expectBoardExpression"
-            title="{{'workflow.placeholder.expression' | translate}}" required #expectBoardExpression="ngModel"
-            [(ngModel)]="obj.data" [options]="{lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
-                                  mode: 'shell'}"></ngx-codemirror>
+        <div [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}" class="b-a"
+             id="boardId">
+          <ngx-codemirror #codeMirror #expectBoardExpression="ngModel" [(ngModel)]="obj.data"
+                          [autoFocus]="true" [options]="{lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
+                                  mode: 'shell'}"
+                          name="expectBoardExpression"
+                          required title="{{'workflow.placeholder.expression' | translate}}"></ngx-codemirror>
         </div>
         <div class="text-sm text-muted" translate>workflow.label.showNoticeBoardNames</div>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary btn-sm" translate>
+    <button class="btn btn-primary btn-sm" translate type="submit">
       common.button.submit
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

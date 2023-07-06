@@ -2,12 +2,12 @@
   <div class="box-header b-b remove">
     <h3 translate>dashboard.label.inventory</h3>
   </div>
-  <div class="box-body text-overflow" [ngStyle]="{'max-height':(ybody * 55 +((ybody -1) *20 -50)) +'px'}">
-    <table class="w-full" *ngIf="!notAuthenticate && isLoaded">
+  <div [ngStyle]="{'max-height':(ybody * 55 +((ybody -1) *20 -50)) +'px'}" class="box-body text-overflow">
+    <table *ngIf="!notAuthenticate && isLoaded" class="w-full">
       <tr class="text-center">
-        <td style="width: 25%" nowrap>
+        <td nowrap style="width: 25%">
           <div class="icon-bg">
-            <i nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+            <i class="icon-color" nz-icon nzTheme="outline" nzType="apartment"></i>
             <div class="text">
               <div class="count">
                 {{statistics.numOfWorkflows || 0}}
@@ -16,9 +16,9 @@
             </div>
           </div>
         </td>
-        <td style="width: 25%" nowrap>
+        <td nowrap style="width: 25%">
           <div class="icon-bg">
-            <i nz-icon nzType="menu-unfold" class="icon-color" nzTheme="outline"></i>
+            <i class="icon-color" nz-icon nzTheme="outline" nzType="menu-unfold"></i>
             <div class="text">
               <div class="count">
                 {{statistics.numOfJobs || 0}}
@@ -27,9 +27,9 @@
             </div>
           </div>
         </td>
-        <td style="width: 25%" nowrap>
+        <td nowrap style="width: 25%">
           <div class="icon-bg">
-            <i nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+            <i class="icon-color" nz-icon nzTheme="outline" nzType="lock"></i>
             <div class="text">
               <div class="count">
                 {{statistics.numOfLocks || 0}}
@@ -38,9 +38,9 @@
             </div>
           </div>
         </td>
-        <td style="width: 25%" nowrap>
+        <td nowrap style="width: 25%">
           <div class="icon-bg">
-            <i nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
+            <i class="icon-color" nz-icon nzTheme="outline" nzType="schedule"></i>
             <div class="text">
               <div class="count">
                 {{statistics.numOfSchedules || 0}}
@@ -52,14 +52,14 @@
         </td>
       </tr>
     </table>
-    <div *ngIf="notAuthenticate" class="vert-middle"
-         [ngStyle]="{'height':(ybody * 55 + ((ybody -1) *20 -50) - 25) +'px'}">
+    <div *ngIf="notAuthenticate" [ngStyle]="{'height':(ybody * 55 + ((ybody -1) *20 -50) - 25) +'px'}"
+         class="vert-middle">
       <div>
         <app-empty-data></app-empty-data>
       </div>
     </div>
-    <div [hidden]="notAuthenticate" class="hide text-center text-primary text m-t m-b"
-         [ngClass]="{'show': !isLoaded}">
+    <div [hidden]="notAuthenticate" [ngClass]="{'show': !isLoaded}"
+         class="hide text-center text-primary text m-t m-b">
       <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
     </div>
   </div>

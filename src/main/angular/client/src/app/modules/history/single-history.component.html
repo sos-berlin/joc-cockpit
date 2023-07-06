@@ -14,15 +14,15 @@
 <div class="scroll-y max-ht">
   <div class="padding p-b-0">
     <div class="m-t-sm box p-a">
-      <div class="table-responsive" *ngIf="workflowPath && orderId">
+      <div *ngIf="workflowPath && orderId" class="table-responsive">
         <nz-table
           #ajaxOrderTable
-          [nzSize]="'small'"
           [nzBordered]="true"
-          [nzShowPagination]="false"
           [nzData]="history"
           [nzLoading]="loading"
+          [nzShowPagination]="false"
           [nzShowSizeChanger]="false"
+          [nzSize]="'small'"
         >
           <thead>
           <tr>
@@ -38,39 +38,42 @@
           </tr>
           </thead>
           <tbody>
-          <ng-template ngFor let-history [ngForOf]="ajaxOrderTable.data">
+          <ng-template [ngForOf]="ajaxOrderTable.data" let-history ngFor>
             <tr class="cursor">
               <td>
-                <span class="show-in-single-line w-full"
-                      (click)="coreService.showLogWindow(history,null,null,null,null)">
-                  <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                <span (click)="coreService.showLogWindow(history,null,null,null,null)"
+                      class="show-in-single-line w-full">
+                  <i (click)="showPanelFuc(history);$event.stopPropagation()"
                      *ngIf="!history.show"
-                     (click)="showPanelFuc(history);$event.stopPropagation()"></i>
-                  <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                     class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+                  <i (click)="hidePanelFuc(history);$event.stopPropagation()"
                      *ngIf="history.show"
-                     (click)="hidePanelFuc(history);$event.stopPropagation()"></i>
-                  <i class="cursor fa fa-download text-hover-primary p-r-xs"
-                     (click)="coreService.downloadLog(history, controllerId);$event.stopPropagation()"></i>
+                     class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
+                  <i (click)="coreService.downloadLog(history, controllerId);$event.stopPropagation()"
+                     class="cursor fa fa-download text-hover-primary p-r-xs"></i>
                   <span [innerHtml]="history.orderId"></span>
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, controllerId, null)">
                 <span class="show-in-single-line w-full">
-                  <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToWorkflowTab(history.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <i (click)="navToWorkflowTab(history.workflow);$event.stopPropagation()"
+                     *ngIf="permission.joc && permission.joc.inventory.view"
+                     class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                   <span (click)="coreService.showWorkflow(history.workflow);$event.stopPropagation()"
-                        class="text-hover-primary" [innerHtml]="history.workflow"></span>
+                        [innerHtml]="history.workflow" class="text-hover-primary"></span>
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, controllerId, null)">
                 <span [innerHtml]="history.position"></span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, controllerId, null)">
-                <span *ngIf="history.state" class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')"
-                      [innerHtml]="history.state._text | translate"></span>
+                <span *ngIf="history.state" [innerHtml]="history.state._text | translate" [ngClass]="coreService.getColor(history.state.severity,'bg')"
+                      class="label"></span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, controllerId, null)">
-                <span *ngIf="history.orderState" class="label" [ngClass]="coreService.getColor(history.orderState.severity,'bg')"
-                      [innerHtml]="history.orderState._text | translate"></span>
+                <span *ngIf="history.orderState" [innerHtml]="history.orderState._text | translate"
+                      [ngClass]="coreService.getColor(history.orderState.severity,'bg')"
+                      class="label"></span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, controllerId, null)"
                   [innerHtml]="history.plannedTime | stringToDate"></td>
@@ -84,29 +87,31 @@
             <tr *ngIf="history.show && history.arguments">
               <td></td>
               <td colspan="10">
-                <app-order-variable [order]="history" [type]="'arguments'" [history]="true" [schedulerId]="controllerId"></app-order-variable>
+                <app-order-variable [history]="true" [order]="history" [schedulerId]="controllerId"
+                                    [type]="'arguments'"></app-order-variable>
               </td>
             </tr>
             <tr *ngIf="history.show">
               <td colspan="11" style="padding:0 !important;">
-              <app-order-history-template [permission]="permission" class="order-history-template0" style="display: block" [history]="history" [schedulerId]="controllerId"
-                                          [historyView]="{}"
-              ></app-order-history-template>
+                <app-order-history-template [historyView]="{}" [history]="history"
+                                            [permission]="permission" [schedulerId]="controllerId" class="order-history-template0"
+                                            style="display: block"
+                ></app-order-history-template>
               </td>
             </tr>
           </ng-template>
           </tbody>
         </nz-table>
       </div>
-      <div class="table-responsive" *ngIf="taskId">
+      <div *ngIf="taskId" class="table-responsive">
         <nz-table
           #ajaxJobTable
-          [nzSize]="'small'"
           [nzBordered]="true"
-          [nzShowPagination]="false"
           [nzData]="history"
           [nzLoading]="loading"
+          [nzShowPagination]="false"
           [nzShowSizeChanger]="false"
+          [nzSize]="'small'"
         >
           <thead>
           <tr>
@@ -122,31 +127,34 @@
           </tr>
           </thead>
           <tbody>
-          <ng-template ngFor let-jobHistory [ngForOf]="ajaxJobTable.data">
-            <tr class="cursor" [ngClass]="{'light-bg':jobHistory.show}">
+          <ng-template [ngForOf]="ajaxJobTable.data" let-jobHistory ngFor>
+            <tr [ngClass]="{'light-bg':jobHistory.show}" class="cursor">
               <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null)">
                 <span class="show-in-single-line">
-                  <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs" [ngClass]="jobHistory.show ? 'fa-caret-up' : 'fa-caret-down'"
-                     (click)="jobHistory.show=!jobHistory.show;$event.stopPropagation()"></i>
-                  <i class="cursor fa fa-download  text-hover-primary p-r-xs"
-                     (click)="coreService.downloadLog(jobHistory,jobHistory.controllerId);$event.stopPropagation()"></i>
+                  <i (click)="jobHistory.show=!jobHistory.show;$event.stopPropagation()"
+                     [ngClass]="jobHistory.show ? 'fa-caret-up' : 'fa-caret-down'"
+                     class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+                  <i (click)="coreService.downloadLog(jobHistory,jobHistory.controllerId);$event.stopPropagation()"
+                     class="cursor fa fa-download  text-hover-primary p-r-xs"></i>
                   <span [innerHtml]="jobHistory.job"></span>
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null)">
                 <span class="show-in-single-line w-full">
-                  <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToWorkflowTab(jobHistory.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <i (click)="navToWorkflowTab(jobHistory.workflow);$event.stopPropagation()"
+                     *ngIf="permission.joc && permission.joc.inventory.view"
+                     class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                   <span (click)="coreService.showWorkflow(jobHistory.workflow);$event.stopPropagation()"
-                        class="text-hover-primary" [innerHtml]="jobHistory.workflow"></span>
+                        [innerHtml]="jobHistory.workflow" class="text-hover-primary"></span>
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null)">
                 <span [innerHtml]="jobHistory.position"></span>
               </td>
               <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null)">
-                <span class="label"
+                <span [innerHtml]="jobHistory.state._text | translate"
                       [ngClass]="coreService.getColor(jobHistory.state.severity,'bg')"
-                      [innerHtml]="jobHistory.state._text | translate"></span>
+                      class="label"></span>
               </td>
               <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null)"
                   [innerHtml]="jobHistory.startTime | stringToDate"></td>
@@ -162,92 +170,95 @@
             <tr *ngIf="jobHistory.show">
               <td></td>
               <td colspan="10">
-                <app-order-variable [order]="jobHistory" [type]="'arguments'" [history]="true" [schedulerId]="controllerId"></app-order-variable>
+                <app-order-variable [history]="true" [order]="jobHistory" [schedulerId]="controllerId"
+                                    [type]="'arguments'"></app-order-variable>
               </td>
             </tr>
           </ng-template>
           </tbody>
         </nz-table>
       </div>
-      <div class="table-responsive" *ngIf="commitId">
+      <div *ngIf="commitId" class="table-responsive">
         <nz-table
           #ajaxTable
-          [nzSize]="'small'"
           [nzBordered]="true"
-          [nzShowPagination]="false"
           [nzData]="history"
           [nzLoading]="loading"
+          [nzShowPagination]="false"
           [nzShowSizeChanger]="false"
+          [nzSize]="'small'"
         >
           <thead>
           <tr>
             <th style="width: 25%"><span translate>common.label.controllerId</span></th>
-            <th style="width: 25%"><span  translate>history.label.deploymentDate</span></th>
-            <th style="width: 25%"><span  translate>common.label.account</span></th>
-            <th style="width: 25%"><span  translate>history.label.state</span></th>
+            <th style="width: 25%"><span translate>history.label.deploymentDate</span></th>
+            <th style="width: 25%"><span translate>common.label.account</span></th>
+            <th style="width: 25%"><span translate>history.label.state</span></th>
           </tr>
           </thead>
           <tbody>
-          <ng-template ngFor let-depHistory [ngForOf]="ajaxTable.data">
+          <ng-template [ngForOf]="ajaxTable.data" let-depHistory ngFor>
             <tr>
               <td>
                 <span [innerHtml]="depHistory.controllerId"></span>
               </td>
               <td>
-                  <span [innerHtml]="depHistory.deploymentDate | stringToDate"></span>
+                <span [innerHtml]="depHistory.deploymentDate | stringToDate"></span>
               </td>
               <td><span [innerHtml]="depHistory.account"></span></td>
-              <td><span class="label" [ngClass]="{'bg-dark-blue' : depHistory.state=== 'DEPLOYED', 'bg-orange' : depHistory.state=== 'NOT_DEPLOYED'}" [innerHtml]="depHistory.state | translate"></span></td>
+              <td><span [innerHtml]="depHistory.state | translate"
+                        [ngClass]="{'bg-dark-blue' : depHistory.state=== 'DEPLOYED', 'bg-orange' : depHistory.state=== 'NOT_DEPLOYED'}"
+                        class="label"></span></td>
             </tr>
             <tr *ngIf="depHistory.errorMessage">
               <td colspan="4"><span class="text-danger">{{depHistory.errorMessage}}</span></td>
             </tr>
             <tr>
-              <td colspan="4" style="padding:0 !important;" class="order-history-template0">
-                <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
-                          [nzData]="depHistory.children" [nzShowPagination]="false" [nzFrontPagination]="false">
-                  <thead>
-                  <tr>
-                    <th nzWidth="19.95%"><span translate>history.label.deployType</span></th>
-                    <th nzWidth="39.97%"><span translate>common.label.path</span></th>
-                    <th nzWidth="19.95%"><span translate>history.label.operation</span></th>
-                    <th nzWidth="19.95%"><span translate>history.label.date</span></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let child of innerChildTable.data">
-                    <td><span [innerHtml]="child.deployType | translate"></span></td>
-                    <td>
+              <td class="order-history-template0" colspan="4" style="padding:0 !important;">
+                <nz-table #innerChildTable [nzData]="depHistory.children" [nzFrontPagination]="false"
+                          [nzShowPagination]="false" class="m-a-0 inner-table" nzSize="small">
+          <thead>
+          <tr>
+            <th nzWidth="19.95%"><span translate>history.label.deployType</span></th>
+            <th nzWidth="39.97%"><span translate>common.label.path</span></th>
+            <th nzWidth="19.95%"><span translate>history.label.operation</span></th>
+            <th nzWidth="19.95%"><span translate>history.label.date</span></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let child of innerChildTable.data">
+            <td><span [innerHtml]="child.deployType | translate"></span></td>
+            <td>
                       <span class="show-in-single-line w-full">
-                        <i *ngIf="child.operation === 'UPDATE' && permission.joc && permission.joc.inventory.view"
-                           (click)="navToInventoryTab(child);$event.stopPropagation()"
+                        <i (click)="navToInventoryTab(child);$event.stopPropagation()"
+                           *ngIf="child.operation === 'UPDATE' && permission.joc && permission.joc.inventory.view"
                            class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                         <span
-                          [ngClass]="(child.deployType === 'Workflow' && child.operation === 'UPDATE') ? 'text-hover-primary' : ''"
                           (click)="coreService.showWorkflow(child.path);$event.stopPropagation()"
-                          [innerHtml]="child.path"></span>
+                          [innerHtml]="child.path"
+                          [ngClass]="(child.deployType === 'Workflow' && child.operation === 'UPDATE') ? 'text-hover-primary' : ''"></span>
                       </span>
-                    </td>
-                    <td><span [innerHtml]="child.operation | translate"></span></td>
-                    <td [innerHtml]="child.deploymentDate | stringToDate"></td>
-                  </tr>
-                  </tbody>
-                </nz-table>
-              </td>
-            </tr>
-          </ng-template>
+            </td>
+            <td><span [innerHtml]="child.operation | translate"></span></td>
+            <td [innerHtml]="child.deploymentDate | stringToDate"></td>
+          </tr>
           </tbody>
         </nz-table>
+        </td>
+        </tr>
+        </ng-template>
+        </tbody>
+        </nz-table>
       </div>
-      <div class="table-responsive" *ngIf="auditLogId">
+      <div *ngIf="auditLogId" class="table-responsive">
         <nz-table
           #ajaxTable
-          [nzSize]="'small'"
           [nzBordered]="true"
-          [nzShowPagination]="false"
           [nzData]="history"
           [nzLoading]="loading"
+          [nzShowPagination]="false"
           [nzShowSizeChanger]="false"
+          [nzSize]="'small'"
         >
           <thead>
           <tr>
@@ -256,16 +267,16 @@
           </tr>
           </thead>
           <tbody>
-          <ng-template ngFor let-submissionHistory [ngForOf]="ajaxTable.data">
+          <ng-template [ngForOf]="ajaxTable.data" let-submissionHistory ngFor>
             <tr>
               <td>
                 <span class="show-in-single-line w-full">
-                    <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                    <i (click)="expandDailyPlan(submissionHistory)"
                        *ngIf="!submissionHistory.show"
-                       (click)="expandDailyPlan(submissionHistory)"></i>
-                    <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                       class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+                    <i (click)="submissionHistory.show = false;"
                        *ngIf="submissionHistory.show"
-                       (click)="submissionHistory.show = false;"></i>
+                       class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
                     <span [innerHtml]="submissionHistory.date | stringToDate1"></span>
                   </span>
               </td>
@@ -275,94 +286,101 @@
             </tr>
             <tr *ngIf="submissionHistory.show">
               <td style="padding:0 !important;">
-                <nz-table class="m-a-0 inner-table" nzSize="small" #innerChildTable
-                          [nzData]="submissionHistory.controllers" [nzShowPagination]="false" [nzFrontPagination]="false">
-                  <tbody>
-                  <ng-template ngFor let-controller
-                               [ngForOf]="innerChildTable.data">
-                    <tr>
-                      <td class="custom-th" colspan="6">
-                        <span class="p-l" translate>common.label.controllerId</span>:
-                        <span [innerHtml]="controller.controllerId"></span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="custom-th" colspan="3"><span class="p-l" translate>history.label.submission</span></td>
-                      <td class="custom-th" colspan="3"><span translate>history.label.submissionTotal</span></td>
-                    </tr>
-                    <ng-container *ngFor="let child of controller.submissions" class="order-history-template0">
-                      <tr>
-                        <td colspan="3">
-                          <span class="p-l">
-                            <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                               *ngIf="!child.show" (click)="loadSubmissionOrders(submissionHistory, controller, child);child.show = true"></i>
-                            <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
-                               *ngIf="child.show" (click)="child.show = false;"></i>
-                            <span [innerHtml]="child.submissionTime | stringToDate"></span>
-                          </span>
-                        </td>
-                        <td colspan="3">
-                          {{child.countTotal}}
-                        </td>
-                      </tr>
-                      <ng-container *ngIf="child.show" class="order-history-template0">
-                        <ng-container *ngIf="!child.orderIds">
-                          <tr>
-                            <td colspan="6" class="text-center">
-                              <nz-spin nzSimple></nz-spin>
-                            </td>
-                          </tr>
-                        </ng-container>
-                        <ng-container  *ngIf="child.orderIds && child.orderIds.length > 0">
-                          <tr>
-                            <td colspan="2" class="custom-th">
-                              <span class="p-l-md" translate>history.label.orderId</span>
-                            </td>
-                            <td colspan="2" class="custom-th"><span translate>order.label.workflow</span></td>
-                            <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
-                            <td class="custom-th"><span translate>common.label.status</span></td>
-                          </tr>
-                          <tr *ngFor="let order of child.orderIds | orderBy: 'scheduledFor': true">
-                            <td colspan="2"><span class="p-l-md"
-                                                  [innerHtml]="order.orderId"></span></td>
-                            <td colspan="2">
-                              <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToWorkflowTab(order.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                              <span (click)="coreService.showWorkflow(order.workflowPath);$event.stopPropagation()"
-                                    class="text-hover-primary" [innerHtml]="order.workflowPath"></span>
-                            </td>
-                            <td><span>{{order.scheduledFor | stringToDate}}</span></td>
-                            <td>
-                              <span class="label bg-orange" *ngIf="order.submitted" translate>{{'submitted' | translate}}</span>
-                              <span class="label bg-red" *ngIf="!order.submitted" translate>{{'notSubmitted' | translate}}</span>
-                            </td>
-                          </tr>
-                          <tr *ngIf="(child.orderIds).length === 0">
-                            <td colspan="6" class="text-center">
-                              <span class="text-uppercase m-t-sm" translate>common.message.noDataMatched</span>
-                            </td>
-                          </tr>
-                        </ng-container>
-                        <tr *ngIf="child.warnMessages && child.warnMessages.length > 0">
-                          <td colspan="6" class="custom-th"><span class="p-l-md" translate>history.label.warnMessages</span></td>
-                        </tr>
-                        <tr *ngFor="let msg of child.warnMessages">
-                          <td colspan="6"><span class="p-l-md text-warn">{{msg}}</span></td>
-                        </tr>
-                        <tr *ngIf="child.errorMessages && child.errorMessages.length > 0">
-                          <td colspan="6" class="custom-th"><span class="p-l-md" translate>history.label.errorMessages</span></td>
-                        </tr>
-                        <tr *ngFor="let msg of child.errorMessages">
-                          <td colspan="6"><span class="p-l-md text-danger">{{msg}}</span></td>
-                        </tr>
-                      </ng-container>
-                    </ng-container>
-                  </ng-template>
-                  </tbody>
-                </nz-table>
+                <nz-table #innerChildTable [nzData]="submissionHistory.controllers" [nzFrontPagination]="false"
+                          [nzShowPagination]="false" class="m-a-0 inner-table"
+                          nzSize="small">
+          <tbody>
+          <ng-template [ngForOf]="innerChildTable.data" let-controller
+                       ngFor>
+            <tr>
+              <td class="custom-th" colspan="6">
+                <span class="p-l" translate>common.label.controllerId</span>:
+                <span [innerHtml]="controller.controllerId"></span>
               </td>
             </tr>
+            <tr>
+              <td class="custom-th" colspan="3"><span class="p-l" translate>history.label.submission</span></td>
+              <td class="custom-th" colspan="3"><span translate>history.label.submissionTotal</span></td>
+            </tr>
+            <ng-container *ngFor="let child of controller.submissions" class="order-history-template0">
+              <tr>
+                <td colspan="3">
+                          <span class="p-l">
+                            <i (click)="loadSubmissionOrders(submissionHistory, controller, child);child.show = true"
+                               *ngIf="!child.show"
+                               class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+                            <i (click)="child.show = false;"
+                               *ngIf="child.show" class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
+                            <span [innerHtml]="child.submissionTime | stringToDate"></span>
+                          </span>
+                </td>
+                <td colspan="3">
+                  {{child.countTotal}}
+                </td>
+              </tr>
+              <ng-container *ngIf="child.show" class="order-history-template0">
+                <ng-container *ngIf="!child.orderIds">
+                  <tr>
+                    <td class="text-center" colspan="6">
+                      <nz-spin nzSimple></nz-spin>
+                    </td>
+                  </tr>
+                </ng-container>
+                <ng-container *ngIf="child.orderIds && child.orderIds.length > 0">
+                  <tr>
+                    <td class="custom-th" colspan="2">
+                      <span class="p-l-md" translate>history.label.orderId</span>
+                    </td>
+                    <td class="custom-th" colspan="2"><span translate>order.label.workflow</span></td>
+                    <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
+                    <td class="custom-th"><span translate>common.label.status</span></td>
+                  </tr>
+                  <tr *ngFor="let order of child.orderIds | orderBy: 'scheduledFor': true">
+                    <td colspan="2"><span [innerHtml]="order.orderId"
+                                          class="p-l-md"></span></td>
+                    <td colspan="2">
+                      <i (click)="navToWorkflowTab(order.workflowPath);$event.stopPropagation()"
+                         *ngIf="permission.joc && permission.joc.inventory.view"
+                         class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                      <span (click)="coreService.showWorkflow(order.workflowPath);$event.stopPropagation()"
+                            [innerHtml]="order.workflowPath" class="text-hover-primary"></span>
+                    </td>
+                    <td><span>{{order.scheduledFor | stringToDate}}</span></td>
+                    <td>
+                      <span *ngIf="order.submitted" class="label bg-orange" translate>{{'submitted' | translate}}</span>
+                      <span *ngIf="!order.submitted" class="label bg-red"
+                            translate>{{'notSubmitted' | translate}}</span>
+                    </td>
+                  </tr>
+                  <tr *ngIf="(child.orderIds).length === 0">
+                    <td class="text-center" colspan="6">
+                      <span class="text-uppercase m-t-sm" translate>common.message.noDataMatched</span>
+                    </td>
+                  </tr>
+                </ng-container>
+                <tr *ngIf="child.warnMessages && child.warnMessages.length > 0">
+                  <td class="custom-th" colspan="6"><span class="p-l-md" translate>history.label.warnMessages</span>
+                  </td>
+                </tr>
+                <tr *ngFor="let msg of child.warnMessages">
+                  <td colspan="6"><span class="p-l-md text-warn">{{msg}}</span></td>
+                </tr>
+                <tr *ngIf="child.errorMessages && child.errorMessages.length > 0">
+                  <td class="custom-th" colspan="6"><span class="p-l-md" translate>history.label.errorMessages</span>
+                  </td>
+                </tr>
+                <tr *ngFor="let msg of child.errorMessages">
+                  <td colspan="6"><span class="p-l-md text-danger">{{msg}}</span></td>
+                </tr>
+              </ng-container>
+            </ng-container>
           </ng-template>
           </tbody>
+        </nz-table>
+        </td>
+        </tr>
+        </ng-template>
+        </tbody>
         </nz-table>
       </div>
     </div>

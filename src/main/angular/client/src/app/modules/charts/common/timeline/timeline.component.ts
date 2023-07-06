@@ -11,12 +11,12 @@ import {
   ViewEncapsulation,
   OnInit
 } from '@angular/core';
-import { brushX } from 'd3-brush';
-import { scaleLinear, scaleTime, scalePoint } from 'd3-scale';
-import { select } from 'd3-selection';
-import { id } from '../../utils/id';
-import { ScaleType } from '../types/scale-type.enum';
-import { ViewDimensions } from '../types/view-dimension.interface';
+import {brushX} from 'd3-brush';
+import {scaleLinear, scaleTime, scalePoint} from 'd3-scale';
+import {select} from 'd3-selection';
+import {id} from '../../utils/id';
+import {ScaleType} from '../types/scale-type.enum';
+import {ViewDimensions} from '../types/view-dimension.interface';
 
 @Component({
   selector: 'g[ngx-charts-timeline]',
@@ -149,7 +149,7 @@ export class Timeline implements OnChanges {
         [0, 0],
         [width, height]
       ])
-      .on('brush end', ({ selection }) => {
+      .on('brush end', ({selection}) => {
         const newSelection = selection || this.xScale.range();
         const newDomain = newSelection.map(this.xScale.invert);
 

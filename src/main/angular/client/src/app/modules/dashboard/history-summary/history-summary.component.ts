@@ -9,7 +9,7 @@ import {DataService} from '../../../services/data.service';
   selector: 'app-history-summary',
   templateUrl: './history-summary.component.html'
 })
-export class HistorySummaryComponent implements OnInit, OnDestroy {
+export class HistorySummaryComponent {
   orderSummary: any;
   taskSummary: any;
   schedulerIds: any;

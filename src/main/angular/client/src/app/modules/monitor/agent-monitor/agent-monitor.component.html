@@ -2,34 +2,40 @@
   <div class="col-lg-offset-6 col-lg-6 col-md-offset-0 col-md-12">
     <div class="timeline m-b-12 monitor-tool">
       <div class="inline btn-group pull-right">
-        <div class="btn btn-default btn-sm"
-             (click)="setView('Week')"
-             [class.primary]="filters.filter.view === 'Week'" translate>
+        <div (click)="setView('Week')"
+             [class.primary]="filters.filter.view === 'Week'"
+             class="btn btn-default btn-sm" translate>
           monitor.button.week
         </div>
-        <div class="btn btn-default btn-sm"
-             (click)="setView('Month')"
-             [class.primary]="filters.filter.view === 'Month'" translate>
+        <div (click)="setView('Month')"
+             [class.primary]="filters.filter.view === 'Month'"
+             class="btn btn-default btn-sm" translate>
           monitor.button.month
         </div>
-        <div class="btn btn-default btn-sm"
-             (click)="setView('Custom')"
-             [class.primary]="filters.filter.view === 'Custom'" translate>
+        <div (click)="setView('Custom')"
+             [class.primary]="filters.filter.view === 'Custom'"
+             class="btn btn-default btn-sm" translate>
           monitor.button.custom
         </div>
       </div>
-      <nz-range-picker [nzAllowClear]="false" class="pull-right m-r-12" *ngIf="filters.filter.view === 'Custom'" [nzDisabledDate]="disabledDate" [(ngModel)]="filters.filter.dateRange" (ngModelChange)="onChangeDate()"></nz-range-picker>
-      <div class="timeline-header pull-right inline m-l-12" *ngIf="filters.filter.view !== 'Custom'">
+      <nz-range-picker (ngModelChange)="onChangeDate()" *ngIf="filters.filter.view === 'Custom'" [(ngModel)]="filters.filter.dateRange"
+                       [nzAllowClear]="false" [nzDisabledDate]="disabledDate"
+                       class="pull-right m-r-12"></nz-range-picker>
+      <div *ngIf="filters.filter.view !== 'Custom'" class="timeline-header pull-right inline m-l-12">
         <div class="btn-group">
-          <div class="btn btn-default btn-sm" (click)="prev()">
+          <div (click)="prev()" class="btn btn-default btn-sm">
             <i class="fa fa-angle-left text-md"></i>
           </div>
           <div class="btn btn-default btn-sm no-cursor">
-            <nz-week-picker *ngIf="filters.filter.view === 'Week'" [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event )" [nzDisabledDate]="disabledDate"></nz-week-picker>
-            <nz-month-picker *ngIf="filters.filter.view === 'Month'" [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event)" [nzDisabledDate]="disabledDate"></nz-month-picker>
+            <nz-week-picker (ngModelChange)="onChange($event )" *ngIf="filters.filter.view === 'Week'"
+                            [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false"
+                            [nzDisabledDate]="disabledDate"></nz-week-picker>
+            <nz-month-picker (ngModelChange)="onChange($event)" *ngIf="filters.filter.view === 'Month'"
+                             [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false"
+                             [nzDisabledDate]="disabledDate"></nz-month-picker>
             {{filters.filter.startDate | date : dateFormat }} - {{filters.filter.endDate | date : dateFormat}}
           </div>
-          <div class="btn btn-default btn-sm" (click)="next()">
+          <div (click)="next()" class="btn btn-default btn-sm">
             <i class="fa fa-angle-right text-md"></i>
           </div>
         </div>
@@ -45,23 +51,25 @@
       </div>
       <div class="box-body p-a ht-292 text-overflow">
         <div class="row">
-          <div class="col-sm-12 col-md-6 text-center" [ngClass]="{'col-md-12' : runningTime.length === 1}" *ngFor="let item of runningTime">
+          <div *ngFor="let item of runningTime" [ngClass]="{'col-md-12' : runningTime.length === 1}"
+               class="col-sm-12 col-md-6 text-center">
             <div class="text-dark _600 m-t">{{item.agentId}}</div>
             <div class="flex-center">
               <app-gauge
-                [dialStartAngle]="-90"
-                [dialEndAngle]="-90.001"
-                [value]="item.value"
-                [label]="getValue"
-                [color]="getColor"
                 [animated]="true"
                 [animationDuration]="1"
+                [color]="getColor"
+                [dialEndAngle]="-90.001"
+                [dialStartAngle]="-90"
+                [label]="getValue"
+                [value]="item.value"
               >
               </app-gauge>
             </div>
-            <i class="text-muted pos-rel t-n-12">{{'common.label.total' | translate}} <i translate [translateParams]="{count: item.hours}">monitor.label.totalDays</i></i>
+            <i class="text-muted pos-rel t-n-12">{{'common.label.total' | translate}} <i [translateParams]="{count: item.hours}"
+                                                                                         translate>monitor.label.totalDays</i></i>
           </div>
-          <div class="col-md-12 text-center" *ngIf="!isLoaded">
+          <div *ngIf="!isLoaded" class="col-md-12 text-center">
             <div class="loading-center text-primary text ht-260">
               <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
             </div>
@@ -82,18 +90,18 @@
           <span translate>monitor.label.statistics</span>
         </h3>
       </div>
-      <div class="box-body p-a scroll-class" #chartArea [hidden]="!isLoaded || statisticsData.length ===0">
+      <div #chartArea [hidden]="!isLoaded || statisticsData.length ===0" class="box-body p-a scroll-class">
         <div class="ht-260">
           <ngx-charts-bar-vertical-2d
-            [groupPadding]="groupPadding"
-            [view]="view"
-            [results]="statisticsData"
             [customColors]="customColors"
             [gradient]="true"
-            [xAxis]="true"
+            [groupPadding]="groupPadding"
             [noBarWhenZero]="false"
-            [trimXAxisTicks]="false"
+            [results]="statisticsData"
             [showYAxisLabel]="true"
+            [trimXAxisTicks]="false"
+            [view]="view"
+            [xAxis]="true"
             [yAxisLabel]="yAxisLabel"
             [yAxis]="true">
             <ng-template #tooltipTemplate let-model="model">
@@ -126,7 +134,7 @@
         </div>
         <div class="inline">
           <div class="pos-rel">
-            <nz-select class="select-box" [(ngModel)]="filters.filter.groupBy" (ngModelChange)="groupBy()">
+            <nz-select (ngModelChange)="groupBy()" [(ngModel)]="filters.filter.groupBy" class="select-box">
               <nz-option [nzLabel]="'Controller ID'" [nzValue]="'CONTROLLERID'"></nz-option>
               <nz-option [nzLabel]="'Date'" [nzValue]="'DATE'"></nz-option>
             </nz-select>
@@ -134,14 +142,14 @@
         </div>
       </div>
       <div class="box-body overview">
-        <div class="row overflow-y" [hidden]="!isLoaded && agents.length === 0">
+        <div [hidden]="!isLoaded && agents.length === 0" class="row overflow-y">
           <div class="col-md-12">
             <app-gantt-chart
-              [dayStart]="'00:00'"
               [dayEnd]="'23:00'"
-              [tasks]="agents"
+              [dayStart]="'00:00'"
               [groupBy]="filters.filter.groupBy"
               [isAgent]="true"
+              [tasks]="agents"
             ></app-gantt-chart>
           </div>
         </div>
