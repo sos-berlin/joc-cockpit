@@ -9,7 +9,7 @@
                 <img src="images/job_scheduler_rabbit_circle_colour.png" class="p-l" width="100">
             </div>
             <div class=" col-sm-9">
-                <div class="row">
+                <div class="row" ng-style="{'margin-top': versionData.gitHash ? 'auto' : '26px'}">
                    <div class=" col-sm-12">
                         <span>&copy; 2002-{{currentYear}} <a class="text-primary" target="_blank" href="https://www.sos-berlin.com">Software- und Organisations-Service GmbH.</a> </span>
                    </div>
@@ -17,7 +17,7 @@
                 <div class="p-b-xs row">
                     <div class="col-sm-12 text-black-lt">All right reserved.</div>
                 </div>
-                <div class="row">
+                <div class="row" ng-if="versionData.gitHash">
                    <label class="col-sm-3">JOC Cockpit</label>
                    <div class=" col-sm-9">
                         <span>{{versionData.gitHash}}</span>

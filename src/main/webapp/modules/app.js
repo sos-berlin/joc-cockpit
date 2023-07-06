@@ -39,10 +39,7 @@
             }).forEach(function (verb) {
                 console[verb] =function(){return 'Sorry, for security reasons, the script console is deactivated';};
             });
-            $resource("version.json").get(function (data) {
-                $rootScope.versionData = data;
-                $cacheFactory.removeAll();
-            });
+   
 
         }])
         .config(['toastyConfigProvider', function (toastyConfigProvider) {

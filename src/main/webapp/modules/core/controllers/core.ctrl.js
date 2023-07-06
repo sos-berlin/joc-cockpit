@@ -1348,12 +1348,23 @@
         };
 
         vm.about = function () {
-            vm.versionData = $rootScope.versionData;
-            $uibModal.open({
-                templateUrl: 'modules/core/template/about-dialog.html',
-                controller: 'DialogCtrl1',
-                scope: vm
-            });
+            if (SOSAuth.accessTokenId) {
+                $resource("version.json").get(function (data) {
+                    vm.versionData = data;
+                    $uibModal.open({
+                        templateUrl: 'modules/core/template/about-dialog.html',
+                        controller: 'DialogCtrl1',
+                        scope: vm
+                    });
+                });
+            } else {
+                vm.versionData = {};
+                $uibModal.open({
+                    templateUrl: 'modules/core/template/about-dialog.html',
+                    controller: 'DialogCtrl1',
+                    scope: vm
+                });
+            }
         };
 
         vm.copyLinkToObject = function (objType, path) {
