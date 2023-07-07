@@ -841,13 +841,11 @@
         <label [nz-tooltip]="'user.tooltips.oidc.iamOidcImage' | translate" [nzTooltipMouseEnterDelay]="0.5"
                class="col-sm-4" translate>user.label.iamOidcImage
         </label>
-        <div *ngIf="!imageUrl" class="col-sm-6">
+        <div *ngIf="!imageUrl && fileList.length === 0" class="col-sm-6">
           <nz-upload
             [(nzFileList)]="fileList"
             [nzAccept]="'image/png'"
             [nzBeforeUpload]="beforeUpload"
-            [nzPreview]="handlePreview"
-            [nzShowButton]="fileList.length < 1"
             nzListType="picture"
           >
             <button class="btn btn-default btn-sm " type="button">
@@ -856,13 +854,18 @@
             </button>
           </nz-upload>
         </div>
-
+        <div *ngFor="let item of fileList; let first = first;">
+          <img height="28px" [src]="avatarUrl"/>
+          {{ item?.file?.name }}
+        </div>
         <div *ngIf="imageUrl" class="col-sm-6">
           <div>
             <img height="28px" src="{{imageUrl}}"/>
           </div>
-          <a (click)="deleteImage()" class="text-hover-color pos-rel t-xs"><i class="fa fa-trash"></i></a>
         </div>
+        <a (click)="deleteImage()" class="text-hover-color text-16 pos-abt t-xs r-12">
+          <span nz-icon nzType="delete" nzTheme="outline"></span>
+        </a>
       </div>
 
       <div class="p-a b-a">

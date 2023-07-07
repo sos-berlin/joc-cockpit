@@ -171,8 +171,8 @@
                      class="col-lg-3 col-xl-3 col-xxl-3"
                      translate>order.label.ignoreAdmissionTimes</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
-                <label (ngModelChange)="saveJSON()" [(ngModel)]="variableSet.forceJobAdmission" name="ignoreAdmissionTimes{{j}}"
-                       nz-checkbox>
+                <label [(ngModel)]="variableSet.forceJobAdmission" name="ignoreAdmissionTimes{{j}}"
+                       nz-checkbox (ngModelChange)="saveJSON()" >
                 </label>
               </div>
             </div>
@@ -225,10 +225,9 @@
                           <ng-container *ngSwitchCase="'Boolean'">
                             <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                                  class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                              <nz-select #value="ngModel" (ngModelChange)="checkVal($event)"
-                                         [(ngModel)]="argument.value" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+                              <nz-select #value="ngModel" [(ngModel)]="argument.value" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
                                          [required]="true" class="m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
-                                         nzAllowClear>
+                                         nzAllowClear (ngModelChange)="checkVal($event)">
                                 <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                                 <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                               </nz-select>
@@ -283,9 +282,9 @@
                        type="text">
               </div>
               <div *ngIf="!variable.isTextField" class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm">
-                <nz-select (ngModelChange)="checkVariableType(variable);saveJSON()" [(ngModel)]="variable.name"
+                <nz-select  [(ngModel)]="variable.name"
                            [nzDisabled]="isTrash || !permission.joc.inventory.manage || variable.isRequired"
-                           name="name{{i}}{{j}}"
+                           name="name{{i}}{{j}}" (ngModelChange)="checkVariableType(variable);saveJSON()"
                            nzPlaceHolder="{{'common.placeholder.selectVariable' | translate}}" nzShowSearch>
                   <nz-option *ngFor="let list of variableSet.variableList" [nzDisabled]="list.isSelected"
                              [nzLabel]="list.name"

@@ -1,14 +1,14 @@
-import {AfterViewInit, Component, HostListener, Input, ViewChild} from '@angular/core';
+import {Component, HostListener, inject, ViewChild} from '@angular/core';
 import {NzFormatBeforeDropEvent, NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Observable, of, Subscription, take} from 'rxjs';
 import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {saveAs} from 'file-saver';
-import {isEmpty, isArray, isEqual, sortBy, clone} from 'underscore';
+import {clone, isArray, isEmpty, isEqual, sortBy} from 'underscore';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {AuthService} from '../../../components/guard';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
@@ -28,8 +28,9 @@ const convert = require('xml-js');
   templateUrl: './show-child-dialog.html'
 })
 export class ShowChildModalComponent {
-  @Input() doc: any;
-  @Input() showAllChild: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA)
+  doc: any;
+  showAllChild: any;
 
   counter = 0;
   data: string;
@@ -41,6 +42,8 @@ export class ShowChildModalComponent {
   }
 
   ngOnInit(): void {
+    this.doc = this.modalData.doc;
+    this.showAllChild = this.modalData.showAllChild;
     this.getText(this.showAllChild[0]);
     this.updateTree();
     let obj: any = this.showAllChild[0];
@@ -546,14 +549,15 @@ export class ShowChildModalComponent {
   selector: 'app-show-modal',
   templateUrl: './show-dialog.html'
 })
-export class ShowModalComponent implements AfterViewInit {
-  @Input() xml;
-  @Input() objectType: any;
-  @Input() schemaIdentifier;
-  @Input() schedulerId;
-  @Input() activeTab;
-  @Input() validation;
-  prevErrLine;
+export class ShowModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA)
+  xml: any;
+  objectType: any;
+  schemaIdentifier: any;
+  schedulerId: any;
+  activeTab: any;
+  validation: any;
+  prevErrLine: any;
   cmOptions: any = {
     scrollbarStyle: 'simple',
     lineNumbers: true,
@@ -566,6 +570,16 @@ export class ShowModalComponent implements AfterViewInit {
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private message: NzMessageService,
               private toasterService: ToastrService, private clipboardService: ClipboardService, private translate: TranslateService,) {
+  }
+
+  ngOnInIt(): void {
+    this.xml = this.modalData.xml
+    this.objectType = this.modalData.objectType
+    this.schemaIdentifier = this.modalData.schemaIdentifier
+    this.schedulerId = this.modalData.schedulerId
+    this.activeTab = this.modalData.activeTab
+    this.validation = this.modalData.validation
+
   }
 
   ngAfterViewInit(): void {
@@ -686,16 +700,28 @@ export class ShowModalComponent implements AfterViewInit {
   templateUrl: './confirmation-dialog.html'
 })
 export class ConfirmationModalComponent {
-  @Input() save;
-  @Input() self;
-  @Input() assignXsd;
-  @Input() delete;
-  @Input() remove;
-  @Input() deleteAll;
-  @Input() objectType;
-  @Input() activeTab;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  save: any;
+  self: any;
+  assignXsd: any;
+  delete: any;
+  remove: any;
+  deleteAll: any;
+  objectType: any;
+  activeTab: any;
 
   constructor(public activeModal: NzModalRef) {
+  }
+
+  ngOnInIt(): void {
+    this.save = this.modalData.save;
+    this.self = this.modalData.self;
+    this.assignXsd = this.modalData.assignXsd;
+    this.delete = this.modalData.delete;
+    this.remove = this.modalData.remove;
+    this.deleteAll = this.modalData.deleteAll;
+    this.objectType = this.modalData.objectType;
+    this.activeTab = this.modalData.objectType;
   }
 
   confirmMessage(message): void {
@@ -961,7 +987,7 @@ export class XmlEditorComponent {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmationModalComponent,
-      nzComponentParams: {
+      nzData: {
         deleteAll: true,
         objectType: this.objectType
       },
@@ -1102,7 +1128,7 @@ export class XmlEditorComponent {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmationModalComponent,
-        nzComponentParams: {
+        nzData: {
           remove: true,
           objectType: this.objectType
         },
@@ -3766,7 +3792,7 @@ export class XmlEditorComponent {
       nzTitle: undefined,
       nzClassName: 'lg',
       nzContent: ShowChildModalComponent,
-      nzComponentParams: {
+      nzData: {
         showAllChild: this.showAllChild,
         doc: this.doc,
       },
@@ -4900,7 +4926,7 @@ export class XmlEditorComponent {
           const modal = this.modal.create({
             nzTitle: undefined,
             nzContent: ConfirmationModalComponent,
-            nzComponentParams: {
+            nzData: {
               save: this.save2,
               assignXsd: this.newXsdAssign,
               self: this
@@ -5073,7 +5099,7 @@ export class XmlEditorComponent {
       nzTitle: undefined,
       nzContent: ShowModalComponent,
       nzClassName: 'lg script-editor',
-      nzComponentParams: {
+      nzData: {
         xml,
         schedulerId: this.schedulerIds.selected,
         objectType: this.objectType,
@@ -6015,7 +6041,7 @@ export class XmlEditorComponent {
       nzTitle: undefined,
       nzContent: ShowModalComponent,
       nzClassName: 'lg script-editor',
-      nzComponentParams: {
+      nzData: {
         xml: data.configuration,
         schedulerId: this.schedulerIds.selected,
         objectType: this.objectType,

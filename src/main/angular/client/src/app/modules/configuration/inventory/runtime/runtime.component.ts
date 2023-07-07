@@ -1,9 +1,10 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, inject} from '@angular/core';
 import {isEmpty, unique, isArray, isEqual, clone} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TreeModalComponent} from '../../../../components/tree-modal/tree.component';
 import {CoreService} from '../../../../services/core.service';
 import {CalendarService} from '../../../../services/calendar.service';
+import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 
 declare const $;
 
@@ -12,9 +13,10 @@ declare const $;
   templateUrl: './add-restriction-dialog.html'
 })
 export class AddRestrictionComponent {
-  @Input() schedulerId: any;
-  @Input() preferences: any;
-  @Input() data: any = {};
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerId: any;
+  preferences: any;
+  data: any = {};
 
   Math = Math;
   selectedMonths: any = [];
@@ -50,6 +52,9 @@ export class AddRestrictionComponent {
   }
 
   ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId;
+    this.preferences = this.modalData.preferences;
+    this.data = this.modalData.data;
     setTimeout(() => {
       this.isVisible = true;
     }, 0);

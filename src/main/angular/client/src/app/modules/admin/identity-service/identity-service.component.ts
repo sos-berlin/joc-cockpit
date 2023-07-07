@@ -1,4 +1,4 @@
-import {Component, Input, Directive, ElementRef, SimpleChanges, inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {clone, isEmpty} from 'underscore';
@@ -9,6 +9,7 @@ import {NzMessageService} from 'ng-zorro-antd/message';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
 import {saveAs} from 'file-saver';
+import {HttpHeaders} from "@angular/common/http";
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../data.service';
@@ -16,54 +17,6 @@ import {SaveService} from '../../../services/save.service';
 import {OrderPipe} from '../../../pipes/core.pipe';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
-
-@Directive({
-  selector: 'img[thumbnail]'
-})
-export class ThumbnailDirective {
-
-  @Input() public image: any;
-
-  constructor(private el: ElementRef) {
-  }
-
-  public ngOnChanges(changes: SimpleChanges) {
-
-    let reader = new FileReader();
-    let el = this.el;
-
-    reader.onloadend = () => {
-      let image = new Image();
-      image.onload = () => {
-        // Resize the image
-        const canvas: any = document.createElement('canvas');
-        let maxSize = 32;
-        let width = image.width;
-        let height = image.height;
-        if (width > height) {
-          if (width > maxSize) {
-            height *= maxSize / width;
-            width = maxSize;
-          }
-        } else {
-          if (height > maxSize) {
-            width *= maxSize / height;
-            height = maxSize;
-          }
-        }
-        canvas.width = width;
-        canvas.height = height;
-        canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-        el.nativeElement.src = canvas.toDataURL('image/jpeg');
-      };
-      image.src = reader.result as string;
-    };
-
-    if (this.image) {
-      return reader.readAsDataURL(this.image);
-    }
-  }
-}
 
 @Component({
   selector: 'app-setting-modal-content',
@@ -303,12 +256,6 @@ export class SettingModalComponent {
     return false;
   };
 
-  private getBase64(img: any, callback: (img: string) => void): void {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result!.toString()));
-    reader.readAsDataURL(img);
-  }
-
   handlePreview(file: NzUploadFile): void {
     this.getBase64(file, (img: string) => {
       this.loading = false;
@@ -335,15 +282,6 @@ export class SettingModalComponent {
     } else {
       this.handlePreview(item);
     }
-  }
-
-  private getJobResources(): void {
-    this.coreService.post('tree', {
-      types: ['JOBRESOURCE'],
-      forInventory: true
-    }).subscribe((res) => {
-      this.jobResourcesTree = this.coreService.prepareTree(res, true);
-    });
   }
 
   onSelect(name: string) {
@@ -386,21 +324,6 @@ export class SettingModalComponent {
         this.currentObj.initialPassword = this.currentObj.initialPassword1;
       }
     }
-  }
-
-  private getUsersData(): void {
-    this.allRoles = [];
-    this.coreService.post('authentication/auth', {
-      identityServiceName: this.data?.['identityServiceName']
-    }).subscribe({
-      next: res => {
-        if (res.roles) {
-          for (const prop in res.roles) {
-            this.allRoles.push(prop);
-          }
-        }
-      }
-    });
   }
 
   changeConfiguration($event: string): void {
@@ -456,22 +379,6 @@ export class SettingModalComponent {
       if (this.currentObj.iamLdapUserDnTemplate && this.currentObj.iamLdapUserDnTemplate !== '{0}' && this.userObj.iamLdapADwithSamAccount) {
         this.userObj.iamLdapADwithSamAccount = false;
       }
-    }
-  }
-
-  private updateUserMode(): void {
-    const PORT = this.currentObj.iamLdapServerUrl.substring(this.currentObj.iamLdapServerUrl.lastIndexOf(':') + 1);
-    this.userObj.iamLdapPort = PORT.match(/\d+/g);
-    if (this.userObj.iamLdapPort) {
-      this.userObj.iamLdapPort = parseInt(this.userObj.iamLdapPort, 10);
-    }
-    const from = this.currentObj.iamLdapServerUrl.indexOf('//') + 2;
-    const to = this.currentObj.iamLdapServerUrl.lastIndexOf(':');
-    this.userObj.iamLdapHost = from < to ? this.currentObj.iamLdapServerUrl.substring(from, to) : '';
-    if (this.currentObj.iamLdapUseStartTls) {
-      this.userObj.iamLdapProtocol = 'STARTTLS';
-    } else {
-      this.userObj.iamLdapProtocol = this.currentObj.iamLdapServerUrl.match('ldaps') ? 'SSL' : 'PLAIN';
     }
   }
 
@@ -569,20 +476,7 @@ export class SettingModalComponent {
           self.toasterService.error(translatedValue);
         });
       }
-      //   self.uploader.clearQueue();
-    }
-  }
-
-  private sync(isSimple: any): void {
-    if (isSimple) {
-      this.changeField();
-      this.changeConfiguration(this.userObj.iamLdapProtocol);
-      this.checkConfirmation(this.userObj.iamLdapAD, 'AD');
-      this.checkConfirmation(this.userObj.iamLdapADwithSamAccount, 'samAccount');
-      this.checkConfirmation(this.userObj.iamLdapWithMemberOf, 'MemberOf');
-    } else {
-      this.changeInput('URL');
-      this.checkConfirmation(this.currentObj.iamLdapUseStartTls, 'StartTls');
+      self.fileList = [];
     }
   }
 
@@ -615,50 +509,15 @@ export class SettingModalComponent {
   }
 
   deleteImage(): void {
-    this.coreService.post('documentations/delete', {
-      documentations: ['/sos/.images/' + this.data?.['identityServiceName']]
-    }).subscribe(() => {
-      this.imageUrl = '';
-    });
-  }
-
-  private getImage(): void {
-    this.coreService.post('documentations', {
-      documentations: ['/sos/.images/' + this.data?.['identityServiceName']]
-    }).subscribe({
-      next: (res: any) => {
-        if (res.documentations && res.documentations.length > 0) {
-          this.imageUrl = './api/iam/icon/' + this.data?.['identityServiceName'];
-        }
-      }
-    });
-  }
-
-  private iconUpload(): void {
-    // if (this.imageUploader && this.data) {
-    //   this.imageUploader.onBeforeUploadItem = (item: any) => {
-    //     const obj: any = {
-    //       identityServiceName: this.data?.['identityServiceName']
-    //     };
-    //     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    //     //item.file.name = encodeURIComponent(item.file.name);
-    //     this.imageUploader.options.additionalParameter = obj;
-    //   };
-    //   this.imageUploader.onErrorItem = (fileItem, response: any) => {
-    //     const res = typeof response === 'string' ? JSON.parse(response) : response;
-    //     if (res.error) {
-    //       this.toasterService.error(res.error.message, res.error.code);
-    //     }
-    //   };
-    // }
-    // this.imageUploader = new FileUploader({
-    //   url: './api/iam/import',
-    //   queueLimit: 1,
-    //   headers: [{
-    //     name: 'X-Access-Token',
-    //     value: this.authService.accessTokenId
-    //   }]
-    // });
+    if(this.imageUrl) {
+      this.coreService.post('documentations/delete', {
+        documentations: ['/sos/.images/' + this.data?.['identityServiceName']]
+      }).subscribe(() => {
+        this.imageUrl = '';
+      });
+    } else {
+      this.fileList = [];
+    }
   }
 
   onSubmit(): void {
@@ -737,6 +596,93 @@ export class SettingModalComponent {
       this.updateUserMode();
     }
   }
+
+  private getBase64(img: any, callback: (img: string) => void): void {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result!.toString()));
+    reader.readAsDataURL(img);
+  }
+
+  private getJobResources(): void {
+    this.coreService.post('tree', {
+      types: ['JOBRESOURCE'],
+      forInventory: true
+    }).subscribe((res) => {
+      this.jobResourcesTree = this.coreService.prepareTree(res, true);
+    });
+  }
+
+  private getUsersData(): void {
+    this.allRoles = [];
+    this.coreService.post('authentication/auth', {
+      identityServiceName: this.data?.['identityServiceName']
+    }).subscribe({
+      next: res => {
+        if (res.roles) {
+          for (const prop in res.roles) {
+            this.allRoles.push(prop);
+          }
+        }
+      }
+    });
+  }
+
+  private updateUserMode(): void {
+    const PORT = this.currentObj.iamLdapServerUrl.substring(this.currentObj.iamLdapServerUrl.lastIndexOf(':') + 1);
+    this.userObj.iamLdapPort = PORT.match(/\d+/g);
+    if (this.userObj.iamLdapPort) {
+      this.userObj.iamLdapPort = parseInt(this.userObj.iamLdapPort, 10);
+    }
+    const from = this.currentObj.iamLdapServerUrl.indexOf('//') + 2;
+    const to = this.currentObj.iamLdapServerUrl.lastIndexOf(':');
+    this.userObj.iamLdapHost = from < to ? this.currentObj.iamLdapServerUrl.substring(from, to) : '';
+    if (this.currentObj.iamLdapUseStartTls) {
+      this.userObj.iamLdapProtocol = 'STARTTLS';
+    } else {
+      this.userObj.iamLdapProtocol = this.currentObj.iamLdapServerUrl.match('ldaps') ? 'SSL' : 'PLAIN';
+    }
+  }
+
+  private sync(isSimple: any): void {
+    if (isSimple) {
+      this.changeField();
+      this.changeConfiguration(this.userObj.iamLdapProtocol);
+      this.checkConfirmation(this.userObj.iamLdapAD, 'AD');
+      this.checkConfirmation(this.userObj.iamLdapADwithSamAccount, 'samAccount');
+      this.checkConfirmation(this.userObj.iamLdapWithMemberOf, 'MemberOf');
+    } else {
+      this.changeInput('URL');
+      this.checkConfirmation(this.currentObj.iamLdapUseStartTls, 'StartTls');
+    }
+  }
+
+  private getImage(): void {
+    this.coreService.post('documentations', {
+      documentations: ['/sos/.images/' + this.data?.['identityServiceName']]
+    }).subscribe({
+      next: (res: any) => {
+        if (res.documentations && res.documentations.length > 0) {
+          this.imageUrl = './api/iam/icon/' + this.data?.['identityServiceName'];
+        }
+      }
+    });
+  }
+
+  private iconUpload(): void {
+    const formData = new FormData();
+    this.fileList.forEach((file: any) => {
+      formData.append('file', file);
+      formData.append('name', encodeURIComponent(file.name));
+      formData.append('identityServiceName', this.data?.['identityServiceName']);
+    });
+    let obj = {auditLog: {}};
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+    formData.append('auditLog', JSON.stringify(obj.auditLog));
+    const headers = new HttpHeaders().set('X-Access-Token', this.authService.accessTokenId);
+    headers.set('Content-Type', 'multipart/form-data');
+
+    this.coreService.request('api/iam/import', formData, headers).subscribe();
+  }
 }
 
 @Component({
@@ -790,25 +736,6 @@ export class IdentityServiceModalComponent {
     this.getCertList();
   }
 
-  private getFidoList(): void {
-    this.coreService.post('iam/identityservices', {"identityServiceType": "FIDO", "secondFactor": true}).subscribe({
-      next: (res) => {
-        this.fidoList = res.identityServiceItems;
-      }
-    })
-  }
-
-  private getCertList(): void {
-    this.coreService.post('iam/identityservices', {
-      identityServiceType: "CERTIFICATE",
-      secondFactor: true
-    }).subscribe({
-      next: (res) => {
-        this.certList = res.identityServiceItems;
-      }
-    })
-  }
-
   checkService(): void {
     this.isUnique = true;
     if (this.identityServices) {
@@ -831,6 +758,63 @@ export class IdentityServiceModalComponent {
     if ($event) {
       this.currentObj.serviceAuthenticationScheme = 'SINGLE-FACTOR';
     }
+  }
+
+  rename(identityServiceOldName: string, identityServiceNewName: string, cb: any): void {
+    const request: any = {
+      identityServiceOldName,
+      identityServiceNewName
+    };
+    request.auditLog = {};
+    this.coreService.getAuditLogObj(this.comments, request.auditLog);
+    if (this.comments.isChecked) {
+      this.dataService.comments = this.comments;
+    }
+    this.coreService.post('iam/identityservice/rename', request).subscribe({
+      next: (res) => {
+        cb(res);
+      }, error: () => {
+        cb(null);
+      }
+    });
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    if (this.identityService) {
+      if (this.identityService.identityServiceName !== this.currentObj.identityServiceName) {
+        this.rename(this.identityService.identityServiceName, this.currentObj.identityServiceName, (res: any) => {
+          if (res) {
+            this.store();
+          } else {
+            this.submitted = false;
+          }
+        });
+      } else {
+        this.store();
+      }
+    } else {
+      this.store();
+    }
+  }
+
+  private getFidoList(): void {
+    this.coreService.post('iam/identityservices', {"identityServiceType": "FIDO", "secondFactor": true}).subscribe({
+      next: (res) => {
+        this.fidoList = res.identityServiceItems;
+      }
+    })
+  }
+
+  private getCertList(): void {
+    this.coreService.post('iam/identityservices', {
+      identityServiceType: "CERTIFICATE",
+      secondFactor: true
+    }).subscribe({
+      next: (res) => {
+        this.certList = res.identityServiceItems;
+      }
+    })
   }
 
   private getSettings(type: string): void {
@@ -887,44 +871,6 @@ export class IdentityServiceModalComponent {
         this.store();
       }
     });
-  }
-
-  rename(identityServiceOldName: string, identityServiceNewName: string, cb: any): void {
-    const request: any = {
-      identityServiceOldName,
-      identityServiceNewName
-    };
-    request.auditLog = {};
-    this.coreService.getAuditLogObj(this.comments, request.auditLog);
-    if (this.comments.isChecked) {
-      this.dataService.comments = this.comments;
-    }
-    this.coreService.post('iam/identityservice/rename', request).subscribe({
-      next: (res) => {
-        cb(res);
-      }, error: () => {
-        cb(null);
-      }
-    });
-  }
-
-  onSubmit(): void {
-    this.submitted = true;
-    if (this.identityService) {
-      if (this.identityService.identityServiceName !== this.currentObj.identityServiceName) {
-        this.rename(this.identityService.identityServiceName, this.currentObj.identityServiceName, (res: any) => {
-          if (res) {
-            this.store();
-          } else {
-            this.submitted = false;
-          }
-        });
-      } else {
-        this.store();
-      }
-    } else {
-      this.store();
-    }
   }
 
   private store(): void {
@@ -984,16 +930,6 @@ export class IdentityServiceComponent {
     this.adminFilter = this.coreService.getAdminTab();
     this.filter = this.adminFilter.identityService;
     this.getIAMList();
-  }
-
-  private getIAMList(): void {
-    this.coreService.post('iam/identityservices', {}).subscribe({
-      next: (res: any) => {
-        this.identityServiceTypes = res.identityServiceTypes;
-        this.identityServices = res.identityServiceItems;
-        this.loading = false;
-      }, error: () => this.loading = false
-    });
   }
 
   ngOnDestroy(): void {
@@ -1163,22 +1099,6 @@ export class IdentityServiceComponent {
     }).subscribe();
   }
 
-  private enableDisable(identityService: any, flag: boolean, comments: any): void {
-    identityService.disabled = flag;
-    if (comments) {
-      identityService.auditLog = {};
-      this.coreService.getAuditLogObj(comments, identityService.auditLog);
-      if (comments.isChecked) {
-        this.dataService.comments = comments;
-      }
-    }
-    this.coreService.post('iam/identityservice/store', identityService).subscribe({
-      next: () => {
-
-      }, error: () => this.getIAMList()
-    });
-  }
-
   delete({identityService}: { identityService: any }): void {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
@@ -1242,5 +1162,31 @@ export class IdentityServiceComponent {
   sort(key: string): void {
     this.filter.filter.reverse = !this.filter.filter.reverse;
     this.filter.filter.sortBy = key;
+  }
+
+  private getIAMList(): void {
+    this.coreService.post('iam/identityservices', {}).subscribe({
+      next: (res: any) => {
+        this.identityServiceTypes = res.identityServiceTypes;
+        this.identityServices = res.identityServiceItems;
+        this.loading = false;
+      }, error: () => this.loading = false
+    });
+  }
+
+  private enableDisable(identityService: any, flag: boolean, comments: any): void {
+    identityService.disabled = flag;
+    if (comments) {
+      identityService.auditLog = {};
+      this.coreService.getAuditLogObj(comments, identityService.auditLog);
+      if (comments.isChecked) {
+        this.dataService.comments = comments;
+      }
+    }
+    this.coreService.post('iam/identityservice/store', identityService).subscribe({
+      next: () => {
+
+      }, error: () => this.getIAMList()
+    });
   }
 }

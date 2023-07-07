@@ -1,16 +1,18 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, inject} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../../services/core.service';
 import {InventoryObject} from "../../../../models/enums";
 import {isArray, sortBy} from "underscore";
+import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-job-wizard',
   templateUrl: './job-wizard.component.html'
 })
 export class JobWizardComponent {
-  @Input() existingJob: any;
-  @Input() node: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  existingJob: any;
+  node: any;
 
   index = 0;
   preferences: any;
@@ -35,6 +37,8 @@ export class JobWizardComponent {
   }
 
   ngOnInit(): void {
+    this.existingJob = this.modalData.existingJob;
+    this.node = this.modalData.node;
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.getJitlJobs();
   }

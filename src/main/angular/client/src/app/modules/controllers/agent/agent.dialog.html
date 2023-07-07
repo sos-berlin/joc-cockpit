@@ -7,29 +7,29 @@
     <span *ngIf="new && !isCluster" translate>agent.label.addAgent</span>
     <span *ngIf="new && isCluster" translate>agent.label.addClusterAgent</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
-    <div class="hide" [ngClass]="{'show': display}">
+    <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
     </div>
-    <div class="form-group row" *ngIf="!new">
-      <label class="col-sm-3" [nz-tooltip]="'agent.tooltip.agentId' | translate" translate>agent.label.agentId</label>
+    <div *ngIf="!new" class="form-group row">
+      <label [nz-tooltip]="'agent.tooltip.agentId' | translate" class="col-sm-3" translate>agent.label.agentId</label>
       <div class="col-sm-8">
         {{agent.agentId}}
       </div>
     </div>
-    <div class="form-group row" *ngIf="new">
-      <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.tooltip.agentId' | translate" translate>agent.label.agentId
+    <div *ngIf="new" class="form-group row">
+      <label [nz-tooltip]="'agent.tooltip.agentId' | translate" class="col-sm-3 form-control-label" translate>agent.label.agentId
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}">
-        <input type="text" identifierValidation class="form-control" name="agentId"
-               required [(ngModel)]="agent.agentId" #agentId="ngModel" [appAutofocus]="true"
-               placeholder="{{'agent.placeholder.enterAgentId' | translate}}">
+      <div [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}" class=" col-sm-8">
+        <input #agentId="ngModel" [(ngModel)]="agent.agentId" [appAutofocus]="true" class="form-control"
+               identifierValidation name="agentId" placeholder="{{'agent.placeholder.enterAgentId' | translate}}" required
+               type="text">
         <div *ngIf="agentId.invalid && (agentId.dirty || agentId.touched)"
              class="text-danger help-block">
           <div *ngIf="(agentId.errors && agentId.errors.required)">
@@ -40,16 +40,18 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.tooltip.agentName' | translate" *ngIf="!isCluster" translate>agent.label.agentName
+      <label *ngIf="!isCluster" [nz-tooltip]="'agent.tooltip.agentName' | translate" class="col-sm-3 form-control-label"
+             translate>agent.label.agentName
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.cluster.tooltip.agentClusterName' | translate" *ngIf="isCluster" translate>agent.label.agentClusterName
+      <label *ngIf="isCluster" [nz-tooltip]="'agent.cluster.tooltip.agentClusterName' | translate"
+             class="col-sm-3 form-control-label" translate>agent.label.agentClusterName
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}">
-        <input type="text" class="form-control" name="agentName" [appAutofocus]="!new"
-               required [(ngModel)]="agent.agentName" #agentName="ngModel"
-               placeholder="{{'agent.placeholder.enterAgentName' | translate}}">
+      <div [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}" class=" col-sm-8">
+        <input #agentName="ngModel" [(ngModel)]="agent.agentName" [appAutofocus]="!new" class="form-control"
+               name="agentName" placeholder="{{'agent.placeholder.enterAgentName' | translate}}" required
+               type="text">
         <div *ngIf="agentName.invalid && (agentName.dirty || agentName.touched)" class="text-danger help-block">
           <div *ngIf="agentName.errors.required">
             <div translate>common.message.requiredError</div>
@@ -58,28 +60,35 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" nz-tooltip="{{isCluster ? ('agent.cluster.tooltip.title' | translate) : ('agent.tooltip.title' | translate) }}" translate>common.label.title</label>
+      <label class="col-sm-3 form-control-label"
+             nz-tooltip="{{isCluster ? ('agent.cluster.tooltip.title' | translate) : ('agent.tooltip.title' | translate) }}"
+             translate>common.label.title</label>
       <div class=" col-sm-8">
-        <input type="text" class="form-control" [(ngModel)]="agent.title"
-               [maxLength]="255" name="title" placeholder="{{'common.placeholder.title' | translate}}">
+        <input [(ngModel)]="agent.title" [maxLength]="255" class="form-control"
+               name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
       </div>
     </div>
-    <div class="form-group row" *ngFor="let alisa of agentNameAliases; let i = index">
-      <label class="col-sm-3 form-control-label"><span nz-tooltip="{{isCluster ? ('agent.cluster.tooltip.agentNameAliases' | translate) : ('agent.tooltip.agentNameAliases' | translate) }}" *ngIf="i==0" translate>agent.label.agentNameAliases</span></label>
+    <div *ngFor="let alisa of agentNameAliases; let i = index" class="form-group row">
+      <label class="col-sm-3 form-control-label"><span
+        *ngIf="i==0"
+        nz-tooltip="{{isCluster ? ('agent.cluster.tooltip.agentNameAliases' | translate) : ('agent.tooltip.agentNameAliases' | translate) }}" translate>agent.label.agentNameAliases</span></label>
       <div class=" col-sm-8">
-        <input type="text" class="form-control" name="agentNameAliases{{i}}" [(ngModel)]="alisa.name"
-               placeholder="{{'agent.placeholder.enterAgentNameAlias' | translate}} {{i+1}}">
+        <input [(ngModel)]="alisa.name" class="form-control" name="agentNameAliases{{i}}" placeholder="{{'agent.placeholder.enterAgentNameAlias' | translate}} {{i+1}}"
+               type="text">
       </div>
-      <div class="p-l-0 m-l-0 col-sm-1" *ngIf="agentNameAliases.length > 1 && agentNameAliases.length - 1 !== i" style="padding-top: 6px"><i (click)="removeAlise(i)" class="cursor text-muted text-hover-color fa fa-times"></i></div>
-      <div class="p-l-0 m-l-0 col-sm-1" *ngIf="agentNameAliases.length - 1 == i" style="padding-top: 6px"><i (click)="addAlise()" class="cursor text-muted fa fa-plus"></i></div>
+      <div *ngIf="agentNameAliases.length > 1 && agentNameAliases.length - 1 !== i" class="p-l-0 m-l-0 col-sm-1"
+           style="padding-top: 6px"><i (click)="removeAlise(i)"
+                                       class="cursor text-muted text-hover-color fa fa-times"></i></div>
+      <div *ngIf="agentNameAliases.length - 1 == i" class="p-l-0 m-l-0 col-sm-1" style="padding-top: 6px"><i
+        (click)="addAlise()" class="cursor text-muted fa fa-plus"></i></div>
     </div>
-    <div class="form-group row"  *ngIf="!isCluster">
-      <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.tooltip.url' | translate" translate>agent.label.url
+    <div *ngIf="!isCluster" class="form-group row">
+      <label [nz-tooltip]="'agent.tooltip.url' | translate" class="col-sm-3 form-control-label" translate>agent.label.url
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
-        <input type="url" class="form-control" name="url" #url="ngModel"
-               required [(ngModel)]="agent.url" placeholder="http://host:port">
+      <div [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}" class=" col-sm-8">
+        <input #url="ngModel" [(ngModel)]="agent.url" class="form-control" name="url"
+               placeholder="http://host:port" required type="url">
         <div *ngIf="url.invalid && (url.dirty || url.touched)"
              class="text-danger help-block">
           <div *ngIf="(url.errors && url.errors.required)">

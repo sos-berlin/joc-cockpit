@@ -1,6 +1,6 @@
 import {ErrorHandler, Injectable, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {en_US, NZ_I18N} from 'ng-zorro-antd/i18n';
+import {en_US, NZ_DATE_LOCALE, NZ_I18N} from 'ng-zorro-antd/i18n';
 import {registerLocaleData} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
@@ -15,6 +15,7 @@ import {AppComponent} from './app.component';
 import {AuthInterceptor} from './components/guard';
 import {LoggingService} from './services/logging.service';
 import {SignupCompleteModule} from "./modules/signup-complete/signup-complete.module";
+import { enUS } from 'date-fns/locale';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   const lang = localStorage['$SOS$LANG'] || 'en';
@@ -71,7 +72,8 @@ export class MyErrorHandler implements ErrorHandler {
     },
     {
       provide: NZ_I18N, useValue: en_US
-    }],
+    },
+    { provide: NZ_DATE_LOCALE, useValue: enUS }],
   bootstrap: [AppComponent]
 })
 export class AppModule {

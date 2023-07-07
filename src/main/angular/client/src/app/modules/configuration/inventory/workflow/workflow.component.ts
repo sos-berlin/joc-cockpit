@@ -9,7 +9,8 @@ import {
   OnDestroy,
   OnInit, Output,
   SimpleChanges,
-  ViewChild
+  ViewChild,
+  inject
 } from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
@@ -34,6 +35,7 @@ import {CreateObjectModalComponent} from "../inventory.component";
 import {UpdateJobTemplatesComponent} from "../job-template/job-template.component";
 import {CalendarService} from "../../../../services/calendar.service";
 import {FileUploaderComponent} from "../../../../components/file-uploader/file-uploader.component";
+import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 
 // Mx-Graph Objects
 declare const mxEditor;
@@ -150,10 +152,11 @@ export class OffsetValidator implements Validator {
   selector: 'app-notice-board-editor-modal',
   templateUrl: './notice-board-editor-dialog.html'
 })
-export class NoticeBoardEditorComponent implements AfterViewInit {
-  @Input() boardTree: any = [];
-  @Input() data: any;
-  @Input() object: any = {};
+export class NoticeBoardEditorComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  boardTree: any = [];
+  data: any;
+  object: any = {};
   obj = {
     data: ''
   };
@@ -161,6 +164,12 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
   @ViewChild('codeMirror', {static: false}) cm;
 
   constructor(public activeModal: NzModalRef) {
+  }
+
+  ngOnInIt(): void {
+    this.boardTree = this.modalData.boardTree;
+    this.data = this.modalData.data;
+    this.object = this.modalData.object;
   }
 
   ngAfterViewInit(): void {
@@ -234,9 +243,10 @@ export class NoticeBoardEditorComponent implements AfterViewInit {
   templateUrl: './facet-editor-dialog.html'
 })
 export class FacetEditorComponent {
-  @Input() preferences: any = {};
-  @Input() data: any = {};
-  @Input() isList: boolean;
+readonly modalData: any = inject(NZ_MODAL_DATA);
+ preferences: any = {};
+ data: any = {};
+ isList: boolean;
   variable: any = {};
   favList = [];
 
@@ -244,6 +254,9 @@ export class FacetEditorComponent {
   }
 
   ngOnInit(): void {
+   this.preferences = this.modalData.preferences;
+   this.data = this.modalData.data;
+   this.isList = this.modalData.isList;
     this.variable = this.coreService.clone(this.data);
     if (this.isList && this.variable.value && (!this.variable.value.list || this.variable.value.list.length === 0)) {
       this.addVariableToArray(this.variable.value);
@@ -302,8 +315,9 @@ export class FacetEditorComponent {
   templateUrl: './repeat-editor-dialog.html'
 })
 export class RepeatEditorComponent {
-  @Input() data;
-  @Input() isTooltipVisible;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  data: any;
+  isTooltipVisible: any;
   isNew: boolean;
   object: any = {};
 
@@ -311,6 +325,8 @@ export class RepeatEditorComponent {
   }
 
   ngOnInit(): void {
+    this.data = this.modalData.data;
+    this.isTooltipVisible = this.modalData.isTooltipVisible;
     if (!this.data.TYPE) {
       this.isNew = true;
       this.object.TYPE = 'Periodic';
@@ -336,10 +352,11 @@ export class RepeatEditorComponent {
   templateUrl: './time-editor-dialog.html'
 })
 export class TimeEditorComponent {
-  @Input() data: any;
-  @Input() period: any;
-  @Input() isTooltipVisible: boolean;
-  @Input() isCycle: boolean;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+ data: any;
+ period: any;
+ isTooltipVisible: boolean;
+ isCycle: boolean;
 
   isExist = false;
 
@@ -351,6 +368,10 @@ export class TimeEditorComponent {
   }
 
   ngOnInit(): void {
+    this.data = this.modalData.data;
+    this.period = this.modalData.period;
+    this.isTooltipVisible = this.modalData.isTooltipVisible;
+    this.isCycle = this.modalData.isCycle;
     if (this.period) {
       const h = Math.floor(((((this.period.startTime % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
       const m = Math.floor((((((this.period.startTime % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
@@ -553,7 +574,7 @@ export class CycleInstructionComponent implements OnChanges {
       nzTitle: undefined,
       nzContent: TimeEditorComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         data,
         period,
         isTooltipVisible: this.isTooltipVisible,
@@ -1079,7 +1100,7 @@ export class AdmissionTimeComponent {
       nzTitle: undefined,
       nzContent: TimeEditorComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         data,
         period,
         isTooltipVisible: this.isTooltipVisible,
@@ -1126,8 +1147,9 @@ export class AdmissionTimeComponent {
   templateUrl: './find-replace-dialog.html'
 })
 export class FindAndReplaceComponent {
-  @Input() agents: any = [];
-  @Input() preferences: any = {};
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  agents: any = [];
+  preferences: any = {};
 
   listOfAllAgents = [];
   listOfAgents = [];
@@ -1143,6 +1165,9 @@ export class FindAndReplaceComponent {
   }
 
   ngOnInit(): void {
+    this.agents = this.modalData.agents;
+    this.preferences = this.modalData.preferences;
+
     this.listOfAllAgents = this.coreService.clone(this.agents);
     this.listOfAgents = this.coreService.clone(this.agents);
     this.listOfAgents.push('*');
@@ -1186,15 +1211,19 @@ export class FindAndReplaceComponent {
   templateUrl: './show-reference-dialog.html'
 })
 export class ShowReferenceComponent {
-  @Input() type: string;
-  @Input() obj: any;
-  @Input() preferences: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  type: string;
+  obj: any;
+  preferences: any;
   data: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private calendarService: CalendarService) {
   }
 
   ngOnInit(): void {
+    this.type = this.modalData.type;
+    this.obj = this.modalData.obj;
+    this.preferences = this.modalData.preferences;
     this.getReferences();
   }
 
@@ -1491,7 +1520,7 @@ export class JobComponent {
       nzContent: JobWizardComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         existingJob: this.selectedNode.job,
         node: this.selectedNode.obj
       },
@@ -1573,7 +1602,7 @@ export class JobComponent {
       nzContent: ScriptEditorComponent,
       nzClassName: 'lg script-editor',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         script: this.selectedNode.job.executable.script,
         scriptTree: this.scriptTree,
         disabled: (this.selectedNode.job && this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name)
@@ -1912,7 +1941,7 @@ export class JobComponent {
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         data: data.value
       },
       nzFooter: null,
@@ -2393,9 +2422,10 @@ export class JobComponent {
   templateUrl: './script-editor.html'
 })
 export class ScriptEditorComponent implements AfterViewInit, OnInit {
-  @Input() script: any;
-  @Input() scriptTree: any = [];
-  @Input() disabled: boolean;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  script: any;
+  scriptTree: any = [];
+  disabled: boolean;
   isTreeShow = false;
   dragEle: any;
   scriptObj = {
@@ -2414,6 +2444,9 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
+    this.script = this.modalData.script;
+    this.scriptTree = this.modalData.scriptTree;
+    this.disabled = this.modalData.disabled;
     if (this.disabled) {
       this.cmOption.reladOnly = true;
     }
@@ -3604,6 +3637,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: FileUploaderComponent,
+      nzData: {
+        type: 'WORKFLOW'
+      },
       nzClassName: 'lg',
       nzFooter: null,
       nzAutofocus: null,
@@ -3612,6 +3648,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
+    
         WorkflowComponent.parseWorkflowJSON(result);
         const res = {
           configuration: result

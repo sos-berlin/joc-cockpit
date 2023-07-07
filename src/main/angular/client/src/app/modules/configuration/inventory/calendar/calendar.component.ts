@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, inject} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DatePipe} from '@angular/common';
 import * as moment from 'moment';
@@ -10,6 +10,7 @@ import {CalendarService} from '../../../../services/calendar.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
+import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 
 declare const Holidays;
 declare const $;
@@ -19,16 +20,18 @@ declare const $;
   templateUrl: './frequency-dialog.html'
 })
 export class FrequencyModalComponent {
-  @Input() schedulerId: any;
-  @Input() dateFormat: any;
-  @Input() dateFormatM: any;
-  @Input() calendar: any;
-  @Input() editor: any;
-  @Input() frequency: any;
-  @Input() flag: boolean;
-  @Input() _temp: any = {};
-  @Input() data: any = {};
-  @Input() isRuntimeEdit: boolean;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+
+  schedulerId: any;
+  dateFormat: any;
+  dateFormatM: any;
+  calendar: any;
+  editor: any;
+  frequency: any;
+  flag: boolean;
+  _temp: any = {};
+  data: any = {};
+  isRuntimeEdit: boolean;
 
   planItems: any = [];
   Math = Math;
@@ -87,6 +90,16 @@ export class FrequencyModalComponent {
   }
 
   ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId;
+    this.dateFormat = this.modalData.dateFormat;
+    this.dateFormatM = this.modalData.dateFormatM;
+    this.calendar = this.modalData.calendar;
+    this.editor = this.modalData.editor;
+    this.frequency = this.modalData.frequency;
+    this.flag = this.modalData.flag;
+    this._temp = this.modalData._temp;
+    this.data = this.modalData.data;
+    this.isRuntimeEdit = this.modalData.isRuntimeEdit;
     setTimeout(() => {
       this.isVisible = true;
     }, 0);
@@ -1282,7 +1295,7 @@ export class CalendarComponent {
       nzTitle: undefined,
       nzContent: FrequencyModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerId,
         dateFormat: this.dateFormat,
         dateFormatM: this.dateFormatM,
@@ -1311,7 +1324,7 @@ export class CalendarComponent {
       nzTitle: undefined,
       nzContent: FrequencyModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerId,
         dateFormat: this.dateFormat,
         dateFormatM: this.dateFormatM,
@@ -1438,7 +1451,7 @@ export class CalendarComponent {
       nzContent: FrequencyModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerId,
         dateFormat: this.dateFormat,
         dateFormatM: this.dateFormatM,

@@ -16,7 +16,7 @@ export class FileUploaderComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   type = '';
   fileType = '.json';
-  nodes: any;
+  nodes: any = [];
   fileList: NzUploadFile[] = [];
   uploading = false;
   showProgressBar = false;
@@ -63,6 +63,12 @@ export class FileUploaderComponent {
   uploadData: any;
   fileLoading = false;
 
+  // workflow
+  workflow: any;
+
+  //setting
+  setting: any;
+
   // User and Roles
   isRole: any;
   userDetail: any;
@@ -70,6 +76,9 @@ export class FileUploaderComponent {
   identityServiceName: string;
   roles = [];
   accounts = [];
+
+  //controller
+  controller: any;
 
   constructor(private activeModal: NzModalRef, private toasterService: ToastrService, private authService: AuthService,
               private coreService: CoreService, private translate: TranslateService) {
@@ -109,10 +118,10 @@ export class FileUploaderComponent {
 
       this.getTree();
     } else if (this.type == 'CRON') {
-      this.preferences = this.modalData.isDeploy;
-      this.display = this.modalData.isDeploy;
-      this.controllerId = this.modalData.isDeploy;
-      this.agents = this.modalData.isDeploy;
+      this.preferences = this.modalData.preferences;
+      this.display = this.modalData.display;
+      this.controllerId = this.modalData.controllerId;
+      this.agents = this.modalData.agents;
       this.requestObj = {
         systemCrontab: false,
         folder: '/'
@@ -130,6 +139,8 @@ export class FileUploaderComponent {
       this.importObj = this.modalData.importObj;
       this.otherSchema = this.modalData.otherSchema;
       this.importXsd = this.modalData.importXsd;
+    } else if (this.type === 'CONTROLLER') {
+      this.controller = this.modalData.controller;
     }
   }
 
@@ -183,15 +194,17 @@ export class FileUploaderComponent {
     if (!node || !node.origin) {
       return;
     }
-    if (this.document.path !== node.key) {
-      this.document.path = node.key;
-    }
-    if (this.requestObj?.folder !== node.key) {
-      this.requestObj.folder = node.key;
-    }
     if (this.type == 'INVENTORY') {
       if (this.requestObj?.targetFolder !== node.key) {
         this.requestObj.targetFolder = node.key;
+      }
+    } else if (this.type === 'CRON') {
+      if (this.requestObj?.folder !== node.key) {
+        this.requestObj.folder = node.key;
+      }
+    } else {
+      if (this.document.path !== node.key) {
+        this.document.path = node.key;
       }
     }
   }
@@ -213,23 +226,23 @@ export class FileUploaderComponent {
   beforeUpload = (file: NzUploadFile): boolean => {
     this.uploadError = false;
     this.fileList.push(file);
-    if (this.type === 'DEPLOYMENT' || this.type === 'USER' || this.type == 'INVENTORY'
-      || this.type == 'XML_EDITOR') {
+    if (this.type === 'DEPLOYMENT' || this.type === 'USER' || this.type == 'INVENTORY' || this.type == 'INVENTORY_OBJECT'
+      || this.type == 'XML_EDITOR' || this.type === 'SETTING' || this.type === 'CONTROLLER' || this.type === 'WORKFLOW') {
       this.onFileSelected(file);
     }
     setTimeout(() => {
       const uploadSpan = document.querySelector('.ant-upload-span');
-      const spanElement = document.createElement('span');
-      // Apply the ByteToSizePipe to format file.size
-      const byteToSizePipe = new ByteToSizePipe();
-      const fileSizeFormatted = byteToSizePipe.transform(file.size);
-
-      spanElement.classList.add("file-size")
-      spanElement.textContent = `Size: ${fileSizeFormatted}`;
-
-      const listItemCardActions = uploadSpan.querySelector('.ant-upload-list-item-card-actions');
-      uploadSpan.insertBefore(spanElement, listItemCardActions);
-    }, 10);
+      if (uploadSpan) {
+        const spanElement = document.createElement('span');
+        // Apply the ByteToSizePipe to format file.size
+        const byteToSizePipe = new ByteToSizePipe();
+        const fileSizeFormatted = byteToSizePipe.transform(file.size);
+        spanElement.classList.add("file-size")
+        spanElement.textContent = `Size: ${fileSizeFormatted}`;
+        const listItemCardActions = uploadSpan.querySelector('.ant-upload-list-item-card-actions');
+        uploadSpan.insertBefore(spanElement, listItemCardActions);
+      }
+    }, 20);
     return false;
   };
 
@@ -237,9 +250,9 @@ export class FileUploaderComponent {
     const self = this;
     const item = file;
     const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
-    if (this.type == 'INVENTORY') {
-      if (fileExt && (fileExt === 'zip' || fileExt.match(/tar/) || fileExt.match(/gz/))) {
-        if (fileExt === 'zip') {
+    if (this.type == 'INVENTORY' || this.type == 'CONTROLLER') {
+      if (fileExt && (fileExt === 'ZIP' || fileExt.match(/TAR/) || fileExt.match(/GZ/))) {
+        if (fileExt === 'ZIP') {
           this.requestObj.format = 'ZIP';
         } else {
           this.requestObj.format = 'TAR_GZ';
@@ -355,11 +368,37 @@ export class FileUploaderComponent {
         } else {
           self.showErrorMsg();
         }
+      } else if (self.type == 'WORKFLOW') {
+        try {
+          data = JSON.parse(_event.target.result);
+          self.workflow = data;
+        } catch (e) {
+
+        }
+        if (!data || !data.instructions || data.instructions.length == 0) {
+          let msg = '';
+          self.translate.get('workflow.message.inValidWorkflow').subscribe(translatedValue => {
+            msg = translatedValue;
+          });
+          self.toasterService.error(msg);
+          self.fileList = [];
+          return;
+        }
+      } else if (self.type === 'SETTING') {
+        try {
+          data = JSON.parse(_event.target.result);
+          self.setting = data;
+        } catch (e) {
+          self.translate.get('error.message.invalidJSON').subscribe(translatedValue => {
+            self.toasterService.error(translatedValue);
+          });
+          self.fileList = [];
+        }
       }
     }
   }
 
-  private showErrorMsg(errorMsg?: string): void {
+  private showErrorMsg(errorMsg = ''): void {
     let msg = errorMsg;
     if (this.type === 'INVENTORY_OBJECT') {
       if (!errorMsg) {
@@ -386,9 +425,17 @@ export class FileUploaderComponent {
       this.import();
       return;
     }
-    if (this.type === 'DEPLOYMENT') {
+    if (this.type === 'DEPLOYMENT' || this.type === 'INVENTORY_OBJECT') {
       setTimeout(() => {
         this.activeModal.close(this.data);
+      }, 200);
+    } else if (this.type === 'SETTING') {
+      setTimeout(() => {
+        this.activeModal.close(this.setting);
+      }, 200);
+    } else if (this.type === 'WORKFLOW') {
+      setTimeout(() => {
+        this.activeModal.close(this.workflow);
       }, 200);
     } else if (this.type === 'XML_EDITOR') {
       if (!this.importXsd) {
@@ -401,7 +448,6 @@ export class FileUploaderComponent {
       this.fileList.forEach((file: any) => {
         formData.append('file', file);
         formData.append('name', file.name);
-        formData.append('folder', this.document.path);
       });
       let obj = {auditLog: {}};
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
@@ -412,11 +458,60 @@ export class FileUploaderComponent {
       let url = 'api/';
       if (this.type === 'DOCUMENTATION') {
         url += 'documentations/import';
+        formData.append('folder', this.document.path);
+      } else if (this.type === 'INVENTORY') {
+        url += (this.isDeploy ? 'inventory/deployment/import_deploy' : 'inventory/import');
+        if (!this.isDeploy) {
+          if (this.requestObj.targetFolder) {
+            this.requestObj.targetFolder = this.requestObj.targetFolder.trimEnd();
+            if (this.requestObj.targetFolder.substring(0, 1) !== '/') {
+              this.requestObj.targetFolder = '/' + this.requestObj.targetFolder;
+            }
+            formData.append('targetFolder', this.requestObj.targetFolder);
+
+          }
+          formData.append('overwrite', this.requestObj.overwrite);
+        }
+        if (this.isDeploy) {
+          formData.append('signatureAlgorithm', this.signatureAlgorithm);
+          formData.append('controllerId', this.schedulerIds.selected);
+        }
+        if (!this.requestObj.overwrite) {
+          if (this.requestObj.type === 'suffix') {
+            formData.append('suffix', this.requestObj.suffix);
+          } else if (this.requestObj.type === 'prefix') {
+            formData.append('prefix', this.requestObj.prefix);
+          }
+        }
+        formData.append('format', this.requestObj.format);
+      } else if (this.type === 'CONTROLLER') {
+        url += 'agents/import';
+        formData.append('controllerId', this.controller.controllerId);
+        formData.append('overwrite', this.requestObj.overwrite);
+        formData.append('format', this.requestObj.format);
+      } else if (this.type === 'CRON') {
+        url += 'inventory/convert/cron';
+        formData.append('folder', this.requestObj.folder || '/');
+        formData.append('systemCrontab', this.requestObj.systemCrontab);
+        formData.append('calendarName', this.requestObj.calendarName);
+        if (this.requestObj.agentName1) {
+          formData.append('subagentClusterId', this.requestObj.agentName);
+          formData.append('agentName', this.requestObj.agentName1);
+        } else {
+          formData.append('agentName', this.requestObj.agentName);
+        }
       }
       this.coreService.request(url, formData, headers).subscribe({
-        next: (res) => {
-          console.log(res);
-          this.activeModal.close(this.document.path);
+        next: () => {
+          if (this.type === 'DOCUMENTATION') {
+            this.activeModal.close(this.document.path);
+          } else if (this.type === 'INVENTORY') {
+            this.activeModal.close(this.requestObj.targetFolder || '/');
+          } else if (this.type === 'CRON') {
+            this.activeModal.close(this.requestObj.folder || '/');
+          } else {
+            this.activeModal.close('DONE');
+          }
         },
         error: (err) => {
           console.log(err)

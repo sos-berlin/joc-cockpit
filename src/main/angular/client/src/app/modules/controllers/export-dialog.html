@@ -1,26 +1,28 @@
 <div class="modal-header">
-  <h4 class="modal-title" >
+  <h4 class="modal-title">
     <span translate>agent.label.exportAgentConfiguration</span>:
     {{controller.controllerId}}
   </h4>
-  <button type="button" class="close" (click)="cancel()" aria-label="Close">
-      <span aria-hidden="true" class="fa fa-times-circle"></span>
+  <button (click)="cancel()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a min-ht-150">
     <div>
-      <div class="hide" [ngClass]="{'show': display}">
+      <div [ngClass]="{'show': display}" class="hide">
         <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="8"></app-audit-log-input>
       </div>
       <div class="form-group row">
         <label class="col-md-4 form-control-label" translate>inventory.label.fileName
-         <sup class="text-danger text-sm">*</sup>
+          <sup class="text-danger text-sm">*</sup>
         </label>
-        <div class="col-md-8" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || inValid}">
-          <input type="text" class="form-control" required name="name" [appAutofocus]="true" #name="ngModel" (blur)="checkFileName()" (focus)="inValid=false"
-                 placeholder="{{'inventory.placeholder.enterFileName' | translate}}" [(ngModel)]="exportObj.filename" />
-          <div *ngIf="inValid || (name.invalid && name.errors && (name.dirty || name.touched))" class="text-danger help-block">
+        <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || inValid}" class="col-md-8">
+          <input #name="ngModel" (blur)="checkFileName()" (focus)="inValid=false" [(ngModel)]="exportObj.filename" [appAutofocus]="true" class="form-control"
+                 name="name" placeholder="{{'inventory.placeholder.enterFileName' | translate}}"
+                 required type="text"/>
+          <div *ngIf="inValid || (name.invalid && name.errors && (name.dirty || name.touched))"
+               class="text-danger help-block">
             <div *ngIf="name.errors && name.errors.required">
               <div translate>common.message.requiredError</div>
             </div>
@@ -33,20 +35,21 @@
       <div class="form-group row">
         <label class="col-md-4 form-control-label" translate>inventory.label.fileFormat</label>
         <div class="col-md-8">
-            <nz-select name="format" [(ngModel)]="exportObj.fileFormat">
-              <nz-option nzLabel="ZIP" nzValue="ZIP"></nz-option>
-              <nz-option nzLabel="TAR_GZ" nzValue="TAR_GZ"></nz-option>
-            </nz-select>
+          <nz-select [(ngModel)]="exportObj.fileFormat" name="format">
+            <nz-option nzLabel="ZIP" nzValue="ZIP"></nz-option>
+            <nz-option nzLabel="TAR_GZ" nzValue="TAR_GZ"></nz-option>
+          </nz-select>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal-footer text-left" >
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || inValid || (required && !comments.comment)">
+  <div class="modal-footer text-left">
+    <button [disabled]="!myForm.form.valid || submitted || inValid || (required && !comments.comment)" class="btn btn-primary btn-sm"
+            type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>

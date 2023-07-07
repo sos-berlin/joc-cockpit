@@ -1,32 +1,23 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter, inject,
-  Input,
-  Output,
-  SimpleChanges,
-  ViewChild,
-  ViewEncapsulation
-} from '@angular/core';
+import {Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {forkJoin, of, Subject, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {isEmpty, groupBy, sortBy, clone, isArray} from 'underscore';
+import {clone, isArray, isEmpty} from 'underscore';
 import {Router} from '@angular/router';
 import {catchError, takeUntil} from 'rxjs/operators';
 import {ToastrService} from 'ngx-toastr';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
-import {GroupByPipe, SearchPipe, OrderPipe} from '../../pipes/core.pipe';
-import {CoreService} from '../../services/core.service';
-import {SaveService} from '../../services/save.service';
-import {AuthService} from '../../components/guard';
-import {DataService} from '../../services/data.service';
-import {ExcelService} from '../../services/excel.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {
   ChangeParameterModalComponent,
   ModifyStartTimeModalComponent
 } from '../../components/modify-modal/modify.component';
+import {AuthService} from '../../components/guard';
+import {GroupByPipe, OrderPipe, SearchPipe} from '../../pipes/core.pipe';
+import {CoreService} from '../../services/core.service';
+import {SaveService} from '../../services/save.service';
+import {DataService} from '../../services/data.service';
+import {ExcelService} from '../../services/excel.service';
 
 declare const JSGantt: any;
 declare let jsgantt: any;
@@ -478,7 +469,6 @@ export class GanttComponent {
     }
     jsgantt.parse({data: this.tasks});
   }
-
 }
 
 @Component({
@@ -486,14 +476,15 @@ export class GanttComponent {
   templateUrl: './filter-dialog.html',
 })
 export class FilterModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
 
-  @Input() allFilter;
-  @Input() new;
-  @Input() edit;
-  @Input() filter;
+  allFilter: any
+  new = false;
+  edit = false;
+  filter: any;
 
   name: string;
 
@@ -501,6 +492,11 @@ export class FilterModalComponent {
   }
 
   ngOnInit(): void {
+    this.allFilter = this.modalData.allFilter;
+    this.new = this.modalData.new;
+    this.edit = this.modalData.edit;
+    this.filter = this.modalData.filter;
+
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
@@ -649,7 +645,6 @@ export class SearchComponent {
     obj.name = result.name;
     obj.from = result.from1;
     obj.to = result.to1;
-
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe({
       next: (res: any) => {
@@ -917,7 +912,7 @@ export class DailyPlanComponent {
       nzTitle: undefined,
       nzContent: CreatePlanModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerIds.selected,
         selectedDate: this.selectedDate,
         preferences: this.preferences,
@@ -972,7 +967,7 @@ export class DailyPlanComponent {
       nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerIds.selected,
         timeZone: this.preferences.zone,
         selectedDate: this.selectedDate,
@@ -1100,7 +1095,7 @@ export class DailyPlanComponent {
       nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerIds.selected,
         orders: this.object.mapOfCheckedId,
         selectedDate: this.selectedDate,
@@ -1125,7 +1120,7 @@ export class DailyPlanComponent {
       nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerIds.selected,
         selectedDate: this.selectedDate,
         order,
@@ -1158,7 +1153,7 @@ export class DailyPlanComponent {
           nzTitle: undefined,
           nzContent: CommentModalComponent,
           nzClassName: 'lg',
-          nzComponentParams: {
+          nzData: {
             comments,
           },
           nzFooter: null,
@@ -1233,7 +1228,7 @@ export class DailyPlanComponent {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
           obj,
           url: 'daily_plan/orders/cancel'
@@ -1270,7 +1265,7 @@ export class DailyPlanComponent {
       nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerIds.selected,
         orders: this.object.mapOfCheckedId,
         timeZone: this.preferences.zone,
@@ -1296,7 +1291,7 @@ export class DailyPlanComponent {
       nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerIds.selected,
         order,
         workflow,
@@ -2411,7 +2406,7 @@ export class DailyPlanComponent {
         nzTitle: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           permission: this.permission,
           allFilter: this.filterList,
           new: true
@@ -2535,7 +2530,7 @@ export class DailyPlanComponent {
           nzTitle: undefined,
           nzContent: FilterModalComponent,
           nzClassName: 'lg',
-          nzComponentParams: {
+          nzData: {
             permission: this.permission,
             allFilter: this.filterList,
             filter: filterObj,

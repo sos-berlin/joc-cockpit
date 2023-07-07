@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -12,6 +12,7 @@ import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {OrderPipe} from "../../pipes/core.pipe";
 import {CommentModalComponent} from "../../components/comment-modal/comment.component";
+import {FileUploaderComponent} from "../../components/file-uploader/file-uploader.component";
 
 @Component({
   selector: 'app-setting',
@@ -176,22 +177,25 @@ export class SettingComponent {
   }
 
   importSetting(): void {
-    // const modal = this.modal.create({
-    //   nzTitle: undefined,
-    //   nzContent: ImportSettingComponent,
-    //   nzClassName: 'lg',
-    //   nzFooter: null,
-    //   nzClosable: false,
-    //   nzAutofocus: null,
-    //   nzMaskClosable: false
-    // });
-    // modal.afterClose.subscribe(result => {
-    //   if (result) {
-    //     this.settings = result;
-    //     this.changeConfiguration(null, null, null);
-    //     this.loadSetting();
-    //   }
-    // });
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: FileUploaderComponent,
+      nzData: {
+        type: 'SETTING'
+      },
+      nzClassName: 'lg',
+      nzFooter: null,
+      nzClosable: false,
+      nzAutofocus: null,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.settings = result;
+        this.changeConfiguration(null, null, null);
+        this.loadSetting();
+      }
+    });
   }
 
   exportSetting(): void {
