@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, HostListener} from '@angular/core';
+import {Component, Input, Output, EventEmitter, SimpleChanges, HostListener} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {ScriptModalComponent} from '../script-modal/script-modal.component';
@@ -9,7 +9,7 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
   selector: 'app-type',
   templateUrl: './type.component.html'
 })
-export class TypeComponent implements OnChanges {
+export class TypeComponent {
   @Input() configuration;
   @Input() jobs;
   @Input() expandAll;
