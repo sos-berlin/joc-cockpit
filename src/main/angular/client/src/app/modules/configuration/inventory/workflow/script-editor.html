@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     <span class="drag-text" translate>workflow.label.scriptEditor</span>
   </h4>
-  <a [codeMirror]="codeMirror" appMaximum class="max-btn">
+  <a class="max-btn" appMaximum [codeMirror]="codeMirror">
     <i class="fa fa-window-maximize"></i>
   </a>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close"
@@ -69,13 +69,12 @@
         </div>
       </div>
       <div class="col-md-12">
-        <div *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" id="show-tree-editor" style="min-width: 150px;">
-          <app-search-input (onBlur)="onBlur($event)" (onSelect)="checkExpectNoticeExp($event)" [nodes]="scriptTree"
-                            [type]="'INCLUDESCRIPT'"></app-search-input>
+        <div id="show-tree-editor" *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" style="min-width: 150px;">
+          <app-search-input [nodes]="scriptTree" [type]="'INCLUDESCRIPT'" (onSelect)="checkExpectNoticeExp($event)" (onBlur)="onBlur($event)"></app-search-input>
         </div>
-        <div [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}" class="b-a" id="resizable">
-          <ngx-codemirror #cm="ngModel" #codeMirror [(ngModel)]="scriptObj.data"
-                          [appAutofocus]="true" [options]="cmOption" name="cm" required
+        <div id="resizable" class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}">
+          <ngx-codemirror [appAutofocus]="true" required #codeMirror
+                          #cm="ngModel" name="cm" [(ngModel)]="scriptObj.data" [options]="cmOption"
           ></ngx-codemirror>
           <div class="rg-right" style="background: transparent; margin-right: -16px"><span style="top:48%"></span></div>
           <div class="rg-bottom" style="bottom: -16px;background: transparent"><span></span></div>

@@ -1,57 +1,59 @@
 <div class="box-shadow-on-modal">
-<div id="tree-modal" class="modal-body p-a min-ht-350">
-  <a class="text" (click)="expandAll();" *ngIf="tree.length > 0"
-     [nz-tooltip]="'common.tooltip.expandAll' | translate">
-    <i class="fa fa-angle-double-down fa-sm"></i>
-  </a>
-  <a class="text m-l-xs" (click)="collapseAll();" *ngIf="tree.length > 0"
-     [nz-tooltip]="'common.tooltip.collapseAll' | translate">
-    <i class="fa fa-angle-double-up fa-sm"></i>
-  </a>
-  <div class="tree-content m-t-sm" *ngIf="tree.length > 0">
-    <nz-tree
-      nzNoAnimation
-      [nzExpandAll]="isExpandAll"
-      [nzData]="tree"
-      [nzTreeTemplate]="nzTreeTemplate"
-    ></nz-tree>
-    <ng-template #nzTreeTemplate let-node>
-      <label nz-checkbox *ngIf="showCheckBox" class="p-r-sm" [(ngModel)]="node.origin.isChecked" name="{{node.key}}" (ngModelChange)="handleCheckbox(node.origin)"></label>
-      <div class="node-wrapper">
-        <div class="node-content-wrapper"
-             (click)="selectNode(node)">
-          <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-          {{node.origin.name || node.origin.path}}
+  <div class="modal-body p-a min-ht-350" id="tree-modal">
+    <div class="search-box-field ">
+      <label>
+        <input (input)="onSearchInput($event.target['value'])" [value]="obj.name"
+               class="input-tree-search "
+               placeholder="{{'common.placeholder.search' | translate}}" type="search"/>
+      </label>
+    </div>
+
+    <div *ngIf="tree.length > 0" class="tree-content m-t-sm">
+      <nz-tree
+        [nzData]="tree"
+        [nzExpandAll]="isExpandAll"
+        [nzTreeTemplate]="nzTreeTemplate"
+        nzNoAnimation
+      ></nz-tree>
+      <ng-template #nzTreeTemplate let-node>
+        <label (ngModelChange)="handleCheckbox(node.origin)" *ngIf="showCheckBox" [(ngModel)]="node.origin.isChecked" class="p-r-sm" name="{{node.key}}"
+               nz-checkbox></label>
+        <div class="node-wrapper">
+          <div (click)="selectNode(node)"
+               class="node-content-wrapper">
+            <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
+            {{node.origin.name || node.origin.path}}
+          </div>
         </div>
-      </div>
-      <div class="m-b-xs m-l-22" *ngFor="let cal of node.origin.calendars">
-        <label nz-checkbox name="'chk-'+ {{cal.id}}" [(ngModel)]="cal.isChecked" (ngModelChange)="handleCheckbox(cal)"></label>
-        <span class="p-l-sm m-t-xs"><i class="fa fa-calendar text-sm">&nbsp;</i>{{cal.name}}</span>
-      </div>
-    </ng-template>
+        <div *ngFor="let cal of node.origin.calendars" class="m-b-xs m-l-22">
+          <label (ngModelChange)="handleCheckbox(cal)" [(ngModel)]="cal.isChecked" name="'chk-'+ {{cal.id}}"
+                 nz-checkbox></label>
+          <span class="p-l-sm m-t-xs"><i class="fa fa-calendar text-sm">&nbsp;</i>{{cal.name}}</span>
+        </div>
+      </ng-template>
+    </div>
+    <div *ngIf="tree.length === 0 && loading" class="m-t-lg">
+      <app-empty-data></app-empty-data>
+    </div>
+    <div *ngIf="!loading" class="m-t-lg text-center">
+      <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
+    </div>
   </div>
-  <div class="m-t-lg" *ngIf="tree.length === 0 && loading">
-    <app-empty-data></app-empty-data>
+  <div class="modal-footer ">
+    <div *ngIf="showCheckBox ||  object">
+      <button (click)="submit()" class="btn btn-primary btn-sm" translate
+              type="button">common.button.done
+      </button>
+      <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm m-l-sm" translate
+              type="button">
+        common.button.cancel
+      </button>
+    </div>
+    <div *ngIf="!showCheckBox && !object">
+      <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm " translate
+              type="button">
+        common.button.close
+      </button>
+    </div>
   </div>
-  <div class="m-t-lg text-center" *ngIf="!loading">
-    <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
-  </div>
-</div>
-<div class="modal-footer ">
-  <div *ngIf="showCheckBox ||  object">
-    <button type="button" class="btn btn-primary btn-sm"  (click)="submit()"
-            translate>common.button.done
-    </button>
-    <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.destroy()"
-            translate>
-      common.button.cancel
-    </button>
-  </div>
-  <div *ngIf="!showCheckBox && !object">
-    <button type="button" class="btn btn-grey btn-sm " (click)="activeModal.destroy()"
-            translate>
-      common.button.close
-    </button>
-  </div>
-</div>
 </div>

@@ -33,9 +33,9 @@ export class ScriptModalComponent {
   permission: any = {};
   dailyPlan: any = {};
   days = [];
-  periodList = [];
-  schemeList = [];
-  tempPeriodList = [];
+  periodList: any = [];
+  schemeList: any = [];
+  tempPeriodList: any = [];
   cmOption: any = {
     scrollbarStyle: 'simple',
     lineNumbers: true,
@@ -44,6 +44,7 @@ export class ScriptModalComponent {
   };
   todayDate: string;
   type: string;
+
   @ViewChild('codeMirror', {static: false}) cm: any;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private translate: TranslateService, private authService: AuthService,
@@ -52,16 +53,17 @@ export class ScriptModalComponent {
 
   ngOnInit(): void {
     this.workflowPath = this.modalData.workflowPath;
-    this.jobName = this.modalData.workflowPath;
-    this.isScript = this.modalData.workflowPath;
-    this.data = this.modalData.workflowPath;
-    this.schedule = this.modalData.workflowPath;
-    this.predicate = this.modalData.workflowPath;
-    this.admissionTime = this.modalData.workflowPath;
-    this.agentName = this.modalData.workflowPath;
-    this.subagentClusterId = this.modalData.workflowPath;
-    this.timezone = this.modalData.workflowPath;
-    this.noticeBoardNames = this.modalData.workflowPath;
+    this.jobName = this.modalData.jobName;
+    this.isScript = this.modalData.isScript;
+    this.data = this.modalData.data;
+    this.schedule = this.modalData.schedule;
+    this.predicate = this.modalData.predicate;
+    this.admissionTime = this.modalData.admissionTime;
+    this.agentName = this.modalData.agentName;
+    this.subagentClusterId = this.modalData.subagentClusterId;
+    this.timezone = this.modalData.timezone;
+    this.noticeBoardNames = this.modalData.noticeBoardNames;
+
     this.todayDate = this.coreService.getStringDate(null);
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.permission = JSON.parse(this.authService.permission) || {};

@@ -1,29 +1,52 @@
-import {Component, OnInit, Input} from '@angular/core';
-import {NzModalRef} from 'ng-zorro-antd/modal';
+import {ChangeDetectorRef, Component, inject,} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {sortBy} from 'underscore';
 import {CoreService} from '../../services/core.service';
+import {debounceTime, Subject} from 'rxjs';
 
 @Component({
   selector: 'app-tree-modal-content',
   templateUrl: './tree.component.html'
 })
-export class TreeModalComponent implements OnInit {
-  @Input() schedulerId;
-  @Input() paths: any = [];
-  @Input() objects: any = [];
-  @Input() showCheckBox: boolean;
-  @Input() type: string;
-  @Input() object: string;
+export class TreeModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerId;
+  paths: any = [];
+  objects: any = [];
+  showCheckBox = false;
+  type = '';
+  object: string;
+  changeDetect = false;
+  nodes: any = [];
   tree: any = [];
   isExpandAll = false;
   loading = false;
   isSubmitted = false;
+  originalTree: any = [];
+  obj = {
+    name: '',
+    token: ''
+  };
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  private searchTerm = new Subject<string>();
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId;
+    this.paths = this.modalData.paths;
+    this.objects = this.modalData.objects || [];
+    this.showCheckBox = this.modalData.showCheckBox;
+    this.type = this.modalData.type;
+    this.object = this.modalData.object;
+    this.changeDetect = this.modalData.changeDetect;
+    this.nodes = this.modalData.nodes;
     this.init();
+    this.searchTerm.pipe(debounceTime(200))
+      .subscribe((searchValue: string) => {
+        this.searchObjects(searchValue);
+      });
   }
 
   init(): void {
@@ -35,6 +58,7 @@ export class TreeModalComponent implements OnInit {
     }).subscribe({
       next: (res) => {
         this.tree = this.coreService.prepareTree(res, true);
+        this.originalTree = [...this.tree];
         if (this.tree.length > 0) {
           this.tree[0].expanded = true;
           this.selectNode(this.tree[0]);
@@ -44,6 +68,7 @@ export class TreeModalComponent implements OnInit {
         this.loading = true;
       }
     });
+
   }
 
   handleCheckbox(object): void {
@@ -97,7 +122,6 @@ export class TreeModalComponent implements OnInit {
 
   private getJSObject(): void {
     const self = this;
-
     function recursive(nodes): void {
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].calendars) {
@@ -121,6 +145,45 @@ export class TreeModalComponent implements OnInit {
     } else {
       this.getJSObject();
       this.activeModal.close(this.objects);
+    }
+  }
+
+  onSearchInput(searchValue: string) {
+    if (searchValue.trim() === '') {
+      this.tree = [...this.originalTree];
+      this.ref.detectChanges();
+    } else {
+      this.searchTerm.next(searchValue);
+    }
+  }
+
+  private searchObjects(value: string) {
+    if (value !== '') {
+      const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
+      if (searchValueWithoutSpecialChars.length >= 2) {
+        const request: any = {
+          search: value,
+          returnTypes: ["CALENDAR"]
+        };
+        if (this.obj.token) {
+          request.token = this.obj.token;
+        }
+        this.coreService.post('inventory/quick/search', request).subscribe({
+          next: (res: any) => {
+            this.obj.token = res.token;
+            this.tree = res.results.map(function (item) {
+              return {...item, key: item.name, title: item.name};
+            });
+            if (this.changeDetect) {
+              this.ref.detectChanges();
+            }
+          }
+        });
+      }
+    } else {
+      if (this.changeDetect) {
+        this.ref.detectChanges();
+      }
     }
   }
 }

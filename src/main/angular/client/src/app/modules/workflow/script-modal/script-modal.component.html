@@ -1,37 +1,36 @@
-<div [hidden]="noticeBoardNames" class="modal-header">
-  <h4 class="modal-title">
+<div class="modal-header" [hidden]="noticeBoardNames">
+  <h4 class="modal-title" >
     <span class="drag-text" translate>workflow.label.showConfiguration</span>
     <i *ngIf="jobName">:</i>
     {{jobName}}
   </h4>
-  <a [codeMirror]="cm" appMaximum class="max-btn">
+  <a class="max-btn" appMaximum [codeMirror]="cm">
     <i class="fa fa-window-maximize"></i>
   </a>
-  <button (click)="activeModal.destroy()" aria-label="Close" class="close"
-          type="button">
+  <button type="button" class="close" aria-label="Close"
+          (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form spellcheck="false">
   <div class="modal-body p-a" style="min-height: 112px">
-    <div *ngIf="noticeBoardNames" class="row">
+    <div class="row" *ngIf="noticeBoardNames">
       <div class="col-sm-12 text-center">
         <b class="b-b p-b-xs m-b-sm">{{type | translate}}</b>
-        <div *ngIf="type === 'PostNotices'" class="m-t-md">
-          <div *ngFor="let board of noticeBoardNames" class="text-muted">
-            <i (click)="coreService.navToInventoryTab(board, 'NOTICEBOARD');"
-               *ngIf="permission.joc && permission.joc.inventory.view"
+        <div class="m-t-md" *ngIf="type === 'PostNotices'">
+          <div class="text-muted" *ngFor="let board of noticeBoardNames">
+            <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(board, 'NOTICEBOARD');"
                class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
-            <a (click)="coreService.showBoard(board);" class="text-hover-primary">{{board}}</a>
+            <a class="text-hover-primary" (click)="coreService.showBoard(board);" >{{board}}</a>
           </div>
         </div>
-        <div *ngIf="type === 'ExpectNotices'" class="m-t-md">
-          <span [innerHTML]="coreService.getHtml(noticeBoardNames, permission) | safeHtml"></span>
+        <div class="m-t-md" *ngIf="type === 'ExpectNotices'">
+           <span [innerHTML]="coreService.getHtml(noticeBoardNames, permission) | safeHtml"></span>
         </div>
       </div>
     </div>
-    <div *ngIf="!noticeBoardNames" class="row">
-      <div *ngIf="agentName" class="col-sm-12 m-b-10">
+    <div class="row" *ngIf="!noticeBoardNames">
+      <div class="col-sm-12 m-b-10" *ngIf="agentName">
         <span class="_600" translate>agent.label.agentName</span>:&nbsp;
         {{agentName}}
         <span *ngIf="subagentClusterId">
@@ -39,51 +38,40 @@
           {{subagentClusterId}}
         </span>
       </div>
-      <div *ngIf="isScript" class="col-md-12">
-        <label *ngIf="!predicate" class="_600 m-b-xs" translate>workflow.label.script</label>
-        <label *ngIf="predicate" class="_600 m-b-xs" translate>workflow.label.predicate</label>
-        <a (click)="navToConfig()" *ngIf="permission && permission.joc.inventory.view"
-           class="text-hover-primary p-l-sm"><i class="fa fa-pencil"></i></a>
+      <div class="col-md-12" *ngIf="isScript">
+        <label class="_600 m-b-xs" *ngIf="!predicate" translate>workflow.label.script</label>
+        <label class="_600 m-b-xs" *ngIf="predicate" translate>workflow.label.predicate</label>
+        <a *ngIf="permission && permission.joc.inventory.view" class="text-hover-primary p-l-sm" (click)="navToConfig()"><i class="fa fa-pencil"></i></a>
         <div class="b-a" id="resizable">
           <ngx-codemirror #codeMirror [options]="cmOption"></ngx-codemirror>
           <div class="rg-right" style="background: transparent; margin-right: -16px"><span style="top:48%"></span></div>
           <div class="rg-bottom" style="bottom: -16px;background: transparent"><span></span></div>
         </div>
       </div>
-      <div *ngIf="!isScript && data" class="col-md-12">
+      <div class="col-md-12" *ngIf="!isScript && data">
         <div class="form-group row">
           <label class="col-sm-3 form-control-label">{{'workflow.label.className' | translate}}
-            <a (click)="navToConfig()" *ngIf="permission && permission.joc.inventory.view"
-               class="text-hover-primary p-l-sm"><i class="fa fa-pencil"></i></a></label>
+          <a *ngIf="permission && permission.joc.inventory.view" class="text-hover-primary p-l-sm" (click)="navToConfig()"><i class="fa fa-pencil"></i></a></label>
           <div class=" col-sm-8">
-            <input [(ngModel)]="data" name="data" nz-input readonly>
+            <input nz-input name="data" [(ngModel)]="data" readonly>
           </div>
         </div>
       </div>
-      <div *ngIf="periodList.length > 0 || schemeList.length > 0" [ngClass]="{'m-b-sm' : periodList.length > 0}"
-           class="col-sm-3 m-t" translate>
-        workflow.admissionTime.label.dailyPlanTimeZone
-      </div>
-      <div *ngIf="periodList.length > 0 || schemeList.length > 0" [ngClass]="{'m-b-sm' : periodList.length > 0}"
-           class="col-sm-3 m-t b-r">
+      <div class="col-sm-3 m-t" [ngClass]="{'m-b-sm' : periodList.length > 0}" *ngIf="periodList.length > 0 || schemeList.length > 0" translate>workflow.admissionTime.label.dailyPlanTimeZone</div>
+      <div class="col-sm-3 m-t b-r" [ngClass]="{'m-b-sm' : periodList.length > 0}" *ngIf="periodList.length > 0 || schemeList.length > 0">
         {{dailyPlan.time_zone}}
       </div>
-      <div *ngIf="periodList.length > 0 || schemeList.length > 0" [ngClass]="{'m-b-sm' : periodList.length > 0}"
-           class="col-sm-3 m-t" translate>
-        workflow.admissionTime.label.dailyPlanPeriodBegin
-      </div>
-      <div *ngIf="periodList.length > 0 || schemeList.length > 0" [ngClass]="{'m-b-sm' : periodList.length > 0}"
-           class="col-sm-3 m-t">
+      <div class="col-sm-3 m-t" [ngClass]="{'m-b-sm' : periodList.length > 0}" *ngIf="periodList.length > 0 || schemeList.length > 0" translate>workflow.admissionTime.label.dailyPlanPeriodBegin</div>
+      <div class="col-sm-3 m-t" [ngClass]="{'m-b-sm' : periodList.length > 0}" *ngIf="periodList.length > 0 || schemeList.length > 0">
         {{dailyPlan.period_begin}}
       </div>
-      <div *ngIf="periodList.length > 0" class="col-sm-3" translate>workflow.label.workflowTimeZone</div>
-      <div *ngIf="periodList.length > 0" class="col-sm-8">
+      <div class="col-sm-3" *ngIf="periodList.length > 0" translate>workflow.label.workflowTimeZone</div>
+      <div class="col-sm-8" *ngIf="periodList.length > 0">
         {{timezone}}
       </div>
-      <div *ngIf="schedule" class="col-md-12 m-t-sm">
+      <div class="col-md-12 m-t-sm" *ngIf="schedule">
         <label class="_600 m-b-xs" translate>workflow.label.listOfSchemes</label>
-        <a (click)="navToConfig()" *ngIf="permission && permission.joc.inventory.view"
-           class="text-hover-primary p-l-sm"><i class="fa fa-pencil"></i></a>
+        <a *ngIf="permission && permission.joc.inventory.view" class="text-hover-primary p-l-sm" (click)="navToConfig()"><i class="fa fa-pencil"></i></a>
         <div class="table-responsive">
           <table class="table table-hover table-bordered ">
             <thead>
@@ -93,14 +81,13 @@
               <th><span translate>workflow.label.repeat</span></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody >
             <tr *ngFor="let list of schemeList">
               <td colspan="2">
                 <div *ngFor="let item of list.periodList">
                   <div class="row">
                     <div class="col-sm-5">
-                      <span *ngIf="item.frequency"><span
-                        translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
+                      <span *ngIf="item.frequency"><span translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
                       <span *ngIf="!item.frequency" translate>workflow.admissionTime.label.everyDay</span>
                     </div>
                     <div class="col-sm-7">
@@ -119,7 +106,7 @@
           </table>
         </div>
       </div>
-      <div *ngIf="periodList.length > 0" class="col-md-12 m-t-sm">
+      <div class="col-md-12 m-t-sm" *ngIf="periodList.length > 0">
         <label class="_600 m-b-xs" translate>workflow.label.admissionTime</label>
         <div class="table-responsive">
           <table class="table table-hover table-bordered">
@@ -142,23 +129,23 @@
           </table>
         </div>
       </div>
-      <div *ngIf="periodList.length > 0 || schemeList.length > 0" class="col-md-12">
-        <button (click)="showConvertTime()" *ngIf="tempPeriodList.length === 0" class="btn btn-default btn-sm"
-                translate type="button">workflow.button.convertAdmissionTime
+      <div class="col-md-12" *ngIf="periodList.length > 0 || schemeList.length > 0">
+        <button type="button" class="btn btn-default btn-sm" *ngIf="tempPeriodList.length === 0"
+                (click)="showConvertTime()" translate>workflow.button.convertAdmissionTime
         </button>
-        <button (click)="showOriginalTime()" *ngIf="tempPeriodList.length > 0" class="btn btn-default btn-sm"
-                translate type="button">workflow.button.originalAdmissionTime
+        <button type="button" class="btn btn-default btn-sm" *ngIf="tempPeriodList.length > 0"
+                (click)="showOriginalTime()" translate>workflow.button.originalAdmissionTime
         </button>
       </div>
     </div>
   </div>
-  <div [hidden]="noticeBoardNames" class="modal-footer">
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
-            translate type="button">
+  <div class="modal-footer" [hidden]="noticeBoardNames">
+    <button type="button" class="btn btn-grey btn-sm"
+            (click)="activeModal.destroy()" translate>
       common.button.close
     </button>
-    <button (click)="copyToClipboard()" *ngIf="data" class="btn btn-default btn-sm"
-            translate type="button">log.button.copyToClipboard
+    <button type="button" class="btn btn-default btn-sm" *ngIf="data"
+            (click)="copyToClipboard()" translate>log.button.copyToClipboard
     </button>
   </div>
 </form>
