@@ -5,7 +5,8 @@ import {
   Input,
   OnChanges,
   OnDestroy, OnInit,
-  SimpleChanges, ViewChild
+  SimpleChanges, ViewChild,
+  inject
 } from '@angular/core';
 import {clone, groupBy, isArray, isEmpty, isEqual, sortBy} from 'underscore';
 import {Router} from '@angular/router';
@@ -22,16 +23,18 @@ import {ValueEditorComponent} from '../../../../components/value-editor/value.co
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {JobWizardComponent} from '../job-wizard/job-wizard.component';
 import {FacetEditorComponent} from '../workflow/workflow.component';
+import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-update-modal',
   templateUrl: './update-dialog.html'
 })
 export class UpdateJobTemplatesComponent {
-  @Input() preferences: any = {};
-  @Input() data: any;
-  @Input() treeObj: any;
-  @Input() job: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  preferences: any = {};
+  data: any;
+  treeObj: any;
+  job: any;
   submitted = false;
   isExpandAll = false;
   listOfWorkflows = [];
@@ -80,6 +83,11 @@ export class UpdateJobTemplatesComponent {
   }
 
   ngOnInit(): void {
+    this.preferences = this.modalData.preferences;
+    this.data = this.modalData.data;
+    this.treeObj = this.modalData.treeObj;
+    this.job = this.modalData.job;
+
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {

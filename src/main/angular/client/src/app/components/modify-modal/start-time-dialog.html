@@ -60,10 +60,9 @@
             <label class="col-md-3 form-control-label" translate>common.label.time
               <sup class="text-danger text-sm">*</sup>
             </label>
-            <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
-              <input #time="ngModel" [(ngModel)]="order.atTime" class="form-control" name="atTime" placeholder="{{'common.placeholder.enterSecond' | translate}}"
-                     required type="text"
-                     validTimeReqex>
+            <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
+              <input validTimeReqex type="text" #time="ngModel" class="form-control" required
+                     name="atTime" [(ngModel)]="order.atTime" placeholder="{{'common.placeholder.enterSecond' | translate}}">
               <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
                 <div *ngIf="!time.valid" translate>common.message.invalid</div>
               </div>
@@ -73,24 +72,18 @@
             <label class="col-md-3 form-control-label" translate>workflow.label.enterDateAndTime
               <sup class="text-danger text-sm">*</sup>
             </label>
-            <div [ngClass]="{ 'has-error' : (((from.dirty || from.touched) && from.invalid))}" class="col-sm-6">
-              <nz-date-picker #from="ngModel" [(ngModel)]="order.fromDate" [nzDisabledDate]="disabledDate"
-                              [nzFormat]="dateFormat" [nzPlaceHolder]="dateFormat | uppercase"
-                              name="from"
-                              required></nz-date-picker>
+            <div class="col-sm-6" [ngClass]="{ 'has-error' : (((from.dirty || from.touched) && from.invalid))}">
+              <nz-date-picker [nzDisabledDate]="disabledDate" required #from="ngModel" [nzPlaceHolder]="dateFormat | uppercase" [nzFormat]="dateFormat" [(ngModel)]="order.fromDate"
+                  name="from"></nz-date-picker>
               <div *ngIf="from.invalid && (from.dirty || from.touched)" class="text-danger help-block">
                 <div *ngIf="from.errors.required">
                   <div translate>common.message.requiredError</div>
                 </div>
               </div>
-              <div [ngClass]="{ 'has-error' : (((fromTime.dirty || fromTime.touched) && fromTime.invalid))}"
-                   class="time-picker">
-                <input #fromTime="ngModel" (ngModelChange)="selectTime(order.fromTime, true)" [(ngModel)]="order.fromTime" [disabled]="!order.fromDate" class="form-control"
-                       name="fromTime"
-                       placeholder="HH:MM:SS" timevalidator type="text"
-                       validTimeReqex>
-                <nz-time-picker (ngModelChange)="selectTime($event)" [(ngModel)]="order.fromTime1"
-                                [nzAllowEmpty]="false" name="fromTimeIcon"></nz-time-picker>
+              <div class="time-picker" [ngClass]="{ 'has-error' : (((fromTime.dirty || fromTime.touched) && fromTime.invalid))}">
+                <input timevalidator validTimeReqex [disabled]="!order.fromDate" type="text" #fromTime="ngModel" class="form-control"
+                    name="fromTime" [(ngModel)]="order.fromTime" (ngModelChange)="selectTime(order.fromTime, true)" placeholder="HH:MM:SS">
+                <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)" [(ngModel)]="order.fromTime1" name="fromTimeIcon"></nz-time-picker>
               </div>
             </div>
           </div>
@@ -107,43 +100,41 @@
             <label class="col-md-3 form-control-label" translate>runtime.label.repeatTime
               <sup class="text-danger text-sm">*</sup>
             </label>
-            <div [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}" class="col-md-2">
-              <input #repeat="ngModel" [(ngModel)]="period.repeat" class="form-control" maxlength="8" name="repeat" placeholder="HH:MM:SS"
-                     required
-                     timevalidator
-                     type="text" validTimeReqex>
+            <div class="col-md-2" [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}">
+              <input timevalidator validTimeReqex required maxlength="8" class="form-control" name="repeat" #repeat="ngModel"
+                     [(ngModel)]="period.repeat"
+                     placeholder="HH:MM:SS" type="text">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label" translate>runtime.label.begin
               <sup class="text-danger text-sm">*</sup>
             </label>
-            <div [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}" class="col-md-2">
-              <input #begin="ngModel" [(ngModel)]="period.begin" class="form-control" maxlength="8" name="begin" placeholder="HH:MM:SS"
-                     required
-                     timevalidator
-                     type="text" validTimeReqex>
+            <div class="col-md-2" [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}">
+              <input timevalidator validTimeReqex required maxlength="8" class="form-control" name="begin" #begin="ngModel"
+                     [(ngModel)]="period.begin"
+                     placeholder="HH:MM:SS" type="text">
             </div>
             <label class="col-md-2 form-control-label text-right" translate>runtime.label.end
               <sup class="text-danger text-sm">*</sup>
             </label>
-            <div [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}" class="col-md-2">
-              <input #end="ngModel" [(ngModel)]="period.end" class="form-control" maxlength="8" name="end" placeholder="HH:MM:SS" required
-                     timevalidator
-                     type="text" validTimeReqex>
+            <div class="col-md-2" [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}">
+              <input timevalidator validTimeReqex required maxlength="8" class="form-control" name="end" #end="ngModel"
+                     [(ngModel)]="period.end"
+                     placeholder="HH:MM:SS" type="text">
             </div>
           </div>
         </ng-container>
-        <div *ngIf="errorMsg" class="form-group row">
-          <div [translateParams]="{n1, n2}" class="col-md-12 text-center p-a" translate>
+        <div class="form-group row" *ngIf="errorMsg">
+          <div class="col-md-12 text-center p-a" translate [translateParams]="{n1, n2}">
             dailyPlan.popup.cannotModifyStartTime
           </div>
         </div>
-        <div *ngIf="!errorMsg" [hidden]="!(dateType.at =='date')" class="form-group row">
+        <div class="form-group row" *ngIf="!errorMsg" [hidden]="!(dateType.at =='date')">
           <div class="col-md-3 form-control-label" translate>common.label.timeZone</div>
           <div class="col-sm-6">
-            <nz-select [(ngModel)]="dateType.timeZone" name="timeZone" nzAllowClear nzShowSearch>
-              <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
+            <nz-select nzShowSearch name="timeZone" nzAllowClear [(ngModel)]="dateType.timeZone">
+              <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
             </nz-select>
           </div>
         </div>

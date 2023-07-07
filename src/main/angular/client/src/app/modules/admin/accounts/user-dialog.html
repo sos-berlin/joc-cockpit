@@ -25,9 +25,9 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <input #account="ngModel" (blur)="checkUser(account.value, currentUser.userName)" [(ngModel)]="currentUser.accountName" [appAutofocus]="true" autocomplete="off"
-               class="form-control" name="name" required
-               type="text"/>
+        <input type="text" class="form-control" name="name" [(ngModel)]="currentUser.accountName" required
+               #account="ngModel" [appAutofocus]="true" autocomplete="off"
+               (blur)="checkUser(account.value, currentUser.userName)"/>
 
         <div *ngIf="account.invalid && (account.dirty || account.touched)" class="text-danger help-block">
           <div *ngIf="account.errors['required']">
@@ -41,11 +41,10 @@
     </div>
     <div *ngIf="isPasswordVisible" class="form-group row">
       <label class="col-sm-4 form-control-label" translate>user.label.password</label>
-      <div [ngClass]="{'has-error' : !minimumPasswordLength}" class="col-sm-6">
-        <input (blur)="checkPwdLength()" (focus)="minimumPasswordLength = true; isPasswordMatch = true" [(ngModel)]="currentUser.fakePassword"
-               autocomplete="off"
-               class="form-control" name="password" placeholder="{{'user.placeholder.password' | translate}}"
-               type="password"/>
+      <div class="col-sm-6" [ngClass]="{'has-error' : !minimumPasswordLength}">
+        <input type="password" class="form-control" placeholder="{{'user.placeholder.password' | translate}}"
+               [(ngModel)]="currentUser.fakePassword"
+               name="password" autocomplete="off" (focus)="minimumPasswordLength = true; isPasswordMatch = true" (blur)="checkPwdLength()"/>
         <div *ngIf="!minimumPasswordLength && currentUser.fakePassword" class="text-danger help-block">
           <div translate>profile.message.minimumPasswordLength</div>
         </div>
@@ -53,11 +52,9 @@
     </div>
     <div *ngIf="isPasswordVisible && !copy" class="form-group row">
       <label class="col-sm-4 form-control-label" translate>profile.label.confirmPassword</label>
-      <div [ngClass]="{'has-error' : !isPasswordMatch}" class="col-sm-6">
-        <input (blur)="checkPassword()"
-               [(ngModel)]="currentUser.repeatedPassword"
-               [required]="(currentUser.fakePassword && currentUser.fakePassword !== '********' && currentUser.fakePassword.length > 0) ? true : false" autocomplete="off"
-               class="form-control" name="repeatedPassword" type="password"/>
+      <div class="col-sm-6" [ngClass]="{'has-error' : !isPasswordMatch}">
+        <input type="password" [required]="(currentUser.fakePassword && currentUser.fakePassword !== '********' && currentUser.fakePassword.length > 0) ? true : false" class="form-control" [(ngModel)]="currentUser.repeatedPassword"
+               name="repeatedPassword" autocomplete="off"  (blur)="checkPassword()"/>
         <div *ngIf="!isPasswordMatch && currentUser.repeatedPassword" class="text-danger help-block">
           <div translate>profile.message.passwordNotMatch</div>
         </div>
@@ -88,15 +85,15 @@
     <div *ngIf="!newUser && !copy && identityServiceType" class="form-group row">
       <label class="col-sm-4" translate>common.label.blocked</label>
       <div class="col-sm-6">
-        <label [(ngModel)]="currentUser.blocked" name="blocked"
-               nz-checkbox></label>
+        <label nz-checkbox [(ngModel)]="currentUser.blocked"
+               name="blocked"></label>
       </div>
     </div>
     <div *ngIf="!newUser && !copy" class="form-group row">
       <label class="col-sm-4" translate>user.label.disabled</label>
       <div class="col-sm-6">
-        <label [(ngModel)]="currentUser.disabled" name="disabled"
-               nz-checkbox></label>
+        <label nz-checkbox [(ngModel)]="currentUser.disabled"
+               name="disabled"></label>
       </div>
     </div>
   </div>

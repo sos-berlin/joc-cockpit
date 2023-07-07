@@ -1,4 +1,4 @@
-import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {isEmpty, sortBy} from "underscore";
@@ -12,6 +12,7 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 import {OrderPipe, SearchPipe} from "../../../pipes/core.pipe";
 import {DataService} from "../../../services/data.service";
+import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 
 declare const $;
 declare const mxEditor;
@@ -104,11 +105,12 @@ export class SubagentModalComponent {
   templateUrl: './add-cluster.dialog.html'
 })
 export class AddClusterModalComponent {
-  @Input() subagentClusters: any;
-  @Input() agentId: any;
-  @Input() data: any;
-  @Input() new: boolean;
-  @Input() isCopy: boolean;
+  readonly modalData: any = inject(NZ_MODAL_DATA)
+  subagentClusters: any;
+  agentId: any;
+  data: any;
+  new: boolean;
+  isCopy: boolean;
   cluster: any = {};
   submitted = false;
   isUniqueId = true;
@@ -121,6 +123,12 @@ export class AddClusterModalComponent {
   }
 
   ngOnInit(): void {
+    this.subagentClusters = this.modalData.subagentClusters;
+    this.agentId = this.modalData.agentId;
+    this.data = this.modalData.data;
+    this.new = this.modalData.new;
+    this.isCopy = this.modalData.isCopy;
+
     this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';

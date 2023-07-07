@@ -167,14 +167,14 @@ export class NewDraftComponent {
 })
 export class SingleDeployComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
-  @Input() schedulerIds: any;
-  @Input() data: any;
-  @Input() type = '';
-  @Input() display: any;
-  @Input() releasable = false;
-  @Input() isRevoke = false;
-  @Input() isChecked = false;
-  @Input() isRemoved = false;
+  schedulerIds: any;
+  data: any;
+  type = '';
+  display: any;
+  releasable = false;
+  isRevoke = false;
+  isChecked = false;
+  isRemoved = false;
   selectedSchedulerIds: any = [];
   deployablesObject: any = [];
   loading = true;
@@ -196,6 +196,14 @@ export class SingleDeployComponent {
   }
 
   ngOnInit(): void {
+    this.schedulerIds = this.modalData.schedulerIds;
+    this.data = this.modalData.data;
+    this.type = this.modalData.type;
+    this.display = this.modalData.display;
+    this.releasable = this.modalData.releasable;
+    this.isRevoke = this.modalData.isRevoke;
+    this.isChecked = this.modalData.isChecked;
+    this.isRemoved = this.modalData.isRemoved;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -406,17 +414,17 @@ export class SingleDeployComponent {
 export class DeployComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
-  @Input() schedulerIds: any;
-  @Input() preferences: any;
-  @Input() path = '';
-  @Input() releasable = false;
-  @Input() display: any;
-  @Input() data: any;
-  @Input() operation = '';
-  @Input() isRemove: any;
-  @Input() isRevoke = false;
-  @Input() isChecked = false;
-  @Input() isSelectedObjects = false;
+  schedulerIds: any;
+  preferences: any;
+  path = '';
+  releasable = false;
+  display: any;
+  data: any;
+  operation = '';
+  isRemove: any;
+  isRevoke = false;
+  isChecked = false;
+  isSelectedObjects = false;
   selectedSchedulerIds: any = [];
   loading = true;
   nodes: any = [];
@@ -448,6 +456,17 @@ export class DeployComponent {
   }
 
   ngOnInit(): void {
+    this.schedulerIds = this.modalData.schedulerIds;
+    this.preferences = this.modalData.preferences;
+    this.path = this.modalData.path;
+    this.releasable = this.modalData.releasable;
+    this.display = this.modalData.display;
+    this.data = this.modalData.data;
+    this.operation = this.modalData.operation;
+    this.isRemove = this.modalData.isRemove;
+    this.isRevoke = this.modalData.isRevoke;
+    this.isChecked = this.modalData.isChecked;
+    this.isSelectedObjects = this.modalData.isSelectedObjects;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -1030,10 +1049,10 @@ export class ExportComponent {
   }
 
   ngOnInit(): void {
-    // this.schedulerIds: any;
-    // this.preferences: any;
-    // this.origin: any;
-    // this.display: any;
+    this.schedulerIds = this.modalData.schedulerIds;
+    this.preferences = this.modalData.preferences;
+    this.origin = this.modalData.origin;
+    this.display = this.modalData.display;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -1617,12 +1636,12 @@ export class RepositoryComponent {
   }
 
   ngOnInit(): void {
-    // this.controllerId = '';
-    // this.preferences: any;
-    // this.origin: any;
-    // this.operation = '';
-    // this.category = '';
-    // this.display = false
+    this.controllerId = this.modalData.controllerId;
+    this.preferences = this.modalData.preferences;
+    this.origin = this.modalData.origin;
+    this.operation = this.modalData.operation;
+    this.category = this.modalData.category;
+    this.display = this.modalData.display;
     this.loadSetting();
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -2353,7 +2372,7 @@ export class GitComponent {
       nzTitle: undefined,
       nzContent: NotificationComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         results: this.results,
       },
       nzFooter: null,
@@ -2395,12 +2414,13 @@ export class NotificationComponent {
   templateUrl: './json-editor-dialog.html'
 })
 export class JsonEditorModalComponent {
-  @Input() name = '';
-  @Input() objectType = '';
-  @Input() object: any;
-  @Input() edit = false;
-  @Input() schedulerId: any;
-  @Input() preferences: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  name = '';
+  objectType = '';
+  object: any;
+  edit = false;
+  schedulerId: any;
+  preferences: any;
   submitted = false;
   isError = false;
   data: any;
@@ -2428,6 +2448,13 @@ export class JsonEditorModalComponent {
   }
 
   ngOnInit(): void {
+    this.name = this.modalData.name;
+    this.objectType = this.modalData.objectType;
+    this.object = this.modalData.object;
+    this.edit = this.modalData.edit;
+    this.schedulerId = this.modalData.schedulerId;
+    this.preferences = this.modalData.preferences;
+
     this.coreService.get('assets/i18n/json-editor-text_' + this.preferences.locale + '.json').subscribe((data) => {
       this.options.languages = {};
       this.options.languages[this.preferences.locale] = data;
@@ -2489,13 +2516,15 @@ export class JsonEditorModalComponent {
   templateUrl: './create-object-dialog.html'
 })
 export class CreateObjectModalComponent {
-  @Input() schedulerId: any;
-  @Input() preferences: any;
-  @Input() obj: any;
-  @Input() copy: any;
-  @Input() restore = false;
-  @Input() allowPath = false;
-  @Input() type = '';
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+
+  schedulerId: any;
+  preferences: any;
+  obj: any;
+  copy: any;
+  restore = false;
+  allowPath = false;
+  type = '';
   isValid = true;
   submitted = false;
   settings: any = {};
@@ -2508,6 +2537,14 @@ export class CreateObjectModalComponent {
   }
 
   ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId
+    this.preferences = this.modalData.preferences
+    this.obj = this.modalData.obj
+    this.copy = this.modalData.copy
+    this.restore = this.modalData.restore;
+    this.allowPath = this.modalData.allowPath;
+    this.type = this.modalData.type;
+
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
@@ -2653,13 +2690,14 @@ export class CreateObjectModalComponent {
   templateUrl: './create-folder-dialog.html'
 })
 export class CreateFolderModalComponent {
-  @Input() schedulerId: any;
-  @Input() origin: any;
-  @Input() type: any;
-  @Input() deepRename: any;
-  @Input() rename: any;
-  @Input() oldName: any;
-  @Input() display: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerId: any;
+  origin: any;
+  type: any;
+  deepRename: any;
+  rename: any;
+  oldName: any;
+  display: any;
   submitted = false;
   required = false;
   isUnique = true;
@@ -2671,6 +2709,13 @@ export class CreateFolderModalComponent {
   }
 
   ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId;
+    this.origin = this.modalData.origin;
+    this.type = this.modalData.type;
+    this.deepRename = this.modalData.deepRename;
+    this.rename = this.modalData.rename;
+    this.oldName = this.modalData.oldName;
+    this.display = this.modalData.display;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -3912,7 +3957,7 @@ export class InventoryComponent {
       nzContent: RepositoryComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         controllerId: this.schedulerIds.selected,
         preferences: this.preferences,
         display: this.preferences.auditLog,
@@ -3991,7 +4036,7 @@ export class InventoryComponent {
       nzTitle: undefined,
       nzContent: NotificationComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         results: [result],
       },
       nzFooter: null,
@@ -4009,7 +4054,7 @@ export class InventoryComponent {
       nzTitle: undefined,
       nzContent: GitComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         controllerId: this.schedulerIds.selected,
         preferences: this.preferences,
         display: this.preferences.auditLog,
@@ -4037,7 +4082,7 @@ export class InventoryComponent {
       nzContent: ExportComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         schedulerIds: this.schedulerIds,
         preferences: this.preferences,
         display: this.preferences.auditLog,
@@ -4116,7 +4161,7 @@ export class InventoryComponent {
       nzTitle: undefined,
       nzContent: CreateFolderModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         display: this.preferences.auditLog,
         schedulerId: this.schedulerIds.selected,
         origin: node.origin

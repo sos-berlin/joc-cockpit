@@ -53,17 +53,17 @@
       </div>
       <div *ngIf="variables.length > 0" class="form-group row m-b-0">
         <div class="pos-abt m-l-12">
-          <label (nzCheckedChange)="onAllChecked($event)" [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
-                 nz-checkbox></label>
+          <label nz-checkbox [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
+                 (nzCheckedChange)="onAllChecked($event)"></label>
         </div>
         <div class="col-md-4 col-lg-4 m-b-sm" style="padding-left: 36px" translate>common.label.name</div>
         <div class="col-md-4 col-lg-7 m-b-sm" translate>common.label.value</div>
       </div>
       <div *ngFor="let argument of variables; let i=index" class="form-group row m-b-0">
         <div class="pos-abt m-l-12">
-          <label (nzCheckedChange)="onItemChecked(argument, $event)" [nzChecked]="object.setOfCheckedValue.has(argument.name)" [nzDisabled]="!argument.name"
-                 nz-checkbox
-                 style="position: relative;top:5px"></label>
+          <label nz-checkbox style="position: relative;top:5px" [nzDisabled]="!argument.name"
+                 [nzChecked]="object.setOfCheckedValue.has(argument.name)"
+                 (nzCheckedChange)="onItemChecked(argument, $event)"></label>
         </div>
         <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid), 'col-sm-10' : argument.isArray}" class="col-sm-4 m-b-sm"
              style="padding-left: 36px">
@@ -76,13 +76,13 @@
         </div>
         <ng-container *ngIf="argument.isArray">
           <ng-container *ngFor="let item of argument.value; let j=index">
-            <div [ngClass]="{'has-error' : ((item.dirty || item.touched) && item.invalid)}"
-                 class="col-sm-10 m-b-sm p-l-lg">
-              <input #item="ngModel" (keydown)="onKeyPress($event,argument)" [(ngModel)]="item.value"
-                     autocomplete="off" class="form-control" name="item{{i}}{{j}}"
-                     placeholder="{{'common.placeholder.value' | translate}}" type="text">
-              <i (click)="openEditor(item)" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
-                 nzType="form"></i>
+            <div class="col-sm-10 m-b-sm p-l-lg"
+                 [ngClass]="{'has-error' : ((item.dirty || item.touched) && item.invalid)}">
+              <input #item="ngModel" autocomplete="off" type="text"
+                     class="form-control" name="item{{i}}{{j}}" (keydown)="onKeyPress($event)"
+                     [(ngModel)]="item.value" placeholder="{{'common.placeholder.value' | translate}}">
+              <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline"
+                 (click)="openEditor(item)"></i>
             </div>
             <div class="col-sm-1 p-l-0">
               <a *ngIf="j == argument.value.length-1" class="text-primary-hover"><i
@@ -92,22 +92,22 @@
           </ng-container>
         </ng-container>
         <ng-container *ngIf="!argument.isArray">
-          <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-               class="col-md-6 col-lg-6 m-b-sm">
-            <input #value="ngModel" (keydown)="onKeyPress($event, argument)" [(ngModel)]="argument.value"
-                   autocomplete="off" class="form-control" name="value{{i}}"
-                   placeholder="{{'common.placeholder.value' | translate}}" type="text">
-            <i (click)="openEditor(argument)" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
-               nzType="form"></i>
+          <div class="col-md-6 col-lg-6 m-b-sm"
+               [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+            <input #value="ngModel" autocomplete="off" type="text"
+                   class="form-control" name="value{{i}}" (keydown)="onKeyPress($event, argument)"
+                   [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
+            <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline"
+               (click)="openEditor(argument)"></i>
           </div>
           <div class="col-sm-1 p-l-0">
             <a><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-muted"></i></a>
           </div>
         </ng-container>
       </div>
-      <div *ngIf="allowVariable" class="form-group row">
+      <div class="form-group row" *ngIf="allowVariable">
         <div class="col-sm-12">
-          <a (click)="addArgument()" class="text-u-l" translate>order.button.addVariable</a>
+          <a class="text-u-l" (click)="addArgument()" translate>order.button.addVariable</a>
         </div>
       </div>
     </div>

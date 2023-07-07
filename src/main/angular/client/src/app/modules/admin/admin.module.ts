@@ -16,8 +16,7 @@ import {ProfilesComponent} from './profiles/profiles.component';
 import {
   IdentityServiceComponent,
   IdentityServiceModalComponent,
-  SettingModalComponent,
-  ThumbnailDirective
+  SettingModalComponent
 } from './identity-service/identity-service.component';
 import {SessionTimeRegexValidator} from '../../directives/core.directive';
 import {ShowPermissionComponent} from './show-permission/show-permission.component';
@@ -52,7 +51,6 @@ import {PendingRequestsComponent} from './pending-requests/pending-requests.comp
     BlocklistComponent,
     AddBlocklistModalComponent,
     SessionManagementComponent,
-    ThumbnailDirective,
     PendingRequestsComponent
   ],
   providers: [

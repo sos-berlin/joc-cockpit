@@ -1,14 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Output,
-  SimpleChanges
-} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {ToastrService} from 'ngx-toastr';
@@ -720,13 +710,12 @@ export class UserComponent {
   entryPerPage = [{value: '10', name: '10'},
     {value: '25', name: '25'},
     {value: '50', name: '50'},
-    {value: '100', name: '100'},
-    {value: this.preferences.maxEntryPerPage, name: this.preferences.maxEntryPerPage}]
+    {value: '100', name: '100'}];
 
   dateTimeFormat = [
     {index: 1, value: 'DD.MM.YYYY HH:mm:ss', name: 'Default (DD.MM.YYYY HH:mm:ss)'},
     {disable: true, value: '', name: '-----------------------------------------'},
-    {index: 3, value: 'HH:mm | DD.MM.YYYY" nzLabel="HH:mm | DD.MM.YYYY', name: 'HH:mm | DD.MM.YYYY'},
+    {index: 3, value: 'HH:mm | DD.MM.YYYY', name: 'HH:mm | DD.MM.YYYY'},
     {index: 4, value: 'hh:mm A | DD.MM.YYYY', name: 'hh:mm A | DD.MM.YYYY'},
     {index: 5, value: 'YYYY/DD/MM HH:mm', name: 'YYYY/DD/MM HH:mm'},
     {index: 6, value: 'YYYY/DD/MM hh:mm A', name: 'YYYY/DD/MM hh:mm A'},
@@ -811,9 +800,7 @@ export class UserComponent {
     {index: 85, value: 'MMMM DD, YYYY HH:mm', name: 'MMMM DD, YYYY HH:mm'},
     {index: 86, value: 'MMMM DD, YYYY hh:mm A', name: 'MMMM DD, YYYY hh:mm A'},
     {index: 87, value: 'MMMM DD, YYYY HH:mm:ss', name: 'MMMM DD, YYYY HH:mm:ss'},
-    {index: 88, value: 'MMMM DD, YYYY hh:mm:ss A', name: 'MMMM DD, YYYY hh:mm:ss A'},
-
-
+    {index: 88, value: 'MMMM DD, YYYY hh:mm:ss A', name: 'MMMM DD, YYYY hh:mm:ss A'}
   ]
   forceLoging = false;
   isGroupBtnActive = false;
@@ -850,6 +837,7 @@ export class UserComponent {
     this.timeZone = this.coreService.getTimeZone();
     this.zones.unshift(this.timeZone, '-----------------------------');
     this.configObj.accountName = this.username;
+    this.entryPerPage.push({value: this.preferences.maxEntryPerPage, name: this.preferences.maxEntryPerPage});
   }
 
   ngOnDestroy(): void {
@@ -940,6 +928,8 @@ export class UserComponent {
     if (this.preferences.entryPerPage > 100) {
       this.preferences.entryPerPage = this.preferences.maxEntryPerPage;
     }
+    this.entryPerPage.pop();
+    this.entryPerPage.push({value: this.preferences.maxEntryPerPage, name: this.preferences.maxEntryPerPage});
     if (isGroupBtnActive) {
       this.preferences.maxAuditLogRecords = this.preferences.maxRecords;
       this.preferences.maxNotificationRecords = this.preferences.maxRecords;
