@@ -1,7 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {Component, inject} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
-import {isArray, isEmpty, sortBy} from 'underscore';
+import {isArray, isEmpty} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
 import {InventoryObject} from '../../../../models/enums';
@@ -14,9 +14,10 @@ import {ValueEditorComponent} from "../../../../components/value-editor/value.co
   templateUrl: './update-object.component.html'
 })
 export class UpdateObjectComponent {
-  @Input() data: any;
-  @Input() type: string;
-  @Input() controllerId: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  data: any;
+  type: string;
+  controllerId: any;
 
   preferences: any = {};
   permission: any = {};
@@ -56,6 +57,10 @@ export class UpdateObjectComponent {
   }
 
   ngOnInit(): void {
+    this.data = this.modalData.data;
+    this.type = this.modalData.type;
+    this.controllerId = this.modalData.controllerId;
+
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};

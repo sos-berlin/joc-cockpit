@@ -262,7 +262,7 @@ export class SystemNotificationComponent {
       nzTitle: undefined,
       nzContent: AcknowledgeModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         type: 'SYSTEM',
         data: {
           notificationIds: data ? [data.notificationId] : Array.from(this.filters.mapOfCheckedId)

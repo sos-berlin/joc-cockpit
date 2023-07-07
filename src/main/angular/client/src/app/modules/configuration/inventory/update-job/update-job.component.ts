@@ -1,6 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NzModalRef} from 'ng-zorro-antd/modal';
-import {isEmpty, isArray} from 'underscore';
+import {Component, inject} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
+import {isArray, isEmpty} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
 import {InventoryObject} from '../../../../models/enums';
@@ -12,8 +12,9 @@ import {AuthService} from '../../../../components/guard';
   templateUrl: './update-job.component.html'
 })
 export class UpdateJobComponent {
-  @Input() data: any = {};
-  @Input() controllerId: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  data: any = {};
+  controllerId: any;
 
   preferences: any = {};
   permission: any = {};
@@ -42,6 +43,8 @@ export class UpdateJobComponent {
   }
 
   ngOnInit(): void {
+    this.data = this.modalData.data;
+    this.controllerId = this.modalData.controllerId;
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};

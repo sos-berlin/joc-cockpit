@@ -1,113 +1,95 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit(filter)">
-  <div [ngClass]="{'modal-body p-a' : !isSearch }">
-    <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
-         class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>customization.label.customizationName
+  <div [ngClass]="{'modal-body p-a' : !isSearch }" >
+    <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName
         <sup *ngIf="!isSearch" class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <input #name="ngModel" (blur)="checkFilterName()" [(ngModel)]="filter.name" [appAutofocus]="!isSearch" autocomplete="off"
-               class="form-control"
-               maxlength="30" name="name" placeholder="{{'customization.placeholder.enterName' | translate}}" required
-               type="text">
+        <input autocomplete="off" [appAutofocus]="!isSearch" type="text" required class="form-control" placeholder="{{'customization.placeholder.enterName' | translate}}"
+               name="name" maxlength="30" [(ngModel)]="filter.name" #name="ngModel"
+               (blur)="checkFilterName()">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-          <div *ngIf="name.errors['required']">
+          <div *ngIf="name.errors.required">
             <div translate>common.message.requiredError</div>
           </div>
         </div>
-        <div *ngIf="!isUnique" class="help-block text-danger">
+        <div class="help-block text-danger" *ngIf="!isUnique">
           <div translate>common.message.uniqueError</div>
         </div>
       </div>
     </div>
-    <div *ngIf="isSearch" class="form-group row">
+    <div class="form-group row" *ngIf="isSearch">
       <label class="col-md-2 col-sm-4" translate>common.label.dateRange</label>
       <div class="col-md-6">
-        <nz-radio-group [(ngModel)]="filter.radio" name="radio">
+        <nz-radio-group name="radio" [(ngModel)]="filter.radio">
           <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
           <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
         </nz-radio-group>
       </div>
     </div>
-    <div *ngIf="filter.radio === 'current'" class="form-group row ">
+    <div class="form-group row " *ngIf="filter.radio === 'current'">
       <label class="col-sm-2 form-control-label" translate>common.label.from</label>
       <div class="col-sm-6">
-        <nz-date-picker
-          [(ngModel)]="filter.fromDate"
-          [nzFormat]="dateFormat" [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" name="from"></nz-date-picker>
-        <div [ngClass]="{'has-error': (fromTime.dirty || fromTime.touched) && fromTime.invalid}" class="time-picker">
-          <input #fromTime="ngModel" (ngModelChange)="selectTime(filter.fromTime, true)" [(ngModel)]="filter.fromTime" [disabled]="!filter.fromDate" class="form-control"
-                 name="fromTime"
-                 placeholder="HH:MM:SS" timevalidator type="text"
-                 validTimeReqex>
-          <nz-time-picker (ngModelChange)="selectTime($event)" [(ngModel)]="filter.fromTime1" [nzAllowEmpty]="false"
-                          name="fromTimeIcon"></nz-time-picker>
+        <nz-date-picker [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.fromDate" name="from" ></nz-date-picker>
+        <div class="time-picker" [ngClass]="{'has-error': (fromTime.dirty || fromTime.touched) && fromTime.invalid}">
+          <input timevalidator validTimeReqex [disabled]="!filter.fromDate" type="text" #fromTime="ngModel" class="form-control"
+                 name="fromTime" [(ngModel)]="filter.fromTime" (ngModelChange)="selectTime(filter.fromTime, true)" placeholder="HH:MM:SS">
+          <nz-time-picker [nzAllowEmpty]="false" [(ngModel)]="filter.fromTime1" (ngModelChange)="selectTime($event)"  name="fromTimeIcon"></nz-time-picker>
         </div>
       </div>
     </div>
-    <div *ngIf="filter.radio === 'current'" class="form-group row">
+    <div class="form-group row" *ngIf="filter.radio === 'current'">
       <label class="col-sm-2 form-control-label" translate>common.label.to</label>
-      <div [ngClass]="{'has-error': ((to.dirty || to.touched) && to.invalid)}" class="col-sm-6">
-        <nz-date-picker
-          #to="ngModel"
-          [(ngModel)]="filter.toDate" [nzFormat]="dateFormat" [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" name="to"></nz-date-picker>
-        <div [ngClass]="{'has-error': (toDate.dirty || toDate.touched) && toDate.invalid}" class="time-picker">
-          <input #toDate="ngModel" (ngModelChange)="selectTime(filter.toTime, true, 'to')" [(ngModel)]="filter.toTime" [disabled]="!filter.toDate" class="form-control"
-                 name="toTime"
-                 placeholder="HH:MM:SS" timevalidator type="text"
-                 validTimeReqex>
-          <nz-time-picker (ngModelChange)="selectTime($event, false, 'to')" [(ngModel)]="filter.toTime1"
-                          [nzAllowEmpty]="false" name="toTimeIcon"></nz-time-picker>
+      <div class="col-sm-6" [ngClass]="{'has-error': ((to.dirty || to.touched) && to.invalid)}">
+        <nz-date-picker [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.toDate"  #to="ngModel" name="to"></nz-date-picker>
+        <div class="time-picker" [ngClass]="{'has-error': (toDate.dirty || toDate.touched) && toDate.invalid}">
+          <input timevalidator validTimeReqex [disabled]="!filter.toDate" type="text" #toDate="ngModel" class="form-control"
+                 name="toTime" [(ngModel)]="filter.toTime" (ngModelChange)="selectTime(filter.toTime, true, 'to')" placeholder="HH:MM:SS">
+          <nz-time-picker [nzAllowEmpty]="false" [(ngModel)]="filter.toTime1" (ngModelChange)="selectTime($event, false, 'to')"  name="toTimeIcon"></nz-time-picker>
         </div>
       </div>
     </div>
-    <div *ngIf="filter.radio === 'planned'" [ngClass]="{'has-error' : ((processExc.dirty || processExc.touched) && processExc.invalid)}"
-         class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.processExecuted</label>
+    <div class="form-group row" *ngIf="filter.radio === 'planned'" [ngClass]="{'has-error' : ((processExc.dirty || processExc.touched) && processExc.invalid)}">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.processExecuted</label>
       <div class="col-sm-6">
-        <input #processExc="ngModel" [(ngModel)]="filter.planned" autocomplete="off" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
-               type="text"
-               validateReqex>
+        <input autocomplete="off" validateReqex class="form-control" #processExc="ngModel" type="text" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
+               [(ngModel)]="filter.planned">
         <div *ngIf="processExc.errors && (processExc.dirty || processExc.touched)" class="help-block text-danger">
-          <div *ngIf="!processExc.valid" translate>common.message.invalid</div>
+          <div translate *ngIf="!processExc.valid">common.message.invalid</div>
         </div>
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>auditLog.search.label.reason</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.reason</label>
       <div class="col-sm-6">
-        <input [(ngModel)]="filter.comment" autocomplete="off" class="form-control"
-               name="regex"
-               placeholder="{{'auditLog.search.placeholder.enterReason' | translate}}" type="text">
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterReason' | translate}}"
+               [(ngModel)]="filter.comment" name="regex">
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>auditLog.search.label.ticketLink</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.ticketLink</label>
       <div class="col-sm-6">
-        <input [(ngModel)]="filter.ticketLink" autocomplete="off" class="form-control"
-               name="ticketLink"
-               placeholder="{{'auditLog.search.placeholder.ticketLink' | translate}}" type="text">
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.ticketLink' | translate}}"
+               [(ngModel)]="filter.ticketLink" name="ticketLink">
       </div>
     </div>
-    <div *ngIf="isSearch" class="form-group row">
+    <div class="form-group row" *ngIf="isSearch">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
       <div class=" col-sm-6">
-        <nz-select [(ngModel)]="filter.controllerId" name="id"
-                   nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}">
-          <nz-option *ngFor="let controller of schedulerIds.controllerIds" [nzLabel]="controller"
-                     [nzValue]="controller"></nz-option>
+        <nz-select nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}" [(ngModel)]="filter.controllerId" name="id">
+          <nz-option *ngFor="let controller of schedulerIds.controllerIds" [nzLabel]="controller" [nzValue]="controller"></nz-option>
         </nz-select>
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>auditLog.search.label.objectTypes</label>
-      <div class="col-sm-6">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.objectTypes</label>
+      <div class="col-sm-6" >
         <nz-select
-          [(ngModel)]="filter.objectTypes"
+          nzMode="multiple"
+          nzShowSearch
           [nzPlaceHolder]="'auditLog.search.placeholder.objectTypes' | translate"
           name="type"
-          nzMode="multiple"
-          nzShowSearch>
+          [(ngModel)]="filter.objectTypes">
           <ng-container *ngFor="let type of objectTypes">
             <nz-option [nzValue]="type" nzLabel="{{type | translate}}"></nz-option>
           </ng-container>
@@ -115,22 +97,21 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>auditLog.search.label.objectName</label>
-      <div class="col-sm-6">
-        <input [(ngModel)]="filter.objectName" autocomplete="off" class="form-control"
-               name="objectName"
-               placeholder="{{'auditLog.search.placeholder.enterObjectName' | translate}}" type="text">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.objectName</label>
+      <div class="col-sm-6" >
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterObjectName' | translate}}"
+               [(ngModel)]="filter.objectName" name="objectName">
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>auditLog.search.label.categories</label>
-      <div class="col-sm-6">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.categories</label>
+      <div class="col-sm-6" >
         <nz-select
-          [(ngModel)]="filter.categories"
+          nzMode="multiple"
+          nzShowSearch
           [nzPlaceHolder]="'auditLog.search.placeholder.categories' | translate"
           name="categories"
-          nzMode="multiple"
-          nzShowSearch>
+          [(ngModel)]="filter.categories">
           <ng-container *ngFor="let category of categories">
             <nz-option [nzValue]="category" nzLabel="{{category | translate}}"></nz-option>
           </ng-container>
@@ -138,40 +119,38 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
-             translate>auditLog.label.account</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}"  translate>auditLog.label.account</label>
       <div class="col-sm-6">
-        <input [(ngModel)]="filter.account" autocomplete="off" class="form-control"
-               name="account"
-               placeholder="{{'auditLog.search.placeholder.enterAccount' | translate}}" type="text">
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterAccount' | translate}}"
+               [(ngModel)]="filter.account" name="account">
       </div>
     </div>
-    <div *ngIf="permission.joc.administration.customization.share && !isSearch" class="form-group row">
+    <div class="form-group row" *ngIf="permission.joc.administration.customization.share && !isSearch">
       <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
       <div class="col-sm-8">
-        <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
+        <label nz-checkbox [(ngModel)]="filter.shared" name="shared"></label>
       </div>
     </div>
-    <div *ngIf="isSearch" class="form-group m-t m-b-xs">
-      <button (click)="search()" class="btn btn-primary btn-sm" translate type="button">
+    <div class="form-group m-t m-b-xs" *ngIf="isSearch">
+      <button type="button" class="btn btn-primary btn-sm" (click)="search()" translate>
         common.button.search
       </button>
-      <button [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted" class="btn btn-default btn-sm m-l-sm"
-              type="submit">
+      <button type="submit" class="btn btn-default btn-sm m-l-sm"
+              [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted">
         <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
         {{'customization.button.saveAsCustomization' | translate}}
       </button>
-      <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
+      <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
         common.button.cancel
       </button>
     </div>
   </div>
-  <div *ngIf="!isSearch" class="modal-footer">
-    <button [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm" type="submit">
+  <div class="modal-footer" *ngIf="!isSearch">
+    <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
       common.button.cancel
     </button>
   </div>

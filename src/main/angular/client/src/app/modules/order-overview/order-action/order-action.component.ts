@@ -109,7 +109,7 @@ export class OrderActionComponent {
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           comments,
           obj,
           url: 'orders/' + url

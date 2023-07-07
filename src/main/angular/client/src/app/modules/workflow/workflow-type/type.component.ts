@@ -419,12 +419,12 @@ export class TypeComponent implements OnChanges {
   }
 
   showConfiguration(instruction): void {
-    let nzComponentParams;
+    let nzData;
     if (instruction.TYPE === 'Job') {
       const job = this.jobs[instruction.jobName];
       const data = job.executable.TYPE === 'ShellScriptExecutable' ? job.executable.script : job.executable.className;
       if (job && job.executable) {
-        nzComponentParams = {
+        nzData = {
           data,
           agentName: job.agentName,
           subagentClusterId: job.subagentClusterId,
@@ -437,7 +437,7 @@ export class TypeComponent implements OnChanges {
         };
       }
     } else if (instruction.TYPE === 'If') {
-      nzComponentParams = {
+      nzData = {
         predicate: true,
         data: instruction.predicate,
         workflowPath: this.workflowObj.path,
@@ -445,18 +445,18 @@ export class TypeComponent implements OnChanges {
         readonly: true
       };
     } else if (instruction.TYPE === 'Cycle') {
-      nzComponentParams = {
+      nzData = {
         schedule: instruction.schedule,
         workflowPath: this.workflowObj.path,
         timezone: this.timezone
       };
     }
-    if (nzComponentParams) {
+    if (nzData) {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ScriptModalComponent,
         nzClassName: 'lg script-editor2',
-        nzComponentParams,
+        nzData,
         nzFooter: null,
         nzAutofocus: null,
         nzClosable: false,
@@ -515,7 +515,7 @@ export class TypeComponent implements OnChanges {
           nzTitle: undefined,
           nzContent: DependentWorkflowComponent,
           nzClassName: 'x-lg',
-          nzComponentParams: {
+          nzData: {
             workflow,
             permission: this.permission,
             preferences: this.preferences,

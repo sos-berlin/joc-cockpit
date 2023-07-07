@@ -1,14 +1,14 @@
-import {Component, OnInit, OnDestroy, ViewChild, Input} from '@angular/core';
+import {Component, inject, ViewChild} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
 import {differenceInCalendarDays} from 'date-fns';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
-import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
+import {OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 
@@ -20,10 +20,11 @@ declare const $: any;
   templateUrl: './post-notice-dialog.html'
 })
 export class PostModalComponent {
-  @Input() controllerId: string;
-  @Input() preferences: any;
-  @Input() board: any;
-  @Input() notice: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  controllerId: string;
+  preferences: any;
+  board: any;
+  notice: any;
 
   viewDate = new Date();
   submitted = false;
@@ -38,6 +39,11 @@ export class PostModalComponent {
   }
 
   ngOnInit(): void {
+    this.controllerId = this.modalData.controllerId;
+    this.preferences = this.modalData.preferences;
+    this.board = this.modalData.board;
+    this.notice = this.modalData.notice;
+
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.postObj.timeZone = this.coreService.getTimeZone();
@@ -147,7 +153,7 @@ export class SingleBoardComponent {
       nzContent: PostModalComponent,
       nzAutofocus: null,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         board,
         notice,
         controllerId: this.controllerId,
@@ -170,7 +176,7 @@ export class SingleBoardComponent {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,
@@ -336,7 +342,7 @@ export class BoardComponent {
     };
     this.boards = [];
     this.loading = true;
-    let paths = [];
+    let paths;
     if (this.child && !skipChild) {
       paths = this.child.defaultSelectedKeys;
     } else {
@@ -790,7 +796,7 @@ export class BoardComponent {
       nzContent: PostModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         board,
         notice,
         controllerId: this.schedulerIds.selected,
@@ -817,7 +823,7 @@ export class BoardComponent {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
-        nzComponentParams: {
+        nzData: {
           comments,
         },
         nzFooter: null,

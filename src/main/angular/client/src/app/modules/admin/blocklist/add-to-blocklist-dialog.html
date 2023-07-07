@@ -17,8 +17,8 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <input #account="ngModel" [(ngModel)]="accountName" [appAutofocus]="true" class="form-control" name="name"
-               required type="text"/>
+        <input type="text" class="form-control" name="name" [(ngModel)]="accountName" required
+               #account="ngModel" [appAutofocus]="true"/>
         <div *ngIf="account.invalid && (account.dirty || account.touched)" class="text-danger help-block">
           <div *ngIf="account.errors['required']">
             <div translate>common.message.requiredError</div>
@@ -34,7 +34,7 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" translate>common.label.comment</label>
       <div class="col-sm-6">
-        <textarea [(ngModel)]="comment" class="form-control" name="bComment" rows="2"></textarea>
+        <textarea class="form-control" name="bComment" rows="2" [(ngModel)]="comment"></textarea>
       </div>
     </div>
   </div>

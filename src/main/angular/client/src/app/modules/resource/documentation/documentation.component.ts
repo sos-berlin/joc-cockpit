@@ -1,6 +1,6 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, inject, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subject, Subscription} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {CoreService} from '../../../services/core.service';
@@ -9,7 +9,7 @@ import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
+import {OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
 import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
 
 declare const $: any;
@@ -21,9 +21,14 @@ const API_URL = './api/';
   templateUrl: './show-dialog.html'
 })
 export class ShowModalComponent {
-  @Input() document: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  document: any;
 
   constructor(public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    this.document = this.modalData.document;
   }
 }
 
@@ -32,8 +37,9 @@ export class ShowModalComponent {
   templateUrl: './edit-dialog.html'
 })
 export class EditModalComponent {
-  @Input() display: any;
-  @Input() document: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  display: any;
+  document: any;
   submitted = false;
   required = false;
   comments: any = {};
@@ -42,6 +48,8 @@ export class EditModalComponent {
   }
 
   ngOnInit(): void {
+    this.display = this.modalData.display;
+    this.document = this.modalData.document;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -106,7 +114,7 @@ export class SingleDocumentationComponent {
       nzTitle: undefined,
       nzContent: EditModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         display: this.preferences.auditLog,
         document: this.coreService.clone(document),
       },
@@ -140,7 +148,7 @@ export class SingleDocumentationComponent {
         nzTitle: undefined,
         nzContent: ShowModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           document: documentObj
         },
         nzFooter: null,
@@ -198,7 +206,7 @@ export class SingleDocumentationComponent {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
-        nzComponentParams: {
+        nzData: {
           comments,
           obj,
           url: 'documentations/delete'
@@ -216,7 +224,7 @@ export class SingleDocumentationComponent {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
+        nzData: {
           type: 'Delete',
           title: 'delete',
           message: 'deleteDocument',
@@ -342,7 +350,7 @@ export class DocumentationComponent {
   loadDocument(path = null, skipChild = false): void {
     const obj: any = {folders: [], types: [], controllerId: this.schedulerIds.selected};
     this.documents = [];
-    let paths = [];
+    let paths;
     if (this.child && !skipChild) {
       paths = this.child.defaultSelectedKeys;
     } else {
@@ -387,7 +395,7 @@ export class DocumentationComponent {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
-        nzComponentParams: {
+        nzData: {
           comments,
           obj,
           url: 'documentations/delete'
@@ -418,10 +426,12 @@ export class DocumentationComponent {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.isProcessing = true;
-          this.coreService.post('documentations/delete', obj).subscribe(res => {
+          this.coreService.post('documentations/delete', obj).subscribe({
+            next: () => {
 
-          }, () => {
-            this.resetAction();
+            }, error: () => {
+              this.resetAction();
+            }
           });
         }
       });
@@ -543,7 +553,7 @@ export class DocumentationComponent {
       nzTitle: undefined,
       nzContent: EditModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         display: this.preferences.auditLog,
         document: this.coreService.clone(document),
       },
@@ -577,7 +587,7 @@ export class DocumentationComponent {
         nzTitle: undefined,
         nzContent: ShowModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           document: documentObj
         },
         nzFooter: null,

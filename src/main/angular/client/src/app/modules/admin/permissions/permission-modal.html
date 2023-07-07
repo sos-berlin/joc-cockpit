@@ -17,11 +17,10 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <nz-select (ngModelChange)="checkCovered(currentPermission)" [(ngModel)]="currentPermission.permissionPath" name="path1" nzPlaceHolder="{{'user.placeholder.enterOrSelectPermission' | translate}}"
-                   nzShowSearch
-                   required>
-          <nz-option *ngFor="let per of permissionOptions" [nzDisabled]="per.indexOf('-----')!=-1" [nzLabel]="per"
-                     [nzValue]="per">
+        <nz-select nzShowSearch [(ngModel)]="currentPermission.permissionPath" name="path1" required nzPlaceHolder="{{'user.placeholder.enterOrSelectPermission' | translate}}"
+                   (ngModelChange)="checkCovered(currentPermission)">
+          <nz-option *ngFor="let per of permissionOptions" [nzLabel]="per" [nzValue]="per"
+                     [nzDisabled]="per.indexOf('-----')!=-1">
           </nz-option>
         </nz-select>
         <div *ngIf="isCovered" [ngClass]="{'m-b-sm':isCovered}" class="help-block text-danger">
@@ -32,8 +31,8 @@
     <div class="form-group row">
       <label class="col-sm-3" translate>user.label.excluded</label>
       <div class=" col-sm-6">
-        <label (ngModelChange)="checkCovered(currentPermission)" [(ngModel)]="currentPermission.excluded"
-               name="excluded" nz-checkbox></label>
+        <label nz-checkbox [(ngModel)]="currentPermission.excluded"
+               name="excluded" (ngModelChange)="checkCovered(currentPermission)"></label>
       </div>
     </div>
   </div>

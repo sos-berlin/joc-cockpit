@@ -1,5 +1,5 @@
-import {Component, OnInit, Input} from '@angular/core';
-import {NzModalRef} from 'ng-zorro-antd/modal';
+import {Component, inject} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 
 @Component({
@@ -7,8 +7,9 @@ import {CoreService} from '../../../services/core.service';
   templateUrl: './acknowledge.dialog.html'
 })
 export class AcknowledgeModalComponent {
-  @Input() data: any;
-  @Input() type: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  data: any;
+  type: any;
   submitted = false;
   comment: string;
   display = false;
@@ -19,6 +20,9 @@ export class AcknowledgeModalComponent {
   }
 
   ngOnInit(): void {
+    this.data = this.modalData.data;
+    this.type = this.modalData.type;
+
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;

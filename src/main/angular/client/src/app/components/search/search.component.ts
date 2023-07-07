@@ -361,7 +361,7 @@ export class SearchComponent {
       nzTitle: undefined,
       nzContent: UpdateJobComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         controllerId: this.controllerId,
         data: {
           onlyUpdate,
@@ -391,7 +391,7 @@ export class SearchComponent {
       nzTitle: undefined,
       nzContent: UpdateObjectComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         controllerId: this.controllerId,
         type: this.object.type,
         data: this.results.filter((item: { name: string }) => {

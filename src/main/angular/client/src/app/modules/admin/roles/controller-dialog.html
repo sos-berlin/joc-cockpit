@@ -23,9 +23,8 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <nz-select (ngModelChange)="checkRole($event)" [(ngModel)]="currentController.roleName"
-                   name="role"
-                   nzPlaceHolder="{{'user.placeholder.selectRoles' | translate}}" nzShowSearch>
+        <nz-select [(ngModel)]="currentController.roleName" (ngModelChange)="checkRole($event)"
+                   name="role"  nzPlaceHolder="{{'user.placeholder.selectRoles' | translate}}" nzShowSearch>
           <nz-option *ngFor="let option of allRoles" [nzLabel]="option.roleName"
                      [nzValue]="option.roleName"></nz-option>
         </nz-select>
@@ -37,9 +36,9 @@
       </label>
       <div [ngClass]="{'has-error' : !isUnique || ((controllerName.dirty || controllerName.touched) && controllerName.invalid)}"
            class="col-sm-6">
-        <nz-select #controllerName="ngModel"
+        <nz-select #controllerName="ngModel" [(ngModel)]="currentController.controller"
                    (ngModelChange)="checkController($event, currentController.role)"
-                   [(ngModel)]="currentController.controller" [nzDisabled]="!currentController.roleName" name="schedulerIds"
+                   [nzDisabled]="!currentController.roleName" name="schedulerIds"
                    nzPlaceHolder="{{'user.placeholder.enterController' | translate}}"
                    required>
           <ng-container *ngFor="let id of schedulerIds.controllerIds">

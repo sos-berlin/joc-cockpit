@@ -22,11 +22,9 @@
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
-          <input #timeout="ngModel" [(ngModel)]="currentObj.sessionTimeout" [appAutofocus]="true"
-                 [placeholder]="'user.placeholder.sessionTimeout' | translate" class="form-control"
-                 name="timeout" required
-                 type="text"
-                 validateSessionTimeReqex>
+          <input type="text" class="form-control" required name="timeout"
+            [placeholder]="'user.placeholder.sessionTimeout' | translate" #timeout="ngModel" validateSessionTimeReqex
+            [(ngModel)]="currentObj.sessionTimeout">
           <div *ngIf="timeout.invalid && (timeout.dirty || timeout.touched)" class="text-danger help-block">
             <div *ngIf="timeout.errors['required']">
               <div translate>common.message.requiredError</div>
@@ -41,17 +39,14 @@
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
-          <input #pwd="ngModel" (blur)="changePswd('PASSWORD')" [(ngModel)]="currentObj.initialPassword1"
-                 [hidden]="passwordFields.first" [placeholder]="'user.placeholder.initialPassword' | translate"
-                 autocomplete="off" class="form-control"
-                 name="initialPassword1" required type="password">
-          <input #pwd="ngModel" (blur)="changePswd('TEXT')" [(ngModel)]="currentObj.initialPassword"
-                 [hidden]="!passwordFields.first" [placeholder]="'user.placeholder.initialPassword' | translate"
-                 autocomplete="off" class="form-control"
-                 name="initialPassword" required type="text">
-          <i (click)="passwordFields.first = !passwordFields.first"
-             [ngClass]="!passwordFields.first ? 'fa-eye' : 'fa-eye-slash'"
-             class="fa pswd-hide-icon2"></i>
+          <input [hidden]="passwordFields.first" type="password" class="form-control" required name="initialPassword1"
+            [placeholder]="'user.placeholder.initialPassword' | translate" (blur)="changePswd('PASSWORD')"
+            autocomplete="off" #pwd="ngModel" [(ngModel)]="currentObj.initialPassword1">
+          <input [hidden]="!passwordFields.first" type="text" class="form-control" required name="initialPassword"
+            [placeholder]="'user.placeholder.initialPassword' | translate" (blur)="changePswd('TEXT')"
+            autocomplete="off" #pwd="ngModel" [(ngModel)]="currentObj.initialPassword">
+          <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.first ? 'fa-eye' : 'fa-eye-slash'"
+            (click)="passwordFields.first = !passwordFields.first"></i>
           <div *ngIf="pwd.invalid && (pwd.dirty || pwd.touched)" class="text-danger help-block">
             <div *ngIf="pwd.errors && pwd.errors['required']">
               <div translate>common.message.requiredError</div>
@@ -70,11 +65,9 @@
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
-          <nz-input-number #minPasswordLength="ngModel" (ngModelChange)="isLengthMatch = true"
-                           [(ngModel)]="currentObj.minPasswordLength" [nzMin]="0"
-                           [nzPlaceHolder]="'user.placeholder.minPasswordLength' | translate"
-                           name="minPasswordLength"
-                           required></nz-input-number>
+          <nz-input-number required name="minPasswordLength"
+            [nzPlaceHolder]="'user.placeholder.minPasswordLength' | translate" [nzMin]="0" #minPasswordLength="ngModel"
+            [(ngModel)]="currentObj.minPasswordLength" (ngModelChange)="isLengthMatch = true"></nz-input-number>
           <div *ngIf="minPasswordLength.invalid && (minPasswordLength.dirty || minPasswordLength.touched)"
                class="text-danger help-block">
             <div *ngIf="minPasswordLength.errors['required']">
@@ -91,10 +84,9 @@
                class="col-sm-4 form-control-label" translate>user.label.iamVaultUrl
           <sup class="text-danger text-sm">*</sup>
         </label>
-        <div [ngClass]="{'has-error' : ((vaultUrl.dirty || vaultUrl.touched) && vaultUrl.invalid)}" class="col-sm-6">
-          <input #vaultUrl="ngModel" [(ngModel)]="currentObj.iamVaultUrl" [appAutofocus]="true"
-                 [placeholder]="'user.placeholder.iamVaultUrl' | translate" class="form-control" name="iamVaultUrl"
-                 required type="url">
+        <div class="col-sm-6" [ngClass]="{'has-error' : ((vaultUrl.dirty || vaultUrl.touched) && vaultUrl.invalid)}">
+          <input type="url" class="form-control" required #vaultUrl="ngModel" name="iamVaultUrl"
+            [placeholder]="'user.placeholder.iamVaultUrl' | translate" [(ngModel)]="currentObj.iamVaultUrl">
           <div *ngIf="vaultUrl.invalid && (vaultUrl.dirty || vaultUrl.touched)" class="text-danger help-block">
             <div *ngIf="vaultUrl.errors['required']">
               <div translate>common.message.requiredError</div>
@@ -108,13 +100,11 @@
                class="col-sm-4 form-control-label" translate>user.label.iamVaultAuthenticationMethodPath
           <sup class="text-danger text-sm">*</sup>
         </label>
-        <div [ngClass]="{'has-error' : ((methodPath.dirty || methodPath.touched) && methodPath.invalid)}"
-             class="col-sm-6">
-          <input #methodPath="ngModel" [(ngModel)]="currentObj.iamVaultAuthenticationMethodPath"
-                 [placeholder]="'user.placeholder.iamVaultAuthenticationMethodPath' | translate" class="form-control"
-                 name="iamVaultAuthenticationMethodPath"
-                 required
-                 type="text">
+        <div class="col-sm-6"
+          [ngClass]="{'has-error' : ((methodPath.dirty || methodPath.touched) && methodPath.invalid)}">
+          <input type="text" class="form-control" required #methodPath="ngModel" name="iamVaultAuthenticationMethodPath"
+            [placeholder]="'user.placeholder.iamVaultAuthenticationMethodPath' | translate"
+            [(ngModel)]="currentObj.iamVaultAuthenticationMethodPath">
           <div *ngIf="methodPath.invalid && (methodPath.dirty || methodPath.touched)" class="text-danger help-block">
             <div *ngIf="methodPath.errors['required']">
               <div translate>common.message.requiredError</div>
@@ -127,10 +117,9 @@
                [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
                translate>user.label.iamVaultTrustStorePath</label>
         <div class="col-sm-6">
-          <input [(ngModel)]="currentObj.iamVaultTruststorePath"
-                 [placeholder]="'user.placeholder.iamVaultTrustStorePath' | translate" class="form-control"
-                 name="iamVaultTruststorePath"
-                 type="text">
+          <input type="text" class="form-control" name="iamVaultTruststorePath"
+            [(ngModel)]="currentObj.iamVaultTruststorePath"
+            [placeholder]="'user.placeholder.iamVaultTrustStorePath' | translate">
         </div>
       </div>
       <div class="form-group row">
@@ -139,14 +128,11 @@
                class="col-sm-4 form-control-label"
                translate>user.label.iamVaultTrustStorePassword</label>
         <div class="col-sm-6">
-          <input [(ngModel)]="currentObj.iamVaultTruststorePassword"
-                 [placeholder]="'user.placeholder.iamVaultTrustStorePassword' | translate"
-                 autocomplete="off" class="form-control"
-                 name="iamVaultTruststorePassword"
-                 type="{{!passwordFields.third ? 'password' : 'text'}}">
-          <i (click)="passwordFields.third = !passwordFields.third"
-             [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
-             class="fa pswd-hide-icon2"></i>
+          <input type="{{!passwordFields.third ? 'password' : 'text'}}" class="form-control"
+            name="iamVaultTruststorePassword" autocomplete="off" [(ngModel)]="currentObj.iamVaultTruststorePassword"
+            [placeholder]="'user.placeholder.iamVaultTrustStorePassword' | translate">
+          <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
+            (click)="passwordFields.third = !passwordFields.third"></i>
         </div>
       </div>
       <div class="form-group row">
@@ -350,9 +336,8 @@
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-sm-6">
-                <nz-select (ngModelChange)="changeConfiguration($event)" [(ngModel)]="userObj.iamLdapProtocol"
-                           name="iamLdapProtocol"
-                           required>
+                <nz-select [(ngModel)]="userObj.iamLdapProtocol" name="iamLdapProtocol"
+                           (ngModelChange)="changeConfiguration($event)" required>
                   <nz-option *ngFor="let option of iamLdapProtocols"
                              [nzLabel]="'user.usermode.label.'+ option.text | translate"
                              [nzValue]="option.value"></nz-option>
@@ -375,9 +360,8 @@
               <label [nz-tooltip]="'user.tooltips.ldap.iamLdapAD' | translate" [nzTooltipMouseEnterDelay]="0.5"
                      class="col-sm-4" translate>user.usermode.label.iamLdapAD</label>
               <div class="col-sm-6">
-                <label (ngModelChange)="checkConfirmation($event, 'AD')" [(ngModel)]="userObj.iamLdapAD"
-                       name="iamLdapAD"
-                       nz-checkbox></label>
+                <label nz-checkbox [(ngModel)]="userObj.iamLdapAD" name="iamLdapAD"
+                       (ngModelChange)="checkConfirmation($event, 'AD')"></label>
               </div>
             </div>
             <div class="form-group row">
@@ -385,9 +369,8 @@
                      [nzTooltipMouseEnterDelay]="0.5"
                      class="col-sm-4" translate>user.usermode.label.iamLdapADWithSamAccount</label>
               <div class="col-sm-6">
-                <label (ngModelChange)="checkConfirmation($event, 'samAccount')"
-                       [(ngModel)]="userObj.iamLdapADwithSamAccount" [nzDisabled]="!userObj.iamLdapAD"
-                       name="iamLdapADWithSamAccount" nz-checkbox></label>
+                <label nz-checkbox [(ngModel)]="userObj.iamLdapADwithSamAccount" [nzDisabled]="!userObj.iamLdapAD"
+                       name="iamLdapADWithSamAccount" (ngModelChange)="checkConfirmation($event, 'samAccount')"></label>
               </div>
             </div>
             <div class="form-group row">
@@ -395,8 +378,8 @@
                      [nzTooltipMouseEnterDelay]="0.5"
                      class="col-sm-4" translate>user.usermode.label.iamLdapWithMemberOf</label>
               <div class="col-sm-6">
-                <label (ngModelChange)="checkConfirmation($event, 'MemberOf')" [(ngModel)]="userObj.iamLdapWithMemberOf"
-                       name="iamLdapWithMemberOf" nz-checkbox></label>
+                <label nz-checkbox [(ngModel)]="userObj.iamLdapWithMemberOf"
+                       name="iamLdapWithMemberOf" (ngModelChange)="checkConfirmation($event, 'MemberOf')"></label>
               </div>
             </div>
             <div class="form-group row">
@@ -500,9 +483,8 @@
                        [nzTooltipMouseEnterDelay]="0.5"
                        class="col-sm-4" translate>user.label.iamLdapUseStartTls</label>
                 <div class="col-sm-6">
-                  <label (ngModelChange)="checkConfirmation($event, 'StartTls')"
-                         [(ngModel)]="currentObj.iamLdapUseStartTls"
-                         name="iamLdapUseStartTls" nz-checkbox></label>
+                  <label nz-checkbox [(ngModel)]="currentObj.iamLdapUseStartTls"
+                         name="iamLdapUseStartTls" (ngModelChange)="checkConfirmation($event, 'StartTls')"></label>
                 </div>
               </div>
               <div class="form-group row">
@@ -627,7 +609,8 @@
                 </label>
                 <div [ngClass]="{'has-error' : ((searchBase.dirty || searchBase.touched) && searchBase.invalid)}"
                      class="col-sm-6">
-                  <input #searchBase="ngModel" [(ngModel)]="currentObj.iamLdapSearchBase" [placeholder]="'user.placeholder.iamLdapSearchBase' | translate"
+                  <input #searchBase="ngModel" [(ngModel)]="currentObj.iamLdapSearchBase"
+                         [placeholder]="'user.placeholder.iamLdapSearchBase' | translate"
                          [required]="userObj.iamLdapWithMemberOf" class="form-control"
                          name="iamLdapSearchBase"
                          type="text">
@@ -638,7 +621,8 @@
                        [nzTooltipMouseEnterDelay]="0.5"
                        class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupSearchBase</label>
                 <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamLdapGroupSearchBase" [disabled]="userObj.iamLdapWithMemberOf" [placeholder]="'user.placeholder.iamLdapGroupSearchBase' | translate"
+                  <input [(ngModel)]="currentObj.iamLdapGroupSearchBase" [disabled]="userObj.iamLdapWithMemberOf"
+                         [placeholder]="'user.placeholder.iamLdapGroupSearchBase' | translate"
                          class="form-control"
                          name="iamLdapGroupSearchBase"
                          type="text">
@@ -649,7 +633,8 @@
                        [nzTooltipMouseEnterDelay]="0.5"
                        class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupSearchFilter</label>
                 <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamLdapGroupSearchFilter" [disabled]="userObj.iamLdapWithMemberOf" [placeholder]="'user.placeholder.iamLdapGroupSearchFilter' | translate"
+                  <input [(ngModel)]="currentObj.iamLdapGroupSearchFilter" [disabled]="userObj.iamLdapWithMemberOf"
+                         [placeholder]="'user.placeholder.iamLdapGroupSearchFilter' | translate"
                          class="form-control"
                          name="iamLdapGroupSearchFilter"
                          type="text">
@@ -660,7 +645,8 @@
                        [nzTooltipMouseEnterDelay]="0.5"
                        class="col-sm-4 form-control-label" translate>user.label.iamLdapUserSearchFilter</label>
                 <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamLdapUserSearchFilter" [placeholder]="'user.placeholder.iamLdapUserSearchFilter' | translate" class="form-control"
+                  <input [(ngModel)]="currentObj.iamLdapUserSearchFilter"
+                         [placeholder]="'user.placeholder.iamLdapUserSearchFilter' | translate" class="form-control"
                          name="iamLdapUserSearchFilter"
                          type="text">
                 </div>
@@ -670,7 +656,8 @@
                        [nzTooltipMouseEnterDelay]="0.5"
                        class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupNameAttribute</label>
                 <div class="col-sm-6">
-                  <input (blur)="changeInput('GroupName')" [(ngModel)]="currentObj.iamLdapGroupNameAttribute" [placeholder]="'user.placeholder.iamLdapGroupNameAttribute' | translate"
+                  <input (blur)="changeInput('GroupName')" [(ngModel)]="currentObj.iamLdapGroupNameAttribute"
+                         [placeholder]="'user.placeholder.iamLdapGroupNameAttribute' | translate"
                          class="form-control"
                          name="iamLdapGroupNameAttribute"
                          type="text">
@@ -681,13 +668,15 @@
                        [nzTooltipMouseEnterDelay]="0.5"
                        class="col-sm-4 form-control-label" translate>user.label.iamLdapUserNameAttribute</label>
                 <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamLdapUserNameAttribute" [placeholder]="'user.placeholder.iamLdapUserNameAttribute' | translate" class="form-control"
+                  <input [(ngModel)]="currentObj.iamLdapUserNameAttribute"
+                         [placeholder]="'user.placeholder.iamLdapUserNameAttribute' | translate" class="form-control"
                          name="iamLdapUserNameAttribute"
                          type="text">
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupRolesMap' | translate" [nzTooltipMouseEnterDelay]="0.5"
+                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupRolesMap' | translate"
+                       [nzTooltipMouseEnterDelay]="0.5"
                        class="col-sm-5 _600" translate>user.label.iamLdapGroupRolesMap</label>
               </div>
               <div *ngIf="currentObj.iamLdapGroupRolesMap && currentObj.iamLdapGroupRolesMap.items.length > 0"
@@ -738,7 +727,8 @@
         </label>
         <div [ngClass]="{'has-error' : ((iamOidcName.dirty || iamOidcName.touched) && iamOidcName.invalid)}"
              class="col-sm-6">
-          <input #iamOidcName="ngModel" [(ngModel)]="currentObj.iamOidcName" [appAutofocus]="true" [placeholder]="'user.placeholder.iamOidcName' | translate" class="form-control"
+          <input #iamOidcName="ngModel" [(ngModel)]="currentObj.iamOidcName" [appAutofocus]="true"
+                 [placeholder]="'user.placeholder.iamOidcName' | translate" class="form-control"
                  name="iamOidcName"
                  required type="text">
           <div *ngIf="iamOidcName.invalid && (iamOidcName.dirty || iamOidcName.touched)" class="text-danger help-block">
@@ -754,9 +744,11 @@
                translate>user.label.iamOidcAuthenticationUrl
           <sup class="text-danger text-sm">*</sup>
         </label>
-        <div [ngClass]="{'has-error' : ((iamOidcAuthenticationUrl.dirty || iamOidcAuthenticationUrl.touched) && iamOidcAuthenticationUrl.invalid)}"
-             class="col-sm-6">
-          <input #iamOidcAuthenticationUrl="ngModel" [(ngModel)]="currentObj.iamOidcAuthenticationUrl" [placeholder]="'user.placeholder.iamOidcAuthenticationUrl' | translate" class="form-control"
+        <div
+          [ngClass]="{'has-error' : ((iamOidcAuthenticationUrl.dirty || iamOidcAuthenticationUrl.touched) && iamOidcAuthenticationUrl.invalid)}"
+          class="col-sm-6">
+          <input #iamOidcAuthenticationUrl="ngModel" [(ngModel)]="currentObj.iamOidcAuthenticationUrl"
+                 [placeholder]="'user.placeholder.iamOidcAuthenticationUrl' | translate" class="form-control"
                  name="iamOidcAuthenticationUrl" required
                  type="text">
           <div
@@ -788,7 +780,9 @@
         </label>
         <div [ngClass]="{'has-error' : ((iamOidcClientId.dirty || iamOidcClientId.touched) && iamOidcClientId.invalid)}"
              class="col-sm-6">
-          <input #iamOidcClientId="ngModel" [(ngModel)]="currentObj.iamOidcClientId" [placeholder]="'user.placeholder.iamOidcClientId' | translate" class="form-control" name="iamOidcClientId"
+          <input #iamOidcClientId="ngModel" [(ngModel)]="currentObj.iamOidcClientId"
+                 [placeholder]="'user.placeholder.iamOidcClientId' | translate" class="form-control"
+                 name="iamOidcClientId"
                  required
                  type="text">
           <div *ngIf="iamOidcClientId.invalid && (iamOidcClientId.dirty || iamOidcClientId.touched)"
@@ -805,13 +799,16 @@
                  class="col-sm-4 form-control-label" translate>user.label.iamOidcClientSecret
             <sup class="text-danger text-sm">*</sup>
           </label>
-          <div [ngClass]="{'has-error' : ((iamOidcClientSecret.dirty || iamOidcClientSecret.touched) && iamOidcClientSecret.invalid)}"
-               class="col-sm-6">
-            <input #iamOidcClientSecret="ngModel" [(ngModel)]="currentObj.iamOidcClientSecret" [placeholder]="'user.placeholder.iamOidcClientSecret' | translate"
+          <div
+            [ngClass]="{'has-error' : ((iamOidcClientSecret.dirty || iamOidcClientSecret.touched) && iamOidcClientSecret.invalid)}"
+            class="col-sm-6">
+            <input #iamOidcClientSecret="ngModel" [(ngModel)]="currentObj.iamOidcClientSecret"
+                   [placeholder]="'user.placeholder.iamOidcClientSecret' | translate"
                    autocomplete="off" class="form-control"
                    name="iamOidcClientSecret"
                    required type="{{!passwordFields.fourth ? 'password' : 'text'}}">
-            <i (click)="passwordFields.fourth = !passwordFields.fourth" [ngClass]="!passwordFields.fourth ? 'fa-eye' : 'fa-eye-slash'"
+            <i (click)="passwordFields.fourth = !passwordFields.fourth"
+               [ngClass]="!passwordFields.fourth ? 'fa-eye' : 'fa-eye-slash'"
                class=" fa pswd-hide-icon2"></i>
             <div *ngIf="iamOidcClientSecret.invalid && (iamOidcClientSecret.dirty || iamOidcClientSecret.touched)"
                  class="text-danger help-block">
@@ -826,9 +823,11 @@
         <label [nz-tooltip]="'user.tooltips.oidc.iamOidcUserAttribute' | translate" [nzTooltipMouseEnterDelay]="0.5"
                class="col-sm-4 form-control-label" translate>user.label.iamOidcUserAttribute
         </label>
-        <div [ngClass]="{'has-error' : ((iamOidcUserAttribute.dirty || iamOidcUserAttribute.touched) && iamOidcUserAttribute.invalid)}"
-             class="col-sm-6">
-          <input #iamOidcUserAttribute="ngModel" [(ngModel)]="currentObj.iamOidcUserAttribute" [placeholder]="'user.placeholder.iamOidcUserAttribute' | translate" autocomplete="off"
+        <div
+          [ngClass]="{'has-error' : ((iamOidcUserAttribute.dirty || iamOidcUserAttribute.touched) && iamOidcUserAttribute.invalid)}"
+          class="col-sm-6">
+          <input #iamOidcUserAttribute="ngModel" [(ngModel)]="currentObj.iamOidcUserAttribute"
+                 [placeholder]="'user.placeholder.iamOidcUserAttribute' | translate" autocomplete="off"
                  class="form-control"
                  name="iamOidcUserAttribute" type="text">
           <div *ngIf="iamOidcUserAttribute.invalid && (iamOidcUserAttribute.dirty || iamOidcUserAttribute.touched)"
@@ -846,7 +845,8 @@
                    [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcGroupClaims</label>
           </div>
           <div class="col-sm-6">
-            <input [(ngModel)]="groupClaim.name" [placeholder]="'user.placeholder.iamOidcGroupClaims' | translate" autocomplete="off"
+            <input [(ngModel)]="groupClaim.name" [placeholder]="'user.placeholder.iamOidcGroupClaims' | translate"
+                   autocomplete="off"
                    class="form-control"
                    name="iamOidcGroupClaims{{i}}" type="text">
             <i (click)="addGroup(currentObj.iamOidcGroupClaims)"
@@ -932,7 +932,8 @@
                  translate>user.label.iamOidcTruststorePath
           </label>
           <div class="col-sm-6">
-            <input [(ngModel)]="currentObj.iamOidcTruststorePath" [placeholder]="'user.placeholder.iamOidcTruststorePath' | translate" class="form-control"
+            <input [(ngModel)]="currentObj.iamOidcTruststorePath"
+                   [placeholder]="'user.placeholder.iamOidcTruststorePath' | translate" class="form-control"
                    name="iamOidcTruststorePath"
                    type="text">
           </div>
@@ -943,7 +944,8 @@
                  translate>user.label.iamOidcTruststoreType
           </label>
           <div class="col-sm-6">
-            <input [(ngModel)]="currentObj.iamOidcTruststoreType" [nzAutocomplete]="auto" [placeholder]="'user.placeholder.iamOidcTruststoreType' | translate"
+            <input [(ngModel)]="currentObj.iamOidcTruststoreType" [nzAutocomplete]="auto"
+                   [placeholder]="'user.placeholder.iamOidcTruststoreType' | translate"
                    class="form-control"
                    name="iamOidcTruststoreType" type="text"/>
             <nz-autocomplete #auto>
@@ -961,11 +963,13 @@
           </label>
           <div class="col-sm-6">
 
-            <input [(ngModel)]="currentObj.iamOidcTruststorePassword" [placeholder]="'user.placeholder.iamOidcTruststorePassword' | translate"
+            <input [(ngModel)]="currentObj.iamOidcTruststorePassword"
+                   [placeholder]="'user.placeholder.iamOidcTruststorePassword' | translate"
                    autocomplete="off" class="form-control"
                    name="iamOidcTruststorePassword"
                    type="{{!passwordFields.third ? 'password' : 'text'}}">
-            <i (click)="passwordFields.third = !passwordFields.third" [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
+            <i (click)="passwordFields.third = !passwordFields.third"
+               [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
                class="fa pswd-hide-icon2"></i>
           </div>
         </div>
@@ -975,13 +979,14 @@
     <div *ngIf="data && data['identityServiceType'] == 'FIDO'">
       <ng-container *ngIf="!fullScreen && !fullScreen2 && !fullScreen3">
         <div class="m-b-12 row">
-          <label [nz-tooltip]="'user.tooltips.webauthn.iamAuthenticatorType' | translate" [nzTooltipMouseEnterDelay]="0.5"
+          <label [nz-tooltip]="'user.tooltips.webauthn.iamAuthenticatorType' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5"
                  class="col-sm-4"
                  translate>user.label.iamFidoAuthenticatorType
           </label>
           <div class="col-sm-6">
-            <nz-radio-group (ngModelChange)="changeSettings($event)" [(ngModel)]="currentObj.iamFidoProtocolType"
-                            name="type">
+            <nz-radio-group [(ngModel)]="currentObj.iamFidoProtocolType" name="type"
+                            (ngModelChange)="changeSettings($event)">
               <label nz-radio nzValue="FIDO2"><span translate>user.label.roaming</span></label>
               <label nz-radio nzValue="PASSKEY"><span translate>user.label.platform</span></label>
             </nz-radio-group>
@@ -1019,7 +1024,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [ngClass]="{'form-control-label' : currentObj.iamFidoProtocolType !== 'FIDO2'}" [nz-tooltip]="'user.tooltips.webauthn.iamUserVerification' | translate"
+          <label [ngClass]="{'form-control-label' : currentObj.iamFidoProtocolType !== 'FIDO2'}"
+                 [nz-tooltip]="'user.tooltips.webauthn.iamUserVerification' | translate"
                  [nzTooltipMouseEnterDelay]="0.5"
                  class="col-sm-4 " translate>user.label.iamFidoUserVerification
           </label>
@@ -1058,7 +1064,8 @@
                 </label>
                 <div [ngClass]="{'has-error' : ((jobResource.dirty || jobResource.touched) && jobResource.invalid)}"
                      class="col-md-6">
-                  <input #jobResource="ngModel" (click)="isTreeShow = true;" [(ngModel)]="currentObj.iamFidoEmailSettings.nameOfJobResource" autocomplete="off"
+                  <input #jobResource="ngModel" (click)="isTreeShow = true;"
+                         [(ngModel)]="currentObj.iamFidoEmailSettings.nameOfJobResource" autocomplete="off"
                          class="form-control" name="jobResource"
                          type="text">
                   <div *ngIf="isTreeShow" [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
@@ -1075,7 +1082,8 @@
                 </label>
                 <div [ngClass]="{'has-error' : ((contentType.dirty || contentType.touched) && contentType.invalid)}"
                      class="col-sm-6">
-                  <input #contentType="ngModel" [(ngModel)]="currentObj.iamFidoEmailSettings.contentType" [placeholder]="'user.placeholder.contentType' | translate" autocomplete="off"
+                  <input #contentType="ngModel" [(ngModel)]="currentObj.iamFidoEmailSettings.contentType"
+                         [placeholder]="'user.placeholder.contentType' | translate" autocomplete="off"
                          class="form-control"
                          name="contentType" type="text">
                   <div *ngIf="contentType.invalid && (contentType.dirty || contentType.touched)"
@@ -1094,7 +1102,8 @@
                 </label>
                 <div [ngClass]="{'has-error' : ((charset.dirty || charset.touched) && charset.invalid)}"
                      class="col-sm-6">
-                  <input #charset="ngModel" [(ngModel)]="currentObj.iamFidoEmailSettings.charset" [placeholder]="'user.placeholder.contentType' | translate" autocomplete="off"
+                  <input #charset="ngModel" [(ngModel)]="currentObj.iamFidoEmailSettings.charset"
+                         [placeholder]="'user.placeholder.contentType' | translate" autocomplete="off"
                          class="form-control"
                          name="charset" type="text">
                   <div *ngIf="charset.invalid && (charset.dirty || charset.touched)"
@@ -1113,7 +1122,8 @@
                 </label>
                 <div [ngClass]="{'has-error' : ((encoding.dirty || encoding.touched) && encoding.invalid)}"
                      class="col-sm-6">
-                  <input #encoding="ngModel" [(ngModel)]="currentObj.iamFidoEmailSettings.encoding" [placeholder]="'user.placeholder.encoding' | translate" autocomplete="off"
+                  <input #encoding="ngModel" [(ngModel)]="currentObj.iamFidoEmailSettings.encoding"
+                         [placeholder]="'user.placeholder.encoding' | translate" autocomplete="off"
                          class="form-control"
                          name="encoding" type="text">
                   <div *ngIf="encoding.invalid && (encoding.dirty || encoding.touched)"
@@ -1142,7 +1152,8 @@
           <nz-tab [nzTitle]="'user.label.confirmationEmail' | translate">
             <div *ngIf="currentObj.iamFidoEmailSettings">
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.sendMailToConfirmEmail' | translate" [nzTooltipMouseEnterDelay]="0.5"
+                <label [nz-tooltip]="'user.tooltips.webauthn.sendMailToConfirmEmail' | translate"
+                       [nzTooltipMouseEnterDelay]="0.5"
                        class="col-sm-4" translate>user.label.sendMailToConfirmEmail</label>
                 <div class="col-sm-6">
                   <label [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToConfirm" name="sendMailToConfirmEmail"
@@ -1155,7 +1166,8 @@
                        translate>user.label.cc
                 </label>
                 <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccRegistration" [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccRegistration"
+                         [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
                          class="form-control"
                          name="ccRegistration" type="text">
                 </div>
@@ -1166,7 +1178,8 @@
                        translate>user.label.bcc
                 </label>
                 <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccRegistration" [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccRegistration"
+                         [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
                          class="form-control"
                          name="bccRegistration" type="text">
                 </div>
@@ -1177,7 +1190,8 @@
                        translate>user.label.subject
                 </label>
                 <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectRegistration" [placeholder]="'user.placeholder.subject' | translate" autocomplete="off"
+                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectRegistration"
+                         [placeholder]="'user.placeholder.subject' | translate" autocomplete="off"
                          class="form-control"
                          name="subjectRegistration" type="text">
                 </div>
@@ -1197,7 +1211,8 @@
                   <a (click)="fullScreen = true" class="pull-right">
                     <i class="fa fa-arrows-alt text-hover-primary"></i>
                   </a>
-                  <textarea [(ngModel)]="currentObj.iamFidoEmailSettings.bodyRegistration" [hidden]="previewRegistration" [nzAutosize]="{ minRows: 5, maxRows:10}"
+                  <textarea [(ngModel)]="currentObj.iamFidoEmailSettings.bodyRegistration"
+                            [hidden]="previewRegistration" [nzAutosize]="{ minRows: 5, maxRows:10}"
                             [placeholder]="'user.placeholder.body' | translate"
                             class="form-control"
                             name="bodyRegistration"
@@ -1230,7 +1245,8 @@
                        translate>user.label.cc
                 </label>
                 <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccAccess" [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccAccess"
+                         [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
                          class="form-control"
                          name="ccAccess" type="text">
                 </div>
@@ -1241,7 +1257,8 @@
                        translate>user.label.bcc
                 </label>
                 <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccAccess" [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccAccess"
+                         [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
                          class="form-control"
                          name="bccAccess" type="text">
                 </div>
@@ -1252,7 +1269,8 @@
                        translate>user.label.subject
                 </label>
                 <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectAccess" [placeholder]="'user.placeholder.subject' | translate" autocomplete="off"
+                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectAccess"
+                         [placeholder]="'user.placeholder.subject' | translate" autocomplete="off"
                          class="form-control"
                          name="subjectAccess" type="text">
                 </div>
@@ -1264,13 +1282,15 @@
                 </label>
                 <div class="col-sm-6">
                   <a (click)="preview = false;" [ngClass]="{'text-primary': preview !== true}"
-                     class="btn btn-xs btn-default" style="box-shadow: none !important;" translate>xml.button.sourceCode</a>
+                     class="btn btn-xs btn-default" style="box-shadow: none !important;"
+                     translate>xml.button.sourceCode</a>
                   <a (click)="preview = true;" [ngClass]="{'text-primary': preview === true}"
                      class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
                   <a (click)="fullScreen2 = true" class="pull-right">
                     <i class="fa fa-arrows-alt text-hover-primary"></i>
                   </a>
-                  <textarea [(ngModel)]="currentObj.iamFidoEmailSettings.bodyAccess" [hidden]="preview" [nzAutosize]="{ minRows: 5, maxRows:10}"
+                  <textarea [(ngModel)]="currentObj.iamFidoEmailSettings.bodyAccess" [hidden]="preview"
+                            [nzAutosize]="{ minRows: 5, maxRows:10}"
                             [placeholder]="'user.placeholder.body' | translate"
                             class="form-control"
                             name="bodyAccess"
@@ -1292,7 +1312,8 @@
                        class="col-sm-4"
                        translate>user.label.sendMailToNotifyConfirmationReceived</label>
                 <div class="col-sm-6">
-                  <label [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToNotifyConfirmationReceived" name="sendMailToNotifyConfirmationReceived"
+                  <label [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToNotifyConfirmationReceived"
+                         name="sendMailToNotifyConfirmationReceived"
                          nz-checkbox></label>
                 </div>
               </div>
@@ -1302,7 +1323,8 @@
                        translate>user.label.recipient
                 </label>
                 <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.receiptConfirmed" [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.receiptConfirmed"
+                         [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
                          class="form-control"
                          name="recipient" type="text">
                 </div>
@@ -1313,7 +1335,8 @@
                        translate>user.label.cc
                 </label>
                 <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccConfirmed" [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccConfirmed"
+                         [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
                          class="form-control"
                          name="ccConfirmed" type="text">
                 </div>
@@ -1324,7 +1347,8 @@
                        translate>user.label.bcc
                 </label>
                 <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccConfirmed" [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccConfirmed"
+                         [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
                          class="form-control"
                          name="bccConfirmed" type="text">
                 </div>
@@ -1335,7 +1359,8 @@
                        translate>user.label.subject
                 </label>
                 <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectConfirmed" [placeholder]="'user.placeholder.subject' | translate" autocomplete="off"
+                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectConfirmed"
+                         [placeholder]="'user.placeholder.subject' | translate" autocomplete="off"
                          class="form-control"
                          name="subjectConfirmed" type="text">
                 </div>
@@ -1347,13 +1372,15 @@
                 </label>
                 <div class="col-sm-6">
                   <a (click)="preview = false;" [ngClass]="{'text-primary': preview !== true}"
-                     class="btn btn-xs btn-default" style="box-shadow: none !important;" translate>xml.button.sourceCode</a>
+                     class="btn btn-xs btn-default" style="box-shadow: none !important;"
+                     translate>xml.button.sourceCode</a>
                   <a (click)="preview = true;" [ngClass]="{'text-primary': preview === true}"
                      class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
                   <a (click)="fullScreen3 = true" class="pull-right">
                     <i class="fa fa-arrows-alt text-hover-primary"></i>
                   </a>
-                  <textarea [(ngModel)]="currentObj.iamFidoEmailSettings.bodyConfirmed" [hidden]="preview" [nzAutosize]="{ minRows: 5, maxRows:10}"
+                  <textarea [(ngModel)]="currentObj.iamFidoEmailSettings.bodyConfirmed" [hidden]="preview"
+                            [nzAutosize]="{ minRows: 5, maxRows:10}"
                             [placeholder]="'user.placeholder.body' | translate"
                             class="form-control"
                             name="bodyConfirmed"
@@ -1383,7 +1410,8 @@
     <!------------------------------------END FIDO---------------------------------------------->
   </div>
   <div class="modal-footer">
-    <button [disabled]="!myForm.form.valid || (required && !comments.comment) || submitted || !isLengthMatch" class="btn btn-primary btn-sm"
+    <button [disabled]="!myForm.form.valid || (required && !comments.comment) || submitted || !isLengthMatch"
+            class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}

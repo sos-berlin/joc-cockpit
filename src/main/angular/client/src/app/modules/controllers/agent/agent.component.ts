@@ -1,6 +1,6 @@
-import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
+import {Component, HostListener, inject, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {isEmpty, sortBy} from "underscore";
 import {TranslateService} from "@ngx-translate/core";
 import {Subscription} from "rxjs";
@@ -12,7 +12,6 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 import {OrderPipe, SearchPipe} from "../../../pipes/core.pipe";
 import {DataService} from "../../../services/data.service";
-import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 
 declare const $;
 declare const mxEditor;
@@ -37,10 +36,11 @@ declare const mxCellOverlay;
   templateUrl: './sub-agent.dialog.html'
 })
 export class SubagentModalComponent {
-  @Input() clusterAgent: any;
-  @Input() data: any;
-  @Input() new: boolean;
-  @Input() controllerId: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  clusterAgent: any;
+  data: any;
+  new: boolean;
+  controllerId: any;
   subagent: any = {};
   submitted = false;
   agentNameAliases: any = [];
@@ -58,6 +58,10 @@ export class SubagentModalComponent {
   }
 
   ngOnInit(): void {
+    this.clusterAgent = this.modalData.clusterAgent;
+    this.data = this.modalData.data;
+    this.new = this.modalData.new;
+    this.controllerId = this.modalData.controllerId;
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
@@ -201,10 +205,11 @@ export class AddClusterModalComponent {
   templateUrl: './agent.dialog.html'
 })
 export class AgentModalComponent {
-  @Input() data: any;
-  @Input() new: boolean;
-  @Input() isCluster: boolean;
-  @Input() controllerId: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  data: any;
+  new: boolean;
+  isCluster: boolean;
+  controllerId: any;
   agent: any = {};
   submitted = false;
   agentNameAliases: any = [];
@@ -218,6 +223,10 @@ export class AgentModalComponent {
   }
 
   ngOnInit(): void {
+    this.data = this.modalData.data;
+    this.new = this.modalData.new;
+    this.isCluster = this.modalData.isCluster;
+    this.controllerId = this.modalData.controllerId;
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }

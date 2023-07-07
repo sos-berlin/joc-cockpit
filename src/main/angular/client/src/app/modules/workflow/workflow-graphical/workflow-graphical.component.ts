@@ -1,7 +1,7 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef, EventEmitter,
+  ElementRef, EventEmitter, inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -10,7 +10,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {isArray, sortBy} from 'underscore';
 import {Subscription} from 'rxjs';
@@ -46,13 +46,14 @@ declare const $: any;
   templateUrl: './dependent-workflow-dialog.html'
 })
 export class DependentWorkflowComponent {
-  @Input() workflow: any = {};
-  @Input() permission: any = {};
-  @Input() preferences: any = {};
-  @Input() controllerId: any;
-  @Input() recursiveCals: any;
-  @Input() view: any;
-  @Input() workflowFilters: any = {};
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  workflow: any = {};
+  permission: any = {};
+  preferences: any = {};
+  controllerId: any;
+  recursiveCals: any;
+  view: any;
+  workflowFilters: any = {};
 
   jobMap = new Map();
   workFlowJson: any = {};
@@ -70,6 +71,13 @@ export class DependentWorkflowComponent {
   }
 
   ngOnInit(): void {
+  this.workflow = this.modalData.workflow;
+  this.permission  = this.modalData.permission;
+  this.preferences  = this.modalData.preferences;
+  this.controllerId = this.modalData.controllerId;
+  this.recursiveCals  = this.modalData.recursiveCals;
+  this.view = this.modalData.view;
+  this.workflowFilters = this.modalData.workflowFilters;
     let flag = false;
     if (this.view) {
       this.pageView = this.view;
@@ -201,7 +209,7 @@ export class DependentWorkflowComponent {
   templateUrl: './workflow-graphical.component.html',
   styleUrls: ['./workflow-graphical.component.css']
 })
-export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class WorkflowGraphicalComponent {
   @Input() workFlowJson: any = {};
   @Input() permission: any = {};
   @Input() preferences: any = {};

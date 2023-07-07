@@ -1201,14 +1201,9 @@
                    class="col-md-4 col-lg-3 form-control-label"
                    title="{{'workflow.label.jobResourceNames' | translate}}" translate>workflow.label.jobResourceNames</label>
             <div class="col-md-8 col-lg-9">
-<<<<<<< HEAD
-              <app-multi-select [type]="'JOBRESOURCE'" [list]="extraConfiguration" [attribute]="'jobResourceNames'"
-                                [nodes]="jobResourcesTree" (onSelectCall)="updateOtherProperties('jobResourceNames')"></app-multi-select>
-=======
               <app-multi-select (funcCall)="updateOtherProperties('jobResourceNames')" [attribute]="'jobResourceNames'" [list]="extraConfiguration"
                                 [nodes]="jobResourcesTree"
                                 [type]="'JOBRESOURCE'"></app-multi-select>
->>>>>>> release/2.5
             </div>
           </div>
           <div [ngClass]="{'hide': fullScreen}" class="form-group row">

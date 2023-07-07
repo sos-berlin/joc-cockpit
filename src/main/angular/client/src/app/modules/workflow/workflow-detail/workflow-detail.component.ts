@@ -183,7 +183,7 @@ export class WorkflowDetailComponent {
       nzContent: DependentWorkflowComponent,
       nzAutofocus: null,
       nzClassName: 'x-lg',
-      nzComponentParams: {
+      nzData: {
         workflow: obj.workflow,
         permission: this.permission,
         preferences: this.preferences,
@@ -314,7 +314,7 @@ export class WorkflowDetailComponent {
       nzContent: ShowDependencyComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         workflow: this.workFlowJson
       },
       nzFooter: null,
@@ -329,7 +329,7 @@ export class WorkflowDetailComponent {
       nzContent: AddOrderModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         preferences: this.preferences,
         permission: this.permission,
         schedulerId: this.schedulerIds.selected,

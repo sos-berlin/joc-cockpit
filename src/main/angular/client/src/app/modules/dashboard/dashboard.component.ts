@@ -1,6 +1,6 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {CompactType, DisplayGrid, GridsterConfig, GridType} from 'angular-gridster2';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
@@ -13,12 +13,20 @@ declare const $: any;
   templateUrl: './add-widget-dialog.html'
 })
 export class AddWidgetModalComponent {
-  @Input() widgets: any;
-  @Input() dashboard: any;
-  @Input() addWidget;
-  @Input() self;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  widgets: any;
+  dashboard: any;
+  addWidget: any;
+  self: any;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.widgets = this.modalData.widgets;
+    this.dashboard = this.modalData.dashboard;
+    this.addWidget = this.modalData.addWidget;
+    this.self = this.modalData.self;
   }
 
   addWidgetFunc(widget): void {
@@ -192,7 +200,7 @@ export class DashboardComponent {
       nzTitle: undefined,
       nzContent: AddWidgetModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         dashboard: this.dashboard,
         widgets: this.widgets,
         addWidget: this.addWidget,

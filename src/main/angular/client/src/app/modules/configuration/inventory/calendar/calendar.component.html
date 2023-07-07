@@ -82,9 +82,8 @@
                      [nzTooltipMouseEnterDelay]="0.5"
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.type</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
-                <nz-select (ngModelChange)="saveJSON()"
-                           [(ngModel)]="calendar.configuration.type" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
-                           name="cType">
+                <nz-select [(ngModel)]="calendar.configuration.type" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
+                           (ngModelChange)="saveJSON()" name="cType">
                   <nz-option [nzLabel]="'runtime.label.workingDay' | translate"
                              nzValue="WORKINGDAYSCALENDAR"></nz-option>
                   <nz-option [nzLabel]="'runtime.label.nonWorkingDay' | translate"
@@ -97,7 +96,7 @@
                      [nzTooltipMouseEnterDelay]="0.5"
                      class="col-md-3 col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>runtime.label.validFrom</label>
               <div class="col-md-3 col-lg-3 col-xl-3 col-xxl-2">
-                <nz-date-picker (ngModelChange)="saveJSON()" [(ngModel)]="calendar.configuration.from"
+                <nz-date-picker [(ngModel)]="calendar.configuration.from" (ngModelChange)="saveJSON()"
                                 [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzFormat]="dateFormat"
                                 [nzPlaceHolder]="'common.placeholder.setStartDate' | translate"
                                 name="from"></nz-date-picker>
@@ -107,7 +106,7 @@
                      class="col-md-3 col-lg-3 col-xl-2 col-xxl-2 form-control-label date-center" translate>runtime.label.validTo</label>
               <div [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}"
                    class="col-md-3 col-lg-3 col-xl-3 col-xxl-2 date-right">
-                <nz-date-picker #to="ngModel" (ngModelChange)="saveJSON()" [(ngModel)]="calendar.configuration.to"
+                <nz-date-picker #to="ngModel" [(ngModel)]="calendar.configuration.to" (ngModelChange)="saveJSON()"
                                 [nzDisabled]="isTrash || !permission.joc.inventory.manage"
                                 [nzFormat]="dateFormat" [nzPlaceHolder]="'common.placeholder.setEndDate' | translate"
                                 id="to"

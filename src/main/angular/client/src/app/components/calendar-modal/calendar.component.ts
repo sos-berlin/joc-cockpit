@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {NzModalRef} from 'ng-zorro-antd/modal';
+import {Component, inject, Input} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
 declare const $: any;
@@ -57,8 +57,9 @@ declare const $: any;
   `
 })
 export class CalendarModalComponent {
-  @Input() path: string | undefined;
-  @Input() calendar = false;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  path: string | undefined;
+  calendar = false;
   calendarView = 'year';
   isCalendarLoading = false;
   planItems: any = [];
@@ -69,6 +70,8 @@ export class CalendarModalComponent {
   }
 
   ngOnInit(): void {
+    this.path = this.modalData.path;
+    this.calendar = this.modalData.calendar;
     this.showCalendar();
   }
 

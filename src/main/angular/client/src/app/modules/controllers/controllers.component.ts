@@ -12,6 +12,7 @@ import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {AgentModalComponent, SubagentModalComponent} from "./agent/agent.component";
+import {FileUploaderComponent} from "../../components/file-uploader/file-uploader.component";
 
 @Component({
   selector: 'app-export-modal',
@@ -490,7 +491,7 @@ export class ControllersComponent {
       nzTitle: undefined,
       nzContent: ExportComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         preferences: this.preferences,
         display: this.preferences.auditLog,
         controller
@@ -502,19 +503,20 @@ export class ControllersComponent {
   }
 
   importAgents(controller): void {
-    // this.modal.create({
-    //   nzTitle: undefined,
-    //   nzContent: ImportModalComponent,
-    //   nzClassName: 'lg',
-    //   nzAutofocus: null,
-    //   nzComponentParams: {
-    //     display: this.preferences.auditLog,
-    //     controller
-    //   },
-    //   nzFooter: null,
-    //   nzClosable: false,
-    //   nzMaskClosable: false
-    // });
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: FileUploaderComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        type: 'CONTROLLER',
+        display: this.preferences.auditLog,
+        controller
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
   addController(): void {
@@ -601,7 +603,7 @@ export class ControllersComponent {
       nzTitle: undefined,
       nzContent: CreateTokenModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         controllerId: controller ? controller.controllerId : '',
         agents: this.object.mapOfCheckedId,
         clusterAgents: this.object.mapOfCheckedId2,
@@ -1011,7 +1013,7 @@ export class ControllersComponent {
         nzContent: AgentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           controllerId: controller.controllerId,
           new: true
         },
@@ -1030,7 +1032,7 @@ export class ControllersComponent {
           nzContent: AgentModalComponent,
           nzClassName: 'lg',
           nzAutofocus: null,
-          nzComponentParams: {
+          nzData: {
             controllerId: controller.controllerId,
             data: agent,
             isCluster
@@ -1108,7 +1110,7 @@ export class ControllersComponent {
         nzContent: AgentModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           controllerId: controller.controllerId,
           isCluster: true,
           new: true
@@ -1131,7 +1133,7 @@ export class ControllersComponent {
       nzContent: SubagentModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         controllerId: controller.controllerId,
         clusterAgent,
         new: true
@@ -1153,7 +1155,7 @@ export class ControllersComponent {
       nzContent: SubagentModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         controllerId: controller.controllerId,
         clusterAgent,
         data: subagent
