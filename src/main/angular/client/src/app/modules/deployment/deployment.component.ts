@@ -1,12 +1,11 @@
-import {Component, Input, ViewChild} from '@angular/core';
-import {isEmpty, isArray, isEqual} from 'underscore';
+import {Component, inject, ViewChild} from '@angular/core';
+import {isArray, isEmpty, isEqual} from 'underscore';
 import {saveAs} from 'file-saver';
-import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
 import {ClipboardService} from "ngx-clipboard";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {TranslateService} from "@ngx-translate/core";
-import {ToastrService} from "ngx-toastr";
 import {Subscription} from "rxjs";
 import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {NzContextMenuService, NzDropdownMenuComponent} from "ng-zorro-antd/dropdown";
@@ -25,10 +24,11 @@ declare const $: any;
   templateUrl: './bulk-update-dialog.html'
 })
 export class BulkUpdateModalComponent {
-  @Input() listOfObjects: any;
-  @Input() securityLevel: Array<string>;
-  @Input() dbmsInit: Array<string>;
-  @Input() methods: Array<string>;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  listOfObjects: any;
+  securityLevel: Array<string>;
+  dbmsInit: Array<string>;
+  methods: Array<string>;
   selectObject = {
     operationType: 'JOC'
   };
@@ -42,6 +42,10 @@ export class BulkUpdateModalComponent {
   }
 
   ngOnInit(): void {
+    this.listOfObjects = this.modalData.listOfObjects;
+    this.securityLevel = this.modalData.securityLevel;
+    this.dbmsInit = this.modalData.dbmsInit;
+    this.methods = this.modalData.methods;
     if (this.listOfObjects && this.listOfObjects.size > 0) {
       let arr = Array.from(this.listOfObjects);
       for (let i = 0; i < arr.length; i++) {
@@ -107,9 +111,10 @@ export class BulkUpdateModalComponent {
   templateUrl: './show-json-dialog.html'
 })
 export class ShowJsonModalComponent {
-  @Input() object: any;
-  @Input() name: string;
-  @Input() isEdit: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  object: any;
+  name: string;
+  isEdit: any;
   submitted = false;
   isError = false;
   data: any;
@@ -136,6 +141,9 @@ export class ShowJsonModalComponent {
   }
 
   ngOnInit(): void {
+    this.object = this.modalData.object;
+    this.name = this.modalData.name;
+    this.isEdit = this.modalData.isEdit;
     const preferenceObj = JSON.parse(sessionStorage['preferences']);
     this.coreService.get('assets/i18n/json-editor-text_' + preferenceObj.locale + '.json').subscribe((data) => {
       this.options.languages = {};
@@ -1384,7 +1392,7 @@ export class DeploymentComponent {
       nzContent: ShowJsonModalComponent,
       nzAutofocus: null,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         object: this.deploymentData.mainObj,
         name: this.deploymentData.path,
         isEdit: true
@@ -1407,7 +1415,7 @@ export class DeploymentComponent {
       nzContent: BulkUpdateModalComponent,
       nzAutofocus: null,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         listOfObjects: this.object.setOfCheckedId,
         securityLevel: this.securityLevel,
         dbmsInit: this.dbmsInit,
@@ -1835,7 +1843,7 @@ export class DeploymentComponent {
       nzTitle: undefined,
       nzContent: CreateFolderModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         display: this.preferences.auditLog,
         schedulerId: this.schedulerIds.selected,
         type: this.objectType,
@@ -1868,7 +1876,7 @@ export class DeploymentComponent {
       nzTitle: undefined,
       nzContent: CreateObjectModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerIds.selected,
         preferences: this.preferences,
         obj
@@ -1981,7 +1989,7 @@ export class DeploymentComponent {
       nzTitle: undefined,
       nzContent: CreateObjectModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerIds.selected,
         preferences: this.preferences,
         type: this.objectType,
@@ -2028,7 +2036,7 @@ export class DeploymentComponent {
         nzTitle: undefined,
         nzContent: CreateFolderModalComponent,
         nzAutofocus: null,
-        nzComponentParams: {
+        nzData: {
           display: this.preferences.auditLog,
           schedulerId: this.schedulerIds.selected,
           origin: this.node.origin,
@@ -2231,7 +2239,7 @@ export class DeploymentComponent {
       nzContent: CreateObjectModalComponent,
       nzAutofocus: null,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         schedulerId: this.schedulerIds.selected,
         preferences: this.preferences,
         obj: object,
@@ -2253,7 +2261,7 @@ export class DeploymentComponent {
         nzContent: ShowJsonModalComponent,
         nzAutofocus: null,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           object: res.configuration,
           name: this.node.origin.path,
           isEdit

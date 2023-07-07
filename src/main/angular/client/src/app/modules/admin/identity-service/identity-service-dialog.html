@@ -20,8 +20,8 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <input #name="ngModel" (blur)="checkService()" [(ngModel)]="currentObj.identityServiceName" [appAutofocus]="true" autocomplete="off"
-               class="form-control" name="name" required type="text"/>
+        <input type="text" class="form-control" name="name" [(ngModel)]="currentObj.identityServiceName" required
+               #name="ngModel" [appAutofocus]="true" autocomplete="off" (blur)="checkService()"/>
         <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
           <div *ngIf="name.errors['required']">
             <div translate>common.message.requiredError</div>
@@ -37,9 +37,9 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div [ngClass]="{'has-error' : ((type.dirty || type.touched) && type.invalid)}" class="col-sm-6">
-        <nz-select #type="ngModel" (ngModelChange)="changeType($event)"
-                   [(ngModel)]="currentObj.identityServiceType" name="type" nzPlaceHolder="{{'user.placeholder.selectIdentityServiceType' | translate}}"
-                   nzShowSearch required>
+        <nz-select #type="ngModel" [(ngModel)]="currentObj.identityServiceType" name="type"
+                   nzPlaceHolder="{{'user.placeholder.selectIdentityServiceType' | translate}}"
+                   nzShowSearch (ngModelChange)="changeType($event)" required>
           <nz-option *ngFor="let option of identityServiceTypes | orderBy" [nzLabel]="option"
                      [nzValue]="option"></nz-option>
         </nz-select>
@@ -69,15 +69,15 @@
          class="form-group row">
       <label class="col-sm-4" translate>user.label.usedAsSecondFactor</label>
       <div class="col-sm-6">
-        <label (ngModelChange)="checkTwoFactor($event)" [(ngModel)]="currentObj.secondFactor" name="secondFactor"
+        <label [(ngModel)]="currentObj.secondFactor" name="secondFactor"  (ngModelChange)="checkTwoFactor($event)"
                nz-checkbox></label>
       </div>
     </div>
     <div *ngIf="identityService" class="form-group row">
       <label class="col-sm-4" translate>user.label.disable</label>
       <div class="col-sm-6">
-        <label [(ngModel)]="currentObj.disabled" name="disabled"
-               nz-checkbox></label>
+        <label nz-checkbox [(ngModel)]="currentObj.disabled"
+               name="disabled"></label>
       </div>
     </div>
     <div *ngIf="currentObj.identityServiceType !== 'CERTIFICATE' && !(currentObj.secondFactor && currentObj.identityServiceType == 'FIDO')"

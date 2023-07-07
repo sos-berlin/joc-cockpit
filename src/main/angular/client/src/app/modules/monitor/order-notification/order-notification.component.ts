@@ -283,7 +283,7 @@ export class OrderNotificationComponent {
       nzTitle: undefined,
       nzContent: AcknowledgeModalComponent,
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         data: {
           controllerId: data ? data.controllerId : this.schedulerIds.selected,
           notificationIds: data ? [data.notificationId] : Array.from(this.filters.mapOfCheckedId)

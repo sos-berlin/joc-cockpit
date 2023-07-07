@@ -599,8 +599,10 @@ export class AddRestrictionComponent {
   templateUrl: './period-editor-dialog.html',
 })
 export class PeriodComponent {
-  @Input() isNew: boolean;
-  @Input() data: any = {};
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+
+  isNew: boolean;
+  data: any = {};
   period: any = {period: {}};
   when_holiday_options = [
     'SUPPRESS',
@@ -613,6 +615,8 @@ export class PeriodComponent {
   }
 
   ngOnInit(): void {
+    this.isNew = this.modalData.isNew;
+    this.data = this.modalData.data;
     if (this.isNew) {
       this.period.frequency = 'singleStart';
       this.period.period.singleStart = '';

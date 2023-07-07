@@ -1,10 +1,10 @@
-import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, HostListener, inject, Input, Output} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
-import {isEmpty, clone, extend} from 'underscore';
+import {clone, extend, isEmpty} from 'underscore';
 import {takeUntil} from 'rxjs/operators';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
@@ -13,7 +13,7 @@ import {SaveService} from '../../services/save.service';
 import {ExcelService} from '../../services/excel.service';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
-import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
+import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 import {FileTransferService} from '../../services/file-transfer.service';
 import {InventoryForHistory} from '../../models/enums';
 
@@ -75,15 +75,15 @@ export class OrderTemplateComponent {
   templateUrl: './filter-dialog.html'
 })
 export class FilterModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  allFilter: any;
+  new = false;
+  edit = false;
+  filter: any;
+  type = ''
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
-
-  @Input() allFilter;
-  @Input() new;
-  @Input() edit;
-  @Input() filter;
-  @Input() type;
 
   name: string;
 
@@ -91,6 +91,12 @@ export class FilterModalComponent {
   }
 
   ngOnInit(): void {
+    this.allFilter = this.modalData.allFilter;
+    this.new = this.modalData.new;
+    this.edit = this.modalData.edit;
+    this.filter = this.modalData.filter;
+    this.type = this.modalData.type;
+
     this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
@@ -2368,7 +2374,7 @@ export class HistoryComponent {
         nzTitle: undefined,
         nzContent: EditIgnoreListComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           savedIgnoreList: this.savedIgnoreList,
           historyFilters: this.historyFilters,
           self: this
@@ -3321,7 +3327,7 @@ export class HistoryComponent {
         nzTitle: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: obj,
+        nzData: obj,
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
@@ -3982,7 +3988,7 @@ export class HistoryComponent {
       nzTitle: undefined,
       nzContent: FilterModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: obj,
+      nzData: obj,
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false

@@ -48,7 +48,7 @@ export class SingleCalendarComponent {
       nzTitle: undefined,
       nzContent: CalendarModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         path: calendar.path,
         calendar: true
       },
@@ -277,7 +277,7 @@ export class CalendarComponent {
       nzTitle: undefined,
       nzContent: CalendarModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         path: calendar.path,
         calendar: true
       },

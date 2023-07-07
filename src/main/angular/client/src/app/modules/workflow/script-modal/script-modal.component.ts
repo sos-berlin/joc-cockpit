@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, HostListener, Input, OnInit, ViewChild} from '@angular/core';
-import {NzModalRef} from 'ng-zorro-antd/modal';
+import {Component, HostListener, inject, ViewChild} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {ClipboardService} from 'ngx-clipboard';
 import {TranslateService} from '@ngx-translate/core';
 import {NzMessageService} from 'ng-zorro-antd/message';
@@ -15,17 +15,18 @@ declare const $;
   templateUrl: './script-modal.component.html'
 })
 export class ScriptModalComponent {
-  @Input() workflowPath: string;
-  @Input() jobName: string;
-  @Input() isScript: boolean;
-  @Input() data: any;
-  @Input() schedule: any;
-  @Input() predicate: any;
-  @Input() admissionTime: any;
-  @Input() agentName: string;
-  @Input() subagentClusterId: string;
-  @Input() timezone: string;
-  @Input() noticeBoardNames: string;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  workflowPath: string;
+  jobName: string;
+  isScript: boolean;
+  data: any;
+  schedule: any;
+  predicate: any;
+  admissionTime: any;
+  agentName: string;
+  subagentClusterId: string;
+  timezone: string;
+  noticeBoardNames: string;
 
   dragEle: any;
   preferences: any = {};
@@ -50,6 +51,17 @@ export class ScriptModalComponent {
   }
 
   ngOnInit(): void {
+    this.workflowPath = this.modalData.workflowPath;
+    this.jobName = this.modalData.workflowPath;
+    this.isScript = this.modalData.workflowPath;
+    this.data = this.modalData.workflowPath;
+    this.schedule = this.modalData.workflowPath;
+    this.predicate = this.modalData.workflowPath;
+    this.admissionTime = this.modalData.workflowPath;
+    this.agentName = this.modalData.workflowPath;
+    this.subagentClusterId = this.modalData.workflowPath;
+    this.timezone = this.modalData.workflowPath;
+    this.noticeBoardNames = this.modalData.workflowPath;
     this.todayDate = this.coreService.getStringDate(null);
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.permission = JSON.parse(this.authService.permission) || {};

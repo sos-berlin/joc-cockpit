@@ -292,7 +292,7 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showLogs</div>
                   <div class="col-md-6">
-                    <nz-radio-group (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.isNewWindow">
+                    <nz-radio-group [(ngModel)]="preferences.isNewWindow" (ngModelChange)="changeConfiguration()" >
                       <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
                       <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
                       <label nz-radio nzValue="download"><span translate>profile.label.download</span></label>
@@ -302,7 +302,7 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showDocumentations</div>
                   <div class="col-md-6">
-                    <nz-radio-group (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.isDocNewWindow">
+                    <nz-radio-group [(ngModel)]="preferences.isDocNewWindow" (ngModelChange)="changeConfiguration()" >
                       <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
                       <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
                     </nz-radio-group>
@@ -311,7 +311,7 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showSubFolderAndFolderContents</div>
                   <div class="col-md-6">
-                    <nz-radio-group (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.expandOption">
+                    <nz-radio-group [(ngModel)]="preferences.expandOption" (ngModelChange)="changeConfiguration()" >
                       <label nz-radio nzValue="single"><span translate>profile.label.folderContents</span></label>
                       <label nz-radio nzValue="both"><span
                         translate>profile.label.subFolderAndFolderContents</span></label>
@@ -321,21 +321,21 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showFilesImmediately</div>
                   <div class="col-md-6">
-                    <label (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.showFiles"
+                    <label [(ngModel)]="preferences.showFiles" (ngModelChange)="changeConfiguration()"
                            nz-checkbox></label>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.enableCommentsForAuditLog</div>
                   <div class="col-md-6">
-                    <label (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.auditLog" [disabled]="forceLoging"
+                    <label [(ngModel)]="preferences.auditLog"  (ngModelChange)="changeConfiguration()" [disabled]="forceLoging"
                            nz-checkbox></label>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.useTimezoneForLog</div>
                   <div class="col-md-6">
-                    <label (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.logTimezone"
+                    <label [(ngModel)]="preferences.logTimezone" (ngModelChange)="changeConfiguration()"
                            nz-checkbox></label>
                   </div>
                 </div>
@@ -344,7 +344,7 @@
                     profile.label.currentController
                   </div>
                   <div class="col-md-6">
-                    <label (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.currentController"
+                    <label [(ngModel)]="preferences.currentController" (ngModelChange)="changeConfiguration()"
                            nz-checkbox></label>
                   </div>
                 </div>
@@ -353,7 +353,7 @@
                     profile.label.showTooltipInfo
                   </div>
                   <div class="col-md-6">
-                    <label (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.showTooltipInfo"
+                    <label [(ngModel)]="preferences.showTooltipInfo" (ngModelChange)="changeConfiguration()"
                            nz-checkbox></label>
                   </div>
                 </div>
@@ -362,7 +362,7 @@
                     profile.label.licenseWarningGotIt
                   </div>
                   <div class="col-md-6">
-                    <label (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.licenseExpirationWarning"
+                    <label [(ngModel)]="preferences.licenseExpirationWarning" (ngModelChange)="changeConfiguration()"
                            nz-checkbox></label>
                   </div>
                 </div>
@@ -371,15 +371,14 @@
                     profile.label.showMoreOptions
                   </div>
                   <div class="col-md-6">
-                    <label (ngModelChange)="changeConfiguration()" [(ngModel)]="preferences.showMoreOptions"
+                    <label [(ngModel)]="preferences.showMoreOptions" (ngModelChange)="changeConfiguration()"
                            nz-checkbox></label>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showView</div>
                   <div class="col-md-6">
-                    <nz-radio-group (ngModelChange)="changeConfiguration();changeView()"
-                                    [(ngModel)]="preferences.pageView">
+                    <nz-radio-group [(ngModel)]="preferences.pageView" (ngModelChange)="changeConfiguration();changeView()">
                       <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
                       <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
                     </nz-radio-group>
@@ -388,8 +387,7 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.orderOverviewPageView</div>
                   <div class="col-md-6">
-                    <nz-radio-group (ngModelChange)="changeConfiguration();changeView()"
-                                    [(ngModel)]="preferences.orderOverviewPageView">
+                    <nz-radio-group  [(ngModel)]="preferences.orderOverviewPageView" (ngModelChange)="changeConfiguration();changeView()">
                       <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
                       <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
                       <label nz-radio nzValue="bulk"><span translate>profile.label.asBulk</span></label>

@@ -1,16 +1,23 @@
-import {Component, Input} from '@angular/core';
-import {NzModalRef} from 'ng-zorro-antd/modal';
+import {Component, inject} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-ignore-list',
   templateUrl: './ignore-list.component.html'
 })
 export class EditIgnoreListComponent {
-  @Input() savedIgnoreList: any;
-  @Input() historyFilters: any;
-  @Input() self;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  savedIgnoreList: any;
+  historyFilters: any;
+  self: any
 
   constructor(public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    this.savedIgnoreList = this.modalData.savedIgnoreList;
+    this.historyFilters = this.modalData.historyFilters;
+    this.self = this.modalData.self;
   }
 
   removeWorkflowIgnoreList(name): void {

@@ -1071,7 +1071,7 @@ export class XmlEditorComponent {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmationModalComponent,
-        nzComponentParams: {
+        nzData: {
           delete: true,
           objectType: this.objectType,
           activeTab: (this.objectType !== 'NOTIFICATION') ? tab : undefined

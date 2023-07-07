@@ -1,8 +1,8 @@
-import {Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter} from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {ChangeDetectorRef, Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {isEmpty, isArray} from 'underscore';
+import {isArray, isEmpty} from 'underscore';
 import {differenceInCalendarDays} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
 import {ValueEditorComponent} from '../../../components/value-editor/value.component';
@@ -16,8 +16,9 @@ import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.c
   templateUrl: './show-dependency-dialog.html'
 })
 export class ShowDependencyComponent {
-  @Input() workflow: any;
-  @Input() schedulerId: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  workflow: any;
+  schedulerId: any;
   permission: any = {}
   loading = true;
 
@@ -25,6 +26,8 @@ export class ShowDependencyComponent {
   }
 
   ngOnInit(): void {
+    this.workflow = this.modalData.workflow;
+    this.schedulerId = this.modalData.schedulerId;
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getDependencies();
   }
@@ -79,10 +82,11 @@ export class ShowDependencyComponent {
   templateUrl: './add-order-dialog.html',
 })
 export class AddOrderModalComponent {
-  @Input() schedulerId: any;
-  @Input() permission: any;
-  @Input() preferences: any;
-  @Input() workflow: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerId: any;
+  permission: any;
+  preferences: any;
+  workflow: any;
 
   viewDate = new Date();
   order: any = {};
@@ -109,6 +113,11 @@ export class AddOrderModalComponent {
   }
 
   ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId;
+    this.permission = this.modalData.permission;
+    this.preferences = this.modalData.preferences;
+    this.workflow = this.modalData.workflow;
+
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
@@ -579,7 +588,6 @@ export class AddOrderModalComponent {
   templateUrl: './workflow-action.component.html'
 })
 export class WorkflowActionComponent {
-
   @Input() workflow: any;
   @Input() preferences: any;
   @Input() permission: any;

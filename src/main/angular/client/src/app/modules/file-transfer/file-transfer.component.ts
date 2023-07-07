@@ -797,7 +797,7 @@ export class FileTransferComponent {
       nzTitle: undefined,
       nzContent: FilterModalComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
+      nzData: {
         permission: this.permission,
         allFilter: this.filterList,
         new: true

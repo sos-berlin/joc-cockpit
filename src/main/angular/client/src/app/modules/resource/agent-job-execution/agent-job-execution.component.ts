@@ -1,7 +1,7 @@
-import {Component, OnInit, OnDestroy, Input, Output, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {clone, isEmpty} from 'underscore';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -16,10 +16,11 @@ import {SaveService} from '../../../services/save.service';
   templateUrl: './filter-dialog.html'
 })
 export class FilterModalComponent {
-  @Input() allFilter;
-  @Input() new;
-  @Input() edit;
-  @Input() filter;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  allFilter: any;
+  new = false;
+  edit = false;
+  filter: any;
 
   schedulerIds: any = {};
   preferences: any = {};
@@ -30,6 +31,11 @@ export class FilterModalComponent {
   }
 
   ngOnInit(): void {
+    this.allFilter = this.modalData.allFilter;
+    this.new = this.modalData.new;
+    this.edit = this.modalData.edit;
+    this.filter = this.modalData.filter;
+
     this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
@@ -669,7 +675,7 @@ export class AgentJobExecutionComponent {
         nzTitle: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
+        nzData: {
           permission: this.permission,
           allFilter: this.filterList,
           new: true
@@ -758,7 +764,7 @@ export class AgentJobExecutionComponent {
           nzTitle: undefined,
           nzContent: FilterModalComponent,
           nzClassName: 'lg',
-          nzComponentParams: {
+          nzData: {
             permission: this.permission,
             allFilter: this.filterList,
             filter: filterObj,
