@@ -100,15 +100,15 @@
         </div>
         <div *ngIf="nodes.length && data" class="form-group row">
           <div class="col-md-12">
-            <label (nzCheckedChange)="selectAll($event)" [(nzChecked)]="object.checked"
-                   [nzIndeterminate]="object.indeterminate" nz-checkbox></label>
+            <label nz-checkbox [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
+                   (nzCheckedChange)="selectAll($event)"></label>
             <label class="p-l-sm _600" translate>runtime.label.selectAll</label>
           </div>
         </div>
         <div *ngIf="data" class="row">
           <div *ngFor="let item of nodes" class="col-md-12 m-b-sm">
-            <label (nzCheckedChange)="onItemChecked(item, $event)" [nzChecked]="object.setOfCheckedPath.has(item.path)"
-                   nz-checkbox></label>
+            <label nz-checkbox [nzChecked]="object.setOfCheckedPath.has(item.path)"
+                   (nzCheckedChange)="onItemChecked(item, $event)" ></label>
             <i class="icon-color p-l-sm p-r-sm" nz-icon nzTheme="outline"
                nzType="apartment"></i>
             <span [ngClass]="{'fa-circle dark-blue' : item.deployed}"

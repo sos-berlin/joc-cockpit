@@ -41,7 +41,7 @@
             <label class="col-lg-2 col-sm-3 " translate>log.label.logEnabled</label>
             <div class=" col-sm-9">
               <div>
-                <label (ngModelChange)="saveSettingConf()" [(ngModel)]="clientLogFilter.isEnable" name="isEnable"
+                <label [(ngModel)]="clientLogFilter.isEnable" name="isEnable" (ngModelChange)="saveSettingConf()"
                        nz-checkbox></label>
               </div>
             </div>

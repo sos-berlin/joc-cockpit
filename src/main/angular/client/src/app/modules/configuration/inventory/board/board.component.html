@@ -94,8 +94,8 @@
                      type="text">
             </nz-input-group>
             <ng-template #addOnAfterTemplate>
-              <nz-select (ngModelChange)="changeExp($event, 'toNotice')"
-                         [(ngModel)]="boardObj.toNoticeMsg"
+              <nz-select [(ngModel)]="boardObj.toNoticeMsg"
+                         (ngModelChange)="changeExp($event, 'toNotice')"
                          [nzAllowClear]="true" name="toNoticeMsg"
                          nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" style="width: 220px">
                 <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDate' | translate"

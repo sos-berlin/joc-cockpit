@@ -17,8 +17,9 @@
               [nzSize]="'small'">
       <thead>
       <tr>
-        <th (nzCheckedChange)="checkAll($event)" *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-            [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate" [nzShowCheckbox]="true"
+        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage"
+            [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
+            (nzCheckedChange)="checkAll($event)" [nzShowCheckbox]="true"
             class="chk">
         </th>
         <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span
@@ -48,8 +49,9 @@
       <tbody>
       <ng-template [ngForOf]="ajaxTable.data" let-account ngFor>
         <tr>
-          <td (nzCheckedChange)="onItemChecked(account, $event)" *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-              [nzChecked]="object.mapOfCheckedId.has(account.id)" [nzShowCheckbox]="true">
+          <td *ngIf="permission.joc && permission.joc.administration.accounts.manage"
+              [nzChecked]="object.mapOfCheckedId.has(account.id)" [nzShowCheckbox]="true"
+              (nzCheckedChange)="onItemChecked(account, $event)" >
           </td>
           <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
             <div class="btn-group dropdown pull-left m-r-sm">

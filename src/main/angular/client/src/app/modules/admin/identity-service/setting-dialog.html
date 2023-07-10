@@ -911,18 +911,21 @@
             </button>
           </nz-upload>
         </div>
-        <div *ngFor="let item of fileList; let first = first;">
+        <div class="col-sm-6" *ngFor="let item of fileList; let first = first;">
           <img height="28px" [src]="avatarUrl"/>
           {{ item?.file?.name }}
+          <a (click)="deleteImage()" class="text-hover-color text-16 pos-abt t-xs r-12">
+            <span nz-icon nzType="delete" nzTheme="outline"></span>
+          </a>
         </div>
         <div *ngIf="imageUrl" class="col-sm-6">
           <div>
             <img height="28px" src="{{imageUrl}}"/>
           </div>
+          <a (click)="deleteImage()" class="text-hover-color text-16 pos-abt t-xs r-12">
+            <span nz-icon nzType="delete" nzTheme="outline"></span>
+          </a>
         </div>
-        <a (click)="deleteImage()" class="text-hover-color text-16 pos-abt t-xs r-12">
-          <span nz-icon nzType="delete" nzTheme="outline"></span>
-        </a>
       </div>
 
       <div class="p-a b-a">

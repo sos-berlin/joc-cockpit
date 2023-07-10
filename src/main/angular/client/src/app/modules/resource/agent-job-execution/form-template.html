@@ -36,12 +36,12 @@
           [(ngModel)]="filter.fromDate"
           [nzFormat]="dateFormat" [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" name="from"></nz-date-picker>
         <div [ngClass]="{'has-error': (fromTime.dirty || fromTime.touched) && fromTime.invalid}" class="time-picker">
-          <input #fromTime="ngModel" (ngModelChange)="selectTime(filter.fromTime, true)" [(ngModel)]="filter.fromTime" [disabled]="!filter.fromDate" class="form-control"
-                 name="fromTime"
+          <input #fromTime="ngModel" [(ngModel)]="filter.fromTime" [disabled]="!filter.fromDate" class="form-control"
+                 name="fromTime" (ngModelChange)="selectTime(filter.fromTime, true)"
                  placeholder="HH:MM:SS" timevalidator type="text"
                  validTimeReqex>
-          <nz-time-picker (ngModelChange)="selectTime($event)" [(ngModel)]="filter.fromTime1" [nzAllowEmpty]="false"
-                          name="fromTimeIcon"></nz-time-picker>
+          <nz-time-picker [(ngModel)]="filter.fromTime1" [nzAllowEmpty]="false"
+                          name="fromTimeIcon" (ngModelChange)="selectTime($event)" ></nz-time-picker>
         </div>
       </div>
     </div>
@@ -52,11 +52,11 @@
           #to="ngModel"
           [(ngModel)]="filter.toDate" [nzFormat]="dateFormat" [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" name="to"></nz-date-picker>
         <div [ngClass]="{'has-error': (toTime.dirty || toTime.touched) && toTime.invalid}" class="time-picker">
-          <input #toTime="ngModel" (ngModelChange)="selectTime(filter.toTime, true, 'to')" [(ngModel)]="filter.toTime" [disabled]="!filter.toDate" class="form-control"
-                 name="toTime"
+          <input #toTime="ngModel" [(ngModel)]="filter.toTime" [disabled]="!filter.toDate" class="form-control"
+                 name="toTime" (ngModelChange)="selectTime(filter.toTime, true, 'to')"
                  placeholder="HH:MM:SS" timevalidator type="text"
                  validTimeReqex>
-          <nz-time-picker (ngModelChange)="selectTime($event, false, 'to')" [(ngModel)]="filter.toTime1"
+          <nz-time-picker [(ngModel)]="filter.toTime1" (ngModelChange)="selectTime($event, false, 'to')"
                           [nzAllowEmpty]="false" name="toTimeIcon"></nz-time-picker>
         </div>
       </div>
@@ -109,7 +109,7 @@
     <div *ngIf="permission.joc.administration.customization.share && !isSearch" class="form-group row">
       <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
       <div class="col-sm-8">
-        <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
+        <label nz-checkbox [(ngModel)]="filter.shared" name="shared"></label>
       </div>
     </div>
     <div *ngIf="isSearch" class="form-group m-t m-b-xs">

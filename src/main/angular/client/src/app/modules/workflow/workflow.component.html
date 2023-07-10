@@ -22,9 +22,10 @@
                 {{'deploymentService.label.agents' | translate}}
                 <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
-              <nz-select (ngModelChange)="selectAgents($event)" [(ngModel)]="workflowFilters.filter.agentNames" [disabled]="savedFilter.selected"
+              <nz-select [(ngModel)]="workflowFilters.filter.agentNames" [disabled]="savedFilter.selected"
                          [nzAllowClear]="false" [nzDropdownClassName]="'multi-select-dropdown-list'" class="multi-select-dropdown cursor"
                          id="agent-select"
+                         (ngModelChange)="selectAgents($event)"
                          name="agentNames"
                          nzMode="multiple">
                 <ng-container *ngFor="let item of listOfAgents; let i = index">
@@ -352,8 +353,8 @@
                     <div class="box-body">
                       <div>
                         <label class="pos-abt">
-                          <label (nzCheckedChange)="onItemChecked(workflow, $event)" [nzChecked]="object.mapOfCheckedId.has(workflow.path)"
-                                 nz-checkbox></label>
+                          <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(workflow.path)"
+                                 (nzCheckedChange)="onItemChecked(workflow, $event)"></label>
                         </label>
                         <div class="text-left block-ellipsis m-l-md">
                           <i class="icon-workflows-icon"></i>&nbsp;
@@ -477,8 +478,8 @@
                 >
                   <thead>
                   <tr>
-                    <th (nzCheckedChange)="checkAll($event)" [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
-                        [nzShowCheckbox]="true" class="chk" rowspan="2"></th>
+                    <th [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
+                        [nzShowCheckbox]="true" class="chk" (nzCheckedChange)="checkAll($event)"  rowspan="2"></th>
                     <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
                     <th (click)="sort('name')" [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" rowspan="2">
                       <a><span class="p-r-xs" translate>common.label.name</span>

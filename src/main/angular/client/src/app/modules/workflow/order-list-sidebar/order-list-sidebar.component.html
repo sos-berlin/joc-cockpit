@@ -71,11 +71,8 @@
     >
       <thead>
       <tr>
-        <th
-          (nzCheckedChange)="onAllChecked($event)"
-          [(nzChecked)]="checked"
-          [nzIndeterminate]="indeterminate"
-          [nzShowCheckbox]="true"
+        <th [(nzChecked)]="checked" [nzIndeterminate]="indeterminate"
+          [nzShowCheckbox]="true" (nzCheckedChange)="onAllChecked($event)"
         ></th>
         <th class="menu"><span translate>common.label.action</span></th>
         <th (click)="sort('orderId')">

@@ -39,13 +39,13 @@
         ></nz-tree>
         <ng-template #nzTreeTemplate let-node>
           <div class="node-wrapper">
-                <span (click)="openFolder(node)"
-                      *ngIf="node.children && node.children.length>0"
-                      [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                      [class.toggle-children-wrapper-expanded]="node.isExpanded" class="w-15 cursor">
-                  <i *ngIf="!node.isExpanded" class="tree-icon" nz-icon nzTheme="outline" nzType="caret-right"></i>
-                  <i *ngIf="node.isExpanded" class="tree-icon" nz-icon nzTheme="outline" nzType="caret-down"></i>
-                </span>
+            <span (click)="openFolder(node)"
+                  *ngIf="node.children && node.children.length>0"
+                  [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                  [class.toggle-children-wrapper-expanded]="node.isExpanded" class="w-15 cursor">
+              <i *ngIf="!node.isExpanded" class="tree-icon" nz-icon nzTheme="outline" nzType="caret-right"></i>
+              <i *ngIf="node.isExpanded" class="tree-icon" nz-icon nzTheme="outline" nzType="caret-down"></i>
+            </span>
             <span *ngIf="node.origin.children && node.origin.children.length === 0" class="w-15">
                   <span class="fa fa-lg"></span>
                 </span>

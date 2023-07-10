@@ -128,8 +128,8 @@
       <div *ngIf="wizard.step === 2" class="col-md-12">
         <div class="row">
           <div class="col-sm-1 m-b-sm text-center">
-            <label (nzCheckedChange)="onAllChecked($event)" [(nzChecked)]="wizard.checked" [nzIndeterminate]="wizard.indeterminate"
-                   nz-checkbox></label>
+            <label nz-checkbox [(nzChecked)]="wizard.checked" [nzIndeterminate]="wizard.indeterminate"
+                   (nzCheckedChange)="onAllChecked($event)" ></label>
           </div>
           <div class="col-sm-5 m-b-sm p-l-0" translate>common.label.name</div>
           <div class="col-sm-6 m-b-sm p-r-0" translate>common.label.value</div>
@@ -138,9 +138,9 @@
           <div class="col-md-12">
             <div *ngFor="let param of job.params; let i = index" class="form-group row m-b-0">
               <div class="col-sm-1 m-b-sm text-center">
-                <label (nzCheckedChange)="onItemChecked(param, $event)" [nzChecked]="wizard.setOfCheckedValue.has(param.name)"
+                <label nz-checkbox [nzChecked]="wizard.setOfCheckedValue.has(param.name)"
                        [nzDisabled]="!(param.newValue || param.newValue == 0 || param.newValue == false)"
-                       nz-checkbox
+                       (nzCheckedChange)="onItemChecked(param, $event)"
                        style="position: relative;top:5px"></label>
               </div>
               <div class="col-sm-5 m-b-sm p-l-0">

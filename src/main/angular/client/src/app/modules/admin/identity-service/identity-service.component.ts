@@ -161,7 +161,7 @@ export class SettingModalComponent {
         this.data?.['identityServiceType'].indexOf(this.saveService.copiedSetting.type) > -1)) {
       this.isEnable = true;
     }
-    if (this.data && this.data?.['identityServiceType'] === 'OIDC') {
+    if (this.data && (this.data?.['identityServiceType'] === 'OIDC' || this.data?.['identityServiceType'] === 'OIDC-JOC')) {
       this.getImage();
     }
 
@@ -509,7 +509,7 @@ export class SettingModalComponent {
   }
 
   deleteImage(): void {
-    if(this.imageUrl) {
+    if (this.imageUrl) {
       this.coreService.post('documentations/delete', {
         documentations: ['/sos/.images/' + this.data?.['identityServiceName']]
       }).subscribe(() => {
@@ -669,19 +669,21 @@ export class SettingModalComponent {
   }
 
   private iconUpload(): void {
-    const formData = new FormData();
-    this.fileList.forEach((file: any) => {
-      formData.append('file', file);
-      formData.append('name', encodeURIComponent(file.name));
-      formData.append('identityServiceName', this.data?.['identityServiceName']);
-    });
-    let obj = {auditLog: {}};
-    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    formData.append('auditLog', JSON.stringify(obj.auditLog));
-    const headers = new HttpHeaders().set('X-Access-Token', this.authService.accessTokenId);
-    headers.set('Content-Type', 'multipart/form-data');
+    if (this.fileList && this.fileList.length > 0) {
+      const formData = new FormData();
+      this.fileList.forEach((file: any) => {
+        formData.append('file', file);
+        formData.append('name', encodeURIComponent(file.name));
+        formData.append('identityServiceName', this.data?.['identityServiceName']);
+      });
+      let obj = {auditLog: {}};
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+      formData.append('auditLog', JSON.stringify(obj.auditLog));
+      const headers = new HttpHeaders().set('X-Access-Token', this.authService.accessTokenId);
+      headers.set('Content-Type', 'multipart/form-data');
 
-    this.coreService.request('api/iam/import', formData, headers).subscribe();
+      this.coreService.request('api/iam/import', formData, headers).subscribe();
+    }
   }
 }
 

@@ -7,9 +7,10 @@
       </perfect-scrollbar>
       <div class="row toolbar b-b m-b-12" style="padding-bottom: 6px">
         <div class="col-md-12" id="search-container">
-          <nz-tree-select (ngModelChange)="selectSearchNode($event)" [(ngModel)]="searchNode.text" [nzDropdownClassName]="'custom-dropdown'"
+          <nz-tree-select [(ngModel)]="searchNode.text" [nzDropdownClassName]="'custom-dropdown'"
                           [nzDropdownStyle]="{ 'max-height': '340px' }" [nzNodes]="allNodes"
-                          [nzPlaceHolder]="'workflow.placeholder.findNode' | translate" [nzShowSearch]="true" class="input-search"
+                          [nzPlaceHolder]="'workflow.placeholder.findNode' | translate" [nzShowSearch]="true"
+                          (ngModelChange)="selectSearchNode($event)" class="input-search"
                           id="searchTree" name="searchNode">
           </nz-tree-select>
           <i class="search-icon" nz-icon nzTheme="outline" nzType="search"></i>
@@ -330,8 +331,8 @@
                       <sup class="text-danger text-sm">*</sup>
                     </label>
                     <div class="col-md-8 col-lg-9">
-                      <nz-select #children="ngModel" (ngModelChange)="selectListForForkList($event)" [(ngModel)]="selectedNode.obj.children" name="children"
-                                 nzShowSearch
+                      <nz-select #children="ngModel" [(ngModel)]="selectedNode.obj.children" name="children"
+                                 nzShowSearch (ngModelChange)="selectListForForkList($event)"
                                  required>
                         <ng-container *ngFor="let item of forkListVariables">
                           <nz-option [nzLabel]="item.name" [nzValue]="item.name" nzCustomContent>
@@ -388,7 +389,7 @@
                       <span [innerHTML]="forkListAgentAssignment"></span>
                     </ng-template>
                     <div class="col-md-8 col-lg-9">
-                      <nz-radio-group (ngModelChange)="changeAgentSelection($event)" [(ngModel)]="selectedNode.radio">
+                      <nz-radio-group [(ngModel)]="selectedNode.radio" (ngModelChange)="changeAgentSelection($event)" >
                         <label nz-radio nzValue="agent"><span
                           translate>workflow.label.agentSelectFromList</span></label>
                         <label nz-radio nzValue="expression"><span
@@ -645,7 +646,7 @@
                      translate>
               </label>
               <div class="col-md-8 col-lg-9">
-                <nz-radio-group (ngModelChange)="changeSettings($event)" [(ngModel)]="selectedNode.obj.type"
+                <nz-radio-group [(ngModel)]="selectedNode.obj.type" (ngModelChange)="changeSettings($event)"
                                 name="type">
                   <label
                     [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.finish.unchanged' | translate) : ''"
@@ -1064,9 +1065,10 @@
                            required type="text">
                   </div>
                   <div *ngIf="!variable.isTextField" class="col-md-6 col-lg-6 m-b-sm">
-                    <nz-select (ngModelChange)="checkVariableType(variable);" [(ngModel)]="variable.name"
+                    <nz-select [(ngModel)]="variable.name"
                                [nzDisabled]="isTrash || !permission.joc.inventory.manage || variable.isRequired"
                                name="name{{i}}"
+                               (ngModelChange)="checkVariableType(variable);"
                                nzPlaceHolder="{{'common.placeholder.selectVariable' | translate}}"
                                nzShowSearch>
                       <nz-option *ngFor="let list of selectedNode.obj.argumentList" [nzDisabled]="list.isSelected"

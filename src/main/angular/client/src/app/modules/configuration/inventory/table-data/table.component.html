@@ -80,11 +80,11 @@
       [nzSize]="'small'">
       <thead>
       <tr>
-        <th (nzCheckedChange)="onAllChecked($event)"
-            *ngIf="permission.joc.inventory.manage"
+        <th *ngIf="permission.joc.inventory.manage"
             [(nzChecked)]="checked"
             [nzIndeterminate]="indeterminate"
             [nzShowCheckbox]="true"
+            (nzCheckedChange)="onAllChecked($event)"
             class="chk"
         ></th>
         <th class="menu"><span translate>common.label.action</span></th>
@@ -137,8 +137,8 @@
       <ng-template [ngForOf]="ajaxTable.data" let-data ngFor>
         <tr
           [ngClass]="{'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.path === data.path && copyObj.name === data.name && copyObj.type === data.type)}">
-          <td (nzCheckedChange)="onItemChecked(data, $event)" *ngIf="permission.joc.inventory.manage"
-              [nzChecked]="mapOfCheckedId.has(data.name)" [nzShowCheckbox]="true"></td>
+          <td *ngIf="permission.joc.inventory.manage" [nzChecked]="mapOfCheckedId.has(data.name)"
+              (nzCheckedChange)="onItemChecked(data, $event)" [nzShowCheckbox]="true"></td>
           <td>
             <div class="btn-group dropdown">
               <button [disabled]="mapOfCheckedId.size > 0" [nzDropdownMenu]="exportMenu" class="btn-drop more-option-h" nz-dropdown

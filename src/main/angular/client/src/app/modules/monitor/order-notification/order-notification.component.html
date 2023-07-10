@@ -52,10 +52,11 @@
       >
         <thead>
         <tr>
-          <th (nzCheckedChange)="checkAll($event)" *ngIf="permission.currentController && permission.currentController.orders.modify"
+          <th *ngIf="permission.currentController && permission.currentController.orders.modify"
               [(nzChecked)]="object.checked"
               [nzIndeterminate]="object.indeterminate"
               [nzShowCheckbox]="true"
+              (nzCheckedChange)="checkAll($event)"
               class="chk"
           ></th>
           <th *ngIf="permission.currentController && permission.currentController.orders.modify" class="menu"><span
@@ -116,10 +117,11 @@
         <ng-template [ngForOf]="ajaxTable.data" let-notify
                      ngFor>
           <tr>
-            <td (nzCheckedChange)="onItemChecked(notify, $event)"
-                *ngIf="permission.currentController && permission.currentController.orders.modify" [nzChecked]="filters.mapOfCheckedId.has(notify.notificationId)"
+            <td *ngIf="permission.currentController && permission.currentController.orders.modify" [nzChecked]="filters.mapOfCheckedId.has(notify.notificationId)"
                 [nzDisabled]="notify.type !== 'ERROR'"
-                [nzShowCheckbox]="true"></td>
+                [nzShowCheckbox]="true"
+                (nzCheckedChange)="onItemChecked(notify, $event)"
+            ></td>
             <td *ngIf="permission.currentController && permission.currentController.orders.modify">
               <div class="btn-group dropdown">
                 <button [nzDisabled]="notify.type !== 'ERROR' || object.checked || object.indeterminate"
