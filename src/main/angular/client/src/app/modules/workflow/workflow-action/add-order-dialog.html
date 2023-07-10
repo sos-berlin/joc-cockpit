@@ -66,11 +66,11 @@
           </div>
         </div>
         <div [ngClass]="{'has-error': (time.dirty || time.touched) && time.invalid}" class="time-picker">
-          <input #time="ngModel" (ngModelChange)="selectTime(order.fromTime, true)" [(ngModel)]="order.fromTime" [disabled]="!order.fromDate" class="form-control"
+          <input #time="ngModel" [(ngModel)]="order.fromTime" [disabled]="!order.fromDate" class="form-control"
                  name="fromTime"
                  placeholder="HH:MM:SS" timevalidator type="text"
-                 validTimeReqex>
-          <nz-time-picker (ngModelChange)="selectTime($event)" [(ngModel)]="order.fromTime1" [nzAllowEmpty]="false"
+                 validTimeReqex (ngModelChange)="selectTime(order.fromTime, true)" >
+          <nz-time-picker [(ngModel)]="order.fromTime1" [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)"
                           name="fromTimeIcon"></nz-time-picker>
         </div>
       </div>
@@ -312,7 +312,7 @@
     <div *ngIf="schedules && schedules.length > 0" class="form-group row">
       <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
       <div class="col-sm-6">
-        <nz-select (ngModelChange)="selectSchedule($event)" [(ngModel)]="object.name" name="schedule" nzAllowClear
+        <nz-select [(ngModel)]="object.name" name="schedule" nzAllowClear (ngModelChange)="selectSchedule($event)"
                    nzShowSearch>
           <nz-option *ngFor="let option of schedules" [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
         </nz-select>

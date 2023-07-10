@@ -60,8 +60,8 @@
             <div class="box-body">
               <label *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="pos-abt"
                      style="margin-top: -2px">
-                <label (nzCheckedChange)="onItemChecked(cluster, $event);" [nzChecked]="object.mapOfCheckedId.has(cluster.subagentClusterId)"
-                       nz-checkbox></label>
+                <label [nzChecked]="object.mapOfCheckedId.has(cluster.subagentClusterId)"
+                       nz-checkbox (nzCheckedChange)="onItemChecked(cluster, $event);" ></label>
               </label>
               <div [ngClass]="{'m-l-md': permission.joc && permission.joc.administration.controllers.manage}"
                    class="text-left block-ellipsis">
@@ -146,10 +146,11 @@
           >
             <thead>
             <tr>
-              <th (nzCheckedChange)="onAllChecked($event)" *ngIf="permission.joc && permission.joc.administration.controllers.manage"
+              <th *ngIf="permission.joc && permission.joc.administration.controllers.manage"
                   [(nzChecked)]="object.checked"
                   [nzIndeterminate]="object.indeterminate"
                   [nzShowCheckbox]="true"
+                  (nzCheckedChange)="onAllChecked($event)"
                   nzWidth="46px"
               ></th>
               <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="menu"><span
@@ -171,9 +172,9 @@
             <tbody (cdkDropListDropped)="sortByDrop($event, ajaxTable.data)" cdkDropList>
             <tr (click)="selectedClusterFn(cluster);$event.preventDefault()" *ngFor="let cluster of ajaxTable.data"
                 cdkDrag class="cursor move-on-hover">
-              <td (nzCheckedChange)="onItemChecked(cluster, $event)" *ngIf="permission.joc && permission.joc.administration.controllers.manage"
+              <td *ngIf="permission.joc && permission.joc.administration.controllers.manage"
                   [nzChecked]="object.mapOfCheckedId.has(cluster.subagentClusterId)"
-                  [nzShowCheckbox]="true">
+                  [nzShowCheckbox]="true" (nzCheckedChange)="onItemChecked(cluster, $event)" >
                 <div cdkDragHandle class="pos-abt move-icon text-16 cur-m t-1"
                      style="left: -1px;overflow: hidden;max-width: 12px">
                   <i aria-hidden="true" class="fa fa-bars"></i>
@@ -367,11 +368,8 @@
           >
             <thead>
             <tr>
-              <th
-                (nzCheckedChange)="onAllChecked($event)"
-                [(nzChecked)]="object.checked"
-                [nzIndeterminate]="object.indeterminate"
-                [nzShowCheckbox]="true"
+              <th [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
+                [nzShowCheckbox]="true" (nzCheckedChange)="onAllChecked($event)"
                 class="chk"
               ></th>
               <th class="menu"><span translate>common.label.action</span></th>
@@ -392,8 +390,8 @@
             <tbody>
             <tr (click)="selectedClusterFn(cluster);$event.preventDefault()" *ngFor="let cluster of ajaxTable.data"
                 class="cursor">
-              <td (nzCheckedChange)="onItemChecked(cluster, $event)" [nzChecked]="object.mapOfCheckedId.has(cluster.subagentClusterId)"
-                  [nzShowCheckbox]="true">
+              <td [nzChecked]="object.mapOfCheckedId.has(cluster.subagentClusterId)"
+                  [nzShowCheckbox]="true" (nzCheckedChange)="onItemChecked(cluster, $event)" >
               </td>
               <td>
                 <button (click)="$event.stopPropagation();" (nzVisibleChange)="onVisible($event)" [nzDisabled]="object.mapOfCheckedId.size > 0"

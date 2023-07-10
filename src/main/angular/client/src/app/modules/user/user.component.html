@@ -321,22 +321,22 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showFilesImmediately</div>
                   <div class="col-md-6">
-                    <label [(ngModel)]="preferences.showFiles" (ngModelChange)="changeConfiguration()"
-                           nz-checkbox></label>
+                    <label nz-checkbox [(ngModel)]="preferences.showFiles"
+                           (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.enableCommentsForAuditLog</div>
                   <div class="col-md-6">
-                    <label [(ngModel)]="preferences.auditLog"  (ngModelChange)="changeConfiguration()" [disabled]="forceLoging"
-                           nz-checkbox></label>
+                    <label nz-checkbox [(ngModel)]="preferences.auditLog" (ngModelChange)="changeConfiguration()" [disabled]="forceLoging"
+                           ></label>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.useTimezoneForLog</div>
                   <div class="col-md-6">
-                    <label [(ngModel)]="preferences.logTimezone" (ngModelChange)="changeConfiguration()"
-                           nz-checkbox></label>
+                    <label nz-checkbox [(ngModel)]="preferences.logTimezone"
+                           (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
@@ -344,8 +344,8 @@
                     profile.label.currentController
                   </div>
                   <div class="col-md-6">
-                    <label [(ngModel)]="preferences.currentController" (ngModelChange)="changeConfiguration()"
-                           nz-checkbox></label>
+                    <label nz-checkbox [(ngModel)]="preferences.currentController"
+                           (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
@@ -353,8 +353,8 @@
                     profile.label.showTooltipInfo
                   </div>
                   <div class="col-md-6">
-                    <label [(ngModel)]="preferences.showTooltipInfo" (ngModelChange)="changeConfiguration()"
-                           nz-checkbox></label>
+                    <label nz-checkbox [(ngModel)]="preferences.showTooltipInfo"
+                           (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
@@ -362,8 +362,8 @@
                     profile.label.licenseWarningGotIt
                   </div>
                   <div class="col-md-6">
-                    <label [(ngModel)]="preferences.licenseExpirationWarning" (ngModelChange)="changeConfiguration()"
-                           nz-checkbox></label>
+                    <label nz-checkbox [(ngModel)]="preferences.licenseExpirationWarning"
+                           (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
@@ -371,8 +371,8 @@
                     profile.label.showMoreOptions
                   </div>
                   <div class="col-md-6">
-                    <label [(ngModel)]="preferences.showMoreOptions" (ngModelChange)="changeConfiguration()"
-                           nz-checkbox></label>
+                    <label nz-checkbox [(ngModel)]="preferences.showMoreOptions"
+                           (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">

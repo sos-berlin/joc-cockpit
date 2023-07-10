@@ -184,11 +184,11 @@
                 >
                   <thead>
                   <tr>
-                    <th (nzCheckedChange)="checkAll($event)"
-                        *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
+                    <th *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
                         [(nzChecked)]="object.checked"
                         [nzIndeterminate]="object.indeterminate"
                         [nzShowCheckbox]="true"
+                        (nzCheckedChange)="checkAll($event)"
                         class="chk"
                     ></th>
                     <th nzWidth="55px"><span translate>common.label.action</span></th>
@@ -236,8 +236,7 @@
                   <ng-template [ngForOf]="ajaxTable.data" let-board
                                ngFor>
                     <tr [ngClass]="{'light-bg':board.show}">
-                      <td (nzCheckedChange)="onItemChecked(board, null, $event)"
-                          *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
+                      <td *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
                           [nzChecked]="object.setOfCheckedId.has(board.path)" [nzDisabled]="board.numOfNotices === board.numOfExpectingOrders"
                           [nzShowCheckbox]="true"></td>
                       <td>
@@ -334,12 +333,12 @@
                               [nzShowPagination]="false" [nzSize]="'small'" class="m-a-0 inner-table">
                       <thead>
                       <tr>
-                        <th (nzCheckedChange)="checkAll($event, board)"
-                            *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
+                        <th *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
                             [(nzChecked)]="board.checked"
                             [nzDisabled]="board.numOfNotices === board.numOfExpectingOrders"
                             [nzIndeterminate]="board.indeterminate"
                             [nzShowCheckbox]="true"
+                            (nzCheckedChange)="checkAll($event, board)"
                             class="chk"
                         ></th>
                         <th

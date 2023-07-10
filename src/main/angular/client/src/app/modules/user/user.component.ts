@@ -13,6 +13,8 @@ import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {NzUploadFile} from "ng-zorro-antd/upload";
+import {ByteToSizePipe} from "../../pipes/core.pipe";
+import {HttpHeaders} from "@angular/common/http";
 
 declare var $;
 
@@ -490,29 +492,36 @@ export class UpdateKeyModalComponent {
   templateUrl: './import-key-dialog.html'
 })
 export class ImportKeyModalComponent {
-  @Input() schedulerId: any;
-  @Input() display: any;
-  @Input() securityLevel: string;
-  @Input() type: string;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerId: any;
+  display: any;
+  securityLevel: string;
+  type: string;
 
   fileList: NzUploadFile[] = [];
   submitted = false;
   required = false;
+  uploading = false;
+  showProgressBar = false;
+  uploadError = false;
   comments: any = {};
   key = {keyAlg: 'RSA'};
 
   constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService,
               public translate: TranslateService, public toasterService: ToastrService) {
-
   }
 
   ngOnInit(): void {
-    //  this.uploader.options.url = this.type === 'key' ? './api/profile/key/import' : this.type === 'certificate' ? './api/profile/key/ca/import' : './api/profile/ca/import';
+  this.schedulerId = this.modalData.schedulerId;
+  this.display = this.modalData.display;
+  this.securityLevel = this.modalData.securityLevel;
+  this.type = this.modalData.type;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
+    
     if (this.type === 'ca') {
       this.key.keyAlg = 'ECDSA';
     }
@@ -522,6 +531,19 @@ export class ImportKeyModalComponent {
   beforeUpload = (file: NzUploadFile): boolean => {
     this.fileList.push(file);
     this.onFileSelected(this.fileList);
+    setTimeout(() => {
+      const uploadSpan = document.querySelector('.ant-upload-span');
+      if (uploadSpan) {
+        const spanElement = document.createElement('span');
+        // Apply the ByteToSizePipe to format file.size
+        const byteToSizePipe = new ByteToSizePipe();
+        const fileSizeFormatted = byteToSizePipe.transform(file.size);
+        spanElement.classList.add("file-size")
+        spanElement.textContent = `Size: ${fileSizeFormatted}`;
+        const listItemCardActions = uploadSpan.querySelector('.ant-upload-list-item-card-actions');
+        uploadSpan.insertBefore(spanElement, listItemCardActions);
+      }
+    }, 20);
     return false;
   };
 
@@ -539,11 +561,11 @@ export class ImportKeyModalComponent {
           const data = _event.target.result;
           if (typeof data === 'string') {
             if (data.match(/private/i)) {
-              //   self.uploader.queue[i].index = 1;
+              self.fileList[i]['index'] = 1;
             } else if (data.match(/public/i)) {
-              // self.uploader.queue[i].index = 2;
+              self.fileList[i]['index'] = 2;
             } else if (data.match(/certificate/i)) {
-              // self.uploader.queue[i].index = 3;
+              self.fileList[i]['index'] = 3;
             } else {
               let msg;
               self.translate.get('profile.message.invalidKeyFileSelected').subscribe(translatedValue => {
@@ -562,14 +584,41 @@ export class ImportKeyModalComponent {
 
   import(): void {
     this.submitted = true;
-    // this.uploader.queue = this.uploader.queue.sort((a, b) => {
-    //   return a.index - b.index;
-    // });
-    // for (let i = 0; i < this.uploader.queue.length; i++) {
-    //   setTimeout(() => {
-    //     this.uploader.queue[i].upload();
-    //   }, 10 * i);
-    // }
+    this.fileList = this.fileList.sort((a, b) => {
+      return a['index'] - b['index'];
+    });
+    for (let i = 0; i < this.fileList.length; i++) {
+      setTimeout(() => {
+        this.upload(this.fileList[i]);
+      }, 10 * i);
+    }
+  }
+
+  private upload(file: any) {
+    let obj: any = {
+      importKeyFilter: JSON.stringify({keyAlgorithm: this.key.keyAlg})
+    };
+    if (this.type === 'certificate') {
+      obj = {};
+    }
+    const URL = this.type === 'key' ? 'profile/key/import' : this.type === 'certificate' ? 'profile/key/ca/import' : 'profile/ca/import';
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('name', file.name);
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+    formData.append('auditLog', JSON.stringify(obj.auditLog));
+    this.uploading = true;
+    const headers = new HttpHeaders().set('X-Access-Token', this.authService.accessTokenId);
+    headers.set('Content-Type', 'multipart/form-data');
+    const bodyData = this.type === 'key' ? {keys: obj} : obj;
+
+    this.coreService.request('api/' + URL, {...formData, ...bodyData}, headers).subscribe({
+      next: () => {
+        if (this.fileList.length === 1 || this.fileList[this.fileList.length - 1].name === obj.name) {
+          this.activeModal.close('success');
+        }
+      }, error: () => this.submitted = false
+    });
   }
 
   cancel(): void {

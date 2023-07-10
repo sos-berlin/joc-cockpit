@@ -8,7 +8,7 @@
           </div>
           <div class="inline">
             <div class="show-block">
-              <label (ngModelChange)="changeController()" [(ngModel)]="agentFilters.current" nz-checkbox>
+              <label nz-checkbox [(ngModel)]="agentFilters.current" (ngModelChange)="changeController()" >
                 {{'common.label.currentController' | translate}}
               </label>
               <div class="inline">

@@ -1,9 +1,10 @@
 <div class="box p-a">
   <div *ngIf="controllerRoles && controllerRoles.length > 1" class="m-l b-b p-b-sm">
     <span class="_600 text-16">#</span>
-    <label (nzCheckedChange)="checkAll($event)" *ngIf="permission.joc && permission.joc.administration.accounts.manage" [(nzChecked)]="object.checked"
+    <label *ngIf="permission.joc && permission.joc.administration.accounts.manage"
+           nz-checkbox [(nzChecked)]="object.checked"
            [nzIndeterminate]="object.indeterminate"
-           nz-checkbox
+           (nzCheckedChange)="checkAll($event)"
            style="margin-left: 13px"></label>
     <a (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text"
        style="padding-left: 12px;">
@@ -23,12 +24,12 @@
           </div>
           <div *ngIf="permission.joc && permission.joc.administration.accounts.manage"
                class="pull-left m-l p-l-sm m-r-xs">
-            <label (nzCheckedChange)="checkMappedObject($event, role)" [nzChecked]="object.mapOfCheckedId.has(role.roleName)"
-                   nz-checkbox></label>
+            <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(role.roleName)"
+                   (nzCheckedChange)="checkMappedObject($event, role)"></label>
           </div>
           <div *ngIf="permission.joc && permission.joc.administration.accounts.manage"
                class="btn-group dropdown pull-left m-r-xs">
-            <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+            <button nz-dropdown [nzDropdownMenu]="option" class="btn-drop more-option-h" nzTrigger="click"
                     type="button"><i
               class="fa fa-ellipsis-h"></i></button>
             <nz-dropdown-menu #option="nzDropdownMenu" role="menu">

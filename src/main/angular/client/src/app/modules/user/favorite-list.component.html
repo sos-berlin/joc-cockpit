@@ -24,10 +24,9 @@
   </div>
 </div>
 <div *ngIf="filter.sharedWithMe" class="b-b p-b-sm w-full m-t-sm m-b-sm">
-  <label (nzCheckedChange)="checkAll($event)" [(nzChecked)]="object.checked"
+  <label nz-checkbox [(nzChecked)]="object.checked"
          [nzIndeterminate]="object.indeterminate"
-         class="m-l-sm"
-         nz-checkbox>
+         class="m-l-sm" (nzCheckedChange)="checkAll($event)" >
     <span class="p-l-xxs" translate>profile.favoriteManagement.label.checkAll</span>
   </label>
 </div>
@@ -39,8 +38,8 @@
         <i aria-hidden="true" class="fa fa-bars"></i>
       </div>
       <div *ngIf="filter.sharedWithMe" class="inline">
-        <label (nzCheckedChange)="checkMappedObject($event, item)" [nzChecked]="object.mapOfCheckedId.has(item.name)"
-               nz-checkbox></label>
+        <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(item.name)"
+               (nzCheckedChange)="checkMappedObject($event, item)"></label>
       </div>
       <div class="btn-group dropdown m-l-xs m-t-n-xs">
         <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" type="button"><i

@@ -382,8 +382,8 @@
                   <div class="row">
                     <div *ngIf="selectedNode.job.defaultArguments.length > 0" class="col-md-12">
                       <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
-                        <label (nzCheckedChange)="onAllChecked(selectedNode.job,'defaultArguments', $event)" [(nzChecked)]="object.checked5" [nzIndeterminate]="object.indeterminate5"
-                               nz-checkbox></label>
+                        <label nz-checkbox [(nzChecked)]="object.checked5" [nzIndeterminate]="object.indeterminate5"
+                               (nzCheckedChange)="onAllChecked(selectedNode.job,'defaultArguments', $event)" ></label>
                       </div>
                       <div class="form-group row m-b-0 m-l-md">
                         <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
@@ -399,8 +399,8 @@
                             <i aria-hidden="true" class="fa fa-bars"></i>
                           </div>
                           <div class="pos-abt" style="margin-left: -13px;">
-                            <label (nzCheckedChange)="onItemChecked(selectedNode.job, 'defaultArguments', argument.name, $event)" [nzChecked]="object.setOfCheckedDefaultArgu.has(argument.name)" [nzDisabled]="!argument.name"
-                                   class="m-t-xs"
+                            <label [nzChecked]="object.setOfCheckedDefaultArgu.has(argument.name)" [nzDisabled]="!argument.name"
+                                   class="m-t-xs" (nzCheckedChange)="onItemChecked(selectedNode.job, 'defaultArguments', argument.name, $event)"
                                    nz-checkbox></label>
                           </div>
                           <div [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}"
@@ -477,8 +477,8 @@
                   <div class="row">
                     <div *ngIf="selectedNode.job.executable.env.length > 0" class="col-md-12">
                       <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
-                        <label (nzCheckedChange)="onAllChecked(selectedNode.job.executable,'env', $event)" [(nzChecked)]="object.checked3" [nzIndeterminate]="object.indeterminate3"
-                               nz-checkbox></label>
+                        <label nz-checkbox [(nzChecked)]="object.checked3" [nzIndeterminate]="object.indeterminate3"
+                               (nzCheckedChange)="onAllChecked(selectedNode.job.executable,'env', $event)" ></label>
                       </div>
                       <div class="form-group row m-b-0 m-l-md">
                         <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
@@ -494,9 +494,8 @@
                             <i aria-hidden="true" class="fa fa-bars"></i>
                           </div>
                           <div class="pos-abt" style="margin-left: -13px;">
-                            <label (nzCheckedChange)="onItemChecked(selectedNode.job.executable, 'env', env.name, $event)" [nzChecked]="object.setOfCheckedEnv.has(env.name)" [nzDisabled]="!env.name"
-                                   class="m-t-xs"
-                                   nz-checkbox></label>
+                            <label nz-checkbox [nzChecked]="object.setOfCheckedEnv.has(env.name)" [nzDisabled]="!env.name"
+                                   class="m-t-xs" (nzCheckedChange)="onItemChecked(selectedNode.job.executable, 'env', env.name, $event)"></label>
                           </div>
                           <div [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}"
                                class="col-md-5 col-lg-5 m-b-sm p-r-0">
@@ -582,8 +581,8 @@
                   <div class="row">
                     <div *ngIf="selectedNode.job.executable.arguments.length > 0" class="col-md-12">
                       <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
-                        <label (nzCheckedChange)="onAllChecked(selectedNode.job.executable,'arguments', $event)" [(nzChecked)]="object.checked1" [nzIndeterminate]="object.indeterminate1"
-                               nz-checkbox></label>
+                        <label nz-checkbox [(nzChecked)]="object.checked1" [nzIndeterminate]="object.indeterminate1"
+                               (nzCheckedChange)="onAllChecked(selectedNode.job.executable,'arguments', $event)" ></label>
                       </div>
                       <div class="form-group row m-b-0 m-l-md">
                         <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
@@ -599,9 +598,9 @@
                             <i aria-hidden="true" class="fa fa-bars"></i>
                           </div>
                           <div class="pos-abt" style="margin-left: -13px;">
-                            <label (nzCheckedChange)="onItemChecked(selectedNode.job.executable,'arguments', argu.name, $event)" [nzChecked]="object.setOfCheckedArgu.has(argu.name)" [nzDisabled]="!argu.name"
-                                   class="m-t-xs"
-                                   nz-checkbox></label>
+                            <label nz-checkbox [nzChecked]="object.setOfCheckedArgu.has(argu.name)" [nzDisabled]="!argu.name"
+                                   class="m-t-xs" (nzCheckedChange)="onItemChecked(selectedNode.job.executable,'arguments', argu.name, $event)"
+                                  ></label>
                           </div>
                           <div [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}"
                                class="col-md-5 col-lg-5 m-b-sm p-r-0">
@@ -677,8 +676,8 @@
                   <div class="row">
                     <div *ngIf="selectedNode.job.executable.jobArguments.length > 0" class="col-md-12">
                       <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
-                        <label (nzCheckedChange)="onAllChecked(selectedNode.job.executable,'jobArguments', $event)" [(nzChecked)]="object.checked2" [nzIndeterminate]="object.indeterminate2"
-                               nz-checkbox></label>
+                        <label nz-checkbox [(nzChecked)]="object.checked2" [nzIndeterminate]="object.indeterminate2"
+                               (nzCheckedChange)="onAllChecked(selectedNode.job.executable,'jobArguments', $event)" ></label>
                       </div>
                       <div class="form-group row m-b-0 m-l-md">
                         <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
@@ -694,8 +693,8 @@
                             <i aria-hidden="true" class="fa fa-bars"></i>
                           </div>
                           <div class="pos-abt" style="margin-left: -13px;">
-                            <label (nzCheckedChange)="onItemChecked(selectedNode.job.executable,'jobArguments', argument.name, $event)" [nzChecked]="object.setOfCheckedJobArgu.has(argument.name)" [nzDisabled]="!argument.name"
-                                   class="m-t-xs"
+                            <label [nzChecked]="object.setOfCheckedJobArgu.has(argument.name)" [nzDisabled]="!argument.name"
+                                   class="m-t-xs" (nzCheckedChange)="onItemChecked(selectedNode.job.executable,'jobArguments', argument.name, $event)"
                                    nz-checkbox></label>
                           </div>
                           <div [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}"
@@ -992,8 +991,8 @@
         <div class="form-group row">
           <div *ngIf="selectedNode.obj.defaultArguments.length > 0" class="col-md-12">
             <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
-              <label (nzCheckedChange)="onAllChecked(selectedNode.obj,'nodeArguments', $event)" [(nzChecked)]="object.checked4" [nzIndeterminate]="object.indeterminate4"
-                     nz-checkbox></label>
+              <label nz-checkbox [(nzChecked)]="object.checked4" [nzIndeterminate]="object.indeterminate4"
+                     (nzCheckedChange)="onAllChecked(selectedNode.obj,'nodeArguments', $event)" ></label>
             </div>
             <div class="form-group row m-b-0 m-l-md">
               <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
@@ -1008,8 +1007,8 @@
                   <i aria-hidden="true" class="fa fa-bars"></i>
                 </div>
                 <div class="pos-abt" style="margin-left: -13px;">
-                  <label (nzCheckedChange)="onItemChecked(selectedNode.obj, 'nodeArguments', argument.name, $event)" [nzChecked]="object.setOfCheckedNodeArgu.has(argument.name)" [nzDisabled]="!argument.name"
-                         class="m-t-xs"
+                  <label [nzChecked]="object.setOfCheckedNodeArgu.has(argument.name)" [nzDisabled]="!argument.name"
+                         class="m-t-xs" (nzCheckedChange)="onItemChecked(selectedNode.obj, 'nodeArguments', argument.name, $event)"
                          nz-checkbox></label>
                 </div>
                 <div [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}"

@@ -7,17 +7,16 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline valign">
-            <label (nzCheckedChange)="controllerChange()" *ngIf="monitorFilters.tabIndex == 0" [(ngModel)]="monitorFilters.controller.current"
-                   name="current" nz-checkbox>
+            <label *ngIf="monitorFilters.tabIndex == 0" [(ngModel)]="monitorFilters.controller.current"
+                   name="current" nz-checkbox  (nzCheckedChange)="controllerChange()" >
               {{'common.label.currentController' | translate}}
             </label>
-            <label (nzCheckedChange)="controllerChange()" *ngIf="monitorFilters.tabIndex == 1" [(ngModel)]="monitorFilters.agent.current"
-                   name="current" nz-checkbox>
+            <label *ngIf="monitorFilters.tabIndex == 1" [(ngModel)]="monitorFilters.agent.current"
+                   name="current" nz-checkbox (nzCheckedChange)="controllerChange()" >
               {{'common.label.currentController' | translate}}
             </label>
-            <label (nzCheckedChange)="controllerChange()"
-                   *ngIf="monitorFilters.tabIndex == 2 && monitorFilters.orderNotification.mapOfCheckedId.size ===0" [(ngModel)]="monitorFilters.orderNotification.current" name="current"
-                   nz-checkbox>
+            <label *ngIf="monitorFilters.tabIndex == 2 && monitorFilters.orderNotification.mapOfCheckedId.size ===0" [(ngModel)]="monitorFilters.orderNotification.current" name="current"
+                   nz-checkbox (nzCheckedChange)="controllerChange()">
               {{'common.label.currentController' | translate}}
             </label>
 

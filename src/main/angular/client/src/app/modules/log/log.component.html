@@ -67,7 +67,7 @@
                (ngModelChange)="checkLogLevel('ERROR')"><span translate>log.label.error</span></label>
         <label *ngIf="isWarnLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.warn"
                (ngModelChange)="checkLogLevel('WARN')"><span translate>log.label.warn</span></label>
-        <label *ngIf="isDeBugLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.debug"
+        <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.debug"
                (ngModelChange)="checkLogLevel('DEBUG')"><span translate>log.label.debug</span></label>
         <label *ngIf="isTraceLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.trace"
                (ngModelChange)="checkLogLevel('TRACE')"><span translate>log.label.trace</span></label>
@@ -80,7 +80,7 @@
         <div class="box white">
           <div class="box-body p-a-0">
 
-            <pre id="logs" (scroll)="onScroll($event)" #dataBody *ngIf="!error" class="log p-a "></pre>
+            <pre id="logs" (scroll)="onScroll($event)" #dataBody *ngIf="!error" class="log p-r-sm p-b-sm p-t-sm "></pre>
             <div class="log text-center p-b-md" *ngIf="error">
               <div class="text-dark p-t text-38 m-b-n-8"><span [innerHtml]="errStatus"></span></div>
               <div class="text-lg text-muted" *ngIf="errStatus">{{'log.label.error' | translate}}!</div>
@@ -137,7 +137,7 @@
                 <span class="_600" *ngIf="!node.origin.end && !node.origin.name">{{node.origin.title | translate}}</span>
                 <span class="text-muted" *ngIf="!node.origin.end && !node.origin.name && !node.origin.title">{{node.origin.logEvent}}</span>
                 <i class="text-primary" *ngIf="node.origin.name1">&nbsp;({{node.origin.name1}})</i>
-                <i class="text-primary" *ngIf="node.origin.retryCount > 1">&nbsp;(Total Tries {{node.origin.retryCount}})</i>
+                <i class="text-primary" *ngIf="node.origin.retryCount > 1 && node.origin.title == 'Retry'">&nbsp;(Total Tries {{node.origin.retryCount}})</i>
                 <span *ngIf="node.origin.logLevel == 'ERROR'">
                     - (<i class="text-sm log_error">Failed</i>)
                   </span>

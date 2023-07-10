@@ -31,7 +31,7 @@ import {DataService} from "../../services/data.service";
         <div class=" col-sm-9">
           <div class="row" [ngStyle]="{'margin-top': versionData.gitHash ? 'auto' : '32px'}">
             <div class=" col-sm-12">
-              <span>&copy; 2002-{{versionData.currentYear}} <a class="text-primary" target="_blank"
+              <span>&copy; 2002-{{versionData.currentYear || currentYear}} <a class="text-primary" target="_blank"
                                                                href="https://www.sos-berlin.com">Software- und Organisations-Service GmbH.</a> </span>
             </div>
           </div>
@@ -93,6 +93,7 @@ export class AboutModalComponent {
   validFrom = '';
   validUntil = '';
   remainingDays: number;
+  currentYear = new Date().getFullYear();
 
   constructor(public modalService: NzModalRef, private coreService: CoreService, private dataService: DataService,
               private ref: ChangeDetectorRef) {

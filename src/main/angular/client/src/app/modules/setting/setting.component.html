@@ -87,8 +87,8 @@
                       <ng-container [ngSwitch]="val.value.type">
                         <ng-container *ngSwitchCase="'TIMEZONE'">
                           <div class="col-sm-4 col-lg-3">
-                            <nz-select (ngModelChange)="changeConfiguration(null, val, setting.name === 'joc')" [(ngModel)]="val.value.value" class="w-xxxl"
-                                       name="{{val.name}}{{i}}"
+                            <nz-select [(ngModel)]="val.value.value" class="w-xxxl"
+                                       name="{{val.name}}{{i}}" (ngModelChange)="changeConfiguration(null, val, setting.name === 'joc')"
                                        nzShowSearch>
                               <nz-option *ngFor="let option of zones" [nzLabel]="option" [nzValue]="option"></nz-option>
                             </nz-select>
@@ -113,9 +113,9 @@
                         <ng-container *ngSwitchCase="'WEEKDAYS'">
                           <div [ngClass]="{'has-error' : ((wkday.dirty || wkday.touched) && wkday.invalid)}"
                                class="col-sm-4 col-lg-3">
-                            <nz-select #wkday="ngModel" (ngModelChange)="changeConfiguration(wkday, val, setting.name === 'joc')" [(ngModel)]="val.value.value" class="w-xxxl"
+                            <nz-select #wkday="ngModel" [(ngModel)]="val.value.value" class="w-xxxl"
                                        name="{{val.name}}{{i}}" nzMode="multiple"
-                                       required>
+                                       required (ngModelChange)="changeConfiguration(wkday, val, setting.name === 'joc')" >
                               <nz-option *ngFor="let option of daysOptions"
                                          [nzLabel]="'runtime.label.'+ option.label | translate"
                                          [nzValue]="option.value"></nz-option>
@@ -128,9 +128,9 @@
                         <ng-container *ngSwitchCase="'LIST'">
                           <div [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}"
                                class="col-sm-4 col-lg-3">
-                            <nz-select #list="ngModel" (ngModelChange)="changeConfiguration(list, val, setting.name === 'joc')" [(ngModel)]="val.value.value"
+                            <nz-select #list="ngModel" [(ngModel)]="val.value.value"
                                        class="w-xxxl" name="{{val.name}}{{i}}"
-                                       required>
+                                       required (ngModelChange)="changeConfiguration(list, val, setting.name === 'joc')">
                               <nz-option *ngFor="let option of val.value.values"
                                          [nzLabel]="option" [nzValue]="option"></nz-option>
                             </nz-select>
@@ -209,9 +209,8 @@
                         <ng-container *ngSwitchCase="'BOOLEAN'">
                           <div [ngClass]="{ 'has-error' : (((booleanVal.dirty || booleanVal.touched) && booleanVal.invalid))}"
                                class="col-sm-4 col-lg-3">
-                            <nz-select #booleanVal="ngModel" (ngModelChange)="changeConfiguration(booleanVal, val, setting.name === 'joc')"
-                                       [(ngModel)]="val.value.value" [nzPlaceHolder]="'common.placeholder.selectValue' | translate" class="w-xxxl"
-                                       name="{{val.name}}{{i}}"
+                            <nz-select #booleanVal="ngModel" [(ngModel)]="val.value.value" [nzPlaceHolder]="'common.placeholder.selectValue' | translate" class="w-xxxl"
+                                       name="{{val.name}}{{i}}" (ngModelChange)="changeConfiguration(booleanVal, val, setting.name === 'joc')"
                                        nzAllowClear>
                               <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                               <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>

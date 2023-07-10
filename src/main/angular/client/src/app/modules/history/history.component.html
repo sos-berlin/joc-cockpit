@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline valign">
-            <label (ngModelChange)="changeController()" [(ngModel)]="historyFilters.current" nz-checkbox>
+            <label [(ngModel)]="historyFilters.current" nz-checkbox (ngModelChange)="changeController()" >
               {{'common.label.currentController' | translate}}
             </label>
           </div>

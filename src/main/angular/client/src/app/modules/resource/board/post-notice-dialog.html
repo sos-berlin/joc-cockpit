@@ -68,12 +68,12 @@
           </div>
         </div>
         <div [ngClass]="{'has-error': (time.dirty || time.touched) && time.invalid}" class="time-picker">
-          <input #time="ngModel" (ngModelChange)="selectTime(postObj.fromTime, true)" [(ngModel)]="postObj.fromTime" [disabled]="!postObj.fromDate" class="form-control"
-                 name="fromTime"
+          <input #time="ngModel" [(ngModel)]="postObj.fromTime" [disabled]="!postObj.fromDate" class="form-control"
+                 name="fromTime" (ngModelChange)="selectTime(postObj.fromTime, true)"
                  placeholder="HH:MM:SS" timevalidator type="text"
                  validTimeReqex>
-          <nz-time-picker (ngModelChange)="selectTime($event)" [(ngModel)]="postObj.fromTime1" [nzAllowEmpty]="false"
-                          name="fromTimeIcon"></nz-time-picker>
+          <nz-time-picker [(ngModel)]="postObj.fromTime1" [nzAllowEmpty]="false"
+                          name="fromTimeIcon" (ngModelChange)="selectTime($event)" ></nz-time-picker>
         </div>
       </div>
     </div>

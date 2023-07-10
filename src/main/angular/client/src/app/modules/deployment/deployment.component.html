@@ -285,7 +285,7 @@
                         class="p-l-sm fa fa-info-circle"></i>
                       </div>
                       <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-46">
-                        <nz-date-picker (ngModelChange)="convertJSON()" [(ngModel)]="data.descriptor.scheduled" name="scheduled"
+                        <nz-date-picker [(ngModel)]="data.descriptor.scheduled" name="scheduled" (ngModelChange)="convertJSON()"
                                         nzShowTime></nz-date-picker>
                       </div>
                     </div>
@@ -296,7 +296,7 @@
                         class="p-l-sm fa fa-info-circle"></i>
                       </div>
                       <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-46">
-                        <nz-date-picker (ngModelChange)="convertJSON()" [(ngModel)]="data.descriptor.created" class="" name="created"
+                        <nz-date-picker [(ngModel)]="data.descriptor.created" (ngModelChange)="convertJSON()" name="created"
                                         nzShowTime></nz-date-picker>
                       </div>
                     </div>
@@ -481,9 +481,8 @@
                     <div *ngFor="let agent of data.agents.controllerRefs; let i = index"
                          [ngClass]="{'b-t m-t': i != 0}">
                       <h6 class="m-t-12 hover-icon">
-                        <label (nzCheckedChange)="onItemChecked(agent.controllerId, $event, '__AGENT')" *ngIf="agent.controllerId" [nzChecked]="object.setOfCheckedId.has(agent.controllerId + '__AGENT')"
-                               class="m-r-sm"
-                               nz-checkbox></label>
+                        <label *ngIf="agent.controllerId" [nzChecked]="object.setOfCheckedId.has(agent.controllerId + '__AGENT')"
+                               class="m-r-sm" nz-checkbox (nzCheckedChange)="onItemChecked(agent.controllerId, $event, '__AGENT')" ></label>
                         {{agent.controllerId || 'Controller_ID_' + (i + 1)}}
                         <i (click)="agent.isAgentExpanded = !agent.isAgentExpanded"
                            [ngClass]="{'fa-caret-up': agent.isAgentExpanded}"
@@ -523,8 +522,8 @@
                         </div>
                         <div *ngFor="let item of agent.members; let j = index" [ngClass]="{'b-t m-t': j != 0}">
                           <h6 class="m-t-12 hover-icon">
-                            <label (nzCheckedChange)="onItemChecked(item.agentId, $event, '__AGENT')" *ngIf="item.agentId" [nzChecked]="object.setOfCheckedId.has(item.agentId + '__AGENT')"
-                                   class="m-r-sm"
+                            <label *ngIf="item.agentId" [nzChecked]="object.setOfCheckedId.has(item.agentId + '__AGENT')"
+                                   class="m-r-sm" (nzCheckedChange)="onItemChecked(item.agentId, $event, '__AGENT')"
                                    nz-checkbox></label>
                             <span>{{item.agentId || 'Agent_ID_' + (j + 1)}}</span>
                             <i (click)="item.isAgentPropertiesExpanded = !item.isAgentPropertiesExpanded"
@@ -626,10 +625,10 @@
                                   <div [ngClass]="{'has-error' : ((method.dirty || method.touched) && method.invalid)}"
                                        class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
                                     <nz-select #method="ngModel"
-                                               (ngModelChange)="convertJSON()"
                                                [(ngModel)]="item.target.authentication.method" [nzDisabled]="isTrash"
                                                id="amethod{{i}}{{j}}"
                                                name="amethod{{i}}{{j}}"
+                                               (ngModelChange)="convertJSON()"
                                                nzPlaceHolder="{{'deploymentService.agent.placeholder.method' | translate}}" required>
                                       <nz-option *ngFor="let option of methods" [nzLabel]="option"
                                                  [nzValue]="option"></nz-option>
@@ -750,8 +749,8 @@
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
-                                  <label (ngModelChange)="convertJSON()" [(ngModel)]="item.target.forceSudo" name="aforceSudo{{i}}{{j}}"
-                                         nz-checkbox></label>
+                                  <label [(ngModel)]="item.target.forceSudo" name="aforceSudo{{i}}{{j}}"
+                                         nz-checkbox (ngModelChange)="convertJSON()" ></label>
                                 </div>
                               </div>
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
@@ -1228,8 +1227,8 @@
                   <div [ngClass]="{'fade-in show': obj.isControllerExpanded}" class="m-l-md hide">
                     <div *ngFor="let controller of data.controllers; let i = index" [ngClass]="{'b-t m-t': i != 0}">
                       <h6 class="m-t-12 hover-icon">
-                        <label (nzCheckedChange)="onItemChecked(controller.controllerId, $event, '__CONTROLLER')" *ngIf="controller.controllerId" [nzChecked]="object.setOfCheckedId.has(controller.controllerId + '__CONTROLLER')"
-                               class="m-r-sm"
+                        <label *ngIf="controller.controllerId" [nzChecked]="object.setOfCheckedId.has(controller.controllerId + '__CONTROLLER')"
+                               class="m-r-sm" (nzCheckedChange)="onItemChecked(controller.controllerId, $event, '__CONTROLLER')"
                                nz-checkbox></label>
                         {{controller.controllerId || 'Controller_ID_' + (i + 1)}}
                         <i (click)="controller.isControllerExpanded = !controller.isControllerExpanded"
@@ -2010,8 +2009,8 @@
                   <div [ngClass]="{'fade-in show': obj.isJOCExpanded}" class="m-l-md hide">
                     <div *ngFor="let jocC of data.joc; let i = index">
                       <h6 class="m-t-12 hover-icon">
-                        <label (nzCheckedChange)="onItemChecked(jocC.members.clusterId, $event, '__JOC')" *ngIf="jocC.members.clusterId" [nzChecked]="object.setOfCheckedId.has(jocC.members.clusterId + '__JOC')"
-                               class="m-r-sm"
+                        <label *ngIf="jocC.members.clusterId" [nzChecked]="object.setOfCheckedId.has(jocC.members.clusterId + '__JOC')"
+                               class="m-r-sm" (nzCheckedChange)="onItemChecked(jocC.members.clusterId, $event, '__JOC')"
                                nz-checkbox></label>
                         {{jocC.members.clusterId || 'Cluster_ID_' + (i + 1)}}
                         <i (click)="jocC.isJOCExpanded = !jocC.isJOCExpanded"
@@ -2048,8 +2047,8 @@
                         </div>
                         <div *ngFor="let item of jocC.members.instances; let j = index" [ngClass]="{'b-t m-t': j != 0}">
                           <h6 class="m-t-12 hover-icon">
-                            <label (nzCheckedChange)="onItemChecked(item.instanceId, $event, '__JOC')" *ngIf="item.instanceId" [nzChecked]="object.setOfCheckedId.has(item.instanceId + '__JOC')"
-                                   class="m-r-sm"
+                            <label *ngIf="item.instanceId" [nzChecked]="object.setOfCheckedId.has(item.instanceId + '__JOC')"
+                                   class="m-r-sm" (nzCheckedChange)="onItemChecked(item.instanceId, $event, '__JOC')"
                                    nz-checkbox></label>
                             <span>{{item.instanceId || (j + 1)}}</span>
                             <i (click)="item.isJOCPropertiesExpanded = !item.isJOCPropertiesExpanded"

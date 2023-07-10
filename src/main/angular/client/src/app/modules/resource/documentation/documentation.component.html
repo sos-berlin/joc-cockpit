@@ -137,8 +137,8 @@
                   <div class="box card">
                     <div class="box-body">
                       <label class="pos-abt" style="margin-top: -2px">
-                        <label (nzCheckedChange)="onItemChecked(document, $event)" [nzChecked]="object.mapOfCheckedId.has(document.path)"
-                               nz-checkbox></label>
+                        <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(document.path)"
+                               (nzCheckedChange)="onItemChecked(document, $event)"></label>
                       </label>
                       <div class="text-left block-ellipsis m-l-md">
                         <span class="text-left">
@@ -237,10 +237,10 @@
                 >
                   <thead>
                   <tr>
-                    <th (nzCheckedChange)="checkAll($event)"
-                        [(nzChecked)]="object.checked"
+                    <th [(nzChecked)]="object.checked"
                         [nzIndeterminate]="object.indeterminate"
                         [nzShowCheckbox]="true"
+                        (nzCheckedChange)="checkAll($event)"
                         class="chk"
                     ></th>
                     <th class="menu"><span translate>common.label.action</span></th>

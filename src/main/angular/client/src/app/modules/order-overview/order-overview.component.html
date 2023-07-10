@@ -492,9 +492,10 @@
                     <div class="box-body">
                       <div>
                         <label class="pos-abt">
-                          <label (nzCheckedChange)="onItemChecked(order, $event)" [nzChecked]="object.mapOfCheckedId.has(order.orderId)"
+                          <label [nzChecked]="object.mapOfCheckedId.has(order.orderId)"
                                  [nzDisabled]="order.positionIsImplicitEnd"
-                                 nz-checkbox></label>
+                                 nz-checkbox
+                                 (nzCheckedChange)="onItemChecked(order, $event)" ></label>
                         </label>
                         <div class="text-left block-ellipsis m-l-md">
                           <i class="p-r-xs" nz-icon nzTheme="outline" nzType="unordered-list"></i>
@@ -657,10 +658,10 @@
                 >
                   <thead>
                   <tr>
-                    <th (nzCheckedChange)="checkAll($event)"
-                        [(nzChecked)]="object.checked"
+                    <th [(nzChecked)]="object.checked"
                         [nzIndeterminate]="object.indeterminate"
                         [nzShowCheckbox]="true"
+                        (nzCheckedChange)="checkAll($event)"
                         class="chk"
                     ></th>
                     <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
@@ -705,8 +706,9 @@
                   <ng-template [ngForOf]="ajaxTable.data" let-order
                                ngFor>
                     <tr [ngClass]="{'light-bg': (showPanelObj && showPanelObj.orderId == order.orderId)}">
-                      <td (nzCheckedChange)="onItemChecked(order, $event)" [nzChecked]="object.mapOfCheckedId.has(order.orderId)"
+                      <td [nzChecked]="object.mapOfCheckedId.has(order.orderId)"
                           [nzDisabled]="order.positionIsImplicitEnd"
+                          (nzCheckedChange)="onItemChecked(order, $event)"
                           [nzShowCheckbox]="true"></td>
                       <td>
                         <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)"

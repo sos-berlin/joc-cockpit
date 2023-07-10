@@ -32,12 +32,12 @@
         <nz-date-picker #date="ngModel" [(ngModel)]="token.fromDate" [nzAutoFocus]="true" [nzDisabledDate]="disabledDate"
                         [nzFormat]="dateFormat" name="date" required></nz-date-picker>
         <div class="time-picker">
-          <input #time="ngModel" (ngModelChange)="selectTime(token.fromTime, true)" [(ngModel)]="token.fromTime" [disabled]="!token.fromDate" class="form-control"
-                 name="fromTime"
+          <input #time="ngModel" [(ngModel)]="token.fromTime" [disabled]="!token.fromDate" class="form-control"
+                 name="fromTime" (ngModelChange)="selectTime(token.fromTime, true)"
                  placeholder="HH:MM:SS" timevalidator type="text"
                  validTimeReqex>
-          <nz-time-picker (ngModelChange)="selectTime($event)" [(ngModel)]="token.fromTime1" [nzAllowEmpty]="false"
-                          name="fromTimeIcon"></nz-time-picker>
+          <nz-time-picker [(ngModel)]="token.fromTime1" [nzAllowEmpty]="false"
+                          name="fromTimeIcon" (ngModelChange)="selectTime($event)" ></nz-time-picker>
         </div>
         <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
           <div *ngIf="date.errors.required">

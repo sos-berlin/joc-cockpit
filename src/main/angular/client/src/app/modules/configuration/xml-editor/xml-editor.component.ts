@@ -15,11 +15,12 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
+import xmlFormat from 'xml-formatter';
 
 declare const require: any;
 declare const $: any;
 
-const format = require('xml-formatter');
+//const format = require('xml-formatter');
 const xpath = require('xpath');
 const convert = require('xml-js');
 
@@ -572,14 +573,13 @@ export class ShowModalComponent {
               private toasterService: ToastrService, private clipboardService: ClipboardService, private translate: TranslateService,) {
   }
 
-  ngOnInIt(): void {
-    this.xml = this.modalData.xml
+  ngOnInit(): void {
+    this.xml = this.modalData.xml;
     this.objectType = this.modalData.objectType
     this.schemaIdentifier = this.modalData.schemaIdentifier
     this.schedulerId = this.modalData.schedulerId
     this.activeTab = this.modalData.activeTab
     this.validation = this.modalData.validation
-
   }
 
   ngAfterViewInit(): void {
@@ -628,7 +628,7 @@ export class ShowModalComponent {
   }
 
   cancel(): void {
-    this.activeModal.close();
+    this.activeModal.destroy();
   }
 
   execCommand(type): void {
@@ -713,7 +713,7 @@ export class ConfirmationModalComponent {
   constructor(public activeModal: NzModalRef) {
   }
 
-  ngOnInIt(): void {
+  ngOnInit(): void {
     this.save = this.modalData.save;
     this.self = this.modalData.self;
     this.assignXsd = this.modalData.assignXsd;
@@ -1666,8 +1666,6 @@ export class XmlEditorComponent {
   }
 
   private getJobResourceTree(node): void {
-    console.log(this.extraInfo, 'extraInfo')
-    console.log(node)
     if (this.jobResourcesTree.length === 0) {
       this.coreService.post('tree', {
         types: ['JOBRESOURCE'],
@@ -5129,18 +5127,18 @@ export class XmlEditorComponent {
   private updateXML(res) {
     if (res && res.configurationJson) {
       let a = [];
-      let arr = JSON.parse(res.result.configurationJson);
+      let arr = JSON.parse(res.configurationJson);
       a.push(arr);
       this.counting = arr.lastUuid;
       this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
       this.nodes = a;
       this.submitXsd = true;
       this.extraInfo = {
-        released: res.result.released,
-        state: res.result.state,
-        hasReleases: res.result.hasReleases,
-        configurationDate: res.result.configurationDate,
-        modified: res.result.configuration ? res.result.configuration.modified : ''
+        released: res.released,
+        state: res.state,
+        hasReleases: res.hasReleases,
+        configurationDate: res.configurationDate,
+        modified: res.configuration ? res.configuration.modified : ''
       };
       this.prevXML = '';
       this.getIndividualData(this.nodes[0], undefined);
@@ -6137,7 +6135,7 @@ export class XmlEditorComponent {
       let a = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>`;
       a = a.concat(xmlAsString);
       if (flag) {
-        let formatedXml = format(a);
+        let formatedXml = xmlFormat(a);
         formatedXml = formatedXml.replace(/>\s*(<!\[CDATA\[)/g, '>$1');
         formatedXml = formatedXml.replace(/]]>\s*<\//g, ']]></');
         return formatedXml;

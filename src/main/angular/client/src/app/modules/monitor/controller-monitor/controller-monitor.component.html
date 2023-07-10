@@ -18,8 +18,8 @@
           monitor.button.custom
         </div>
       </div>
-      <nz-range-picker (ngModelChange)="onChangeDate()" *ngIf="filters.filter.view === 'Custom'" [(ngModel)]="filters.filter.dateRange"
-                       [nzAllowClear]="false" [nzDisabledDate]="disabledDate"
+      <nz-range-picker *ngIf="filters.filter.view === 'Custom'" [(ngModel)]="filters.filter.dateRange"
+                       [nzAllowClear]="false" [nzDisabledDate]="disabledDate" (ngModelChange)="onChangeDate()"
                        class="pull-right m-r-12"></nz-range-picker>
       <div *ngIf="filters.filter.view !== 'Custom'" class="timeline-header pull-right inline m-l-12">
         <div class="btn-group">
@@ -27,12 +27,12 @@
             <i class="fa fa-angle-left text-md"></i>
           </div>
           <div class="btn btn-default btn-sm no-cursor">
-            <nz-week-picker (ngModelChange)="onChange($event )" *ngIf="filters.filter.view === 'Week'"
+            <nz-week-picker *ngIf="filters.filter.view === 'Week'"
                             [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false"
-                            [nzDisabledDate]="disabledDate"></nz-week-picker>
-            <nz-month-picker (ngModelChange)="onChange($event)" *ngIf="filters.filter.view === 'Month'"
+                            [nzDisabledDate]="disabledDate" (ngModelChange)="onChange($event )" ></nz-week-picker>
+            <nz-month-picker *ngIf="filters.filter.view === 'Month'"
                              [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false"
-                             [nzDisabledDate]="disabledDate"></nz-month-picker>
+                             [nzDisabledDate]="disabledDate" (ngModelChange)="onChange($event)" ></nz-month-picker>
             {{filters.filter.startDate | date : dateFormat }} - {{filters.filter.endDate | date : dateFormat}}
           </div>
           <div (click)="next()" class="btn btn-default btn-sm">

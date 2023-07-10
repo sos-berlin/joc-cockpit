@@ -166,7 +166,7 @@ export class NoticeBoardEditorComponent {
   constructor(public activeModal: NzModalRef) {
   }
 
-  ngOnInIt(): void {
+  ngOnInit(): void {
     this.boardTree = this.modalData.boardTree;
     this.data = this.modalData.data;
     this.object = this.modalData.object;

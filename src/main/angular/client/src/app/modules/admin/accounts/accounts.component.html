@@ -16,10 +16,11 @@
     >
       <thead>
       <tr>
-        <th (nzCheckedChange)="checkAll($event)" *ngIf="permission.joc && permission.joc.administration.accounts.manage"
+        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage"
             [(nzChecked)]="object.checked"
             [nzIndeterminate]="object.indeterminate"
             [nzShowCheckbox]="true"
+            (nzCheckedChange)="checkAll($event)"
             class="chk"
         ></th>
         <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span>
@@ -71,9 +72,11 @@
       </thead>
       <tbody>
       <tr *ngFor="let account of ajaxTable.data" [ngClass]="{'opacity7': account.disabled}">
-        <td (nzCheckedChange)="onItemChecked(account, $event)" *ngIf="permission.joc && permission.joc.administration.accounts.manage"
+        <td *ngIf="permission.joc && permission.joc.administration.accounts.manage"
             [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
-            [nzShowCheckbox]="true"></td>
+            [nzShowCheckbox]="true"
+            (nzCheckedChange)="onItemChecked(account, $event)">
+        </td>
         <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
           <div class="btn-group dropdown pull-left m-r-sm">
             <button [nzDisabled]="object.checked || object.indeterminate" [nzDropdownMenu]="option" class="btn-drop more-option-h"

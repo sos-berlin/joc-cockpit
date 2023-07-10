@@ -29,33 +29,38 @@
           </div>
         </div>
       </div>
-      <nz-upload
-        [(nzFileList)]="fileList"
-        [nzAccept]="'.json'"
-        [nzBeforeUpload]="beforeUpload"
-        [nzShowButton]="fileList.length < 1"
-        [nzType]="fileList.length === 1 ? null : 'drag'"
-        nzListType="picture"
-      >
-        <div *ngIf="fileList.length === 0">
-          <i class="icon-upload-icon"></i>
-          <div class="upload-text" translate>common.button.dragAndDropFileToUpload</div>
-        </div>
-      </nz-upload>
-      <nz-upload *ngIf="fileList.length === 0" [nzAccept]="fileType" [nzBeforeUpload]="beforeUpload">
-        <div class="p-t-sm">
-          <button class="btn btn-default btn-sm" type="button">
-            <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
-            <span translate>common.button.chooseFileToUpload</span>
-          </button>
-        </div>
-      </nz-upload>
     </div>
+    <nz-upload
+      [(nzFileList)]="fileList"
+      [nzAccept]="'.json'"
+      [nzBeforeUpload]="beforeUpload"
+      [nzShowButton]="fileList.length < 1"
+      [nzType]="fileList.length === 1 ? null : 'drag'"
+      nzListType="picture"
+    >
+      <div *ngIf="fileList.length === 0">
+        <i class="icon-upload-icon"></i>
+        <div class="upload-text" translate>common.button.dragAndDropFileToUpload</div>
+      </div>
+    </nz-upload>
+    <div class="process-container" *ngIf="showProgressBar">
+      <div class="upload-progress-bar">
+        <div class="progress-bar-value" [ngClass]="{'success': !uploading}"></div>
+      </div>
+    </div>
+    <nz-upload *ngIf="fileList.length === 0" [nzAccept]="fileType" [nzBeforeUpload]="beforeUpload">
+      <div class="p-t-sm">
+        <button class="btn btn-default btn-sm" type="button">
+          <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
+          <span translate>common.button.chooseFileToUpload</span>
+        </button>
+      </div>
+    </nz-upload>
   </div>
   <div *ngIf="fileList.length > 0" class="modal-footer">
-    <button (click)="import()" [disabled]="submitted || uploader.isUploading || (required && !comments.comment)"
+    <button (click)="import()" [disabled]="submitted || uploading || (required && !comments.comment)"
             class="btn btn-primary btn-sm" type="submit">
-      <i *ngIf="uploader.isUploading" class="fa fa-spin fa-spinner p-r-xs"></i>
+      <i *ngIf="uploading" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.import' | translate}}
     </button>
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
