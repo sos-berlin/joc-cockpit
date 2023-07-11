@@ -7004,6 +7004,11 @@
                     vm.isLoading = true;
                 });
             }
+            $(document).ready(function () {
+                $('#leftPanel').stickySidebar({
+                    sidebarTopMargin: 155
+                });
+            });
         };
         vm.init();
 

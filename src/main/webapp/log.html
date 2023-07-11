@@ -69,19 +69,7 @@
         style="visibility:hidden;position:absolute;display:none"></iframe>
 <script src="bower_components/angular/angular.min.js"></script>
 <script src="modules/log.js"></script>
-<script>
-    (function () {
-        function setMarginTop(){
-            document.getElementById('logs').style.marginTop = (document.getElementById('upper-header').clientHeight + 1) +'px';
-        }
-        // handle resize event
-        window.addEventListener("resize", function() {
-          setMarginTop();
-        });
-        setTimeout(function () {
-            setMarginTop();
-        },800);
-    })();
-</script>
+<script src="js/main-log.js"></script>
+
 </body>
 </html>

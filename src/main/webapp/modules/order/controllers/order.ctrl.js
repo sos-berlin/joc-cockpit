@@ -5420,6 +5420,11 @@
                 vm.isError = true;
                 vm.isLoaded = false;
             });
+            $(document).ready(function () {
+                $('#leftPanel').stickySidebar({
+                    sidebarTopMargin: 155
+                });
+            });
         };
 
         vm.init();
@@ -6868,6 +6873,18 @@
             if (promise1)
                 $timeout.cancel(promise1);
         });
+
+        setTimeout(function () {
+            $('.table-responsive').on('show.bs.dropdown', function (e) {
+                let $menu = $(e.target).find('.more-option-h');
+                $('.dropdown-menu-list1').addClass('list-dropdown').css('top', $menu.offset().top + 'px');
+                $('.dropdown-menu-list1').css('left', '22px');
+            });
+            $('.table-responsive').on('hide.bs.dropdown', function () {
+                $('.dropdown-menu-list1').removeClass('list-dropdown');
+            });
+        }, 1000)
+
     }
 
     HistoryCtrl.$inject = ["$scope", "OrderService", "TaskService", "$uibModal", "SavedFilter", "$timeout", "$filter",

@@ -89,7 +89,7 @@
                     CoreService.setSideView(vm.sideView);
                 };
 
-                if (!vm.sideView.orderOverview.show) {
+                if (!vm.sideView.yadeOverview.show) {
                     vm.hidePanel();
                 }
 
