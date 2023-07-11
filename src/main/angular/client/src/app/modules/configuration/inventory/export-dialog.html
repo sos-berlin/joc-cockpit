@@ -61,7 +61,7 @@
       <div *ngIf="!origin || !origin.object" class="row m-b-12">
         <div class="col-md-3" translate>inventory.label.exportType</div>
         <div class="col-md-6">
-          <nz-radio-group (ngModelChange)="filterList(false)" [(ngModel)]="exportObj.exportType" name="exportType">
+          <nz-radio-group  [(ngModel)]="exportObj.exportType" name="exportType" (ngModelChange)="filterList(false)">
             <label nz-radio nzValue="individual"><span translate>inventory.label.individualObjects</span></label>
             <label nz-radio nzValue="folders"><span translate>inventory.label.folders</span></label>
           </nz-radio-group>
@@ -70,8 +70,8 @@
       <div *ngIf="(!origin || !origin.object) && exportObj.exportType === 'folders'" class="form-group row">
         <label class="col-md-3 form-control-label" translate>inventory.label.objectTypes</label>
         <div class="col-md-6">
-          <nz-select (ngModelChange)="filterList(false)" [(ngModel)]="exportObj.objectTypes" [nzPlaceHolder]="'inventory.placeholder.objectTypes' | translate"
-                     name="objectTypes"
+          <nz-select [(ngModel)]="exportObj.objectTypes" [nzPlaceHolder]="'inventory.placeholder.objectTypes' | translate"
+                     name="objectTypes" (ngModelChange)="filterList(false)"
                      nzMode="multiple">
             <nz-option *ngFor="let option of objectTypes" [nzLabel]="option | translate" [nzValue]="option"></nz-option>
           </nz-select>
@@ -82,8 +82,8 @@
           <label translate>inventory.label.forSigning</label>
         </div>
         <div class="col-md-6">
-          <label (ngModelChange)="onchangeSigning()" [(ngModel)]="exportObj.forSigning" name="forSigning"
-                 nz-checkbox></label>
+          <label [(ngModel)]="exportObj.forSigning" name="forSigning"
+                 nz-checkbox (ngModelChange)="onchangeSigning()"></label>
         </div>
       </div>
       <div *ngIf="exportType === 'BOTH'" class="form-group row">
@@ -91,11 +91,11 @@
           <label translate>inventory.export.label.filterType</label>
         </div>
         <div class="col-md-9">
-          <label (ngModelChange)="filterList()" [(ngModel)]="filter.controller" name="controller" nz-checkbox>
+          <label [(ngModel)]="filter.controller" name="controller" nz-checkbox (ngModelChange)="filterList()">
             {{'inventory.export.label.controller'| translate}}
           </label>
-          <label (ngModelChange)="filterList()" [(ngModel)]="filter.dailyPlan" [disabled]="exportObj.forSigning" class="m-l-md"
-                 name="dailyPlan" nz-checkbox>
+          <label [(ngModel)]="filter.dailyPlan" [disabled]="exportObj.forSigning" class="m-l-md"
+                 name="dailyPlan" nz-checkbox (ngModelChange)="filterList()">
             {{'inventory.export.label.dailyPlan'| translate}}
           </label>
         </div>
@@ -105,20 +105,20 @@
           <label translate>inventory.export.label.filter</label>
         </div>
         <div class="col-md-9">
-          <label (ngModelChange)="filterList()" [(ngModel)]="filter.valid" [disabled]="exportObj.forSigning" name="valid"
+          <label [(ngModel)]="filter.valid" [disabled]="exportObj.forSigning" name="valid" (ngModelChange)="filterList()"
                  nz-checkbox>
             {{'inventory.export.label.validOnly'| translate}}
           </label>
-          <label (ngModelChange)="filterList()" [(ngModel)]="filter.draft" class="m-l-md" name="draft" nz-checkbox>
+          <label [(ngModel)]="filter.draft" class="m-l-md" name="draft" nz-checkbox  (ngModelChange)="filterList()">
             {{'inventory.export.label.draft'| translate}}
           </label>
-          <label (ngModelChange)="filterList()" *ngIf="!(exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'JOBTEMPLATE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR'))" [(ngModel)]="filter.deploy" [disabled]="!filter.controller" class="m-l-md"
-                 name="deploy"
+          <label *ngIf="!(exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'JOBTEMPLATE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR'))" [(ngModel)]="filter.deploy" [disabled]="!filter.controller" class="m-l-md"
+                 name="deploy" (ngModelChange)="filterList()"
                  nz-checkbox>
             {{'inventory.export.label.deployed'| translate}}
           </label>
-          <label (ngModelChange)="filterList()" *ngIf="exportType === 'BOTH' || exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'JOBTEMPLATE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR')" [(ngModel)]="filter.release" [disabled]="exportObj.forSigning || !filter.dailyPlan"
-                 class="m-l-md" name="release"
+          <label *ngIf="exportType === 'BOTH' || exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'JOBTEMPLATE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR')" [(ngModel)]="filter.release" [disabled]="exportObj.forSigning || !filter.dailyPlan"
+                 class="m-l-md" name="release" (ngModelChange)="filterList()"
                  nz-checkbox>
             {{'inventory.export.label.released'| translate}}
           </label>

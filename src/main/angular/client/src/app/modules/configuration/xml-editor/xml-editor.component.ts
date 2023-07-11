@@ -5127,18 +5127,18 @@ export class XmlEditorComponent {
   private updateXML(res) {
     if (res && res.configurationJson) {
       let a = [];
-      let arr = JSON.parse(res.result.configurationJson);
+      let arr = JSON.parse(res.configurationJson);
       a.push(arr);
       this.counting = arr.lastUuid;
       this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
       this.nodes = a;
       this.submitXsd = true;
       this.extraInfo = {
-        released: res.result.released,
-        state: res.result.state,
-        hasReleases: res.result.hasReleases,
-        configurationDate: res.result.configurationDate,
-        modified: res.result.configuration ? res.result.configuration.modified : ''
+        released: res.released,
+        state: res.state,
+        hasReleases: res.hasReleases,
+        configurationDate: res.configurationDate,
+        modified: res.configuration ? res.configuration.modified : ''
       };
       this.prevXML = '';
       this.getIndividualData(this.nodes[0], undefined);

@@ -28,6 +28,7 @@
           </div>
           <div class="btn btn-default btn-sm no-cursor">
             <nz-week-picker *ngIf="filters.filter.view === 'Week'"
+                            [nzFormat]="dateFormat"
                             [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false"
                             [nzDisabledDate]="disabledDate" (ngModelChange)="onChange($event )" ></nz-week-picker>
             <nz-month-picker *ngIf="filters.filter.view === 'Month'"

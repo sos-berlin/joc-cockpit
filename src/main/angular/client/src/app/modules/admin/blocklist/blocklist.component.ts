@@ -103,7 +103,7 @@ export class BlocklistComponent {
   }
 
   ngOnInit(): void {
-    this.permission = this.modalData.permission;
+    this.permission = this.modalData.permission || {};
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.blocklistFilter = this.coreService.getAdminTab().blocklist;
     if (this.preferences.entryPerPage) {

@@ -54,7 +54,7 @@ export class AddRestrictionComponent {
   ngOnInit(): void {
     this.schedulerId = this.modalData.schedulerId;
     this.preferences = this.modalData.preferences;
-    this.data = this.modalData.data;
+    this.data = this.modalData.data || {};
     setTimeout(() => {
       this.isVisible = true;
     }, 0);
@@ -616,7 +616,7 @@ export class PeriodComponent {
 
   ngOnInit(): void {
     this.isNew = this.modalData.isNew;
-    this.data = this.modalData.data;
+    this.data = this.modalData.data || {};
     if (this.isNew) {
       this.period.frequency = 'singleStart';
       this.period.period.singleStart = '';

@@ -29,7 +29,7 @@ export class ValueEditorComponent implements AfterViewInit {
 
   ngOnInit(): void {
     this.data = this.modalData.data;
-    this.object = this.modalData.object;
+    this.object = this.modalData.object || {};
   }
 
   ngAfterViewInit(): void {

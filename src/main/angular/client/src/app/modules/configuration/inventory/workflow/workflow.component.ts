@@ -166,10 +166,10 @@ export class NoticeBoardEditorComponent {
   constructor(public activeModal: NzModalRef) {
   }
 
-  ngOnInIt(): void {
-    this.boardTree = this.modalData.boardTree;
+  ngOnInit(): void {
+    this.boardTree = this.modalData.boardTree || [];
     this.data = this.modalData.data;
-    this.object = this.modalData.object;
+    this.object = this.modalData.object || {};
   }
 
   ngAfterViewInit(): void {
@@ -243,10 +243,10 @@ export class NoticeBoardEditorComponent {
   templateUrl: './facet-editor-dialog.html'
 })
 export class FacetEditorComponent {
-readonly modalData: any = inject(NZ_MODAL_DATA);
- preferences: any = {};
- data: any = {};
- isList: boolean;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  preferences: any = {};
+  data: any = {};
+  isList = false;
   variable: any = {};
   favList = [];
 
@@ -254,9 +254,9 @@ readonly modalData: any = inject(NZ_MODAL_DATA);
   }
 
   ngOnInit(): void {
-   this.preferences = this.modalData.preferences;
-   this.data = this.modalData.data;
-   this.isList = this.modalData.isList;
+    this.preferences = this.modalData.preferences || {};
+    this.data = this.modalData.data || {};
+    this.isList = this.modalData.isList;
     this.variable = this.coreService.clone(this.data);
     if (this.isList && this.variable.value && (!this.variable.value.list || this.variable.value.list.length === 0)) {
       this.addVariableToArray(this.variable.value);
@@ -353,10 +353,10 @@ export class RepeatEditorComponent {
 })
 export class TimeEditorComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
- data: any;
- period: any;
- isTooltipVisible: boolean;
- isCycle: boolean;
+  data: any;
+  period: any;
+  isTooltipVisible = false;
+  isCycle = false;
 
   isExist = false;
 
@@ -1165,8 +1165,8 @@ export class FindAndReplaceComponent {
   }
 
   ngOnInit(): void {
-    this.agents = this.modalData.agents;
-    this.preferences = this.modalData.preferences;
+    this.agents = this.modalData.agents || [];
+    this.preferences = this.modalData.preferences || {};
 
     this.listOfAllAgents = this.coreService.clone(this.agents);
     this.listOfAgents = this.coreService.clone(this.agents);
@@ -3648,7 +3648,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-    
         WorkflowComponent.parseWorkflowJSON(result);
         const res = {
           configuration: result

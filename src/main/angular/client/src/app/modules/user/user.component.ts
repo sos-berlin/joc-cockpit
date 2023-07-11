@@ -37,7 +37,7 @@ export class EditFavoriteModalComponent {
   }
 
   ngOnInit(): void {
-    this.list = this.modalData.list;
+    this.list = this.modalData.list || [];
     this.data = this.modalData.data;
     this.type = this.modalData.type;
     this.schedulerId = this.modalData.schedulerId;

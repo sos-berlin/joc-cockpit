@@ -71,9 +71,9 @@ export class DependentWorkflowComponent {
   }
 
   ngOnInit(): void {
-  this.workflow = this.modalData.workflow;
-  this.permission  = this.modalData.permission;
-  this.preferences  = this.modalData.preferences;
+  this.workflow = this.modalData.workflow || {};
+  this.permission  = this.modalData.permission || {};
+  this.preferences  = this.modalData.preferences || {};
   this.controllerId = this.modalData.controllerId;
   this.recursiveCals  = this.modalData.recursiveCals;
   this.view = this.modalData.view;

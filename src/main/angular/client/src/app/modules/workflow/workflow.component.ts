@@ -44,7 +44,7 @@ export class FilterModalComponent {
     this.new = this.modalData.new;
     this.edit = this.modalData.edit;
     this.filter = this.modalData.filter;
-    this.listOfAgents = this.modalData.listOfAgents;
+    this.listOfAgents = this.modalData.listOfAgents || [];
     this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
