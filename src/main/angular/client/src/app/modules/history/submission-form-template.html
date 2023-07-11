@@ -32,17 +32,19 @@
     <div *ngIf="filter.radio == 'current'" class="form-group row">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.from</label>
       <div class="col-sm-6">
-        <nz-date-picker
-          [(ngModel)]="filter.from"
-          [nzFormat]="dateFormat" [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" name="from"></nz-date-picker>
+        <app-date-input [object]="filter" [attributeDate]="'from'"
+                        [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
+                        [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+        ></app-date-input>
       </div>
     </div>
     <div *ngIf="filter.radio == 'current'" class="form-group row">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.to</label>
       <div class="col-sm-6">
-        <nz-date-picker
-          [(ngModel)]="filter.to"
-          [nzFormat]="dateFormat" [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" name="to"></nz-date-picker>
+        <app-date-input [object]="filter" [attributeDate]="'to'"
+                        [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
+                        [placeholder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+        ></app-date-input>
       </div>
     </div>
     <div *ngIf="filter.radio == 'planned'" [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}"

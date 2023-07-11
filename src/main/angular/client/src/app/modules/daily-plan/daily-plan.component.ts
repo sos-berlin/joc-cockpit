@@ -52,7 +52,7 @@ export class CreatePlanModalComponent {
   ngOnInit(): void {
     this.schedulerId = this.modalData.schedulerId;
     this.selectedDate = this.modalData.selectedDate;
-    this.dateRanges = this.modalData.dateRanges;
+    this.dateRanges = this.modalData.dateRanges || [];
     this.preferences = this.modalData.preferences;
     this.display = this.preferences.auditLog;
     this.getWorkflowTree();
@@ -168,15 +168,16 @@ export class CreatePlanModalComponent {
   templateUrl: './remove-plan-dialog.html',
 })
 export class RemovePlanModalComponent {
-  @Input() schedulerId: string;
-  @Input() orders;
-  @Input() order;
-  @Input() workflow;
-  @Input() timeZone;
-  @Input() selectedDate;
-  @Input() submissionsDelete: boolean;
-  @Input() isSubmit: boolean;
-  @Input() dateRange: any = [];
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerId: string;
+  orders;
+  order;
+  workflow;
+  timeZone;
+  selectedDate;
+  submissionsDelete: boolean;
+  isSubmit: boolean;
+  dateRange: any = [];
 
   submitted = false;
   count = 0;
@@ -190,6 +191,16 @@ export class RemovePlanModalComponent {
   }
 
   ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId;
+    this.orders = this.modalData.orders;
+    this.order = this.modalData.order;
+    this.workflow = this.modalData.workflow;
+    this.timeZone = this.modalData.timeZone;
+    this.selectedDate = this.modalData.selectedDate;
+    this.submissionsDelete = this.modalData.submissionsDelete;
+    this.isSubmit = this.modalData.isSubmit;
+    this.dateRange = this.modalData.dateRange || [];
+
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';

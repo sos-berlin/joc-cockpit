@@ -199,8 +199,8 @@
                    required type="text">
           </div>
           <div *ngIf="!argument.isTextField" class="col-sm-4 m-b-sm">
-            <nz-select (ngModelChange)="checkVariableType(argument)" [(ngModel)]="argument.name" [nzDisabled]="argument.isRequired"
-                       name="argu_name{{i}}{{argument.name}}"
+            <nz-select [(ngModel)]="argument.name" [nzDisabled]="argument.isRequired"
+                       name="argu_name{{i}}{{argument.name}}" (ngModelChange)="checkVariableType(argument)"
                        nzShowSearch>
               <nz-option *ngFor="let list of variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name"
                          [nzValue]="list.name"></nz-option>
@@ -322,8 +322,8 @@
          class="form-group row">
       <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
       <div class="col-sm-6">
-        <nz-select (ngModelChange)="selectOrder($event)" [(ngModel)]="object.orderName" name="order" nzAllowClear
-                   nzShowSearch>
+        <nz-select [(ngModel)]="object.orderName" name="order" nzAllowClear
+                   nzShowSearch (ngModelChange)="selectOrder($event)" >
           <nz-option *ngFor="let option of selectedSchedule.orderParameterisations" [nzLabel]="option.orderName || '-'"
                      [nzValue]="option.orderName || '-'"></nz-option>
         </nz-select>

@@ -20,7 +20,7 @@ export class ShowPermissionComponent {
 
   ngOnInit(): void {
     this.identityServiceName = this.modalData.identityServiceName;
-    this.account = this.modalData.account;
+    this.account = this.modalData.account || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.getPermission();
   }

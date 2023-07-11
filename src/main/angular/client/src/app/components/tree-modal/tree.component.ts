@@ -35,13 +35,13 @@ export class TreeModalComponent {
 
   ngOnInit(): void {
     this.schedulerId = this.modalData.schedulerId;
-    this.paths = this.modalData.paths;
+    this.paths = this.modalData.paths || [];
     this.objects = this.modalData.objects || [];
     this.showCheckBox = this.modalData.showCheckBox;
     this.type = this.modalData.type;
     this.object = this.modalData.object;
     this.changeDetect = this.modalData.changeDetect;
-    this.nodes = this.modalData.nodes;
+    this.nodes = this.modalData.nodes || [];
     this.init();
     this.searchTerm.pipe(debounceTime(200))
       .subscribe((searchValue: string) => {

@@ -140,7 +140,7 @@ export class SettingModalComponent {
   }
 
   ngOnInit(): void {
-    this.data = this.modalData.data;
+    this.data = this.modalData.data || {};
 
     const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.display = preferences.auditLog;

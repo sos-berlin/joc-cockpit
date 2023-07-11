@@ -1,0 +1,30 @@
+<div class="w-full" [ngClass]="{ 'has-error' : (((from.dirty || from.touched) && from.invalid))}">
+  <nz-date-picker
+    #from="ngModel"
+    [required]="isRequired"
+    [(ngModel)]="object[attributeDate]"
+    [nzFormat]="dateFormat"
+    [nzAllowClear]="!isTime && isAllowClear"
+    [nzPlaceHolder]="placeholder | translate" [name]="name + 'Date'"></nz-date-picker>
+  <ng-container *ngIf="isTime">
+    <div [ngClass]="{'has-error': (dateAndTime.dirty || dateAndTime.touched) && dateAndTime.invalid}"
+         class="time-picker">
+      <input #dateAndTime="ngModel" [(ngModel)]="object[attributeTime]" [disabled]="isDisable" class="form-control"
+             [name]="name + 'Time'" (ngModelChange)="selectTime(object[attributeTime], true, attributeTime + '1')"
+             placeholder="HH:MM:SS" timevalidator
+             type="text" validTimeReqex>
+      <nz-time-picker [(ngModel)]="object[attributeTime + '1']"
+                      (ngModelChange)="selectTime($event, false, attributeTime)"
+                      [nzAllowEmpty]="false" [name]="name + 'TimeIcon'"></nz-time-picker>
+    </div>
+
+    <a *ngIf="isAllowClear" class="text-hover-primary p-l-sm"
+       (click)="object[attributeDate] = null; object[attributeTime] = '';"
+       translate="">common.button.clear</a>
+  </ng-container>
+  <div *ngIf="from.invalid && (from.dirty || from.touched)" class="text-danger help-block">
+    <div *ngIf="from.errors.required">
+      <div translate>common.message.requiredError</div>
+    </div>
+  </div>
+</div>

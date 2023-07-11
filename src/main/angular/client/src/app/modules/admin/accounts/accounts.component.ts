@@ -164,7 +164,7 @@ export class AccountModalComponent {
     this.newUser = this.modalData.newUser;
     this.copy = this.modalData.copy;
     this.userDetail = this.modalData.userDetail;
-    this.accountList = this.modalData.accountList;
+    this.accountList = this.modalData.accountList || [];
     this.oldUser = this.modalData.oldUser;
     this.identityServiceType = this.modalData.identityServiceType;
     this.identityServiceName = this.modalData.identityServiceName;

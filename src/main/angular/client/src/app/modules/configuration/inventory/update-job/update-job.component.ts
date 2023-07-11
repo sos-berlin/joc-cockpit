@@ -43,7 +43,7 @@ export class UpdateJobComponent {
   }
 
   ngOnInit(): void {
-    this.data = this.modalData.data;
+    this.data = this.modalData.data || {};
     this.controllerId = this.modalData.controllerId;
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};

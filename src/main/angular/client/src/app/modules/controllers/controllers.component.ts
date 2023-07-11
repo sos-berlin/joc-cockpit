@@ -76,10 +76,10 @@ export class ExportComponent {
     if (this.exportObj.filename) {
       const ext = this.exportObj.filename.split('.').pop();
       if (ext && this.exportObj.filename.indexOf('.') > -1) {
-        if (this.exportObj.fileFormat === 'ZIP' && (ext === 'ZIP' || ext === 'zip')) {
-          this.inValid = false;
-        } else {
-          this.inValid = !(this.exportObj.fileFormat === 'TAR_GZ' && (ext === 'tar' || ext === 'gz'));
+        if ((ext === 'ZIP' || ext === 'zip')) {
+          this.exportObj.fileFormat = 'ZIP';
+        } else if ((ext === 'tar' || ext === 'gz')) {
+          this.exportObj.fileFormat = 'TAR_GZ';
         }
       } else {
         this.inValid = false;

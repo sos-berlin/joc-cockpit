@@ -776,7 +776,7 @@
                 <span [innerHTML]="stickySubagentAgentAssignment"></span>
               </ng-template>
               <div class="col-md-8 col-lg-9">
-                <nz-radio-group (ngModelChange)="changeAgentSelection($event)" [(ngModel)]="selectedNode.radio">
+                <nz-radio-group [(ngModel)]="selectedNode.radio" (ngModelChange)="changeAgentSelection($event)">
                   <label nz-radio nzValue="agent"><span
                     translate>workflow.label.subagentCluster</span></label>
                   <label nz-radio nzValue="expression"><span
@@ -1214,7 +1214,7 @@
                  title="{{'workflow.label.timeZone' | translate}}" translate>workflow.label.timeZone
             </div>
             <div class="col-md-8 col-lg-9">
-              <nz-select (ngModelChange)="updateOtherProperties('timeZone')" [(ngModel)]="extraConfiguration.timeZone" name="timeZone"
+              <nz-select [(ngModel)]="extraConfiguration.timeZone" name="timeZone"  (ngModelChange)="updateOtherProperties('timeZone')"
                          nzShowSearch>
                 <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
               </nz-select>
@@ -1258,8 +1258,8 @@
                 </div>
               </div>
               <div class="col-md-3 col-lg-3 m-b-sm p-r-0">
-                <nz-select (ngModelChange)="changeDataType($event, variable)" [(ngModel)]="variable.value.type" [nzDisabled]="isTrash"
-                           name="type{{i}}">
+                <nz-select [(ngModel)]="variable.value.type" [nzDisabled]="isTrash"
+                           name="type{{i}}" (ngModelChange)="changeDataType($event, variable)">
                   <nz-option *ngFor="let dataType of allowedDatatype" [nzLabel]="dataType | translate"
                              [nzValue]="dataType"></nz-option>
                 </nz-select>
@@ -1270,9 +1270,9 @@
                                  [nzMin]="0"
                                  [nzStep]="1" name="value{{i}}"
                                  nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                <nz-select (ngModelChange)="updateOtherProperties('variable')" *ngSwitchCase="'Boolean'"
+                <nz-select *ngSwitchCase="'Boolean'"
                            [(ngModel)]="variable.value.default" [nzDisabled]="isTrash" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                           name="value{{i}}" nzAllowClear>
+                           name="value{{i}}" nzAllowClear  (ngModelChange)="updateOtherProperties('variable')">
                   <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                   <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                 </nz-select>

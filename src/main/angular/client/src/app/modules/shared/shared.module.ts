@@ -69,6 +69,7 @@ import {MultiSelectComponent} from "../../components/multi-select/multi-select.c
 import {SearchInputComponent} from "../../components/search-input/search-input.component";
 import {SelectInputComponent} from "../../components/select-input/select-input.component";
 import {FileUploaderComponent} from '../../components/file-uploader/file-uploader.component';
+import {DateInputComponent} from "../../components/date-input/date-input.component";
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzTagModule, NzSelectModule,
@@ -82,7 +83,7 @@ const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, 
   ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, FacetValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
   StartUpModalComponent, TreeComponent, AgentSelectionComponent, ValueEditorComponent, WorkflowTreeStructureComponent, NodePositionComponent, SearchComponent,
-  SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent];
+  SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent, DateInputComponent];
 
 @NgModule({
   imports: [

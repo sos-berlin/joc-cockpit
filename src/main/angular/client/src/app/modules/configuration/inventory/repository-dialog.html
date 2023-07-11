@@ -31,7 +31,7 @@
              class="fa fa-info-circle p-l-xs"></i>
         </div>
         <div class="col-md-9">
-          <nz-switch (ngModelChange)="filterList()" [(ngModel)]="filter.deploy" name="deployed"></nz-switch>
+          <nz-switch [(ngModel)]="filter.deploy" name="deployed" (ngModelChange)="filterList()"></nz-switch>
         </div>
       </div>
       <div *ngIf="operation === 'store'" class="form-group row">
