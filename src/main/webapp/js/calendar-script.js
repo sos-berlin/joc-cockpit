@@ -1,0 +1,1 @@
+$('#year-calendar').calendar({language: localStorage.$SOS$LANG, view: 'month'});

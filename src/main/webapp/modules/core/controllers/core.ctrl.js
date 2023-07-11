@@ -2230,6 +2230,10 @@
         vm.$on('Close-Model', function (evt, arg) {
             $uibModalStack.dismissAll(arg);
         });
+
+        $("#notification").click(function (e) {
+            e.stopPropagation();
+        });
     }
 
     ConfigurationCtrl.$inject = ['$scope', 'ResourceService', '$uibModalInstance'];
@@ -2282,6 +2286,10 @@
         }
         if ($window.sessionStorage.$SOS$FORCELOGING == 'true') {
             vm.required = true;
+        }
+
+        vm.openFileOption = function () {
+            document.getElementById("file").click();
         }
 
         vm.sortableOptions = {

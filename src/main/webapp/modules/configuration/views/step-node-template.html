@@ -651,7 +651,7 @@
             </div>
             <div class="col-lg-11 col-md-10 col-sm-12">
                 <div class="graph-container">
-                    <div class="box-shadow-z1" id="graph" ondragover="allowDrop(event)"></div>
+                    <div class="box-shadow-z1" id="graph" ondragover="allowDrop1(event)"></div>
                     <div id="dropContainer2" class="dropContainer">
                         <div class="dropContainer" translate>joe.message.dropHereToRemoveNode</div>
                     </div>
@@ -1045,31 +1045,4 @@
         </div>
     </div>
 </div>
-<script>
-    function allowDrop(ev) {
-        if (ev.target.tagName && ev.target.tagName.toLowerCase() === 'svg') {
-            ev.preventDefault();
-        } else if (ev.target.tagName && (ev.target.tagName.toLowerCase() === 'div' || ev.target.tagName.toLowerCase() === 'span')) {
-            if(ev.target.dataset)
-            if (ev.target.className && typeof ev.target.className === 'string' && ev.target.className.match(/job/)) {
-                ev.preventDefault();
-            } if (ev.target.dataset && ev.target.dataset.state) {
-                ev.preventDefault();
-            }else if (ev.target.childElementCount > 0) {
-                let className = ev.target.childNodes[0].className;
-                if (className.match(/job/)) {
-                    ev.preventDefault();
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-    }
-
-    function drag(ev) {
-        ev.dataTransfer.setData("data", ev.target.id);
-        window.selectedJob = ev.target.id;
-    }
-</script>
+<script src="../../../js/allow-drop.js"></script>

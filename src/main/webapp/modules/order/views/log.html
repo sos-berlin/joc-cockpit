@@ -79,14 +79,4 @@
         </div>
     </div>
 </div>
-<script>
-    $(function(){
-        var $header = $('.app-header').height() || 60;
-        var $topHeader = $('.top-header-bar').height() || 16;
-        var $subHeaderHt = 59;
-        $(window).on('resize', function(){
-           var height = $(this).height() - ($header + $topHeader +$subHeaderHt +138);
-           $('.log').height(height);
-        }).trigger('resize'); //on page load
-    });
-</script>
+<script src="../../../js/order-log.js"></script>

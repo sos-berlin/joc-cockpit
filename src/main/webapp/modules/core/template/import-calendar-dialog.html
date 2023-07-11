@@ -125,11 +125,11 @@
                 </div>
                 <div class="p-l-sm p-t-sm" ng-hide="uploader.queue.length>0">
                     <button type="button" class="btn btn-grey btn-sm"
-                            onclick="openFileOption()">
+                            ng-click="openFileOption()">
                         <span translate="">button.chooseFileToUpload</span>
                     </button>
                 </div>
-                <input type="file" id="file1" nv-file-select="" accept=".json" uploader="uploader"
+                <input type="file" id="file" nv-file-select="" accept=".json" uploader="uploader"
                        style="display: none;">
             </div>
             <div ng-if="fileLoading" class="text-center m-t-lg m-b-md">
@@ -146,8 +146,4 @@
         </div>
     </form>
 </div>
-<script>
-    function openFileOption() {
-        document.getElementById("file1").click();
-    }
-</script>
+
