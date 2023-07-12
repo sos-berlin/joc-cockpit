@@ -3651,7 +3651,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         WorkflowComponent.parseWorkflowJSON(result);
         const res = {
           configuration: result
-        }
+        };
         this.initObjects(res);
         this.workflow.configuration = this.coreService.clone(result);
         this.workflow.actual = JSON.stringify(res.configuration);

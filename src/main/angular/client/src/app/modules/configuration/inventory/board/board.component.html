@@ -128,9 +128,9 @@
                      type="text">
             </nz-input-group>
             <ng-template #addOnAfterTemplate3>
-              <nz-select (ngModelChange)="changeExp($event, 'NoticeId')"
-                         [(ngModel)]="boardObj.readingOrderToNoticeIdMsg"
+              <nz-select [(ngModel)]="boardObj.readingOrderToNoticeIdMsg"
                          [nzAllowClear]="true" name="readingOrderToNoticeIdMsg"
+                         (ngModelChange)="changeExp($event, 'NoticeId')"
                          nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" style="width: 220px">
                 <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDate' | translate"
                            nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$', '$1')"></nz-option>
@@ -170,7 +170,7 @@
                                required></nz-input-number>
             </nz-input-group>
             <ng-template #addOnAfterTemplate2>
-              <nz-select (ngModelChange)="changeUnit($event)" [(ngModel)]="boardObj.units" name="units"
+              <nz-select [(ngModel)]="boardObj.units" name="units" (ngModelChange)="changeUnit($event)"
                          style="width: 220px">
                 <nz-option [nzLabel]="'inventory.label.milliseconds' | translate" nzValue="Milliseconds"></nz-option>
                 <nz-option [nzLabel]="'inventory.label.seconds' | translate" nzValue="Seconds"></nz-option>

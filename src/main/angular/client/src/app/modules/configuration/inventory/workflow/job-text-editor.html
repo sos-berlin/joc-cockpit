@@ -132,7 +132,7 @@
                class="col-md-4 col-lg-3" translate>workflow.label.agentAssignment
           </div>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
-            <nz-radio-group (ngModelChange)="changeAgentSelection($event)" [(ngModel)]="selectedNode.radio">
+            <nz-radio-group [(ngModel)]="selectedNode.radio" (ngModelChange)="changeAgentSelection($event)" >
               <label nz-radio nzValue="agent"><span
                 translate>workflow.label.agentOrSubagentSelectFromList</span></label>
               <label nz-radio nzValue="expression"><span
@@ -209,7 +209,7 @@
                translate>workflow.label.returnCode
           </div>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
-            <nz-radio-group (ngModelChange)="saveToHistory();" [(ngModel)]="returnCodes.on"
+            <nz-radio-group [(ngModel)]="returnCodes.on" (ngModelChange)="saveToHistory();"
                             [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name">
               <label (click)="selectedNode.job.executable.returnCodeMeaning.success = selectedNode.job.executable.returnCodeMeaning.failure;selectedNode.job.executable.returnCodeMeaning.failure = ''" nz-radio
                      nzValue="success"><span
@@ -277,9 +277,8 @@
                  class="col-md-4 col-lg-3 form-control-label"
                  translate>workflow.label.jobClass</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
-            <nz-select (ngModelChange)="changeType()"
-                       [(ngModel)]="selectedNode.job.executable.TYPE" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
-                       name="executableType">
+            <nz-select [(ngModel)]="selectedNode.job.executable.TYPE" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
+                       name="executableType" (ngModelChange)="changeType()">
               <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ShellScriptExecutable'"></nz-option>
               <nz-option [nzLabel]="'workflow.label.jitl' | translate" [nzValue]="'InternalExecutable'"></nz-option>
             </nz-select>
@@ -500,8 +499,9 @@
                           <div [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}"
                                class="col-md-5 col-lg-5 m-b-sm p-r-0">
                             <label class="w-full">
-                              <input #ename="ngModel"
-                                     (blur)="isStringValid(env, ename, selectedNode.job.executable.env);upperCase(env)" (ngModelChange)="onChange($event)" [(ngModel)]="env.name" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
+                              <input #ename="ngModel" [(ngModel)]="env.name" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
+                                     (blur)="isStringValid(env, ename, selectedNode.job.executable.env);upperCase(env)"
+                                     (ngModelChange)="onChange($event)"
                                      [nzAutocomplete]="auto" autocomplete="off" class="form-control"
                                      envVariableValidation
                                      name="name{{i}}"
@@ -521,10 +521,10 @@
                                         [nzPrefix]="['$']"
                                         [nzSuggestions]="mentionValueList" [nzValueWith]="valueWith">
                               <label class="w-full">
-                                <input (ngModelChange)="checkValue(env)"
-                                       [(ngModel)]="env.value" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [required]="env.name && env.name.length > 0"
+                                <input [(ngModel)]="env.value" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [required]="env.name && env.name.length > 0"
                                        autocomplete="off" class="form-control"
                                        name="value{{i}}" nz-input
+                                       (ngModelChange)="checkValue(env)"
                                        nzMentionTrigger
                                        placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
                               </label>
@@ -536,11 +536,9 @@
                             </nz-mention>
                           </div>
                           <div class="col-md-1 col-lg-1 p-l-0">
-                            <i
-                              *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name)"
+                            <i *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name)"
                               class="fa fa-scissors m-t-sm"></i>
-                            <a
-                              *ngIf="!(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) && !(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name))"><i
+                            <a *ngIf="!(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) && !(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name))"><i
                               (click)="removeEnv(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                           </div>
                         </div>
@@ -605,7 +603,7 @@
                           <div [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}"
                                class="col-md-5 col-lg-5 m-b-sm p-r-0">
                             <label class="w-full">
-                              <input #ename="ngModel" (blur)="isStringValid(argu, ename, selectedNode.job.executable.arguments)" (ngModelChange)="onChange($event)" [(ngModel)]="argu.name"
+                              <input #ename="ngModel" [(ngModel)]="argu.name" (blur)="isStringValid(argu, ename, selectedNode.job.executable.arguments)" (ngModelChange)="onChange($event)"
                                      [nzAutocomplete]="auto" class="form-control"
                                      identifierValidation
                                      name="name{{i}}"
@@ -851,9 +849,8 @@
                  title="{{'workflow.label.compatibleMode' | translate}}"
                  translate>workflow.label.compatibleMode</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
-            <nz-select (ngModelChange)="saveToHistory();"
-                       [(ngModel)]="selectedNode.job.executable.v1Compatible" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" name="v1Compatible"
-                       nzAllowClear>
+            <nz-select [(ngModel)]="selectedNode.job.executable.v1Compatible" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" name="v1Compatible"
+                       nzAllowClear (ngModelChange)="saveToHistory();">
               <nz-option [nzLabel]="'workflow.label.branch1.x' | translate" [nzValue]="true"></nz-option>
             </nz-select>
           </div>
@@ -1030,10 +1027,11 @@
                               [nzPrefix]="['$']"
                               [nzSuggestions]="variableList" [nzValueWith]="valueWith">
                     <label class="w-full">
-                      <input (keydown)="onKeyPress($event, 'node')" (ngModelChange)="checkValue(argument)" [(ngModel)]="argument.value"
+                      <input (keydown)="onKeyPress($event, 'node')" [(ngModel)]="argument.value"
                              [required]="argument.name && argument.name.length > 0" autocomplete="off"
                              class="form-control" name="value{{i}}"
                              nz-input nzMentionTrigger
+                             (ngModelChange)="checkValue(argument)"
                              placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
                     </label>
                     <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"

@@ -57,22 +57,11 @@
       <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}" class="col-sm-6">
-        <nz-date-picker #date="ngModel" [(ngModel)]="order.fromDate" [nzDisabledDate]="disabledDate"
-                        [nzFormat]="dateFormat" name="date" required></nz-date-picker>
-        <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
-          <div *ngIf="date.errors['required']">
-            <div translate>common.message.requiredError</div>
-          </div>
-        </div>
-        <div [ngClass]="{'has-error': (time.dirty || time.touched) && time.invalid}" class="time-picker">
-          <input #time="ngModel" [(ngModel)]="order.fromTime" [disabled]="!order.fromDate" class="form-control"
-                 name="fromTime"
-                 placeholder="HH:MM:SS" timevalidator type="text"
-                 validTimeReqex (ngModelChange)="selectTime(order.fromTime, true)" >
-          <nz-time-picker [(ngModel)]="order.fromTime1" [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)"
-                          name="fromTimeIcon"></nz-time-picker>
-        </div>
+      <div class="col-sm-6">
+        <app-date-input [object]="order" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'" [isRequired]="true"
+                        [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
+                        [placeholder]="( dateFormat | uppercase )"
+        ></app-date-input>
       </div>
     </div>
     <div [hidden]="!(order.at =='date')" class="form-group row">

@@ -2,6 +2,8 @@
   <nz-date-picker
     #from="ngModel"
     [required]="isRequired"
+    [nzAutoFocus]="isAutoFocus"
+    [nzDisabledDate]="disabledDate"
     [(ngModel)]="object[attributeDate]"
     [nzFormat]="dateFormat"
     [nzAllowClear]="!isTime && isAllowClear"

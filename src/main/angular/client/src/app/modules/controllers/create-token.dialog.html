@@ -27,23 +27,11 @@
       <label class="col-sm-3 form-control-label" translate>agent.label.validUntil
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div *ngIf="token.at === 'date'" [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}"
-           class="col-sm-8">
-        <nz-date-picker #date="ngModel" [(ngModel)]="token.fromDate" [nzAutoFocus]="true" [nzDisabledDate]="disabledDate"
-                        [nzFormat]="dateFormat" name="date" required></nz-date-picker>
-        <div class="time-picker">
-          <input #time="ngModel" [(ngModel)]="token.fromTime" [disabled]="!token.fromDate" class="form-control"
-                 name="fromTime" (ngModelChange)="selectTime(token.fromTime, true)"
-                 placeholder="HH:MM:SS" timevalidator type="text"
-                 validTimeReqex>
-          <nz-time-picker [(ngModel)]="token.fromTime1" [nzAllowEmpty]="false"
-                          name="fromTimeIcon" (ngModelChange)="selectTime($event)" ></nz-time-picker>
-        </div>
-        <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
-          <div *ngIf="date.errors.required">
-            <div translate>common.message.requiredError</div>
-          </div>
-        </div>
+      <div *ngIf="token.at === 'date'" class="col-sm-8">
+        <app-date-input [object]="token" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'" [isRequired]="true" [isAutoFocus]="true"
+                        [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
+                        [placeholder]="( dateFormat | uppercase )"
+        ></app-date-input>
       </div>
       <div *ngIf="token.at !== 'date'" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}"
            class="col-sm-8">

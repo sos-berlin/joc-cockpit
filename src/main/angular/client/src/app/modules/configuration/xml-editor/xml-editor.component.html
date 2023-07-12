@@ -280,14 +280,14 @@
                         <tr *ngFor="let item of node.origin.attributes">
                           <td style="padding: 3px;"><span> {{item.name}}</span></td>
                           <td
-                            style="padding: 3px;">{{(item.data && item.name !== 'password') ? item.data : passwordLabel(item.data)}}
+                            style="padding: 3px;">{{((item.data && item.name === 'password') || (item.base && item.base === 'password')) ? passwordLabel(item.data) : item.data}}
                           </td>
                         </tr>
                       </table>
                       <table *ngIf="node.origin && node.origin.values" style="padding: 3px;">
                         <tr *ngFor="let item of node.origin.values">
                           <td style="padding: 3px;"><span> {{item.name}}</span></td>
-                          <td [innerHTML]="(item.data && ((item.name && item.name !== 'password') || (item.base && item.base !== 'password') || (item.parent && item.parent !== 'Password'))) ? (item.data | safeHtml) : passwordLabel(item.data)"
+                          <td [innerHTML]="(item.data && ((item.name && item.name === 'password') || (item.base && item.base === 'password') || (item.parent && item.parent === 'Password'))) ? passwordLabel(item.data) : (item.data | safeHtml)"
                               style="padding: 3px;">
                           </td>
                         </tr>
@@ -303,17 +303,17 @@
                           [hidden]="!node.origin.attributes || (node.origin.attributes && node.origin.attributes.length==0)"
                           class="text-sm pl-2">
                         {{getFirstNotEmptyAttribute(node.origin.attributes)}}
-                      </span>
+                    </span>
                     <span (click)="selectNode(node);addContent(node.origin.values);"
-                          *ngIf="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && ((node.origin.values[0].base && node.origin.values[0].base !== 'password') || node.origin.values[0].parent !== 'Password'))"
+                          *ngIf="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && ((node.origin.values[0].base && node.origin.values[0].base !== 'password') && node.origin.values[0].parent !== 'Password'))"
                           class="text-sm pl-2">
                         {{node.origin.values[0].base === 'html' ? removeTag(node.origin.values[0]) : node.origin.values[0].data}}
-                      </span>
+                    </span>
                     <span (click)="selectNode(node);addContent(node.origin.values);"
                           *ngIf="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && (node.origin.values[0].parent === 'Password' || node.origin.values[0].base === 'password'))"
                           class="text-sm pl-2">
                         {{passwordLabel(node.origin.values[0].data)}}
-                      </span>
+                    </span>
                   </div>
                   <span (click)="expandNode(node.origin);$event.stopPropagation()"
                         *ngIf="node.children && node.children.length > 0"> <i
@@ -573,7 +573,7 @@
                         *ngIf="node.refElement"
                         [ngClass]="{'v-align-link': !(node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML)}"
                       ><a translate>xml.button.gotoRefElement</a></span>
-                      <span (mouseover)="getpos(node.id)"
+                      <span (mouseover)="getPos(node.id)"
                             *ngIf="node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML"
                             [ngClass]="(node.refer || node.refElement) ? 'm-l-xs' : ''" data-placement="bottom" data-toggle="tooltip" id="{{node.id}}"
                             title="{{node.text.doc[0].innerHTML}}">

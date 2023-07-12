@@ -32,32 +32,19 @@
     <div *ngIf="filter.radio == 'current'" class="form-group row">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.from</label>
       <div class="col-sm-6">
-        <nz-date-picker
-          [(ngModel)]="filter.fromDate"
-          [nzFormat]="dateFormat" [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" name="from"></nz-date-picker>
-        <div [ngClass]="{'has-error': (fromTime.dirty || fromTime.touched) && fromTime.invalid}" class="time-picker">
-          <input #fromTime="ngModel" validTimeReqex [(ngModel)]="filter.fromTime" [disabled]="!filter.fromDate" class="form-control"
-                 name="fromTime" (ngModelChange)="selectTime(filter.fromTime, true)"
-                 placeholder="HH:MM:SS" timevalidator type="text">
-          <nz-time-picker [(ngModel)]="filter.fromTime1" (ngModelChange)="selectTime($event)" [nzAllowEmpty]="false"
-                          name="fromTimeIcon"></nz-time-picker>
-        </div>
+        <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
+                        [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
+                        [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+        ></app-date-input>
       </div>
     </div>
     <div *ngIf="filter.radio == 'current'" class="form-group row">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.to</label>
       <div class="col-sm-6">
-        <nz-date-picker
-          [(ngModel)]="filter.toDate"
-          [nzFormat]="dateFormat"
-          [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" name="to"></nz-date-picker>
-        <div [ngClass]="{'has-error': (toDate.dirty || toDate.touched) && toDate.invalid}" class="time-picker">
-          <input #toDate="ngModel" [(ngModel)]="filter.toTime" [disabled]="!filter.toDate" class="form-control"
-                 name="toTime" placeholder="HH:MM:SS" timevalidator type="text"
-                 validTimeReqex (ngModelChange)="selectTime(filter.toTime, true, 'to')" >
-          <nz-time-picker [(ngModel)]="filter.toTime1" (ngModelChange)="selectTime($event, false, 'to')"
-                          [nzAllowEmpty]="false" name="toTimeIcon"></nz-time-picker>
-        </div>
+        <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
+                        [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
+                        [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+        ></app-date-input>
       </div>
     </div>
     <div *ngIf="filter.radio == 'planned'" [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}"

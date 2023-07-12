@@ -3,7 +3,6 @@ import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {isArray, isEmpty} from 'underscore';
-import {differenceInCalendarDays} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
 import {ValueEditorComponent} from '../../../components/value-editor/value.component';
 import {AuthService} from '../../../components/guard';
@@ -48,7 +47,7 @@ export class ShowDependencyComponent {
           this.workflow.addOrderFromWorkflows = res.workflow.addOrderFromWorkflows;
           this.workflow.addOrderToWorkflows = res.workflow.addOrderToWorkflows;
           this.loading = false;
-        }, error: (err) => {
+        }, error: () => {
           this.loading = false;
         }
       });
@@ -88,7 +87,6 @@ export class AddOrderModalComponent {
   preferences: any;
   workflow: any;
 
-  viewDate = new Date();
   order: any = {};
   arguments: any = [];
   forkListVariables: any = [];
@@ -215,11 +213,6 @@ export class AddOrderModalComponent {
       });
     }
     this.updateSelectItems();
-  }
-
-  disabledDate = (current: Date): boolean => {
-    // Can not select days before today and today
-    return differenceInCalendarDays(current, this.viewDate) < 0;
   }
 
   checkVariableType(argument): void {
