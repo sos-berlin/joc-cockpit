@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit, ViewChild, ElementRef} from '@angular/core';
+import {Component, HostListener, ViewChild, ElementRef} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {isArray, isEmpty} from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
@@ -8,7 +8,6 @@ import {CoreService} from '../../services/core.service';
 import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 
 declare const $;
-
 @Component({
   selector: 'app-log',
   templateUrl: './log.component.html'

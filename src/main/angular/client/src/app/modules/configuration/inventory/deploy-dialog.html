@@ -51,14 +51,11 @@
         <label class="col-md-3 form-control-label" translate>common.label.specificDate
           <sup class="text-danger text-sm">*</sup>
         </label>
-        <div [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}" class="col-md-6">
-          <nz-date-picker #date="ngModel" [(ngModel)]="dateObj.fromDate"
-                          [nzFormat]="dateFormat" name="date" required></nz-date-picker>
-          <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
-            <div *ngIf="date.errors['required']">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
+        <div class="col-md-6">
+          <app-date-input [object]="dateObj" [attributeDate]="'fromDate'" [isRequired]="true"
+                          [name]="'from'" [dateFormat]="dateFormat"
+                          [placeholder]="( dateFormat | uppercase )"
+          ></app-date-input>
         </div>
       </div>
       <div *ngIf="!isRevoke && !isDeleted && !releasable && !isRemove && !isSelectedObjects" class="form-group row">

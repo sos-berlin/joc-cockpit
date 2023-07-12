@@ -160,8 +160,7 @@
             <i [nzType]="'rollback'" nz-icon nzTheme="outline"></i>
           </a>
           <div>
-            <input (blur)="clearSearchInput()" (ngModelChange)="onSearchInput($event)"
-                   [(ngModel)]="searchNode.text"
+            <input [(ngModel)]="searchNode.text" (blur)="clearSearchInput()" (ngModelChange)="onSearchInput($event)"
                    [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
                    class="input-tree-search"
                    id="treeSearch"

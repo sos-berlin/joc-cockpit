@@ -22,12 +22,13 @@
               <div [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
                    class="col-sm-6">
                 <div class="time-picker m-l-0">
-                  <input #startTime="ngModel" (ngModelChange)="selectTime(object.startTime, true)" [(ngModel)]="object.startTime" [appAutofocus]="true" class="form-control" name="startTime"
+                  <input #startTime="ngModel" [(ngModel)]="object.startTime" [appAutofocus]="true" class="form-control" name="startTime"
                          placeholder="HH:MM:SS"
+                         (ngModelChange)="selectTime(object.startTime, true)"
                          required timevalidator
                          type="text" validTimeReqex>
-                  <nz-time-picker (keydown.Tab)="onTab()" (ngModelChange)="selectTime($event)" [(ngModel)]="object.startTime1"
-                                  [nzAllowEmpty]="false"
+                  <nz-time-picker (keydown.Tab)="onTab()" [(ngModel)]="object.startTime1"
+                                  [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)"
                                   name="startTimeIcon"></nz-time-picker>
                 </div>
                 <div *ngIf="startTime.invalid && (startTime.dirty || startTime.touched)" class="text-danger help-block">

@@ -8,19 +8,18 @@ import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {saveAs} from 'file-saver';
+import xmlFormat from 'xml-formatter';
 import {clone, isArray, isEmpty, isEqual, sortBy} from 'underscore';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
-import {AuthService} from '../../../components/guard';
+import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
+import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
-import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
-import xmlFormat from 'xml-formatter';
 
 declare const require: any;
 declare const $: any;
 
-//const format = require('xml-formatter');
 const xpath = require('xpath');
 const convert = require('xml-js');
 
@@ -76,7 +75,6 @@ export class ShowChildModalComponent {
       }
     }
   }
-
 
   getText(data): void {
     this.selectedNode = data;
@@ -1189,11 +1187,11 @@ export class XmlEditorComponent {
 
             };
 
-            this.releaseNOtification(obj);
+            this.releaseNotification(obj);
           }
         });
       } else {
-        this.releaseNOtification(obj);
+        this.releaseNotification(obj);
       }
     } else {
       this.gotoErrorLocation();
@@ -1204,8 +1202,7 @@ export class XmlEditorComponent {
     }
   }
 
-  private releaseNOtification(obj): void {
-
+  private releaseNotification(obj): void {
     this.coreService.post('notification/release', obj).subscribe({
       next: (res: any) => {
         if (res.validationError) {
@@ -1261,7 +1258,7 @@ export class XmlEditorComponent {
         } else if (res.configuration) {
           this.compareJobResource(res.configuration, obj);
         }
-      }, error: (err) => {
+      }, error: () => {
         this.translate.get('xml.message.jobResourceNotFound').subscribe(translatedValue => {
           this.toasterService.info(obj.name + ' ' + translatedValue, '');
         });
@@ -1334,6 +1331,7 @@ export class XmlEditorComponent {
         flag = false;
       }
     }
+    console.log('compareJobResource', flag)
     this.extraInfo.sync = flag;
   }
 
@@ -1563,7 +1561,6 @@ export class XmlEditorComponent {
       sessionStorage['$SOS$XSD'] = this.selectedXsd;
       this.readXML();
       this.submitXsd = true;
-      // this.getInitTree(false);
     }
   }
 
@@ -1627,7 +1624,7 @@ export class XmlEditorComponent {
             this.prevXML = this.removeComment(res.configuration);
             this.loadTree(this.path, true);
             setTimeout(() => {
-              this.createJsonfromXml(res.configuration);
+              this.createJsonFromXml(res.configuration);
             }, 600);
           } else {
             this.submitXsd = false;
@@ -3655,7 +3652,7 @@ export class XmlEditorComponent {
     }
     if (this.copyItem.children) {
       this.copyItem.children.forEach((res: any) => {
-        this.changeUuId(res, this.copyItem.uuid);
+        this.changeUuid(res, this.copyItem.uuid);
         this.changeParentId(res, this.copyItem.uuid);
       });
     }
@@ -4555,11 +4552,11 @@ export class XmlEditorComponent {
   getDataAttr(refer): void {
     this.tempArr = [];
     if (this.nodes[0] && this.nodes[0].children) {
-      this.keyrecursion(refer, this.nodes[0].children);
+      this.keyRecursion(refer, this.nodes[0].children);
     }
   }
 
-  keyrecursion(refer, childNode): void {
+  keyRecursion(refer, childNode): void {
     let temp;
     for (let i = 0; i < childNode.length; i++) {
       if (childNode[i].ref === refer) {
@@ -4577,7 +4574,7 @@ export class XmlEditorComponent {
         }
       } else {
         if (childNode[i] && childNode[i].children) {
-          this.keyrecursion(refer, childNode[i].children);
+          this.keyRecursion(refer, childNode[i].children);
         }
       }
     }
@@ -4648,7 +4645,7 @@ export class XmlEditorComponent {
           }
         } else {
           for (let i = 0; i < this.nodes[0].children.length; i++) {
-            this.gotoKeyrefRecursion(node, this.nodes[0].children[i]);
+            this.gotoKeyRefRecursion(node, this.nodes[0].children[i]);
           }
         }
       } else if (this.refElement && this.refElement.parent === this.nodes[0].ref) {
@@ -4662,19 +4659,19 @@ export class XmlEditorComponent {
           }
         } else {
           for (let i = 0; i < this.nodes[0].children.length; i++) {
-            this.gotoKeyrefRecursion(node, this.nodes[0].children[i]);
+            this.gotoKeyRefRecursion(node, this.nodes[0].children[i]);
           }
         }
       } else {
         for (let i = 0; i < this.nodes[0].children.length; i++) {
-          this.gotoKeyrefRecursion(node, this.nodes[0].children[i]);
+          this.gotoKeyRefRecursion(node, this.nodes[0].children[i]);
         }
       }
       this.scrollTreeToGivenId(this.selectedNode.uuid);
     }
   }
 
-  gotoKeyrefRecursion(node, child): void {
+  gotoKeyRefRecursion(node, child): void {
     if (node !== undefined) {
       if (node.refElement === child.ref) {
         if (child.keyref) {
@@ -4690,7 +4687,7 @@ export class XmlEditorComponent {
         } else {
           if (child.children) {
             for (let i = 0; i < child.children.length; i++) {
-              this.gotoKeyrefRecursion(node, child.children[i]);
+              this.gotoKeyRefRecursion(node, child.children[i]);
             }
           }
         }
@@ -4706,14 +4703,14 @@ export class XmlEditorComponent {
         } else {
           if (child.children) {
             for (let i = 0; i < child.children.length; i++) {
-              this.gotoKeyrefRecursion(node, child.children[i]);
+              this.gotoKeyRefRecursion(node, child.children[i]);
             }
           }
         }
       } else {
         if (child.children) {
           for (let i = 0; i < child.children.length; i++) {
-            this.gotoKeyrefRecursion(node, child.children[i]);
+            this.gotoKeyRefRecursion(node, child.children[i]);
           }
         }
       }
@@ -5077,7 +5074,7 @@ export class XmlEditorComponent {
     self.submitXsd = false;
   }
 
-  getpos(id): void {
+  getPos(id): void {
     $('[data-toggle="tooltip"]').tooltip({
       trigger: 'hover focus manual',
       html: true,
@@ -5109,6 +5106,7 @@ export class XmlEditorComponent {
       nzMaskClosable: false
     });
     modal.afterClose.subscribe(res => {
+      console.log(res)
       if (res && res.configurationJson) {
         this.updateXML(res);
       } else if (this.objectType === 'NOTIFICATION') {
@@ -5262,10 +5260,6 @@ export class XmlEditorComponent {
     this.showErrorToast(msg, 'Element : ' + node.parent);
   }
 
-  successPopToast(): void {
-    this.toasterService.success('Element : ' + this.nodes[0].ref, 'XML is valid');
-  }
-
   // goto error location
   gotoErrorLocation(): void {
     if (this.errorLocation && this.errorLocation.ref) {
@@ -5283,7 +5277,7 @@ export class XmlEditorComponent {
   }
 
   // create json from xml
-  createJsonfromXml(data): void {
+  createJsonFromXml(data): void {
     let result1: any = convert.xml2json(data, {
       compact: true,
       spaces: 4,
@@ -5409,12 +5403,12 @@ export class XmlEditorComponent {
 
     for (let key in xmljson[rootNode]) {
       if (key !== '_attributes' && key !== '_cdata') {
-        this.addChildForxml(key, rootNode, xmljson, mainjson);
+        this.addChildForXML(key, rootNode, xmljson, mainjson);
       }
     }
   }
 
-  addChildForxml(key, rootNode, xmljson, mainjson) {
+  addChildForXML(key, rootNode, xmljson, mainjson) {
     let a;
     if (key.indexOf('*')) {
       a = key.split('*')[0];
@@ -5677,11 +5671,8 @@ export class XmlEditorComponent {
   }
 
   private deleteNotification(obj) {
-
-
     this.coreService.post('notification/delete', obj).subscribe({
       next: (res: any) => {
-
         this.extraInfo = {
           released: res.released,
           state: res.state,
@@ -5734,7 +5725,6 @@ export class XmlEditorComponent {
       }
     });
   }
-
 
   private afterDelete(res, tab): void {
     let flag = true;
@@ -5972,13 +5962,13 @@ export class XmlEditorComponent {
     }
   }
 
-  private changeUuId(node, id): void {
+  private changeUuid(node, id): void {
     node.uuid = id + this.counting;
     node.key = id + this.counting;
     this.counting++;
     if (node && node.children && node.children.length > 0) {
       node.children.forEach((cNode) => {
-        this.changeUuId(cNode, node.uuid);
+        this.changeUuid(cNode, node.uuid);
       });
     }
   }

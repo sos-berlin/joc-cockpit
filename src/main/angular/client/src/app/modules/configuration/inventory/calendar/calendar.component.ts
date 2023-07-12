@@ -97,8 +97,8 @@ export class FrequencyModalComponent {
     this.editor = this.modalData.editor;
     this.frequency = this.modalData.frequency;
     this.flag = this.modalData.flag;
-    this._temp = this.modalData._temp;
-    this.data = this.modalData.data;
+    this._temp = this.modalData._temp || {};
+    this.data = this.modalData.data || {};
     this.isRuntimeEdit = this.modalData.isRuntimeEdit;
     setTimeout(() => {
       this.isVisible = true;

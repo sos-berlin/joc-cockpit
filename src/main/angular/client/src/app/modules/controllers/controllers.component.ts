@@ -2,7 +2,6 @@ import {Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {Subscription} from 'rxjs';
-import {differenceInCalendarDays} from 'date-fns';
 import {Router} from "@angular/router";
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {CoreService} from '../../services/core.service';
@@ -216,10 +215,6 @@ export class CreateTokenModalComponent {
     });
   }
 
-  disabledDate = (current: Date): boolean => {
-    // Can not select days before today and today
-    return differenceInCalendarDays(current, this.viewDate) < 0;
-  };
 }
 
 @Component({
