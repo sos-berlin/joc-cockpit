@@ -1,18 +1,30 @@
-<div class="form-group row" *ngIf="!selectedNode.obj.show">
-  <label class="col-md-4 col-lg-3 form-control-label"
-         [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
-         [nzTooltipMouseEnterDelay]="0.5"
-         translate>workflow.label.label
-  </label>
-  <div class="col-md-8 col-lg-9">
-    <label class="w-full">
-      <input type="text" labelValidation required autocomplete="off"
-             maxlength="30" class="form-control"
-             name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label">
+<div *ngIf="!selectedNode.obj.show">
+  <div class="form-group row">
+    <label class="col-md-4 col-lg-3 form-control-label"
+           [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
+           [nzTooltipMouseEnterDelay]="0.5"
+           translate>workflow.label.label
     </label>
-    <div *ngIf="label.invalid && (label.dirty || label.touched)"
-         class="text-danger help-block">
-      <div *ngIf="label.errors && label.errors.invalidIdentifier" translate>common.message.invalid</div>
+    <div class="col-md-8 col-lg-9">
+      <label class="w-full">
+        <input type="text" labelValidation required autocomplete="off"
+               maxlength="30" class="form-control"
+               name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label">
+      </label>
+      <div *ngIf="label.invalid && (label.dirty || label.touched)"
+           class="text-danger help-block">
+        <div *ngIf="label.errors && label.errors.invalidIdentifier" translate>common.message.invalid</div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-md-4 col-lg-3"
+           [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.cycle.onlyOnePeriod' | translate) : ''"
+           [nzTooltipMouseEnterDelay]="0.5"
+           translate>workflow.label.onlyOnePeriod
+    </label>
+    <div class="col-md-8 col-lg-9">
+      <label name="onlyOnePeriod" nz-checkbox [(ngModel)]="selectedNode.obj.onlyOnePeriod"></label>
     </div>
   </div>
 </div>

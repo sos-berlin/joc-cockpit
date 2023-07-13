@@ -2009,6 +2009,9 @@
         "retry": {
           "maxTries": "Lorsque le nombre maximal de tentatives est atteint, l'instruction Try se termine et l'ordre passe à l'état ECHEC.",
           "delay": "Le délai spécifie le temps en secondes avant que la prochaine tentative ne soit effectuée. Si un certain nombre de valeurs sont spécifiées - séparées par une virgule - alors chaque valeur de gauche à droite s'applique à la période d'attente de la prochaine tentative."
+        },
+        "cycle": {
+          "onlyOnePeriod": "Only One Period"
         }
       }
     },
@@ -3332,6 +3335,7 @@
     "label.bySubagentCluster": "Par Cluster de Sous-agents",
     "label.stopOnFailure": "Arrêt en cas d'échec",
     "label.references": "Références",
+    "label.onlyOnePeriod": "Only One Period",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",

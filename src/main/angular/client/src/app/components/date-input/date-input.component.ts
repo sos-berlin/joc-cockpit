@@ -15,7 +15,7 @@ export class DateInputComponent {
   @Input() isRequired = false;
   @Input() isAutoFocus = false;
   @Input() isPreviousDateDisabled = false;
-  @Input() dateFormat = false;
+  @Input() dateFormat = '';
   @Input() object: any = {};
   @Input() attributeDate = '';
   @Input() attributeTime = '';

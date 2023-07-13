@@ -1184,6 +1184,10 @@ export class WorkflowService {
             if (json.instructions[x].schedule) {
               _node.setAttribute('schedule', JSON.stringify(json.instructions[x].schedule));
             }
+
+            if (json.instructions[x].onlyOnePeriod !== undefined) {
+              _node.setAttribute('onlyOnePeriod', json.instructions[x].onlyOnePeriod);
+            }
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('cycle', colorCode, self.theme) : 'cycle');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);

@@ -54,7 +54,7 @@
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWithW'" [isRequired]="true"
-                                  [name]="'startingWithW'" [dateFormat]="dateFormat"
+                                  [name]="'startingWithW'" [dateFormat]="dateFormat" [isAllowClear]="true"
                                   [placeholder]="'runtime.placeholder.startDate'"
                   ></app-date-input>
                 </div>
@@ -64,7 +64,7 @@
 
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOnW'" [isRequired]="true"
-                                  [name]="'endOnW'" [dateFormat]="dateFormat"
+                                  [name]="'endOnW'" [dateFormat]="dateFormat" [isAllowClear]="true"
                                   [placeholder]="'runtime.placeholder.endDate'"
                   ></app-date-input>
                 </div>
@@ -108,7 +108,7 @@
 
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWithS'"
-                                  [name]="'startingWithS'" [dateFormat]="dateFormat"
+                                  [name]="'startingWithS'" [dateFormat]="dateFormat" [isAllowClear]="true"
                                   [placeholder]="'runtime.placeholder.startDate'"
                   ></app-date-input>
                 </div>
@@ -117,7 +117,7 @@
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validTo</label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOnS'"
-                                  [name]="'endOnS'" [dateFormat]="dateFormat"
+                                  [name]="'endOnS'" [dateFormat]="dateFormat" [isAllowClear]="true"
                                   [placeholder]="'runtime.placeholder.endDate'"
                   ></app-date-input>
                 </div>
@@ -215,7 +215,7 @@
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWithM'"
-                                  [name]="'startingWithM'" [dateFormat]="dateFormat"
+                                  [name]="'startingWithM'" [dateFormat]="dateFormat" [isAllowClear]="true"
                                   [placeholder]="'runtime.placeholder.startDate'"
                   ></app-date-input>
                 </div>
@@ -224,7 +224,7 @@
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validTo</label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOnM'"
-                                  [name]="'endOnM'" [dateFormat]="dateFormat"
+                                  [name]="'endOnM'" [dateFormat]="dateFormat" [isAllowClear]="true"
                                   [placeholder]="'runtime.placeholder.endDate'"
                   ></app-date-input>
                 </div>
@@ -254,8 +254,8 @@
                 </label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWith'" [isRequired]="frequency.tab == 'every'"
-                                  [name]="'startingWith'" [dateFormat]="dateFormat"
-                                  [placeholder]="'(' + dateFormat + ')'"
+                                  [name]="'startingWith'" [dateFormat]="dateFormat" [isAllowClear]="true"
+                                  [placeholder]="dateFormat | uppercase"
                   ></app-date-input>
                 </div>
               </div>
@@ -263,8 +263,8 @@
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validTo</label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOn'"
-                                  [name]="'endOn'" [dateFormat]="dateFormat"
-                                  [placeholder]="'(' + dateFormat + ')'"
+                                  [name]="'endOn'" [dateFormat]="dateFormat" [isAllowClear]="true"
+                                  [placeholder]="(dateFormat | uppercase)"
                   ></app-date-input>
                 </div>
               </div>

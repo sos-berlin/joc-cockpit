@@ -40,7 +40,7 @@
     </div>
     <div *ngIf="filter.radio === 'current'" class="form-group row">
       <label class="col-sm-2 form-control-label" translate>common.label.to</label>
-      <div [ngClass]="{'has-error': ((to.dirty || to.touched) && to.invalid)}" class="col-sm-6">
+      <div class="col-sm-6">
         <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
                         [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
                         [placeholder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
