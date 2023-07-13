@@ -17,6 +17,7 @@ export class DataService implements OnDestroy {
   public closeModal: BehaviorSubject<string> = new BehaviorSubject<string>('');
   public reloadTree: BehaviorSubject<any> = new BehaviorSubject<any>({});
   public reloadWorkflowError: BehaviorSubject<any> = new BehaviorSubject<any>({});
+  public reloadAuthentication: BehaviorSubject<any> = new BehaviorSubject<any>({});
   private functionSource = new Subject<string>();
   private refreshWidgetSource = new Subject<any>();
 

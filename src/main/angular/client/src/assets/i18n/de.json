@@ -2005,6 +2005,9 @@
         "retry": {
           "maxTries": "Nach Erreichenn der max. Anzahl von Wiederholungsversuchen wird die Retry-Anweisung beendeet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt.",
           "delay": "Die Verzögerung ist die Anzahl Sekunden, für die auf den nächsten Wiederholungsversuch gewartet wird. Werden mehrere durch Komma getrennte Werte angegeben, so gelten sie von links nach rechts für die Wartezeit auf die nächste Wiederholung."
+        },
+        "cycle": {
+          "onlyOnePeriod": "Only One Period"
         }
       }
     },
@@ -3328,6 +3331,7 @@
     "label.bySubagentCluster": "Per Subagenten Cluster",
     "label.stopOnFailure": "Stoppen im Fehlerfall",
     "label.references": "Referenzen",
+    "label.onlyOnePeriod": "Only One Period",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",

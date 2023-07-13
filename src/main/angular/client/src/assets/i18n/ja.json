@@ -2005,6 +2005,9 @@
         "retry": {
           "maxTries": "再試行回数が最大になると、Retry命令は終了し、オーダーは失敗ステートになります。",
           "delay": "遅延は、次のリトライが実行されるまでの時間を秒単位で指定します。コンマで区切って複数の値を指定した場合は、左から右に向かってそれぞれの値が次のリトライを待つ期間に適用されます。"
+        },
+        "cycle": {
+          "onlyOnePeriod": "Only One Period"
         }
       }
     },
@@ -3328,6 +3331,7 @@
     "label.bySubagentCluster": "サブエージェントクラスター",
     "label.stopOnFailure": "失敗時停止",
     "label.references": "参照",
+    "label.onlyOnePeriod": "Only One Period",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",

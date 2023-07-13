@@ -225,6 +225,9 @@ export class FileUploaderComponent {
   beforeUpload = (file: NzUploadFile): boolean => {
     this.uploadError = false;
     this.fileList.push(file);
+    if(this.coreService.sanitizeFileName(file.name)) {
+      this.showErrorMsg('File name has invalid characters.')
+    }
     if (this.type === 'DEPLOYMENT' || this.type === 'USER' || this.type == 'INVENTORY' || this.type == 'INVENTORY_OBJECT'
       || this.type == 'XML_EDITOR' || this.type === 'SETTING' || this.type === 'CONTROLLER' || this.type === 'WORKFLOW') {
       this.onFileSelected(file);

@@ -4,10 +4,12 @@ import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
 import * as AES from 'crypto-js/aes';
 import * as Utf8 from 'crypto-js/enc-utf8';
-import {isArray} from "underscore";
+import {isArray, isEmpty} from "underscore";
 import {HttpHeaders} from "@angular/common/http";
+import {Subscription} from "rxjs";
 import {CoreService} from '../../services/core.service';
 import {AuthService, OIDCAuthService} from '../../components/guard';
+import {DataService} from "../../services/data.service";
 
 @Component({
   selector: 'app-login',
@@ -15,6 +17,7 @@ import {AuthService, OIDCAuthService} from '../../components/guard';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+  isLoading = true;
   user: any = {};
   schedulerIds: any = {};
   submitted = false;
@@ -33,12 +36,27 @@ export class LoginComponent {
   showLogin = false;
   userObject: any = {};
 
+  subscription: Subscription;
+
   constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService,
               private authService: AuthService, private oAuthService: OIDCAuthService, private renderer: Renderer2,
-              private translate: TranslateService, private toasterService: ToastrService) {
+              private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService) {
   }
 
   ngOnInit(): void {
+    this.subscription = this.dataService.reloadAuthentication.subscribe({
+      next: (res) => {
+        this.isLoading = true;
+        if (res.data) {
+          this.userObject.userName = 'OIDC';
+          this.userObject.identityService = res.data.identityService;
+          this.onSign(res.data.secondFactoridentityService);
+          setTimeout(() => {
+            this.isLoading = false;
+          }, 100)
+        }
+      }
+    });
     if (localStorage['$SOS$REMEMBER'] === 'true' || localStorage['$SOS$REMEMBER'] === true) {
       if (localStorage['$SOS$FOO']) {
         const urs = AES.decrypt(localStorage['$SOS$FOO'].toString(), '$SOSJS7');
@@ -62,9 +80,14 @@ export class LoginComponent {
     }
   }
 
+  ngOnDestroy(): void{
+    this.subscription.unsubscribe();
+  }
+
   private getDefaultConfiguration() {
     this.coreService.post('configuration/login', {}).subscribe({
       next: (res) => {
+        this.isLoading = false;
         this.defaultSetting = res;
         if (!res.enableRememberMe) {
           localStorage.removeItem('$SOS$FOO');
@@ -76,6 +99,7 @@ export class LoginComponent {
         if (res.title) {
           document.title = 'JS7: ' + res.title;
         }
+
         if (res.customLogo && res.customLogo.name) {
           let imgUrl = '../ext/images/' + res.customLogo.name;
           const imgContainer = this.renderer.createElement('img');
@@ -99,6 +123,8 @@ export class LoginComponent {
             this.renderer?.appendChild(dom, imgContainer);
           }
         }
+      }, error: () => {
+        this.isLoading = false;
       }
     })
   }
@@ -377,7 +403,11 @@ export class LoginComponent {
 
     if (this.userObject.userName && this.userObject.identityService) {
       obj['X-1ST-IDENTITY-SERVICE'] = this.userObject.identityService.substring(this.userObject.identityService.lastIndexOf(':') + 1);
+      if (this.userObject.userName === 'OIDC') {
+        delete this.userObject.userName;
+      }
     }
+
     let headers = new HttpHeaders(obj);
     this.coreService.log('authentication/login', this.userObject.userName ? this.userObject : {fido: true}, {headers}).subscribe({
       next: (data: any) => {

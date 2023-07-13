@@ -5302,7 +5302,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             let val = attr[j].value;
             if ((attr[j].name === 'arguments' || attr[j].name === 'defaultArguments' || attr[j].name === 'outcome' || attr[j].name === 'result')) {
               val = val ? JSON.parse(val) : attr[j].name === 'outcome' ? {returnCode: 0} : {};
-            } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'forceJobAdmission' || attr[j].name === 'stopOnFailure' || attr[j].name === 'joinIfFailed' || attr[j].name === 'uncatchable' || attr[j].name === 'unsuccessful') {
+            } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'onlyOnePeriod' || attr[j].name === 'forceJobAdmission' || attr[j].name === 'stopOnFailure' || attr[j].name === 'joinIfFailed' || attr[j].name === 'uncatchable' || attr[j].name === 'unsuccessful') {
               val = val == 'true';
             } else if (obj.TYPE === 'PostNotices' && attr[j].name === 'noticeBoardNames') {
               val = val ? val.split(',') : '';
@@ -7927,6 +7927,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 obj.cell, 'schedule', JSON.stringify(self.selectedNode.obj.schedule));
               graph.getModel().execute(edit);
             }
+            const edit2 = new mxCellAttributeChange(
+              obj.cell, 'onlyOnePeriod', self.selectedNode.newObj.onlyOnePeriod);
+            graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'ForkList') {
             if (self.selectedNode.radio1 === 'byListVariable' || !self.hasLicense) {
               const edit = new mxCellAttributeChange(
@@ -8323,6 +8326,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             obj.retryDelays = [{value: '0s'}];
           }
         } else if (cell.value.tagName === 'Cycle') {
+          const val1 = cell.getAttribute('onlyOnePeriod');
+          obj.onlyOnePeriod = val1 == 'true';
           obj.schedule = cell.getAttribute('schedule');
           if (!obj.schedule || isEmpty(obj.schedule) || typeof obj.schedule !== 'string') {
             obj.schedule = {};

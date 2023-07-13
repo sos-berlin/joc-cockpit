@@ -2606,4 +2606,8 @@ export class CoreService {
     return col;
   }
 
+  sanitizeFileName(fileName) {
+    const pattern = /[*?|<>]/i
+    return pattern.test(fileName);
+  }
 }

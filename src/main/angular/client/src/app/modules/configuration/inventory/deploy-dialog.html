@@ -53,7 +53,7 @@
         </label>
         <div class="col-md-6">
           <app-date-input [object]="dateObj" [attributeDate]="'fromDate'" [isRequired]="true"
-                          [name]="'from'" [dateFormat]="dateFormat"
+                          [name]="'from'" [dateFormat]="dateFormat" [isAllowClear]="true"
                           [placeholder]="( dateFormat | uppercase )"
           ></app-date-input>
         </div>

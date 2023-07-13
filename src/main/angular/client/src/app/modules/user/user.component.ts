@@ -525,11 +525,15 @@ export class ImportKeyModalComponent {
     if (this.type === 'ca') {
       this.key.keyAlg = 'ECDSA';
     }
-
   }
 
   beforeUpload = (file: NzUploadFile): boolean => {
+    this.uploadError = false;
     this.fileList.push(file);
+    if(this.coreService.sanitizeFileName(file.name)) {
+      this.toasterService.error('File name has invalid characters.');
+      this.fileList = [];
+    }
     this.onFileSelected(this.fileList);
     setTimeout(() => {
       const uploadSpan = document.querySelector('.ant-upload-span');
@@ -576,7 +580,7 @@ export class ImportKeyModalComponent {
             }
           }
         } catch (e) {
-
+          self.uploadError = true;
         }
       }
     }
@@ -611,13 +615,15 @@ export class ImportKeyModalComponent {
     const headers = new HttpHeaders().set('X-Access-Token', this.authService.accessTokenId);
     headers.set('Content-Type', 'multipart/form-data');
     const bodyData = this.type === 'key' ? {keys: obj} : obj;
-
     this.coreService.request('api/' + URL, {...formData, ...bodyData}, headers).subscribe({
       next: () => {
         if (this.fileList.length === 1 || this.fileList[this.fileList.length - 1].name === obj.name) {
           this.activeModal.close('success');
         }
-      }, error: () => this.submitted = false
+      }, error: () => {
+        this.uploadError = true;
+        this.submitted = false
+      }
     });
   }
 
@@ -735,7 +741,7 @@ export class UserComponent {
     {value: '4000', name: '4000'},
     {value: '4500', name: '4500'},
     {value: '5000', name: '5000'}
-  ]
+  ];
 
   headerColor = [{value: '', name: 'Default'},
     {value: 'header-blackcurrant', name: 'Blackcurrant'},
@@ -850,7 +856,7 @@ export class UserComponent {
     {index: 86, value: 'MMMM DD, YYYY hh:mm A', name: 'MMMM DD, YYYY hh:mm A'},
     {index: 87, value: 'MMMM DD, YYYY HH:mm:ss', name: 'MMMM DD, YYYY HH:mm:ss'},
     {index: 88, value: 'MMMM DD, YYYY hh:mm:ss A', name: 'MMMM DD, YYYY hh:mm:ss A'}
-  ]
+  ];
   forceLoging = false;
   isGroupBtnActive = false;
   securityLevel: string;
