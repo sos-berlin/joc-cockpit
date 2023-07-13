@@ -5,6 +5,7 @@ import {Router} from '@angular/router';
 import {registerLocaleData} from "@angular/common";
 import {AuthService, OIDCAuthService} from './components/guard';
 import {CoreService} from './services/core.service';
+import {DataService} from "./services/data.service";
 
 declare const $: any;
 
@@ -15,8 +16,8 @@ declare const $: any;
 export class AppComponent {
   locales: any = [];
 
-  constructor(public translate: TranslateService, private i18n: NzI18nService, public coreService: CoreService,
-              private authService: AuthService, private readonly oAuthService: OIDCAuthService, private router: Router) {
+  constructor(private translate: TranslateService, private i18n: NzI18nService, public coreService: CoreService, private dataService:  DataService,
+              private authService: AuthService, private oAuthService: OIDCAuthService, private router: Router) {
     AppComponent.themeInit();
     /*    Object.getOwnPropertyNames(console).filter((property) => {
           return typeof console[property] === 'function';
@@ -124,7 +125,11 @@ export class AppComponent {
             let providerName: string = sessionStorage.getItem('providerName');
             let key: string = sessionStorage.getItem('$SOS$KEY');
             let expireTime: string = sessionStorage.getItem('$SOS$TOKENEXPIRETIME');
-
+            if (data.accessToken === '' && data.isAuthenticated && data.secondFactoridentityService) {
+              data.identityService = providerName;
+              this.dataService.reloadAuthentication.next({data});
+              return;
+            }
             sessionStorage.clear();
             this.authService.setUser(data);
             this.authService.save();
