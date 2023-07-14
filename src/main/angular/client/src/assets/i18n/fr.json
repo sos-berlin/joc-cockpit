@@ -735,7 +735,8 @@
     "message.dailyPlanOverview": "Ce widget affiche un aperçu  du plan quotidien.",
     "message.fileTransferHistorySummary": "Ce widget affiche l'historique des transferts de fichier.",
     "message.apiServerStatus": "Ce widget affiche le statut du API Server",
-    "message.confirmNodeLoss": "Pouvez-vous confirmer que l'Instance du Contrôleur '{{lossNode}}' ne tourne pas ?"
+    "message.confirmNodeLoss": "Pouvez-vous confirmer que l'Instance du Contrôleur '{{lossNode}}' ne tourne pas ?",
+    "message.confirmAgentNodeLoss": "Pouvez-vous Agent que l'Instance du Contrôleur '{{lossNode}}' ne tourne pas ?"
   },
   "dailyPlan": {
     "label.createPlan": "Créer le plan quotidien",

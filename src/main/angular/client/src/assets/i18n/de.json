@@ -735,7 +735,8 @@
     "message.dailyPlanOverview": "Das Steuerelement zeigt die Übersicht des Tagesplans",
     "message.fileTransferHistorySummary": "Das Steuerelement zeigt die Historie der Dateiübertragungen",
     "message.apiServerStatus": "Das Steuerelement zeigt den Status des API Server",
-    "message.confirmNodeLoss": "Bestätigen Sie, dass die Controller Instanz '{{lossNode}}' nicht gestartet ist?"
+    "message.confirmNodeLoss": "Bestätigen Sie, dass die Controller Instanz '{{lossNode}}' nicht gestartet ist?",
+    "message.confirmAgentNodeLoss": "Bestätigen Sie, dass die Agent Instanz '{{lossNode}}' nicht gestartet ist?"
   },
   "dailyPlan": {
     "label.createPlan": "Tagesplan anlegen",

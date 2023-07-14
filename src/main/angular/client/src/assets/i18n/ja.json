@@ -735,7 +735,8 @@
     "message.dailyPlanOverview": "実行計画表示ウィジェット",
     "message.fileTransferHistorySummary": "ファイル転送履歴を表示",
     "message.apiServerStatus": "APIサーバーステータス表示ウィジェット",
-    "message.confirmNodeLoss": " コントローラーインスタンス {{lossNode}} が停止していることが確認されました"
+    "message.confirmNodeLoss": " コントローラーインスタンス {{lossNode}} が停止していることが確認されました",
+    "message.confirmAgentNodeLoss": "Can you confirm that the Agent instance '{{lossNode}}' is not running?"
   },
   "dailyPlan": {
     "label.createPlan": "実行計画作成",
