@@ -404,7 +404,7 @@ export class LoginComponent {
     if (this.userObject.userName && this.userObject.identityService) {
       obj['X-1ST-IDENTITY-SERVICE'] = this.userObject.identityService.substring(this.userObject.identityService.lastIndexOf(':') + 1);
       if (this.userObject.userName === 'OIDC') {
-        delete this.userObject.userName;
+        this.userObject.userName = '';
       }
     }
 
@@ -421,6 +421,7 @@ export class LoginComponent {
       }, error: () => {
         this.submitted = false;
         this.errorMsg = true;
+        sessionStorage.clear();
       }
     });
   }

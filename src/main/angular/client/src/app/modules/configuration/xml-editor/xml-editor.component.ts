@@ -1331,7 +1331,6 @@ export class XmlEditorComponent {
         flag = false;
       }
     }
-    console.log('compareJobResource', flag)
     this.extraInfo.sync = flag;
   }
 
@@ -5106,7 +5105,6 @@ export class XmlEditorComponent {
       nzMaskClosable: false
     });
     modal.afterClose.subscribe(res => {
-      console.log(res)
       if (res && res.configurationJson) {
         this.updateXML(res);
       } else if (this.objectType === 'NOTIFICATION') {

@@ -1,7 +1,7 @@
-import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+import {Component, OnInit, OnDestroy, Input, inject} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from "@angular/router";
-import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
@@ -13,20 +13,23 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
   templateUrl: './confirm-node-dialog.html'
 })
 export class ConfirmNodeModalComponent {
-  @Input() agent: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  agent: any;
 
   submitted = false;
   display: any;
   required = false;
   comments: any = {};
-  data = {
-    lostDirector: 'PRIMARY_DIRECTOR'
-  };
+
+  lossNode = '';
+
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
+    this.agent = this.modalData.agent;
+    this.lossNode = this.agent.clusterState?.lossNode;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -41,8 +44,7 @@ export class ConfirmNodeModalComponent {
     const request: any = {
       auditLog: {},
       controllerId: this.agent.controllerId,
-      agentId: this.agent.agentId,
-      lostDirector: this.data.lostDirector
+      agentId: this.agent.agentId
     };
     this.coreService.getAuditLogObj(this.comments, request.auditLog);
     this.coreService.post('agent/cluster/confirm_node_loss', request).subscribe({
