@@ -2081,6 +2081,11 @@ export class WorkflowService {
       return seconds;
     } else if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(str)) {
       const a = str.split(':');
+      if (a?.length == 1) {
+        return parseInt(a[0], 10);
+      } else if (a?.length == 2) {
+        return (+a[0]) * 60 * 60 + (+a[1]) * 60;
+      }
       return (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
     } else {
       return parseInt(str, 10);

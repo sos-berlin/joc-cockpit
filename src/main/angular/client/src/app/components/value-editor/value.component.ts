@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -16,7 +15,7 @@ declare const $;
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './value-editor.html'
 })
-export class ValueEditorComponent implements AfterViewInit {
+export class ValueEditorComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   data: any;
   object: any = {};

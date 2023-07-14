@@ -1055,7 +1055,6 @@ export class IdentityServiceComponent {
   }
 
   manageSetting({data}: { data: any }): void {
-    console.log(data)
     this.modal.create({
       nzTitle: undefined,
       nzContent: SettingModalComponent,

@@ -10750,9 +10750,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             json.instructions[x].cycleWorkflow = {
               instructions: json.instructions[x].instructions
             };
+            const onlyOnePeriod = clone(json.instructions[x].onlyOnePeriod);
             let scheduleObj = json.instructions[x].schedule ? clone(json.instructions[x].schedule) : null;
             delete json.instructions[x].instructions;
             delete json.instructions[x].schedule;
+            delete json.instructions[x].onlyOnePeriod;
             if (scheduleObj && typeof scheduleObj === 'string') {
               try {
                 scheduleObj = JSON.parse(scheduleObj);
@@ -10762,6 +10764,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (scheduleObj && scheduleObj.schemes && scheduleObj.schemes.length > 0) {
               json.instructions[x].schedule = scheduleObj;
             }
+            json.instructions[x].onlyOnePeriod = onlyOnePeriod;
           } else if (json.instructions[x].TYPE === 'ForkList') {
             const childrenObj = clone(json.instructions[x].children);
             const childToIdObj = clone(json.instructions[x].childToId);

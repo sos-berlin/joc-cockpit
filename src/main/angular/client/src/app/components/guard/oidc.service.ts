@@ -38,7 +38,6 @@ export class OIDCAuthService {
   showDebugInformation?: boolean;
   clientSecret?: string;
   requireHttps?: boolean | 'remoteOnly';
-  skipIssuerCheck?: boolean;
   nonceStateSeparator: string = ';';
   state = '';
   responseTypesSupported = [];
@@ -107,12 +106,8 @@ export class OIDCAuthService {
     });
   }
 
-  private validateDiscoveryDocument(doc: any) {
+  private validateDiscoveryDocument(doc: any): boolean {
     let errors: any;
-    if (!this.skipIssuerCheck && doc.issuer !== this.issuer) {
-      this.toasterService.error('invalid issuer in discovery document, expected: ' + this.issuer, 'current: ' + doc.issuer);
-      return false;
-    }
     errors = this.validateUrlFromDiscoveryDocument(doc.authorization_endpoint);
     if (errors.length > 0) {
       this.toasterService.error('error validating authorization_endpoint in discovery document', errors);
@@ -136,11 +131,10 @@ export class OIDCAuthService {
       this.toasterService.error('error validating userinfo_endpoint in discovery document', errors);
       return false;
     }
-
     return true;
   }
 
-  validateUrlFromDiscoveryDocument(url: string) {
+  validateUrlFromDiscoveryDocument(url: string): string[] {
     const errors = [];
     const httpsCheck = this.validateUrlForHttps(url);
     if (!httpsCheck) {
@@ -149,7 +143,7 @@ export class OIDCAuthService {
     return errors;
   }
 
-  validateUrlForHttps(url: string | undefined) {
+  validateUrlForHttps(url: string | undefined): boolean {
     if (!url) {
       return true;
     }
@@ -185,7 +179,7 @@ export class OIDCAuthService {
     }
   }
 
-  async createLoginUrl(state = '', noPrompt = false) {
+  async createLoginUrl(state = '', noPrompt = false): Promise<string> {
     let redirectUri: string | undefined = this.redirectUri;
     const nonce: any = await this.createAndSaveNonce();
     if (state) {

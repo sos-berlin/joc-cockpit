@@ -1372,7 +1372,7 @@
           </div>
 
         </div>
-        <div class="box-body p-t-0">
+        <div class="box-body p-t-0" *ngIf="isReferencedBy">
           <div *ngIf="isReferencedBy.fileOrderSources || isReferencedBy.schedules || isReferencedBy.workflows"
                class="b-t p-t-sm text-16 _500" translate>workflow.label.references
           </div>

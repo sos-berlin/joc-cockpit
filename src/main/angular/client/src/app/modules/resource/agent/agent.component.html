@@ -134,7 +134,7 @@
                           <li (click)="switchOver(cluster)" [nzDisabled]="cluster.subagents?.length < 2" nz-menu-item>
                             <a translate>dashboard.button.switchOver</a>
                           </li>
-                          <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="cluster.subagents?.length < 2"
+                          <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="!cluster.clusterState?.lossNode"
                               nz-menu-item>
                             <a translate>agent.button.confirmNodeLoss</a>
                           </li>
@@ -249,7 +249,7 @@
                             <li (click)="switchOver(cluster)" [nzDisabled]="cluster.subagents?.length < 2" nz-menu-item>
                               <a translate>dashboard.button.switchOver</a>
                             </li>
-                            <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="cluster.subagents?.length < 2"
+                            <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="!cluster.clusterState?.lossNode"
                                 nz-menu-item>
                               <a translate>agent.button.confirmNodeLoss</a>
                             </li>
