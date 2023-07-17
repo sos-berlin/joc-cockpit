@@ -16,7 +16,7 @@ declare const $: any;
 export class AppComponent {
   locales: any = [];
 
-  constructor(private translate: TranslateService, private i18n: NzI18nService, public coreService: CoreService, private dataService:  DataService,
+  constructor(private translate: TranslateService, private i18n: NzI18nService, public coreService: CoreService, private dataService: DataService,
               private authService: AuthService, private oAuthService: OIDCAuthService, private router: Router) {
     AppComponent.themeInit();
     /*    Object.getOwnPropertyNames(console).filter((property) => {
@@ -34,6 +34,7 @@ export class AppComponent {
         this.oAuthService.loadDiscoveryDocument('').then((res: any) => {
           this.oAuthService.tryLoginCodeFlow().then(() => {
             if (this.oAuthService.id_token) {
+              this.dataService.reloadAuthentication.next({loading: true});
               this.login({
                 token: this.oAuthService.access_token,
                 idToken: this.oAuthService.id_token,
@@ -41,7 +42,10 @@ export class AppComponent {
                 document: res.discoveryDocument
               });
             }
-          });
+          }).catch((err) => {
+            console.log(err)
+            sessionStorage.clear();
+          })
         });
       }
     }
@@ -152,7 +156,7 @@ export class AppComponent {
             }
           }, error: () => {
             this.oAuthService.logOut(sessionStorage['$SOS$KEY']);
-            delete sessionStorage['$SOS$KEY'];
+            sessionStorage.clear();
           }
         });
       });

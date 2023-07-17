@@ -3201,6 +3201,8 @@
     "label.executableType": "実行タイプ",
     "label.shell": "Shell",
     "label.jitl": "JITL",
+    "label.java": "Java",
+    "label.javaScript": "JavaScript",
     "label.branch1.x": "V.1.x系",
     "label.uncatchable": "Uncatchable",
     "label.unsuccessful": "失敗",

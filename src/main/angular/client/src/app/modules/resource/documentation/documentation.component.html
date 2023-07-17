@@ -278,7 +278,7 @@
                   </thead>
                   <tbody>
                   <tr *ngFor="let document of ajaxTable.data">
-                    <td (nzCheckedChange)="onItemChecked(document, $event)" [nzChecked]="object.mapOfCheckedId.has(document.path)"
+                    <td [nzChecked]="object.mapOfCheckedId.has(document.path)" (nzCheckedChange)="onItemChecked(document, $event)"
                         [nzShowCheckbox]="true"></td>
                     <td>
                       <div class="btn-group dropdown">

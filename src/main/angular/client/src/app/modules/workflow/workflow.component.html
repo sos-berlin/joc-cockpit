@@ -605,8 +605,8 @@
                   <ng-template [ngForOf]="ajaxTable.data" let-workflow
                                ngFor>
                     <tr [ngClass]="{'light-bg':workflow.show}">
-                      <td (nzCheckedChange)="onItemChecked(workflow,$event)" [nzChecked]="object.mapOfCheckedId.has(workflow.path)"
-                          [nzShowCheckbox]="true"></td>
+                      <td [nzChecked]="object.mapOfCheckedId.has(workflow.path)"
+                          [nzShowCheckbox]="true" (nzCheckedChange)="onItemChecked(workflow,$event)" ></td>
                       <td>
                         <div class="btn-group dropdown">
                           <app-workflow-action (isChanged)="changedHandler($event)"

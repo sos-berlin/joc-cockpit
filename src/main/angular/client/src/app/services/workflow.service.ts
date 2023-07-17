@@ -551,8 +551,8 @@ export class WorkflowService {
         if (isEmpty(value.admissionTimeScheme) || value.admissionTimeScheme.periods.length === 0) {
           delete value.admissionTimeScheme;
         }
-        if (!value.executable || (!value.executable.className && value.executable.TYPE === 'InternalExecutable')
-          || (!value.executable.script && value.executable.TYPE === 'ShellScriptExecutable') || !value.agentName) {
+        if (!value.executable || (!value.executable.className && ((value.executable.TYPE === 'InternalExecutable' || value.executable.TYPE === 'Java') && value.executable.internalType !== 'JavaScript_Graal'))
+          || (!value.executable.script && (value.executable.TYPE === 'ShellScriptExecutable' || value.executable.TYPE === 'JavaScript' || value.executable.internalType === 'JavaScript_Graal')) || !value.agentName) {
           return false;
         }
         if (value.executable && value.executable.login && value.executable.login.withUserProfile && !value.executable.login.credentialKey) {
@@ -2030,6 +2030,7 @@ export class WorkflowService {
   }
 
   convertStringToDuration(str: string, isDuration = false): number {
+
     function durationSeconds(timeExpr: string) {
       const units: any = {h: 3600, m: 60, s: 1};
       const regex = /(\d+)([hms])/g;
@@ -2566,6 +2567,10 @@ export class WorkflowService {
   }
 
   convertJobObject(job: any, isJobTemplate = true): any {
+    if (job.executable.TYPE === 'Java' || job.executable.TYPE === 'JavaScript') {
+      job.executable.TYPE = 'InternalExecutable';
+    }
+    console.log(job.executable)
     if (isEmpty(job.admissionTimeScheme)) {
       delete job.admissionTimeScheme;
     }
@@ -2592,7 +2597,7 @@ export class WorkflowService {
         delete job.agentName1
       }
       if (job.defaultArguments) {
-        if (job.executable.v1Compatible && job.executable.TYPE === 'ShellScriptExecutable') {
+        if (job.executable.v1Compatible && (job.executable.TYPE === 'ShellScriptExecutable')) {
           job.defaultArguments.forEach((argu: any) => {
             this.coreService.addSlashToString(argu, 'value');
           });
@@ -2602,7 +2607,7 @@ export class WorkflowService {
         }
       }
       if (job.executable.arguments) {
-        if (job.executable.TYPE === 'InternalExecutable') {
+        if (job.executable.TYPE === 'InternalExecutable' || job.executable.TYPE === 'Java' || job.executable.TYPE === 'JavaScript') {
           if (isArray(job.executable.arguments)) {
             job.executable.arguments.forEach((argu: any) => {
               this.coreService.addSlashToString(argu, 'value');
@@ -2624,7 +2629,7 @@ export class WorkflowService {
     }
 
     if (job.executable && job.executable.jobArguments) {
-      if (job.executable.TYPE === 'InternalExecutable') {
+      if (job.executable.TYPE === 'InternalExecutable' || job.executable.TYPE === 'Java') {
         if (job.executable.jobArguments && isArray(job.executable.jobArguments)) {
           job.executable.jobArguments.forEach((argu: any) => {
             this.coreService.addSlashToString(argu, 'value');
@@ -2644,10 +2649,10 @@ export class WorkflowService {
         delete job.notification.mail;
       }
     }
-    if (job.executable.TYPE === 'InternalExecutable') {
+    if ((job.executable.TYPE === 'InternalExecutable' || job.executable.TYPE === 'Java') && job.executable.internalType !== 'JavaScript_Graal') {
       delete job.executable.script;
       delete job.executable.login;
-    } else if (job.executable.TYPE === 'ShellScriptExecutable') {
+    } else if (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.TYPE === 'JavaScript' || job.executable.internalType === 'JavaScript_Graal') {
       delete job.executable.className;
     }
     if (job.executable.env) {

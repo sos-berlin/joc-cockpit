@@ -455,7 +455,7 @@ export class OIDCAuthService {
     this.assertUrlNotNullAndCorrectProtocol(this.tokenEndpoint, 'tokenEndpoint');
     let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
     const clientId = sessionStorage.getItem('clientId');
-    const clientSecret = sessionStorage.getItem('clientSecret');
+    const clientSecret = this.tokenEndpoint.match('v2.0/') ? '' : (sessionStorage.getItem('clientSecret') || this.clientSecret);
     let flag = true;
     let basicAuth = false;
     if (this.tokenEndMethodsSupported.length > 0) {
@@ -463,16 +463,16 @@ export class OIDCAuthService {
         this.tokenEndMethodsSupported.forEach((method) => {
           if (method == 'none') {
             flag = false;
-          } else if (method == 'client_secret_basic' && (this.clientSecret || clientSecret)) {
+          } else if (method == 'client_secret_basic' && clientSecret) {
             basicAuth = true;
             flag = false;
-            headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((this.clientId || clientId) + ':' + (this.clientSecret || clientSecret)))));
+            headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((this.clientId || clientId) + ':' + clientSecret))));
           }
         })
       }
     }
-    if (flag && (this.clientSecret || clientSecret)) {
-      params = params.set('client_secret', this.clientSecret || clientSecret);
+    if (flag && clientSecret) {
+      params = params.set('client_secret', clientSecret);
     }
     if (!basicAuth) {
       params = params.set('client_id', this.clientId || clientId);
@@ -638,6 +638,7 @@ export class OIDCAuthService {
         'Content-Type',
         'application/x-www-form-urlencoded'
       );
+      const clientSecret = this.tokenEndpoint.match('v2.0/') ? '' : data.clientSecret;
       let flag = true;
       let basicAuth = false;
       if (this.tokenEndMethodsSupported.length > 0) {
@@ -645,16 +646,16 @@ export class OIDCAuthService {
           this.tokenEndMethodsSupported.forEach((method) => {
             if (method == 'none') {
               flag = false;
-            } else if (method == 'client_secret_basic' && data.clientSecret) {
+            } else if (method == 'client_secret_basic' && clientSecret) {
               basicAuth = true;
               flag = false;
-              headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((data.clientId + ':' + this.clientSecret)))));
+              headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((data.clientId + ':' + clientSecret)))));
             }
           })
         }
       }
-      if (flag && data.clientSecret) {
-        params = params.set('client_secret', data.clientSecret);
+      if (flag && clientSecret) {
+        params = params.set('client_secret', clientSecret);
       }
       if (!basicAuth) {
         params = params.set('client_id', data.clientId);

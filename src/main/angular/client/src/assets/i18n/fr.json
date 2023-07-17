@@ -3201,6 +3201,8 @@
     "label.executableType": "Type d'Exécutable",
     "label.shell": "Shell",
     "label.jitl": "JITL",
+    "label.java": "Java",
+    "label.javaScript": "JavaScript",
     "label.branch1.x": "Branche 1.x",
     "label.uncatchable": "Intraitable",
     "label.unsuccessful": "échoué",

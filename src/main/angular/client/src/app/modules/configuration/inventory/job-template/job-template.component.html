@@ -113,7 +113,7 @@
                translate>workflow.label.returnCode
           </div>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <nz-radio-group (ngModelChange)="saveJSON();" [(ngModel)]="returnCodes.on">
+            <nz-radio-group [(ngModel)]="returnCodes.on" (ngModelChange)="saveJSON();" >
               <label (click)="job.configuration.executable.returnCodeMeaning.success = job.configuration.executable.returnCodeMeaning.failure;job.configuration.executable.returnCodeMeaning.failure = ''" nz-radio
                      nzValue="success"><span
                 translate>workflow.label.onSuccess</span></label>
@@ -168,29 +168,44 @@
                  class="col-md-4 col-lg-3 form-control-label"
                  translate>workflow.label.jobClass</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <nz-select (ngModelChange)="saveJSON()" [(ngModel)]="job.configuration.executable.TYPE"
-                       name="executableType">
+            <nz-select [(ngModel)]="job.configuration.executable.TYPE"
+                       name="executableType" (ngModelChange)="saveJSON()" >
               <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ShellScriptExecutable'"></nz-option>
               <nz-option [nzLabel]="'workflow.label.jitl' | translate" [nzValue]="'InternalExecutable'"></nz-option>
+              <nz-option [nzLabel]="'workflow.label.java' | translate" [nzValue]="'Java'"></nz-option>
+              <nz-option [nzLabel]="'workflow.label.javaScript' | translate" [nzValue]="'JavaScript'"></nz-option>
             </nz-select>
           </div>
         </div>
         <div class="form-group row">
           <div class="col-md-12">
             <nz-tabset>
-              <nz-tab *ngIf="job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable'"
+              <nz-tab *ngIf="job.configuration.executable && (job.configuration.executable.TYPE === 'ShellScriptExecutable' || job.configuration.executable.TYPE === 'JavaScript')"
                       [nzTitle]="titleTemplate">
                 <ng-template #titleTemplate>
                   <span translate>workflow.label.script</span>
                   <sup class="text-danger text-sm">*</sup>
                 </ng-template>
                 <div class="row">
-                  <div class="col-md-12 role">
+                  <div class="col-md-12">
+                    <div *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" id="show-tree"
+                         style="min-width: 150px;">
+                      <app-search-input (onBlur)="onBlurTree($event)" (onSelect)="checkExpectNoticeExp($event)"
+                                        [changeDetect]="true"
+                                        [nodes]="scriptTree" [type]="'INCLUDESCRIPT'"></app-search-input>
+                    </div>
                     <div [ngClass]="{'invalid': (script.invalid && (script.dirty && script.touched))}" class="b-a">
                       <ngx-codemirror #script="ngModel" (focusout)="saveJSON()" [(ngModel)]="job.configuration.executable.script"
-                                      [options]="cmOption" name="script"
+                                      [options]="{
+                                          lineNumbers: true,
+                                          autoRefresh: true,
+                                          scrollbarStyle: 'simple',
+                                          extraKeys: job.configuration.executable.TYPE === 'ShellScriptExecutable' ?  {} : {'Ctrl-Space': 'autocomplete'},
+                                          mode: job.configuration.executable.TYPE === 'ShellScriptExecutable' ? 'shell' : 'javascript'
+                                        }" name="script"
                                       required title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}"></ngx-codemirror>
                     </div>
+                    <div *ngIf="job.configuration.executable.TYPE === 'ShellScriptExecutable'" class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
                     <div *ngIf="(script.invalid && (script.dirty && script.touched))" class="text-danger help-block">
                       <div *ngIf="(script.errors && script.errors['required'])">
                         <div translate>common.message.requiredError</div>
@@ -199,7 +214,8 @@
                   </div>
                 </div>
               </nz-tab>
-              <nz-tab *ngIf="job.configuration.executable && job.configuration.executable.TYPE === 'InternalExecutable'"
+              <nz-tab *ngIf="job.configuration.executable && (job.configuration.executable.TYPE === 'InternalExecutable'
+                      || job.configuration.executable.TYPE === 'Java')"
                       [nzTitle]="titleTemplate">
                 <ng-template #titleTemplate>
                   <span translate>workflow.label.className</span>
@@ -276,7 +292,7 @@
                           </div>
                         </div>
                         <div class="col-md-3 col-lg-3 col-xl-3 m-b-sm p-r-0">
-                          <nz-select (ngModelChange)="saveJSON()" [(ngModel)]="parameter.value.type" [nzDisabled]="isTrash"
+                          <nz-select [(ngModel)]="parameter.value.type" [nzDisabled]="isTrash" (ngModelChange)="saveJSON()"
                                      name="type{{i}}">
                             <nz-option *ngFor="let dataType of allowedDatatype" [nzLabel]="dataType | translate"
                                        [nzValue]="dataType"></nz-option>
@@ -287,9 +303,9 @@
                                            [nzMin]="0"
                                            [nzStep]="1" name="value{{i}}"
                                            nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                          <nz-select (ngModelChange)="saveJSON()" *ngSwitchCase="'Boolean'"
+                          <nz-select *ngSwitchCase="'Boolean'"
                                      [(ngModel)]="parameter.value.default"
-                                     [nzDisabled]="isTrash"
+                                     [nzDisabled]="isTrash" (ngModelChange)="saveJSON()"
                                      [nzPlaceHolder]="'common.placeholder.selectValue' | translate" name="value{{i}}"
                                      nzAllowClear>
                             <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
@@ -342,7 +358,7 @@
                                     rows="2"></textarea>
                         </div>
                         <div class="col-lg-12 col-xl-9 m-b-12">
-                          <label (ngModelChange)="saveJSON()" [(ngModel)]="parameter.value.required" class="m-t-xs"
+                          <label [(ngModel)]="parameter.value.required" class="m-t-xs" (ngModelChange)="saveJSON()"
                                  nz-checkbox>
                             {{'workflow.label.required' | translate}}
                           </label>
@@ -411,8 +427,8 @@
                           </div>
                         </div>
                         <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                          <input (blur)="saveJSON()" (ngModelChange)="checkValue(env)" [(ngModel)]="env.value" autocomplete="off"
-                                 class="form-control" name="value{{i}}"
+                          <input [(ngModel)]="env.value" autocomplete="off"
+                                 class="form-control" name="value{{i}}" (blur)="saveJSON()" (ngModelChange)="checkValue(env)"
                                  nz-input placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
                           <i (click)="openEditor(env,  'value')" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
                              nzType="form"></i>
@@ -611,7 +627,7 @@
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.criticality' | translate}}" translate>workflow.label.criticality</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <nz-select (ngModelChange)="saveJSON()" [(ngModel)]="job.configuration.criticality"
+                      <nz-select [(ngModel)]="job.configuration.criticality" (ngModelChange)="saveJSON()"
                                  [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
                                  class="w-full"
                                  name="criticality" nzAllowClear>
@@ -645,7 +661,7 @@
                            class="col-md-4 col-lg-3 block-ellipsis-job"
                            title="{{'workflow.label.loadUserProfile' | translate}}" translate>workflow.label.loadUserProfile</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label (ngModelChange)="saveJSON()" [(ngModel)]="job.configuration.executable.login.withUserProfile"
+                      <label [(ngModel)]="job.configuration.executable.login.withUserProfile" (ngModelChange)="saveJSON()"
                              [nzDisabled]="isTrash || !permission.joc.inventory.manage"
                              name="loadUserProfile" nz-checkbox></label>
                     </div>
@@ -656,8 +672,7 @@
                            class="col-md-4 col-lg-3 block-ellipsis-job"
                            title="{{'workflow.label.failOnOutputErr' | translate}}" translate>workflow.label.failOnOutputErr</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label (ngModelChange)="saveJSON()"
-                             [(ngModel)]="job.configuration.failOnErrWritten"
+                      <label [(ngModel)]="job.configuration.failOnErrWritten" (ngModelChange)="saveJSON()"
                              [nzDisabled]="isTrash || !permission.joc.inventory.manage || job.configuration.warnOnErrWritten"
                              name="failOnErrWritten" nz-checkbox></label>
                     </div>
@@ -669,9 +684,7 @@
                            title="{{'workflow.label.warnOnOutputErr' | translate}}"
                            translate>workflow.label.warnOnOutputErr</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label
-                        (ngModelChange)="saveJSON()"
-                        [(ngModel)]="job.configuration.warnOnErrWritten"
+                      <label [(ngModel)]="job.configuration.warnOnErrWritten" (ngModelChange)="saveJSON()"
                         [nzDisabled]="isTrash || !permission.joc.inventory.manage || job.configuration.failOnErrWritten"
                         name="warnOnErrWritten" nz-checkbox></label>
                     </div>
@@ -683,7 +696,7 @@
                            title="{{'workflow.label.skipIfNoAdmissionForOrderDay' | translate}}"
                            translate>workflow.label.skipIfNoAdmissionForOrderDay</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label (ngModelChange)="saveJSON()" [(ngModel)]="job.configuration.skipIfNoAdmissionForOrderDay"
+                      <label [(ngModel)]="job.configuration.skipIfNoAdmissionForOrderDay" (ngModelChange)="saveJSON()"
                              [nzDisabled]="isTrash || !permission.joc.inventory.manage"
                              name="skipIfNoAdmissionForOrderDay" nz-checkbox></label>
                     </div>
@@ -707,8 +720,8 @@
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.mailOn' | translate}}" translate>workflow.label.mailOn</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <nz-select (ngModelChange)="saveJSON()" [(ngModel)]="job.configuration.notification.types" [nzPlaceHolder]="'workflow.placeholder.mailOn' | translate"
-                                 class="w-full"
+                      <nz-select [(ngModel)]="job.configuration.notification.types" [nzPlaceHolder]="'workflow.placeholder.mailOn' | translate"
+                                 class="w-full" (ngModelChange)="saveJSON()"
                                  name="types" nzMode="multiple">
                         <nz-option [nzLabel]="'ERROR'" [nzValue]="'ERROR'"></nz-option>
                         <nz-option [nzLabel]="'WARNING'" [nzValue]="'WARNING'"></nz-option>
