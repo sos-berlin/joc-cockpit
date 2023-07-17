@@ -99,7 +99,7 @@
                  class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
                  title="{{'inventory.label.planOrderAutomatically' | translate}}" translate>inventory.label.planOrderAutomatically</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <label (ngModelChange)="saveJSON()" [(ngModel)]="schedule.configuration.planOrderAutomatically"
+            <label [(ngModel)]="schedule.configuration.planOrderAutomatically" (ngModelChange)="saveJSON()"
                    [nzDisabled]="isTrash || !permission.joc.inventory.manage" name="planOrderAutomatically"
                    nz-checkbox></label>
           </div>
@@ -110,10 +110,9 @@
                  class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
                  title="{{'inventory.label.submitOrderToControllerWhenPlanned' | translate}}" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <label (ngModelChange)="saveJSON()"
-                   [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned"
+            <label [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned"
                    [nzDisabled]="isTrash || !permission.joc.inventory.manage || !schedule.configuration.planOrderAutomatically" name="submitOrderToControllerWhenPlanned"
-                   nz-checkbox></label>
+                   nz-checkbox (ngModelChange)="saveJSON()"></label>
           </div>
         </div>
         <div *ngIf="(schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) || schedule.configuration.orderParameterisations.length"
@@ -282,8 +281,7 @@
                        type="text">
               </div>
               <div *ngIf="!variable.isTextField" class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm">
-                <nz-select  [(ngModel)]="variable.name"
-                           [nzDisabled]="isTrash || !permission.joc.inventory.manage || variable.isRequired"
+                <nz-select  [(ngModel)]="variable.name" [nzDisabled]="isTrash || !permission.joc.inventory.manage || variable.isRequired"
                            name="name{{i}}{{j}}" (ngModelChange)="checkVariableType(variable);saveJSON()"
                            nzPlaceHolder="{{'common.placeholder.selectVariable' | translate}}" nzShowSearch>
                   <nz-option *ngFor="let list of variableSet.variableList" [nzDisabled]="list.isSelected"
@@ -317,10 +315,9 @@
                   <ng-container *ngSwitchCase="'Boolean'">
                     <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                          class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                      <nz-select #value="ngModel" (ngModelChange)="checkVal($event)"
-                                 [(ngModel)]="variable.value" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
+                      <nz-select #value="ngModel" [(ngModel)]="variable.value" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
                                  [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="variable.isRequired"
-                                 name="value{{i}}{{j}}" nzAllowClear>
+                                 name="value{{i}}{{j}}" nzAllowClear  (ngModelChange)="checkVal($event)">
                         <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                         <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                       </nz-select>

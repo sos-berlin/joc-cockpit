@@ -236,8 +236,7 @@
                        type="text">
               </nz-input-group>
               <ng-template #addOnAfterTemplate>
-                <nz-select (ngModelChange)="changeExp($event, 'toNotice')"
-                           [(ngModel)]="object.toNoticeMsg"
+                <nz-select [(ngModel)]="object.toNoticeMsg" (ngModelChange)="changeExp($event, 'toNotice')"
                            [nzAllowClear]="true" name="toNoticeMsg"
                            nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" style="width: 220px">
                   <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDate' | translate"
@@ -263,8 +262,7 @@
                        type="text">
               </nz-input-group>
               <ng-template #addOnAfterTemplate3>
-                <nz-select (ngModelChange)="changeExp($event, 'NoticeId')"
-                           [(ngModel)]="object.readingOrderToNoticeIdMsg"
+                <nz-select [(ngModel)]="object.readingOrderToNoticeIdMsg" (ngModelChange)="changeExp($event, 'NoticeId')"
                            [nzAllowClear]="true" name="readingOrderToNoticeIdMsg"
                            nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" style="width: 220px">
                   <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDate' | translate"
@@ -295,7 +293,7 @@
                 ></nz-input-number>
               </nz-input-group>
               <ng-template #addOnAfterTemplate2>
-                <nz-select (ngModelChange)="changeUnit($event)" [(ngModel)]="object.units" name="units"
+                <nz-select [(ngModel)]="object.units" name="units" (ngModelChange)="changeUnit($event)"
                            style="width: 220px">
                   <nz-option [nzLabel]="'inventory.label.milliseconds' | translate" nzValue="Milliseconds"></nz-option>
                   <nz-option [nzLabel]="'inventory.label.seconds' | translate" nzValue="Seconds"></nz-option>
@@ -511,8 +509,8 @@
                        type="text">
               </div>
               <div *ngIf="!variable.isTextField" class="col-md-6 col-lg-4 m-b-sm">
-                <nz-select (ngModelChange)="checkVariableType(variable);" [(ngModel)]="variable.name" [nzDisabled]="variable.isRequired"
-                           name="name{{i}}{{j}}"
+                <nz-select [(ngModel)]="variable.name" [nzDisabled]="variable.isRequired"
+                           name="name{{i}}{{j}}" (ngModelChange)="checkVariableType(variable);"
                            nzPlaceHolder="{{'common.placeholder.selectVariable' | translate}}" nzShowSearch>
                   <nz-option *ngFor="let list of variableSet.variableList" [nzDisabled]="list.isSelected"
                              [nzLabel]="list.name"

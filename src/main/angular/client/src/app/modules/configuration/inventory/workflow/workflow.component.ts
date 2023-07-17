@@ -2,27 +2,31 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, Directive, EventEmitter, forwardRef,
+  Component,
+  Directive,
+  EventEmitter,
+  forwardRef,
   HostListener,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
-  OnInit, Output,
+  OnInit,
+  Output,
   SimpleChanges,
-  ViewChild,
-  inject
+  ViewChild
 } from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
 import {NzMessageService} from "ng-zorro-antd/message";
-import {isEmpty, isArray, isEqual, clone, extend, sortBy} from 'underscore';
+import {clone, extend, isArray, isEmpty, isEqual, sortBy} from 'underscore';
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
 import {Router} from '@angular/router';
 import {AbstractControl, NG_VALIDATORS, Validator} from '@angular/forms';
-import {CdkDragDrop, moveItemInArray, DragDrop} from '@angular/cdk/drag-drop';
+import {CdkDragDrop, DragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
@@ -35,7 +39,6 @@ import {CreateObjectModalComponent} from "../inventory.component";
 import {UpdateJobTemplatesComponent} from "../job-template/job-template.component";
 import {CalendarService} from "../../../../services/calendar.service";
 import {FileUploaderComponent} from "../../../../components/file-uploader/file-uploader.component";
-import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 
 // Mx-Graph Objects
 declare const mxEditor;
@@ -1301,7 +1304,6 @@ export class JobComponent {
   obj: any = {};
   isDisplay = true;
   isRuntimeVisible = false;
-  isReloading = false;
   fullScreen = false;
   isLengthExceed = false;
   index = 0;
@@ -1328,10 +1330,6 @@ export class JobComponent {
     checked5: false,
     indeterminate5: false,
     setOfCheckedDefaultArgu: new Set<string>()
-  };
-
-  scriptObj = {
-    name: ''
   };
 
   variableList = [];
@@ -1387,18 +1385,20 @@ export class JobComponent {
       if (this.cm && this.cm.codeMirror) {
         this.cm.codeMirror.setOption("extraKeys", {
           "Ctrl-Space": function (editor) {
-            const cursor = editor.getCursor();
-            self.isTreeShow = true;
-            self.ref.detectChanges();
-            setTimeout(() => {
-              const dom = $('#show-tree');
-              dom?.css({
-                'opacity': '1',
-                'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
-                'left': '36px',
-                'width': 'calc(100% - 48px)'
-              });
-            }, 0)
+            if(self.selectedNode.job.executable.TYPE === 'ShellScriptExecutable') {
+              const cursor = editor.getCursor();
+              self.isTreeShow = true;
+              self.ref.detectChanges();
+              setTimeout(() => {
+                const dom = $('#show-tree');
+                dom?.css({
+                  'opacity': '1',
+                  'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
+                  'left': '36px',
+                  'width': 'calc(100% - 48px)'
+                });
+              }, 0)
+            }
           }
         })
       }
@@ -1429,6 +1429,13 @@ export class JobComponent {
   }
 
   changeType(): void {
+    if (this.selectedNode.job.executable.TYPE === 'Java') {
+      this.selectedNode.job.executable.internalType = 'Java';
+    } else if (this.selectedNode.job.executable.TYPE === 'JavaScript') {
+      this.selectedNode.job.executable.internalType = 'JavaScript_Graal';
+    } else if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
+      this.selectedNode.job.executable.internalType = 'JITL';
+    }
     this.saveToHistory();
   }
 
@@ -1539,7 +1546,7 @@ export class JobComponent {
     this.selectedNode.job.executable.TYPE = result.executable.TYPE;
     this.selectedNode.job.executable.className = result.executable.className;
     this.selectedNode.job.executable.script = result.executable.script;
-    if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
+    if (this.selectedNode.job.executable.TYPE === 'InternalExecutable' || this.selectedNode.job.executable.TYPE === 'Java' || this.selectedNode.job.executable.TYPE === 'JavaScript') {
       this.selectedNode.job.executable.arguments = result.executable.arguments || [];
       if (!isArray(this.selectedNode.job.executable.arguments)) {
         this.selectedNode.job.executable.arguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'arguments');
@@ -1961,8 +1968,8 @@ export class JobComponent {
     if (this.error && this.selectedNode && this.selectedNode.obj) {
       this.obj.label = !this.selectedNode.obj.label;
       this.obj.agent = !this.selectedNode.job.agentName;
-      this.obj.script = !this.selectedNode.job.executable.script && this.selectedNode.job.executable.TYPE === 'ShellScriptExecutable';
-      this.obj.className = !this.selectedNode.job.executable.className && this.selectedNode.job.executable.TYPE === 'InternalExecutable';
+      this.obj.script = !this.selectedNode.job.executable.script && (this.selectedNode.job.executable.TYPE === 'ShellScriptExecutable' || this.selectedNode.job.executable.TYPE === 'JavaScript');
+      this.obj.className = !this.selectedNode.job.executable.className && (this.selectedNode.job.executable.TYPE === 'InternalExecutable' || this.selectedNode.job.executable.TYPE === 'Java');
     } else {
       this.obj = {};
     }
@@ -2284,6 +2291,13 @@ export class JobComponent {
     }
     if (this.selectedNode.job.executable.TYPE === 'ScriptExecutable') {
       this.selectedNode.job.executable.TYPE = 'ShellScriptExecutable';
+    }
+    if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
+      if (this.selectedNode.job.executable.internalType === 'Java') {
+        this.selectedNode.job.executable.TYPE = 'Java';
+      } else if (this.selectedNode.job.executable.internalType === 'JavaScript_Graal') {
+        this.selectedNode.job.executable.TYPE = 'JavaScript';
+      }
     }
     if (this.hasLicense && (this.selectedNode.job.subagentClusterIdExpr || this.selectedNode.job.withSubagentClusterIdExpr)) {
       this.selectedNode.radio = 'expression';
@@ -2672,7 +2686,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   workflowTree = [];
   lockTree = [];
   boardTree = [];
-  tempTree = [];
   scriptTree = [];
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
@@ -8174,6 +8187,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             .replace(/&nbsp;/g, ' ').replace(/&#39;/g, '\'').replace('\n', '').replace('\r', '');
         }
 
+        if (self.selectedNode?.job?.executable?.TYPE) {
+          if (self.selectedNode.job.executable.TYPE === 'Java' || self.selectedNode.job.executable.TYPE === 'JavaScript') {
+            self.selectedNode.job.executable.TYPE = 'InternalExecutable';
+          }
+        }
+
         let isChange = true;
         if (isEqual(JSON.stringify(self.selectedNode.newObj), JSON.stringify(self.selectedNode.actualValue))) {
           isChange = false;
@@ -8512,7 +8531,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       }
       if (cell?.value?.tagName === 'ExpectNotices' || cell?.value?.tagName === 'ConsumeNotices') {
-        self.selectedNode.isTreeShow = false;
+        if (self.selectedNode) {
+          self.selectedNode.isTreeShow = false;
+        }
         self.ref.detectChanges();
         setTimeout(() => {
           if (self.cm && self.cm.codeMirror) {
@@ -10871,9 +10892,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               checkErr = true;
               if (!this.invalidMsg) {
                 if (this.jobs[n].value.executable) {
-                  if (this.jobs[n].value.executable.TYPE === 'ShellScriptExecutable' && !this.jobs[n].value.executable.script) {
+                  if ((this.jobs[n].value.executable.TYPE === 'ShellScriptExecutable' || this.jobs[n].value.executable.internalType === 'JavaScript_Graal')
+                    && !this.jobs[n].value.executable.script) {
                     this.invalidMsg = 'workflow.message.scriptIsMissing';
-                  } else if (this.jobs[n].value.executable.TYPE === 'InternalExecutable' && !this.jobs[n].value.executable.className) {
+                  } else if (this.jobs[n].value.executable.TYPE === 'InternalExecutable' && this.jobs[n].value.executable.internalType !== 'JavaScript_Graal' && !this.jobs[n].value.executable.className) {
                     this.invalidMsg = 'workflow.message.classNameIsMissing';
                   } else if (!this.jobs[n].value.agentName) {
                     this.invalidMsg = 'workflow.message.agentIsMissing';

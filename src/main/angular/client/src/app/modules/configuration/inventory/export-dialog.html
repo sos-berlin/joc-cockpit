@@ -61,7 +61,7 @@
       <div *ngIf="!origin || !origin.object" class="row m-b-12">
         <div class="col-md-3" translate>inventory.label.exportType</div>
         <div class="col-md-6">
-          <nz-radio-group  [(ngModel)]="exportObj.exportType" name="exportType" (ngModelChange)="filterList(false)">
+          <nz-radio-group [(ngModel)]="exportObj.exportType" name="exportType" (ngModelChange)="filterList(false)">
             <label nz-radio nzValue="individual"><span translate>inventory.label.individualObjects</span></label>
             <label nz-radio nzValue="folders"><span translate>inventory.label.folders</span></label>
           </nz-radio-group>

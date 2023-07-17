@@ -731,7 +731,8 @@
     "message.dailyPlanOverview": "This widget displays the summary of the Daily Plan",
     "message.fileTransferHistorySummary": "This widget displays the summary of past File Transfers",
     "message.apiServerStatus": "This widget displays the status of the API Server",
-    "message.confirmNodeLoss": "Can you confirm that the Controller instance '{{lossNode}}' is not running?"
+    "message.confirmNodeLoss": "Can you confirm that the Controller instance '{{lossNode}}' is not running?",
+    "message.confirmAgentNodeLoss": "Can you confirm that the Agent instance '{{lossNode}}' is not running?"
   },
   "dailyPlan": {
     "label.createPlan": "Create Daily Plan",
@@ -3196,6 +3197,8 @@
     "label.executableType": "Executable Type",
     "label.shell": "Shell",
     "label.jitl": "JITL",
+    "label.java": "Java",
+    "label.javaScript": "JavaScript",
     "label.branch1.x": "Branch 1.x",
     "label.uncatchable": "Uncatchable",
     "label.unsuccessful": "Unsuccessful",

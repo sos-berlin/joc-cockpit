@@ -63,10 +63,10 @@
           <label translate>inventory.export.label.filter</label>
         </div>
         <div class="col-md-9">
-          <label [(ngModel)]="filter.draft" name="draft" nz-checkbox  (ngModelChange)="filterList()">
+          <label [(ngModel)]="filter.draft" name="draft" nz-checkbox (ngModelChange)="filterList()">
             {{'inventory.export.label.draft'| translate}}
           </label>
-          <label [(ngModel)]="filter.deploy" class="m-l-md" name="deploy" nz-checkbox  (ngModelChange)="filterList()">
+          <label [(ngModel)]="filter.deploy" class="m-l-md" name="deploy" nz-checkbox (ngModelChange)="filterList()">
             {{'inventory.export.label.deployed'| translate}}
           </label>
         </div>
@@ -78,7 +78,7 @@
         </div>
         <div class="col-md-6">
           <label [(ngModel)]="object.isRecursive" name="isRecursive"
-                 nz-checkbox  (ngModelChange)="handleRecursive()"></label>
+                 nz-checkbox (ngModelChange)="handleRecursive()"></label>
         </div>
       </div>
       <div *ngIf="!isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects" class="row m-b-sm">

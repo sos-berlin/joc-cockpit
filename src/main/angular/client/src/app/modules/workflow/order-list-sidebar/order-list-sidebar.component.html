@@ -130,7 +130,7 @@
       <ng-template [ngForOf]="ajaxTable.data" [ngForTrackBy]="trackByFn"
                    let-order ngFor>
         <tr>
-          <td (nzCheckedChange)="onItemChecked(order.orderId, $event)" [nzChecked]="setOfCheckedId.has(order.orderId)"
+          <td [nzChecked]="setOfCheckedId.has(order.orderId)" (nzCheckedChange)="onItemChecked(order.orderId, $event)"
               [nzDisabled]="order.positionIsImplicitEnd"
               [nzShowCheckbox]="true"></td>
           <td>
