@@ -206,7 +206,7 @@
           [nzData]="data"
           [nzLoading]="!isLoaded"
           [nzPageIndex]="yadeFilters.currentPage"
-          [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+          [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
           [nzPageSize]="yadeFilters.entryPerPage || preferences.entryPerPage || 25"
           [nzShowPagination]="data.length > 0"
           [nzShowSizeChanger]="true"

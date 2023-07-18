@@ -57,14 +57,6 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-3 m-t" [ngClass]="{'m-b-sm' : periodList.length > 0}" *ngIf="periodList.length > 0 || schemeList.length > 0" translate>workflow.admissionTime.label.dailyPlanTimeZone</div>
-      <div class="col-sm-3 m-t b-r" [ngClass]="{'m-b-sm' : periodList.length > 0}" *ngIf="periodList.length > 0 || schemeList.length > 0">
-        {{dailyPlan.time_zone}}
-      </div>
-      <div class="col-sm-3 m-t" [ngClass]="{'m-b-sm' : periodList.length > 0}" *ngIf="periodList.length > 0 || schemeList.length > 0" translate>workflow.admissionTime.label.dailyPlanPeriodBegin</div>
-      <div class="col-sm-3 m-t" [ngClass]="{'m-b-sm' : periodList.length > 0}" *ngIf="periodList.length > 0 || schemeList.length > 0">
-        {{dailyPlan.period_begin}}
-      </div>
       <div class="col-sm-3" *ngIf="periodList.length > 0" translate>workflow.label.workflowTimeZone</div>
       <div class="col-sm-8" *ngIf="periodList.length > 0">
         {{timezone}}

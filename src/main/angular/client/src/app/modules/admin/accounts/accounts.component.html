@@ -8,7 +8,7 @@
       [nzData]="data"
       [nzLoading]="loading"
       [nzPageIndex]="usr.currentPage"
-      [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 5000]"
+      [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage) || 500]"
       [nzPageSize]="usr.entryPerPage || preferences.entryPerPage || 25"
       [nzShowPagination]="data.length > 0"
       [nzShowSizeChanger]="true"

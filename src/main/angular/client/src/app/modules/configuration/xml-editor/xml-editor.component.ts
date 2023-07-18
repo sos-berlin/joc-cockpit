@@ -5740,7 +5740,7 @@ export class XmlEditorComponent {
         }
       }
     }
-    if (flag) {
+    if (flag || this.tabsArray.length === 0) {
       this.nodes = [];
       this.submitXsd = false;
     }
