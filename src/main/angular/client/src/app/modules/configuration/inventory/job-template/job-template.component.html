@@ -187,7 +187,7 @@
                   <sup class="text-danger text-sm">*</sup>
                 </ng-template>
                 <div class="row">
-                  <div class="col-md-12">
+                  <div class="col-md-12" *ngIf="job.configuration.executable.TYPE === 'ShellScriptExecutable'">
                     <div *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" id="show-tree"
                          style="min-width: 150px;">
                       <app-search-input (onBlur)="onBlurTree($event)" (onSelect)="checkExpectNoticeExp($event)"
@@ -195,17 +195,34 @@
                                         [nodes]="scriptTree" [type]="'INCLUDESCRIPT'"></app-search-input>
                     </div>
                     <div [ngClass]="{'invalid': (script.invalid && (script.dirty && script.touched))}" class="b-a">
+                      <ngx-codemirror #codeMirror #script="ngModel" (focusout)="saveJSON()" [(ngModel)]="job.configuration.executable.script"
+                                      [options]="{
+                                          lineNumbers: true,
+                                          autoRefresh: true,
+                                          scrollbarStyle: 'simple',
+                                          mode: 'shell'
+                                        }" name="script"
+                                      required title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}"></ngx-codemirror>
+                    </div>
+                    <div class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
+                    <div *ngIf="(script.invalid && (script.dirty && script.touched))" class="text-danger help-block">
+                      <div *ngIf="(script.errors && script.errors['required'])">
+                        <div translate>common.message.requiredError</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12" *ngIf="job.configuration.executable.TYPE === 'JavaScript'">
+                    <div [ngClass]="{'invalid': (script.invalid && (script.dirty && script.touched))}" class="b-a">
                       <ngx-codemirror #script="ngModel" (focusout)="saveJSON()" [(ngModel)]="job.configuration.executable.script"
                                       [options]="{
                                           lineNumbers: true,
                                           autoRefresh: true,
                                           scrollbarStyle: 'simple',
-                                          extraKeys: job.configuration.executable.TYPE === 'ShellScriptExecutable' ?  {} : {'Ctrl-Space': 'autocomplete'},
-                                          mode: job.configuration.executable.TYPE === 'ShellScriptExecutable' ? 'shell' : 'javascript'
+                                          extraKeys: {'Ctrl-Space': 'autocomplete'},
+                                          mode: 'javascript'
                                         }" name="script"
                                       required title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}"></ngx-codemirror>
                     </div>
-                    <div *ngIf="job.configuration.executable.TYPE === 'ShellScriptExecutable'" class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
                     <div *ngIf="(script.invalid && (script.dirty && script.touched))" class="text-danger help-block">
                       <div *ngIf="(script.errors && script.errors['required'])">
                         <div translate>common.message.requiredError</div>

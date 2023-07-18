@@ -4,6 +4,7 @@ import {AppModule} from './app/app.module';
 import {environment} from './environments/environment';
 import 'codemirror/mode/shell/shell';
 import 'codemirror/mode/xml/xml';
+import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/ruby/ruby';
 import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/search/searchcursor';

@@ -1385,20 +1385,18 @@ export class JobComponent {
       if (this.cm && this.cm.codeMirror) {
         this.cm.codeMirror.setOption("extraKeys", {
           "Ctrl-Space": function (editor) {
-            if(self.selectedNode.job.executable.TYPE === 'ShellScriptExecutable') {
-              const cursor = editor.getCursor();
-              self.isTreeShow = true;
-              self.ref.detectChanges();
-              setTimeout(() => {
-                const dom = $('#show-tree');
-                dom?.css({
-                  'opacity': '1',
-                  'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
-                  'left': '36px',
-                  'width': 'calc(100% - 48px)'
-                });
-              }, 0)
-            }
+            const cursor = editor.getCursor();
+            self.isTreeShow = true;
+            self.ref.detectChanges();
+            setTimeout(() => {
+              const dom = $('#show-tree');
+              dom?.css({
+                'opacity': '1',
+                'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
+                'left': '36px',
+                'width': 'calc(100% - 48px)'
+              });
+            }, 0)
           }
         })
       }

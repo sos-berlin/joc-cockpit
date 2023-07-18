@@ -297,7 +297,7 @@
                   <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
                 </ng-template>
                 <div *ngIf="isDisplay" class="row">
-                  <div [ngClass]="{'col-md-12': !isModal}" class="col-md-11 role">
+                  <div *ngIf="selectedNode.job.executable.TYPE === 'ShellScriptExecutable'" [ngClass]="{'col-md-12': !isModal}" class="col-md-11 role">
                     <div *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" id="show-tree"
                          style="min-width: 150px;">
                       <app-search-input (onBlur)="onBlurTree($event)" (onSelect)="checkExpectNoticeExp($event)"
@@ -315,21 +315,48 @@
                                           autoRefresh: true,
                                           scrollbarStyle: 'simple',
                                           readOnly: (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name),
-                                          extraKeys: selectedNode.job.executable.TYPE === 'ShellScriptExecutable' ?  {} : {'Ctrl-Space': 'autocomplete'},
-                                          mode: selectedNode.job.executable.TYPE === 'ShellScriptExecutable' ? 'shell' : 'javascript'
+                                          mode: 'shell'
                                         }"
                                         (focusChange)="focusChange()"
                                         (focusout)="saveToHistory()"
                                         required
                         ></ngx-codemirror>
                       </div>
-                      <div *ngIf="selectedNode.job.executable.TYPE === 'ShellScriptExecutable'" class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
+                      <div class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
                       <div *ngIf="obj.script || (script.invalid && (script.dirty && script.touched))"
                            class="text-danger help-block">
                         <div *ngIf="(script.errors && script.errors.required) || obj.script">
                           <div translate>common.message.requiredError</div>
                         </div>
                       </div>
+                  </div>
+
+                  <div *ngIf="selectedNode.job.executable.TYPE === 'JavaScript'" [ngClass]="{'col-md-12': !isModal}" class="col-md-11 role">
+                    <i (click)="showEditor()" class="pos-abt z-index-9999 text-20 r-24 t-1" nz-icon nzTheme="outline"
+                       nzType="form"></i>
+                    <div [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}" class="b-a"
+                         id="scriptId">
+                      <ngx-codemirror #script="ngModel"
+                                      [(ngModel)]="selectedNode.job.executable.script"
+                                      [options]="{
+                                          lineNumbers: true,
+                                          autoRefresh: true,
+                                          scrollbarStyle: 'simple',
+                                          readOnly: (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name),
+                                          extraKeys: {'Ctrl-Space': 'autocomplete'},
+                                          mode: 'javascript'
+                                        }"
+                                      (focusChange)="focusChange()"
+                                      (focusout)="saveToHistory()"
+                                      required
+                      ></ngx-codemirror>
+                    </div>
+                    <div *ngIf="obj.script || (script.invalid && (script.dirty && script.touched))"
+                         class="text-danger help-block">
+                      <div *ngIf="(script.errors && script.errors.required) || obj.script">
+                        <div translate>common.message.requiredError</div>
+                      </div>
+                    </div>
                   </div>
                   <div *ngIf="isModal" class="col-md-1">
                     <label [(ngModel)]="checkboxObjects.script" name="cscript" nz-checkbox></label>

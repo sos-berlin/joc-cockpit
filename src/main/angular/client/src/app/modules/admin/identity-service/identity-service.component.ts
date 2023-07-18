@@ -171,7 +171,7 @@ export class SettingModalComponent {
       configurationType: 'IAM',
       name: this.data ? this.data?.['identityServiceName'] : undefined
     }).subscribe((res) => {
-      if (res.configuration.objectType && res.configuration.objectType.match('LDAP')) {
+      if (res.configuration.objectType && (res.configuration.objectType.match('LDAP') || this.data['identityServiceType'] === 'OIDC')) {
         this.getUsersData();
       }
       if (res.configuration.configurationItem) {

@@ -2570,7 +2570,6 @@ export class WorkflowService {
     if (job.executable.TYPE === 'Java' || job.executable.TYPE === 'JavaScript') {
       job.executable.TYPE = 'InternalExecutable';
     }
-    console.log(job.executable)
     if (isEmpty(job.admissionTimeScheme)) {
       delete job.admissionTimeScheme;
     }
