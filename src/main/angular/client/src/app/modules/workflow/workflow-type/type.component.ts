@@ -422,7 +422,7 @@ export class TypeComponent {
     let nzData;
     if (instruction.TYPE === 'Job') {
       const job = this.jobs[instruction.jobName];
-      const data = job.executable.TYPE === 'ShellScriptExecutable' ? job.executable.script : job.executable.className;
+      const data = (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.internalType === 'JavaScript_Graal') ? job.executable.script : job.executable.className;
       if (job && job.executable) {
         nzData = {
           data,
@@ -432,7 +432,8 @@ export class TypeComponent {
           admissionTime: job.admissionTimeScheme,
           timezone: this.timezone,
           jobName: instruction.jobName,
-          isScript: job.executable.TYPE === 'ShellScriptExecutable',
+          mode: job.executable.TYPE === 'ShellScriptExecutable' ? 'shell' : 'javascript',
+          isScript: (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.internalType === 'JavaScript_Graal'),
           readonly: true
         };
       }

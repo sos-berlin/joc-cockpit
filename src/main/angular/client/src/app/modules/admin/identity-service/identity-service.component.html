@@ -47,7 +47,7 @@
       [nzData]="(identityServices | filter: filter.searchKey: ['identityServiceName', 'identityServiceType', 'serviceAuthenticationScheme']) | orderBy: filter.filter.sortBy:filter.filter.reverse"
       [nzLoading]="loading"
       [nzPageIndex]="filter.currentPage"
-      [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 5000]"
+      [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage) || 500]"
       [nzPageSize]="preferences.entryPerPage || 25"
       [nzShowPagination]="(identityServices | filter: filter.searchKey : ['identityServiceName', 'identityServiceType', 'serviceAuthenticationScheme']).length > 0"
       [nzShowSizeChanger]="true"

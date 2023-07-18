@@ -5,7 +5,7 @@
     [nzData]="profiles"
     [nzLoading]="loading"
     [nzPageIndex]="prof.currentPage"
-    [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 500]"
+    [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage) || 500]"
     [nzPageSize]="preferences.entryPerPage || 25"
     [nzShowSizeChanger]="true"
     [nzSize]="'small'"

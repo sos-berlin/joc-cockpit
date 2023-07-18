@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -9,9 +8,6 @@ import {
   HostListener,
   inject,
   Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
   Output,
   SimpleChanges,
   ViewChild
@@ -425,7 +421,7 @@ export class TimeEditorComponent {
   selector: 'app-cycle-instruction',
   templateUrl: './cycle-instruction-editor.html'
 })
-export class CycleInstructionComponent implements OnChanges {
+export class CycleInstructionComponent {
   @Input() selectedNode: any;
   @Input() isTooltipVisible = false;
   @Input() timeZone: string;
@@ -1601,7 +1597,7 @@ export class JobComponent {
     this.ref.detectChanges();
   }
 
-  showEditor(): void {
+  showEditor(mode): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ScriptEditorComponent,
@@ -1609,6 +1605,7 @@ export class JobComponent {
       nzAutofocus: null,
       nzData: {
         script: this.selectedNode.job.executable.script,
+        mode,
         scriptTree: this.scriptTree,
         disabled: (this.selectedNode.job && this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name)
       },
@@ -2433,9 +2430,10 @@ export class JobComponent {
   selector: 'app-script-content',
   templateUrl: './script-editor.html'
 })
-export class ScriptEditorComponent implements AfterViewInit, OnInit {
+export class ScriptEditorComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   script: any;
+
   scriptTree: any = [];
   disabled: boolean;
   isTreeShow = false;
@@ -2448,7 +2446,6 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
     scrollbarStyle: 'simple',
     viewportMargin: Infinity,
     autoRefresh: true,
-    mode: 'shell'
   };
   @ViewChild('codeMirror', {static: false}) cm: any;
 
@@ -2459,6 +2456,10 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
     this.script = this.modalData.script;
     this.scriptTree = this.modalData.scriptTree;
     this.disabled = this.modalData.disabled;
+    this.cmOption.mode = this.modalData.mode;
+    if (this.cmOption.mode == 'javascript') {
+      this.cmOption.extraKeys = {'Ctrl-Space': 'autocomplete'};
+    }
     if (this.disabled) {
       this.cmOption.reladOnly = true;
     }
@@ -2492,31 +2493,29 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
     setTimeout(() => {
       if (this.cm && this.cm.codeMirror) {
         setTimeout(() => {
-          let arr = this.script?.split('\n') || [];
           const doc = this.cm.codeMirror.getDoc();
           const cursor = doc.getCursor();  // gets the line number in the cursor position
           doc.replaceRange(this.script, cursor);
-          cursor.line = arr.length > 0 ? arr.length - 1 : 0;
-          cursor.ch = arr.length > 0 ? arr[arr.length - 1]?.length + 1 : 0;
           this.cm.codeMirror.focus();
           doc.setCursor(cursor);
         }, 400);
-
-        this.cm.codeMirror.setOption("extraKeys", {
-          "Ctrl-Space": function (editor) {
-            const cursor = editor.getCursor();
-            self.isTreeShow = true;
-            setTimeout(() => {
-              const dom = $('#show-tree-editor');
-              dom?.css({
-                'opacity': '1',
-                'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
-                'left': '36px',
-                'width': 'calc(100% - 48px)'
-              });
-            }, 0)
-          }
-        })
+        if ((this.cmOption.mode == 'shell')) {
+          this.cm.codeMirror.setOption("extraKeys", {
+            "Ctrl-Space": function (editor) {
+              const cursor = editor.getCursor();
+              self.isTreeShow = true;
+              setTimeout(() => {
+                const dom = $('#show-tree-editor');
+                dom?.css({
+                  'opacity': '1',
+                  'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
+                  'left': '36px',
+                  'width': 'calc(100% - 48px)'
+                });
+              }, 0)
+            }
+          })
+        }
       }
     }, 0);
   }
@@ -2666,7 +2665,7 @@ export class ExpressionComponent {
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss']
 })
-export class WorkflowComponent implements OnChanges, OnDestroy {
+export class WorkflowComponent {
   @Input() data: any;
   @Input() preferences: any;
   @Input() schedulerId: any;

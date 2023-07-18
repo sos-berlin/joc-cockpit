@@ -1,11 +1,8 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef, EventEmitter, inject,
   Input,
-  OnChanges,
-  OnDestroy,
-  OnInit, Output,
+  Output,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
@@ -1490,7 +1487,7 @@ export class WorkflowGraphicalComponent {
     let nzData;
     if (argu.jobName) {
       const job = this.jobs[argu.jobName];
-      const data = job.executable.TYPE === 'ShellScriptExecutable' ? job.executable.script : job.executable.className;
+      const data = (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.internalType === 'JavaScript_Graal') ? job.executable.script : job.executable.className;
       if (job && job.executable) {
         nzData = {
           data,
@@ -1500,7 +1497,8 @@ export class WorkflowGraphicalComponent {
           workflowPath: this.workFlowJson.path,
           admissionTime: job.admissionTimeScheme,
           timezone: this.workFlowJson.timeZone,
-          isScript: job.executable.TYPE === 'ShellScriptExecutable',
+          mode: job.executable.TYPE === 'ShellScriptExecutable' ? 'shell' : 'javascript',
+          isScript: (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.internalType === 'JavaScript_Graal'),
           readonly: true
         };
       }

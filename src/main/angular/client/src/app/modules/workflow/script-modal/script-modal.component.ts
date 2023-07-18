@@ -27,11 +27,12 @@ export class ScriptModalComponent {
   subagentClusterId: string;
   timezone: string;
   noticeBoardNames: string;
+  mode: string;
 
   dragEle: any;
   preferences: any = {};
   permission: any = {};
-  dailyPlan: any = {};
+
   days = [];
   periodList: any = [];
   schemeList: any = [];
@@ -63,6 +64,11 @@ export class ScriptModalComponent {
     this.subagentClusterId = this.modalData.subagentClusterId;
     this.timezone = this.modalData.timezone;
     this.noticeBoardNames = this.modalData.noticeBoardNames;
+    if (this.modalData.mode) {
+      this.cmOption.mode = this.modalData.mode;
+    } else {
+      this.cmOption.mode = 'ruby';
+    }
 
     this.todayDate = this.coreService.getStringDate(null);
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
@@ -70,10 +76,7 @@ export class ScriptModalComponent {
     if (this.preferences && this.preferences.zone === 'Asia/Calcutta') {
       this.preferences.zone = 'Asia/Kolkata';
     }
-    if ((this.admissionTime && this.admissionTime.periods && this.admissionTime.periods.length > 0)
-      || (this.schedule && this.schedule.schemes)) {
-      this.loadSetting();
-    }
+
     this.days = this.coreService.getLocale().days;
     if (this.days) {
       this.days.push(this.days[0]);
@@ -112,39 +115,6 @@ export class ScriptModalComponent {
   onMouseMove(e): void {
     if (this.dragEle) {
       this.dragEle.disabled = !(e.target && (e.target.getAttribute('class') === 'modal-header' || e.target.getAttribute('class') === 'drag-text'));
-    }
-  }
-
-  private loadSetting(): void {
-    const controllerIds = JSON.parse(this.authService.scheduleIds) || {};
-    if (this.authService.currentUserData && controllerIds.selected) {
-      const configObj = {
-        controllerId: controllerIds.selected,
-        account: this.authService.currentUserData,
-        configurationType: 'GLOBALS'
-      };
-      this.coreService.post('configurations', configObj).subscribe((res: any) => {
-        const dailyPlan = {
-          time_zone: '',
-          period_begin: '',
-        };
-        if (res.configurations[0]) {
-          const obj = JSON.parse(res.configurations[0].configurationItem).dailyplan;
-          if (obj.time_zone) {
-            dailyPlan.time_zone = obj.time_zone.value;
-          }
-          if (obj.period_begin) {
-            dailyPlan.period_begin = obj.period_begin.value;
-          }
-        }
-        if (!dailyPlan.time_zone) {
-          dailyPlan.time_zone = res.defaultGlobals.dailyplan.time_zone.default;
-        }
-        if (!dailyPlan.period_begin) {
-          dailyPlan.period_begin = res.defaultGlobals.dailyplan.period_begin.default;
-        }
-        this.dailyPlan = dailyPlan;
-      });
     }
   }
 
@@ -216,7 +186,7 @@ export class ScriptModalComponent {
 
   private convertTime(): void {
     this.tempPeriodList = this.coreService.clone(this.schemeList);
-    if (this.preferences.zone !== this.dailyPlan.time_zone) {
+    if (this.preferences.zone !== this.timezone) {
       const convertTedList = [];
       this.schemeList.forEach((list) => {
         const x = {
@@ -228,10 +198,10 @@ export class ScriptModalComponent {
             const obj: any = {
               periods: []
             };
-            const dailyPlanTime = this.workflowService.convertStringToDuration(this.dailyPlan.period_begin, true);
-            const originalTime = this.workflowService.convertSecondToTime((period.startTime + dailyPlanTime));
-            const currentDay = this.coreService.getDateByFormat(this.todayDate + ' ' + this.workflowService.convertSecondToTime(period.startTime) + '.000' + this.coreService.getDateByFormat(null, this.dailyPlan.time_zone, 'Z'), this.preferences.zone, 'YYYY-MM-DD');
-            const convertedTime = this.coreService.getDateByFormat(this.todayDate + ' ' + originalTime + '.000' + this.coreService.getDateByFormat(null, this.dailyPlan.time_zone, 'Z'), this.preferences.zone, 'HH:mm:ss');
+
+            const originalTime = this.workflowService.convertSecondToTime((period.startTime));
+            const currentDay = this.coreService.getDateByFormat(this.todayDate + ' ' + this.workflowService.convertSecondToTime(period.startTime) + '.000' + this.coreService.getDateByFormat(null, this.timezone, 'Z'), this.preferences.zone, 'YYYY-MM-DD');
+            const convertedTime = this.coreService.getDateByFormat(this.todayDate + ' ' + originalTime + '.000' + this.coreService.getDateByFormat(null, this.timezone, 'Z'), this.preferences.zone, 'HH:mm:ss');
             if (this.todayDate != currentDay) {
               obj.day = (currentDay > this.todayDate) ? (item.day + 1) : (item.day - 1);
             } else {
