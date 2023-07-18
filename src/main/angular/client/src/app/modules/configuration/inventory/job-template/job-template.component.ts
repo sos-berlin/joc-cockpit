@@ -649,11 +649,12 @@ export class JobTemplateComponent {
       this.addParameter();
     }
 
-    if (this.cm && this.cm.codeMirror) {
-      const self = this;
-      this.cm.codeMirror.setOption("extraKeys", {
-        "Ctrl-Space": function (editor) {
-          if(self.selectedNode.job.executable.TYPE === 'ShellScriptExecutable') {
+    setTimeout(() => {
+     
+      if (this.cm && this.cm.codeMirror) {
+        const self = this;
+        this.cm.codeMirror.setOption("extraKeys", {
+          "Ctrl-Space": function (editor) {
             const cursor = editor.getCursor();
             self.isTreeShow = true;
             self.ref.detectChanges();
@@ -666,11 +667,11 @@ export class JobTemplateComponent {
                 'width': 'calc(100% - 48px)'
               });
             }, 0)
-          }
-        }
-      })
-    }
 
+          }
+        })
+      }
+    }, 100);
   }
 
   rename(inValid): void {

@@ -117,12 +117,12 @@ export class AppComponent {
           clientSecret: sessionStorage['clientSecret']
         }
       }, () => {
-
-        this.coreService.post('authentication/login', {
+        const request = {
           identityServiceName: sessionStorage['providerName'],
           idToken,
           oidcDocument: btoa(JSON.stringify(document))
-        }).subscribe({
+        };
+        this.coreService.post('authentication/login', request).subscribe({
           next: (data) => {
             let returnUrl = sessionStorage.getItem('returnUrl');
             let logoutUrl: string = sessionStorage.getItem('logoutUrl');
@@ -130,8 +130,7 @@ export class AppComponent {
             let key: string = sessionStorage.getItem('$SOS$KEY');
             let expireTime: string = sessionStorage.getItem('$SOS$TOKENEXPIRETIME');
             if (data.accessToken === '' && data.isAuthenticated && data.secondFactoridentityService) {
-              data.identityService = providerName;
-              this.dataService.reloadAuthentication.next({data});
+              this.dataService.reloadAuthentication.next({data : {request, ...{secondFactoridentityService: data.secondFactoridentityService}}});
               return;
             }
             sessionStorage.clear();

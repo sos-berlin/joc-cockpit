@@ -9,13 +9,14 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {ToastrModule} from 'ngx-toastr';
 import {PortalModule} from '@angular/cdk/portal';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {enUS} from 'date-fns/locale';
 import {AppRoutingModule} from './app-routing.module';
 import {LoginModule} from './modules/login/login.module';
+import {SignupCompleteModule} from "./modules/signup-complete/signup-complete.module";
 import {AppComponent} from './app.component';
 import {AuthInterceptor} from './components/guard';
 import {LoggingService} from './services/logging.service';
-import {SignupCompleteModule} from "./modules/signup-complete/signup-complete.module";
-import { enUS } from 'date-fns/locale';
+
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   const lang = localStorage['$SOS$LANG'] || 'en';
@@ -73,14 +74,8 @@ export class MyErrorHandler implements ErrorHandler {
     {
       provide: NZ_I18N, useValue: en_US
     },
-    { provide: NZ_DATE_LOCALE, useValue: enUS }],
+    {provide: NZ_DATE_LOCALE, useValue: enUS}],
   bootstrap: [AppComponent]
 })
 export class AppModule {
 }
-
-
-
-
-
-

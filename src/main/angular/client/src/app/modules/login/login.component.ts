@@ -46,10 +46,13 @@ export class LoginComponent {
   ngOnInit(): void {
     this.subscription = this.dataService.reloadAuthentication.subscribe({
       next: (res) => {
-        this.isLoading = true;
+        if(!isEmpty(res)){
+          this.isLoading = true;
+        }
         if (res.data) {
-          this.userObject.userName = 'OIDC';
-          this.userObject.identityService = res.data.identityService;
+          this.userObject.idToken = res.data.request.idToken;
+          this.userObject.openIdConfiguration = res.data.request.oidcDocument;
+          this.userObject.identityService = res.data.request.identityServiceName;
           this.onSign(res.data.secondFactoridentityService);
           setTimeout(() => {
             this.isLoading = false;
@@ -82,6 +85,7 @@ export class LoginComponent {
 
   ngOnDestroy(): void{
     this.subscription.unsubscribe();
+    this.dataService.reloadAuthentication.next({});
   }
 
   private getDefaultConfiguration() {
@@ -403,9 +407,12 @@ export class LoginComponent {
 
     if (this.userObject.userName && this.userObject.identityService) {
       obj['X-1ST-IDENTITY-SERVICE'] = this.userObject.identityService.substring(this.userObject.identityService.lastIndexOf(':') + 1);
-      if (this.userObject.userName === 'OIDC') {
-        this.userObject.userName = '';
-      }
+    }
+
+    if (this.userObject.idToken && this.userObject.identityService) {
+      obj['X-1ST-IDENTITY-SERVICE'] = this.userObject.identityService.substring(this.userObject.identityService.lastIndexOf(':') + 1);
+      obj['X-ID-TOKEN'] = this.userObject.idToken;
+      obj['X-OPENID-CONFIGURATION'] = this.userObject.openIdConfiguration;
     }
 
     let headers = new HttpHeaders(obj);
