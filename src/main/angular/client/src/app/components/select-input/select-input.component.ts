@@ -11,6 +11,7 @@ export class SelectInputComponent {
   @Input() isAllowClear = false;
   @Input() isSearchable = false;
   @Input() isRequired = false;
+  @Input() isSelectDisabled: any
   @Input() dropdownClassName = '';
   @Input() ngClassName = '';
   @Input() classNames = '';
@@ -21,6 +22,9 @@ export class SelectInputComponent {
   @Input() optionValue = '';
   @Input() isCustomContent = false;
   @Input() extraLabelText = '';
+  @Input() id = '';
+  @Input() customId = ''
+
 
   @Output() modelChange = new EventEmitter<any>();
   @Output() onBlur = new EventEmitter<any>();

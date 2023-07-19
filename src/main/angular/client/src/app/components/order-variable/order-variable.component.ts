@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {isArray, isEqual, object} from 'underscore';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';

@@ -28,7 +28,7 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div *ngIf="token.at === 'date'" class="col-sm-8">
-        <app-date-input [object]="token" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'" [isRequired]="true" [isAutoFocus]="true"
+        <app-date-input [object]="token" [ignoreThirdParam]="true" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'" [isRequired]="true" [isAutoFocus]="true"
                         [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
                         [placeholder]="( dateFormat | uppercase )"
         ></app-date-input>

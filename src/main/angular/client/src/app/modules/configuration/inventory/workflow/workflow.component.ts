@@ -37,32 +37,32 @@ import {CalendarService} from "../../../../services/calendar.service";
 import {FileUploaderComponent} from "../../../../components/file-uploader/file-uploader.component";
 
 // Mx-Graph Objects
-declare const mxEditor;
-declare const mxUtils;
-declare const mxEvent;
-declare const mxClient;
-declare const mxEdgeHandler;
-declare const mxRectangleShape;
-declare const mxAutoSaveManager;
-declare const mxGraphHandler;
-declare const mxCellAttributeChange;
-declare const mxGraph;
-declare const mxImage;
-declare const mxRubberband;
-declare const mxOutline;
-declare const mxDragSource;
-declare const mxConstants;
-declare const mxRectangle;
-declare const mxPoint;
-declare const mxUndoManager;
-declare const mxEventObject;
-declare const mxToolbar;
-declare const mxCellHighlight;
-declare const mxImageShape;
-declare const mxRhombus;
-declare const mxLabel;
-declare const mxKeyHandler;
-declare const $;
+declare const mxEditor: any;
+declare const mxUtils: any;
+declare const mxEvent: any;
+declare const mxClient: any;
+declare const mxEdgeHandler: any;
+declare const mxRectangleShape: any;
+declare const mxAutoSaveManager: any;
+declare const mxGraphHandler: any;
+declare const mxCellAttributeChange: any;
+declare const mxGraph: any;
+declare const mxImage: any;
+declare const mxRubberband: any;
+declare const mxOutline: any;
+declare const mxDragSource: any;
+declare const mxConstants: any;
+declare const mxRectangle: any;
+declare const mxPoint: any;
+declare const mxUndoManager: any;
+declare const mxEventObject: any;
+declare const mxToolbar: any;
+declare const mxCellHighlight: any;
+declare const mxImageShape: any;
+declare const mxRhombus: any;
+declare const mxLabel: any;
+declare const mxKeyHandler: any;
+declare const $: any;
 
 @Directive({
   selector: '[appValidateDuration]',
@@ -1540,7 +1540,14 @@ export class JobComponent {
     this.selectedNode.job.executable.TYPE = result.executable.TYPE;
     this.selectedNode.job.executable.className = result.executable.className;
     this.selectedNode.job.executable.script = result.executable.script;
-    if (this.selectedNode.job.executable.TYPE === 'InternalExecutable' || this.selectedNode.job.executable.TYPE === 'Java' || this.selectedNode.job.executable.TYPE === 'JavaScript') {
+    this.selectedNode.job.executable.internalType = result.executable.internalType;
+    if (result.executable.internalType === 'JavaScript_Graal') {
+      this.selectedNode.job.executable.TYPE = "JavaScript";
+    } else if (result.executable.internalType === 'Java') {
+      this.selectedNode.job.executable.TYPE = "Java";
+    }
+    if (this.selectedNode.job.executable.TYPE === 'InternalExecutable' || this.selectedNode.job.executable.TYPE === 'Java'
+      || this.selectedNode.job.executable.TYPE === 'JavaScript') {
       this.selectedNode.job.executable.arguments = result.executable.arguments || [];
       if (!isArray(this.selectedNode.job.executable.arguments)) {
         this.selectedNode.job.executable.arguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'arguments');
@@ -1990,6 +1997,17 @@ export class JobComponent {
       if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
         text = '##!include ' + name;
       }
+
+      if (this.selectedNode.job.executable.TYPE == 'JavaScript') {
+        if (!currentLine.substring(0, cursor.ch).match('//!include')) {
+          text = '//!include ' + name;
+        }
+      } else {
+        if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
+          text = '##!include ' + name;
+        }
+      }
+
       str = str + text + ' ';
       doc.replaceRange(str, cursor);
       cursor.ch = cursor.ch + (text.length);
@@ -2458,7 +2476,7 @@ export class ScriptEditorComponent {
     this.disabled = this.modalData.disabled;
     this.cmOption.mode = this.modalData.mode;
     if (this.cmOption.mode == 'javascript') {
-      this.cmOption.extraKeys = {'Ctrl-Space': 'autocomplete'};
+      this.cmOption.extraKeys = {'Alt-Space': 'autocomplete'};
     }
     if (this.disabled) {
       this.cmOption.reladOnly = true;
@@ -2554,8 +2572,14 @@ export class ScriptEditorComponent {
 
       let str = (!isSpace ? ' ' : '');
       let text = name;
-      if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
-        text = '##!include ' + name;
+      if (this.cmOption.mode == 'javascript') {
+        if (!currentLine.substring(0, cursor.ch).match('//!include')) {
+          text = '//!include ' + name;
+        }
+      } else {
+        if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
+          text = '##!include ' + name;
+        }
       }
       str = str + text + ' ';
       doc.replaceRange(str, cursor);
@@ -6371,7 +6395,7 @@ export class WorkflowComponent {
          * @param cell
          */
         graph.convertValueToString = function (cell) {
-          return self.workflowService.convertValueToString(cell, graph);
+          return self.workflowService.convertValueToString(cell, graph, self.jobs);
         };
 
         // Returns the type as the tooltip for column cells

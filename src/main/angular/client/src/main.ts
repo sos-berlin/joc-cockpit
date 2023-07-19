@@ -16,6 +16,8 @@ import 'codemirror/addon/hint/javascript-hint';
 import 'codemirror/addon/hint/xml-hint';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/scroll/simplescrollbars';
+import 'codemirror/addon/fold/foldcode';
+import 'codemirror/addon/fold/foldgutter';
 
 if (environment.production) {
   enableProdMode();

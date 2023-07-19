@@ -56,6 +56,9 @@ export class SearchComponent {
     {label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false}
   ];
 
+  jobCriticality=[{value: 'NORMAL' , name:'common.label.normal'},
+  {value: 'CRITICAL' , name:'common.label.critical'}]
+
   availabilityStatusOptions = [
     {label: 'suspended', value: 'SUSPENDED', checked: false},
     {label: 'outstanding', value: 'OUTSTANDING', checked: false}

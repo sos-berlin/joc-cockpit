@@ -19,6 +19,7 @@ export class DateInputComponent {
   @Input() object: any = {};
   @Input() attributeDate = '';
   @Input() attributeTime = '';
+  @Input() ignoreThirdParam = false;
 
   @Output() modelChange = new EventEmitter<any>();
 
@@ -26,7 +27,11 @@ export class DateInputComponent {
   }
 
   selectTime(time, isEditor = false, val = 'from'): void {
-    this.coreService.selectTime(time, isEditor, this.object, val);
+    if(this.ignoreThirdParam) {
+      this.coreService.selectTime(time, isEditor, this.object);
+    } else {
+      this.coreService.selectTime(time, isEditor, this.object, val);
+    }
   }
 
   disabledDate = (current: Date): boolean => {

@@ -1,5 +1,5 @@
 import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
-import {isArray, isEmpty} from 'underscore';
+import {isEmpty} from 'underscore';
 import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {AuthService} from "../guard";
 import {CoreService} from '../../services/core.service';

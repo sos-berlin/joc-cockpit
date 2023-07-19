@@ -21,7 +21,7 @@ import {InventoryObject} from '../../../../models/enums';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {JobWizardComponent} from '../job-wizard/job-wizard.component';
-import {FacetEditorComponent} from '../workflow/workflow.component';
+import {FacetEditorComponent, ScriptEditorComponent} from '../workflow/workflow.component';
 
 declare const $;
 
@@ -830,6 +830,28 @@ export class JobTemplateComponent {
     });
   }
 
+  showEditor(mode): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ScriptEditorComponent,
+      nzClassName: 'lg script-editor',
+      nzAutofocus: null,
+      nzData: {
+        script: this.job.configuration.executable.script,
+        mode,
+        scriptTree: this.scriptTree
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.job.configuration.executable.script = result;
+        this.ref.detectChanges();
+      }
+    });
+  }
   closeRuntime(): void {
     this.isRuntimeVisible = false;
     setTimeout(() => {
@@ -1273,8 +1295,15 @@ export class JobTemplateComponent {
 
       let str = (!isSpace ? ' ' : '');
       let text = name;
-      if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
-        text = '##!include ' + name;
+
+      if (this.job.configuration.executable.TYPE == 'JavaScript') {
+        if (!currentLine.substring(0, cursor.ch).match('//!include')) {
+          text = '//!include ' + name;
+        }
+      } else {
+        if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
+          text = '##!include ' + name;
+        }
       }
       str = str + text + ' ';
       doc.replaceRange(str, cursor);
