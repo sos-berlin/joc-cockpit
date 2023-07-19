@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {isEmpty, isArray, clone, isNaN, sortBy} from 'underscore';
+import {clone, isArray, isEmpty, isNaN, sortBy} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from './core.service';
 import {StringDatePipe} from '../pipes/core.pipe';
@@ -884,6 +884,7 @@ export class WorkflowService {
             if (json.instructions[x].documentationName !== undefined) {
               _node.setAttribute('documentationName', json.instructions[x].documentationName);
             }
+
             if (json.instructions[x].defaultArguments && typeof json.instructions[x].defaultArguments === 'object') {
               _node.setAttribute('defaultArguments', JSON.stringify(json.instructions[x].defaultArguments));
             }
@@ -1617,7 +1618,7 @@ export class WorkflowService {
     }
   }
 
-  public convertValueToString(cell: any, graph: any): string {
+  public convertValueToString(cell: any, graph: any, jobs = []): string {
     function truncate(input: string, num: number): string {
       if (input.length > num) {
         return input.substring(0, num) + '...';
@@ -1638,6 +1639,7 @@ export class WorkflowService {
         }
         return '';
       } else if (cell.value.tagName === 'Job') {
+
         const lb = cell.getAttribute('label');
         if (lb) {
           const edge = graph.getOutgoingEdges(cell)[0];
@@ -1663,6 +1665,16 @@ export class WorkflowService {
               skip = translatedValue;
             });
             str += '<div><span class = "text-xs ' + class1 + '">' + skip + '</span></div>';
+          }
+        }
+        if(jobs.length > 0) {
+          for (let i in jobs) {
+            if (cell.getAttribute('jobName') == jobs[i].name) {
+              if (jobs[i].value.jobTemplate) {
+                str += '<div><span class = "text-xs"><i class="icon-jobs-icon icon-color tree-icon p-r-xs"></i>' + jobs[i].value.jobTemplate.name + '</span></div>';
+              }
+              break;
+            }
           }
         }
         return str;
@@ -1988,22 +2000,26 @@ export class WorkflowService {
   }
 
   convertDurationToString(time: any): string {
-    const seconds = Number(time);
-    const y = Math.floor(seconds / (3600 * 365 * 24));
-    const m = Math.floor((seconds % (3600 * 365 * 24)) / (3600 * 30 * 24));
-    const w = Math.floor(((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) / (3600 * 7 * 24));
-    const d = Math.floor((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) / (3600 * 24));
-    const h = Math.floor(((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
-    const M = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
-    const s = Math.floor(((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
-    if (y == 0 && m == 0 && w == 0 && d == 0) {
-      if (h == 0 && M == 0) {
-        return s + 's';
+    if (time) {
+      const seconds = Number(time);
+      const y = Math.floor(seconds / (3600 * 365 * 24));
+      const m = Math.floor((seconds % (3600 * 365 * 24)) / (3600 * 30 * 24));
+      const w = Math.floor(((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) / (3600 * 7 * 24));
+      const d = Math.floor((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) / (3600 * 24));
+      const h = Math.floor(((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
+      const M = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
+      const s = Math.floor(((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
+      if (y == 0 && m == 0 && w == 0 && d == 0) {
+        if (h == 0 && M == 0) {
+          return s + 's';
+        } else {
+          return (h < 10 ? '0' + h : h) + ':' + (M < 10 ? '0' + M : M) + ':' + (s < 10 ? '0' + s : s);
+        }
       } else {
-        return (h < 10 ? '0' + h : h) + ':' + (M < 10 ? '0' + M : M) + ':' + (s < 10 ? '0' + s : s);
+        return (y != 0 ? y + 'y ' : '') + (m != 0 ? m + 'm ' : '') + (w != 0 ? w + 'w ' : '') + (d != 0 ? d + 'd ' : '') + (h != 0 ? h + 'h ' : '') + (M != 0 ? M + 'M ' : '') + (s != 0 ? s + 's ' : '');
       }
     } else {
-      return (y != 0 ? y + 'y ' : '') + (m != 0 ? m + 'm ' : '') + (w != 0 ? w + 'w ' : '') + (d != 0 ? d + 'd ' : '') + (h != 0 ? h + 'h ' : '') + (M != 0 ? M + 'M ' : '') + (s != 0 ? s + 's ' : '');
+      return time;
     }
   }
 
@@ -2568,6 +2584,7 @@ export class WorkflowService {
 
   convertJobObject(job: any, isJobTemplate = true): any {
     if (job.executable.TYPE === 'Java' || job.executable.TYPE === 'JavaScript') {
+      job.executable.internalType = job.executable.TYPE === 'Java' ? 'Java' : 'JavaScript_Graal';
       job.executable.TYPE = 'InternalExecutable';
     }
     if (isEmpty(job.admissionTimeScheme)) {

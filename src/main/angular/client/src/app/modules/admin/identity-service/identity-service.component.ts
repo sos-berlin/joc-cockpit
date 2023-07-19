@@ -1009,6 +1009,7 @@ export class IdentityServiceComponent {
         nzData: {
           comments
         },
+        nzAutofocus: null,
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
@@ -1041,6 +1042,7 @@ export class IdentityServiceComponent {
           url: 'iam/identityservice/store'
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });

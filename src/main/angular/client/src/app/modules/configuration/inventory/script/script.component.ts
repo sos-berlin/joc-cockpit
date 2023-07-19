@@ -3,8 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
-  OnChanges,
-  OnDestroy,
   SimpleChanges, ViewChild
 } from '@angular/core';
 import {isEmpty, isEqual, clone} from 'underscore';
@@ -21,7 +19,7 @@ import {InventoryObject} from '../../../../models/enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './script.component.html',
 })
-export class ScriptComponent implements OnDestroy, OnChanges {
+export class ScriptComponent {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
@@ -43,7 +41,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
     lineNumbers: true,
     autoRefresh: true,
     mode: 'shell',
-    extraKeys: {'Ctrl-Space': 'autocomplete'}
+    extraKeys: {'Alt-Space': 'autocomplete'}
   };
   lastModified: any = '';
   subscription1: Subscription;

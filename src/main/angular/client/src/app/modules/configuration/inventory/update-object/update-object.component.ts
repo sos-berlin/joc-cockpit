@@ -49,7 +49,7 @@ export class UpdateObjectComponent {
     lineNumbers: true,
     autoRefresh: true,
     mode: 'shell',
-    extraKeys: {'Ctrl-Space': 'autocomplete'}
+    extraKeys: {'Alt-Space': 'autocomplete'}
   };
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService,

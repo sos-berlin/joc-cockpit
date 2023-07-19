@@ -27,7 +27,9 @@ export class FileUploaderComponent {
 
   comments: any = {};
   data: any;
-
+  fileFormat = [{value: 'ZIP', name: 'ZIP'},
+    {value: 'TAR_GZ', name: 'TAR_GZ'}
+  ]
   document = {path: '', path1: ''};
 
   //Inventory
