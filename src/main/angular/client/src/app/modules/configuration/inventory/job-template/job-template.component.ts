@@ -399,6 +399,7 @@ export class JobTemplateComponent {
     indeterminate3: false,
     setOfCheckedEnv: new Set<string>()
   };
+  showToken = /\w/;
 
   lastModified: any = '';
   copiedParamObjects: any = {};
@@ -650,10 +651,10 @@ export class JobTemplateComponent {
     }
 
     setTimeout(() => {
-     
       if (this.cm && this.cm.codeMirror) {
         const self = this;
         this.cm.codeMirror.setOption("extraKeys", {
+          "Shift-Ctrl-Space": "autocomplete",
           "Ctrl-Space": function (editor) {
             const cursor = editor.getCursor();
             self.isTreeShow = true;

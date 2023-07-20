@@ -201,11 +201,15 @@
                                       [options]="{
                                           lineNumbers: true,
                                           autoRefresh: true,
+                                          lineWrapping: true,
+                                          foldGutter: true,
+                                          autoCloseBrackets: job.configuration.executable.TYPE === 'JavaScript',
                                           scrollbarStyle: 'simple',
-                                          extraKeys: {'Alt-Space': 'autocomplete'},
-                                          mode: job.configuration.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell'
+                                          highlightSelectionMatches: {showToken, annotateScrollbar: true},
+                                          mode: job.configuration.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell',
+                                          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
                                         }" name="script"
-                                      required title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}"></ngx-codemirror>
+                                      required></ngx-codemirror>
                     </div>
                     <div class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
                     <div *ngIf="(script.invalid && (script.dirty && script.touched))" class="text-danger help-block">

@@ -159,6 +159,7 @@ export class NoticeBoardEditorComponent {
   obj = {
     data: ''
   };
+  showToken = /\w/;
   isTreeShow = false;
   @ViewChild('codeMirror', {static: false}) cm;
 
@@ -188,6 +189,7 @@ export class NoticeBoardEditorComponent {
         }, 400);
 
         this.cm.codeMirror.setOption("extraKeys", {
+          "Shift-Ctrl-Space": "autocomplete",
           "Ctrl-Space": function (editor) {
             const cursor = editor.getCursor();
             self.isTreeShow = true;
@@ -1293,6 +1295,7 @@ export class JobComponent {
   @Input() checkboxObjects: any = {};
 
   history = [];
+  showToken = /\w/;
   indexOfNextAdd = 0;
   error: boolean;
   errorMsg: string;
@@ -1371,32 +1374,11 @@ export class JobComponent {
 
   ngOnInit(): void {
     this.index = 0;
-    const self = this;
     this.isTreeShow = false;
     if (!this.isModal) {
       this.updateVariableList();
     }
-
-    setTimeout(() => {
-      if (this.cm && this.cm.codeMirror) {
-        this.cm.codeMirror.setOption("extraKeys", {
-          "Ctrl-Space": function (editor) {
-            const cursor = editor.getCursor();
-            self.isTreeShow = true;
-            self.ref.detectChanges();
-            setTimeout(() => {
-              const dom = $('#show-tree');
-              dom?.css({
-                'opacity': '1',
-                'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
-                'left': '36px',
-                'width': 'calc(100% - 48px)'
-              });
-            }, 0)
-          }
-        })
-      }
-    }, 100);
+    this.initAutoComplete(100);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -1418,6 +1400,31 @@ export class JobComponent {
     this.subscription.unsubscribe();
   }
 
+  private initAutoComplete(time = 0): void {
+    const self = this;
+    setTimeout(() => {
+      if (this.cm && this.cm.codeMirror) {
+        this.cm.codeMirror.setOption("extraKeys", {
+          "Shift-Ctrl-Space": "autocomplete",
+          "Ctrl-Space": function (editor) {
+            const cursor = editor.getCursor();
+            self.isTreeShow = true;
+            self.ref.detectChanges();
+            setTimeout(() => {
+              const dom = $('#show-tree');
+              dom?.css({
+                'opacity': '1',
+                'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
+                'left': '36px',
+                'width': 'calc(100% - 48px)'
+              });
+            }, 0)
+          }
+        })
+      }
+    }, time);
+  }
+
   navToJobTemp(name): void {
     this.dataService.reloadTree.next({navigate: {name, type: InventoryObject.JOBTEMPLATE}});
   }
@@ -1430,6 +1437,7 @@ export class JobComponent {
     } else if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
       this.selectedNode.job.executable.internalType = 'JITL';
     }
+    this.reloadScript();
     this.saveToHistory();
   }
 
@@ -1484,6 +1492,7 @@ export class JobComponent {
     this.isDisplay = false;
     setTimeout(() => {
       this.isDisplay = true;
+      this.initAutoComplete();
       this.ref.detectChanges();
     }, time);
   }
@@ -2453,7 +2462,8 @@ export class ScriptEditorComponent {
   script: any;
 
   scriptTree: any = [];
-  disabled: boolean;
+  isSkip = false;
+  disabled= false;
   isTreeShow = false;
   dragEle: any;
   scriptObj = {
@@ -2461,9 +2471,13 @@ export class ScriptEditorComponent {
   };
   cmOption: any = {
     lineNumbers: true,
+    autoRefresh: true,
+    lineWrapping: true,
+    foldGutter: true,
     scrollbarStyle: 'simple',
     viewportMargin: Infinity,
-    autoRefresh: true,
+    highlightSelectionMatches: {showToken:/\w/, annotateScrollbar: true},
+    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
   };
   @ViewChild('codeMirror', {static: false}) cm: any;
 
@@ -2474,9 +2488,10 @@ export class ScriptEditorComponent {
     this.script = this.modalData.script;
     this.scriptTree = this.modalData.scriptTree;
     this.disabled = this.modalData.disabled;
+    this.isSkip = this.modalData.isSkip;
     this.cmOption.mode = this.modalData.mode;
-    if (this.cmOption.mode == 'javascript') {
-      this.cmOption.extraKeys = {'Alt-Space': 'autocomplete'};
+    if(this.cmOption.mode === 'javascript'){
+      this.cmOption.autoCloseBrackets =true;
     }
     if (this.disabled) {
       this.cmOption.reladOnly = true;
@@ -2517,9 +2532,10 @@ export class ScriptEditorComponent {
           this.cm.codeMirror.focus();
           doc.setCursor(cursor);
         }, 400);
-        if ((this.cmOption.mode == 'shell')) {
-          this.cm.codeMirror.setOption("extraKeys", {
-            "Ctrl-Space": function (editor) {
+        this.cm.codeMirror.setOption("extraKeys", {
+          "Shift-Ctrl-Space": "autocomplete",
+          "Ctrl-Space": function (editor) {
+            if(!self.isSkip) {
               const cursor = editor.getCursor();
               self.isTreeShow = true;
               setTimeout(() => {
@@ -2532,8 +2548,8 @@ export class ScriptEditorComponent {
                 });
               }, 0)
             }
-          })
-        }
+          }
+        })
       }
     }, 0);
   }
@@ -3519,7 +3535,7 @@ export class WorkflowComponent {
       if (cells && cells.length > 0) {
         if (this.cutCell.length > 0) {
           this.cutCell.forEach(cell => {
-            this.changeCellStyle(this.editor.graph, cell, false);
+            this.workflowService.changeCellStyle(this.editor.graph, cell, false);
           });
         }
         this.cutCell = [];
@@ -3548,12 +3564,12 @@ export class WorkflowComponent {
         this.copyId = [];
         if (this.cutCell.length > 0) {
           this.cutCell.forEach(cell => {
-            this.changeCellStyle(graph, cell, false);
+            this.workflowService.changeCellStyle(graph, cell, false);
           });
         }
         this.cutCell = [];
         cells.forEach(cell => {
-          this.changeCellStyle(graph, cell, true);
+          this.workflowService.changeCellStyle(graph, cell, true);
           this.cutCell.push(cell);
         });
         this.updateToolbar('cut', node ? node.cell : null, 'multiple instructions');
@@ -4808,15 +4824,6 @@ export class WorkflowComponent {
     }
     if (obj.children) {
       this.selectListForForkList(obj.children);
-    }
-  }
-
-  private changeCellStyle(graph, cell, isBlur): void {
-    const state = graph.view.getState(cell);
-    if (state && state.shape) {
-      state.style[mxConstants.STYLE_OPACITY] = isBlur ? 60 : 100;
-      state.shape.apply(state);
-      state.shape.redraw();
     }
   }
 
@@ -8572,6 +8579,7 @@ export class WorkflowComponent {
             }, 100);
 
             self.cm.codeMirror.setOption("extraKeys", {
+              "Shift-Ctrl-Space": "autocomplete",
               "Ctrl-Space": function (editor) {
                 // Save contents
                 const cursor = editor.getCursor();
@@ -11144,7 +11152,7 @@ export class WorkflowComponent {
   private clearClipboard(): void {
     if (this.cutCell.length > 0) {
       this.cutCell.forEach(cell => {
-        this.changeCellStyle(this.editor.graph, cell, false);
+        this.workflowService.changeCellStyle(this.editor.graph, cell, false);
       })
     }
     this.cutCell = [];

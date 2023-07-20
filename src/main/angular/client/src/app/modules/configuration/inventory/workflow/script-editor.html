@@ -79,7 +79,7 @@
           <div class="rg-right" style="background: transparent; margin-right: -16px"><span style="top:48%"></span></div>
           <div class="rg-bottom" style="bottom: -16px;background: transparent"><span></span></div>
         </div>
-        <div *ngIf="cmOption.mode === 'shell'" class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
+        <div *ngIf="!isSkip" class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
         <div *ngIf="(cm.invalid && (cm.dirty || cm.touched))"
              class="text-danger help-block">
           <div *ngIf="(cm.errors && cm.errors.required)">

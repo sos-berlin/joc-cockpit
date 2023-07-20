@@ -1618,7 +1618,28 @@ export class WorkflowService {
     }
   }
 
+  public changeCellStyle(graph, cell, isBlur, isColor = false): void {
+    const state = graph.view.getState(cell);
+    if (state && state.shape) {
+      state.style[mxConstants.STYLE_OPACITY] = isBlur ? 60 : 100;
+      if(isColor) {
+        state.style[mxConstants.STYLE_FILLCOLOR] = '#b1d7f8';
+        state.style[mxConstants.STYLE_STROKECOLOR] = '#739fc4';
+      }
+      state.shape.apply(state);
+      state.shape.redraw();
+    }
+  }
+
   public convertValueToString(cell: any, graph: any, jobs = []): string {
+    function getClass(input: string, num: number): string {
+       if (input.length > num) {
+         return 'p-l-md';
+       } else {
+        return '';
+      }
+    }
+
     function truncate(input: string, num: number): string {
       if (input.length > num) {
         return input.substring(0, num) + '...';
@@ -1654,8 +1675,8 @@ export class WorkflowService {
         }
         let state = cell.getAttribute('state');
 
-        let str = '<div class="cursor workflow-title"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>'
-          + truncate(cell.getAttribute('jobName'), 22) + '</div>';
+        let str = '<div class="cursor workflow-title ' + getClass(cell.getAttribute('jobName'), 22) +'"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>'
+          + cell.getAttribute('jobName') + '</div>';
         if (state) {
           state = JSON.parse(state);
           if (state._text) {
@@ -1667,11 +1688,12 @@ export class WorkflowService {
             str += '<div><span class = "text-xs ' + class1 + '">' + skip + '</span></div>';
           }
         }
-        if(jobs.length > 0) {
+        if (jobs.length > 0) {
           for (let i in jobs) {
             if (cell.getAttribute('jobName') == jobs[i].name) {
               if (jobs[i].value.jobTemplate) {
-                str += '<div><span class = "text-xs"><i class="icon-jobs-icon icon-color tree-icon p-r-xs"></i>' + jobs[i].value.jobTemplate.name + '</span></div>';
+                this.changeCellStyle(graph, cell, false,true);
+                str += '<div class="job-temp-text"><span class = "text-xs"><i class="icon-jobs-icon icon-color tree-icon p-r-xs"></i>' + jobs[i].value.jobTemplate.name + '</span></div>';
               }
               break;
             }

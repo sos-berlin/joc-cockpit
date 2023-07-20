@@ -75,7 +75,32 @@
           </nz-tab>
           <nz-tab *ngIf="node" [nzTitle]="'workflow.wizard.tab.jobTemplate' | translate">
             <div class="min-ht-150">
-              <div *ngIf="jobTree.length>0" class="row">
+              <div>
+                <div>
+                  <input [(ngModel)]="wizard.searchText2" (blur)="clearSearchInput()"
+                         (ngModelChange)="onSearchInput($event)"
+                         [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
+                         type="search" class="input-tree-search"
+                         name="treeSearch"
+                  />
+                  <i *ngIf="wizard.loading" [nzType]="'loading'" class="tree-search-icon" nz-icon
+                     nzTheme="outline"></i>
+                </div>
+                <nz-autocomplete #auto>
+                  <ng-container *ngFor="let option of jobTemplates | orderBy: 'name'">
+                    <nz-auto-option (click)="selectJobTemp(option)" [nzValue]="option.path" class="min-ht-opt">
+                      <div class="node-wrapper p-l">
+                        <div [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+                             class="node-content-wrapper2" nzTooltipPlacement="right">
+                          <i class="icon-jobs-icon icon-color tree-icon"></i>
+                          <span class="p-l-sm">{{ option.name }}</span>
+                        </div>
+                      </div>
+                    </nz-auto-option>
+                  </ng-container>
+                </nz-autocomplete>
+              </div>
+              <div *ngIf="jobTree.length>0" class="row m-t-12">
                 <div *ngIf="isTreeLoad" class="col-md-12">
                   <nz-tree (nzExpandChange)="onExpand($event)" [nzData]="jobTree" [nzTreeTemplate]="nzTreeTemplate"
                            nzNoAnimation></nz-tree>

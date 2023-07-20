@@ -45,11 +45,15 @@ export class UpdateObjectComponent {
   workflow: any = {};
   required = false;
   cmOption: any = {
-    scrollbarStyle: 'simple',
     lineNumbers: true,
     autoRefresh: true,
+    lineWrapping: true,
+    foldGutter: true,
+    scrollbarStyle: 'simple',
+    highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     mode: 'shell',
-    extraKeys: {'Alt-Space': 'autocomplete'}
+    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+    extraKeys: {'Shift-Ctrl-Space': 'autocomplete'}
   };
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService,
