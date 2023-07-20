@@ -3704,7 +3704,7 @@ export class InventoryComponent {
               this.updateData(res.results);
             }
             this.searchNode.loading = false;
-          }, error: () => this.searchNode.loading = true
+          }, error: () => this.searchNode.loading = false
         });
       }
     } else {

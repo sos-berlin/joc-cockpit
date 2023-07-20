@@ -13,6 +13,7 @@ import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../../models/enums';
+import {ScriptEditorComponent} from "../workflow/workflow.component";
 
 @Component({
   selector: 'app-script',
@@ -37,11 +38,15 @@ export class ScriptComponent {
   indexOfNextAdd = 0;
   history = [];
   cmOption: any = {
-    scrollbarStyle: 'simple',
     lineNumbers: true,
     autoRefresh: true,
+    lineWrapping: true,
+    foldGutter: true,
+    scrollbarStyle: 'simple',
+    highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     mode: 'shell',
-    extraKeys: {'Alt-Space': 'autocomplete'}
+    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+    extraKeys: {'Shift-Ctrl-Space': 'autocomplete'}
   };
   lastModified: any = '';
   subscription1: Subscription;
@@ -213,6 +218,30 @@ export class ScriptComponent {
       this.script.configuration = JSON.parse(obj);
       this.saveJSON(true);
     }
+  }
+
+  showEditor(): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ScriptEditorComponent,
+      nzClassName: 'lg script-editor',
+      nzAutofocus: null,
+      nzData: {
+        script: this.script.configuration.script,
+        mode: 'shell',
+        isSkip: true,
+        scriptTree: []
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.script.configuration.script = result;
+        this.ref.detectChanges();
+      }
+    });
   }
 
   saveJSON(flag = false): void {

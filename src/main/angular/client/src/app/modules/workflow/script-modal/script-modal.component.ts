@@ -38,10 +38,15 @@ export class ScriptModalComponent {
   schemeList: any = [];
   tempPeriodList: any = [];
   cmOption: any = {
-    scrollbarStyle: 'simple',
     lineNumbers: true,
+    autoRefresh: true,
+    lineWrapping: true,
+    foldGutter: true,
+    scrollbarStyle: 'simple',
     readOnly: true,
-    mode: 'shell'
+    highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
+    mode: 'shell',
+    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
   };
   todayDate: string;
   type: string;

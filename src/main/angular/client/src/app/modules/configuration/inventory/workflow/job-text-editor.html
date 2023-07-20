@@ -313,10 +313,14 @@
                                       [options]="{
                                          lineNumbers: true,
                                          autoRefresh: true,
+                                         lineWrapping: true,
+                                         foldGutter: true,
+                                         autoCloseBrackets: selectedNode.job.executable.TYPE === 'JavaScript',
                                          scrollbarStyle: 'simple',
                                          readOnly: (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name),
-                                         extraKeys: {'Ctrl-Alt-Space': 'autocomplete'},
-                                         mode: selectedNode.job.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell'
+                                         highlightSelectionMatches: {showToken, annotateScrollbar: true},
+                                         mode: selectedNode.job.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell',
+                                         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
                                        }"
                                       (focusChange)="focusChange()"
                                       (focusout)="saveToHistory()"
