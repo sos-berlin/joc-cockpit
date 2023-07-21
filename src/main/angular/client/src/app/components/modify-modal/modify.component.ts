@@ -32,8 +32,12 @@ export class ChangeParameterModalComponent {
   schedule: any = {};
   display: any;
   positions: any;
+  blockPositions: any;
+  selectValue=[{value: 'True' , name:true},
+  {value: 'False' , name:false}]
 
   positionObj = {
+    blockPosition: '',
     startPosition: '',
     endPositions: []
   }
@@ -92,6 +96,11 @@ export class ChangeParameterModalComponent {
         this.positions = new Map()
         res.positions.forEach((item) => {
           this.positions.set(item.positionString, JSON.stringify(item.position));
+        });
+
+        this.blockPositions = new Map()
+        res.blockPositions.forEach((item) => {
+          this.blockPositions.set(item.positionString, JSON.stringify(item.position));
         });
       });
     }
@@ -368,6 +377,9 @@ export class ChangeParameterModalComponent {
           }
         }
       });
+    }
+    if (this.positionObj.blockPosition) {
+      obj.blockPosition = JSON.parse(this.blockPositions.get(this.positionObj.blockPosition));
     }
     if (this.positionObj.startPosition) {
       obj.startPosition = JSON.parse(this.positions.get(this.positionObj.startPosition));

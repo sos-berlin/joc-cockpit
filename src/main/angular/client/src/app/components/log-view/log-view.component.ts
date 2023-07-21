@@ -399,10 +399,12 @@ export class LogViewComponent {
               obj.taskId = res.taskId;
             }
             this.runningTaskLog(obj, domId);
+            if (res.log) {
+              this.scrollBottom();
+            }
           } else {
             this.finished = true;
           }
-          this.scrollBottom();
         }
       });
     }
@@ -416,7 +418,9 @@ export class LogViewComponent {
             if (res.logEvents) {
               this.jsonToString(res);
               this.showHideTask(res.logEvents);
-              this.scrollBottom();
+              if (res.logEvents.length > 0) {
+                this.scrollBottom();
+              }
             }
             if (!res.complete && !this.isCancel) {
               if (res.eventId) {

@@ -803,6 +803,7 @@ export class CoreService {
           const modalData: PopoutData = {
             modalName: 'Order Log',
             controllerId,
+            historyId: url,
             orderId: orderId,
             workflow: workflow
           };
@@ -819,13 +820,14 @@ export class CoreService {
       }
     }
 
-    openWindow();
+
     this.post('order/history', {
       orderId: orderId,
       controllerId
     }).subscribe({
       next: (res) => {
         if (res.historyId) {
+
           let url2 = '?historyId=' + encodeURIComponent(res.historyId) + '&orderId=' + encodeURIComponent(orderId) + '&workflow=' + encodeURIComponent(workflow) + '&controllerId=' + controllerId;
           if (preferenceObj.isNewWindow === 'newWindow') {
             this.popupService.closePopoutModal();
@@ -836,6 +838,7 @@ export class CoreService {
             url = '';
             this.downloadLog(res, controllerId);
           }
+          openWindow();
         } else {
           url = '';
           let msg = '';
@@ -1485,7 +1488,7 @@ export class CoreService {
         if (!(/[$+]/.test(env.value)) || (/\s/g.test(env.value) && !/[+]/.test(env.value))) {
           const startChar = env.value.substring(0, 1);
           const endChar = env.value.substring(env.value.length - 1);
-          if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
+          if (startChar === "$" || (startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
 
           } else if (env.value === 'true' || env.value === 'false') {
           } else if (/^\d+$/.test(env.value)) {

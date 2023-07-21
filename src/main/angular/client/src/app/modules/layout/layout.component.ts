@@ -83,7 +83,9 @@ export class LayoutComponent {
           this.changePassword();
         }
         if (this.loading) {
-          LayoutComponent.calculateHeight();
+          setTimeout(() => {
+            LayoutComponent.calculateHeight();
+          }, 50)
         }
       }
     });
@@ -717,6 +719,7 @@ export class LayoutComponent {
     preferences.maxHistoryPerTask = 10;
     preferences.maxAuditLogPerObject = 10;
     preferences.maxFavoriteEntries = 10;
+    preferences.tabSize = 4;
     preferences.maxEntryPerPage = '1000';
     preferences.entryPerPage = '25';
     preferences.isNewWindow = 'newWindow';

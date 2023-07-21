@@ -198,10 +198,12 @@
                        nzType="form"></i>
                     <div [ngClass]="{'invalid': (script.invalid && (script.dirty && script.touched))}" class="b-a">
                       <ngx-codemirror #codeMirror #script="ngModel" (focusout)="saveJSON()" [(ngModel)]="job.configuration.executable.script"
+                                      (keydown)="handleKeyDown($event)"
                                       [options]="{
                                           lineNumbers: true,
                                           autoRefresh: true,
                                           lineWrapping: true,
+                                          matchBrackets: true,
                                           foldGutter: true,
                                           autoCloseBrackets: job.configuration.executable.TYPE === 'JavaScript',
                                           scrollbarStyle: 'simple',

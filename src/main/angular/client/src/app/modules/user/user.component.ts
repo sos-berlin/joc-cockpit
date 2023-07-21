@@ -531,8 +531,13 @@ export class ImportKeyModalComponent {
     this.uploadError = false;
     this.fileList.push(file);
     if(this.coreService.sanitizeFileName(file.name)) {
-      this.toasterService.error('File name has invalid characters.');
+      let msg = '';
+      this.translate.get('error.message.invalidFileName').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.toasterService.error(msg);
       this.fileList = [];
+      return false;
     }
     this.onFileSelected(this.fileList);
     setTimeout(() => {

@@ -1301,7 +1301,8 @@
     "message.errorInLoadingScheduleIds": "コントローラーID取得エラー",
     "message.pasteInSubFolderNotAllowed": "宛先フォルダーはソースフォルダーの下にあります",
     "message.invalidJSON": "無効なJSONファイルです",
-    "message.fileSizeExceed": "有効なファイルサイズは1MB以下です"
+    "message.fileSizeExceed": "有効なファイルサイズは1MB以下です",
+    "message.invalidFileName": "File name has invalid characters"
   },
   "favorite": {
     "button.addFavorite": "お気に入りを追加",
@@ -1871,6 +1872,7 @@
         "orderName": "Order Name",
         "startNode": "Start Position before Instruction",
         "endNode": "End Positions before Instructions",
+        "blockPosition": "Block Position",
         "ignoreAdmissionTimes": "Ignore Job Admission Times"
       },
       "script": {
@@ -1994,7 +1996,8 @@
           "remainWhenTerminated": "終了時は留まる",
           "startPosition": "開始位置",
           "endPositions": "終了位置",
-          "ignoreAdmissionTimes": "Ignore Job Admission Times"
+          "ignoreAdmissionTimes": "Ignore Job Admission Times",
+          "blockPosition": "Block Position"
         },
         "lock": {
           "name": "リソースロック名前はインベントリー内で一意です。リソースロックを使用することで、ワークフローのセクションの並列処理を制限できます。",
@@ -2158,7 +2161,7 @@
     "label.password": "パスワード",
     "label.rememberMe": "保存",
     "button.logIn": "ログイン",
-    "button.loginWith" : "{{identityServiceName}}IDサービスでログイン",
+    "button.loginWith": "{{identityServiceName}}IDサービスでログイン",
     "button.registerDevice": "新規デバイス登録",
     "message.loginError": "アカウントかパスワードが間違っています",
     "message.operationTimeoutOrCancelled": "操作がタイムアウトになったか、キャンセルされました",
@@ -2266,6 +2269,7 @@
     "label.listOfDynamicallyVariables": "値を変更可能な変数",
     "label.cycleEndTime": "サイクル終了時間",
     "label.ignoreAdmissionTimes": "許可時間を無視",
+    "label.blockPosition": "Block Position",
     "button.allOrders": "全オーダー",
     "button.cancel": "キャンセル",
     "button.startNow": "即時開始",
@@ -2286,6 +2290,7 @@
     "button.assignParameterizationFromSchedules": "スケジュールから変数設定",
     "placeholder.selectStartNode": "開始ノード選択",
     "placeholder.selectEndNode": "終了ノード選択",
+    "placeholder.selectBlockPosition": "Select Block Position",
     "placeholder.enterCycleEndTime": "hh:mm:ssか、秒で入力",
     "message.noVariableAvailable": "変数はありません",
     "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません",
@@ -2377,6 +2382,7 @@
     "label.favoriteManagement": "お気に入り管理",
     "label.licenseWarningGotIt": "ライセンス警告を確認",
     "label.showMoreOptions": "オプション表示",
+    "label.tabSize": "Tab Size",
     "button.resetPreferences": "プリファレンスリセット",
     "button.groupLimit": "グループリミット",
     "button.changePassword": "パスワード変更",
@@ -3305,6 +3311,7 @@
     "label.remainWhenTerminated": "終了時は留まる",
     "label.startPosition": "ワークフロー命令より前の開始位置",
     "label.endPositions": "ワークフロー命令より前の終了位置",
+    "label.blockPosition": "Block Position",
     "label.joinIfFailed": "失敗時Join",
     "label.skipIfNoAdmissionForOrderDay": "許可時間ではないときスキップ",
     "label.listOfSchemes": "スキーマリスト",

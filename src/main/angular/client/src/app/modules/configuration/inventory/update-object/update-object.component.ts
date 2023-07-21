@@ -48,6 +48,7 @@ export class UpdateObjectComponent {
     lineNumbers: true,
     autoRefresh: true,
     lineWrapping: true,
+    matchBrackets: true,
     foldGutter: true,
     scrollbarStyle: 'simple',
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},

@@ -228,7 +228,12 @@ export class FileUploaderComponent {
     this.uploadError = false;
     this.fileList.push(file);
     if(this.coreService.sanitizeFileName(file.name)) {
-      this.showErrorMsg('File name has invalid characters.')
+      let msg = '';
+      this.translate.get('error.message.invalidFileName').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.toasterService.error(msg);
+      return false;
     }
     if (this.type === 'DEPLOYMENT' || this.type === 'USER' || this.type == 'INVENTORY' || this.type == 'INVENTORY_OBJECT'
       || this.type == 'XML_EDITOR' || this.type === 'SETTING' || this.type === 'CONTROLLER' || this.type === 'WORKFLOW') {
@@ -416,7 +421,7 @@ export class FileUploaderComponent {
       });
     } else {
       this.translate.get('error.message.invalidJSON').subscribe(translatedValue => {
-        this.toasterService.error(translatedValue);
+        msg = translatedValue;
       });
     }
     this.toasterService.error(msg);

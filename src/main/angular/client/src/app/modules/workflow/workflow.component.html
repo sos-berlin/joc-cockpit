@@ -712,87 +712,87 @@
                       *ngIf="workflow.show && workflow.fileOrderSources && workflow.fileOrderSources.length>0">
                       <tr>
                         <td class="menu"></td>
-                        <td [colSpan]="!workflowFilters.isCompact ? 17 : 5" style="padding:0 !important;">
+                        <td [colSpan]="!workflowFilters.isCompact ? 17 : 6" style="padding:0 !important;">
                           <nz-table #innerChildTable [nzData]="workflow.fileOrderSources" [nzFrontPagination]="false"
                                     [nzShowPagination]="false" class="m-a-0 inner-table"
                                     nzSize="small">
-                  <thead>
-                  <tr>
-                    <th><span class="m-l-sm" translate>common.label.path</span></th>
-                    <th><span translate>inventory.label.deploymentDate</span></th>
-                    <th><span translate>common.label.status</span></th>
-                    <th><span translate>workflow.label.agent</span></th>
-                    <th><span translate>inventory.label.directory</span></th>
-                    <th><span translate>inventory.label.pattern</span></th>
-                    <th><span translate>common.label.timeZone</span></th>
-                    <th><span translate>workflow.label.delay</span></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let order of innerChildTable.data">
-                    <td>
-                                  <span class="show-in-single-line m-l-sm">
-                                    <i (click)="coreService.showDocumentation(order.documentationName, preferences)"
-                                       *ngIf="order.documentationName"
-                                       class="cursor fa fa-book p-r-xs"></i>
-                                    <span class="text-dark">
-                                      <i (click)="coreService.navToInventoryTab(order.path, 'FILEORDERSOURCE')"
-                                         class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                                      <span [innerHtml]="order.path"></span>
-                                      <i *ngIf="order.title"> - </i>
-                                      <i class="text-muted">{{order.title}}</i>
-                                    </span>
+                            <thead>
+                            <tr>
+                              <th><span class="m-l-sm" translate>common.label.path</span></th>
+                              <th><span translate>inventory.label.deploymentDate</span></th>
+                              <th><span translate>common.label.status</span></th>
+                              <th><span translate>workflow.label.agent</span></th>
+                              <th><span translate>inventory.label.directory</span></th>
+                              <th><span translate>inventory.label.pattern</span></th>
+                              <th><span translate>common.label.timeZone</span></th>
+                              <th><span translate>workflow.label.delay</span></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let order of innerChildTable.data">
+                              <td>
+                                <span class="show-in-single-line m-l-sm">
+                                  <i (click)="coreService.showDocumentation(order.documentationName, preferences)"
+                                     *ngIf="order.documentationName"
+                                     class="cursor fa fa-book p-r-xs"></i>
+                                  <span class="text-dark">
+                                    <i (click)="coreService.navToInventoryTab(order.path, 'FILEORDERSOURCE')"
+                                       class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                                    <span [innerHtml]="order.path"></span>
+                                    <i *ngIf="order.title"> - </i>
+                                    <i class="text-muted">{{order.title}}</i>
                                   </span>
-                    </td>
-                    <td>
-                      <span [innerHtml]="order.versionDate | stringToDate"></span>
-                    </td>
-                    <td>
-                                  <span *ngIf="order.state" [innerHtml]="order.state._text | translate"
-                                        [ngClass]="coreService.getColor(order.state.severity, 'bg')"
-                                        class="label"></span>
-                    </td>
-                    <td>{{order.agentName}}</td>
-                    <td>{{order.directoryExpr || order.directory}}</td>
-                    <td>{{order.pattern}}</td>
-                    <td>{{order.timeZone}}</td>
-                    <td>{{order.delay}}</td>
-                  </tr>
+                                </span>
+                              </td>
+                              <td>
+                                <span [innerHtml]="order.versionDate | stringToDate"></span>
+                              </td>
+                              <td>
+                                <span *ngIf="order.state" [innerHtml]="order.state._text | translate"
+                                      [ngClass]="coreService.getColor(order.state.severity, 'bg')"
+                                      class="label"></span>
+                              </td>
+                              <td>{{order.agentName}}</td>
+                              <td>{{order.directoryExpr || order.directory}}</td>
+                              <td>{{order.pattern}}</td>
+                              <td>{{order.timeZone}}</td>
+                              <td>{{order.delay}}</td>
+                            </tr>
+                            </tbody>
+                          </nz-table>
+                        </td>
+                      </tr>
+                    </ng-container>
+                    <tr *ngIf="workflow.show" id="{{workflow.path + workflow.versionId}}">
+                      <td colspan="17">
+                        <div class="m-a-sm">
+                          <div class="hover">
+                            <a class="text-primary noExl" translate>workflow.label.start</a>
+                            <span class="expand-collapse-btn">
+                                  <i (click)="workflow.isExpand = true;"
+                                     [nz-tooltip]="'common.tooltip.expandAll' | translate"
+                                     class="cursor fa fa-lg fa-angle-double-down"></i>
+                                  <i (click)="workflow.isExpand = false;"
+                                     [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+                                     class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
+                                </span>
+                          </div>
+                          <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)"
+                                    (isProcessing)="processingHandler($event)"
+                                    (onClick)="viewHistory($event)" (update)="updatePanelHeight()"
+                                    [configuration]="workflow.configuration"
+                                    [expandAll]="workflow.isExpand" [jobs]="workflow.configuration.jobs"
+                                    [orderPreparation]="workflow.configuration.orderPreparation"
+                                    [orderReload]="workflow.orderReload" [orders]="workflow.orders"
+                                    [permission]="permission"
+                                    [preferences]="preferences"
+                                    [schedulerId]="schedulerIds.selected"
+                                    [timezone]="workflow.configuration.timeZone" [workflowObj]="{path: workflow.configuration.path, versionId: workflow.configuration.versionId}"></app-type>
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-template>
                   </tbody>
-                </nz-table>
-                </td>
-                </tr>
-                </ng-container>
-                <tr *ngIf="workflow.show" id="{{workflow.path + workflow.versionId}}">
-                  <td colspan="17">
-                    <div class="m-a-sm">
-                      <div class="hover">
-                        <a class="text-primary noExl" translate>workflow.label.start</a>
-                        <span class="expand-collapse-btn">
-                              <i (click)="workflow.isExpand = true;"
-                                 [nz-tooltip]="'common.tooltip.expandAll' | translate"
-                                 class="cursor fa fa-lg fa-angle-double-down"></i>
-                              <i (click)="workflow.isExpand = false;"
-                                 [nz-tooltip]="'common.tooltip.collapseAll' | translate"
-                                 class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
-                            </span>
-                      </div>
-                      <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)"
-                                (isProcessing)="processingHandler($event)"
-                                (onClick)="viewHistory($event)" (update)="updatePanelHeight()"
-                                [configuration]="workflow.configuration"
-                                [expandAll]="workflow.isExpand" [jobs]="workflow.configuration.jobs"
-                                [orderPreparation]="workflow.configuration.orderPreparation"
-                                [orderReload]="workflow.orderReload" [orders]="workflow.orders"
-                                [permission]="permission"
-                                [preferences]="preferences"
-                                [schedulerId]="schedulerIds.selected"
-                                [timezone]="workflow.configuration.timeZone" [workflowObj]="{path: workflow.configuration.path, versionId: workflow.configuration.versionId}"></app-type>
-                    </div>
-                  </td>
-                </tr>
-                </ng-template>
-                </tbody>
                 </nz-table>
                 <div *ngIf="ajaxTable.data.length >0"
                      class="w-half label-top"><span translate>common.label.total</span> {{data.length}}

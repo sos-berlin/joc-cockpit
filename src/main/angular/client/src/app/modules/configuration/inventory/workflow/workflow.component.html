@@ -620,7 +620,7 @@
                 <div [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}" class="b-a"
                      id="boardId">
                   <ngx-codemirror #codeMirror #expectBoardExpression="ngModel"
-                                  [(ngModel)]="selectedNode.obj.noticeBoardNames" [options]="{lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
+                                  [(ngModel)]="selectedNode.obj.noticeBoardNames" (keydown)="handleKeyDown($event)" [options]="{lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
                                   mode: 'shell'}"
                                   required
                   ></ngx-codemirror>
@@ -900,46 +900,57 @@
                 </div>
               </div>
             </div>
-            <div class="form-group row">
-              <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.remainWhenTerminated' | translate) : ''"
-                     [nzTooltipMouseEnterDelay]="0.5"
-                     class="col-md-4 col-lg-3 block-ellipsis-job"
-                     title="{{'workflow.label.remainWhenTerminated' | translate}}" translate>workflow.label.remainWhenTerminated</label>
-              <div class="col-md-8 col-lg-9">
-                <label [(ngModel)]="selectedNode.obj.remainWhenTerminated" name="remainWhenTerminated"
-                       nz-checkbox></label>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.startPosition' | translate) : ''"
+            <div class="form-group row" *ngIf="blockPositions?.size > 0">
+              <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.blockPosition' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5"
                      class="col-md-4 col-lg-3 form-control-label"
-                     title="{{'workflow.label.startPosition' | translate}}" translate>workflow.label.startPosition</label>
+                     title="{{'workflow.label.blockPosition' | translate}}" translate>workflow.label.blockPosition</label>
               <div *ngIf="positions" class="col-md-8 col-lg-9">
-                <app-node-position [obj]="selectedNode.obj" [positions]="positions"
-                                   [type]="'START'" [workflow]="selectedNode.obj.workflow"></app-node-position>
+                <app-node-position [obj]="selectedNode.obj" [positions]="blockPositions"
+                                   [type]="'BLOCK_POSITION'" [workflow]="selectedNode.obj.workflow"></app-node-position>
               </div>
             </div>
             <div class="form-group row">
-              <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.endPositions' | translate) : ''"
-                     [nzTooltipMouseEnterDelay]="0.5"
-                     class="col-md-4 col-lg-3 form-control-label"
-                     title="{{'workflow.label.endPositions' | translate}}" translate>workflow.label.endPositions</label>
-              <div *ngIf="positions" class="col-md-8 col-lg-9">
-                <app-node-position (onBlur)="updateEndNode(selectedNode.obj)" [obj]="selectedNode.obj" [position]="selectedNode.obj.startPosition"
-                                   [positions]="positions" [type]="'END'"
-                                   [workflow]="selectedNode.obj.workflow"></app-node-position>
+                <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.startPosition' | translate) : ''"
+                       [nzTooltipMouseEnterDelay]="0.5"
+                       class="col-md-4 col-lg-3 form-control-label"
+                       title="{{'workflow.label.startPosition' | translate}}" translate>workflow.label.startPosition</label>
+                <div *ngIf="positions" class="col-md-8 col-lg-9">
+                  <app-node-position [obj]="selectedNode.obj" [positions]="positions"
+                                     [type]="'START'" [workflow]="selectedNode.obj.workflow"></app-node-position>
+                </div>
               </div>
-            </div>
             <div class="form-group row">
-              <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.ignoreAdmissionTimes' | translate) : ''"
-                     [nzTooltipMouseEnterDelay]="0.5"
-                     class="col-md-4 col-lg-3 block-ellipsis-job"
-                     title="{{'order.label.ignoreAdmissionTimes' | translate}}" translate>order.label.ignoreAdmissionTimes</label>
-              <div class="col-md-8 col-lg-9">
-                <label [(ngModel)]="selectedNode.obj.forceJobAdmission" name="ignoreAdmissionTimes" nz-checkbox></label>
+                <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.endPositions' | translate) : ''"
+                       [nzTooltipMouseEnterDelay]="0.5"
+                       class="col-md-4 col-lg-3 form-control-label"
+                       title="{{'workflow.label.endPositions' | translate}}" translate>workflow.label.endPositions</label>
+                <div *ngIf="positions" class="col-md-8 col-lg-9">
+                  <app-node-position (onBlur)="updateEndNode(selectedNode.obj)" [obj]="selectedNode.obj" [position]="selectedNode.obj.startPosition"
+                                     [positions]="positions" [type]="'END'"
+                                     [workflow]="selectedNode.obj.workflow"></app-node-position>
+                </div>
               </div>
-            </div>
+
+            <div class="form-group row">
+                <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.ignoreAdmissionTimes' | translate) : ''"
+                       [nzTooltipMouseEnterDelay]="0.5"
+                       class="col-md-4 col-lg-3 block-ellipsis-job"
+                       title="{{'order.label.ignoreAdmissionTimes' | translate}}" translate>order.label.ignoreAdmissionTimes</label>
+                <div class="col-md-8 col-lg-9">
+                  <label [(ngModel)]="selectedNode.obj.forceJobAdmission" name="ignoreAdmissionTimes" nz-checkbox></label>
+                </div>
+              </div>
+            <div class="form-group row">
+                <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.remainWhenTerminated' | translate) : ''"
+                       [nzTooltipMouseEnterDelay]="0.5"
+                       class="col-md-4 col-lg-3 block-ellipsis-job"
+                       title="{{'workflow.label.remainWhenTerminated' | translate}}" translate>workflow.label.remainWhenTerminated</label>
+                <div class="col-md-8 col-lg-9">
+                  <label [(ngModel)]="selectedNode.obj.remainWhenTerminated" name="remainWhenTerminated"
+                         nz-checkbox></label>
+                </div>
+              </div>
             <div *ngIf="(selectedNode.obj.arguments && selectedNode.obj.arguments.length > 0) || (selectedNode.obj.forkListArguments && selectedNode.obj.forkListArguments.length > 0)
               || (selectedNode.obj.argumentList && selectedNode.obj.argumentList.length > 0)" class="form-group row">
               <div class="col-md-12">

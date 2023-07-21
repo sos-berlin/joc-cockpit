@@ -1674,8 +1674,19 @@ export class WorkflowService {
           className = 'show-block';
         }
         let state = cell.getAttribute('state');
-
-        let str = '<div class="cursor workflow-title ' + getClass(cell.getAttribute('jobName'), 22) +'"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>'
+        let jobTemplate = '';
+        if (jobs.length > 0) {
+          for (let i in jobs) {
+            if (cell.getAttribute('jobName') == jobs[i].name) {
+              if (jobs[i].value.jobTemplate) {
+                this.changeCellStyle(graph, cell, false, true);
+                jobTemplate = '<div class="job-temp-text"><span class = "text-xs"><i class="icon-jobs-icon icon-color tree-icon p-r-xs"></i>' + jobs[i].value.jobTemplate.name + '</span></div>';
+              }
+              break;
+            }
+          }
+        }
+        let str = '<div class="cursor workflow-title ' + getClass(cell.getAttribute('jobName'), 22) + '"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>'
           + cell.getAttribute('jobName') + '</div>';
         if (state) {
           state = JSON.parse(state);
@@ -1688,17 +1699,10 @@ export class WorkflowService {
             str += '<div><span class = "text-xs ' + class1 + '">' + skip + '</span></div>';
           }
         }
-        if (jobs.length > 0) {
-          for (let i in jobs) {
-            if (cell.getAttribute('jobName') == jobs[i].name) {
-              if (jobs[i].value.jobTemplate) {
-                this.changeCellStyle(graph, cell, false,true);
-                str += '<div class="job-temp-text"><span class = "text-xs"><i class="icon-jobs-icon icon-color tree-icon p-r-xs"></i>' + jobs[i].value.jobTemplate.name + '</span></div>';
-              }
-              break;
-            }
-          }
+        if (jobTemplate) {
+          str += jobTemplate;
         }
+
         return str;
       } else if (cell.value?.tagName === 'Workflow') {
         const cls = cell.getAttribute('type') === 'expect' ? 'm-t-n-6' : cell.getAttribute('type') === 'post' ? 'm-t-sm' : '';

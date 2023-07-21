@@ -1301,6 +1301,7 @@
     "message.errorInLoadingScheduleIds": "Error in fetching Controller IDs",
     "message.pasteInSubFolderNotAllowed": "The destination folder is a sub-folder of the source folder.",
     "message.invalidJSON": "Invalid JSON file",
+    "message.invalidFileName": "File name has invalid characters",
     "message.fileSizeExceed": "Allowed file size is less than 1 MB"
   },
   "favorite": {
@@ -1871,6 +1872,7 @@
         "orderName": "The order name is a non-qualifying part of the order identifier. Users can freely specify the job name when creating schedules and adding on demand orders.",
         "startNode": "The start position of a job can be before the specified instruction in the workflow. The job starts from the specified position.",
         "endNode": "The end position of a job can be before the specified instruction in the workflow. The job ends before the specified position.",
+        "blockPosition": "Block Position",
         "ignoreAdmissionTimes": "The execution of jobs can be restricted by Admission Times of the jobs. This option ignores Admission Times and forces the start of jobs."
       },
       "script": {
@@ -1994,7 +1996,8 @@
           "remainWhenTerminated": "After termination the Order remains with the workflow. This requires to manually perform the operation 'Leave Workflow' that is available from the WORKFLOWS view.",
           "startPosition": "Allows to select the start position of the order in the workflow. Without a start position, the orders starts from the beginning of the workflow.",
           "endPositions": "Allows the selection of one or more end positions of the order in the workflow. Without an end position, the order ends with the end of the workflow.",
-          "ignoreAdmissionTimes": "The execution of jobs can be restricted by Admission Times of the jobs. This option ignores Admission Times and forces the start of jobs."
+          "ignoreAdmissionTimes": "The execution of jobs can be restricted by Admission Times of the jobs. This option ignores Admission Times and forces the start of jobs.",
+          "blockPosition": "Block Position"
         },
         "lock": {
           "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parallelism by using Resource Locks.",
@@ -2266,6 +2269,7 @@
     "label.listOfDynamicallyVariables": "Variables with modifiable values",
     "label.cycleEndTime": "Cycle End Time",
     "label.ignoreAdmissionTimes": "Ignore Job Admission Times",
+    "label.blockPosition": "Block Position",
     "button.allOrders": "All Orders",
     "button.cancel": "Cancel",
     "button.startNow": "Start Now",
@@ -2286,6 +2290,7 @@
     "button.assignParameterizationFromSchedules": "Assign parameterization from Schedules",
     "placeholder.selectStartNode": "Select Start Position",
     "placeholder.selectEndNode": "Select End Position",
+    "placeholder.selectBlockPosition": "Select Block Position",
     "placeholder.enterCycleEndTime": "Enter value as hh:mm:ss or seconds",
     "message.noVariableAvailable": "no variable available",
     "message.orderModificationNotAllowed": "The order state {{state}} does not allow modification",
@@ -2377,6 +2382,7 @@
     "label.favoriteManagement": "Favorite Management",
     "label.licenseWarningGotIt": "License Warning acknowledged",
     "label.showMoreOptions": "Show more options",
+    "label.tabSize": "Tab Size",
     "button.resetPreferences": "Reset Profile Preferences",
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",
@@ -3305,6 +3311,7 @@
     "label.remainWhenTerminated": "Remain When Terminated",
     "label.startPosition": "Start Position before Instruction",
     "label.endPositions": "End Positions before Instructions",
+    "label.blockPosition": "Block Position",
     "label.joinIfFailed": "Join If Failed",
     "label.skipIfNoAdmissionForOrderDay": "Skip Job if no admission for Order's date",
     "label.listOfSchemes": "List of Cycles",
