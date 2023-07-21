@@ -100,7 +100,9 @@ export class AddOrderModalComponent {
   schedules: any;
   selectedSchedule: any;
   positions: any;
+  blockPositions: any;
   positionList: any;
+  blockPositionList: any;
   object = {
     orderName: '',
     name: ''
@@ -149,6 +151,13 @@ export class AddOrderModalComponent {
         res.positions.forEach((item) => {
           this.positions.set(item.positionString, JSON.stringify(item.position));
           this.positionList.set(JSON.stringify(item.position), item.positionString);
+        });
+
+        this.blockPositions = new Map();
+        this.blockPositionList = new Map();
+        res.blockPositions.forEach((item) => {
+          this.blockPositions.set(item.positionString, JSON.stringify(item.position));
+          this.blockPositionList.set(JSON.stringify(item.position), item.positionString);
         });
       }, error: () => this.submitted = false
     });
@@ -322,6 +331,9 @@ export class AddOrderModalComponent {
         }
       });
     }
+    if (this.order.blockPosition && this.positions) {
+      order.blockPosition = JSON.parse(this.positions.get(this.order.blockPosition))
+    }
     if (this.order.startPosition && this.positions) {
       order.startPosition = JSON.parse(this.positions.get(this.order.startPosition))
     }
@@ -457,6 +469,9 @@ export class AddOrderModalComponent {
         (this.selectedSchedule.orderParameterisations[i].orderName == '' && name == '-') || this.selectedSchedule.orderParameterisations.length == 1) {
         this.updateVariablesFromSchedule(this.selectedSchedule.orderParameterisations[i]);
         if (this.selectedSchedule.orderParameterisations[i].positions) {
+          if (this.selectedSchedule.orderParameterisations[i].positions.blockPosition) {
+            this.order.blockPosition = this.blockPositionList.get(JSON.stringify(this.selectedSchedule.orderParameterisations[i].positions.blockPosition));
+          }
           if (this.selectedSchedule.orderParameterisations[i].positions.startPosition) {
             this.order.startPosition = this.positionList.get(JSON.stringify(this.selectedSchedule.orderParameterisations[i].positions.startPosition));
           }

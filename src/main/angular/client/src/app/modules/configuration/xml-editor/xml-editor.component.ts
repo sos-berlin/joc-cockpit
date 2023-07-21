@@ -558,10 +558,16 @@ export class ShowModalComponent {
   validation: any;
   prevErrLine: any;
   cmOptions: any = {
-    scrollbarStyle: 'simple',
-    lineNumbers: true,
     indentWithTabs: true,
+    lineNumbers: true,
     autoRefresh: true,
+    lineWrapping: true,
+    matchBrackets: true,
+    foldGutter: true,
+    scrollbarStyle: 'simple',
+    viewportMargin: Infinity,
+    highlightSelectionMatches: {showToken:/\w/, annotateScrollbar: true},
+    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
     mode: 'xml',
   };
   obj: any = {xml: ''};
@@ -661,6 +667,21 @@ export class ShowModalComponent {
         this.activeModal.close(res);
       }
     });
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    const tabKey = "Tab";
+    if (event.key === tabKey) {
+      event.preventDefault();
+
+      const numSpaces = this.modalData.tabSize;
+      const cursor = this.cm.codeMirror.getCursor();
+      const spaces = ' '.repeat(numSpaces);
+
+      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
+
+      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
+    }
   }
 
   private highlightLineNo(num): void {

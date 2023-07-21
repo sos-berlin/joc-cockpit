@@ -72,6 +72,14 @@
         </nz-select>
       </div>
     </div>
+    <div *ngIf="permission.currentController && permission.currentController.orders.managePositions && blockPositions?.size > 0"
+         class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>order.label.blockPosition</label>
+      <div class="col-sm-6">
+        <app-node-position [obj]="order" [positions]="blockPositions" [reload]="order.reload"
+                           [type]="'BLOCK_POSITION'" [workflow]="workflow"></app-node-position>
+      </div>
+    </div>
     <div *ngIf="permission.currentController && permission.currentController.orders.managePositions"
          class="form-group row">
       <label class="col-sm-4 form-control-label" translate>order.label.startNode</label>

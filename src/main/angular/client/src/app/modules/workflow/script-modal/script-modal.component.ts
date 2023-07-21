@@ -41,6 +41,7 @@ export class ScriptModalComponent {
     lineNumbers: true,
     autoRefresh: true,
     lineWrapping: true,
+    matchBrackets: true,
     foldGutter: true,
     scrollbarStyle: 'simple',
     readOnly: true,
@@ -139,6 +140,21 @@ export class ScriptModalComponent {
 
   convertSecondIntoWeek(): void {
     this.workflowService.convertSecondIntoWeek(this.admissionTime, this.periodList, this.days, {});
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    const tabKey = "Tab";
+    if (event.key === tabKey) {
+      event.preventDefault();
+
+      const numSpaces = this.preferences.tabSize;
+      const cursor = this.cm.codeMirror.getCursor();
+      const spaces = ' '.repeat(numSpaces);
+
+      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
+
+      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
+    }
   }
 
   showConvertTime(): void {

@@ -213,6 +213,21 @@ export class NoticeBoardEditorComponent {
     this.checkExpectNoticeExp(value);
   }
 
+  handleKeyDown(event: KeyboardEvent) {
+    const tabKey = "Tab";
+    if (event.key === tabKey) {
+      event.preventDefault();
+
+      const numSpaces = this.modalData.tabSize;
+      const cursor = this.cm.codeMirror.getCursor();
+      const spaces = ' '.repeat(numSpaces);
+
+      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
+
+      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
+    }
+  }
+
   checkExpectNoticeExp(event): void {
     this.isTreeShow = false;
     if (event) {
@@ -482,6 +497,9 @@ export class CycleInstructionComponent {
         }
       } catch (e) {
       }
+    }
+    if (!this.selectedNode.obj.schedule) {
+      this.selectedNode.obj.schedule = {};
     }
     if (!this.selectedNode.obj.schedule.schemes) {
       this.selectedNode.obj.schedule.schemes = [];
@@ -1623,6 +1641,7 @@ export class JobComponent {
         script: this.selectedNode.job.executable.script,
         mode,
         scriptTree: this.scriptTree,
+        tabSize: this.preferences.tabSize,
         disabled: (this.selectedNode.job && this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name)
       },
       nzFooter: null,
@@ -2473,6 +2492,7 @@ export class ScriptEditorComponent {
     lineNumbers: true,
     autoRefresh: true,
     lineWrapping: true,
+    matchBrackets: true,
     foldGutter: true,
     scrollbarStyle: 'simple',
     viewportMargin: Infinity,
@@ -2772,6 +2792,7 @@ export class WorkflowComponent {
   lastModified: any = '';
   hasLicense: boolean;
   positions: any;
+  blockPositions: any;
   info1 = '';
   info2 = '';
   info3 = '';
@@ -4684,6 +4705,7 @@ export class WorkflowComponent {
             this.selectedNode.obj.arguments = [];
           }
           this.positions = undefined;
+          this.blockPositions = undefined;
           this.getPositions(this.selectedNode.obj.workflowName);
           this.updateArgumentList();
         }
@@ -4697,15 +4719,26 @@ export class WorkflowComponent {
     }).subscribe({
       next: (res) => {
         this.positions = new Map();
+        this.blockPositions = new Map();
         res.positions.forEach((item) => {
           this.positions.set(item.positionString, JSON.stringify(item.position));
         });
-
+        res.blockPositions.forEach((item) => {
+          this.blockPositions.set(item.positionString, JSON.stringify(item.position));
+        });
         if (this.selectedNode.obj) {
           let map = new Map();
           this.positions.forEach((k, v) => {
             map.set(k, v);
           });
+          let map2 = new Map();
+          this.blockPositions.forEach((k, v) => {
+            map2.set(k, v);
+          });
+          if (this.selectedNode.obj.blockPosition) {
+            this.selectedNode.obj.blockPosition =
+              map2.get(JSON.stringify(this.selectedNode.obj.blockPosition));
+          }
           if (this.selectedNode.obj.startPosition) {
             this.selectedNode.obj.startPosition =
               map.get(JSON.stringify(this.selectedNode.obj.startPosition));
@@ -5327,7 +5360,7 @@ export class WorkflowComponent {
       const attr = cell.value.attributes;
       for (const j in attr) {
 
-        if (attr[j].name === 'startPosition' || attr[j].name === 'endPositions') {
+        if (attr[j].name === 'blockPosition' || attr[j].name === 'startPosition' || attr[j].name === 'endPositions') {
           obj[attr[j].name] = JSON.parse(attr[j].value);
           if (attr[j].name === 'endPositions' && isArray(obj[attr[j].name])) {
             obj[attr[j].name] = obj[attr[j].name].map((item) => {
@@ -7905,9 +7938,16 @@ export class WorkflowComponent {
                 obj.cell, 'endPositions', JSON.stringify(arr));
               graph.getModel().execute(edit6);
             }
-            const edit7 = new mxCellAttributeChange(
+
+            if (self.selectedNode.newObj.blockPosition && self.blockPositions.get(self.selectedNode.newObj.blockPosition)) {
+              const edit7 = new mxCellAttributeChange(
+                obj.cell, 'blockPosition', JSON.stringify(self.blockPositions.get(self.selectedNode.newObj.blockPosition)))
+              graph.getModel().execute(edit7);
+            }
+            const edit8 = new mxCellAttributeChange(
               obj.cell, 'forceJobAdmission', self.selectedNode.newObj.forceJobAdmission);
-            graph.getModel().execute(edit7);
+            graph.getModel().execute(edit8);
+
           } else if (self.selectedNode.type === 'If') {
             const predicate = self.selectedNode.newObj.predicate;
             self.validatePredicate(predicate, null, false);
@@ -8353,6 +8393,10 @@ export class WorkflowComponent {
           obj.endPositions = cell.getAttribute('endPositions');
           if (obj.endPositions && obj.endPositions != 'undefined' && typeof obj.endPositions == 'string') {
             obj.endPositions = JSON.parse(obj.endPositions);
+          }
+          obj.blockPosition = cell.getAttribute('blockPosition');
+          if (obj.blockPosition && obj.blockPosition != 'undefined' && typeof obj.blockPosition == 'string') {
+            obj.blockPosition = JSON.parse(obj.blockPosition);
           }
           const val1 = cell.getAttribute('remainWhenTerminated');
           obj.remainWhenTerminated = val1 == 'true';
@@ -10762,6 +10806,7 @@ export class WorkflowComponent {
             const workflowName = clone(json.instructions[x].workflowName);
             const argu = clone(json.instructions[x].arguments);
             const startPosition = clone(json.instructions[x].startPosition);
+            const blockPosition = clone(json.instructions[x].blockPosition);
             const remainWhenTerminated = clone(json.instructions[x].remainWhenTerminated);
             const forceJobAdmission = clone(json.instructions[x].forceJobAdmission);
             const endPositions = clone(json.instructions[x].endPositions);
@@ -10770,6 +10815,7 @@ export class WorkflowComponent {
             delete json.instructions[x].remainWhenTerminated;
             delete json.instructions[x].startPosition;
             delete json.instructions[x].endPositions;
+            delete json.instructions[x].blockPosition;
             delete json.instructions[x].forceJobAdmission;
             json.instructions[x].workflowName = workflowName;
             json.instructions[x].arguments = argu;
@@ -10777,6 +10823,7 @@ export class WorkflowComponent {
             json.instructions[x].forceJobAdmission = forceJobAdmission;
             json.instructions[x].startPosition = startPosition;
             json.instructions[x].endPositions = endPositions;
+            json.instructions[x].blockPosition = blockPosition;
           } else if (json.instructions[x].TYPE === 'Lock') {
             json.instructions[x].lockedWorkflow = {
               instructions: json.instructions[x].instructions

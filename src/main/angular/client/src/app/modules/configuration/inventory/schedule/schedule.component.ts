@@ -47,6 +47,7 @@ export class ScheduleComponent {
   indexOfNextAdd = 0;
   history = [];
   positions: any;
+  blockPositions: any;
   lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
@@ -577,6 +578,14 @@ export class ScheduleComponent {
           this.positions.forEach((k, v) => {
             map.set(k, v);
           });
+          let map2 = new Map();
+          this.blockPositions.forEach((k, v) => {
+            map2.set(k, v);
+          });
+          if (this.schedule.configuration.orderParameterisations[prop].positions.blockPosition) {
+            this.schedule.configuration.orderParameterisations[prop].positions.blockPosition =
+              map2.get(JSON.stringify(this.schedule.configuration.orderParameterisations[prop].positions.blockPosition));
+          }
           if (this.schedule.configuration.orderParameterisations[prop].positions.startPosition) {
             this.schedule.configuration.orderParameterisations[prop].positions.startPosition =
               map.get(JSON.stringify(this.schedule.configuration.orderParameterisations[prop].positions.startPosition));
@@ -765,6 +774,9 @@ export class ScheduleComponent {
         });
       }
       if (parameter.positions) {
+        if (parameter.positions.blockPosition && this.blockPositions && this.blockPositions.has(parameter.positions.blockPosition)) {
+          parameter.positions.blockPosition = JSON.parse(this.blockPositions.get(parameter.positions.blockPosition))
+        }
         if (parameter.positions.startPosition && this.positions && this.positions.has(parameter.positions.startPosition)) {
           parameter.positions.startPosition = JSON.parse(this.positions.get(parameter.positions.startPosition))
         }
@@ -918,9 +930,13 @@ export class ScheduleComponent {
       workflowPath: path
     }).subscribe({
       next: (res) => {
-        this.positions = new Map()
+        this.positions = new Map();
         res.positions.forEach((item) => {
           this.positions.set(item.positionString, JSON.stringify(item.position));
+        });
+        this.blockPositions = new Map();
+        res.blockPositions.forEach((item) => {
+          this.blockPositions.set(item.positionString, JSON.stringify(item.position));
         });
         cb();
       }, error: () => {

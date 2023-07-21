@@ -20,6 +20,28 @@
     </ng-template>
   </nz-tree-select>
 </ng-container>
+<ng-container *ngIf="type === 'BLOCK_POSITION'">
+  <nz-tree-select
+    nzAllowClear
+    [nzDropdownStyle]="{ 'max-height': '260px' }"
+    [nzPlaceHolder]="'order.placeholder.selectBlockPosition' | translate"
+    name="startNode{{index}}"
+    [(ngModel)]="obj.blockPosition"
+    [nzDropdownClassName]="'custom-dropdown'"
+    [nzNodes]="nodes"
+    (ngModelChange)="selectStartNode(null)"
+    [nzShowSearch]="true"
+  >
+    <ng-template #nzTreeTemplate let-node>
+      <div class="node-wrapper w-93">
+        <div class="node-content-wrapper">
+          {{node.origin.title}}
+          <i *ngIf="node.origin.label" class="text-muted p-l-xs" translate>({{node.origin.label}})</i>
+        </div>
+      </div>
+    </ng-template>
+  </nz-tree-select>
+</ng-container>
 <ng-container *ngIf="type === 'END'">
   <nz-tree-select
     nzMultiple

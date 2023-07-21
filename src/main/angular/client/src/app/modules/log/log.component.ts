@@ -1,6 +1,6 @@
 import {Component, HostListener, ViewChild, ElementRef} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {isArray, isEmpty} from 'underscore';
+import {isEmpty} from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {AuthService} from '../../components/guard';
@@ -405,10 +405,12 @@ export class LogComponent {
               obj.taskId = res.taskId;
             }
             this.runningTaskLog(obj, orderTaskFlag);
+            if (res.log) {
+              this.scrollBottom();
+            }
           } else {
             this.finished = true;
           }
-          this.scrollBottom();
         }
       });
     }
@@ -421,7 +423,9 @@ export class LogComponent {
           if (res.logEvents) {
             this.jsonToString(res);
             this.showHideTask(res.logEvents);
-            this.scrollBottom();
+            if (res.logEvents.length > 0) {
+              this.scrollBottom();
+            }
           }
           if (!res.complete && !this.isCancel) {
             if (res.eventId) {
