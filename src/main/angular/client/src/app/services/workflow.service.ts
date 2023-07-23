@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {isEmpty, isArray, clone, isNaN, sortBy} from 'underscore';
+import {clone, isArray, isEmpty, isNaN, sortBy} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from './core.service';
 import {StringDatePipe} from '../pipes/core.pipe';
@@ -551,8 +551,8 @@ export class WorkflowService {
         if (isEmpty(value.admissionTimeScheme) || value.admissionTimeScheme.periods.length === 0) {
           delete value.admissionTimeScheme;
         }
-        if (!value.executable || (!value.executable.className && value.executable.TYPE === 'InternalExecutable')
-          || (!value.executable.script && value.executable.TYPE === 'ShellScriptExecutable') || !value.agentName) {
+        if (!value.executable || (!value.executable.className && ((value.executable.TYPE === 'InternalExecutable' || value.executable.TYPE === 'Java') && value.executable.internalType !== 'JavaScript_Graal'))
+          || (!value.executable.script && (value.executable.TYPE === 'ShellScriptExecutable' || value.executable.TYPE === 'JavaScript' || value.executable.internalType === 'JavaScript_Graal')) || !value.agentName) {
           return false;
         }
         if (value.executable && value.executable.login && value.executable.login.withUserProfile && !value.executable.login.credentialKey) {
@@ -884,6 +884,7 @@ export class WorkflowService {
             if (json.instructions[x].documentationName !== undefined) {
               _node.setAttribute('documentationName', json.instructions[x].documentationName);
             }
+
             if (json.instructions[x].defaultArguments && typeof json.instructions[x].defaultArguments === 'object') {
               _node.setAttribute('defaultArguments', JSON.stringify(json.instructions[x].defaultArguments));
             }
@@ -1617,7 +1618,28 @@ export class WorkflowService {
     }
   }
 
-  public convertValueToString(cell: any, graph: any): string {
+  public changeCellStyle(graph, cell, isBlur, isColor = false): void {
+    const state = graph.view.getState(cell);
+    if (state && state.shape) {
+      state.style[mxConstants.STYLE_OPACITY] = isBlur ? 60 : 100;
+      if(isColor) {
+        state.style[mxConstants.STYLE_FILLCOLOR] = '#b1d7f8';
+        state.style[mxConstants.STYLE_STROKECOLOR] = '#739fc4';
+      }
+      state.shape.apply(state);
+      state.shape.redraw();
+    }
+  }
+
+  public convertValueToString(cell: any, graph: any, jobs = []): string {
+    function getClass(input: string, num: number): string {
+       if (input.length > num) {
+         return 'p-l-md';
+       } else {
+        return '';
+      }
+    }
+
     function truncate(input: string, num: number): string {
       if (input.length > num) {
         return input.substring(0, num) + '...';
@@ -1638,6 +1660,7 @@ export class WorkflowService {
         }
         return '';
       } else if (cell.value.tagName === 'Job') {
+
         const lb = cell.getAttribute('label');
         if (lb) {
           const edge = graph.getOutgoingEdges(cell)[0];
@@ -1651,9 +1674,20 @@ export class WorkflowService {
           className = 'show-block';
         }
         let state = cell.getAttribute('state');
-
-        let str = '<div class="cursor workflow-title"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>'
-          + truncate(cell.getAttribute('jobName'), 22) + '</div>';
+        let jobTemplate = '';
+        if (jobs.length > 0) {
+          for (let i in jobs) {
+            if (cell.getAttribute('jobName') == jobs[i].name) {
+              if (jobs[i].value.jobTemplate) {
+                this.changeCellStyle(graph, cell, false, true);
+                jobTemplate = '<div class="job-temp-text"><span class = "text-xs"><i class="icon-jobs-icon icon-color tree-icon p-r-xs"></i>' + jobs[i].value.jobTemplate.name + '</span></div>';
+              }
+              break;
+            }
+          }
+        }
+        let str = '<div class="cursor workflow-title ' + getClass(cell.getAttribute('jobName'), 22) + '"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>'
+          + cell.getAttribute('jobName') + '</div>';
         if (state) {
           state = JSON.parse(state);
           if (state._text) {
@@ -1665,6 +1699,10 @@ export class WorkflowService {
             str += '<div><span class = "text-xs ' + class1 + '">' + skip + '</span></div>';
           }
         }
+        if (jobTemplate) {
+          str += jobTemplate;
+        }
+
         return str;
       } else if (cell.value?.tagName === 'Workflow') {
         const cls = cell.getAttribute('type') === 'expect' ? 'm-t-n-6' : cell.getAttribute('type') === 'post' ? 'm-t-sm' : '';
@@ -1988,22 +2026,26 @@ export class WorkflowService {
   }
 
   convertDurationToString(time: any): string {
-    const seconds = Number(time);
-    const y = Math.floor(seconds / (3600 * 365 * 24));
-    const m = Math.floor((seconds % (3600 * 365 * 24)) / (3600 * 30 * 24));
-    const w = Math.floor(((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) / (3600 * 7 * 24));
-    const d = Math.floor((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) / (3600 * 24));
-    const h = Math.floor(((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
-    const M = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
-    const s = Math.floor(((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
-    if (y == 0 && m == 0 && w == 0 && d == 0) {
-      if (h == 0 && M == 0) {
-        return s + 's';
+    if (time) {
+      const seconds = Number(time);
+      const y = Math.floor(seconds / (3600 * 365 * 24));
+      const m = Math.floor((seconds % (3600 * 365 * 24)) / (3600 * 30 * 24));
+      const w = Math.floor(((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) / (3600 * 7 * 24));
+      const d = Math.floor((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) / (3600 * 24));
+      const h = Math.floor(((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
+      const M = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
+      const s = Math.floor(((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
+      if (y == 0 && m == 0 && w == 0 && d == 0) {
+        if (h == 0 && M == 0) {
+          return s + 's';
+        } else {
+          return (h < 10 ? '0' + h : h) + ':' + (M < 10 ? '0' + M : M) + ':' + (s < 10 ? '0' + s : s);
+        }
       } else {
-        return (h < 10 ? '0' + h : h) + ':' + (M < 10 ? '0' + M : M) + ':' + (s < 10 ? '0' + s : s);
+        return (y != 0 ? y + 'y ' : '') + (m != 0 ? m + 'm ' : '') + (w != 0 ? w + 'w ' : '') + (d != 0 ? d + 'd ' : '') + (h != 0 ? h + 'h ' : '') + (M != 0 ? M + 'M ' : '') + (s != 0 ? s + 's ' : '');
       }
     } else {
-      return (y != 0 ? y + 'y ' : '') + (m != 0 ? m + 'm ' : '') + (w != 0 ? w + 'w ' : '') + (d != 0 ? d + 'd ' : '') + (h != 0 ? h + 'h ' : '') + (M != 0 ? M + 'M ' : '') + (s != 0 ? s + 's ' : '');
+      return time;
     }
   }
 
@@ -2030,6 +2072,7 @@ export class WorkflowService {
   }
 
   convertStringToDuration(str: string, isDuration = false): number {
+
     function durationSeconds(timeExpr: string) {
       const units: any = {h: 3600, m: 60, s: 1};
       const regex = /(\d+)([hms])/g;
@@ -2566,6 +2609,10 @@ export class WorkflowService {
   }
 
   convertJobObject(job: any, isJobTemplate = true): any {
+    if (job.executable.TYPE === 'Java' || job.executable.TYPE === 'JavaScript') {
+      job.executable.internalType = job.executable.TYPE === 'Java' ? 'Java' : 'JavaScript_Graal';
+      job.executable.TYPE = 'InternalExecutable';
+    }
     if (isEmpty(job.admissionTimeScheme)) {
       delete job.admissionTimeScheme;
     }
@@ -2592,7 +2639,7 @@ export class WorkflowService {
         delete job.agentName1
       }
       if (job.defaultArguments) {
-        if (job.executable.v1Compatible && job.executable.TYPE === 'ShellScriptExecutable') {
+        if (job.executable.v1Compatible && (job.executable.TYPE === 'ShellScriptExecutable')) {
           job.defaultArguments.forEach((argu: any) => {
             this.coreService.addSlashToString(argu, 'value');
           });
@@ -2602,7 +2649,7 @@ export class WorkflowService {
         }
       }
       if (job.executable.arguments) {
-        if (job.executable.TYPE === 'InternalExecutable') {
+        if (job.executable.TYPE === 'InternalExecutable' || job.executable.TYPE === 'Java' || job.executable.TYPE === 'JavaScript') {
           if (isArray(job.executable.arguments)) {
             job.executable.arguments.forEach((argu: any) => {
               this.coreService.addSlashToString(argu, 'value');
@@ -2624,7 +2671,7 @@ export class WorkflowService {
     }
 
     if (job.executable && job.executable.jobArguments) {
-      if (job.executable.TYPE === 'InternalExecutable') {
+      if (job.executable.TYPE === 'InternalExecutable' || job.executable.TYPE === 'Java') {
         if (job.executable.jobArguments && isArray(job.executable.jobArguments)) {
           job.executable.jobArguments.forEach((argu: any) => {
             this.coreService.addSlashToString(argu, 'value');
@@ -2644,10 +2691,10 @@ export class WorkflowService {
         delete job.notification.mail;
       }
     }
-    if (job.executable.TYPE === 'InternalExecutable') {
+    if ((job.executable.TYPE === 'InternalExecutable' || job.executable.TYPE === 'Java') && job.executable.internalType !== 'JavaScript_Graal') {
       delete job.executable.script;
       delete job.executable.login;
-    } else if (job.executable.TYPE === 'ShellScriptExecutable') {
+    } else if (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.TYPE === 'JavaScript' || job.executable.internalType === 'JavaScript_Graal') {
       delete job.executable.className;
     }
     if (job.executable.env) {

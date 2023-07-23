@@ -24,6 +24,7 @@ export class UpdateJobComponent {
   agents = {
     agentList: []
   };
+  scriptTree = [];
   jobResourcesTree = [];
   documentationTree = [];
   renameFailedJobs = [];
@@ -65,6 +66,15 @@ export class UpdateJobComponent {
         types: [InventoryObject.JOBRESOURCE]
       }).subscribe((res) => {
         this.jobResourcesTree = this.coreService.prepareTree(res, false);
+      });
+    }
+    if (this.scriptTree.length === 0) {
+      this.coreService.post('tree', {
+        controllerId: this.controllerId,
+        forInventory: true,
+        types: [InventoryObject.INCLUDESCRIPT]
+      }).subscribe((res) => {
+        this.scriptTree = this.coreService.prepareTree(res, false);
       });
     }
     if (this.documentationTree.length === 0 && this.permission.joc.documentations.view) {

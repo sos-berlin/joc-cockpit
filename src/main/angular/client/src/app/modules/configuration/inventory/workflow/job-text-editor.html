@@ -281,13 +281,16 @@
                        name="executableType" (ngModelChange)="changeType()">
               <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ShellScriptExecutable'"></nz-option>
               <nz-option [nzLabel]="'workflow.label.jitl' | translate" [nzValue]="'InternalExecutable'"></nz-option>
+              <nz-option [nzLabel]="'workflow.label.java' | translate" [nzValue]="'Java'"></nz-option>
+              <nz-option [nzLabel]="'workflow.label.javaScript' | translate" [nzValue]="'JavaScript'"></nz-option>
             </nz-select>
           </div>
         </div>
         <div class="form-group row">
           <div class="col-md-12">
             <nz-tabset>
-              <nz-tab (nzClick)="reloadScript()" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE !== 'InternalExecutable'"
+              <nz-tab (nzClick)="reloadScript()" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE !== 'InternalExecutable'
+               && selectedNode.job.executable.TYPE !== 'Java'"
                       [nzTitle]="titleTemplate">
                 <ng-template #titleTemplate>
                   <span translate>workflow.label.script</span>
@@ -301,14 +304,28 @@
                                         [changeDetect]="true"
                                         [nodes]="scriptTree" [type]="'INCLUDESCRIPT'"></app-search-input>
                     </div>
-                    <i (click)="showEditor()" class="pos-abt z-index-9999 text-20 r-24 t-1" nz-icon nzTheme="outline"
+                    <i (click)="showEditor(selectedNode.job.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell')" class="pos-abt z-index-9999 text-20 r-24 t-1" nz-icon nzTheme="outline"
                        nzType="form"></i>
                     <div [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}" class="b-a"
                          id="scriptId">
-                      <ngx-codemirror #codeMirror #script="ngModel" (focusChange)="focusChange()"
+                      <ngx-codemirror #codeMirror #script="ngModel"
+                                      [(ngModel)]="selectedNode.job.executable.script"
+                                      [options]="{
+                                         lineNumbers: true,
+                                         autoRefresh: true,
+                                         lineWrapping: true,
+                                         foldGutter: true,
+                                         matchBrackets: true,
+                                         autoCloseBrackets: selectedNode.job.executable.TYPE === 'JavaScript',
+                                         scrollbarStyle: 'simple',
+                                         readOnly: (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name),
+                                         highlightSelectionMatches: {showToken, annotateScrollbar: true},
+                                         mode: selectedNode.job.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell',
+                                         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+                                       }"
+                                      (focusChange)="focusChange()"
                                       (focusout)="saveToHistory()"
-                                      [(ngModel)]="selectedNode.job.executable.script" [options]="{lineNumbers: true, autoRefresh: true, scrollbarStyle: 'simple', readOnly: (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name),
-                        mode: 'shell'}" required
+                                      required
                       ></ngx-codemirror>
                     </div>
                     <div class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
@@ -324,7 +341,8 @@
                   </div>
                 </div>
               </nz-tab>
-              <nz-tab *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'"
+              <nz-tab *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'InternalExecutable' ||
+               selectedNode.job.executable.TYPE === 'Java')"
                       [nzTitle]="titleTemplate">
                 <ng-template #titleTemplate>
                   <span translate>workflow.label.className</span>
@@ -552,7 +570,8 @@
                   </div>
                 </div>
               </nz-tab>
-              <nz-tab *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'"
+              <nz-tab *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'InternalExecutable' ||
+                selectedNode.job.executable.TYPE === 'Java' || selectedNode.job.executable.TYPE === 'JavaScript')"
                       [nzTitle]="'workflow.label.arguments' | translate">
                 <div [ngClass]="{'fullScreen': fullScreen}">
                   <div *ngIf="!isModal" class="text-right m-t-n-6">
@@ -647,7 +666,8 @@
                   </div>
                 </div>
               </nz-tab>
-              <nz-tab *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'InternalExecutable')"
+              <nz-tab *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'InternalExecutable' ||
+                selectedNode.job.executable.TYPE === 'Java' || selectedNode.job.executable.TYPE === 'JavaScript')"
                       [nzTitle]="'workflow.label.jobArguments' | translate">
                 <div [ngClass]="{'fullScreen': fullScreen}">
                   <div *ngIf="!isModal" class="text-right m-t-n-6">

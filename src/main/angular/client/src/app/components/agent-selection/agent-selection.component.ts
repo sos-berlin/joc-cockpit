@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {CoreService} from "../../services/core.service";
 import {DataService} from "../../services/data.service";
 
@@ -8,7 +8,7 @@ declare const $: any;
   selector: 'app-agent-selection',
   templateUrl: './agent-selection.component.html'
 })
-export class AgentSelectionComponent implements OnChanges {
+export class AgentSelectionComponent {
   @Input() preferences: any = {};
   @Input() agents: any;
   @Input() obj: any = {};

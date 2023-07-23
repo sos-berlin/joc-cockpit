@@ -3704,7 +3704,7 @@ export class InventoryComponent {
               this.updateData(res.results);
             }
             this.searchNode.loading = false;
-          }, error: () => this.searchNode.loading = true
+          }, error: () => this.searchNode.loading = false
         });
       }
     } else {
@@ -4847,7 +4847,7 @@ export class InventoryComponent {
       const comments = {
         radio: 'predefined',
         type: object.type || object.object || 'Folder',
-        operation: 'Delete',
+        operation: 'Revert Draft',
         name: object.name || object.path
       };
       const modal = this.modal.create({

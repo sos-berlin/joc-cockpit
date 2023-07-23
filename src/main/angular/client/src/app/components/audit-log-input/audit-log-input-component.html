@@ -7,22 +7,14 @@
     </nz-radio-group>
   </div>
 </div>
-<div class="form-group row" *ngIf="comments.radio=='predefined'"
-     [ngClass]="{'has-error' : ((comment.dirty || comment.touched) && comment.invalid)}">
+<div class="form-group row" *ngIf="comments.radio=='predefined'">
   <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.selectComment
     <sup *ngIf="required" class="text-danger text-sm">*</sup>
   </label>
   <div class="col-sm-{{sizeY}}">
-    <nz-select [nzAllowClear]="!required" nzPlaceHolder="{{'common.label.selectPredefinedReason' | translate}}"
-               [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
-               [required]="required">
-      <nz-option *ngFor="let list of messageList" [nzLabel]="list" [nzValue]="list"></nz-option>
-    </nz-select>
-    <div *ngIf="comment.invalid && (comment.dirty || comment.touched)" class="text-danger m-t-xs">
-      <div *ngIf="comment.errors && comment.errors['required']" translate>
-        common.message.requiredError
-      </div>
-    </div>
+    <app-select-input  [attributeName]="'comment'" [isRequired]="'true'" [placeholder]="'common.label.selectPredefinedReason'"
+                      [listArray]="messageList" [name]="'comment'" [isAllowClear]="'true'"
+                      [object]="comments"></app-select-input>
   </div>
 </div>
 <div *ngIf="comments.radio=='new'" [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}"

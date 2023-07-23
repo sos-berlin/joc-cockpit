@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import {WorkflowService} from "../../services/workflow.service";
 import {GraphicalViewModalComponent} from "../graphical-view-modal/graphical-view-modal.component";
@@ -7,7 +7,7 @@ import {GraphicalViewModalComponent} from "../graphical-view-modal/graphical-vie
   selector: 'app-node-position',
   templateUrl: './node-position.component.html'
 })
-export class NodePositionComponent implements OnChanges {
+export class NodePositionComponent {
 
   @Input() obj: any;
   @Input() position: any;

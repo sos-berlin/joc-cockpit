@@ -11,28 +11,28 @@
         </a>
       </span>
 
-      <label (ngModelChange)="checkLogLevel('MAIN')" [(ngModel)]="object.checkBoxs.main" class="m-r" nz-checkbox><span
-        translate>log.label.main</span></label>
-      <label (ngModelChange)="checkLogLevel('SUCCESS')" *ngIf="isStdSuccessLevel" [(ngModel)]="object.checkBoxs.success" class="m-r"
-             nz-checkbox><span translate>log.label.success</span></label>
-      <label (ngModelChange)="checkLogLevel('STDOUT')" [(ngModel)]="object.checkBoxs.stdout" class="m-r"
-             nz-checkbox><span translate>log.label.stdout</span></label>
-      <label (ngModelChange)="checkLogLevel('STDERR')" *ngIf="isStdErrLevel" [(ngModel)]="object.checkBoxs.stderr" class="m-r"
-             nz-checkbox><span translate>log.label.stderr</span></label>
-      <label (ngModelChange)="checkLogLevel('INFO')" *ngIf="isInfoLevel" [(ngModel)]="object.checkBoxs.info" class="m-r"
-             nz-checkbox><span translate>log.label.info</span></label>
-      <label (ngModelChange)="checkLogLevel('FATAL')" *ngIf="isFatalLevel" [(ngModel)]="object.checkBoxs.fatal" class="m-r"
-             nz-checkbox><span translate>log.label.fatal</span></label>
-      <label (ngModelChange)="checkLogLevel('ERROR')" *ngIf="isErrorLevel" [(ngModel)]="object.checkBoxs.error" class="m-r"
-             nz-checkbox><span translate>log.label.error</span></label>
-      <label (ngModelChange)="checkLogLevel('WARN')" *ngIf="isWarnLevel" [(ngModel)]="object.checkBoxs.warn" class="m-r"
-             nz-checkbox><span translate>log.label.warn</span></label>
-      <label (ngModelChange)="checkLogLevel('DEBUG')" [(ngModel)]="object.checkBoxs.debug" class="m-r" nz-checkbox><span
+      <label [(ngModel)]="object.checkBoxs.main" class="m-r" nz-checkbox (ngModelChange)="checkLogLevel('MAIN')" >
+        <span translate>log.label.main</span></label>
+      <label *ngIf="isStdSuccessLevel" [(ngModel)]="object.checkBoxs.success" class="m-r"
+             (ngModelChange)="checkLogLevel('SUCCESS')" nz-checkbox><span translate>log.label.success</span></label>
+      <label [(ngModel)]="object.checkBoxs.stdout" class="m-r"
+             nz-checkbox (ngModelChange)="checkLogLevel('STDOUT')" ><span translate>log.label.stdout</span></label>
+      <label *ngIf="isStdErrLevel" [(ngModel)]="object.checkBoxs.stderr" class="m-r"
+             nz-checkbox (ngModelChange)="checkLogLevel('STDERR')" ><span translate>log.label.stderr</span></label>
+      <label *ngIf="isInfoLevel" [(ngModel)]="object.checkBoxs.info" class="m-r"
+             nz-checkbox (ngModelChange)="checkLogLevel('INFO')" ><span translate>log.label.info</span></label>
+      <label *ngIf="isFatalLevel" [(ngModel)]="object.checkBoxs.fatal" class="m-r"
+             nz-checkbox (ngModelChange)="checkLogLevel('FATAL')" ><span translate>log.label.fatal</span></label>
+      <label *ngIf="isErrorLevel" [(ngModel)]="object.checkBoxs.error" class="m-r"
+             nz-checkbox (ngModelChange)="checkLogLevel('ERROR')" ><span translate>log.label.error</span></label>
+      <label *ngIf="isWarnLevel" [(ngModel)]="object.checkBoxs.warn" class="m-r"
+             nz-checkbox (ngModelChange)="checkLogLevel('WARN')" ><span translate>log.label.warn</span></label>
+      <label [(ngModel)]="object.checkBoxs.debug" class="m-r" nz-checkbox (ngModelChange)="checkLogLevel('DEBUG')" ><span
         translate>log.label.debug</span></label>
-      <label (ngModelChange)="checkLogLevel('TRACE')" *ngIf="isTraceLevel" [(ngModel)]="object.checkBoxs.trace" class="m-r"
-             nz-checkbox><span translate>log.label.trace</span></label>
-      <label (ngModelChange)="checkLogLevel('DETAIL')" *ngIf="isDetailLevel" [(ngModel)]="object.checkBoxs.detail" class="m-r"
-             nz-checkbox><span translate>log.label.detail</span></label>
+      <label *ngIf="isTraceLevel" [(ngModel)]="object.checkBoxs.trace" class="m-r"
+             nz-checkbox (ngModelChange)="checkLogLevel('TRACE')" ><span translate>log.label.trace</span></label>
+      <label *ngIf="isDetailLevel" [(ngModel)]="object.checkBoxs.detail" class="m-r"
+             nz-checkbox (ngModelChange)="checkLogLevel('DETAIL')" ><span translate>log.label.detail</span></label>
 
       <a (click)="cancel()" *ngIf="!isCancel && !finished" class="m-r m-l pull-right">
         <i class="icon" nz-icon nzTheme="outline" nzType="close"></i>

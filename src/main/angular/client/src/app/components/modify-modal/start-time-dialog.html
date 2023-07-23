@@ -73,7 +73,7 @@
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-6">
-              <app-date-input [object]="order" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'" [isRequired]="true"
+              <app-date-input [object]="order" [ignoreThirdParam]="true" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'" [isRequired]="true"
                               [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
                               [placeholder]="( dateFormat | uppercase )"
               ></app-date-input>
@@ -125,9 +125,9 @@
         <div class="form-group row" *ngIf="!errorMsg" [hidden]="!(dateType.at =='date')">
           <div class="col-md-3 form-control-label" translate>common.label.timeZone</div>
           <div class="col-sm-6">
-            <nz-select nzShowSearch name="timeZone" nzAllowClear [(ngModel)]="dateType.timeZone">
-              <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
-            </nz-select>
+            <app-select-input isSearchable='true' isAllowClear="true" [attributeName]="'timeZone'" [name]="'timeZone'"
+                              [listArray]="zones" [object]="dateType"></app-select-input>
+
           </div>
         </div>
       </div>

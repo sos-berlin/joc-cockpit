@@ -171,7 +171,7 @@ export class SettingModalComponent {
       configurationType: 'IAM',
       name: this.data ? this.data?.['identityServiceName'] : undefined
     }).subscribe((res) => {
-      if (res.configuration.objectType && res.configuration.objectType.match('LDAP')) {
+      if (res.configuration.objectType && (res.configuration.objectType.match('LDAP') || this.data['identityServiceType'] === 'OIDC')) {
         this.getUsersData();
       }
       if (res.configuration.configurationItem) {
@@ -1009,6 +1009,7 @@ export class IdentityServiceComponent {
         nzData: {
           comments
         },
+        nzAutofocus: null,
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
@@ -1041,6 +1042,7 @@ export class IdentityServiceComponent {
           url: 'iam/identityservice/store'
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });

@@ -43,7 +43,7 @@
         <label class="_600 m-b-xs" *ngIf="predicate" translate>workflow.label.predicate</label>
         <a *ngIf="permission && permission.joc.inventory.view" class="text-hover-primary p-l-sm" (click)="navToConfig()"><i class="fa fa-pencil"></i></a>
         <div class="b-a" id="resizable">
-          <ngx-codemirror #codeMirror [options]="cmOption"></ngx-codemirror>
+          <ngx-codemirror #codeMirror (keydown)="handleKeyDown($event)" [options]="cmOption"></ngx-codemirror>
           <div class="rg-right" style="background: transparent; margin-right: -16px"><span style="top:48%"></span></div>
           <div class="rg-bottom" style="bottom: -16px;background: transparent"><span></span></div>
         </div>
@@ -56,14 +56,6 @@
             <input nz-input name="data" [(ngModel)]="data" readonly>
           </div>
         </div>
-      </div>
-      <div class="col-sm-3 m-t" [ngClass]="{'m-b-sm' : periodList.length > 0}" *ngIf="periodList.length > 0 || schemeList.length > 0" translate>workflow.admissionTime.label.dailyPlanTimeZone</div>
-      <div class="col-sm-3 m-t b-r" [ngClass]="{'m-b-sm' : periodList.length > 0}" *ngIf="periodList.length > 0 || schemeList.length > 0">
-        {{dailyPlan.time_zone}}
-      </div>
-      <div class="col-sm-3 m-t" [ngClass]="{'m-b-sm' : periodList.length > 0}" *ngIf="periodList.length > 0 || schemeList.length > 0" translate>workflow.admissionTime.label.dailyPlanPeriodBegin</div>
-      <div class="col-sm-3 m-t" [ngClass]="{'m-b-sm' : periodList.length > 0}" *ngIf="periodList.length > 0 || schemeList.length > 0">
-        {{dailyPlan.period_begin}}
       </div>
       <div class="col-sm-3" *ngIf="periodList.length > 0" translate>workflow.label.workflowTimeZone</div>
       <div class="col-sm-8" *ngIf="periodList.length > 0">

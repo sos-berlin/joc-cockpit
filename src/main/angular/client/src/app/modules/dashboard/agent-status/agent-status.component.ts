@@ -164,7 +164,9 @@ export class AgentStatusComponent {
 
   // events
   onChartClick({active}: { active: any }): void {
-    this.navToAgentView(this.pieChartData.labels[active[0].index]);
+    if(this.pieChartData.labels && active[0]) {
+      this.navToAgentView(this.pieChartData.labels[active[0].index]);
+    }
   }
 
   navToAgentView(text): void {

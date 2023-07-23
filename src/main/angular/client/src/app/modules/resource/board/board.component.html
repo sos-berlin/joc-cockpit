@@ -176,8 +176,8 @@
                   [nzData]="data"
                   [nzLoading]="loading"
                   [nzPageIndex]="boardsFilters.currentPage"
-                  [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
-                  [nzPageSize]="boardsFilters.entryPerPage ||  preferences.entryPerPage"
+                  [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
+                  [nzPageSize]="boardsFilters.entryPerPage ||  preferences.entryPerPage || 25"
                   [nzShowPagination]="data.length > 0"
                   [nzShowSizeChanger]="true"
                   [nzSize]="'small'"
@@ -354,9 +354,8 @@
                                    ngFor>
                         <tr>
                           <td
-                            (nzCheckedChange)="onItemChecked(board, notice, $event)"
                             *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" [nzChecked]="object.mapOfCheckedId.has(notice.id +'__' + board.path)"
-                            [nzDisabled]="notice.state._text === 'EXPECTED'"
+                            [nzDisabled]="notice.state._text === 'EXPECTED'"  (nzCheckedChange)="onItemChecked(board, notice, $event)"
                             [nzShowCheckbox]="true"></td>
                           <td
                             *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)">

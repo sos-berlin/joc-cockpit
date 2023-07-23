@@ -1,9 +1,10 @@
-import {Component, Input, OnInit, inject} from '@angular/core';
-import {NzModalRef} from 'ng-zorro-antd/modal';
+import {Component, inject} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
+import {isArray, sortBy} from "underscore";
+import {debounceTime} from "rxjs/operators";
+import {Subject} from "rxjs";
 import {CoreService} from '../../../../services/core.service';
 import {InventoryObject} from "../../../../models/enums";
-import {isArray, sortBy} from "underscore";
-import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-job-wizard',
@@ -13,25 +14,30 @@ export class JobWizardComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   existingJob: any;
   node: any;
-
   index = 0;
   preferences: any;
   wizard = {
     step: 1,
     checked: false,
+    loading: false,
     indeterminate: false,
+    token: '',
     searchText: '',
+    searchText2: '',
     setOfCheckedValue: new Set<string>()
   };
   filter = {
     sortBy: 'name',
     reverse: false
   };
+  jobTemplates: any = [];
   jobTree: any = [];
   jobList: any;
   job: any;
   loading = true;
   isTreeLoad = false;
+
+  private searchTerm = new Subject<string>();
 
   constructor(private coreService: CoreService, private activeModal: NzModalRef) {
   }
@@ -41,6 +47,10 @@ export class JobWizardComponent {
     this.node = this.modalData.node;
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.getJitlJobs();
+    this.searchTerm.pipe(debounceTime(200))
+      .subscribe((searchValue: string) => {
+        this.searchObjects(searchValue);
+      });
   }
 
   tabChange($event): void {
@@ -115,6 +125,40 @@ export class JobWizardComponent {
           e.origin.loading = false;
         }
       });
+    }
+  }
+
+  clearSearchInput(): void {
+    this.jobTemplates = [];
+    this.wizard.searchText2 = '';
+  }
+
+  onSearchInput(searchValue: string) {
+    this.searchTerm.next(searchValue);
+  }
+
+  private searchObjects(value: string) {
+    if (value !== '') {
+      const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
+      if (searchValueWithoutSpecialChars.length >= 2) {
+        this.wizard.loading = true;
+        const request: any = {
+          search: value,
+          returnTypes: ["JOBTEMPLATE"]
+        };
+        if (this.wizard.token) {
+          request.token = this.wizard.token;
+        }
+        this.coreService.post('inventory/quick/search', request).subscribe({
+          next: (res: any) => {
+            this.wizard.token = res.token;
+            this.jobTemplates = res.results;
+            this.wizard.loading = false;
+          }, error: () => this.wizard.loading = false
+        });
+      }
+    } else {
+      this.jobTemplates = [];
     }
   }
 

@@ -63,8 +63,8 @@
       [nzData]="data | orderBy: filter.sortBy: filter.reverse"
       [nzLoading]="loading"
       [nzPageIndex]="filter.currentPage"
-      [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
-      [nzPageSize]="filter.entryPerPage || preferences.entryPerPage"
+      [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
+      [nzPageSize]="filter.entryPerPage || preferences.entryPerPage || 25"
       [nzShowPagination]="true"
       [nzShowSizeChanger]="true"
       [nzSize]="'small'"
@@ -130,9 +130,11 @@
       <ng-template [ngForOf]="ajaxTable.data" [ngForTrackBy]="trackByFn"
                    let-order ngFor>
         <tr>
-          <td (nzCheckedChange)="onItemChecked(order.orderId, $event)" [nzChecked]="setOfCheckedId.has(order.orderId)"
+          <td [nzChecked]="setOfCheckedId.has(order.orderId)"
               [nzDisabled]="order.positionIsImplicitEnd"
-              [nzShowCheckbox]="true"></td>
+              [nzShowCheckbox]="true"
+              (nzCheckedChange)="onItemChecked(order.orderId, $event)"
+          ></td>
           <td>
             <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)" [isDisabled]="checked || indeterminate"
                               [order]="order" [permission]="permission"

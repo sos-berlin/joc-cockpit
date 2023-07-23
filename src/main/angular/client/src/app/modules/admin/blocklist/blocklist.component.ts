@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
@@ -73,8 +73,8 @@ export class AddBlocklistModalComponent {
   templateUrl: './blocklist.component.html'
 })
 export class BlocklistComponent {
-  readonly modalData: any = inject(NZ_MODAL_DATA);
-  permission: any = {};
+
+  @Input() permission: any = {};
   isLoaded = false;
   blocklist = [];
   data = [];
@@ -103,7 +103,6 @@ export class BlocklistComponent {
   }
 
   ngOnInit(): void {
-    this.permission = this.modalData.permission || {};
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.blocklistFilter = this.coreService.getAdminTab().blocklist;
     if (this.preferences.entryPerPage) {

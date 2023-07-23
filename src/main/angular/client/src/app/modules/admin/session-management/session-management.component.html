@@ -12,7 +12,7 @@
     <nz-table #ajaxTable (nzPageIndexChange)="pageIndexChange($event)" (nzPageSizeChange)="pageSizeChange($event)"
               [nzBordered]="true" [nzData]="data" [nzLoading]="!isLoaded"
               [nzPageIndex]="sessionFilter.currentPage"
-              [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]" [nzPageSize]="sessionFilter.entryPerPage" [nzShowPagination]="data.length > 0"
+              [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]" [nzPageSize]="sessionFilter.entryPerPage || 25" [nzShowPagination]="data.length > 0"
               [nzShowSizeChanger]="true"
               [nzSize]="'small'">
       <thead>

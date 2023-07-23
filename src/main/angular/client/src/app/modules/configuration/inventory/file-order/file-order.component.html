@@ -150,8 +150,8 @@
                  [nzTooltipMouseEnterDelay]="0.5"
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.timeZone</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <nz-select (ngModelChange)="changeValue($event, 'timeZone')" [(ngModel)]="fileOrder.configuration.timeZone" name="timeZone" nzAllowClear
-                       nzShowSearch>
+            <nz-select [(ngModel)]="fileOrder.configuration.timeZone" name="timeZone" nzAllowClear
+                       nzShowSearch  (ngModelChange)="changeValue($event, 'timeZone')">
               <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
             </nz-select>
           </div>

@@ -20,8 +20,18 @@
         <div [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}" class="b-a"
              id="boardId">
           <ngx-codemirror #codeMirror #expectBoardExpression="ngModel" [(ngModel)]="obj.data"
-                          [autoFocus]="true" [options]="{lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
-                                  mode: 'shell'}"
+                          [autoFocus]="true"
+                          [options]="{
+                                         lineNumbers: true,
+                                         autoRefresh: true,
+                                         lineWrapping: true,
+                                         matchBrackets: true,
+                                         foldGutter: true,
+                                         scrollbarStyle: 'simple',
+                                         highlightSelectionMatches: {showToken, annotateScrollbar: true},
+                                         mode: 'shell',
+                                         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+                                       }"
                           name="expectBoardExpression"
                           required title="{{'workflow.placeholder.expression' | translate}}"></ngx-codemirror>
         </div>

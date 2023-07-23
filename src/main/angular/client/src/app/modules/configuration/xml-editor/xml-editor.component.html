@@ -190,8 +190,8 @@
         <div class="col-md-offset-2 col-md-8 m-t-md">
             <span class="form-group">
               <span>
-                <nz-select (ngModelChange)="changeXSD(selectedXsd)" [(ngModel)]="selectedXsd" class="w-full" name="schema"
-                           nzShowSearch>
+                <nz-select [(ngModel)]="selectedXsd" class="w-full" name="schema"
+                           nzShowSearch (ngModelChange)="changeXSD(selectedXsd)" >
                     <nz-option *ngFor="let xsd of otherSchema;" [nzLabel]="xsd"
                                [nzValue]="xsd"></nz-option>
                 </nz-select>
@@ -490,44 +490,44 @@
                              id="{{node.name}}" title="{{node.name}} should not contain spaces"
                              type="url"
                              xmlAutofocus>
-                      <nz-select (ngModelChange)="submitData(node.data, node)"
-                                 (nzBlur)="validateAttr(node.data, node)"
-                                 (nzFocus)="getDataAttr(node.refer)"
-                                 *ngIf="node.values && node.values.length==0 && node.name && (node.type === 'xs:NMTOKEN' || node.type === 'xs:string' || !node.type) && node.refer" [(ngModel)]="node.data"
+                      <nz-select *ngIf="node.values && node.values.length==0 && node.name && (node.type === 'xs:NMTOKEN' || node.type === 'xs:string' || !node.type) && node.refer" [(ngModel)]="node.data"
                                  [ngClass]="error && errorName === node.name? 'invalid': ''"
                                  [required]="node.use ==='required'"
+                                 (ngModelChange)="submitData(node.data, node)"
+                                 (nzBlur)="validateAttr(node.data, node)"
+                                 (nzFocus)="getDataAttr(node.refer)"
                                  class="w-full"
                                  id="{{node.name}}">
                         <nz-option *ngFor="let key of tempArr" [nzLabel]="key" [nzValue]="key"></nz-option>
                       </nz-select>
-                      <nz-select (ngModelChange)="updateListData(node)"
-                                 *ngIf="node.values && node.values.length>0 && node.type === 'xs:list'"
+                      <nz-select *ngIf="node.values && node.values.length>0 && node.type === 'xs:list'"
                                  [(ngModel)]="node.data1"
                                  [ngClass]="error && errorName === node.name? 'invalid': ''"
                                  [required]="node.use ==='required'"
+                                 (ngModelChange)="updateListData(node)"
                                  class="w-full"
                                  id="{{node.name}}"
                                  nzMode="multiple">
                         <nz-option *ngFor="let key of node.values" [nzLabel]="key"
                                    [nzValue]="key"></nz-option>
                       </nz-select>
-                      <nz-input-number (ngModelChange)="submitData(node.data, node)"
-                                       (nzBlur)="validateAttr(node.data, node)"
-                                       (nzFocus)="hideError()"
-                                       *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:integer'"
+                      <nz-input-number *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:integer'"
                                        [(ngModel)]="node.data"
                                        [ngClass]="error && errorName === node.name? 'invalid': ''"
                                        class="w-full"
+                                       (ngModelChange)="submitData(node.data, node)"
+                                       (nzBlur)="validateAttr(node.data, node)"
+                                       (nzFocus)="hideError()"
                                        id="{{node.name}}" required
                                        xmlAutofocus>
                       </nz-input-number>
-                      <nz-input-number (ngModelChange)="submitData(node.data, node)"
-                                       (nzBlur)="validateAttr(node.data, node)"
-                                       (nzFocus)="hideError()"
-                                       *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
+                      <nz-input-number *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
                                        [(ngModel)]="node.data"
                                        [ngClass]="error && errorName === node.name? 'invalid': ''"
                                        [nzMin]="0"
+                                       (ngModelChange)="submitData(node.data, node)"
+                                       (nzBlur)="validateAttr(node.data, node)"
+                                       (nzFocus)="hideError()"
                                        class="w-full" id="{{node.name}}" required
                                        xmlAutofocus>
                       </nz-input-number>
@@ -542,12 +542,12 @@
                                type="checkbox">
                         <i class="primary"></i>
                       </label>
-                      <nz-select (ngModelChange)="submitData(node.data, node)"
-                                 (nzBlur)="validateAttr(node.data, node)"
-                                 *ngIf="node.values && node.values.length > 0 && node.type !== 'xs:list'"
+                      <nz-select *ngIf="node.values && node.values.length > 0 && node.type !== 'xs:list'"
                                  [(ngModel)]="node.data"
                                  [ngClass]="error && errorName === node.name? 'invalid': ''"
                                  [required]="node.use ==='required'" class="w-full"
+                                 (ngModelChange)="submitData(node.data, node)"
+                                 (nzBlur)="validateAttr(node.data, node)"
                                  id="{{node.name}}">
                         <nz-option *ngFor="let key of node.values" [nzLabel]="key.value"
                                    [nzValue]="key.value"></nz-option>
@@ -555,7 +555,9 @@
                       <div *ngIf="error && errorName === node.name" [innerText]="text" class="help-block text-danger"
                            id="{{node.name}}Alert" role="alert">
                       </div>
-                      <nz-select (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)" *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && node.name === 'time_zone'" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''"
+                      <nz-select  *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && node.name === 'time_zone'"
+                                  [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''"
+                                  (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)"
                                  [required]="node.use ==='required'"
                                  class="w-full"
                                  id="{{node.name}}"
@@ -645,17 +647,17 @@
                         xml.message.requiredField
                       </div>
                     </div>
-                    <nz-select (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
-                               *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean'"
+                    <nz-select *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean'"
                                [(ngModel)]="selectedNode.values[0].data"
+                               (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''" class="w-full"
                                id="{{selectedNode.ref}}">
                       <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                       <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                     </nz-select>
-                    <nz-select (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
-                               *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].values"
+                    <nz-select *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].values"
                                [(ngModel)]="selectedNode.values[0].data"
+                               (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''"
                                class="w-full"
                                id="{{selectedNode.ref}}">

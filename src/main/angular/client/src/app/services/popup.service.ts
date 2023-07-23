@@ -18,7 +18,7 @@ import {LogViewComponent} from "../components/log-view/log-view.component";
 export interface PopoutData {
   modalName: string;
   controllerId: string;
-  historyId?: number;
+  historyId?: any;
   orderId?: string;
   workflow?: string;
   taskId?: number;

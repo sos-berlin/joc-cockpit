@@ -15,6 +15,12 @@
       <div class="hide" [ngClass]="{'show': display}" *ngIf="!(variableList.length === 0 && forkListVariables.length === 0) || (variables.length === 0 && forkListVariables.length === 0 && variable)">
         <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="7"></app-audit-log-input>
       </div>
+      <div class="form-group row" *ngIf="permission.currentController && permission.currentController.orders.managePositions && !variable && blockPositions?.size > 0">
+        <label class="col-sm-4 form-control-label" translate>order.label.blockPosition</label>
+        <div class="col-sm-7">
+          <app-node-position [obj]="positionObj" [type]="'BLOCK_POSITION'" [workflow]="workflow" [positions]="blockPositions"></app-node-position>
+        </div>
+      </div>
       <div class="form-group row" *ngIf="permission.currentController && permission.currentController.orders.managePositions && !variable">
         <label class="col-sm-4 form-control-label" translate>order.label.startNode</label>
         <div class="col-sm-7">
@@ -64,19 +70,11 @@
                         </div>
                       </ng-container>
                       <ng-container *ngSwitchCase="'Boolean'">
-                        <div class="col-md-6 col-sm-6 m-b-sm"
-                             [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                          <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                                     #value="ngModel" [required]="true" name="_value{{i}}{{j}}{{k}}" [(ngModel)]="argument.value">
-                            <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                            <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                          </nz-select>
-                          <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                               class="text-danger help-block">
-                            <div *ngIf="value.errors.required">
-                              <div translate>common.message.requiredError</div>
-                            </div>
-                          </div>
+                        <div class="col-md-6 col-sm-6 m-b-sm">
+                          <app-select-input [placeholder]="'common.placeholder.selectValue'" [isRequired]="true"
+                                          [isAllowClear]="true" [name]="'_value' +i +j+k" [object]="argument" [optionLabel]="'label'" [optionValue]="'value'"
+                                          [attributeName]="'value'" [listArray]="selectValue"></app-select-input>
+
                         </div>
                       </ng-container>
                       <ng-container *ngSwitchDefault>

@@ -2,17 +2,16 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  inject,
   Input,
-  OnChanges,
-  OnDestroy, OnInit,
-  SimpleChanges, ViewChild,
-  inject
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
 import {clone, groupBy, isArray, isEmpty, isEqual, sortBy} from 'underscore';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {NzMessageService} from "ng-zorro-antd/message";
 import {CoreService} from '../../../../services/core.service';
@@ -22,8 +21,9 @@ import {InventoryObject} from '../../../../models/enums';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {JobWizardComponent} from '../job-wizard/job-wizard.component';
-import {FacetEditorComponent} from '../workflow/workflow.component';
-import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
+import {FacetEditorComponent, ScriptEditorComponent} from '../workflow/workflow.component';
+
+declare const $;
 
 @Component({
   selector: 'app-update-modal',
@@ -366,7 +366,7 @@ export class UpdateJobTemplatesComponent {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './job-template.component.html'
 })
-export class JobTemplateComponent implements OnChanges, OnDestroy {
+export class JobTemplateComponent {
   @Input() permission: any;
   @Input() preferences: any;
   @Input() schedulerId: any;
@@ -378,11 +378,13 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
   job: any = {};
   invalidMsg: string;
   objectType = InventoryObject.JOBTEMPLATE;
-  documentationTree = [];
+
   indexOfNextAdd = 0;
   history = [];
   isRuntimeVisible = false;
   jobResourcesTree = [];
+  documentationTree = [];
+  scriptTree: any = [];
   isLengthExceed = false;
   selectedNode: any = {};
   returnCodes: any = {on: 'success'};
@@ -397,19 +399,18 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
     indeterminate3: false,
     setOfCheckedEnv: new Set<string>()
   };
-  cmOption: any = {
-    lineNumbers: true,
-    autoRefresh: true,
-    scrollbarStyle: 'simple',
-    mode: 'shell',
-    extraKeys: {'Ctrl-Space': 'autocomplete'}
-  };
+  showToken = /\w/;
+
   lastModified: any = '';
   copiedParamObjects: any = {};
   allowedDatatype = ['String', 'Number', 'Boolean'];
 
+  isTreeShow = false;
+
   subscription1: Subscription;
   subscription2: Subscription;
+
+  @ViewChild('codeMirror', {static: false}) cm: any;
 
   constructor(public coreService: CoreService, private dataService: DataService, private router: Router, private translate: TranslateService,
               private modal: NzModalService, private ref: ChangeDetectorRef, private message: NzMessageService,
@@ -511,6 +512,16 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
           this.jobResourcesTree = this.coreService.prepareTree(res, false);
         });
       }
+      if (this.scriptTree.length === 0) {
+        this.coreService.post('tree', {
+          controllerId: this.schedulerId,
+          forInventory: true,
+          types: [InventoryObject.INCLUDESCRIPT]
+        }).subscribe((res) => {
+          this.scriptTree = this.coreService.prepareTree(res, false);
+        });
+      }
+
 
       this.history.push(JSON.stringify(this.job.configuration));
       if (!res.valid) {
@@ -521,6 +532,21 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       this.ref.detectChanges();
     });
 
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    const tabKey = "Tab";
+    if (event.key === tabKey) {
+      event.preventDefault();
+
+      const numSpaces = this.preferences.tabSize;
+      const cursor = this.cm.codeMirror.getCursor();
+      const spaces = ' '.repeat(numSpaces);
+
+      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
+
+      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
+    }
   }
 
   private setJobProperties(): void {
@@ -538,7 +564,13 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
     if (this.job.configuration.executable.TYPE === 'ScriptExecutable') {
       this.job.configuration.executable.TYPE = 'ShellScriptExecutable';
     }
-
+    if (this.job.configuration.executable.TYPE === 'InternalExecutable') {
+      if (this.job.configuration.executable.internalType === 'Java') {
+        this.job.configuration.executable.TYPE = 'Java';
+      } else if (this.job.configuration.executable.internalType === 'JavaScript_Graal') {
+        this.job.configuration.executable.TYPE = 'JavaScript';
+      }
+    }
     if (!this.job.configuration.executable.returnCodeMeaning) {
       this.job.configuration.executable.returnCodeMeaning = {
         success: 0
@@ -632,6 +664,30 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
     if (this.job.configuration.arguments.length === 0) {
       this.addParameter();
     }
+
+    setTimeout(() => {
+      if (this.cm && this.cm.codeMirror) {
+        const self = this;
+        this.cm.codeMirror.setOption("extraKeys", {
+          "Shift-Ctrl-Space": "autocomplete",
+          "Ctrl-Space": function (editor) {
+            const cursor = editor.getCursor();
+            self.isTreeShow = true;
+            self.ref.detectChanges();
+            setTimeout(() => {
+              const dom = $('#show-tree');
+              dom?.css({
+                'opacity': '1',
+                'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
+                'left': '36px',
+                'width': 'calc(100% - 48px)'
+              });
+            }, 0)
+
+          }
+        })
+      }
+    }, 100);
   }
 
   rename(inValid): void {
@@ -790,6 +846,28 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
     });
   }
 
+  showEditor(mode): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ScriptEditorComponent,
+      nzClassName: 'lg script-editor',
+      nzAutofocus: null,
+      nzData: {
+        script: this.job.configuration.executable.script,
+        mode,
+        scriptTree: this.scriptTree
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.job.configuration.executable.script = result;
+        this.ref.detectChanges();
+      }
+    });
+  }
   closeRuntime(): void {
     this.isRuntimeVisible = false;
     setTimeout(() => {
@@ -1217,6 +1295,41 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
     }
   }
 
+  onBlurTree(value: string): void {
+    $('.ant-select-tree-dropdown').hide();
+    this.checkExpectNoticeExp(value);
+  }
+
+  checkExpectNoticeExp(name): void {
+    this.isTreeShow = false;
+    this.ref.detectChanges();
+    if (name) {
+      const doc = this.cm.codeMirror.getDoc();
+      const cursor = doc.getCursor(); // gets the line number in the cursor position
+      const currentLine = this.cm.codeMirror.getLine(cursor.line);
+      const isSpace = cursor.ch > 0 ? currentLine.substring(cursor.ch - 1, cursor.ch) == ' ' : true;
+
+      let str = (!isSpace ? ' ' : '');
+      let text = name;
+
+      if (this.job.configuration.executable.TYPE == 'JavaScript') {
+        if (!currentLine.substring(0, cursor.ch).match('//!include')) {
+          text = '//!include ' + name;
+        }
+      } else {
+        if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
+          text = '##!include ' + name;
+        }
+      }
+      str = str + text + ' ';
+      doc.replaceRange(str, cursor);
+      cursor.ch = cursor.ch + (text.length);
+
+      this.cm.codeMirror.focus();
+      doc.setCursor(cursor);
+    }
+  }
+
   saveJSON(flag = false): void {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
@@ -1282,9 +1395,9 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       if (!this.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
       }
-      if (this.job.configuration.executable.TYPE === 'ShellScriptExecutable' && !this.job.configuration.executable.script) {
+      if ((this.job.configuration.executable.TYPE === 'ShellScriptExecutable' || this.job.configuration.executable.internalType === 'JavaScript_Graal') && !this.job.configuration.executable.script) {
         this.invalidMsg = 'workflow.message.scriptIsMissing';
-      } else if (this.job.configuration.executable.TYPE === 'InternalExecutable' && !this.job.configuration.executable.className) {
+      } else if (this.job.configuration.executable.TYPE === 'InternalExecutable' && this.job.configuration.executable.internalType !== 'JavaScript_Graal' && !this.job.configuration.executable.className) {
         this.invalidMsg = 'workflow.message.classNameIsMissing';
       } else if (this.job.configuration.executable && this.job.configuration.executable.login &&
         this.job.configuration.executable.login.withUserProfile && !this.job.configuration.executable.login.credentialKey) {

@@ -124,7 +124,7 @@ export class WorkflowTreeStructureComponent {
     let nzData;
     if (instruction.TYPE === 'Job') {
       const job = this.jobs[instruction.jobName];
-      const data = job.executable.TYPE === 'ShellScriptExecutable' ? job.executable.script : job.executable.className;
+      const data = (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.internalType === 'JavaScript_Graal') ? job.executable.script : job.executable.className;
       if (job && job.executable) {
         nzData = {
           data,
@@ -133,7 +133,8 @@ export class WorkflowTreeStructureComponent {
           jobName: instruction.jobName,
           admissionTime: job.admissionTimeScheme,
           timezone: this.timezone,
-          isScript: job.executable.TYPE === 'ShellScriptExecutable',
+          mode: job.executable.TYPE === 'ShellScriptExecutable' ? 'shell' : 'javascript',
+          isScript: (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.internalType === 'JavaScript_Graal'),
           readonly: true
         };
       }

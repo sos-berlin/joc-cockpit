@@ -1,28 +1,28 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, Directive, EventEmitter, forwardRef,
+  Component,
+  Directive,
+  EventEmitter,
+  forwardRef,
   HostListener,
+  inject,
   Input,
-  OnChanges,
-  OnDestroy,
-  OnInit, Output,
+  Output,
   SimpleChanges,
-  ViewChild,
-  inject
+  ViewChild
 } from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
 import {NzMessageService} from "ng-zorro-antd/message";
-import {isEmpty, isArray, isEqual, clone, extend, sortBy} from 'underscore';
+import {clone, extend, isArray, isEmpty, isEqual, sortBy} from 'underscore';
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
 import {Router} from '@angular/router';
 import {AbstractControl, NG_VALIDATORS, Validator} from '@angular/forms';
-import {CdkDragDrop, moveItemInArray, DragDrop} from '@angular/cdk/drag-drop';
+import {CdkDragDrop, DragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
@@ -35,35 +35,34 @@ import {CreateObjectModalComponent} from "../inventory.component";
 import {UpdateJobTemplatesComponent} from "../job-template/job-template.component";
 import {CalendarService} from "../../../../services/calendar.service";
 import {FileUploaderComponent} from "../../../../components/file-uploader/file-uploader.component";
-import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 
 // Mx-Graph Objects
-declare const mxEditor;
-declare const mxUtils;
-declare const mxEvent;
-declare const mxClient;
-declare const mxEdgeHandler;
-declare const mxRectangleShape;
-declare const mxAutoSaveManager;
-declare const mxGraphHandler;
-declare const mxCellAttributeChange;
-declare const mxGraph;
-declare const mxImage;
-declare const mxRubberband;
-declare const mxOutline;
-declare const mxDragSource;
-declare const mxConstants;
-declare const mxRectangle;
-declare const mxPoint;
-declare const mxUndoManager;
-declare const mxEventObject;
-declare const mxToolbar;
-declare const mxCellHighlight;
-declare const mxImageShape;
-declare const mxRhombus;
-declare const mxLabel;
-declare const mxKeyHandler;
-declare const $;
+declare const mxEditor: any;
+declare const mxUtils: any;
+declare const mxEvent: any;
+declare const mxClient: any;
+declare const mxEdgeHandler: any;
+declare const mxRectangleShape: any;
+declare const mxAutoSaveManager: any;
+declare const mxGraphHandler: any;
+declare const mxCellAttributeChange: any;
+declare const mxGraph: any;
+declare const mxImage: any;
+declare const mxRubberband: any;
+declare const mxOutline: any;
+declare const mxDragSource: any;
+declare const mxConstants: any;
+declare const mxRectangle: any;
+declare const mxPoint: any;
+declare const mxUndoManager: any;
+declare const mxEventObject: any;
+declare const mxToolbar: any;
+declare const mxCellHighlight: any;
+declare const mxImageShape: any;
+declare const mxRhombus: any;
+declare const mxLabel: any;
+declare const mxKeyHandler: any;
+declare const $: any;
 
 @Directive({
   selector: '[appValidateDuration]',
@@ -160,6 +159,7 @@ export class NoticeBoardEditorComponent {
   obj = {
     data: ''
   };
+  showToken = /\w/;
   isTreeShow = false;
   @ViewChild('codeMirror', {static: false}) cm;
 
@@ -189,6 +189,7 @@ export class NoticeBoardEditorComponent {
         }, 400);
 
         this.cm.codeMirror.setOption("extraKeys", {
+          "Shift-Ctrl-Space": "autocomplete",
           "Ctrl-Space": function (editor) {
             const cursor = editor.getCursor();
             self.isTreeShow = true;
@@ -210,6 +211,21 @@ export class NoticeBoardEditorComponent {
   onBlur(value: string): void {
     $('.ant-select-tree-dropdown').hide();
     this.checkExpectNoticeExp(value);
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    const tabKey = "Tab";
+    if (event.key === tabKey) {
+      event.preventDefault();
+
+      const numSpaces = this.modalData.tabSize;
+      const cursor = this.cm.codeMirror.getCursor();
+      const spaces = ' '.repeat(numSpaces);
+
+      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
+
+      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
+    }
   }
 
   checkExpectNoticeExp(event): void {
@@ -422,7 +438,7 @@ export class TimeEditorComponent {
   selector: 'app-cycle-instruction',
   templateUrl: './cycle-instruction-editor.html'
 })
-export class CycleInstructionComponent implements OnChanges {
+export class CycleInstructionComponent {
   @Input() selectedNode: any;
   @Input() isTooltipVisible = false;
   @Input() timeZone: string;
@@ -481,6 +497,9 @@ export class CycleInstructionComponent implements OnChanges {
         }
       } catch (e) {
       }
+    }
+    if (!this.selectedNode.obj.schedule) {
+      this.selectedNode.obj.schedule = {};
     }
     if (!this.selectedNode.obj.schedule.schemes) {
       this.selectedNode.obj.schedule.schemes = [];
@@ -1294,6 +1313,7 @@ export class JobComponent {
   @Input() checkboxObjects: any = {};
 
   history = [];
+  showToken = /\w/;
   indexOfNextAdd = 0;
   error: boolean;
   errorMsg: string;
@@ -1301,7 +1321,6 @@ export class JobComponent {
   obj: any = {};
   isDisplay = true;
   isRuntimeVisible = false;
-  isReloading = false;
   fullScreen = false;
   isLengthExceed = false;
   index = 0;
@@ -1328,10 +1347,6 @@ export class JobComponent {
     checked5: false,
     indeterminate5: false,
     setOfCheckedDefaultArgu: new Set<string>()
-  };
-
-  scriptObj = {
-    name: ''
   };
 
   variableList = [];
@@ -1377,32 +1392,11 @@ export class JobComponent {
 
   ngOnInit(): void {
     this.index = 0;
-    const self = this;
     this.isTreeShow = false;
     if (!this.isModal) {
       this.updateVariableList();
     }
-
-    setTimeout(() => {
-      if (this.cm && this.cm.codeMirror) {
-        this.cm.codeMirror.setOption("extraKeys", {
-          "Ctrl-Space": function (editor) {
-            const cursor = editor.getCursor();
-            self.isTreeShow = true;
-            self.ref.detectChanges();
-            setTimeout(() => {
-              const dom = $('#show-tree');
-              dom?.css({
-                'opacity': '1',
-                'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
-                'left': '36px',
-                'width': 'calc(100% - 48px)'
-              });
-            }, 0)
-          }
-        })
-      }
-    }, 100);
+    this.initAutoComplete(100);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -1424,11 +1418,44 @@ export class JobComponent {
     this.subscription.unsubscribe();
   }
 
+  private initAutoComplete(time = 0): void {
+    const self = this;
+    setTimeout(() => {
+      if (this.cm && this.cm.codeMirror) {
+        this.cm.codeMirror.setOption("extraKeys", {
+          "Shift-Ctrl-Space": "autocomplete",
+          "Ctrl-Space": function (editor) {
+            const cursor = editor.getCursor();
+            self.isTreeShow = true;
+            self.ref.detectChanges();
+            setTimeout(() => {
+              const dom = $('#show-tree');
+              dom?.css({
+                'opacity': '1',
+                'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
+                'left': '36px',
+                'width': 'calc(100% - 48px)'
+              });
+            }, 0)
+          }
+        })
+      }
+    }, time);
+  }
+
   navToJobTemp(name): void {
     this.dataService.reloadTree.next({navigate: {name, type: InventoryObject.JOBTEMPLATE}});
   }
 
   changeType(): void {
+    if (this.selectedNode.job.executable.TYPE === 'Java') {
+      this.selectedNode.job.executable.internalType = 'Java';
+    } else if (this.selectedNode.job.executable.TYPE === 'JavaScript') {
+      this.selectedNode.job.executable.internalType = 'JavaScript_Graal';
+    } else if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
+      this.selectedNode.job.executable.internalType = 'JITL';
+    }
+    this.reloadScript();
     this.saveToHistory();
   }
 
@@ -1483,6 +1510,7 @@ export class JobComponent {
     this.isDisplay = false;
     setTimeout(() => {
       this.isDisplay = true;
+      this.initAutoComplete();
       this.ref.detectChanges();
     }, time);
   }
@@ -1539,7 +1567,14 @@ export class JobComponent {
     this.selectedNode.job.executable.TYPE = result.executable.TYPE;
     this.selectedNode.job.executable.className = result.executable.className;
     this.selectedNode.job.executable.script = result.executable.script;
-    if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
+    this.selectedNode.job.executable.internalType = result.executable.internalType;
+    if (result.executable.internalType === 'JavaScript_Graal') {
+      this.selectedNode.job.executable.TYPE = "JavaScript";
+    } else if (result.executable.internalType === 'Java') {
+      this.selectedNode.job.executable.TYPE = "Java";
+    }
+    if (this.selectedNode.job.executable.TYPE === 'InternalExecutable' || this.selectedNode.job.executable.TYPE === 'Java'
+      || this.selectedNode.job.executable.TYPE === 'JavaScript') {
       this.selectedNode.job.executable.arguments = result.executable.arguments || [];
       if (!isArray(this.selectedNode.job.executable.arguments)) {
         this.selectedNode.job.executable.arguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'arguments');
@@ -1596,7 +1631,7 @@ export class JobComponent {
     this.ref.detectChanges();
   }
 
-  showEditor(): void {
+  showEditor(mode): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ScriptEditorComponent,
@@ -1604,7 +1639,9 @@ export class JobComponent {
       nzAutofocus: null,
       nzData: {
         script: this.selectedNode.job.executable.script,
+        mode,
         scriptTree: this.scriptTree,
+        tabSize: this.preferences.tabSize,
         disabled: (this.selectedNode.job && this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name)
       },
       nzFooter: null,
@@ -1961,8 +1998,8 @@ export class JobComponent {
     if (this.error && this.selectedNode && this.selectedNode.obj) {
       this.obj.label = !this.selectedNode.obj.label;
       this.obj.agent = !this.selectedNode.job.agentName;
-      this.obj.script = !this.selectedNode.job.executable.script && this.selectedNode.job.executable.TYPE === 'ShellScriptExecutable';
-      this.obj.className = !this.selectedNode.job.executable.className && this.selectedNode.job.executable.TYPE === 'InternalExecutable';
+      this.obj.script = !this.selectedNode.job.executable.script && (this.selectedNode.job.executable.TYPE === 'ShellScriptExecutable' || this.selectedNode.job.executable.TYPE === 'JavaScript');
+      this.obj.className = !this.selectedNode.job.executable.className && (this.selectedNode.job.executable.TYPE === 'InternalExecutable' || this.selectedNode.job.executable.TYPE === 'Java');
     } else {
       this.obj = {};
     }
@@ -1988,6 +2025,17 @@ export class JobComponent {
       if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
         text = '##!include ' + name;
       }
+
+      if (this.selectedNode.job.executable.TYPE == 'JavaScript') {
+        if (!currentLine.substring(0, cursor.ch).match('//!include')) {
+          text = '//!include ' + name;
+        }
+      } else {
+        if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
+          text = '##!include ' + name;
+        }
+      }
+
       str = str + text + ' ';
       doc.replaceRange(str, cursor);
       cursor.ch = cursor.ch + (text.length);
@@ -2285,6 +2333,13 @@ export class JobComponent {
     if (this.selectedNode.job.executable.TYPE === 'ScriptExecutable') {
       this.selectedNode.job.executable.TYPE = 'ShellScriptExecutable';
     }
+    if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
+      if (this.selectedNode.job.executable.internalType === 'Java') {
+        this.selectedNode.job.executable.TYPE = 'Java';
+      } else if (this.selectedNode.job.executable.internalType === 'JavaScript_Graal') {
+        this.selectedNode.job.executable.TYPE = 'JavaScript';
+      }
+    }
     if (this.hasLicense && (this.selectedNode.job.subagentClusterIdExpr || this.selectedNode.job.withSubagentClusterIdExpr)) {
       this.selectedNode.radio = 'expression';
       if (this.selectedNode.job.subagentClusterIdExpr) {
@@ -2421,11 +2476,13 @@ export class JobComponent {
   selector: 'app-script-content',
   templateUrl: './script-editor.html'
 })
-export class ScriptEditorComponent implements AfterViewInit, OnInit {
+export class ScriptEditorComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   script: any;
+
   scriptTree: any = [];
-  disabled: boolean;
+  isSkip = false;
+  disabled= false;
   isTreeShow = false;
   dragEle: any;
   scriptObj = {
@@ -2433,10 +2490,14 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
   };
   cmOption: any = {
     lineNumbers: true,
+    autoRefresh: true,
+    lineWrapping: true,
+    matchBrackets: true,
+    foldGutter: true,
     scrollbarStyle: 'simple',
     viewportMargin: Infinity,
-    autoRefresh: true,
-    mode: 'shell'
+    highlightSelectionMatches: {showToken:/\w/, annotateScrollbar: true},
+    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
   };
   @ViewChild('codeMirror', {static: false}) cm: any;
 
@@ -2447,6 +2508,11 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
     this.script = this.modalData.script;
     this.scriptTree = this.modalData.scriptTree;
     this.disabled = this.modalData.disabled;
+    this.isSkip = this.modalData.isSkip;
+    this.cmOption.mode = this.modalData.mode;
+    if(this.cmOption.mode === 'javascript'){
+      this.cmOption.autoCloseBrackets =true;
+    }
     if (this.disabled) {
       this.cmOption.reladOnly = true;
     }
@@ -2480,29 +2546,28 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
     setTimeout(() => {
       if (this.cm && this.cm.codeMirror) {
         setTimeout(() => {
-          let arr = this.script?.split('\n') || [];
           const doc = this.cm.codeMirror.getDoc();
           const cursor = doc.getCursor();  // gets the line number in the cursor position
           doc.replaceRange(this.script, cursor);
-          cursor.line = arr.length > 0 ? arr.length - 1 : 0;
-          cursor.ch = arr.length > 0 ? arr[arr.length - 1]?.length + 1 : 0;
           this.cm.codeMirror.focus();
           doc.setCursor(cursor);
         }, 400);
-
         this.cm.codeMirror.setOption("extraKeys", {
+          "Shift-Ctrl-Space": "autocomplete",
           "Ctrl-Space": function (editor) {
-            const cursor = editor.getCursor();
-            self.isTreeShow = true;
-            setTimeout(() => {
-              const dom = $('#show-tree-editor');
-              dom?.css({
-                'opacity': '1',
-                'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
-                'left': '36px',
-                'width': 'calc(100% - 48px)'
-              });
-            }, 0)
+            if(!self.isSkip) {
+              const cursor = editor.getCursor();
+              self.isTreeShow = true;
+              setTimeout(() => {
+                const dom = $('#show-tree-editor');
+                dom?.css({
+                  'opacity': '1',
+                  'top': (cursor.line > 0 ? (cursor.line * 18.7) + 24 : 24) + 'px',
+                  'left': '36px',
+                  'width': 'calc(100% - 48px)'
+                });
+              }, 0)
+            }
           }
         })
       }
@@ -2543,8 +2608,14 @@ export class ScriptEditorComponent implements AfterViewInit, OnInit {
 
       let str = (!isSpace ? ' ' : '');
       let text = name;
-      if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
-        text = '##!include ' + name;
+      if (this.cmOption.mode == 'javascript') {
+        if (!currentLine.substring(0, cursor.ch).match('//!include')) {
+          text = '//!include ' + name;
+        }
+      } else {
+        if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
+          text = '##!include ' + name;
+        }
       }
       str = str + text + ' ';
       doc.replaceRange(str, cursor);
@@ -2654,7 +2725,7 @@ export class ExpressionComponent {
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss']
 })
-export class WorkflowComponent implements OnChanges, OnDestroy {
+export class WorkflowComponent {
   @Input() data: any;
   @Input() preferences: any;
   @Input() schedulerId: any;
@@ -2672,7 +2743,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   workflowTree = [];
   lockTree = [];
   boardTree = [];
-  tempTree = [];
   scriptTree = [];
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
@@ -2722,6 +2792,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   lastModified: any = '';
   hasLicense: boolean;
   positions: any;
+  blockPositions: any;
   info1 = '';
   info2 = '';
   info3 = '';
@@ -3485,7 +3556,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (cells && cells.length > 0) {
         if (this.cutCell.length > 0) {
           this.cutCell.forEach(cell => {
-            this.changeCellStyle(this.editor.graph, cell, false);
+            this.workflowService.changeCellStyle(this.editor.graph, cell, false);
           });
         }
         this.cutCell = [];
@@ -3514,12 +3585,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.copyId = [];
         if (this.cutCell.length > 0) {
           this.cutCell.forEach(cell => {
-            this.changeCellStyle(graph, cell, false);
+            this.workflowService.changeCellStyle(graph, cell, false);
           });
         }
         this.cutCell = [];
         cells.forEach(cell => {
-          this.changeCellStyle(graph, cell, true);
+          this.workflowService.changeCellStyle(graph, cell, true);
           this.cutCell.push(cell);
         });
         this.updateToolbar('cut', node ? node.cell : null, 'multiple instructions');
@@ -4634,6 +4705,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             this.selectedNode.obj.arguments = [];
           }
           this.positions = undefined;
+          this.blockPositions = undefined;
           this.getPositions(this.selectedNode.obj.workflowName);
           this.updateArgumentList();
         }
@@ -4647,15 +4719,26 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }).subscribe({
       next: (res) => {
         this.positions = new Map();
+        this.blockPositions = new Map();
         res.positions.forEach((item) => {
           this.positions.set(item.positionString, JSON.stringify(item.position));
         });
-
+        res.blockPositions.forEach((item) => {
+          this.blockPositions.set(item.positionString, JSON.stringify(item.position));
+        });
         if (this.selectedNode.obj) {
           let map = new Map();
           this.positions.forEach((k, v) => {
             map.set(k, v);
           });
+          let map2 = new Map();
+          this.blockPositions.forEach((k, v) => {
+            map2.set(k, v);
+          });
+          if (this.selectedNode.obj.blockPosition) {
+            this.selectedNode.obj.blockPosition =
+              map2.get(JSON.stringify(this.selectedNode.obj.blockPosition));
+          }
           if (this.selectedNode.obj.startPosition) {
             this.selectedNode.obj.startPosition =
               map.get(JSON.stringify(this.selectedNode.obj.startPosition));
@@ -4774,15 +4857,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
     if (obj.children) {
       this.selectListForForkList(obj.children);
-    }
-  }
-
-  private changeCellStyle(graph, cell, isBlur): void {
-    const state = graph.view.getState(cell);
-    if (state && state.shape) {
-      state.style[mxConstants.STYLE_OPACITY] = isBlur ? 60 : 100;
-      state.shape.apply(state);
-      state.shape.redraw();
     }
   }
 
@@ -5286,7 +5360,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       const attr = cell.value.attributes;
       for (const j in attr) {
 
-        if (attr[j].name === 'startPosition' || attr[j].name === 'endPositions') {
+        if (attr[j].name === 'blockPosition' || attr[j].name === 'startPosition' || attr[j].name === 'endPositions') {
           obj[attr[j].name] = JSON.parse(attr[j].value);
           if (attr[j].name === 'endPositions' && isArray(obj[attr[j].name])) {
             obj[attr[j].name] = obj[attr[j].name].map((item) => {
@@ -6361,7 +6435,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
          * @param cell
          */
         graph.convertValueToString = function (cell) {
-          return self.workflowService.convertValueToString(cell, graph);
+          return self.workflowService.convertValueToString(cell, graph, self.jobs);
         };
 
         // Returns the type as the tooltip for column cells
@@ -7864,9 +7938,16 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 obj.cell, 'endPositions', JSON.stringify(arr));
               graph.getModel().execute(edit6);
             }
-            const edit7 = new mxCellAttributeChange(
+
+            if (self.selectedNode.newObj.blockPosition && self.blockPositions.get(self.selectedNode.newObj.blockPosition)) {
+              const edit7 = new mxCellAttributeChange(
+                obj.cell, 'blockPosition', JSON.stringify(self.blockPositions.get(self.selectedNode.newObj.blockPosition)))
+              graph.getModel().execute(edit7);
+            }
+            const edit8 = new mxCellAttributeChange(
               obj.cell, 'forceJobAdmission', self.selectedNode.newObj.forceJobAdmission);
-            graph.getModel().execute(edit7);
+            graph.getModel().execute(edit8);
+
           } else if (self.selectedNode.type === 'If') {
             const predicate = self.selectedNode.newObj.predicate;
             self.validatePredicate(predicate, null, false);
@@ -8174,6 +8255,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             .replace(/&nbsp;/g, ' ').replace(/&#39;/g, '\'').replace('\n', '').replace('\r', '');
         }
 
+        if (self.selectedNode?.job?.executable?.TYPE) {
+          if (self.selectedNode.job.executable.TYPE === 'Java' || self.selectedNode.job.executable.TYPE === 'JavaScript') {
+            self.selectedNode.job.executable.TYPE = 'InternalExecutable';
+          }
+        }
+
         let isChange = true;
         if (isEqual(JSON.stringify(self.selectedNode.newObj), JSON.stringify(self.selectedNode.actualValue))) {
           isChange = false;
@@ -8306,6 +8393,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           obj.endPositions = cell.getAttribute('endPositions');
           if (obj.endPositions && obj.endPositions != 'undefined' && typeof obj.endPositions == 'string') {
             obj.endPositions = JSON.parse(obj.endPositions);
+          }
+          obj.blockPosition = cell.getAttribute('blockPosition');
+          if (obj.blockPosition && obj.blockPosition != 'undefined' && typeof obj.blockPosition == 'string') {
+            obj.blockPosition = JSON.parse(obj.blockPosition);
           }
           const val1 = cell.getAttribute('remainWhenTerminated');
           obj.remainWhenTerminated = val1 == 'true';
@@ -8512,7 +8603,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       }
       if (cell?.value?.tagName === 'ExpectNotices' || cell?.value?.tagName === 'ConsumeNotices') {
-        self.selectedNode.isTreeShow = false;
+        if (self.selectedNode) {
+          self.selectedNode.isTreeShow = false;
+        }
         self.ref.detectChanges();
         setTimeout(() => {
           if (self.cm && self.cm.codeMirror) {
@@ -8530,6 +8623,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }, 100);
 
             self.cm.codeMirror.setOption("extraKeys", {
+              "Shift-Ctrl-Space": "autocomplete",
               "Ctrl-Space": function (editor) {
                 // Save contents
                 const cursor = editor.getCursor();
@@ -10712,6 +10806,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const workflowName = clone(json.instructions[x].workflowName);
             const argu = clone(json.instructions[x].arguments);
             const startPosition = clone(json.instructions[x].startPosition);
+            const blockPosition = clone(json.instructions[x].blockPosition);
             const remainWhenTerminated = clone(json.instructions[x].remainWhenTerminated);
             const forceJobAdmission = clone(json.instructions[x].forceJobAdmission);
             const endPositions = clone(json.instructions[x].endPositions);
@@ -10720,6 +10815,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             delete json.instructions[x].remainWhenTerminated;
             delete json.instructions[x].startPosition;
             delete json.instructions[x].endPositions;
+            delete json.instructions[x].blockPosition;
             delete json.instructions[x].forceJobAdmission;
             json.instructions[x].workflowName = workflowName;
             json.instructions[x].arguments = argu;
@@ -10727,6 +10823,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             json.instructions[x].forceJobAdmission = forceJobAdmission;
             json.instructions[x].startPosition = startPosition;
             json.instructions[x].endPositions = endPositions;
+            json.instructions[x].blockPosition = blockPosition;
           } else if (json.instructions[x].TYPE === 'Lock') {
             json.instructions[x].lockedWorkflow = {
               instructions: json.instructions[x].instructions
@@ -10871,9 +10968,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               checkErr = true;
               if (!this.invalidMsg) {
                 if (this.jobs[n].value.executable) {
-                  if (this.jobs[n].value.executable.TYPE === 'ShellScriptExecutable' && !this.jobs[n].value.executable.script) {
+                  if ((this.jobs[n].value.executable.TYPE === 'ShellScriptExecutable' || this.jobs[n].value.executable.internalType === 'JavaScript_Graal')
+                    && !this.jobs[n].value.executable.script) {
                     this.invalidMsg = 'workflow.message.scriptIsMissing';
-                  } else if (this.jobs[n].value.executable.TYPE === 'InternalExecutable' && !this.jobs[n].value.executable.className) {
+                  } else if (this.jobs[n].value.executable.TYPE === 'InternalExecutable' && this.jobs[n].value.executable.internalType !== 'JavaScript_Graal' && !this.jobs[n].value.executable.className) {
                     this.invalidMsg = 'workflow.message.classNameIsMissing';
                   } else if (!this.jobs[n].value.agentName) {
                     this.invalidMsg = 'workflow.message.agentIsMissing';
@@ -11101,7 +11199,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   private clearClipboard(): void {
     if (this.cutCell.length > 0) {
       this.cutCell.forEach(cell => {
-        this.changeCellStyle(this.editor.graph, cell, false);
+        this.workflowService.changeCellStyle(this.editor.graph, cell, false);
       })
     }
     this.cutCell = [];

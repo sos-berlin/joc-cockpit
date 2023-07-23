@@ -11,7 +11,7 @@
   <div class="table-responsive">
     <nz-table #ajaxTable (nzPageIndexChange)="pageIndexChange($event)" (nzPageSizeChange)="pageSizeChange($event)"
               [nzBordered]="true" [nzData]="data" [nzLoading]="!isLoaded"
-              [nzPageIndex]="blocklistFilter.currentPage" [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]" [nzPageSize]="blocklistFilter.entryPerPage"
+              [nzPageIndex]="blocklistFilter.currentPage" [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]" [nzPageSize]="blocklistFilter.entryPerPage || 25"
               [nzShowPagination]="data.length > 0"
               [nzShowSizeChanger]="true"
               [nzSize]="'small'">

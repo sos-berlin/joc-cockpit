@@ -803,6 +803,7 @@ export class CoreService {
           const modalData: PopoutData = {
             modalName: 'Order Log',
             controllerId,
+            historyId: url,
             orderId: orderId,
             workflow: workflow
           };
@@ -819,13 +820,14 @@ export class CoreService {
       }
     }
 
-    openWindow();
+
     this.post('order/history', {
       orderId: orderId,
       controllerId
     }).subscribe({
       next: (res) => {
         if (res.historyId) {
+
           let url2 = '?historyId=' + encodeURIComponent(res.historyId) + '&orderId=' + encodeURIComponent(orderId) + '&workflow=' + encodeURIComponent(workflow) + '&controllerId=' + controllerId;
           if (preferenceObj.isNewWindow === 'newWindow') {
             this.popupService.closePopoutModal();
@@ -836,6 +838,7 @@ export class CoreService {
             url = '';
             this.downloadLog(res, controllerId);
           }
+          openWindow();
         } else {
           url = '';
           let msg = '';
@@ -1485,7 +1488,7 @@ export class CoreService {
         if (!(/[$+]/.test(env.value)) || (/\s/g.test(env.value) && !/[+]/.test(env.value))) {
           const startChar = env.value.substring(0, 1);
           const endChar = env.value.substring(env.value.length - 1);
-          if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
+          if (startChar === "$" || (startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
 
           } else if (env.value === 'true' || env.value === 'false') {
           } else if (/^\d+$/.test(env.value)) {
@@ -2216,8 +2219,8 @@ export class CoreService {
     return arr;
   }
 
-  convertTryToRetry(mainJson: any, positions?: any,
-                    startNode?: string, isMap = false, order?: any, workflowObj?: any): void {
+  convertTryToRetry(mainJson: any, positions?: any, startNode?: string,
+                    isMap = false, order?: any, workflowObj?: any): void {
     const self = this;
     let count = 1
     let isChecked = false;
@@ -2314,7 +2317,6 @@ export class CoreService {
                   parent.join.position = positions.get(parent.join.positionString);
                 }
                 json.instructions[x].TYPE = 'Join';
-
               }
             }
           }
@@ -2325,9 +2327,25 @@ export class CoreService {
               } else {
                 jobMap.set(json.instructions[x].jobName, 1)
               }
-              if (!isEmpty(workflowObj.jobs) && !json.instructions[x].documentationName) {
+
+              if (!isEmpty(workflowObj.jobs)) {
                 const job = workflowObj.jobs[json.instructions[x].jobName];
-                json.instructions[x].documentationName = job ? job.documentationName : null;
+                if (!job) {
+                  for (let job in workflowObj.jobs) {
+                    if(workflowObj.jobs[job].name === json.instructions[x].jobName) {
+                      if (workflowObj.jobs[job].value) {
+                        if (!json.instructions[x].documentationName) {
+                          json.instructions[x].documentationName = workflowObj.jobs[job].value.documentationName;
+                        }
+                      }
+                      break;
+                    }
+                  }
+                } else {
+                  if (!json.instructions[x].documentationName) {
+                    json.instructions[x].documentationName = job ? job.documentationName : null;
+                  }
+                }
               }
             }
             json.instructions[x].TYPE = 'Job';
@@ -2373,31 +2391,31 @@ export class CoreService {
               }
             }
           }
-          if (json.instructions[x].TYPE === 'StickySubagent' || json.instructions[x].TYPE === 'ConsumeNotices') {
+          else if (json.instructions[x].TYPE === 'StickySubagent' || json.instructions[x].TYPE === 'ConsumeNotices') {
             if (json.instructions[x].subworkflow) {
               json.instructions[x].instructions = json.instructions[x].subworkflow.instructions;
               delete json.instructions[x].subworkflow;
             }
           }
-          if (json.instructions[x].TYPE === 'Lock') {
+          else if (json.instructions[x].TYPE === 'Lock') {
             if (json.instructions[x].lockedWorkflow) {
               json.instructions[x].instructions = json.instructions[x].lockedWorkflow.instructions;
               delete json.instructions[x].lockedWorkflow;
             }
           }
-          if (json.instructions[x].TYPE === 'Options') {
+          else if (json.instructions[x].TYPE === 'Options') {
             if (json.instructions[x].block) {
               json.instructions[x].instructions = json.instructions[x].block.instructions;
               delete json.instructions[x].block;
             }
           }
-          if (json.instructions[x].TYPE === 'Cycle') {
+          else if (json.instructions[x].TYPE === 'Cycle') {
             if (json.instructions[x].cycleWorkflow) {
               json.instructions[x].instructions = json.instructions[x].cycleWorkflow.instructions;
               delete json.instructions[x].cycleWorkflow;
             }
           }
-          if (json.instructions[x].TYPE === 'ForkList') {
+          else if (json.instructions[x].TYPE === 'ForkList') {
             if (json.instructions[x].workflow) {
               json.instructions[x].instructions = json.instructions[x].workflow.instructions;
               json.instructions[x].result = json.instructions[x].workflow.result;
@@ -2607,7 +2625,7 @@ export class CoreService {
   }
 
   sanitizeFileName(fileName) {
-    const pattern = /[*?|<>]/i
+    const pattern = /[*?<>]/i
     return pattern.test(fileName);
   }
 }

@@ -1,6 +1,6 @@
-import {Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
-import {isEmpty, extend, clone, sortBy} from 'underscore';
+import {isEmpty, extend, clone} from 'underscore';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ActivatedRoute, Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -795,6 +795,7 @@ export class FileTransferComponent {
   createCustomization(): void {
     this.modal.create({
       nzTitle: undefined,
+      nzAutofocus: null,
       nzContent: FilterModalComponent,
       nzClassName: 'lg',
       nzData: {
@@ -811,6 +812,7 @@ export class FileTransferComponent {
   editFilters(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
+      nzAutofocus: null,
       nzContent: EditFilterModalComponent,
       nzData: {
         filterList: this.filterList,
@@ -970,6 +972,7 @@ export class FileTransferComponent {
       }
       const modal = this.modal.create({
         nzTitle: undefined,
+        nzAutofocus: null,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
         nzData: {
