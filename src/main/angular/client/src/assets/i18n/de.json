@@ -2012,7 +2012,7 @@
           "delay": "Die Verzögerung ist die Anzahl Sekunden, für die auf den nächsten Wiederholungsversuch gewartet wird. Werden mehrere durch Komma getrennte Werte angegeben, so gelten sie von links nach rechts für die Wartezeit auf die nächste Wiederholung."
         },
         "cycle": {
-          "onlyOnePeriod": "Only One Period"
+          "onlyOnePeriod": "Nur eine Periode"
         }
       }
     },
@@ -3336,7 +3336,7 @@
     "label.bySubagentCluster": "Per Subagenten Cluster",
     "label.stopOnFailure": "Stoppen im Fehlerfall",
     "label.references": "Referenzen",
-    "label.onlyOnePeriod": "Only One Period",
+    "label.onlyOnePeriod": "Nur eine Periode",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
