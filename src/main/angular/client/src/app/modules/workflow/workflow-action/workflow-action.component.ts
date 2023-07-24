@@ -100,6 +100,7 @@ export class AddOrderModalComponent {
   schedules: any;
   selectedSchedule: any;
   positions: any;
+  newPositions: any;
   blockPositions: any;
   positionList: any;
   blockPositionList: any;
@@ -156,8 +157,9 @@ export class AddOrderModalComponent {
         this.blockPositions = new Map();
         this.blockPositionList = new Map();
         res.blockPositions.forEach((item) => {
+          item.positionString = item.positionString.substring(0, item.positionString.lastIndexOf('/'));
           this.blockPositions.set(item.positionString, JSON.stringify(item.position));
-          this.blockPositionList.set(JSON.stringify(item.position), item.positionString);
+          this.blockPositionList.set(JSON.stringify(item.position), JSON.stringify(item));
         });
       }, error: () => this.submitted = false
     });
@@ -278,6 +280,16 @@ export class AddOrderModalComponent {
 
   selectTime(time, isEditor = false): void {
     this.coreService.selectTime(time, isEditor, this.order);
+  }
+
+  getNewPositions(positions): void {
+    this.newPositions = positions ? positions.positions : undefined;
+    if (positions) {
+      this.newPositions = new Map();
+      positions.positions.forEach(item => {
+        this.newPositions.set(item.positionString, JSON.stringify(item.position));
+      })
+    }
   }
 
   onSubmit(): void {

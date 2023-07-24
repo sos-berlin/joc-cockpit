@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {isArray, isEmpty} from 'underscore';
@@ -56,7 +56,7 @@ export class UpdateObjectComponent {
     gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
     extraKeys: {'Shift-Ctrl-Space': 'autocomplete'}
   };
-
+  @ViewChild('codeMirror', {static: false}) cm;
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService,
               private authService: AuthService, private modal: NzModalService, private translate: TranslateService) {
   }
@@ -145,7 +145,20 @@ export class UpdateObjectComponent {
       });
     });
   }
+  handleKeyDown(event: KeyboardEvent) {
+    const tabKey = "Tab";
+    if (event.key === tabKey) {
+      event.preventDefault();
 
+      const numSpaces = this.preferences.tabSize;
+      const cursor = this.cm.codeMirror.getCursor();
+      const spaces = ' '.repeat(numSpaces);
+
+      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
+
+      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
+    }
+  }
   onSelect(name) {
     this.isTreeShow = false;
     this.object.workflowName = name;

@@ -74,7 +74,7 @@
         </div>
         <div id="resizable" class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}">
           <ngx-codemirror [appAutofocus]="true" required #codeMirror
-                          #cm="ngModel" name="cm" [(ngModel)]="scriptObj.data" [options]="cmOption"
+                          #cm="ngModel" name="cm" [(ngModel)]="scriptObj.data" [options]="cmOption" (keydown)="handleKeyDown($event)" (mousedown)="handleMouseDown($event)"
           ></ngx-codemirror>
           <div class="rg-right" style="background: transparent; margin-right: -16px"><span style="top:48%"></span></div>
           <div class="rg-bottom" style="bottom: -16px;background: transparent"><span></span></div>

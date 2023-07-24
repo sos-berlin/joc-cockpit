@@ -31,8 +31,10 @@ export class ChangeParameterModalComponent {
   comments: any = {};
   schedule: any = {};
   display: any;
+  newPositions: any;
   positions: any;
   blockPositions: any;
+  blockPositionList: any;
   selectValue=[{value: 'True' , name:true},
   {value: 'False' , name:false}]
 
@@ -99,8 +101,11 @@ export class ChangeParameterModalComponent {
         });
 
         this.blockPositions = new Map()
+        this.blockPositionList = new Map();
         res.blockPositions.forEach((item) => {
+          item.positionString = item.positionString.substring(0, item.positionString.lastIndexOf('/'));
           this.blockPositions.set(item.positionString, JSON.stringify(item.position));
+          this.blockPositionList.set(JSON.stringify(item.position), JSON.stringify(item));
         });
       });
     }
@@ -229,6 +234,16 @@ export class ChangeParameterModalComponent {
   selectStartNode(value, positions): void {
     if (value) {
       positions.endPositions = [];
+    }
+  }
+
+  getNewPositions(positions): void {
+    this.newPositions = positions ? positions.positions : undefined;
+    if (positions) {
+      this.newPositions = new Map();
+      positions.positions.forEach(item => {
+        this.newPositions.set(item.positionString, JSON.stringify(item.position));
+      })
     }
   }
 

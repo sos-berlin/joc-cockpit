@@ -21,6 +21,7 @@
              id="boardId">
           <ngx-codemirror #codeMirror #expectBoardExpression="ngModel" [(ngModel)]="obj.data"
                           [autoFocus]="true"
+                          (keydown)="handleKeyDown($event)"
                           [options]="{
                                          lineNumbers: true,
                                          autoRefresh: true,

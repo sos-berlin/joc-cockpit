@@ -47,7 +47,9 @@ export class ScheduleComponent {
   indexOfNextAdd = 0;
   history = [];
   positions: any;
+  newPositions: any;
   blockPositions: any;
+  blockPositionList: any;
   lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
@@ -719,6 +721,19 @@ export class ScheduleComponent {
     this.saveJSON();
   }
 
+  getNewPositions(positions): void {
+    this.newPositions = positions ? positions.positions : undefined;
+    if (positions) {
+      this.newPositions = new Map();
+      positions.positions.forEach(item => {
+        this.newPositions.set(item.positionString, JSON.stringify(item.position));
+      })
+    }
+
+    this.saveJSON();
+  }
+
+
   checkVal(isChecked) {
     setTimeout(() => {
       this.saveJSON();
@@ -935,8 +950,11 @@ export class ScheduleComponent {
           this.positions.set(item.positionString, JSON.stringify(item.position));
         });
         this.blockPositions = new Map();
+        this.blockPositionList = new Map();
         res.blockPositions.forEach((item) => {
+          item.positionString = item.positionString.substring(0, item.positionString.lastIndexOf('/'));
           this.blockPositions.set(item.positionString, JSON.stringify(item.position));
+          this.blockPositionList.set(JSON.stringify(item.position), JSON.stringify(item));
         });
         cb();
       }, error: () => {

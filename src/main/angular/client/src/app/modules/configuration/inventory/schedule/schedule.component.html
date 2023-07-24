@@ -149,8 +149,8 @@
                      [nzTooltipMouseEnterDelay]="0.5"
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.blockPosition</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
-                <app-node-position (onBlur)="saveJSON()" [obj]="variableSet.positions" [positions]="blockPositions"
-                                   [type]="'BLOCK_POSITION'" [workflow]="workflow"></app-node-position>
+                <app-node-position [obj]="variableSet.positions" [positions]="blockPositions" [blockPositionList]="blockPositionList"
+                                   [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event)"></app-node-position>
               </div>
             </div>
             <div class="form-group row">
@@ -158,7 +158,7 @@
                      [nzTooltipMouseEnterDelay]="0.5"
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.startNode</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
-                <app-node-position (onBlur)="saveJSON()" [obj]="variableSet.positions" [positions]="positions"
+                <app-node-position (onBlur)="saveJSON()" [obj]="variableSet.positions" [newPositions]="newPositions"  [positions]="positions"
                                    [type]="'START'" [workflow]="workflow"></app-node-position>
               </div>
             </div>
@@ -167,12 +167,13 @@
                      [nzTooltipMouseEnterDelay]="0.5"
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.endNode</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
-                <app-node-position (onBlur)="updateEndNode(variableSet.positions)" [obj]="variableSet.positions"
+                <app-node-position (onBlur)="updateEndNode(variableSet.positions)" [newPositions]="newPositions" [obj]="variableSet.positions"
                                    [position]="variableSet.positions.startPosition"
                                    [positions]="positions" [type]="'END'"
                                    [workflow]="workflow"></app-node-position>
               </div>
             </div>
+
             <div class="form-group row">
               <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.ignoreAdmissionTimes' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5"

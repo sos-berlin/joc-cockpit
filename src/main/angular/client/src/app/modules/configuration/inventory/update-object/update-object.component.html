@@ -648,7 +648,7 @@
             </label>
             <div class="col-md-6">
               <div class="b-a">
-                <ngx-codemirror [(ngModel)]="object.script" [options]="cmOption" name="cm"></ngx-codemirror>
+                <ngx-codemirror [(ngModel)]="object.script"  (keydown)="handleKeyDown($event)" [options]="cmOption" name="cm"></ngx-codemirror>
               </div>
             </div>
             <div class="col-md-1">
