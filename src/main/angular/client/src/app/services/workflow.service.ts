@@ -1543,8 +1543,13 @@ export class WorkflowService {
       if (targetId) {
         _node.setAttribute('targetId', targetId);
       }
-      let closeTag = type === 'Cycle' ? 'cycle' : 'close' + type;
-      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol(closeTag, colorCode, self.theme) : closeTag);
+
+      let v1;
+      if(type === 'Cycle') {
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToVertex('cycle', colorCode, self.theme) : 'cycle');
+      } else {
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('close' + type, colorCode, self.theme) : 'close' + type);
+      }
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
       if (branches.instructions && branches.instructions.length > 0) {
@@ -1622,7 +1627,7 @@ export class WorkflowService {
     const state = graph.view.getState(cell);
     if (state && state.shape) {
       state.style[mxConstants.STYLE_OPACITY] = isBlur ? 60 : 100;
-      if(isColor) {
+      if (isColor) {
         state.style[mxConstants.STYLE_FILLCOLOR] = '#b1d7f8';
         state.style[mxConstants.STYLE_STROKECOLOR] = '#739fc4';
       }
@@ -1633,9 +1638,9 @@ export class WorkflowService {
 
   public convertValueToString(cell: any, graph: any, jobs = []): string {
     function getClass(input: string, num: number): string {
-       if (input.length > num) {
-         return 'p-l-md';
-       } else {
+      if (input.length > num) {
+        return 'p-l-md ';
+      } else {
         return '';
       }
     }
@@ -2789,4 +2794,5 @@ export class WorkflowService {
     }
     return job;
   }
+
 }

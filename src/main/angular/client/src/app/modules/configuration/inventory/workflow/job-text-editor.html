@@ -310,6 +310,7 @@
                          id="scriptId">
                       <ngx-codemirror #codeMirror #script="ngModel"
                                       [(ngModel)]="selectedNode.job.executable.script"
+                                      (keydown)="handleKeyDown($event)"
                                       [options]="{
                                          lineNumbers: true,
                                          autoRefresh: true,

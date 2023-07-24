@@ -1418,6 +1418,21 @@ export class JobComponent {
     this.subscription.unsubscribe();
   }
 
+  handleKeyDown(event: KeyboardEvent) {
+    const tabKey = "Tab";
+    if (event.key === tabKey) {
+      event.preventDefault();
+
+      const numSpaces = this.preferences.tabSize;
+      const cursor = this.cm.codeMirror.getCursor();
+      const spaces = ' '.repeat(numSpaces);
+
+      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
+
+      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
+    }
+  }
+
   private initAutoComplete(time = 0): void {
     const self = this;
     setTimeout(() => {
@@ -2482,7 +2497,7 @@ export class ScriptEditorComponent {
 
   scriptTree: any = [];
   isSkip = false;
-  disabled= false;
+  disabled = false;
   isTreeShow = false;
   dragEle: any;
   scriptObj = {
@@ -2496,7 +2511,7 @@ export class ScriptEditorComponent {
     foldGutter: true,
     scrollbarStyle: 'simple',
     viewportMargin: Infinity,
-    highlightSelectionMatches: {showToken:/\w/, annotateScrollbar: true},
+    highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
   };
   @ViewChild('codeMirror', {static: false}) cm: any;
@@ -2510,8 +2525,8 @@ export class ScriptEditorComponent {
     this.disabled = this.modalData.disabled;
     this.isSkip = this.modalData.isSkip;
     this.cmOption.mode = this.modalData.mode;
-    if(this.cmOption.mode === 'javascript'){
-      this.cmOption.autoCloseBrackets =true;
+    if (this.cmOption.mode === 'javascript') {
+      this.cmOption.autoCloseBrackets = true;
     }
     if (this.disabled) {
       this.cmOption.reladOnly = true;
@@ -2555,7 +2570,7 @@ export class ScriptEditorComponent {
         this.cm.codeMirror.setOption("extraKeys", {
           "Shift-Ctrl-Space": "autocomplete",
           "Ctrl-Space": function (editor) {
-            if(!self.isSkip) {
+            if (!self.isSkip) {
               const cursor = editor.getCursor();
               self.isTreeShow = true;
               setTimeout(() => {
@@ -2572,6 +2587,33 @@ export class ScriptEditorComponent {
         })
       }
     }, 0);
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    const tabKey = "Tab";
+    if (event.key === tabKey) {
+      event.preventDefault();
+
+      const numSpaces = this.modalData.tabSize;
+      const cursor = this.cm.codeMirror.getCursor();
+      const spaces = ' '.repeat(numSpaces);
+
+      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
+
+      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
+    }
+
+  }
+
+  handleMouseDown(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    console.log(target, "sssssssss")
+
+    if (target.classList.contains('cm-matchhighlight')) {
+      console.log(target, "sssssssss")
+      target.style.backgroundColor = 'darkgreen';
+    }
+
   }
 
   @HostListener('document:mousemove', ['$event'])
@@ -2636,6 +2678,7 @@ export class ScriptEditorComponent {
 export class ExpressionComponent {
   @Input() selectedNode: any;
   @Input() error: any;
+  @Input() tabSize: any;
   @Input() isTooltipVisible: boolean;
   expression: any = {};
   operators = ['==', '!=', '<', '<=', '>', '>=', 'in', '&&', '||', '!'];
@@ -2707,6 +2750,21 @@ export class ExpressionComponent {
 
   change(): void {
     this.error = !this.selectedNode.obj.predicate;
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    const tabKey = "Tab";
+    if (event.key === tabKey) {
+      event.preventDefault();
+
+      const numSpaces = this.tabSize;
+      const cursor = this.cm.codeMirror.getCursor();
+      const spaces = ' '.repeat(numSpaces);
+
+      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
+
+      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
+    }
   }
 
   // Begin inputting of clicked text into editor
@@ -2792,6 +2850,8 @@ export class WorkflowComponent {
   lastModified: any = '';
   hasLicense: boolean;
   positions: any;
+  newPositions: any;
+  blockPositionList: any;
   blockPositions: any;
   info1 = '';
   info2 = '';
@@ -2948,6 +3008,21 @@ export class WorkflowComponent {
       }
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    const tabKey = "Tab";
+    if (event.key === tabKey) {
+      event.preventDefault();
+
+      const numSpaces = this.preferences.tabSize;
+      const cursor = this.cm.codeMirror.getCursor();
+      const spaces = ' '.repeat(numSpaces);
+
+      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
+
+      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
     }
   }
 
@@ -4705,6 +4780,7 @@ export class WorkflowComponent {
             this.selectedNode.obj.arguments = [];
           }
           this.positions = undefined;
+          this.newPositions = undefined;
           this.blockPositions = undefined;
           this.getPositions(this.selectedNode.obj.workflowName);
           this.updateArgumentList();
@@ -4719,12 +4795,16 @@ export class WorkflowComponent {
     }).subscribe({
       next: (res) => {
         this.positions = new Map();
-        this.blockPositions = new Map();
         res.positions.forEach((item) => {
           this.positions.set(item.positionString, JSON.stringify(item.position));
         });
+
+        this.blockPositions = new Map();
+        this.blockPositionList = new Map();
         res.blockPositions.forEach((item) => {
+          item.positionString = item.positionString.substring(0, item.positionString.lastIndexOf('/'));
           this.blockPositions.set(item.positionString, JSON.stringify(item.position));
+          this.blockPositionList.set(JSON.stringify(item.position), JSON.stringify(item));
         });
         if (this.selectedNode.obj) {
           let map = new Map();
@@ -4735,10 +4815,12 @@ export class WorkflowComponent {
           this.blockPositions.forEach((k, v) => {
             map2.set(k, v);
           });
+
           if (this.selectedNode.obj.blockPosition) {
             this.selectedNode.obj.blockPosition =
               map2.get(JSON.stringify(this.selectedNode.obj.blockPosition));
           }
+
           if (this.selectedNode.obj.startPosition) {
             this.selectedNode.obj.startPosition =
               map.get(JSON.stringify(this.selectedNode.obj.startPosition));
@@ -4758,6 +4840,16 @@ export class WorkflowComponent {
 
   updateEndNode(positions): void {
     positions.endPositions = [...positions.endPositions];
+  }
+
+  getNewPositions(positions): void {
+    this.newPositions = positions ? positions.positions : undefined;
+    if (positions) {
+      this.newPositions = new Map();
+      positions.positions.forEach(item => {
+        this.newPositions.set(item.positionString, JSON.stringify(item.position));
+      })
+    }
   }
 
   createForkListVariables(): void {
@@ -7922,28 +8014,24 @@ export class WorkflowComponent {
             const edit4 = new mxCellAttributeChange(
               obj.cell, 'remainWhenTerminated', self.selectedNode.newObj.remainWhenTerminated);
             graph.getModel().execute(edit4);
+            const edit5 = new mxCellAttributeChange(
+              obj.cell, 'startPosition', (self.selectedNode.newObj.startPosition && self.positions.has(self.selectedNode.newObj.startPosition)) ? JSON.stringify(self.positions.get(self.selectedNode.newObj.startPosition)) : undefined)
+            graph.getModel().execute(edit5);
 
-            if (self.selectedNode.newObj.startPosition && self.positions.get(self.selectedNode.newObj.startPosition)) {
-              const edit5 = new mxCellAttributeChange(
-                obj.cell, 'startPosition', JSON.stringify(self.positions.get(self.selectedNode.newObj.startPosition)))
-              graph.getModel().execute(edit5);
-            }
-
-            if (self.selectedNode.newObj.endPositions && self.selectedNode.newObj.endPositions.length > 0) {
-              let arr = [];
+            let arr = [];
+            if (self.selectedNode.newObj.endPositions) {
               self.selectedNode.newObj.endPositions.forEach((item) => {
                 arr.push(self.positions.get(item));
               })
-              const edit6 = new mxCellAttributeChange(
-                obj.cell, 'endPositions', JSON.stringify(arr));
-              graph.getModel().execute(edit6);
             }
+            const edit6 = new mxCellAttributeChange(
+              obj.cell, 'endPositions', (self.selectedNode.newObj.endPositions && self.selectedNode.newObj.endPositions.length > 0) ? JSON.stringify(arr) : undefined);
+            graph.getModel().execute(edit6);
 
-            if (self.selectedNode.newObj.blockPosition && self.blockPositions.get(self.selectedNode.newObj.blockPosition)) {
-              const edit7 = new mxCellAttributeChange(
-                obj.cell, 'blockPosition', JSON.stringify(self.blockPositions.get(self.selectedNode.newObj.blockPosition)))
-              graph.getModel().execute(edit7);
-            }
+            const edit7 = new mxCellAttributeChange(
+              obj.cell, 'blockPosition', (self.selectedNode.newObj.blockPosition && self.blockPositions.get(self.selectedNode.newObj.blockPosition)) ? JSON.stringify(self.blockPositions.get(self.selectedNode.newObj.blockPosition)) : undefined)
+            graph.getModel().execute(edit7);
+
             const edit8 = new mxCellAttributeChange(
               obj.cell, 'forceJobAdmission', self.selectedNode.newObj.forceJobAdmission);
             graph.getModel().execute(edit8);
@@ -10828,7 +10916,6 @@ export class WorkflowComponent {
             json.instructions[x].lockedWorkflow = {
               instructions: json.instructions[x].instructions
             };
-
             const demands = clone(json.instructions[x].demands);
             delete json.instructions[x].instructions;
             delete json.instructions[x].demands;

@@ -12,6 +12,8 @@ export class NodePositionComponent {
   @Input() obj: any;
   @Input() position: any;
   @Input() positions: any;
+  @Input() blockPositionList: any;
+  @Input() newPositions: any;
   @Input() workflow: any;
   @Input() type: string;
   @Input() index = 0;
@@ -28,7 +30,7 @@ export class NodePositionComponent {
       this.getNodes(this.position);
     }
 
-    if (changes['reload'] && changes['reload'].currentValue == true) {
+    if ((changes['reload'] && changes['reload'].currentValue == true) || changes['newPositions']) {
       this.getNodes(this.position);
     }
   }
@@ -43,9 +45,11 @@ export class NodePositionComponent {
     function recursive(json, obj, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
-
           let skip = false;
           let isEnable = self.positions ? self.positions.has(json.instructions[x].positionString) : true;
+          if (self.newPositions?.size > 0) {
+            isEnable = self.newPositions ? self.newPositions.has(json.instructions[x].positionString) : true;
+          }
           if (!position || json.instructions[x].positionString === position) {
             flag = true;
           }
@@ -78,18 +82,20 @@ export class NodePositionComponent {
                   obj.children.push(_obj);
                 }
                 for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                  let obj1 = {
+                    title: json.instructions[x].branches[i].id,
+                    disabled: true,
+                    label: json.instructions[x].label,
+                    key: json.instructions[x].positionString + json.instructions[x].branches[i].id,
+                    children: []
+                  };
+                  if (flag && !skip) {
+                    _obj.children.push(obj1);
+                  }
                   if (json.instructions[x].branches[i].workflow?.instructions) {
-                    let obj1 = {
-                      title: json.instructions[x].branches[i].id,
-                      disabled: true,
-                      label: json.instructions[x].label,
-                      key: json.instructions[x].positionString + json.instructions[x].branches[i].id,
-                      children: []
-                    };
-                    if (flag && !skip) {
-                      _obj.children.push(obj1);
-                    }
                     recursive(json.instructions[x].branches[i].workflow, obj1, json.instructions[x]);
+                  } else {
+                    recursive(json.instructions[x].branches[i], obj1, json.instructions[x]);
                   }
                 }
               }
@@ -191,9 +197,11 @@ export class NodePositionComponent {
       }
     }
 
-    recursive({
-      instructions: this.workflow.actual || this.workflow.instructions
-    }, nodes);
+    if(this.workflow) {
+      recursive({
+        instructions: this.workflow.actual || this.workflow.instructions
+      }, nodes);
+    }
     self.nodes = nodes.children;
   }
 
@@ -204,6 +212,22 @@ export class NodePositionComponent {
     this.onBlur.emit();
   }
 
+  selectBlockPosition(value) {
+    if (value) {
+      this.obj.startPosition = '';
+      this.obj.endPositions = [];
+      if (this.positions.has(value)) {
+        let positions = this.blockPositionList.get(this.positions.get(value));
+        if (positions && typeof positions == 'string') {
+          positions = JSON.parse(positions);
+        }
+        this.onBlur.emit(positions);
+      }
+    } else {
+      this.onBlur.emit(null);
+    }
+  }
+
   showGraphicalView(operation) {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -211,7 +235,7 @@ export class NodePositionComponent {
       nzClassName: 'lg',
       nzData: {
         workflow: this.workflow,
-        positions: this.positions,
+        positions: this.newPositions || this.positions,
         data: this.obj,
         operation,
         startNode: operation === 'END' && this.obj.startPosition ? this.obj.startPosition : undefined
@@ -224,11 +248,15 @@ export class NodePositionComponent {
       if (result) {
         if (operation === 'START') {
           this.obj.startPosition = result;
-        } else {
+          this.onBlur.emit();
+        } else if (operation === 'END') {
           this.obj.endPositions = result;
           this.obj.endPositions = [...this.obj.endPositions];
+          this.onBlur.emit();
+        } else {
+          this.obj.blockPosition = result;
+          this.selectBlockPosition(result);
         }
-        this.onBlur.emit();
       }
     });
   }

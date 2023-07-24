@@ -9326,3 +9326,17 @@ cdk-virtual-scroll-viewport {
   white-space: nowrap;
   margin-bottom: -2px;
 }
+
+.CodeMirror-guttermarker-subtle {
+  color: orange !important;
+  font-size: 1.5rem;
+  margin-top: -9px;
+  margin-left: -3px;
+}
+
+.CodeMirror-foldgutter-open {
+  color: blue !important;
+  font-size: 1.5rem;
+  margin-top: -9px;
+  margin-left: -3px;
+}

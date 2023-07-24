@@ -34,7 +34,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 'X-OPENID-CONFIGURATION': user.oidcDocument
               };
               const headers = new HttpHeaders(headerOptions);
-              req = req.clone({headers});
+              req = req.clone({headers, body: {}});
             } else if (!user.fido) {
               req = req.clone({
                 headers: req.headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((user.userName || '') + ':' + (user.password || ''))))),

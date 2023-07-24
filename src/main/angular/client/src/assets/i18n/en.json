@@ -2011,7 +2011,7 @@
           "delay": "The Delay specifies the time in seconds before the next retry is performed. If a number of values are specified - separated by a comma - then each value from left to right applies to the period that the next retry is waited for."
         },
         "cycle": {
-          "onlyOnePeriod": "Only One Period"
+          "onlyOnePeriod": "Only one Period"
         }
       }
     },
@@ -3341,7 +3341,7 @@
     "label.bySubagentCluster": "By Subagent Cluster",
     "label.stopOnFailure": "Stop On Failure",
     "label.references": "References",
-    "label.onlyOnePeriod": "Only One Period",
+    "label.onlyOnePeriod": "Only one Period",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",

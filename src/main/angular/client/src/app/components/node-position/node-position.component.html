@@ -25,11 +25,12 @@
     nzAllowClear
     [nzDropdownStyle]="{ 'max-height': '260px' }"
     [nzPlaceHolder]="'order.placeholder.selectBlockPosition' | translate"
-    name="startNode{{index}}"
+    name="blockNode{{index}}"
     [(ngModel)]="obj.blockPosition"
     [nzDropdownClassName]="'custom-dropdown'"
     [nzNodes]="nodes"
-    (ngModelChange)="selectStartNode(null)"
+    (ngModelChange)="selectBlockPosition($event)"
+    (nzRemoved)="selectBlockPosition($event)"
     [nzShowSearch]="true"
   >
     <ng-template #nzTreeTemplate let-node>

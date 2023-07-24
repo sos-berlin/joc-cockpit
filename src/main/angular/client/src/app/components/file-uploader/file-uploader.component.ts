@@ -233,6 +233,7 @@ export class FileUploaderComponent {
         msg = translatedValue;
       });
       this.toasterService.error(msg);
+      this.fileList = [];
       return false;
     }
     if (this.type === 'DEPLOYMENT' || this.type === 'USER' || this.type == 'INVENTORY' || this.type == 'INVENTORY_OBJECT'

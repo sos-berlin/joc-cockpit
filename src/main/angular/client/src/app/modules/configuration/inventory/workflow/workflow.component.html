@@ -218,7 +218,7 @@
             </div>
           </div>
           <div *ngIf="selectedNode.type === 'If'">
-            <app-expression-content [error]="error" [isTooltipVisible]="!preferences.showTooltipInfo"
+            <app-expression-content [error]="error" [tabSize]="preferences.tabSize" [isTooltipVisible]="!preferences.showTooltipInfo"
                                     [selectedNode]="selectedNode"></app-expression-content>
           </div>
           <div *ngIf="selectedNode.type === 'Fork'">
@@ -900,13 +900,13 @@
                 </div>
               </div>
             </div>
-            <div class="form-group row" *ngIf="blockPositions?.size > 0">
+            <div class="form-group row" [hidden]="!blockPositions || blockPositions?.size == 0">
               <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.blockPosition' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5"
                      class="col-md-4 col-lg-3 form-control-label"
                      title="{{'workflow.label.blockPosition' | translate}}" translate>workflow.label.blockPosition</label>
               <div *ngIf="positions" class="col-md-8 col-lg-9">
-                <app-node-position [obj]="selectedNode.obj" [positions]="blockPositions"
+                <app-node-position [obj]="selectedNode.obj" [positions]="blockPositions" [blockPositionList]="blockPositionList" (onBlur)="getNewPositions($event)"
                                    [type]="'BLOCK_POSITION'" [workflow]="selectedNode.obj.workflow"></app-node-position>
               </div>
             </div>
@@ -916,7 +916,7 @@
                        class="col-md-4 col-lg-3 form-control-label"
                        title="{{'workflow.label.startPosition' | translate}}" translate>workflow.label.startPosition</label>
                 <div *ngIf="positions" class="col-md-8 col-lg-9">
-                  <app-node-position [obj]="selectedNode.obj" [positions]="positions"
+                  <app-node-position [obj]="selectedNode.obj" [newPositions]="newPositions" [positions]="positions"
                                      [type]="'START'" [workflow]="selectedNode.obj.workflow"></app-node-position>
                 </div>
               </div>
@@ -926,7 +926,7 @@
                        class="col-md-4 col-lg-3 form-control-label"
                        title="{{'workflow.label.endPositions' | translate}}" translate>workflow.label.endPositions</label>
                 <div *ngIf="positions" class="col-md-8 col-lg-9">
-                  <app-node-position (onBlur)="updateEndNode(selectedNode.obj)" [obj]="selectedNode.obj" [position]="selectedNode.obj.startPosition"
+                  <app-node-position (onBlur)="updateEndNode(selectedNode.obj)" [newPositions]="newPositions" [obj]="selectedNode.obj" [position]="selectedNode.obj.startPosition"
                                      [positions]="positions" [type]="'END'"
                                      [workflow]="selectedNode.obj.workflow"></app-node-position>
                 </div>

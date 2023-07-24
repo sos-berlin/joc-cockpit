@@ -2015,7 +2015,7 @@
           "delay": "Le délai spécifie le temps en secondes avant que la prochaine tentative ne soit effectuée. Si un certain nombre de valeurs sont spécifiées - séparées par une virgule - alors chaque valeur de gauche à droite s'applique à la période d'attente de la prochaine tentative."
         },
         "cycle": {
-          "onlyOnePeriod": "Only One Period"
+          "onlyOnePeriod": "Une seule Période"
         }
       }
     },
@@ -3345,7 +3345,7 @@
     "label.bySubagentCluster": "Par Cluster de Sous-agents",
     "label.stopOnFailure": "Arrêt en cas d'échec",
     "label.references": "Références",
-    "label.onlyOnePeriod": "Only One Period",
+    "label.onlyOnePeriod": "Une seule Période",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",

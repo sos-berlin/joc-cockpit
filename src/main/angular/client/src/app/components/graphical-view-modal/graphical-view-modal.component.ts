@@ -250,7 +250,12 @@ export class GraphicalViewModalComponent {
       this.workflowService.createWorkflow(this.workFlowJson, {graph: this.graph}, mapObj);
 
       if (this.data) {
-        if (this.operation === 'START' && this.data.startPosition) {
+
+        if (this.operation === 'BLOCK_POSITION' && this.data.blockPosition) {
+          this.position = this.coreService.clone(this.data.blockPosition);
+          let pos = this.positions.get(this.data.blockPosition);
+          this.graph.setSelectionCell(mapObj.vertixMap.get(pos));
+        } else if (this.operation === 'START' && this.data.startPosition) {
           this.position = this.coreService.clone(this.data.startPosition);
           let pos = this.positions.get(this.data.startPosition);
           this.graph.setSelectionCell(mapObj.vertixMap.get(pos));
