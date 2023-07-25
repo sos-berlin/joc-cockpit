@@ -1,6 +1,5 @@
 import {Component, inject} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {differenceInCalendarDays} from 'date-fns';
 import {isArray, isEmpty, object} from 'underscore';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
@@ -35,8 +34,8 @@ export class ChangeParameterModalComponent {
   positions: any;
   blockPositions: any;
   blockPositionList: any;
-  selectValue=[{value: 'True' , name:true},
-  {value: 'False' , name:false}]
+  selectValue = [{value: 'True', name: true},
+    {value: 'False', name: false}]
 
   positionObj = {
     blockPosition: '',
@@ -103,7 +102,6 @@ export class ChangeParameterModalComponent {
         this.blockPositions = new Map()
         this.blockPositionList = new Map();
         res.blockPositions.forEach((item) => {
-          item.positionString = item.positionString.substring(0, item.positionString.lastIndexOf('/'));
           this.blockPositions.set(item.positionString, JSON.stringify(item.position));
           this.blockPositionList.set(JSON.stringify(item.position), JSON.stringify(item));
         });
@@ -397,12 +395,28 @@ export class ChangeParameterModalComponent {
       obj.blockPosition = JSON.parse(this.blockPositions.get(this.positionObj.blockPosition));
     }
     if (this.positionObj.startPosition) {
-      obj.startPosition = JSON.parse(this.positions.get(this.positionObj.startPosition));
+      if (this.newPositions && this.newPositions?.size) {
+        if (this.newPositions.has(this.positionObj.startPosition)) {
+          obj.startPosition = JSON.parse(this.newPositions.get(this.positionObj.startPosition));
+        }
+      } else if (this.positions && this.positions?.size) {
+        if (this.positions.has(this.positionObj.startPosition)) {
+          obj.startPosition = JSON.parse(this.positions.get(this.positionObj.startPosition));
+        }
+      }
     }
     if (this.positionObj.endPositions) {
       obj.endPositions = [];
       this.positionObj.endPositions.forEach(pos => {
-        obj.endPositions.push(JSON.parse(this.positions.get(pos)));
+        if (this.newPositions && this.newPositions?.size) {
+          if (this.newPositions.has(pos)) {
+            obj.endPositions.push(JSON.parse(this.newPositions.get(pos)));
+          }
+        } else if (this.positions && this.positions?.size) {
+          if (this.positions.has(pos)) {
+            obj.endPositions.push(JSON.parse(this.positions.get(pos)));
+          }
+        }
       });
     }
     obj.auditLog = {};
@@ -512,11 +526,6 @@ export class ModifyStartTimeModalComponent {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.dateType.timeZone = this.preferences.zone;
-  }
-
-  disabledDate = (current: Date): boolean => {
-    // Can not select days before today and today
-    return differenceInCalendarDays(current, new Date()) < 0;
   }
 
   static checkTime(time): string {

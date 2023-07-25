@@ -383,10 +383,21 @@
                 <label [(ngModel)]="checkboxObjects.orderName" class="m-t-xs" name="corderName" nz-checkbox></label>
               </div>
             </div>
+            <div *ngIf="blockPositions?.size > 0"
+                 class="form-group row">
+              <label class="col-sm-4 form-control-label" translate>order.label.blockPosition</label>
+              <div class="col-sm-6">
+                <app-node-position [index]="j" [obj]="variableSet.positions" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList"
+                                   [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event)"></app-node-position>
+              </div>
+              <div class="col-md-1">
+                <label [(ngModel)]="checkboxObjects.startNode" class="m-t-xs" name="cstartNode" nz-checkbox></label>
+              </div>
+            </div>
             <div class="form-group row">
               <label class="col-md-4 form-control-label" translate>order.label.startNode</label>
               <div class="col-md-6">
-                <app-node-position [index]="j" [obj]="variableSet.positions" [positions]="positions"
+                <app-node-position [index]="j" [obj]="variableSet.positions" [newPositions]="newPositions" [positions]="positions"
                                    [type]="'START'" [workflow]="workflow"></app-node-position>
               </div>
               <div class="col-md-1">
@@ -396,7 +407,7 @@
             <div class="form-group row">
               <label class="col-md-4 form-control-label" translate>order.label.endNode</label>
               <div class="col-md-6">
-                <app-node-position [index]="j" [obj]="variableSet.positions" [position]="variableSet.positions.startPosition"
+                <app-node-position [index]="j" [obj]="variableSet.positions" [newPositions]="newPositions" [position]="variableSet.positions.startPosition"
                                    [positions]="positions" [type]="'END'"
                                    [workflow]="workflow"></app-node-position>
               </div>
@@ -648,7 +659,7 @@
             </label>
             <div class="col-md-6">
               <div class="b-a">
-                <ngx-codemirror [(ngModel)]="object.script"  (keydown)="handleKeyDown($event)" [options]="cmOption" name="cm"></ngx-codemirror>
+                <ngx-codemirror [(ngModel)]="object.script" [options]="cmOption" name="cm"></ngx-codemirror>
               </div>
             </div>
             <div class="col-md-1">

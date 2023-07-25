@@ -310,13 +310,13 @@
                          id="scriptId">
                       <ngx-codemirror #codeMirror #script="ngModel"
                                       [(ngModel)]="selectedNode.job.executable.script"
-                                      (keydown)="handleKeyDown($event)"
                                       [options]="{
                                          lineNumbers: true,
                                          autoRefresh: true,
                                          lineWrapping: true,
                                          foldGutter: true,
                                          matchBrackets: true,
+                                         tabSize: preferences.tabSize,
                                          autoCloseBrackets: selectedNode.job.executable.TYPE === 'JavaScript',
                                          scrollbarStyle: 'simple',
                                          readOnly: (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name),

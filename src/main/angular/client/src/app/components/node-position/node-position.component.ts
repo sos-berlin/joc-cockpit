@@ -1,17 +1,18 @@
 import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
-import {WorkflowService} from "../../services/workflow.service";
 import {GraphicalViewModalComponent} from "../graphical-view-modal/graphical-view-modal.component";
+import {WorkflowService} from "../../services/workflow.service";
+import {CoreService} from "../../services/core.service";
 
 @Component({
   selector: 'app-node-position',
   templateUrl: './node-position.component.html'
 })
 export class NodePositionComponent {
-
   @Input() obj: any;
   @Input() position: any;
   @Input() positions: any;
+  @Input() blockPositions: any;
   @Input() blockPositionList: any;
   @Input() newPositions: any;
   @Input() workflow: any;
@@ -20,9 +21,11 @@ export class NodePositionComponent {
   @Input() reload: boolean;
 
   nodes: any = [];
+  blockInstructions = ['Lock', 'Cycle', 'ConsumeNotices', 'Options', 'StickySubagent', 'ForkList'];
+
   @Output() onBlur = new EventEmitter<string>();
 
-  constructor(public workflowService: WorkflowService, private modal: NzModalService) {
+  constructor(public workflowService: WorkflowService, private modal: NzModalService, private coreService: CoreService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -45,7 +48,6 @@ export class NodePositionComponent {
     function recursive(json, obj, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
-          let skip = false;
           let isEnable = self.positions ? self.positions.has(json.instructions[x].positionString) : true;
           if (self.newPositions?.size > 0) {
             isEnable = self.newPositions ? self.newPositions.has(json.instructions[x].positionString) : true;
@@ -53,13 +55,25 @@ export class NodePositionComponent {
           if (!position || json.instructions[x].positionString === position) {
             flag = true;
           }
+          if (self.blockPositions) {
+            if (self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
+              if (self.blockInstructions.includes(json.instructions[x].TYPE)) {
+                const pos = json.instructions[x].positionString + '/' + self.coreService.lowerFLetter(json.instructions[x].TYPE)
+                isEnable = self.blockPositions.has(pos);
+              } else {
+                isEnable = false;
+              }
+            } else {
+              isEnable = false;
+            }
+          }
 
           if (position && json.instructions[x].positionString === position) {
             isEnable = false;
           }
 
           if (!self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
-            if (flag && !skip) {
+            if (flag) {
               obj.children.push({
                 title: json.instructions[x].jobName || (json.instructions[x].TYPE !== 'ImplicitEnd' ? json.instructions[x].TYPE : parent ? 'Join' : '--- end ---'),
                 key: json.instructions[x].positionString,
@@ -78,7 +92,7 @@ export class NodePositionComponent {
                   label: json.instructions[x].label,
                   children: []
                 };
-                if (flag && !skip) {
+                if (flag) {
                   obj.children.push(_obj);
                 }
                 for (let i = 0; i < json.instructions[x].branches.length; i++) {
@@ -89,7 +103,15 @@ export class NodePositionComponent {
                     key: json.instructions[x].positionString + json.instructions[x].branches[i].id,
                     children: []
                   };
-                  if (flag && !skip) {
+
+                  if (self.blockPositions) {
+                    const pos = json.instructions[x].positionString + '/fork+' + json.instructions[x].branches[i].id;
+                    obj1.disabled = !self.blockPositions.has(pos);
+                    if (!obj1.disabled) {
+                      obj1.key = pos;
+                    }
+                  }
+                  if (flag) {
                     _obj.children.push(obj1);
                   }
                   if (json.instructions[x].branches[i].workflow?.instructions) {
@@ -113,8 +135,15 @@ export class NodePositionComponent {
                 disabled: !isEnable,
                 children: []
               };
-              if (flag && !skip) {
+              if (flag) {
                 obj.children.push(_obj);
+              }
+              if (self.blockPositions) {
+                const pos = json.instructions[x].positionString + '/try';
+                _obj.disabled = !self.blockPositions.has(pos);
+                if (!_obj.disabled) {
+                  _obj.key = pos;
+                }
               }
               if (json.instructions[x].try) {
                 if (json.instructions[x].try.instructions && json.instructions[x].try.instructions.length > 0) {
@@ -128,6 +157,17 @@ export class NodePositionComponent {
                   key: json.instructions[x].positionString + "catch",
                   children: []
                 };
+                if (self.blockPositions) {
+                  const pos = json.instructions[x].positionString + '/catch';
+                  obj1.disabled = !self.blockPositions.has(pos);
+                  if (!obj1.disabled) {
+                    obj1.key = pos;
+                  }
+                } else {
+                  if (self.newPositions?.size > 0) {
+                    obj1.disabled = self.newPositions ? !self.newPositions.has(json.instructions[x].positionString) : true;
+                  }
+                }
                 _obj.children.push(obj1);
                 recursive(json.instructions[x].catch, obj1);
               }
@@ -139,7 +179,14 @@ export class NodePositionComponent {
                 key: json.instructions[x].positionString,
                 children: []
               };
-              if (flag && !skip) {
+              if (self.blockPositions) {
+                const pos = json.instructions[x].positionString + '/then';
+                _obj.disabled = !self.blockPositions.has(pos);
+                if (!_obj.disabled) {
+                  _obj.key = pos;
+                }
+              }
+              if (flag) {
                 obj.children.push(_obj);
               }
               if (json.instructions[x].then && json.instructions[x].then.instructions) {
@@ -152,7 +199,14 @@ export class NodePositionComponent {
                   key: json.instructions[x].positionString,
                   children: []
                 };
-                if (flag && !skip) {
+                if (self.blockPositions) {
+                  const pos = json.instructions[x].positionString + '/else';
+                  obj1.disabled = !self.blockPositions.has(pos);
+                  if (!obj1.disabled) {
+                    obj1.key = pos;
+                  }
+                }
+                if (flag) {
                   _obj.children.push(obj1);
                 }
                 recursive(json.instructions[x].else, obj1);
@@ -167,7 +221,10 @@ export class NodePositionComponent {
                 key: json.instructions[x].positionString,
                 children: []
               };
-              if (flag && !skip) {
+              if (self.blockPositions) {
+                _obj.key = json.instructions[x].positionString + '/' + self.coreService.lowerFLetter(json.instructions[x].TYPE)
+              }
+              if (flag) {
                 obj.children.push(_obj);
               }
               if ((json.instructions[x].TYPE === 'Cycle' && json.instructions[x].cycleWorkflow)) {
@@ -190,14 +247,11 @@ export class NodePositionComponent {
             }
           }
 
-          if (json.instructions[x].positionString && json.instructions[x].positionString === position && isEnable) {
-            skip = true;
-          }
         }
       }
     }
 
-    if(this.workflow) {
+    if (this.workflow) {
       recursive({
         instructions: this.workflow.actual || this.workflow.instructions
       }, nodes);
@@ -216,8 +270,8 @@ export class NodePositionComponent {
     if (value) {
       this.obj.startPosition = '';
       this.obj.endPositions = [];
-      if (this.positions.has(value)) {
-        let positions = this.blockPositionList.get(this.positions.get(value));
+      if (this.blockPositions.has(value)) {
+        let positions = this.blockPositionList.get(this.blockPositions.get(value));
         if (positions && typeof positions == 'string') {
           positions = JSON.parse(positions);
         }

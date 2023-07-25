@@ -43,6 +43,7 @@ export class ScriptComponent {
     lineWrapping: true,
     matchBrackets: true,
     foldGutter: true,
+    tabSize: 4,
     scrollbarStyle: 'simple',
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     mode: 'shell',
@@ -71,6 +72,10 @@ export class ScriptComponent {
         this.undo();
       }
     });
+  }
+
+  ngOnInit(): void{
+    this.cmOption.tabSize = this.preferences.tabSize;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -119,20 +124,6 @@ export class ScriptComponent {
     }
   }
 
-  handleKeyDown(event: KeyboardEvent) {
-    const tabKey = "Tab";
-    if (event.key === tabKey) {
-      event.preventDefault();
-
-      const numSpaces = this.preferences.tabSize;
-      const cursor = this.cm.codeMirror.getCursor();
-      const spaces = ' '.repeat(numSpaces);
-
-      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
-
-      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
-    }
-  }
   rename(inValid): void {
     if (this.data.id === this.script.id && this.data.name !== this.script.name) {
       if (!inValid) {

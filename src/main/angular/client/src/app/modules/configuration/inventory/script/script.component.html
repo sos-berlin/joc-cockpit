@@ -83,7 +83,7 @@
             <div [ngClass]="{'invalid': (cm.invalid && (cm.dirty && cm.touched) && !script.configuration.script)}"
                  class="b-a">
               <ngx-codemirror #cm="ngModel" #codeMirror (focusout)="saveJSON()"
-                              [(ngModel)]="script.configuration.script"  (keydown)="handleKeyDown($event)" [options]="cmOption"
+                              [(ngModel)]="script.configuration.script" [options]="cmOption"
                               name="cm" required></ngx-codemirror>
             </div>
             <div *ngIf="(cm.invalid && (cm.dirty && cm.touched)) && !script.configuration.script"

@@ -149,7 +149,7 @@
                      [nzTooltipMouseEnterDelay]="0.5"
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.blockPosition</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
-                <app-node-position [obj]="variableSet.positions" [positions]="blockPositions" [blockPositionList]="blockPositionList"
+                <app-node-position [obj]="variableSet.positions" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList"
                                    [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event)"></app-node-position>
               </div>
             </div>

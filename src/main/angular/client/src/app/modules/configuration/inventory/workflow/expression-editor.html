@@ -7,7 +7,7 @@
   </div>
   <div class="col-md-12">
     <div [ngClass]="{'invalid': error || (cm.invalid && (cm.dirty || cm.touched))}" class="b-a p-a-xs">
-      <ngx-codemirror #cm="ngModel" #codeMirror [(ngModel)]="selectedNode.obj.predicate"  (keydown)="handleKeyDown($event)" [options]="cmOption"
+      <ngx-codemirror #cm="ngModel" #codeMirror [(ngModel)]="selectedNode.obj.predicate" [options]="cmOption"
                       required
       ></ngx-codemirror>
     </div>

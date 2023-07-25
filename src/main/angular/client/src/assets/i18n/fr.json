@@ -208,9 +208,7 @@
     "label.exportAgentConfiguration": "Exporter la configuration des Agents",
     "label.importAgentConfiguration": "Importer la configuration des Agents",
     "label.clusterState": "État du Cluster",
-    "label.lostDirector": "Agent Directeur perdu",
-    "label.primary": "Primaire",
-    "label.secondary": "Secondaire",
+
     "button.createToken": "Créer un Jeton à usage unique",
     "button.addAgent": "Ajouter un Agent Autonome",
     "button.addSubagent": "Ajouter un Sous-agent",
@@ -234,7 +232,6 @@
     "button.show": "Afficher",
     "button.exportAgentConfiguration": "Exporter la configuration des Agents",
     "button.importAgentConfiguration": "Importer la configuration Agents",
-    "button.confirmNodeLoss": "Confirmer la perte d'une Instance d'Agent Directeur",
     "message.dropHereToDetach": "Cliquez ici pour supprimer le Sous-agent",
     "message.noClusterFound": "Aucun Cluster trouvé",
     "message.clickHereToAdd": "Cliquez ici pour ajouter",
@@ -3594,64 +3591,11 @@
     "message.jobResourceNotFound": "Ressource de Tâche n'existe plus"
   },
   "calendar": {
-    "days": [
-      "Dimanche",
-      "Lundi",
-      "Mardi",
-      "Mercredi",
-      "Jeudi",
-      "Vendredi",
-      "Samedi",
-      "Dimanche"
-    ],
-    "daysShort": [
-      "Dim",
-      "Lun",
-      "Mar",
-      "Mer",
-      "Jeu",
-      "Ven",
-      "Sam",
-      "Dim"
-    ],
-    "daysMin": [
-      "D",
-      "L",
-      "Ma",
-      "Me",
-      "J",
-      "V",
-      "S",
-      "D"
-    ],
-    "months": [
-      "Janvier",
-      "Février",
-      "Mars",
-      "Avril",
-      "Mai",
-      "Juin",
-      "Juillet",
-      "Août",
-      "Septembre",
-      "Octobre",
-      "Novembre",
-      "Décembre"
-    ],
-    "monthsShort": [
-      "Jan",
-      "Fév",
-      "Mar",
-      "Avr",
-      "Mai",
-      "Jui",
-      "Jul",
-      "Aou",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Déc"
-    ],
+    "days": ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+    "daysShort": ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
+    "daysMin": ["D", "L", "Ma", "Me", "J", "V", "S", "D"],
+    "months": ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+    "monthsShort": ["Jan", "Fév", "Mar", "Avr", "Mai", "Jui", "Jul", "Aou", "Sep", "Oct", "Nov", "Déc"],
     "weekShort": "S",
     "weekStart": 1
   },

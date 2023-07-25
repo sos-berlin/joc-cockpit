@@ -21,7 +21,6 @@
              id="boardId">
           <ngx-codemirror #codeMirror #expectBoardExpression="ngModel" [(ngModel)]="obj.data"
                           [autoFocus]="true"
-                          (keydown)="handleKeyDown($event)"
                           [options]="{
                                          lineNumbers: true,
                                          autoRefresh: true,
@@ -29,6 +28,7 @@
                                          matchBrackets: true,
                                          foldGutter: true,
                                          scrollbarStyle: 'simple',
+                                         tabSize: modalData.tabSize,
                                          highlightSelectionMatches: {showToken, annotateScrollbar: true},
                                          mode: 'shell',
                                          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']

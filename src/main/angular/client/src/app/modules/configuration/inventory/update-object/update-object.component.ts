@@ -34,6 +34,9 @@ export class UpdateObjectComponent {
   jobResourcesTree = [];
   documentationTree = [];
   positions: any;
+  blockPositions: any;
+  blockPositionList: any;
+  newPositions: any;
   step = 1;
   submitted = false;
   isVisible = false;
@@ -50,6 +53,7 @@ export class UpdateObjectComponent {
     lineWrapping: true,
     matchBrackets: true,
     foldGutter: true,
+    tabSize: 4,
     scrollbarStyle: 'simple',
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     mode: 'shell',
@@ -69,6 +73,7 @@ export class UpdateObjectComponent {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.cmOption.tabSize = this.preferences.tabSize;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -144,20 +149,6 @@ export class UpdateObjectComponent {
         this.updateVariableList();
       });
     });
-  }
-  handleKeyDown(event: KeyboardEvent) {
-    const tabKey = "Tab";
-    if (event.key === tabKey) {
-      event.preventDefault();
-
-      const numSpaces = this.preferences.tabSize;
-      const cursor = this.cm.codeMirror.getCursor();
-      const spaces = ' '.repeat(numSpaces);
-
-      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
-
-      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
-    }
   }
   onSelect(name) {
     this.isTreeShow = false;
@@ -313,9 +304,15 @@ export class UpdateObjectComponent {
       workflowPath: path
     }).subscribe({
       next: (res) => {
-        this.positions = new Map()
+        this.positions = new Map();
         res.positions.forEach((item) => {
           this.positions.set(item.positionString, JSON.stringify(item.position));
+        });
+        this.blockPositions = new Map();
+        this.blockPositionList = new Map();
+        res.blockPositions.forEach((item) => {
+          this.blockPositions.set(item.positionString, JSON.stringify(item.position));
+          this.blockPositionList.set(JSON.stringify(item.position), JSON.stringify(item));
         });
         cb();
       }, error: () => {
@@ -448,6 +445,16 @@ export class UpdateObjectComponent {
       this.object.postOrderToNoticeId = $event;
     } else {
       this.object.expectOrderToNoticeId = $event;
+    }
+  }
+
+  getNewPositions(positions): void {
+    this.newPositions = positions ? positions.positions : undefined;
+    if (positions) {
+      this.newPositions = new Map();
+      positions.positions.forEach(item => {
+        this.newPositions.set(item.positionString, JSON.stringify(item.position));
+      })
     }
   }
 
@@ -754,6 +761,9 @@ export class UpdateObjectComponent {
             });
           }
           if (parameter.positions) {
+            if (parameter.positions.blockPosition && this.blockPositions && this.blockPositions.has(parameter.positions.blockPosition)) {
+              parameter.positions.blockPosition = JSON.parse(this.blockPositions.get(parameter.positions.blockPosition))
+            }
             if (parameter.positions.startPosition && this.positions && this.positions.has(parameter.positions.startPosition)) {
               parameter.positions.startPosition = JSON.parse(this.positions.get(parameter.positions.startPosition))
             }

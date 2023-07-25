@@ -1,13 +1,30 @@
 <div class="box-shadow-on-modal">
   <div class="modal-body p-a min-ht-350" id="tree-modal">
-    <div class="search-box-field ">
-      <label>
-        <input (input)="onSearchInput($event.target['value'])" [value]="obj.name"
-               class="input-tree-search "
-               placeholder="{{'common.placeholder.search' | translate}}" type="search"/>
-      </label>
+    <div>
+      <div>
+        <input [(ngModel)]="obj.searchText" (blur)="clearSearchInput()"
+               (ngModelChange)="onSearchInput($event)"
+               [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
+               type="search" class="input-tree-search"
+               name="treeSearch"
+        />
+        <i *ngIf="obj.loading" [nzType]="'loading'" class="tree-search-icon" nz-icon
+           nzTheme="outline"></i>
+      </div>
+      <nz-autocomplete #auto>
+        <ng-container *ngFor="let option of objectList | orderBy: 'name'">
+          <nz-auto-option (click)="selectObject(option.name)" [nzValue]="option.path" class="min-ht-opt">
+            <div class="node-wrapper p-l">
+              <div [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+                   class="node-content-wrapper2" nzTooltipPlacement="right">
+                <i class="icon-jobs-icon icon-color tree-icon"></i>
+                <span class="p-l-sm">{{ option.name }}</span>
+              </div>
+            </div>
+          </nz-auto-option>
+        </ng-container>
+      </nz-autocomplete>
     </div>
-
     <div *ngIf="tree.length > 0" class="tree-content m-t-sm">
       <nz-tree
         [nzData]="tree"

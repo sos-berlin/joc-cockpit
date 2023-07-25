@@ -585,8 +585,12 @@ export class ScheduleComponent {
             map2.set(k, v);
           });
           if (this.schedule.configuration.orderParameterisations[prop].positions.blockPosition) {
-            this.schedule.configuration.orderParameterisations[prop].positions.blockPosition =
-              map2.get(JSON.stringify(this.schedule.configuration.orderParameterisations[prop].positions.blockPosition));
+            const pos = this.coreService.clone(this.schedule.configuration.orderParameterisations[prop].positions.blockPosition);
+            this.schedule.configuration.orderParameterisations[prop].positions.blockPosition = map2.has(pos) ? map2.get(pos) :
+              map2.get(JSON.stringify(pos));
+            if (pos) {
+              this.newPositions = this.blockPositionList.has(pos) ? this.blockPositionList.get(pos).positions : undefined;
+            }
           }
           if (this.schedule.configuration.orderParameterisations[prop].positions.startPosition) {
             this.schedule.configuration.orderParameterisations[prop].positions.startPosition =
@@ -952,7 +956,6 @@ export class ScheduleComponent {
         this.blockPositions = new Map();
         this.blockPositionList = new Map();
         res.blockPositions.forEach((item) => {
-          item.positionString = item.positionString.substring(0, item.positionString.lastIndexOf('/'));
           this.blockPositions.set(item.positionString, JSON.stringify(item.position));
           this.blockPositionList.set(JSON.stringify(item.position), JSON.stringify(item));
         });

@@ -19,7 +19,7 @@
         <label class="col-sm-4 form-control-label" translate>order.label.blockPosition</label>
         <div class="col-sm-7">
           <app-node-position [obj]="positionObj" [blockPositionList]="blockPositionList" [type]="'BLOCK_POSITION'" [workflow]="workflow"
-                             [positions]="blockPositions" (onBlur)="getNewPositions($event)"></app-node-position>
+                             [blockPositions]="blockPositions" (onBlur)="getNewPositions($event)"></app-node-position>
         </div>
       </div>
       <div class="form-group row" *ngIf="permission.currentController && permission.currentController.orders.managePositions && !variable">

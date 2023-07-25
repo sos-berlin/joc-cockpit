@@ -66,5 +66,5 @@
     </ng-template>
   </nz-tree-select>
 </ng-container>
-<i class="fa fa-sitemap mt-2 cursor primary-text-hover-color pos-abt m-l-sm" aria-hidden="true"
+<i *ngIf="type !== 'BLOCK_POSITION'" class="fa fa-sitemap mt-2 cursor primary-text-hover-color pos-abt m-l-sm" aria-hidden="true"
    (click)="showGraphicalView(type)"></i>

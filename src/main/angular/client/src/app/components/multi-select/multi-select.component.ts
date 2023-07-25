@@ -25,6 +25,9 @@ export class MultiSelectComponent {
   }
 
   ngOnInit(): void {
+    if(this.list[this.attribute] && typeof this.list[this.attribute] == 'string'){
+      this.list[this.attribute] = [this.list[this.attribute]];
+    }
     if (!this.list[this.attribute]) {
       this.list[this.attribute] = [];
     }
