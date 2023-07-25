@@ -768,6 +768,9 @@ export class LayoutComponent {
       if (!data.maxFavoriteEntries) {
         data.maxFavoriteEntries = 10;
       }
+      if (!data.tabSize) {
+        data.tabSize = 4;
+      }
       if (!data.orderOverviewPageView) {
         data.orderOverviewPageView = 'list';
       }

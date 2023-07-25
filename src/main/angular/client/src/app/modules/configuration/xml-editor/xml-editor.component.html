@@ -385,7 +385,7 @@
                     <div class="col-sm-5">
                       <div *ngIf="node.name === 'job_resources'">
                         <app-multi-select [attribute]="'data'" [list]="node" [nodes]="jobResourcesTree"
-                                          [type]="'JOBRESOURCE'"></app-multi-select>
+                                          [type]="'JOBRESOURCE'" (onSelectCall)="onChangeJobResource(node.data, node)"></app-multi-select>
                       </div>
                       <div *ngIf="node.name === 'name' && node.parent === 'JobResource'">
                         <input (click)="isTreeShow = true;" [(ngModel)]="node.data" autocomplete="off" class="form-control"

@@ -76,7 +76,7 @@
          class="form-group row">
       <label class="col-sm-4 form-control-label" translate>order.label.blockPosition</label>
       <div class="col-sm-6">
-        <app-node-position [obj]="order" [positions]="blockPositions" [blockPositionList]="blockPositionList" [reload]="order.reload"
+        <app-node-position [obj]="order" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList" [reload]="order.reload"
                            [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event)"></app-node-position>
       </div>
     </div>

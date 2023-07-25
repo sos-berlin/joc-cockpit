@@ -69,7 +69,7 @@
       </div>
       <div class="col-md-12">
         <div [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}" class="b-a">
-          <ngx-codemirror #cm="ngModel" #codeMirror [(ngModel)]="obj.xml" (keydown)="handleKeyDown($event)" [options]="cmOptions" name="cm"
+          <ngx-codemirror #cm="ngModel" #codeMirror [(ngModel)]="obj.xml"  [options]="cmOptions" name="cm"
                           required>
           </ngx-codemirror>
         </div>

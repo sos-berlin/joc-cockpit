@@ -22,8 +22,10 @@ export class TreeModalComponent {
   isExpandAll = false;
   loading = false;
   isSubmitted = false;
-  originalTree: any = [];
+  objectList: any = [];
   obj = {
+    loading: false,
+    searchText: '',
     name: '',
     token: ''
   };
@@ -58,7 +60,6 @@ export class TreeModalComponent {
     }).subscribe({
       next: (res) => {
         this.tree = this.coreService.prepareTree(res, true);
-        this.originalTree = [...this.tree];
         if (this.tree.length > 0) {
           this.tree[0].expanded = true;
           this.selectNode(this.tree[0]);
@@ -73,6 +74,19 @@ export class TreeModalComponent {
 
   handleCheckbox(object): void {
     this.onNodeChecked(object);
+  }
+
+  clearSearchInput(): void {
+    this.objectList = [];
+    this.obj.searchText = '';
+  }
+
+  onSearchInput(searchValue: string) {
+    this.searchTerm.next(searchValue);
+  }
+
+  selectObject(name): void {
+    this.activeModal.close([{calendarName: name, periods: []}]);
   }
 
   selectNode(e): void {
@@ -122,6 +136,7 @@ export class TreeModalComponent {
 
   private getJSObject(): void {
     const self = this;
+
     function recursive(nodes): void {
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].calendars) {
@@ -148,15 +163,6 @@ export class TreeModalComponent {
     }
   }
 
-  onSearchInput(searchValue: string) {
-    if (searchValue.trim() === '') {
-      this.tree = [...this.originalTree];
-      this.ref.detectChanges();
-    } else {
-      this.searchTerm.next(searchValue);
-    }
-  }
-
   private searchObjects(value: string) {
     if (value !== '') {
       const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
@@ -171,9 +177,7 @@ export class TreeModalComponent {
         this.coreService.post('inventory/quick/search', request).subscribe({
           next: (res: any) => {
             this.obj.token = res.token;
-            this.tree = res.results.map(function (item) {
-              return {...item, key: item.name, title: item.name};
-            });
+            this.objectList = res.results;
             if (this.changeDetect) {
               this.ref.detectChanges();
             }

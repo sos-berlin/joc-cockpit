@@ -157,7 +157,6 @@ export class AddOrderModalComponent {
         this.blockPositions = new Map();
         this.blockPositionList = new Map();
         res.blockPositions.forEach((item) => {
-          item.positionString = item.positionString.substring(0, item.positionString.lastIndexOf('/'));
           this.blockPositions.set(item.positionString, JSON.stringify(item.position));
           this.blockPositionList.set(JSON.stringify(item.position), JSON.stringify(item));
         });
@@ -283,12 +282,12 @@ export class AddOrderModalComponent {
   }
 
   getNewPositions(positions): void {
-    this.newPositions = positions ? positions.positions : undefined;
+    this.newPositions = undefined;
     if (positions) {
       this.newPositions = new Map();
       positions.positions.forEach(item => {
         this.newPositions.set(item.positionString, JSON.stringify(item.position));
-      })
+      });
     }
   }
 
@@ -343,16 +342,36 @@ export class AddOrderModalComponent {
         }
       });
     }
-    if (this.order.blockPosition && this.positions) {
-      order.blockPosition = JSON.parse(this.positions.get(this.order.blockPosition))
+    if (this.order.blockPosition && this.blockPositions && this.blockPositions?.size) {
+      if (this.blockPositions.has(this.order.blockPosition)) {
+        order.blockPosition = JSON.parse(this.blockPositions.get(this.order.blockPosition));
+      }
     }
-    if (this.order.startPosition && this.positions) {
-      order.startPosition = JSON.parse(this.positions.get(this.order.startPosition))
+
+    if (this.order.startPosition) {
+      if(this.newPositions && this.newPositions?.size){
+        if (this.newPositions.has(this.order.startPosition)) {
+          order.startPosition = JSON.parse(this.newPositions.get(this.order.startPosition));
+        }
+      } else if (this.positions && this.positions?.size) {
+        if (this.positions.has(this.order.startPosition)) {
+          order.startPosition = JSON.parse(this.positions.get(this.order.startPosition));
+        }
+      }
     }
-    if (this.order.endPositions && this.order.endPositions.length > 0 && this.positions) {
+
+    if (this.order.endPositions && this.order.endPositions.length > 0) {
       order.endPositions = [];
       this.order.endPositions.forEach(pos => {
-        order.endPositions.push(JSON.parse(this.positions.get(pos)));
+        if(this.newPositions && this.newPositions?.size){
+          if (this.newPositions.has(pos)) {
+            order.endPositions.push(JSON.parse(this.newPositions.get(pos)));
+          }
+        } else if(this.positions && this.positions?.size) {
+          if (this.positions.has(pos)) {
+            order.endPositions.push(JSON.parse(this.positions.get(pos)));
+          }
+        }
       });
     }
     obj.orders.push(order);

@@ -564,6 +564,7 @@ export class ShowModalComponent {
     lineWrapping: true,
     matchBrackets: true,
     foldGutter: true,
+    tabSize: 4,
     scrollbarStyle: 'simple',
     viewportMargin: Infinity,
     highlightSelectionMatches: {showToken:/\w/, annotateScrollbar: true},
@@ -579,11 +580,12 @@ export class ShowModalComponent {
 
   ngOnInit(): void {
     this.xml = this.modalData.xml;
-    this.objectType = this.modalData.objectType
-    this.schemaIdentifier = this.modalData.schemaIdentifier
-    this.schedulerId = this.modalData.schedulerId
-    this.activeTab = this.modalData.activeTab
-    this.validation = this.modalData.validation
+    this.objectType = this.modalData.objectType;
+    this.schemaIdentifier = this.modalData.schemaIdentifier;
+    this.schedulerId = this.modalData.schedulerId;
+    this.activeTab = this.modalData.activeTab;
+    this.validation = this.modalData.validation;
+    this.cmOptions.tabSize = this.modalData.tabSize;
   }
 
   ngAfterViewInit(): void {
@@ -667,21 +669,6 @@ export class ShowModalComponent {
         this.activeModal.close(res);
       }
     });
-  }
-
-  handleKeyDown(event: KeyboardEvent) {
-    const tabKey = "Tab";
-    if (event.key === tabKey) {
-      event.preventDefault();
-
-      const numSpaces = this.modalData.tabSize;
-      const cursor = this.cm.codeMirror.getCursor();
-      const spaces = ' '.repeat(numSpaces);
-
-      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
-
-      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
-    }
   }
 
   private highlightLineNo(num): void {
@@ -5119,6 +5106,7 @@ export class XmlEditorComponent {
         schedulerId: this.schedulerIds.selected,
         objectType: this.objectType,
         schemaIdentifier: this.schemaIdentifier,
+        tabSize: this.preferences.tabSize,
         activeTab: this.activeTab
       },
       nzFooter: null,
@@ -6052,6 +6040,7 @@ export class XmlEditorComponent {
         xml: data.configuration,
         schedulerId: this.schedulerIds.selected,
         objectType: this.objectType,
+        tabSize: this.preferences.tabSize,
         schemaIdentifier: this.schemaIdentifier,
         activeTab: this.activeTab,
         validation: data.validation

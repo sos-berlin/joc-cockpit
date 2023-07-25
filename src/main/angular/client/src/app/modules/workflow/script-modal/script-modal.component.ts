@@ -45,6 +45,7 @@ export class ScriptModalComponent {
     foldGutter: true,
     scrollbarStyle: 'simple',
     readOnly: true,
+    tabSize: 4,
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     mode: 'shell',
     gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
@@ -70,6 +71,7 @@ export class ScriptModalComponent {
     this.subagentClusterId = this.modalData.subagentClusterId;
     this.timezone = this.modalData.timezone;
     this.noticeBoardNames = this.modalData.noticeBoardNames;
+    this.cmOption.tabSize = this.preferences.tabSize;
     if (this.modalData.mode) {
       this.cmOption.mode = this.modalData.mode;
     } else {
@@ -140,21 +142,6 @@ export class ScriptModalComponent {
 
   convertSecondIntoWeek(): void {
     this.workflowService.convertSecondIntoWeek(this.admissionTime, this.periodList, this.days, {});
-  }
-
-  handleKeyDown(event: KeyboardEvent) {
-    const tabKey = "Tab";
-    if (event.key === tabKey) {
-      event.preventDefault();
-
-      const numSpaces = this.preferences.tabSize;
-      const cursor = this.cm.codeMirror.getCursor();
-      const spaces = ' '.repeat(numSpaces);
-
-      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
-
-      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
-    }
   }
 
   showConvertTime(): void {

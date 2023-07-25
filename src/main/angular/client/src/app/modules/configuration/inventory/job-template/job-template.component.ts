@@ -534,21 +534,6 @@ export class JobTemplateComponent {
 
   }
 
-  handleKeyDown(event: KeyboardEvent) {
-    const tabKey = "Tab";
-    if (event.key === tabKey) {
-      event.preventDefault();
-
-      const numSpaces = this.preferences.tabSize;
-      const cursor = this.cm.codeMirror.getCursor();
-      const spaces = ' '.repeat(numSpaces);
-
-      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
-
-      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
-    }
-  }
-
   private setJobProperties(): void {
     if (!this.job.configuration.parallelism) {
       this.job.configuration.parallelism = 1;

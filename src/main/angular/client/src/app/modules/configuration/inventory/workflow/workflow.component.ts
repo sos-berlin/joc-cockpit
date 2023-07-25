@@ -146,7 +146,6 @@ export class OffsetValidator implements Validator {
   }
 }
 
-
 @Component({
   selector: 'app-notice-board-editor-modal',
   templateUrl: './notice-board-editor-dialog.html'
@@ -161,6 +160,7 @@ export class NoticeBoardEditorComponent {
   };
   showToken = /\w/;
   isTreeShow = false;
+
   @ViewChild('codeMirror', {static: false}) cm;
 
   constructor(public activeModal: NzModalRef) {
@@ -211,21 +211,6 @@ export class NoticeBoardEditorComponent {
   onBlur(value: string): void {
     $('.ant-select-tree-dropdown').hide();
     this.checkExpectNoticeExp(value);
-  }
-
-  handleKeyDown(event: KeyboardEvent) {
-    const tabKey = "Tab";
-    if (event.key === tabKey) {
-      event.preventDefault();
-
-      const numSpaces = this.modalData.tabSize;
-      const cursor = this.cm.codeMirror.getCursor();
-      const spaces = ' '.repeat(numSpaces);
-
-      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
-
-      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
-    }
   }
 
   checkExpectNoticeExp(event): void {
@@ -1418,21 +1403,6 @@ export class JobComponent {
     this.subscription.unsubscribe();
   }
 
-  handleKeyDown(event: KeyboardEvent) {
-    const tabKey = "Tab";
-    if (event.key === tabKey) {
-      event.preventDefault();
-
-      const numSpaces = this.preferences.tabSize;
-      const cursor = this.cm.codeMirror.getCursor();
-      const spaces = ' '.repeat(numSpaces);
-
-      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
-
-      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
-    }
-  }
-
   private initAutoComplete(time = 0): void {
     const self = this;
     setTimeout(() => {
@@ -2509,6 +2479,7 @@ export class ScriptEditorComponent {
     lineWrapping: true,
     matchBrackets: true,
     foldGutter: true,
+    tabSize: 4,
     scrollbarStyle: 'simple',
     viewportMargin: Infinity,
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
@@ -2528,6 +2499,7 @@ export class ScriptEditorComponent {
     if (this.cmOption.mode === 'javascript') {
       this.cmOption.autoCloseBrackets = true;
     }
+    this.cmOption.tabSize = this.modalData.tabSize;
     if (this.disabled) {
       this.cmOption.reladOnly = true;
     }
@@ -2587,33 +2559,6 @@ export class ScriptEditorComponent {
         })
       }
     }, 0);
-  }
-
-  handleKeyDown(event: KeyboardEvent) {
-    const tabKey = "Tab";
-    if (event.key === tabKey) {
-      event.preventDefault();
-
-      const numSpaces = this.modalData.tabSize;
-      const cursor = this.cm.codeMirror.getCursor();
-      const spaces = ' '.repeat(numSpaces);
-
-      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
-
-      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
-    }
-
-  }
-
-  handleMouseDown(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    console.log(target, "sssssssss")
-
-    if (target.classList.contains('cm-matchhighlight')) {
-      console.log(target, "sssssssss")
-      target.style.backgroundColor = 'darkgreen';
-    }
-
   }
 
   @HostListener('document:mousemove', ['$event'])
@@ -2686,22 +2631,28 @@ export class ExpressionComponent {
   variablesOperators = ['matches', 'startWith', 'endsWith', 'contains'];
   varExam = 'variable ("aString", default="") matches ".*"';
   lastSelectOperator = '';
-  @ViewChild('codeMirror', {static: true}) cm;
+
   cmOption: any = {
-    lineNumbers: false,
-    scrollbarStyle: 'simple',
-    autoFocus: true,
+    lineNumbers: true,
     autoRefresh: true,
+    lineWrapping: true,
+    matchBrackets: true,
+    foldGutter: true,
+    tabSize: 4,
+    scrollbarStyle: 'simple',
+    highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     mode: 'ruby'
   };
+
+  @ViewChild('codeMirror', {static: true}) cm;
 
   constructor() {
   }
 
   ngOnInit(): void {
     this.expression.type = 'returnCode';
+    this.cmOption.tabSize = this.tabSize;
     this.change();
-
   }
 
   ngAfterViewInit(): void {
@@ -2750,21 +2701,6 @@ export class ExpressionComponent {
 
   change(): void {
     this.error = !this.selectedNode.obj.predicate;
-  }
-
-  handleKeyDown(event: KeyboardEvent) {
-    const tabKey = "Tab";
-    if (event.key === tabKey) {
-      event.preventDefault();
-
-      const numSpaces = this.tabSize;
-      const cursor = this.cm.codeMirror.getCursor();
-      const spaces = ' '.repeat(numSpaces);
-
-      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
-
-      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
-    }
   }
 
   // Begin inputting of clicked text into editor
@@ -3011,20 +2947,6 @@ export class WorkflowComponent {
     }
   }
 
-  handleKeyDown(event: KeyboardEvent) {
-    const tabKey = "Tab";
-    if (event.key === tabKey) {
-      event.preventDefault();
-
-      const numSpaces = this.preferences.tabSize;
-      const cursor = this.cm.codeMirror.getCursor();
-      const spaces = ' '.repeat(numSpaces);
-
-      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
-
-      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
-    }
-  }
 
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
@@ -4802,10 +4724,10 @@ export class WorkflowComponent {
         this.blockPositions = new Map();
         this.blockPositionList = new Map();
         res.blockPositions.forEach((item) => {
-          item.positionString = item.positionString.substring(0, item.positionString.lastIndexOf('/'));
           this.blockPositions.set(item.positionString, JSON.stringify(item.position));
           this.blockPositionList.set(JSON.stringify(item.position), JSON.stringify(item));
         });
+
         if (this.selectedNode.obj) {
           let map = new Map();
           this.positions.forEach((k, v) => {
@@ -4817,8 +4739,12 @@ export class WorkflowComponent {
           });
 
           if (this.selectedNode.obj.blockPosition) {
-            this.selectedNode.obj.blockPosition =
-              map2.get(JSON.stringify(this.selectedNode.obj.blockPosition));
+            const pos = this.coreService.clone(this.selectedNode.obj.blockPosition);
+            this.selectedNode.obj.blockPosition = map2.has(pos) ? map2.get(pos) :
+              map2.get(JSON.stringify(pos));
+            if (pos) {
+              this.newPositions = this.blockPositionList.has(pos) ? this.blockPositionList.get(pos).positions : undefined;
+            }
           }
 
           if (this.selectedNode.obj.startPosition) {
@@ -4851,7 +4777,6 @@ export class WorkflowComponent {
       })
     }
   }
-
   createForkListVariables(): void {
     this.forkListVariableObj = {
       create: true,
@@ -8014,18 +7939,40 @@ export class WorkflowComponent {
             const edit4 = new mxCellAttributeChange(
               obj.cell, 'remainWhenTerminated', self.selectedNode.newObj.remainWhenTerminated);
             graph.getModel().execute(edit4);
+            let startPosition;
+            if(self.selectedNode.newObj.startPosition) {
+              if (self.newPositions && self.newPositions.has(self.selectedNode.newObj.startPosition)) {
+                startPosition = JSON.stringify(self.newPositions.get(self.selectedNode.newObj.startPosition));
+              } else if (self.positions && self.positions.has(self.selectedNode.newObj.startPosition)) {
+                startPosition = JSON.stringify(self.positions.get(self.selectedNode.newObj.startPosition));
+              }
+            }
             const edit5 = new mxCellAttributeChange(
-              obj.cell, 'startPosition', (self.selectedNode.newObj.startPosition && self.positions.has(self.selectedNode.newObj.startPosition)) ? JSON.stringify(self.positions.get(self.selectedNode.newObj.startPosition)) : undefined)
+              obj.cell, 'startPosition', startPosition)
             graph.getModel().execute(edit5);
 
-            let arr = [];
-            if (self.selectedNode.newObj.endPositions) {
-              self.selectedNode.newObj.endPositions.forEach((item) => {
-                arr.push(self.positions.get(item));
-              })
+
+            let endPositions;
+            if(self.selectedNode.newObj.endPositions) {
+              let arr = [];
+              if (self.newPositions && self.newPositions.has(self.selectedNode.newObj.endPositions)) {
+                self.selectedNode.newObj.endPositions.forEach((item) => {
+                  if(self.newPositions.has(item)) {
+                    arr.push(self.newPositions.get(item));
+                  }
+                })
+                endPositions = JSON.stringify(arr);
+              } else if (self.positions && self.positions.has(self.selectedNode.newObj.endPositions)) {
+                self.selectedNode.newObj.endPositions.forEach((item) => {
+                  if(self.positions.has(item)) {
+                    arr.push(self.positions.get(item));
+                  }
+                })
+                endPositions = JSON.stringify(arr);
+              }
             }
             const edit6 = new mxCellAttributeChange(
-              obj.cell, 'endPositions', (self.selectedNode.newObj.endPositions && self.selectedNode.newObj.endPositions.length > 0) ? JSON.stringify(arr) : undefined);
+              obj.cell, 'endPositions', endPositions);
             graph.getModel().execute(edit6);
 
             const edit7 = new mxCellAttributeChange(

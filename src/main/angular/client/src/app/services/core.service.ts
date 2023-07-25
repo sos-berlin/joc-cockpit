@@ -2628,4 +2628,9 @@ export class CoreService {
     const pattern = /[*?<>]/i
     return pattern.test(fileName);
   }
+
+  lowerFLetter(string: string): string {
+    return string[0].toLowerCase() +
+      string.slice(1);
+  }
 }

@@ -620,7 +620,9 @@
                 <div [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}" class="b-a"
                      id="boardId">
                   <ngx-codemirror #codeMirror #expectBoardExpression="ngModel"
-                                  [(ngModel)]="selectedNode.obj.noticeBoardNames" (keydown)="handleKeyDown($event)" [options]="{lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
+                                  [(ngModel)]="selectedNode.obj.noticeBoardNames" [options]="{
+                                  lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
+                                  tabSize: preferences.tabSize,
                                   mode: 'shell'}"
                                   required
                   ></ngx-codemirror>
@@ -906,7 +908,7 @@
                      class="col-md-4 col-lg-3 form-control-label"
                      title="{{'workflow.label.blockPosition' | translate}}" translate>workflow.label.blockPosition</label>
               <div *ngIf="positions" class="col-md-8 col-lg-9">
-                <app-node-position [obj]="selectedNode.obj" [positions]="blockPositions" [blockPositionList]="blockPositionList" (onBlur)="getNewPositions($event)"
+                <app-node-position [obj]="selectedNode.obj" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList" (onBlur)="getNewPositions($event)"
                                    [type]="'BLOCK_POSITION'" [workflow]="selectedNode.obj.workflow"></app-node-position>
               </div>
             </div>
