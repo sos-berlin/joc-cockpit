@@ -655,8 +655,11 @@ export class JobTemplateComponent {
         const self = this;
         this.cm.codeMirror.setOption("extraKeys", {
           "Shift-Ctrl-Space": "autocomplete",
-          "Tab": function(cm) {
-            const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+          "Tab": (cm) => {
+            let spaces = '';
+            for(let i =0; i < parseInt(self.preferences.tabSize) || 4; i++){
+              spaces += ' ';
+            }
             cm.replaceSelection(spaces);
           },
           "Ctrl-Space": function (editor) {

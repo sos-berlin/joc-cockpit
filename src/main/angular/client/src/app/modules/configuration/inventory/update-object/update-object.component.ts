@@ -56,14 +56,7 @@ export class UpdateObjectComponent {
     scrollbarStyle: 'simple',
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     mode: 'shell',
-    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-    extraKeys: {
-      'Shift-Ctrl-Space': 'autocomplete',
-      "Tab": function(cm) {
-        const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
-        cm.replaceSelection(spaces);
-      }
-    }
+    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
   };
   @ViewChild('codeMirror', {static: false}) cm;
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService,
@@ -78,7 +71,17 @@ export class UpdateObjectComponent {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    this.cmOption.tabSize = this.preferences.tabSize;
+    this.cmOption.tabSize = parseInt(this.preferences.tabSize) || 4;
+    this.cmOption.extraKeys = {
+      'Shift-Ctrl-Space': 'autocomplete',
+      "Tab": (cm) => {
+        let spaces = '';
+        for(let i =0; i < this.cmOption.tabSize; i++){
+          spaces += ' ';
+        }
+        cm.replaceSelection(spaces);
+      }
+    }
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;

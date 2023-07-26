@@ -283,19 +283,12 @@ export class OrderListSidebarComponent implements OnChanges {
 
   resumeAllOrder(): void {
     const map = new Map();
-    let workflow;
     this.orders.forEach(item => {
       if (this.setOfCheckedId.has(item.orderId)) {
-        
-        if (!workflow) {
-          workflow = item.workflowId.path;
-        } else if (workflow !== item.workflowId.path) {
-          workflow = null;
-        }
         map.set(item.orderId, item);
       }
     });
-    if (workflow) {
+    if (map.size === 1) {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ResumeOrderModalComponent,

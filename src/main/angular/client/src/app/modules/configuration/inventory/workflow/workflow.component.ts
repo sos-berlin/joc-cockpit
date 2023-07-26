@@ -190,8 +190,12 @@ export class NoticeBoardEditorComponent {
 
         this.cm.codeMirror.setOption("extraKeys", {
           "Shift-Ctrl-Space": "autocomplete",
-          "Tab": function(cm) {
-            const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+          "Tab": (cm) => {
+            let spaces = '';
+            let tabSize = parseInt(self.modalData.tabSize || 4);
+            for(let i =0; i < tabSize; i++){
+              spaces += ' ';
+            }
             cm.replaceSelection(spaces);
           },
           "Ctrl-Space": function (editor) {
@@ -1413,8 +1417,12 @@ export class JobComponent {
       if (this.cm && this.cm.codeMirror) {
         this.cm.codeMirror.setOption("extraKeys", {
           "Shift-Ctrl-Space": "autocomplete",
-          "Tab": function(cm) {
-            const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+          "Tab": (cm) => {
+            let spaces = '';
+            let tabSize = parseInt(self.preferences.tabSize || 4);
+            for(let i =0; i < tabSize; i++){
+              spaces += ' ';
+            }
             cm.replaceSelection(spaces);
           },
           "Ctrl-Space": function (editor) {
@@ -2547,10 +2555,14 @@ export class ScriptEditorComponent {
           this.cm.codeMirror.focus();
           doc.setCursor(cursor);
         }, 400);
+        this.cmOption.tabSize = parseInt(this.modalData.tabSize) || 4;
         this.cm.codeMirror.setOption("extraKeys", {
           "Shift-Ctrl-Space": "autocomplete",
-          "Tab": function(cm) {
-            const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+          "Tab": (cm) => {
+            let spaces = '';
+            for(let i =0; i < this.cmOption.tabSize; i++){
+              spaces += ' ';
+            }
             cm.replaceSelection(spaces);
           },
           "Ctrl-Space": function (editor) {
@@ -8683,8 +8695,12 @@ export class WorkflowComponent {
 
             self.cm.codeMirror.setOption("extraKeys", {
               "Shift-Ctrl-Space": "autocomplete",
-              "Tab": function(cm) {
-                const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+              "Tab": (cm) => {
+                let spaces = '';
+                let tabSize = parseInt(self.preferences.tabSize || 4);
+                for(let i =0; i < tabSize; i++){
+                  spaces += ' ';
+                }
                 cm.replaceSelection(spaces);
               },
               "Ctrl-Space": function (editor) {
