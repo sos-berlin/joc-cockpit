@@ -4711,32 +4711,6 @@ export class WorkflowComponent {
       });
     }
   }
-
-  private getPositionStr(positionData, newPositions): string {
-    let positionString;
-    if (newPositions) {
-      if (newPositions.length > 0) {
-        for (let i in newPositions) {
-          if (JSON.stringify(positionData) === JSON.stringify(newPositions[i].position) ||
-            positionData === JSON.stringify(newPositions[i].position) || JSON.stringify(positionData) === newPositions[i].position ||
-            isEqual(positionData, newPositions[i].position)) {
-            positionString = newPositions[i].positionString;
-            break;
-          }
-        }
-      }
-    } else {
-      for (const [key, value] of this.positions) {
-        if (JSON.stringify(positionData) === JSON.stringify(value) || positionData === JSON.stringify(value)
-          || JSON.stringify(positionData) === value || isEqual(positionData, value)) {
-          positionString = key;
-          break;
-        }
-      }
-    }
-    return positionString;
-  }
-
   private getPositions(path): void {
     this.coreService.post('inventory/read/order/positions', {
       workflowPath: path
@@ -4777,16 +4751,15 @@ export class WorkflowComponent {
 
           }
           if (this.selectedNode.obj.startPosition) {
-            this.selectedNode.obj.startPosition = this.getPositionStr(this.selectedNode.obj.startPosition, newPositions);
+            this.selectedNode.obj.startPosition = this.coreService.getPositionStr(this.selectedNode.obj.startPosition, newPositions, this.positions);
           }
           if (this.selectedNode.obj.endPositions) {
             this.selectedNode.obj.endPositions =
               this.selectedNode.obj.endPositions.map(pos => {
-                return this.getPositionStr(pos, newPositions);
+                return this.coreService.getPositionStr(pos, newPositions, this.positions);
               }).filter(pos => !!pos);
           }
         }
-
         this.ref.detectChanges();
       }
     });
