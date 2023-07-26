@@ -30,9 +30,11 @@ export class NodePositionComponent {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.workflow) {
+      this.getNodes();
+    }
+    if(changes['position']?.currentValue){
       this.getNodes(this.position);
     }
-
     if ((changes['reload'] && changes['reload'].currentValue == true) || changes['newPositions']) {
       this.getNodes(this.position);
     }
@@ -44,7 +46,6 @@ export class NodePositionComponent {
       children: []
     };
     let flag = false;
-
     function recursive(json, obj, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -52,9 +53,7 @@ export class NodePositionComponent {
           if (self.newPositions?.size > 0) {
             isEnable = self.newPositions ? self.newPositions.has(json.instructions[x].positionString) : true;
           }
-          if (!position || json.instructions[x].positionString === position) {
-            flag = true;
-          }
+          flag = true;
           if (self.blockPositions) {
             if (self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
               if (self.blockInstructions.includes(json.instructions[x].TYPE)) {
@@ -66,10 +65,10 @@ export class NodePositionComponent {
             } else {
               isEnable = false;
             }
-          }
-
-          if (position && json.instructions[x].positionString === position) {
-            isEnable = false;
+          } else {
+            if (position && json.instructions[x].positionString === position) {
+              isEnable = false;
+            }
           }
 
           if (!self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
@@ -213,7 +212,6 @@ export class NodePositionComponent {
               }
             } else if (json.instructions[x].TYPE === 'Cycle' || json.instructions[x].TYPE === 'Lock' ||
               json.instructions[x].TYPE === 'Options' || json.instructions[x].TYPE === 'ForkList' || json.instructions[x].TYPE === 'ConsumeNotices') {
-
               let _obj = {
                 title: json.instructions[x].TYPE,
                 disabled: !isEnable,
@@ -270,12 +268,8 @@ export class NodePositionComponent {
     if (value) {
       this.obj.startPosition = '';
       this.obj.endPositions = [];
-      if (this.blockPositions.has(value)) {
-        let positions = this.blockPositionList.get(this.blockPositions.get(value));
-        if (positions && typeof positions == 'string') {
-          positions = JSON.parse(positions);
-        }
-        this.onBlur.emit(positions);
+      if (this.blockPositionList.has(value)) {
+        this.onBlur.emit(this.blockPositionList.get(value));
       }
     } else {
       this.onBlur.emit(null);

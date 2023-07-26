@@ -839,6 +839,7 @@ export class JobTemplateComponent {
       nzAutofocus: null,
       nzData: {
         script: this.job.configuration.executable.script,
+        tabSize: this.preferences.tabSize,
         mode,
         scriptTree: this.scriptTree
       },

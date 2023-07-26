@@ -102,7 +102,6 @@ export class AddOrderModalComponent {
   positions: any;
   newPositions: any;
   blockPositions: any;
-  positionList: any;
   blockPositionList: any;
   object = {
     orderName: '',
@@ -148,17 +147,15 @@ export class AddOrderModalComponent {
     }).subscribe({
       next: (res) => {
         this.positions = new Map();
-        this.positionList = new Map();
         res.positions.forEach((item) => {
-          this.positions.set(item.positionString, JSON.stringify(item.position));
-          this.positionList.set(JSON.stringify(item.position), item.positionString);
+          this.positions.set(item.positionString, (item.position));
         });
 
         this.blockPositions = new Map();
         this.blockPositionList = new Map();
         res.blockPositions.forEach((item) => {
-          this.blockPositions.set(item.positionString, JSON.stringify(item.position));
-          this.blockPositionList.set(JSON.stringify(item.position), JSON.stringify(item));
+          this.blockPositions.set(item.positionString, (item.position));
+          this.blockPositionList.set(item.positionString, item.positions);
         });
       }, error: () => this.submitted = false
     });
@@ -285,8 +282,8 @@ export class AddOrderModalComponent {
     this.newPositions = undefined;
     if (positions) {
       this.newPositions = new Map();
-      positions.positions.forEach(item => {
-        this.newPositions.set(item.positionString, JSON.stringify(item.position));
+      positions.forEach(item => {
+        this.newPositions.set(item.positionString, (item.position));
       });
     }
   }
@@ -344,18 +341,18 @@ export class AddOrderModalComponent {
     }
     if (this.order.blockPosition && this.blockPositions && this.blockPositions?.size) {
       if (this.blockPositions.has(this.order.blockPosition)) {
-        order.blockPosition = JSON.parse(this.blockPositions.get(this.order.blockPosition));
+        order.blockPosition = (this.blockPositions.get(this.order.blockPosition));
       }
     }
 
     if (this.order.startPosition) {
-      if(this.newPositions && this.newPositions?.size){
+      if(this.newPositions && this.newPositions?.size > -1){
         if (this.newPositions.has(this.order.startPosition)) {
-          order.startPosition = JSON.parse(this.newPositions.get(this.order.startPosition));
+          order.startPosition = (this.newPositions.get(this.order.startPosition));
         }
       } else if (this.positions && this.positions?.size) {
         if (this.positions.has(this.order.startPosition)) {
-          order.startPosition = JSON.parse(this.positions.get(this.order.startPosition));
+          order.startPosition = (this.positions.get(this.order.startPosition));
         }
       }
     }
@@ -363,13 +360,13 @@ export class AddOrderModalComponent {
     if (this.order.endPositions && this.order.endPositions.length > 0) {
       order.endPositions = [];
       this.order.endPositions.forEach(pos => {
-        if(this.newPositions && this.newPositions?.size){
+        if(this.newPositions && this.newPositions?.size > -1){
           if (this.newPositions.has(pos)) {
-            order.endPositions.push(JSON.parse(this.newPositions.get(pos)));
+            order.endPositions.push((this.newPositions.get(pos)));
           }
         } else if(this.positions && this.positions?.size) {
           if (this.positions.has(pos)) {
-            order.endPositions.push(JSON.parse(this.positions.get(pos)));
+            order.endPositions.push((this.positions.get(pos)));
           }
         }
       });
@@ -504,12 +501,12 @@ export class AddOrderModalComponent {
             this.order.blockPosition = this.blockPositionList.get(JSON.stringify(this.selectedSchedule.orderParameterisations[i].positions.blockPosition));
           }
           if (this.selectedSchedule.orderParameterisations[i].positions.startPosition) {
-            this.order.startPosition = this.positionList.get(JSON.stringify(this.selectedSchedule.orderParameterisations[i].positions.startPosition));
+       //     this.order.startPosition = this.positionList.get(JSON.stringify(this.selectedSchedule.orderParameterisations[i].positions.startPosition));
           }
           if (this.selectedSchedule.orderParameterisations[i].positions.endPositions && this.selectedSchedule.orderParameterisations[i].positions.endPositions.length > 0) {
             this.order.endPositions = [];
             this.selectedSchedule.orderParameterisations[i].positions.endPositions.forEach(item => {
-              this.order.endPositions.push(this.positionList.get(JSON.stringify(item)));
+         //     this.order.endPositions.push(this.positionList.get(JSON.stringify(item)));
             })
           }
           this.order.reload = true;
