@@ -6,7 +6,7 @@ import {filter, Observable} from 'rxjs';
 import * as moment from 'moment-timezone';
 import {ToastrService} from "ngx-toastr";
 import {TranslateService} from '@ngx-translate/core';
-import {clone, isArray, isEmpty, isNumber, object, sortBy} from 'underscore';
+import {clone, isArray, isEmpty, isEqual, isNumber, object, sortBy} from 'underscore';
 import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
 import {POPOUT_MODALS, PopoutData, PopupService} from "./popup.service";
@@ -2625,6 +2625,7 @@ export class CoreService {
   }
 
   sanitizeFileName(fileName) {
+    fileName = decodeURIComponent(fileName);
     const pattern = /[*?<>]/i
     return pattern.test(fileName);
   }
@@ -2632,5 +2633,30 @@ export class CoreService {
   lowerFLetter(string: string): string {
     return string[0].toLowerCase() +
       string.slice(1);
+  }
+
+  getPositionStr(positionData, newPositions, positions): string {
+    let positionString;
+    if (newPositions) {
+      if (newPositions.length > 0) {
+        for (let i in newPositions) {
+          if (JSON.stringify(positionData) === JSON.stringify(newPositions[i].position) ||
+            positionData === JSON.stringify(newPositions[i].position) || JSON.stringify(positionData) === newPositions[i].position ||
+            isEqual(positionData, newPositions[i].position)) {
+            positionString = newPositions[i].positionString;
+            break;
+          }
+        }
+      }
+    } else {
+      for (const [key, value] of positions) {
+        if (JSON.stringify(positionData) === JSON.stringify(value) || positionData === JSON.stringify(value)
+          || JSON.stringify(positionData) === value || isEqual(positionData, value)) {
+          positionString = key;
+          break;
+        }
+      }
+    }
+    return positionString;
   }
 }

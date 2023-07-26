@@ -562,27 +562,6 @@ export class ScheduleComponent {
     this.updateSelectItems();
   }
 
-  private getPositionStr(positionData, newPositions): string {
-    let positionString;
-    if (newPositions) {
-      if (newPositions.length > 0) {
-        for (let i in newPositions) {
-          if (JSON.stringify(positionData) === JSON.stringify(newPositions[i].position)) {
-            positionString = newPositions[i].positionString;
-            break;
-          }
-        }
-      }
-    } else {
-      for (const [key, value] of this.positions) {
-        if (JSON.stringify(positionData) === JSON.stringify(value)) {
-          positionString = key;
-          break;
-        }
-      }
-    }
-    return positionString;
-  }
 
   updateSelectItems(flag?): void {
     for (const prop in this.schedule.configuration.orderParameterisations) {
@@ -610,14 +589,12 @@ export class ScheduleComponent {
           }
 
           if (this.schedule.configuration.orderParameterisations[prop].positions.startPosition) {
-            if (isArray(this.schedule.configuration.orderParameterisations[prop].positions.startPosition)) {
-              this.schedule.configuration.orderParameterisations[prop].positions.startPosition = this.getPositionStr(this.schedule.configuration.orderParameterisations[prop].positions.startPosition, newPositions)
-            }
+            this.schedule.configuration.orderParameterisations[prop].positions.startPosition = this.coreService.getPositionStr(this.schedule.configuration.orderParameterisations[prop].positions.startPosition, newPositions, this.positions)
           }
           if (this.schedule.configuration.orderParameterisations[prop].positions.endPositions) {
             this.schedule.configuration.orderParameterisations[prop].positions.endPositions =
               this.schedule.configuration.orderParameterisations[prop].positions.endPositions.map(pos => {
-                return this.getPositionStr(pos, newPositions);
+                return this.coreService.getPositionStr(pos, newPositions, this.positions);
               }).filter(pos => !!pos);
           }
         }
