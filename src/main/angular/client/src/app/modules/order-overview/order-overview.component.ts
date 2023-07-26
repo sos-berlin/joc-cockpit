@@ -1029,17 +1029,8 @@ export class OrderOverviewComponent {
   }
 
   resumeAllOrder(): void {
-    let workflow;
-    for (let [key, value] of this.object.mapOfCheckedId) {
-      if (!workflow) {
-        workflow = value.workflowId.path;
-      } else if (workflow !== value.workflowId.path) {
-        workflow = null;
-        break;
-      }
-    }
 
-    if (workflow) {
+    if (this.object.mapOfCheckedId.size == 1) {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ResumeOrderModalComponent,

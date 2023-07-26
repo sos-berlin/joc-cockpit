@@ -47,14 +47,7 @@ export class ScriptComponent {
     scrollbarStyle: 'simple',
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     mode: 'shell',
-    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-    extraKeys: {
-      'Shift-Ctrl-Space': 'autocomplete',
-      "Tab": function(cm) {
-        const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
-        cm.replaceSelection(spaces);
-      }
-    }
+    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
   };
   lastModified: any = '';
   subscription1: Subscription;
@@ -80,8 +73,18 @@ export class ScriptComponent {
     });
   }
 
-  ngOnInit(): void{
-    this.cmOption.tabSize = this.preferences.tabSize;
+  ngOnInit(): void {
+    this.cmOption.tabSize = parseInt(this.preferences.tabSize) || 4;
+    this.cmOption.extraKeys = {
+      'Shift-Ctrl-Space': 'autocomplete',
+      "Tab": (cm) => {
+        let spaces = '';
+        for(let i =0; i < this.cmOption.tabSize; i++){
+          spaces += ' ';
+        }
+        cm.replaceSelection(spaces);
+      }
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
