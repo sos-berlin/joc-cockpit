@@ -4704,11 +4704,37 @@ export class WorkflowComponent {
           this.positions = undefined;
           this.newPositions = undefined;
           this.blockPositions = undefined;
+          this.blockPositionList = undefined;
           this.getPositions(this.selectedNode.obj.workflowName);
           this.updateArgumentList();
         }
       });
     }
+  }
+
+  private getPositionStr(positionData, newPositions): string {
+    let positionString;
+    if (newPositions) {
+      if (newPositions.length > 0) {
+        for (let i in newPositions) {
+          if (JSON.stringify(positionData) === JSON.stringify(newPositions[i].position) ||
+            positionData === JSON.stringify(newPositions[i].position) || JSON.stringify(positionData) === newPositions[i].position ||
+            isEqual(positionData, newPositions[i].position)) {
+            positionString = newPositions[i].positionString;
+            break;
+          }
+        }
+      }
+    } else {
+      for (const [key, value] of this.positions) {
+        if (JSON.stringify(positionData) === JSON.stringify(value) || positionData === JSON.stringify(value)
+          || JSON.stringify(positionData) === value || isEqual(positionData, value)) {
+          positionString = key;
+          break;
+        }
+      }
+    }
+    return positionString;
   }
 
   private getPositions(path): void {
@@ -4724,37 +4750,39 @@ export class WorkflowComponent {
         this.blockPositions = new Map();
         this.blockPositionList = new Map();
         res.blockPositions.forEach((item) => {
-          this.blockPositions.set(item.positionString, JSON.stringify(item.position));
-          this.blockPositionList.set(JSON.stringify(item.position), JSON.stringify(item));
+          this.blockPositions.set(item.positionString, (item.position));
+          this.blockPositionList.set(item.positionString, item.positions);
         });
 
         if (this.selectedNode.obj) {
-          let map = new Map();
-          this.positions.forEach((k, v) => {
-            map.set(k, v);
-          });
-          let map2 = new Map();
-          this.blockPositions.forEach((k, v) => {
-            map2.set(k, v);
-          });
-
+          let newPositions;
           if (this.selectedNode.obj.blockPosition) {
-            const pos = this.coreService.clone(this.selectedNode.obj.blockPosition);
-            this.selectedNode.obj.blockPosition = map2.has(pos) ? map2.get(pos) :
-              map2.get(JSON.stringify(pos));
-            if (pos) {
-              this.newPositions = this.blockPositionList.has(pos) ? this.blockPositionList.get(pos).positions : undefined;
+            if (isArray(this.selectedNode.obj.blockPosition)) {
+              for (const [key, value] of this.blockPositions) {
+                if (JSON.stringify(this.selectedNode.obj.blockPosition) === JSON.stringify(value)) {
+                  this.selectedNode.obj.blockPosition = key;
+                  break;
+                }
+              }
+              if (this.blockPositionList.has(this.selectedNode.obj.blockPosition)) {
+                newPositions = this.blockPositionList.get(this.selectedNode.obj.blockPosition);
+                if (newPositions && isArray(newPositions)) {
+                  this.newPositions = new Map();
+                  newPositions.forEach((item) => {
+                    this.newPositions.set(item.positionString, (item.position));
+                  });
+                }
+              }
             }
-          }
 
+          }
           if (this.selectedNode.obj.startPosition) {
-            this.selectedNode.obj.startPosition =
-              map.get(JSON.stringify(this.selectedNode.obj.startPosition));
+            this.selectedNode.obj.startPosition = this.getPositionStr(this.selectedNode.obj.startPosition, newPositions);
           }
           if (this.selectedNode.obj.endPositions) {
             this.selectedNode.obj.endPositions =
               this.selectedNode.obj.endPositions.map(pos => {
-                return map.get(JSON.stringify(pos));
+                return this.getPositionStr(pos, newPositions);
               }).filter(pos => !!pos);
           }
         }
@@ -4769,14 +4797,15 @@ export class WorkflowComponent {
   }
 
   getNewPositions(positions): void {
-    this.newPositions = positions ? positions.positions : undefined;
+    this.newPositions = undefined;
     if (positions) {
       this.newPositions = new Map();
-      positions.positions.forEach(item => {
-        this.newPositions.set(item.positionString, JSON.stringify(item.position));
+      positions.forEach(item => {
+        this.newPositions.set(item.positionString, (item.position));
       })
     }
   }
+
   createForkListVariables(): void {
     this.forkListVariableObj = {
       create: true,
@@ -5376,12 +5405,13 @@ export class WorkflowComponent {
       };
       const attr = cell.value.attributes;
       for (const j in attr) {
-
         if (attr[j].name === 'blockPosition' || attr[j].name === 'startPosition' || attr[j].name === 'endPositions') {
-          obj[attr[j].name] = JSON.parse(attr[j].value);
+          if(attr[j].value && typeof attr[j].value == 'string') {
+            obj[attr[j].name] = JSON.parse(attr[j].value);
+          }
           if (attr[j].name === 'endPositions' && isArray(obj[attr[j].name])) {
             obj[attr[j].name] = obj[attr[j].name].map((item) => {
-              return JSON.parse((item))
+              return isArray(item) ? item : JSON.parse((item))
             })
           } else {
             if (typeof obj[attr[j].name] == 'string') {
@@ -7940,43 +7970,51 @@ export class WorkflowComponent {
               obj.cell, 'remainWhenTerminated', self.selectedNode.newObj.remainWhenTerminated);
             graph.getModel().execute(edit4);
             let startPosition;
-            if(self.selectedNode.newObj.startPosition) {
+            if (self.selectedNode.newObj.startPosition) {
               if (self.newPositions && self.newPositions.has(self.selectedNode.newObj.startPosition)) {
                 startPosition = JSON.stringify(self.newPositions.get(self.selectedNode.newObj.startPosition));
               } else if (self.positions && self.positions.has(self.selectedNode.newObj.startPosition)) {
                 startPosition = JSON.stringify(self.positions.get(self.selectedNode.newObj.startPosition));
               }
             }
+
             const edit5 = new mxCellAttributeChange(
               obj.cell, 'startPosition', startPosition)
             graph.getModel().execute(edit5);
 
-
             let endPositions;
-            if(self.selectedNode.newObj.endPositions) {
+            if (self.selectedNode.newObj.endPositions) {
               let arr = [];
-              if (self.newPositions && self.newPositions.has(self.selectedNode.newObj.endPositions)) {
-                self.selectedNode.newObj.endPositions.forEach((item) => {
-                  if(self.newPositions.has(item)) {
+              self.selectedNode.newObj.endPositions.forEach((item) => {
+                if (self.newPositions) {
+                  if (self.newPositions.has(item)) {
                     arr.push(self.newPositions.get(item));
                   }
-                })
-                endPositions = JSON.stringify(arr);
-              } else if (self.positions && self.positions.has(self.selectedNode.newObj.endPositions)) {
-                self.selectedNode.newObj.endPositions.forEach((item) => {
-                  if(self.positions.has(item)) {
+                } else {
+                  if (self.positions && self.positions.has(item)) {
                     arr.push(self.positions.get(item));
                   }
-                })
-                endPositions = JSON.stringify(arr);
-              }
+                }
+              });
+              endPositions = JSON.stringify(arr);
             }
+
             const edit6 = new mxCellAttributeChange(
               obj.cell, 'endPositions', endPositions);
             graph.getModel().execute(edit6);
+            let blockPosition;
+            if (self.selectedNode.newObj.blockPosition) {
+              if (self.selectedNode.newObj.blockPosition) {
+                if (typeof self.selectedNode.newObj.blockPosition === 'string' && self.blockPositions.has(self.selectedNode.newObj.blockPosition)) {
+                  blockPosition = JSON.stringify(self.blockPositions.get(self.selectedNode.newObj.blockPosition));
+                } else if (isArray(self.selectedNode.newObj.blockPosition) && self.blockPositions.has(JSON.stringify(self.selectedNode.newObj.blockPosition))) {
+                  blockPosition = JSON.stringify(self.blockPositions.get(self.selectedNode.newObj.blockPosition));
+                }
+              }
+            }
 
             const edit7 = new mxCellAttributeChange(
-              obj.cell, 'blockPosition', (self.selectedNode.newObj.blockPosition && self.blockPositions.get(self.selectedNode.newObj.blockPosition)) ? JSON.stringify(self.blockPositions.get(self.selectedNode.newObj.blockPosition)) : undefined)
+              obj.cell, 'blockPosition', blockPosition)
             graph.getModel().execute(edit7);
 
             const edit8 = new mxCellAttributeChange(
@@ -8433,6 +8471,7 @@ export class WorkflowComponent {
           if (obj.blockPosition && obj.blockPosition != 'undefined' && typeof obj.blockPosition == 'string') {
             obj.blockPosition = JSON.parse(obj.blockPosition);
           }
+
           const val1 = cell.getAttribute('remainWhenTerminated');
           obj.remainWhenTerminated = val1 == 'true';
           const val2 = cell.getAttribute('forceJobAdmission');
@@ -10628,7 +10667,6 @@ export class WorkflowComponent {
             if (!json.instructions[x].id && !json.instructions[x].instructions && !json.instructions[x].demands) {
 
             } else {
-
               if (json.instructions[x].demands && typeof json.instructions[x].demands == 'string') {
                 json.instructions[x].demands = JSON.parse(json.instructions[x].demands);
               }
@@ -10844,7 +10882,7 @@ export class WorkflowComponent {
             const blockPosition = clone(json.instructions[x].blockPosition);
             const remainWhenTerminated = clone(json.instructions[x].remainWhenTerminated);
             const forceJobAdmission = clone(json.instructions[x].forceJobAdmission);
-            const endPositions = clone(json.instructions[x].endPositions);
+            let endPositions = clone(json.instructions[x].endPositions);
             delete json.instructions[x].workflowName;
             delete json.instructions[x].arguments;
             delete json.instructions[x].remainWhenTerminated;
@@ -10852,13 +10890,24 @@ export class WorkflowComponent {
             delete json.instructions[x].endPositions;
             delete json.instructions[x].blockPosition;
             delete json.instructions[x].forceJobAdmission;
+            if(endPositions && endPositions.length > 0) {
+              let arr = [];
+              endPositions.forEach((item) => {
+                if (typeof item === 'string') {
+                  arr.push(JSON.parse(item));
+                } else {
+                  arr.push((item));
+                }
+              });
+              endPositions = arr;
+            }
             json.instructions[x].workflowName = workflowName;
             json.instructions[x].arguments = argu;
-            json.instructions[x].remainWhenTerminated = remainWhenTerminated;
-            json.instructions[x].forceJobAdmission = forceJobAdmission;
+            json.instructions[x].remainWhenTerminated = remainWhenTerminated == true || remainWhenTerminated == 'true';
             json.instructions[x].startPosition = startPosition;
             json.instructions[x].endPositions = endPositions;
             json.instructions[x].blockPosition = blockPosition;
+            json.instructions[x].forceJobAdmission = forceJobAdmission == true || forceJobAdmission == 'true';
           } else if (json.instructions[x].TYPE === 'Lock') {
             json.instructions[x].lockedWorkflow = {
               instructions: json.instructions[x].instructions

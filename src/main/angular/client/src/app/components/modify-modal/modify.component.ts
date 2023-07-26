@@ -236,11 +236,11 @@ export class ChangeParameterModalComponent {
   }
 
   getNewPositions(positions): void {
-    this.newPositions = positions ? positions.positions : undefined;
+    this.newPositions = undefined;
     if (positions) {
       this.newPositions = new Map();
-      positions.positions.forEach(item => {
-        this.newPositions.set(item.positionString, JSON.stringify(item.position));
+      positions.forEach(item => {
+        this.newPositions.set(item.positionString, (item.position));
       })
     }
   }

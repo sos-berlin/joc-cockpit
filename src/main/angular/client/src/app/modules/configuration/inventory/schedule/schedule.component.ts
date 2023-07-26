@@ -1,14 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges
-} from '@angular/core';
-import {isEmpty, isArray, isEqual, clone} from 'underscore';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, SimpleChanges} from '@angular/core';
+import {clone, isArray, isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {ToastrService} from "ngx-toastr";
@@ -47,7 +38,6 @@ export class ScheduleComponent {
   indexOfNextAdd = 0;
   history = [];
   positions: any;
-  newPositions: any;
   blockPositions: any;
   blockPositionList: any;
   lastModified: any = '';
@@ -572,34 +562,62 @@ export class ScheduleComponent {
     this.updateSelectItems();
   }
 
+  private getPositionStr(positionData, newPositions): string {
+    let positionString;
+    if (newPositions) {
+      if (newPositions.length > 0) {
+        for (let i in newPositions) {
+          if (JSON.stringify(positionData) === JSON.stringify(newPositions[i].position)) {
+            positionString = newPositions[i].positionString;
+            break;
+          }
+        }
+      }
+    } else {
+      for (const [key, value] of this.positions) {
+        if (JSON.stringify(positionData) === JSON.stringify(value)) {
+          positionString = key;
+          break;
+        }
+      }
+    }
+    return positionString;
+  }
+
   updateSelectItems(flag?): void {
     for (const prop in this.schedule.configuration.orderParameterisations) {
       if (flag) {
         if (this.schedule.configuration.orderParameterisations[prop].positions) {
-          let map = new Map();
-          this.positions.forEach((k, v) => {
-            map.set(k, v);
-          });
-          let map2 = new Map();
-          this.blockPositions.forEach((k, v) => {
-            map2.set(k, v);
-          });
+          let newPositions;
           if (this.schedule.configuration.orderParameterisations[prop].positions.blockPosition) {
-            const pos = this.coreService.clone(this.schedule.configuration.orderParameterisations[prop].positions.blockPosition);
-            this.schedule.configuration.orderParameterisations[prop].positions.blockPosition = map2.has(pos) ? map2.get(pos) :
-              map2.get(JSON.stringify(pos));
-            if (pos) {
-              this.newPositions = this.blockPositionList.has(pos) ? this.blockPositionList.get(pos).positions : undefined;
+            if (isArray(this.schedule.configuration.orderParameterisations[prop].positions.blockPosition)) {
+              for (const [key, value] of this.blockPositions) {
+                if (JSON.stringify(this.schedule.configuration.orderParameterisations[prop].positions.blockPosition) === JSON.stringify(value)) {
+                  this.schedule.configuration.orderParameterisations[prop].positions.blockPosition = key;
+                  break;
+                }
+              }
+              if (this.blockPositionList.has(this.schedule.configuration.orderParameterisations[prop].positions.blockPosition)) {
+                newPositions = this.blockPositionList.get(this.schedule.configuration.orderParameterisations[prop].positions.blockPosition);
+                if (newPositions && isArray(newPositions)) {
+                  this.schedule.configuration.orderParameterisations[prop].positions.newPositions = new Map();
+                  newPositions.forEach((item) => {
+                    this.schedule.configuration.orderParameterisations[prop].positions.newPositions.set(item.positionString, (item.position));
+                  });
+                }
+              }
             }
           }
+
           if (this.schedule.configuration.orderParameterisations[prop].positions.startPosition) {
-            this.schedule.configuration.orderParameterisations[prop].positions.startPosition =
-              map.get(JSON.stringify(this.schedule.configuration.orderParameterisations[prop].positions.startPosition));
+            if (isArray(this.schedule.configuration.orderParameterisations[prop].positions.startPosition)) {
+              this.schedule.configuration.orderParameterisations[prop].positions.startPosition = this.getPositionStr(this.schedule.configuration.orderParameterisations[prop].positions.startPosition, newPositions)
+            }
           }
           if (this.schedule.configuration.orderParameterisations[prop].positions.endPositions) {
             this.schedule.configuration.orderParameterisations[prop].positions.endPositions =
               this.schedule.configuration.orderParameterisations[prop].positions.endPositions.map(pos => {
-                return map.get(JSON.stringify(pos));
+                return this.getPositionStr(pos, newPositions);
               }).filter(pos => !!pos);
           }
         }
@@ -725,13 +743,14 @@ export class ScheduleComponent {
     this.saveJSON();
   }
 
-  getNewPositions(positions): void {
-    this.newPositions = positions ? positions.positions : undefined;
+  getNewPositions(positions, data): void {
     if (positions) {
-      this.newPositions = new Map();
-      positions.positions.forEach(item => {
-        this.newPositions.set(item.positionString, JSON.stringify(item.position));
+      data.newPositions = new Map();
+      positions.forEach(item => {
+        data.newPositions.set(item.positionString, (item.position));
       })
+    } else {
+      delete data['newPositions'];
     }
 
     this.saveJSON();
@@ -758,7 +777,7 @@ export class ScheduleComponent {
     const obj = this.coreService.clone(this.schedule.configuration);
     let isEmptyExist = false;
     let isValid = true;
-    obj.orderParameterisations = obj.orderParameterisations.filter(parameter => {
+    obj.orderParameterisations = obj.orderParameterisations.filter((parameter) => {
       if (parameter.orderName === '' || !parameter.orderName) {
         if (isEmptyExist) {
           return false;
@@ -793,20 +812,43 @@ export class ScheduleComponent {
         });
       }
       if (parameter.positions) {
+        let newPositions;
         if (parameter.positions.blockPosition && this.blockPositions && this.blockPositions.has(parameter.positions.blockPosition)) {
-          parameter.positions.blockPosition = JSON.parse(this.blockPositions.get(parameter.positions.blockPosition))
+
+          if (parameter.positions.blockPosition) {
+            let _newPositions = this.blockPositionList.get(parameter.positions.blockPosition);
+            if (_newPositions) {
+              newPositions = new Map();
+              _newPositions.forEach((item) => {
+                newPositions.set(item.positionString, (item.position));
+              });
+            }
+          }
+          parameter.positions.blockPosition = this.blockPositions.get(parameter.positions.blockPosition);
         }
-        if (parameter.positions.startPosition && this.positions && this.positions.has(parameter.positions.startPosition)) {
-          parameter.positions.startPosition = JSON.parse(this.positions.get(parameter.positions.startPosition))
+        if (parameter.positions.startPosition) {
+
+          if (newPositions) {
+            if (newPositions.has(parameter.positions.startPosition)) {
+              parameter.positions.startPosition = (newPositions.get(parameter.positions.startPosition))
+            }
+          } else if (this.positions && this.positions.has(parameter.positions.startPosition)) {
+            parameter.positions.startPosition = (this.positions.get(parameter.positions.startPosition))
+          }
         }
         if (parameter.positions.endPositions) {
           parameter.positions.endPositions = parameter.positions.endPositions.map((item) => {
-            if (this.positions.has(item)) {
-              return JSON.parse(this.positions.get(item))
+            if (newPositions) {
+              if (newPositions.has(item)) {
+                return (newPositions.get(item))
+              }
+            } else if (this.positions.has(item)) {
+              return (this.positions.get(item))
             }
-          })
+          });
         }
       }
+      delete parameter.positions['newPositions'];
       return true;
     });
 
@@ -822,6 +864,7 @@ export class ScheduleComponent {
     if (obj.nonWorkingDayCalendars.length === 0) {
       delete obj.nonWorkingDayCalendars;
     }
+
     if (skip || (this.schedule.actual && !isEqual(this.schedule.actual, JSON.stringify(obj)))) {
       if (obj.calendars.length > 0) {
         for (let i = 0; i < obj.calendars.length; i++) {
@@ -951,13 +994,13 @@ export class ScheduleComponent {
       next: (res) => {
         this.positions = new Map();
         res.positions.forEach((item) => {
-          this.positions.set(item.positionString, JSON.stringify(item.position));
+          this.positions.set(item.positionString, (item.position));
         });
         this.blockPositions = new Map();
         this.blockPositionList = new Map();
         res.blockPositions.forEach((item) => {
-          this.blockPositions.set(item.positionString, JSON.stringify(item.position));
-          this.blockPositionList.set(JSON.stringify(item.position), JSON.stringify(item));
+          this.blockPositions.set(item.positionString, (item.position));
+          this.blockPositionList.set(item.positionString, item.positions);
         });
         cb();
       }, error: () => {
@@ -1050,7 +1093,6 @@ export class ScheduleComponent {
         });
       }
       this.history.push(JSON.stringify(this.schedule.configuration));
-
     });
   }
 

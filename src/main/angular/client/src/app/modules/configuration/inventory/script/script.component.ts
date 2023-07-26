@@ -234,6 +234,7 @@ export class ScriptComponent {
       nzAutofocus: null,
       nzData: {
         script: this.script.configuration.script,
+        tabSize: this.preferences.tabSize,
         mode: 'shell',
         isSkip: true,
         scriptTree: []

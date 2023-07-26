@@ -946,6 +946,14 @@ export class WorkflowService {
             if (json.instructions[x].endPositions !== undefined && isArray(json.instructions[x].endPositions)) {
               _node.setAttribute('endPositions', JSON.stringify(json.instructions[x].endPositions));
             }
+
+            if (json.instructions[x].blockPosition !== undefined && json.instructions[x].blockPosition) {
+              if (isArray(json.instructions[x].blockPosition)) {
+                _node.setAttribute('blockPosition', JSON.stringify(json.instructions[x].blockPosition));
+              } else {
+                _node.setAttribute('blockPosition', (json.instructions[x].blockPosition));
+              }
+            }
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('addOrder', colorCode, self.theme) : 'addOrder');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
