@@ -736,7 +736,7 @@
     "message.fileTransferHistorySummary": "ファイル転送履歴を表示",
     "message.apiServerStatus": "APIサーバーステータス表示ウィジェット",
     "message.confirmNodeLoss": " コントローラーインスタンス {{lossNode}} が停止していることが確認されました",
-    "message.confirmAgentNodeLoss": "Can you confirm that the Agent instance '{{lossNode}}' is not running?"
+    "message.confirmAgentNodeLoss": "'{{lossNode}}'エージェントインスタンスが停止していることを確認してください"
   },
   "dailyPlan": {
     "label.createPlan": "実行計画作成",
@@ -1306,7 +1306,7 @@
     "message.pasteInSubFolderNotAllowed": "宛先フォルダーはソースフォルダーの下にあります",
     "message.invalidJSON": "無効なJSONファイルです",
     "message.fileSizeExceed": "有効なファイルサイズは1MB以下です",
-    "message.invalidFileName": "File name has invalid characters"
+    "message.invalidFileName": "ファイル名に無効な文字があります"
   },
   "favorite": {
     "button.addFavorite": "お気に入りを追加",
@@ -1873,11 +1873,11 @@
         "workflowName": "ワークフロー名",
         "planOrderAutomatically": "実行計画自動作成",
         "submitOrderToControllerWhenPlanned": "実行計画作成後オーダー登録",
-        "orderName": "Order Name",
-        "startNode": "Start Position before Instruction",
-        "endNode": "End Positions before Instructions",
-        "blockPosition": "Block Position",
-        "ignoreAdmissionTimes": "Ignore Job Admission Times"
+        "orderName": "オーダー名",
+        "startNode": "ワークフロー命令より前の開始位置",
+        "endNode": "ワークフロー命令より前の終了位置",
+        "blockPosition": "ブロック位置",
+        "ignoreAdmissionTimes": "許可時間を無視"
       },
       "script": {
         "name": "スクリプトインクルードは、定期的に発生するコードスニペットをジョブスクリプトに含めるために使用します。スクリプトインクルード名は、インベントリー内で一意です。スクリプトインクルード名には、ドットやハイフンなど、ほとんどのユニコード文字を使用できますが、先頭や末尾のドットやハイフンは使用できません。",
@@ -2000,8 +2000,8 @@
           "remainWhenTerminated": "終了時は留まる",
           "startPosition": "開始位置",
           "endPositions": "終了位置",
-          "ignoreAdmissionTimes": "Ignore Job Admission Times",
-          "blockPosition": "Block Position"
+          "ignoreAdmissionTimes": "許可時間を無視",
+          "blockPosition": "ブロック位置"
         },
         "lock": {
           "name": "リソースロック名前はインベントリー内で一意です。リソースロックを使用することで、ワークフローのセクションの並列処理を制限できます。",
@@ -2015,7 +2015,7 @@
           "delay": "遅延は、次のリトライが実行されるまでの時間を秒単位で指定します。コンマで区切って複数の値を指定した場合は、左から右に向かってそれぞれの値が次のリトライを待つ期間に適用されます。"
         },
         "cycle": {
-          "onlyOnePeriod": "Only One Period"
+          "onlyOnePeriod": "１回のみ"
         }
       }
     },
@@ -2273,7 +2273,7 @@
     "label.listOfDynamicallyVariables": "値を変更可能な変数",
     "label.cycleEndTime": "サイクル終了時間",
     "label.ignoreAdmissionTimes": "許可時間を無視",
-    "label.blockPosition": "Block Position",
+    "label.blockPosition": "ブロック位置",
     "button.allOrders": "全オーダー",
     "button.cancel": "キャンセル",
     "button.startNow": "即時開始",
@@ -2294,7 +2294,7 @@
     "button.assignParameterizationFromSchedules": "スケジュールから変数設定",
     "placeholder.selectStartNode": "開始ノード選択",
     "placeholder.selectEndNode": "終了ノード選択",
-    "placeholder.selectBlockPosition": "Select Block Position",
+    "placeholder.selectBlockPosition": "ブロック位置選択",
     "placeholder.enterCycleEndTime": "hh:mm:ssか、秒で入力",
     "message.noVariableAvailable": "変数はありません",
     "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません",
@@ -2386,7 +2386,7 @@
     "label.favoriteManagement": "お気に入り管理",
     "label.licenseWarningGotIt": "ライセンス警告を確認",
     "label.showMoreOptions": "オプション表示",
-    "label.tabSize": "Tab Size",
+    "label.tabSize": "タブサイズ",
     "button.resetPreferences": "プリファレンスリセット",
     "button.groupLimit": "グループリミット",
     "button.changePassword": "パスワード変更",
@@ -2894,15 +2894,15 @@
     "label.iamOidcTruststorePassword": "OIDCトラストストアパスワード",
     "label.iamOidcImage": "OIDCイメージ",
     "label.iamOidcUserAttribute": "OIDCユーザー属性",
-    "label.iamOidcGroupClaims": "OIDC Group Claims",
-    "label.iamOidcGroupRolesMap": "OIDC Group Roles Map",
+    "label.iamOidcGroupClaims": "OIDCグループクレーム",
+    "label.iamOidcGroupRolesMap": "OIDCグループロールマップ",
     "label.iamOidcAuthenticationCodeFlow": "Authentication Code Flow",
     "label.iamOidcImplicitFlow": "Implicit Flow",
-    "label.iamOidcFlowType": "Flow Type",
+    "label.iamOidcFlowType": "Flowタイプ",
     "label.iamFidoTimeout": "タイムアウト",
-    "label.iamFidoTransports": "Transports",
-    "label.iamFidoUserVerification": "User Verification",
-    "label.iamFidoResidentKey": "Resident Key",
+    "label.iamFidoTransports": "トランスポート",
+    "label.iamFidoUserVerification": "ユーザー確認",
+    "label.iamFidoResidentKey": "レジデントキー",
     "label.iamFidoAuthenticatorType": "認証タイプ",
     "label.roaming": "ローミング",
     "label.platform": "プラットフォーム",
@@ -3032,10 +3032,10 @@
     "placeholder.iamOidcTruststoreType": "OIDCトラストストアタイプ入力",
     "placeholder.iamOidcTruststorePassword": "OIDCトラストストアパスワード入力",
     "placeholder.iamOidcUserAttribute": "OIDCユーザー属性入力",
-    "placeholder.iamOidcGroupClaims": "Enter OIDC Group Claims",
+    "placeholder.iamOidcGroupClaims": "OIDCグループクレーム入力",
     "placeholder.iamFidoTimeout": "ミリ秒でタイムアウト入力",
-    "placeholder.iamFidoTransports": "Transport選択",
-    "placeholder.iamFidoUserVerification": "User Verification選択",
+    "placeholder.iamFidoTransports": "トランスポート選択",
+    "placeholder.iamFidoUserVerification": "ユーザー確認選択",
     "placeholder.contentType": "コンテンツタイプ入力",
     "placeholder.charset": "文字コード入力",
     "placeholder.encoding": "文字エンコード入力",
@@ -3141,14 +3141,14 @@
         "iamOidcTruststorePassword": "OIDCトラストストアパスワード",
         "iamOidcUserAttribute": "OIDCユーザー属性",
         "iamOidcImage": "OIDCイメージ",
-        "iamOidcGroupClaims": "OIDC Group Claims",
-        "iamOidcGroupRolesMap": "OIDC Group Roles Map"
+        "iamOidcGroupClaims": "OIDCグループクレーム",
+        "iamOidcGroupRolesMap": "OIDCグループロールマップ"
       },
       "webauthn": {
         "iamTimeout": "タイムアウト",
-        "iamTransports": "Transports",
-        "iamUserVerification": "User Verification",
-        "iamResidentKey": "Resident Key",
+        "iamTransports": "トランスポート",
+        "iamUserVerification": "ユーザー確認",
+        "iamResidentKey": "レジデントキー",
         "iamAuthenticatorType": "Authenticatorタイプ",
         "iamRequireAccount": "認証に必要なアカウント",
         "emailSettings": "メール設定",
@@ -3315,7 +3315,7 @@
     "label.remainWhenTerminated": "終了時は留まる",
     "label.startPosition": "ワークフロー命令より前の開始位置",
     "label.endPositions": "ワークフロー命令より前の終了位置",
-    "label.blockPosition": "Block Position",
+    "label.blockPosition": "ブロック位置",
     "label.joinIfFailed": "失敗時Join",
     "label.skipIfNoAdmissionForOrderDay": "許可時間ではないときスキップ",
     "label.listOfSchemes": "スキーマリスト",
@@ -3345,7 +3345,7 @@
     "label.bySubagentCluster": "サブエージェントクラスター",
     "label.stopOnFailure": "失敗時停止",
     "label.references": "参照",
-    "label.onlyOnePeriod": "Only One Period",
+    "label.onlyOnePeriod": "１回のみ",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
