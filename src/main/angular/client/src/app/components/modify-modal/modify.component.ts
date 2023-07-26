@@ -96,14 +96,14 @@ export class ChangeParameterModalComponent {
       }).subscribe((res) => {
         this.positions = new Map()
         res.positions.forEach((item) => {
-          this.positions.set(item.positionString, JSON.stringify(item.position));
+          this.positions.set(item.positionString, item.position);
         });
 
         this.blockPositions = new Map()
         this.blockPositionList = new Map();
         res.blockPositions.forEach((item) => {
-          this.blockPositions.set(item.positionString, JSON.stringify(item.position));
-          this.blockPositionList.set(JSON.stringify(item.position), JSON.stringify(item));
+          this.blockPositions.set(item.positionString, item.position);
+          this.blockPositionList.set(item.positionString, item.positions);
         });
       });
     }
@@ -391,34 +391,38 @@ export class ChangeParameterModalComponent {
         }
       });
     }
-    if (this.positionObj.blockPosition) {
-      obj.blockPosition = JSON.parse(this.blockPositions.get(this.positionObj.blockPosition));
+    if (this.positionObj.blockPosition && this.blockPositions && this.blockPositions?.size) {
+      if (this.blockPositions.has(this.positionObj.blockPosition)) {
+        obj.blockPosition = (this.blockPositions.get(this.positionObj.blockPosition));
+      }
     }
+
     if (this.positionObj.startPosition) {
-      if (this.newPositions && this.newPositions?.size) {
+      if(this.newPositions && this.newPositions?.size > -1){
         if (this.newPositions.has(this.positionObj.startPosition)) {
-          obj.startPosition = JSON.parse(this.newPositions.get(this.positionObj.startPosition));
+          obj.startPosition = (this.newPositions.get(this.positionObj.startPosition));
         }
       } else if (this.positions && this.positions?.size) {
         if (this.positions.has(this.positionObj.startPosition)) {
-          obj.startPosition = JSON.parse(this.positions.get(this.positionObj.startPosition));
+          obj.startPosition = (this.positions.get(this.positionObj.startPosition));
         }
       }
     }
-    if (this.positionObj.endPositions) {
+    if (this.positionObj.endPositions && this.positionObj.endPositions.length > 0) {
       obj.endPositions = [];
       this.positionObj.endPositions.forEach(pos => {
-        if (this.newPositions && this.newPositions?.size) {
+        if(this.newPositions && this.newPositions?.size > -1){
           if (this.newPositions.has(pos)) {
-            obj.endPositions.push(JSON.parse(this.newPositions.get(pos)));
+            obj.endPositions.push((this.newPositions.get(pos)));
           }
-        } else if (this.positions && this.positions?.size) {
+        } else if(this.positions && this.positions?.size) {
           if (this.positions.has(pos)) {
-            obj.endPositions.push(JSON.parse(this.positions.get(pos)));
+            obj.endPositions.push((this.positions.get(pos)));
           }
         }
       });
     }
+
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     if (obj.variables || obj.removeVariables) {

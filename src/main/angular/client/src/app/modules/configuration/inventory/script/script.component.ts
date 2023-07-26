@@ -48,7 +48,13 @@ export class ScriptComponent {
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     mode: 'shell',
     gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-    extraKeys: {'Shift-Ctrl-Space': 'autocomplete'}
+    extraKeys: {
+      'Shift-Ctrl-Space': 'autocomplete',
+      "Tab": function(cm) {
+        const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+        cm.replaceSelection(spaces);
+      }
+    }
   };
   lastModified: any = '';
   subscription1: Subscription;

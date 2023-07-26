@@ -283,32 +283,85 @@ export class OrderListSidebarComponent implements OnChanges {
 
   resumeAllOrder(): void {
     const map = new Map();
+    let workflow;
     this.orders.forEach(item => {
       if (this.setOfCheckedId.has(item.orderId)) {
+        
+        if (!workflow) {
+          workflow = item.workflowId.path;
+        } else if (workflow !== item.workflowId.path) {
+          workflow = null;
+        }
         map.set(item.orderId, item);
       }
     });
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ResumeOrderModalComponent,
-      nzClassName: 'x-lg',
-      nzData: {
-        preferences: this.preferences,
-        schedulerId: this.schedulerId,
-        orders: map
-      },
-      nzFooter: null,
-      nzAutofocus: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
+    if (workflow) {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ResumeOrderModalComponent,
+        nzClassName: 'x-lg',
+        nzData: {
+          preferences: this.preferences,
+          schedulerId: this.schedulerId,
+          orders: map
+        },
+        nzFooter: null,
+        nzAutofocus: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.isProcessing = true;
+          this.resetAction(5000);
+          this.resetCheckBox();
+        }
+      });
+    } else {
+      const obj: any = {
+        controllerId: this.schedulerId,
+        orderIds: []
+      };
+      map.forEach((order) => {
+        obj.orderIds.push(order.orderId);
+      });
+      if (this.preferences.auditLog) {
+        let comments = {
+          radio: 'predefined',
+          type: 'Order',
+          operation: 'Resume',
+          name: ''
+        };
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: CommentModalComponent,
+          nzClassName: 'lg',
+          nzData: {
+            comments,
+            obj,
+            url: 'orders/resume'
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            this.isProcessing = true;
+            this.resetAction(5000);
+            this.resetCheckBox();
+          }
+        });
+      } else {
         this.isProcessing = true;
-        this.resetAction(5000);
-        this.resetCheckBox();
+        this.coreService.post('orders/resume', obj).subscribe({
+          next: () => {
+            this.resetCheckBox();
+            this.resetAction(5000);
+          }, error: () => this.resetAction()
+        });
       }
-    });
+    }
   }
 
   cancelAllOrder(isKill = false): void {

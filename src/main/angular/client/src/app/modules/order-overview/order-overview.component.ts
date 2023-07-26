@@ -3,9 +3,6 @@ import {
   Directive,
   EventEmitter, forwardRef,
   Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
   Output,
   SimpleChanges,
   ViewChild

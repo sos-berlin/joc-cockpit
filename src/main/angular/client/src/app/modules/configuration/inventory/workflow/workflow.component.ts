@@ -190,6 +190,10 @@ export class NoticeBoardEditorComponent {
 
         this.cm.codeMirror.setOption("extraKeys", {
           "Shift-Ctrl-Space": "autocomplete",
+          "Tab": function(cm) {
+            const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+            cm.replaceSelection(spaces);
+          },
           "Ctrl-Space": function (editor) {
             const cursor = editor.getCursor();
             self.isTreeShow = true;
@@ -1409,6 +1413,10 @@ export class JobComponent {
       if (this.cm && this.cm.codeMirror) {
         this.cm.codeMirror.setOption("extraKeys", {
           "Shift-Ctrl-Space": "autocomplete",
+          "Tab": function(cm) {
+            const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+            cm.replaceSelection(spaces);
+          },
           "Ctrl-Space": function (editor) {
             const cursor = editor.getCursor();
             self.isTreeShow = true;
@@ -2541,6 +2549,10 @@ export class ScriptEditorComponent {
         }, 400);
         this.cm.codeMirror.setOption("extraKeys", {
           "Shift-Ctrl-Space": "autocomplete",
+          "Tab": function(cm) {
+            const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+            cm.replaceSelection(spaces);
+          },
           "Ctrl-Space": function (editor) {
             if (!self.isSkip) {
               const cursor = editor.getCursor();
@@ -8671,6 +8683,10 @@ export class WorkflowComponent {
 
             self.cm.codeMirror.setOption("extraKeys", {
               "Shift-Ctrl-Space": "autocomplete",
+              "Tab": function(cm) {
+                const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+                cm.replaceSelection(spaces);
+              },
               "Ctrl-Space": function (editor) {
                 // Save contents
                 const cursor = editor.getCursor();

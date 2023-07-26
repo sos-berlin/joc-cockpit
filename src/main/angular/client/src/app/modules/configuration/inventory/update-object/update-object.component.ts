@@ -36,7 +36,6 @@ export class UpdateObjectComponent {
   positions: any;
   blockPositions: any;
   blockPositionList: any;
-  newPositions: any;
   step = 1;
   submitted = false;
   isVisible = false;
@@ -58,7 +57,13 @@ export class UpdateObjectComponent {
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     mode: 'shell',
     gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-    extraKeys: {'Shift-Ctrl-Space': 'autocomplete'}
+    extraKeys: {
+      'Shift-Ctrl-Space': 'autocomplete',
+      "Tab": function(cm) {
+        const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+        cm.replaceSelection(spaces);
+      }
+    }
   };
   @ViewChild('codeMirror', {static: false}) cm;
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService,
@@ -311,8 +316,8 @@ export class UpdateObjectComponent {
         this.blockPositions = new Map();
         this.blockPositionList = new Map();
         res.blockPositions.forEach((item) => {
-          this.blockPositions.set(item.positionString, JSON.stringify(item.position));
-          this.blockPositionList.set(JSON.stringify(item.position), JSON.stringify(item));
+          this.blockPositions.set(item.positionString, (item.position));
+          this.blockPositionList.set(item.positionString, item.positions);
         });
         cb();
       }, error: () => {
@@ -448,12 +453,12 @@ export class UpdateObjectComponent {
     }
   }
 
-  getNewPositions(positions): void {
-    this.newPositions = undefined;
+  getNewPositions(positions, data): void {
+    data.newPositions = undefined;
     if (positions) {
-      this.newPositions = new Map();
+      data.newPositions = new Map();
       positions.forEach(item => {
-        this.newPositions.set(item.positionString, (item.position));
+        data.newPositions.set(item.positionString, (item.position));
       })
     }
   }
@@ -761,18 +766,40 @@ export class UpdateObjectComponent {
             });
           }
           if (parameter.positions) {
+            let newPositions;
             if (parameter.positions.blockPosition && this.blockPositions && this.blockPositions.has(parameter.positions.blockPosition)) {
-              parameter.positions.blockPosition = JSON.parse(this.blockPositions.get(parameter.positions.blockPosition))
+
+              if (parameter.positions.blockPosition) {
+                let _newPositions = this.blockPositionList.get(parameter.positions.blockPosition);
+                if (_newPositions) {
+                  newPositions = new Map();
+                  _newPositions.forEach((item) => {
+                    newPositions.set(item.positionString, (item.position));
+                  });
+                }
+              }
+              parameter.positions.blockPosition = this.blockPositions.get(parameter.positions.blockPosition);
             }
-            if (parameter.positions.startPosition && this.positions && this.positions.has(parameter.positions.startPosition)) {
-              parameter.positions.startPosition = JSON.parse(this.positions.get(parameter.positions.startPosition))
+            if (parameter.positions.startPosition) {
+
+              if (newPositions) {
+                if (newPositions.has(parameter.positions.startPosition)) {
+                  parameter.positions.startPosition = (newPositions.get(parameter.positions.startPosition))
+                }
+              } else if (this.positions && this.positions.has(parameter.positions.startPosition)) {
+                parameter.positions.startPosition = (this.positions.get(parameter.positions.startPosition))
+              }
             }
             if (parameter.positions.endPositions) {
               parameter.positions.endPositions = parameter.positions.endPositions.map((item) => {
-                if (this.positions.has(item)) {
-                  return JSON.parse(this.positions.get(item))
+                if (newPositions) {
+                  if (newPositions.has(item)) {
+                    return (newPositions.get(item))
+                  }
+                } else if (this.positions.has(item)) {
+                  return (this.positions.get(item))
                 }
-              })
+              });
             }
           }
           return true;

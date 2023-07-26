@@ -388,7 +388,7 @@
               <label class="col-sm-4 form-control-label" translate>order.label.blockPosition</label>
               <div class="col-sm-6">
                 <app-node-position [index]="j" [obj]="variableSet.positions" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList"
-                                   [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event)"></app-node-position>
+                                   [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event, variableSet.positions)"></app-node-position>
               </div>
               <div class="col-md-1">
                 <label [(ngModel)]="checkboxObjects.startNode" class="m-t-xs" name="cstartNode" nz-checkbox></label>
@@ -397,7 +397,7 @@
             <div class="form-group row">
               <label class="col-md-4 form-control-label" translate>order.label.startNode</label>
               <div class="col-md-6">
-                <app-node-position [index]="j" [obj]="variableSet.positions" [newPositions]="newPositions" [positions]="positions"
+                <app-node-position [index]="j" [obj]="variableSet.positions" [newPositions]="variableSet.positions.newPositions" [positions]="positions"
                                    [type]="'START'" [workflow]="workflow"></app-node-position>
               </div>
               <div class="col-md-1">
@@ -407,7 +407,7 @@
             <div class="form-group row">
               <label class="col-md-4 form-control-label" translate>order.label.endNode</label>
               <div class="col-md-6">
-                <app-node-position [index]="j" [obj]="variableSet.positions" [newPositions]="newPositions" [position]="variableSet.positions.startPosition"
+                <app-node-position [index]="j" [obj]="variableSet.positions" [newPositions]="variableSet.positions.newPositions" [position]="variableSet.positions.startPosition"
                                    [positions]="positions" [type]="'END'"
                                    [workflow]="workflow"></app-node-position>
               </div>
