@@ -498,7 +498,6 @@ export class AddOrderModalComponent {
         this.updateVariablesFromSchedule(this.selectedSchedule.orderParameterisations[i]);
         if (this.selectedSchedule.orderParameterisations[i].positions) {
           let newPositions;
-          console.log(this.selectedSchedule.orderParameterisations[i].positions, '>>>>>')
           if (this.selectedSchedule.orderParameterisations[i].positions.blockPosition) {
             for (const [key, value] of this.blockPositions) {
               if (JSON.stringify(this.selectedSchedule.orderParameterisations[i].positions.blockPosition) === JSON.stringify(value)) {
