@@ -14,7 +14,6 @@ export class DataService implements OnDestroy {
   public reloadLicenseCheck: BehaviorSubject<any> = new BehaviorSubject<boolean>(false);
   public isThemeReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public resetProfileSetting: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public closeModal: BehaviorSubject<string> = new BehaviorSubject<string>('');
   public reloadTree: BehaviorSubject<any> = new BehaviorSubject<any>({});
   public reloadWorkflowError: BehaviorSubject<any> = new BehaviorSubject<any>({});
   public reloadAuthentication: BehaviorSubject<any> = new BehaviorSubject<any>({});
@@ -60,7 +59,6 @@ export class DataService implements OnDestroy {
     this.isProfileReload.unsubscribe();
     this.isThemeReload.unsubscribe();
     this.resetProfileSetting.unsubscribe();
-    this.closeModal.unsubscribe();
   }
 }
 

@@ -1,4 +1,4 @@
-<div *ngIf="isModal" class="modal-header">
+<div class="modal-header">
   <h4 class="modal-title">
     <span *ngIf="new" translate>controller.label.newController</span>
     <span *ngIf="!new" translate>controller.label.registerController</span>
@@ -9,8 +9,8 @@
 </div>
 
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
-  <div [ngClass]="{'modal-body p-a' : isModal}">
-    <div *ngIf="display && isModal">
+  <div class="modal-body p-a">
+    <div *ngIf="display">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="8"></app-audit-log-input>
     </div>
     <div *ngIf="hasLicense" class="form-group row">
@@ -194,21 +194,9 @@
           </div>
         </div>
       </div>
-
-    </div>
-    <div class="form-group row" *ngIf="!isModal">
-      <div class="col-md-12 m-t">
-        <button type="submit" [disabled]="!myForm.form.valid || submitted || error" class="btn btn-primary btn-sm">
-          <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
-          {{'common.button.submit' | translate}}
-        </button>
-        <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
-          common.button.cancel
-        </button>
-      </div>
     </div>
   </div>
-  <div class="modal-footer" *ngIf="isModal">
+  <div class="modal-footer">
     <button type="submit" [disabled]="!myForm.form.valid || submitted || error || (required && !comments.comment)" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}

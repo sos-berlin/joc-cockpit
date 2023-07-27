@@ -182,7 +182,9 @@ export class OrderSearchComponent {
   }
 
   getFolderTree(): void {
-    this.filter.paths = [];
+    if(!this.filter.paths){
+      this.filter.paths = [];
+    }
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
       forInventory: true,
@@ -3325,6 +3327,7 @@ export class HistoryComponent {
       }
       this.modal.create({
         nzTitle: undefined,
+        nzAutofocus: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
         nzData: obj,
@@ -3374,7 +3377,6 @@ export class HistoryComponent {
           this.copyFilter(result);
         }
       }
-    }, () => {
     });
   }
 

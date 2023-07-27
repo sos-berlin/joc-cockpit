@@ -1,8 +1,8 @@
-import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
-import {NZ_MODAL_DATA} from "ng-zorro-antd/modal";
+import {NZ_MODAL_DATA, NzModalRef} from "ng-zorro-antd/modal";
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
@@ -15,11 +15,8 @@ declare const $;
 })
 export class StartUpModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
-  @Input() isModal: boolean;
-  @Input() new: boolean;
-  @Input() modalRef: boolean;
-  @Input() controllerInfo: any;
-  @Output() afterSubmit: EventEmitter<any> = new EventEmitter();
+  new: boolean;
+  controllerInfo: any;
   submitted = false;
   controller: any = {};
   isPrimaryConnectionChecked = false;
@@ -33,17 +30,14 @@ export class StartUpModalComponent {
   controllerId = '';
   hasLicense = false;
 
-  constructor(public coreService: CoreService, private router: Router, private dataService: DataService,
+  constructor(public coreService: CoreService, private router: Router, private activeModal: NzModalRef,
               public translate: TranslateService, private toasterService: ToastrService) {
   }
 
   ngOnInit(): void {
-    if(this.modalData){
-      this.isModal = this.modalData.isModal;
-      this.modalRef = this.modalData.modalRef;
-      this.controllerInfo = this.modalData.controllerInfo;
-      this.new = this.modalData.new;
-    }
+    this.controllerInfo = this.modalData.controllerInfo;
+    this.new = this.modalData.new;
+
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -129,11 +123,7 @@ export class StartUpModalComponent {
 
     this.coreService.post('controller/register', obj).subscribe({
       next: () => {
-        if (this.modalRef) {
-          this.dataService.closeModal.next('reload');
-        } else {
-          this.afterSubmit.emit();
-        }
+        this.activeModal.close('reload');
         this.submitted = false;
       }, error: () => this.submitted = false
     });
@@ -185,14 +175,9 @@ export class StartUpModalComponent {
   }
 
   close(): void {
-    if (this.modalRef) {
-      this.dataService.closeModal.next('close');
-    }
+    this.activeModal.destroy();
   }
 
-  cancel(): void {
-    this.router.navigate(['/dashboard']).then();
-  }
 }
 
 @Component({
@@ -203,14 +188,37 @@ export class StartUpComponent {
   controller: any = {};
   schedulerIds: any = {};
   error: any;
+  submitted = false;
+  isPrimaryConnectionChecked = false;
+  isBackupConnectionChecked = false;
+  isConnectionChecked = false;
+  required = false;
+  display: any;
+  comments: any = {};
+
+  controllerId = '';
+  hasLicense = false;
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
-              public translate: TranslateService, private dataService: DataService) {
+              public translate: TranslateService, private dataService: DataService, private toasterService: ToastrService) {
   }
 
   ngOnInit(): void {
     const headerHt = $('.fixed-top').height() || 70;
     $('.app-body').css('margin-top', headerHt + 'px');
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+    this.hasLicense = sessionStorage['hasLicense'] == 'true';
+    this.controller = {
+      url: '',
+      type: 'STANDALONE',
+      clusterAs: 'AGENT',
+      title: 'STANDALONE CONTROLLER',
+      primaryTitle: 'PRIMARY CONTROLLER',
+      backupTitle: 'SECONDARY CONTROLLER',
+    };
   }
 
   private redirect(): void {
@@ -227,5 +235,95 @@ export class StartUpComponent {
         this.redirect();
       }, error: () => this.redirect()
     });
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    let obj: any = {
+      controllers: [],
+      controllerId: this.controllerId
+    };
+
+    if (this.controller.type === 'STANDALONE') {
+      let _obj: any = {};
+      _obj.url = this.controller.url;
+      _obj.title = this.controller.title;
+      _obj.role = 'STANDALONE';
+      obj.controllers.push(_obj);
+    } else {
+      if (this.controller.primaryUrl) {
+        let _obj: any = {};
+        _obj.url = this.controller.primaryUrl;
+        _obj.title = this.controller.primaryTitle;
+        _obj.role = 'PRIMARY';
+        _obj.clusterUrl = this.controller.primaryClusterUrl;
+        obj.controllers.push(_obj);
+      }
+
+      if (this.controller.backupUrl) {
+        let _obj: any = {};
+        _obj.url = this.controller.backupUrl;
+        _obj.role = 'BACKUP';
+        _obj.clusterUrl = this.controller.backupClusterUrl;
+        _obj.title = this.controller.backupTitle;
+        obj.controllers.push(_obj);
+      }
+    }
+    if (this.display) {
+      obj.auditLog = {};
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+    }
+
+    this.coreService.post('controller/register', obj).subscribe({
+      next: () => {
+        this.getSchedulerIds();
+        this.submitted = false;
+      }, error: () => this.submitted = false
+    });
+  }
+
+  testConnection(type, url): void {
+    this.error = false;
+    this.setFlag(type, true);
+    this.coreService.post('controller/test', {url, controllerId: ''}).subscribe({
+      next: (res: any) => {
+        this.setFlag(type, false);
+        if (res && res.controller) {
+          let title = '', msg = '';
+          if (res.controller.connectionState && res.controller.connectionState._text === 'unreachable') {
+            this.error = true;
+            this.translate.get('error.message.oops').subscribe(translatedValue => {
+              title = translatedValue;
+            });
+            this.translate.get('error.message.connectionError').subscribe(translatedValue => {
+              msg = translatedValue;
+            });
+            this.toasterService.error(msg, title);
+          } else {
+            this.translate.get('error.message.connectionSuccess').subscribe(translatedValue => {
+              msg = translatedValue;
+            });
+            this.toasterService.success(msg);
+          }
+        }
+      }, error: () => {
+        this.error = true;
+        this.setFlag(type, false);
+      }
+    });
+  }
+
+  cancel(): void {
+    this.router.navigate(['/dashboard']).then();
+  }
+
+  setFlag(type, flag): void {
+    if (type === 'ALL') {
+      this.isConnectionChecked = flag;
+    } else if (type === 'PRIMARY') {
+      this.isPrimaryConnectionChecked = flag;
+    } else if (type === 'BACKUP') {
+      this.isBackupConnectionChecked = flag;
+    }
   }
 }

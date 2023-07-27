@@ -55,7 +55,7 @@
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWithW'" [isRequired]="true"
                                   [name]="'startingWithW'" [dateFormat]="dateFormat" [isAllowClear]="true"
-                                  [placeholder]="'runtime.placeholder.startDate'"
+                                  [placeholder]="'runtime.placeholder.startDate'" (modelChange)="onDateChange()"
                   ></app-date-input>
                 </div>
               </div>
@@ -65,7 +65,7 @@
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOnW'" [isRequired]="true"
                                   [name]="'endOnW'" [dateFormat]="dateFormat" [isAllowClear]="true"
-                                  [placeholder]="'runtime.placeholder.endDate'"
+                                  [placeholder]="'runtime.placeholder.endDate'" (modelChange)="onDateChange()"
                   ></app-date-input>
                 </div>
               </div>
@@ -109,7 +109,7 @@
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWithS'"
                                   [name]="'startingWithS'" [dateFormat]="dateFormat" [isAllowClear]="true"
-                                  [placeholder]="'runtime.placeholder.startDate'"
+                                  [placeholder]="'runtime.placeholder.startDate'" (modelChange)="onDateChange()"
                   ></app-date-input>
                 </div>
               </div>
@@ -118,7 +118,7 @@
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOnS'"
                                   [name]="'endOnS'" [dateFormat]="dateFormat" [isAllowClear]="true"
-                                  [placeholder]="'runtime.placeholder.endDate'"
+                                  [placeholder]="'runtime.placeholder.endDate'" (modelChange)="onDateChange()"
                   ></app-date-input>
                 </div>
               </div>
@@ -216,7 +216,7 @@
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWithM'"
                                   [name]="'startingWithM'" [dateFormat]="dateFormat" [isAllowClear]="true"
-                                  [placeholder]="'runtime.placeholder.startDate'"
+                                  [placeholder]="'runtime.placeholder.startDate'" (modelChange)="onDateChange()"
                   ></app-date-input>
                 </div>
               </div>
@@ -225,7 +225,7 @@
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOnM'"
                                   [name]="'endOnM'" [dateFormat]="dateFormat" [isAllowClear]="true"
-                                  [placeholder]="'runtime.placeholder.endDate'"
+                                  [placeholder]="'runtime.placeholder.endDate'" (modelChange)="onDateChange()"
                   ></app-date-input>
                 </div>
               </div>
@@ -255,7 +255,7 @@
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWith'" [isRequired]="frequency.tab == 'every'"
                                   [name]="'startingWith'" [dateFormat]="dateFormat" [isAllowClear]="true"
-                                  [placeholder]="dateFormat | uppercase"
+                                  [placeholder]="dateFormat | uppercase" (modelChange)="onDateChange()"
                   ></app-date-input>
                 </div>
               </div>
@@ -264,7 +264,7 @@
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOn'"
                                   [name]="'endOn'" [dateFormat]="dateFormat" [isAllowClear]="true"
-                                  [placeholder]="(dateFormat | uppercase)"
+                                  [placeholder]="(dateFormat | uppercase)" (modelChange)="onDateChange()"
                   ></app-date-input>
                 </div>
               </div>
