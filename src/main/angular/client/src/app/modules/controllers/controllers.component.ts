@@ -520,7 +520,7 @@ export class ControllersComponent {
       nzContent: StartUpModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzComponentParams: {
+      nzData: {
         isModal: true,
         new: true,
         modalRef: true
@@ -545,7 +545,7 @@ export class ControllersComponent {
           nzContent: StartUpModalComponent,
           nzClassName: 'lg',
           nzAutofocus: null,
-          nzComponentParams: {
+          nzData: {
             isModal: true,
             controllerInfo: res.controllers,
             agents: res.agents,

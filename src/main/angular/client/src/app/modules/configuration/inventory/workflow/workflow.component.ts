@@ -2657,11 +2657,8 @@ export class ExpressionComponent {
   lastSelectOperator = '';
 
   cmOption: any = {
-    lineNumbers: true,
     autoRefresh: true,
     lineWrapping: true,
-    matchBrackets: true,
-    foldGutter: true,
     tabSize: 4,
     scrollbarStyle: 'simple',
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
