@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, inject} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, SimpleChanges, inject} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DatePipe} from '@angular/common';
 import * as moment from 'moment';
@@ -68,21 +68,6 @@ export class FrequencyModalComponent {
     {label: 'friday', value: '5', checked: false},
     {label: 'saturday', value: '6', checked: false},
     {label: 'sunday', value: '0', checked: false}
-  ];
-
-  monthsOptions = [
-    {label: 'january', value: '1', checked: false},
-    {label: 'february', value: '2', checked: false},
-    {label: 'march', value: '3', checked: false},
-    {label: 'april', value: '4', checked: false},
-    {label: 'may', value: '5', checked: false},
-    {label: 'june', value: '6', checked: false},
-    {label: 'july', value: '7', checked: false},
-    {label: 'august', value: '8', checked: false},
-    {label: 'september', value: '9', checked: false},
-    {label: 'october', value: '10', checked: false},
-    {label: 'november', value: '11', checked: false},
-    {label: 'december', value: '12', checked: false}
   ];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService,

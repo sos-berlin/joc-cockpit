@@ -52,6 +52,8 @@ export class NodePositionComponent {
           let isEnable = self.positions ? self.positions.has(json.instructions[x].positionString) : true;
           if (self.newPositions?.size > 0) {
             isEnable = self.newPositions ? self.newPositions.has(json.instructions[x].positionString) : true;
+          } else if (self.newPositions && self.newPositions.size == 0) {
+            isEnable = false;
           }
           flag = true;
           if (self.blockPositions) {

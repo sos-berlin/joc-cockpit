@@ -425,7 +425,7 @@ export class ChangeParameterModalComponent {
 
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    if (obj.variables || obj.removeVariables) {
+    if (obj.variables || obj.removeVariables || obj.endPositions || obj.startPosition || obj.blockPosition) {
       this.coreService.post('daily_plan/orders/modify', obj).subscribe({
         next: () => {
           this.activeModal.close(obj.variables);

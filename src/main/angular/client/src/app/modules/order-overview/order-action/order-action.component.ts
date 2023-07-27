@@ -176,19 +176,15 @@ export class OrderActionComponent {
   }
 
   private getRequirements(order, cb): void {
-    if (order.requirements && order.requirements.parameters) {
-      cb();
-    } else {
-      this.coreService.post('workflow', {
-        controllerId: this.schedulerId,
-        workflowId: {path: order.workflowId.path}
-      }).subscribe({
-        next: (res: any) => {
-          order.requirements = res.workflow.orderPreparation;
-          cb(res.workflow);
-        }, error: () => cb()
-      });
-    }
+    this.coreService.post('workflow', {
+      controllerId: this.schedulerId,
+      workflowId: {path: order.workflowId.path}
+    }).subscribe({
+      next: (res: any) => {
+        order.requirements = res.workflow.orderPreparation;
+        cb(res.workflow);
+      }, error: () => cb()
+    });
   }
 
   changeParameter(order): void {
