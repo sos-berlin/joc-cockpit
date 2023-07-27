@@ -1065,9 +1065,7 @@ export class DailyPlanComponent {
         }
       }
       if (!state) {
-        if (order.requirements) {
-          openModal(order.requirements);
-        } else {
+
           this.coreService.post('workflow', {
             controllerId: this.schedulerIds.selected,
             workflowId: {path: order.workflowPath}
@@ -1075,7 +1073,7 @@ export class DailyPlanComponent {
             order.requirements = res.workflow.orderPreparation;
             openModal(order.requirements, res.workflow);
           });
-        }
+
       } else {
         this.showInfoMsg(state);
       }
@@ -2045,17 +2043,13 @@ export class DailyPlanComponent {
 
   private openModel(plan, order): void {
     if (order) {
-      if (!order.requirements) {
-        this.coreService.post('workflow', {
-          controllerId: this.schedulerIds.selected,
-          workflowId: {path: order.workflowPath}
-        }).subscribe((res: any) => {
-          order.requirements = res.workflow.orderPreparation;
-          this._openModel(plan, order, order.requirements, res.workflow);
-        });
-      } else {
-        this._openModel(plan, order, order.requirements);
-      }
+      this.coreService.post('workflow', {
+        controllerId: this.schedulerIds.selected,
+        workflowId: {path: order.workflowPath}
+      }).subscribe((res: any) => {
+        order.requirements = res.workflow.orderPreparation;
+        this._openModel(plan, order, order.requirements, res.workflow);
+      });
     } else {
       if (plan && plan.value && plan.value.length > 0) {
         let requirements: any, workflowPath = '';
@@ -2070,16 +2064,12 @@ export class DailyPlanComponent {
             }
           }
         });
-        if (requirements) {
-          this._openModel(plan, order, requirements);
-        } else {
-          this.coreService.post('workflow', {
-            controllerId: this.schedulerIds.selected,
-            workflowId: {path: workflowPath}
-          }).subscribe((res: any) => {
-            this._openModel(plan, order, res.workflow.orderPreparation, res.workflow);
-          });
-        }
+        this.coreService.post('workflow', {
+          controllerId: this.schedulerIds.selected,
+          workflowId: {path: workflowPath}
+        }).subscribe((res: any) => {
+          this._openModel(plan, order, res.workflow.orderPreparation, res.workflow);
+        });
       } else {
         this._openModel(plan, order, []);
       }
