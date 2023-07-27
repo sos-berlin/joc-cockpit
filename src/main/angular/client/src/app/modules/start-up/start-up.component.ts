@@ -1,7 +1,8 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
+import {NZ_MODAL_DATA} from "ng-zorro-antd/modal";
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
@@ -13,6 +14,7 @@ declare const $;
   templateUrl: './start-up.dialog.html'
 })
 export class StartUpModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
   @Input() isModal: boolean;
   @Input() new: boolean;
   @Input() modalRef: boolean;
@@ -36,6 +38,12 @@ export class StartUpModalComponent {
   }
 
   ngOnInit(): void {
+    if(this.modalData){
+      this.isModal = this.modalData.isModal;
+      this.modalRef = this.modalData.modalRef;
+      this.controllerInfo = this.modalData.controllerInfo;
+      this.new = this.modalData.new;
+    }
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
