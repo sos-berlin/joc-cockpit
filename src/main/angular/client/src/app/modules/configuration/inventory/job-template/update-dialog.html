@@ -66,10 +66,10 @@
             <label translate>inventory.export.label.filter</label>
           </div>
           <div class="col-md-9">
-            <label (ngModelChange)="filterList()" [(ngModel)]="object.draft" name="draft" nz-checkbox>
+            <label [(ngModel)]="object.draft" name="draft" nz-checkbox (ngModelChange)="filterList()" >
               {{'inventory.export.label.draft'| translate}}
             </label>
-            <label (ngModelChange)="filterList()" [(ngModel)]="object.deploy" class="m-l-md" name="deploy" nz-checkbox>
+            <label [(ngModel)]="object.deploy" class="m-l-md" name="deploy" nz-checkbox  (ngModelChange)="filterList()">
               {{'inventory.export.label.deployed'| translate}}
             </label>
           </div>
@@ -147,7 +147,7 @@
                 class="label m-l"></span>
           <ul *ngIf="workflow.jobs && workflow.show" class="m-b-sm p-t-xxs">
             <li class="m-b-xs"><span class="_600 text" translate>dashboard.label.jobs</span>:</li>
-            <li *ngFor="let job of workflow.jobs" class="m-l-sm p-l-xs">
+            <li *ngFor="let job of workflow.jobs | orderBy: 'name'" class="m-l-sm p-l-xs">
               <ng-container [ngTemplateOutletContext]="{ $implicit: job}"
                             [ngTemplateOutlet]="jobTemplate"></ng-container>
             </li>

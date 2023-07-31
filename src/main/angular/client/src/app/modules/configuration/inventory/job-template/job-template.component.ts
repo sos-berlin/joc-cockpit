@@ -657,7 +657,8 @@ export class JobTemplateComponent {
           "Shift-Ctrl-Space": "autocomplete",
           "Tab": (cm) => {
             let spaces = '';
-            for(let i =0; i < parseInt(self.preferences.tabSize) || 4; i++){
+            const tabSize = parseInt(self.preferences.tabSize) || 4;
+            for(let i =0; i < tabSize; i++){
               spaces += ' ';
             }
             cm.replaceSelection(spaces);

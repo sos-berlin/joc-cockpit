@@ -228,7 +228,6 @@ export class ControllersComponent {
   currentSecurityLevel: string;
   permission: any = {};
   preferences: any = {};
-  modalInstance: NzModalRef;
   loading = false;
   isLoaded = false;
   hasLicense = false;
@@ -242,21 +241,11 @@ export class ControllersComponent {
   isJOCActive = false;
 
   subscription1: Subscription;
-  subscription2: Subscription;
 
   constructor(public coreService: CoreService, private modal: NzModalService, private message: NzMessageService,
               private authService: AuthService, private dataService: DataService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
-    });
-    this.subscription2 = dataService.closeModal.subscribe(res => {
-      if (res && this.modalInstance) {
-        if (res === 'reload') {
-          this.modalInstance.close(res);
-        } else {
-          this.modalInstance.destroy();
-        }
-      }
     });
   }
 
@@ -272,7 +261,6 @@ export class ControllersComponent {
 
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
   }
 
   private refresh(args: { eventSnapshots: any[] }): void {
@@ -515,13 +503,12 @@ export class ControllersComponent {
   }
 
   addController(): void {
-    this.modalInstance = this.modal.create({
+    const modalInstance = this.modal.create({
       nzTitle: undefined,
       nzContent: StartUpModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
       nzData: {
-        isModal: true,
         new: true,
         modalRef: true
       },
@@ -529,7 +516,7 @@ export class ControllersComponent {
       nzClosable: false,
       nzMaskClosable: false
     });
-    this.modalInstance.afterClose.subscribe(result => {
+    modalInstance.afterClose.subscribe(result => {
       if (result && this.controllers.length === 0) {
         this.isLoaded = false;
         this.getSchedulerIds();
@@ -540,13 +527,12 @@ export class ControllersComponent {
   editController(controller): void {
     if (this.permission.joc && this.permission.joc.administration.controllers.manage) {
       this.coreService.post('controllers/p', {controllerId: controller}).subscribe((res: any) => {
-        this.modalInstance = this.modal.create({
+        const modalInstance = this.modal.create({
           nzTitle: undefined,
           nzContent: StartUpModalComponent,
           nzClassName: 'lg',
           nzAutofocus: null,
           nzData: {
-            isModal: true,
             controllerInfo: res.controllers,
             agents: res.agents,
             clusterAgents: res.clusterAgents,
@@ -556,7 +542,7 @@ export class ControllersComponent {
           nzClosable: false,
           nzMaskClosable: false
         });
-        this.modalInstance.afterClose.subscribe(result => {
+        modalInstance.afterClose.subscribe(result => {
           if (result && this.controllers.length === 0) {
             if (!this.isLoaded) {
               this.getSchedulerIds();

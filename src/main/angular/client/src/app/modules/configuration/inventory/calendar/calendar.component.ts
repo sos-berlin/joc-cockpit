@@ -246,6 +246,10 @@ export class FrequencyModalComponent {
     }
   }
 
+  onDateChange(): void{
+    this.onFrequencyChange();
+  }
+
   onFrequencyChange(): void {
     if (this.frequency) {
       if (!this.frequency.isUltimos) {

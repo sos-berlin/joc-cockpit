@@ -1435,18 +1435,15 @@ export class PermissionsComponent {
      * Update a permission_node's state when they are clicked.
      */
     function togglePermission(permission_node) {
-      if (self.userPermission.joc && self.userPermission.joc.administration.accounts.manage) {
-        if (permission_node.icon) {
-          permission_node.icon = './assets/images/minus.png';
-        }
-        if (permission_node.collapsed) {
-          permission_node.collapsed = false;
-        } else {
-          collapse(permission_node);
-        }
-
-        draw(permission_node, calculateTopMost());
+      if (permission_node.icon) {
+        permission_node.icon = './assets/images/minus.png';
       }
+      if (permission_node.collapsed) {
+        permission_node.collapsed = false;
+      } else {
+        collapse(permission_node);
+      }
+      draw(permission_node, calculateTopMost());
     }
 
     function generatePermissionList(permission) {

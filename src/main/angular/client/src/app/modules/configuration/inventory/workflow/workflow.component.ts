@@ -2293,6 +2293,8 @@ export class JobComponent {
     }
     if (this.selectedNode.job.jobResourceNames && this.selectedNode.job.jobResourceNames.length > 0) {
       this.jobresources.list = this.coreService.clone(this.selectedNode.job.jobResourceNames);
+    } else {
+      this.jobresources.list = [];
     }
 
     this.onBlur();
@@ -2512,6 +2514,9 @@ export class ScriptEditorComponent {
     this.disabled = this.modalData.disabled;
     this.isSkip = this.modalData.isSkip;
     this.cmOption.mode = this.modalData.mode;
+    if (this.modalData.disabled) {
+      this.cmOption.readOnly = true;
+    }
     if (this.cmOption.mode === 'javascript') {
       this.cmOption.autoCloseBrackets = true;
     }
