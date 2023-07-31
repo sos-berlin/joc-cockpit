@@ -489,9 +489,9 @@ export class WorkflowService {
     instruction.try = {
       instructions: instruction.instructions
     };
-    delete instruction.instructions;
-    delete instruction.catch;
-    delete instruction.label;
+    delete instruction['instructions'];
+    delete instruction['catch'];
+    delete instruction['label'];
     instruction.catch = catchObj;
     instruction.label = label;
   }
@@ -517,11 +517,11 @@ export class WorkflowService {
     const retryDelays = clone(instruction.retryDelays);
     const maxTries = clone(instruction.maxTries);
     const label = clone(instruction.label);
-    delete instruction.instructions;
-    delete instruction.catch;
-    delete instruction.retryDelays;
-    delete instruction.maxTries;
-    delete instruction.label;
+    delete instruction['instructions'];
+    delete instruction['catch'];
+    delete instruction['retryDelays'];
+    delete instruction['maxTries'];
+    delete instruction['label'];
     instruction.catch = catchObj;
     instruction.label = label;
     instruction.maxTries = parseInt(maxTries, 10);
@@ -545,11 +545,11 @@ export class WorkflowService {
   validateFields(value: any, type: string): boolean {
     if (value) {
       if (value.defaultArguments && isEmpty(value.defaultArguments)) {
-        delete value.defaultArguments;
+        delete value['defaultArguments'];
       }
       if (type === 'Job') {
         if (isEmpty(value.admissionTimeScheme) || value.admissionTimeScheme.periods.length === 0) {
-          delete value.admissionTimeScheme;
+          delete value['admissionTimeScheme'];
         }
         if (!value.executable || (!value.executable.className && ((value.executable.TYPE === 'InternalExecutable' || value.executable.TYPE === 'Java') && value.executable.internalType !== 'JavaScript_Graal'))
           || (!value.executable.script && (value.executable.TYPE === 'ShellScriptExecutable' || value.executable.TYPE === 'JavaScript' || value.executable.internalType === 'JavaScript_Graal')) || !value.agentName) {
@@ -573,7 +573,7 @@ export class WorkflowService {
       }
       if (type === 'Lock') {
         if (!value.count) {
-          delete value.count;
+          delete value['count'];
         }
         if (!value.lockName) {
           return false;
@@ -601,7 +601,7 @@ export class WorkflowService {
         if (value.uncatchable && value.uncatchable != 'null' && value.uncatchable != 'undefined' && typeof value.uncatchable === 'string') {
           value.uncatchable = value.uncatchable == 'true';
         } else {
-          delete value.uncatchable;
+          delete value['uncatchable'];
         }
       }
 
@@ -609,7 +609,7 @@ export class WorkflowService {
         if (value.unsuccessful && value.unsuccessful != 'null' && value.unsuccessful != 'undefined' && typeof value.unsuccessful === 'string') {
           value.unsuccessful = value.unsuccessful == 'true';
         } else {
-          delete value.unsuccessful;
+          delete value['unsuccessful'];
         }
       }
 
@@ -638,17 +638,17 @@ export class WorkflowService {
       if (value.returnCode && value.returnCode != 'null' && value.returnCode != 'undefined' && typeof value.returnCode === 'string') {
         value.returnCode = parseInt(value.returnCode, 10);
         if (isNaN(value.returnCode)) {
-          delete value.returnCode;
+          delete value['returnCode'];
         }
       } else {
-        delete value.returnCode;
+        delete value['returnCode'];
       }
 
       if (value.timeout1) {
-        delete value.timeout1;
+        delete value['timeout1'];
       }
       if (value.graceTimeout1) {
-        delete value.graceTimeout1;
+        delete value['graceTimeout1'];
       }
       if (typeof value.taskLimit === 'string') {
         value.taskLimit = parseInt(value.taskLimit, 10);
@@ -659,13 +659,13 @@ export class WorkflowService {
       if (typeof value.timeout === 'string') {
         value.timeout = parseInt(value.timeout, 10);
         if (isNaN(value.timeout)) {
-          delete value.timeout;
+          delete value['timeout'];
         }
       }
       if (typeof value.graceTimeout === 'string') {
         value.graceTimeout = parseInt(value.graceTimeout, 10);
         if (isNaN(value.graceTimeout)) {
-          delete value.graceTimeout;
+          delete value['graceTimeout'];
         }
       }
     }
@@ -676,36 +676,36 @@ export class WorkflowService {
     if (obj.executable && obj.executable.returnCodeMeaning) {
       if (obj.executable.TYPE === 'ShellScriptExecutable') {
         if (obj.executable.returnCodeMeaning.success === '') {
-          delete obj.executable.returnCodeMeaning.success;
+          delete obj.executable.returnCodeMeaning['success'];
         }
         if (obj.executable.returnCodeMeaning.failure === '') {
-          delete obj.executable.returnCodeMeaning.failure;
+          delete obj.executable.returnCodeMeaning['failure'];
         }
 
         if (obj.executable.returnCodeMeaning.success == 0 || obj.executable.returnCodeMeaning.success == '0') {
-          delete obj.executable.returnCodeMeaning.failure;
+          delete obj.executable.returnCodeMeaning['failure'];
         }
         if (obj.executable.returnCodeMeaning.failure == 0 || obj.executable.returnCodeMeaning.failure == '0') {
-          delete obj.executable.returnCodeMeaning.success;
+          delete obj.executable.returnCodeMeaning['success'];
         }
 
         if (typeof obj.executable.returnCodeMeaning.success == 'string') {
-          delete obj.executable.returnCodeMeaning.failure;
+          delete obj.executable.returnCodeMeaning['failure'];
         } else if (typeof obj.executable.returnCodeMeaning.failure == 'string') {
-          delete obj.executable.returnCodeMeaning.success;
+          delete obj.executable.returnCodeMeaning['success'];
         }
       } else {
         delete obj.executable.returnCodeMeaning.success;
-        delete obj.executable.returnCodeMeaning.failure;
+        delete obj.executable.returnCodeMeaning['failure'];
       }
       if (obj.executable.returnCodeMeaning.warning === '') {
-        delete obj.executable.returnCodeMeaning.warning;
+        delete obj.executable.returnCodeMeaning['warning'];
       }
 
     }
     if (obj.executable) {
       if (isEmpty(obj.executable.returnCodeMeaning)) {
-        delete obj.executable.returnCodeMeaning;
+        delete obj.executable['returnCodeMeaning'];
       }
     }
   }
@@ -1553,7 +1553,7 @@ export class WorkflowService {
       }
 
       let v1;
-      if(type === 'Cycle') {
+      if (type === 'Cycle') {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToVertex('cycle', colorCode, self.theme) : 'cycle');
       } else {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('close' + type, colorCode, self.theme) : 'close' + type);
@@ -2483,7 +2483,6 @@ export class WorkflowService {
     return this.jobPath;
   }
 
-
   getStringDay(day: any): string {
     return (day == 0 ? 'Monday' : day == 1 ? 'Tuesday' : day == 2 ? 'Wednesday' : day == 3 ? 'Thursday' : day == 4 ? 'Friday' : day == 5 ? 'Saturday' : 'Sunday') + ' of a month';
   }
@@ -2526,7 +2525,6 @@ export class WorkflowService {
     } else {
       str = str + Math.abs(month) + 'th';
     }
-
     return str + ' day of a month';
   }
 
@@ -2626,17 +2624,20 @@ export class WorkflowService {
       job.executable.internalType = job.executable.TYPE === 'Java' ? 'Java' : 'JavaScript_Graal';
       job.executable.TYPE = 'InternalExecutable';
     }
+    if (job.jobResourceNames && (job.jobResourceNames.length == 0 || isEmpty(job.jobResourceNames))) {
+      delete job['jobResourceNames'];
+    }
     if (isEmpty(job.admissionTimeScheme)) {
-      delete job.admissionTimeScheme;
+      delete job['admissionTimeScheme'];
     }
     if (job.executable && isEmpty(job.executable.login)) {
-      delete job.executable.login;
+      delete job.executable['login'];
     }
     if (!job.executable.v1Compatible) {
       if (job.executable.TYPE === 'ShellScriptExecutable') {
         job.executable.v1Compatible = false;
       } else {
-        delete job.executable.v1Compatible;
+        delete job.executable['v1Compatible'];
       }
     }
     if (!isJobTemplate) {
@@ -2649,7 +2650,7 @@ export class WorkflowService {
             subagentClusterId: job.agentName
           }, ...job
         }
-        delete job.agentName1
+        delete job['agentName1']
       }
       if (job.defaultArguments) {
         if (job.executable.v1Compatible && (job.executable.TYPE === 'ShellScriptExecutable')) {
@@ -2658,7 +2659,7 @@ export class WorkflowService {
           });
           this.coreService.convertArrayToObject(job, 'defaultArguments', true);
         } else {
-          delete job.defaultArguments;
+          delete job['defaultArguments'];
         }
       }
       if (job.executable.arguments) {
@@ -2670,14 +2671,14 @@ export class WorkflowService {
             this.coreService.convertArrayToObject(job.executable, 'arguments', true);
           }
         } else {
-          delete job.executable.arguments;
+          delete job.executable['arguments'];
         }
       }
     } else {
-      delete job.defaultArguments;
-      delete job.agentName1;
-      delete job.agentName;
-      delete job.subagentClusterId;
+      delete job['defaultArguments'];
+      delete job['agentName1'];
+      delete job['agentName'];
+      delete job['subagentClusterId'];
       if (job.executable && job.executable.arguments) {
         this.coreService.convertArrayToObject(job.executable, 'arguments', true);
       }
@@ -2692,23 +2693,23 @@ export class WorkflowService {
           this.coreService.convertArrayToObject(job.executable, 'jobArguments', true);
         }
       } else {
-        delete job.executable.jobArguments;
+        delete job.executable['jobArguments'];
       }
     }
     this.checkReturnCodes(job);
 
     if (job.notification && isEmpty(job.notification.mail)) {
       if (!job.notification.types || job.notification.types.length === 0) {
-        delete job.notification;
+        delete job['notification'];
       } else {
-        delete job.notification.mail;
+        delete job.notification['mail'];
       }
     }
     if ((job.executable.TYPE === 'InternalExecutable' || job.executable.TYPE === 'Java') && job.executable.internalType !== 'JavaScript_Graal') {
-      delete job.executable.script;
-      delete job.executable.login;
+      delete job.executable['script'];
+      delete job.executable['login'];
     } else if (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.TYPE === 'JavaScript' || job.executable.internalType === 'JavaScript_Graal') {
-      delete job.executable.className;
+      delete job.executable['className'];
     }
     if (job.executable.env) {
       if (job.executable.TYPE === 'ShellScriptExecutable') {
@@ -2717,20 +2718,20 @@ export class WorkflowService {
           this.coreService.convertArrayToObject(job.executable, 'env', true);
         }
       } else {
-        delete job.executable.env;
+        delete job.executable['env'];
       }
     }
 
     if (job.arguments && job.arguments.length > 0) {
       let temp = this.coreService.clone(job.arguments);
       job.arguments = temp.filter((value: any) => {
-        delete value.value.invalid;
+        delete value.value['invalid'];
         if (value.value.type !== 'String') {
-          delete value.value.facet;
-          delete value.value.message;
+          delete value.value['facet'];
+          delete value.value['message'];
         }
         if (!value.value.default && value.value.default !== false && value.value.default !== 0) {
-          delete value.value.default;
+          delete value.value['default'];
         }
 
         if (value.value.type === 'String') {
@@ -2764,41 +2765,41 @@ export class WorkflowService {
     if (job.timeout1) {
       job.timeout = this.convertStringToDuration(job.timeout1);
     } else {
-      delete job.timeout;
+      delete job['timeout'];
     }
 
     if (job.graceTimeout1) {
       job.graceTimeout = this.convertStringToDuration(job.graceTimeout1);
     } else {
-      delete job.graceTimeout;
+      delete job['graceTimeout'];
     }
     delete job.timeout1;
     delete job.graceTimeout1;
     if (!job.arguments || typeof job.arguments === 'string' || job.arguments.length === 0) {
-      delete job.arguments;
+      delete job['arguments'];
     }
     if (job.executable && (!job.executable.arguments || typeof job.executable.arguments === 'string' || job.executable.arguments.length === 0)) {
-      delete job.executable.arguments;
+      delete job.executable['arguments'];
     }
     if (job.executable && (!job.executable.jobArguments || typeof job.executable.jobArguments === 'string' || job.executable.jobArguments.length === 0)) {
-      delete job.executable.jobArguments;
+      delete job.executable['jobArguments'];
     }
     if (job.executable && (!job.executable.env || typeof job.executable.env === 'string' || job.executable.env.length === 0)) {
-      delete job.executable.env;
+      delete job.executable['env'];
     }
     if (job.executable?.returnCodeMeaning) {
       if (job.executable.returnCodeMeaning.warning === '') {
-        delete job.executable.returnCodeMeaning.warning;
+        delete job.executable.returnCodeMeaning['warning'];
       }
       if (job.executable.returnCodeMeaning.warning === 0) {
         job.executable.returnCodeMeaning.warning = '0';
       }
       if ((!job.executable.returnCodeMeaning.warning) && (job.executable.returnCodeMeaning.success == '0' || job.executable.returnCodeMeaning.success == 0)) {
-        delete job.executable.returnCodeMeaning.success;
+        delete job.executable.returnCodeMeaning['success'];
       }
     }
     if (job.executable?.returnCodeMeaning && isEmpty(job.executable.returnCodeMeaning)) {
-      delete job.executable.returnCodeMeaning;
+      delete job.executable['returnCodeMeaning'];
     }
     return job;
   }
