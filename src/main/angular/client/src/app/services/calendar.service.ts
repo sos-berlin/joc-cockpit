@@ -7,6 +7,40 @@ import * as moment from 'moment';
 export class CalendarService {
   preferences: any = {};
 
+  dayNumbers = [
+    {label: 'runtime.label.first', value: '1'},
+    {label: 'runtime.label.second', value: '2'},
+    {label: 'runtime.label.third', value: '3'},
+    {label: 'runtime.label.fourth', value: '4'},
+    {label: 'runtime.label.last', value: '-1'},
+    {label: 'runtime.label.secondLast', value: '-2'},
+    {label: 'runtime.label.thirdLast', value: '-3'},
+    {label: 'runtime.label.fourthLast', value: '-4'}
+  ];
+  specificWeekDay = [
+    {label: 'runtime.label.sunday', value: 'sunday'},
+    {label: 'runtime.label.monday', value: 'monday'},
+    {label: 'runtime.label.tuesday', value: 'tuesday'},
+    {label: 'runtime.label.wednesday', value: 'wednesday'},
+    {label: 'runtime.label.thursday', value: 'thursday'},
+    {label: 'runtime.label.friday', value: 'friday'},
+    {label: 'runtime.label.saturday', value: 'saturday'}
+  ];
+  frequencyTab = [
+    {label: 'runtime.label.weekDays', value: 'weekDays'},
+    {label: 'runtime.label.specificWeekDays', value: 'specificWeekDays'},
+    {label: 'runtime.label.specificDays', value: 'specificDays'},
+    {label: 'runtime.label.monthDays', value: 'monthDays'},
+    {label: 'runtime.label.every', value: 'every'},
+    {label: 'runtime.label.nationalHoliday', value: 'nationalHoliday'}
+  ];
+  dateEntity = [
+    {label: 'runtime.label.days', value: 'DAILY'},
+    {label: 'runtime.label.weeks', value: 'WEEKLY'},
+    {label: 'runtime.label.months', value: 'MONTHLY'},
+    {label: 'runtime.label.years', value: 'YEARLY'}
+  ];
+
   constructor(private datePipe: DatePipe) {
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};

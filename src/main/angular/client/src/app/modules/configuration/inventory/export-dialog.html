@@ -37,10 +37,10 @@
       <div class="form-group row">
         <label class="col-md-3 form-control-label" translate>inventory.label.fileFormat</label>
         <div class="col-md-6">
-          <nz-select [(ngModel)]="exportObj.fileFormat" name="format">
-            <nz-option nzLabel="ZIP" nzValue="ZIP"></nz-option>
-            <nz-option nzLabel="TAR_GZ" nzValue="TAR_GZ"></nz-option>
-          </nz-select>
+          <app-select-input [attributeName]="'fileFormat'"
+                            [extraLabelText]="'local'"
+                            [listArray]="fileFormat" [name]="'format'" [optionLabel]="'label'" [optionValue]="'value'"
+                            [object]="exportObj"></app-select-input>
         </div>
       </div>
       <div *ngIf="securityLevel === 'HIGH'" class="form-group row">
@@ -48,14 +48,9 @@
           <label translate>common.label.controllerId</label>
         </div>
         <div class="col-md-6">
-          <nz-select
-            [(ngModel)]="exportObj.controllerId"
-            name="schedulerIds"
-            nzShowSearch>
-            <ng-container *ngFor="let id of schedulerIds.controllerIds">
-              <nz-option [nzLabel]="id" [nzValue]="id"></nz-option>
-            </ng-container>
-          </nz-select>
+          <app-select-input [attributeName]="'controllerId'" [isSearchable]="true"
+                            [listArray]="schedulerIds.controllerIds" [name]="'schedulerIds'"
+                            [object]="exportObj"></app-select-input>
         </div>
       </div>
       <div *ngIf="!origin || !origin.object" class="row m-b-12">
@@ -70,11 +65,9 @@
       <div *ngIf="(!origin || !origin.object) && exportObj.exportType === 'folders'" class="form-group row">
         <label class="col-md-3 form-control-label" translate>inventory.label.objectTypes</label>
         <div class="col-md-6">
-          <nz-select [(ngModel)]="exportObj.objectTypes" [nzPlaceHolder]="'inventory.placeholder.objectTypes' | translate"
-                     name="objectTypes" (ngModelChange)="filterList(false)"
-                     nzMode="multiple">
-            <nz-option *ngFor="let option of objectTypes" [nzLabel]="option | translate" [nzValue]="option"></nz-option>
-          </nz-select>
+          <app-select-input (modelChange)="filterList(false)" [attributeName]="'objectTypes'" [isSearchable]="true" [placeholder]="'inventory.placeholder.objectTypes'"
+                            [listArray]="objectTypes" [name]="'objectTypes'" [isMultiple]="'multiple'"
+                            [object]="exportObj"></app-select-input>
         </div>
       </div>
       <div *ngIf="securityLevel === 'HIGH'" class="form-group row">

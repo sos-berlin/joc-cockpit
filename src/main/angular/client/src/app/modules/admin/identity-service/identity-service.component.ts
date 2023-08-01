@@ -171,7 +171,7 @@ export class SettingModalComponent {
       configurationType: 'IAM',
       name: this.data ? this.data?.['identityServiceName'] : undefined
     }).subscribe((res) => {
-      if (res.configuration.objectType && (res.configuration.objectType.match('LDAP') || this.data['identityServiceType'] === 'OIDC')) {
+      if (res.configuration.objectType && this.data && (res.configuration.objectType.match('LDAP') || this.data['identityServiceType'] === 'OIDC')) {
         this.getUsersData();
       }
       if (res.configuration.configurationItem) {
@@ -673,12 +673,17 @@ export class SettingModalComponent {
       const formData = new FormData();
       this.fileList.forEach((file: any) => {
         formData.append('file', file);
-        formData.append('name', encodeURIComponent(file.name));
         formData.append('identityServiceName', this.data?.['identityServiceName']);
       });
-      let obj = {auditLog: {}};
-      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-      formData.append('auditLog', JSON.stringify(obj.auditLog));
+      if (this.comments.comment) {
+        formData.append('comment', this.comments.comment);
+      }
+      if (this.comments.timeSpent) {
+        formData.append('timeSpent',this.comments.timeSpent);
+      }
+      if (this.comments.ticketLink) {
+        formData.append('ticketLink', this.comments.ticketLink);
+      }
       const headers = new HttpHeaders().set('X-Access-Token', this.authService.accessTokenId);
       headers.set('Content-Type', 'multipart/form-data');
 

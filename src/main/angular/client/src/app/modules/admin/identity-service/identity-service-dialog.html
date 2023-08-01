@@ -1,9 +1,9 @@
 <div class="modal-header">
   <h4 class="modal-title">
-        <span *ngIf="identityService">
-            <span translate>user.label.editIdentityService</span>:
-            <span [innerHtml]="identityService.identityServiceName"></span>
-        </span>
+    <span *ngIf="identityService">
+      <span translate>user.label.editIdentityService</span>:
+      <span [innerHtml]="identityService.identityServiceName"></span>
+    </span>
     <span *ngIf="!identityService" translate>user.label.addIdentityService</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -36,18 +36,12 @@
       <label class="col-sm-4 form-control-label" translate>user.label.identityServiceType
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div [ngClass]="{'has-error' : ((type.dirty || type.touched) && type.invalid)}" class="col-sm-6">
-        <nz-select #type="ngModel" [(ngModel)]="currentObj.identityServiceType" name="type"
-                   nzPlaceHolder="{{'user.placeholder.selectIdentityServiceType' | translate}}"
-                   nzShowSearch (ngModelChange)="changeType($event)" required>
-          <nz-option *ngFor="let option of identityServiceTypes | orderBy" [nzLabel]="option"
-                     [nzValue]="option"></nz-option>
-        </nz-select>
-        <div *ngIf="type.invalid && (type.dirty || type.touched)" class="text-danger help-block">
-          <div *ngIf="type.errors['required']">
-            <div translate>common.message.requiredError</div>
-          </div>
-        </div>
+      <div class="col-sm-6">
+       <app-select-input [isRequired]="true" [isSearchable]="true" [name]="'type'"
+                          [placeholder]="'user.placeholder.selectIdentityServiceType'"
+                          [object]="currentObj" [attributeName]="'identityServiceType'"
+                          (modelChange)="changeType($event)"
+                          [listArray]="identityServiceTypes | orderBy"></app-select-input>
       </div>
     </div>
     <div class="form-group row">
@@ -85,34 +79,30 @@
       <label class="col-sm-4 form-control-label" translate>user.label.serviceAuthenticationScheme
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div [ngClass]="{'has-error' : ((scheme.dirty || scheme.touched) && scheme.invalid)}" class="col-sm-6">
-        <nz-select #scheme="ngModel" [(ngModel)]="currentObj.serviceAuthenticationScheme" name="serviceAuthenticationScheme"
-                   required>
-          <nz-option *ngFor="let option of serviceAuthenticationSchemes" [nzLabel]="option | translate"
-                     [nzValue]="option"></nz-option>
-        </nz-select>
+      <div class="col-sm-6">
+        <app-select-input [isRequired]="true" [name]="'serviceAuthenticationScheme'"
+                          [object]="currentObj" [attributeName]="'serviceAuthenticationScheme'"
+                          [listArray]="serviceAuthenticationSchemes"></app-select-input>
       </div>
     </div>
     <div *ngIf="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'FIDO'"
          class="form-group row">
       <label class="col-sm-4 form-control-label" translate>user.label.listOfFido</label>
       <div class="col-sm-6">
-        <nz-select [(ngModel)]="currentObj.secondFactorIdentityServiceName"
-                   name="fidoName">
-          <nz-option *ngFor="let option of fidoList" [nzLabel]="option.identityServiceName"
-                     [nzValue]="option.identityServiceName"></nz-option>
-        </nz-select>
+       <app-select-input [name]="'fidoName'"
+                          [object]="currentObj" [attributeName]="'secondFactorIdentityServiceName'"
+                          [listArray]="fidoList" [optionLabel]="'identityServiceName'"
+                          [optionValue]="'identityServiceName'"></app-select-input>
       </div>
     </div>
     <div *ngIf="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'CERTIFICATE'"
          class="form-group row">
       <label class="col-sm-4 form-control-label" translate>user.label.listOfCert</label>
       <div class="col-sm-6">
-        <nz-select [(ngModel)]="currentObj.secondFactorIdentityServiceName"
-                   name="certName">
-          <nz-option *ngFor="let option of certList" [nzLabel]="option.identityServiceName"
-                     [nzValue]="option.identityServiceName"></nz-option>
-        </nz-select>
+         <app-select-input [name]="'certName'"
+                          [object]="currentObj" [attributeName]="'secondFactorIdentityServiceName'"
+                          [listArray]="fidoList" [optionLabel]="'identityServiceName'"
+                          [optionValue]="'identityServiceName'"></app-select-input>
       </div>
     </div>
   </div>

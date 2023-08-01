@@ -457,11 +457,16 @@ export class FileUploaderComponent {
       const formData = new FormData();
       this.fileList.forEach((file: any) => {
         formData.append('file', file);
-        formData.append('name', file.name);
       });
-      let obj = {auditLog: {}};
-      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-      formData.append('auditLog', JSON.stringify(obj.auditLog));
+      if (this.comments.comment) {
+        formData.append('comment', this.comments.comment);
+      }
+      if (this.comments.timeSpent) {
+        formData.append('timeSpent',this.comments.timeSpent);
+      }
+      if (this.comments.ticketLink) {
+        formData.append('ticketLink', this.comments.ticketLink);
+      }
       this.uploading = true;
       const headers = new HttpHeaders().set('X-Access-Token', this.authService.accessTokenId);
       headers.set('Content-Type', 'multipart/form-data');

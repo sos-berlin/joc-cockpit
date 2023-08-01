@@ -1569,6 +1569,7 @@ export class JobComponent {
     this.selectedNode.job.executable.className = result.executable.className;
     this.selectedNode.job.executable.script = result.executable.script;
     this.selectedNode.job.executable.internalType = result.executable.internalType;
+    this.selectedNode.job.executable.v1Compatible = result.executable.v1Compatible;
     if (result.executable.internalType === 'JavaScript_Graal') {
       this.selectedNode.job.executable.TYPE = "JavaScript";
     } else if (result.executable.internalType === 'Java') {
@@ -4930,6 +4931,7 @@ export class WorkflowComponent {
   private updateWorkflow(graph, jobMap): void {
     const scrollValue: any = {};
     const element = document.getElementById('graph');
+
     if (element) {
       scrollValue.scrollTop = element.scrollTop;
       scrollValue.scrollLeft = element.scrollLeft;
@@ -4950,11 +4952,17 @@ export class WorkflowComponent {
 
     const _element = document.getElementById('graph');
     if (element) {
-      _element.scrollTop = scrollValue.scrollTop;
+      if (scrollValue.scrollTop) {
+        _element.scrollTop = scrollValue.scrollTop;
+      }
       _element.scrollLeft = scrollValue.scrollLeft;
+      const bounds = graph.getGraphBounds();
+      if (bounds.y < 0) {
+        graph.view.setTranslate(bounds.x, -0.5);
+      }
     }
     if (scrollValue.scale && scrollValue.scale != 1) {
-      graph.getView().setScale(scrollValue.scale);
+      graph.view.setScale(scrollValue.scale);
     }
   }
 
@@ -6787,8 +6795,12 @@ export class WorkflowComponent {
          * should be removed as well. Default is true.
          */
         mxGraph.prototype.removeCells = function (cells, flag) {
+
           if (cells == null) {
             cells = this.getDeletableCells(this.getSelectionCells());
+          }
+          if(cells?.length === 0 && typeof flag == 'boolean'){
+            return cells;
           }
           if (typeof flag != 'boolean') {
             if (cells && cells.length) {

@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnChanges,
-  OnDestroy,
-  SimpleChanges
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, SimpleChanges} from '@angular/core';
 import {clone, isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
@@ -23,7 +15,7 @@ import {CommentModalComponent} from '../../../../components/comment-modal/commen
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './board.component.html'
 })
-export class BoardComponent implements OnChanges, OnDestroy {
+export class BoardComponent {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -45,6 +37,27 @@ export class BoardComponent implements OnChanges, OnDestroy {
   history = [];
   subscription1: Subscription;
   subscription2: Subscription;
+  units = [
+    {label: 'inventory.label.milliseconds', value: 'Milliseconds'},
+    {label: 'inventory.label.seconds', value: 'Seconds'},
+    {label: 'inventory.label.minutes', value: 'Minutes'},
+    {label: 'inventory.label.hours', value: 'Hours'},
+    {label: 'inventory.label.days', value: 'Days'},
+    {label: 'HH:MM:SS', value: 'HH:MM:SS'}
+  ];
+  listOfNoticeMsg = [
+    {
+      label: 'inventory.label.matchingDailyPlanDate',
+      value: 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$\', \'$1\')'
+    },
+    {
+      label: 'inventory.label.matchingDailyPlanDateAndOrderName',
+      value: 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-([^:]*)(?::[^|]*)?([|].*)?$\', \'$1$2$3\')'
+    },
+    {
+      label: 'inventory.label.matchingOrderName',
+      value: 'replaceAll($js7OrderId, \'^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]*)(?::[^|]*)?([|].*)?$\', \'$1$2\')'
+    }];
 
   constructor(public coreService: CoreService, private translate: TranslateService, public inventoryService: InventoryService,
               private dataService: DataService, private ref: ChangeDetectorRef, private router: Router, private modal: NzModalService) {

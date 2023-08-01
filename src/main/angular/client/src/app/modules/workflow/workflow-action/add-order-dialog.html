@@ -67,9 +67,9 @@
     <div [hidden]="!(order.at =='date')" class="form-group row">
       <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
       <div class="col-sm-6">
-        <nz-select [(ngModel)]="order.timeZone" name="timeZone" nzAllowClear nzShowSearch>
-          <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
-        </nz-select>
+        <app-select-input [attributeName]="'timeZone'" [isAllowClear]="true" [isSearchable]="true"
+                          [listArray]="zones" [name]="'timeZone'"
+                          [object]="order"></app-select-input>
       </div>
     </div>
     <div *ngIf="permission.currentController && permission.currentController.orders.managePositions && blockPositions?.size > 0"

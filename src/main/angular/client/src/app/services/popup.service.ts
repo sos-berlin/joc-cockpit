@@ -8,8 +8,7 @@ import {
   ComponentFactoryResolver,
   ComponentRef,
   Injectable,
-  Injector,
-  OnDestroy,
+  Injector
 } from '@angular/core';
 
 import {InjectionToken} from '@angular/core';
@@ -32,7 +31,7 @@ export let POPOUT_MODALS: any = {};
 @Injectable({
   providedIn: 'root'
 })
-export class PopupService implements OnDestroy {
+export class PopupService {
   styleSheetElement: any;
 
   constructor(

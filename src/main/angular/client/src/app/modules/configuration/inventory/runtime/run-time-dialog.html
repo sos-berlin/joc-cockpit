@@ -20,9 +20,9 @@
           <div class="row col-md-12 m-t m-b-sm">
             <div class="col-sm-3 form-control-label" translate>runtime.label.timeZone</div>
             <div class="col-sm-6">
-              <nz-select [(ngModel)]="timeZone" [nzDisabled]="isTrash" name="timeZone" nzAllowClear nzShowSearch>
-                <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
-              </nz-select>
+              <app-select-input [isAllowClear]="true" [isSearchable]="true"
+                                [listArray]="zones" [name]="'timeZone'"
+                                [object]="timeZone"></app-select-input>
             </div>
           </div>
           <div class="col-md-12">
