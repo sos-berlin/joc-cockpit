@@ -36,6 +36,10 @@ export class JobWizardComponent {
   job: any;
   loading = true;
   isTreeLoad = false;
+  selectValue = [
+    {label: 'True', value: 'true'},
+    {label: 'False', value: 'false'}
+  ]
 
   private searchTerm = new Subject<string>();
 

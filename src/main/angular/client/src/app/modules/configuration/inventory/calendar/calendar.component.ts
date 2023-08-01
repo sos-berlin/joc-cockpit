@@ -1,8 +1,8 @@
-import {ChangeDetectorRef, Component, Input, SimpleChanges, inject} from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {ChangeDetectorRef, Component, inject, Input, SimpleChanges} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DatePipe} from '@angular/common';
 import * as moment from 'moment';
-import {isEmpty, isEqual, clone} from 'underscore';
+import {clone, isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
@@ -10,7 +10,6 @@ import {CalendarService} from '../../../../services/calendar.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
-import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 
 declare const Holidays;
 declare const $;
@@ -71,7 +70,7 @@ export class FrequencyModalComponent {
   ];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService,
-              private datePipe: DatePipe, private calendarService: CalendarService) {
+              private datePipe: DatePipe, public calendarService: CalendarService) {
   }
 
   ngOnInit(): void {
@@ -246,7 +245,7 @@ export class FrequencyModalComponent {
     }
   }
 
-  onDateChange(): void{
+  onDateChange(): void {
     this.onFrequencyChange();
   }
 
@@ -333,6 +332,33 @@ export class FrequencyModalComponent {
     } else {
       this.editor.showYearView = false;
     }
+  }
+
+  addDates(): void {
+    const date = this.frequency.specificDate;
+    const obj = {
+      startDate: date,
+      endDate: date,
+      color: 'blue'
+    };
+    let flag = false;
+    let index = 0;
+    for (let i = 0; i < this.tempItems.length; i++) {
+      if ((new Date(this.tempItems[i].startDate).setHours(0, 0, 0, 0) == new Date(obj.startDate).setHours(0, 0, 0, 0))) {
+        flag = true;
+        index = i;
+        break;
+      }
+    }
+    if (!flag) {
+      this.tempItems.push(obj);
+    } else {
+      this.tempItems.splice(index, 1);
+    }
+    this.editor.isEnable = this.tempItems.length > 0;
+    this.frequency.specificDate = '';
+    $('#calendar').data('calendar').setDataSource(this.tempItems);
+    this.addFrequency();
   }
 
   selectAllHolidays(): void {
@@ -1106,6 +1132,10 @@ export class CalendarComponent {
   lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
+  cType = [
+    {label: 'runtime.label.workingDay', value: 'WORKINGDAYSCALENDAR'},
+    {label: 'runtime.label.nonWorkingDay', value: 'NONWORKINGDAYSCALENDAR'}
+  ]
 
   constructor(public coreService: CoreService, public modal: NzModalService, private calendarService: CalendarService,
               private dataService: DataService, private ref: ChangeDetectorRef, private router: Router, private translate: TranslateService) {

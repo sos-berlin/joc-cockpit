@@ -194,12 +194,10 @@
                   <ng-container *ngSwitchCase="'Boolean'">
                     <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                          class="col-sm-5 m-b-sm p-r-0">
-                      <nz-select #value="ngModel" [(ngModel)]="param.newValue" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                                 [required]="param.required" name="_value{{i}}"
-                                 (ngModelChange)="checkCheckbox(param)" nzAllowClear>
-                        <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                        <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                      </nz-select>
+                      <app-select-input (modelChange)="checkCheckbox(param)" [attributeName]="'newValue'" [isRequired]="param.required"
+                                        [placeholder]="'common.placeholder.selectValue'" [isAllowClear]="true"
+                                        [listArray]="selectValue" [name]="'_value' + i" [optionLabel]="'label'" [optionValue]="'value'"
+                                        [object]="param"></app-select-input>
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                            class="text-danger help-block">
                         <div *ngIf="value.errors.required">

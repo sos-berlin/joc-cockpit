@@ -1043,7 +1043,9 @@ export class ExportComponent {
     deployConfigurations: [],
     releasedConfigurations: []
   };
-
+  fileFormat=[{value: 'ZIP' , name:'ZIP'},
+    {value: 'TAR_GZ' , name:'TAR_GZ'}
+  ]
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
               private inventoryService: InventoryService) {
   }

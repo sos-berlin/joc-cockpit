@@ -17,12 +17,11 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <nz-select nzShowSearch [(ngModel)]="currentPermission.permissionPath" name="path1" required nzPlaceHolder="{{'user.placeholder.enterOrSelectPermission' | translate}}"
-                   (ngModelChange)="checkCovered(currentPermission)">
-          <nz-option *ngFor="let per of permissionOptions" [nzLabel]="per" [nzValue]="per"
-                     [nzDisabled]="per.indexOf('-----')!=-1">
-          </nz-option>
-        </nz-select>
+         <app-select-input [isRequired]="true" [isSearchable]="true" [name]="'path1'"
+                          [placeholder]="'user.placeholder.enterOrSelectPermission'" [object]="currentPermission"
+                          [attributeName]="'permissionPath'"
+                          (modelChange)="checkCovered(currentPermission)"
+                          [listArray]="permissionOptions"></app-select-input>
         <div *ngIf="isCovered" [ngClass]="{'m-b-sm':isCovered}" class="help-block text-danger">
           <div translate>user.message.permissionIsAlreadyCovered</div>
         </div>

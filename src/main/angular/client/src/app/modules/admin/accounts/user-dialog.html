@@ -63,15 +63,8 @@
     <div *ngIf="!copy && !secondFactor" class="form-group row">
       <label class="col-sm-4 form-control-label" translate>user.label.roles</label>
       <div class="col-sm-6">
-        <nz-select
-          #roles="ngModel"
-          [(ngModel)]="currentUser.roles"
-          name="roles"
-          nzMode="multiple"
-          nzPlaceHolder="{{'user.placeholder.selectRoles' | translate}}"
-          nzShowSearch>
-          <nz-option *ngFor="let option of allRoles" [nzLabel]="option" [nzValue]="option"></nz-option>
-        </nz-select>
+        <app-select-input [isSearchable]="true" [isMultiple]="'multiple'" [placeholder]="'user.placeholder.selectRoles'" [name]="'roles'"
+              [object]="currentUser" [attributeName]="'roles'" [listArray]="allRoles" ></app-select-input>
       </div>
     </div>
     <div *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')" class="form-group row">

@@ -604,25 +604,27 @@ export class ImportKeyModalComponent {
   }
 
   private upload(file: any) {
-    let obj: any = {
-      importKeyFilter: JSON.stringify({keyAlgorithm: this.key.keyAlg})
-    };
-    if (this.type === 'certificate') {
-      obj = {};
-    }
     const URL = this.type === 'key' ? 'profile/key/import' : this.type === 'certificate' ? 'profile/key/ca/import' : 'profile/ca/import';
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('name', file.name);
-    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    formData.append('auditLog', JSON.stringify(obj.auditLog));
+    if (this.comments.comment) {
+      formData.append('comment', this.comments.comment);
+    }
+    if (this.comments.timeSpent) {
+      formData.append('timeSpent',this.comments.timeSpent);
+    }
+    if (this.comments.ticketLink) {
+      formData.append('ticketLink', this.comments.ticketLink);
+    }
+    if(this.type === 'key'){
+      formData.append('importKeyFilter', JSON.stringify({keyAlgorithm: this.key.keyAlg}));
+    }
     this.uploading = true;
     const headers = new HttpHeaders().set('X-Access-Token', this.authService.accessTokenId);
     headers.set('Content-Type', 'multipart/form-data');
-    const bodyData = this.type === 'key' ? {keys: obj} : obj;
-    this.coreService.request('api/' + URL, {...formData, ...bodyData}, headers).subscribe({
+    this.coreService.request('api/' + URL, formData, headers).subscribe({
       next: () => {
-        if (this.fileList.length === 1 || this.fileList[this.fileList.length - 1].name === obj.name) {
+        if (this.fileList.length === 1 || this.fileList[this.fileList.length - 1].name === file.name) {
           this.activeModal.close('success');
         }
       }, error: () => {

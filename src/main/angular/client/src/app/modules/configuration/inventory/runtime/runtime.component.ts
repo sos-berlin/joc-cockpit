@@ -48,7 +48,7 @@ export class AddRestrictionComponent {
     {label: 'sunday', value: '0', checked: false}
   ];
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, private calendarService: CalendarService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, public calendarService: CalendarService) {
   }
 
   ngOnInit(): void {
@@ -119,6 +119,33 @@ export class AddRestrictionComponent {
     if (this.frequency.days && this.frequency.days.length > 0) {
       this.editor.isEnable = true;
     }
+  }
+
+  addDates(): void {
+    const date = this.frequency.specificDate;
+    const obj = {
+      startDate: date,
+      endDate: date,
+      color: 'blue'
+    };
+    let flag = false;
+    let index = 0;
+    for (let i = 0; i < this.tempItems.length; i++) {
+      if ((new Date(this.tempItems[i].startDate).setHours(0, 0, 0, 0) == new Date(obj.startDate).setHours(0, 0, 0, 0))) {
+        flag = true;
+        index = i;
+        break;
+      }
+    }
+    if (!flag) {
+      this.tempItems.push(obj);
+    } else {
+      this.tempItems.splice(index, 1);
+    }
+    this.editor.isEnable = this.tempItems.length > 0;
+    this.frequency.specificDate = '';
+    $('#calendar').data('calendar').setDataSource(this.tempItems);
+    this.addFrequency();
   }
 
   updateFrequencyObj(i): void {
@@ -610,7 +637,10 @@ export class PeriodComponent {
     'PREVIOUSNONWORKINGDAY',
     'NEXTNONWORKINGDAY'
   ];
-
+  periodFrequency = [
+    {label: 'runtime.label.singleStart', value: 'singleStart'},
+    {label: 'runtime.label.repeat', value: 'repeat'}
+  ]
   constructor(public activeModal: NzModalRef, private calendarService: CalendarService) {
   }
 

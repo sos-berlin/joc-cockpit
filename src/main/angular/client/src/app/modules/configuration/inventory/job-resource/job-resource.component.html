@@ -199,7 +199,7 @@
                         </div>
                         <div class="pos-abt m-l-n-13">
                           <label nz-checkbox [nzChecked]="object.setOfCheckedEnv.has(env.name)" [nzDisabled]="!env.name"
-                                 class="m-t-xs" (nzCheckedChange)="onItemChecked('env', env.name, $event)"                          ></label>
+                                 class="m-t-xs" (nzCheckedChange)="onItemChecked('env', env.name, $event)"></label>
                         </div>
                         <div [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}"
                              class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm">

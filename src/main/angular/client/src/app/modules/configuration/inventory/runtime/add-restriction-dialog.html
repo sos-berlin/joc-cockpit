@@ -17,13 +17,9 @@
       <div class="form-group row"  *ngIf="isVisible">
         <label class="col-sm-3 form-control-label" translate>runtime.label.frequencyType</label>
         <div class="col-sm-6">
-          <nz-select nzShowSearch name="frequencyTab" [(ngModel)]="frequency.tab" (ngModelChange)="changeFrequency()">
-            <nz-option nzValue="weekDays" [nzLabel]="'runtime.label.weekDays' | translate"></nz-option>
-            <nz-option nzValue="specificWeekDays" [nzLabel]="'runtime.label.specificWeekDays' | translate"></nz-option>
-            <nz-option nzValue="specificDays" [nzLabel]="'runtime.label.specificDays' | translate"></nz-option>
-            <nz-option nzValue="monthDays" [nzLabel]="'runtime.label.monthDays' | translate"></nz-option>
-            <nz-option nzValue="every" [nzLabel]="'runtime.label.every' | translate"></nz-option>
-          </nz-select>
+          <app-select-input (modelChange)="changeFrequency()" [attributeName]="'tab'" [isSearchable]="true"
+                            [listArray]="calendarService.frequencyTab" [name]="'frequencyTab'" [optionLabel]="'label'" [optionValue]="'value'"
+                            [object]="frequency"></app-select-input>
         </div>
       </div>
     </div>
@@ -71,31 +67,17 @@
         <div class="form-group row">
           <label class="col-sm-3" translate>runtime.label.dayNumber</label>
           <div class="col-sm-5">
-            <nz-select [(ngModel)]="frequency.which" name="which" (ngModelChange)="onFrequencyChange()">
-              <nz-option nzValue="1" [nzLabel]="'runtime.label.first' | translate"></nz-option>
-              <nz-option nzValue="2" [nzLabel]="'runtime.label.second' | translate"></nz-option>
-              <nz-option nzValue="3" [nzLabel]="'runtime.label.third' | translate"></nz-option>
-              <nz-option nzValue="4" [nzLabel]="'runtime.label.fourth' | translate"></nz-option>
-              <nz-option nzValue="-1" [nzLabel]="'runtime.label.last' | translate"></nz-option>
-              <nz-option nzValue="-2" [nzLabel]="'runtime.label.secondLast' | translate"></nz-option>
-              <nz-option nzValue="-3" [nzLabel]="'runtime.label.thirdLast' | translate"></nz-option>
-              <nz-option nzValue="-4" [nzLabel]="'runtime.label.fourthLast' | translate"></nz-option>
-            </nz-select>
+           <app-select-input (modelChange)="onFrequencyChange()" [attributeName]="'which' "
+                              [listArray]="calendarService.dayNumbers" [name]="'types'" [optionLabel]="'label'" [optionValue]="'value'"
+                              [object]="frequency"></app-select-input>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-3 form-control-label" translate>runtime.label.weekDays</label>
           <div class="col-sm-5">
-            <nz-select [(ngModel)]="frequency.specificWeekDay" name="specificWeekDay"
-                       (ngModelChange)="onFrequencyChange()">
-              <nz-option nzValue="sunday" [nzLabel]="'runtime.label.sunday' | translate"></nz-option>
-              <nz-option nzValue="monday" [nzLabel]="'runtime.label.monday' | translate"></nz-option>
-              <nz-option nzValue="tuesday" [nzLabel]="'runtime.label.tuesday' | translate"></nz-option>
-              <nz-option nzValue="wednesday" [nzLabel]="'runtime.label.wednesday' | translate"></nz-option>
-              <nz-option nzValue="thursday" [nzLabel]="'runtime.label.thursday' | translate"></nz-option>
-              <nz-option nzValue="friday" [nzLabel]="'runtime.label.friday' | translate"></nz-option>
-              <nz-option nzValue="saturday" [nzLabel]="'runtime.label.saturday' | translate"></nz-option>
-            </nz-select>
+            <app-select-input (modelChange)="onFrequencyChange()" [attributeName]="'specificWeekDay'"
+                              [listArray]="calendarService.specificWeekDay" [name]="'specificWeekDay'" [optionLabel]="'label'" [optionValue]="'value'"
+                              [object]="frequency"></app-select-input>
           </div>
         </div>
         <div class="form-group row">
@@ -120,6 +102,20 @@
       <div class="tab-pane animated fadeIn" id="tab3"
            [ngClass]="{'active':frequency.tab == 'specificDays'}">
         <div>
+          <div class="form-group row b-b p-b">
+            <label class="col-sm-3 form-control-label" translate>history.label.date</label>
+            <div class="col-sm-2">
+              <app-date-input [object]="frequency" [attributeDate]="'specificDate'"
+                              [name]="'specificDate'" [dateFormat]="dateFormat" [isAllowClear]="true"
+                              [placeholder]="dateFormat"
+              ></app-date-input>
+            </div>
+            <div class="col-sm-1">
+              <button type="button" class="btn btn-primary btn-sm m-t-2" (click)="addDates()">
+                <span class="fa fa-plus"></span>
+              </button>
+            </div>
+          </div>
           <div id="calendar"></div>
         </div>
       </div>
@@ -233,13 +229,9 @@
             </nz-input-number>
           </div>
           <div class="col-sm-3">
-            <nz-select [(ngModel)]="frequency.dateEntity" name="dateEntity"
-                       (ngModelChange)="onFrequencyChange()">
-              <nz-option nzValue="DAILY" [nzLabel]="'runtime.label.days' | translate"></nz-option>
-              <nz-option nzValue="WEEKLY" [nzLabel]="'runtime.label.weeks' | translate"></nz-option>
-              <nz-option nzValue="MONTHLY" [nzLabel]="'runtime.label.months' | translate"></nz-option>
-              <nz-option nzValue="YEARLY" [nzLabel]="'runtime.label.years' | translate"></nz-option>
-            </nz-select>
+            <app-select-input (modelChange)="onFrequencyChange()" [attributeName]="'dateEntity'"
+                              [listArray]="calendarService.dateEntity" [name]="'dateEntity'" [optionLabel]="'label'" [optionValue]="'value'"
+                              [object]="frequency"></app-select-input>
           </div>
         </div>
         <div class="form-group row">
