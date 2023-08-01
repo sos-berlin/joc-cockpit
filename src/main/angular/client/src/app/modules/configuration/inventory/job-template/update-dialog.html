@@ -106,7 +106,7 @@
           </div>
         </div>
         <div *ngIf="data" class="row">
-          <div *ngFor="let item of nodes" class="col-md-12 m-b-sm">
+          <div *ngFor="let item of nodes | orderBy: 'path'" class="col-md-12 m-b-sm">
             <label nz-checkbox [nzChecked]="object.setOfCheckedPath.has(item.path)"
                    (nzCheckedChange)="onItemChecked(item, $event)" ></label>
             <i class="icon-color p-l-sm p-r-sm" nz-icon nzTheme="outline"
@@ -135,7 +135,7 @@
     <div *ngIf="isUpdated">
       <ul *ngIf="updatedList.length > 0">
         <li class="m-b-xs"><span class="_600 text" translate>inventory.label.workflows</span>:</li>
-        <li *ngFor="let workflow of updatedList" class="p-l-sm">
+        <li *ngFor="let workflow of updatedList | orderBy: 'path'" class="p-l-sm">
           <i (click)="workflow.show = true;"
              *ngIf="!workflow.show" class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
           <i (click)="workflow.show = false"

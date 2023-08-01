@@ -22,7 +22,7 @@
         <span class="fa fa-lg p-r-sm"></span>
       </span>
         <div (click)="loadData(node, $event);"
-             [class.node-content-wrapper-active]="list.includes(node.origin.name) || list.includes(node.origin.path)"
+             [class.node-content-wrapper-active]="(list && (list.includes(node.origin.name) || list.includes(node.origin.path)))"
              [nz-tooltip]="node.origin.path?.substring(0, node.origin.path?.lastIndexOf('/')) || '/'" class="node-content-wrapper p-l-xs w-full"
              nzTooltipPlacement="right">
           <i *ngIf="!node.origin.type && !node.origin.objectType" [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
