@@ -35,10 +35,9 @@
       <div class="form-group row">
         <label class="col-md-4 form-control-label" translate>inventory.label.fileFormat</label>
         <div class="col-md-8">
-          <nz-select [(ngModel)]="exportObj.fileFormat" name="format">
-            <nz-option nzLabel="ZIP" nzValue="ZIP"></nz-option>
-            <nz-option nzLabel="TAR_GZ" nzValue="TAR_GZ"></nz-option>
-          </nz-select>
+          <app-select-input [optionLabel]="'label'" [optionValue]="'value'"
+            [name]="'format'" [object]="exportObj" [attributeName]="'fileFormat'"
+            [listArray]="fileFormat"></app-select-input>
         </div>
       </div>
     </div>

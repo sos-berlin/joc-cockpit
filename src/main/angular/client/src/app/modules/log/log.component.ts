@@ -2,10 +2,10 @@ import {Component, HostListener, ViewChild, ElementRef} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {isEmpty} from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
+import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {AuthService} from '../../components/guard';
 import {CoreService} from '../../services/core.service';
-import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 
 declare const $;
 @Component({
@@ -165,14 +165,19 @@ export class LogComponent {
       logDom.style['margin-right'] = 'auto';
       sessionStorage['isLogTreeOpen'] = false;
     });
-    setTimeout(() => {
-      if (sessionStorage['isLogTreeOpen'] == 'true' || sessionStorage['isLogTreeOpen'] == true) {
-        $(open, panel).click();
+    if (!this.taskId) {
+      setTimeout(() => {
+        if (sessionStorage['isLogTreeOpen'] == 'true' || sessionStorage['isLogTreeOpen'] == true) {
+          $(open, panel).click();
+        }
+      }, 0);
+    } else {
+      if(close && close[0] && close[0].style) {
+        close[0].style.display = 'none';
+        open[0].style.display = 'none';
       }
-    }, 0)
-
+    }
   }
-
 
   openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
     // do something if u want
@@ -187,7 +192,6 @@ export class LogComponent {
       }
     }
   }
-
 
   selectNode(node): void {
     if (node.origin.key) {

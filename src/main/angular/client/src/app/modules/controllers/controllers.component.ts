@@ -31,6 +31,10 @@ export class ExportComponent {
     fileFormat: 'ZIP'
   };
 
+  fileFormat=[{value: 'ZIP' , name:'ZIP'},
+  {value: 'TAR_GZ' , name:'TAR_GZ'}
+]
+
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 

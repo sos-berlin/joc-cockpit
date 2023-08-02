@@ -62,26 +62,18 @@
     <div *ngIf="isSearch" class="form-group row">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
       <div class=" col-sm-6">
-        <nz-select [(ngModel)]="filter.controllerId" name="id"
-                   nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}">
-          <nz-option *ngFor="let controller of schedulerIds.controllerIds" [nzLabel]="controller"
-                     [nzValue]="controller"></nz-option>
-        </nz-select>
+        <app-select-input [attributeName]="'controllerId'" [isAllowClear]="true" [placeholder]="'common.label.selectController'"
+                          [listArray]="schedulerIds.controllerIds" [name]="'id'"
+                          [object]="filter"></app-select-input>
       </div>
     </div>
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>resource.agentJobExecution.label.agentIds</label>
       <div class="col-sm-6">
-        <nz-select
-          [(ngModel)]="filter.agentIds"
-          [nzPlaceHolder]="'resource.agentJobExecution.placeholder.selectAgentIds' | translate"
-          name="type"
-          nzMode="multiple"
-          nzShowSearch>
-          <ng-container *ngFor="let id of agentIds">
-            <nz-option [nzLabel]="id" [nzValue]="id"></nz-option>
-          </ng-container>
-        </nz-select>
+        <app-select-input [attributeName]="'agentIds' "
+                          [placeholder]="'resource.agentJobExecution.placeholder.selectAgentIds'" [isMultiple]="'multiple'" [isSearchable]="true"
+                          [listArray]="agentIds" [name]="'type'"
+                          [object]="filter"></app-select-input>
       </div>
     </div>
     <div class="form-group row">

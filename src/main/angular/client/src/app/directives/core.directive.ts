@@ -474,7 +474,7 @@ export class ResizableDirective {
 
   ngOnInit(): void {
     let dom: any;
-    if (this.el.nativeElement.attributes.class.value.match('resizable')) {
+    if (this.el.nativeElement.attributes.class?.value.match('resizable')) {
       dom = $('#' + this.el.nativeElement.attributes.id.value);
       if (dom) {
         if (this.height) {
@@ -508,7 +508,7 @@ export class ResizableDirective {
           }
         });
       }
-    } else if (this.el.nativeElement.attributes.class.value.match('sidebar-property-panel')) {
+    } else if (this.el.nativeElement.attributes.class?.value.match('sidebar-property-panel')) {
       dom = $('#property-panel');
       if (dom) {
         dom.resizable({

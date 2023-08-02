@@ -135,10 +135,9 @@
         </div>
         <div class="inline">
           <div class="pos-rel">
-            <nz-select [(ngModel)]="filters.filter.groupBy" class="select-box" (ngModelChange)="groupBy()" >
-              <nz-option [nzLabel]="'Controller ID'" [nzValue]="'CONTROLLERID'"></nz-option>
-              <nz-option [nzLabel]="'Date'" [nzValue]="'DATE'"></nz-option>
-            </nz-select>
+            <app-select-input  (modelChange)="groupBy()" [attributeName]="'groupBy'" [isAllowClear]="true"
+                               [listArray]="selectBox" [name]="'select-box'" [optionLabel]="'label'" [optionValue]="'value'"
+                               [object]="filters.filter"></app-select-input>
           </div>
         </div>
       </div>

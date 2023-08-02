@@ -3871,8 +3871,12 @@ pre.log {
   }
 }
 
-.log_line {
+.log_line, .stdout, .stderr, .warn, .error, .trace, .fatal, div.main {
   padding-left: 8px;
+}
+
+.log_line > .main, .inner-log-m .main, .main .main {
+  padding-left: 0;
 }
 
 .log_error, .log_stderr {
@@ -9339,4 +9343,26 @@ cdk-virtual-scroll-viewport {
   font-size: 1.5rem;
   margin-top: -9px;
   margin-left: -3px;
+}
+.graph-container {
+  /* width */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #e8e8e8;
+    border-radius: 5px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #ccc;
+  }
 }

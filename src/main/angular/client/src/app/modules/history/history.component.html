@@ -840,7 +840,7 @@
                 </div>
               </td>
               <td *ngIf="!historyFilters.current">
-                <span (click)="coreService.showLogWindow(history,null,null,history.controllerId, null)"
+                <span (click)="coreService.showLogWindow(history,null,null,history.controllerId, null,viewContainerRef)"
                       class="show-in-single-line w-full">
                   <i (click)="showPanelFuc(history);$event.stopPropagation()"
                      *ngIf="!history.show" class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
@@ -853,7 +853,7 @@
                 </span>
               </td>
               <td>
-                <span (click)="coreService.showLogWindow(history,null,null,history.controllerId,null)"
+                <span (click)="coreService.showLogWindow(history,null,null,history.controllerId,null,viewContainerRef)"
                       class="show-in-single-line w-full">
                   <i (click)="showPanelFuc(history);$event.stopPropagation()"
                      *ngIf="!history.show && historyFilters.current"
@@ -867,7 +867,7 @@
                   <span [innerHtml]="history.orderId | highlight : order.searchText"></span>
                 </span>
               </td>
-              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)">
+              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
                 <span class="show-in-single-line w-full">
                   <i (click)="navToWorkflowTab(history.workflow);$event.stopPropagation()"
                      *ngIf="permission.joc && permission.joc.inventory.view"
@@ -876,25 +876,25 @@
                         [innerHtml]="history.workflow | highlight : order.searchText" class="text-hover-primary"></span>
                 </span>
               </td>
-              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)">
+              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
                 <span [innerHtml]="history.position"></span>
               </td>
-              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)">
+              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
                 <span *ngIf="history.state" [innerHtml]="history.state._text | translate" [ngClass]="coreService.getColor(history.state.severity,'bg')"
                       class="label"></span>
               </td>
-              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)">
+              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
                 <span *ngIf="history.orderState" [innerHtml]="history.orderState._text | translate"
                       [ngClass]="coreService.getColor(history.orderState.severity,'bg')"
                       class="label"></span>
               </td>
-              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)"
+              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)"
                   [innerHtml]="history.plannedTime | stringToDate"></td>
-              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)"
+              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)"
                   [innerHtml]="history.startTime | stringToDate"></td>
-              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)"
+              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)"
                   [innerHtml]="history.endTime | stringToDate"></td>
-              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)"
+              <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)"
                   [innerHtml]="history.startTime | duration:history.endTime"></td>
             </tr>
             <tr *ngIf="history.show && history.arguments">
@@ -1037,7 +1037,7 @@
                   </nz-dropdown-menu>
                 </div>
               </td>
-              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId, null)"
+              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId, null,viewContainerRef)"
                   *ngIf="!historyFilters.current">
                 <span class="show-in-single-line">
                   <i (click)="jobHistory.show=!jobHistory.show;;$event.stopPropagation()"
@@ -1048,7 +1048,7 @@
                   <span [innerHtml]="jobHistory.controllerId | highlight : task.searchText"></span>
                 </span>
               </td>
-              <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null)">
+              <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null,viewContainerRef)">
                 <span class="show-in-single-line">
                   <i (click)="jobHistory.show=!jobHistory.show;$event.stopPropagation()" *ngIf="historyFilters.current"
                      [ngClass]="jobHistory.show ? 'fa-caret-up' : 'fa-caret-down'"
@@ -1058,7 +1058,7 @@
                   <span [innerHtml]="jobHistory.job | highlight : task.searchText"></span>
                 </span>
               </td>
-              <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null)">
+              <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null,viewContainerRef)">
                 <span class="show-in-single-line w-full">
                   <i (click)="navToWorkflowTab(jobHistory.workflow);$event.stopPropagation()"
                      *ngIf="permission.joc && permission.joc.inventory.view"
@@ -1068,23 +1068,23 @@
                         class="text-hover-primary"></span>
                 </span>
               </td>
-              <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null)">
+              <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null,viewContainerRef)">
                 <span [innerHtml]="jobHistory.position | highlight : task.searchText"></span>
               </td>
-              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null)">
+              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null,viewContainerRef)">
                 <span [innerHtml]="jobHistory.state._text | translate"
                       [ngClass]="coreService.getColor(jobHistory.state.severity,'bg')"
                       class="label"></span>
               </td>
-              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null)"
+              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null,viewContainerRef)"
                   [innerHtml]="jobHistory.startTime | stringToDate"></td>
-              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null)"
+              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null,viewContainerRef)"
                   [innerHtml]="jobHistory.endTime | stringToDate"></td>
-              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null)"
+              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null,viewContainerRef)"
                   [innerHtml]="jobHistory.startTime | duration:jobHistory.endTime"></td>
-              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null)"
+              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null,viewContainerRef)"
                   [innerHtml]="jobHistory.criticality | translate | highlight : task.searchText"></td>
-              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null)"
+              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null,viewContainerRef)"
                   [innerHtml]="jobHistory.exitCode"></td>
             </tr>
             <tr *ngIf="jobHistory.show">
@@ -1206,7 +1206,7 @@
           <ng-template [ngForOf]="ajaxYadeTable.data" let-transfer
                        ngFor>
             <tr [ngClass]="{'light-bg':transfer.show}" class="cursor">
-              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
+              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true,viewContainerRef)"
                   *ngIf="!historyFilters.current">
                 <span class="show-in-single-line">
                 <i (click)="showTransferFuc(transfer);$event.stopPropagation()"
@@ -1219,7 +1219,7 @@
                 <span *ngIf="!transfer.controllerId" [innerHtml]="transfer.controllerId"></span>
                 </span>
               </td>
-              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)" noWrap>
+              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true,viewContainerRef)" noWrap>
                 <span>
                 <i (click)="showTransferFuc(transfer);$event.stopPropagation()"
                    *ngIf="!transfer.show && historyFilters.current"
@@ -1231,11 +1231,11 @@
                       class="label"></span>
                 </span>
               </td>
-              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
+              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true,viewContainerRef)"
                   [innerHtml]="transfer.profile | highlight : yade.searchText"></td>
-              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
+              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true,viewContainerRef)"
                   [innerHtml]="transfer._operation | highlight : yade.searchText"></td>
-              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)">
+              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true,viewContainerRef)">
                 <span class="show-in-single-line w-full">
                   <i (click)="navToWorkflowTab(transfer.workflowPath);$event.stopPropagation()"
                      *ngIf="permission.joc && permission.joc.inventory.view"
@@ -1245,21 +1245,21 @@
                         class="text-hover-primary"></span>
                 </span>
               </td>
-              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)">
+              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true,viewContainerRef)">
                 <span [innerHtml]="transfer.orderId | highlight : yade.searchText"></span>
               </td>
-              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
+              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true,viewContainerRef)"
                   [innerHtml]="transfer.numOfFiles | highlight : yade.searchText"></td>
-              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
+              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true,viewContainerRef)"
                   class="text-danger"
                   style="width: 20% !important;">
                 <span *ngIf="transfer.error" [innerHtml]="transfer.error.message"></span>
               </td>
-              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
+              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true,viewContainerRef)"
                   [innerHtml]="transfer.start | stringToDate"></td>
-              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
+              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true,viewContainerRef)"
                   [innerHtml]="transfer.end | stringToDate"></td>
-              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
+              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true,viewContainerRef)"
                   [innerHtml]="transfer.start | duration:transfer.end"></td>
             </tr>
             <tr *ngIf="transfer.show">

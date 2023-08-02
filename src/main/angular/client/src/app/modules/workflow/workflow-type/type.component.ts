@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, SimpleChanges, HostListener} from '@angular/core';
+import {Component, Input, Output, EventEmitter, SimpleChanges, HostListener, ViewContainerRef} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {ScriptModalComponent} from '../script-modal/script-modal.component';
@@ -35,7 +35,7 @@ export class TypeComponent {
   sideBar: any = {};
   isFirst = false;
 
-  constructor(public coreService: CoreService, private modal: NzModalService) {
+  constructor(public coreService: CoreService, private modal: NzModalService, private viewContainerRef: ViewContainerRef) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -536,7 +536,7 @@ export class TypeComponent {
 
   showLog(order): void {
     if (order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')) {
-      this.coreService.showOrderLogWindow(order.orderId, this.schedulerId, this.workflowObj.path);
+      this.coreService.showOrderLogWindow(order.orderId, this.schedulerId, this.workflowObj.path, this.viewContainerRef);
     }
   }
 

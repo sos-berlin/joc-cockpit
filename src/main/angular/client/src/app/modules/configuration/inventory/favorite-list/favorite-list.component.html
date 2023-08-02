@@ -33,8 +33,6 @@
 <div *ngIf="list.length > 0" class="text-right">
   <a (click)="showList()" class="primary-text-hover-color text-u-l p-t-xxs cursor" translate>favorite.button.addFromFavorite</a>
 </div>
-<nz-select #myinput [(ngModel)]="obj.selected" [nzPlaceHolder]="'common.placeholder.search' | translate"
-           class="fav-list-search-box" (ngModelChange)="onChangeValue($event)"
-           nzShowSearch>
-  <nz-option *ngFor="let item of list | orderBy: 'ordering'" [nzLabel]="item.name" [nzValue]="item.name"></nz-option>
-</nz-select>
+<app-select-input (modelChange)="onChangeValue($event)" [attributeName]="'selected'" [classNames]="'fav-list-search-box'" [isSearchable]="true"
+                  [listArray]="list"
+                  [object]="obj"></app-select-input>

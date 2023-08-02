@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Input, Output, EventEmitter, ViewContainerRef} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from 'underscore';
 import {CoreService} from '../../../services/core.service';
@@ -24,7 +24,7 @@ export class OrderActionComponent {
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
   @Output() isDropdownOpen: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(public coreService: CoreService, private modal: NzModalService) {
+  constructor(public coreService: CoreService, private modal: NzModalService, private viewContainerRef: ViewContainerRef,) {
   }
 
   change(value: boolean): void {
@@ -83,7 +83,7 @@ export class OrderActionComponent {
 
   showLog(order): void {
     if (order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')) {
-      this.coreService.showOrderLogWindow(order.orderId, this.schedulerId, order.workflowId.path);
+      this.coreService.showOrderLogWindow(order.orderId, this.schedulerId, order.workflowId.path, this.viewContainerRef);
     }
   }
 

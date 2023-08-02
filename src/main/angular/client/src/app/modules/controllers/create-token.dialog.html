@@ -50,9 +50,10 @@
         <sup class="text-danger text-sm">*</sup>
       </div>
       <div class="col-sm-8">
-        <nz-select [(ngModel)]="token.timezone" name="timeZone" nzShowSearch required>
-          <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
-        </nz-select>
+        <app-select-input [attributeName]="'timezone'"
+                          [isSearchable]="true" [isRequired]="true"
+                          [listArray]="zones" [name]="'timeZone'"
+                          [object]="token"></app-select-input>
       </div>
     </div>
   </div>

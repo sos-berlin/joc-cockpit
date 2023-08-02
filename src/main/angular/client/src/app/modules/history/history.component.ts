@@ -1,4 +1,4 @@
-import {Component, EventEmitter, HostListener, inject, Input, Output} from '@angular/core';
+import {Component, EventEmitter, HostListener, inject, Input, Output, ViewContainerRef} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
@@ -182,7 +182,7 @@ export class OrderSearchComponent {
   }
 
   getFolderTree(): void {
-    if(!this.filter.paths){
+    if (!this.filter.paths) {
       this.filter.paths = [];
     }
     this.coreService.post('tree', {
@@ -1136,7 +1136,7 @@ export class HistoryComponent {
     {date: '30d', text: 'next30'}
   ];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
+  constructor(public viewContainerRef: ViewContainerRef, private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
               private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe, private orderPipe: OrderPipe,
               private message: NzMessageService, private router: Router, private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {

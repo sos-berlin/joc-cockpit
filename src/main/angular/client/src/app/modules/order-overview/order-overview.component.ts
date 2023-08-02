@@ -258,6 +258,30 @@ export class OrderOverviewComponent {
     {date: '2d', text: 'nextDay'},
     {date: '7d', text: 'nextWeak'}
   ];
+  orderTreeStatus = [
+    {label: 'order.button.cancel', value: 'Cancel'},
+    {label: 'order.button.cancelAndKillTask', value: 'cancelWithKill'},
+    {label: 'order.button.suspend', value: 'Suspend'},
+    {label: 'order.button.suspendAndKillTask', value: 'SuspendKillTask'}
+  ]
+  orderTreeStatusSuspended = [
+    {label: 'order.button.cancel', value: 'Cancel'},
+    {label: 'order.button.cancelAndKillTask', value: 'cancelWithKill'},
+    {label: 'order.button.resume', value: 'Resume'}
+  ]
+  orderTreeStatusPrompting =  [
+    {label: 'order.button.cancel', value: 'Cancel'},
+    {label: 'order.button.cancelAndKillTask', value: 'cancelWithKill'},
+    {label: 'order.button.confirm', value: 'confirm'}
+    ]
+  orderTreeStatusFailed = [
+    {label: 'order.button.cancel', value: 'Cancel'},
+    {label: 'order.button.cancelAndKillTask', value: 'cancelWithKill'},
+    {label: 'order.button.resume', value: 'resume'}
+  ]
+  orderTreeStatusCompleted=[
+    {label: 'order.button.leaveWorkflow', value: 'Terminate'}
+    ]
 
   subscription1: Subscription;
   subscription2: Subscription;

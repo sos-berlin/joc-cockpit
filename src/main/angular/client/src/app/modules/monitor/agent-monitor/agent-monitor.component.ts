@@ -33,7 +33,10 @@ export class AgentMonitorComponent {
   yAxisLabel = 'In Hours';
   groupPadding = 16;
   view: any = null;
-
+  selectBox = [
+    {label: 'Controller ID', value: 'CONTROLLERID'},
+    {label: 'Date', value: 'DATE'}
+  ]
   subscription1: Subscription;
   subscription2: Subscription;
 
