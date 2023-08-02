@@ -1,14 +1,8 @@
 import {
-  ComponentPortal,
-  DomPortalOutlet,
-  PortalInjector,
-} from '@angular/cdk/portal';
-import {
   ApplicationRef,
-  ComponentFactoryResolver,
-  ComponentRef,
+  EmbeddedViewRef,
   Injectable,
-  Injector
+  Type, ViewContainerRef,
 } from '@angular/core';
 
 import {InjectionToken} from '@angular/core';
@@ -35,31 +29,30 @@ export class PopupService {
   styleSheetElement: any;
 
   constructor(
-    private injector: Injector,
-    private componentFactoryResolver: ComponentFactoryResolver,
-    private applicationRef: ApplicationRef
+    private applicationRef: ApplicationRef,
   ) {
   }
 
   ngOnDestroy() {
   }
 
-  openPopoutModal(data: any, properties: any) {
+  openPopoutModal(data: any, properties: any, viewContainerRef?: ViewContainerRef) {
+
     const windowInstance = this.openOnce(
       'assets/log.html',
       properties
     );
 
-    this.checkAndCall(data, windowInstance);
+    this.checkAndCall(data, windowInstance, viewContainerRef);
   }
 
-  private checkAndCall(data: any, windowInstance: any) {
+  private checkAndCall(data: any, windowInstance: any, viewContainerRef: any) {
     // Wait for window instance to be created
     setTimeout(() => {
       if (this.isPopupInitialized(windowInstance)) {
-        this.createCDKPortal(data, windowInstance);
+        this.createCDKPortal(data, windowInstance, LogViewComponent, viewContainerRef);
       } else {
-        this.checkAndCall(data, windowInstance);
+        this.checkAndCall(data, windowInstance, viewContainerRef);
       }
     }, 400);
   }
@@ -80,15 +73,9 @@ export class PopupService {
     return winRef;
   }
 
-  createCDKPortal(data: any, windowInstance: any) {
+  createCDKPortal(data: any, windowInstance: any, component: Type<any>, viewContainerRef: ViewContainerRef) {
     if (windowInstance) {
-      // Create a PortalOutlet with the body of the new window document
-      const outlet = new DomPortalOutlet(
-        windowInstance.document.body,
-        this.componentFactoryResolver,
-        this.applicationRef,
-        this.injector
-      );
+      const componentRef = viewContainerRef.createComponent(component);
 
       // Copy stylesheet link from parent window
       this.styleSheetElement = this.getStyleSheetElement();
@@ -96,16 +83,11 @@ export class PopupService {
 
       // Clear popout modal content
       if (windowInstance.document.body) {
-        windowInstance.document.body.innerText = '';
+       windowInstance.document.body.appendChild((componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement);
       }
       POPOUT_MODALS['windowInstance'] = windowInstance;
-      // Create an injector with modal data
-      const injector = this.createInjector(data);
-      // Attach the portal
-      let componentInstance = this.attachLogContainer(outlet, injector);
-
-      POPOUT_MODALS['outlet'] = outlet;
-      POPOUT_MODALS['componentInstance'] = componentInstance;
+      POPOUT_MODALS['data'] = data;
+      POPOUT_MODALS['componentRef'] = componentRef;
     }
   }
 
@@ -123,23 +105,10 @@ export class PopupService {
     if (POPOUT_MODALS['windowInstance']) {
       POPOUT_MODALS['windowInstance'].close();
     }
-  }
-
-  attachLogContainer(outlet: any, injector: any) {
-    const containerPortal = new ComponentPortal(
-      LogViewComponent,
-      null,
-      injector
-    );
-    const containerRef: ComponentRef<LogViewComponent> =
-      outlet.attach(containerPortal);
-    return containerRef.instance;
-  }
-
-  createInjector(data: any): PortalInjector {
-    const injectionTokens = new WeakMap();
-    injectionTokens.set(POPOUT_MODAL_DATA, data);
-    return new PortalInjector(this.injector, injectionTokens);
+    if (POPOUT_MODALS['componentRef']) {
+      this.applicationRef.detachView(POPOUT_MODALS['componentRef'].hostView);
+      POPOUT_MODALS['componentRef'].destroy();
+    }
   }
 
   getStyleSheetElement() {

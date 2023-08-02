@@ -4,7 +4,7 @@ import {
   Input,
   Output,
   SimpleChanges,
-  ViewChild
+  ViewChild, ViewContainerRef
 } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -249,7 +249,7 @@ export class WorkflowGraphicalComponent {
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
               public workflowService: WorkflowService, public modal: NzModalService, private dataService: DataService,
-              private nzContextMenuService: NzContextMenuService) {
+              private nzContextMenuService: NzContextMenuService, private viewContainerRef: ViewContainerRef) {
   }
 
   ngAfterViewInit(): void {
@@ -1556,7 +1556,7 @@ export class WorkflowGraphicalComponent {
 
   showLog(order): void {
     if (order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')) {
-      this.coreService.showOrderLogWindow(order.orderId, this.controllerId, this.workFlowJson.path);
+      this.coreService.showOrderLogWindow(order.orderId, this.controllerId, this.workFlowJson.path, this.viewContainerRef);
     }
   }
 

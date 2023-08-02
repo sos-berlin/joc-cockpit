@@ -37,6 +37,12 @@ export class BulkUpdateModalComponent {
   data: any;
   list = [];
 
+  operationType=[{value: 'ALL' , name:'ALL'},
+  {value: 'JOC' , name:'JOC'},
+  {value: 'AGENT' , name:'AGENT'},
+  {value: 'CONTROLLER' , name:'CONTROLLER'}
+]
+
   constructor(public coreService: CoreService, public activeModal: NzModalRef) {
 
   }

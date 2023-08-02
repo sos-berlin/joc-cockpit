@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, ViewContainerRef} from '@angular/core';
 import {HttpClient, HttpRequest, HttpResponse} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
@@ -10,6 +10,7 @@ import {clone, isArray, isEmpty, isEqual, isNumber, object, sortBy} from 'unders
 import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
 import {POPOUT_MODALS, PopoutData, PopupService} from "./popup.service";
+import {LogViewComponent} from "../components/log-view/log-view.component";
 
 declare const $: any;
 
@@ -792,7 +793,7 @@ export class CoreService {
     }
   }
 
-  showOrderLogWindow(orderId: string, controllerId: string, workflow: string): void {
+  showOrderLogWindow(orderId: string, controllerId: string, workflow: string, viewRef: any): void {
     const preferenceObj = JSON.parse(sessionStorage['preferences']);
     const self = this;
     let url = '';
@@ -809,7 +810,7 @@ export class CoreService {
           };
           self.openPopout(modalData, 'top=' + window.localStorage['log_window_y'] + ',' +
             'left=' + window.localStorage['log_window_x'] + ',innerwidth=' + window.localStorage['log_window_wt'] + ',' +
-            'innerheight=' + window.localStorage['log_window_ht'] + self.windowProperties);
+            'innerheight=' + window.localStorage['log_window_ht'] + self.windowProperties, viewRef);
         } else if (preferenceObj.isNewWindow === 'newTab') {
           window.open(url, '_blank');
         }
@@ -851,7 +852,7 @@ export class CoreService {
     })
   }
 
-  showLogWindow(order: any, task: any, job: any, id: string, transfer: any): void {
+  showLogWindow(order: any, task: any, job: any, id: string, transfer: any,viewRef:any): void {
     if (!order && !task) {
       return;
     }
@@ -897,7 +898,7 @@ export class CoreService {
       };
       this.openPopout(modalData, 'top=' + window.localStorage['log_window_y'] + ',' +
         'left=' + window.localStorage['log_window_x'] + ',innerwidth=' + window.localStorage['log_window_wt'] + ',' +
-        'innerheight=' + window.localStorage['log_window_ht'] + this.windowProperties);
+        'innerheight=' + window.localStorage['log_window_ht'] + this.windowProperties,viewRef);
     } else if (preferenceObj.isNewWindow === 'newTab') {
       window.open('#/log' + url, '_blank');
     } else {
@@ -906,13 +907,11 @@ export class CoreService {
     }
   }
 
-  private openPopout(modalData: PopoutData, properties: any) {
+  private openPopout(modalData: PopoutData, properties: any, viewContainerRef: ViewContainerRef) {
     if (!this.popupService.isPopoutWindowOpen()) {
-      this.popupService.openPopoutModal(modalData, properties);
+      this.popupService.openPopoutModal(modalData, properties, viewContainerRef);
     } else {
-      POPOUT_MODALS['outlet'].detach();
-      const injector = this.popupService.createInjector(modalData);
-      POPOUT_MODALS['componentInstance'] = this.popupService.attachLogContainer(POPOUT_MODALS['outlet'], injector);
+      this.popupService.createCDKPortal(modalData, POPOUT_MODALS['windowInstance'], LogViewComponent, viewContainerRef);
       this.popupService.focusPopoutWindow();
     }
   }
@@ -2561,7 +2560,7 @@ export class CoreService {
   }
 
   slimscrollFunc(dom: any, ht: any, graph): void {
-    dom.slimscroll({height: ht});
+    dom.css({height: ht});
     /**
      * Changes the zoom on mouseWheel events
      */
@@ -2573,11 +2572,6 @@ export class CoreService {
             graph.zoomIn();
           } else {
             graph.zoomOut();
-          }
-        } else {
-          const bounds = graph.getGraphBounds();
-          if (bounds.y < -0.05 && bounds.height > dom.height()) {
-            graph.center(true, true, 0.5, -0.02);
           }
         }
       }

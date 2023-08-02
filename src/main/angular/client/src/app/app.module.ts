@@ -1,4 +1,4 @@
-import {ErrorHandler, Injectable, NgModule} from '@angular/core';
+import {ErrorHandler, Injectable, NgModule, ViewContainerRef} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {en_US, NZ_DATE_LOCALE, NZ_I18N} from 'ng-zorro-antd/i18n';
 import {registerLocaleData} from '@angular/common';
@@ -16,6 +16,7 @@ import {SignupCompleteModule} from "./modules/signup-complete/signup-complete.mo
 import {AppComponent} from './app.component';
 import {AuthInterceptor} from './components/guard';
 import {LoggingService} from './services/logging.service';
+import {POPOUT_MODAL_DATA, PopupService} from "./services/popup.service";
 
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -65,6 +66,10 @@ export class MyErrorHandler implements ErrorHandler {
     })
   ],
   providers: [
+    {
+      provide: POPOUT_MODAL_DATA,  // That's the token we defined previously
+      useClass: PopupService,  // That's the actual service itself
+    },
     {provide: ErrorHandler, useClass: MyErrorHandler},
     {
       provide: HTTP_INTERCEPTORS,

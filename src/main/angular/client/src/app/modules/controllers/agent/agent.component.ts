@@ -429,7 +429,7 @@ export class AgentComponent {
     let top = Math.round($('.scroll-y').position().top) + 24;
     let ht = 'calc(100vh - ' + top + 'px)';
     $('.graph-container').css({'height': ht, 'scroll-top': '0'});
-    $('#graph').slimscroll({height: 'calc(100vh - ' + (top + 54) + 'px)'});
+    $('#graph').css({height: 'calc(100vh - ' + (top + 54) + 'px)'});
     $('#toolbarContainer').css({'max-height': ht});
   }
 
@@ -866,11 +866,6 @@ export class AgentComponent {
                   this.editor.execute('zoomIn');
                 } else {
                   this.editor.execute('zoomOut');
-                }
-              } else {
-                const bounds = this.editor.graph.getGraphBounds();
-                if (bounds.y < -0.05 && bounds.height > dom.height()) {
-                  this.editor.graph.center(true, true, 0.5, -0.02);
                 }
               }
             }

@@ -404,8 +404,12 @@
       padding-left: 21px !important;
     }
 
-    .log_line {
+    .log_line, .stdout, .stderr, .warn, .error, .trace, .fatal, div.main {
       padding-left: 8px;
+    }
+
+    .log_line > .main, .inner-log-m .main, .main .main {
+      padding-left: 0;
     }
 
     .p-r-xs {

@@ -179,11 +179,8 @@
                   + (orderOverview.terminated || 0)}}</span></td>
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
-                    <nz-select [(ngModel)]="orderOverviewAction.all" name="all"
-                               nzDisabled
-                               nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}" style="width: 75%">
-                      <nz-option [nzLabel]="''" [nzValue]="''"></nz-option>
-                    </nz-select>
+                    <app-select-input [attributeName]="'all'" [isSelectDisabled]="true" [isSearchable]="true"
+                                      [name]="'all'"></app-select-input>
                   </td>
                   <td></td>
                 </tr>
@@ -193,16 +190,10 @@
                   <td class="count"><span class="_600">{{orderOverview.pending}}</span></td>
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
-                    <nz-select [(ngModel)]="orderOverviewAction.pending" [disabled]="orderOverview.pending == 0" name="pending"
-                               nzAllowClear
-                               nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}" style="width: 75%">
-                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate"
-                                 [nzValue]="'cancelWithKill'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.suspend' | translate" [nzValue]="'Suspend'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.suspendAndKillTask' | translate"
-                                 [nzValue]="'SuspendKillTask'"></nz-option>
-                    </nz-select>
+                    <app-select-input [attributeName]="'pending'" [isAllowClear]="true"
+                                      [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                      [listArray]="orderTreeStatus" [name]="'pending'" [optionLabel]="'label'" [optionValue]="'value'"
+                                      [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
                     <button (click)="submitTransaction('pending', 'PENDING')" [disabled]="!orderOverviewAction.pending"
@@ -217,16 +208,11 @@
                   <td class="count"><span class="_600">{{orderOverview.scheduled}}</span></td>
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
-                    <nz-select [(ngModel)]="orderOverviewAction.scheduled" [disabled]="orderOverview.scheduled == 0" name="scheduled"
-                               nzAllowClear
-                               nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}" style="width: 75%">
-                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate"
-                                 [nzValue]="'CancelWithKill'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.suspend' | translate" [nzValue]="'Suspend'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.suspendAndKillTask' | translate"
-                                 [nzValue]="'SuspendKillTask'"></nz-option>
-                    </nz-select>
+                    <app-select-input [attributeName]="'scheduled'" [isAllowClear]="true"
+                                      [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                      [listArray]="orderTreeStatus" [name]="'scheduled'" [optionLabel]="'label'" [optionValue]="'value'"
+                                      [object]="orderOverviewAction"></app-select-input>
+
                   </td>
                   <td>
                     <button (click)="submitTransaction('scheduled', 'SCHEDULED')" [disabled]="!orderOverviewAction.scheduled"
@@ -241,16 +227,10 @@
                   <td class="count"><span class="_600">{{orderOverview.inProgress}}</span></td>
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
-                    <nz-select [(ngModel)]="orderOverviewAction.inProgress" [disabled]="orderOverview.inProgress == 0" name="inProgress"
-                               nzAllowClear
-                               nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}" style="width: 75%">
-                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate"
-                                 [nzValue]="'CancelWithKill'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.suspend' | translate" [nzValue]="'Suspend'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.suspendAndKillTask' | translate"
-                                 [nzValue]="'SuspendKillTask'"></nz-option>
-                    </nz-select>
+                    <app-select-input [attributeName]="'inProgress'" [isAllowClear]="true"
+                                      [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                      [listArray]="orderTreeStatus" [name]="'inProgress'" [optionLabel]="'label'" [optionValue]="'value'"
+                                      [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
                     <button (click)="submitTransaction('inProgress', 'INPROGRESS')" [disabled]="!orderOverviewAction.inProgress"
@@ -265,16 +245,11 @@
                   <td class="count"><span class="_600">{{orderOverview.running}}</span></td>
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
-                    <nz-select [(ngModel)]="orderOverviewAction.running" [disabled]="orderOverview.running == 0" name="running"
-                               nzAllowClear
-                               nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}" style="width: 75%">
-                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate"
-                                 [nzValue]="'CancelWithKill'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.suspend' | translate" [nzValue]="'Suspend'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.suspendAndKillTask' | translate"
-                                 [nzValue]="'SuspendKillTask'"></nz-option>
-                    </nz-select>
+                    <app-select-input [attributeName]="'running'" [isAllowClear]="true"
+                                      [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                      [listArray]="orderTreeStatus" [name]="'running'" [optionLabel]="'label'" [optionValue]="'value'"
+                                      [isSelectDisabled]="orderOverview.running == 0"
+                                      [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
                     <button (click)="submitTransaction('running', 'RUNNING')" [disabled]="!orderOverviewAction.running"
@@ -289,14 +264,11 @@
                   <td class="count"><span class="_600">{{orderOverview.suspended}}</span></td>
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
-                    <nz-select [(ngModel)]="orderOverviewAction.suspended" [disabled]="orderOverview.suspended == 0" name="suspended"
-                               nzAllowClear
-                               nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}" style="width: 75%">
-                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate"
-                                 [nzValue]="'CancelWithKill'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.resume' | translate" [nzValue]="'Resume'"></nz-option>
-                    </nz-select>
+                    <app-select-input [attributeName]="'suspended'" [isAllowClear]="true" [optionLabel]="'label'" [optionValue]="'value'"
+                                      [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                      [listArray]="orderTreeStatusSuspended" [name]="'suspended'"
+                                      [isSelectDisabled]="orderOverview.suspended == 0"
+                                      [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
                     <button (click)="submitTransaction('suspended', 'SUSPENDED')" [disabled]="!orderOverviewAction.suspended"
@@ -311,14 +283,9 @@
                   <td class="count"><span class="_600">{{orderOverview.prompting}}</span></td>
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
-                    <nz-select [(ngModel)]="orderOverviewAction.prompting" [disabled]="orderOverview.prompting == 0" name="prompting"
-                               nzAllowClear
-                               nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}" style="width: 75%">
-                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate"
-                                 [nzValue]="'CancelWithKill'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.confirm' | translate" [nzValue]="'Confirm'"></nz-option>
-                    </nz-select>
+                    <app-select-input  [attributeName]="'prompting'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                      [optionLabel]="'label'" [optionValue]="'value'" [listArray]="orderTreeStatusPrompting" [name]="'prompting'" [isSelectDisabled]="orderOverview.prompting == 0"
+                                       [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
                     <button (click)="submitTransaction('prompting', 'PROMPTING')" [disabled]="!orderOverviewAction.prompting"
@@ -333,16 +300,9 @@
                   <td class="count"><span class="_600">{{orderOverview.waiting}}</span></td>
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
-                    <nz-select [(ngModel)]="orderOverviewAction.waiting" [disabled]="orderOverview.waiting == 0" name="waiting"
-                               nzAllowClear
-                               nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}" style="width: 75%">
-                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate"
-                                 [nzValue]="'CancelWithKill'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.suspend' | translate" [nzValue]="'Suspend'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.suspendAndKillTask' | translate"
-                                 [nzValue]="'SuspendKillTask'"></nz-option>
-                    </nz-select>
+                    <app-select-input  [attributeName]="'waiting'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                       [listArray]="orderTreeStatus" [name]="'waiting'" [optionLabel]="'label'" [optionValue]="'value'" [isSelectDisabled]="orderOverview.waiting == 0"
+                                       [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
                     <button (click)="submitTransaction('waiting', 'WAITING')" [disabled]="!orderOverviewAction.waiting"
@@ -357,16 +317,9 @@
                   <td><span class="_600">{{orderOverview.blocked}}</span></td>
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
-                    <nz-select [(ngModel)]="orderOverviewAction.blocked" [disabled]="orderOverview.blocked == 0" name="blocked"
-                               nzAllowClear
-                               nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}" style="width: 75%">
-                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate"
-                                 [nzValue]="'CancelWithKill'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.suspend' | translate" [nzValue]="'Suspend'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.suspendAndKillTask' | translate"
-                                 [nzValue]="'SuspendKillTask'"></nz-option>
-                    </nz-select>
+                    <app-select-input  [attributeName]="'blocked'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                       [listArray]="orderTreeStatus" [name]="'blocked'" [optionLabel]="'label'" [optionValue]="'value'" [isSelectDisabled]="orderOverview.blocked == 0"
+                                       [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
                     <button (click)="submitTransaction('blocked', 'BLOCKED')" [disabled]="!orderOverviewAction.blocked"
@@ -381,14 +334,9 @@
                   <td class="count"><span class="_600">{{orderOverview.failed}}</span></td>
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
-                    <nz-select [(ngModel)]="orderOverviewAction.failed" [disabled]="orderOverview.failed == 0" name="failed"
-                               nzAllowClear
-                               nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}" style="width: 75%">
-                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate"
-                                 [nzValue]="'CancelWithKill'"></nz-option>
-                      <nz-option [nzLabel]="'order.button.resume' | translate" [nzValue]="'Resume'"></nz-option>
-                    </nz-select>
+                    <app-select-input  [attributeName]="'failed'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                       [listArray]="orderTreeStatusFailed" [name]="'failed'" [optionLabel]="'label'" [optionValue]="'value'" [isSelectDisabled]="orderOverview.failed == 0"
+                                       [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
                     <button (click)="submitTransaction('failed', 'FAILED')" [disabled]="!orderOverviewAction.failed"
@@ -403,12 +351,9 @@
                   <td class="count"><span class="_600">{{orderOverview.terminated}}</span></td>
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
-                    <nz-select [(ngModel)]="orderOverviewAction.completed" [disabled]="orderOverview.terminated == 0" name="completed"
-                               nzAllowClear
-                               nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}" style="width: 75%">
-                      <nz-option [nzLabel]="'order.button.leaveWorkflow' | translate"
-                                 [nzValue]="'Terminate'"></nz-option>
-                    </nz-select>
+                    <app-select-input  [attributeName]="'completed'" [isAllowClear]="true" [optionLabel]="'label'" [optionValue]="'value'" [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                       [name]="'completed'" [isSelectDisabled]="orderOverview.completed == 0" [listArray]="orderTreeStatusCompleted"
+                                       [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
                     <button (click)="submitTransaction('completed', 'COMPLETED')" [disabled]="!orderOverviewAction.completed"

@@ -3838,7 +3838,6 @@ export class WorkflowComponent {
           const top = (_top + $('#rightPanel').position().top);
           const ht = 'calc(100vh - ' + (top + 22) + 'px)';
           dom.css({height: ht, 'scroll-top': '0'});
-          $('#graph').slimscroll({height: ht, scrollTo: '0'});
         }
       }, 10);
     }
@@ -4955,10 +4954,8 @@ export class WorkflowComponent {
       if (scrollValue.scrollTop) {
         _element.scrollTop = scrollValue.scrollTop;
       }
-      _element.scrollLeft = scrollValue.scrollLeft;
-      const bounds = graph.getGraphBounds();
-      if (bounds.y < 0) {
-        graph.view.setTranslate(bounds.x, -0.5);
+      if (scrollValue.scrollLeft) {
+        _element.scrollLeft = scrollValue.scrollLeft;
       }
     }
     if (scrollValue.scale && scrollValue.scale != 1) {
@@ -5001,24 +4998,20 @@ export class WorkflowComponent {
     /**
      * Changes the zoom on mouseWheel events
      */
-    const dom = $('#graph');
-    dom.bind('mousewheel DOMMouseScroll', (event) => {
-      if (this.editor) {
-        if (event.ctrlKey) {
-          event.preventDefault();
-          if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-            this.editor.execute('zoomIn');
-          } else {
-            this.editor.execute('zoomOut');
-          }
-        } else {
-          const bounds = this.editor.graph.getGraphBounds();
-          if (bounds.y < -0.05 && bounds.height > dom.height()) {
-            this.center();
+    if (this.editor) {
+      $('#graph').bind('mousewheel DOMMouseScroll', (event) => {
+        if (this.editor) {
+          if (event.ctrlKey) {
+            event.preventDefault();
+            if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+              this.editor.execute('zoomIn');
+            } else {
+              this.editor.execute('zoomOut');
+            }
           }
         }
-      }
-    });
+      });
+    }
 
     const el = $.fn['show'];
     $.fn['show'] = function () {
