@@ -3203,6 +3203,7 @@
     "label.onSuccess": "On Success",
     "label.onWarning": "Return Code on Warning",
     "label.onFailure": "On Failure",
+    "label.ignore": "Ignore",
     "label.returnCode": "Return Code",
     "label.executableType": "Executable Type",
     "label.shell": "Shell",

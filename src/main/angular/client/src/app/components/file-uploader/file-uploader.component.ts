@@ -29,7 +29,7 @@ export class FileUploaderComponent {
   data: any;
   fileFormat = [{value: 'ZIP', name: 'ZIP'},
     {value: 'TAR_GZ', name: 'TAR_GZ'}
-  ]
+  ];
   document = {path: '', path1: ''};
 
   //Inventory
@@ -141,6 +141,7 @@ export class FileUploaderComponent {
       this.otherSchema = this.modalData.otherSchema;
       this.importXsd = this.modalData.importXsd;
     } else if (this.type === 'CONTROLLER') {
+      this.fileType = '.zip, .tar.gz, .gz';
       this.controller = this.modalData.controller;
     }
   }
@@ -227,7 +228,7 @@ export class FileUploaderComponent {
   beforeUpload = (file: NzUploadFile): boolean => {
     this.uploadError = false;
     this.fileList.push(file);
-    if(this.coreService.sanitizeFileName(file.name)) {
+    if (this.coreService.sanitizeFileName(file.name)) {
       let msg = '';
       this.translate.get('error.message.invalidFileName').subscribe(translatedValue => {
         msg = translatedValue;
@@ -462,7 +463,7 @@ export class FileUploaderComponent {
         formData.append('comment', this.comments.comment);
       }
       if (this.comments.timeSpent) {
-        formData.append('timeSpent',this.comments.timeSpent);
+        formData.append('timeSpent', this.comments.timeSpent);
       }
       if (this.comments.ticketLink) {
         formData.append('ticketLink', this.comments.ticketLink);

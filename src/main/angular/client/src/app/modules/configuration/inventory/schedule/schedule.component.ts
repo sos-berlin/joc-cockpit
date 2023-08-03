@@ -975,7 +975,7 @@ export class ScheduleComponent {
         });
         this.blockPositions = new Map();
         this.blockPositionList = new Map();
-        res.blockPositions.forEach((item) => {
+        res.blockPositions?.forEach((item) => {
           this.blockPositions.set(item.positionString, (item.position));
           this.blockPositionList.set(item.positionString, item.positions);
         });

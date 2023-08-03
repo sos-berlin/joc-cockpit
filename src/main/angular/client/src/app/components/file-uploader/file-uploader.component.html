@@ -15,6 +15,7 @@
        <span translate>agent.label.importAgentConfiguration</span>:
        {{controller.controllerId}}
     </span>
+    <span *ngIf="type === 'CRON'" translate>inventory.cronTab.label.convertCron</span>
     <span *ngIf="type === 'SETTING'" translate>settings.label.importSetting</span>
     <span *ngIf="type === 'WORKFLOW'" translate>workflow.label.importWorkflow</span>
   </h4>
@@ -27,6 +28,77 @@
     <div class="row">
       <div [ngClass]="{'show': display}" class="col-md-12 hide">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
+      </div>
+      <div *ngIf="type === 'CRON'" class="col-md-12">
+        <div class="form-group row">
+          <label class="col-md-3 form-control-label">
+            <label translate>inventory.cronTab.label.folder</label>
+          </label>
+          <div class="col-md-9">
+            <input autocomplete="off" type="text" name="folder" class="form-control pos-abt input-path-with-select"
+                   [(ngModel)]="requestObj.folder"
+                   placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}">
+            <nz-tree-select
+              name="path1"
+              class="custom-select-box"
+              [nzAllowClear]="false"
+              [nzNodes]="nodes"
+              [nzDisplayWith]="displayWith"
+              [nzDropdownStyle]="{ 'max-height': '260px' }"
+              [(ngModel)]="requestObj.folder1"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div class="node-wrapper" (click)="selectPath(node);">
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
+                    <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                    {{node.title}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3 form-control-label">
+            <label translate>inventory.cronTab.label.calendarName
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+          </label>
+          <div class="col-md-9" [ngClass]="{'has-error' : ((calendarName.dirty || calendarName.touched) && calendarName.invalid)}">
+            <input #calendarName="ngModel" (click)="isTreeShow = true;"
+                   [(ngModel)]="requestObj.calendarName" autocomplete="off"
+                   class="form-control" name="workflowName" type="text">
+            <div *ngIf="isTreeShow" [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
+              <app-search-input (onBlur)="onBlur()" (onSelect)="onSelect($event)" [changeDetect]="true" [isDisplay]="true"
+                                [nodes]="calendarTree" [type]="'WORKINGDAYSCALENDAR'"></app-search-input>
+            </div>
+            <div *ngIf="calendarName.invalid && calendarName.errors && (calendarName.dirty || calendarName.touched)" class="text-danger help-block">
+              <div *ngIf="calendarName.errors.required">
+                <div translate>common.message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3 form-control-label">
+            <label translate>inventory.cronTab.label.agentName
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+          </label>
+          <div class="col-md-9">
+            <app-agent-selection [preferences]="preferences" [agents]="agents"
+                                 (selectSubagentCluster)="selectSubagentCluster($event)"
+                                 [data]="requestObj"></app-agent-selection>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3">
+            <label [nz-tooltip]="'inventory.cronTab.tooltip.systemCrontab' | translate" translate>inventory.cronTab.label.systemCrontab</label>
+          </label>
+          <div class="col-md-9">
+            <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.systemCrontab"></label>
+          </div>
+        </div>
       </div>
       <div *ngIf="type === 'DOCUMENTATION'" class="col-md-12">
         <div class="form-group row">
@@ -73,7 +145,7 @@
               <label translate>inventory.label.fileFormat</label>
             </label>
             <div class="col-md-9">
-              <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'label'"
+              <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'name'"
                                 [listArray]="fileFormat" [object]="requestObj"></app-select-input>
             </div>
           </div>
@@ -112,10 +184,8 @@
               <label translate>inventory.label.fileFormat</label>
             </label>
             <div class="col-md-9">
-              <nz-select [(ngModel)]="requestObj.format" name="format">
-                <nz-option nzLabel="ZIP" nzValue="ZIP"></nz-option>
-                <nz-option nzLabel="TAR_GZ" nzValue="TAR_GZ"></nz-option>
-              </nz-select>
+              <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'name'"
+                                [listArray]="fileFormat" [object]="requestObj"></app-select-input>
             </div>
           </div>
           <div class="form-group row">
@@ -176,7 +246,7 @@
             <label translate>inventory.label.fileFormat</label>
           </label>
           <div class="col-md-9">
-            <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'label'"
+            <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'name'"
                               [listArray]="fileFormat" [object]="requestObj"></app-select-input>
           </div>
         </div>
@@ -222,7 +292,8 @@
     <button (click)="handleUpload();" [disabled]="!myForm.form.valid || uploading || (required && !comments.comment)"
             class="btn btn-primary btn-sm" type="submit">
       <i *ngIf="uploading" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'common.button.import' | translate}}
+      <span *ngIf="type !== 'CRON'" translate>common.button.import</span>
+      <span *ngIf="type === 'CRON'" translate>inventory.cronTab.button.convert</span>
     </button>
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel

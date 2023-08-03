@@ -571,6 +571,9 @@ export class JobTemplateComponent {
       }
     }
     this.returnCodes.on = this.job.configuration.executable.returnCodeMeaning.failure ? 'failure' : 'success';
+    if(this.job.configuration.executable.returnCodeMeaning.failure === 'none'){
+      this.returnCodes.on = 'ignore';
+    }
 
     if (!this.job.configuration.executable.jobArguments || isEmpty(this.job.configuration.executable.jobArguments)) {
       this.job.configuration.executable.jobArguments = [];

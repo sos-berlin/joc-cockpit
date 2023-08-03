@@ -2360,6 +2360,9 @@ export class JobComponent {
     }
 
     this.returnCodes.on = this.selectedNode.job.executable.returnCodeMeaning.failure ? 'failure' : 'success';
+    if(this.selectedNode.job.executable.returnCodeMeaning.failure === 'none'){
+      this.returnCodes.on = 'ignore';
+    }
 
     if (!this.selectedNode.job.defaultArguments || isEmpty(this.selectedNode.job.defaultArguments)) {
       this.selectedNode.job.defaultArguments = [];
@@ -5020,25 +5023,27 @@ export class WorkflowComponent {
     };
 
     const panel = $('.property-panel');
+    const transitionCSS = {transition: 'none'};
+
     $('.sidebar-open', panel).click(() => {
       self.propertyPanelWidth = localStorage['propertyPanelWidth'] ? parseInt(localStorage['propertyPanelWidth'], 10) : 460;
-      $('#outlineContainer').css({right: self.propertyPanelWidth + 10 + 'px'});
-      $('.graph-container').css({'margin-right': self.propertyPanelWidth + 'px'});
-      $('.toolbar').css({'margin-right': (self.propertyPanelWidth - 12) + 'px'});
-      $('.sidebar-close').css({right: self.propertyPanelWidth + 'px'});
-      $('#property-panel').css({width: self.propertyPanelWidth + 'px'}).show();
-      $('.sidebar-open').css({right: '-20px'});
+      $('#outlineContainer').css({...transitionCSS, right: self.propertyPanelWidth + 10 + 'px'});
+      $('.graph-container').css({...transitionCSS, 'margin-right': self.propertyPanelWidth + 'px'});
+      $('.toolbar').css({...transitionCSS, 'margin-right': (self.propertyPanelWidth - 12) + 'px'});
+      $('.sidebar-close').css({...transitionCSS, right: self.propertyPanelWidth + 'px'});
+      $('#property-panel').css({...transitionCSS, width: self.propertyPanelWidth + 'px'}).show();
+      $('.sidebar-open').css({...transitionCSS, right: '-20px'});
       self.centered(true);
     });
 
     $('.sidebar-close', panel).click(() => {
       self.propertyPanelWidth = 0;
-      $('#outlineContainer').css({right: '10px'});
-      $('.graph-container').css({'margin-right': '0'});
-      $('.toolbar').css({'margin-right': '-12px'});
-      $('.sidebar-open').css({right: '0'});
-      $('#property-panel').hide();
-      $('.sidebar-close').css({right: '-20px'});
+      $('#outlineContainer').css({...transitionCSS, right: '10px'});
+      $('.graph-container').css({...transitionCSS, 'margin-right': '0'});
+      $('.toolbar').css({...transitionCSS, 'margin-right': '-12px'});
+      $('.sidebar-open').css({...transitionCSS, right: '0'});
+      $('#property-panel').css(transitionCSS).hide();
+      $('.sidebar-close').css({...transitionCSS, right: '-20px'});
       self.centered(true);
     });
 

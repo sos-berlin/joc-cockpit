@@ -517,10 +517,12 @@ export class ResizableDirective {
           handles: 'w',
           resize: (e, x) => {
             const wt = x.size.width;
-            $('#outlineContainer').css({right: wt + 10 + 'px'});
-            $('.graph-container').css({'margin-right': wt + 'px'});
-            $('.toolbar').css({'margin-right': (wt - 12) + 'px'});
-            $('.sidebar-close').css({right: wt + 'px'});
+            const transitionCSS = {transition: 'none'};
+            $('#outlineContainer').css({...transitionCSS, right: wt + 10 + 'px'});
+            $('.property-panel').css({ width: wt + 'px'});
+            $('.sidebar-close').css({...transitionCSS, right: wt + 'px'});
+            $('.graph-container').css({...transitionCSS, 'margin-right': wt + 'px'});
+            $('.toolbar').css({...transitionCSS, 'margin-right': (wt - 12) + 'px'});
             localStorage['propertyPanelWidth'] = wt;
           }
         });

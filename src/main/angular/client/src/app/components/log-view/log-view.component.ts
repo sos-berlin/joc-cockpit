@@ -59,35 +59,39 @@ export class LogViewComponent {
   }
 
   ngOnInit(): void {
+    this.dataObject = POPOUT_MODALS['data'];
+    if (!this.dataObject.controllerId) {
+      setTimeout(() => {
+        this.ngOnInit();
+      }, 50);
+      return;
+    }
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
-    setTimeout(() => {
-      this.dataObject = POPOUT_MODALS['data'];
-      POPOUT_MODALS['windowInstance'].document.title = this.dataObject.modalName + ' - ' + (this.dataObject.orderId || this.dataObject.job);
-      this.controllerId = this.dataObject.controllerId;
-      if (this.authService.scheduleIds) {
-        const ids = JSON.parse(this.authService.scheduleIds);
-        if (ids && ids.selected != this.controllerId) {
-          const configObj = {
-            controllerId: this.controllerId,
-            accountName: this.authService.currentUserData
-          };
-          this.coreService.post('profile/prefs', configObj).subscribe({
-            next: (res: any) => {
-              if (res.profileItem) {
-                this.preferences = JSON.parse(res.profileItem);
-              }
-              this.init();
-            }, error: () => this.init()
-          });
-        } else {
-          this.init();
-        }
+    POPOUT_MODALS['windowInstance'].document.title = this.dataObject.modalName + ' - ' + (this.dataObject.orderId || this.dataObject.job);
+    this.controllerId = this.dataObject.controllerId;
+    if (this.authService.scheduleIds) {
+      const ids = JSON.parse(this.authService.scheduleIds);
+      if (ids && ids.selected != this.controllerId) {
+        const configObj = {
+          controllerId: this.controllerId,
+          accountName: this.authService.currentUserData
+        };
+        this.coreService.post('profile/prefs', configObj).subscribe({
+          next: (res: any) => {
+            if (res.profileItem) {
+              this.preferences = JSON.parse(res.profileItem);
+            }
+            this.init();
+          }, error: () => this.init()
+        });
       } else {
         this.init();
       }
-    }, 100)
+    } else {
+      this.init();
+    }
   }
 
   ngOnDestroy() {
@@ -390,6 +394,9 @@ export class LogViewComponent {
         this.loading = false;
         this.finished = true;
         this.isLoading = false;
+      }, complete: () => {
+        POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-close')[0].style.display = 'none';
+        POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-open')[0].style.display = 'none';
       }
     });
   }

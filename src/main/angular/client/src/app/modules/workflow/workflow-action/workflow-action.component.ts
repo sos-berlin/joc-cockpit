@@ -730,7 +730,7 @@ export class WorkflowActionComponent {
         radio: 'predefined',
         type: 'Workflow',
         operation: type,
-        name: workflow ? workflow.path : paths.join(',')
+        name: workflow ? workflow.path : (typeof paths != 'boolean') ? paths.join(',') : 'All'
       };
       const modal = this.modal.create({
         nzTitle: undefined,

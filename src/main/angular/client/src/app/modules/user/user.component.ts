@@ -486,7 +486,7 @@ export class UpdateKeyModalComponent {
     }
     this.coreService.post(URL, obj).subscribe({
       next: () => {
-        this.activeModal.close();
+        this.activeModal.close('DONE');
       }, error: () => this.submitted = false
     });
   }

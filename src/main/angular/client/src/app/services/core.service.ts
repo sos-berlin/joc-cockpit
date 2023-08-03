@@ -911,6 +911,7 @@ export class CoreService {
     if (!this.popupService.isPopoutWindowOpen()) {
       this.popupService.openPopoutModal(modalData, properties, viewContainerRef);
     } else {
+      this.popupService.detachView();
       this.popupService.createCDKPortal(modalData, POPOUT_MODALS['windowInstance'], LogViewComponent, viewContainerRef);
       this.popupService.focusPopoutWindow();
     }
