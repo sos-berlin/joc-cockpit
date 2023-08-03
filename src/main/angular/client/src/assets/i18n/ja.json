@@ -3199,6 +3199,7 @@
     "label.onSuccess": "成功",
     "label.onWarning": "警告",
     "label.onFailure": "失敗",
+    "label.ignore": "Ignore",
     "label.returnCode": "リターンコード",
     "label.executableType": "実行タイプ",
     "label.shell": "Shell",

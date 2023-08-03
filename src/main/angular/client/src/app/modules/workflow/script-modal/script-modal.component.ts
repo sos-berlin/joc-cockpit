@@ -41,14 +41,11 @@ export class ScriptModalComponent {
     lineNumbers: true,
     autoRefresh: true,
     lineWrapping: true,
-    matchBrackets: true,
-    foldGutter: true,
     scrollbarStyle: 'simple',
     readOnly: true,
     tabSize: 4,
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
-    mode: 'shell',
-    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+    mode: 'shell'
   };
   todayDate: string;
   type: string;

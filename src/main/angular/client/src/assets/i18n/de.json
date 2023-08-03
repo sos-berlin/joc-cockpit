@@ -3199,6 +3199,7 @@
     "label.onSuccess": "Bei Erfolg",
     "label.onWarning": "Rückgabewert bei Warnung",
     "label.onFailure": "Bei Fehler",
+    "label.ignore": "Ignore",
     "label.returnCode": "Rückgabewert",
     "label.executableType": "Typ der Ausführung",
     "label.shell": "Shell",

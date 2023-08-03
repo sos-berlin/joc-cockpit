@@ -120,6 +120,8 @@
               <label (click)="job.configuration.executable.returnCodeMeaning.failure = job.configuration.executable.returnCodeMeaning.success;job.configuration.executable.returnCodeMeaning.success = ''" nz-radio
                      nzValue="failure"><span
                 translate>workflow.label.onFailure</span></label>
+              <label (click)="job.configuration.executable.returnCodeMeaning.failure = 'none';job.configuration.executable.returnCodeMeaning.success = ''" nz-radio nzValue="ignore"><span
+                translate>workflow.label.ignore</span></label>
             </nz-radio-group>
           </div>
         </div>

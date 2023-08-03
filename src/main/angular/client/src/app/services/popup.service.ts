@@ -97,14 +97,18 @@ export class PopupService {
     );
   }
 
-  focusPopoutWindow() {
+  focusPopoutWindow(): void {
     POPOUT_MODALS['windowInstance'].focus();
   }
 
-  closePopoutModal() {
+  closePopoutModal(): void {
     if (POPOUT_MODALS['windowInstance']) {
       POPOUT_MODALS['windowInstance'].close();
     }
+    this.detachView();
+  }
+
+  detachView(): void {
     if (POPOUT_MODALS['componentRef']) {
       this.applicationRef.detachView(POPOUT_MODALS['componentRef'].hostView);
       POPOUT_MODALS['componentRef'].destroy();

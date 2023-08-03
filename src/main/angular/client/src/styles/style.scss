@@ -3875,7 +3875,15 @@ pre.log {
   padding-left: 8px;
 }
 
-.log_line > .main, .inner-log-m .main, .main .main {
+.log_line > .main,
+.inner-log-m .main,
+.inner-log-m .stdout,
+.inner-log-m .stderr,
+.inner-log-m .warn,
+.inner-log-m .error,
+.inner-log-m .trace,
+.inner-log-m .fatal,
+.main .main {
   padding-left: 0;
 }
 
