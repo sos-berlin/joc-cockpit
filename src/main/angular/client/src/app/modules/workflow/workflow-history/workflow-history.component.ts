@@ -7,7 +7,8 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  ViewContainerRef
 } from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from "@angular/router";
@@ -24,7 +25,7 @@ export class WorkflowTemplateComponent {
   @Input() schedulerId: any;
   @Input() permission: any;
 
-  constructor(public coreService: CoreService) {
+  constructor(public coreService: CoreService, public viewContainerRef: ViewContainerRef) {
   }
 
   showPanelFuc(data, count): void {
@@ -75,7 +76,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(public coreService: CoreService, private authService: AuthService,
-              private router: Router, private dataService: DataService) {
+              private router: Router, private dataService: DataService, public viewContainerRef: ViewContainerRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);

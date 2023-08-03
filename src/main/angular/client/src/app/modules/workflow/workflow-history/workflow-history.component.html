@@ -68,7 +68,7 @@
         </thead>
         <tbody>
         <ng-template [ngForOf]="orderHistoryTable.data" let-history ngFor>
-          <tr (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)"
+          <tr (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)"
               [ngClass]="{'light-bg':history.show}" class="cursor">
             <td>
             <span class="show-in-single-line w-full">
@@ -195,7 +195,7 @@
         </thead>
         <tbody>
         <ng-template [ngForOf]="taskHistoryTable.data" let-history ngFor>
-          <tr (click)="coreService.showLogWindow(null, history, null, history.controllerId, null)" [ngClass]="{'light-bg':history.show}"
+          <tr (click)="coreService.showLogWindow(null, history, null, history.controllerId, null,viewContainerRef)" [ngClass]="{'light-bg':history.show}"
               class="cursor">
             <td>
                <span class="show-in-single-line">
@@ -297,7 +297,7 @@
         </thead>
         <tbody>
         <ng-template [ngForOf]="jobHistoryTable.data" let-history ngFor>
-          <tr (click)="coreService.showLogWindow(null, history, null, history.controllerId, null)" class="cursor">
+          <tr (click)="coreService.showLogWindow(null, history, null, history.controllerId, null,viewContainerRef)" class="cursor">
             <td [innerHtml]="history.position"></td>
             <td>
             <span [innerHtml]="history.state._text | translate" [ngClass]="coreService.getColor(history.state.severity,'bg')"

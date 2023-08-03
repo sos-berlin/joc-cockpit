@@ -30,7 +30,7 @@ export class OrderTemplateComponent {
   @Input() orderSearch: any;
   @Input() permission: any;
 
-  constructor(public coreService: CoreService, private router: Router) {
+  constructor(public coreService: CoreService, private router: Router, public viewContainerRef: ViewContainerRef) {
   }
 
   downloadLog(obj, schedulerId): void {
@@ -815,7 +815,7 @@ export class SingleHistoryComponent {
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private router: Router,
-              private dataService: DataService, private route: ActivatedRoute) {
+              private dataService: DataService, private route: ActivatedRoute, public viewContainerRef: ViewContainerRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
