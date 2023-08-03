@@ -50,7 +50,7 @@
                      *ngIf="!transfer.show" class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
                   <i (click)="transfer.show = false;"
                      *ngIf="transfer.show" class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>&nbsp;
-                  <span (click)="coreService.showLogWindow(null, transfer, null, transfer.controllerId, null);$event.stopPropagation()"
+                  <span (click)="coreService.showLogWindow(null, transfer, null, transfer.controllerId, null,viewContainerRef);$event.stopPropagation()"
                         [innerHtml]="transfer.state._text | translate"
                         [ngClass]="coreService.getColor(transfer.state.severity,'bg')"
                         class="label cursor"></span>

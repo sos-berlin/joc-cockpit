@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output, ViewContainerRef} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {isEmpty, extend, clone} from 'underscore';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -478,7 +478,7 @@ export class FileTransferComponent {
   searchableProperties = ['controllerId', 'profile', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
-              private router: Router, private orderPipe: OrderPipe, private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService) {
+              private router: Router, private orderPipe: OrderPipe, private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService, public viewContainerRef: ViewContainerRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);

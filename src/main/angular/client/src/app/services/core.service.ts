@@ -1501,6 +1501,8 @@ export class CoreService {
             }
           }
         }
+      } else if(env.value === "" || env.value === ''){
+        env.value = JSON.stringify(env.value);
       }
     });
   }

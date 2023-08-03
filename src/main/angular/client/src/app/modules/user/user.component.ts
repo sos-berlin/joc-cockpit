@@ -479,7 +479,12 @@ export class UpdateKeyModalComponent {
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     const URL = this.type === 'key' ? 'profile/key/store' : this.type === 'certificate' ? 'profile/key/ca/store' : 'profile/ca/store';
-    this.coreService.post(URL, this.type === 'key' ? {keys: obj} : obj).subscribe({
+    if (this.type === 'key') {
+      let _obj = {keys: obj, auditLog: obj.auditLog};
+      delete _obj.keys['auditLog'];
+      obj = _obj;
+    }
+    this.coreService.post(URL, obj).subscribe({
       next: () => {
         this.activeModal.close();
       }, error: () => this.submitted = false
