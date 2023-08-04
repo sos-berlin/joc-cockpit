@@ -192,18 +192,11 @@
                     </div>
                   </ng-container>
                   <ng-container *ngSwitchCase="'Boolean'">
-                    <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                         class="col-sm-5 m-b-sm p-r-0">
+                    <div class="col-sm-5 m-b-sm p-r-0">
                       <app-select-input (modelChange)="checkCheckbox(param)" [attributeName]="'newValue'" [isRequired]="param.required"
                                         [placeholder]="'common.placeholder.selectValue'" [isAllowClear]="true"
                                         [listArray]="selectValue" [name]="'_value' + i" [optionLabel]="'label'" [optionValue]="'value'"
                                         [object]="param"></app-select-input>
-                      <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                           class="text-danger help-block">
-                        <div *ngIf="value.errors.required">
-                          <div translate>common.message.requiredError</div>
-                        </div>
-                      </div>
                     </div>
                   </ng-container>
                   <ng-container *ngSwitchCase="'String'">
@@ -211,7 +204,7 @@
                          class="col-sm-5 m-b-sm p-r-0">
                       <input #value="ngModel" (blur)="checkCheckbox(param)" (keydown)="onKeyPress($event)"
                              [(ngModel)]="param.newValue" [facetValidation]="param.facet" [required]="param.required" autocomplete="off"
-                             class="form-control" name="value{{i}}" placeholder="{{'common.placeholder.value' | translate}}"
+                             class="form-control" name="_value{{i}}" placeholder="{{'common.placeholder.value' | translate}}"
                              type="text">
                       <i *ngIf="param.message" [nz-tooltip]="param.message" class="pos-abt cursor fa fa-info-circle"
                          style="right: 32px;top:1px;"></i>

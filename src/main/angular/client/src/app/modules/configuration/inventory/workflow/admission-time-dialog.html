@@ -271,7 +271,7 @@
           <div class="time-picker m-l-0">
             <input required timevalidator type="text" #timePicker="ngModel" class="form-control"
                 name="startTime" [(ngModel)]="object.startTime" (ngModelChange)="selectTime(object.startTime, true)" placeholder="HH:MM:SS">
-            <nz-time-picker [nzAllowEmpty]="false" (keydown.Tab)="onTab()" (ngModelChange)="selectTime($event)" [(ngModel)]="object.startTime1" name="fromTimeIcon"></nz-time-picker>
+            <nz-time-picker [nzAllowEmpty]="false" (keydown.Tab)="onTab()" [(ngModel)]="object.startTime1" (ngModelChange)="selectTime($event)" name="fromTimeIcon"></nz-time-picker>
           </div>
           <div *ngIf="timePicker.invalid && (timePicker.dirty || timePicker.touched)" class="text-danger help-block">
             <div *ngIf="timePicker.errors['required']">

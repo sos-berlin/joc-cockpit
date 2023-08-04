@@ -1798,6 +1798,7 @@
     "message.noObjectFoundToRelease": "リリースできるオブジェクトはありません",
     "message.updateFromJobTemplate": "本当にジョブテンプレートから更新しますか？",
     "message.localChangesWillBeOverwritten": "この操作により、ローカルでの変更はすべて上書きされます",
+    "message.changeDeductInWorkflow": "Change deduct in the Workflow variables, please adjust variables and release the Schedule again",
     "cronTab": {
       "label.convertCron": "crontab変換",
       "label.folder": "フォルダー",

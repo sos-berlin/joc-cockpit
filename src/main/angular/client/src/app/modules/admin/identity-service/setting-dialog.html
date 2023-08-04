@@ -336,8 +336,8 @@
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-sm-6">
-                <app-select-input [isRequired]="true"  [name]="'iamLdapProtocol'"
-              [extraLabelText]="'user.usermode.label.'"  [object]="userObj" [attributeName]="'iamLdapProtocol'"  (modelChange)="changeConfiguration($event)" [listArray]="iamLdapProtocols"
+                <app-select-input [isRequired]="true"  [name]="'iamLdapProtocol'" [extraLabelText]="'user.usermode.label.'"
+                                  [object]="userObj" [attributeName]="'iamLdapProtocol'" (modelChange)="changeConfiguration($event)" [listArray]="iamLdapProtocols"
                 [optionLabel]="'text'" [optionValue]="'value'" ></app-select-input>
               </div>
             </div>
@@ -689,10 +689,9 @@
                     <input #group="ngModel" [(ngModel)]="item.ldapGroupDn" class="form-control" name="group{{i}}"
                            placeholder="{{'user.placeholder.group' | translate}}" type="text">
                   </div>
-                  <div [ngClass]="{'has-error' : ((roles.dirty || roles.touched) && roles.invalid)}"
-                       class="col-md-6 m-b-sm">
-                     <app-select-input [isSearchable]="true" [isMultiple]="'multiple'" [placeholder]="'user.placeholder.selectRoles'" [isRequired]="(item.ldapGroupDn && item.ldapGroupDn.length > 0) ? true : false"  [name]="'roles' + i"
-                    [object]="item" [attributeName]="'roles'"  (modelChange)="changeConfiguration($event)" [listArray]="allRoles"  ></app-select-input>
+                  <div class="col-md-6 m-b-sm">
+                     <app-select-input [isSearchable]="true" [isMultiple]="true" [placeholder]="'user.placeholder.selectRoles'" [isRequired]="(item.ldapGroupDn && item.ldapGroupDn.length > 0) ? true : false"  [name]="'roles' + i"
+                    [object]="item" [attributeName]="'roles'" (modelChange)="changeConfiguration($event)" [listArray]="allRoles"  ></app-select-input>
                   </div>
                   <div class="col-md-1">
                     <a (click)="removeGroupRoles(i)" class="cursor"><i
@@ -864,9 +863,8 @@
               <input #group="ngModel" [(ngModel)]="item.oidcGroup" class="form-control" name="group{{i}}"
                      placeholder="{{'user.placeholder.group' | translate}}" type="text">
             </div>
-            <div [ngClass]="{'has-error' : ((roles.dirty || roles.touched) && roles.invalid)}"
-                 class="col-md-6 m-b-sm">
-              <app-select-input  [attributeName]="'roles'" [isMultiple]="'multiple'" [isSearchable]="true"
+            <div class="col-md-6 m-b-sm">
+              <app-select-input  [attributeName]="'roles'" [isMultiple]="true" [isSearchable]="true"
                                 [listArray]="allRoles" [name]="'roles'+ i" [isRequired]="(item.oidcGroup && item.oidcGroup.length > 0) ? true : false"
                                 [object]="item"></app-select-input>
             </div>
@@ -1008,7 +1006,7 @@
                  class="col-sm-4 form-control-label" translate>user.label.iamFidoTransports
           </label>
           <div class="col-sm-6">
-            <app-select-input  [isMultiple]="'multiple'"   [name]="'iamFidoTransports'"
+            <app-select-input  [isMultiple]="true" [name]="'iamFidoTransports'"
               [object]="currentObj" [attributeName]="'iamFidoTransports'" [listArray]="iamFidoTransports" [optionLabel]="'text'" [optionValue]="'value'"></app-select-input>
           </div>
         </div>
@@ -1019,9 +1017,8 @@
                  class="col-sm-4 " translate>user.label.iamFidoUserVerification
           </label>
           <div *ngIf="currentObj.iamFidoProtocolType !== 'FIDO2'" class="col-sm-6">
-           <app-select-input  [name]="'iamFidoUserVerification'"
-            [object]="currentObj" [attributeName]="'iamFidoUserVerification'" [listArray]="iamFidoUserVerification"
-             [optionLabel]="'text'" [optionValue]="'value'"></app-select-input>
+           <app-select-input  [name]="'iamFidoUserVerification'" [object]="currentObj" [attributeName]="'iamFidoUserVerification'"
+                              [listArray]="iamFidoUserVerification" [optionLabel]="'text'" [optionValue]="'value'"></app-select-input>
           </div>
           <div *ngIf="currentObj.iamFidoProtocolType === 'FIDO2'" class="col-sm-6">Required</div>
         </div>
@@ -1128,10 +1125,11 @@
                        translate>user.label.priority
                 </label>
                 <div class="col-sm-6">
-                  <app-select-input  [name]="'priority'"
-                  [optionValue]="'value'"
-                  [optionLabel]="'name'" [object]="currentObj.iamFidoEmailSettings" [attributeName]="'priority'" [listArray]="fidoEmailSettingPriority"
-                ></app-select-input>
+                  <nz-select [(ngModel)]="currentObj.iamFidoEmailSettings.priority" name="priority">
+                    <nz-option [nzLabel]="'Normal'" [nzValue]="'normal'"></nz-option>
+                    <nz-option [nzLabel]="'Low'" [nzValue]="'low'"></nz-option>
+                    <nz-option [nzLabel]="'High'" [nzValue]="'high'"></nz-option>
+                  </nz-select>
                 </div>
               </div>
             </div>

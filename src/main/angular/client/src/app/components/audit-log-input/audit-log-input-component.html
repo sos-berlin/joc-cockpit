@@ -12,8 +12,8 @@
     <sup *ngIf="required" class="text-danger text-sm">*</sup>
   </label>
   <div class="col-sm-{{sizeY}}">
-    <app-select-input  [attributeName]="'comment'" [isRequired]="'true'" [placeholder]="'common.label.selectPredefinedReason'"
-                      [listArray]="messageList" [name]="'comment'" [isAllowClear]="'true'"
+    <app-select-input  [attributeName]="'comment'" [isRequired]="true" [placeholder]="'common.label.selectPredefinedReason'"
+                      [listArray]="messageList" [name]="'comment'" [isAllowClear]="true"
                       [object]="comments"></app-select-input>
   </div>
 </div>

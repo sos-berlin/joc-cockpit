@@ -20,11 +20,8 @@ export class SelectInputComponent {
   @Input() attributeName = '';
   @Input() optionLabel = '';
   @Input() optionValue = '';
-  @Input() isCustomContent = false;
   @Input() extraLabelText = '';
   @Input() id = '';
-  @Input() customId = ''
-
 
   @Output() modelChange = new EventEmitter<any>();
   @Output() onBlur = new EventEmitter<any>();

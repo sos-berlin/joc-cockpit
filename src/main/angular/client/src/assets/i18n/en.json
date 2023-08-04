@@ -1798,6 +1798,7 @@
     "message.noObjectFoundToRelease": "No releasable object found",
     "message.updateFromJobTemplate": "Are you sure you want to update the job from the Job Template?",
     "message.localChangesWillBeOverwritten": "All local changes will be overwritten by this action",
+    "message.changeDeductInWorkflow": "Change deduct in the Workflow variables, please adjust variables and release the Schedule again",
     "cronTab": {
       "label.convertCron": "Convert crontab",
       "label.folder": "Folder",

@@ -622,19 +622,12 @@
                                     </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.method' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
-                                  <div [ngClass]="{'has-error' : ((method.dirty || method.touched) && method.invalid)}"
-                                       class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
+                                  <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
                                     <app-select-input (modelChange)="convertJSON()" [attributeName]="'method'" [isSelectDisabled]="isTrash"
                                                       [id]="'amethod' + i + j" [isRequired]="true"
                                                       [listArray]="methods" [name]="'amethod' + i + j"
                                                       [placeholder]="'deploymentService.agent.placeholder.method'"
                                                       [object]="item.target.authentication"></app-select-input>
-                                    <div *ngIf="method.invalid && (method.dirty || method.touched)"
-                                         class="text-danger help-block">
-                                      <div *ngIf="method.errors.required" translate>
-                                        common.message.requiredError
-                                      </div>
-                                    </div>
                                   </div>
                                 </div>
                                 <div class="row m-t-sm">
@@ -1365,19 +1358,12 @@
                                     </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.method' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
-                                  <div [ngClass]="{'has-error' : ((method.dirty || method.touched) && method.invalid)}"
-                                       class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
+                                  <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
                                     <app-select-input (modelChange)="convertJSON()" [attributeName]="'method'" [isSelectDisabled]="isTrash"
                                                       [id]="'cmethod' + i + j" [isRequired]="true"
                                                       [listArray]="methods" [name]="'cmethod' + i + j"
                                                       [placeholder]="'deploymentService.agent.placeholder.method'"
                                                       [object]="item.target.authentication"></app-select-input>
-                                    <div *ngIf="method.invalid && (method.dirty || method.touched)"
-                                         class="text-danger help-block">
-                                      <div *ngIf="method.errors.required" translate>
-                                        common.message.requiredError
-                                      </div>
-                                    </div>
                                   </div>
                                 </div>
                                 <div class="row m-t-sm">
@@ -2141,19 +2127,12 @@
                                     </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.method' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
-                                  <div [ngClass]="{'has-error' : ((method.dirty || method.touched) && method.invalid)}"
-                                       class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
+                                  <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
                                     <app-select-input (modelChange)="convertJSON()" [attributeName]="'method'" [isSelectDisabled]="isTrash"
                                                       [id]="'method' + i + j" [isRequired]="true"
                                                       [listArray]="methods" [name]="'method' + i + j"
-                                                      [placeholder]="'deploymentService.agent.placeholder.method'"
+                                                      [placeholder]="'deploymentService.joc.placeholder.method'"
                                                       [object]="item.target.authentication"></app-select-input>
-                                    <div *ngIf="method.invalid && (method.dirty || method.touched)"
-                                         class="text-danger help-block">
-                                      <div *ngIf="method.errors.required" translate>
-                                        common.message.requiredError
-                                      </div>
-                                    </div>
                                   </div>
                                 </div>
                                 <div class="row m-t-sm">

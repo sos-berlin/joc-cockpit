@@ -1135,7 +1135,7 @@ export class CalendarComponent {
   cType = [
     {label: 'runtime.label.workingDay', value: 'WORKINGDAYSCALENDAR'},
     {label: 'runtime.label.nonWorkingDay', value: 'NONWORKINGDAYSCALENDAR'}
-  ]
+  ];
 
   constructor(public coreService: CoreService, public modal: NzModalService, private calendarService: CalendarService,
               private dataService: DataService, private ref: ChangeDetectorRef, private router: Router, private translate: TranslateService) {

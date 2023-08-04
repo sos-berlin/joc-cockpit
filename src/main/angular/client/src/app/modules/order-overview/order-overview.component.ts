@@ -269,19 +269,19 @@ export class OrderOverviewComponent {
     {label: 'order.button.cancelAndKillTask', value: 'cancelWithKill'},
     {label: 'order.button.resume', value: 'Resume'}
   ]
-  orderTreeStatusPrompting =  [
+  orderTreeStatusPrompting = [
     {label: 'order.button.cancel', value: 'Cancel'},
     {label: 'order.button.cancelAndKillTask', value: 'cancelWithKill'},
     {label: 'order.button.confirm', value: 'confirm'}
-    ]
+  ];
   orderTreeStatusFailed = [
     {label: 'order.button.cancel', value: 'Cancel'},
     {label: 'order.button.cancelAndKillTask', value: 'cancelWithKill'},
     {label: 'order.button.resume', value: 'resume'}
-  ]
-  orderTreeStatusCompleted=[
+  ];
+  orderTreeStatusCompleted = [
     {label: 'order.button.leaveWorkflow', value: 'Terminate'}
-    ]
+  ];
 
   subscription1: Subscription;
   subscription2: Subscription;
