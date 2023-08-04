@@ -212,21 +212,21 @@ export class LogViewComponent {
     }
 
     $(POPOUT_MODALS['windowInstance'].document).on("keydown", disableF5);
-    const panel = $('.property-panel');
-    const dom = POPOUT_MODALS['windowInstance'].document.getElementById('property-panel');
+   // const panel = $('.property-panel');
+    const dom = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-property-panel');
     const close = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-close');
     const open = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-open');
-    $(open, panel).click(() => {
+    $(open).click(() => {
       close[0].style.right = '300px';
-      dom.style.width = '302px';
+      dom[0].style.width = '302px';
       this.dataBody.nativeElement.setAttribute('style', 'margin-right: 308px');
       open[0].style.right = '-20px';
       sessionStorage['isLogTreeOpen'] = true;
     });
 
-    $(close, panel).click(() => {
+    $(close).click(() => {
       open[0].style.right = '0';
-      dom.style.width = '0';
+      dom[0].style.width = '0';
       close[0].style.right = '-20px';
       this.dataBody.nativeElement.setAttribute('style', 'margin-right: 10px');
       sessionStorage['isLogTreeOpen'] = false;
@@ -235,7 +235,7 @@ export class LogViewComponent {
     if(!this.taskId) {
       setTimeout(() => {
         if (sessionStorage['isLogTreeOpen'] == 'true' || sessionStorage['isLogTreeOpen'] == true) {
-          $(open, panel).click();
+          $(open).click();
         }
       }, 500)
     } else {
