@@ -3841,6 +3841,9 @@ export class WorkflowComponent {
           const top = (_top + $('#rightPanel').position().top);
           const ht = 'calc(100vh - ' + (top + 22) + 'px)';
           dom.css({height: ht, 'scroll-top': '0'});
+          $('#graph').animate({
+            scrollTop: 0
+          }, 300);
         }
       }, 10);
     }
@@ -4667,14 +4670,16 @@ export class WorkflowComponent {
     const dom = document.getElementById('graph');
     let x = 0.5;
     let y = 0.2;
+    let flag = true;
     if (dom && this.editor) {
       if (dom.clientWidth !== dom.scrollWidth) {
         x = 0;
       }
       if (dom.clientHeight !== dom.scrollHeight) {
         y = 0;
+        flag = false;
       }
-      this.editor.graph.center(true, true, x, y);
+      this.editor.graph.center(true, flag, x, y);
     }
   }
 
