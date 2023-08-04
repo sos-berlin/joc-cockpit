@@ -135,7 +135,7 @@
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.sourceProtocol</label>
       <div class="col-sm-6">
-        <app-select-input [attributeName]="'sourceProtocol'" [isAllowClear]="true" [isMultiple]="'multiple'"
+        <app-select-input [attributeName]="'sourceProtocol'" [isAllowClear]="true" [isMultiple]="true"
                           [isSearchable]="true"
                           [listArray]="allhosts" [name]="'sourceProtocol'"
                           [placeholder]="'fileTransfer.search.placeholder.sourceProtocol'"
@@ -167,7 +167,7 @@
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.targetProtocol</label>
       <div class=" col-sm-6">
         <app-select-input [attributeName]="'targetProtocol'" [isAllowClear]="true" [isSearchable]="true"
-                          [isMultiple]="'multiple'" [placeholder]="'fileTransfer.search.placeholder.targetProtocol'"
+                          [isMultiple]="true" [placeholder]="'fileTransfer.search.placeholder.targetProtocol'"
                           [listArray]="allhosts" [name]="'targetProtocol'"
                           [object]="filter"></app-select-input>
       </div>

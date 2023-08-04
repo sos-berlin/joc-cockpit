@@ -103,7 +103,7 @@ export class SearchInputComponent {
     }).subscribe({
       next: (res: any) => {
         let data = this.type == 'NOTICEBOARD' ? res.noticeBoards : this.type == 'LOCK' ? res.locks : this.type === 'JOBRESOURCE' ? res.jobResources :
-          this.type === 'WORKFLOW' ? res.workflows : this.type === 'SCHEDULE' ? res.schedules : res.includeScripts;
+          this.type === 'WORKFLOW' ? res.workflows : this.type === 'SCHEDULE' ? res.schedules : this.type === 'WORKINGDAYSCALENDAR' ? res.calendars : res.includeScripts;
         for (let i = 0; i < data.length; i++) {
           const _path = key + (key === '/' ? '' : '/') + data[i].name;
           data[i].title = this.isPath ? _path : data[i].name;

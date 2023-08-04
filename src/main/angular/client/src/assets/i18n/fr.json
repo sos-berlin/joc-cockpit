@@ -1795,6 +1795,7 @@
     "message.noObjectFoundToRelease": "Aucun objet publiable trouvé",
     "message.updateFromJobTemplate": "Vous êtes sûr de vouloir mettre à jour le Job à partir du Modèle de Tâche ?",
     "message.localChangesWillBeOverwritten": "Toutes les modifications locales seront écrasées par cette action",
+    "message.changeDeductInWorkflow": "Change deduct in the Workflow variables, please adjust variables and release the Schedule again",
     "cronTab": {
       "label.convertCron": "Convertir crontab",
       "label.folder": "Dossier",

@@ -1,5 +1,6 @@
 <div [ngClass]="{'has-error' : ((type.dirty || type.touched) && type.invalid)}">
   <nz-select
+    [nzMode]="isMultiple ? 'multiple' : 'default'"
     #type="ngModel"
     [name]="name"
     [(ngModel)]="object[attributeName]"
@@ -18,32 +19,6 @@
                [nzValue]="optionValue ? option[optionValue] : option"
                [nzDisabled]="option === '-----------------------------' || option.disable">
     </nz-option>
-    <ng-container *ngIf="[customId] === 'find'">
-      <ng-container *ngFor="let item of listArray">
-        <ng-container *ngIf="item.title == 'agents'">
-          <nz-option-group *ngFor="let group of [item]" [nzLabel]="groupTitle">
-            <ng-template #groupTitle>
-                  <span class="_600">
-                    {{ 'agent.label.' + group.title | translate }}
-                  </span>
-            </ng-template>
-            <nz-option *ngFor="let agent of group.children" [nzLabel]="agent"
-                       [nzValue]="agent"></nz-option>
-          </nz-option-group>
-        </ng-container>
-        <ng-container *ngIf="item.title == 'agentGroups'">
-          <nz-option-group *ngFor="let group of [item]" [nzLabel]="groupTitle">
-            <ng-template #groupTitle>
-                        <span class="_600">
-                          {{ 'agent.label.' + group?.title | translate }}
-                        </span>
-            </ng-template>
-            <nz-option *ngFor="let agent of group?.children" [nzLabel]="agent.title" [nzValue]="agent.title">
-            </nz-option>
-          </nz-option-group>
-        </ng-container>
-      </ng-container>
-    </ng-container>
   </nz-select>
   <div *ngIf="type.invalid && (type.dirty || type.touched)" class="text-danger help-block">
     <div *ngIf="type.errors['required']">

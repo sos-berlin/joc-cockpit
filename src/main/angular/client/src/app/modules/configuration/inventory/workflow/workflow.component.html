@@ -1227,7 +1227,7 @@
                  title="{{'workflow.label.timeZone' | translate}}" translate>workflow.label.timeZone
             </div>
             <div class="col-md-8 col-lg-9">
-              <nz-select [(ngModel)]="extraConfiguration.timeZone" name="timeZone"  (ngModelChange)="updateOtherProperties('timeZone')"
+              <nz-select [(ngModel)]="extraConfiguration.timeZone" name="timeZone" (ngModelChange)="updateOtherProperties('timeZone')"
                          nzShowSearch>
                 <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
               </nz-select>
@@ -1361,8 +1361,8 @@
                       </div>
                     </div>
                     <div class="col-md-7 col-lg-7 m-b-sm p-r-0">
-                      <nz-select (ngModelChange)="updateOtherProperties('variable')" [(ngModel)]="param.value.type" [nzDisabled]="isTrash"
-                                 name="type{{i}}{{j}}">
+                      <nz-select [(ngModel)]="param.value.type" [nzDisabled]="isTrash"
+                                 name="type{{i}}{{j}}" (ngModelChange)="updateOtherProperties('variable')" >
                         <nz-option [nzLabel]="'String' | translate" [nzValue]="'String'"></nz-option>
                         <nz-option [nzLabel]="'Number' | translate" [nzValue]="'Number'"></nz-option>
                         <nz-option [nzLabel]="'Boolean' | translate" [nzValue]="'Boolean'"></nz-option>

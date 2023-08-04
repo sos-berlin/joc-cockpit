@@ -35,14 +35,12 @@ export class ChangeParameterModalComponent {
   blockPositions: any;
   blockPositionList: any;
   selectValue = [{value: 'True', name: true},
-    {value: 'False', name: false}]
-
+    {value: 'False', name: false}];
   positionObj = {
     blockPosition: '',
     startPosition: '',
     endPositions: []
-  }
-
+  };
   constructor(private activeModal: NzModalRef, public coreService: CoreService, private authService: AuthService) {
   }
 
@@ -398,7 +396,7 @@ export class ChangeParameterModalComponent {
     }
 
     if (this.positionObj.startPosition) {
-      if(this.newPositions && this.newPositions?.size > -1){
+      if (this.newPositions && this.newPositions?.size > -1) {
         if (this.newPositions.has(this.positionObj.startPosition)) {
           obj.startPosition = (this.newPositions.get(this.positionObj.startPosition));
         }
@@ -411,11 +409,11 @@ export class ChangeParameterModalComponent {
     if (this.positionObj.endPositions && this.positionObj.endPositions.length > 0) {
       obj.endPositions = [];
       this.positionObj.endPositions.forEach(pos => {
-        if(this.newPositions && this.newPositions?.size > -1){
+        if (this.newPositions && this.newPositions?.size > -1) {
           if (this.newPositions.has(pos)) {
             obj.endPositions.push((this.newPositions.get(pos)));
           }
-        } else if(this.positions && this.positions?.size) {
+        } else if (this.positions && this.positions?.size) {
           if (this.positions.has(pos)) {
             obj.endPositions.push((this.positions.get(pos)));
           }

@@ -71,7 +71,7 @@
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>resource.agentJobExecution.label.agentIds</label>
       <div class="col-sm-6">
         <app-select-input [attributeName]="'agentIds' "
-                          [placeholder]="'resource.agentJobExecution.placeholder.selectAgentIds'" [isMultiple]="'multiple'" [isSearchable]="true"
+                          [placeholder]="'resource.agentJobExecution.placeholder.selectAgentIds'" [isMultiple]="true" [isSearchable]="true"
                           [listArray]="agentIds" [name]="'type'"
                           [object]="filter"></app-select-input>
       </div>

@@ -328,6 +328,9 @@ export class WorkflowGraphicalComponent {
     this.updateWorkflow();
     setTimeout(() => {
       this.actual();
+      $('#graph').animate({
+        scrollTop: 0
+      }, 300);
     }, 10);
   }
 

@@ -378,6 +378,13 @@ export class ScheduleComponent {
   updateVariableList(): void {
     this.variableList = [];
     this.forkListVariables = [];
+    let variablesBeforeUpdate = {};
+    for (const prop in this.schedule.configuration.orderParameterisations) {
+      if (this.schedule.configuration.orderParameterisations[prop]) {
+        variablesBeforeUpdate = JSON.stringify(this.schedule.configuration.orderParameterisations[prop].variables);
+        break;
+      }
+    }
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
@@ -522,6 +529,13 @@ export class ScheduleComponent {
       }
     }
     this.updateSelectItems(true);
+    if (this.schedule.configuration.orderParameterisations?.length > 0) {
+      if (!isEqual((variablesBeforeUpdate), JSON.stringify(this.schedule.configuration.orderParameterisations[0].variables))) {
+        this.translate.get('inventory.message.changeDeductInWorkflow').subscribe(translatedValue => {
+          this.toasterService.warning(translatedValue);
+        });
+      }
+    }
   }
 
   checkVariableType(argument): void {

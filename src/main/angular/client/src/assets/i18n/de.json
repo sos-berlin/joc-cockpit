@@ -1794,6 +1794,7 @@
     "message.noObjectFoundToRelease": "Kein freigebbares Objekt gefunden",
     "message.updateFromJobTemplate": "Sind Sie sicher, dass Sie den Job aus der Job-Vorlage aktualisieren wollen?",
     "message.localChangesWillBeOverwritten": "Alle lokalen Änderungen werden durch diese Operation überschrieben",
+    "message.changeDeductInWorkflow": "Change deduct in the Workflow variables, please adjust variables and release the Schedule again",
     "cronTab": {
       "label.convertCron": "crontab konvertieren",
       "label.folder": "Ordner",
