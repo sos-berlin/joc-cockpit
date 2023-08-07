@@ -3388,6 +3388,7 @@
     "button.stop": "Stop",
     "button.unstop": "Unstop",
     "button.transitionOrders": "Transfer Orders to latest Version",
+    "button.format": "Reformat",
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",

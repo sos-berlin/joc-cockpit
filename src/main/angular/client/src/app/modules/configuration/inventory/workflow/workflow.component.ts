@@ -193,7 +193,7 @@ export class NoticeBoardEditorComponent {
           "Tab": (cm) => {
             let spaces = '';
             let tabSize = parseInt(self.modalData.tabSize || 4);
-            for(let i =0; i < tabSize; i++){
+            for (let i = 0; i < tabSize; i++) {
               spaces += ' ';
             }
             cm.replaceSelection(spaces);
@@ -219,6 +219,21 @@ export class NoticeBoardEditorComponent {
   onBlur(value: string): void {
     $('.ant-select-tree-dropdown').hide();
     this.checkExpectNoticeExp(value);
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    const tabKey = "Tab";
+    if (event.key === tabKey) {
+      event.preventDefault();
+
+      const numSpaces = this.modalData.tabSize;
+      const cursor = this.cm.codeMirror.getCursor();
+      const spaces = ' '.repeat(numSpaces);
+
+      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
+
+      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
+    }
   }
 
   checkExpectNoticeExp(event): void {
@@ -1420,7 +1435,7 @@ export class JobComponent {
           "Tab": (cm) => {
             let spaces = '';
             let tabSize = parseInt(self.preferences.tabSize || 4);
-            for(let i =0; i < tabSize; i++){
+            for (let i = 0; i < tabSize; i++) {
               spaces += ' ';
             }
             cm.replaceSelection(spaces);
@@ -1453,6 +1468,7 @@ export class JobComponent {
       this.selectedNode.job.executable.internalType = 'Java';
     } else if (this.selectedNode.job.executable.TYPE === 'JavaScript') {
       this.selectedNode.job.executable.internalType = 'JavaScript_Graal';
+      this.selectedNode.job.executable.script = this.coreService.getDefaultJSFunc();
     } else if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
       this.selectedNode.job.executable.internalType = 'JITL';
     }
@@ -2360,7 +2376,7 @@ export class JobComponent {
     }
 
     this.returnCodes.on = this.selectedNode.job.executable.returnCodeMeaning.failure ? 'failure' : 'success';
-    if(this.selectedNode.job.executable.returnCodeMeaning.failure === 'none'){
+    if (this.selectedNode.job.executable.returnCodeMeaning.failure === 'none') {
       this.returnCodes.on = 'ignore';
     }
 
@@ -2569,7 +2585,7 @@ export class ScriptEditorComponent {
           "Shift-Ctrl-Space": "autocomplete",
           "Tab": (cm) => {
             let spaces = '';
-            for(let i =0; i < this.cmOption.tabSize; i++){
+            for (let i = 0; i < this.cmOption.tabSize; i++) {
               spaces += ' ';
             }
             cm.replaceSelection(spaces);
@@ -2592,6 +2608,58 @@ export class ScriptEditorComponent {
         })
       }
     }, 0);
+  }
+
+  ngOnDestroy(): void {
+    // Remove the keydown event listener when the component is destroyed
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  handleKeyDown = (event: KeyboardEvent): void => {
+    console.log(event)
+    if (event.shiftKey && event.altKey && event.keyCode === 70) {
+      // Call the autoFormatCode function to format the selected range
+      this.autoFormatCode(event);
+    }
+  }
+
+  autoFormatCode(event: Event): void {
+    event.preventDefault();
+    const doc = this.cm?.codeMirror?.getDoc();
+    if (!doc) return;
+    const cursor = doc.getCursor();
+    const originalText = doc.getValue();
+    const start = doc.somethingSelected() ? doc.getCursor('start') : {line: 0, ch: 0};
+    const end = doc.somethingSelected()
+      ? doc.getCursor('end')
+      : {line: doc.lineCount() - 1, ch: doc.getLine(doc.lineCount() - 1).length};
+
+    const tabSize = this.cm.codeMirror.getOption('tabSize');
+    const indentString = ' '.repeat(tabSize);
+
+    let indentLevel = 0;
+    let formattedCode = '';
+
+    for (let line = start.line; line <= end.line; line++) {
+      const currentLine = doc.getLine(line).trim();
+      if (currentLine.includes('}') || currentLine.includes('} else')) {
+        indentLevel--;
+      }
+      formattedCode += indentString.repeat(indentLevel) + currentLine + '\n';
+      if (currentLine.includes('{') || currentLine.endsWith('{')) {
+        indentLevel++;
+      }
+    }
+
+    doc.replaceRange(formattedCode, start, end);
+
+    const formattedText = doc.getValue();
+    if (originalText !== formattedText) {
+      this.scriptObj.data = formattedText;
+    }
+
+    this.cm.codeMirror.focus();
+    doc.setCursor(cursor);
   }
 
   @HostListener('document:mousemove', ['$event'])

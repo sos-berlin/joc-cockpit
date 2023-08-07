@@ -852,7 +852,7 @@ export class CoreService {
     })
   }
 
-  showLogWindow(order: any, task: any, job: any, id: string, transfer: any,viewRef:any): void {
+  showLogWindow(order: any, task: any, job: any, id: string, transfer: any, viewRef: any): void {
     if (!order && !task) {
       return;
     }
@@ -898,7 +898,7 @@ export class CoreService {
       };
       this.openPopout(modalData, 'top=' + window.localStorage['log_window_y'] + ',' +
         'left=' + window.localStorage['log_window_x'] + ',innerwidth=' + window.localStorage['log_window_wt'] + ',' +
-        'innerheight=' + window.localStorage['log_window_ht'] + this.windowProperties,viewRef);
+        'innerheight=' + window.localStorage['log_window_ht'] + this.windowProperties, viewRef);
     } else if (preferenceObj.isNewWindow === 'newTab') {
       window.open('#/log' + url, '_blank');
     } else {
@@ -1502,7 +1502,7 @@ export class CoreService {
             }
           }
         }
-      } else if(env.value === "" || env.value === ''){
+      } else if (env.value === "" || env.value === '') {
         env.value = JSON.stringify(env.value);
       }
     });
@@ -2334,7 +2334,7 @@ export class CoreService {
                 const job = workflowObj.jobs[json.instructions[x].jobName];
                 if (!job) {
                   for (let job in workflowObj.jobs) {
-                    if(workflowObj.jobs[job].name === json.instructions[x].jobName) {
+                    if (workflowObj.jobs[job].name === json.instructions[x].jobName) {
                       if (workflowObj.jobs[job].value) {
                         if (!json.instructions[x].documentationName) {
                           json.instructions[x].documentationName = workflowObj.jobs[job].value.documentationName;
@@ -2392,32 +2392,27 @@ export class CoreService {
                 json.instructions[x].catch = {instructions: []};
               }
             }
-          }
-          else if (json.instructions[x].TYPE === 'StickySubagent' || json.instructions[x].TYPE === 'ConsumeNotices') {
+          } else if (json.instructions[x].TYPE === 'StickySubagent' || json.instructions[x].TYPE === 'ConsumeNotices') {
             if (json.instructions[x].subworkflow) {
               json.instructions[x].instructions = json.instructions[x].subworkflow.instructions;
               delete json.instructions[x].subworkflow;
             }
-          }
-          else if (json.instructions[x].TYPE === 'Lock') {
+          } else if (json.instructions[x].TYPE === 'Lock') {
             if (json.instructions[x].lockedWorkflow) {
               json.instructions[x].instructions = json.instructions[x].lockedWorkflow.instructions;
               delete json.instructions[x].lockedWorkflow;
             }
-          }
-          else if (json.instructions[x].TYPE === 'Options') {
+          } else if (json.instructions[x].TYPE === 'Options') {
             if (json.instructions[x].block) {
               json.instructions[x].instructions = json.instructions[x].block.instructions;
               delete json.instructions[x].block;
             }
-          }
-          else if (json.instructions[x].TYPE === 'Cycle') {
+          } else if (json.instructions[x].TYPE === 'Cycle') {
             if (json.instructions[x].cycleWorkflow) {
               json.instructions[x].instructions = json.instructions[x].cycleWorkflow.instructions;
               delete json.instructions[x].cycleWorkflow;
             }
-          }
-          else if (json.instructions[x].TYPE === 'ForkList') {
+          } else if (json.instructions[x].TYPE === 'ForkList') {
             if (json.instructions[x].workflow) {
               json.instructions[x].instructions = json.instructions[x].workflow.instructions;
               json.instructions[x].result = json.instructions[x].workflow.result;
@@ -2655,5 +2650,44 @@ export class CoreService {
       }
     }
     return positionString;
+  }
+
+  renderTimeSheetHeader(filters: any, weekStart, cb): void {
+    const headerDates = [];
+    const firstDate = new Date(filters.filter.startYear, filters.filter.startMonth, 1);
+    const lastDate = new Date(filters.filter.startYear, filters.filter.startMonth + 1, 0);
+    let currentDate = new Date(firstDate.getTime());
+    if (filters.filter.view === 'Week') {
+      currentDate = new Date(filters.filter.endDate);
+    }
+    while (currentDate.getDay() !== weekStart) {
+      currentDate.setDate(currentDate.getDate() - 1);
+    }
+    if (filters.filter.view === 'Month') {
+      while (currentDate <= lastDate) {
+        do {
+          const date = currentDate.getDate();
+          if (currentDate >= firstDate && currentDate <= lastDate) {
+            headerDates.push(new Date(currentDate));
+          }
+          currentDate.setDate(date + 1);
+        }
+        while (currentDate.getDay() !== weekStart);
+      }
+    } else {
+      do {
+        const date = currentDate.getDate();
+        headerDates.push(new Date(currentDate));
+        currentDate.setDate(date + 1);
+      }
+      while (currentDate.getDay() !== weekStart);
+    }
+    filters.filter.startDate = headerDates[0];
+    filters.filter.endDate = headerDates[headerDates.length - 1];
+    cb();
+  }
+
+  getDefaultJSFunc(): string {
+    return "class JS7Job extends js7.Job {\n\tprocessOrder(js7Step) {\n\t\tjs7Step.getLogger().info('hello world');\n\t\t// do some stuff\n\t}\n}";
   }
 }

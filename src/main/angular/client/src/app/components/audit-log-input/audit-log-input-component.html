@@ -23,7 +23,7 @@
     <sup *ngIf="required" class="text-danger text-sm">*</sup>
   </label>
   <div class="col-sm-{{sizeY}}">
-    <textarea rows="3" class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
+    <textarea class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
               [required]="required"
               [(ngModel)]="comments.comment"
               placeholder="{{'common.placeholder.enterComment' | translate}}"
@@ -53,7 +53,6 @@
 <div *ngIf="router.url.match('/users/') || router.url.match('/settings')" class="form-group row">
   <label class="col-sm-{{sizeX}}" translate>user.label.reuseReason</label>
   <div class="col-sm-{{sizeY}}">
-    <label nz-checkbox [(ngModel)]="comments.isChecked"
-           name="reuseReason"></label>
+    <label nz-checkbox [(ngModel)]="comments.isChecked" name="reuseReason"></label>
   </div>
 </div>

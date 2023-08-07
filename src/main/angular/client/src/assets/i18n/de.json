@@ -3388,6 +3388,7 @@
     "button.stop": "Stoppen",
     "button.unstop": "Entstoppen",
     "button.transitionOrders": "Aufträge in neue Version übertragen",
+    "button.format": "Reformat",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",

@@ -229,6 +229,10 @@ export class AddRestrictionComponent {
     }
   }
 
+  onDateChange(): void {
+    this.onFrequencyChange();
+  }
+
   onFrequencyChange(): void {
     if (this.frequency) {
       if (!this.frequency.isUltimos) {
@@ -265,6 +269,12 @@ export class AddRestrictionComponent {
         this.editor.isEnable = this.frequency.days && this.frequency.days.length > 0;
       } else if (this.frequency.tab == 'specificDays') {
         this.editor.isEnable = this.tempItems.length > 0;
+        $('#calendar').calendar({
+          language: this.coreService.getLocale(),
+          clickDay: (e) => {
+            this.selectDate(e);
+          }
+        }).setDataSource(this.tempItems);
       }
     }
   }

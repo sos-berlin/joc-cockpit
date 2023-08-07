@@ -13,7 +13,7 @@
               class="fa fa-trash"></i>&nbsp; {{'resource.board.button.deleteAll' | translate}}</button>
             <div [ngClass]="{'hide': (object.setOfCheckedId.size>0 || object.mapOfCheckedId.size>0)}" class="inline">
               <div class="btn-group dropdown">
-                <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
+                <button nz-dropdown [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12"
                         nzTrigger="click">
                   <span translate>common.label.sortBy</span>
                   <span class="text-primary">
@@ -54,14 +54,14 @@
       <app-links></app-links>
     </div>
     <div class="col-md-4 text-right">
-      <button (click)="collapseDetails()"
+      <button (click)="collapseDetails()"  class="hide btn btn-sm btn-grey m-l-12 pull-right"
               [ngClass]="{'show-block':boards.length>0 && pageView!='grid'}"
-              class="hide btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
+             nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
         <i class="fa fa-compress text"></i>
       </button>
-      <button (click)="expandDetails()"
+      <button (click)="expandDetails()" class="hide btn btn-sm btn-grey m-l-12 pull-right"
               [ngClass]="{'show-block':boards.length>0 && pageView!='grid'}"
-              class="hide btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
+              nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
         <i class="fa fa-expand text"></i>
       </button>
       <button (click)="search()" class="btn btn-sm inline pull-right m-l btn-grey">
@@ -70,8 +70,8 @@
       </button>
       <div class="search-box-field pull-right">
         <label>
-          <input (keyup)="searchInResult()" [(ngModel)]="boardsFilters.searchText" placeholder="{{'common.placeholder.search' | translate}}"
-                 type="search">
+          <input type="search" [(ngModel)]="boardsFilters.searchText" (keyup)="searchInResult()" placeholder="{{'common.placeholder.search' | translate}}"
+                 >
         </label>
         <i (click)="boardsFilters.searchText = '';searchInResult()" [hidden]="!boardsFilters.searchText"
            class="fa fa-times search-close"></i>
@@ -233,15 +233,15 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <ng-template [ngForOf]="ajaxTable.data" let-board
-                               ngFor>
+                  <ng-template ngFor [ngForOf]="ajaxTable.data" let-board>
                     <tr [ngClass]="{'light-bg':board.show}">
                       <td *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
+                          [nzShowCheckbox]="true"
                           [nzChecked]="object.setOfCheckedId.has(board.path)" [nzDisabled]="board.numOfNotices === board.numOfExpectingOrders"
-                          [nzShowCheckbox]="true"></td>
+                          ></td>
                       <td>
                         <div class="btn-group dropdown">
-                          <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                          <button nz-dropdown [nzDropdownMenu]="option" class="btn-drop more-option-h" nzTrigger="click"
                                   type="button">
                             <i class="fa fa-ellipsis-h"></i>
                           </button>
@@ -334,10 +334,10 @@
                       <thead>
                       <tr>
                         <th *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
+                            [nzShowCheckbox]="true"
                             [(nzChecked)]="board.checked"
                             [nzDisabled]="board.numOfNotices === board.numOfExpectingOrders"
                             [nzIndeterminate]="board.indeterminate"
-                            [nzShowCheckbox]="true"
                             (nzCheckedChange)="checkAll($event, board)"
                             class="chk"
                         ></th>

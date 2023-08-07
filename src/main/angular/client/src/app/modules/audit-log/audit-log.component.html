@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div *ngIf="auditLog.type === 'AUDITLOG'" class="inline valign">
-            <label [(ngModel)]="adtLog.current" (ngModelChange)="changeController()" name="current" nz-checkbox>
+            <label nz-checkbox [(ngModel)]="adtLog.current" (ngModelChange)="changeController()" name="current">
               {{'common.label.currentController' | translate}}
             </label>
           </div>

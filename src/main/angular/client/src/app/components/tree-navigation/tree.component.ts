@@ -1,6 +1,6 @@
 import {
-  Component, OnInit, Input, Output, EventEmitter,
-  HostListener, OnChanges, SimpleChanges, AfterViewInit
+  Component, Input, Output, EventEmitter,
+  HostListener, SimpleChanges
 } from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {Subject} from "rxjs";

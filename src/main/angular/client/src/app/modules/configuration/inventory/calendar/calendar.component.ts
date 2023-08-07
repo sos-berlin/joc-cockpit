@@ -291,6 +291,12 @@ export class FrequencyModalComponent {
         this.onChangeDays();
       } else if (this.frequency.tab == 'specificDays') {
         this.editor.isEnable = this.tempItems.length > 0;
+        $('#calendar').calendar({
+          language: this.coreService.getLocale(),
+          clickDay: (e) => {
+            this.selectDate(e);
+          }
+        }).setDataSource(this.tempItems);
       }
 
     }
@@ -1061,7 +1067,8 @@ export class FrequencyModalComponent {
             });
           }
         }
-        if ($('#full-calendar') && $('#full-calendar').data('calendar')) {
+        const domElem = $('#full-calendar');
+        if (domElem && domElem.data('calendar')) {
 
         } else {
           $('#full-calendar').calendar({
