@@ -681,7 +681,7 @@ export class BoardComponent {
     board.indeterminate = false;
   }
 
-  checkAll(value: boolean, board): void {
+  checkAll(value: boolean, board?): void {
     if (board) {
       this.checkChild(value, board);
     }

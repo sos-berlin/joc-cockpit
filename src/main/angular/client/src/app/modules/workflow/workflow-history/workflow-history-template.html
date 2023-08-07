@@ -72,7 +72,7 @@
     <td class="p-a-b-b-0" colspan="8">
   <tr [ngClass]="{'light-bg':child.order.show}" class="tr-border cursor">
     <td>
-            <span (click)="coreService.showLogWindow(child.order,null,null,child.order.controllerId,null)"
+            <span (click)="coreService.showLogWindow(child.order,null,null,child.order.controllerId,null,viewContainerRef)"
                   [ngStyle]="{'padding-left': (6 * (history.level > 10 ? 11 : history.level)) + 'px'}"
                   class="show-in-single-line w-full">
               <i (click)="showPanelFuc(child.order, history.level);$event.stopPropagation()"

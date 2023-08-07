@@ -14,14 +14,14 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {NzMessageService} from "ng-zorro-antd/message";
+import {JobWizardComponent} from '../job-wizard/job-wizard.component';
+import {FacetEditorComponent, ScriptEditorComponent} from '../workflow/workflow.component';
+import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
+import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {WorkflowService} from "../../../../services/workflow.service";
 import {InventoryObject} from '../../../../models/enums';
-import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
-import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
-import {JobWizardComponent} from '../job-wizard/job-wizard.component';
-import {FacetEditorComponent, ScriptEditorComponent} from '../workflow/workflow.component';
 
 declare const $;
 

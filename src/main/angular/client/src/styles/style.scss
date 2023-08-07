@@ -6944,6 +6944,7 @@ tr.tr-border td {
   .order-view {
     padding-left: 20px;
   }
+
 }
 
 .workflow.sidebar-hover-effect, deployment.sidebar-hover-effect {
@@ -6954,7 +6955,11 @@ tr.tr-border td {
   width: 290px !important;
   box-shadow: 0 0 25px 0 rgba(0, 0, 0, .05);
   transition: all .25s;
-  -webkit-transition: all .25s
+  -webkit-transition: all .25s;
+
+  a.tree-search {
+    top: 18px;
+  }
 }
 
 #xmlLeftSidePanel.sidebar-hover-effect:hover {

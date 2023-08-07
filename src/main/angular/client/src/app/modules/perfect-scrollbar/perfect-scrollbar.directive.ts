@@ -8,7 +8,7 @@ import {PLATFORM_ID} from '@angular/core';
 import {isPlatformBrowser} from '@angular/common';
 import {
   NgZone, Inject, Optional, ElementRef, Directive,
-  OnInit, DoCheck, OnChanges, OnDestroy, Input, Output, EventEmitter,
+  Input, Output, EventEmitter,
   SimpleChanges, KeyValueDiffer, KeyValueDiffers
 } from '@angular/core';
 

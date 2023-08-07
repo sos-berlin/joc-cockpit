@@ -5,7 +5,7 @@ import {PLATFORM_ID} from '@angular/core';
 import {isPlatformBrowser} from '@angular/common';
 import {
   NgZone, Inject, Component,
-  OnInit, OnDestroy, DoCheck, Input, Output, EventEmitter, HostBinding,
+  Input, Output, EventEmitter, HostBinding,
   ViewChild, ViewEncapsulation, ChangeDetectorRef
 } from '@angular/core';
 

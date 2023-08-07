@@ -93,7 +93,9 @@ export class AgentMonitorComponent {
 
   init(): void {
     if (this.filters.filter.view !== 'Custom') {
-      this.renderTimeSheetHeader();
+      this.coreService.renderTimeSheetHeader(this.filters, this.weekStart, () => {
+        this.getData();
+      });
     } else {
       this.getData();
     }
@@ -134,7 +136,9 @@ export class AgentMonitorComponent {
   setView(view): void {
     this.filters.filter.view = view;
     if (view !== 'Custom') {
-      this.renderTimeSheetHeader();
+      this.coreService.renderTimeSheetHeader(this.filters, this.weekStart, () => {
+        this.getData();
+      });
     } else {
       this.filters.filter.dateRange = [this.filters.filter.startDate, this.filters.filter.endDate];
     }
@@ -171,7 +175,9 @@ export class AgentMonitorComponent {
     } else {
       this.filters.filter.endDate.setDate(this.filters.filter.endDate.getDate() - 8);
     }
-    this.renderTimeSheetHeader();
+    this.coreService.renderTimeSheetHeader(this.filters, this.weekStart, () => {
+      this.getData();
+    });
   }
 
   next(): void {
@@ -180,7 +186,9 @@ export class AgentMonitorComponent {
     } else {
       this.filters.filter.endDate.setDate(this.filters.filter.endDate.getDate() + 1);
     }
-    this.renderTimeSheetHeader();
+    this.coreService.renderTimeSheetHeader(this.filters, this.weekStart, () => {
+      this.getData();
+    });
   }
 
   onChange = (date: Date) => {
@@ -190,43 +198,9 @@ export class AgentMonitorComponent {
     } else {
       this.filters.filter.endDate = new Date(date);
     }
-    this.renderTimeSheetHeader();
-  }
-
-  renderTimeSheetHeader(): void {
-    const headerDates = [];
-    const firstDate = new Date(this.filters.filter.startYear, this.filters.filter.startMonth, 1);
-    const lastDate = new Date(this.filters.filter.startYear, this.filters.filter.startMonth + 1, 0);
-    let currentDate = new Date(firstDate.getTime());
-    const weekStart = this.weekStart;
-    if (this.filters.filter.view === 'Week') {
-      currentDate = new Date(this.filters.filter.endDate);
-    }
-    while (currentDate.getDay() !== weekStart) {
-      currentDate.setDate(currentDate.getDate() - 1);
-    }
-    if (this.filters.filter.view === 'Month') {
-      while (currentDate <= lastDate) {
-        do {
-          const date = currentDate.getDate();
-          if (currentDate >= firstDate && currentDate <= lastDate) {
-            headerDates.push(new Date(currentDate));
-          }
-          currentDate.setDate(date + 1);
-        }
-        while (currentDate.getDay() !== weekStart);
-      }
-    } else {
-      do {
-        const date = currentDate.getDate();
-        headerDates.push(new Date(currentDate));
-        currentDate.setDate(date + 1);
-      }
-      while (currentDate.getDay() !== weekStart);
-    }
-    this.filters.filter.startDate = headerDates[0];
-    this.filters.filter.endDate = headerDates[headerDates.length - 1];
-    this.getData();
+    this.coreService.renderTimeSheetHeader(this.filters, this.weekStart, () => {
+      this.getData();
+    });
   }
 
   private getOverviewData(groupByData): void {

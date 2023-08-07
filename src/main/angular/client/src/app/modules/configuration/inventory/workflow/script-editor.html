@@ -65,6 +65,14 @@
                 <span class="nav-text" translate>workflow.button.redo</span>
               </a>
             </li>
+            <li class="nav-item dropdown-separator">
+              <span class="separator"></span>
+            </li>
+            <li class="nav-item" nz-tooltip="shft+Alt-F">
+              <a class="nav-link">
+                <span class="nav-text" (click)="autoFormatCode($event)" translate>workflow.button.format</span>
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -74,7 +82,7 @@
         </div>
         <div id="resizable" class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}">
           <ngx-codemirror [appAutofocus]="true" required #codeMirror
-                          #cm="ngModel" name="cm" [(ngModel)]="scriptObj.data" [options]="cmOption"
+                          #cm="ngModel" name="cm" [(ngModel)]="scriptObj.data" [options]="cmOption" (keydown)="handleKeyDown($event)"
           ></ngx-codemirror>
           <div class="rg-right" style="background: transparent; margin-right: -16px"><span style="top:48%"></span></div>
           <div class="rg-bottom" style="bottom: -16px;background: transparent"><span></span></div>

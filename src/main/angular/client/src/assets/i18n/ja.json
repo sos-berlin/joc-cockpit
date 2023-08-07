@@ -3384,6 +3384,7 @@
     "button.stop": "停止",
     "button.unstop": "停止解除",
     "button.transitionOrders": "オーダートランジション",
+    "button.format": "Reformat",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",

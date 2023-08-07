@@ -773,7 +773,7 @@ export class OrderOverviewComponent {
     }
   }
 
-  changeDateFilter(isValid, type: string, date): void {
+  changeDateFilter(isValid, type: string, date?): void {
     if (date) {
       if (type == 'FROM') {
         this.orderFilters.filter.stateDateFrom = this.coreService.getDateByFormat(date, this.preferences.zone, this.preferences.dateFormat);

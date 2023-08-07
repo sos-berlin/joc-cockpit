@@ -9,6 +9,7 @@ import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {CalendarService} from '../../../../services/calendar.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
+import {ValueEditorComponent} from "../../../../components/value-editor/value.component";
 
 @Component({
   selector: 'app-schedule',
@@ -748,7 +749,7 @@ export class ScheduleComponent {
   }
 
 
-  checkVal(isChecked) {
+  checkVal() {
     setTimeout(() => {
       this.saveJSON();
     }, 0);
@@ -1084,6 +1085,26 @@ export class ScheduleComponent {
         });
       }
       this.history.push(JSON.stringify(this.schedule.configuration));
+    });
+  }
+
+  openEditor(data: any, type: string): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ValueEditorComponent,
+      nzClassName: 'lg',
+      nzData: {
+        data: data[type]
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        data[type] = result;
+        this.ref.detectChanges();
+      }
     });
   }
 

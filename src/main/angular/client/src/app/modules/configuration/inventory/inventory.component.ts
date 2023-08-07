@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component, inject,
-  Input,
   ViewChild
 } from '@angular/core';
 import {forkJoin, of, Subject, Subscription} from 'rxjs';

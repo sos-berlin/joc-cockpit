@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';

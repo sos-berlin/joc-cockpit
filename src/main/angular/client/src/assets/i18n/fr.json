@@ -3385,6 +3385,7 @@
     "button.stop": "Arrêter",
     "button.unstop": "Débloquer",
     "button.transitionOrders": "Transférer Ordres vers la dernière version",
+    "button.format": "Reformat",
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",

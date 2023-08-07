@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {interval, Subscription} from 'rxjs';
 import {ClipboardService} from 'ngx-clipboard';
 import {NzMessageService} from 'ng-zorro-antd/message';

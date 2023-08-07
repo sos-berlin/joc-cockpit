@@ -99,9 +99,9 @@
                  class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
                  title="{{'inventory.label.planOrderAutomatically' | translate}}" translate>inventory.label.planOrderAutomatically</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <label [(ngModel)]="schedule.configuration.planOrderAutomatically" (ngModelChange)="saveJSON()"
+            <label nz-checkbox [(ngModel)]="schedule.configuration.planOrderAutomatically" (ngModelChange)="saveJSON()"
                    [nzDisabled]="isTrash || !permission.joc.inventory.manage" name="planOrderAutomatically"
-                   nz-checkbox></label>
+                   ></label>
           </div>
         </div>
         <div class="form-group row">
@@ -110,9 +110,9 @@
                  class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
                  title="{{'inventory.label.submitOrderToControllerWhenPlanned' | translate}}" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <label [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned"
+            <label nz-checkbox [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned"
                    [nzDisabled]="isTrash || !permission.joc.inventory.manage || !schedule.configuration.planOrderAutomatically" name="submitOrderToControllerWhenPlanned"
-                   nz-checkbox (ngModelChange)="saveJSON()"></label>
+                   (ngModelChange)="saveJSON()"></label>
           </div>
         </div>
         <div *ngIf="(schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) || schedule.configuration.orderParameterisations.length"
@@ -237,7 +237,7 @@
                                  class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
                               <nz-select #value="ngModel" [(ngModel)]="argument.value" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
                                          [required]="true" class="m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
-                                         nzAllowClear (ngModelChange)="checkVal($event)">
+                                         nzAllowClear (ngModelChange)="checkVal()">
                                 <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                                 <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                               </nz-select>
@@ -257,11 +257,15 @@
                           <ng-container *ngSwitchDefault>
                             <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                                  class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                              <input #value="ngModel" (blur)="saveJSON()" [(ngModel)]="argument.value" [required]="true"
-                                     autocomplete="off"
+                              <input #value="ngModel" [(ngModel)]="argument.value" [required]="true"
+                                     autocomplete="off" (blur)="saveJSON()"
                                      class="form-control m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
                                      placeholder="{{'common.placeholder.value' | translate}}"
                                      type="text">
+                              <i (click)="openEditor(argument, 'value')" *ngIf="argument.type === 'String'"
+                                 [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                                 nzTheme="outline" nzType="form"
+                                 style="right: 13px;top:1px;"></i>
                               <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                                    class="text-danger help-block m-l-n-23">
                                 <div *ngIf="value.errors['required']">
@@ -328,7 +332,7 @@
                          class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
                       <nz-select #value="ngModel" [(ngModel)]="variable.value" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
                                  [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="variable.isRequired"
-                                 name="value{{i}}{{j}}" nzAllowClear  (ngModelChange)="checkVal($event)">
+                                 name="value{{i}}{{j}}" nzAllowClear  (ngModelChange)="checkVal()">
                         <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                         <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                       </nz-select>
@@ -356,6 +360,10 @@
                              type="text">
                       <i *ngIf="variable.message" [nz-tooltip]="variable.message"
                          class="pos-abt cursor fa fa-info-circle" style="right: 18px;top:9px;"></i>
+                      <i (click)="openEditor(variable, 'value')" *ngIf="variable.type === 'String'"
+                         [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                         nzTheme="outline" nzType="form"
+                         style="right: 13px;top:1px;"></i>
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                            class="text-danger help-block">
                         <div *ngIf="value.errors['required']" translate>common.message.requiredError</div>
