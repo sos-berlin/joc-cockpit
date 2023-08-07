@@ -4813,6 +4813,7 @@ export class WorkflowComponent {
       });
     }
   }
+
   private getPositions(path): void {
     this.coreService.post('inventory/read/order/positions', {
       workflowPath: path
@@ -5484,7 +5485,7 @@ export class WorkflowComponent {
       const attr = cell.value.attributes;
       for (const j in attr) {
         if (attr[j].name === 'blockPosition' || attr[j].name === 'startPosition' || attr[j].name === 'endPositions') {
-          if(attr[j].value && typeof attr[j].value == 'string') {
+          if (attr[j].value && typeof attr[j].value == 'string') {
             obj[attr[j].name] = JSON.parse(attr[j].value);
           }
           if (attr[j].name === 'endPositions' && isArray(obj[attr[j].name])) {
@@ -6870,7 +6871,7 @@ export class WorkflowComponent {
           if (cells == null) {
             cells = this.getDeletableCells(this.getSelectionCells());
           }
-          if(cells?.length === 0 && typeof flag == 'boolean'){
+          if (cells?.length === 0 && typeof flag == 'boolean') {
             return cells;
           }
           if (typeof flag != 'boolean') {
@@ -8783,7 +8784,7 @@ export class WorkflowComponent {
               "Tab": (cm) => {
                 let spaces = '';
                 let tabSize = parseInt(self.preferences.tabSize || 4);
-                for(let i =0; i < tabSize; i++){
+                for (let i = 0; i < tabSize; i++) {
                   spaces += ' ';
                 }
                 cm.replaceSelection(spaces);
@@ -10980,7 +10981,7 @@ export class WorkflowComponent {
             delete json.instructions[x].endPositions;
             delete json.instructions[x].blockPosition;
             delete json.instructions[x].forceJobAdmission;
-            if(endPositions && endPositions.length > 0) {
+            if (endPositions && endPositions.length > 0) {
               let arr = [];
               endPositions.forEach((item) => {
                 if (typeof item === 'string') {
