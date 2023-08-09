@@ -2,8 +2,7 @@
   <ng-template #contentTemplate>
     <div class="p-l-sm">
       <span translate> order.label.state </span>:
-      <span [ngClass]="coreService.getColor(order.state.severity, 'text')"
-            class="_600"> {{order.state._text |  translate}}</span>
+      <span [ngClass]="coreService.getColor(order.state.severity, 'text')" class="_600"> {{order.state._text |  translate}}</span>
       <span *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'text')"
             class="_600">/{{order.marked._text | translate}}</span>
     </div>
@@ -18,7 +17,7 @@
     <div *ngIf="order.obstacles && order.obstacles.length > 0" class="p-l-sm">
       <div *ngFor="let obstacle of order.obstacles">
         <span translate> {{obstacle.type | translate}} </span>
-        <span *ngIf="obstacle.until" class="_600">:&nbsp;{{obstacle.until | stringToDate}}</span>
+        <span *ngIf="obstacle['until']" class="_600">:&nbsp;{{obstacle['until'] | stringToDate}}</span>
       </div>
     </div>
     <div *ngIf="order.lastOutcome" class="p-l-sm">
@@ -33,7 +32,7 @@
     <div *ngIf="order.expectedNotices" class="p-l-sm">
       <div class="_600 m-b-xxs">{{'order.label.expectedNotices' | translate}} :</div>
       <div *ngFor="let notice of order.expectedNotices" class="p-l-sm">
-        {{notice.boardName}}
+        {{notice['boardName']}}
       </div>
     </div>
 
@@ -88,9 +87,9 @@
 <div *ngFor="let instruction of configuration.instructions">
   <ul class="m-b-0">
     <li>
-      <a *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock' || instruction.TYPE === 'Options' || instruction.TYPE === 'StickySubagent' || instruction.TYPE === 'ConsumeNotices'"
+      <a *ngIf="instruction['TYPE'] === 'Fork' || instruction['TYPE'] === 'ForkList' || instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Try' || instruction['TYPE'] === 'Retry' || instruction['TYPE'] === 'Cycle' || instruction['TYPE'] === 'Lock' || instruction['TYPE'] === 'Options' || instruction['TYPE'] === 'StickySubagent' || instruction['TYPE'] === 'ConsumeNotices'"
          class="hover">
-        <div *ngIf="instruction.TYPE !== 'If' && instruction.TYPE !== 'Cycle'" class="btn-group dropdown"
+        <div *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle'" class="btn-group dropdown"
              style="margin-left: -10px">
           <button [nzDropdownMenu]="menu" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
                   type="button">
@@ -115,7 +114,7 @@
             </ul>
           </nz-dropdown-menu>
         </div>
-        <div *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'" class="btn-group dropdown"
+        <div *ngIf="instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Cycle'" class="btn-group dropdown"
              style="margin-left: -10px">
           <button [nzDropdownMenu]="menu" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
                   type="button">
@@ -147,14 +146,14 @@
         </div>
         <i (click)="collapse(instruction)" [ngClass]="{'fa-minus' : (instruction.show)}" class="fa fa-plus pr-2"></i>
         <span class="_600">
-          <span *ngIf="instruction.TYPE !== 'If' && instruction.TYPE !== 'Cycle'">{{instruction.TYPE}}</span>
-          <a (click)="showConfiguration(instruction);" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'"
-             class="cursor">{{instruction.TYPE}}</a><span
-          *ngIf="instruction.TYPE === 'Lock'">:</span>
+          <span *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle'">{{instruction['TYPE']}}</span>
+          <a (click)="showConfiguration(instruction);" *ngIf="instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Cycle'"
+             class="cursor">{{instruction['TYPE']}}</a><span
+          *ngIf="instruction['TYPE'] === 'Lock'">:</span>
           <span *ngIf="instruction.label" class="p-l-xs  _400">(</span>
           <i *ngIf="instruction.label" class="text-muted _400">{{instruction.label}}</i>
           <span *ngIf="instruction.label" class="p-r-xs _400">)</span>
-          <span *ngIf="instruction.TYPE === 'Lock'" class="text-muted">
+          <span *ngIf="instruction['TYPE'] === 'Lock'" class="text-muted">
             <span *ngFor="let item of instruction.demands" class="text-muted">
               <i (click)="coreService.navToInventoryTab(item.lockName, 'LOCK');$event.stopPropagation();"
                  *ngIf="permission.joc && permission.joc.inventory.view"
@@ -171,7 +170,7 @@
               </ng-template>
             </span>
           </span>
-          <span *ngIf="(instruction.TYPE === 'ConsumeNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"
+          <span *ngIf="(instruction['TYPE'] === 'ConsumeNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"
                 class="text-muted"></span>
         </span>
         <i *ngIf="instruction.state && instruction.state._text" class="p-l-xxs p-r-xs">-</i>
@@ -195,10 +194,10 @@
         <span (click)="showOrders(instruction)" *ngIf="instruction.orderCount > 0 && (!instruction.show && !expandAll)"
               class="order-count">{{instruction.orderCount}}</span>
       </a>
-      <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'AddOrder' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Break' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
-       || instruction.TYPE === 'PostNotices' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'ExpectNotices'"
-           [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd'}">
-        <div *ngIf="instruction.TYPE === 'Job'" class="btn-group dropdown" style="margin-left: -10px">
+      <div *ngIf="instruction['TYPE'] === 'Job' || instruction['TYPE'] === 'AddOrder' || instruction['TYPE'] === 'Fail' || instruction['TYPE'] === 'Break' || instruction['TYPE'] === 'Finish' || instruction['TYPE'] === 'ImplicitEnd'
+       || instruction['TYPE'] === 'PostNotices' || instruction['TYPE'] === 'Prompt' || instruction['TYPE'] === 'ExpectNotices'"
+           [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction['TYPE'] === 'ImplicitEnd'}">
+        <div *ngIf="instruction['TYPE'] === 'Job'" class="btn-group dropdown" style="margin-left: -10px">
           <button [nzDropdownMenu]="menu" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
                   type="button">
             <i class="fa fa-ellipsis-h"></i>
@@ -245,7 +244,7 @@
                 </a>
               </li>
               <li (click)="viewHistory(instruction)"
-                  *ngIf="instruction.TYPE === 'Job' && permission.currentController && permission.currentController.orders.view"
+                  *ngIf="instruction['TYPE'] === 'Job' && permission.currentController && permission.currentController.orders.view"
                   nz-menu-item>
                 <a>
                   <span translate>common.button.showHistory</span>
@@ -254,7 +253,7 @@
             </ul>
           </nz-dropdown-menu>
         </div>
-        <div *ngIf="instruction.TYPE !== 'Job' && instruction.TYPE !== 'ImplicitEnd'" class="btn-group dropdown"
+        <div *ngIf="instruction['TYPE'] !== 'Job' && instruction['TYPE'] !== 'ImplicitEnd'" class="btn-group dropdown"
              style="margin-left: -10px">
           <button [nzDropdownMenu]="menu" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
                   type="button">
@@ -281,29 +280,29 @@
         </div>
         <i
           (click)="viewHistory(instruction)"
-          *ngIf="instruction.TYPE === 'Job' && permission.currentController && permission.currentController.orders.view" class="cursor fa fa-history p-l-xs p-r-xs"></i>
+          *ngIf="instruction['TYPE'] === 'Job' && permission.currentController && permission.currentController.orders.view" class="cursor fa fa-history p-l-xs p-r-xs"></i>
         <i (click)="coreService.showDocumentation(instruction.documentationName, preferences)"
-           *ngIf="instruction.TYPE === 'Job' && instruction.documentationName"
+           *ngIf="instruction['TYPE'] === 'Job' && instruction.documentationName"
            class="cursor fa fa-book p-l-xs p-r-xs"></i>
-        <span (click)="showConfiguration(instruction)" *ngIf="instruction.TYPE === 'Job'" class="cursor">
+        <span (click)="showConfiguration(instruction)" *ngIf="instruction['TYPE'] === 'Job'" class="cursor">
           {{instruction.jobName}}
         </span>
-        <span *ngIf="instruction.TYPE === 'Job'">
+        <span *ngIf="instruction['TYPE'] === 'Job'">
           - <span [innerHTML]="jobs[instruction.jobName].title | stringToLink" class="text-muted"></span>
            <span *ngIf="instruction.label" class="p-l-xs  _400">(</span>
            <i *ngIf="instruction.label" class="text-muted _400">{{instruction.label}}</i>
            <span *ngIf="instruction.label" class="p-r-xs _400">)</span>
         </span>
         <span (click)="openWorkflowDependency(instruction);"
-              *ngIf="instruction.TYPE !== 'Job'"
-              [ngClass]="{'cursor' : (instruction.TYPE === 'PostNotices' || instruction.TYPE === 'AddOrder')}" [nz-tooltip]="instruction.question || instruction.message">
-          {{instruction.TYPE | translate}}
+              *ngIf="instruction['TYPE'] !== 'Job'"
+              [ngClass]="{'cursor' : (instruction['TYPE'] === 'PostNotices' || instruction['TYPE'] === 'AddOrder')}" [nz-tooltip]="instruction.question || instruction.message">
+          {{instruction['TYPE'] | translate}}
           <span *ngIf="instruction.label" class="p-l-xs  _400">(</span>
            <i *ngIf="instruction.label" class="text-muted _400">{{instruction.label}}</i>
            <span *ngIf="instruction.label" class="p-r-xs _400">)</span>
           <span
-            *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices' || instruction.TYPE === 'AddOrder')">: </span>
-          <span *ngIf="instruction.TYPE === 'PostNotices' && instruction.noticeBoardNames">
+            *ngIf="(instruction['TYPE'] === 'PostNotices' || instruction['TYPE'] === 'ExpectNotices' || instruction['TYPE'] === 'AddOrder')">: </span>
+          <span *ngIf="instruction['TYPE'] === 'PostNotices' && instruction.noticeBoardNames">
             <span *ngFor="let board of instruction.noticeBoardNames" class="text-muted">
               <i (click)="coreService.navToInventoryTab(board, 'NOTICEBOARD');$event.stopPropagation();"
                  *ngIf="permission.joc && permission.joc.inventory.view"
@@ -312,9 +311,9 @@
                  class="text-hover-primary">{{board}}</a>
             </span>
           </span>
-          <span *ngIf="(instruction.TYPE === 'ExpectNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"
+          <span *ngIf="(instruction['TYPE'] === 'ExpectNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"
                 class="text-muted"></span>
-          <span *ngIf="instruction.TYPE === 'AddOrder'" class="text-muted">
+          <span *ngIf="instruction['TYPE'] === 'AddOrder'" class="text-muted">
             <i (click)="coreService.navToInventoryTab(instruction.workflowName, 'WORKFLOW');$event.stopPropagation();"
                *ngIf="permission.joc && permission.joc.inventory.view"
                class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
@@ -337,11 +336,11 @@
           </span>
         </span>
       </div>
-      <div *ngIf="instruction.TYPE === 'ForkListEnd' || instruction.TYPE === 'CycleEnd'" class="m-l-n-40">
+      <div *ngIf="instruction['TYPE'] === 'ForkListEnd' || instruction['TYPE'] === 'CycleEnd'" class="m-l-n-40">
         <span>
-          <span *ngIf="instruction.TYPE === 'ForkListEnd'"
+          <span *ngIf="instruction['TYPE'] === 'ForkListEnd'"
                 class="_600">{{'workflow.label.forkListEnd' | translate}}</span>
-          <span *ngIf="instruction.TYPE === 'CycleEnd'" class="_600">{{'workflow.label.cycleEnd' | translate}}</span>
+          <span *ngIf="instruction['TYPE'] === 'CycleEnd'" class="_600">{{'workflow.label.cycleEnd' | translate}}</span>
         </span>
         <span *ngIf="instruction.orders && instruction.orders.length> 0" class="m-l-md">
          <ng-template [ngForOf]="instruction.orders | orderBy : 'scheduledFor': true | slice:0:3" let-order ngFor>
@@ -354,7 +353,7 @@
           </span>
         </span>
       </div>
-      <div *ngIf="instruction.TYPE === 'Fork' && (instruction.show)">
+      <div *ngIf="instruction['TYPE'] === 'Fork' && (instruction.show)">
         <div *ngFor="let branch of instruction.branches">
           <div class="p-l-md">
             <a (click)="collapse(branch)" class="m-l">
@@ -386,7 +385,7 @@
           </div>
         </div>
       </div>
-      <div *ngIf="instruction.TYPE === 'If' && (instruction.show)">
+      <div *ngIf="instruction['TYPE'] === 'If' && (instruction.show)">
         <div *ngIf="instruction.then && instruction.then.instructions">
           <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)"
                     (onClick)="viewHistory($event)" [addOrderToWorkflows]="addOrderToWorkflows"
@@ -416,9 +415,9 @@
             </span>
             <span (click)="showOrders(instruction.else)" *ngIf="instruction.else && instruction.else.orderCount > 0 && (!instruction.else.show && !expandAll)"
                   class="order-count">{{instruction.else.orderCount}}</span>
-            <div *ngIf="instruction.else && (instruction.else.show)" class="p-l">
+            <div *ngIf="instruction.else && instruction.else.instructions && instruction.else.instructions.length > 0 (instruction.else.show)" class="p-l">
               <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)"
-                        (onClick)="viewHistory($event)" *ngIf="instruction.else.instructions"
+                        (onClick)="viewHistory($event)"
                         [addOrderToWorkflows]="addOrderToWorkflows" [configuration]="instruction.else" [expandAll]="expandAll"
                         [expectedNoticeBoards]="expectedNoticeBoards" [jobs]="jobs"
                         [orderPreparation]="orderPreparation" [permission]="permission" [postNoticeBoards]="postNoticeBoards"
@@ -429,9 +428,9 @@
           </div>
         </div>
       </div>
-      <div *ngIf="instruction.TYPE === 'Try' && (instruction.show)">
+      <div *ngIf="instruction['TYPE'] === 'Try' && instruction.instructions && instruction.instructions.length > 0 && (instruction.show)">
         <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)"
-                  (onClick)="viewHistory($event)" *ngIf="instruction.instructions"
+                  (onClick)="viewHistory($event)"
                   [addOrderToWorkflows]="addOrderToWorkflows" [configuration]="instruction" [expandAll]="expandAll"
                   [expectedNoticeBoards]="expectedNoticeBoards" [jobs]="jobs"
                   [orderPreparation]="orderPreparation" [permission]="permission" [postNoticeBoards]="postNoticeBoards"
@@ -440,7 +439,7 @@
                   [workflowObj]="workflowObj"></app-type>
         <div class="p-l-md">
           <a (click)="collapse(instruction.catch)" *ngIf="instruction.catch" class="m-l">
-            <i [ngClass]="{'fa-minus' : (instruction.catch.show)}" class="fa fa-plus pr-2"></i>
+            <i *ngIf="instruction.catch.instructions && instruction.catch.instructions.length > 0" [ngClass]="{'fa-minus' : (instruction.catch.show)}" class="fa fa-plus pr-2"></i>
             <span class="_600" translate>workflow.label.catch</span>
           </a>
           <span *ngIf="instruction.catch && instruction.catch.orders && instruction.catch.orders.length>0"
@@ -458,9 +457,9 @@
             </span>
           <span (click)="showOrders(instruction.catch)" *ngIf="instruction.catch && instruction.catch.orderCount > 0 && (!instruction.catch.show && !expandAll)"
                 class="order-count">{{instruction.catch.orderCount}}</span>
-          <div *ngIf="instruction.catch && (instruction.catch.show)" class="m-l">
+          <div *ngIf="instruction.catch && instruction.catch.instructions && instruction.catch.instructions.length > 0 && (instruction.catch.show)" class="m-l">
             <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)"
-                      (onClick)="viewHistory($event)" *ngIf="instruction.catch.instructions"
+                      (onClick)="viewHistory($event)"
                       [addOrderToWorkflows]="addOrderToWorkflows" [configuration]="instruction.catch" [expandAll]="expandAll"
                       [expectedNoticeBoards]="expectedNoticeBoards" [jobs]="jobs"
                       [orderPreparation]="orderPreparation" [permission]="permission" [postNoticeBoards]="postNoticeBoards"
@@ -471,10 +470,10 @@
         </div>
       </div>
       <div
-        *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Options' || instruction.TYPE === 'Lock' || instruction.TYPE === 'StickySubagent' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'ConsumeNotices') && (instruction.show)">
-        <div>
+        *ngIf="(instruction['TYPE'] === 'Retry' || instruction['TYPE'] === 'Cycle' || instruction['TYPE'] === 'Options' || instruction['TYPE'] === 'Lock' || instruction['TYPE'] === 'StickySubagent' || instruction['TYPE'] === 'ForkList' || instruction['TYPE'] === 'ConsumeNotices') && (instruction.show)">
+        <div *ngIf="instruction.instructions && instruction.instructions.length > 0">
           <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)"
-                    (onClick)="viewHistory($event)" *ngIf="instruction.instructions"
+                    (onClick)="viewHistory($event)"
                     [addOrderToWorkflows]="addOrderToWorkflows" [configuration]="instruction" [expandAll]="expandAll"
                     [expectedNoticeBoards]="expectedNoticeBoards" [jobs]="jobs"
                     [orderPreparation]="orderPreparation" [permission]="permission" [postNoticeBoards]="postNoticeBoards"

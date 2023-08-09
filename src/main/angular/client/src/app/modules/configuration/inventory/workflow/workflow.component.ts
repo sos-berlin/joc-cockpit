@@ -221,21 +221,6 @@ export class NoticeBoardEditorComponent {
     this.checkExpectNoticeExp(value);
   }
 
-  handleKeyDown(event: KeyboardEvent) {
-    const tabKey = "Tab";
-    if (event.key === tabKey) {
-      event.preventDefault();
-
-      const numSpaces = this.modalData.tabSize;
-      const cursor = this.cm.codeMirror.getCursor();
-      const spaces = ' '.repeat(numSpaces);
-
-      this.cm.codeMirror.replaceRange(spaces, cursor, cursor);
-
-      this.cm.codeMirror.setCursor({line: cursor.line, ch: cursor.ch + numSpaces});
-    }
-  }
-
   checkExpectNoticeExp(event): void {
     this.isTreeShow = false;
     if (event) {
@@ -2063,7 +2048,7 @@ export class JobComponent {
     }
   }
 
-  onChangeJobResource(value): void {
+  onChangeJobResource(): void {
     if (!isEqual(JSON.stringify(this.selectedNode.job.jobResourceNames), JSON.stringify(this.jobresources.list))) {
       this.selectedNode.job.jobResourceNames = this.coreService.clone(this.jobresources.list);
     }
@@ -2616,8 +2601,7 @@ export class ScriptEditorComponent {
   }
 
   handleKeyDown = (event: KeyboardEvent): void => {
-    console.log(event)
-    if (event.shiftKey && event.altKey && event.keyCode === 70) {
+    if (event.shiftKey && event.altKey && event.code == 'F') {
       // Call the autoFormatCode function to format the selected range
       this.autoFormatCode(event);
     }

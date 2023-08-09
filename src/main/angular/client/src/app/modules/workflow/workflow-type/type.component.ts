@@ -1,4 +1,14 @@
-import {Component, Input, Output, EventEmitter, SimpleChanges, HostListener, ViewContainerRef} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+  SimpleChanges,
+  ViewContainerRef
+} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {ScriptModalComponent} from '../script-modal/script-modal.component';
@@ -7,6 +17,7 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
 
 @Component({
   selector: 'app-type',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './type.component.html'
 })
 export class TypeComponent {
@@ -35,7 +46,10 @@ export class TypeComponent {
   sideBar: any = {};
   isFirst = false;
 
-  constructor(public coreService: CoreService, private modal: NzModalService, private viewContainerRef: ViewContainerRef) {
+  constructor(public coreService: CoreService, private modal: NzModalService, private viewContainerRef: ViewContainerRef,
+              private ref: ChangeDetectorRef
+  ) {
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {

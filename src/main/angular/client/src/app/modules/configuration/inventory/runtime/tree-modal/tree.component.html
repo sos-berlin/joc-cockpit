@@ -33,8 +33,6 @@
         nzNoAnimation
       ></nz-tree>
       <ng-template #nzTreeTemplate let-node>
-        <label (ngModelChange)="handleCheckbox(node.origin)" *ngIf="showCheckBox" [(ngModel)]="node.origin.isChecked" class="p-r-sm" name="{{node.key}}"
-               nz-checkbox></label>
         <div class="node-wrapper">
           <div (click)="selectNode(node)"
                class="node-content-wrapper">
@@ -42,11 +40,13 @@
             {{node.origin.name || node.origin.path}}
           </div>
         </div>
-        <div *ngFor="let cal of node.origin.calendars" class="m-b-xs m-l-22">
-          <label (ngModelChange)="handleCheckbox(cal)" [(ngModel)]="cal.isChecked" name="'chk-'+ {{cal.id}}"
-                 nz-checkbox></label>
-          <span class="p-l-sm m-t-xs"><i class="fa fa-calendar text-sm">&nbsp;</i>{{cal.name}}</span>
-        </div>
+        <ng-container *ngIf="node.isExpanded">
+          <div *ngFor="let cal of node.origin.calendars" class="m-b-xs m-l-22">
+            <label nz-checkbox [(ngModel)]="cal.isChecked" name="'chk-'+ {{cal.id}}"
+            ></label>
+            <span class="p-l-sm m-t-xs"><i class="fa fa-calendar text-sm">&nbsp;</i>{{cal.name}}</span>
+          </div>
+        </ng-container>
       </ng-template>
     </div>
     <div *ngIf="tree.length === 0 && loading" class="m-t-lg">
@@ -57,7 +57,6 @@
     </div>
   </div>
   <div class="modal-footer ">
-    <div *ngIf="showCheckBox ||  object">
       <button (click)="submit()" class="btn btn-primary btn-sm" translate
               type="button">common.button.done
       </button>
@@ -65,12 +64,5 @@
               type="button">
         common.button.cancel
       </button>
-    </div>
-    <div *ngIf="!showCheckBox && !object">
-      <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm " translate
-              type="button">
-        common.button.close
-      </button>
-    </div>
   </div>
 </div>

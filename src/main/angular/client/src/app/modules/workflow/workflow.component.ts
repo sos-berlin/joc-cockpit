@@ -1245,8 +1245,10 @@ export class WorkflowComponent {
     }
     workflow.show = true;
     workflow.configuration = this.coreService.clone(workflow);
-    this.workflowService.convertTryToRetry(workflow.configuration, null, {}, {count: 0, setObj});
-    this.updatePanelHeight();
+    setTimeout(() => {
+      this.workflowService.convertTryToRetry(workflow.configuration, null, {}, {count: 0, setObj});
+      this.updatePanelHeight();
+    }, 0);
   }
 
   hidePanelFuc(workflow): void {
