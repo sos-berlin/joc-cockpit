@@ -1798,7 +1798,7 @@
     "message.noObjectFoundToRelease": "Kein freigebbares Objekt gefunden",
     "message.updateFromJobTemplate": "Sind Sie sicher, dass Sie den Job aus der Job-Vorlage aktualisieren wollen?",
     "message.localChangesWillBeOverwritten": "Alle lokalen Änderungen werden durch diese Operation überschrieben",
-    "message.changeDeductInWorkflow": "Change deduct in the Workflow variables, please adjust variables and release the Schedule again",
+    "message.changeDeductInWorkflow": "Änderungen an Variablen des Arbeitsablaufs erkannt, bitte die Variablen anpassen und den Zeitplan freigeben.",
     "cronTab": {
       "label.convertCron": "crontab konvertieren",
       "label.folder": "Ordner",
@@ -3204,7 +3204,7 @@
     "label.onSuccess": "Bei Erfolg",
     "label.onWarning": "Rückgabewert bei Warnung",
     "label.onFailure": "Bei Fehler",
-    "label.ignore": "Ignore",
+    "label.ignore": "Ignorieren",
     "label.returnCode": "Rückgabewert",
     "label.executableType": "Typ der Ausführung",
     "label.shell": "Shell",

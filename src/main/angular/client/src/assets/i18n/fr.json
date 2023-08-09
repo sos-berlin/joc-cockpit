@@ -1798,7 +1798,7 @@
     "message.noObjectFoundToRelease": "Aucun objet publiable trouvé",
     "message.updateFromJobTemplate": "Vous êtes sûr de vouloir mettre à jour le Job à partir du Modèle de Tâche ?",
     "message.localChangesWillBeOverwritten": "Toutes les modifications locales seront écrasées par cette action",
-    "message.changeDeductInWorkflow": "Change deduct in the Workflow variables, please adjust variables and release the Schedule again",
+    "message.changeDeductInWorkflow": "Modifications des variables du flux de travail détectées, veuillez ajuster les variables et relâcher la Plannification.",
     "cronTab": {
       "label.convertCron": "Convertir crontab",
       "label.folder": "Dossier",
@@ -3204,7 +3204,7 @@
     "label.onSuccess": "Sur Succès",
     "label.onWarning": "Code de Retour sur Avertissement",
     "label.onFailure": "Sur Échec",
-    "label.ignore": "Ignore",
+    "label.ignore": "Ignorer",
     "label.returnCode": "Code de Retour",
     "label.executableType": "Type d'Exécutable",
     "label.shell": "Shell",
