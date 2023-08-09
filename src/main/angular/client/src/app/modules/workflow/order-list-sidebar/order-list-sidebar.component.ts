@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from 'underscore';
 import {CoreService} from '../../../services/core.service';
@@ -13,6 +13,7 @@ import {OrderPipe} from "../../../pipes/core.pipe";
 
 @Component({
   selector: 'app-order-list-sidebar',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './order-list-sidebar.component.html'
 })
 export class OrderListSidebarComponent implements OnChanges {
@@ -82,20 +83,6 @@ export class OrderListSidebarComponent implements OnChanges {
     if (!this.isDropdownOpen && this.setOfCheckedId.size === 0) {
       this.data = [...this.orders];
     } else {
-      if (this.setOfCheckedId.size > 0) {
-        let tempArr = [];
-        for (let i in this.orders) {
-          if (!this.setOfCheckedId.has(this.orders[i].orderId)) {
-            for (let j in this.data) {
-              if (this.setOfCheckedId.has(this.data[j].orderId)) {
-                tempArr.push(this.data[j]);
-                break;
-              }
-            }
-          }
-        }
-        this.data = tempArr.concat(this.orders);
-      }
       setTimeout(() => {
         this.refreshView();
       }, 800);
@@ -123,7 +110,6 @@ export class OrderListSidebarComponent implements OnChanges {
   }
 
   onItemChecked(orderId: string, checked: boolean): void {
-    let orders = [];
     if (!checked && this.setOfCheckedId.size > (this.filter.entryPerPage || this.preferences.entryPerPage)) {
       const orders = this.getCurrentData(this.data, this.filter);
       if (orders.length < this.data.length) {
@@ -138,7 +124,7 @@ export class OrderListSidebarComponent implements OnChanges {
     } else {
       this.setOfCheckedId.delete(orderId);
     }
-    this.refreshCheckedStatus(orders);
+    this.refreshCheckedStatus();
   }
 
   getCurrentData(list, filter): Array<any> {
@@ -155,19 +141,19 @@ export class OrderListSidebarComponent implements OnChanges {
   }
 
   onAllChecked(value: boolean): void {
-    let orders = [];
     if (value && this.data.length > 0) {
-      orders = this.getCurrentData(this.data, this.filter);
+      const orders = this.getCurrentData(this.data, this.filter);
       orders.forEach(item => {
         this.setOfCheckedId.add(item.orderId);
       });
     } else {
       this.setOfCheckedId.clear();
     }
-    this.refreshCheckedStatus(orders);
+    this.refreshCheckedStatus();
   }
 
-  refreshCheckedStatus(orders): void {
+  refreshCheckedStatus(allOrder = false): void {
+    const orders = allOrder ? this.data : this.getCurrentData(this.data, this.filter);
     this.object.isCancel = false;
     this.object.isCancelWithKill = false;
     this.object.isModify = true;

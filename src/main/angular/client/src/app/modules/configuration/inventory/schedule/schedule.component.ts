@@ -532,9 +532,9 @@ export class ScheduleComponent {
     this.updateSelectItems(true);
     if (this.schedule.configuration.orderParameterisations?.length > 0) {
       if (!isEqual((variablesBeforeUpdate), JSON.stringify(this.schedule.configuration.orderParameterisations[0].variables))) {
-        this.translate.get('inventory.message.changeDeductInWorkflow').subscribe(translatedValue => {
-          this.toasterService.warning(translatedValue);
-        });
+        // this.translate.get('inventory.message.changeDeductInWorkflow').subscribe(translatedValue => {
+        //   this.toasterService.warning(translatedValue);
+        // });
       }
     }
   }

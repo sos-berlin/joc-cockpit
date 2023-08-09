@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, inject} from '@angular/core';
 import {isEmpty, unique, isArray, isEqual, clone} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {TreeModalComponent} from '../../../../components/tree-modal/tree.component';
+import {TreeModalComponent} from './tree-modal/tree.component';
 import {CoreService} from '../../../../services/core.service';
 import {CalendarService} from '../../../../services/calendar.service';
 import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
@@ -30,7 +30,6 @@ export class AddRestrictionComponent {
   editor: any = {isEnable: false};
   calendar: any = {};
   updateFrequency: any = {};
-  tempList: any = [];
   frequencyList: any = [];
   dateFormat: any;
   dateFormatM: any;
@@ -755,33 +754,21 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   assignCalendar(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: TreeModalComponent,
-      nzData: {
-        schedulerId: this.schedulerId,
-        type: 'WORKINGDAYSCALENDAR',
-        object: 'Calendar'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.calendars = this.calendars.concat(result);
-        this.ref.detectChanges();
-      }
-    });
+    this.openTreeModal('WORKINGDAYSCALENDAR');
   }
 
   assignHolidayCalendar(): void {
+    this.openTreeModal('NONWORKINGDAYSCALENDAR');
+  }
+
+  private openTreeModal(type: string): void{
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: TreeModalComponent,
       nzData: {
         schedulerId: this.schedulerId,
-        type: 'NONWORKINGDAYSCALENDAR',
+        preferences: this.preferences,
+        type: type,
         object: 'Calendar'
       },
       nzFooter: null,
@@ -790,8 +777,12 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.nonWorkingDayCalendars = this.nonWorkingDayCalendars.concat(result);
-        unique(this.nonWorkingDayCalendars);
+        if(type === 'NONWORKINGDAYSCALENDAR') {
+          this.nonWorkingDayCalendars = this.nonWorkingDayCalendars.concat(result);
+          unique(this.nonWorkingDayCalendars);
+        } else {
+          this.calendars = this.calendars.concat(result);
+        }
         this.ref.detectChanges();
       }
     });

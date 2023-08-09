@@ -1,8 +1,8 @@
-import {ChangeDetectorRef, Component, inject,} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {sortBy} from 'underscore';
-import {CoreService} from '../../services/core.service';
 import {debounceTime, Subject} from 'rxjs';
+import {CoreService} from '../../../../../services/core.service';
 
 @Component({
   selector: 'app-tree-modal-content',
@@ -10,13 +10,13 @@ import {debounceTime, Subject} from 'rxjs';
 })
 export class TreeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
-  schedulerId;
-  paths: any = [];
+  schedulerId = '';
+  preferences: any = {};
   objects: any = [];
-  showCheckBox = false;
+
   type = '';
   object: string;
-  changeDetect = false;
+
   nodes: any = [];
   tree: any = [];
   isExpandAll = false;
@@ -32,18 +32,14 @@ export class TreeModalComponent {
 
   private searchTerm = new Subject<string>();
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
     this.schedulerId = this.modalData.schedulerId;
-    this.paths = this.modalData.paths || [];
-    this.objects = this.modalData.objects || [];
-    this.showCheckBox = this.modalData.showCheckBox;
+    this.preferences = this.modalData.preferences;
     this.type = this.modalData.type;
     this.object = this.modalData.object;
-    this.changeDetect = this.modalData.changeDetect;
-    this.nodes = this.modalData.nodes || [];
     this.init();
     this.searchTerm.pipe(debounceTime(200))
       .subscribe((searchValue: string) => {
@@ -72,10 +68,6 @@ export class TreeModalComponent {
 
   }
 
-  handleCheckbox(object): void {
-    this.onNodeChecked(object);
-  }
-
   clearSearchInput(): void {
     this.objectList = [];
     this.obj.searchText = '';
@@ -91,9 +83,10 @@ export class TreeModalComponent {
 
   selectNode(e): void {
     const data = e.origin || e;
-    if (this.showCheckBox) {
-
-    } else if (this.object) {
+    if (this.preferences.expandOption === 'both') {
+      e.isExpanded = !e.isExpanded;
+    }
+    if (this.object) {
       if (this.object === 'Calendar') {
         const obj: any = {
           path: e.key,
@@ -111,18 +104,6 @@ export class TreeModalComponent {
       }
     } else {
       this.activeModal.close(data.path);
-    }
-  }
-
-  onNodeChecked(e): void {
-    if (this.object !== 'Calendar') {
-      if (e.isChecked) {
-        if (this.paths.indexOf(e.path) === -1) {
-          this.paths.push(e.path);
-        }
-      } else {
-        this.paths.splice(this.paths.indexOf(e.path), 1);
-      }
     }
   }
 
@@ -155,12 +136,8 @@ export class TreeModalComponent {
 
   submit(): void {
     this.isSubmitted = true;
-    if (this.paths && this.paths.length > 0) {
-      this.activeModal.close(this.paths);
-    } else {
-      this.getJSObject();
-      this.activeModal.close(this.objects);
-    }
+    this.getJSObject();
+    this.activeModal.close(this.objects);
   }
 
   private searchObjects(value: string) {
@@ -178,15 +155,8 @@ export class TreeModalComponent {
           next: (res: any) => {
             this.obj.token = res.token;
             this.objectList = res.results;
-            if (this.changeDetect) {
-              this.ref.detectChanges();
-            }
           }
         });
-      }
-    } else {
-      if (this.changeDetect) {
-        this.ref.detectChanges();
       }
     }
   }

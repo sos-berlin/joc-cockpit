@@ -12,30 +12,30 @@
           </span>
         </span>
         <div class="inline pull-right">
+          <ng-container *ngIf="!isTrash">
+            <span *ngIf="schedule.configuration" [ngClass]="!schedule.valid ? 'badge-danger':'badge-success'"
+                  class="badge m-r-12">
+                <span *ngIf="schedule.valid" translate>inventory.label.valid</span>
+                <span *ngIf="!schedule.valid">
+                  <span translate>inventory.label.notValid</span>
+                  <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
+                </span>
+              </span>
+            <span *ngIf="schedule.configuration" [ngClass]="!data.released ? 'badge-danger':'badge-success'"
+                  class="badge">
+                <span *ngIf="!data.released" translate>inventory.label.notReleased</span>
+                <span *ngIf="data.released" translate>inventory.label.released</span>
+              </span>
+            <button
+              (click)="release()"
+              *ngIf="permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [disabled]="!schedule.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
+              <i class="fa fa-rocket p-r-xs"></i>
+              <span translate>inventory.button.release</span>
+            </button>
+          </ng-container>
           <button (click)="openRuntimeEditor()" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
             <i class="fa fa-clock-o p-r-xs"></i>
             <span translate>inventory.button.runTime</span>
-          </button>
-        </div>
-        <div *ngIf="!isTrash" class="inline pull-right">
-          <span *ngIf="schedule.configuration" [ngClass]="!schedule.valid ? 'badge-danger':'badge-success'"
-                class="badge m-r-12">
-              <span *ngIf="schedule.valid" translate>inventory.label.valid</span>
-              <span *ngIf="!schedule.valid">
-                <span translate>inventory.label.notValid</span>
-                <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
-              </span>
-            </span>
-          <span *ngIf="schedule.configuration" [ngClass]="!data.released ? 'badge-danger':'badge-success'"
-                class="badge">
-              <span *ngIf="!data.released" translate>inventory.label.notReleased</span>
-              <span *ngIf="data.released" translate>inventory.label.released</span>
-            </span>
-          <button
-            (click)="release()"
-            *ngIf="permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [disabled]="!schedule.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
-            <i class="fa fa-rocket p-r-xs"></i>
-            <span translate>inventory.button.release</span>
           </button>
         </div>
       </div>

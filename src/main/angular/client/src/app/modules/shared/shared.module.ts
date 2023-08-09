@@ -43,7 +43,6 @@ import {ToggleComponent} from '../../components/toggle/toggle.component';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
-import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {CalendarModalComponent} from '../../components/calendar-modal/calendar.component';
@@ -76,7 +75,7 @@ const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzInputModule, NzMessageModule, NzRadioModule, ChartsModule, NzTreeSelectModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
-  CalendarModalComponent, TreeModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
+  CalendarModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
   ModifyStartTimeModalComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, RelativeDateValidator, RelativeDateRegexValidator, UrlValidator,

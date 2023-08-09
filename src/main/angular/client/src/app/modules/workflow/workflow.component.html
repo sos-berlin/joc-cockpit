@@ -840,7 +840,7 @@
   <ng-container *nzDrawerContent>
     <div (click)="sideBar.isVisible = false" class="close-btn"></div>
     <div class="p-l-sm p-r-sm">
-      <app-order-list-sidebar [isSingleWorkflow]="!sideBar.state" [loading]="sideBar.loading" [orderPreparation]="sideBar.orderPreparation"
+      <app-order-list-sidebar #orderView [isSingleWorkflow]="!sideBar.state" [loading]="sideBar.loading" [orderPreparation]="sideBar.orderPreparation"
                               [orders]="sideBar.orders" [permission]="permission"
                               [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order-list-sidebar>
     </div>
