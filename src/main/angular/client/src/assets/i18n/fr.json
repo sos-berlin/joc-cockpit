@@ -543,6 +543,8 @@
     "button.viewDocumentation": "Voir la Documentation",
     "button.viewHistory": "Afficher l'Historique",
     "button.showHistory": "Afficher l'Historique",
+    "button.switchToSpecificDate": "Switch to Specific Date",
+    "button.switchToRelativeDate": "Switch to Relative Date",
     "placeholder.search": "Filtrer les résultats",
     "placeholder.name": "Nom",
     "placeholder.value": "Valeur",
