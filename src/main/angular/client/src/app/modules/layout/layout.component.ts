@@ -495,11 +495,7 @@ export class LayoutComponent {
 
   private authenticate(): any {
     if (typeof sessionStorage['logoutUrl'] == 'string') {
-      let returnUrl = this.router.url.match(/login/) ? '/' : this.router.url;
-      if (returnUrl === '/error' || returnUrl === 'error') {
-        returnUrl = '/';
-      }
-      this.router.navigate(['login'], {queryParams: {returnUrl}}).then();
+      this.navToLogin();
       return;
     }
     this.coreService.post('authentication/login', {}).subscribe({
@@ -512,13 +508,17 @@ export class LayoutComponent {
           this.changePassword();
         }
       }, error: () => {
-        let returnUrl = this.router.url.match(/login/) ? '/' : this.router.url;
-        if (returnUrl === '/error' || returnUrl === 'error') {
-          returnUrl = '/';
-        }
-        this.router.navigate(['login'], {queryParams: {returnUrl}}).then();
+        this.navToLogin();
       }
     });
+  }
+
+  private navToLogin(): void {
+    let returnUrl = this.router.url.match(/login/) ? '/' : this.router.url;
+    if (returnUrl === '/error' || returnUrl === 'error') {
+      returnUrl = '/';
+    }
+    this.router.navigate(['login'], {queryParams: {returnUrl}}).then();
   }
 
   private init(): void {

@@ -523,22 +523,36 @@ export class OrderOverviewComponent {
     obj.compact = true;
     if (this.orderFilters.filter.state === 'INPROGRESS' || this.orderFilters.filter.state === 'FAILED'
       || this.orderFilters.filter.state === 'RUNNING' || this.orderFilters.filter.state === 'COMPLETED') {
-      if (this.orderFilters.filter.stateDateFrom) {
-        if (/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(this.orderFilters.filter.stateDateFrom)) {
-          obj.stateDateFrom = this.orderFilters.filter.stateDateFrom;
-        } else {
-          obj.stateDateFrom = this.coreService.getDate(this.orderFilters.filter.stateDateFrom, this.preferences.dateFormat)._d;
+      if(this.orderFilters.isRelative) {
+        if (this.orderFilters.filter.stateDateFrom) {
+          if (/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(this.orderFilters.filter.stateDateFrom)) {
+            obj.stateDateFrom = this.orderFilters.filter.stateDateFrom;
+          } else {
+            obj.stateDateFrom = this.coreService.getDate(this.orderFilters.filter.stateDateFrom, this.preferences.dateFormat)._d;
+          }
         }
-      }
-      if (this.orderFilters.filter.stateDateTo) {
-        if (/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(this.orderFilters.filter.stateDateTo)) {
-          obj.stateDateTo = this.orderFilters.filter.stateDateTo;
-        } else {
-          obj.stateDateTo = this.coreService.getDate(this.orderFilters.filter.stateDateTo, this.preferences.dateFormat)._d;
+        if (this.orderFilters.filter.stateDateTo) {
+          if (/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(this.orderFilters.filter.stateDateTo)) {
+            obj.stateDateTo = this.orderFilters.filter.stateDateTo;
+          } else {
+            obj.stateDateTo = this.coreService.getDate(this.orderFilters.filter.stateDateTo, this.preferences.dateFormat)._d;
+          }
+        }
+      } else {
+        if (this.orderFilters.filter.stateDateFrom1) {
+          obj.stateDateFrom = this.coreService.getDate(this.orderFilters.filter.stateDateFrom1, this.preferences.dateFormat)._d;
+        }
+        if (this.orderFilters.filter.stateDateTo1) {
+          obj.stateDateTo = this.coreService.getDate(this.orderFilters.filter.stateDateTo1, this.preferences.dateFormat)._d;
         }
       }
     }
-
+    if (!obj.stateDateFrom) {
+      delete obj['stateDateFrom'];
+    }
+    if (!obj.stateDateTo) {
+      delete obj['stateDateTo'];
+    }
     this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         res.orders = this.orderPipe.transform(res.orders, this.orderFilters.filter.sortBy, this.orderFilters.reverse);
@@ -773,21 +787,7 @@ export class OrderOverviewComponent {
     }
   }
 
-  changeDateFilter(isValid, type: string, date?): void {
-    if (date) {
-      if (type == 'FROM') {
-        this.orderFilters.filter.stateDateFrom = this.coreService.getDateByFormat(date, this.preferences.zone, this.preferences.dateFormat);
-      } else {
-        this.orderFilters.filter.stateDateTo = this.coreService.getDateByFormat(date, this.preferences.zone, this.preferences.dateFormat);
-      }
-    } else {
-      if (type == 'FROM') {
-        this.orderFilters.filter.stateDateFrom1 = null;
-      } else {
-        this.orderFilters.filter.stateDateTo1 = null;
-      }
-    }
-
+  changeDateFilter(isValid, type: string): void {
     if (isValid) {
       if (this.pageView === 'bulk') {
         this.loadOrder();
@@ -798,10 +798,8 @@ export class OrderOverviewComponent {
     } else {
       if (type == 'FROM') {
         this.orderFilters.filter.stateDateFrom = null;
-        this.orderFilters.filter.stateDateFrom1 = null;
       } else {
         this.orderFilters.filter.stateDateTo = null;
-        this.orderFilters.filter.stateDateTo1 = null;
       }
     }
   }
@@ -1246,6 +1244,14 @@ export class OrderOverviewComponent {
       data.push(obj);
     }
     this.excelService.exportAsExcelFile(data, 'JS7-orders');
+  }
+
+  switchToSpecificDate(): void{
+    this.orderFilters.isRelative = false;
+  }
+
+  switchToRelativeDate(): void {
+    this.orderFilters.isRelative = true;
   }
 
   /* ================================= End Action ============================*/

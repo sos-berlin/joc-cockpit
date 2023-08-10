@@ -1339,15 +1339,20 @@
                   <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
                   <div class="col-md-8 col-lg-8 m-b-sm" style="padding-left: 20px" translate>common.label.type</div>
                 </div>
-                <div *ngFor="let param of variable.value.listParameters; let j = index" [ngClass]="{'m-b-0': j !== variable.value.listParameters.length - 1}"
-                     class="form-group row p-r-0"
-                     style="width: 105%">
-                  <div class="col-md-12">
-                    <div (click)="addVariableToList(variable.value)" *ngIf="j === variable.value.listParameters.length - 1"
-                         class="pos-abt cursor"
-                         style="margin-top: 5px;left:6px;font-size:16px;z-index: 999">
-                      <a class="text-primary-hover cursor"><i
-                        class="fa fa-plus"></i></a>
+                <div class="col-md-12" (cdkDropListDropped)="nestedDrop($event,variable)" cdkDropList>
+                  <div *ngFor="let param of variable.value.listParameters; let j = index"
+                       [ngClass]="{'m-b-0': j !== variable.value.listParameters.length - 1}"
+                       class="form-group row p-r-0" cdkDrag
+                       >
+                    <div (click)="addVariableToList(variable.value)"
+                         *ngIf="j === variable.value.listParameters.length - 1"
+                         class="pos-abt cursor" style="margin-top: 7px;left:-24px;font-size:15px;z-index: 999">
+                      <a class="text-primary-hover cursor"><i class="fa fa-plus"></i></a>
+                    </div>
+                    <!-- Drag Handle -->
+                    <div cdkDragHandle class="pos-abt"
+                         style="margin-left: -8px;font-size: 15px;margin-top: 6px;cursor: move">
+                      <i aria-hidden="true" class="fa fa-bars"></i>
                     </div>
                     <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
                          class="col-md-4 col-lg-4 m-b-sm p-r-0">

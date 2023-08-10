@@ -389,30 +389,52 @@
                   </button>
                   <ng-container *ngIf="orderFilters.filter.state === 'INPROGRESS' || orderFilters.filter.state === 'FAILED'
                    || orderFilters.filter.state === 'RUNNING' || orderFilters.filter.state === 'COMPLETED'">
-                    <div [ngClass]="{ 'error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
-                         class="pos-rel t-1">
-                      <input #startTime="ngModel" (blur)="changeDateFilter(!(((startTime.dirty || startTime.touched) && startTime.invalid)),'FROM')" [(ngModel)]="orderFilters.filter.stateDateFrom"
-                             [appValidateRelativeDate]="preferences.dateFormat"
-                             class="form-control input-overlay"
-                             name="startTime"
-                             placeholder="{{ 'common.placeholder.setStartDate' | translate }} (+/-)(s|m|h|d|w|M|y)"
-                             type="text"/>
-                      <nz-date-picker (ngModelChange)="changeDateFilter(!(((startTime.dirty || startTime.touched) && startTime.invalid)), 'FROM', orderFilters.filter.stateDateFrom1)" [(ngModel)]="orderFilters.filter.stateDateFrom1" [nzPlaceHolder]="''"
-                                      class="pos-rel bottom-border cursor"
-                                      nzShowTime></nz-date-picker>
-                    </div>
-                    <div [ngClass]="{ 'error' : (((endTime.dirty || endTime.touched) && endTime.invalid))}"
-                         class="pos-rel t-xxs">
-                      <input #endTime="ngModel" (blur)="changeDateFilter(!(((startTime.dirty || startTime.touched) && startTime.invalid)),'TO')" [(ngModel)]="orderFilters.filter.stateDateTo"
-                             [appValidateRelativeDate]="preferences.dateFormat"
-                             class="form-control input-overlay m-l-12"
-                             name="endTime"
-                             placeholder="{{ 'common.placeholder.setEndDate' | translate }} (+/-)(s|m|h|d|w|M|y)"
-                             type="text"/>
-                      <nz-date-picker (ngModelChange)="changeDateFilter(!(((startTime.dirty || startTime.touched) && startTime.invalid)), 'TO', orderFilters.filter.stateDateTo1)" [(ngModel)]="orderFilters.filter.stateDateTo1" [nzPlaceHolder]="''"
-                                      class="pos-rel m-l-12 bottom-border cursor"
-                                      nzShowTime></nz-date-picker>
-                    </div>
+                    <label class="pos-rel m-r-12 t-6 hidden-btn-group1" translate>inventory.search.label.from</label>
+                    <ng-container *ngIf="orderFilters.isRelative">
+                      <div [ngClass]="{ 'error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
+                           class="pos-rel t-1">
+                        <input #startTime="ngModel" (blur)="changeDateFilter(!(((startTime.dirty || startTime.touched) && startTime.invalid)),'FROM')" [(ngModel)]="orderFilters.filter.stateDateFrom"
+                               [appValidateRelativeDate]="preferences.dateFormat"
+                               class="form-control input-overlay"
+                               name="startTime"
+                               placeholder="(+/-)(s|m|h|d|w|M|y)"
+                               type="text"/>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="!orderFilters.isRelative">
+                      <div class="pos-rel t-1">
+                        <nz-date-picker [(ngModel)]="orderFilters.filter.stateDateFrom1" (ngModelChange)="changeDateFilter(true, 'FROM')" [nzPlaceHolder]="preferences.dateFormat"
+                                        class="pos-rel bottom-border cursor" style="height: 29px"
+                                        nzShowTime></nz-date-picker>
+                      </div>
+                    </ng-container>
+                    <label class="pos-rel t-6 p-l hidden-btn-group1" translate>inventory.search.label.to</label>
+                    <ng-container *ngIf="orderFilters.isRelative">
+                      <div [ngClass]="{ 'error' : (((endTime.dirty || endTime.touched) && endTime.invalid))}"
+                           class="pos-rel t-xxs">
+                        <input #endTime="ngModel" (blur)="changeDateFilter(!(((endTime.dirty || endTime.touched) && endTime.invalid)),'TO')" [(ngModel)]="orderFilters.filter.stateDateTo"
+                               [appValidateRelativeDate]="preferences.dateFormat"
+                               class="form-control input-overlay m-l-12"
+                               name="endTime"
+                               placeholder="(+/-)(s|m|h|d|w|M|y)"
+                               type="text"/>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="!orderFilters.isRelative">
+                      <div class="pos-rel t-xxs">
+                        <nz-date-picker [(ngModel)]="orderFilters.filter.stateDateTo1" (ngModelChange)="changeDateFilter(true, 'TO')" [nzPlaceHolder]="preferences.dateFormat"
+                                        class="m-l-12 bottom-border cursor" style="height: 29px"
+                                        nzShowTime></nz-date-picker>
+                      </div>
+                    </ng-container>
+                    <a *ngIf="orderFilters.isRelative" (click)="switchToSpecificDate()" class="text-hover-primary cursor m-l pos-rel t-sm hidden-btn-text" >
+                      <span translate>common.button.switchToSpecificDate</span>
+                      <i nz-icon nzType="swap" nzTheme="outline"></i>
+                    </a>
+                    <a *ngIf="!orderFilters.isRelative" (click)="switchToRelativeDate()" class="text-hover-primary cursor m-l pos-rel t-sm hidden-btn-text">
+                      <span translate>common.button.switchToRelativeDate</span>
+                      <i nz-icon nzType="swap" nzTheme="outline"></i>
+                    </a>
                   </ng-container>
                 </div>
 

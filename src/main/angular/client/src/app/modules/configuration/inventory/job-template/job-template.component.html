@@ -12,35 +12,35 @@
           </span>
         </span>
         <div class="inline pull-right">
-          <button (click)="updateJobs()"
-                  *ngIf="job.configuration" [disabled]="!data.released" class="btn btn-sm btn-grey m-l-12 m-t-n-xs">
-            <i class="fa fa-refresh p-r-xs"></i>
-            {{'inventory.button.updateJobs' | translate}}
-          </button>
+          <ng-container *ngIf="!isTrash">
+            <span *ngIf="job.configuration" [ngClass]="!job.valid ? 'badge-danger':'badge-success'" class="badge m-r-12">
+              <span *ngIf="job.valid" translate>inventory.label.valid</span>
+              <span *ngIf="!job.valid">
+                <span translate>inventory.label.notValid</span>
+                <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
+              </span>
+            </span>
+            <span *ngIf="job.configuration" [ngClass]="!data.released ? 'badge-danger':'badge-success'" class="badge">
+              <span *ngIf="!data.released" translate>inventory.label.notReleased</span>
+              <span *ngIf="data.released" translate>inventory.label.released</span>
+            </span>
+            <button
+              (click)="release()"
+              *ngIf="permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [disabled]="!job.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
+              <i class="fa fa-rocket p-r-xs"></i>
+              <span translate>inventory.button.release</span>
+            </button>
+            <button (click)="updateJobs()"
+                    *ngIf="job.configuration" [disabled]="!data.released" class="btn btn-sm btn-grey m-l-12 m-t-n-xs">
+              <i class="fa fa-refresh p-r-xs"></i>
+              {{'inventory.button.updateJobs' | translate}}
+            </button>
+          </ng-container>
           <button (click)="openJobWizard()"
                   [disabled]="job.configuration && job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable'"
                   class="btn btn-sm btn-grey m-l-12 m-t-n-xs">
             <i class="fa fa-magic p-r-xs"></i>
             {{'workflow.button.wizard' | translate}}
-          </button>
-        </div>
-        <div *ngIf="!isTrash" class="inline pull-right">
-          <span *ngIf="job.configuration" [ngClass]="!job.valid ? 'badge-danger':'badge-success'" class="badge m-r-12">
-            <span *ngIf="job.valid" translate>inventory.label.valid</span>
-            <span *ngIf="!job.valid">
-              <span translate>inventory.label.notValid</span>
-              <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
-            </span>
-          </span>
-          <span *ngIf="job.configuration" [ngClass]="!data.released ? 'badge-danger':'badge-success'" class="badge">
-            <span *ngIf="!data.released" translate>inventory.label.notReleased</span>
-            <span *ngIf="data.released" translate>inventory.label.released</span>
-          </span>
-          <button
-            (click)="release()"
-            *ngIf="permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [disabled]="!job.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
-            <i class="fa fa-rocket p-r-xs"></i>
-            <span translate>inventory.button.release</span>
           </button>
         </div>
       </div>
@@ -101,16 +101,9 @@
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.description' | translate}}" translate>workflow.label.description</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <a (click)="job.configuration.preview = false;" [ngClass]="{'text-primary': job.configuration.preview !== true}"
-               class="btn btn-xs btn-default" style="box-shadow: none !important;" translate>xml.button.sourceCode</a>
-            <a (click)="job.configuration.preview = true;" [ngClass]="{'text-primary': job.configuration.preview === true}"
-               class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
             <textarea (blur)="saveJSON()" [(ngModel)]="job.configuration.description"
                       class="form-control" name="description" placeholder="{{'workflow.placeholder.description' | translate}}"
                       rows="2"></textarea>
-            <div *ngIf="job.configuration.preview" class="b-a" style="min-height: 104px;max-height: 300px;overflow: auto">
-              <pre [innerHTML]="job.configuration.value.description | safeHtml"></pre>
-            </div>
           </div>
         </div>
         <div *ngIf="job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable'"

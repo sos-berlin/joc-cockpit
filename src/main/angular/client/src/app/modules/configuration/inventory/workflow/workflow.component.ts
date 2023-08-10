@@ -2625,15 +2625,33 @@ export class ScriptEditorComponent {
     let formattedCode = '';
 
     for (let line = start.line; line <= end.line; line++) {
-      const currentLine = doc.getLine(line).trim();
-      if (currentLine.includes('}') || currentLine.includes('} else')) {
+      const currentLine = doc.getLine(line);
+
+      // If the line contains ##!include, append it as-is and continue to the next iteration
+      if (currentLine.includes('##!include')) {
+        formattedCode += currentLine + '\n';
+        continue;
+      }
+
+      const trimmedLine = currentLine.trim();
+
+      if (trimmedLine.includes('}') || trimmedLine.includes('} else')) {
         indentLevel--;
       }
-      formattedCode += indentString.repeat(indentLevel) + currentLine + '\n';
-      if (currentLine.includes('{') || currentLine.endsWith('{')) {
+
+      // Only add the indent if the line is not empty
+      if (trimmedLine.length > 0) {
+        formattedCode += indentString.repeat(indentLevel) + trimmedLine + '\n';
+      } else {
+        formattedCode += '\n';
+      }
+
+      if (trimmedLine.includes('{') || trimmedLine.endsWith('{')) {
         indentLevel++;
       }
     }
+
+    formattedCode = formattedCode.trimEnd(); // This will remove the trailing newline
 
     doc.replaceRange(formattedCode, start, end);
 
@@ -4445,6 +4463,14 @@ export class WorkflowComponent {
     }
     if (variable.name) {
       this.updateOtherProperties('variable');
+    }
+  }
+
+  nestedDrop(event: CdkDragDrop<string[]>, variable): void {
+    moveItemInArray(variable.value.listParameters, event.previousIndex, event.currentIndex);
+    console.log(event.previousIndex, event.currentIndex, "sssssssss")
+    if (event.previousIndex !== event.currentIndex) {
+      this.updateOtherProperties('childvariable');
     }
   }
 
@@ -11324,6 +11350,27 @@ export class WorkflowComponent {
 
       if (!isEqual(JSON.stringify(this.orderPreparation), JSON.stringify(variableDeclarations))) {
         this.orderPreparation = variableDeclarations;
+        flag = true;
+      }
+    } else if (type === 'childvariable') {
+      console.log('child variable')
+      const variableDeclarations = {parametersArray: [], parameters: {}, allowUndeclared: false};
+      const temp = this.coreService.clone(this.variableDeclarations.parameters);
+      variableDeclarations.parametersArray = temp.map((value) => {
+        if (value.value.type === 'List') {
+          value.value.listParameters = this.coreService.keyValuePair(value.value.listParameters);
+        }
+        return value;
+      });
+      variableDeclarations.parametersArray.forEach(param => {
+        variableDeclarations.parameters[param.name] = param.value;
+      });
+
+      if (!isEqual(JSON.stringify(this.orderPreparation), JSON.stringify(variableDeclarations.parameters))) {
+        this.orderPreparation = {
+          parameters: variableDeclarations.parameters,
+          allowUndeclared: variableDeclarations.allowUndeclared
+        };
         flag = true;
       }
     }

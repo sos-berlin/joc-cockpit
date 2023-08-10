@@ -1,9 +1,8 @@
 .input-overlay {
-  position: absolute;
-  z-index: 1;
-  width: 166px;
+  width: 191px;
   background-color: var(--background-color);
   border: none;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .bottom-border {
@@ -16,11 +15,6 @@
 
 .error .bottom-border {
   border-bottom-color: #a94442 !important;
-}
-
-.pos-rel .ant-picker-input {
-  pointer-events: auto;
-  cursor: pointer;
 }
 
 .bottom-border {
