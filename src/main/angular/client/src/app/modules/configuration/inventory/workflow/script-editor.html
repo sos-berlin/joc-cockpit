@@ -65,11 +65,11 @@
                 <span class="nav-text" translate>workflow.button.redo</span>
               </a>
             </li>
-            <li class="nav-item dropdown-separator">
+            <li class="nav-item dropdown-separator" *ngIf="cmOption.mode === 'javascript'">
               <span class="separator"></span>
             </li>
-            <li class="nav-item" nz-tooltip="shft+Alt-F">
-              <a class="nav-link">
+            <li class="nav-item" *ngIf="cmOption.mode === 'javascript'">
+              <a class="nav-link" nz-tooltip="shft+Alt-F">
                 <span class="nav-text" (click)="autoFormatCode($event)" translate>workflow.button.format</span>
               </a>
             </li>

@@ -16,14 +16,14 @@
         <div class="form-group row">
           <label class="col-sm-3 form-control-label" translate>workflow.wizard.label.title</label>
           <div class="col-sm-9">
-            <input [(ngModel)]="job.title" [appAutofocus]="true" class="form-control" name="title"
+            <input [(ngModel)]="job.title" class="form-control" name="title"
                    placeholder="{{'common.placeholder.title' | translate}}" type="text">
           </div>
         </div>
         <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="index" [nzAnimated]="false">
           <nz-tab [nzTitle]="'workflow.wizard.tab.jitl' | translate">
             <div class="form-group row">
-              <div class="col-sm-12 m-t-sm m-b">
+              <div class="col-sm-12 m-t-sm m-b" *ngIf="index == 0">
                 <input [(ngModel)]="wizard.searchText" [appAutofocus]="true" name="search"
                        placeholder="{{'common.placeholder.search' | translate}}" type="search">
                 <i (click)="wizard.searchText = '';" *ngIf="wizard.searchText" class="fa fa-times search-close"></i>
@@ -76,8 +76,8 @@
           <nz-tab *ngIf="node" [nzTitle]="'workflow.wizard.tab.jobTemplate' | translate">
             <div class="min-ht-150">
               <div>
-                <div>
-                  <input [(ngModel)]="wizard.searchText2" (blur)="clearSearchInput()"
+                <div *ngIf="index == 1">
+                  <input [appAutofocus]="true" [(ngModel)]="wizard.searchText2" (blur)="clearSearchInput()"
                          (ngModelChange)="onSearchInput($event)"
                          [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
                          type="search" class="input-tree-search"

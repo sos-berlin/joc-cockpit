@@ -531,10 +531,31 @@ export class ScheduleComponent {
     }
     this.updateSelectItems(true);
     if (this.schedule.configuration.orderParameterisations?.length > 0) {
-      if (!isEqual((variablesBeforeUpdate), JSON.stringify(this.schedule.configuration.orderParameterisations[0].variables))) {
-        // this.translate.get('inventory.message.changeDeductInWorkflow').subscribe(translatedValue => {
-        //   this.toasterService.warning(translatedValue);
-        // });
+      let arr = [];
+      for (let j in this.schedule.configuration.orderParameterisations[0].variables) {
+        arr.push({
+          name: this.schedule.configuration.orderParameterisations[0].variables[j].name,
+          value: this.schedule.configuration.orderParameterisations[0].variables[j].value
+        });
+      }
+      for (let j in this.schedule.configuration.orderParameterisations[0].forkListVariables) {
+        let value = [];
+        for (let x in this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList) {
+          for (let y in this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x]) {
+            let obj = {};
+            obj[this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x][y].name] = this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x][y].value;
+            value.push(obj);
+          }
+        }
+        arr.push({
+          name: this.schedule.configuration.orderParameterisations[0].forkListVariables[j].name,
+          value: value
+        });
+      }
+      if (!isEqual((variablesBeforeUpdate), JSON.stringify(arr))) {
+        this.translate.get('inventory.message.changeDeductInWorkflow').subscribe(translatedValue => {
+          this.toasterService.warning(translatedValue);
+        });
       }
     }
   }

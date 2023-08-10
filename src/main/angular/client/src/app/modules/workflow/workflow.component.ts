@@ -1607,28 +1607,30 @@ export class WorkflowComponent {
     }
   }
 
-  viewOrderState(state) {
+  viewOrderState(state, loading = true) {
     let workflowIds = [];
     for (let i in this.workflows) {
       workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
     }
-    this.sideBar = {
-      isVisible: true,
-      loading: true,
-      state,
-      orders: []
-    };
+    if(loading) {
+      this.sideBar = {
+        isVisible: true,
+        loading: loading,
+        state,
+        orders: []
+      };
+    }
     const request = {
       compact: true,
       controllerId: this.schedulerIds.selected,
       workflowIds: workflowIds,
       states: state == 'COMPLETED' ? ["FINISHED", "CANCELLED"] : [state]
     };
-
     this.getOrdersOnState(request);
   }
 
   private getOrdersOnState(obj) {
+    obj.limit = this.preferences.maxOrderRecords;
     this.coreService.post('orders', obj).subscribe((res: any) => {
       if (res) {
         this.sideBar.loading = false;
@@ -1699,7 +1701,6 @@ export class WorkflowComponent {
                 }
               }
               callOrderCount = true;
-
             } else if (args.eventSnapshots[j].eventType === 'WorkflowUpdated' && (args.eventSnapshots[j].path && this.workflows[i].path === args.eventSnapshots[j].path)) {
               this.coreService.post('workflow', {
                 controllerId: this.schedulerIds.selected,
@@ -1767,7 +1768,7 @@ export class WorkflowComponent {
         });
         if (this.sideBar?.isVisible) {
           if (this.sideBar.state) {
-            this.viewOrderState(this.sideBar.state);
+            this.viewOrderState(this.sideBar.state, false);
           }
         }
       }
