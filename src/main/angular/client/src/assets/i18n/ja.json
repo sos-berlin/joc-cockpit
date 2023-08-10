@@ -539,6 +539,8 @@
     "button.viewDocumentation": "ドキュメント表示",
     "button.viewHistory": "履歴表示",
     "button.showHistory": "履歴表示",
+    "button.switchToSpecificDate": "Switch to Specific Date",
+    "button.switchToRelativeDate": "Switch to Relative Date",
     "placeholder.search": "検索",
     "placeholder.name": "名称",
     "placeholder.value": "値",
