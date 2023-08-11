@@ -4206,7 +4206,7 @@ export class InventoryComponent {
     }
     let flag = false;
     if (releasable && origin.objectType) {
-      if (!origin.objectType.match(/CALENDAR/) && origin.objectType !== InventoryObject.SCHEDULE) {
+      if ((!origin.objectType.match(/CALENDAR/) && origin.objectType !== InventoryObject.SCHEDULE) || operation == 'recall') {
         this.releaseSingleObject(origin, operation);
         return;
       } else {

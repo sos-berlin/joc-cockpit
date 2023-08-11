@@ -27,6 +27,7 @@ import {
 import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {AbstractControl, NG_VALIDATORS, Validator} from "@angular/forms";
+import {OrderActionComponent} from "./order-action/order-action.component";
 
 declare const $;
 
@@ -288,6 +289,7 @@ export class OrderOverviewComponent {
   private pendingHTTPRequests$ = new Subject<void>();
 
   @ViewChild(TreeComponent, {static: false}) child;
+  @ViewChild(OrderActionComponent, {static: false}) actionChild;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private route: ActivatedRoute, private dataService: DataService, private searchPipe: SearchPipe,
@@ -896,7 +898,8 @@ export class OrderOverviewComponent {
     let url = this.orderOverviewAction[type].toLowerCase();
     if (operation && operation.match(/WithKill/)) {
       obj.kill = true;
-      operation = operation.match(/Cancel/) ? 'Cancel' : 'Suspend';
+
+      operation = operation.match(/cancel/) ? 'Cancel' : 'Suspend';
       url = operation === 'Cancel' ? 'cancel' : 'suspend';
     }
     if (operation.match(/Terminate/)) {

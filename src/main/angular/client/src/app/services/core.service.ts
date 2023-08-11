@@ -917,6 +917,174 @@ export class CoreService {
     }
   }
 
+  renderData(res, domId, object, obj, windowInstance?): void {
+    let lastLevel = '';
+    let lastClass = '';
+    const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
+    ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(main|success|error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
+      const div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
+      if (timestampRegex.test(match)) {
+        const arr = match.split(/\s+\[/);
+        let date;
+        if (arr && arr.length > 0) {
+          date = arr[0];
+        }
+        if (date && /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.(\d+)([+,-]){1}(\d+)$/.test(date)) {
+          const datetime = this.preferences.logTimezone ? this.getLogDateFormat(date, this.preferences.zone) : date;
+          if (this.preferences.logTimezone && datetime && timestampRegex.test(datetime)) {
+            match = match.replace(timestampRegex, datetime);
+          }
+        }
+      }
+
+      if (level) {
+        lastLevel = level;
+      } else {
+        if (prefix.search(/\[stdout\]/i) > -1) {
+          lastLevel = 'stdout';
+        } else if (prefix.search(/\[stderr\]/i) > -1) {
+          lastLevel = 'stderr';
+        } else if (prefix.search(/\[debug\]/i) > -1) {
+          lastLevel = 'debug';
+        } else if (prefix.search(/\[trace\]/i) > -1) {
+          lastLevel = 'trace';
+        } else if (prefix.search(/\[info\]/i) > -1) {
+          lastLevel = 'info';
+        } else if (prefix.search(/\[main\]/i) > -1) {
+          lastLevel = 'main';
+        } else if (prefix.search(/\[success\]/i) > -1) {
+          lastLevel = 'success';
+        } else if (lastLevel) {
+          level = lastLevel;
+        }
+      }
+
+      level = (level) ? level.trim().toLowerCase() : 'info';
+      if (level !== 'info') {
+        div.className += ' log_' + level;
+      }
+      if (level === 'main') {
+        div.className += ' main';
+        if (!object.checkBoxs.main) {
+          div.className += ' hide-block';
+        }
+      } else if (level === 'success') {
+        div.className += ' success';
+        if (!object.checkBoxs.success) {
+          div.className += ' hide-block';
+        }
+      } else if (level === 'stdout') {
+        div.className += ' stdout';
+        if (!object.checkBoxs.stdout) {
+          div.className += ' hide-block';
+        }
+      } else if (level === 'stderr') {
+        div.className += ' stderr';
+        if (!object.checkBoxs.stderr) {
+          div.className += ' hide-block';
+        }
+      } else if (level === 'fatal') {
+        obj.isFatalLevel = true;
+        div.className += ' fatal';
+        if (!object.checkBoxs.fatal) {
+          div.className += ' hide-block';
+        }
+      } else if (level === 'error') {
+        div.className += ' error';
+        if (!object.checkBoxs.error) {
+          div.className += ' hide-block';
+        }
+      } else if (level === 'warn') {
+        obj.isWarnLevel = true;
+        div.className += ' warn';
+        if (!object.checkBoxs.warn) {
+          div.className += ' hide-block';
+        }
+      } else if (level === 'trace') {
+        obj.isTraceLevel = true;
+        div.className += ' trace';
+        if (!object.checkBoxs.trace) {
+          div.className += ' hide-block';
+        }
+      } else if (prefix.search(/\[stdout\]/i) > -1) {
+        div.className += ' stdout';
+        if (!object.checkBoxs.stdout) {
+          div.className += ' hide-block';
+        }
+      } else if (prefix.search(/\[stderr\]/i) > -1) {
+        obj.isStdErrLevel = true;
+        div.className += ' stderr log_stderr';
+        if (!object.checkBoxs.stderr) {
+          div.className += ' hide-block';
+        }
+      } else if (prefix.search(/\[debug\]/i) > -1) {
+        div.className += ' debug log_debug';
+        if (!object.checkBoxs.debug) {
+          div.className += ' hide-block';
+        }
+      } else if (prefix.search(/\[trace\]/i) > -1) {
+        obj.isTraceLevel = true;
+        div.className += ' trace log_trace';
+        if (!object.checkBoxs.trace) {
+          div.className += ' hide-block';
+        }
+      } else if (prefix.search(/\[main\]/i) > -1) {
+        div.className += ' main log_main';
+        if (!object.checkBoxs.main) {
+          div.className += ' hide-block';
+        }
+      } else if (prefix.search(/\[info\]/i) > -1) {
+        obj.isInfoLevel = true;
+        div.className += ' info log_info';
+        if (!object.checkBoxs.info) {
+          div.className += ' hide-block';
+        }
+      } else {
+        div.className += ' scheduler scheduler_' + level;
+        if (!object.checkBoxs.scheduler) {
+          div.className += ' hide-block';
+        }
+      }
+
+      if (level.match('^debug') && !object.checkBoxs.debug) {
+        div.className += ' hide-block';
+      }
+      div.textContent = match.replace(/^\r?\n/, '');
+      if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Success\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Success\])/)) {
+        div.className += ' log_success';
+        lastClass = 'log_success';
+      } else if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Error\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Error\])/)) {
+        div.className += ' log_error';
+        lastClass = 'log_error';
+      } else if (lastLevel && lastClass) {
+        div.className += ' ' + lastClass;
+      } else if (!lastLevel) {
+        lastClass = '';
+      }
+
+      if(windowInstance) {
+        if (windowInstance.document.getElementById('logs')) {
+          if (!domId) {
+            windowInstance.document.getElementById('logs').appendChild(div);
+          } else {
+            try {
+              windowInstance.document.getElementById(domId).appendChild(div);
+            } catch (e) {
+
+            }
+          }
+        }
+      } else {
+        if (!domId) {
+          window.document.getElementById('logs')?.appendChild(div);
+        } else {
+          window.document.getElementById(domId)?.appendChild(div);
+        }
+      }
+      return '';
+    });
+  }
+
   showDocumentation(document: string, preferences: any): void {
     const link = './api/documentation/show?documentation=' + encodeURIComponent(document) + '&accessToken=' + this.authService.accessTokenId;
     if (preferences.isDocNewWindow === 'newWindow') {

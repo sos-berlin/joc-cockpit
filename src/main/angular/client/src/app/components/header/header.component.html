@@ -54,7 +54,7 @@
             <span (click)="navToOrderNoti(3,log)" class="cursor primary-text-hover-color">
               <span class="inline w-182">{{log.timestamp}}</span>
               <span class="inline w-64">[{{log.level}}]</span>
-              {{log.category}}
+              {{log['category']}}
               {{log.source}} {{log.message}}
             </span>
           </div>

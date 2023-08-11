@@ -167,13 +167,12 @@ export class BaseChartComponent implements OnChanges, AfterViewInit, OnDestroy, 
     }
 
     const source = observableFromEvent(window, 'resize');
-    const subscription = source.pipe(debounceTime(200)).subscribe(e => {
+    this.resizeSubscription = source.pipe(debounceTime(200)).subscribe(e => {
       this.update();
       if (this.cd) {
         this.cd.markForCheck();
       }
     });
-    this.resizeSubscription = subscription;
   }
 
   /**

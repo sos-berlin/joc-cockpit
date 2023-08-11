@@ -998,6 +998,7 @@ export class XmlEditorComponent {
         objectType: this.objectType
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -1057,6 +1058,7 @@ export class XmlEditorComponent {
           comments,
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -1083,6 +1085,7 @@ export class XmlEditorComponent {
           activeTab: (this.objectType !== 'NOTIFICATION') ? tab : undefined
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -1183,6 +1186,7 @@ export class XmlEditorComponent {
             comments,
           },
           nzFooter: null,
+          nzAutofocus: null,
           nzClosable: false,
           nzMaskClosable: false
         });
@@ -3799,6 +3803,7 @@ export class XmlEditorComponent {
         doc: this.doc,
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -4793,6 +4798,7 @@ export class XmlEditorComponent {
         importXsd: false
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -4907,6 +4913,7 @@ export class XmlEditorComponent {
             comments,
           },
           nzFooter: null,
+          nzAutofocus: null,
           nzClosable: false,
           nzMaskClosable: false
         });
@@ -4973,6 +4980,7 @@ export class XmlEditorComponent {
         importXsd: true
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });

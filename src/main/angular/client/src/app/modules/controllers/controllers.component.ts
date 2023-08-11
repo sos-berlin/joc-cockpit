@@ -1079,6 +1079,7 @@ export class ControllersComponent {
           objectName: agent.agentId,
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -1200,6 +1201,7 @@ export class ControllersComponent {
           objectName: sub.subagentId,
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -1249,6 +1251,7 @@ export class ControllersComponent {
           url: subagent ? 'agents/inventory/cluster/subagent/reset' : 'agent/reset'
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -1263,6 +1266,7 @@ export class ControllersComponent {
           objectName: obj.agentId,
         },
         nzFooter: null,
+        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });

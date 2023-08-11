@@ -140,6 +140,7 @@ export class FileUploaderComponent {
       this.importObj = this.modalData.importObj;
       this.otherSchema = this.modalData.otherSchema;
       this.importXsd = this.modalData.importXsd;
+      this.fileType = '.xsd, .xml';
     } else if (this.type === 'CONTROLLER') {
       this.fileType = '.zip, .tar.gz, .gz';
       this.controller = this.modalData.controller;

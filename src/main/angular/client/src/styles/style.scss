@@ -6962,6 +6962,13 @@ tr.tr-border td {
   }
 }
 
+.resource.sidebar-hover-effect:hover {
+  a.tree-search{
+    top: 54px;
+  }
+}
+
+
 #xmlLeftSidePanel.sidebar-hover-effect:hover {
   width: 30% !important
 }
@@ -7532,8 +7539,14 @@ tr.tr-border td:first-child {
   background-position: bottom;
   background-repeat: repeat-x;
 }
-.cm-matchhighlight {background-color: lightgreen}
-.CodeMirror-selection-highlight-scrollbar {background-color: green}
+
+.cm-matchhighlight {
+  background-color: lightgreen
+}
+
+.CodeMirror-selection-highlight-scrollbar {
+  background-color: green
+}
 
 .bg-highlight {
   background-color: #d9534f4f !important
@@ -9357,6 +9370,7 @@ cdk-virtual-scroll-viewport {
   margin-top: -9px;
   margin-left: -3px;
 }
+
 .graph-container {
   /* width */
   ::-webkit-scrollbar {

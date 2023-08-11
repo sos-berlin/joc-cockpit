@@ -1226,6 +1226,7 @@ export class CalendarComponent {
               comments
             },
             nzFooter: null,
+            nzAutofocus: null,
             nzClosable: false,
             nzMaskClosable: false
           });
@@ -1331,6 +1332,7 @@ export class CalendarComponent {
         flag: true
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
@@ -1361,6 +1363,7 @@ export class CalendarComponent {
         data
       },
       nzFooter: null,
+      nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
     });
