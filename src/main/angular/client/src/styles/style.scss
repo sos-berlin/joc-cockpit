@@ -6962,6 +6962,13 @@ tr.tr-border td {
   }
 }
 
+.resource.sidebar-hover-effect:hover {
+  a.tree-search{
+    top: 54px;
+  }
+}
+
+
 #xmlLeftSidePanel.sidebar-hover-effect:hover {
   width: 30% !important
 }

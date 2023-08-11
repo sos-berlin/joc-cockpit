@@ -425,10 +425,6 @@ export class AccountsComponent {
     this.dataService.announceFunction('IS_ACCOUNT_PROFILES_FALSE');
   }
 
-  showRole(account: any): void {
-    this.router.navigate(['/users/identity_service/role'], {queryParams: {account}}).then();
-  }
-
   /* ---------------------------- Action ----------------------------------*/
 
   showPermission(account: any): void {

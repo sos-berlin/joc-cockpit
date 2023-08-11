@@ -2888,6 +2888,7 @@
     "label.iamLdapSystemPassword": "LDAP System User Password",
     "label.iamLdapReadTimeout": "LDAP Read Timeout",
     "label.iamLdapConnectTimeout": "LDAP Connect Timeout",
+    "label.disableNestedGroupSearch": "Disable nested group search",
     "label.iamOidcName": "OIDC Name",
     "label.iamOidcAuthenticationUrl": "OIDC Authentication URL",
     "label.iamOidcClientId": "OIDC Client ID",
@@ -3113,7 +3114,8 @@
         "iamLdapSystemUser": "Wird ein LDAP System User Account angegeben, so erfolgt die 'bind' Operation mit diesem Konto. Bleibt die Einstellung leer, dann erfolgt die 'bind' Operation mit Anwenderkonto der Anmeldung.",
         "iamLdapSystemPassword": "Ein LDAP System User Password wird meist verlangt, wenn ein LDAP System User Account angegeben ist.",
         "iamLdapReadTimeout": "LDAP Read Timeout",
-        "iamLdapConnectTimeout": "LDAP Connect Timeout"
+        "iamLdapConnectTimeout": "LDAP Connect Timeout",
+        "disableNestedGroupSearch": "Disable nested group search"
       },
       "vault": {
         "iamVaultUrl": "Die URL, unter der das Vault Server REST API verfügbar ist.",

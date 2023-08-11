@@ -765,6 +765,13 @@ export class LogViewComponent {
   renderData(res: any, domId: string | null): void {
     this.loading = false;
     this.calculateHeight();
+    this.coreService.renderData(res, domId, this.object, {
+      isFatalLevel: this.isFatalLevel,
+      isWarnLevel: this.isWarnLevel,
+      isTraceLevel: this.isTraceLevel,
+      isStdErrLevel: this.isStdErrLevel,
+      isInfoLevel: this.isInfoLevel
+    }, POPOUT_MODALS['windowInstance']);
     let lastLevel = '';
     let lastClass = '';
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;

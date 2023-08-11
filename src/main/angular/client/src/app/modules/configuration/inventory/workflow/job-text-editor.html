@@ -52,7 +52,7 @@
           <div [ngClass]="{'has-error' : (invalidName || ((name.dirty || name.touched) && name.invalid))}"
                class="col-md-8 col-lg-9">
             <label class="w-full">
-              <input #name="ngModel" (blur)="checkJobInfo();invalidName = ''" [(ngModel)]="selectedNode.obj.jobName" [appAutofocus]="(!error || invalidName)"
+              <input #name="ngModel" (blur)="checkJobInfo();invalidName = ''" [(ngModel)]="selectedNode.obj.jobName" [appAutofocus]="(!error || !!invalidName)"
                      autocomplete="off"
                      class="form-control"
                      identifierValidation name="name" placeholder="{{'common.placeholder.name' | translate}}"

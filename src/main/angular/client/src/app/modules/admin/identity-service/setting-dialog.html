@@ -676,16 +676,26 @@
                        [nzTooltipMouseEnterDelay]="0.5"
                        class="col-sm-5 _600" translate>user.label.iamLdapGroupRolesMap</label>
               </div>
+              <div class="form-group row" *ngIf="currentObj.iamLdapGroupRolesMap">
+                <label [nz-tooltip]="'user.tooltips.ldap.disableNestedGroupSearch' | translate"
+                       [nzTooltipMouseEnterDelay]="0.5"
+                       class="col-sm-4"
+                       translate>user.label.disableNestedGroupSearch</label>
+                <div class="col-sm-6">
+                  <label [(ngModel)]="currentObj.iamLdapGroupRolesMap.iamLdapDisableNestedGroupSearch" name="iamLdapDisableNestedGroupSearch" nz-checkbox>
+                  </label>
+                </div>
+              </div>
               <div *ngIf="currentObj.iamLdapGroupRolesMap && currentObj.iamLdapGroupRolesMap.items.length > 0"
                    class="form-group row m-b-0">
-                <div class="col-md-5 m-b-sm" translate>user.label.group</div>
-                <div class="col-md-6 m-b-sm m-l-22" translate>user.label.roles</div>
+                <div class="col-md-4 m-b-sm" translate>user.label.group</div>
+                <div class="col-md-6 m-b-sm" translate>user.label.roles</div>
               </div>
               <ng-container *ngIf="currentObj.iamLdapGroupRolesMap && currentObj.iamLdapGroupRolesMap.items.length > 0">
                 <div *ngFor="let item of currentObj.iamLdapGroupRolesMap.items; let i = index"
                      class="form-group row m-b-0">
                   <div [ngClass]="{'has-error' : ((group.dirty || group.touched) && group.invalid)}"
-                       class="col-md-5 m-b-sm">
+                       class="col-md-4 m-b-sm">
                     <input #group="ngModel" [(ngModel)]="item.ldapGroupDn" class="form-control" name="group{{i}}"
                            placeholder="{{'user.placeholder.group' | translate}}" type="text">
                   </div>

@@ -266,7 +266,7 @@
             <tbody>
             <ng-template [ngForOf]="ajaxTable.data" [ngForTrackBy]="trackByFn" let-auditLog ngFor>
               <tr (click)="navToDeploymentHistory(auditLog)"
-                  [ngClass]="{'primary-text-hover-color cursor': auditLog.commitId || auditLog.category === 'DAILYPLAN'}">
+                  [ngClass]="{'primary-text-hover-color cursor': auditLog.commitId || auditLog['category'] === 'DAILYPLAN'}">
                 <td (click)="$event.stopPropagation()" *ngIf="!adtLog.current">
                   <i (click)="showDetail(auditLog);$event.stopPropagation()" *ngIf="!auditLog.show"
                      class="cursor fa fa-caret-down fa-lg"></i>
@@ -284,7 +284,7 @@
                   <span [innerHtml]="auditLog.created | stringToDate | highlight : adtLog.searchText"></span></td>
                 <td><span [innerHtml]="auditLog.account | highlight : adtLog.searchText"></span></td>
                 <td><span [innerHtml]="auditLog.request | highlight : adtLog.searchText"></span></td>
-                <td><span [innerHtml]="auditLog.category |translate | highlight : adtLog.searchText"></span></td>
+                <td><span [innerHtml]="auditLog['category'] |translate | highlight : adtLog.searchText"></span></td>
                 <td><span [innerHtml]="auditLog.comment | highlight : adtLog.searchText"></span></td>
                 <td>
                   <span *ngIf="auditLog.timeSpent">

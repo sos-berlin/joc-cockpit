@@ -151,7 +151,7 @@
               <span [innerHtml]="notify.jocId | highlight : filters.filter.searchText"></span>
             </td>
             <td (click)="$event.stopPropagation()">
-              <span [innerHtml]="notify.category | highlight : filters.filter.searchText"></span>
+              <span [innerHtml]="notify['category'] | highlight : filters.filter.searchText"></span>
             </td>
             <td (click)="$event.stopPropagation()">
               <span [innerHtml]="notify.source | highlight : filters.filter.searchText"></span>

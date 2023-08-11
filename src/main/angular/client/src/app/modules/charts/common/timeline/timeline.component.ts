@@ -8,8 +8,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   SimpleChanges,
-  ViewEncapsulation,
-  OnInit
+  ViewEncapsulation
 } from '@angular/core';
 import {brushX} from 'd3-brush';
 import {scaleLinear, scaleTime, scalePoint} from 'd3-scale';
@@ -185,11 +184,9 @@ export class Timeline implements OnChanges {
   getDims(): ViewDimensions {
     const width = this.view[0];
 
-    const dims = {
+    return {
       width,
       height: this.height
     };
-
-    return dims;
   }
 }

@@ -541,11 +541,11 @@ export class ScheduleComponent {
       for (let j in this.schedule.configuration.orderParameterisations[0].forkListVariables) {
         let value = [];
         for (let x in this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList) {
+          let obj = {};
           for (let y in this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x]) {
-            let obj = {};
             obj[this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x][y].name] = this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x][y].value;
-            value.push(obj);
           }
+          value.push(obj);
         }
         arr.push({
           name: this.schedule.configuration.orderParameterisations[0].forkListVariables[j].name,

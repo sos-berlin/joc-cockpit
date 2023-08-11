@@ -415,7 +415,7 @@
             </span>
             <span (click)="showOrders(instruction.else)" *ngIf="instruction.else && instruction.else.orderCount > 0 && (!instruction.else.show && !expandAll)"
                   class="order-count">{{instruction.else.orderCount}}</span>
-            <div *ngIf="instruction.else && instruction.else.instructions && instruction.else.instructions.length > 0 (instruction.else.show)" class="p-l">
+            <div *ngIf="instruction.else && instruction.else.instructions && instruction.else.instructions.length > 0 && (instruction.else.show)" class="p-l">
               <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)"
                         (onClick)="viewHistory($event)"
                         [addOrderToWorkflows]="addOrderToWorkflows" [configuration]="instruction.else" [expandAll]="expandAll"

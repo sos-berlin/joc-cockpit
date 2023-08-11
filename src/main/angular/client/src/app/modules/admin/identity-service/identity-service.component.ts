@@ -217,6 +217,11 @@ export class SettingModalComponent {
                   this.userObj.iamLdapHost = from < to ? this.currentObj.iamLdapServerUrl.substring(from, to) : '';
                 }
               }
+              if(res.configuration.objectType === 'LDAP'){
+                if (!this.currentObj.iamLdapGroupRolesMap) {
+                  this.currentObj.iamLdapGroupRolesMap = {items: []};
+                }
+              }
             }
           }
         } else {
@@ -389,6 +394,9 @@ export class SettingModalComponent {
     };
     if (!this.currentObj.iamLdapGroupRolesMap) {
       this.currentObj.iamLdapGroupRolesMap = {items: []};
+    }
+    if (!this.currentObj.iamLdapGroupRolesMap.items) {
+      this.currentObj.iamLdapGroupRolesMap.items = [];
     }
     if (!this.coreService.isLastEntryEmpty(this.currentObj.iamLdapGroupRolesMap.items, 'ldapGroupDn', '')) {
       this.currentObj.iamLdapGroupRolesMap.items.push(param);

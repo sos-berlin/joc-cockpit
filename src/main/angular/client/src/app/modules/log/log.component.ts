@@ -366,7 +366,7 @@ export class LogComponent {
     }).subscribe({
       next: (res: any) => {
         if (res) {
-          this.renderData(res.body, false);
+          this.renderData(res.body, null);
           if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
             const obj = {
               controllerId: this.controllerId,
@@ -745,159 +745,15 @@ export class LogComponent {
     this.loading = false;
   }
 
-  renderData(res, orderTaskFlag): void {
+  renderData(res: any, domId: string | null): void {
     this.loading = false;
     LogComponent.calculateHeight();
-    let lastLevel = '';
-    let lastClass = '';
-    const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
-    ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(main|success|error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
-      const div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
-      if (timestampRegex.test(match)) {
-        const arr = match.split(/\s+\[/);
-        let date;
-        if (arr && arr.length > 0) {
-          date = arr[0];
-        }
-        if (date && /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.(\d+)([+,-]){1}(\d+)$/.test(date)) {
-          const datetime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(date, this.preferences.zone) : date;
-          if (this.preferences.logTimezone && datetime && timestampRegex.test(datetime)) {
-            match = match.replace(timestampRegex, datetime);
-          }
-        }
-      }
-
-      if (level) {
-        lastLevel = level;
-      } else {
-        if (prefix.search(/\[stdout\]/i) > -1) {
-          lastLevel = 'stdout';
-        } else if (prefix.search(/\[stderr\]/i) > -1) {
-          lastLevel = 'stderr';
-        } else if (prefix.search(/\[debug\]/i) > -1) {
-          lastLevel = 'debug';
-        } else if (prefix.search(/\[trace\]/i) > -1) {
-          lastLevel = 'trace';
-        } else if (prefix.search(/\[info\]/i) > -1) {
-          lastLevel = 'info';
-        } else if (prefix.search(/\[main\]/i) > -1) {
-          lastLevel = 'main';
-        } else if (prefix.search(/\[success\]/i) > -1) {
-          lastLevel = 'success';
-        } else if (lastLevel) {
-          level = lastLevel;
-        }
-      }
-
-      level = (level) ? level.trim().toLowerCase() : 'info';
-      if (level !== 'info') {
-        div.className += ' log_' + level;
-      }
-      if (level === 'main') {
-        div.className += ' main';
-        if (!this.object.checkBoxs.main) {
-          div.className += ' hide-block';
-        }
-      } else if (level === 'success') {
-        div.className += ' success';
-        if (!this.object.checkBoxs.success) {
-          div.className += ' hide-block';
-        }
-      } else if (level === 'stdout') {
-        div.className += ' stdout';
-        if (!this.object.checkBoxs.stdout) {
-          div.className += ' hide-block';
-        }
-      } else if (level === 'stderr') {
-        div.className += ' stderr';
-        if (!this.object.checkBoxs.stderr) {
-          div.className += ' hide-block';
-        }
-      } else if (level === 'fatal') {
-        this.isFatalLevel = true;
-        div.className += ' fatal';
-        if (!this.object.checkBoxs.fatal) {
-          div.className += ' hide-block';
-        }
-      } else if (level === 'error') {
-        div.className += ' error';
-        if (!this.object.checkBoxs.error) {
-          div.className += ' hide-block';
-        }
-      } else if (level === 'warn') {
-        this.isWarnLevel = true;
-        div.className += ' warn';
-        if (!this.object.checkBoxs.warn) {
-          div.className += ' hide-block';
-        }
-      } else if (level === 'trace') {
-        this.isTraceLevel = true;
-        div.className += ' trace';
-        if (!this.object.checkBoxs.trace) {
-          div.className += ' hide-block';
-        }
-      } else if (prefix.search(/\[stdout\]/i) > -1) {
-        div.className += ' stdout';
-        if (!this.object.checkBoxs.stdout) {
-          div.className += ' hide-block';
-        }
-      } else if (prefix.search(/\[stderr\]/i) > -1) {
-        this.isStdErrLevel = true;
-        div.className += ' stderr log_stderr';
-        if (!this.object.checkBoxs.stderr) {
-          div.className += ' hide-block';
-        }
-      } else if (prefix.search(/\[debug\]/i) > -1) {
-        div.className += ' debug log_debug';
-        if (!this.object.checkBoxs.debug) {
-          div.className += ' hide-block';
-        }
-      } else if (prefix.search(/\[trace\]/i) > -1) {
-        this.isTraceLevel = true;
-        div.className += ' trace log_trace';
-        if (!this.object.checkBoxs.trace) {
-          div.className += ' hide-block';
-        }
-      } else if (prefix.search(/\[main\]/i) > -1) {
-        div.className += ' main log_main';
-        if (!this.object.checkBoxs.main) {
-          div.className += ' hide-block';
-        }
-      } else if (prefix.search(/\[info\]/i) > -1) {
-        this.isInfoLevel = true;
-        div.className += ' info log_info';
-        if (!this.object.checkBoxs.info) {
-          div.className += ' hide-block';
-        }
-      } else {
-        div.className += ' scheduler scheduler_' + level;
-        if (!this.object.checkBoxs.scheduler) {
-          div.className += ' hide-block';
-        }
-      }
-
-      if (level.match('^debug') && !this.object.checkBoxs.debug) {
-        div.className += ' hide-block';
-      }
-      div.textContent = match.replace(/^\r?\n/, '');
-      if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Success\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Success\])/)) {
-        div.className += ' log_success';
-        lastClass = 'log_success';
-      } else if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Error\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Error\])/)) {
-        div.className += ' log_error';
-        lastClass = 'log_error';
-      } else if (lastLevel && lastClass) {
-        div.className += ' ' + lastClass;
-      } else if (!lastLevel) {
-        lastClass = '';
-      }
-
-      if (!orderTaskFlag) {
-        window.document.getElementById('logs')?.appendChild(div);
-      } else {
-        window.document.getElementById(orderTaskFlag)?.appendChild(div);
-      }
-      return '';
+    this.coreService.renderData(res, domId, this.object, {
+      isFatalLevel: this.isFatalLevel,
+      isWarnLevel: this.isWarnLevel,
+      isTraceLevel: this.isTraceLevel,
+      isStdErrLevel: this.isStdErrLevel,
+      isInfoLevel: this.isInfoLevel
     });
   }
 
