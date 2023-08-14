@@ -60,6 +60,9 @@
                   nz-menu-item>
                 <a translate>{{'dailyPlan.button.setParameters' | translate}} ..</a>
               </li>
+              <li (click)="coreService.copyArguments(value, 'variables')" nz-menu-item [nzDisabled]="!value.variables">
+                <a translate>common.button.copyArguments</a>
+              </li>
               <li (click)="coreService.copyLink('order',value.orderId, value.workflowPath)" [nzDisabled]="value.state && value.state._text !== 'FINISHED'"
                   nz-menu-item>
                 <a translate>common.button.copyLinkToObject</a>

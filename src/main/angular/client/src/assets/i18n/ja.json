@@ -505,6 +505,7 @@
     "button.confirm": "確認",
     "button.saveAs": "名前を付けて保存",
     "button.submit": "登録",
+    "button.forceSubmit": "Force Submit",
     "button.search": "検索",
     "button.duplicate": "複製",
     "button.copy": "コピー",
@@ -545,6 +546,7 @@
     "button.showHistory": "履歴表示",
     "button.switchToSpecificDate": "Switch to Specific Date",
     "button.switchToRelativeDate": "Switch to Relative Date",
+    "button.copyArguments": "Copy arguments",
     "placeholder.search": "検索",
     "placeholder.name": "名称",
     "placeholder.value": "値",
@@ -2295,6 +2297,7 @@
     "button.modifyVariables": "変数編集",
     "button.showLog": "ログ表示",
     "button.assignParameterizationFromSchedules": "スケジュールから変数設定",
+    "button.assignFromSchedule": "Assign from Schedules",
     "placeholder.selectStartNode": "開始ノード選択",
     "placeholder.selectEndNode": "終了ノード選択",
     "placeholder.selectBlockPosition": "ブロック位置選択",
@@ -2888,6 +2891,7 @@
     "label.iamLdapSystemPassword": "LDAPシステムパスワード",
     "label.iamLdapReadTimeout": "LDAPリードタイムアウト",
     "label.iamLdapConnectTimeout": "LDAP接続タイムアウト",
+    "label.disableNestedGroupSearch": "Disable nested group search",
     "label.iamOidcName": "OIDC名",
     "label.iamOidcAuthenticationUrl": "OIDC認証URL",
     "label.iamOidcClientId": "OIDCクライアントID",
@@ -3113,7 +3117,8 @@
         "iamLdapSystemUser": "LDAPシステムユーザー",
         "iamLdapSystemPassword": "LDAPシステムパスワード",
         "iamLdapReadTimeout": "LDAPリードタイムアウト",
-        "iamLdapConnectTimeout": "LDAP接続タイムアウト"
+        "iamLdapConnectTimeout": "LDAP接続タイムアウト",
+        "disableNestedGroupSearch": "Disable nested group search"
       },
       "vault": {
         "iamVaultUrl": "VaultサーバーREST APIにアクセスするためのURL",

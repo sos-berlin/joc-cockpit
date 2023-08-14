@@ -113,12 +113,9 @@
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>common.label.state</label>
       <div [ngClass]="{'col-md-6': isSearch}" class="col-sm-8">
-        <nz-checkbox-wrapper (nzOnChange)="stateChange($event)">
-          <ng-container *ngFor="let option of checkOptions">
-            <label [name]="option.text" [ngModel]="option.checked" [nzValue]="option.status" nz-checkbox><span
-              translate>common.label.{{option.text}}</span></label>
-          </ng-container>
-        </nz-checkbox-wrapper>
+        <nz-radio-group name="state" [(ngModel)]="filter.state">
+          <label nz-radio  *ngFor="let option of checkOptions" [nzValue]="option.status" ><span translate>common.label.{{option.text}}</span></label>
+        </nz-radio-group>
       </div>
     </div>
     <div class="form-group row ">

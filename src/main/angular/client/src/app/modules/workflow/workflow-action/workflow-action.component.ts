@@ -107,6 +107,8 @@ export class AddOrderModalComponent {
     orderName: '',
     name: ''
   }
+  isCollapsed: boolean[] = [];
+  showPasteButton: boolean = false;
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
               private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService) {
@@ -135,7 +137,88 @@ export class AddOrderModalComponent {
     }
     this.getPositions();
     this.updateVariableList();
+    this.checkClipboardContent();
   }
+
+  toggleCollapse(k: number): void {
+    if (this.preferences.listVariableCollapse) {
+      if (this.allValuesAssigned(this.forkListVariables[k])) {
+        this.isCollapsed[k] = !this.isCollapsed[k];
+      }
+    } else {
+      this.isCollapsed[k] = !this.isCollapsed[k];
+    }
+  }
+
+  collapseAll(): void {
+    for (let k = 0; k < this.forkListVariables.length; k++) {
+      if (this.preferences.listVariableCollapse) {
+        if (this.allValuesAssigned(this.forkListVariables[k])) {
+          this.isCollapsed[k] = true;
+        }
+      } else {
+        this.isCollapsed[k] = true;
+      }
+    }
+  }
+
+  allValuesAssigned(listVariables): boolean {
+    for (let actualListArr of listVariables.actualList) {
+      for (let argument of actualListArr) {
+        if (!argument.value) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  async handlePaste() {
+    try {
+      let data = navigator.clipboard.readText();
+      if(data && typeof data == 'string') {
+        const clipboardData = JSON.parse(await navigator.clipboard.readText());
+        console.log(clipboardData)
+        if (this.forkListVariables && this.forkListVariables.length > 0) {
+          this.forkListVariables.forEach((listVariables) => {
+            const data = clipboardData[listVariables.name];
+            // Check if data exists for the current listVariables
+            if (data) {
+              if (typeof data === 'object') {
+                listVariables.actualList.forEach((actualListArr) => {
+                  actualListArr.forEach((argument) => {
+                    const nestedData = data[argument.name];
+                    if (nestedData !== undefined) {
+                      argument.value = nestedData;
+                    }
+                  });
+                });
+              } else if (typeof data === 'string') {
+                listVariables.value = data;
+              }
+            }
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Error reading clipboard or processing data', err);
+    }
+  }
+
+  async checkClipboardContent() {
+    try {
+      const clipboardData = JSON.parse(await navigator.clipboard.readText());
+      if (clipboardData && typeof clipboardData === 'object') {
+        this.showPasteButton = this.forkListVariables.some(item => item.list);
+      } else {
+        this.showPasteButton = false;
+      }
+    } catch (err) {
+      this.showPasteButton = false;
+      console.error('Error reading clipboard', err);
+    }
+  }
+
 
   private getPositions(): void {
     this.coreService.post('orders/add/positions', {
@@ -346,7 +429,7 @@ export class AddOrderModalComponent {
     }
 
     if (this.order.startPosition) {
-      if(this.newPositions && this.newPositions?.size > -1){
+      if (this.newPositions && this.newPositions?.size > -1) {
         if (this.newPositions.has(this.order.startPosition)) {
           order.startPosition = (this.newPositions.get(this.order.startPosition));
         }
@@ -360,11 +443,11 @@ export class AddOrderModalComponent {
     if (this.order.endPositions && this.order.endPositions.length > 0) {
       order.endPositions = [];
       this.order.endPositions.forEach(pos => {
-        if(this.newPositions && this.newPositions?.size > -1){
+        if (this.newPositions && this.newPositions?.size > -1) {
           if (this.newPositions.has(pos)) {
             order.endPositions.push((this.newPositions.get(pos)));
           }
-        } else if(this.positions && this.positions?.size) {
+        } else if (this.positions && this.positions?.size) {
           if (this.positions.has(pos)) {
             order.endPositions.push((this.positions.get(pos)));
           }
@@ -486,7 +569,35 @@ export class AddOrderModalComponent {
     }
   }
 
-  selectOrder(name): void {
+  selectVarFromSchedule(name, listVariables): void {
+    listVariables.orderName = '';
+    for (let i in this.schedules) {
+      if (this.schedules[i].name == name) {
+        
+        listVariables = this.schedules[i];
+        if (listVariables.orderParameterisations && listVariables.orderParameterisations.length == 1) {
+          this.selectOrder(listVariables.orderParameterisations[0].name || '-');
+        }
+        break;
+      }
+    }
+  }
+
+  private selectVarForOrder(name, listVariables): void{
+    for (let i in listVariables.orderParameterisations) {
+      if (listVariables.orderParameterisations[i].orderName == name ||
+        (listVariables.orderParameterisations[i].orderName == '' && name == '-') || listVariables.orderParameterisations.length == 1) {
+        this.updateVariablesFromSchedule(listVariables.orderParameterisations[i]);
+        break;
+      }
+    }
+  }
+
+  selectOrder(name, listVariables?): void {
+    if(listVariables){
+      this.selectVarForOrder(name, listVariables);
+      return;
+    }
     this.order.reload = false;
     if (name && name !== '-') {
       this.order.orderId = name;
@@ -633,6 +744,11 @@ export class AddOrderModalComponent {
         }
       });
     }
+  }
+
+  assignFromSchedule(variable): void {
+
+    this.assignParameterizationFromSchedules();
   }
 }
 

@@ -96,12 +96,47 @@
                            [reload]="order.reload" [type]="'END'" [workflow]="workflow"></app-node-position>
       </div>
     </div>
+    <div class="form-group row">
+      <div class="col-sm-12">
+        <a (click)="assignParameterizationFromSchedules()" class="text-u-l" translate>order.button.assignParameterizationFromSchedules</a>
+      </div>
+    </div>
+    <div *ngIf="schedules && schedules.length > 0" class="form-group row">
+      <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
+      <div class="col-sm-6">
+        <nz-select [(ngModel)]="object.name" name="schedule" nzAllowClear (ngModelChange)="selectSchedule($event)"
+                   nzShowSearch>
+          <nz-option *ngFor="let option of schedules | orderBy: 'name'" [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div *ngIf="selectedSchedule && selectedSchedule.orderParameterisations && selectedSchedule.orderParameterisations.length > 1"
+         class="form-group row">
+      <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
+      <div class="col-sm-6">
+        <nz-select [(ngModel)]="object.orderName" name="order" nzAllowClear
+                   nzShowSearch (ngModelChange)="selectOrder($event)" >
+          <nz-option *ngFor="let option of selectedSchedule.orderParameterisations" [nzLabel]="option.orderName || '-'"
+                     [nzValue]="option.orderName || '-'"></nz-option>
+        </nz-select>
+      </div>
+    </div>
     <div *ngIf="forkListVariables && forkListVariables.length > 0">
       <div *ngFor="let listVariables of forkListVariables; let k = index">
-        <div class="m-b-sm">{{'order.label.variableList' | translate}}:
-          <b>{{listVariables.name}}</b>
+
+        <!-- Toggle -->
+        <div class="m-b-sm">
+          <i (click)="toggleCollapse(k)"
+             nz-icon
+             [nzType]="isCollapsed[k] ? 'right' : 'down'"
+             nzTheme="outline"
+             style="cursor: pointer;"></i>
+          {{'order.label.variableList' | translate}}: <b>{{listVariables.name}}</b>
         </div>
-        <div *ngIf="listVariables.list" class="p-a-sm b-a m-b">
+
+
+        <!-- Conditional Content based on Toggle State -->
+        <div *ngIf="!isCollapsed[k]" class="p-a-sm b-a m-b">
           <div class="form-group row m-b-0 m-l-12">
             <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
             <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
@@ -171,6 +206,34 @@
                      class="col-md-1 p-l-0">
                   <a><i (click)="removeVariableFromList(i, listVariables.actualList)"
                         class="fa fa-times m-t-sm text-muted"></i></a>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="form-group row">
+                <div class="col-sm-12">
+                  <a (click)="assignFromSchedule(listVariables)" class="text-u-l" translate>order.button.assignFromSchedule</a>
+                </div>
+              </div>
+              <div *ngIf="schedules && schedules.length > 0" class="form-group row">
+                <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
+                <div class="col-sm-6">
+                  <nz-select [(ngModel)]="listVariables.name" name="schedule{{i}}" nzAllowClear (ngModelChange)="selectVarFromSchedule($event, listVariables)"
+                             nzShowSearch>
+                    <nz-option *ngFor="let option of schedules | orderBy: 'name'" [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
+                  </nz-select>
+                </div>
+              </div>
+              <div *ngIf="listVariables.orderParameterisations && listVariables.orderParameterisations.length > 1"
+                   class="form-group row">
+                <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
+                <div class="col-sm-6">
+                  <nz-select [(ngModel)]="listVariables.orderName" name="order{{i}}" nzAllowClear
+                             nzShowSearch (ngModelChange)="selectOrder($event, listVariables)" >
+                    <nz-option *ngFor="let option of listVariables.orderParameterisations" [nzLabel]="option.orderName || '-'"
+                               [nzValue]="option.orderName || '-'"></nz-option>
+                  </nz-select>
                 </div>
               </div>
             </div>
@@ -301,31 +364,6 @@
       <!--        <a class="text-u-l" (click)="addArgument(true)" translate>order.button.addVariable</a>-->
       <!--      </div>-->
     </div>
-    <div class="form-group row">
-      <div class="col-sm-12">
-        <a (click)="assignParameterizationFromSchedules()" class="text-u-l" translate>order.button.assignParameterizationFromSchedules</a>
-      </div>
-    </div>
-    <div *ngIf="schedules && schedules.length > 0" class="form-group row">
-      <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
-      <div class="col-sm-6">
-        <nz-select [(ngModel)]="object.name" name="schedule" nzAllowClear (ngModelChange)="selectSchedule($event)"
-                   nzShowSearch>
-          <nz-option *ngFor="let option of schedules" [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
-        </nz-select>
-      </div>
-    </div>
-    <div *ngIf="selectedSchedule && selectedSchedule.orderParameterisations && selectedSchedule.orderParameterisations.length > 1"
-         class="form-group row">
-      <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
-      <div class="col-sm-6">
-        <nz-select [(ngModel)]="object.orderName" name="order" nzAllowClear
-                   nzShowSearch (ngModelChange)="selectOrder($event)" >
-          <nz-option *ngFor="let option of selectedSchedule.orderParameterisations" [nzLabel]="option.orderName || '-'"
-                     [nzValue]="option.orderName || '-'"></nz-option>
-        </nz-select>
-      </div>
-    </div>
   </div>
   <div class="modal-footer text-left">
     <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
@@ -334,6 +372,7 @@
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
+    <i class="fa fa-paste" *ngIf="showPasteButton" (click)="handlePaste()" ></i>
   </div>
 </form>
 

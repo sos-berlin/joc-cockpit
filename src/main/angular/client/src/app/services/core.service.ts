@@ -2858,4 +2858,15 @@ export class CoreService {
   getDefaultJSFunc(): string {
     return "class JS7Job extends js7.Job {\n\tprocessOrder(js7Step) {\n\t\tjs7Step.getLogger().info('hello world');\n\t\t// do some stuff\n\t}\n}";
   }
+
+  copyArguments(data, type): void{
+ 
+    navigator.clipboard.writeText(JSON.stringify(data[type])).then(() => {
+      console.log('Text successfully copied to clipboard');
+    }).catch(err => {
+      console.error('Could not copy text to clipboard', err);
+    });
+  }
+
+
 }

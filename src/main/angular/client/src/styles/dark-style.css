@@ -1124,6 +1124,10 @@ div.CodeMirror-selected {
   color: #F8F8F8 !important;
 }
 
+.cm-s-default .cm-property {
+  color: #fff
+}
+
 .CodeMirror-activeline-background {
   background: #314151 !important;
 }

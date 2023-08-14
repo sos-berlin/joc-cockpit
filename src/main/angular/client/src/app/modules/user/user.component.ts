@@ -1,20 +1,20 @@
 import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {registerLocaleData} from '@angular/common';
+import {HttpHeaders} from "@angular/common/http";
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {ToastrService} from 'ngx-toastr';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzI18nService} from 'ng-zorro-antd/i18n';
-import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
-import {registerLocaleData} from '@angular/common';
+import {NzUploadFile} from "ng-zorro-antd/upload";
 import {ChangePasswordComponent} from "../../components/change-password/change-password.component";
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {CommentModalComponent} from "../../components/comment-modal/comment.component";
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
-import {NzUploadFile} from "ng-zorro-antd/upload";
 import {ByteToSizePipe} from "../../pipes/core.pipe";
-import {HttpHeaders} from "@angular/common/http";
 
 declare var $;
 
@@ -526,7 +526,7 @@ export class ImportKeyModalComponent {
       this.required = true;
       this.display = true;
     }
-    
+
     if (this.type === 'ca') {
       this.key.keyAlg = 'ECDSA';
     }
