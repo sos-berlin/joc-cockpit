@@ -826,12 +826,17 @@
                           nz-menu-item>
                         <a translate>history.button.addWorkflowToIgnoreList</a>
                       </li>
+                      <li nz-menu-divider></li>
                       <li (click)="showAllPanelFuc(history)" nz-menu-item>
                         <a translate>history.button.expandAll</a>
                       </li>
                       <li (click)="hideAllPanelFuc(history)" nz-menu-item>
                         <a translate>history.button.collapseAll</a>
                       </li>
+                      <li (click)="coreService.copyArguments(history, 'arguments')" nz-menu-item [nzDisabled]="!history.arguments">
+                        <a translate>common.button.copyArguments</a>
+                      </li>
+                      <li nz-menu-divider></li>
                       <li (click)="coreService.copyLink('order',history.orderId, history.workflow)" nz-menu-item>
                         <a translate>common.button.copyLinkToObject</a>
                       </li>

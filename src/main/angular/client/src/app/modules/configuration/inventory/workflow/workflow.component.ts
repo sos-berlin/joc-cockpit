@@ -4110,6 +4110,7 @@ export class WorkflowComponent {
     };
     this.modal.create({
       nzTitle: undefined,
+      nzClassName: 'lg',
       nzContent: ShowReferenceComponent,
       nzData: {
         obj,

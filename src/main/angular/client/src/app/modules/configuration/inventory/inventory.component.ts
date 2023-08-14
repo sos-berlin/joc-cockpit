@@ -2475,15 +2475,19 @@ export class JsonEditorModalComponent {
     this.clipboardService.copyFromContent(this.editor.getText());
   }
 
-  onSubmit(): void {
+  onSubmit(isForce = false): void {
     this.submitted = true;
-    this.validateByURL(this.editor.get(), (isValid: boolean) => {
-      if (isValid) {
-        this.activeModal.close(this.editor.get());
-      }
-      this.submitted = false;
-      this.ref.detectChanges();
-    });
+    if (isForce) {
+      this.activeModal.close(this.editor.get());
+    } else {
+      this.validateByURL(this.editor.get(), (isValid: boolean) => {
+        if (isValid) {
+          this.activeModal.close(this.editor.get());
+        }
+        this.submitted = false;
+        this.ref.detectChanges();
+      });
+    }
   }
 
   private parseErrorMsg(res: any, cb: any): void {

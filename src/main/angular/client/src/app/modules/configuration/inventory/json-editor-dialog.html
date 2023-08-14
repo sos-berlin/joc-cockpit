@@ -29,6 +29,11 @@
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
+    <button *ngIf="edit && isError" [disabled]="submitted" class="btn btn-secondary btn-sm"
+            type="button" (click)="onSubmit(true)">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.forceSubmit' | translate}}
+    </button>
     <button (click)="copyToClipboard()" class="btn btn-default btn-sm"
             translate type="button">log.button.copyToClipboard
     </button>

@@ -564,9 +564,9 @@ export class SearchComponent {
   scheduleTree = [];
   workflowTree = [];
   checkOptions = [
-    {status: 'PLANNED', text: 'planned', checked: false},
-    {status: 'SUBMITTED', text: 'submitted', checked: false},
-    {status: 'FINISHED', text: 'finished', checked: false}
+    {status: 'PLANNED', text: 'planned'},
+    {status: 'SUBMITTED', text: 'submitted'},
+    {status: 'FINISHED', text: 'finished'}
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService) {
@@ -584,14 +584,6 @@ export class SearchComponent {
     }
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getFolderTree();
-    if (this.filter.state && this.filter.state.length > 0) {
-      this.checkOptions = this.checkOptions.map(item => {
-        return {
-          ...item,
-          checked: this.filter.state.indexOf(item.status) > -1
-        };
-      });
-    }
   }
 
   getFolderTree(): void {
@@ -617,10 +609,6 @@ export class SearchComponent {
     } else {
       this.filter.scheduleFolders.splice(this.filter.scheduleFolders.indexOf(path), 1);
     }
-  }
-
-  stateChange(value: string[]): void {
-    this.filter.state = value;
   }
 
   checkFilterName(): void {
@@ -1492,13 +1480,8 @@ export class DailyPlanComponent {
     if (filter.late) {
       obj.late = true;
     }
-    if (filter.state && filter.state.length > 0) {
-      obj.states = filter.state.filter((state) => {
-        return state !== 'ALL';
-      });
-      if (obj.states.length === 0) {
-        delete obj.states;
-      }
+    if (filter.state && filter.state !== 'ALL') {
+      obj.states = [filter.state];
     }
     return obj;
   }

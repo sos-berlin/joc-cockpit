@@ -530,32 +530,34 @@ export class ScheduleComponent {
       }
     }
     this.updateSelectItems(true);
-    if (this.schedule.configuration.orderParameterisations?.length > 0) {
-      let arr = [];
-      for (let j in this.schedule.configuration.orderParameterisations[0].variables) {
-        arr.push({
-          name: this.schedule.configuration.orderParameterisations[0].variables[j].name,
-          value: this.schedule.configuration.orderParameterisations[0].variables[j].value
-        });
-      }
-      for (let j in this.schedule.configuration.orderParameterisations[0].forkListVariables) {
-        let value = [];
-        for (let x in this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList) {
-          let obj = {};
-          for (let y in this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x]) {
-            obj[this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x][y].name] = this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x][y].value;
-          }
-          value.push(obj);
+    if (this.schedule.released) {
+      if (this.schedule.configuration.orderParameterisations?.length > 0) {
+        let arr = [];
+        for (let j in this.schedule.configuration.orderParameterisations[0].variables) {
+          arr.push({
+            name: this.schedule.configuration.orderParameterisations[0].variables[j].name,
+            value: this.schedule.configuration.orderParameterisations[0].variables[j].value
+          });
         }
-        arr.push({
-          name: this.schedule.configuration.orderParameterisations[0].forkListVariables[j].name,
-          value: value
-        });
-      }
-      if (!isEqual((variablesBeforeUpdate), JSON.stringify(arr))) {
-        this.translate.get('inventory.message.changeDeductInWorkflow').subscribe(translatedValue => {
-          this.toasterService.warning(translatedValue);
-        });
+        for (let j in this.schedule.configuration.orderParameterisations[0].forkListVariables) {
+          let value = [];
+          for (let x in this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList) {
+            let obj = {};
+            for (let y in this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x]) {
+              obj[this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x][y].name] = this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x][y].value;
+            }
+            value.push(obj);
+          }
+          arr.push({
+            name: this.schedule.configuration.orderParameterisations[0].forkListVariables[j].name,
+            value: value
+          });
+        }
+        if (!isEqual((variablesBeforeUpdate), JSON.stringify(arr))) {
+          this.translate.get('inventory.message.changeDeductInWorkflow').subscribe(translatedValue => {
+            this.toasterService.warning(translatedValue);
+          });
+        }
       }
     }
   }
