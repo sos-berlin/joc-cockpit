@@ -35,11 +35,9 @@
                class="fa fa-caret-down "></i></a></th>
           <th (click)="sort('orderState._text','orderHistory')" class="dynamic-thead"><a>
             <span class="p-r-xs" translate>history.label.orderState</span>
-            <i
-              *ngIf="workflowFilters.historyFilter.sortBy == 'orderState._text' && !workflowFilters.historyFilter.reverse"
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'orderState._text' && !workflowFilters.historyFilter.reverse"
               class="fa fa-caret-up "></i>
-            <i
-              *ngIf="workflowFilters.historyFilter.sortBy == 'orderState._text' && workflowFilters.historyFilter.reverse"
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'orderState._text' && workflowFilters.historyFilter.reverse"
               class="fa fa-caret-down "></i></a></th>
           <th (click)="sort('plannedTime','orderHistory')" class="dynamic-thead"><a>
             <span class="p-r-xs" translate>history.label.plannedTime</span>
@@ -78,7 +76,7 @@
                 </button>
                 <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
                   <ul nz-menu>
-                    <li (click)="coreService.copyArguments(history, 'arguments')" nz-menu-item [nzDisabled]="!history.arguments">
+                    <li (click)="coreService.copyArguments(history, 'arguments', message)" nz-menu-item [nzDisabled]="!history.arguments">
                       <a translate>common.button.copyArguments</a>
                     </li>
                   </ul>

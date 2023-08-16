@@ -1816,7 +1816,8 @@
       "label.deployed": "配置済",
       "label.released": "リリース済",
       "label.controller": "コントローラー",
-      "label.dailyPlan": "実行計画"
+      "label.dailyPlan": "実行計画",
+      "label.useRelativePathOnly": "Use Relative Path Only"
     },
     "repository": {
       "label.filter": "フィルター",
@@ -2018,6 +2019,9 @@
         "cycle": {
           "onlyOnePeriod": "１回のみ"
         }
+      },
+      "export": {
+        "useRelativePathOnly": "Use Relative Path Only"
       }
     },
     "search": {

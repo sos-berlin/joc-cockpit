@@ -2859,10 +2859,18 @@ export class CoreService {
     return "class JS7Job extends js7.Job {\n\tprocessOrder(js7Step) {\n\t\tjs7Step.getLogger().info('hello world');\n\t\t// do some stuff\n\t}\n}";
   }
 
-  copyArguments(data, type): void{
- 
-    navigator.clipboard.writeText(JSON.stringify(data[type])).then(() => {
+  copyArguments(data, type, message): void{
+
+    let arr: any[];
+    if(!isArray(data[type])){
+      arr = this.convertObjectToArray(data, type);
+    } else {
+      arr = data[type];
+    }
+
+    navigator.clipboard.writeText(JSON.stringify(arr)).then(() => {
       console.log('Text successfully copied to clipboard');
+      this.showCopyMessage(message);
     }).catch(err => {
       console.error('Could not copy text to clipboard', err);
     });

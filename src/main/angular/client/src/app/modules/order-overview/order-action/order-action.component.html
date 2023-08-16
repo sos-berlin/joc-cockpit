@@ -59,7 +59,7 @@
       </li>
       <li *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')"
           nz-menu-divider></li>
-      <li (click)="coreService.copyArguments(order, 'arguments')" nz-menu-item [nzDisabled]="!order.arguments">
+      <li (click)="coreService.copyArguments(order, 'arguments', message)" nz-menu-item [nzDisabled]="!order.arguments">
         <a translate>common.button.copyArguments</a>
       </li>
       <li (click)="showLog(order)" *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')"

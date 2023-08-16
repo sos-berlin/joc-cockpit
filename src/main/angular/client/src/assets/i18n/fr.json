@@ -1817,7 +1817,8 @@
       "label.deployed": "Déployé",
       "label.released": "Publié",
       "label.controller": "Contrôleur",
-      "label.dailyPlan": "Automatisation"
+      "label.dailyPlan": "Automatisation",
+      "label.useRelativePathOnly": "Use Relative Path Only"
     },
     "repository": {
       "label.filter": "Filtre",
@@ -2019,6 +2020,9 @@
         "cycle": {
           "onlyOnePeriod": "Une seule Période"
         }
+      },
+      "export": {
+        "useRelativePathOnly": "Use Relative Path Only"
       }
     },
     "search": {

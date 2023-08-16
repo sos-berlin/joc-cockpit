@@ -18,6 +18,7 @@ import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {DataService} from '../../services/data.service';
 import {ExcelService} from '../../services/excel.service';
+import {NzMessageService} from "ng-zorro-antd/message";
 
 declare const JSGantt: any;
 declare let jsgantt: any;
@@ -746,7 +747,7 @@ export class DailyPlanComponent {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private groupByPipe: GroupByPipe, private toasterService: ToastrService,
               private modal: NzModalService, private translate: TranslateService, private searchPipe: SearchPipe,
-              private orderPipe: OrderPipe, private excelService: ExcelService, private router: Router) {
+              public message: NzMessageService, private orderPipe: OrderPipe, private excelService: ExcelService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });

@@ -1019,6 +1019,7 @@ export class ExportComponent {
   path = '';
   securityLevel = '';
   exportObj = {
+    useShortPath: false,
     isRecursive: false,
     controllerId: '',
     forSigning: false,
@@ -1533,7 +1534,7 @@ export class ExportComponent {
           };
         }
       }
-
+      obj.useShortPath = this.exportObj.useShortPath;
       if (this.object.folders && this.object.folders.length > 0) {
         this.exportFolder(obj);
       } else {

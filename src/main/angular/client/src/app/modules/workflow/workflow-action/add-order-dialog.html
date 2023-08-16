@@ -125,15 +125,11 @@
       <div *ngFor="let listVariables of forkListVariables; let k = index">
 
         <!-- Toggle -->
-        <div class="m-b-sm">
-          <i (click)="toggleCollapse(k)"
-             nz-icon
-             [nzType]="isCollapsed[k] ? 'right' : 'down'"
-             nzTheme="outline"
-             style="cursor: pointer;"></i>
+        <div class="m-b-sm cursor" (click)="toggleCollapse(k)">
+          <i nz-icon [nzType]="isCollapsed[k] ? 'right' : 'down'"
+             nzTheme="outline"></i>
           {{'order.label.variableList' | translate}}: <b>{{listVariables.name}}</b>
         </div>
-
 
         <!-- Conditional Content based on Toggle State -->
         <div *ngIf="!isCollapsed[k]" class="p-a-sm b-a m-b">
@@ -141,14 +137,15 @@
             <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
             <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
           </div>
-          <div *ngFor="let actualListArr of listVariables.actualList; let i=index" [ngClass]="{'b-b m-b-sm': i !== listVariables.actualList.length - 1}"
+          <div *ngFor="let actualListArr of listVariables.actualList; let i=index"
+               [ngClass]="{'b-b m-b-sm': i !== listVariables.actualList.length - 1}"
                class="form-group row m-b-0 m-l-12">
             <div (click)="addVariableToList(listVariables)"
                  *ngIf="listVariables.actualList && (i === listVariables.actualList.length - 1)"
                  class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 4px;cursor: pointer">
               <i aria-hidden="true" class="fa fa-plus"></i>
             </div>
-            <div *ngFor="let argument of actualListArr; let j=index" class="col-md-12">
+            <div *ngFor="let argument of actualListArr.list; let j=index" class="col-md-12">
               <div class="form-group row m-b-0">
                 <div class="col-sm-4 m-b-sm">
                   <input [(ngModel)]="argument.name" class="form-control" name="_name{{i}}{{j}}{{k}}" readonly
@@ -209,29 +206,28 @@
                 </div>
               </div>
             </div>
-
             <div class="col-md-12">
               <div class="form-group row">
                 <div class="col-sm-12">
-                  <a (click)="assignFromSchedule(listVariables)" class="text-u-l" translate>order.button.assignFromSchedule</a>
+                  <a (click)="assignFromSchedule()" class="text-u-l" translate>order.button.assignFromSchedule</a>
                 </div>
               </div>
               <div *ngIf="schedules && schedules.length > 0" class="form-group row">
                 <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
                 <div class="col-sm-6">
-                  <nz-select [(ngModel)]="listVariables.name" name="schedule{{i}}" nzAllowClear (ngModelChange)="selectVarFromSchedule($event, listVariables)"
+                  <nz-select [(ngModel)]="actualListArr.name" name="schedule{{i}}" nzAllowClear (ngModelChange)="selectVarFromSchedule($event, actualListArr)"
                              nzShowSearch>
                     <nz-option *ngFor="let option of schedules | orderBy: 'name'" [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
                   </nz-select>
                 </div>
               </div>
-              <div *ngIf="listVariables.orderParameterisations && listVariables.orderParameterisations.length > 1"
+              <div *ngIf="actualListArr.orderParameterisations && actualListArr.orderParameterisations.length > 1"
                    class="form-group row">
                 <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
                 <div class="col-sm-6">
-                  <nz-select [(ngModel)]="listVariables.orderName" name="order{{i}}" nzAllowClear
-                             nzShowSearch (ngModelChange)="selectOrder($event, listVariables)" >
-                    <nz-option *ngFor="let option of listVariables.orderParameterisations" [nzLabel]="option.orderName || '-'"
+                  <nz-select [(ngModel)]="actualListArr.orderName" name="order{{i}}" nzAllowClear
+                             nzShowSearch (ngModelChange)="selectOrder($event, actualListArr, listVariables)" >
+                    <nz-option *ngFor="let option of actualListArr.orderParameterisations" [nzLabel]="option.orderName || '-'"
                                [nzValue]="option.orderName || '-'"></nz-option>
                   </nz-select>
                 </div>
@@ -247,7 +243,6 @@
         <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
       </div>
       <div (cdkDropListDropped)="drop($event)" cdkDropList>
-
         <div *ngFor="let argument of arguments; let i=index" cdkDrag class="form-group row m-b-0 m-l-12">
           <div cdkDragHandle class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 3px;cursor: move">
             <i aria-hidden="true" class="fa fa-bars"></i>
@@ -359,10 +354,6 @@
         <a (click)="addArgument()" class="text-u-l" translate>order.button.modifyVariable</a>
         <a (click)="addArguments()" class="text-u-l m-l" translate>order.button.modifyVariables</a>
       </div>
-      <!--      <div class="col-sm-12"-->
-      <!--           *ngIf="variableList.length <= arguments.length && (workflow.orderPreparation && workflow.orderPreparation.allowUndeclared)">-->
-      <!--        <a class="text-u-l" (click)="addArgument(true)" translate>order.button.addVariable</a>-->
-      <!--      </div>-->
     </div>
   </div>
   <div class="modal-footer text-left">
@@ -372,7 +363,12 @@
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
-    <i class="fa fa-paste" *ngIf="showPasteButton" (click)="handlePaste()" ></i>
+    <div *ngIf="showPasteButton" class="w-full" style="display: flex;justify-content: end;">
+      <button (click)="handlePaste()" class="btn btn-grey btn-sm" type="button">
+        <i class="fa fa-paste"></i>
+        {{'common.button.paste' | translate}}
+      </button>
+    </div>
   </div>
 </form>
 
