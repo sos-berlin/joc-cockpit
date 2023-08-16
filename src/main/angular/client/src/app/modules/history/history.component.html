@@ -833,7 +833,7 @@
                       <li (click)="hideAllPanelFuc(history)" nz-menu-item>
                         <a translate>history.button.collapseAll</a>
                       </li>
-                      <li (click)="coreService.copyArguments(history, 'arguments')" nz-menu-item [nzDisabled]="!history.arguments">
+                      <li (click)="coreService.copyArguments(history, 'arguments', message)" nz-menu-item [nzDisabled]="!history.arguments">
                         <a translate>common.button.copyArguments</a>
                       </li>
                       <li nz-menu-divider></li>

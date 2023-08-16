@@ -1138,7 +1138,7 @@ export class HistoryComponent {
 
   constructor(public viewContainerRef: ViewContainerRef, private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
               private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe, private orderPipe: OrderPipe,
-              private message: NzMessageService, private router: Router, private translate: TranslateService, private excelService: ExcelService) {
+              public message: NzMessageService, private router: Router, private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });

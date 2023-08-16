@@ -15,6 +15,7 @@ import {Router} from "@angular/router";
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
+import {NzMessageService} from "ng-zorro-antd/message";
 
 @Component({
   selector: 'app-order-history-template',
@@ -75,7 +76,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   workflowFilters: any = {};
   subscription: Subscription;
 
-  constructor(public coreService: CoreService, private authService: AuthService,
+  constructor(public coreService: CoreService, private authService: AuthService, public message: NzMessageService,
               private router: Router, private dataService: DataService, public viewContainerRef: ViewContainerRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {

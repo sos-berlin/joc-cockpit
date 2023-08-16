@@ -119,6 +119,14 @@
       </div>
       <div *ngIf="nodes.length > 0" class="form-group row">
         <div class="col-md-3">
+          <label [nz-tooltip]="'inventory.tooltips.export.useRelativePathOnly' | translate" translate>inventory.export.label.useRelativePathOnly</label>
+        </div>
+        <div class="col-md-6">
+          <label [(ngModel)]="exportObj.useShortPath" name="useShortPath" nz-checkbox></label>
+        </div>
+      </div>
+      <div *ngIf="nodes.length > 0" class="form-group row">
+        <div class="col-md-3">
           <label translate>inventory.label.handleRecursively</label>
         </div>
         <div class="col-md-6">

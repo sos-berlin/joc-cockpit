@@ -9,6 +9,7 @@ import {
   ModifyStartTimeModalComponent
 } from '../../../components/modify-modal/modify.component';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import {NzMessageService} from "ng-zorro-antd/message";
 
 @Component({
   selector: 'app-order-action',
@@ -24,7 +25,8 @@ export class OrderActionComponent {
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
   @Output() isDropdownOpen: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(public coreService: CoreService, private modal: NzModalService, private viewContainerRef: ViewContainerRef,) {
+  constructor(public coreService: CoreService, private modal: NzModalService, private viewContainerRef: ViewContainerRef,
+              public message: NzMessageService) {
   }
 
   change(value: boolean): void {
