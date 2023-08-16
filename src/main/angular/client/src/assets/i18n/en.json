@@ -544,8 +544,8 @@
     "button.viewDocumentation": "View Documentation",
     "button.viewHistory": "View History",
     "button.showHistory": "Show History",
-    "button.switchToSpecificDate": "Switch to Specific Date",
-    "button.switchToRelativeDate": "Switch to Relative Date",
+    "button.switchToSpecificDate": "Switch to specific date",
+    "button.switchToRelativeDate": "Switch to relative date",
     "button.copyArguments": "Copy arguments",
     "placeholder.search": "Filter results",
     "placeholder.name": "Name",
@@ -1821,7 +1821,7 @@
       "label.released": "Released",
       "label.controller": "Controller",
       "label.dailyPlan": "Automation",
-      "label.useRelativePathOnly": "Use Relative Path Only"
+      "label.useRelativePathOnly": "Use relative path"
     },
     "repository": {
       "label.filter": "Filter",
@@ -2007,7 +2007,7 @@
           "startPosition": "Allows to select the start position of the order in the workflow. Without a start position, the orders starts from the beginning of the workflow.",
           "endPositions": "Allows the selection of one or more end positions of the order in the workflow. Without an end position, the order ends with the end of the workflow.",
           "ignoreAdmissionTimes": "The execution of jobs can be restricted by Admission Times of the jobs. This option ignores Admission Times and forces the start of jobs.",
-          "blockPosition": "Block Position"
+          "blockPosition": "An order can be added to the position of a specific block instruction, for example to a branch in a Fork Instruction, to a Lock Instruction etc. at any nesting level of workflow instructions. The order will leave the workflow when reaching the end of the block instruction. When selecting a block instruction then start position and end positions are specified within the scope of the block instruction."
         },
         "lock": {
           "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parallelism by using Resource Locks.",
@@ -2021,11 +2021,11 @@
           "delay": "The Delay specifies the time in seconds before the next retry is performed. If a number of values are specified - separated by a comma - then each value from left to right applies to the period that the next retry is waited for."
         },
         "cycle": {
-          "onlyOnePeriod": "Only one Period"
+          "onlyOnePeriod": "A cycle can specify more than one period, for example for 1pm, 2pm, 3pm with each cycle lasting for 30 minutes. By default an order arriving at 1.45pm will run both cycles for 2pm and 3pm. When using the setting 'One period only' then an order will run the first matching period only and will not consider later periods."
         }
       },
       "export": {
-        "useRelativePathOnly": "Use Relative Path Only"
+        "useRelativePathOnly": "When exporting scheduling objects then by default an absolute path is used. Users can specify a relative path to be used starting from the selected folder. If no folder is selected but scheduling objects only then using a relative path maps to exporting as top-level objects to the export archive file."
       }
     },
     "search": {
@@ -2301,7 +2301,7 @@
     "button.modifyVariables": "Modify Variables",
     "button.showLog": "Show Log",
     "button.assignParameterizationFromSchedules": "Assign parameterization from Schedules",
-    "button.assignFromSchedule": "Assign from Schedules",
+    "button.assignFromSchedule": "Assign from Schedule",
     "placeholder.selectStartNode": "Select Start Position",
     "placeholder.selectEndNode": "Select End Position",
     "placeholder.selectBlockPosition": "Select Block Position",
@@ -2397,7 +2397,7 @@
     "label.licenseWarningGotIt": "License Warning acknowledged",
     "label.showMoreOptions": "Show more options",
     "label.tabSize": "Tab Size",
-    "label.listVariableCollapse": "List Variable Collapse",
+    "label.listVariableCollapse": "Collapse list variable",
     "button.resetPreferences": "Reset Profile Preferences",
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",
@@ -3359,7 +3359,7 @@
     "label.bySubagentCluster": "By Subagent Cluster",
     "label.stopOnFailure": "Stop On Failure",
     "label.references": "References",
-    "label.onlyOnePeriod": "Only one Period",
+    "label.onlyOnePeriod": "One period only",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",

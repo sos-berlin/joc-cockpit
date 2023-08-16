@@ -505,7 +505,7 @@
     "button.confirm": "Confirmer",
     "button.saveAs": "Enregistrer sous",
     "button.submit": "Soumettre",
-    "button.forceSubmit": "Force Submit",
+    "button.forceSubmit": "Soumettre de force",
     "button.search": "Rechercher",
     "button.duplicate": "Dupliquer",
     "button.copy": "Copier",
@@ -544,9 +544,9 @@
     "button.viewDocumentation": "Voir la Documentation",
     "button.viewHistory": "Afficher l'Historique",
     "button.showHistory": "Afficher l'Historique",
-    "button.switchToSpecificDate": "Switch to Specific Date",
-    "button.switchToRelativeDate": "Switch to Relative Date",
-    "button.copyArguments": "Copy arguments",
+    "button.switchToSpecificDate": "Passer à une date spécifique",
+    "button.switchToRelativeDate": "Passer à une date relative",
+    "button.copyArguments": "Copier les arguments",
     "placeholder.search": "Filtrer les résultats",
     "placeholder.name": "Nom",
     "placeholder.value": "Valeur",
@@ -1821,7 +1821,7 @@
       "label.released": "Publié",
       "label.controller": "Contrôleur",
       "label.dailyPlan": "Automatisation",
-      "label.useRelativePathOnly": "Use Relative Path Only"
+      "label.useRelativePathOnly": "Utiliser le chemin relatif"
     },
     "repository": {
       "label.filter": "Filtre",
@@ -2007,7 +2007,7 @@
           "startPosition": "Permet de sélectionner la position de départ de l'Ordere le Workflow. Sans position de départ, l'ordre va démarrer dès le début du Workflow.",
           "endPositions": "Permet de sélectionner une ou plusieurs positions de fin de l'Ordre dans le Workflow. Sans position de fin, l'Ordre va se terminer à la fin du Workflow.",
           "ignoreAdmissionTimes": "L'exécution des tâches en cours peut être limitée par les heures d'admission des tâches. Cette option ignore les heures d'admission et force le lancement des tâches.",
-          "blockPosition": "Block Position"
+          "blockPosition": "Un ordre peut être ajouté à la position d'une instruction de bloc spécifique, par exemple à une branche dans une Fork Instruction , à une Lock Instruction etc. à n'importe quel niveau d'imbrication des instructions du workflow. L'ordre quittera le workflow lorsqu'il atteindra la fin de l'instruction de bloc. Lors de la sélection d'une instruction de bloc, les positions de début et de fin sont spécifiées dans le champ d'application de l'instruction de bloc."
         },
         "lock": {
           "name": "Les noms des Verrous de Ressources sont uniques dans l'inventaire. Les sections des workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressources.",
@@ -2021,11 +2021,11 @@
           "delay": "Le délai spécifie le temps en secondes avant que la prochaine tentative ne soit effectuée. Si un certain nombre de valeurs sont spécifiées - séparées par une virgule - alors chaque valeur de gauche à droite s'applique à la période d'attente de la prochaine tentative."
         },
         "cycle": {
-          "onlyOnePeriod": "Une seule Période"
+          "onlyOnePeriod": "Un cycle peut spécifier plus d'une période, par exemple pour 13 heures, 14 heures, 15 heures, chaque cycle durant 30 minutes. Par défaut, un ordre arrivant à 13h45 exécutera les deux cycles de 14h et 15h. Si vous utilisez le paramètre 'Une seule période', un ordre ne sera exécuté que pour la première période correspondante et ne prendra pas en compte les périodes suivantes."
         }
       },
       "export": {
-        "useRelativePathOnly": "Use Relative Path Only"
+        "useRelativePathOnly": "Lors de l'exportation d'objets, un chemin absolu est utilisé par défaut. Les utilisateurs peuvent spécifier un chemin relatif à utiliser à partir du dossier sélectionné. Si aucun dossier n'est sélectionné, mais uniquement des objets individuels, l'utilisation d'un chemin relatif correspond à l'exportation d'objets de premier niveau dans le fichier d'archive d'exportation."
       }
     },
     "search": {
@@ -2301,10 +2301,10 @@
     "button.modifyVariables": "Modifier les Variables",
     "button.showLog": "Afficher le Journal",
     "button.assignParameterizationFromSchedules": "Paramétrage à partir des Planifications",
-    "button.assignFromSchedule": "Assign from Schedules",
+    "button.assignFromSchedule": "Assigner à partir d'une Planification",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",
-    "placeholder.selectBlockPosition": "Select Block Position",
+    "placeholder.selectBlockPosition": "Sélectionner la Position d Bloc",
     "placeholder.enterCycleEndTime": "Entrer une valeur comme hh:mm:ss ou secondes",
     "message.noVariableAvailable": "aucune variable disponible",
     "message.orderModificationNotAllowed": "L'état de l'ordre {{state}} ne permet pas de modification",
@@ -2397,7 +2397,7 @@
     "label.licenseWarningGotIt": "Avertissement reconnu",
     "label.showMoreOptions": "Montrer plus d'options",
     "label.tabSize": "Largeur de la tabulation",
-    "label.listVariableCollapse": "List Variable Collapse",
+    "label.listVariableCollapse": "Déplier la Variable de Tableau",
     "button.resetPreferences": "Réinitialiser les Préférences du Profil",
     "button.groupLimit": "Limite de groupe",
     "button.changePassword": "Changer le mot de passe",
@@ -2795,7 +2795,7 @@
       "git_hold_job_resources": "Indique si les Ressources de Tâche doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
       "git_hold_workflows": "Indique si les Workflows doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
       "git_hold_calendars": "Indique si les Calendriers doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
-      "git_hold_schedules": "Indique si les Ressources de Tâche doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
+      "git_hold_schedules": "Indique si les Planifications doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
       "git_hold_notice_boards": "Indique si les Conditions doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
       "git_hold_resource_locks": "Indique si les Verroux de Ressource doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
       "git_hold_script_includes": "Indique si les Scripts Éléments doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
@@ -2896,7 +2896,7 @@
     "label.iamLdapSystemPassword": "LDAP System User Password",
     "label.iamLdapReadTimeout": "LDAP Read Timeout",
     "label.iamLdapConnectTimeout": "LDAP Connect Timeout",
-    "label.disableNestedGroupSearch": "Disable nested group search",
+    "label.disableNestedGroupSearch": "Désactiver la recherche par groupes imbriqués",
     "label.iamOidcName": "OIDC Name",
     "label.iamOidcAuthenticationUrl": "OIDC Authentication URL",
     "label.iamOidcClientId": "OIDC Client ID",
@@ -3359,7 +3359,7 @@
     "label.bySubagentCluster": "Par Cluster de Sous-agents",
     "label.stopOnFailure": "Arrêt en cas d'échec",
     "label.references": "Références",
-    "label.onlyOnePeriod": "Une seule Période",
+    "label.onlyOnePeriod": "Une seule période",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
@@ -3596,7 +3596,7 @@
     "message.colonNotAllowed": "les deux points ne sont pas autorisés",
     "message.wouldYouLikeToSaveCurrentXml": "Souhaitez-vous enregistrer le document XML actuel ?",
     "message.wouldYouLikeToDeleteCurrentXml": "Souhaitez-vous supprimer le brouillon actuel ?",
-    "message.notValidUrl": "veuillez ajouter un URI valide",
+    "message.notValidUrl": "veuillez ajouter un URL valide",
     "message.invalidXMLFileExtension": "Seuls les fichiers portant l'extension .xml sont autorisés",
     "message.invalidXSDFileExtension": "Seuls les fichiers portant l'extension .xsd sont autorisés",
     "message.invalidXMLFile": "Fichier xml non valide ou fichier vide",
