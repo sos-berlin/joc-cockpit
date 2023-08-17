@@ -1547,6 +1547,7 @@ export class ExportComponent {
         });
       }
     } else {
+      obj.useShortPath = this.exportObj.useShortPath;
       if (this.object.folders && this.object.folders.length > 0) {
         this.exportFolder(obj);
       } else {

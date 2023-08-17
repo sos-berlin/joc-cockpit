@@ -25,7 +25,7 @@ export class MultiSelectComponent {
   }
 
   ngOnInit(): void {
-    if(this.list[this.attribute] && typeof this.list[this.attribute] == 'string'){
+    if (this.list && this.list[this.attribute] && typeof this.list[this.attribute] == 'string') {
       this.list[this.attribute] = [this.list[this.attribute]];
     }
     if (!this.list[this.attribute]) {
@@ -33,12 +33,14 @@ export class MultiSelectComponent {
     }
   }
 
-
   openSearch(): void {
     this.object.isTreeShow = true;
   }
 
   onSelect(selectedValue): void {
+    if (!this.list[this.attribute]) {
+      this.list[this.attribute] = [];
+    }
     if (this.list[this.attribute].includes(selectedValue)) {
       const index = this.list[this.attribute].indexOf(selectedValue);
       if (index > -1) {

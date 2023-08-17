@@ -501,7 +501,7 @@
     "button.confirm": "Bestätigen",
     "button.saveAs": "Speichern unter",
     "button.submit": "Übermitteln",
-    "button.forceSubmit": "Force Submit",
+    "button.forceSubmit": "Übermittlung erzwingen",
     "button.search": "Suchen",
     "button.duplicate": "Duplizieren",
     "button.copy": "Kopieren",
@@ -540,9 +540,9 @@
     "button.viewDocumentation": "Dokumentation anzeigen",
     "button.viewHistory": "Historie anzeigen",
     "button.showHistory": "Historie anzeigen",
-    "button.switchToSpecificDate": "Switch to Specific Date",
-    "button.switchToRelativeDate": "Switch to Relative Date",
-    "button.copyArguments": "Copy arguments",
+    "button.switchToSpecificDate": "Zu bestimmtem Datum wechseln",
+    "button.switchToRelativeDate": "Zu relativem Datum wechseln",
+    "button.copyArguments": "Argumente kopieren",
     "placeholder.search": "Ergebnisse filtern",
     "placeholder.name": "Name",
     "placeholder.value": "Wert",
@@ -1240,7 +1240,7 @@
       "tooltip": {
         "jocInstanceId": "JOC Cockpit Instanz-Kennung",
         "jocClusterId": "JOC Cockpit Cluster-Kennung",
-        "ordering": "Aufsteigende Reihenfolge der JOC Cockpit Instanz im Dashboard.",
+        "ordering": "Aufsteigende Reihenfolge der JOC Cockpit Instanz in der ÜBERSICHT.",
         "host": "Der Rechner, auf dem JOC Cockpit installiert wird.",
         "port": "Der Port, über den eine Verbindung zum Rechner aufgenommen wird. Häufig ist dies Port 22 für SSH Verbindungen.",
         "method": "Die Authentifizierungsmethode für die SSH Verbindung zum Rechner von JOC Cockpit. Die Methode private/public key wird unterstützt.",
@@ -1817,7 +1817,7 @@
       "label.released": "Freigegeben",
       "label.controller": "Controller",
       "label.dailyPlan": "Automation",
-      "label.useRelativePathOnly": "Use Relative Path Only"
+      "label.useRelativePathOnly": "Relativen Pfad verwenden"
     },
     "repository": {
       "label.filter": "Filter",
@@ -2003,7 +2003,7 @@
           "startPosition": "Erlaubt die Auwahl der Start-Position des Auftrags im Arbeitsablauf. Ohen Start-Position startet der Aufrag ab Beginn des Arbeitsablaufs.",
           "endPositions": "Erlabut die Auswahl einer oder mehrerer Ende-Positionen des Auftrags im Arbeitsablauf. Ohne Ende-Position endet der Auftrag mit dem Ende des Arbeitsablaufs.",
           "ignoreAdmissionTimes": "Die Ausführung von Jobs im Arbeitslauf kann durch Zutrittszeiten der Jobs eingeschränkt sein. Diese Option ignoriert Zutrittszeiten und forciert den Start der Jobs.",
-          "blockPosition": "Block Position"
+          "blockPosition": "Ein Auftrag kann an der Position einer bestimmten Blockanweisung hinzugefügt werden, z.B. an einer Verzweigung in einer Fork Instruction, an einer Lock Instruction usw. auf jeder beliebigen Verschachtelungsebene von Anweisungen im Arbeitsablauf. Der Auftrag verlässt den Workflow, wenn er das Ende der Blockanweisung erreicht. Bei der Auswahl einer Blockanweisung werden Start- und Endpositionen im Kontext der Blockanweisung angegeben."
         },
         "lock": {
           "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in Arbeitsabläufen können durch Ressourcen-Sperren für die parallele Ausführung limitiert werden.",
@@ -2017,11 +2017,11 @@
           "delay": "Die Verzögerung ist die Anzahl Sekunden, für die auf den nächsten Wiederholungsversuch gewartet wird. Werden mehrere durch Komma getrennte Werte angegeben, so gelten sie von links nach rechts für die Wartezeit auf die nächste Wiederholung."
         },
         "cycle": {
-          "onlyOnePeriod": "Nur eine Periode"
+          "onlyOnePeriod": "Ein Zyklus kann mehrere Zeiträume umfassen, z.B. 13.00, 14.00 und 15.00 Uhr, wobei jeder Zyklus 30 Minuten dauert. Standardmäßig werden bei einem Auftrag, der um 13.45 Uhr eintrifft, beide Zyklen für 14.00 und 15.00 Uhr ausgeführt. Bei der Einstellung "Nur eine Periode" wird nur die erste passende Periode verwendet und spätere Perioden werden nicht berücksichtigt."
         }
       },
       "export": {
-        "useRelativePathOnly": "Use Relative Path Only"
+        "useRelativePathOnly": "Beim Export von Objekten wird standardmäßig ein absoluter Pfad verwendet. Benutzer können einen relativen Pfad angeben, der ab dem ausgewählten Ordner verwendet wird. Wenn kein Ordner ausgewählt ist, sondern nur Objekte, werden diese bei Verwendung eines relativen Pfades als oberste Objekte der Export Archiv-Datei hinzugefügt."
       }
     },
     "search": {
@@ -2170,7 +2170,7 @@
     "label.password": "Kennwort",
     "label.rememberMe": "Eingaben merken",
     "button.logIn": "Anmelden",
-    "button.loginWith" : "Fortsetzen mit {{identityServiceName}}",
+    "button.loginWith": "Fortsetzen mit {{identityServiceName}}",
     "button.registerDevice": "Sicherheitsschlüssel registrieren",
     "button.registerKeyFor": "Sicherheitsschlüssel registrieren für {{identityServiceName}}",
     "message.loginError": "Konto oder Kennwort falsch",
@@ -2296,12 +2296,12 @@
     "button.modifyVariable": "Variable ändern",
     "button.modifyVariables": "Variablen ändern",
     "button.showLog": "Protokoll anzeigen",
-    "button.assignParameterizationFromSchedules": "Parametrisierung aus Zeitplänen",
-    "button.assignFromSchedule": "Assign from Schedules",
+    "button.assignParameterizationFromSchedules": "Parametrisierung aus Zeitplan",
+    "button.assignFromSchedule": "Parametrisierung aus Zeitplan",
     "placeholder.selectStartNode": "Start-Position auswählen",
     "placeholder.selectEndNode": "End-Position auswählen",
-    "placeholder.selectBlockPosition": "Select Block Position",
-    "placeholder.enterCycleEndTime": "Wert angeben im Format hh:mm:ss oder Sekunden",
+    "placeholder.selectBlockPosition": "Block-Position angeben",
+    "placeholder.enterCycleEndTime": "Wert im Format hh:mm:ss oder Sekunden angeben",
     "message.noVariableAvailable": "keine Variablen vorhanden",
     "message.orderModificationNotAllowed": "Der Auftagszustand {{state}} erlaubt keine Änderung",
     "message.noLogHistoryFound": "Kein Protokoll für diesen Auftrag gefunden",
@@ -2393,7 +2393,7 @@
     "label.licenseWarningGotIt": "Lizenzwarnung akzeptiert",
     "label.showMoreOptions": "Mehr Optionen anzeigen",
     "label.tabSize": "Tabulatorbreite",
-    "label.listVariableCollapse": "List Variable Collapse",
+    "label.listVariableCollapse": "Listenvariable einklappen",
     "button.resetPreferences": "Einstellungen des Profils zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
@@ -2401,17 +2401,17 @@
     "message.minimumPasswordLength": "Kennwort zu kurz",
     "message.passwordShouldNotSame": "Altes Kennwort und neues Kennwort dürfen nicht übereinstimmen.",
     "favoriteManagement": {
-      "label.manageFavorite":"Favoriten verwalten",
-      "label.addFavorite":"Favorit hinzufügen",
-      "label.editFavorite":"Favorit aktualisieren",
-      "label.checkAll":"Alle prüfen",
-      "button.takeOver":"Übernehmen",
-      "button.addFavorite":"Favorit hinzufügen",
-      "button.sharedWithMe":"Mit mir geteilt",
-      "tab.agents":"Agenten",
-      "tab.facets":"Eingabeprüfungen",
-      "tooltip.sharedByMe":"Von mir geteilt",
-      "tooltip.sharedWithMe":"Mit mir geteilt"
+      "label.manageFavorite": "Favoriten verwalten",
+      "label.addFavorite": "Favorit hinzufügen",
+      "label.editFavorite": "Favorit aktualisieren",
+      "label.checkAll": "Alle prüfen",
+      "button.takeOver": "Übernehmen",
+      "button.addFavorite": "Favorit hinzufügen",
+      "button.sharedWithMe": "Mit mir geteilt",
+      "tab.agents": "Agenten",
+      "tab.facets": "Eingabeprüfungen",
+      "tooltip.sharedByMe": "Von mir geteilt",
+      "tooltip.sharedWithMe": "Mit mir geteilt"
     },
     "permission": {
       "label.order": "Auftrag",
@@ -2892,7 +2892,7 @@
     "label.iamLdapSystemPassword": "LDAP System User Password",
     "label.iamLdapReadTimeout": "LDAP Read Timeout",
     "label.iamLdapConnectTimeout": "LDAP Connect Timeout",
-    "label.disableNestedGroupSearch": "Disable nested group search",
+    "label.disableNestedGroupSearch": "Suche in verschachtelten Gruppen deaktivieren",
     "label.iamOidcName": "OIDC Name",
     "label.iamOidcAuthenticationUrl": "OIDC Authentication URL",
     "label.iamOidcClientId": "OIDC Client ID",
@@ -3119,7 +3119,7 @@
         "iamLdapSystemPassword": "Ein LDAP System User Password wird meist verlangt, wenn ein LDAP System User Account angegeben ist.",
         "iamLdapReadTimeout": "LDAP Read Timeout",
         "iamLdapConnectTimeout": "LDAP Connect Timeout",
-        "disableNestedGroupSearch": "Disable nested group search"
+        "disableNestedGroupSearch": "Suche in verschachtelten Gruppen deaktivieren."
       },
       "vault": {
         "iamVaultUrl": "Die URL, unter der das Vault Server REST API verfügbar ist.",

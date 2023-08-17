@@ -435,14 +435,16 @@ export class AddOrderModalComponent {
       }
       this.forkListVariables.forEach((item) => {
         order.arguments[item.name] = [];
-        console.log(item)
-        if (item.actualList?.list) {
-          for (const i in item.actualList.list) {
-            const listObj = {};
-            item.actualList.list[i].forEach((data) => {
-              listObj[data.name] = data.value;
-            });
-            order.arguments[item.name].push(listObj);
+        console.log(item.actualList, '>>>>')
+        if (item.actualList?.length > 0) {
+          for (const i in item.actualList) {
+           // for (const j in item.actualList[i].list) {
+              const listObj = {};
+              item.actualList[i].list.forEach((data) => {
+                listObj[data.name] = data.value;
+              });
+              order.arguments[item.name].push(listObj);
+         //   }
           }
         }
       });
@@ -496,8 +498,8 @@ export class AddOrderModalComponent {
     });
     let flag = false;
     for (const i in data.actualList) {
-      for (const j in data.actualList[i]) {
-        if (!data.actualList[i][j].value) {
+      for (const j in data.actualList[i].list) {
+        if (!data.actualList[i].list[j].value) {
           flag = true;
           break;
         }
@@ -507,7 +509,7 @@ export class AddOrderModalComponent {
       }
     }
     if (!flag) {
-      data.actualList.push(arr);
+      data.actualList.push({list: arr});
     }
   }
 
@@ -607,14 +609,23 @@ export class AddOrderModalComponent {
     }
   }
 
-  private selectVarForOrder(name, listVariables, listName): void {
+  private selectVarForOrder(name, listVariables, data): void {
     for (let i in listVariables.orderParameterisations) {
       if (listVariables.orderParameterisations[i].orderName == name ||
         (listVariables.orderParameterisations[i].orderName == '' && name == '-') || listVariables.orderParameterisations.length == 1) {
         let list = listVariables.orderParameterisations[i];
         for (let x in list.variables) {
-          if(isArray(list.variables[x]) && x == listName.name){
-            console.log(list.variables[x], '???');
+          if(isArray(list.variables[x]) && x == data.name){
+            for(let y in data.actualList) {
+              for (let z in data.actualList[y].list) {
+                for(let m in list.variables[x]){
+                  if(list.variables[x][m][data.actualList[y].list[z].name]) {
+                    data.actualList[y].list[z].value = list.variables[x][m][data.actualList[y].list[z].name];
+                  }
+                }
+
+              }
+            }
           }
         }
         break;
@@ -622,9 +633,9 @@ export class AddOrderModalComponent {
     }
   }
 
-  selectOrder(name, listVariables?, listName?): void {
+  selectOrder(name, listVariables?, data?): void {
     if (listVariables) {
-      this.selectVarForOrder(name, listVariables, listName);
+      this.selectVarForOrder(name, listVariables, data);
       return;
     }
     this.order.reload = false;
@@ -731,7 +742,7 @@ export class AddOrderModalComponent {
                       }
                     }
                     if (arr.length > 0) {
-                      actualList.push(arr);
+                      actualList.push({list: arr});
                     }
                   });
                 }
@@ -743,10 +754,10 @@ export class AddOrderModalComponent {
                 arr.push({name: item.name, type: item.value.type});
               });
               if (arr.length > 0) {
-                actualList.push(arr);
+                actualList.push({list: arr});
               }
             }
-            this.forkListVariables.push({name: k, list: val.listParameters, actualList: actualList});
+            this.forkListVariables.push({name: k, list: val.listParameters, actualList});
           }
         }
         return {name: k, value: val};
