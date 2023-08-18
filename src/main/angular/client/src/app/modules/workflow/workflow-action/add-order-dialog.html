@@ -209,13 +209,13 @@
             <div class="col-md-12">
               <div class="form-group row">
                 <div class="col-sm-12">
-                  <a (click)="assignFromSchedule()" class="text-u-l" translate>order.button.assignFromSchedule</a>
+                  <a (click)="assignParameterizationFromSchedules()" class="text-u-l" translate>order.button.assignFromSchedule</a>
                 </div>
               </div>
               <div *ngIf="schedules && schedules.length > 0" class="form-group row">
                 <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
                 <div class="col-sm-6">
-                  <nz-select [(ngModel)]="actualListArr.name" name="schedule{{i}}" nzAllowClear (ngModelChange)="selectVarFromSchedule($event, actualListArr)"
+                  <nz-select [(ngModel)]="actualListArr.name" name="schedule{{i}}" nzAllowClear (ngModelChange)="selectVarFromSchedule($event, actualListArr, listVariables, i)"
                              nzShowSearch>
                     <nz-option *ngFor="let option of schedules | orderBy: 'name'" [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
                   </nz-select>
@@ -226,7 +226,7 @@
                 <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
                 <div class="col-sm-6">
                   <nz-select [(ngModel)]="actualListArr.orderName" name="order{{i}}" nzAllowClear
-                             nzShowSearch (ngModelChange)="selectOrder($event, actualListArr, listVariables)" >
+                             nzShowSearch (ngModelChange)="selectOrder($event, actualListArr, listVariables, i)" >
                     <nz-option *ngFor="let option of actualListArr.orderParameterisations" [nzLabel]="option.orderName || '-'"
                                [nzValue]="option.orderName || '-'"></nz-option>
                   </nz-select>
@@ -354,6 +354,10 @@
         <a (click)="addArgument()" class="text-u-l" translate>order.button.modifyVariable</a>
         <a (click)="addArguments()" class="text-u-l m-l" translate>order.button.modifyVariables</a>
       </div>
+      <div class="col-sm-12"
+           *ngIf="variableList.length <= arguments.length && (workflow.orderPreparation && workflow.orderPreparation.allowUndeclared)">
+        <a class="text-u-l" (click)="addArgument(true)" translate>order.button.addVariable</a>
+      </div>
     </div>
   </div>
   <div class="modal-footer text-left">
@@ -363,10 +367,20 @@
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
-    <div *ngIf="showPasteButton" class="w-full" style="display: flex;justify-content: end;">
-      <button (click)="handlePaste()" class="btn btn-grey btn-sm" type="button">
-        <i class="fa fa-paste"></i>
-        {{'common.button.paste' | translate}}
+    <div *ngIf="storedArguments?.length>0" class="w-full" style="display: flex;justify-content: end;">
+      <ng-template #contentTemplate>
+        <div class="p-a-sm b-a m-b-sm cursor" (click)="handlePaste(item)" *ngFor="let item of storedArguments">
+          <div class="truncate">{{item}}</div>
+        </div>
+        <div class="pull-right">
+          <a class="text-hover-primary" (click)="clearClipboard()" translate>common.button.clear</a>
+        </div>
+      </ng-template>
+      <button nz-button nz-popover [nzPopoverTitle]="'common.label.clipboard' | translate" [nzPopoverContent]="contentTemplate"
+              nzPopoverTrigger="click" [nzPopoverOverlayClassName]="'clipboard-list'"
+              class="btn btn-grey btn-sm" type="button">
+        <i class="fa fa-clipboard"></i>
+        {{'common.button.showClipboard' | translate}}
       </button>
     </div>
   </div>

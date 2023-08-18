@@ -117,7 +117,7 @@
           </label>
         </div>
       </div>
-      <div *ngIf="nodes.length > 0" class="form-group row">
+      <div *ngIf="nodes.length > 0 && exportObj.exportType === 'folders'" class="form-group row">
         <div class="col-md-3">
           <label [nz-tooltip]="'inventory.tooltips.export.useRelativePathOnly' | translate" translate>inventory.export.label.useRelativePathOnly</label>
         </div>
@@ -147,10 +147,10 @@
         <div class="col-md-12 export-tree-checkbox">
           <nz-tree
             #treeCtrl
+            [nzCheckable]="true"
             (nzCheckBoxChange)="checkBoxChange($event)"
             (nzExpandChange)="getDeploymentVersion($event)"
             [nzCheckStrictly]="!exportObj.isRecursive"
-            [nzCheckable]="true"
             [nzData]="nodes"
             [nzTreeTemplate]="nzTreeTemplate"
             nzNoAnimation

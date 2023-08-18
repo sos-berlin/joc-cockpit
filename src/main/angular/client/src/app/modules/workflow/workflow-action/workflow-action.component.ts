@@ -95,6 +95,7 @@ export class AddOrderModalComponent {
   required = false;
   comments: any = {};
   submitted = false;
+  storedArguments = [];
   zones = [];
   variableList = [];
   schedules: any;
@@ -108,7 +109,6 @@ export class AddOrderModalComponent {
     name: ''
   }
   isCollapsed: boolean[] = [];
-  showPasteButton: boolean = false;
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
               private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService) {
@@ -173,75 +173,69 @@ export class AddOrderModalComponent {
     return true;
   }
 
-  async handlePaste() {
-    try {
-      let data = await navigator.clipboard.readText();
-      if(data && typeof data == 'string') {
-        const clipboardDataArray = JSON.parse(data);
-        if (!Array.isArray(clipboardDataArray)) {
-          return;
-        }
-        clipboardDataArray.forEach(clipboardItem => {
-          if (this.forkListVariables && this.forkListVariables.length > 0) {
-            this.forkListVariables.forEach((listVariables) => {
-              if (listVariables.name === clipboardItem.name) {
-                if (Array.isArray(clipboardItem.value)) {
-                  clipboardItem.value.forEach((innerArray, idx) => {
-                    innerArray.forEach(item => {
-                      listVariables.actualList[idx].list.forEach((argument) => {
+  handlePaste(data) {
+    if(!data){
+      data = this.storedArguments[0];
+    }
+    if (data && typeof data == 'string') {
+      const clipboardDataArray = JSON.parse(data);
+      if (!isArray(clipboardDataArray)) {
+        return;
+      }
+
+      clipboardDataArray.forEach(clipboardItem => {
+        if (this.forkListVariables && this.forkListVariables.length > 0) {
+          this.forkListVariables.forEach((listVariables) => {
+            if (listVariables.name === clipboardItem.name) {
+              if (isArray(clipboardItem.value)) {
+                clipboardItem.value.forEach((innerArray) => {
+                  innerArray.forEach(item => {
+                    listVariables.actualList.forEach((actualList) => {
+                      actualList.list.forEach((argument) => {
                         if (argument.name === item.name) {
                           argument.value = item.value;
                         }
                       });
                     });
                   });
-                } else if (typeof clipboardItem.value === 'string') {
-                  listVariables.value = clipboardItem.value;
-                }
+                });
               }
-            });
-          }
+            }
+          });
+        }
 
-          if (this.variableList && this.variableList.length > 0) {
-            this.variableList.forEach(variable => {
-              if (variable.name === clipboardItem.name) {
-                if (typeof clipboardItem.value === 'string') {
-                  variable.value.default = clipboardItem.value;
-                }
+        if (this.variableList && this.variableList.length > 0) {
+          this.variableList.forEach(variable => {
+            if (variable.name === clipboardItem.name) {
+              if (typeof clipboardItem.value === 'string') {
+                variable.value.default = clipboardItem.value;
               }
-            });
-          }
+            }
+          });
+        }
 
-          if (this.arguments && this.arguments.length > 0) {
-            this.arguments.forEach(variable => {
-              if (variable.name === clipboardItem.name) {
-                variable.value = clipboardItem.value;
-              }
-            });
-          }
-        });
-      }
-    } catch (err) {
-      console.error('Error reading clipboard or processing data', err);
+        if (this.arguments && this.arguments.length > 0) {
+          this.arguments.forEach(variable => {
+            if (variable.name === clipboardItem.name) {
+              variable.value = clipboardItem.value;
+            }
+          });
+        }
+      });
     }
   }
 
-  async checkClipboardContent() {
-    try {
-      const data = await navigator.clipboard.readText();
-      if(data && typeof data == 'string') {
-        const clipboardData = JSON.parse(data);
-        if (Array.isArray(clipboardData) && clipboardData.length > 0) {
-          this.showPasteButton = this.variableList.some(item => item.list);
-        } else {
-          this.showPasteButton = false;
-        }
-      }
-    } catch (err) {
-      this.showPasteButton = false;
-    } finally {
+  checkClipboardContent() {
+    this.storedArguments = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];
+    this.storedArguments = this.storedArguments.reverse();
+    if (this.storedArguments.length > 0) {
       document.addEventListener('paste', this.handlePaste.bind(this));
     }
+  }
+
+  clearClipboard(): void {
+    this.storedArguments = [];
+    sessionStorage.removeItem('$SOS$copiedArgument');
   }
 
   private getPositions(): void {
@@ -435,16 +429,13 @@ export class AddOrderModalComponent {
       }
       this.forkListVariables.forEach((item) => {
         order.arguments[item.name] = [];
-        console.log(item.actualList, '>>>>')
         if (item.actualList?.length > 0) {
           for (const i in item.actualList) {
-           // for (const j in item.actualList[i].list) {
-              const listObj = {};
-              item.actualList[i].list.forEach((data) => {
-                listObj[data.name] = data.value;
-              });
-              order.arguments[item.name].push(listObj);
-         //   }
+            const listObj = {};
+            item.actualList[i].list.forEach((data) => {
+              listObj[data.name] = data.value;
+            });
+            order.arguments[item.name].push(listObj);
           }
         }
       });
@@ -596,34 +587,31 @@ export class AddOrderModalComponent {
     }
   }
 
-  selectVarFromSchedule(name, listVariables): void {
+  selectVarFromSchedule(name, listVariables, data, index): void {
     listVariables.orderName = '';
     for (let i in this.schedules) {
       if (this.schedules[i].name == name) {
         listVariables.orderParameterisations = this.schedules[i].orderParameterisations;
         if (listVariables.orderParameterisations && listVariables.orderParameterisations.length == 1) {
-          this.selectOrder(listVariables.orderParameterisations[0].name || '-');
+          this.selectOrder(listVariables.orderParameterisations[0].name || '-', listVariables, data, index);
         }
         break;
       }
     }
   }
 
-  private selectVarForOrder(name, listVariables, data): void {
+  private selectVarForOrder(name, listVariables, data, index): void {
     for (let i in listVariables.orderParameterisations) {
       if (listVariables.orderParameterisations[i].orderName == name ||
         (listVariables.orderParameterisations[i].orderName == '' && name == '-') || listVariables.orderParameterisations.length == 1) {
         let list = listVariables.orderParameterisations[i];
         for (let x in list.variables) {
-          if(isArray(list.variables[x]) && x == data.name){
-            for(let y in data.actualList) {
-              for (let z in data.actualList[y].list) {
-                for(let m in list.variables[x]){
-                  if(list.variables[x][m][data.actualList[y].list[z].name]) {
-                    data.actualList[y].list[z].value = list.variables[x][m][data.actualList[y].list[z].name];
-                  }
+          if (isArray(list.variables[x]) && x == data.name) {
+            for (let z in data.actualList[index].list) {
+              for (let m in list.variables[x]) {
+                if (list.variables[x][m][data.actualList[index].list[z].name]) {
+                  data.actualList[index].list[z].value = list.variables[x][m][data.actualList[index].list[z].name];
                 }
-
               }
             }
           }
@@ -633,9 +621,9 @@ export class AddOrderModalComponent {
     }
   }
 
-  selectOrder(name, listVariables?, data?): void {
+  selectOrder(name, listVariables?, data?, index?): void {
     if (listVariables) {
-      this.selectVarForOrder(name, listVariables, data);
+      this.selectVarForOrder(name, listVariables, data, index);
       return;
     }
     this.order.reload = false;
@@ -728,7 +716,6 @@ export class AddOrderModalComponent {
 
             for (let x in orderParameterisations.variables) {
               if (k === x) {
-                let flag = false;
                 if (isArray(orderParameterisations.variables[x])) {
                   orderParameterisations.variables[x].forEach((key) => {
                     let arr = [];
@@ -786,9 +773,6 @@ export class AddOrderModalComponent {
     }
   }
 
-  assignFromSchedule(): void {
-    this.assignParameterizationFromSchedules();
-  }
 }
 
 @Component({
