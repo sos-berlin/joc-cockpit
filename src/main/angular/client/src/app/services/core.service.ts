@@ -917,7 +917,7 @@ export class CoreService {
     }
   }
 
-  renderData(res, domId, object, obj, windowInstance?): void {
+  renderData(res, domId, object, obj): void {
     let lastLevel = '';
     let lastClass = '';
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
@@ -1062,24 +1062,10 @@ export class CoreService {
         lastClass = '';
       }
 
-      if(windowInstance) {
-        if (windowInstance.document.getElementById('logs')) {
-          if (!domId) {
-            windowInstance.document.getElementById('logs').appendChild(div);
-          } else {
-            try {
-              windowInstance.document.getElementById(domId).appendChild(div);
-            } catch (e) {
-
-            }
-          }
-        }
+      if (!domId) {
+        window.document.getElementById('logs')?.appendChild(div);
       } else {
-        if (!domId) {
-          window.document.getElementById('logs')?.appendChild(div);
-        } else {
-          window.document.getElementById(domId)?.appendChild(div);
-        }
+        window.document.getElementById(domId)?.appendChild(div);
       }
       return '';
     });
@@ -2859,22 +2845,35 @@ export class CoreService {
     return "class JS7Job extends js7.Job {\n\tprocessOrder(js7Step) {\n\t\tjs7Step.getLogger().info('hello world');\n\t\t// do some stuff\n\t}\n}";
   }
 
-  copyArguments(data, type, message): void{
-
+  copyArguments(data, type, message): void {
+   
     let arr: any[];
-    if(!isArray(data[type])){
+    if (!isArray(data[type])) {
       arr = this.convertObjectToArray(data, type);
+
+      arr.forEach((item => {
+        if (item.value && typeof item.value === 'object') {
+          item.value = [this.convertObjectToArray(item, 'value')];
+        }
+      }))
     } else {
       arr = data[type];
     }
+   
+    // Get existing data from sessionStorage (if any)
+    let storedData = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];
 
-    navigator.clipboard.writeText(JSON.stringify(arr)).then(() => {
-      console.log('Text successfully copied to clipboard');
-      this.showCopyMessage(message);
-    }).catch(err => {
-      console.error('Could not copy text to clipboard', err);
-    });
+    // Add the new data to the array
+    storedData.push(JSON.stringify(arr));
+
+    // Check if the length exceeds 20, remove the oldest entry
+    if (storedData.length > 20) {
+      storedData.shift(); // Remove the first element (oldest)
+    }
+
+    // Update the stored data in sessionStorage
+    sessionStorage.setItem('$SOS$copiedArgument', JSON.stringify(storedData));
+    this.showCopyMessage(message);
   }
-
 
 }

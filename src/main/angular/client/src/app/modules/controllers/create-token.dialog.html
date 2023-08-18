@@ -50,15 +50,13 @@
         <sup class="text-danger text-sm">*</sup>
       </div>
       <div class="col-sm-8">
-        <app-select-input [attributeName]="'timezone'"
-                          [isSearchable]="true" [isRequired]="true"
-                          [listArray]="zones" [name]="'timeZone'"
-                          [object]="token"></app-select-input>
+        <app-select-input [attributeName]="'timezone'" [isSearchable]="true" [isRequired]="true"
+                          [listArray]="zones" [name]="'timeZone'" [object]="token"></app-select-input>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+    <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment) || (!token.fromDate && token.at === 'date')" class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}

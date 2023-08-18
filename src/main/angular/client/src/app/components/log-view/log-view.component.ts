@@ -771,7 +771,7 @@ export class LogViewComponent {
       isTraceLevel: this.isTraceLevel,
       isStdErrLevel: this.isStdErrLevel,
       isInfoLevel: this.isInfoLevel
-    }, POPOUT_MODALS['windowInstance']);
+    });
     let lastLevel = '';
     let lastClass = '';
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
