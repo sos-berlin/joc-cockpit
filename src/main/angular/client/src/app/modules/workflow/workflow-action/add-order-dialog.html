@@ -376,10 +376,15 @@
           <a class="text-hover-primary" (click)="clearClipboard()" translate>common.button.clear</a>
         </div>
       </ng-template>
+      <button (click)="handlePaste(storedArguments[0])"
+              class="btn btn-grey btn-sm m-r-12" type="button">
+        <i class="fa fa-paste"></i>
+        {{'common.button.paste' | translate}}
+      </button>
       <button nz-button nz-popover [nzPopoverTitle]="'common.label.clipboard' | translate" [nzPopoverContent]="contentTemplate"
               nzPopoverTrigger="click" [nzPopoverOverlayClassName]="'clipboard-list'"
               class="btn btn-grey btn-sm" type="button">
-        <i class="fa fa-clipboard"></i>
+        <i class="fa list"></i>
         {{'common.button.showClipboard' | translate}}
       </button>
     </div>

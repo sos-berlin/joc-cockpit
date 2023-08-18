@@ -2878,7 +2878,7 @@ export class WorkflowComponent {
   invalidMsg: string;
   inventoryConf: any;
   allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'List'];
-  variableDeclarations = {parameters: []};
+  variableDeclarations = {parameters: [], allowUndeclared:  false};
   document = {name: ''};
   fullScreen = false;
   isSearchVisible = false;
@@ -4049,7 +4049,7 @@ export class WorkflowComponent {
           }
           this.data.syncState = res.syncState;
           this.jobs = [];
-          this.variableDeclarations = {parameters: []};
+          this.variableDeclarations = {parameters: [], allowUndeclared: false};
           this.orderPreparation = {};
           this.jobResourceNames = [];
           if (res.configuration) {
@@ -4163,7 +4163,7 @@ export class WorkflowComponent {
 
   private updateOrderPreparation(): void {
     if (this.orderPreparation && !isEmpty(this.orderPreparation)) {
-      // this.variableDeclarations.allowUndeclared = this.orderPreparation.allowUndeclared;
+      this.variableDeclarations.allowUndeclared = this.orderPreparation.allowUndeclared;
       if (this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
         const temp = this.coreService.clone(this.orderPreparation.parameters);
         this.variableDeclarations.parameters = Object.entries(temp).map(([k, v]) => {
@@ -11310,7 +11310,7 @@ export class WorkflowComponent {
         flag = true;
       }
     } else if (type === 'variable') {
-      const variableDeclarations = {parameters: [], allowUndeclared: false};
+      const variableDeclarations = {parameters: [], allowUndeclared: this.variableDeclarations.allowUndeclared};
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
         delete value.value.invalid;
@@ -11355,7 +11355,7 @@ export class WorkflowComponent {
       }
     } else if (type === 'childvariable') {
       console.log('child variable')
-      const variableDeclarations = {parametersArray: [], parameters: {}, allowUndeclared: false};
+      const variableDeclarations = {parametersArray: [], parameters: {}, allowUndeclared: this.variableDeclarations.allowUndeclared};
       const temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parametersArray = temp.map((value) => {
         if (value.value.type === 'List') {

@@ -8978,6 +8978,16 @@ td .ver-top {
   width: 280px;
 }
 
+.ant-popover-title{
+  background-color: var(--box-color);
+  border-color: var(--border-color) !important;
+  color: var(--text-color) !important;
+}
+
+.ant-popover-arrow-content::before{
+  background-color: var(--box-color);
+}
+
 .ant-popover-placement-bottomRight {
   width: 800px;
   max-width: 100%;
@@ -9391,5 +9401,21 @@ cdk-virtual-scroll-viewport {
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
     background: #ccc;
+  }
+}
+
+.truncate {
+  max-height: 61px; /* Adjust as needed for three lines of text */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal; /* Allow line breaks */
+  display: -webkit-box; /* Use the old -webkit-box to control lines */
+  -webkit-line-clamp: 3; /* Number of lines to display */
+  -webkit-box-orient: vertical;
+}
+.clipboard-list {
+  .ant-popover-inner-content {
+    max-height: 300px;
+    overflow: auto;
   }
 }
