@@ -1876,6 +1876,11 @@ export class CoreService {
 
   /** -------- Log View --------- */
 
+  private upperFLetter(string: string): string {
+    return string[0].toUpperCase() +
+      string.slice(1);
+  }
+
   createTreeStructure(mainObj: any): any {
     let nodes: any = [];
     mainObj.treeStructure.forEach((item: any) => {
@@ -1960,6 +1965,26 @@ export class CoreService {
                 orderId: item.orderId,
                 children: []
               };
+            } else {
+              let text = lastPos.split(':')[0];
+              console.log(lastPos, text, 'text',  lastPos.split(':'), item.job);
+              if(lastPos.split(':')[1] === '0') {
+               
+
+                parentNode = {
+                  title: this.upperFLetter(text),
+                  key: text + item.orderId + item.logEvent + item.position,
+                  name: '',
+                  logLevel: item.logLevel,
+                  position: item.position,
+                  position1: item.position.substring(0, item.position.lastIndexOf(':')),
+                  isLeaf: false,
+                  count: item.count,
+                  logEvent: item.logEvent,
+                  orderId: item.orderId,
+                  children: []
+                };
+              }
             }
           }
         }

@@ -174,7 +174,7 @@ export class AddOrderModalComponent {
   }
 
   handlePaste(data) {
-    if(!data){
+    if(!data || data.type){
       data = this.storedArguments[0];
     }
     if (data && typeof data == 'string') {
