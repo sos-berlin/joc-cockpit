@@ -715,7 +715,7 @@
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="deploy((type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT'))" *ngIf="step === 3"
-            [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)"
+            [disabled]="!myForm.form.valid || submitted"
             class="btn btn-primary btn-sm" translate
             type="button">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>

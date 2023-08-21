@@ -76,7 +76,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button [disabled]="!myForm.form.valid || (required && !comments.comment) || submitted || (object.at === 'template' && selectedTemplates.schedules && selectedTemplates.schedules.length ===0
+    <button [disabled]="!myForm.form.valid || submitted || (object.at === 'template' && selectedTemplates.schedules && selectedTemplates.schedules.length ===0
      && object.workflowPaths && object.workflowPaths.length ===0 && object.paths.length === 0 && selectedTemplates.paths.length === 0)" class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>

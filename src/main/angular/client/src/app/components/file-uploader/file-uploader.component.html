@@ -289,7 +289,7 @@
     </nz-upload>
   </div>
   <div *ngIf="fileList.length > 0" class="modal-footer">
-    <button (click)="handleUpload();" [disabled]="!myForm.form.valid || uploading || (required && !comments.comment)"
+    <button (click)="handleUpload();" [disabled]="!myForm.form.valid || uploading"
             class="btn btn-primary btn-sm" type="submit">
       <i *ngIf="uploading" class="fa fa-spin fa-spinner p-r-xs"></i>
       <span *ngIf="type !== 'CRON'" translate>common.button.import</span>

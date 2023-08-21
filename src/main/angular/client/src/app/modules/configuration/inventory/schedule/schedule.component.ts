@@ -42,6 +42,7 @@ export class ScheduleComponent {
   blockPositions: any;
   blockPositionList: any;
   lastModified: any = '';
+  allowUndeclaredVariables: boolean;
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -70,6 +71,7 @@ export class ScheduleComponent {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.allowUndeclaredVariables = sessionStorage['allowUndeclaredVariables'] == 'true';
   }
 
   ngOnChanges(changes: SimpleChanges): void {

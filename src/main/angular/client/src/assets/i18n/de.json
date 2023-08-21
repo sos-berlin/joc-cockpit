@@ -2787,7 +2787,8 @@
       "log_applicable_size": "Falls die Größe der Protokollausgaben eines Jobs diesen Wert überschreitet, wird der History Service die Ausgaben trunkieren und die ersten und letzten 100 KB verwenden. Die originale Protokolldatei des Jobs wird entfernt. Die Größe wird in MB angenommen.",
       "log_maximum_size": "Falls die Größe der Protokollausgaben eines Jobs diesen Wert überschreitet, wird der History Service die Ausgaben trunkieren und die ersten 100 KB verwenden. Die originale Protokolldatei des Jobs wird entfernt. Die Größe wird in MB angenommen.",
       "joc_reverse_proxy_url": "Wenn JOC Cockpit nicht über die originäre URL, sondern nur über einen Reverse Proxy Dienst erreichbar ist, gibt dieser Wert die zu verwendende URL an, zum Beispiel bei E-Mail Benachrichtigungen.",
-      "allow_empty_arguments": "Leere Argumente zulassen"
+      "allow_empty_arguments": "Leere Argumente zulassen",
+      "allow_undeclared_variables": "Allow undeclared variables"
     },
     "user": {
       "welcome_got_it": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht länger angezeigt werden soll.",
@@ -3311,7 +3312,7 @@
     "label.failOnOutputErr": "Scheitern bei Ausgaben in stderr",
     "label.warnOnOutputErr": "Warnen bei Ausgaben in stderr",
     "label.showConfiguration": "Konfiguration anzeigen",
-    "label.allowUndeclared": "Undeklarierte Variablen",
+    "label.allowUndeclared": "Allow undeclared variables",
     "label.boardNames": "Namen der Notizbretter",
     "label.expectBoardName": "Name Notizbrett",
     "label.expectBoardExpression": "ExpectNotices Ausdruck",

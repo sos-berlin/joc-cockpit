@@ -1,10 +1,16 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, Optional} from '@angular/core';
 import {Router} from '@angular/router';
 import {NzModalRef} from 'ng-zorro-antd/modal';
+import {ControlContainer, NgForm} from "@angular/forms";
 
 @Component({
   selector: 'app-audit-log-input',
-  templateUrl: './audit-log-input-component.html'
+  templateUrl: './audit-log-input-component.html',
+  viewProviders: [{
+    provide: ControlContainer,
+    deps: [[Optional, NgForm]],
+    useFactory: (ngForm: NgForm) => ngForm,
+  }]
 })
 export class AuditLogInputComponent {
   @Input() comments: any;

@@ -110,7 +110,8 @@
                  nz-checkbox>
             {{'inventory.export.label.deployed'| translate}}
           </label>
-          <label *ngIf="exportType === 'BOTH' || exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'JOBTEMPLATE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR')" [(ngModel)]="filter.release" [disabled]="exportObj.forSigning || !filter.dailyPlan"
+          <label *ngIf="exportType === 'BOTH' || exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'JOBTEMPLATE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR')"
+                 [(ngModel)]="filter.release" [disabled]="exportObj.forSigning || !filter.dailyPlan"
                  class="m-l-md" name="release" (ngModelChange)="filterList()"
                  nz-checkbox>
             {{'inventory.export.label.released'| translate}}
@@ -259,7 +260,7 @@
     </div>
   </div>
   <div class="modal-footer text-left">
-    <button *ngIf="nodes.length > 0" [disabled]="!myForm.form.valid || submitted || loading || inValid || (required && !comments.comment)" class="btn btn-primary btn-sm"
+    <button *ngIf="nodes.length > 0" [disabled]="!myForm.form.valid || submitted || loading || inValid" class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
       {{'common.button.submit' | translate}}

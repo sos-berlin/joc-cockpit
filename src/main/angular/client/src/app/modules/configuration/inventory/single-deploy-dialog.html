@@ -141,7 +141,7 @@
     </div>
   </div>
   <div class="modal-footer text-left">
-    <button *ngIf="!isRemoved" [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+    <button *ngIf="!isRemoved" [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted" class="btn btn-primary btn-sm"
             translate
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>

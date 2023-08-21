@@ -954,7 +954,7 @@
                 </div>
               </div>
             <div *ngIf="(selectedNode.obj.arguments && selectedNode.obj.arguments.length > 0) || (selectedNode.obj.forkListArguments && selectedNode.obj.forkListArguments.length > 0)
-              || (selectedNode.obj.argumentList && selectedNode.obj.argumentList.length > 0)" class="form-group row">
+              || (selectedNode.obj.argumentList && selectedNode.obj.argumentList.length > 0)" class="row">
               <div class="col-md-12">
                 <div class="form-group row">
                   <div class="col-md-12">
@@ -1161,6 +1161,11 @@
                 </div>
               </div>
             </div>
+            <div class="form-group row">
+              <div class="col-sm-12" *ngIf="allowUndeclaredVariables && selectedNode.obj.workflow?.orderPreparation?.allowUndeclared">
+                <a class="text-u-l" (click)="addUndeclaredArgument()" translate>order.button.addVariable</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1233,17 +1238,40 @@
               </nz-select>
             </div>
           </div>
-          <div class="form-group row">
+          <div class="form-group row" *ngIf="allowUndeclaredVariables || variableDeclarations.allowUndeclared">
             <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.allowUndeclared' | translate}}" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.allowUndeclared' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                    translate>workflow.label.allowUndeclared</label>
             <div class="col-md-8 col-lg-9">
-              <label nz-checkbox [(ngModel)]="variableDeclarations.allowUndeclared" (nzCheckedChange)="updateOtherProperties('variable')" name="allowUndeclared"></label>
+              <label nz-checkbox [(ngModel)]="variableDeclarations.allowUndeclared" (nzCheckedChange)="updateOtherProperties('variable')"
+                     name="allowUndeclared"></label>
             </div>
           </div>
           <div class="form-group row">
+            <ng-template #contentTemplate>
+              <div class="p-a-sm b-a m-b-sm cursor" (click)="handlePaste(item)" *ngFor="let item of storedArguments">
+                <div class="truncate">{{item}}</div>
+              </div>
+              <div class="pull-right">
+                <a class="text-hover-primary" (click)="removeClipboard()" translate>common.button.clear</a>
+              </div>
+            </ng-template>
             <label class="col-md-12 _600" translate>order.label.variables</label>
-            <a (click)="fitToScreen()" class="anchor-with-icon pos-abt"
-               nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" style="right: 18px; margin-top: -1px" translate>
+            <a *ngIf="variableDeclarations.parameters?.length > 0" (click)="copyArguments()" class="anchor-with-icon pos-abt m-t-n-1" [ngStyle]="{'right': storedArguments?.length > 0 ? '90px' : '42px'}"
+               nz-tooltip="{{'common.button.copyArguments' | translate}}">
+              <i class="fa fa-copy"></i>
+            </a>
+            <a *ngIf="storedArguments?.length > 0" (click)="handlePaste(storedArguments[0])" class="anchor-with-icon pos-abt m-t-n-1"
+               nz-tooltip="{{'common.button.paste' | translate}}" style="right: 66px;">
+              <i class="fa fa-paste"></i>
+            </a>
+            <a *ngIf="storedArguments?.length > 0" nz-popover [nzPopoverTitle]="'common.label.clipboard' | translate" [nzPopoverContent]="contentTemplate"
+                nzPopoverTrigger="click" [nzPopoverOverlayClassName]="'clipboard-list'"
+                class="anchor-with-icon pos-abt m-t-n-1"
+               nz-tooltip="{{'common.button.showClipboard' | translate}}" style="right: 42px;">
+              <i class="fa fa-list"></i>
+            </a>
+            <a (click)="fitToScreen()" class="anchor-with-icon pos-abt m-t-n-1"
+               nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" style="right: 18px;" translate>
               <i *ngIf="!fullScreen" class="fa fa-arrows-alt"></i>
               <i *ngIf="fullScreen" class="fa fa-minus-square-o"></i>
             </a>

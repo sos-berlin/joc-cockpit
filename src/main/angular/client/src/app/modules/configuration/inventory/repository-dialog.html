@@ -184,7 +184,7 @@
     </div>
   </div>
   <div class="modal-footer text-left">
-    <button *ngIf="nodes.length > 0 || (operation === 'delete' && !origin.object)" [disabled]="!myForm.form.valid || submitted || loading || (required && !comments.comment)"
+    <button *ngIf="nodes.length > 0 || (operation === 'delete' && !origin.object)" [disabled]="!myForm.form.valid || submitted || loading"
             class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>

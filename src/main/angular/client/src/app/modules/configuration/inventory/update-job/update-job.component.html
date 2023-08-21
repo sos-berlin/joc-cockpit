@@ -82,7 +82,7 @@
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="deploy()" *ngIf="step === 4" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)"
+    <button (click)="deploy()" *ngIf="step === 4" [disabled]="!myForm.form.valid || submitted"
             class="btn btn-primary btn-sm" translate
             type="button">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>

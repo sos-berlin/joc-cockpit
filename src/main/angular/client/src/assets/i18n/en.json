@@ -2787,7 +2787,8 @@
       "log_applicable_size": "If the value for the size of a job's log output is exceeded then the History Service will truncate the log output and will use the first and last 100 KB for the task log. The original log file will be removed. The size is assumed in MB.",
       "log_maximum_size": "If the value for the size of a job's log output is exceeded then the History Service will truncate the log output and will use the first 100 KB for the task log. The original log file will be removed. The size is assumed in MB.",
       "joc_reverse_proxy_url": "If JOC Cockpit is not accessible from its original URL but from a reverse proxy service only then this value specifies the URL to be used, for example with e-mail notifications.",
-      "allow_empty_arguments": "Allow empty arguments"
+      "allow_empty_arguments": "Allow empty arguments",
+      "allow_undeclared_variables": "Allow undeclared variables"
     },
     "user": {
       "welcome_got_it": "Specifies that the welcome window that offers defaults and examples for download should no longer be displayed.",
@@ -3311,7 +3312,7 @@
     "label.failOnOutputErr": "Fail on output to stderr",
     "label.warnOnOutputErr": "Warn on output to stderr",
     "label.showConfiguration": "Show Configuration",
-    "label.allowUndeclared": "Undeclared Variables",
+    "label.allowUndeclared": "Allow undeclared variables",
     "label.boardNames": "Notice Board Names",
     "label.expectBoardName": "Notice Board Name",
     "label.expectBoardExpression": "ExpectNotices Expression",

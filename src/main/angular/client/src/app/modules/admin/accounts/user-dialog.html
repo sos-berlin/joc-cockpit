@@ -90,7 +90,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button [disabled]="!myForm.form.valid || !isUnique || submitted || !minimumPasswordLength || !isPasswordMatch || (required && !comments.comment)"
+    <button [disabled]="!myForm.form.valid || !isUnique || submitted || !minimumPasswordLength || !isPasswordMatch"
             class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>

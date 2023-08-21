@@ -354,14 +354,13 @@
         <a (click)="addArgument()" class="text-u-l" translate>order.button.modifyVariable</a>
         <a (click)="addArguments()" class="text-u-l m-l" translate>order.button.modifyVariables</a>
       </div>
-      <div class="col-sm-12"
-           *ngIf="variableList.length <= arguments.length && (workflow.orderPreparation && workflow.orderPreparation.allowUndeclared)">
+      <div class="col-sm-12" *ngIf="workflow.orderPreparation?.allowUndeclared">
         <a class="text-u-l" (click)="addArgument(true)" translate>order.button.addVariable</a>
       </div>
     </div>
   </div>
   <div class="modal-footer text-left">
-    <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
@@ -377,15 +376,13 @@
         </div>
       </ng-template>
       <button (click)="handlePaste(storedArguments[0])"
-              class="btn btn-grey btn-sm m-r-12" type="button">
+              class="btn btn-grey btn-sm m-r-12" type="button" [nz-tooltip]="'common.button.paste' | translate" >
         <i class="fa fa-paste"></i>
-        {{'common.button.paste' | translate}}
       </button>
       <button nz-button nz-popover [nzPopoverTitle]="'common.label.clipboard' | translate" [nzPopoverContent]="contentTemplate"
               nzPopoverTrigger="click" [nzPopoverOverlayClassName]="'clipboard-list'"
-              class="btn btn-grey btn-sm" type="button">
-        <i class="fa list"></i>
-        {{'common.button.showClipboard' | translate}}
+              class="btn btn-grey btn-sm" type="button" [nz-tooltip]="'common.button.showClipboard' | translate" >
+        <i class="fa fa-list"></i>
       </button>
     </div>
   </div>
