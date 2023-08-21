@@ -2023,7 +2023,7 @@
           "delay": "Die Verzögerung ist die Anzahl Sekunden, für die auf den nächsten Wiederholungsversuch gewartet wird. Werden mehrere durch Komma getrennte Werte angegeben, so gelten sie von links nach rechts für die Wartezeit auf die nächste Wiederholung."
         },
         "cycle": {
-          "onlyOnePeriod": "Ein Zyklus kann mehrere Zeiträume umfassen, z.B. 13.00, 14.00 und 15.00 Uhr, wobei jeder Zyklus 30 Minuten dauert. Standardmäßig werden bei einem Auftrag, der um 13.45 Uhr eintrifft, beide Zyklen für 14.00 und 15.00 Uhr ausgeführt. Bei der Einstellung "Nur eine Periode" wird nur die erste passende Periode verwendet und spätere Perioden werden nicht berücksichtigt."
+          "onlyOnePeriod": "Ein Zyklus kann mehrere Zeiträume umfassen, z.B. 13.00, 14.00 und 15.00 Uhr, wobei jeder Zyklus 30 Minuten dauert. Standardmäßig werden bei einem Auftrag, der um 13.45 Uhr eintrifft, beide Zyklen für 14.00 und 15.00 Uhr ausgeführt. Bei der Einstellung 'Nur eine Periode' wird nur die erste passende Periode verwendet und spätere Perioden werden nicht berücksichtigt."
         }
       },
       "export": {
