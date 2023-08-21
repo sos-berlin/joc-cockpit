@@ -56,7 +56,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button (click)="generateKey()" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)"
+    <button (click)="generateKey()" [disabled]="!myForm.form.valid || submitted"
             class="btn btn-primary btn-sm" type="button">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}

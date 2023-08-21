@@ -173,7 +173,7 @@
               <a class="text-u-l" (click)="addVariable()"
                  translate>order.button.modifyVariable</a>
             </div>
-            <div class="col-sm-12" *ngIf="variableList.length <= variables.length && (orderPreparation && orderPreparation.allowUndeclared)">
+            <div class="col-sm-12" *ngIf="(orderPreparation && orderPreparation.allowUndeclared)">
               <a class="text-u-l" (click)="addVariable(true)" translate>order.button.addVariable</a>
             </div>
           </div>
@@ -184,7 +184,7 @@
       </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm">
+    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

@@ -2395,6 +2395,7 @@
     "label.licenseWarningGotIt": "ライセンス警告を確認",
     "label.showMoreOptions": "オプション表示",
     "label.tabSize": "タブサイズ",
+    "label.listVariableCollapse": "Collapse list variable",
     "button.resetPreferences": "プリファレンスリセット",
     "button.groupLimit": "グループリミット",
     "button.changePassword": "パスワード変更",
@@ -2782,7 +2783,8 @@
       "log_applicable_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、最初と最後の100KBをタスクログに使用します。元のログファイルは削除されます。",
       "log_maximum_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、タスクログ用に最初の100KBを使用します。オリジナルのログファイルは削除されます。",
       "joc_reverse_proxy_url": "JOCコックピットが本来のURLからではなく、リバースプロキシサービスからしかアクセスできない場合、この値は、例えばメール通知で使用されるURLを指定します。",
-      "allow_empty_arguments": "空の引数を許可"
+      "allow_empty_arguments": "空の引数を許可",
+      "allow_undeclared_variables": "Allow undeclared variables"
     },
     "user": {
       "welcome_got_it": "了解",
@@ -3306,7 +3308,7 @@
     "label.failOnOutputErr": "stderr出力でエラー",
     "label.warnOnOutputErr": "stderr出力で警告",
     "label.showConfiguration": "ジョブ定義表示",
-    "label.allowUndeclared": "未宣言を許可",
+    "label.allowUndeclared": "Allow undeclared variables",
     "label.boardNames": "通知ボード名",
     "label.expectBoardName": "通知ボード名",
     "label.expectBoardExpression": "ExpectNotice条件式",

@@ -43,7 +43,7 @@
     </div>
   </div>
   <div class="modal-footer text-left">
-    <button [disabled]="!myForm.form.valid || submitted || inValid || (required && !comments.comment)" class="btn btn-primary btn-sm"
+    <button [disabled]="!myForm.form.valid || submitted || inValid" class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
       {{'common.button.submit' | translate}}

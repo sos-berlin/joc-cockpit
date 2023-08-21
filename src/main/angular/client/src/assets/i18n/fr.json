@@ -483,7 +483,7 @@
     "label.allEntriesSelected": "Tous {{count}} entrées sont selectionnées.",
     "label.selectAllEntries": "Sélectionner tous {{count}} entrées",
     "label.clearSelection": "Remise à zéro de la sélection",
-    "label.clipboard": "Clipboard",
+    "label.clipboard": "Presse-papiers",
     "button.all": "Tous",
     "button.save": "Enregistrer",
     "button.apply": "Appliquer",
@@ -545,7 +545,7 @@
     "button.switchToSpecificDate": "Passer à une date spécifique",
     "button.switchToRelativeDate": "Passer à une date relative",
     "button.copyArguments": "Copier les arguments",
-    "button.showClipboard": "Show clipboard",
+    "button.showClipboard": "Afficher presse-papiers",
     "placeholder.search": "Filtrer les résultats",
     "placeholder.name": "Nom",
     "placeholder.value": "Valeur",
@@ -2784,7 +2784,8 @@
       "log_applicable_size": "Si cette valeur pour la taille de la sortie du journal d'une tâche est dépassée, le History Service tronquera la sortie du journal et utilisera les 100 premiers et derniers Ko pour le journal de la tâche. Le fichier journal original sera supprimé. La taille est spécifiée en MO.",
       "log_maximum_size": "Si cette valeur pour la taille de la sortie du journal d'une tâche est dépassée, le History Service tronquera la sortie du journal et utilisera les 100 premiers Ko pour le journal de la tâche. Le fichier journal original sera supprimé. La taille est spécifiée en MO.",
       "joc_reverse_proxy_url": "Si JOC Cockpit n'est pas accessible à partir de son URL d'origine mais uniquement à partir d'un service de reverse proxy, cette valeur indique l'URL à utiliser, par exemple pour les notifications par e-mail.",
-      "allow_empty_arguments": "Permettre les arguments vides"
+      "allow_empty_arguments": "Permettre les arguments vides",
+      "allow_undeclared_variables": "Allow undeclared variables"
     },
     "user": {
       "welcome_got_it": "Spécifie que la fenêtre d'accueil qui propose des valeurs par défaut et des exemples à télécharger ne doit plus être affichée.",
@@ -3308,7 +3309,7 @@
     "label.failOnOutputErr": "Échec sur la sortie vers stderr",
     "label.warnOnOutputErr": "Avertissement sur la sortie vers stderr",
     "label.showConfiguration": "Afficher la Configuration",
-    "label.allowUndeclared": "Variables non déclarés",
+    "label.allowUndeclared": "Allow undeclared variables",
     "label.boardNames": "Noms des Conditions",
     "label.expectBoardName": "Board Name",
     "label.expectBoardExpression": "ExpectNotices Expression",

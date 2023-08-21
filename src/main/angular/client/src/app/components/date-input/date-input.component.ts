@@ -1,10 +1,18 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Optional, Output} from '@angular/core';
 import {differenceInCalendarDays} from "date-fns";
+import {ControlContainer, NgForm} from "@angular/forms";
 import {CoreService} from "../../services/core.service";
 
 @Component({
   selector: 'app-date-input',
-  templateUrl: './date-input.component.html'
+  templateUrl: './date-input.component.html',
+  viewProviders: [
+    {
+      provide: ControlContainer,
+      deps: [[Optional, NgForm]],
+      useFactory: (ngForm: NgForm) => ngForm,
+    }
+  ]
 })
 export class DateInputComponent {
   @Input() placeholder = '';

@@ -1,8 +1,8 @@
 <div class="search-box-field pull-right pos-rel" style="top:-39px">
   <label>
-    <input (keyup)="searchInResult()" [(ngModel)]="blocklistFilter.filter.searchText" placeholder="{{'common.placeholder.search' | translate}}"
-           type="search">
-    <i (click)="blocklistFilter.filter.searchKey = '';" *ngIf="blocklistFilter.filter.searchKey"
+    <input type="search" (keyup)="searchInResult()" [(ngModel)]="blocklistFilter.filter.searchText" placeholder="{{'common.placeholder.search' | translate}}"
+           >
+    <i  *ngIf="blocklistFilter.filter.searchKey" (click)="blocklistFilter.filter.searchKey = '';"
        class="fa fa-times search-close"></i>
   </label>
 </div>
@@ -18,8 +18,9 @@
       <thead>
       <tr>
         <th *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-            [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate" [nzShowCheckbox]="true"
-            class="chk" (nzCheckedChange)="checkAll($event)" >
+            [nzShowCheckbox]="true" [nzIndeterminate]="object.indeterminate"
+            [(nzChecked)]="object.checked" (nzCheckedChange)="checkAll($event)"
+            class="chk">
         </th>
         <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span
           translate>common.label.action</span></th>
@@ -53,13 +54,13 @@
       <ng-template [ngForOf]="ajaxTable.data" let-account ngFor>
         <tr>
           <td *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-              [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
               [nzShowCheckbox]="true"
+              [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
               (nzCheckedChange)="onItemChecked(account, $event)">
           </td>
           <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
             <div class="btn-group dropdown pull-left m-r-sm">
-              <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+              <button nz-dropdown [nzDropdownMenu]="option" class="btn-drop more-option-h" nzTrigger="click"
                       type="button"><i class="fa fa-ellipsis-h"></i></button>
               <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                 <ul nz-menu>

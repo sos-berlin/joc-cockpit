@@ -70,13 +70,13 @@
   </div>
   <div class="modal-footer">
     <button (click)="onRemove()" *ngIf="!isSubmit"
-            [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)"
+            [disabled]="!myForm.form.valid || submitted"
             class="btn btn-danger btn-sm" type="button">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.remove' | translate}}
     </button>
     <button (click)="onSubmit()" *ngIf="isSubmit"
-            [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)"
+            [disabled]="!myForm.form.valid || submitted"
             class="btn btn-primary btn-sm" type="button">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}

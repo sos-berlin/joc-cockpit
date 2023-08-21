@@ -2838,6 +2838,7 @@ export class WorkflowComponent {
   lockTree = [];
   boardTree = [];
   scriptTree = [];
+  storedArguments = [];
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
   dummyXml: any;
@@ -2878,13 +2879,14 @@ export class WorkflowComponent {
   invalidMsg: string;
   inventoryConf: any;
   allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'List'];
-  variableDeclarations = {parameters: [], allowUndeclared:  false};
+  variableDeclarations = {parameters: [], allowUndeclared: false};
   document = {name: ''};
   fullScreen = false;
   isSearchVisible = false;
   keyHandler: any;
   lastModified: any = '';
   hasLicense: boolean;
+  allowUndeclaredVariables: boolean;
   positions: any;
   newPositions: any;
   blockPositionList: any;
@@ -2905,6 +2907,7 @@ export class WorkflowComponent {
               private toasterService: ToastrService, public workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService,
               private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
     this.hasLicense = sessionStorage['hasLicense'] == 'true';
+    this.allowUndeclaredVariables = sessionStorage['allowUndeclaredVariables'] == 'true';
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.workflow.actual) {
@@ -3441,6 +3444,59 @@ export class WorkflowComponent {
       this.editor.graph.fit();
       this.center();
     }
+  }
+
+  copyArguments(): void {
+    // Get existing data from sessionStorage (if any)
+    let storedData = sessionStorage.getItem('$SOS$copiedDeclaredArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedDeclaredArgument')) : [];
+
+    // Add the new data to the array
+    storedData.push(JSON.stringify(this.variableDeclarations.parameters));
+
+    // Check if the length exceeds 20, remove the oldest entry
+    if (storedData.length > 20) {
+      storedData.shift(); // Remove the first element (oldest)
+    }
+
+    // Update the stored data in sessionStorage
+    sessionStorage.setItem('$SOS$copiedDeclaredArgument', JSON.stringify(storedData));
+    this.coreService.showCopyMessage(this.message);
+    this.fetchClipboard();
+  }
+
+  handlePaste(data) {
+    if (!data || data.type) {
+      data = this.storedArguments[0];
+    }
+    if (data && typeof data == 'string') {
+      const clipboardDataArray = JSON.parse(data);
+      if (!isArray(clipboardDataArray)) {
+        return;
+      }
+      clipboardDataArray.forEach(argu => {
+        let flag = true;
+        for (let i in this.variableDeclarations.parameters) {
+          if (argu.name == this.variableDeclarations.parameters[i].name) {
+            flag = false;
+            console.log(argu.name, this.variableDeclarations.parameters[i])
+          }
+        }
+        if (flag) {
+          this.variableDeclarations.parameters.push(argu);
+        }
+      })
+      console.log(this.variableDeclarations.parameters, 'this.variableDeclarations.parameters');
+      this.updateOtherProperties('variable');
+    }
+  }
+
+  removeClipboard(): void{
+    this.storedArguments = [];
+    sessionStorage.removeItem('$SOS$copiedDeclaredArgument');
+  }
+
+  fetchClipboard(): void{
+    this.storedArguments = sessionStorage.getItem('$SOS$copiedDeclaredArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedDeclaredArgument')) : [];
   }
 
   fitToScreen(): void {
@@ -4159,6 +4215,7 @@ export class WorkflowComponent {
       this.addVariable();
     }
     this.updateOrderPreparation();
+    this.fetchClipboard();
   }
 
   private updateOrderPreparation(): void {
@@ -4377,6 +4434,19 @@ export class WorkflowComponent {
       if (this.selectedNode.obj.arguments[j].name === data.name) {
         this.selectedNode.obj.arguments.splice(j, 1);
         break;
+      }
+    }
+  }
+
+  addUndeclaredArgument(): void {
+    const param: any = {
+      name: '',
+      value: '',
+      isTextField: true
+    };
+    if (this.selectedNode.obj.arguments) {
+      if (!this.coreService.isLastEntryEmpty(this.selectedNode.obj.arguments, 'name', '')) {
+        this.selectedNode.obj.arguments.push(param);
       }
     }
   }

@@ -2731,6 +2731,7 @@ export class CoreService {
     sessionStorage['hasLicense'] = result.clusterLicense;
     sessionStorage['licenseType'] = result.licenseType;
     sessionStorage['allowEmptyArguments'] = result.allowEmptyArguments;
+    sessionStorage['allowUndeclaredVariables'] = result.allowUndeclaredVariables;
     if (result.licenseValidFrom) {
       sessionStorage['licenseValidFrom'] = result.licenseValidFrom;
     }

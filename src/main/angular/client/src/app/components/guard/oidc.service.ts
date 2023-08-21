@@ -282,7 +282,8 @@ export class OIDCAuthService {
             let revokationParams = params
               .set('token', content.token)
               .set('token_type_hint', 'access_token');
-            if (logoutUrl.includes('login.windows.net')) {
+            if (logoutUrl.includes('login.windows.net') || logoutUrl.includes('login.microsoftonline.com')) {
+  
               // navigate to the logout URL
               window.location.replace(logoutUrl + '?post_logout_redirect_uri=' + window.location.href);
               return
@@ -455,7 +456,7 @@ export class OIDCAuthService {
     this.assertUrlNotNullAndCorrectProtocol(this.tokenEndpoint, 'tokenEndpoint');
     let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
     const clientId = sessionStorage.getItem('clientId');
-    const clientSecret = this.tokenEndpoint.match('v2.0/') ? '' : (sessionStorage.getItem('clientSecret') || this.clientSecret);
+    const clientSecret = this.tokenEndpoint.match('/v2.0') ? '' : (sessionStorage.getItem('clientSecret') || this.clientSecret);
     let flag = true;
     let basicAuth = false;
     if (this.tokenEndMethodsSupported.length > 0) {

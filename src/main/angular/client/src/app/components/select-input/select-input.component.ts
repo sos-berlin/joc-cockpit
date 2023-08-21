@@ -1,8 +1,14 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Optional, Output} from '@angular/core';
+import {ControlContainer, NgForm} from "@angular/forms";
 
 @Component({
   selector: 'app-select-input',
-  templateUrl: './select-input.component.html'
+  templateUrl: './select-input.component.html',
+  viewProviders: [{
+    provide: ControlContainer,
+    deps: [[Optional, NgForm]],
+    useFactory: (ngForm: NgForm) => ngForm,
+  }]
 })
 export class SelectInputComponent {
   @Input() placeholder = '';

@@ -164,7 +164,7 @@ export class AddOrderModalComponent {
 
   allValuesAssigned(listVariables): boolean {
     for (let actualListArr of listVariables.actualList) {
-      for (let argument of actualListArr) {
+      for (let argument of actualListArr?.list) {
         if (!argument.value) {
           return false;
         }
