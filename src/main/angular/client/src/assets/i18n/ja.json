@@ -482,7 +482,7 @@
     "label.allEntriesSelected": "全{{count}}アイテムが選択されました",
     "label.selectAllEntries": "全{{count}}アイテムを選択",
     "label.clearSelection": "選択解除",
-    "label.clipboard": "Clipboard",
+    "label.clipboard": "クリップボード",
     "button.all": "全て",
     "button.save": "保存",
     "button.apply": "適用",
@@ -502,7 +502,7 @@
     "button.confirm": "確認",
     "button.saveAs": "名前を付けて保存",
     "button.submit": "登録",
-    "button.forceSubmit": "Force Submit",
+    "button.forceSubmit": "強制登録",
     "button.search": "検索",
     "button.duplicate": "複製",
     "button.copy": "コピー",
@@ -541,10 +541,10 @@
     "button.viewDocumentation": "ドキュメント表示",
     "button.viewHistory": "履歴表示",
     "button.showHistory": "履歴表示",
-    "button.switchToSpecificDate": "Switch to Specific Date",
-    "button.switchToRelativeDate": "Switch to Relative Date",
-    "button.copyArguments": "Copy arguments",
-    "button.showClipboard": "Show clipboard",
+    "button.switchToSpecificDate": "絶対日付に切替",
+    "button.switchToRelativeDate": "相対日付に切替",
+    "button.copyArguments": "変数コピー",
+    "button.showClipboard": "クリップボード表示",
     "placeholder.search": "検索",
     "placeholder.name": "名称",
     "placeholder.value": "値",
@@ -753,7 +753,7 @@
     "label.totalOrderEntry": "合計{{total}}オーダーがあります",
     "label.all": "全て",
     "label.select": "選択",
-    "label.chooseTemplates": "テンプレート選択",
+    "label.chooseTemplates": "ワークフロー選択",
     "label.submissionHistory": "登録履歴",
     "label.overwrite": "上書",
     "label.planeDate": "プラン日付",
@@ -1800,7 +1800,7 @@
     "message.noObjectFoundToRelease": "リリースできるオブジェクトはありません",
     "message.updateFromJobTemplate": "本当にジョブテンプレートから更新しますか？",
     "message.localChangesWillBeOverwritten": "この操作により、ローカルでの変更はすべて上書きされます",
-    "message.changeDeductInWorkflow": "Change deduct in the Workflow variables, please adjust variables and release the Schedule again",
+    "message.changeDeductInWorkflow": "ワークフローの変数を変更し、変数を調整して再度スケジュールをリリースしてください",
     "cronTab": {
       "label.convertCron": "crontab変換",
       "label.folder": "フォルダー",
@@ -1819,7 +1819,7 @@
       "label.released": "リリース済",
       "label.controller": "コントローラー",
       "label.dailyPlan": "実行計画",
-      "label.useRelativePathOnly": "Use Relative Path Only"
+      "label.useRelativePathOnly": "相対パスを使用してください"
     },
     "repository": {
       "label.filter": "フィルター",
@@ -2023,7 +2023,7 @@
         }
       },
       "export": {
-        "useRelativePathOnly": "Use Relative Path Only"
+        "useRelativePathOnly": "相対パスを使用してください"
       }
     },
     "search": {
@@ -2299,7 +2299,7 @@
     "button.modifyVariables": "変数編集",
     "button.showLog": "ログ表示",
     "button.assignParameterizationFromSchedules": "スケジュールから変数設定",
-    "button.assignFromSchedule": "Assign from Schedules",
+    "button.assignFromSchedule": "スケジュールから割り当て",
     "placeholder.selectStartNode": "開始ノード選択",
     "placeholder.selectEndNode": "終了ノード選択",
     "placeholder.selectBlockPosition": "ブロック位置選択",
@@ -2395,7 +2395,7 @@
     "label.licenseWarningGotIt": "ライセンス警告を確認",
     "label.showMoreOptions": "オプション表示",
     "label.tabSize": "タブサイズ",
-    "label.listVariableCollapse": "Collapse list variable",
+    "label.listVariableCollapse": "変数リストをたたむ",
     "button.resetPreferences": "プリファレンスリセット",
     "button.groupLimit": "グループリミット",
     "button.changePassword": "パスワード変更",
@@ -2783,8 +2783,8 @@
       "log_applicable_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、最初と最後の100KBをタスクログに使用します。元のログファイルは削除されます。",
       "log_maximum_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、タスクログ用に最初の100KBを使用します。オリジナルのログファイルは削除されます。",
       "joc_reverse_proxy_url": "JOCコックピットが本来のURLからではなく、リバースプロキシサービスからしかアクセスできない場合、この値は、例えばメール通知で使用されるURLを指定します。",
-      "allow_empty_arguments": "空の引数を許可",
-      "allow_undeclared_variables": "Allow undeclared variables"
+      "allow_empty_arguments": "空の変数を許可",
+      "allow_undeclared_variables": "宣言されていない変数を許可"
     },
     "user": {
       "welcome_got_it": "了解",
@@ -2895,7 +2895,7 @@
     "label.iamLdapSystemPassword": "LDAPシステムパスワード",
     "label.iamLdapReadTimeout": "LDAPリードタイムアウト",
     "label.iamLdapConnectTimeout": "LDAP接続タイムアウト",
-    "label.disableNestedGroupSearch": "Disable nested group search",
+    "label.disableNestedGroupSearch": "ネストしたグループ検索を無効にする",
     "label.iamOidcName": "OIDC名",
     "label.iamOidcAuthenticationUrl": "OIDC認証URL",
     "label.iamOidcClientId": "OIDCクライアントID",
@@ -3122,7 +3122,7 @@
         "iamLdapSystemPassword": "LDAPシステムパスワード",
         "iamLdapReadTimeout": "LDAPリードタイムアウト",
         "iamLdapConnectTimeout": "LDAP接続タイムアウト",
-        "disableNestedGroupSearch": "Disable nested group search"
+        "disableNestedGroupSearch": "ネストしたグループ検索を無効にする"
       },
       "vault": {
         "iamVaultUrl": "VaultサーバーREST APIにアクセスするためのURL",
@@ -3215,7 +3215,7 @@
     "label.onSuccess": "成功",
     "label.onWarning": "警告",
     "label.onFailure": "失敗",
-    "label.ignore": "Ignore",
+    "label.ignore": "無視",
     "label.returnCode": "リターンコード",
     "label.executableType": "実行タイプ",
     "label.shell": "Shell",
@@ -3308,7 +3308,7 @@
     "label.failOnOutputErr": "stderr出力でエラー",
     "label.warnOnOutputErr": "stderr出力で警告",
     "label.showConfiguration": "ジョブ定義表示",
-    "label.allowUndeclared": "Allow undeclared variables",
+    "label.allowUndeclared": "宣言されていない変数を許可",
     "label.boardNames": "通知ボード名",
     "label.expectBoardName": "通知ボード名",
     "label.expectBoardExpression": "ExpectNotice条件式",
@@ -3399,7 +3399,7 @@
     "button.stop": "停止",
     "button.unstop": "停止解除",
     "button.transitionOrders": "オーダートランジション",
-    "button.format": "Reformat",
+    "button.format": "再フォーマット",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",
