@@ -114,7 +114,7 @@
           </div>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <nz-radio-group [(ngModel)]="returnCodes.on" (ngModelChange)="saveJSON();" >
-              <label (click)="job.configuration.executable.returnCodeMeaning.success = job.configuration.executable.returnCodeMeaning.failure;job.configuration.executable.returnCodeMeaning.failure = ''" nz-radio
+              <label (click)="job.configuration.executable.returnCodeMeaning.success = (job.configuration.executable.returnCodeMeaning.failure == 'none' ? '0' : job.configuration.executable.returnCodeMeaning.failure);job.configuration.executable.returnCodeMeaning.failure = ''" nz-radio
                      nzValue="success"><span
                 translate>workflow.label.onSuccess</span></label>
               <label (click)="job.configuration.executable.returnCodeMeaning.failure = job.configuration.executable.returnCodeMeaning.success;job.configuration.executable.returnCodeMeaning.success = ''" nz-radio
