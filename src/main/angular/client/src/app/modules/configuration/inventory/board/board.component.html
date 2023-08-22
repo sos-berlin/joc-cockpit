@@ -94,7 +94,7 @@
                      type="text">
             </nz-input-group>
             <ng-template #addOnAfterTemplate>
-             <app-select-input (modelChange)="changeExp($event, 'toNotice')"
+             <app-select-input [classNames]="'w-220'" (modelChange)="changeExp($event, 'toNotice')"
                                 [placeholder]="'inventory.placeholder.selectPredefinedExpression'" [optionLabel]="'label'" [optionValue]="'value'"
                                 [attributeName]="'toNoticeMsg'" [isAllowClear]="true"
                                 [listArray]="listOfNoticeMsg" [name]="'toNoticeMsg'"
@@ -122,7 +122,7 @@
                      type="text">
             </nz-input-group>
             <ng-template #addOnAfterTemplate3>
-              <app-select-input (modelChange)="changeExp($event, 'NoticeId')"
+              <app-select-input [classNames]="'w-220'" (modelChange)="changeExp($event, 'NoticeId')"
                                 [attributeName]="'readingOrderToNoticeIdMsg'"
                                 [placeholder]="'inventory.placeholder.selectPredefinedExpression'"
                                 [listArray]="listOfNoticeMsg" [name]="'readingOrderToNoticeIdMsg'"
@@ -159,7 +159,7 @@
                                required></nz-input-number>
             </nz-input-group>
             <ng-template #addOnAfterTemplate2>
-              <app-select-input (modelChange)="changeUnit($event)" [attributeName]="'units'"
+              <app-select-input [classNames]="'w-220'" (modelChange)="changeUnit($event)" [attributeName]="'units'"
                                 [listArray]="units" [name]="'units'" [optionLabel]="'label'" [optionValue]="'value'"
                                 [object]="boardObj"></app-select-input>
             </ng-template>

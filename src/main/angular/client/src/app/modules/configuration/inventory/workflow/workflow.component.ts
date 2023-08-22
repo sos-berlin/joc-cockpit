@@ -2897,6 +2897,8 @@ export class WorkflowComponent {
   forkListAgentAssignment = '';
   stickySubagentAgentAssignment = '';
   selectedCellId = '';
+  sortingDirections: {[key: string]: 'asc' | 'desc'} = {};
+
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -3048,6 +3050,20 @@ export class WorkflowComponent {
     } catch (e) {
       console.error(e);
     }
+  }
+
+  sortAscending(variable: any): void {
+    const variableId = variable.id || variable.name;
+    variable.value.listParameters.sort((a, b) => (a.name > b.name) ? 1 : -1);
+    this.sortingDirections[variableId] = 'asc';
+    this.updateOtherProperties('childvariable');
+  }
+
+  sortDescending(variable: any): void {
+    const variableId = variable.id || variable.name;
+    variable.value.listParameters.sort((a, b) => (a.name < b.name) ? 1 : -1);
+    this.sortingDirections[variableId] = 'desc';
+    this.updateOtherProperties('childvariable');
   }
 
 
@@ -3478,14 +3494,12 @@ export class WorkflowComponent {
         for (let i in this.variableDeclarations.parameters) {
           if (argu.name == this.variableDeclarations.parameters[i].name) {
             flag = false;
-            console.log(argu.name, this.variableDeclarations.parameters[i])
           }
         }
         if (flag) {
           this.variableDeclarations.parameters.push(argu);
         }
       })
-      console.log(this.variableDeclarations.parameters, 'this.variableDeclarations.parameters');
       this.updateOtherProperties('variable');
     }
   }
@@ -4539,7 +4553,6 @@ export class WorkflowComponent {
 
   nestedDrop(event: CdkDragDrop<string[]>, variable): void {
     moveItemInArray(variable.value.listParameters, event.previousIndex, event.currentIndex);
-    console.log(event.previousIndex, event.currentIndex, "sssssssss")
     if (event.previousIndex !== event.currentIndex) {
       this.updateOtherProperties('childvariable');
     }
@@ -11379,7 +11392,7 @@ export class WorkflowComponent {
         this.jobResourceNames = this.coreService.clone(this.extraConfiguration.jobResourceNames);
         flag = true;
       }
-    } else if (type === 'variable') {
+    } else if (type === 'variable' || type == 'allowUndeclared') {
       const variableDeclarations = {parameters: [], allowUndeclared: this.variableDeclarations.allowUndeclared};
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
@@ -11419,13 +11432,16 @@ export class WorkflowComponent {
         delete variableDeclarations.parameters;
       }
 
-      if (!isEqual(JSON.stringify(this.orderPreparation), JSON.stringify(variableDeclarations))) {
+      if (!isEqual(JSON.stringify(this.orderPreparation), JSON.stringify(variableDeclarations)) || type == 'allowUndeclared') {
         this.orderPreparation = variableDeclarations;
         flag = true;
       }
     } else if (type === 'childvariable') {
-      console.log('child variable')
-      const variableDeclarations = {parametersArray: [], parameters: {}, allowUndeclared: this.variableDeclarations.allowUndeclared};
+      const variableDeclarations = {
+        parametersArray: [],
+        parameters: {},
+        allowUndeclared: this.variableDeclarations.allowUndeclared
+      };
       const temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parametersArray = temp.map((value) => {
         if (value.value.type === 'List') {

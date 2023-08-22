@@ -142,7 +142,8 @@ export class BoardComponent {
       this.board.path1 = this.data.path;
       this.board.name = this.data.name;
       this.boardObj = {
-        endOfLifeMsg: '$js7EpochMilli + '
+        endOfLifeMsg: '$js7EpochMilli + ',
+        units: 'Milliseconds'
       };
       if (res.configuration.endOfLife) {
         this.boardObj.endOfLife = this.convertIntoUnit(res.configuration.endOfLife.replace(this.boardObj.endOfLifeMsg, ''));

@@ -1967,10 +1967,7 @@ export class CoreService {
               };
             } else {
               let text = lastPos.split(':')[0];
-              console.log(lastPos, text, 'text',  lastPos.split(':'), item.job);
               if(lastPos.split(':')[1] === '0') {
-               
-
                 parentNode = {
                   title: this.upperFLetter(text),
                   key: text + item.orderId + item.logEvent + item.position,
@@ -2872,7 +2869,7 @@ export class CoreService {
   }
 
   copyArguments(data, type, message): void {
-   
+
     let arr: any[];
     if (!isArray(data[type])) {
       arr = this.convertObjectToArray(data, type);
@@ -2885,7 +2882,7 @@ export class CoreService {
     } else {
       arr = data[type];
     }
-   
+
     // Get existing data from sessionStorage (if any)
     let storedData = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];
 

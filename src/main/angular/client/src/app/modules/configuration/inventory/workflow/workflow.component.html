@@ -1242,7 +1242,7 @@
             <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.allowUndeclared' | translate}}" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.allowUndeclared' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                    translate>workflow.label.allowUndeclared</label>
             <div class="col-md-8 col-lg-9">
-              <label nz-checkbox [(ngModel)]="variableDeclarations.allowUndeclared" (nzCheckedChange)="updateOtherProperties('variable')"
+              <label nz-checkbox [(ngModel)]="variableDeclarations.allowUndeclared" (nzCheckedChange)="updateOtherProperties('allowUndeclared')"
                      name="allowUndeclared"></label>
             </div>
           </div>
@@ -1364,8 +1364,18 @@
               </div>
               <ng-container *ngIf="variable.value.type === 'List'" class="b-b p-b-sm">
                 <div class="row col-md-12">
-                  <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
-                  <div class="col-md-8 col-lg-8 m-b-sm" style="padding-left: 20px" translate>common.label.type</div>
+                  <div class="col-md-4 col-lg-4 m-b-sm" translate>
+                    common.label.name
+                    <i class="fa fa-caret-down cursor" style="font-size:15px" nz-tooltip="{{'inventory.label.descending' | translate}}"
+                       (click)="sortDescending(variable)">
+                    </i>
+                    <i class="fa fa-caret-up cursor" style="font-size:15px" nz-tooltip="{{'inventory.label.ascending' | translate}}"
+                       (click)="sortAscending(variable)">
+                    </i>
+                  </div>
+                  <div class="col-md-8 col-lg-8 m-b-sm" style="padding-left: 20px" translate>
+                    common.label.type
+                  </div>
                 </div>
                 <div class="col-md-12" (cdkDropListDropped)="nestedDrop($event,variable)" cdkDropList>
                   <div *ngFor="let param of variable.value.listParameters; let j = index"

@@ -122,6 +122,10 @@
       </div>
     </div>
     <div *ngIf="forkListVariables && forkListVariables.length > 0">
+      <i class="fa fa-angle-double-down fa-lg cursor" [nz-tooltip]="'common.tooltip.expandAll' | translate"
+         (click)="expandAll();"></i>
+      <i class="fa fa-angle-double-up fa-lg cursor" style="margin-left: 4px"
+         [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll();"></i>
       <div *ngFor="let listVariables of forkListVariables; let k = index">
 
         <!-- Toggle -->
@@ -368,7 +372,9 @@
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
     <div *ngIf="storedArguments?.length>0" class="w-full" style="display: flex;justify-content: end;">
       <ng-template #contentTemplate>
-        <div class="p-a-sm b-a m-b-sm cursor" (click)="handlePaste(item)" *ngFor="let item of storedArguments">
+        <div class="p-a-sm b-a m-b-sm cursor" (click)="handlePaste(item)"
+             *ngFor="let item of storedArguments; let i = index">
+          <span class="serial-number">{{i + 1}}</span>
           <div class="truncate">{{item}}</div>
         </div>
         <div class="pull-right">

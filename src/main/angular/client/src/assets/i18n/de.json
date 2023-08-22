@@ -544,7 +544,7 @@
     "button.switchToSpecificDate": "Zu bestimmtem Datum wechseln",
     "button.switchToRelativeDate": "Zu relativem Datum wechseln",
     "button.copyArguments": "Argumente kopieren",
-    "button.showClipboard": "Zwischenablage zeigen",
+    "button.showClipboard": "Zwischenablage anzeigen",
     "placeholder.search": "Ergebnisse filtern",
     "placeholder.name": "Name",
     "placeholder.value": "Wert",
@@ -2019,7 +2019,7 @@
           "delay": "Die Verzögerung ist die Anzahl Sekunden, für die auf den nächsten Wiederholungsversuch gewartet wird. Werden mehrere durch Komma getrennte Werte angegeben, so gelten sie von links nach rechts für die Wartezeit auf die nächste Wiederholung."
         },
         "cycle": {
-          "onlyOnePeriod": "Ein Zyklus kann mehrere Zeiträume umfassen, z.B. 13.00, 14.00 und 15.00 Uhr, wobei jeder Zyklus 30 Minuten dauert. Standardmäßig werden bei einem Auftrag, der um 13.45 Uhr eintrifft, beide Zyklen für 14.00 und 15.00 Uhr ausgeführt. Bei der Einstellung "Nur eine Periode" wird nur die erste passende Periode verwendet und spätere Perioden werden nicht berücksichtigt."
+          "onlyOnePeriod": "Ein Zyklus kann mehrere Zeiträume umfassen, z.B. 13.00, 14.00 und 15.00 Uhr, wobei jeder Zyklus 30 Minuten dauert. Standardmäßig werden bei einem Auftrag, der um 13.45 Uhr eintrifft, beide Zyklen für 14.00 und 15.00 Uhr ausgeführt. Bei der Einstellung 'Nur eine Periode' wird nur die erste passende Periode verwendet und spätere Perioden werden nicht berücksichtigt."
         }
       },
       "export": {
@@ -2741,7 +2741,7 @@
       "monitoring_history_age": "Benennt die Aufbewahrungsdauer der Historie der Überwachungen. Ältere Einträge werden aus der Historie entfernt.",
       "notification_history_age": "Benennt die Aufbewahrungsdauer der Historie der Benachrichtigungen. Ältere Einträge werden aus der Historie entfernt.",
       "max_pool_size": "Die maximale Größe des Verbindungspools gibt die Anzahl der verwendeten Datenbankverbindungen an. Für Umgebungen, in denen eine größere Anzahl von Einträgen aus den täglichen Job-Pprotokollen zu bereinigen ist, kann es von Vorteil sein, diesen Wert auf beispielsweise 10 zu erhöhen. Anwender müssen prüfen, ob ihr DBMS die Verwendung einer höheren Anzahl von Verbindungen zulässt.",
-      "profile_age":  "Benennt die maximale Anzahl von Tagen, die ein Profil nicht durch ein Anwenderkonto verwendet wurde, bevor es bereinigt wird.",
+      "profile_age": "Benennt die maximale Anzahl von Tagen, die ein Profil nicht durch ein Anwenderkonto verwendet wurde, bevor es bereinigt wird.",
       "failed_login_history_age": "Gibt die maximale Anzahl von Tagen an, für die Einträge in der Historie der fehlgeschlagenen Anmeldungen aufbewahrt werden, bevor sie bereinigt werden."
     },
     "dailyplan": {
@@ -2783,8 +2783,8 @@
       "log_applicable_size": "Falls die Größe der Protokollausgaben eines Jobs diesen Wert überschreitet, wird der History Service die Ausgaben trunkieren und die ersten und letzten 100 KB verwenden. Die originale Protokolldatei des Jobs wird entfernt. Die Größe wird in MB angenommen.",
       "log_maximum_size": "Falls die Größe der Protokollausgaben eines Jobs diesen Wert überschreitet, wird der History Service die Ausgaben trunkieren und die ersten 100 KB verwenden. Die originale Protokolldatei des Jobs wird entfernt. Die Größe wird in MB angenommen.",
       "joc_reverse_proxy_url": "Wenn JOC Cockpit nicht über die originäre URL, sondern nur über einen Reverse Proxy Dienst erreichbar ist, gibt dieser Wert die zu verwendende URL an, zum Beispiel bei E-Mail Benachrichtigungen.",
-      "allow_empty_arguments": "Leere Argumente zulassen",
-      "allow_undeclared_variables": "Allow undeclared variables"
+      "allow_empty_arguments": "Standardmäßig werden leere Argumente von Aufträgen und Auftragsvorlagen nicht zugelassen, da dies die Aufträge zwingt, zwischen leeren und nicht gesetzten Variablen zu unterscheiden. Benutzer können das Verhalten aktivieren, um leere Argumente zuzulassen.",
+      "allow_undeclared_variables": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen."
     },
     "user": {
       "welcome_got_it": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht länger angezeigt werden soll.",
@@ -2823,13 +2823,13 @@
     "label.profiles": "Profile",
     "label.pendingRequests": "Pending Requests",
     "label.blocklist": "Sperrliste",
-    "label.date" : "Datum",
+    "label.date": "Datum",
     "label.blockedAccountsFound": "Gesperrte Konten gefunden",
     "label.blockedAccountFound": "Gesperrtes Konto gefunden",
     "label.addPermission": "Berechtigung hinzufügen",
     "label.addRole": "Rolle erstellen",
     "label.addUser": "Konto erstellen",
-    "label.lastLogin":  "Letzte Anmeldung",
+    "label.lastLogin": "Letzte Anmeldung",
     "label.addController": "Controller hinzufügen",
     "label.copyController": "Controller kopieren",
     "label.editFolder": "Ordner ändern",
@@ -3308,7 +3308,7 @@
     "label.failOnOutputErr": "Scheitern bei Ausgaben in stderr",
     "label.warnOnOutputErr": "Warnen bei Ausgaben in stderr",
     "label.showConfiguration": "Konfiguration anzeigen",
-    "label.allowUndeclared": "Allow undeclared variables",
+    "label.allowUndeclared": "Undeklarierte Variablen zulassen",
     "label.boardNames": "Namen der Notizbretter",
     "label.expectBoardName": "Name Notizbrett",
     "label.expectBoardExpression": "ExpectNotices Ausdruck",

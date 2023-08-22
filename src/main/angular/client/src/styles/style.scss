@@ -2875,6 +2875,10 @@ button.close {
   width: 220px;
 }
 
+.w-220 {
+  width: 220px !important;
+}
+
 .w-lg {
   width: 240px;
 }
@@ -9413,9 +9417,24 @@ cdk-virtual-scroll-viewport {
   -webkit-line-clamp: 3; /* Number of lines to display */
   -webkit-box-orient: vertical;
 }
+
 .clipboard-list {
   .ant-popover-inner-content {
     max-height: 300px;
     overflow: auto;
   }
+}
+
+.serial-number {
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  border-radius: 50%;
+  background-color: var(--menu-hover);
+  color: var(--text-color);
+  top: -5px;
+  right: -5px;
+  font-size: 12px;
+  float: right;
+  margin: -14px;
 }

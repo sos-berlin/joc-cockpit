@@ -18,7 +18,6 @@ import {AuthInterceptor} from './components/guard';
 import {LoggingService} from './services/logging.service';
 import {POPOUT_MODAL_DATA, PopupService} from "./services/popup.service";
 
-
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   const lang = localStorage['$SOS$LANG'] || 'en';
   import(`../../node_modules/@angular/common/locales/${lang}.mjs`).then(locale => {
