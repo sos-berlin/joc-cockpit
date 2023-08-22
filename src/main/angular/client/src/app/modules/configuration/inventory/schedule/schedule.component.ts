@@ -359,16 +359,16 @@ export class ScheduleComponent {
         for (let x in this.forkListVariables) {
           if (this.forkListVariables[x].name == sour.name) {
             for (let i in sour.value) {
-              sour.value[i] = sour.value[i].filter((item) => {
-                let flag = false;
-                for (let k in this.forkListVariables[x].list) {
-                  if (this.forkListVariables[x].list[k].name == item.name) {
-                    flag = true;
+              let arr = [];
+              for (let j in this.forkListVariables[x].list) {
+                for (let k in sour.value[i]) {
+                  if (this.forkListVariables[x].list[j].name == sour.value[i][k].name) {
+                    arr.push(sour.value[i][k]);
                     break;
                   }
                 }
-                return flag;
-              });
+              }
+              sour.value[i] = arr;
             }
           }
         }
@@ -500,6 +500,10 @@ export class ScheduleComponent {
             delete item.isExist;
             return true;
           } else {
+            if ((this.workflow.orderPreparation?.allowUndeclared && this.allowUndeclaredVariables)) {
+              item.isTextField = true;
+              return true;
+            }
             return false;
           }
         });

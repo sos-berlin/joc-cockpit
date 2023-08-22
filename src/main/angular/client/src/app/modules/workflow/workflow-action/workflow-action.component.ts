@@ -138,6 +138,7 @@ export class AddOrderModalComponent {
     this.getPositions();
     this.updateVariableList();
     this.checkClipboardContent();
+    this.isCollapsed = Array(this.forkListVariables.length).fill(false);
   }
 
   toggleCollapse(k: number): void {
@@ -148,6 +149,10 @@ export class AddOrderModalComponent {
     } else {
       this.isCollapsed[k] = !this.isCollapsed[k];
     }
+  }
+
+  expandAll(): void {
+    this.isCollapsed = this.isCollapsed.map(() => false);
   }
 
   collapseAll(): void {
@@ -174,7 +179,7 @@ export class AddOrderModalComponent {
   }
 
   handlePaste(data) {
-    if(!data || data.type){
+    if (!data || data.type) {
       data = this.storedArguments[0];
     }
     if (data && typeof data == 'string') {
@@ -182,11 +187,13 @@ export class AddOrderModalComponent {
       if (!isArray(clipboardDataArray)) {
         return;
       }
-
+      let tempArr = [];
       clipboardDataArray.forEach(clipboardItem => {
+        let flag = true;
         if (this.forkListVariables && this.forkListVariables.length > 0) {
           this.forkListVariables.forEach((listVariables) => {
             if (listVariables.name === clipboardItem.name) {
+              flag = false;
               if (isArray(clipboardItem.value)) {
                 clipboardItem.value.forEach((innerArray) => {
                   innerArray.forEach(item => {
@@ -207,6 +214,7 @@ export class AddOrderModalComponent {
         if (this.variableList && this.variableList.length > 0) {
           this.variableList.forEach(variable => {
             if (variable.name === clipboardItem.name) {
+              flag = false;
               if (typeof clipboardItem.value === 'string') {
                 variable.value.default = clipboardItem.value;
               }
@@ -217,11 +225,20 @@ export class AddOrderModalComponent {
         if (this.arguments && this.arguments.length > 0) {
           this.arguments.forEach(variable => {
             if (variable.name === clipboardItem.name) {
+              flag = false;
               variable.value = clipboardItem.value;
             }
           });
         }
+        if (flag) {
+          clipboardItem.isTextField = true;
+          tempArr.push(clipboardItem);
+        }
       });
+
+      if (tempArr.length > 0) {
+        this.arguments = this.arguments.concat(tempArr);
+      }
     }
   }
 

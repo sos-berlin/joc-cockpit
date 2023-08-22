@@ -410,7 +410,7 @@
                   <a (click)="addVariables(false, variableSet)" class="text-u-l m-l-12" translate>order.button.modifyVariables</a>
                 </div>
                 <div class="col-sm-12" *ngIf="allowUndeclaredVariables && workflow?.orderPreparation?.allowUndeclared">
-                  <a class="text-u-l" (click)="addVariables(true, variableSet)" translate>order.button.addVariable</a>
+                  <a class="text-u-l" (click)="addVariable(true, variableSet)" translate>order.button.addVariable</a>
                 </div>
               </div>
             </div>
