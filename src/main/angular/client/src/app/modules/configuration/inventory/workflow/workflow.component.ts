@@ -3982,6 +3982,7 @@ export class WorkflowComponent {
           const ht = 'calc(100vh - ' + (top + 22) + 'px)';
           dom.css({height: ht, 'scroll-top': '0'});
           $('#graph').animate({
+            height: ht,
             scrollTop: 0
           }, 300);
         }
