@@ -1880,26 +1880,45 @@ export class JobComponent {
       this.object.setOfCheckedNodeArgu.clear();
     }
     let list = this.getList(type);
-    const arr = list.filter(item => {
-      if (type === 'arguments') {
-        return this.object.setOfCheckedArgu.has(item.name);
-      } else if (type === 'jobArguments') {
-        return this.object.setOfCheckedJobArgu.has(item.name);
-      } else if (type === 'env') {
-        return this.object.setOfCheckedEnv.has(item.name);
-      } else if (type === 'nodeArguments') {
-        return this.object.setOfCheckedNodeArgu.has(item.name);
-      } else {
-        return this.object.setOfCheckedDefaultArgu.has(item.name);
+
+    let itemsToCopy = list.filter(item => {
+      switch (type) {
+        case 'arguments':
+          return this.object.setOfCheckedArgu.has(item.name);
+        case 'jobArguments':
+          return this.object.setOfCheckedJobArgu.has(item.name);
+        case 'env':
+          return this.object.setOfCheckedEnv.has(item.name);
+        case 'nodeArguments':
+          return this.object.setOfCheckedNodeArgu.has(item.name);
+        default:
+          return this.object.setOfCheckedDefaultArgu.has(item.name);
       }
     });
-    this.copiedParamObjects = {operation, type, data: arr, name: this.selectedNode.obj.jobName};
+
+    if (itemsToCopy.length === 0) {
+      itemsToCopy = list;
+    } else {
+      this.resetCheckedStates(type);
+    }
+
+    this.copiedParamObjects = {operation, type, data: itemsToCopy, name: this.selectedNode.obj.jobName};
     this.coreService.tabs._configuration.copiedParamObjects = this.coreService.clone(this.copiedParamObjects);
-    if (arr.length > 0) {
+
+    if (itemsToCopy.length > 0) {
       this.coreService.showCopyMessage(this.message, operation === 'CUT' ? 'cut' : 'copied');
     }
   }
-
+  private resetCheckedStates(type: string): void {
+    switch (type) {
+      case 'arguments':
+        this.object.setOfCheckedArgu.clear();
+        break;
+      case 'jobArguments':
+        this.object.setOfCheckedJobArgu.clear();
+        break;
+    }
+  }
   private getList(type): Array<any> {
     if (type === 'arguments') {
       return this.selectedNode.job.executable.arguments;
@@ -3054,14 +3073,25 @@ export class WorkflowComponent {
 
   sortAscending(variable: any): void {
     const variableId = variable.id || variable.name;
-    variable.value.listParameters.sort((a, b) => (a.name > b.name) ? 1 : -1);
+    variable.value.listParameters.sort((a, b) => {
+      if (a.name.startsWith('_') && b.name.startsWith('_')) return a.name > b.name ? 1 : -1;
+      if (a.name.startsWith('_')) return -1;
+      if (b.name.startsWith('_')) return 1;
+      return a.name > b.name ? 1 : -1;
+    });
     this.sortingDirections[variableId] = 'asc';
     this.updateOtherProperties('childvariable');
   }
 
+
   sortDescending(variable: any): void {
     const variableId = variable.id || variable.name;
-    variable.value.listParameters.sort((a, b) => (a.name < b.name) ? 1 : -1);
+    variable.value.listParameters.sort((a, b) => {
+      if (a.name.startsWith('_') && b.name.startsWith('_')) return a.name < b.name ? 1 : -1;
+      if (a.name.startsWith('_')) return 1;
+      if (b.name.startsWith('_')) return -1;
+      return a.name < b.name ? 1 : -1;
+    });
     this.sortingDirections[variableId] = 'desc';
     this.updateOtherProperties('childvariable');
   }
@@ -4373,10 +4403,24 @@ export class WorkflowComponent {
               delete item.isExist;
               return true;
             }
+            if ((this.selectedNode.obj.workflow.orderPreparation?.allowUndeclared && this.allowUndeclaredVariables)) {
+              item.isTextField = true;
+              return true;
+            }
           }
           return false;
         });
       }
+    } else if ((this.selectedNode.obj.workflow.orderPreparation?.allowUndeclared && this.allowUndeclaredVariables)) {
+      if (this.selectedNode.obj.arguments && this.selectedNode.obj.arguments.length > 0) {
+        this.selectedNode.obj.arguments.forEach(item => {
+          if (!isArray(item.value)) {
+            item.isTextField = true;
+          }
+        });
+      }
+    } else {
+      this.selectedNode.obj.arguments = [];
     }
     this.updateSelectItems();
   }
@@ -5255,6 +5299,7 @@ export class WorkflowComponent {
 
     function findFirstNode(data): void {
       for (const prop in node.cells) {
+
         if (node.cells[prop]?.value?.tagName === 'Job') {
           let name = node.cells[prop].getAttribute('jobName');
           let count = 1;
@@ -5410,7 +5455,6 @@ export class WorkflowComponent {
           }
         }
       }
-
       if (list.length > 0 && isFound) {
         if (startNode && startNode.value && !self.workflowService.isInstructionCollapsible(startNode.value.tagName)) {
           findNext(list, startNode, data);
@@ -5421,7 +5465,6 @@ export class WorkflowComponent {
     function traversForkList(list, obj, edge, branchObj, parent, endNode): void {
       let callAgain = false;
       for (const i in list) {
-
         if (list[i].value && ((list[i].getParent().id == parent.id) || (list[i].getAttribute('parentId') == parent.id) || (edge.target && list[i].id == edge.target.id) || (list[i].id == parent.getParent().id) || (self.workflowService.checkClosingCell(list[i].value.tagName)
           && parent.id == list[i].getAttribute('targetId')))) {
           if ((self.workflowService.checkClosingCell(list[i].value.tagName) && parent.id == list[i].getAttribute('targetId'))) {
@@ -5655,7 +5698,6 @@ export class WorkflowComponent {
         graph.setCellStyles(mxConstants.STYLE_STROKECOLOR, '#90C7F5', [cell]);
       }
     });
-
 
     if (jsonObject.instructions.length > 0) {
       this.workflow.configuration = this.coreService.clone(jsonObject);
@@ -9538,6 +9580,7 @@ export class WorkflowComponent {
               const _type = targetCell.getAttribute('type') || targetCell.getAttribute('displayLabel');
               if (!(_type === 'retry' || _type === 'cycle' || _type === 'lock' || _type === 'options' || _type === 'consumeNotices' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
                 targetCell.setParent(targetCell.source.getParent());
+                clickedCell.setParent(targetCell.source.getParent());
               }
             }
           }
