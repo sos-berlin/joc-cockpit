@@ -27,7 +27,8 @@
   background-position: 0 0;
   background-color: rgba(255, 255, 255, .9);
   box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.06);
-  height: calc(100vh - 248px);
+  height: 100%;
+  width: auto;
 }
 
 #toolbar-scrollbar {

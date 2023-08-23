@@ -34,6 +34,7 @@ export class ChangeParameterModalComponent {
   positions: any;
   blockPositions: any;
   blockPositionList: any;
+  allowUndeclaredVariables: boolean;
   selectValue = [{value: 'True', name: true},
     {value: 'False', name: false}];
   positionObj = {
@@ -41,6 +42,7 @@ export class ChangeParameterModalComponent {
     startPosition: '',
     endPositions: []
   };
+
   constructor(private activeModal: NzModalRef, public coreService: CoreService, private authService: AuthService) {
   }
 
@@ -55,6 +57,7 @@ export class ChangeParameterModalComponent {
     this.workflow = this.modalData.workflow;
     const preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
+    this.allowUndeclaredVariables = sessionStorage['allowUndeclaredVariables'] == 'true';
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
@@ -185,8 +188,15 @@ export class ChangeParameterModalComponent {
           this.setForkListVariables(item, this.forkListVariables);
           return false;
         } else {
+          if(!item.type){
+            item.isTextField = true;
+          }
           return true;
         }
+      });
+    } else {
+      this.variables?.forEach((item) => {
+        item.isTextField = true;
       });
     }
     this.updateSelectItems();
@@ -195,29 +205,80 @@ export class ChangeParameterModalComponent {
   private setForkListVariables(sour, target): void {
     for (let x in target) {
       if (target[x].name === sour.name) {
-
         if (sour.value) {
-          for (const i in sour.value) {
-            if (!isArray(sour.value[i])) {
-              sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
-                let type;
-                for (const prop in target[x].list) {
-                  if (target[x].list[prop].name === k1) {
-                    type = target[x].list[prop].value.type;
+          if (sour.value.length > 0) {
+            let notExistArr = [];
+            for (const i in sour.value) {
+              if (!isArray(sour.value[i])) {
+                sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
+                  let type;
+                  for (const prop in target[x].list) {
+                    if (target[x].list[prop].name === k1) {
+                      type = target[x].list[prop].value.type;
+                      break;
+                    }
+                  }
+                  return {name: k1, value: v1, type};
+                });
+              } else {
+                for (const j in sour.value[i]) {
+                  for (const prop in target[x].list) {
+                    if (target[x].list[prop].name === sour.value[i].name) {
+                      sour.value[i].type = target[x].list[prop].value.type;
+                      break;
+                    }
+                  }
+                }
+              }
+              for (const prop in target[x].list) {
+                let flag = false;
+                for (const j in sour.value[i]) {
+                  if (target[x].list[prop].name === sour.value[i][j].name) {
+                    flag = true;
                     break;
                   }
                 }
-                return {name: k1, value: v1, type};
-              });
-            } else {
-              for (const j in sour.value[i]) {
-                for (const prop in target[x].list) {
-                  if (target[x].list[prop].name === sour.value[i].name) {
-                    sour.value[i].type = target[x].list[prop].value.type;
+                if (!flag) {
+                  let isDuplicate = false;
+                  for (let y in notExistArr) {
+                    if (notExistArr[y].name == target[x].list[prop].name) {
+                      isDuplicate = true;
+                      break;
+                    }
+                  }
+                  if (!isDuplicate) {
+                    notExistArr.push(target[x].list[prop]);
+                  }
+                }
+              }
+
+              if (notExistArr.length > 0) {
+                notExistArr.forEach(item => {
+                  sour.value[i].push({name: item.name, type: item.value.type})
+                })
+              }
+            }
+          } else {
+            const tempArr = [];
+            for (const prop in target[x].list) {
+              tempArr.push({name: target[x].list[prop].name, value: '', type: target[x].list[prop].value.type});
+            }
+            sour.value.push(tempArr);
+          }
+        }
+        for (let x in this.forkListVariables) {
+          if (this.forkListVariables[x].name == sour.name) {
+            for (let i in sour.value) {
+              let arr = [];
+              for (let j in this.forkListVariables[x].list) {
+                for (let k in sour.value[i]) {
+                  if (this.forkListVariables[x].list[j].name == sour.value[i][k].name) {
+                    arr.push(sour.value[i][k]);
                     break;
                   }
                 }
               }
+              sour.value[i] = arr;
             }
           }
         }

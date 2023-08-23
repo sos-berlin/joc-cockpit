@@ -329,8 +329,8 @@ export class ScheduleComponent {
                 }
                 if (!flag) {
                   let isDuplicate = false;
-                  for (let x in notExistArr) {
-                    if (notExistArr[x].name == target[x].list[prop].name) {
+                  for (let y in notExistArr) {
+                    if (notExistArr[y].name == target[x].list[prop].name) {
                       isDuplicate = true;
                       break;
                     }
@@ -532,9 +532,16 @@ export class ScheduleComponent {
     } else if (this.schedule.configuration.orderParameterisations && this.schedule.configuration.orderParameterisations.length > 0) {
       for (const prop in this.schedule.configuration.orderParameterisations) {
         delete this.schedule.configuration.orderParameterisations[prop].forkListVariables;
-        this.schedule.configuration.orderParameterisations[prop].variables = [];
+        if (!(this.workflow.orderPreparation?.allowUndeclared && this.allowUndeclaredVariables)) {
+          this.schedule.configuration.orderParameterisations[prop].variables = [];
+        } else {
+          this.schedule.configuration.orderParameterisations[prop].variables.forEach((item) => {
+            item.isTextField = true;
+          });
+        }
       }
     }
+
     this.updateSelectItems(true);
     if (this.schedule.released) {
       if (this.schedule.configuration.orderParameterisations?.length > 0) {
