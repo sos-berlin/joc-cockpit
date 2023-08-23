@@ -2882,21 +2882,22 @@ export class CoreService {
     } else {
       arr = data[type];
     }
+    if (arr.length > 0) {
+      // Get existing data from sessionStorage (if any)
+      let storedData = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];
 
-    // Get existing data from sessionStorage (if any)
-    let storedData = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];
+      // Add the new data to the array
+      storedData.push(JSON.stringify(arr));
 
-    // Add the new data to the array
-    storedData.push(JSON.stringify(arr));
+      // Check if the length exceeds 20, remove the oldest entry
+      if (storedData.length > 20) {
+        storedData.shift(); // Remove the first element (oldest)
+      }
 
-    // Check if the length exceeds 20, remove the oldest entry
-    if (storedData.length > 20) {
-      storedData.shift(); // Remove the first element (oldest)
+      // Update the stored data in sessionStorage
+      sessionStorage.setItem('$SOS$copiedArgument', JSON.stringify(storedData));
+      this.showCopyMessage(message);
     }
-
-    // Update the stored data in sessionStorage
-    sessionStorage.setItem('$SOS$copiedArgument', JSON.stringify(storedData));
-    this.showCopyMessage(message);
   }
 
 }
