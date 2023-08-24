@@ -1481,7 +1481,7 @@ export class DailyPlanComponent {
     if (filter.late) {
       obj.late = true;
     }
-    if (filter.state && filter.state !== 'ALL') {
+    if (filter.state && filter.state !== 'ALL' && !isArray(filter.state)) {
       obj.states = [filter.state];
     }
     return obj;
