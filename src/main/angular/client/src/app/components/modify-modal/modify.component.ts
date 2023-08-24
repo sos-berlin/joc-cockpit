@@ -1,9 +1,10 @@
 import {Component, inject} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {isArray, isEmpty, object} from 'underscore';
-import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from "../guard";
+import {ValueEditorComponent} from "../value-editor/value.component";
 
 @Component({
   selector: 'app-change-parameter',
@@ -43,7 +44,8 @@ export class ChangeParameterModalComponent {
     endPositions: []
   };
 
-  constructor(private activeModal: NzModalRef, public coreService: CoreService, private authService: AuthService) {
+  constructor(private activeModal: NzModalRef, public coreService: CoreService, private authService: AuthService,
+              private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -369,6 +371,27 @@ export class ChangeParameterModalComponent {
       return argu.name !== item.name;
     });
     this.updateSelectItems();
+  }
+
+  openEditor(data): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ValueEditorComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        data: data.value,
+        object: data
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        data.value = result;
+      }
+    });
   }
 
   addVariable(isNew = false): void {
