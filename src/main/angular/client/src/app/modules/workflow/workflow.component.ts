@@ -381,7 +381,7 @@ export class SingleWorkflowComponent {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (const j in args.eventSnapshots) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow
-          && this.path === args.eventSnapshots[j].workflow.path && args.eventSnapshots[j].workflow.versionId === this.versionId) {
+          && this.path === args.eventSnapshots[j].workflow.path &&( args.eventSnapshots[j].workflow.versionId === this.versionId || !this.versionId) ) {
           this.getOrders({
             compact: true,
             controllerId: this.controllerId,

@@ -1187,7 +1187,7 @@ export class CoreService {
     return temp;
   }
 
-  copyLink(objType: string, name: string, workflow: string = ''): void {
+  copyLink(objType: string, name: string, workflow: any = '', versionId?): void {
     let link = '';
     const regEx = /(.+)\/#/;
     if (!regEx.test(window.location.href)) {
@@ -1201,6 +1201,9 @@ export class CoreService {
     host = host + '/#/';
     if (objType === 'workflow' && name) {
       link = host + 'workflows/workflow?path=' + encodeURIComponent(name);
+      if(versionId){
+        link += '&versionId=' + encodeURIComponent(versionId);
+      }
     } else if (objType === 'order' && name) {
       link = host + 'history/order?orderId=' + encodeURIComponent(name) + '&workflow=' + encodeURIComponent(workflow);
     } else if (objType === 'lock' && name) {
