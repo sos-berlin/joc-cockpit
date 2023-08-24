@@ -1645,8 +1645,9 @@ export class CoreService {
           if (startChar === "$" || (startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
 
           } else if (env.value === 'true' || env.value === 'false') {
-          } else if (/^\d+$/.test(env.value)) {
-
+          } else if (/^\d+$/.test(env.value) || (/^(now\()/i.test(env.value) || /^(variable\()/i.test(env.value) || /^(env\()/i.test(env.value)
+            || /^(toFile\()/i.test(env.value) || /^(replaceAll\()/i.test(env.value) || /^(jobResourceVariable\()/g.test(env.value)
+            || /^(scheduledOrEmpty\()/g.test(env.value) || /^([0-9])+(.toString)$/g.test(env.value) || /^(JobResource:)/g.test(env.value))) {
           } else {
             let x = env.value.replace(/\\([\s\S])|(")/g, '\\$1$2').trim();
             if (x.match(/\\/)) {

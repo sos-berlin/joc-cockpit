@@ -262,7 +262,7 @@
                                        class="form-control m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
                                        placeholder="{{'common.placeholder.value' | translate}}"
                                        type="text">
-                                <i (click)="openEditor(argument, 'value')" *ngIf="argument.type === 'String'"
+                                <i (click)="openEditor(argument, 'value')"
                                    [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
                                    nzTheme="outline" nzType="form"
                                    style="right: 13px;top:1px;"></i>
@@ -360,7 +360,7 @@
                                type="text">
                         <i *ngIf="variable.message" [nz-tooltip]="variable.message"
                            class="pos-abt cursor fa fa-info-circle" style="right: 18px;top:9px;"></i>
-                        <i (click)="openEditor(variable, 'value')" *ngIf="variable.type === 'String'"
+                        <i (click)="openEditor(variable, 'value')"
                            [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
                            nzTheme="outline" nzType="form"
                            style="right: 13px;top:1px;"></i>

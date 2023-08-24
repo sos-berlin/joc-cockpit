@@ -194,6 +194,8 @@
                       <input #value="ngModel" [(ngModel)]="argument.value" [required]="true" autocomplete="off" class="form-control"
                              name="_value{{i}}{{j}}{{k}}" placeholder="{{'common.placeholder.value' | translate}}"
                              type="text">
+                      <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
+                         style="right: 13px;top:1px;" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                            class="text-danger help-block">
                         <div *ngIf="value.errors['required']">
@@ -309,7 +311,7 @@
                          class="form-control" name="value{{i}}{{argument.name}}"
                          placeholder="{{'common.placeholder.value' | translate}}" type="text">
                   <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
-                     style="right: 13px;top:1px;"></i>
+                     style="right: 13px;top:1px;" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
                   <i *ngIf="argument.message" [nz-tooltip]="argument.message" class="pos-abt cursor fa fa-info-circle"
                      style="right: 32px;top:1px;"></i>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
