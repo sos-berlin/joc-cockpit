@@ -371,8 +371,6 @@ export class TimeEditorComponent {
 
   object: any = {};
 
-  @ViewChild('timePicker', {static: true}) tp;
-
   constructor(public activeModal: NzModalRef, private workflowService: WorkflowService, private coreService: CoreService) {
   }
 
@@ -391,12 +389,13 @@ export class TimeEditorComponent {
     }
   }
 
-  onTab(): void {
-    this.tp.close();
-  }
-
   selectTime(time, isEditor = false): void {
     this.coreService.selectTime(time, isEditor, this.object, 'start');
+  }
+
+  onTimeChanged(newTime: string) {
+    this.object.startTime = newTime;
+    this.selectTime(newTime, true);
   }
 
   onSubmit(): void {
@@ -713,8 +712,6 @@ export class AdmissionTimeComponent {
 
   @Output() close: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild('timePicker', {static: true}) tp;
-
   constructor(private coreService: CoreService, private modal: NzModalService,
               private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
   }
@@ -752,10 +749,6 @@ export class AdmissionTimeComponent {
     }
     this.job.admissionTimeScheme.periods = this.workflowService.convertListToAdmissionTime(this.data.periodList);
     this.data.periodList = null;
-  }
-
-  onTab(): void {
-    this.tp.close();
   }
 
   changeFrequency(): void {
@@ -816,6 +809,11 @@ export class AdmissionTimeComponent {
 
   selectTime(time, isEditor = false): void {
     this.coreService.selectTime(time, isEditor, this.object, 'start');
+  }
+
+  onTimeChanged(newTime: string) {
+    this.object.startTime = newTime;
+    this.selectTime(newTime, true);
   }
 
   dayChange(value: string[]): void {

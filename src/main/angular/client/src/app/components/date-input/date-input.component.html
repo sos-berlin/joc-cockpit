@@ -12,9 +12,9 @@
     <div [ngClass]="{'has-error': (dateAndTime.dirty || dateAndTime.touched) && dateAndTime.invalid}"
          class="time-picker">
       <input #dateAndTime="ngModel" [(ngModel)]="object[attributeTime]" [disabled]="isDisable" [required]="isRequired" class="form-control"
-             [name]="name + 'Time'" (ngModelChange)="selectTime(object[attributeTime], true, attributeTime)"
-             placeholder="HH:MM:SS" timevalidator
-             type="text" validTimeReqex>
+             [name]="name + 'Time'" (timeChanged)="onTimeChanged($event, attributeTime)"
+             placeholder="HH:MM:SS" timevalidatorReqex
+             type="text">
       <nz-time-picker [(ngModel)]="object[attributeTime + '1']"
                       (ngModelChange)="selectTime($event, false, attributeTime)"
                       [nzAllowEmpty]="false" [name]="name + 'TimeIcon'"></nz-time-picker>
