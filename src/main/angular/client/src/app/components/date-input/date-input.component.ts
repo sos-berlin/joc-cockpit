@@ -35,16 +35,21 @@ export class DateInputComponent {
   }
 
   selectTime(time, isEditor = false, val = 'from'): void {
-    if(this.ignoreThirdParam) {
+    if (this.ignoreThirdParam) {
       this.coreService.selectTime(time, isEditor, this.object);
     } else {
       this.coreService.selectTime(time, isEditor, this.object, val);
     }
   }
 
+  onTimeChanged(newTime: string, attribute: string) {
+    this.object[attribute] = newTime;
+    this.selectTime(newTime, true, attribute);
+  }
+
   disabledDate = (current: Date): boolean => {
     // Can not select days before today and today
-    if(!this.isPreviousDateDisabled){
+    if (!this.isPreviousDateDisabled) {
       return false;
     }
     return differenceInCalendarDays(current, new Date()) < 0;

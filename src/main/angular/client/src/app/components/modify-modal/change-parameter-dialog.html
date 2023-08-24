@@ -174,7 +174,7 @@
             </div>
           </div>
           <div class="form-group row m-b-0 m-t-sm" *ngIf="!variable">
-            <div class="col-sm-12 col-md-12" *ngIf="variableList.length > variables.length">
+            <div class="col-sm-12 col-md-12" *ngIf="variableList.length > variables.length || (orderPreparation && orderPreparation.allowUndeclared)">
               <a class="text-u-l" (click)="addVariable()"
                  translate>order.button.modifyVariable</a>
             </div>

@@ -800,7 +800,7 @@ export class DailyPlanComponent {
       if (this.selectedSubmissionId) {
         obj.submissionHistoryIds = [this.selectedSubmissionId];
       }
-      if (this.dailyPlanFilters.filter.status && this.dailyPlanFilters.filter.status !== 'ALL') {
+      if (this.dailyPlanFilters.filter.status && this.dailyPlanFilters.filter.status !== 'ALL' && !isArray(this.dailyPlanFilters.filter.status)) {
         obj.states = [this.dailyPlanFilters.filter.status];
       }
       if (this.dailyPlanFilters.filter.late) {

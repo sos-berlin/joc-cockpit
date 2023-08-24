@@ -5,7 +5,8 @@ import {
   forwardRef,
   HostListener,
   Input,
-  OnChanges
+  OnChanges,
+  Output, EventEmitter
 } from '@angular/core';
 import {AbstractControl, NG_VALIDATORS, NgModel, ValidationErrors, Validator} from '@angular/forms';
 import {SaveService} from '../services/save.service';
@@ -666,5 +667,64 @@ export class MaximumDirective {
   private doResize() {
     let height = Math.ceil(($('body').height() - 212) / 20);
     this.textarea.nativeElement.rows = !this.isMax ? this.rows : height;
+  }
+
+}
+
+@Directive({
+  selector: '[timevalidatorReqex]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => TimeValidatorReqexDirective), multi: true}
+  ]
+})
+export class TimeValidatorReqexDirective implements Validator {
+
+  regex = /^(?:(\d+)h\s*,?\s*)?(?:(\d+)m\s*,?\s*)?(?:(\d+)s)?$/;
+
+  @Output() timeChanged = new EventEmitter<string>();
+
+  @HostListener('focusout', ['$event.target'])
+  onFocusout(target): void {
+    const value = target.value.trim();
+
+    const matches = this.regex.exec(value);
+    if (matches) {
+      let hours = parseInt(matches[1] || '0', 10);
+      let minutes = parseInt(matches[2] || '0', 10);
+      let seconds = parseInt(matches[3] || '0', 10);
+
+      minutes += Math.floor(seconds / 60);
+      seconds = seconds % 60;
+
+      hours += Math.floor(minutes / 60);
+      minutes = minutes % 60;
+
+      if (hours < 24 || (hours === 24 && minutes === 0 && seconds === 0)) {
+        const formattedValue = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        this.timeChanged.emit(formattedValue);
+      } else {
+        this.timeChanged.emit('00:00:00');
+      }
+    }
+  }
+
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v) {
+      if (/^\s*$/i.test(v) ||
+        /^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\s*$/.test(v)
+        || /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]\s*$/i.test(v)
+        || v === '24:00'
+        || v === '24:00:00'
+        || /^\s*\d+\s*$/i.test(v) || this.regex.test(v)
+      ) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+    return {
+      validTimeReqex: true
+    };
   }
 }
