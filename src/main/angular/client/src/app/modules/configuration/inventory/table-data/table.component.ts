@@ -260,7 +260,7 @@ export class TableComponent implements OnChanges, OnDestroy {
   }
 
   removeObject(object): void {
-    if (this.objectType !== 'WORKFLOW') {
+    if (this.objectType !== 'WORKFLOW' && this.objectType !== 'SCHEDULE' && !this.objectType.match(/CALENDAR/)) {
       if (this.preferences.auditLog) {
         const comments = {
           radio: 'predefined',

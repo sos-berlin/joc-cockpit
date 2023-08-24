@@ -34,7 +34,7 @@
           nz-menu-item>
         <a>{{'workflow.button.transitionOrders' | translate}}</a>
       </li>
-      <li (click)="coreService.copyLink('workflow',workflow.name)" nz-menu-item>
+      <li (click)="coreService.copyLink('workflow',workflow.path,  '', workflow.versionId)" nz-menu-item>
         <a translate>common.button.copyLinkToObject</a>
       </li>
     </ul>
