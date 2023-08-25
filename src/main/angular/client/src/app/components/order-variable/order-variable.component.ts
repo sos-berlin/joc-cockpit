@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {isArray, isEqual, object} from 'underscore';
+import {isArray, isEqual} from 'underscore';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -108,13 +108,15 @@ export class OrderVariableComponent {
           canDelete = false;
         }
       }
+      let removeVariables = [];
+      for (let i in variable) {
+        removeVariables.push(variable[i]);
+      }
       if (canDelete) {
         this.coreService.post('daily_plan/orders/modify', {
           controllerId: this.schedulerId,
           orderIds: [order.orderId],
-          removeVariables: object([variable].map((val) => {
-            return [val.name, val.value];
-          }))
+          removeVariables: removeVariables
         }).subscribe(() => {
           for (let i = 0; i < order.variables.length; i++) {
             if (isEqual(order.variables[i], variable)) {
