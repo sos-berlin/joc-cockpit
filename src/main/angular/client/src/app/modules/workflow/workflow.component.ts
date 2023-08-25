@@ -322,7 +322,9 @@ export class SingleWorkflowComponent {
       workflowIds: []
     };
     const path = this.workflows[0].path;
-    request.workflowIds.push({path, versionId: this.workflows[0].versionId});
+    if (path) {
+      request.workflowIds.push({path, versionId: this.workflows[0].versionId});
+    }
     if (request.workflowIds.length > 0) {
       this.getOrders(request);
     }
@@ -381,7 +383,7 @@ export class SingleWorkflowComponent {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (const j in args.eventSnapshots) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow
-          && this.path === args.eventSnapshots[j].workflow.path &&( args.eventSnapshots[j].workflow.versionId === this.versionId || !this.versionId) ) {
+          && this.path === args.eventSnapshots[j].workflow.path && (args.eventSnapshots[j].workflow.versionId === this.versionId || !this.versionId)) {
           this.getOrders({
             compact: true,
             controllerId: this.controllerId,
@@ -412,7 +414,9 @@ export class SingleWorkflowComponent {
         if (!res.workflow.ordersSummary) {
           res.workflow.ordersSummary = {};
         }
-        request.workflowIds.push({path, versionId: res.workflow.versionId});
+        if (path) {
+          request.workflowIds.push({path, versionId: res.workflow.versionId});
+        }
         this.workflows = [res.workflow];
         if (request.workflowIds.length > 0) {
           this.getOrders(request);
@@ -901,9 +905,13 @@ export class WorkflowComponent {
             ((this.workflowFilters.expandedObjects.indexOf(path + res.workflows[i].versionId) > -1) ||
               (this.workflowFilters.expandedObjects.indexOf(path + 'CURRENT') > -1 && res.workflows[i].isCurrentVersion))) {
             this.showPanelFuc(res.workflows[i], false, this.workflowFilters?.mapObj?.get(path + res.workflows[i].versionId));
-            request.workflowIds.push({path, versionId: res.workflows[i].versionId});
+            if(path) {
+              request.workflowIds.push({path, versionId: res.workflows[i].versionId});
+            }
           } else {
-            request2.workflowIds.push({path, versionId: res.workflows[i].versionId});
+            if(path) {
+              request2.workflowIds.push({path, versionId: res.workflows[i].versionId});
+            }
           }
 
           if (this.showPanel && this.showPanel.path === path) {
@@ -1145,10 +1153,12 @@ export class WorkflowComponent {
       workflowIds: []
     };
     for (const i in this.workflows) {
-      if (this.workflows[i].show) {
-        request.workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
-      } else {
-        request2.workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
+      if (this.workflows[i].path) {
+        if (this.workflows[i].show) {
+          request.workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
+        } else {
+          request2.workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
+        }
       }
     }
     if (request.workflowIds.length > 0) {
@@ -1236,7 +1246,7 @@ export class WorkflowComponent {
   }
 
   showPanelFuc(workflow, flag = true, setObj?): void {
-    if (flag && workflow.numOfOrders > 0) {
+    if (flag && workflow.numOfOrders > 0 && workflow.path) {
       this.getOrders({
         compact: true,
         controllerId: this.schedulerIds.selected,
@@ -1610,9 +1620,11 @@ export class WorkflowComponent {
   viewOrderState(state, loading = true) {
     let workflowIds = [];
     for (let i in this.workflows) {
-      workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
+      if (this.workflows[i].path) {
+        workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
+      }
     }
-    if(loading) {
+    if (loading) {
       this.sideBar = {
         isVisible: true,
         loading: loading,
