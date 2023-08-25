@@ -16,7 +16,6 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
 
 @Component({
   selector: 'app-type',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './type.component.html'
 })
 export class TypeComponent {

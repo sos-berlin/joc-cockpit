@@ -515,6 +515,9 @@ export class WorkflowDetailComponent {
       this.loading = true;
       return;
     }
+    if(!workflow.path){
+      return;
+    }
     const obj: any = {
       compact: true,
       controllerId: this.schedulerIds.selected,

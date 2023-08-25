@@ -152,6 +152,9 @@ export class DependentWorkflowComponent {
     if (this.permission && this.permission.currentController && !this.permission.currentController.orders.view) {
       return;
     }
+    if(!workflow.path){
+      return;
+    }
     const obj: any = {
       compact: true,
       controllerId: this.controllerId,
