@@ -356,7 +356,8 @@
       </div>
     </div>
     <div class="form-group row">
-      <div *ngIf="variableList.length > arguments.length || workflow.orderPreparation?.allowUndeclared" class="col-sm-12">
+      <div *ngIf="variableList.length > arguments.length || (workflow.orderPreparation?.allowUndeclared && variableList.length > 0)" class="col-sm-12"
+        [ngClass]="{'m-b-sm': workflow.orderPreparation?.allowUndeclared}">
         <a (click)="addArgument()" class="text-u-l" translate>order.button.modifyVariable</a>
         <a (click)="addArguments()" class="text-u-l m-l" translate>order.button.modifyVariables</a>
       </div>

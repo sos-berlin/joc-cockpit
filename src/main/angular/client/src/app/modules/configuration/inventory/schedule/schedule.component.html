@@ -405,7 +405,7 @@
                 </div>
               </div>
               <div [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}" class="form-group row">
-                <div *ngIf="variableList.length > variableSet.variables.length || allowUndeclaredVariables && workflow?.orderPreparation?.allowUndeclared" class="col-sm-12">
+                <div *ngIf="variableList.length > variableSet.variables.length || (allowUndeclaredVariables && workflow?.orderPreparation?.allowUndeclared && variableList.length > 0)" class="col-sm-12">
                   <a (click)="addVariable(false, variableSet)" class="text-u-l" translate>order.button.modifyVariable</a>
                   <a (click)="addVariables(false, variableSet)" class="text-u-l m-l-12" translate>order.button.modifyVariables</a>
                 </div>
