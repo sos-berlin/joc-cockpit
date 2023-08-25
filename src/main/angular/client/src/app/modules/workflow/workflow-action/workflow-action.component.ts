@@ -772,6 +772,14 @@ export class AddOrderModalComponent {
         }
         return !item.value.final;
       });
+    } else {
+      for (let x in orderParameterisations.variables) {
+        this.arguments.push({
+          name: x,
+          isTextField: true,
+          value: orderParameterisations.variables[x]
+        });
+      }
     }
     this.updateSelectItems();
 

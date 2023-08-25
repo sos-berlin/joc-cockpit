@@ -104,7 +104,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-12 text m-b" *ngIf="variableList.length > 0">
+        <div class="col-sm-12 text m-b" *ngIf="variableList.length > 0 || (orderPreparation && orderPreparation.allowUndeclared)">
            <div class="form-group row m-b-0 m-l-12" *ngIf="variables.length > 0">
             <div class="col-md-5 col-sm-5 m-b-sm" translate>common.label.name</div>
             <div class="col-md-6 col-sm-6 m-b-sm" translate>common.label.value</div>
@@ -174,7 +174,8 @@
             </div>
           </div>
           <div class="form-group row m-b-0 m-t-sm" *ngIf="!variable">
-            <div class="col-sm-12 col-md-12" *ngIf="variableList.length > variables.length || (orderPreparation && orderPreparation.allowUndeclared)">
+            <div class="col-sm-12 col-md-12" *ngIf="variableList.length > variables.length || (orderPreparation && orderPreparation.allowUndeclared && variableList.length > 0)"
+                 [ngClass]="{'m-b-sm': workflow.orderPreparation?.allowUndeclared}">
               <a class="text-u-l" (click)="addVariable()"
                  translate>order.button.modifyVariable</a>
             </div>
@@ -183,7 +184,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-12 text" *ngIf="(variableList.length === 0 && forkListVariables.length === 0) || (variables.length === 0 && forkListVariables.length === 0 && variable)">
+        <div class="col-sm-12 text" *ngIf="((variableList.length === 0 && forkListVariables.length === 0) || (variables.length === 0 && forkListVariables.length === 0 && variable)) && (!(orderPreparation && orderPreparation.allowUndeclared))">
           <div class="text-center m-t m-b" translate>common.message.noVariableDeclarationFound</div>
         </div>
       </div>
