@@ -34,9 +34,16 @@
     <div class="row m-t-xs">
       <div class="col-md-12">
         <h5 class="_300 m-t-sm">
-          <span *ngIf="orderId">{{workflow}} - <i class="text-muted">{{orderId}}</i></span>
-          <span *ngIf="taskId"><span *ngIf="job">{{job}} </span> <span *ngIf="!job"
-                                                                       translate>common.label.taskId </span> - <i
+          <span *ngIf="workflow">
+            Workflow: <i class="text-muted">{{workflow.substring(workflow.lastIndexOf('/') + 1)}}</i> -&nbsp;
+          </span>
+          <span *ngIf="orderId">
+            Order ID: <i class="text-muted">{{orderId}}</i></span>
+          <span *ngIf="taskId">
+            <span *ngIf="job">
+            Job: <i class="text-muted">{{job}}</i>
+            </span>
+            <span *ngIf="!job" translate>common.label.taskId </span> - <i
             class="text-muted">{{taskId}}</i></span>
         </h5>
       </div>
