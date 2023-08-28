@@ -356,6 +356,7 @@ export class LogComponent {
 
   loadJobLog(): void {
     this.job = this.route.snapshot.queryParams['job'];
+    this.workflow = this.route.snapshot.queryParams['workflow'];
     const jobs: any = {};
     jobs.controllerId = this.controllerId;
     jobs.taskId = this.taskId;
@@ -581,9 +582,13 @@ export class LogComponent {
 
       const datetime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(dt[i].controllerDatetime, this.preferences.zone) : dt[i].controllerDatetime;
       col = (datetime + ' <span class="w-64 inline">[' + dt[i].logLevel + ']</span> ' +
-        '[' + dt[i].logEvent + '] ' + (dt[i].orderId ? ('id=' + dt[i].orderId) : '') + (dt[i].position ? ', pos=' + dt[i].position : '') + '');
+        '[' + dt[i].logEvent + '] ' + (dt[i].orderId ? ('id=' + dt[i].orderId) : '') + '');
+
       if (dt[i].job) {
-        col += ', Job=' + dt[i].job;
+        col += ', <b>Job=' + dt[i].job + '</b>';
+      }
+      if(dt[i].position || dt[i].position == 0) {
+        col += ', pos=' + dt[i].position;
       }
       if (dt[i].agentDatetime) {
         col += ', Agent' + '(';

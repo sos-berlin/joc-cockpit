@@ -866,19 +866,19 @@ export class CoreService {
     } else if (task && task.taskId) {
       if (transfer) {
         if (task.job) {
-          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + '&controllerId=' + controllerId;
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + (task.workflow ? '&workflow=' + encodeURIComponent(task.workflow) : '') + '&controllerId=' + controllerId;
         } else if (job) {
-          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + job + '&controllerId=' + controllerId;
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + job + (task.workflow ? '&workflow=' + encodeURIComponent(task.workflow) : '') + '&controllerId=' + controllerId;
         } else {
-          url = '?taskId=' + encodeURIComponent(task.taskId) + '&controllerId=' + controllerId;
+          url = '?taskId=' + encodeURIComponent(task.taskId) + (task.workflow ? '&workflow=' + encodeURIComponent(task.workflow) : '') + '&controllerId=' + controllerId;
         }
       } else {
         if (task.job) {
-          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + '&controllerId=' + controllerId;
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + (task.workflow ? '&workflow=' + encodeURIComponent(task.workflow) : '') + '&controllerId=' + controllerId;
         } else if (job) {
-          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(job) + '&controllerId=' + controllerId;
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(job) + (task.workflow ? '&workflow=' + encodeURIComponent(task.workflow) : '') + '&controllerId=' + controllerId;
         } else {
-          url = '?taskId=' + encodeURIComponent(task.taskId) + '&controllerId=' + controllerId;
+          url = '?taskId=' + encodeURIComponent(task.taskId) + (task.workflow ? '&workflow=' + encodeURIComponent(task.workflow) : '') + '&controllerId=' + controllerId;
         }
       }
     } else {
@@ -890,7 +890,7 @@ export class CoreService {
       const modalData: PopoutData = {
         modalName: (order && order.orderId) ? 'Order Log' : 'Task Log',
         controllerId,
-        workflow: order?.workflow,
+        workflow: order?.workflow || task?.workflow,
         orderId: (order && order.orderId) ? order.orderId : undefined,
         taskId: task ? task.taskId : undefined,
         historyId: (order && order.historyId) ? order.historyId : undefined,
@@ -1201,7 +1201,7 @@ export class CoreService {
     host = host + '/#/';
     if (objType === 'workflow' && name) {
       link = host + 'workflows/workflow?path=' + encodeURIComponent(name);
-      if(versionId){
+      if (versionId) {
         link += '&versionId=' + encodeURIComponent(versionId);
       }
     } else if (objType === 'order' && name) {

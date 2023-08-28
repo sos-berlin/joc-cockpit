@@ -2299,7 +2299,7 @@
     "button.modifyVariable": "Modifier une Variable",
     "button.modifyVariables": "Modifier les Variables",
     "button.showLog": "Afficher le Journal",
-    "button.assignParameterizationFromSchedules": "Paramétrage à partir des Planifications",
+    "button.assignParameterizationFromSchedules": "Paramétrage à partir d'une Planification",
     "button.assignFromSchedule": "Assigner à partir d'une Planification",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",

@@ -2298,7 +2298,7 @@
     "button.modifyVariable": "Modify Variable",
     "button.modifyVariables": "Modify Variables",
     "button.showLog": "Show Log",
-    "button.assignParameterizationFromSchedules": "Assign parameterization from Schedules",
+    "button.assignParameterizationFromSchedules": "Assign parameterization from Schedule",
     "button.assignFromSchedule": "Assign from Schedule",
     "placeholder.selectStartNode": "Select Start Position",
     "placeholder.selectEndNode": "Select End Position",

@@ -65,6 +65,8 @@
                 <div class="col-sm-5">
                   <span class="cursor" (click)="editFrequency(list, i, j);" *ngIf="item.frequency"><span translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
                   <span class="cursor" (click)="editFrequency(list, i, j);" *ngIf="!item.frequency" translate>workflow.admissionTime.label.everyDay</span>
+                  <a class="text-xs text-primary m-l-sm"
+                     (click)="editFrequency(list, i, j)"><i class="fa fa-pencil"></i></a>
                   <a class="text-xs text-hover-color m-l-sm"
                      (click)="removeFrequency(j , list, i)"><i class="fa fa-times"></i></a>
                 </div>

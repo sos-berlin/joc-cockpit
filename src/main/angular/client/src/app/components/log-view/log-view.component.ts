@@ -69,7 +69,19 @@ export class LogViewComponent {
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
-    POPOUT_MODALS['windowInstance'].document.title = this.dataObject.modalName + ' - ' + (this.dataObject.orderId || this.dataObject.job);
+    let title = this.dataObject.modalName + ' - ';
+    if (this.dataObject.workflow) {
+      title += 'Workflow : ' + this.dataObject.workflow.substring(this.dataObject.workflow.lastIndexOf('/') + 1) + ' - ';
+    }
+    if (this.dataObject.orderId) {
+      title += 'Order ID : ' + this.dataObject.orderId;
+    } else {
+      if (this.dataObject.job) {
+        title += 'Job : ' + this.dataObject.job;
+      }
+    }
+
+    POPOUT_MODALS['windowInstance'].document.title = title;
     this.controllerId = this.dataObject.controllerId;
     if (this.authService.scheduleIds) {
       const ids = JSON.parse(this.authService.scheduleIds);
@@ -212,7 +224,7 @@ export class LogViewComponent {
     }
 
     $(POPOUT_MODALS['windowInstance'].document).on("keydown", disableF5);
-   // const panel = $('.property-panel');
+    // const panel = $('.property-panel');
     const dom = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-property-panel');
     const close = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-close');
     const open = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-open');
@@ -232,14 +244,14 @@ export class LogViewComponent {
       sessionStorage['isLogTreeOpen'] = false;
     });
 
-    if(!this.taskId) {
+    if (!this.taskId) {
       setTimeout(() => {
         if (sessionStorage['isLogTreeOpen'] == 'true' || sessionStorage['isLogTreeOpen'] == true) {
           $(open).click();
         }
       }, 500)
     } else {
-      if(close && close[0] && close[0].style) {
+      if (close && close[0] && close[0].style) {
         close[0].style.display = 'none';
         open[0].style.display = 'none';
       }
@@ -593,9 +605,12 @@ export class LogViewComponent {
 
       const datetime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(dt[i].controllerDatetime, this.preferences.zone) : dt[i].controllerDatetime;
       col = (datetime + ' <span class="w-64 inline">[' + dt[i].logLevel + ']</span> ' +
-        '[' + dt[i].logEvent + '] ' + (dt[i].orderId ? ('id=' + dt[i].orderId) : '') + (dt[i].position ? ', pos=' + dt[i].position : '') + '');
+        '[' + dt[i].logEvent + '] ' + (dt[i].orderId ? ('id=' + dt[i].orderId) : '') + '');
       if (dt[i].job) {
-        col += ', Job=' + dt[i].job;
+        col += ', <b>Job=' + dt[i].job + '</b>';
+      }
+      if(dt[i].position || dt[i].position == 0) {
+        col += ', pos=' + dt[i].position;
       }
       if (dt[i].agentDatetime) {
         col += ', Agent' + '(';
