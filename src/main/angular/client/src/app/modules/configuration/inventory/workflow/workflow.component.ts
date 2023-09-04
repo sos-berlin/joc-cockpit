@@ -11460,8 +11460,6 @@ export class WorkflowComponent {
         if (value.value.type === 'List') {
           delete value.value.final;
           value.value.listParameters = this.coreService.keyValuePair(value.value.listParameters);
-        } else if (value.value.type === 'Final') {
-          delete value.value.type;
         } else {
           delete value.value.final;
           if (value.value.type === 'String') {
@@ -11475,6 +11473,9 @@ export class WorkflowComponent {
             list.push(obj.name);
           });
           value.value.list = list;
+        }
+        if (value.value.type == 'Final') {
+          delete value.value.type;
         }
         return !!value.name;
       });

@@ -69,7 +69,7 @@
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.timeZone</div>
                   <div class="col-md-8 col-lg-9">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'zone'" [classNames]="'w-xl'"
-                                      [extraLabelText]="'local '" [isSearchable]="true"
+                                      [extraLabelText]="'local '" [isSearchable]="true" [ignoreTranslate]="true"
                                       [listArray]="zones" [name]="'timeZone'"
                                       [object]="preferences"></app-select-input>
 

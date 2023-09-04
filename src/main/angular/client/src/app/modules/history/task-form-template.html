@@ -103,7 +103,7 @@
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
       <div class=" col-sm-6">
         <app-select-input [attributeName]="'controllerId'" [name]="'id'" [isAllowClear]="true"
-                          [placeholder]="'common.label.selectController'"
+                          [ignoreTranslate]="true" [placeholder]="'common.label.selectController'"
                           [listArray]="schedulerIds.controllerIds" [object]="filter"></app-select-input>
       </div>
     </div>

@@ -17,6 +17,7 @@ export class SelectInputComponent {
   @Input() isAllowClear = false;
   @Input() isSearchable = false;
   @Input() isRequired = false;
+  @Input() ignoreTranslate = false;
   @Input() isSelectDisabled: any
   @Input() dropdownClassName = '';
   @Input() ngClassName = '';
