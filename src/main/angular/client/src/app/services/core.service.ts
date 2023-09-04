@@ -917,12 +917,17 @@ export class CoreService {
     }
   }
 
-  renderData(res, domId, object, obj): void {
+  renderData(res, domId, object, obj, windowInstance?): void {
     let lastLevel = '';
     let lastClass = '';
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
     ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(main|success|error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
-      const div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
+      let div;// Now create a div element and append it to a non-appended span.
+      if(windowInstance){
+        div = windowInstance.document.createElement('div');
+      } else {
+        div = window.document.createElement('div');
+      }
       if (timestampRegex.test(match)) {
         const arr = match.split(/\s+\[/);
         let date;
@@ -1062,10 +1067,18 @@ export class CoreService {
         lastClass = '';
       }
 
-      if (!domId) {
-        window.document.getElementById('logs')?.appendChild(div);
+      if(windowInstance){
+        if (!domId) {
+          windowInstance.document.getElementById('logs')?.appendChild(div);
+        } else {
+          windowInstance.document.getElementById(domId)?.appendChild(div);
+        }
       } else {
-        window.document.getElementById(domId)?.appendChild(div);
+        if (!domId) {
+          window.document.getElementById('logs')?.appendChild(div);
+        } else {
+          window.document.getElementById(domId)?.appendChild(div);
+        }
       }
       return '';
     });
@@ -2735,6 +2748,13 @@ export class CoreService {
     sessionStorage['allowUndeclaredVariables'] = result.allowUndeclaredVariables;
     if (result.licenseValidFrom) {
       sessionStorage['licenseValidFrom'] = result.licenseValidFrom;
+    }
+    if (sessionStorage['preferences'] && (result.forceCommentsForAuditLog === 'true' || result.forceCommentsForAuditLog === true)) {
+      const preferences = JSON.parse(sessionStorage['preferences']);
+      if (preferences && !preferences.auditLog) {
+        preferences.auditLog = true;
+        sessionStorage['preferences'] = JSON.stringify(preferences);
+      }
     }
   }
 

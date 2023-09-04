@@ -756,12 +756,12 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <div *ngIf="selectedNode.obj.retryDelays && selectedNode.obj.maxTries > selectedNode.obj.retryDelays.length"
+                  <div *ngIf="selectedNode.obj.retryDelays && selectedNode.obj.maxTries > (selectedNode.obj.retryDelays.length + 1)"
                        class="col-sm-12 m-b-sm">
                     <a (click)="addDelay(selectedNode.obj.retryDelays);" class="text-u-l"
                        translate>workflow.button.addDelay</a>
                   </div>
-                  <div *ngIf="selectedNode.obj.maxTries != selectedNode.obj.retryDelays.length" class="col-sm-12">
+                  <div *ngIf="selectedNode.obj.maxTries > (selectedNode.obj.retryDelays.length + 1)" class="col-sm-12">
                     <a (click)="addAllDelay();" class="text-u-l" translate>workflow.button.addAllDelay</a>
                   </div>
                 </div>
