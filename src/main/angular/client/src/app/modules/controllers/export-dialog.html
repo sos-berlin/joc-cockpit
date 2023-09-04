@@ -35,7 +35,7 @@
       <div class="form-group row">
         <label class="col-md-4 form-control-label" translate>inventory.label.fileFormat</label>
         <div class="col-md-8">
-          <app-select-input [optionLabel]="'name'" [optionValue]="'value'"
+          <app-select-input [optionLabel]="'name'" [optionValue]="'value'" [ignoreTranslate]="true"
             [name]="'format'" [object]="exportObj" [attributeName]="'fileFormat'"
             [listArray]="fileFormat"></app-select-input>
         </div>

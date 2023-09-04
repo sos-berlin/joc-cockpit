@@ -301,13 +301,14 @@ export class SingleDeployComponent {
         } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
           obj.addOrdersDateFrom = 'now';
         }
-      } else if (this.isRevoke) {
-        if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
-          obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-        } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
-          obj.cancelOrdersDateFrom = 'now';
-        }
       }
+      // if (this.isRevoke) {
+      //   if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
+      //     obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+      //   } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
+      //     obj.cancelOrdersDateFrom = 'now';
+      //   }
+      // }
     }
     if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
       if (this.object.store.draftConfigurations.length === 0) {
@@ -952,13 +953,14 @@ export class DeployComponent {
           } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
             obj.addOrdersDateFrom = 'now';
           }
-        } else if (this.isRevoke) {
-          if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
-            obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-          } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
-            obj.cancelOrdersDateFrom = 'now';
-          }
         }
+        // if (this.isRevoke) {
+        //   if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
+        //     obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+        //   } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
+        //     obj.cancelOrdersDateFrom = 'now';
+        //   }
+        // }
       }
     }
 

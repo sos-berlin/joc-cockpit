@@ -15,7 +15,7 @@
     [nzAllowClear]="isAllowClear"
     [nzPlaceHolder]="placeholder | translate">
     <nz-option *ngFor="let option of listArray;let i = index"
-               [nzLabel]="(optionLabel ? option[optionLabel] : i == 0 ? (extraLabelText +  option) : option) | translate"
+               [nzLabel]="ignoreTranslate ? ((optionLabel ? option[optionLabel] : (extraLabelText && i == 0) ? (extraLabelText +  option) : option) | translate) : (optionLabel ? option[optionLabel] : (extraLabelText && i == 0) ? (extraLabelText +  option) : option)"
                [nzValue]="optionValue ? option[optionValue] : option"
                [nzDisabled]="option === '-----------------------------' || option.disable">
     </nz-option>

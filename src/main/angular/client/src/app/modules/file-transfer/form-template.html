@@ -75,7 +75,7 @@
     <div *ngIf="isSearch" class="form-group row">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
       <div class=" col-sm-6">
-        <app-select-input [attributeName]="'controllerId'" [isAllowClear]="true"
+        <app-select-input [attributeName]="'controllerId'" [isAllowClear]="true" [ignoreTranslate]="true"
                           [placeholder]="'common.label.selectController'"
                           [listArray]="schedulerIds.controllerIds" [name]="'id'"
                           [object]="filter"></app-select-input>
