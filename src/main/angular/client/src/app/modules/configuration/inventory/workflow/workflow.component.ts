@@ -4618,15 +4618,15 @@ export class WorkflowComponent {
   }
 
   checkDelayEntries(): void {
-    if (this.selectedNode.obj.maxTries < this.selectedNode.obj.retryDelays.length) {
-      this.selectedNode.obj.retryDelays.splice(this.selectedNode.obj.maxTries, this.selectedNode.obj.retryDelays.length - this.selectedNode.obj.maxTries);
+    if (this.selectedNode.obj.maxTries < (this.selectedNode.obj.retryDelays.length)) {
+      this.selectedNode.obj.retryDelays.splice(this.selectedNode.obj.maxTries - 1, (this.selectedNode.obj.retryDelays.length + 1) - this.selectedNode.obj.maxTries);
     }
   }
 
   addAllDelay(): void {
-    if (this.selectedNode.obj.maxTries > this.selectedNode.obj.retryDelays.length) {
-      const len = (this.selectedNode.obj.maxTries - this.selectedNode.obj.retryDelays.length);
-      for (let i = 0; i <= len; i++) {
+    if (this.selectedNode.obj.maxTries > (this.selectedNode.obj.retryDelays.length - 1)) {
+      const len = (this.selectedNode.obj.maxTries - (this.selectedNode.obj.retryDelays.length + 1));
+      for (let i = 0; i < len; i++) {
         this.selectedNode.obj.retryDelays.push({value: '1m'});
       }
     }
@@ -6642,7 +6642,7 @@ export class WorkflowComponent {
                 } else {
                   const cells = graph.getSelectionCells();
                   if (cells && cells.length > 0) {
-                    if (cells[0].getParent().id !== cell.getParent().id) {
+                    if (cells[0]?.getParent()?.id !== cell.getParent().id) {
                       let parentCell = {cell: cell.getParent()};
                       checkParentRecursively(parentCell, cells[0]);
                       cell = parentCell.cell;
@@ -6673,7 +6673,7 @@ export class WorkflowComponent {
         function checkParentRecursively(parentCell, selectedCell): void {
           if (parentCell && parentCell.cell) {
             const parent = parentCell.cell.getParent();
-            if (parent && parent.id !== selectedCell.getParent().id) {
+            if (parent && parent.id !== selectedCell.getParent()?.id) {
               parentCell.cell = parent;
               checkParentRecursively(parentCell, selectedCell);
             }
@@ -7182,7 +7182,7 @@ export class WorkflowComponent {
                       targetId = 'start';
                     }
                     self.droppedCell = {
-                      target: {source: sourceId, target: targetId},
+                      target: {source: sourceId, target: targetId, parent: cell.target.getParent()},
                       cells: self.movedCells,
                       type: cell.value.getAttribute('type'),
                       isOutside
@@ -8052,7 +8052,7 @@ export class WorkflowComponent {
           }
         }
       } else {
-        if (cell.edges) {
+        if (cell?.edges) {
           let _tempCell: any;
           for (let i = 0; i < cell.edges.length; i++) {
             if (_tempCell) {
@@ -8708,10 +8708,10 @@ export class WorkflowComponent {
             const arr = obj.retryDelays.split(',');
             obj.retryDelays = [];
             arr.forEach((item) => {
-              obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item) || '0s'});
+              obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item) || '1m'});
             });
           } else {
-            obj.retryDelays = [{value: '0s'}];
+            obj.retryDelays = [{value: '1m'}];
           }
         } else if (cell.value.tagName === 'Cycle') {
           const val1 = cell.getAttribute('onlyOnePeriod');
@@ -9432,7 +9432,7 @@ export class WorkflowComponent {
                 targetId = 'start';
               }
               self.droppedCell = {
-                target: {source: sourceId, target: targetId},
+                target: {source: sourceId, target: targetId, parent: targetCell.getParent()},
                 cells: self.cutCell,
                 type: targetCell.value.getAttribute('type')
               };
@@ -9506,7 +9506,7 @@ export class WorkflowComponent {
           _node = doc.createElement('Retry');
           _node.setAttribute('displayLabel', 'retry');
           _node.setAttribute('maxTries', '10');
-          _node.setAttribute('retryDelays', '0s');
+          _node.setAttribute('retryDelays', '1m');
           _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'retry');
         } else if (title.match('cycle')) {
@@ -10232,7 +10232,11 @@ export class WorkflowComponent {
      */
     function rearrangeCell(obj): void {
       const connection = obj.target;
-      const droppedCells = obj.cells;
+      let droppedCells = obj.cells;
+      if(droppedCells.length > 1 && connection.parent && (connection.parent.id == 1 || connection.parent.id == '1')){
+        console.log('Reverse the list');
+        droppedCells = droppedCells.reverse()
+      }
       for (let i in droppedCells) {
         let proceed = true;
         if (connection.source === droppedCells[i].id || connection.target === droppedCells[i].id ||
