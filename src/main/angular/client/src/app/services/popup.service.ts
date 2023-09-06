@@ -67,7 +67,7 @@ export class PopupService {
     // or get the reference to the existing "target" window
     const winRef: any = window.open('', '', options);
     // If the "target" window was just opened, change its url
-    if (winRef.location.href === 'about:blank') {
+    if (winRef?.location.href === 'about:blank') {
       winRef.location.href = url;
     }
     return winRef;

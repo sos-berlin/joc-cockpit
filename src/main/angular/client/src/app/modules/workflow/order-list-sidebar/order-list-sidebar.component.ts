@@ -1,4 +1,12 @@
-import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from 'underscore';
 import {CoreService} from '../../../services/core.service';
@@ -48,7 +56,7 @@ export class OrderListSidebarComponent implements OnChanges {
 
   @ViewChild(OrderActionComponent, {static: false}) actionChild;
 
-  constructor(public coreService: CoreService, public modal: NzModalService, private orderPipe: OrderPipe) {
+  constructor(public coreService: CoreService, public modal: NzModalService, private orderPipe: OrderPipe, public viewContainerRef: ViewContainerRef) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -407,7 +415,8 @@ export class OrderListSidebarComponent implements OnChanges {
   }
 
   showLog(order): void {
-    this.actionChild.showLog(order);
+    //this.actionChild.showLog(order);
+    this.coreService.showOrderLogWindow(order.orderId, this.schedulerId, order.workflowId.path, this.viewContainerRef);
   }
 
   resetCheckBox(): void {

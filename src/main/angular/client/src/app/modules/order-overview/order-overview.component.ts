@@ -5,7 +5,7 @@ import {
   Input,
   Output,
   SimpleChanges,
-  ViewChild
+  ViewChild, ViewContainerRef
 } from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
@@ -294,7 +294,7 @@ export class OrderOverviewComponent {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private route: ActivatedRoute, private dataService: DataService, private searchPipe: SearchPipe,
               private translate: TranslateService, private excelService: ExcelService,
-              public modal: NzModalService, private orderPipe: OrderPipe) {
+              public modal: NzModalService, private orderPipe: OrderPipe, public viewContainerRef: ViewContainerRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });

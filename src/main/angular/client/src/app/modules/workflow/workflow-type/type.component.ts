@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   HostListener,
@@ -44,7 +43,8 @@ export class TypeComponent {
   sideBar: any = {};
   isFirst = false;
 
-  constructor(public coreService: CoreService, private modal: NzModalService, private viewContainerRef: ViewContainerRef
+  constructor(public coreService: CoreService, private modal: NzModalService,
+              public viewContainerRef: ViewContainerRef
   ) {
 
   }

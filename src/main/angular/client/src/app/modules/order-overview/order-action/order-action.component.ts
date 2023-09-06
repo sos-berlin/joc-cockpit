@@ -19,13 +19,14 @@ export class OrderActionComponent {
   @Input() order: any;
   @Input() preferences: any;
   @Input() permission: any;
+  @Input() viewContainerRef: any;
   @Input() schedulerId: any;
   @Input() isDisabled = false;
 
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
   @Output() isDropdownOpen: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(public coreService: CoreService, private modal: NzModalService, private viewContainerRef: ViewContainerRef,
+  constructor(public coreService: CoreService, private modal: NzModalService,
               public message: NzMessageService) {
   }
 
