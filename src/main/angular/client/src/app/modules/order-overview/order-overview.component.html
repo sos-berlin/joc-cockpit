@@ -472,6 +472,7 @@
                         <div class="btn-group dropdown pull-right abt-dropdown ">
                           <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)"
                                             [order]="order"
+                                            [viewContainerRef]="viewContainerRef"
                                             [permission]="permission"
                                             [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order-action>
                         </div>
@@ -681,6 +682,7 @@
                         <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)"
                                           [isDisabled]="object.checked || object.indeterminate" [order]="order"
                                           [permission]="permission"
+                                          [viewContainerRef]="viewContainerRef"
                                           [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order-action>
                       </td>
                       <td>
@@ -866,7 +868,7 @@
                           </thead>
                           <tbody>
                           <ng-template [ngForOf]="orderHistoryTable.data | orderBy: 'startTime':true" let-history ngFor>
-                            <tr (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)"
+                            <tr (click)="coreService.showLogWindow(history,null, null, history.controllerId, null, viewContainerRef)"
                                 [ngClass]="{'light-bg':history.show}" class="cursor">
                               <td>
                                 <span class="show-in-single-line">

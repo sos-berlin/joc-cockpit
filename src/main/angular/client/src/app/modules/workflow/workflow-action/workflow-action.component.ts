@@ -60,8 +60,8 @@ export class ShowDependencyComponent {
     this.activeModal.destroy();
   }
 
-  showWorkflow(workflow): void {
-    this.coreService.showWorkflow(workflow);
+  showWorkflow(workflow, version): void {
+    this.coreService.showWorkflow(workflow, version);
     this.close();
   }
 

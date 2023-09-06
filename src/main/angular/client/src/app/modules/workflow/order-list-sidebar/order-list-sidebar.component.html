@@ -138,6 +138,7 @@
             <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)" [isDisabled]="checked || indeterminate"
                               [order]="order" [permission]="permission"
                               [preferences]="preferences"
+                              [viewContainerRef]="viewContainerRef"
                               [schedulerId]="schedulerId"></app-order-action>
           </td>
           <td>

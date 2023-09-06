@@ -276,6 +276,7 @@ export class SingleWorkflowComponent {
   sideBar: any = {};
   date = '1d';
   subscription1: Subscription;
+  subscription2: Subscription;
 
   filterBtn: any = [
     {date: 'ALL', text: 'all'},
@@ -297,21 +298,26 @@ export class SingleWorkflowComponent {
   }
 
   ngOnInit(): void {
-    this.path = this.route.snapshot.queryParamMap.get('path');
-    this.versionId = this.route.snapshot.queryParamMap.get('versionId');
-    this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
+    this.permission = JSON.parse(this.authService.permission) || {};
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']);
     }
-    this.permission = JSON.parse(this.authService.permission) || {};
-    this.getWorkflowList({
-      controllerId: this.controllerId,
-      workflowId: {path: this.path, versionId: this.versionId ? this.versionId : undefined}
+    // Subscribe to changes in the route parameters (including query parameters).
+    this.subscription2 = this.route.queryParamMap.subscribe(params => {
+      
+      this.path = params.get('path');
+      this.versionId = params.get('versionId');
+      this.controllerId = params.get('controllerId');
+      this.getWorkflowList({
+        controllerId: this.controllerId,
+        workflowId: {path: this.path, versionId: this.versionId ? this.versionId : undefined}
+      });
     });
   }
 
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   loadOrders(date): void {

@@ -64,7 +64,7 @@
   </ng-template>
   <div class="d-inline-block m-r">
     <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)" [order]="order"
-                      [permission]="permission" [preferences]="preferences"
+                      [permission]="permission" [preferences]="preferences" [viewContainerRef]="viewContainerRef"
                       [schedulerId]="schedulerId"></app-order-action>
     <span (mouseover)="getObstacles(order)" [nz-tooltip]="contentTemplate" style="position: relative;top:2px">
       <i *ngIf="!order.marked" [ngClass]="coreService.getColor(order.state.severity, 'text')"
