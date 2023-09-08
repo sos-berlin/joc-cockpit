@@ -138,7 +138,7 @@ export class ScheduleComponent {
   addVariableToList(data): void {
     const arr = [];
     data.list.forEach(item => {
-      arr.push({name: item.name, type: item.value.type});
+      arr.push({name: item.name, type: item.value.type, value: (item.value.value || item.value.default)});
     });
     let flag = false;
     for (const i in data.actualList) {
@@ -343,14 +343,14 @@ export class ScheduleComponent {
 
               if (notExistArr.length > 0) {
                 notExistArr.forEach(item => {
-                  sour.value[i].push({name: item.name, type: item.value.type})
+                  sour.value[i].push({name: item.name, type: item.value.type, value: item.value.value || item.value.default})
                 })
               }
             }
           } else {
             const tempArr = [];
             for (const prop in target[x].list) {
-              tempArr.push({name: target[x].list[prop].name, value: '', type: target[x].list[prop].value.type});
+              tempArr.push({name: target[x].list[prop].name, value: target[x].list[prop].value.value || target[x].list[prop].value.default || '', type: target[x].list[prop].value.type});
             }
             sour.value.push(tempArr);
           }

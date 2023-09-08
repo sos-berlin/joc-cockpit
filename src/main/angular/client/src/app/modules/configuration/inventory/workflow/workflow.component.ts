@@ -4329,7 +4329,7 @@ export class WorkflowComponent {
   addArgumentToList(data): void {
     const arr = [];
     data.list.forEach(item => {
-      arr.push({name: item.name, type: item.value.type});
+      arr.push({name: item.name, type: item.value.type, value: item.value.value || item.value.default});
     });
     let flag = false;
     for (const i in data.actualList) {
@@ -4354,17 +4354,18 @@ export class WorkflowComponent {
     if (this.selectedNode.obj.workflow.orderPreparation && this.selectedNode.obj.workflow.orderPreparation.parameters && !isEmpty(this.selectedNode.obj.workflow.orderPreparation.parameters)) {
       this.selectedNode.obj.argumentList = Object.entries(this.selectedNode.obj.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
+
         if (val.type === 'List') {
           const actualList = [];
           if (val.listParameters) {
             if (isArray(val.listParameters)) {
               val.listParameters.forEach((item) => {
-                actualList.push({name: item.name, type: item.value.type});
+                actualList.push({name: item.name, type: item.value.type, value: item.value.default});
               });
             } else {
               val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
                 const val1: any = v1;
-                actualList.push({name: k1, type: val1.type});
+                actualList.push({name: k1, type: val1.type, value: val1.default});
                 return {name: k1, value: val1};
               });
             }
@@ -4434,21 +4435,28 @@ export class WorkflowComponent {
         if (sour.value) {
           if (sour.value.length > 0) {
             for (const i in sour.value) {
+              const tempList = this.coreService.clone(target[x].list);
               sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
-                let type;
-                for (const prop in target[x].list) {
-                  if (target[x].list[prop].name === k1) {
-                    type = target[x].list[prop].value.type;
+                let type, index =0;
+                for (const prop in tempList) {
+                  if (tempList[prop].name === k1) {
+                    type = tempList[prop].value.type;
+                    tempList.splice(index, 1);
                     break;
                   }
+                  index++;
                 }
                 return {name: k1, value: v1, type};
               });
+              for (const prop in tempList) {
+                sour.value[i].push({name: tempList[prop].name, value: tempList[prop].value.default, type: tempList[prop].value.type});
+              }
+       
             }
           } else {
             const tempArr = [];
             for (const prop in target[x].list) {
-              tempArr.push({name: target[x].list[prop].name, value: '', type: target[x].list[prop].value.type});
+              tempArr.push({name: target[x].list[prop].name, value: target[x].list[prop].value.default || '', type: target[x].list[prop].value.type});
             }
             sour.value.push(tempArr);
           }
@@ -10234,14 +10242,13 @@ export class WorkflowComponent {
       const connection = obj.target;
       let droppedCells = obj.cells;
       if(droppedCells.length > 1 && connection.parent && (connection.parent.id == 1 || connection.parent.id == '1')){
-        console.log('Reverse the list');
         droppedCells = droppedCells.reverse()
       }
       for (let i in droppedCells) {
         let proceed = true;
+
         if (connection.source === droppedCells[i].id || connection.target === droppedCells[i].id ||
           connection === droppedCells[i].id) {
-
         } else {
           let dropObject: any, targetObject: any, index = 0, targetIndex = 0, isCatch = false;
           const source = connection.source || connection;
@@ -11461,7 +11468,9 @@ export class WorkflowComponent {
           delete value.value.final;
           value.value.listParameters = this.coreService.keyValuePair(value.value.listParameters);
         } else {
-          delete value.value.final;
+          if (value.value.type !== 'Final') {
+            delete value.value.final;
+          }
           if (value.value.type === 'String') {
             this.coreService.addSlashToString(value.value, 'default');
           }

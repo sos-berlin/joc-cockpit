@@ -316,12 +316,12 @@ export class AddOrderModalComponent {
           if (val.listParameters) {
             if (isArray(val.listParameters)) {
               val.listParameters.forEach((item) => {
-                actualList.push({name: item.name, type: item.value.type});
+                actualList.push({name: item.name, type: item.value.type, value: item.value.default});
               });
             } else {
               val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
                 const val1: any = v1;
-                actualList.push({name: k1, type: val1.type});
+                actualList.push({name: k1, type: val1.type, value: val1.default});
                 return {name: k1, value: val1};
               });
             }
@@ -502,7 +502,7 @@ export class AddOrderModalComponent {
   addVariableToList(data): void {
     const arr = [];
     data.list.forEach(item => {
-      arr.push({name: item.name, type: item.value.type});
+      arr.push({name: item.name, type: item.value.type, value: item.value.default});
     });
     let flag = false;
     for (const i in data.actualList) {

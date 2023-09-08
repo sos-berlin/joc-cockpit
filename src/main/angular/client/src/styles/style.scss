@@ -7079,6 +7079,10 @@ aside.sidebar-hover-effect {
   opacity: .55;
 }
 
+.ant-input-number-input {
+  padding-left: 6px !important;
+}
+
 .ant-input-number-input::placeholder {
   color: var(--placholder-color);
   opacity: .55;
