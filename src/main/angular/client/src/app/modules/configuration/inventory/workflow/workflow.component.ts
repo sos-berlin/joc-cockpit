@@ -4329,12 +4329,12 @@ export class WorkflowComponent {
   addArgumentToList(data): void {
     const arr = [];
     data.list.forEach(item => {
-      arr.push({name: item.name, type: item.value.type, value: item.value.value || item.value.default});
+      arr.push({name: item.name, type: item.value.type, value: (item.value.value || item.value.default), isRequired: (item.isRequired || item.value.isRequired)});
     });
     let flag = false;
     for (const i in data.actualList) {
       for (const j in data.actualList[i]) {
-        if (!data.actualList[i][j].value) {
+        if (!data.actualList[i][j].value && data.actualList[i][j].value !== 0 && data.actualList[i][j].value !== false) {
           flag = true;
           break;
         }
@@ -4360,12 +4360,32 @@ export class WorkflowComponent {
           if (val.listParameters) {
             if (isArray(val.listParameters)) {
               val.listParameters.forEach((item) => {
-                actualList.push({name: item.name, type: item.value.type, value: item.value.default});
+                const obj: any = {
+                  name: item.name,
+                  type: item.value.type,
+                  value: item.value.default,
+                  isRequired: true
+                };
+                if (item.default || item.default == 0 || item.default == false) {
+                  obj.isRequired = false;
+                }
+                item.isRequired = obj.isRequired;
+                actualList.push(obj);
               });
             } else {
               val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
                 const val1: any = v1;
-                actualList.push({name: k1, type: val1.type, value: val1.default});
+                const obj = {
+                  name: k1,
+                  type: val1.type,
+                  value: val1.default,
+                  isRequired: true
+                };
+                if (val1.default || val1.default == 0 || val1.default == false) {
+                  obj.isRequired = false;
+                }
+                val1.isRequired = obj.isRequired;
+                actualList.push(obj);
                 return {name: k1, value: val1};
               });
             }
@@ -4437,26 +4457,38 @@ export class WorkflowComponent {
             for (const i in sour.value) {
               const tempList = this.coreService.clone(target[x].list);
               sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
-                let type, index =0;
+                let type, index =0, isRequired = true;
                 for (const prop in tempList) {
                   if (tempList[prop].name === k1) {
                     type = tempList[prop].value.type;
+                    isRequired = tempList[prop].value.isRequired;
                     tempList.splice(index, 1);
                     break;
                   }
                   index++;
                 }
-                return {name: k1, value: v1, type};
+                return {name: k1, value: v1, type, isRequired};
               });
               for (const prop in tempList) {
-                sour.value[i].push({name: tempList[prop].name, value: tempList[prop].value.default, type: tempList[prop].value.type});
+                sour.value[i].push(
+                  {
+                    name: tempList[prop].name,
+                    value: tempList[prop].value.value || tempList[prop].value.default,
+                    type: tempList[prop].value.type,
+                    isRequired: tempList[prop].value.isRequired || tempList[prop].isRequired,
+                  });
               }
-       
+
             }
           } else {
             const tempArr = [];
             for (const prop in target[x].list) {
-              tempArr.push({name: target[x].list[prop].name, value: target[x].list[prop].value.default || '', type: target[x].list[prop].value.type});
+              tempArr.push({
+                name: target[x].list[prop].name,
+                value: (target[x].list[prop].value.value || target[x].list[prop].value.default),
+                type: target[x].list[prop].value.type,
+                isRequired: (target[x].list[prop].isRequired || target[x].list[prop].value.isRequired)
+              });
             }
             sour.value.push(tempArr);
           }

@@ -138,12 +138,12 @@ export class ScheduleComponent {
   addVariableToList(data): void {
     const arr = [];
     data.list.forEach(item => {
-      arr.push({name: item.name, type: item.value.type, value: (item.value.value || item.value.default)});
+      arr.push({name: item.name, type: item.value.type, value: (item.value.value || item.value.default), isRequired: (item.isRequired || item.value.isRequired)});
     });
     let flag = false;
     for (const i in data.actualList) {
       for (const j in data.actualList[i]) {
-        if (!data.actualList[i][j].value) {
+        if (!data.actualList[i][j].value && data.actualList[i][j].value !== false && data.actualList[i][j].value !== 0) {
           flag = true;
           break;
         }
@@ -308,14 +308,15 @@ export class ScheduleComponent {
             let notExistArr = [];
             for (const i in sour.value) {
               sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
-                let type;
+                let type, isRequired = true;
                 for (const prop in target[x].list) {
                   if (target[x].list[prop].name === k1) {
                     type = target[x].list[prop].value.type;
+                    isRequired = target[x].list[prop].value.type;
                     break;
                   }
                 }
-                return {name: k1, value: v1, type};
+                return {name: k1, value: v1, type, isRequired};
               });
 
               for (const prop in target[x].list) {
@@ -343,14 +344,24 @@ export class ScheduleComponent {
 
               if (notExistArr.length > 0) {
                 notExistArr.forEach(item => {
-                  sour.value[i].push({name: item.name, type: item.value.type, value: item.value.value || item.value.default})
+                  sour.value[i].push({
+                    name: item.name,
+                    type: item.value.type,
+                    value: (item.value.value || item.value.default),
+                    isRequired: item.value.isRequired || item.isRequired
+                  })
                 })
               }
             }
           } else {
             const tempArr = [];
             for (const prop in target[x].list) {
-              tempArr.push({name: target[x].list[prop].name, value: target[x].list[prop].value.value || target[x].list[prop].value.default || '', type: target[x].list[prop].value.type});
+              tempArr.push({
+                name: target[x].list[prop].name,
+                value: target[x].list[prop].value.value || target[x].list[prop].value.default || '',
+                type: target[x].list[prop].value.type,
+                isRequired: target[x].list[prop].value.isRequired || target[x].list[prop].isRequired
+              });
             }
             sour.value.push(tempArr);
           }

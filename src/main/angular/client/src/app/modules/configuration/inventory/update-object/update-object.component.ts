@@ -347,12 +347,12 @@ export class UpdateObjectComponent {
   addVariableToList(data): void {
     const arr = [];
     data.list.forEach(item => {
-      arr.push({name: item.name, type: item.value.type});
+      arr.push({name: item.name, type: item.value.type, value: (item.value.value || item.value.default), isRequired: (item.isRequired || item.value.isRequired)});
     });
     let flag = false;
     for (const i in data.actualList) {
       for (const j in data.actualList[i]) {
-        if (!data.actualList[i][j].value) {
+        if (!data.actualList[i][j].value && data.actualList[i][j].value !== false && data.actualList[i][j].value !== 0) {
           flag = true;
           break;
         }

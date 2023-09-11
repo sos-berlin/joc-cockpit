@@ -217,7 +217,7 @@
                                 <nz-input-number #value="ngModel" (nzBlur)="saveJSON()" [(ngModel)]="argument.value"
                                                  [nzMin]="0"
                                                  [nzStep]="1"
-                                                 [required]="true" class="m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
+                                                 [required]="argument.isRequired" class="m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
                                                  nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
                                 <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                                      class="text-danger help-block m-l-n-23">
@@ -236,7 +236,7 @@
                               <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                                    class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
                                 <nz-select #value="ngModel" [(ngModel)]="argument.value" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                                           [required]="true" class="m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
+                                           [required]="argument.isRequired" class="m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
                                            nzAllowClear (ngModelChange)="checkVal()">
                                   <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                                   <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
@@ -257,7 +257,7 @@
                             <ng-container *ngSwitchDefault>
                               <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                                    class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                                <input #value="ngModel" [(ngModel)]="argument.value" [required]="true"
+                                <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired"
                                        autocomplete="off" (blur)="saveJSON()"
                                        class="form-control m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
                                        placeholder="{{'common.placeholder.value' | translate}}"

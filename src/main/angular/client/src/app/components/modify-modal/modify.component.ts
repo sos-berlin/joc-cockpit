@@ -36,8 +36,8 @@ export class ChangeParameterModalComponent {
   blockPositions: any;
   blockPositionList: any;
   allowUndeclaredVariables: boolean;
-  selectValue = [{value: 'True', name: true},
-    {value: 'False', name: false}];
+  selectValue = [{name: 'True', value: true},
+    {name: 'False', value: false}];
   positionObj = {
     blockPosition: '',
     startPosition: '',
@@ -162,18 +162,43 @@ export class ChangeParameterModalComponent {
           if (val.listParameters) {
             if (isArray(val.listParameters)) {
               val.listParameters.forEach((item) => {
-                actualList.push({name: item.name, type: item.value.type});
+                const obj: any = {
+                  name: item.name,
+                  type: item.value.type,
+                  isRequired: true
+                };
+                if (item.default || item.default == 0 || item.default == false) {
+                  obj.isRequired = false;
+                }
+                item.isRequired = obj.isRequired;
+                actualList.push(obj);
               });
             } else {
               if (!isArray(val.listParameters)) {
                 val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
                   const val1: any = v1;
-                  actualList.push({name: k1, type: val1.type});
+                  const obj = {
+                    name: k1,
+                    type: val1.type,
+                    isRequired: true
+                  };
+                  if (val1.default || val1.default == 0 || val1.default == false) {
+                    obj.isRequired = false;
+                  }
+                  val1.isRequired = obj.isRequired;
+                  actualList.push(obj);
                   return {name: k1, value: val1};
                 });
               }
             }
-            this.forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
+
+            if (this.variable && this.variable.name) {
+              if (this.variable.name == k) {
+                this.forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
+              }
+            } else {
+              this.forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
+            }
           }
         }
         return {name: k, value: v};
@@ -190,7 +215,7 @@ export class ChangeParameterModalComponent {
           this.setForkListVariables(item, this.forkListVariables);
           return false;
         } else {
-          if(!item.type){
+          if (!item.type) {
             item.isTextField = true;
           }
           return true;
@@ -205,6 +230,7 @@ export class ChangeParameterModalComponent {
   }
 
   private setForkListVariables(sour, target): void {
+
     for (let x in target) {
       if (target[x].name === sour.name) {
         if (sour.value) {
@@ -213,20 +239,22 @@ export class ChangeParameterModalComponent {
             for (const i in sour.value) {
               if (!isArray(sour.value[i])) {
                 sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
-                  let type;
+                  let type, isRequired = true;
                   for (const prop in target[x].list) {
                     if (target[x].list[prop].name === k1) {
                       type = target[x].list[prop].value.type;
+                      isRequired = target[x].list[prop].value.isRequired;
                       break;
                     }
                   }
-                  return {name: k1, value: v1, type};
+                  return {name: k1, value: v1, type, isRequired};
                 });
               } else {
                 for (const j in sour.value[i]) {
                   for (const prop in target[x].list) {
-                    if (target[x].list[prop].name === sour.value[i].name) {
-                      sour.value[i].type = target[x].list[prop].value.type;
+                    if (target[x].list[prop].name === sour.value[i][j].name) {
+                      sour.value[i][j].type = target[x].list[prop].value.type;
+                      sour.value[i][j].isRequired = target[x].list[prop].value.isRequired;
                       break;
                     }
                   }
@@ -256,14 +284,24 @@ export class ChangeParameterModalComponent {
 
               if (notExistArr.length > 0) {
                 notExistArr.forEach(item => {
-                  sour.value[i].push({name: item.name, type: item.value.type})
+                  sour.value[i].push({
+                    name: item.name,
+                    type: item.value.type,
+                    value: (item.value.value || item.value.default),
+                    isRequired: (item.isRequired || item.value.isRequired)
+                  })
                 })
               }
             }
           } else {
             const tempArr = [];
             for (const prop in target[x].list) {
-              tempArr.push({name: target[x].list[prop].name, value: '', type: target[x].list[prop].value.type});
+              tempArr.push({
+                name: target[x].list[prop].name,
+                value: (target[x].list[prop].value.value || target[x].list[prop].value.default),
+                type: target[x].list[prop].value.type,
+                isRequired: (target[x].list[prop].isRequired || target[x].list[prop].value.isRequired)
+              });
             }
             sour.value.push(tempArr);
           }
@@ -309,12 +347,12 @@ export class ChangeParameterModalComponent {
   addVariableToList(data): void {
     const arr = [];
     data.list.forEach(item => {
-      arr.push({name: item.name, type: item.value.type});
+      arr.push({name: item.name, type: item.value.type, value: (item.value.value || item.value.default), isRequired: (item.isRequired || item.value.isRequired)});
     });
     let flag = false;
     for (const i in data.actualList) {
       for (const j in data.actualList[i]) {
-        if (!data.actualList[i][j].value) {
+        if (!data.actualList[i][j].value && data.actualList[i][j].value !== 0 && data.actualList[i][j].value !== false) {
           flag = true;
           break;
         }
