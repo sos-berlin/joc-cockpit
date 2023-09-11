@@ -316,12 +316,22 @@ export class AddOrderModalComponent {
           if (val.listParameters) {
             if (isArray(val.listParameters)) {
               val.listParameters.forEach((item) => {
-                actualList.push({name: item.name, type: item.value.type});
+                const obj = {name: item.name, type: item.value.type, value: item.value.default, isRequired: true};
+                if (item.value.default || item.value.default == 0 || item.value.default == false) {
+                  obj.isRequired = false;
+                }
+                item.isRequired = obj.isRequired;
+                actualList.push(obj);
               });
             } else {
               val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
                 const val1: any = v1;
-                actualList.push({name: k1, type: val1.type});
+                const obj = {name: k1, type: val1.type, value: val1.default, isRequired: true};
+                if (val1.default || val1.default == 0 || val1.default == false) {
+                  obj.isRequired = false;
+                }
+                val1.isRequired = obj.isRequired;
+                actualList.push(obj);
                 return {name: k1, value: val1};
               });
             }
@@ -502,12 +512,12 @@ export class AddOrderModalComponent {
   addVariableToList(data): void {
     const arr = [];
     data.list.forEach(item => {
-      arr.push({name: item.name, type: item.value.type});
+      arr.push({name: item.name, type: item.value.type, value: (item.value.value || item.value.default), isRequired: (item.isRequired || item.value.isRequired)});
     });
     let flag = false;
     for (const i in data.actualList) {
       for (const j in data.actualList[i].list) {
-        if (!data.actualList[i].list[j].value) {
+        if (!data.actualList[i].list[j].value && data.actualList[i].list[j].value !== 0 && data.actualList[i].list[j].value !== false) {
           flag = true;
           break;
         }

@@ -60,7 +60,7 @@
                       <ng-container *ngSwitchCase="'Number'">
                         <div class="col-md-6 col-sm-6 m-b-sm"
                              [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                          <nz-input-number [required]="true" #value="ngModel"
+                          <nz-input-number [required]="argument.isRequired" #value="ngModel"
                                            nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
                                            [nzMin]="0" [nzStep]="1" name="_value{{i}}{{j}}{{k}}" [(ngModel)]="argument.value"></nz-input-number>
                           <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
@@ -73,8 +73,8 @@
                       </ng-container>
                       <ng-container *ngSwitchCase="'Boolean'">
                         <div class="col-md-6 col-sm-6 m-b-sm">
-                          <app-select-input [placeholder]="'common.placeholder.selectValue'" [isRequired]="true"
-                                          [isAllowClear]="true" [name]="'_value' +i +j+k" [object]="argument" [optionLabel]="'label'" [optionValue]="'value'"
+                          <app-select-input [placeholder]="'common.placeholder.selectValue'" [isRequired]="argument.isRequired"
+                                          [isAllowClear]="true" [name]="'_value' +i +j+k" [object]="argument" [optionLabel]="'name'" [optionValue]="'value'"
                                           [attributeName]="'value'" [listArray]="selectValue"></app-select-input>
 
                         </div>
@@ -82,7 +82,7 @@
                       <ng-container *ngSwitchDefault>
                         <div class="col-md-6 col-sm-6 m-b-sm"
                              [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                          <input #value="ngModel" [required]="true" autocomplete="off" type="text" class="form-control"
+                          <input #value="ngModel" [required]="argument.isRequired" autocomplete="off" type="text" class="form-control"
                                  name="_value{{i}}{{j}}{{k}}" [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
                           <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
                              style="right: 13px;top:1px;" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
@@ -138,18 +138,10 @@
                   </div>
                 </ng-container>
                 <ng-container *ngSwitchCase="'Boolean'">
-                  <div class="col-md-6 col-sm-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                    <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                               #value="ngModel" [required]="item.isRequired" name="value{{i}}{{item.name}}" [(ngModel)]="item.value">
-                      <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                      <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                    </nz-select>
-                    <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                         class="text-danger help-block">
-                      <div *ngIf="value.errors.required">
-                        <div translate>common.message.requiredError</div>
-                      </div>
-                    </div>
+                  <div class="col-md-6 col-sm-6 m-b-sm">
+                    <app-select-input [placeholder]="'common.placeholder.selectValue'" [isRequired]="item.isRequired"
+                                      [isAllowClear]="true" [name]="'value{{i}}{{item.name}}'" [object]="item" [optionLabel]="'name'" [optionValue]="'value'"
+                                      [attributeName]="'value'" [listArray]="selectValue"></app-select-input>
                   </div>
                 </ng-container>
                 <ng-container *ngSwitchDefault>
