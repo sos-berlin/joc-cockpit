@@ -179,37 +179,6 @@ export class UpdateObjectComponent {
     this.isVisible = true;
   }
 
-  private setForkListVariables(sour, target): void {
-    for (let x in target) {
-      if (target[x].name === sour.name) {
-        if (sour.value) {
-          if (sour.value.length > 0) {
-            for (const i in sour.value) {
-              sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
-                let type;
-                for (const prop in target[x].list) {
-                  if (target[x].list[prop].name === k1) {
-                    type = target[x].list[prop].value.type;
-                    break;
-                  }
-                }
-                return {name: k1, value: v1, type};
-              });
-            }
-          } else {
-            const tempArr = [];
-            for (const prop in target[x].list) {
-              tempArr.push({name: target[x].list[prop].name, value: '', type: target[x].list[prop].value.type});
-            }
-            sour.value.push(tempArr);
-          }
-        }
-        target[x].actualList = sour.value;
-        break;
-      }
-    }
-  }
-
   updateVariableList(): void {
     this.variableList = [];
     this.forkListVariables = [];
@@ -221,12 +190,32 @@ export class UpdateObjectComponent {
           if (val.listParameters) {
             if (isArray(val.listParameters)) {
               val.listParameters.forEach((item) => {
-                actualList.push({name: item.name, type: item.value.type});
+                const obj: any = {
+                  name: item.name,
+                  type: item.value.type,
+                  value: item.value.default,
+                  isRequired: true
+                };
+                if (item.default || item.default == 0 || item.default == false) {
+                  obj.isRequired = false;
+                }
+                item.isRequired = obj.isRequired;
+                actualList.push(obj);
               });
             } else {
               val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
                 const val1: any = v1;
-                actualList.push({name: k1, type: val1.type});
+                const obj = {
+                  name: k1,
+                  type: val1.type,
+                  value: val1.default,
+                  isRequired: true
+                };
+                if (val1.default || val1.default == 0 || val1.default == false) {
+                  obj.isRequired = false;
+                }
+                val1.isRequired = obj.isRequired;
+                actualList.push(obj);
                 return {name: k1, value: val1};
               });
             }
@@ -276,7 +265,7 @@ export class UpdateObjectComponent {
         if (this.object.orderParameterisations[prop].variables && this.object.orderParameterisations[prop].variables.length > 0) {
           this.object.orderParameterisations[prop].variables = this.object.orderParameterisations[prop].variables.filter(item => {
             if (isArray(item.value)) {
-              this.setForkListVariables(item, this.object.orderParameterisations[prop].forkListVariables);
+              this.coreService.setForkListVariables(item, this.object.orderParameterisations[prop].forkListVariables);
               return false;
             } else {
               return true;

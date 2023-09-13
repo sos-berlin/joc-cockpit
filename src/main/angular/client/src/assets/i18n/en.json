@@ -2749,7 +2749,8 @@
       "start_time": "Specifies the start time to run the Daily Plan on a daily basis with the indicated time zone. Without this setting the Daily Plan will run 30 minutes before the point in time specified by the period_begin setting. This setting accepts a time value, e.g. 23:00:00.",
       "period_begin": "Specifies the begin of the 24 hours Daily Plan period with the indicated time zone.",
       "days_ahead_plan": "Specifies the number of days ahead for which orders are generated and are made available with the PLANNED state.",
-      "days_ahead_submit": "Specifies the number of days ahead for which PLANNED orders are submitted to Controllers and are made available with the SUBMITTED state."
+      "days_ahead_submit": "Specifies the number of days ahead for which PLANNED orders are submitted to Controllers and are made available with the SUBMITTED state.",
+      "projections_ahead": "Projections ahead"
     },
     "joc": {
       "force_comments_for_audit_log": "Specifies that for any changes applied to an object such as to add an order, to cancel an order etc. a reason has to be added for the Audit Log.",

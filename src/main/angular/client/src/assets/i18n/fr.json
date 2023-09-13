@@ -2750,7 +2750,8 @@
       "start_time": "Spécifie l'heure de démarrage de l'exécution du Plan Quotidien sur une base quotidienne avec le fuseau horaire indiqué. Sans ce paramètre, le Plan Quotidien sera exécuté 30 minutes avant le moment spécifié par le paramètre period_begin. Ce paramètre accepte une valeur temporelle, par exemple 23:00:00.",
       "period_begin": "Spécifie le début de la période du Plan Quotidien de 24 heures avec le fuseau horaire indiqué.",
       "days_ahead_plan": "Spécifie le nombre de jours à venir pour lesquels les ordres sont générés et mises à disposition avec l'état PLANIFIE.",
-      "days_ahead_submit": "Spécifie le nombre de jours à venir pour lesquels les ordres PLANIFIÉS sont soumis aux Contrôleurs et sont rendus disponibles avec l'état SOUMIS."
+      "days_ahead_submit": "Spécifie le nombre de jours à venir pour lesquels les ordres PLANIFIÉS sont soumis aux Contrôleurs et sont rendus disponibles avec l'état SOUMIS.",
+      "projections_ahead": "Projections ahead"
     },
     "joc": {
       "force_comments_for_audit_log": "Spécifie que pour tout changement appliqué à un objet tel que l'ajout d'un ordre, l'annulation d'un ordre, etc., une raison doit être ajoutée au Journal d'Audit.",

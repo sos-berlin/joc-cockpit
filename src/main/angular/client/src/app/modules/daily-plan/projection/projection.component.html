@@ -1,0 +1,11 @@
+<div class="p-a box" [hidden]="data?.length === 0">
+  <div id="ZT-Gantt" #ztgantt style="height: 100%; width: 100%"></div>
+</div>
+<div class="m-t" *ngIf="data?.length === 0">
+  <app-empty-data></app-empty-data>
+</div>
+<div *ngIf="!isLoaded" class="spinner">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
+</div>
