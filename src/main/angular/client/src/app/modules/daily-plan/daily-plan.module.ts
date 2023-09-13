@@ -10,6 +10,7 @@ import {
 import {SharedModule} from '../shared/shared.module';
 import {DailyPlanRoutingModule} from './daily-plan-routing.module';
 import {DailyPlanRegexValidator} from '../../directives/core.directive';
+import {ProjectionComponent} from "./projection/projection.component";
 import {GroupByPipe} from '../../pipes/core.pipe';
 
 @NgModule({
@@ -17,7 +18,7 @@ import {GroupByPipe} from '../../pipes/core.pipe';
     SharedModule,
     DailyPlanRoutingModule
   ],
-  declarations: [DailyPlanComponent, GanttComponent, RemovePlanModalComponent, FilterModalComponent,
+  declarations: [DailyPlanComponent, GanttComponent, ProjectionComponent, RemovePlanModalComponent, FilterModalComponent,
     SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent],
   providers: [GroupByPipe]
 })

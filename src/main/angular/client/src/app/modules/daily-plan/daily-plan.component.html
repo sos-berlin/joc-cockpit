@@ -458,12 +458,12 @@
     </div>
   </div>
 </div>
-<div class="scroll-y max-ht">
+<div [ngClass]="{'scroll-y max-ht': pageView !== 'projection'}">
   <div class="padding p-b-0">
     <div class="row m-t-xs">
       <div class="col-lg-12">
         <div class="sticky leftPanel daily-plan" id="leftPanel">
-          <div class="box m-b-0 max-ht-n-155">
+          <div class="box m-b-0 max-ht-n-155" [hidden]="pageView == 'projection'">
             <div class="p-b b-b icon-hover">
               <ng-template #tooltipTemplate>
                 <div class="m-a-xs">
@@ -532,10 +532,25 @@
               </div>
             </div>
           </div>
+          <div class="box m-b-0 max-ht-n-155" *ngIf="pageView == 'projection'">
+            <div class="p-a">
+              <div class="row form-group b-b p-b-sm">
+                <div class="col-md-6 _600">{{'Schedule' | translate}}</div>
+                <div class="col-md-6 text-right _600">{{'Total Orders' | translate}}</div>
+              </div>
+              <div class="row form-group b-b p-b-sm" *ngFor="let schedule of schedules">
+                <div class="col-md-9"><a class="text-hover-primary">{{schedule.schedule}}</a></div>
+                <div class="col-md-3 text-center"><div class="badge">{{schedule.totalOrders}}</div></div>
+              </div>
+              <div class="m-t" *ngIf="schedules?.length == 0">
+                <app-empty-data></app-empty-data>
+              </div>
+            </div>
+          </div>
         </div>
         <div id="rightPanel">
           <div>
-            <div *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage))"
+            <div [hidden]="pageView == 'projection'" *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage))"
                  class="row m-b-12">
               <div class="col-lg-12">
                 <button (click)="expandCollapseDetails(true)" [disabled]="planOrders.length === 0"
@@ -604,6 +619,10 @@
                 </div>
               </div>
             </div>
+            <div *ngIf="pageView == 'projection'">
+              <app-projection [projectionData]="projectionData" [isLoaded]="isLoaded" [groupBy]="dailyPlanFilters.filter.groupBy" [preferences]="preferences"
+                              [toggle]="isToggle"></app-projection>
+            </div>
             <div *ngIf="pageView =='grid' && planOrders.length==0 && isLoaded" class=" text-center m-t text-uppercase">
               <app-empty-data></app-empty-data>
             </div>
@@ -618,7 +637,7 @@
               <a (click)="isAllSelected = false;resetCheckBox()" *ngIf="object.mapOfCheckedId.size === (totalOrders - totalFinishedOrders)"
                  class="text-primary p-l-xs" translate>common.label.clearSelection</a>
             </div>
-            <div *ngIf="pageView !=='grid'" class="box p-a">
+            <div *ngIf="pageView !=='grid' && pageView !== 'projection'" class="box p-a">
               <div class="table-responsive" id="dailyPlanTableId">
                 <nz-table
                   #ajaxTable

@@ -14,6 +14,9 @@ import {Router} from '@angular/router';
       <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='list'}" (click)="setView('list')">
         <i class="fa fa-bars"></i>
       </button>
+      <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='projection'}" (click)="setView('projection')">
+        <i class="fa fa-list-alt"></i>
+      </button>
     </div>
   `
 })

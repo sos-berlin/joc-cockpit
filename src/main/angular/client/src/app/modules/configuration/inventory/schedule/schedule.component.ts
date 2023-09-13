@@ -312,7 +312,7 @@ export class ScheduleComponent {
                 for (const prop in target[x].list) {
                   if (target[x].list[prop].name === k1) {
                     type = target[x].list[prop].value.type;
-                    isRequired = target[x].list[prop].value.type;
+                    isRequired = target[x].list[prop].value.isRequired;
                     break;
                   }
                 }
@@ -407,12 +407,32 @@ export class ScheduleComponent {
           if (val.listParameters) {
             if (isArray(val.listParameters)) {
               val.listParameters.forEach((item) => {
-                actualList.push({name: item.name, type: item.value.type});
+                const obj: any = {
+                  name: item.name,
+                  type: item.value.type,
+                  value: item.value.default,
+                  isRequired: true
+                };
+                if (item.default || item.default == 0 || item.default == false) {
+                  obj.isRequired = false;
+                }
+                item.isRequired = obj.isRequired;
+                actualList.push(obj);
               });
             } else {
               val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
                 const val1: any = v1;
-                actualList.push({name: k1, type: val1.type});
+                const obj = {
+                  name: k1,
+                  type: val1.type,
+                  value: val1.default,
+                  isRequired: true
+                };
+                if (val1.default || val1.default == 0 || val1.default == false) {
+                  obj.isRequired = false;
+                }
+                val1.isRequired = obj.isRequired;
+                actualList.push(obj);
                 return {name: k1, value: val1};
               });
             }

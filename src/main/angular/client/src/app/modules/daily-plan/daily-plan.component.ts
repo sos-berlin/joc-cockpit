@@ -700,6 +700,8 @@ export class DailyPlanComponent {
   searchFilter: any = {};
   temp_filter: any = {};
   filterList: any = [];
+  projectionData: any = {};
+  schedules: any[] = [];
   showSearchPanel = false;
   selectedSubmissionId: number;
   isSearchHit = false;
@@ -759,8 +761,11 @@ export class DailyPlanComponent {
 
   ngOnInit(): void {
     this.initConf();
-    if (this.pageView === 'grid') {
+    if (this.pageView === 'grid' || this.pageView === 'projection') {
       this.isToggle = true;
+      if(this.pageView === 'projection'){
+        this.loadProjection();
+      }
     }
   }
 
@@ -771,6 +776,31 @@ export class DailyPlanComponent {
     this.pendingHTTPRequests$.next();
     this.pendingHTTPRequests$.complete();
     $('.scroll-y').remove();
+  }
+
+  loadProjection(): void {
+    this.isLoaded = false;
+    this.coreService.post('daily_plan/projections', {}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        this.projectionData = res.years;
+        this.schedules = [];
+        if(res.meta){
+          for (const controller of Object.keys(res.meta)) {
+            const scheduleData = res.meta[controller];
+            for (const schedule of Object.keys(scheduleData)) {
+              this.schedules.push({
+                schedule,
+                ...scheduleData[schedule]
+              });
+            }
+          }
+        }
+
+        this.isLoaded = true;
+      }, error: () => {
+        this.isLoaded = true;
+      }
+    });
   }
 
   loadOrderPlan(): void {
@@ -806,6 +836,7 @@ export class DailyPlanComponent {
       if (this.dailyPlanFilters.filter.late) {
         obj.late = true;
       }
+
       obj.limit = this.preferences.maxDailyPlanRecords;
       this.coreService.post('daily_plan/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
         next: (res: any) => {
@@ -1748,8 +1779,11 @@ export class DailyPlanComponent {
   }
 
   receiveMessage($event): void {
-    if ($event === 'grid') {
+    if ($event === 'grid' || $event === 'projection') {
       this.isToggle = true;
+    }
+    if($event === 'projection'){
+      this.loadProjection();
     }
     this.pageView = $event;
     this.resetCheckBox();
