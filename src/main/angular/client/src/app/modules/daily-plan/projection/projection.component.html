@@ -1,7 +1,8 @@
+
 <div class="p-a box" [hidden]="data?.length === 0">
   <div id="ZT-Gantt" #ztgantt style="height: 100%; width: 100%"></div>
 </div>
-<div class="m-t" *ngIf="data?.length === 0">
+<div class="m-t" *ngIf="data?.length === 0 && isLoaded">
   <app-empty-data></app-empty-data>
 </div>
 <div *ngIf="!isLoaded" class="spinner">
@@ -9,3 +10,41 @@
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
 </div>
+<nz-drawer (nzOnClose)="close()" [nzVisible]="isVisible" nzPlacement="right">
+  <ng-container *nzDrawerContent>
+    <div (click)="close()" class="close-btn"></div>
+    <div class="text-center m-b text"><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm"
+                                                                               translate>dailyPlan.label.schedule</span>
+    </div>
+    <br>
+    <div class="modal-body p-a">
+      <div class="row">
+        <div class="col-md-12">
+          <ul class="nav navbar-nav navbar-nav-inline pull-right nav-active-border nav-active-border2 b-primary">
+            <li class="nav-item">
+              <a (click)="viewCalObj.calendarView = 'month';getPlan()"
+                 [ngClass]="{'active' : viewCalObj.calendarView=='month'}"
+                 class="nav-link">
+                <span class="nav-text text-dark p-b-sm" translate>runtime.label.monthly</span>
+              </a>
+            </li>
+            <li class="nav-item dropdown-separator">
+              <span class="separator"></span>
+            </li>
+            <li class="nav-item">
+              <a (click)="viewCalObj.calendarView = 'year';getPlan()"
+                 [ngClass]="{'active' : viewCalObj.calendarView=='year'}"
+                 class="nav-link">
+                <span class="nav-text text-dark p-b-sm" translate>runtime.label.yearly</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <br>
+      <div class="p-l-sm p-r-sm">
+        <div id="full-calendar"></div>
+      </div>
+    </div>
+  </ng-container>
+</nz-drawer>

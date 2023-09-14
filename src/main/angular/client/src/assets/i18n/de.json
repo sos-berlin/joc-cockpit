@@ -804,6 +804,7 @@
     "button.deployOrderTemplate": "Zeitpläne freigeben",
     "button.groupByOrder": "Gruppieren nach Auftrag",
     "button.groupByScheduleTemplate": "Gruppieren nach Zeitplan",
+    "button.recreate": "Re-Create",
     "placeholder.selectOrderTemplate": "Zeitpläne auswählen",
     "placeholder.selectSubmissionHistory": "Tagesplan auswählen",
     "placeholder.timeRange": "now, (+/-)(d), today",

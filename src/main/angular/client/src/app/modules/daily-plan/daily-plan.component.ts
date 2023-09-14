@@ -19,6 +19,7 @@ import {SaveService} from '../../services/save.service';
 import {DataService} from '../../services/data.service';
 import {ExcelService} from '../../services/excel.service';
 import {NzMessageService} from "ng-zorro-antd/message";
+import {differenceInCalendarDays} from "date-fns";
 
 declare const JSGantt: any;
 declare let jsgantt: any;
@@ -420,6 +421,7 @@ export class GanttComponent {
     jsgantt.templates.task_class = function (start, end, task) {
       return task.class;
     };
+
     jsgantt.init(this.editor.nativeElement);
     this.tasks = [];
     if (this.groupBy === 'WORKFLOW' || this.groupBy === 'ORDER') {
@@ -724,6 +726,10 @@ export class DailyPlanComponent {
   selectedYear: any;
   selectedMonth: any;
 
+  viewDate: Date = new Date();
+  dateFormat: string;
+  weekStart = 1;
+
   object = {
     mapOfCheckedId: new Map(),
     checked: false,
@@ -763,7 +769,7 @@ export class DailyPlanComponent {
     this.initConf();
     if (this.pageView === 'grid' || this.pageView === 'projection') {
       this.isToggle = true;
-      if(this.pageView === 'projection'){
+      if (this.pageView === 'projection') {
         this.loadProjection();
       }
     }
@@ -780,11 +786,19 @@ export class DailyPlanComponent {
 
   loadProjection(): void {
     this.isLoaded = false;
-    this.coreService.post('daily_plan/projections', {}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+    let obj = {
+      controllerIds: [],
+      dateFrom: this.coreService.getDateByFormat(this.dailyPlanFilters.projection.startDate, this.preferences.zone, 'YYYY-MM-DD'),
+      dateTo: this.coreService.getDateByFormat(this.dailyPlanFilters.projection.endDate, this.preferences.zone, 'YYYY-MM-DD')
+    };
+    if (this.dailyPlanFilters.current) {
+      obj.controllerIds.push(this.schedulerIds.selected);
+    }
+    this.coreService.post('daily_plan/projections', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.projectionData = res.years;
         this.schedules = [];
-        if(res.meta){
+        if (res.meta) {
           for (const controller of Object.keys(res.meta)) {
             const scheduleData = res.meta[controller];
             for (const schedule of Object.keys(scheduleData)) {
@@ -932,11 +946,164 @@ export class DailyPlanComponent {
     }
   }
 
+  /* ------------- Projections----------------- **/
+
   selectDateRange(flag): void {
     this.isCalendarClick = flag;
     $('#full-calendar').data('calendar').setRange(this.isCalendarClick);
     this.dateRanges = [];
   }
+
+  setView(view): void {
+    this.dailyPlanFilters.projection.view = view;
+    if (view !== 'Custom') {
+      this.renderTimeSheetHeader(this.dailyPlanFilters, this.weekStart, () => {
+        this.loadProjection();
+      });
+    } else {
+      this.dailyPlanFilters.projection.dateRange = [this.dailyPlanFilters.projection.startDate, this.dailyPlanFilters.projection.endDate];
+    }
+  }
+
+  onChangeDate(): void {
+    if (this.dailyPlanFilters.projection.dateRange) {
+      this.dailyPlanFilters.projection.startDate = this.dailyPlanFilters.projection.dateRange[0];
+      this.dailyPlanFilters.projection.endDate = this.dailyPlanFilters.projection.dateRange[1];
+      this.loadProjection();
+    }
+  }
+
+  onChange = (date: any) => {
+    if (this.dailyPlanFilters.projection.view === 'Month' || this.dailyPlanFilters.projection.view === 'Year') {
+      this.dailyPlanFilters.projection.startMonth = new Date(date).getMonth();
+      this.dailyPlanFilters.projection.startYear = new Date(date).getFullYear();
+    } else {
+      this.dailyPlanFilters.projection.endDate = new Date(date);
+    }
+    this.renderTimeSheetHeader(this.dailyPlanFilters, this.weekStart, () => {
+      this.loadProjection();
+    });
+  }
+
+  renderTimeSheetHeader(filters: any, weekStart, cb): void {
+    const headerDates = [];
+    const firstDate = new Date(filters.projection?.startYear, filters.projection?.startMonth, 1);
+    let lastDate = new Date(filters.projection?.startYear, (filters.projection?.startMonth) + 1, 0);
+    if (filters.projection?.view == 'Year') {
+      new Date(filters.projection?.startYear + 1, (filters.projection?.startMonth), 0);
+    }
+    console.log('firstDate', firstDate);
+    console.log('lastDate', lastDate);
+    if (filters.projection?.view == 'Custom') {
+      let currentDate = new Date(firstDate.getTime());
+
+      while (currentDate.getDay() !== weekStart) {
+        currentDate.setDate(currentDate.getDate() - 1);
+      }
+      if (filters.projection?.view === 'Month') {
+        while (currentDate <= lastDate) {
+          console.log('>>>>>')
+          do {
+            const date = currentDate.getDate();
+            if (currentDate >= firstDate && currentDate <= lastDate) {
+              headerDates.push(new Date(currentDate));
+            }
+            currentDate.setDate(date + 1);
+          }
+          while (currentDate.getDay() !== weekStart);
+        }
+      } else {
+        do {
+          const date = currentDate.getDate();
+          headerDates.push(new Date(currentDate));
+          currentDate.setDate(date + 1);
+        }
+        while (currentDate.getDay() !== weekStart);
+      }
+    }
+    console.log('headerDates>>>>', headerDates);
+    filters.projection.startDate = headerDates[0] || firstDate;
+    filters.projection.endDate = headerDates[headerDates.length - 1] || lastDate;
+    cb();
+  }
+
+  prev(): void {
+    if (this.dailyPlanFilters.projection.view === 'Year') {
+      this.dailyPlanFilters.projection.startYear = this.dailyPlanFilters.projection.startYear - 1;
+    } else if (this.dailyPlanFilters.projection.view === 'Month') {
+      this.dailyPlanFilters.projection.startMonth = this.dailyPlanFilters.projection.startMonth - 1;
+    } else {
+      const d = new Date(this.dailyPlanFilters.projection.endDate);
+      const time = d.setDate(d.getDate() - 8);
+      this.dailyPlanFilters.projection.endDate = new Date(time).setHours(0, 0, 0, 0);
+    }
+    this.renderTimeSheetHeader(this.dailyPlanFilters, this.weekStart, () => {
+      this.loadProjection();
+    });
+  }
+
+  next(): void {
+    if (this.dailyPlanFilters.projection.view === 'Year') {
+      this.dailyPlanFilters.projection.startYear = this.dailyPlanFilters.projection.startYear + 1;
+    } else if (this.dailyPlanFilters.projection.view === 'Month') {
+      this.dailyPlanFilters.projection.startMonth = this.dailyPlanFilters.projection.startMonth + 1;
+    } else {
+      const d = new Date(this.dailyPlanFilters.projection.endDate);
+      const time = d.setDate(d.getDate() + 1);
+      this.dailyPlanFilters.projection.endDate = new Date(time).setHours(0, 0, 0, 0);
+    }
+    this.renderTimeSheetHeader(this.dailyPlanFilters, this.weekStart, () => {
+      this.loadProjection();
+    });
+  }
+
+  disabledDate = (current: Date): boolean => {
+    return differenceInCalendarDays(current, this.viewDate) < 0;
+  }
+
+  recreateProjection(): void {
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Projection',
+        operation: 'Recreate',
+        name: ''
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzData: {
+          comments,
+        },
+        nzFooter: null,
+        nzAutofocus: undefined,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.recreate(result);
+        }
+      });
+    } else {
+      this.recreate({});
+    }
+  }
+
+  private recreate(auditLog): void {
+    this.isProcessing = true;
+    let obj = {
+      auditLog
+    };
+    this.coreService.post('daily_plan/projections/recreate', obj).subscribe({
+      next: () => {
+        this.resetAction(5000);
+      }, error: () => this.resetAction()
+    });
+  }
+
+  /* -------------End of Projection -------------------- **/
 
   createPlan(): void {
     const modal = this.modal.create({
@@ -1086,13 +1253,13 @@ export class DailyPlanComponent {
       }
       if (!state) {
 
-          this.coreService.post('workflow', {
-            controllerId: this.schedulerIds.selected,
-            workflowId: {path: order.workflowPath}
-          }).subscribe((res: any) => {
-            order.requirements = res.workflow.orderPreparation;
-            openModal(order.requirements, res.workflow);
-          });
+        this.coreService.post('workflow', {
+          controllerId: this.schedulerIds.selected,
+          workflowId: {path: order.workflowPath}
+        }).subscribe((res: any) => {
+          order.requirements = res.workflow.orderPreparation;
+          openModal(order.requirements, res.workflow);
+        });
 
       } else {
         this.showInfoMsg(state);
@@ -1782,7 +1949,7 @@ export class DailyPlanComponent {
     if ($event === 'grid' || $event === 'projection') {
       this.isToggle = true;
     }
-    if($event === 'projection'){
+    if ($event === 'projection') {
       this.loadProjection();
     }
     this.pageView = $event;
@@ -2160,6 +2327,10 @@ export class DailyPlanComponent {
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.dailyPlanFilters = this.coreService.getDailyPlanTab();
     this.savedFilter = JSON.parse(this.saveService.dailyPlanFilters) || {};
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if (!(this.dailyPlanFilters.current || this.dailyPlanFilters.current === false)) {
+      this.dailyPlanFilters.current = this.preferences.currentController;
+    }
     if (this.dailyPlanFilters.selectedDate) {
       this.selectedDate = this.dailyPlanFilters.selectedDate;
       if (typeof this.selectedDate.getMonth !== 'function') {

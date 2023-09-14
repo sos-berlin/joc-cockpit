@@ -805,6 +805,7 @@
     "button.deployOrderTemplate": "Calendrier de Publication",
     "button.groupByOrder": "Regrouper par Ordre",
     "button.groupByScheduleTemplate": "Regrouper par Planification",
+    "button.recreate": "Re-Create",
     "placeholder.selectOrderTemplate": "Sélectionner les Planifications",
     "placeholder.selectSubmissionHistory": "Sélectionner Historique du Plan Quotidien",
     "placeholder.timeRange": "now, (+/-)(d), today",

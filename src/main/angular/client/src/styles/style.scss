@@ -9442,3 +9442,38 @@ cdk-virtual-scroll-viewport {
   float: right;
   margin: -14px;
 }
+
+.timeline {
+  display: inline-block;
+  min-width: 100%;
+
+  .ant-picker-input {
+    top: 1px;
+    cursor: pointer;
+  }
+
+  .ant-picker{
+    height: 28px;
+    top: 2px;
+  }
+}
+
+.timeline .timeline-header {
+  display: inline-block;
+  margin-right: 16px;
+
+  .ant-picker {
+    width: 0;
+    height: 0;
+    padding-left: 0 !important;
+    right: 8px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .no-cursor {
+    cursor: default;
+  }
+}
+
+

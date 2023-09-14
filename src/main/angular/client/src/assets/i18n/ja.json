@@ -804,6 +804,7 @@
     "button.deployOrderTemplate": "スケジュールリリース",
     "button.groupByOrder": "オーダー別",
     "button.groupByScheduleTemplate": "スケジュール別",
+    "button.recreate": "Re-Create",
     "placeholder.selectOrderTemplate": "オーダーテンプレート選択",
     "placeholder.selectSubmissionHistory": "登録履歴選択",
     "placeholder.timeRange": "now, (+/-)(d), today",

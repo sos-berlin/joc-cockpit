@@ -291,7 +291,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div [ngClass]="{'hide':object.mapOfCheckedId.size>0 || dateRanges.length > 0}" class="inline m-b-xs">
+          <div *ngIf="pageView !== 'projection'" [ngClass]="{'hide':object.mapOfCheckedId.size>0 || dateRanges.length > 0}" class="inline m-b-xs">
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
                 <button (click)="getPlans(btn.status)" [disabled]="savedFilter.selected"
@@ -319,13 +319,19 @@
             </div>
           </div>
           <div [ngClass]="{'hide':object.mapOfCheckedId.size>0 || dateRanges.length > 0}" class="inline">
-            <div class="btn-group m-l-12">
+            <div class="btn-group m-l-12" *ngIf="pageView !== 'projection'">
               <button (click)="changeLate()" [disabled]="savedFilter.selected"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.late}" class="btn btn-grey btn-sm button-group-ellipsis">
                 <span translate>dailyPlan.button.late</span>
               </button>
             </div>
-            <div class="btn-group dropdown">
+            <div class="inline valign" *ngIf="pageView === 'projection'">
+              <label [(ngModel)]="dailyPlanFilters.current"
+                     name="current" nz-checkbox  (nzCheckedChange)="loadProjection()" >
+                {{'common.label.currentController' | translate}}
+              </label>
+            </div>
+            <div class="btn-group dropdown" *ngIf="pageView !== 'projection'">
               <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12"
                       nz-dropdown nzTrigger="click" translate type="button">
                 <span translate>common.label.sortBy</span>
@@ -369,7 +375,7 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <div *ngIf="permission.joc && permission.joc.administration.customization.view" class="btn-group dropdown">
+            <div *ngIf="permission.joc && permission.joc.administration.customization.view && pageView !== 'projection'" class="btn-group dropdown">
               <button [ngClass]="{'btn-primary': selectedFiltered.name}" [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization"
                       [nzPlacement]="'bottomRight'"
                       class="btn btn-grey btn-sm m-l-12" nz-dropdown
@@ -409,7 +415,7 @@
             </button>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
-          <div [ngClass]="{'show-block':object.mapOfCheckedId.size>0}" class="hide">
+          <div *ngIf="pageView !== 'projection'" [ngClass]="{'show-block':object.mapOfCheckedId.size>0}" class="hide">
             <button (click)="modifyOrderStartTime()"
                     *ngIf="permission.currentController && permission.currentController.orders.modify"
                     [disabled]="!object.isModifyStartTime" class="btn btn-grey btn-sm m-l-12"><i
@@ -620,8 +626,59 @@
               </div>
             </div>
             <div *ngIf="pageView == 'projection'">
-              <app-projection [projectionData]="projectionData" [isLoaded]="isLoaded" [groupBy]="dailyPlanFilters.filter.groupBy" [preferences]="preferences"
-                              [toggle]="isToggle"></app-projection>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="timeline" style="min-width: 50%">
+                    <nz-range-picker *ngIf="dailyPlanFilters.projection.view === 'Custom'" [(ngModel)]="dailyPlanFilters.projection.dateRange"
+                                     [nzAllowClear]="false" [nzDisabledDate]="disabledDate" (ngModelChange)="onChangeDate()"
+                                     class="m-r-12"></nz-range-picker>
+                    <div *ngIf="dailyPlanFilters.projection.view !== 'Custom'" class="timeline-header inline">
+                      <div class="btn-group">
+                        <div (click)="prev()" class="btn btn-default btn-sm">
+                          <i class="fa fa-angle-left text-md"></i>
+                        </div>
+                        <div class="btn btn-default btn-sm no-cursor">
+                          <nz-year-picker *ngIf="dailyPlanFilters.projection.view === 'Year'"
+                                          [nzFormat]="dateFormat"
+                                          [(ngModel)]="dailyPlanFilters.projection.endDate" [nzAllowClear]="false"
+                                          [nzDisabledDate]="disabledDate" (ngModelChange)="onChange($event )" ></nz-year-picker>
+                          <nz-month-picker *ngIf="dailyPlanFilters.projection.view === 'Month'"
+                                           [(ngModel)]="dailyPlanFilters.projection.endDate" [nzAllowClear]="false"
+                                           [nzDisabledDate]="disabledDate" (ngModelChange)="onChange($event)" ></nz-month-picker>
+                          {{dailyPlanFilters.projection.startDate | date : dateFormat }} - {{dailyPlanFilters.projection.endDate | date : dateFormat}}
+                        </div>
+                        <div (click)="next()" class="btn btn-default btn-sm">
+                          <i class="fa fa-angle-right text-md"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="inline btn-group">
+                      <div (click)="setView('Month')"
+                           [class.primary]="dailyPlanFilters.projection.view === 'Month'"
+                           class="btn btn-default btn-sm" translate>
+                        runtime.label.month
+                      </div>
+                      <div (click)="setView('Year')"
+                           [class.primary]="dailyPlanFilters.projection.view === 'Year'"
+                           class="btn btn-default btn-sm" translate>
+                        runtime.label.year
+                      </div>
+                      <div (click)="setView('Custom')"
+                           [class.primary]="dailyPlanFilters.projection.view === 'Custom'"
+                           class="btn btn-default btn-sm" translate>
+                        monitor.button.custom
+                      </div>
+                    </div>
+                  </div>
+                  <button (click)="recreateProjection()" class="btn btn-grey btn-sm button-group-ellipsis pull-right">
+                    <span translate>dailyPlan.button.recreate</span>
+                  </button>
+                </div>
+                <div class="col-md-12 m-t">
+                  <app-projection [projectionData]="projectionData" [isLoaded]="isLoaded" [groupBy]="dailyPlanFilters.filter.groupBy" [preferences]="preferences"
+                                  [toggle]="isToggle"></app-projection>
+                </div>
+              </div>
             </div>
             <div *ngIf="pageView =='grid' && planOrders.length==0 && isLoaded" class=" text-center m-t text-uppercase">
               <app-empty-data></app-empty-data>
