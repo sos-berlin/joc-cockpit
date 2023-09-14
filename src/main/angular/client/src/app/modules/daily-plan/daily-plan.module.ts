@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {
   DailyPlanComponent,
   FilterModalComponent,
@@ -16,7 +17,8 @@ import {GroupByPipe} from '../../pipes/core.pipe';
 @NgModule({
   imports: [
     SharedModule,
-    DailyPlanRoutingModule
+    DailyPlanRoutingModule,
+    NzDrawerModule
   ],
   declarations: [DailyPlanComponent, GanttComponent, ProjectionComponent, RemovePlanModalComponent, FilterModalComponent,
     SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent],

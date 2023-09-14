@@ -9,12 +9,12 @@ import {Router} from '@angular/router';
         class="fa fa-sitemap"></i>
       </button>
       <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid'}" (click)="setView('grid')"><i
-        class="fa fa-th-large" [ngClass]="{'fa-sitemap' : this.router.url.match('workflow_detail'), 'fa-sliders' : this.router.url.match('daily_plan') }"></i>
+        class="fa fa-th-large" [ngClass]="{'fa-sitemap' : router.url.match('workflow_detail'), 'fa-sliders' : router.url.match('daily_plan') }"></i>
       </button>
       <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='list'}" (click)="setView('list')">
         <i class="fa fa-bars"></i>
       </button>
-      <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='projection'}" (click)="setView('projection')">
+      <button *ngIf="router.url.match('daily_plan')" class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='projection'}" (click)="setView('projection')">
         <i class="fa fa-list-alt"></i>
       </button>
     </div>

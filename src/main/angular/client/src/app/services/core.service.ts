@@ -23,6 +23,7 @@ export class CoreService {
   locales: any = [];
   expertMode: string | undefined | null;
 
+  currentDate = new Date();
   preferences: any = {};
   xmlEditorPreferences: any = {};
   sideView = {
@@ -181,6 +182,15 @@ export class CoreService {
 
     this.tabs._daliyPlan = {};
     this.tabs._daliyPlan.filter = {};
+    this.tabs._daliyPlan.projection = {
+      view: 'Month',
+      startYear: this.currentDate.getFullYear(),
+      startMonth: this.currentDate.getMonth(),
+      currentYear: this.currentDate.getFullYear(),
+      currentMonth: this.currentDate.getMonth(),
+      startDate: this.currentDate.setDate(1),
+      endDate: new Date(this.currentDate.getFullYear(), (this.currentDate.getMonth()) + 1, 0),
+    };
     this.tabs._daliyPlan.filter.status = 'ALL';
     this.tabs._daliyPlan.filter.groupBy = '';
     this.tabs._daliyPlan.filter.late = false;
@@ -1228,7 +1238,7 @@ export class CoreService {
     } else if (objType === 'calendar' && name) {
       link = host + 'resources/calendars/calendar?name=' + encodeURIComponent(name);
     } else if (objType === 'document' && name) {
-      link = host + 'resources/documentations/documentation?name=' + encodeURIComponent(name);
+      link = host + 'resources/documentations/documentation?path=' + encodeURIComponent(name);
     } else if (objType === 'configuration') {
       if (workflow) {
         this.clipboardService.copyFromContent(host + 'configuration/inventory?objectType=' + workflow + '&path=' + encodeURIComponent(name));

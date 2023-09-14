@@ -9378,15 +9378,31 @@
 
           // handle double click event
           ztGanttBarTask.addEventListener("dblclick", handleDblClick);
+          ztGanttBarTask.addEventListener("click", handleClick);
 
           function handleDblClick(e) {
-            that.createLightbox(task);
+
             const onTaskDblClick = new CustomEvent("onTaskDblClick", {
               detail: {
                 task: task,
               },
             });
             that.element.dispatchEvent(onTaskDblClick);
+            if( that.templates.showLightBox !== false
+            ){
+              that.createLightbox(task);
+            }
+
+          }
+          function handleClick(e) {
+
+            const onTaskClick = new CustomEvent("onTaskClick", {
+              detail: {
+                task: task,
+              },
+            });
+            that.element.dispatchEvent(onTaskClick);
+
           }
 
           // Handle mouseover event

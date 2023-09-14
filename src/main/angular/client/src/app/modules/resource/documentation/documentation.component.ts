@@ -95,7 +95,7 @@ export class SingleDocumentationComponent {
   }
 
   ngOnInit(): void {
-    this.path = this.route.snapshot.queryParamMap.get('name');
+    this.path = this.route.snapshot.queryParamMap.get('path');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']);

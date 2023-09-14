@@ -808,6 +808,7 @@
     "button.deployOrderTemplate": "Release Schedules",
     "button.groupByOrder": "Group By Order",
     "button.groupByScheduleTemplate": "Group By Schedule",
+    "button.recreate": "Re-Create",
     "placeholder.selectOrderTemplate": "Select Schedules",
     "placeholder.selectSubmissionHistory": "Select Daily Plan History",
     "placeholder.timeRange": "now, (+/-)(d), today",
