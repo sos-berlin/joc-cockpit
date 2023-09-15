@@ -154,6 +154,15 @@ export class SearchComponent {
         }
       });
     }
+
+    if (!this.isWorkflow && !this.isLock && !this.isBoard && !this.isCalendar) {
+      if (!this.searchObj.deployedOrReleased) {
+        this.searchObj.deployedOrReleased = 'all';
+      }
+      if (!this.searchObj.validOrInvalid) {
+        this.searchObj.validOrInvalid = 'all';
+      }
+    }
   }
 
   ngOnDestroy(): void {
@@ -293,12 +302,23 @@ export class SearchComponent {
         delete obj.advanced.jobNameExactMatch;
       }
     }
-    if (this.searchObj.deployedOrReleased && this.searchObj.currentController) {
+    if (this.searchObj.deployedOrReleased == 'deployed' && this.searchObj.currentController) {
       obj.controllerId = this.controllerId;
     }
     if (!this.isWorkflow && !this.isBoard && !this.isLock && !this.isCalendar) {
       this.url = 'inventory/search';
-      obj.deployedOrReleased = this.searchObj.deployedOrReleased;
+      if (this.searchObj.deployedOrReleased == 'deployed') {
+        obj.deployedOrReleased = true;
+      } else if (this.searchObj.deployedOrReleased == 'undeployed') {
+        obj.undeployedOrUnreleased = true;
+      }
+      if (this.searchObj.deployedOrReleased !== 'deployed') {
+        if (this.searchObj.validOrInvalid == 'valid') {
+          obj.valid = true;
+        } else if (this.searchObj.validOrInvalid == 'invalid') {
+          obj.valid = false;
+        }
+      }
       obj.returnType = this.searchObj.returnType;
     } else {
       obj.controllerId = this.controllerId;

@@ -1,6 +1,7 @@
-import {Component, ElementRef, Input, ViewChild} from '@angular/core';
-import {CoreService} from "../../../services/core.service";
+import {Component, ElementRef, Input, SimpleChanges, ViewChild} from '@angular/core';
 import {isEmpty} from "underscore";
+import {CoreService} from "../../../services/core.service";
+import {GroupByPipe} from "../../../pipes/core.pipe";
 
 declare const $;
 
@@ -11,7 +12,7 @@ declare const $;
 })
 export class ProjectionComponent {
   @Input() projectionData: any;
-  @Input() groupBy: any;
+  @Input() filters: any;
   @Input() preferences: any;
   @Input() toggle: boolean;
   @Input() isLoaded: boolean;
@@ -19,23 +20,48 @@ export class ProjectionComponent {
   data: any[] = [];
   isVisible = false;
   calendarTitle = new Date().getFullYear();
-  viewCalObj: any = {calendarView: 'year'};
   planItems: any = [];
-  proData: any = []
+
+  gantt: any;
 
   @ViewChild('ztgantt', {static: true}) element: ElementRef;
 
-  constructor(private coreService: CoreService) {
+  constructor(private coreService: CoreService, private groupByPipe: GroupByPipe) {
   }
 
-  ngOnChanges(): void {
-    if (this.projectionData && !isEmpty(this.projectionData)) {
-      this.groupData(this.projectionData);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['projectionData'] && this.projectionData && !isEmpty(this.projectionData)) {
+      if (!isEmpty(this.projectionData)) {
+        this.groupData(this.projectionData);
+      } else {
+        this.data = [];
+        this.planItems = [];
+      }
+    }
+    if (changes['filters']) {
+      const dom = $('#full-calendar-projection');
+      if (dom?.data('calendar') && this.filters.calendarView) {
+        $('#full-calendar-projection').data('calendar').setView({
+          view: this.filters.view == 'Month' ? 'month' : 'year'
+        });
+      }
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.gantt) {
+      this.gantt.destroy();
     }
   }
 
   private render() {
-    let ZT_Gantt = new window['ztGantt'](this.element.nativeElement);
+    let ZT_Gantt;
+    if (!this.gantt) {
+      ZT_Gantt = new window['ztGantt'](this.element.nativeElement);
+      this.gantt = ZT_Gantt;
+    } else {
+      ZT_Gantt = this.gantt;
+    }
     ZT_Gantt.options.columns = [
       {
         name: "text",
@@ -53,15 +79,23 @@ export class ProjectionComponent {
     ZT_Gantt.templates.task_drag = (mode, task) => {
       return false;
     };
-    ZT_Gantt.options.scales = [
-      {
-        unit: "year",
-        step: 1,
-        format: '%Y'
-      },
-      {unit: "month", step: 1, format: "%F"},
-      {unit: "day", step: 1, format: "%d"},
-    ];
+
+    if (this.filters.view == 'Year') {
+      ZT_Gantt.options.scales = [
+        {
+          unit: "year",
+          step: 1,
+          format: '%Y'
+        },
+        {unit: "month", step: 1, format: "%F"},
+        {unit: "day", step: 1, format: "%d"},
+      ];
+    } else {
+      ZT_Gantt.options.scales = [
+        {unit: "month", step: 1, format: "%F,%Y"},
+        {unit: "day", step: 1, format: "%d"},
+      ];
+    }
 
     let lowestStartDate = null;
     let highestEndDate = null;
@@ -107,10 +141,13 @@ export class ProjectionComponent {
     ZT_Gantt.options.addLinks = false;
     ZT_Gantt.options.startDate = lowestStartDate
     ZT_Gantt.options.endDate = highestEndDate
-    ZT_Gantt.attachEvent('onTaskClick', event => {
-      this.open()
-    })
-    ZT_Gantt.render();
+    ZT_Gantt.attachEvent('onTaskClick', (event) => {
+      this.open(event);
+    });
+    setTimeout(() => {
+      ZT_Gantt.render();
+    }, 10)
+    this.populatePlanItems(this.data);
   }
 
   groupData(data) {
@@ -155,12 +192,20 @@ export class ProjectionComponent {
             };
 
             flattenedData.push(item);
-            this.proData.push(datePeriods)
           });
+          if (dateKey) {
+            let planData: any = {};
+            const date = this.coreService.getDate(dateKey);
+            planData.startDate = date;
+            planData.endDate = date;
+            planData.color = 'blue';
+            this.planItems.push(planData);
+          }
         }
-
       }
+
     }
+
     this.data = flattenedData;
     this.render();
 
@@ -170,76 +215,35 @@ export class ProjectionComponent {
     this.isVisible = false;
   }
 
-  open(): void {
+  open(event): void {
     this.isVisible = true;
-    this.populatePlanItems(this.proData);
+    console.log(event)
   }
 
-
   private populatePlanItems(data: any): void {
-    const uniquePeriods = new Set();
-
-    data.forEach((dateData) => {
-      dateData.forEach((entry) => {
-        const singleStart = entry.period;
-        uniquePeriods.add(singleStart);
-      });
-    });
-
-    const flattenedPeriods = [...uniquePeriods];
-    console.log(flattenedPeriods, "flattenedPeriods")
-
-    flattenedPeriods.forEach((value: any) => {
-      console.log(value, "vaaaaa")
-      let planData: any = {};
-      if (value.begin) {
-        planData = {
-          plannedStartTime: this.coreService.getDateByFormat(value.begin, this.preferences.zone, 'YYYY-MM-DD'),
-          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.begin), this.preferences.dateFormat)
-        };
-        if (value.end) {
-          planData.endTime = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.end),
-            this.preferences.dateFormat);
-        }
-        if (value.repeat) {
-          planData.repeat = value.repeat;
-        }
-      } else if (value.singleStart) {
-
-        planData = {
-          plannedStartTime: this.coreService.getDateByFormat(value.singleStart, this.preferences.zone, 'YYYY-MM-DD'),
-          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.singleStart), this.preferences.dateFormat)
-        };
-      }
-      const date = this.coreService.getDate(planData.plannedStartTime);
-      planData.startDate = date;
-      planData.endDate = date;
-      planData.color = 'blue';
-      this.planItems.push(planData);
-    });
     this.showCalendar();
   }
 
-  getPlan(): void {
-    const dom = $('#full-calendar');
-    if (dom) {
-      dom.data('calendar').setYearView({
-        view: this.viewCalObj.calendarView,
-        year: this.calendarTitle
+  showCalendar(): void {
+    // setTimeout(() => {
+    const dom = $('#full-calendar-projection');
+    if (!dom.data('calendar')) {
+      $('#full-calendar-projection').calendar({
+        language: this.coreService.getLocale(),
+        view: this.filters.view == 'Month' ? 'month' : 'year',
+        renderEnd: (e) => {
+          this.calendarTitle = e.currentYear;
+        }
       });
     }
-  }
-
-  showCalendar(): void {
-    $('#full-calendar').calendar({
-      language: this.coreService.getLocale(),
-      renderEnd: (e) => {
-        this.calendarTitle = e.currentYear;
+    setTimeout(() => {
+      const dom = $('#full-calendar-projection');
+      if (dom.data('calendar')) {
+        dom.data('calendar').setView({
+          view: this.filters.view == 'Month' ? 'month' : 'year'
+        });
+        dom.data('calendar').setDataSource(this.planItems);
       }
-    });
-    console.log(this.planItems, 'this.planItems')
-    // setTimeout(() => {
-    //   $('#full-calendar').data('calendar').setDataSource(this.planItems);
-    // }, 10)
+    }, 100);
   }
 }

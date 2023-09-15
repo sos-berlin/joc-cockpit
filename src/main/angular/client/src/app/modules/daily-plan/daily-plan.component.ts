@@ -728,7 +728,6 @@ export class DailyPlanComponent {
 
   viewDate: Date = new Date();
   dateFormat: string;
-  weekStart = 1;
 
   object = {
     mapOfCheckedId: new Map(),
@@ -957,7 +956,7 @@ export class DailyPlanComponent {
   setView(view): void {
     this.dailyPlanFilters.projection.view = view;
     if (view !== 'Custom') {
-      this.renderTimeSheetHeader(this.dailyPlanFilters, this.weekStart, () => {
+      this.renderTimeSheetHeader(this.dailyPlanFilters, () => {
         this.loadProjection();
       });
     } else {
@@ -980,50 +979,19 @@ export class DailyPlanComponent {
     } else {
       this.dailyPlanFilters.projection.endDate = new Date(date);
     }
-    this.renderTimeSheetHeader(this.dailyPlanFilters, this.weekStart, () => {
+    this.renderTimeSheetHeader(this.dailyPlanFilters, () => {
       this.loadProjection();
     });
   }
 
-  renderTimeSheetHeader(filters: any, weekStart, cb): void {
-    const headerDates = [];
+  renderTimeSheetHeader(filters: any, cb): void {
     const firstDate = new Date(filters.projection?.startYear, filters.projection?.startMonth, 1);
     let lastDate = new Date(filters.projection?.startYear, (filters.projection?.startMonth) + 1, 0);
     if (filters.projection?.view == 'Year') {
-      new Date(filters.projection?.startYear + 1, (filters.projection?.startMonth), 0);
+      lastDate = new Date(filters.projection?.startYear + 1, (filters.projection?.startMonth), 0);
     }
-    console.log('firstDate', firstDate);
-    console.log('lastDate', lastDate);
-    if (filters.projection?.view == 'Custom') {
-      let currentDate = new Date(firstDate.getTime());
-
-      while (currentDate.getDay() !== weekStart) {
-        currentDate.setDate(currentDate.getDate() - 1);
-      }
-      if (filters.projection?.view === 'Month') {
-        while (currentDate <= lastDate) {
-          console.log('>>>>>')
-          do {
-            const date = currentDate.getDate();
-            if (currentDate >= firstDate && currentDate <= lastDate) {
-              headerDates.push(new Date(currentDate));
-            }
-            currentDate.setDate(date + 1);
-          }
-          while (currentDate.getDay() !== weekStart);
-        }
-      } else {
-        do {
-          const date = currentDate.getDate();
-          headerDates.push(new Date(currentDate));
-          currentDate.setDate(date + 1);
-        }
-        while (currentDate.getDay() !== weekStart);
-      }
-    }
-    console.log('headerDates>>>>', headerDates);
-    filters.projection.startDate = headerDates[0] || firstDate;
-    filters.projection.endDate = headerDates[headerDates.length - 1] || lastDate;
+    filters.projection.startDate = firstDate;
+    filters.projection.endDate = lastDate;
     cb();
   }
 
@@ -1037,7 +1005,7 @@ export class DailyPlanComponent {
       const time = d.setDate(d.getDate() - 8);
       this.dailyPlanFilters.projection.endDate = new Date(time).setHours(0, 0, 0, 0);
     }
-    this.renderTimeSheetHeader(this.dailyPlanFilters, this.weekStart, () => {
+    this.renderTimeSheetHeader(this.dailyPlanFilters, () => {
       this.loadProjection();
     });
   }
@@ -1047,12 +1015,8 @@ export class DailyPlanComponent {
       this.dailyPlanFilters.projection.startYear = this.dailyPlanFilters.projection.startYear + 1;
     } else if (this.dailyPlanFilters.projection.view === 'Month') {
       this.dailyPlanFilters.projection.startMonth = this.dailyPlanFilters.projection.startMonth + 1;
-    } else {
-      const d = new Date(this.dailyPlanFilters.projection.endDate);
-      const time = d.setDate(d.getDate() + 1);
-      this.dailyPlanFilters.projection.endDate = new Date(time).setHours(0, 0, 0, 0);
     }
-    this.renderTimeSheetHeader(this.dailyPlanFilters, this.weekStart, () => {
+    this.renderTimeSheetHeader(this.dailyPlanFilters, () => {
       this.loadProjection();
     });
   }
