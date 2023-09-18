@@ -727,6 +727,7 @@ export class DailyPlanComponent {
   selectedMonth: any;
 
   viewDate: Date = new Date();
+  weekStart = 1;
   dateFormat: string;
 
   object = {
@@ -954,13 +955,23 @@ export class DailyPlanComponent {
   }
 
   setView(view): void {
-    this.dailyPlanFilters.projection.view = view;
-    if (view !== 'Custom') {
-      this.renderTimeSheetHeader(this.dailyPlanFilters, () => {
-        this.loadProjection();
-      });
+    if (this.dailyPlanFilters.projection.calendarView) {
+      this.dailyPlanFilters.projection.calView = view;
+      console.log(this.dailyPlanFilters.projection, '>>>>')
+      const firstDate = new Date(this.dailyPlanFilters.projection?.calendarTitle, this.dailyPlanFilters.projection?.startMonth, 1);
+      let lastDate = new Date(this.dailyPlanFilters.projection?.calendarTitle, (this.dailyPlanFilters.projection?.startMonth) + 1, 0);
+      this.dailyPlanFilters.projection.startDate = firstDate;
+      this.dailyPlanFilters.projection.endDate = lastDate;
+      this.loadProjection();
     } else {
-      this.dailyPlanFilters.projection.dateRange = [this.dailyPlanFilters.projection.startDate, this.dailyPlanFilters.projection.endDate];
+      this.dailyPlanFilters.projection.view = view;
+      if (view !== 'Custom') {
+        this.renderTimeSheetHeader(this.dailyPlanFilters, () => {
+          this.loadProjection();
+        });
+      } else {
+        this.dailyPlanFilters.projection.dateRange = [this.dailyPlanFilters.projection.startDate, this.dailyPlanFilters.projection.endDate];
+      }
     }
   }
 
@@ -985,13 +996,27 @@ export class DailyPlanComponent {
   }
 
   renderTimeSheetHeader(filters: any, cb): void {
+    const headerDates = [];
     const firstDate = new Date(filters.projection?.startYear, filters.projection?.startMonth, 1);
     let lastDate = new Date(filters.projection?.startYear, (filters.projection?.startMonth) + 1, 0);
-    if (filters.projection?.view == 'Year') {
-      lastDate = new Date(filters.projection?.startYear + 1, (filters.projection?.startMonth), 0);
+    let currentDate = new Date(firstDate.getTime());
+    if (filters.projection.view === 'Week') {
+      currentDate = new Date(filters.projection.endDate);
     }
-    filters.projection.startDate = firstDate;
-    filters.projection.endDate = lastDate;
+    while (currentDate.getDay() !== this.weekStart) {
+      currentDate.setDate(currentDate.getDate() - 1);
+    }
+    if (filters.projection.view === 'Week') {
+      do {
+        const date = currentDate.getDate();
+        headerDates.push(new Date(currentDate));
+        currentDate.setDate(date + 1);
+      }
+      while (currentDate.getDay() !==this.weekStart);
+    }
+
+    filters.projection.startDate = headerDates[0] || firstDate;
+    filters.projection.endDate = headerDates[headerDates.length - 1] || lastDate;
     cb();
   }
 

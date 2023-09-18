@@ -184,6 +184,9 @@ export class CoreService {
     this.tabs._daliyPlan.filter = {};
     this.tabs._daliyPlan.projection = {
       view: 'Month',
+      calView: 'Month',
+      calendarView: true,
+      calendarTitle: new Date().getFullYear(),
       startYear: this.currentDate.getFullYear(),
       startMonth: this.currentDate.getMonth(),
       currentYear: this.currentDate.getFullYear(),

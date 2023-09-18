@@ -14,7 +14,7 @@
  * limitations under the License.
  * ========================================================= */
 
-(function (global) {
+(function () {
   let ZTGantt = function (element, options, templates) {
     this.element = element;
     this.initializeOptions(options);
@@ -43,9 +43,9 @@
         endDate: opt.endDate,
         zoomLevel: opt.zoomLevel || "day",
         zoomConfig: opt.zoomConfig || {
-          levels: [{ unit: "day", step: 1, format: "%d" }],
+          levels: [{unit: "day", step: 1, format: "%d"}],
         },
-        scales: opt.scales || [{ unit: "day", step: 1, format: "%d" }],
+        scales: opt.scales || [{unit: "day", step: 1, format: "%d"}],
         minColWidth: 80,
         openedTasks: [],
         selectedRow: "",
@@ -106,54 +106,6 @@
           day_short: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
         },
         i18n: {
-          hi: {
-            month_full: [
-              "जनवरी",
-              "फ़रवरी",
-              "मार्च",
-              "अप्रैल",
-              "मई",
-              "जून",
-              "जुलाई",
-              "अगस्त",
-              "सितंबर",
-              "अक्टूबर",
-              "नवंबर",
-              "दिसंबर",
-            ],
-            month_short: [
-              "जनवरी",
-              "फ़रवरी",
-              "मार्च",
-              "अप्रैल",
-              "मई",
-              "जून",
-              "जुलाई",
-              "अगस्त",
-              "सितंबर",
-              "अक्टूबर",
-              "नवंबर",
-              "दिसंबर",
-            ],
-            day_full: [
-              "रविवार",
-              "सोमवार",
-              "मंगलवार",
-              "बुधवार",
-              "गुरुवार",
-              "शुक्रवार",
-              "शनिवार",
-            ],
-            day_short: ["रवि", "सोम", "मंगल", "बुध", "गुरु", "शुक्र", "शनि"],
-            label: {
-              description: "विवरण",
-            },
-            buttons: {
-              save: "जमा करे",
-              cancel: "रद्द करे",
-              delete: "मिटाये",
-            },
-          },
           en: {
             month_full: [
               "January",
@@ -346,1326 +298,6 @@
               delete: "削除",
             },
           },
-          ar: {
-            month_full: [
-              "كانون الثاني",
-              "شباط",
-              "آذار",
-              "نيسان",
-              "أيار",
-              "حزيران",
-              "تموز",
-              "آب",
-              "أيلول",
-              "تشرين الأول",
-              "تشرين الثاني",
-              "كانون الأول",
-            ],
-            month_short: [
-              "يناير",
-              "فبراير",
-              "مارس",
-              "أبريل",
-              "مايو",
-              "يونيو",
-              "يوليو",
-              "أغسطس",
-              "سبتمبر",
-              "أكتوبر",
-              "نوفمبر",
-              "ديسمبر",
-            ],
-            day_full: [
-              "الأحد",
-              "الأثنين",
-              "ألثلاثاء",
-              "الأربعاء",
-              "ألحميس",
-              "ألجمعة",
-              "السبت",
-            ],
-            day_short: [
-              "احد",
-              "اثنين",
-              "ثلاثاء",
-              "اربعاء",
-              "خميس",
-              "جمعة",
-              "سبت",
-            ],
-            label: {
-              description: "وصف",
-            },
-            buttons: {
-              save: "يحفظ",
-              cancel: "يلغي",
-              delete: "يمسح",
-            },
-          },
-          be: {
-            month_full: [
-              "Студзень",
-              "Люты",
-              "Сакавік",
-              "Красавік",
-              "Maй",
-              "Чэрвень",
-              "Ліпень",
-              "Жнівень",
-              "Верасень",
-              "Кастрычнік",
-              "Лістапад",
-              "Снежань",
-            ],
-            month_short: [
-              "Студз",
-              "Лют",
-              "Сак",
-              "Крас",
-              "Maй",
-              "Чэр",
-              "Ліп",
-              "Жнів",
-              "Вер",
-              "Каст",
-              "Ліст",
-              "Снеж",
-            ],
-            day_full: [
-              "Нядзеля",
-              "Панядзелак",
-              "Аўторак",
-              "Серада",
-              "Чацвер",
-              "Пятніца",
-              "Субота",
-            ],
-            day_short: ["Нд", "Пн", "Аўт", "Ср", "Чцв", "Пт", "Сб"],
-            label: {
-              description: "Апісанне",
-            },
-            buttons: {
-              save: "Захаваць",
-              cancel: "Адмяніць",
-              delete: "Выдаліць",
-            },
-          },
-          ca: {
-            month_full: [
-              "Gener",
-              "Febrer",
-              "Març",
-              "Abril",
-              "Maig",
-              "Juny",
-              "Juliol",
-              "Agost",
-              "Setembre",
-              "Octubre",
-              "Novembre",
-              "Desembre",
-            ],
-            month_short: [
-              "Gen",
-              "Feb",
-              "Mar",
-              "Abr",
-              "Mai",
-              "Jun",
-              "Jul",
-              "Ago",
-              "Set",
-              "Oct",
-              "Nov",
-              "Des",
-            ],
-            day_full: [
-              "Diumenge",
-              "Dilluns",
-              "Dimarts",
-              "Dimecres",
-              "Dijous",
-              "Divendres",
-              "Dissabte",
-            ],
-            day_short: ["Dg", "Dl", "Dm", "Dc", "Dj", "Dv", "Ds"],
-            label: {
-              description: "Descripció",
-            },
-            buttons: {
-              save: "Desa",
-              cancel: "Cancel · lar",
-              delete: "Suprimeix",
-            },
-          },
-          cn: {
-            month_full: [
-              "一月",
-              "二月",
-              "三月",
-              "四月",
-              "五月",
-              "六月",
-              "七月",
-              "八月",
-              "九月",
-              "十月",
-              "十一月",
-              "十二月",
-            ],
-            month_short: [
-              "简",
-              "二月",
-              "三月",
-              "四月",
-              "可能",
-              "君",
-              "七月",
-              "八月",
-              "九月",
-              "十月",
-              "十一月",
-              "十二月",
-            ],
-            day_full: [
-              "星期日",
-              "星期一",
-              "星期二",
-              "星期三",
-              "星期四",
-              "星期五",
-              "星期六",
-            ],
-            day_short: [
-              "太阳",
-              "星期一",
-              "星期二",
-              "星期三",
-              "星期四",
-              "星期五",
-              "星期六",
-            ],
-            label: {
-              description: "描述",
-            },
-            buttons: {
-              save: "节省",
-              cancel: "取消",
-              delete: "删除",
-            },
-          },
-          hr: {
-            month_full: [
-              "Siječanj",
-              "Veljača",
-              "Ožujak",
-              "Travanj",
-              "Svibanj",
-              "Lipanj",
-              "Srpanj",
-              "Kolovoz",
-              "Rujan",
-              "Listopad",
-              "Studeni",
-              "Prosinac",
-            ],
-            month_short: [
-              "Sij",
-              "Velj",
-              "Ožu",
-              "Tra",
-              "Svi",
-              "Lip",
-              "Srp",
-              "Kol",
-              "Ruj",
-              "Lis",
-              "Stu",
-              "Pro",
-            ],
-            day_full: [
-              "Nedjelja",
-              "Ponedjeljak",
-              "Utorak",
-              "Srijeda",
-              "Četvrtak",
-              "Petak",
-              "Subota",
-            ],
-            day_short: ["Ned", "Pon", "Uto", "Sri", "Čet", "Pet", "Sub"],
-            label: {
-              description: "Opis",
-            },
-            buttons: {
-              save: "Uštedjeti",
-              cancel: "Otkazati",
-              delete: "Izbrisati",
-            },
-          },
-          cs: {
-            month_full: [
-              "Leden",
-              "Únor",
-              "Březen",
-              "Duben",
-              "Květen",
-              "Červen",
-              "Červenec",
-              "Srpen",
-              "Září",
-              "Říjen",
-              "Listopad",
-              "Prosinec",
-            ],
-            month_short: [
-              "Led",
-              "Ún",
-              "Bře",
-              "Dub",
-              "Kvě",
-              "Čer",
-              "Čec",
-              "Srp",
-              "Září",
-              "Říj",
-              "List",
-              "Pro",
-            ],
-            day_full: [
-              "Neděle",
-              "Pondělí",
-              "Úterý",
-              "Středa",
-              "Čtvrtek",
-              "Pátek",
-              "Sobota",
-            ],
-            day_short: ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"],
-            label: {
-              description: "Popis",
-            },
-            buttons: {
-              save: "Uložit",
-              cancel: "zrušení",
-              delete: "Vymazat",
-            },
-          },
-          da: {
-            month_full: [
-              "Januar",
-              "Februar",
-              "Mars",
-              "April",
-              "Mai",
-              "Juni",
-              "Juli",
-              "August",
-              "September",
-              "Oktober",
-              "November",
-              "Desember",
-            ],
-            month_short: [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "Mai",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Okt",
-              "Nov",
-              "Des",
-            ],
-            day_full: [
-              "Søndag",
-              "Mandag",
-              "Tirsdag",
-              "Onsdag",
-              "Torsdag",
-              "Fredag",
-              "Lørdag",
-            ],
-            day_short: ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"],
-            label: {
-              description: "Beskrivelse",
-            },
-            buttons: {
-              save: "Gemme",
-              cancel: "Afbestille",
-              delete: "Slet",
-            },
-          },
-          nl: {
-            month_full: [
-              "Januari",
-              "Februari",
-              "Maart",
-              "April",
-              "Mei",
-              "Juni",
-              "Juli",
-              "Augustus",
-              "September",
-              "Oktober",
-              "November",
-              "December",
-            ],
-            month_short: [
-              "Jan",
-              "Feb",
-              "mrt",
-              "Apr",
-              "Mei",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Okt",
-              "Nov",
-              "Dec",
-            ],
-            day_full: [
-              "Zondag",
-              "Maandag",
-              "Dinsdag",
-              "Woensdag",
-              "Donderdag",
-              "Vrijdag",
-              "Zaterdag",
-            ],
-            day_short: ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"],
-            label: {
-              description: "Beschrijving",
-            },
-            buttons: {
-              save: "Redden",
-              cancel: "Annuleren",
-              delete: "Verwijderen",
-            },
-          },
-          fi: {
-            month_full: [
-              "Tammikuu",
-              "Helmikuu",
-              "Maaliskuu",
-              "Huhtikuu",
-              "Toukokuu",
-              "Kes&auml;kuu",
-              "Hein&auml;kuu",
-              "Elokuu",
-              "Syyskuu",
-              "Lokakuu",
-              "Marraskuu",
-              "Joulukuu",
-            ],
-            month_short: [
-              "Tam",
-              "Hel",
-              "Maa",
-              "Huh",
-              "Tou",
-              "Kes",
-              "Hei",
-              "Elo",
-              "Syy",
-              "Lok",
-              "Mar",
-              "Jou",
-            ],
-            day_full: [
-              "Sunnuntai",
-              "Maanantai",
-              "Tiistai",
-              "Keskiviikko",
-              "Torstai",
-              "Perjantai",
-              "Lauantai",
-            ],
-            day_short: ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La"],
-            label: {
-              description: "Kuvaus",
-            },
-            buttons: {
-              save: "Tallentaa",
-              cancel: "Peruuttaa",
-              delete: "Poistaa",
-            },
-          },
-          el: {
-            month_full: [
-              "Ιανουάριος",
-              "Φεβρουάριος",
-              "Μάρτιος",
-              "Απρίλιος",
-              "Μάϊος",
-              "Ιούνιος",
-              "Ιούλιος",
-              "Αύγουστος",
-              "Σεπτέμβριος",
-              "Οκτώβριος",
-              "Νοέμβριος",
-              "Δεκέμβριος",
-            ],
-            month_short: [
-              "ΙΑΝ",
-              "ΦΕΒ",
-              "ΜΑΡ",
-              "ΑΠΡ",
-              "ΜΑΙ",
-              "ΙΟΥΝ",
-              "ΙΟΥΛ",
-              "ΑΥΓ",
-              "ΣΕΠ",
-              "ΟΚΤ",
-              "ΝΟΕ",
-              "ΔΕΚ",
-            ],
-            day_full: [
-              "Κυριακή",
-              "Δευτέρα",
-              "Τρίτη",
-              "Τετάρτη",
-              "Πέμπτη",
-              "Παρασκευή",
-              "Κυριακή",
-            ],
-            day_short: ["ΚΥ", "ΔΕ", "ΤΡ", "ΤΕ", "ΠΕ", "ΠΑ", "ΣΑ"],
-            label: {
-              description: "Περιγραφή",
-            },
-            buttons: {
-              save: "Αποθηκεύσετε",
-              cancel: "Ματαίωση",
-              delete: "Διαγράφω",
-            },
-          },
-          hu: {
-            month_full: [
-              "Január",
-              "Február",
-              "Március",
-              "Április",
-              "Május",
-              "Június",
-              "Július",
-              "Augusztus",
-              "Szeptember",
-              "Október",
-              "November",
-              "December",
-            ],
-            month_short: [
-              "Jan",
-              "Feb",
-              "Már",
-              "Ápr",
-              "Máj",
-              "Jún",
-              "Júl",
-              "Aug",
-              "Sep",
-              "Okt",
-              "Nov",
-              "Dec",
-            ],
-            day_full: [
-              "Vasárnap",
-              "Hétfõ",
-              "Kedd",
-              "Szerda",
-              "Csütörtök",
-              "Péntek",
-              "szombat",
-            ],
-            day_short: ["Va", "Hé", "Ke", "Sze", "Csü", "Pé", "Szo"],
-            label: {
-              description: "Leírás",
-            },
-            buttons: {
-              save: "Megment",
-              cancel: "Megszünteti",
-              delete: "Töröl",
-            },
-          },
-          id: {
-            month_full: [
-              "Januari",
-              "Februari",
-              "Maret",
-              "April",
-              "Mei",
-              "Juni",
-              "Juli",
-              "Agustus",
-              "September",
-              "Oktober",
-              "November",
-              "Desember",
-            ],
-            month_short: [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "Mei",
-              "Jun",
-              "Jul",
-              "Ags",
-              "Sep",
-              "Okt",
-              "Nov",
-              "Des",
-            ],
-            day_full: [
-              "Minggu",
-              "Senin",
-              "Selasa",
-              "Rabu",
-              "Kamis",
-              "Jumat",
-              "Sabtu",
-            ],
-            day_short: ["Ming", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
-            label: {
-              description: "Keterangan",
-            },
-            buttons: {
-              save: "Menyimpan",
-              cancel: "Membatalkan",
-              delete: "Menghapus",
-            },
-          },
-          it: {
-            month_full: [
-              "Gennaio",
-              "Febbraio",
-              "Marzo",
-              "Aprile",
-              "Maggio",
-              "Giugno",
-              "Luglio",
-              "Agosto",
-              "Settembre",
-              "Ottobre",
-              "Novembre",
-              "Dicembre",
-            ],
-            month_short: [
-              "Gen",
-              "Feb",
-              "Mar",
-              "Apr",
-              "Mag",
-              "Giu",
-              "Lug",
-              "Ago",
-              "Set",
-              "Ott",
-              "Nov",
-              "Dic",
-            ],
-            day_full: [
-              "Domenica",
-              "Lunedì",
-              "Martedì",
-              "Mercoledì",
-              "Giovedì",
-              "Venerdì",
-              "Sabato",
-            ],
-            day_short: ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"],
-            label: {
-              description: "Descrizione",
-            },
-            buttons: {
-              save: "Salva",
-              cancel: "Annulla",
-              delete: "Eliminare",
-            },
-          },
-          kr: {
-            month_full: [
-              "1월",
-              "2월",
-              "3월",
-              "4월",
-              "5월",
-              "6월",
-              "7월",
-              "8월",
-              "9월",
-              "10월",
-              "11월",
-              "12월",
-            ],
-            month_short: [
-              "1월",
-              "2월",
-              "3월",
-              "4월",
-              "5월",
-              "6월",
-              "7월",
-              "8월",
-              "9월",
-              "10월",
-              "11월",
-              "12월",
-            ],
-            day_full: [
-              "일요일",
-              "월요일",
-              "화요일",
-              "수요일",
-              "목요일",
-              "금요일",
-              "토요일",
-            ],
-            day_short: ["일", "월", "화", "수", "목", "금", "토"],
-            label: {
-              description: "설명",
-            },
-            buttons: {
-              save: "구하다",
-              cancel: "취소",
-              delete: "삭제",
-            },
-          },
-          fa: {
-            month_full: [
-              "ژانویه",
-              "فوریه",
-              "مارس",
-              "آوریل",
-              "مه",
-              "ژوئن",
-              "ژوئیه",
-              "اوت",
-              "سپتامبر",
-              "اکتبر",
-              "نوامبر",
-              "دسامبر",
-            ],
-            month_short: [
-              "1",
-              "2",
-              "3",
-              "4",
-              "5",
-              "6",
-              "7",
-              "8",
-              "9",
-              "10",
-              "11",
-              "12",
-            ],
-            day_full: [
-              "يکشنبه",
-              "دوشنبه",
-              "سه‌شنبه",
-              "چهارشنبه",
-              "پنجشنبه",
-              "جمعه",
-              "شنبه",
-            ],
-            day_short: ["ی", "د", "س", "چ", "پ", "ج", "ش"],
-            label: {
-              description: "شرح",
-            },
-            buttons: {
-              save: "صرفه جویی",
-              cancel: "لغو کنید",
-              delete: "حذف",
-            },
-          },
-          pl: {
-            month_full: [
-              "Styczeń",
-              "Luty",
-              "Marzec",
-              "Kwiecień",
-              "Maj",
-              "Czerwiec",
-              "Lipiec",
-              "Sierpień",
-              "Wrzesień",
-              "Październik",
-              "Listopad",
-              "Grudzień",
-            ],
-            month_short: [
-              "Sty",
-              "Lut",
-              "Mar",
-              "Kwi",
-              "Maj",
-              "Cze",
-              "Lip",
-              "Sie",
-              "Wrz",
-              "Paź",
-              "Lis",
-              "Gru",
-            ],
-            day_full: [
-              "Niedziela",
-              "Poniedziałek",
-              "Wtorek",
-              "Środa",
-              "Czwartek",
-              "Piątek",
-              "Sobota",
-            ],
-            day_short: ["Nie", "Pon", "Wto", "Śro", "Czw", "Pią", "Sob"],
-            label: {
-              description: "Opis",
-            },
-            buttons: {
-              save: "Ratować",
-              cancel: "Anulować",
-              delete: "Usuwać",
-            },
-          },
-          pt: {
-            month_full: [
-              "Janeiro",
-              "Fevereiro",
-              "Março",
-              "Abril",
-              "Maio",
-              "Junho",
-              "Julho",
-              "Agosto",
-              "Setembro",
-              "Outubro",
-              "Novembro",
-              "Dezembro",
-            ],
-            month_short: [
-              "Jan",
-              "Fev",
-              "Mar",
-              "Abr",
-              "Mai",
-              "Jun",
-              "Jul",
-              "Ago",
-              "Set",
-              "Out",
-              "Nov",
-              "Dez",
-            ],
-            day_full: [
-              "Domingo",
-              "Segunda",
-              "Terça",
-              "Quarta",
-              "Quinta",
-              "Sexta",
-              "Sábado",
-            ],
-            day_short: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"],
-            label: {
-              description: "Descrição",
-            },
-            buttons: {
-              save: "Salvar",
-              cancel: "Cancelar",
-              delete: "Excluir",
-            },
-          },
-          ro: {
-            month_full: [
-              "Ianuarie",
-              "Februarie",
-              "Martie",
-              "Aprilie",
-              "Mai",
-              "Iunie",
-              "Iulie",
-              "August",
-              "Septembrie",
-              "Octombrie",
-              "November",
-              "December",
-            ],
-            month_short: [
-              "Ian",
-              "Feb",
-              "Mar",
-              "Apr",
-              "Mai",
-              "Iun",
-              "Iul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dec",
-            ],
-            day_full: [
-              "Duminica",
-              "Luni",
-              "Marti",
-              "Miercuri",
-              "Joi",
-              "Vineri",
-              "Sambata",
-            ],
-            day_short: ["Du", "Lu", "Ma", "Mi", "Jo", "Vi", "Sa"],
-            label: {
-              description: "Descriere",
-            },
-            buttons: {
-              save: "Salvați",
-              cancel: "Anulare",
-              delete: "Șterge",
-            },
-          },
-          ru: {
-            month_full: [
-              "Январь",
-              "Февраль",
-              "Март",
-              "Апрель",
-              "Maй",
-              "Июнь",
-              "Июль",
-              "Август",
-              "Сентябрь",
-              "Oктябрь",
-              "Ноябрь",
-              "Декабрь",
-            ],
-            month_short: [
-              "Янв",
-              "Фев",
-              "Maр",
-              "Aпр",
-              "Maй",
-              "Июн",
-              "Июл",
-              "Aвг",
-              "Сен",
-              "Окт",
-              "Ноя",
-              "Дек",
-            ],
-            day_full: [
-              "Воскресенье",
-              "Понедельник",
-              "Вторник",
-              "Среда",
-              "Четверг",
-              "Пятница",
-              "Суббота",
-            ],
-            day_short: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
-            label: {
-              description: "Описание",
-            },
-            buttons: {
-              save: "Сохранять",
-              cancel: "Отмена",
-              delete: "Удалить",
-            },
-          },
-          si: {
-            month_full: [
-              "Januar",
-              "Februar",
-              "Marec",
-              "April",
-              "Maj",
-              "Junij",
-              "Julij",
-              "Avgust",
-              "September",
-              "Oktober",
-              "November",
-              "December",
-            ],
-            month_short: [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "Maj",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Okt",
-              "Nov",
-              "Dec",
-            ],
-            day_full: [
-              "Nedelja",
-              "Ponedeljek",
-              "Torek",
-              "Sreda",
-              "Četrtek",
-              "Petek",
-              "Sobota",
-            ],
-            day_short: ["Ned", "Pon", "Tor", "Sre", "Čet", "Pet", "Sob"],
-            label: {
-              description: "Opis",
-            },
-            buttons: {
-              save: "Shrani",
-              cancel: "Prekliči",
-              delete: "Izbriši",
-            },
-          },
-          es: {
-            month_full: [
-              "Enero",
-              "Febrero",
-              "Marzo",
-              "Abril",
-              "Mayo",
-              "Junio",
-              "Julio",
-              "Agosto",
-              "Septiembre",
-              "Octubre",
-              "Noviembre",
-              "Diciembre",
-            ],
-            month_short: [
-              "Ene",
-              "Feb",
-              "Mar",
-              "Abr",
-              "May",
-              "Jun",
-              "Jul",
-              "Ago",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dic",
-            ],
-            day_full: [
-              "Domingo",
-              "Lunes",
-              "Martes",
-              "Miércoles",
-              "Jueves",
-              "Viernes",
-              "Sábado",
-            ],
-            day_short: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
-            label: {
-              description: "Descripción",
-            },
-            buttons: {
-              save: "Ahorrar",
-              cancel: "Cancelar",
-              delete: "Borrar",
-            },
-          },
-          sv: {
-            month_full: [
-              "Januari",
-              "Februari",
-              "Mars",
-              "April",
-              "Maj",
-              "Juni",
-              "Juli",
-              "Augusti",
-              "September",
-              "Oktober",
-              "November",
-              "December",
-            ],
-            month_short: [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "Maj",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Okt",
-              "Nov",
-              "Dec",
-            ],
-            day_full: [
-              "Söndag",
-              "Måndag",
-              "Tisdag",
-              "Onsdag",
-              "Torsdag",
-              "Fredag",
-              "Lördag",
-            ],
-            day_short: ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"],
-            label: {
-              description: "Beskrivning",
-            },
-            buttons: {
-              save: "Spara",
-              cancel: "Annullera",
-              delete: "Radera",
-            },
-          },
-          tr: {
-            month_full: [
-              "Ocak",
-              "Şubat",
-              "Mart",
-              "Nisan",
-              "Mayıs",
-              "Haziran",
-              "Temmuz",
-              "Ağustos",
-              "Eylül",
-              "Ekim",
-              "Kasım",
-              "Aralık",
-            ],
-            month_short: [
-              "Oca",
-              "Şub",
-              "Mar",
-              "Nis",
-              "May",
-              "Haz",
-              "Tem",
-              "Ağu",
-              "Eyl",
-              "Eki",
-              "Kas",
-              "Ara",
-            ],
-            day_full: [
-              "Pazar",
-              "Pazartesi",
-              "Salı",
-              "Çarşamba",
-              "Perşembe",
-              "Cuma",
-              "Cumartesi",
-            ],
-            day_short: ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"],
-            label: {
-              description: "Tanım",
-            },
-            buttons: {
-              save: "Kaydetmek",
-              cancel: "İptal etmek",
-              delete: "Silmek",
-            },
-          },
-          ua: {
-            month_full: [
-              "Січень",
-              "Лютий",
-              "Березень",
-              "Квітень",
-              "Травень",
-              "Червень",
-              "Липень",
-              "Серпень",
-              "Вересень",
-              "Жовтень",
-              "Листопад",
-              "Грудень",
-            ],
-            month_short: [
-              "Січ",
-              "Лют",
-              "Бер",
-              "Кві",
-              "Тра",
-              "Чер",
-              "Лип",
-              "Сер",
-              "Вер",
-              "Жов",
-              "Лис",
-              "Гру",
-            ],
-            day_full: [
-              "Неділя",
-              "Понеділок",
-              "Вівторок",
-              "Середа",
-              "Четвер",
-              "П'ятниця",
-              "Субота",
-            ],
-            day_short: ["Нед", "Пон", "Вів", "Сер", "Чет", "Птн", "Суб"],
-            label: {
-              description: "опис",
-            },
-            buttons: {
-              save: "зберегти",
-              cancel: "Скасувати",
-              delete: "Видалити",
-            },
-          },
-          he: {
-            month_full: [
-              "ינואר",
-              "פברואר",
-              "מרץ",
-              "אפריל",
-              "מאי",
-              "יוני",
-              "יולי",
-              "אוגוסט",
-              "ספטמבר",
-              "אוקטובר",
-              "נובמבר",
-              "דצמבר",
-            ],
-            month_short: [
-              "ינואר",
-              "פברואר",
-              "מרץ",
-              "אפריל",
-              "מאי",
-              "יוני",
-              "יולי",
-              "אוגוסט",
-              "ספטמבר",
-              "אוקטובר",
-              "נובמבר",
-              "דצמבר",
-            ],
-            day_full: [
-              "יוֹם רִאשׁוֹן",
-              "יוֹם שֵׁנִי",
-              "יוֹם שְׁלִישִׁי",
-              "יום רביעי",
-              "יוֹם חֲמִישִׁי",
-              "יוֹם שִׁישִׁי",
-              "יום שבת",
-            ],
-            day_short: [
-              "שמש",
-              "יום שני",
-              "ג'",
-              "היינו עושים",
-              "יום ה'",
-              "שישי",
-              "ישב",
-            ],
-            label: {
-              description: "תיאור",
-            },
-            buttons: {
-              save: "להציל",
-              cancel: "לְבַטֵל",
-              delete: "לִמְחוֹק",
-            },
-          },
-          no: {
-            month_full: [
-              "januar",
-              "februar",
-              "mars",
-              "april",
-              "Kan",
-              "juni",
-              "juli",
-              "august",
-              "september",
-              "oktober",
-              "november",
-              "desember",
-            ],
-            month_short: [
-              "Jan",
-              "feb",
-              "Mar",
-              "apr",
-              "Kan",
-              "jun",
-              "jul",
-              "august",
-              "sep",
-              "okt",
-              "nov",
-              "des",
-            ],
-            day_full: [
-              "søndag",
-              "Monday",
-              "tirsdag",
-              "onsdag",
-              "Torsdag",
-              "fredag",
-              "lørdag",
-            ],
-            day_short: ["Søn", "man", "tirs", "ons", "tor", "fre", "Lør"],
-            label: {
-              description: "Beskrivelse",
-            },
-            buttons: {
-              save: "Lagre",
-              cancel: "Avbryt",
-              delete: "Slett",
-            },
-          },
-          sk: {
-            month_full: [
-              "Január",
-              "február",
-              "marec",
-              "apríl",
-              "máj",
-              "jún",
-              "júl",
-              "august",
-              "september",
-              "október",
-              "november",
-              "december",
-            ],
-            month_short: [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "máj",
-              "Jun",
-              "júl",
-              "Aug",
-              "Sep",
-              "október",
-              "Nov",
-              "Dec",
-            ],
-            day_full: [
-              "Nedeľa",
-              "pondelok",
-              "utorok",
-              "streda",
-              "štvrtok",
-              "piatok",
-              "sobota",
-            ],
-            day_short: ["Ne", "Po", "Ut", "St", "Št", "Pia", "So"],
-            label: {
-              description: "Popis",
-            },
-            buttons: {
-              save: "Uložiť",
-              cancel: "Zrušiť",
-              delete: "Odstrániť",
-            },
-          },
         },
         localLang: opt.localLang || "en",
         currentLanguage: {},
@@ -1758,6 +390,7 @@
         "webkitfullscreenchange",
         handleFullScreenChangeSafari
       );
+
       function handleFullScreenChangeSafari() {
         // Check if full screen mode has been exited
         if (!document.webkitIsFullScreen) {
@@ -1769,6 +402,7 @@
       // Listen for the fullscreenchange event
       document.removeEventListener("fullscreenchange", handleFullScreenChange);
       document.addEventListener("fullscreenchange", handleFullScreenChange);
+
       function handleFullScreenChange() {
         // Check if full screen mode has been exited
         if (!document.fullscreenElement) {
@@ -1797,13 +431,6 @@
         that.element.dispatchEvent(onResize);
       }
 
-      let tooltip = document.createElement("div");
-      tooltip.classList.add("zt-gantt-tooltip");
-      tooltip.id = "zt-gantt-tooltip";
-      tooltip.style.display = "none";
-      let isTooltipExist = document.querySelector("#zt-gantt-tooltip");
-      if (isTooltipExist) isTooltipExist.remove();
-      document.body.append(tooltip);
     },
 
     // render the zt-gantt chart
@@ -1830,6 +457,7 @@
       let options = this.options;
       this.options.currentLanguage = this.options.i18n[this.options.localLang];
       this.zoomInit("initial");
+
       function createNestedTree(
         flatArray,
         parentIdKey = "parent",
@@ -1842,12 +470,12 @@
           const id = item[idKey];
           const parentId = item[parentIdKey];
 
-          map[id] = { ...item, children: map[id] ? map[id].children : [] };
+          map[id] = {...item, children: map[id] ? map[id].children : []};
 
           if (!parentId) {
             tree.push(map[id]);
           } else {
-            map[parentId] = map[parentId] || { children: [] };
+            map[parentId] = map[parentId] || {children: []};
             map[parentId].children.push(map[id]);
           }
         });
@@ -1979,43 +607,11 @@
       this.createBody(options, dates, calendar, mainContainer, weekday, true);
 
       if (options.rightGrid) {
-        let newGridOptions = { ...options };
+        let newGridOptions = {...options};
         newGridOptions.columns = options.rightGrid;
         this.createRightSidebar(newGridOptions, mainContainer);
       }
 
-      let tooltip = document.querySelector("#zt-gantt-tooltip");
-
-      this.element.removeEventListener("mousemove", handleMouseMove);
-      this.element.addEventListener("mousemove", handleMouseMove);
-
-      if (!tooltip) {
-        tooltip = document.createElement("div");
-        tooltip.classList.add("zt-gantt-tooltip");
-        tooltip.id = "zt-gantt-tooltip";
-        tooltip.style.display = "none";
-        document.body.append(tooltip);
-      }
-
-      function handleMouseMove(e) {
-        tooltip.style.top = e.y + 25 + window.scrollY + "px";
-        tooltip.style.left = e.x + 10 + window.scrollX + "px";
-        if (
-          tooltip.offsetLeft + tooltip.offsetWidth >
-          window.screen.width - 15
-        ) {
-          let left = e.x - tooltip.offsetWidth + window.scrollX;
-          tooltip.style.left = `${left < 0 ? 0 : left}px`;
-        }
-        if (
-          tooltip.offsetTop + tooltip.offsetHeight >
-          document.body.offsetHeight - 5
-        ) {
-          tooltip.style.top = `${
-            e.y - tooltip.offsetHeight + window.scrollY
-          }px`;
-        }
-      }
 
       verScroll =
         document.querySelector(".zt-gantt-ver-scroll")?.scrollTop || 0;
@@ -2194,57 +790,6 @@
         dataItem.style.lineHeight = options.row_height + "px";
         let that = this;
 
-        // handle double click event
-        dataItem.addEventListener("dblclick", handleDblClick);
-
-        function handleDblClick(e) {
-          if (e.target.classList.contains("zt-gantt-tree-icon")) {
-            return;
-          }
-          that.createLightbox(that.options.data[j]);
-          const onTaskDblClick = new CustomEvent("onTaskDblClick", {
-            detail: {
-              task: that.options.data[j],
-            },
-          });
-          that.element.dispatchEvent(onTaskDblClick);
-        }
-
-        let start_date, end_date;
-        // Handle mouseover event
-        dataItem.addEventListener("mouseover", handleMouseOver);
-
-        function handleMouseOver(e) {
-          let tooltip = document.getElementById("zt-gantt-tooltip");
-          tooltip.innerHTML = "";
-          start_date = options.data[j].start_date;
-          end_date = options.data[j].end_date;
-          if (options.data[j].children) {
-            let taskData = [...options.data[j].children];
-            let startAndEndDate = that.getStartAndEndDate(taskData);
-            start_date = startAndEndDate.startDate;
-            end_date = startAndEndDate.endDate;
-          }
-          let tooltipContent = that.templates.tooltip_text(
-            start_date,
-            end_date,
-            options.data[j]
-          );
-
-          if (tooltipContent !== false) {
-            tooltip.innerHTML = tooltipContent;
-            tooltip.style.display = "block";
-          }
-        }
-
-        // Handle mouseleave event
-        dataItem.addEventListener("mouseleave", handleMouseLeave);
-
-        function handleMouseLeave(e) {
-          let tooltip = document.getElementById("zt-gantt-tooltip");
-          tooltip.innerHTML = "";
-          tooltip.style.display = "none";
-        }
 
         this.addClickListener(dataItem, (e) => {
           if (e.target.classList.contains("zt-gantt-tree-icon")) {
@@ -2664,142 +1209,13 @@
 
         scaleRow.setAttribute("zt-gantt-data-task-id", j);
         scaleRow.style.height = options.row_height + "px";
-        let cellEndDate = new Date(0);
-        let rangeCount = 0;
-        for (let k = 0; k < dates.length; k++) {
-          let date = new Date(dates[k]);
-          if (new Date(cellEndDate).getTime() >= date.setHours(0, 0, 0, 0)) {
-            continue;
-          }
-          let colDates;
-          let scaleCell = document.createElement("div");
-          scaleCell.classList.add("zt-gantt-task-cell");
-          if (this.options.zoomLevel !== "day") {
-            colDates = this.initColSizes(this.options.zoomLevel, 1, date);
-          } else {
-            scaleCell.classList.add(
-              options.weekends.includes(weekday[date.getDay()])
-                ? "zt-gantt-weekend-cell"
-                : "zt-gantt-weekday-cell",
-              k == 0 ? "zt-gantt-border-left-none" : "zt-gantt-task-cell"
-            );
-          }
-
-          //add custom classes from user
-          if (typeof this.templates.timeline_cell_class === "function") {
-            let cssClass = this.templates.timeline_cell_class(
-              options.data[j],
-              dates[k]
-            );
-            if (cssClass) {
-              cssClass = cssClass.trim().replace(/\s+/g, " ").split(" ");
-              scaleCell.classList.add(...cssClass);
-            }
-          }
-
-          if (this.options.zoomLevel !== "day") {
-            if (this.options.zoomLevel === "hour") {
-              scaleCell.style.left = rangeCount + "px";
-              scaleCell.style.width = this.calculateGridWidth(date) + "px";
-            } else {
-              scaleCell.style.left = rangeCount + "px";
-              scaleCell.style.width =
-                colDates.dateCount.length * this.calculateGridWidth(date) +
-                "px";
-            }
-          } else {
-            scaleCell.style.left = this.calculateGridWidth(date) * k + "px";
-            scaleCell.style.width = this.calculateGridWidth(date) + "px";
-          }
-
-          scaleCell.setAttribute(
-            "zt-gantt-cell-date",
-            this.formatDateToString(
-              this.options.zoomLevel === "day"
-                ? "%Y-%m-%d"
-                : this.options.zoomLevel === "week"
-                  ? "W-%W"
-                  : this.options.zoomLevel === "month"
-                    ? "M-%m"
-                    : this.options.zoomLevel === "quarter"
-                      ? "Q-%q"
-                      : "%Y",
-              date
-            )
-          );
-
-          scaleCell.setAttribute("zt-gantt-task-id", options.data[j].id);
-          let currentDate = new Date(date).setHours(0);
-          if (this.options.zoomLevel === "hour") {
-            let cellWidth = this.calculateGridWidth(date);
-            const fragment = document.createDocumentFragment();
-            for (let i = 0; i < 24; i++) {
-              let hourCell = scaleCell.cloneNode(true);
-              hourCell.style.left = rangeCount + "px";
-              hourCell.style.width = cellWidth + "px";
-              rangeCount += cellWidth;
-              // scaleRow.append(hourCell);
-              fragment.appendChild(hourCell);
-            }
-            scaleRow.append(fragment);
-          } else if (
-            this.options.zoomLevel !== "day" &&
-            new Date(cellEndDate).getTime() < currentDate
-          ) {
-            rangeCount +=
-              colDates.dateCount.length * this.calculateGridWidth(date);
-            cellEndDate = new Date(colDates.endDate);
-            scaleRow.append(scaleCell);
-          } else if (this.options.zoomLevel === "day") {
-            scaleRow.append(scaleCell);
-          }
-
-          // handle cell click event
-          let that = this;
-          this.addClickListener(scaleCell, function (e) {
-            const onCellClick = new CustomEvent("onCellClick", {
-              detail: {
-                task: options.data[j],
-                cellDate: that.formatDateToString(
-                  that.options.zoomLevel === "day"
-                    ? "%Y-%m-%d"
-                    : that.options.zoomLevel === "week"
-                      ? "W-%W"
-                      : that.options.zoomLevel === "month"
-                        ? "M-%m"
-                        : that.options.zoomLevel === "quarter"
-                          ? "Q-%q"
-                          : "%Y",
-                  date
-                ),
-              },
-            });
-            that.element.dispatchEvent(onCellClick);
-          });
-        }
 
         let isTaskExist = this.getTask(options.data[j].id, this.searchedData);
         if (!this.searchedData || isTaskExist) {
           ztGanttTaskData.append(scaleRow);
         }
 
-        // if children exist
-        if (
-          options.data[j].children &&
-          this.options.data[j].children.length > 0 &&
-          !this.options.splitTask
-        ) {
-          this.createBodyChildTask(
-            options.data[j].children,
-            options,
-            j,
-            dates,
-            weekday,
-            ztGanttTaskData,
-            j,
-            this.options.openedTasks.includes(this.options.data[j].id)
-          );
-        }
+
       }
 
       rightDataContainer.style.width =
@@ -2855,6 +1271,7 @@
       }
 
       let rowCount = 0;
+
 
       let ztGanttBarsArea = document.createElement("div");
       ztGanttBarsArea.classList.add("zt-gantt-bars-area");
@@ -3001,67 +1418,6 @@
             this.options.data[j].taskColor,
             "important"
           );
-        }
-
-        let that = this;
-
-        // handle double click event
-        ztGanttBarTask.addEventListener("dblclick", handleDblClick);
-
-        function handleDblClick(e) {
-          that.createLightbox(that.options.data[j]);
-          const onTaskDblClick = new CustomEvent("onTaskDblClick", {
-            detail: {
-              task: that.options.data[j],
-            },
-          });
-          that.element.dispatchEvent(onTaskDblClick);
-        }
-
-        // Handle mouseover event
-        ztGanttBarTask.addEventListener("mouseover", handleMouseOver);
-        let userAgent = navigator.userAgent;
-        function handleMouseOver(e) {
-          if (/^((?!chrome|android).)*safari/i.test(userAgent)) {
-            ztGanttBarTask.classList.add("hovered");
-          }
-
-          if (that.options.data[j].children) {
-            let taskData = [...that.options.data[j].children];
-            let startAndEndDate = that.getStartAndEndDate(taskData);
-            start_date = startAndEndDate.startDate;
-            end_date = startAndEndDate.endDate;
-          }
-          let tooltip = document.getElementById("zt-gantt-tooltip");
-          tooltip.innerHTML = "";
-
-          let tooltipContent = that.templates.tooltip_text(
-            that.options.data[j].type === "milestone"
-              ? that.options.data[j].start_date
-              : start_date,
-            that.options.data[j].type === "milestone"
-              ? that.options.data[j].end_date || that.options.data[j].start_date
-              : end_date || start_date,
-            that.options.data[j]
-          );
-
-          if (tooltipContent !== false) {
-            tooltip.innerHTML = tooltipContent;
-            tooltip.style.display = "block";
-          }
-        }
-
-        // Handle mouseleave event
-        ztGanttBarTask.addEventListener("mouseleave", handleMouseLeave);
-
-        function handleMouseLeave(event) {
-          if (/^((?!chrome|android).)*safari/i.test(userAgent)) {
-            ztGanttBarTask.classList.remove("hovered");
-          }
-
-          let tooltip = document.getElementById("zt-gantt-tooltip");
-          tooltip.innerHTML = "";
-          tooltip.style.display = "none";
         }
 
         if (
@@ -3751,6 +2107,7 @@
             return format;
         }
       });
+
       function toFixed(t) {
         return t < 10 ? "0" + t : t;
       }
@@ -3898,11 +2255,6 @@
         this.createScrollbar(mainContainer, this.options);
       }
 
-      // manage tooltip
-      let tooltip = document.getElementById("zt-gantt-tooltip");
-      tooltip.innerHTML = "";
-      tooltip.style.display = "none";
-
       // handle custom event
       const onCollapse = new CustomEvent("onCollapse", {
         detail: {
@@ -3979,9 +2331,7 @@
       function getDates(array) {
         let dates = [];
         array.forEach((item) => {
-          if (Array.isArray(item.children) && item.children.length > 0) {
-            dates = dates.concat(getDates(item.children));
-          }
+
           if (
             item.hasOwnProperty("start_date") &&
             item.hasOwnProperty("end_date")
@@ -3998,7 +2348,7 @@
       const lowestDate = new Date(Math.min(...dateValues));
       const highestDate = new Date(Math.max(...dateValues));
 
-      return { startDate: lowestDate, endDate: highestDate };
+      return {startDate: lowestDate, endDate: highestDate};
     },
 
     // resize or move Task Bars
@@ -4036,7 +2386,7 @@
         startWidth = taskBar.offsetWidth;
         startLeft = taskBar.offsetLeft;
         startTop = taskBar.offsetTop;
-        originalTask = { ...task };
+        originalTask = {...task};
 
         document.addEventListener("mousemove", resize, false);
         document.addEventListener("mouseup", handleMouseUp, false);
@@ -5059,63 +3409,6 @@
       return totalWidth;
     },
 
-    createLightbox: function (task) {
-      const lightbox = document.getElementById("zt-gantt-lightbox");
-      const lightboxBackdrop = document.getElementById(
-        "zt-gantt-lightbox-backdrop"
-      );
-      if (lightbox) {
-        lightbox.remove();
-        lightboxBackdrop.remove();
-      }
-      let lightBoxContainer = document.createElement("div");
-      let backdrop = document.createElement("div");
-      lightBoxContainer.classList.add("zt-gantt-lightbox");
-      lightBoxContainer.id = "zt-gantt-lightbox";
-      backdrop.classList.add("zt-gantt-lightbox-backdrop");
-      backdrop.id = "zt-gantt-lightbox-backdrop";
-      lightBoxContainer.setAttribute("role", "dialog");
-      lightBoxContainer.innerHTML =
-        this.templates.showLightBox?.(task) ||
-        `<div class="zt-gantt-task-title">
-      <span>${task.text}</span>
-    </div>
-    <div><p>${this.options.currentLanguage.label.description}</p></div>
-    <div>
-    <textarea rows="4" id="lightbox-text-area" placeholder="Description">${task.text}</textarea>
-    </div>
-    <div class='lightbox-footer'>
-    <button role="save">${this.options.currentLanguage.buttons.save}</button>
-    <button role="cancel">${this.options.currentLanguage.buttons.cancel}</button>
-    <button role="delete">${this.options.currentLanguage.buttons.delete}</button>
-    </div>
-    `;
-      document.body.append(backdrop);
-      document.body.append(lightBoxContainer);
-      let that = this;
-      // hide lightbox
-      let cancelbtn = document.querySelector("[role=cancel]");
-      cancelbtn.addEventListener("click", handleCancelClick);
-      function handleCancelClick() {
-        that.hideLightbox();
-      }
-
-      // delete task
-      let deletebtn = document.querySelector("[role=delete]");
-      deletebtn.addEventListener("click", handleDeleteClick);
-      function handleDeleteClick() {
-        that.deleteTask(task.id);
-      }
-
-      // update task
-      let savebtn = document.querySelector("[role=save]");
-      savebtn.addEventListener("click", handleSaveClick);
-      function handleSaveClick() {
-        let value = document.querySelector("#lightbox-text-area").value;
-        task.text = value;
-        that.updateTaskData(task);
-      }
-    },
 
     // hide lightbox
     hideLightbox: function () {
@@ -5125,218 +3418,6 @@
         lightbox.style.display = "none";
         backdrop.style.display = "none";
       }
-    },
-
-    // add Task
-    addTask: function (task) {
-      if (task.id == task.parent) {
-        this.toastr(
-          "Error",
-          "task id and task parent can not be same",
-          "error"
-        );
-      }
-
-      this.originalData.unshift(task);
-      this.eachTask((item) => {
-        if (item.id == task.parent) {
-          if (!item.children) {
-            item.children = [];
-          }
-
-          item.children.unshift(task);
-        }
-      });
-
-      // this.render();
-      this.options.openedTasks.push(+task.parent);
-      this.options.openedTasks.push(task.id);
-
-      this.options.openedTasks = [...new Set(this.options.openedTasks)];
-      this.hideLightbox();
-    },
-
-    // delete task
-    deleteTask: function (id) {
-      const task = this.getTask(id);
-      for (let i = 0; i < this.originalData.length; i++) {
-        if (this.originalData[i].id == id) {
-          this.originalData.splice(i, 1);
-          this.render();
-          this.hideLightbox();
-          const onTaskDelete = new CustomEvent("onTaskDelete", {
-            detail: {
-              task: task,
-            },
-          });
-          this.element.dispatchEvent(onTaskDelete);
-          break;
-        }
-      }
-    },
-
-    // update task data
-    updateTaskData: function (task) {
-      const updatedTaskIndex = this.originalData.findIndex(
-        (item) => item.id === task.id
-      );
-      if (updatedTaskIndex !== -1) {
-        this.originalData[updatedTaskIndex] = {
-          ...this.originalData[updatedTaskIndex],
-          ...task,
-        };
-
-        this.eachTask((item) => {
-          if (item.id === task.id) {
-            task = this.originalData[updatedTaskIndex];
-          }
-        });
-
-        this.updateTaskDuration();
-        this.hideLightbox();
-
-        const onAfterTaskUpdate = new CustomEvent("onAfterTaskUpdate", {
-          detail: {
-            task: task,
-          },
-        });
-        this.element.dispatchEvent(onAfterTaskUpdate);
-      }
-    },
-
-    // export Gantt as PNG
-    exportToPNG: async function (name = "ztGantt", styleSheet) {
-      await this.getFile(name, "png", styleSheet);
-    },
-
-    // export Gantt as PDF
-    exportToPDF: async function (name = "ztGantt", styleSheet) {
-      await this.getFile(name, "pdf", styleSheet);
-    },
-
-    //export Gantt as Excel
-    exportToExcel: function (name = "ztGantt") {
-      let csv = "";
-      const regexIgnorePattern =
-        /<[^>]+?\szt-gantt-ignore=(["'])(true)\1[^>]*>.*?<\/[^>]+?>/g;
-
-      // Create the header row
-      let headerRow = this.options.columns
-        .map((col) =>
-          col.label
-            .replaceAll(",", " ")
-            .replaceAll(regexIgnorePattern, "")
-            .replace(/<[^>]*>/g, "")
-        )
-        .join(",");
-      let right = this.options.rightGrid;
-      if (right) {
-        headerRow +=
-          "," + right.map((col) => col.label.replaceAll(",", " ")).join(",");
-      }
-
-      csv += headerRow + "\n";
-
-      // Call the recursive function to convert data to CSV
-      csv += convertToCSV(this.options.data, this.options.columns, right);
-
-      // Recursive function to convert data to CSV
-      function convertToCSV(array, columns, right) {
-        let csvData = "";
-
-        array.forEach((obj) => {
-          let rowData = columns.map((col) =>
-            col
-              .template(obj)
-              .replaceAll(",", " ")
-              .replaceAll(regexIgnorePattern, "")
-              .replace(/<[^>]*>/g, "")
-          );
-          if (right) {
-            rowData.push(
-              ...right.map((col) =>
-                col
-                  .template(obj)
-                  .replaceAll(",", " ")
-                  .replaceAll(regexIgnorePattern, "")
-                  .replace(/<[^>]*>/g, "")
-              )
-            );
-          }
-          csvData += rowData.join(",") + "\n";
-
-          if (obj.children && obj.children.length > 0) {
-            csvData += convertToCSV(obj.children, columns, right);
-          }
-        });
-
-        return csvData;
-      }
-
-      // Create a download link
-      let link = document.createElement("a");
-      link.setAttribute(
-        "href",
-        "data:application/vnd.ms-excel," + encodeURIComponent(csv)
-      );
-      link.setAttribute("download", `${name}.xls`);
-      // Programmatically trigger the download
-      link.click();
-    },
-
-    // function for calling api
-    getFile: async function (filename = "ztGantt", type, styleSheet) {
-      const apiUrl = this.options.exportApi;
-
-      if (!this.options.exportApi) {
-        this.toastr("Add export url", "Please add an export url!!", "error");
-        return;
-      }
-
-      const postData = {
-        styles: styleSheet,
-        content: this.element.outerHTML,
-        fileType: type,
-        zoom: this.options.zoomLevel,
-      };
-
-      const requestOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postData),
-      };
-      this.showLoader();
-      await fetch(apiUrl, requestOptions)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          const blob = new Blob([new Uint8Array(data.data.data)], {
-            type: "application/pdf",
-          });
-          this.saveAs(filename, blob, type);
-          this.hideLoader();
-        })
-        .catch((error) => {
-          console.error("Fetch error:", error);
-          this.toastr("Export Error", error, "error");
-          this.hideLoader();
-        });
-    },
-
-    // function for saving file
-    saveAs: function (fileName, blob, type) {
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = fileName + "." + type;
-      link.click();
-      URL.revokeObjectURL(url);
     },
 
     createChildTask: function (
@@ -5414,74 +3495,6 @@
           dataItem.style.lineHeight = options.row_height + "px";
           let that = this;
 
-          // handle double click event
-          dataItem.addEventListener("dblclick", handleDblClick);
-
-          function handleDblClick(e) {
-            if (e.target.classList.contains("zt-gantt-tree-icon")) {
-              return;
-            }
-            that.createLightbox(taskData[l]);
-            const onTaskDblClick = new CustomEvent("onTaskDblClick", {
-              detail: {
-                task: taskData[l],
-              },
-            });
-            that.element.dispatchEvent(onTaskDblClick);
-          }
-
-          let start_date, end_date;
-          // Handle mouseover event
-          dataItem.addEventListener("mouseover", handleMouseOver);
-
-          function handleMouseOver() {
-            let tooltip = document.getElementById("zt-gantt-tooltip");
-            tooltip.innerHTML = "";
-            start_date = taskData[l].start_date;
-            end_date = taskData[l].end_date || taskData[l].start_date;
-
-            if (taskData[l].children && taskData[l].children.length > 0) {
-              let data = [...taskData[l].children];
-              let startAndEndDate = that.getStartAndEndDate(data);
-              let start = startAndEndDate.startDate;
-              let end = startAndEndDate.endDate;
-
-              const setDate = (date) => {
-                const d = new Date(date);
-                d.setHours(0, 0, 0, 0);
-                return d;
-              };
-
-              const dates = [
-                setDate(start_date),
-                setDate(start),
-                setDate(end_date),
-                setDate(end),
-              ];
-
-              start_date = new Date(Math.min(...dates));
-              end_date = new Date(Math.max(...dates));
-            }
-            let tooltipContent = that.templates.tooltip_text(
-              start_date,
-              end_date,
-              taskData[l]
-            );
-
-            if (tooltipContent !== false) {
-              tooltip.innerHTML = tooltipContent;
-              tooltip.style.display = "block";
-            }
-          }
-
-          // Handle mouseleave event
-          dataItem.addEventListener("mouseleave", handleMouseLeave);
-
-          function handleMouseLeave() {
-            let tooltip = document.getElementById("zt-gantt-tooltip");
-            tooltip.innerHTML = "";
-            tooltip.style.display = "none";
-          }
 
           this.addClickListener(dataItem, (e) => {
             if (e.target.classList.contains("zt-gantt-tree-icon")) {
@@ -6050,87 +4063,6 @@
           );
         }
 
-        let that = this;
-
-        // handle double click event
-        ztGanttBarTask.addEventListener("dblclick", handleDblClick);
-
-        function handleDblClick(e) {
-          that.createLightbox(taskData[k]);
-          const onTaskDblClick = new CustomEvent("onTaskDblClick", {
-            detail: {
-              task: taskData[k],
-            },
-          });
-          that.element.dispatchEvent(onTaskDblClick);
-        }
-
-        // Handle mouseover event
-        ztGanttBarTask.addEventListener("mouseover", handleMouseOver);
-
-        let userAgent = navigator.userAgent;
-
-        function handleMouseOver() {
-          if (/^((?!chrome|android).)*safari/i.test(userAgent)) {
-            ztGanttBarTask.classList.add("hovered");
-          }
-          let tooltip = document.getElementById("zt-gantt-tooltip");
-          tooltip.innerHTML = "";
-
-          let start_date = taskData[k].start_date;
-          let end_date = taskData[k].end_date || taskData[k].start_date;
-
-          if (taskData[k].children && taskData[k].children.length > 0) {
-            let data = [...taskData[k].children];
-            let startAndEndDate = that.getStartAndEndDate(data);
-            let start = startAndEndDate.startDate;
-            let end = startAndEndDate.endDate;
-
-            const setDate = (date) => {
-              const d = new Date(date);
-              d.setHours(0, 0, 0, 0);
-              return d;
-            };
-
-            const dates = [
-              setDate(start_date),
-              setDate(start),
-              setDate(end_date),
-              setDate(end),
-            ];
-
-            start_date = new Date(Math.min(...dates));
-            end_date = new Date(Math.max(...dates));
-          }
-
-          let tooltipContent = that.templates.tooltip_text(
-            taskData[k].type === "milestone"
-              ? taskData[k].start_date
-              : start_date,
-            taskData[k].type === "milestone"
-              ? taskData[k].end_date || taskData[k].start_date
-              : end_date || start_date,
-            taskData[k]
-          );
-
-          if (tooltipContent !== false) {
-            tooltip.innerHTML = tooltipContent;
-            tooltip.style.display = "block";
-          }
-        }
-
-        // Handle mouseleave event
-        ztGanttBarTask.addEventListener("mouseleave", handleMouseLeave);
-
-        function handleMouseLeave() {
-          if (/^((?!chrome|android).)*safari/i.test(userAgent)) {
-            ztGanttBarTask.classList.remove("hovered");
-          }
-          let tooltip = document.getElementById("zt-gantt-tooltip");
-          tooltip.innerHTML = "";
-          tooltip.style.display = "none";
-        }
-
         if (
           this.templates.task_drag("resize", taskData[k]) &&
           taskData[k].type !== "milestone"
@@ -6514,40 +4446,6 @@
         dataItem.style.height = options.row_height + "px";
         dataItem.style.lineHeight = options.row_height + "px";
         let that = this;
-        // Handle mouseover event
-        dataItem.addEventListener("mouseover", handleMouseOver);
-
-        function handleMouseOver(e) {
-          let tooltip = document.getElementById("zt-gantt-tooltip");
-          tooltip.innerHTML = "";
-          let start_date;
-          let end_date;
-          if (options.data[j].children) {
-            let taskData = [...options.data[j].children];
-            let startAndEndDate = that.getStartAndEndDate(taskData);
-            start_date = startAndEndDate.startDate;
-            end_date = startAndEndDate.endDate;
-          }
-
-          let tooltipContent = that.templates.tooltip_text(
-            start_date,
-            end_date,
-            options.data[j]
-          );
-
-          if (tooltipContent !== false) {
-            tooltip.innerHTML = tooltipContent;
-            tooltip.style.display = "block";
-          }
-        }
-
-        // Handle mouseleave event
-        dataItem.addEventListener("mouseleave", handleMouseLeave);
-        function handleMouseLeave(event) {
-          let tooltip = document.getElementById("zt-gantt-tooltip");
-          tooltip.innerHTML = "";
-          tooltip.style.display = "none";
-        }
 
         this.addClickListener(dataItem, (e) => {
           if (e.target.classList.contains("zt-gantt-tree-icon")) {
@@ -6841,6 +4739,7 @@
       // for horizontal custom scroller
       horScroll.removeEventListener("scroll", handleHorScroll);
       horScroll.addEventListener("scroll", handleHorScroll);
+
       function handleHorScroll() {
         calendar.scrollLeft = horScroll.scrollLeft;
       }
@@ -6849,6 +4748,7 @@
       if (rightSideBar) {
         rightSideBar.removeEventListener("scroll", handleRightSidebarScroll);
         rightSideBar.addEventListener("scroll", handleRightSidebarScroll);
+
         function handleRightSidebarScroll() {
           calendar.scrollTop = rightSideBar.scrollTop;
           verticalScroll.scrollTop = rightSideBar.scrollTop;
@@ -7029,14 +4929,12 @@
     },
 
     filterTask: function (condition, isFilter) {
-      if (!this.searchedData) {
-        this.oldOpenedTasks = [...this.options.openedTasks];
-      }
 
       this.selectedRow = undefined;
       const allData = [...this.options.data];
       const data = filterAndFlatten(allData, condition);
       let that = this;
+
       function filterAndFlatten(data, condition) {
         let parents = [];
         return data.reduce((result, item) => {
@@ -7045,8 +4943,9 @@
             // result.push(flatItem);
             result.push(item);
             pushParent(item);
-            function pushParent(item){
-              if(item.parent && item.parent != 0 && !parents.includes(item.parent)){
+
+            function pushParent(item) {
+              if (item.parent && item.parent != 0 && !parents.includes(item.parent)) {
                 parents.push(item.parent);
                 let parentItem = that.getTask(item.parent);
                 pushParent(parentItem);
@@ -7135,12 +5034,13 @@
       }
     },
 
-    // attach evnets
+    // attach events
     attachEvent: function (name, callback) {
       this.element.removeEventListener(name, handleEvent);
       this.element.addEventListener(name, handleEvent);
 
       let that = this;
+
       function handleEvent(e) {
         if (
           name === "onBeforeTaskDrag" ||
@@ -7211,7 +5111,7 @@
 
         if (task.children && task.children.length > 0) {
           let data = [...task.children];
-          let { startDate, endDate } = this.getStartAndEndDate(data);
+          let {startDate, endDate} = this.getStartAndEndDate(data);
 
           const setDate = (date) => {
             const d = new Date(date);
@@ -7289,15 +5189,15 @@
     convertDecimalToTime: function (decimalTime) {
       const hours = Math.floor(decimalTime);
       const minutes = Math.round((decimalTime - hours) * 60);
-      return { hours, minutes };
+      return {hours, minutes};
     },
 
     // get time from pixels
     getTimeByPx: function (pixels, date) {
       let pxPerMin = this.calculateGridWidth(date, "day") / (24 * 60);
       let dateTime = pixels / pxPerMin / 60;
-      let { hours, minutes } = this.convertDecimalToTime(dateTime);
-      return { hours, minutes };
+      let {hours, minutes} = this.convertDecimalToTime(dateTime);
+      return {hours, minutes};
     },
 
     // get pixels from time
@@ -8350,10 +6250,7 @@
       const quarterStartDate = new Date(year, quarterStartMonth, 1);
       const quarterEndDate = new Date(year, quarterStartMonth + 3, 0);
 
-      const daysInQuarter =
-        (quarterEndDate - quarterStartDate) / (1000 * 60 * 60 * 24) + 1;
-
-      return daysInQuarter;
+      return (quarterEndDate - quarterStartDate) / (1000 * 60 * 60 * 24) + 1;
     },
 
     // function to get the quarter of a date
@@ -8362,19 +6259,17 @@
       // Get the month from the date (0-11)
       const month = date.getMonth();
       // Calculate the quarter
-      const quarter = Math.floor(month / 3) + 1;
-      return quarter;
+      return Math.floor(month / 3) + 1;
     },
 
     // function to get the current zoom level scale
     getScale: function () {
-      let scaleObj = {
+      return {
         unit: this.options.zoomLevel,
         step: 1,
         startDate: this.options.startDate,
         endDate: this.options.endDate,
       };
-      return scaleObj;
     },
 
     addTaskOnDrag: function (timeLine) {
@@ -8492,6 +6387,7 @@
         }
         hasMoved = false;
       }
+
       function createTaskArea(e) {
         hasMoved = true;
 
@@ -9147,13 +7043,11 @@
 
     destroy: function () {
       let layout = document.querySelector("#zt-gantt-layout");
-      let tooltip = document.querySelector("#zt-gantt-tooltip");
       if (layout) {
         layout.remove();
       }
-      if (tooltip) {
-        tooltip.remove();
-      }
+
+      ZTGantt = null;
     },
 
     isTaskExist: function (source, target) {
@@ -9197,7 +7091,7 @@
           } else {
             let flag = false;
             for (let j = 0; j < tasksArray.length; j++) {
-              if(
+              if (
                 new Date(tasksArray[j].start_date).getTime() ===
                 new Date(task.start_date).getTime() &&
                 new Date(tasksArray[j].end_date).getTime() ===
@@ -9222,10 +7116,8 @@
         if (this.options.data[i].children) {
           let tasks = getUniqueObjects(this.options.data[i].children);
           tasksData.push(tasks);
-          console.log(tasks,"tasks")
         }
       }
-      console.log(tasksData,"tasksData")
 
       for (let j = 0; j < tasksData.length; j++) {
         for (let k = 0; k < tasksData[j].length; k++) {
@@ -9234,8 +7126,6 @@
           if (!this.searchedData || isTaskExist1) {
             rowCount = j;
           }
-
-          console.log(rowCount,j,"rowCount")
 
           let start_date = task.start_date;
           let end_date = task.end_date || task.start_date;
@@ -9345,14 +7235,7 @@
             "px";
           let barTaskHeight = Math.floor((this.options.row_height * 60) / 100);
           ztGanttBarTask.style.height = `${barTaskHeight}px`;
-          ztGanttBarTask.style.lineHeight = `${(barTaskHeight/2) + 4}px`;
-          if (task.type === "milestone") {
-            ztGanttBarTask.style.width = `${barTaskHeight}px`;
-            ztGanttBarTask.style.left =
-              (cellBefore + 1) *
-              this.calculateGridWidth(start_date, "day") +
-              "px";
-          }
+          ztGanttBarTask.style.lineHeight = `${(barTaskHeight / 2) + 4}px`;
 
           let ztGanttBarTaskContent = document.createElement("div");
           ztGanttBarTaskContent.classList.add(
@@ -9360,42 +7243,11 @@
             "parent-task-bar-content"
           );
 
-          if (task.type === "milestone" && task.taskColor) {
-            ztGanttBarTaskContent.style.setProperty(
-              "background-color",
-              task.taskColor,
-              "important"
-            );
-
-            ztGanttBarTaskContent.style.setProperty(
-              "border-color",
-              task.taskColor,
-              "important"
-            );
-          }
-
           let that = this;
 
-          // handle double click event
-          ztGanttBarTask.addEventListener("dblclick", handleDblClick);
           ztGanttBarTask.addEventListener("click", handleClick);
 
-          function handleDblClick(e) {
-
-            const onTaskDblClick = new CustomEvent("onTaskDblClick", {
-              detail: {
-                task: task,
-              },
-            });
-            that.element.dispatchEvent(onTaskDblClick);
-            if( that.templates.showLightBox !== false
-            ){
-              that.createLightbox(task);
-            }
-
-          }
           function handleClick(e) {
-
             const onTaskClick = new CustomEvent("onTaskClick", {
               detail: {
                 task: task,
@@ -9403,98 +7255,6 @@
             });
             that.element.dispatchEvent(onTaskClick);
 
-          }
-
-          // Handle mouseover event
-          ztGanttBarTask.addEventListener("mouseover", handleMouseOver);
-          let userAgent = navigator.userAgent;
-          function handleMouseOver(e) {
-            if (/^((?!chrome|android).)*safari/i.test(userAgent)) {
-              ztGanttBarTask.classList.add("hovered");
-            }
-
-            let start_date = task.start_date;
-            let end_date = task.end_date || task.start_date;
-
-            if (task.children && task.children.length > 0) {
-              let data = [...task.children];
-              let startAndEndDate = that.getStartAndEndDate(data);
-              let start = startAndEndDate.startDate;
-              let end = startAndEndDate.endDate;
-
-              const setDate = (date) => {
-                const d = new Date(date);
-                d.setHours(0, 0, 0, 0);
-                return d;
-              };
-
-              const dates = [
-                setDate(start_date),
-                setDate(start),
-                setDate(end_date),
-                setDate(end),
-              ];
-
-              start_date = new Date(Math.min(...dates));
-              end_date = new Date(Math.max(...dates));
-            }
-            let tooltip = document.getElementById("zt-gantt-tooltip");
-            tooltip.innerHTML = "";
-
-            let tooltipContent = that.templates.tooltip_text(
-              task.type === "milestone" ? task.start_date : start_date,
-              task.type === "milestone"
-                ? task.end_date || task.start_date
-                : end_date || start_date,
-              task
-
-            );
-
-            if (tooltipContent !== false) {
-              tooltip.innerHTML = tooltipContent;
-              tooltip.style.display = "block";
-            }
-          }
-
-          // Handle mouseleave event
-          ztGanttBarTask.addEventListener("mouseleave", handleMouseLeave);
-
-          function handleMouseLeave(event) {
-
-            if (/^((?!chrome|android).)*safari/i.test(userAgent)) {
-              ztGanttBarTask.classList.remove("hovered");
-            }
-
-            let tooltip = document.getElementById("zt-gantt-tooltip");
-            tooltip.innerHTML = "";
-            tooltip.style.display = "none";
-          }
-
-          if (
-            this.templates.task_drag("resize", task) &&
-            task.type !== "milestone"
-          ) {
-            // left side resizer
-            let ztGanttTaskDragLeft = document.createElement("div");
-            ztGanttTaskDragLeft.classList.add("zt-gantt-task-drag-left");
-
-            // right side resizer
-            let ztGanttTaskDragRight = document.createElement("div");
-            ztGanttTaskDragRight.classList.add("zt-gantt-task-drag-right");
-
-            ztGanttBarTask.append(ztGanttTaskDragLeft, ztGanttTaskDragRight);
-            this.resizeTaskBars(
-              ztGanttTaskDragLeft,
-              ztGanttBarTask,
-              "left",
-              task
-            );
-            this.resizeTaskBars(
-              ztGanttTaskDragRight,
-              ztGanttBarTask,
-              "right",
-              task
-            );
           }
 
           let taskDates = this.getDates(start_date, end_date);
@@ -9507,165 +7267,18 @@
             });
           }
 
-          let taskProgress;
-          if (this.options.taskProgress === true && task.type !== "milestone") {
-            let progressPer = task.progress || 0;
-            let taskProgressContainer = document.createElement("div");
-            taskProgressContainer.classList.add(
-              "zt-gantt-task-progress-wrapper"
-            );
-            taskProgress = document.createElement("div");
-            taskProgress.classList.add("zt-gantt-task-progress");
-            taskProgress.style.width = `${
-              progressPer > 100 ? 100 : progressPer
-            }%`;
-
-            if (task.taskColor) {
-              taskProgress.style.setProperty(
-                "background-color",
-                task.taskColor,
-                "important"
-              );
-            }
-
-            taskProgressContainer.append(taskProgress);
-
-            let taskProgressDrag = document.createElement("div");
-            taskProgressDrag.classList.add("zt-gantt-task-progress-drag");
-            taskProgressDrag.style.left = `${
-              progressPer > 100 ? 100 : progressPer
-            }%`;
-
-            ztGanttBarTask.append(taskProgressContainer, taskProgressDrag);
-            this.dragTaskProgress(
-              taskProgressDrag,
-              taskProgress,
-              ztGanttBarTask,
-              task
-            );
-          }
-
-          if (this.templates.task_drag("move", task)) {
-            this.resizeTaskBars(
-              ztGanttBarTaskContent,
-              ztGanttBarTask,
-              "move",
-              task
-            );
-          }
-
-          // link control pointers
-          let isAddLinks =
-            typeof this.options.addLinks === "function"
-              ? this.options.addLinks(task)
-              : this.options.addLinks;
-
-          if (isAddLinks === true) {
-            // left point
-            let leftLinkPoint = document.createElement("div");
-            leftLinkPoint.classList.add(
-              "zt-gantt-link-control",
-              "zt-gantt-left-point"
-            );
-            let leftPoint = document.createElement("div");
-            leftPoint.classList.add("zt-gantt-link-point");
-
-            // right point
-            let rightLinkPoint = document.createElement("div");
-            rightLinkPoint.classList.add(
-              "zt-gantt-link-control",
-              "zt-gantt-right-point"
-            );
-            let rightPoint = document.createElement("div");
-            rightPoint.classList.add("zt-gantt-link-point");
-
-            leftLinkPoint.append(leftPoint);
-            rightLinkPoint.append(rightPoint);
-            ztGanttBarTask.append(leftLinkPoint, rightLinkPoint);
-
-            this.createNewLink(rightPoint, ztGanttBarTask, task.id, "right");
-            this.createNewLink(leftPoint, ztGanttBarTask, task.id, "left");
-          }
-
-          //add custom task color picker
-          let isCustomColor =
-            typeof this.options.taskColor === "function"
-              ? this.options.taskColor(task)
-              : this.options.taskColor;
-
-          if (isCustomColor) {
-            let colorPicker = document.createElement("div");
-            colorPicker.classList.add("zt-gantt-task-color-picker");
-            let colorInput = document.createElement("input");
-            colorInput.type = "color";
-            colorInput.value =
-              task.taskColor ||
-              (task.type === "milestone" ? "#e84855" : "#56a4fd");
-            colorPicker.append(colorInput);
-            ztGanttBarTask.append(colorPicker);
-
-            this.changeTaskbarColor(
-              ztGanttBarTask,
-              colorInput,
-              taskProgress,
-              ztGanttBarTaskContent,
-              task
-            );
-          }
-
-
-
           if (task.type !== "milestone") {
-            let taskWidth =
-              taskDates.length * this.calculateGridWidth(end_date, "day");
-
-            // if (taskWidth === 0 || !taskWidth) {
-            //   ztGanttBarTask.classList.add("zt-gantt-d-none");
-            // }
-
-            // let hourWidth = this.getPxByTime(end_date, "width");
-            // let hourLeft = this.getPxByTime(start_date, "left");
-            // hourWidth += hourLeft;
-            // taskWidth -= hourWidth;
-
             ztGanttBarTask.style.width = 30 + "px";
             ztGanttBarTask.style.marginLeft = 8 + "px";
             ztGanttBarTask.style.marginTop = 4 + "px";
-          }
 
-          if (task.type === "milestone") {
-            sideContent = document.createElement("div");
-            sideContent.classList.add("zt-gantt-side-content");
-            sideContent.innerHTML = this.templates.taskbar_text(
-              new Date(task.start_date),
-              new Date(task.end_date),
-              task
-            );
-            ztGanttBarTask.append(sideContent);
-          } else {
             ztGanttBarTaskContent.innerHTML = this.templates.taskbar_text(
-              new Date( new Date(task.start_date).setHours(0)),
-              new Date( new Date(task.end_date).setHours(0)),
+              new Date(new Date(task.start_date).setHours(0)),
+              new Date(new Date(task.end_date).setHours(0)),
               task
             );
           }
           ztGanttBarTask.append(ztGanttBarTaskContent);
-
-          this.attachEvent("onAfterTaskUpdate", (event) => {
-            if (task.type === "milestone") {
-              sideContent.innerHTML = this.templates.taskbar_text(
-                task.start_date.setHours(0),
-                task.end_date.setHours(0),
-                task
-              );
-            } else {
-              ztGanttBarTaskContent.innerHTML = this.templates.taskbar_text(
-                task.start_date.setHours(0),
-                task.end_date.setHours(0),
-                task
-              );
-            }
-          });
 
           let isTaskExist = this.getTask(task.id, this.searchedData);
           if (!this.searchedData || isTaskExist) {
@@ -9688,6 +7301,5 @@
     },
   };
 
-  global.ztGantt = ZTGantt;
   window.ztGantt = ZTGantt;
-})(this);
+})();

@@ -16,11 +16,13 @@ export class ProjectionComponent {
   @Input() preferences: any;
   @Input() toggle: boolean;
   @Input() isLoaded: boolean;
+  @Input() isCalendarView: boolean;
 
   data: any[] = [];
   isVisible = false;
-  calendarTitle = new Date().getFullYear();
+
   planItems: any = [];
+  schedule: any = {};
 
   gantt: any;
 
@@ -37,158 +39,166 @@ export class ProjectionComponent {
         this.data = [];
         this.planItems = [];
       }
-    }
-    if (changes['filters']) {
-      const dom = $('#full-calendar-projection');
-      if (dom?.data('calendar') && this.filters.calendarView) {
-        $('#full-calendar-projection').data('calendar').setView({
-          view: this.filters.view == 'Month' ? 'month' : 'year'
-        });
+    } else if (changes['isCalendarView']) {
+      if (changes['isCalendarView'].currentValue == true) {
+        this.ngOnDestroy();
       }
+      this.render();
     }
   }
 
   ngOnDestroy(): void {
     if (this.gantt) {
       this.gantt.destroy();
+      this.gantt = null;
     }
   }
 
   private render() {
-    let ZT_Gantt;
-    if (!this.gantt) {
-      ZT_Gantt = new window['ztGantt'](this.element.nativeElement);
-      this.gantt = ZT_Gantt;
-    } else {
-      ZT_Gantt = this.gantt;
+    if (this.data.length == 0) {
+      return;
     }
-    ZT_Gantt.options.columns = [
-      {
-        name: "text",
-        width: 245,
-        min_width: 80,
-        max_width: 300,
-        tree: true,
-        label: "Schedules",
-        resize: true,
-        template: (task) => {
-          return `<span>${task.text}</span>`;
-        },
-      },
-    ];
-    ZT_Gantt.templates.task_drag = (mode, task) => {
-      return false;
-    };
+    if (this.filters.calendarView) {
+      this.showCalendar();
+    } else {
+      let ZT_Gantt;
+      if (!this.gantt) {
+        ZT_Gantt = new window['ztGantt'](this.element.nativeElement);
+        this.gantt = ZT_Gantt;
+      } else {
+        ZT_Gantt = this.gantt;
+      }
 
-    if (this.filters.view == 'Year') {
-      ZT_Gantt.options.scales = [
+      ZT_Gantt.options.columns = [
         {
-          unit: "year",
-          step: 1,
-          format: '%Y'
+          name: "text",
+          width: 245,
+          min_width: 80,
+          max_width: 300,
+          tree: true,
+          label: "Schedules",
+          resize: true,
+          template: (task) => {
+            return `<span>${task.text}</span>`;
+          },
         },
-        {unit: "month", step: 1, format: "%F"},
-        {unit: "day", step: 1, format: "%d"},
       ];
-    } else {
-      ZT_Gantt.options.scales = [
-        {unit: "month", step: 1, format: "%F,%Y"},
-        {unit: "day", step: 1, format: "%d"},
-      ];
+      ZT_Gantt.templates.task_drag = (mode, task) => {
+        return false;
+      };
+
+      if (this.filters.view !== 'Month') {
+        ZT_Gantt.options.scales = [
+          {
+            unit: "week",
+            step: 1,
+            format: (t) => {
+              const {
+                startDate: a,
+                endDate: n,
+                weekNum: i,
+              } = weekStartAndEnd(t);
+              return ` ${ZT_Gantt.formatDateToString(
+                "%j %M",
+                a
+              )} - ${ZT_Gantt.formatDateToString(
+                "%j %M",
+                n
+              )}, ${a.getFullYear()}`;
+            },
+          },
+          {unit: "day", step: 1, format: "%d"}
+        ]
+      } else {
+        ZT_Gantt.options.scales = [
+          {unit: "month", step: 1, format: "%F,%Y"},
+          {unit: "day", step: 1, format: "%d"},
+        ];
+      }
+
+      function weekStartAndEnd(t) {
+        const e = t.getDay();
+        let a, n;
+        0 === e
+          ? ((a = ZT_Gantt.add(t, -6, "day")), (n = t))
+          : ((a = ZT_Gantt.add(t, -1 * e + 1, "day")),
+            (n = ZT_Gantt.add(t, 7 - e, "day")));
+        return {
+          startDate: a,
+          endDate: n,
+          weekNum: ZT_Gantt.formatDateToString("%W", t),
+        };
+      }
+
+
+      ZT_Gantt.templates.taskbar_text = function (start, end, task) {
+        return task.count
+      };
+
+      ZT_Gantt.templates.taskbar_text = function (start, end, task) {
+        return task.count
+      };
+      ZT_Gantt.templates.tooltip_text = function (start, end, task) {
+        return (
+          "<b>Schedule:</b> " +
+          task.text +
+          "<br/><b>Start date:</b> " +
+          new Date(start) +
+          "<br/><b>End date:</b> " +
+          new Date(end)
+        );
+      };
+      ZT_Gantt.templates.showLightBox = false;
+      ZT_Gantt.options.date_format = '%Y-%m-%dT%H:%i:%sZ';
+      ZT_Gantt.options.localLang = this.coreService.getLocale().lang;
+      ZT_Gantt.options.data = this.data;
+      ZT_Gantt.options.collapse = false;
+      ZT_Gantt.options.taskProgress = false;
+      ZT_Gantt.options.minColWidth = 48;
+      ZT_Gantt.options.row_height = 30;
+      ZT_Gantt.options.weekends = [];
+      ZT_Gantt.options.fullWeek = true;
+      ZT_Gantt.options.updateLinkOnDrag = true;
+      ZT_Gantt.options.splitTask = true;
+      ZT_Gantt.options.addLinks = false;
+      ZT_Gantt.options.startDate = this.filters.startDate;
+      ZT_Gantt.options.endDate = this.filters.endDate;
+      ZT_Gantt.attachEvent('onTaskClick', (event) => {
+        this.open(event);
+      });
+      setTimeout(() => {
+        ZT_Gantt.render();
+      }, 30)
     }
-
-    let lowestStartDate = null;
-    let highestEndDate = null;
-    this.data.forEach((group) => {
-      const itemStartDate = new Date(group.start_date).getTime();
-      const itemEndDate = new Date(group.end_date).getTime();
-      if (lowestStartDate === null || itemStartDate < lowestStartDate) {
-        lowestStartDate = itemStartDate;
-      }
-      if (highestEndDate === null || itemEndDate > highestEndDate) {
-        highestEndDate = itemEndDate;
-      }
-    });
-    ZT_Gantt.templates.taskbar_text = function (start, end, task) {
-      return task.count
-    };
-
-    ZT_Gantt.templates.taskbar_text = function (start, end, task) {
-      return task.count
-    };
-    ZT_Gantt.templates.tooltip_text = function (start, end, task) {
-      return (
-        "<b>Schedule:</b> " +
-        task.text +
-        "<br/><b>Start date:</b> " +
-        new Date(start) +
-        "<br/><b>End date:</b> " +
-        new Date(end)
-      );
-    };
-    ZT_Gantt.templates.showLightBox = false;
-    ZT_Gantt.options.date_format = '%Y-%m-%dT%H:%i:%sZ';
-    ZT_Gantt.options.localLang = "en";
-    ZT_Gantt.options.data = this.data;
-    ZT_Gantt.options.collapse = false;
-    ZT_Gantt.options.taskProgress = false;
-    ZT_Gantt.options.minColWidth = 48;
-    ZT_Gantt.options.row_height = 30;
-    ZT_Gantt.options.weekends = [];
-    ZT_Gantt.options.fullWeek = true;
-    ZT_Gantt.options.updateLinkOnDrag = true;
-    ZT_Gantt.options.splitTask = true;
-    ZT_Gantt.options.addLinks = false;
-    ZT_Gantt.options.startDate = lowestStartDate
-    ZT_Gantt.options.endDate = highestEndDate
-    ZT_Gantt.attachEvent('onTaskClick', (event) => {
-      this.open(event);
-    });
-    setTimeout(() => {
-      ZT_Gantt.render();
-    }, 10)
-    this.populatePlanItems(this.data);
   }
 
-  groupData(data) {
+  private groupData(data) {
     const flattenedData = [];
     let scheduleIdCounter = 1;
     for (const yearKey of Object.keys(data)) {
       const yearData = data[yearKey];
       for (const monthKey of Object.keys(yearData)) {
         const monthData = yearData[monthKey];
-
         for (const dateKey of Object.keys(monthData)) {
           const dateData = monthData[dateKey];
           const datePeriods = dateData.periods;
-          const scheduleCounts = {};
-
-          datePeriods.forEach((period) => {
-            const schedule = period.schedule;
+          const group = this.groupByPipe.transform(datePeriods, 'schedule');
+          group.forEach((period) => {
+            const schedule = period.key;
             const start_date = dateKey;
             const end_date = dateKey;
-            const repeat = period.period.repeat;
-
-            if (!scheduleCounts[schedule]) {
-              scheduleCounts[schedule] = 0;
-            }
-
-            scheduleCounts[schedule]++;
-
             let scheduleItem = flattenedData.find((item) => item.text === schedule);
-
             if (!scheduleItem) {
               scheduleItem = {id: scheduleIdCounter++, text: schedule};
               flattenedData.push(scheduleItem);
             }
-
             const item = {
               text: schedule,
               start_date,
               end_date,
-              repeat,
+              periods: period.value,
               parent: scheduleItem.id,
-              count: scheduleCounts[schedule],
+              count: period.value.length,
             };
 
             flattenedData.push(item);
@@ -203,12 +213,10 @@ export class ProjectionComponent {
           }
         }
       }
-
     }
 
     this.data = flattenedData;
     this.render();
-
   }
 
   close(): void {
@@ -217,33 +225,80 @@ export class ProjectionComponent {
 
   open(event): void {
     this.isVisible = true;
-    console.log(event)
+    this.schedule = {
+      list: []
+    };
+    if (event['task']) {
+      this.schedule.date = event['task']['start_date'];
+      this.schedule.list.push(event['task'])
+    } else {
+      const currentDate = new Date(event.date).getTime();
+      this.schedule.date = event.date;
+      for (let i in this.data) {
+        const startDate = new Date(this.data[i].start_date).getTime();
+        if (startDate == currentDate) {
+          this.schedule.list.push(this.data[i])
+        } else if (startDate > currentDate) {
+          break;
+        }
+      }
+    }
+    console.log(this.data)
   }
 
-  private populatePlanItems(data: any): void {
-    this.showCalendar();
+  getPeriodStr(period): string {
+    let periodStr = null;
+    if (period.begin) {
+      periodStr = this.coreService.getDateByFormat(period.begin, null, 'HH:mm:ss');
+    }
+    if (period.end) {
+      periodStr = periodStr + '-' + this.coreService.getDateByFormat(period.end, null, 'HH:mm:ss');
+    }
+    if (period.singleStart) {
+      periodStr = 'Single start: ' + this.coreService.getDateByFormat(period.singleStart, null, 'HH:mm:ss');
+    } else if (period.repeat) {
+      periodStr = periodStr + ' every ' + this.getTimeInString(period.repeat);
+    }
+    return periodStr;
   }
 
-  showCalendar(): void {
-    // setTimeout(() => {
+  private getTimeInString(time: any): string {
+    if (time.toString().substring(0, 2) === '00' && time.toString().substring(3, 5) === '00') {
+      return time.toString().substring(6, time.length) + ' seconds';
+    } else if (time.toString().substring(0, 2) === '00') {
+      return time.toString().substring(3, time.length) + ' minutes';
+    } else if ((time.toString().substring(0, 2) != '00' && time.length === 5) || (time.length > 5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) === '00'))) {
+      return time.toString().substring(0, 5) + ' hours';
+    } else {
+      return time;
+    }
+  }
+
+  private showCalendar(): void {
     const dom = $('#full-calendar-projection');
     if (!dom.data('calendar')) {
       $('#full-calendar-projection').calendar({
         language: this.coreService.getLocale(),
-        view: this.filters.view == 'Month' ? 'month' : 'year',
+        view: this.filters.calView.toLowerCase(),
         renderEnd: (e) => {
-          this.calendarTitle = e.currentYear;
+          this.filters.calendarTitle = e.currentYear;
+        },
+        clickDay: (e) => {
+          this.open(e);
         }
+      });
+    } else {
+      $('#full-calendar-projection').data('calendar').setYearView({
+        view: this.filters.calView.toLowerCase(),
+        year: this.filters.calendarTitle
       });
     }
     setTimeout(() => {
       const dom = $('#full-calendar-projection');
       if (dom.data('calendar')) {
-        dom.data('calendar').setView({
-          view: this.filters.view == 'Month' ? 'month' : 'year'
-        });
         dom.data('calendar').setDataSource(this.planItems);
       }
-    }, 100);
+    }, 10);
   }
+
 }
