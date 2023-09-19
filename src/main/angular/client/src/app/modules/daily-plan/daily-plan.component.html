@@ -547,7 +547,7 @@
 
                 <div class="row form-group b-b p-b-sm" *ngFor="let schedule of schedules">
                   <div class="col-md-9">
-                    <a><i (click)="coreService.navToInventoryTab(schedule.schedule, 'SCHEDULE');"
+                    <a (click)="highlightSchedule(schedule.schedule)"><i (click)="coreService.navToInventoryTab(schedule.schedule, 'SCHEDULE');"
                        *ngIf="permission.joc && permission.joc.inventory.view"
                        class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                     {{schedule.schedule}}</a>
@@ -652,6 +652,9 @@
                           <nz-month-picker *ngIf="dailyPlanFilters.projection.view === 'Month'"
                                            [(ngModel)]="dailyPlanFilters.projection.endDate" [nzAllowClear]="false"
                                            [nzDisabledDate]="disabledDate" (ngModelChange)="onChange($event)" ></nz-month-picker>
+                          <nz-year-picker *ngIf="dailyPlanFilters.projection.view === 'Year'"
+                                           [(ngModel)]="dailyPlanFilters.projection.endDate" [nzAllowClear]="false"
+                                           [nzDisabledDate]="disabledDate" (ngModelChange)="onChange($event)" ></nz-year-picker>
                           {{dailyPlanFilters.projection.startDate | date : dateFormat }} - {{dailyPlanFilters.projection.endDate | date : dateFormat}}
                         </div>
                         <div (click)="next()" class="btn btn-default btn-sm">
@@ -670,10 +673,10 @@
                            class="btn btn-default btn-sm" translate>
                         runtime.label.month
                       </div>
-                      <div (click)="setView('Custom')"
-                           [class.primary]="dailyPlanFilters.projection.view === 'Custom'"
+                      <div (click)="setView('Year')"
+                           [class.primary]="dailyPlanFilters.projection.view === 'Year'"
                            class="btn btn-default btn-sm" translate>
-                        monitor.button.custom
+                        runtime.label.year
                       </div>
                     </div>
                   </div>
@@ -698,7 +701,8 @@
                   </div>
                 </div>
                 <div class="col-md-12 m-t">
-                  <app-projection [projectionData]="projectionData" [isLoaded]="isLoaded" [isCalendarView]="dailyPlanFilters.projection.calendarView" [filters]="dailyPlanFilters.projection" [preferences]="preferences"
+                  <app-projection [projectionData]="projectionData" [isLoaded]="isLoaded" [isCalendarView]="dailyPlanFilters.projection.calendarView"
+                                  [filters]="dailyPlanFilters.projection" [searchText]="dailyPlanFilters.projection.searchText" [preferences]="preferences"
                                   [toggle]="isToggle"></app-projection>
                 </div>
               </div>
