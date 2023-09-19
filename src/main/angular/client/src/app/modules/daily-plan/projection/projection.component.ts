@@ -1,5 +1,4 @@
 import {Component, ElementRef, Input, SimpleChanges, ViewChild} from '@angular/core';
-import {isEmpty} from "underscore";
 import {CoreService} from "../../../services/core.service";
 import {GroupByPipe} from "../../../pipes/core.pipe";
 
@@ -17,6 +16,7 @@ export class ProjectionComponent {
   @Input() toggle: boolean;
   @Input() isLoaded: boolean;
   @Input() isCalendarView: boolean;
+  @Input() searchText: string;
 
   data: any[] = [];
   isVisible = false;
@@ -32,13 +32,8 @@ export class ProjectionComponent {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['projectionData'] && this.projectionData && !isEmpty(this.projectionData)) {
-      if (!isEmpty(this.projectionData)) {
-        this.groupData(this.projectionData);
-      } else {
-        this.data = [];
-        this.planItems = [];
-      }
+    if (changes['projectionData'] && this.projectionData) {
+      this.groupData(this.projectionData);
     } else if (changes['isCalendarView']) {
       if (changes['isCalendarView'].currentValue == true) {
         this.ngOnDestroy();
@@ -55,12 +50,14 @@ export class ProjectionComponent {
   }
 
   private render() {
-    if (this.data.length == 0) {
-      return;
-    }
     if (this.filters.calendarView) {
       this.showCalendar();
     } else {
+      if (this.data.length == 0) {
+        this.ngOnDestroy();
+        return;
+      }
+      this.isLoaded = false;
       let ZT_Gantt;
       if (!this.gantt) {
         ZT_Gantt = new window['ztGantt'](this.element.nativeElement);
@@ -87,7 +84,17 @@ export class ProjectionComponent {
         return false;
       };
 
-      if (this.filters.view !== 'Month') {
+      if (this.filters.view == 'Year') {
+        ZT_Gantt.options.scales = [
+          {
+            unit: "year",
+            step: 1,
+            format: '%Y'
+          },
+          {unit: "month", step: 1, format: "%F"},
+          {unit: "day", step: 1, format: "%d"},
+        ];
+      } else if (this.filters.view !== 'Month') {
         ZT_Gantt.options.scales = [
           {
             unit: "week",
@@ -167,8 +174,10 @@ export class ProjectionComponent {
         this.open(event);
       });
       setTimeout(() => {
+        ZT_Gantt.clearAll();
         ZT_Gantt.render();
-      }, 30)
+        this.isLoaded = true;
+      }, 10)
     }
   }
 
@@ -215,6 +224,14 @@ export class ProjectionComponent {
       }
     }
 
+    flattenedData.sort((a, b) => {
+      if (a.text.toLowerCase() < b.text.toLowerCase()) {
+        return -1;
+      } else if (a.text.toLowerCase() > b.text.toLowerCase()) {
+        return 1;
+      }
+      return 0;
+    });
     this.data = flattenedData;
     this.render();
   }
@@ -232,10 +249,10 @@ export class ProjectionComponent {
       this.schedule.date = event['task']['start_date'];
       this.schedule.list.push(event['task'])
     } else {
-      const currentDate = new Date(event.date).getTime();
       this.schedule.date = event.date;
       for (let i in this.data) {
-        const startDate = new Date(this.data[i].start_date).getTime();
+        const currentDate = new Date(event.date).setHours(0, 0, 0, 0);
+        const startDate = new Date(this.data[i].start_date).setHours(0, 0, 0, 0);
         if (startDate == currentDate) {
           this.schedule.list.push(this.data[i])
         } else if (startDate > currentDate) {
@@ -243,7 +260,6 @@ export class ProjectionComponent {
         }
       }
     }
-    console.log(this.data)
   }
 
   getPeriodStr(period): string {
@@ -281,7 +297,8 @@ export class ProjectionComponent {
         language: this.coreService.getLocale(),
         view: this.filters.calView.toLowerCase(),
         renderEnd: (e) => {
-          this.filters.calendarTitle = e.currentYear;
+          this.filters.currentYear = e.currentYear;
+          this.filters.currentMonth = e.currentMonth;
         },
         clickDay: (e) => {
           this.open(e);
@@ -290,7 +307,7 @@ export class ProjectionComponent {
     } else {
       $('#full-calendar-projection').data('calendar').setYearView({
         view: this.filters.calView.toLowerCase(),
-        year: this.filters.calendarTitle
+        year: this.filters.currentYear
       });
     }
     setTimeout(() => {

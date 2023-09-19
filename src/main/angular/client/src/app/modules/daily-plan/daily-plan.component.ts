@@ -769,9 +769,6 @@ export class DailyPlanComponent {
     this.initConf();
     if (this.pageView === 'grid' || this.pageView === 'projection') {
       this.isToggle = true;
-      if (this.pageView === 'projection') {
-        this.loadProjection();
-      }
     }
   }
 
@@ -809,7 +806,7 @@ export class DailyPlanComponent {
             }
           }
         }
-
+        this.schedules.sort((a, b) => a.schedule.localeCompare(b.schedule));
         this.isLoaded = true;
       }, error: () => {
         this.isLoaded = true;
@@ -958,8 +955,8 @@ export class DailyPlanComponent {
     if (this.dailyPlanFilters.projection.calendarView) {
       this.dailyPlanFilters.projection.calView = view;
       console.log(this.dailyPlanFilters.projection, '>>>>')
-      const firstDate = new Date(this.dailyPlanFilters.projection?.calendarTitle, this.dailyPlanFilters.projection?.startMonth, 1);
-      let lastDate = new Date(this.dailyPlanFilters.projection?.calendarTitle, (this.dailyPlanFilters.projection?.startMonth) + 1, 0);
+      const firstDate = new Date(this.dailyPlanFilters.projection?.currentYear, this.dailyPlanFilters.projection?.currentMonth, 1);
+      let lastDate = new Date(this.dailyPlanFilters.projection?.currentYear, (this.dailyPlanFilters.projection?.currentMonth) + 1, 0);
       this.dailyPlanFilters.projection.startDate = firstDate;
       this.dailyPlanFilters.projection.endDate = lastDate;
       this.loadProjection();
@@ -1002,6 +999,8 @@ export class DailyPlanComponent {
     let currentDate = new Date(firstDate.getTime());
     if (filters.projection.view === 'Week') {
       currentDate = new Date(filters.projection.endDate);
+    } else if (filters.projection?.view == 'Year') {
+      lastDate = new Date(filters.projection?.startYear + 1, (filters.projection?.startMonth), 0);
     }
     while (currentDate.getDay() !== this.weekStart) {
       currentDate.setDate(currentDate.getDate() - 1);
@@ -1012,7 +1011,7 @@ export class DailyPlanComponent {
         headerDates.push(new Date(currentDate));
         currentDate.setDate(date + 1);
       }
-      while (currentDate.getDay() !==this.weekStart);
+      while (currentDate.getDay() !== this.weekStart);
     }
 
     filters.projection.startDate = headerDates[0] || firstDate;
@@ -1940,6 +1939,8 @@ export class DailyPlanComponent {
     }
     if ($event === 'projection') {
       this.loadProjection();
+    } else if (this.pageView == 'projection') {
+      this.reloadDailyPlan()
     }
     this.pageView = $event;
     this.resetCheckBox();
@@ -2320,6 +2321,17 @@ export class DailyPlanComponent {
     if (!(this.dailyPlanFilters.current || this.dailyPlanFilters.current === false)) {
       this.dailyPlanFilters.current = this.preferences.currentController;
     }
+    if (localStorage['views']) {
+      this.pageView = JSON.parse(localStorage['views']).dailyPlan;
+    }
+    if (this.pageView === 'projection') {
+      this.loadProjection();
+    } else {
+      this.reloadDailyPlan();
+    }
+  }
+
+  private reloadDailyPlan(): void {
     if (this.dailyPlanFilters.selectedDate) {
       this.selectedDate = this.dailyPlanFilters.selectedDate;
       if (typeof this.selectedDate.getMonth !== 'function') {
@@ -2340,9 +2352,6 @@ export class DailyPlanComponent {
     }
     if (!this.dailyPlanFilters.filter.status) {
       this.dailyPlanFilters.filter.status = 'ALL';
-    }
-    if (localStorage['views']) {
-      this.pageView = JSON.parse(localStorage['views']).dailyPlan;
     }
     this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {

@@ -801,13 +801,13 @@
             ".zt-gantt-selected-task-bar"
           );
 
-          // scroll horizontall scroll
+          // scroll horizontal scroll
           let horizontalScroll = document.querySelector(".zt-gantt-hor-scroll");
           cellBefore =
             document.querySelector(
               `[zt-gantt-taskbar-id="${options.data[j].id}"]`
-            ).offsetLeft - 80;
-          if (horizontalScroll) {
+            )?.offsetLeft - 80;
+          if (horizontalScroll && cellBefore) {
             horizontalScroll.scrollLeft = cellBefore < 0 ? 0 : cellBefore;
           }
           for (let item of selectedRows) {
@@ -822,13 +822,15 @@
           let currentTaskBar = document.querySelector(
             `[zt-gantt-taskbar-id="${options.data[j].id}"]`
           );
-          currentTaskBar.classList.add("zt-gantt-selected-task-bar");
+          currentTaskBar?.classList?.add("zt-gantt-selected-task-bar");
 
           let taskRow = document.querySelectorAll(
             `[zt-gantt-data-task-id="${j}"]`
           );
-          for (let item of taskRow) {
-            item.classList.add("zt-gantt-selected");
+          if(taskRow) {
+            for (let item of taskRow) {
+              item.classList.add("zt-gantt-selected");
+            }
           }
           that.options.selectedRow = `${options.data[j].id}`;
           that.options.selectedTask = `${options.data[j].id}`;
@@ -865,6 +867,7 @@
             `${k == 0 ? "zt-gantt-d-block" : "zt-gantt-data"}`
           );
           cell.setAttribute("data-column-index", k);
+          cell.setAttribute("id", options.data[j].text.replaceAll('/', '_'));
 
           let ztGanttBlank = document.createElement("div");
           ztGanttBlank.classList.add("zt-gantt-blank");

@@ -186,7 +186,6 @@ export class CoreService {
       view: 'Month',
       calView: 'Month',
       calendarView: true,
-      calendarTitle: new Date().getFullYear(),
       startYear: this.currentDate.getFullYear(),
       startMonth: this.currentDate.getMonth(),
       currentYear: this.currentDate.getFullYear(),

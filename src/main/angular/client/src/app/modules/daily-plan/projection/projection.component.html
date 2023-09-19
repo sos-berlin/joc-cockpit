@@ -1,9 +1,10 @@
-<div class="p-a box scroll-y" [hidden]="data?.length === 0" style="max-height: calc(100vh - 208px);">
+<div class="box" style="max-height: calc(100vh - 208px);"
+     [ngStyle]="{'height': (filters.calendarView || data.length == 0) ? 'auto' : 'calc(100vh - 208px)'}" [ngClass]="{'scroll-y' : filters.calendarView, 'p-a': data.length > 0}">
   <div [hidden]="!filters.calendarView" id="full-calendar-projection" style="height: 100%; width: 100%"></div>
   <div [hidden]="filters.calendarView" id="gantt" #ztgantt style="height: 100%; width: 100%"></div>
 </div>
 
-<div class="m-t" *ngIf="data?.length === 0 && isLoaded">
+<div class="m-t" *ngIf="data?.length === 0 && !filters.calendarView && isLoaded">
   <app-empty-data></app-empty-data>
 </div>
 <div *ngIf="!isLoaded" class="spinner">
@@ -38,6 +39,11 @@
                   <div *ngFor="let p of sch.periods;">
                     {{getPeriodStr(p.period)}}
                   </div>
+                </td>
+              </tr>
+              <tr *ngIf="schedule.list?.length == 0">
+                <td colspan="2">
+                  <app-empty-data></app-empty-data>
                 </td>
               </tr>
               </tbody>
