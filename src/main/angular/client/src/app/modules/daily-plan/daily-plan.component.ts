@@ -6,6 +6,7 @@ import {clone, isArray, isEmpty} from 'underscore';
 import {Router} from '@angular/router';
 import {catchError, takeUntil} from 'rxjs/operators';
 import {ToastrService} from 'ngx-toastr';
+import {NzMessageService} from "ng-zorro-antd/message";
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {
@@ -18,8 +19,6 @@ import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {DataService} from '../../services/data.service';
 import {ExcelService} from '../../services/excel.service';
-import {NzMessageService} from "ng-zorro-antd/message";
-import {differenceInCalendarDays} from "date-fns";
 
 declare const JSGantt: any;
 declare let jsgantt: any;
@@ -702,7 +701,7 @@ export class DailyPlanComponent {
   searchFilter: any = {};
   temp_filter: any = {};
   filterList: any = [];
-  projectionData: any = {};
+  projectionData: any;
   schedules: any[] = [];
   showSearchPanel = false;
   selectedSubmissionId: number;
@@ -781,34 +780,56 @@ export class DailyPlanComponent {
     $('.scroll-y').remove();
   }
 
-  loadProjection(): void {
+  highlightSchedule(data) {
+    const dom = (document.getElementById(data.replaceAll('/', '_')));
+    if (dom) {
+      $('#zt-gantt-grid-left-data').scrollTop(dom.offsetTop - 56);
+    }
+  }
+
+  private getDate(date): string {
+    return this.coreService.getDateByFormat(date, this.preferences.zone, 'YYYY-MM-DD');
+  }
+
+  public changeInCalendar(e?): void {
+    if (e) {
+      this.dailyPlanFilters.projection.currentYear = e.currentYear;
+      this.dailyPlanFilters.projection.currentMonth = e.currentMonth;
+    }
+    let firstDate;
+    let lastDate;
+    if (this.dailyPlanFilters.projection.calView === 'Year') {
+      firstDate = new Date(this.dailyPlanFilters.projection?.currentYear, 0, 1);
+      lastDate = new Date(this.dailyPlanFilters.projection?.currentYear, 12, 0);
+    } else {
+      firstDate = new Date(this.dailyPlanFilters.projection?.currentYear, this.dailyPlanFilters.projection?.currentMonth, 1);
+      lastDate = new Date(this.dailyPlanFilters.projection?.currentYear, (this.dailyPlanFilters.projection?.currentMonth) + 1, 0);
+    }
+    this.dailyPlanFilters.projection.calStartDate = firstDate;
+    this.dailyPlanFilters.projection.calEndDate = lastDate;
+    this.loadProjectionForCalendar();
+  }
+
+  private loadProjectionForCalendar(): void {
     this.isLoaded = false;
     let obj = {
       controllerIds: [],
-      dateFrom: this.coreService.getDateByFormat(this.dailyPlanFilters.projection.startDate, this.preferences.zone, 'YYYY-MM-DD'),
-      dateTo: this.coreService.getDateByFormat(this.dailyPlanFilters.projection.endDate, this.preferences.zone, 'YYYY-MM-DD')
+      dateFrom: this.getDate(this.dailyPlanFilters.projection.calStartDate),
+      dateTo: this.getDate(this.dailyPlanFilters.projection.calEndDate)
     };
+
     if (this.dailyPlanFilters.current) {
       obj.controllerIds.push(this.schedulerIds.selected);
     }
-    this.coreService.post('daily_plan/projections', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+
+    this.coreService.post('daily_plan/projections/calendar', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.projectionData = res.years;
-        this.schedules = [];
-        if (res.meta) {
-          for (const controller of Object.keys(res.meta)) {
-            const scheduleData = res.meta[controller];
-            for (const schedule of Object.keys(scheduleData)) {
-              this.schedules.push({
-                schedule,
-                ...scheduleData[schedule]
-              });
-            }
-          }
-        }
-        this.schedules.sort((a, b) => a.schedule.localeCompare(b.schedule));
         this.isLoaded = true;
       }, error: () => {
+        this.projectionData = {
+          
+        };
         this.isLoaded = true;
       }
     });
@@ -952,101 +973,8 @@ export class DailyPlanComponent {
   }
 
   setView(view): void {
-    if (this.dailyPlanFilters.projection.calendarView) {
-      this.dailyPlanFilters.projection.calView = view;
-      console.log(this.dailyPlanFilters.projection, '>>>>')
-      const firstDate = new Date(this.dailyPlanFilters.projection?.currentYear, this.dailyPlanFilters.projection?.currentMonth, 1);
-      let lastDate = new Date(this.dailyPlanFilters.projection?.currentYear, (this.dailyPlanFilters.projection?.currentMonth) + 1, 0);
-      this.dailyPlanFilters.projection.startDate = firstDate;
-      this.dailyPlanFilters.projection.endDate = lastDate;
-      this.loadProjection();
-    } else {
-      this.dailyPlanFilters.projection.view = view;
-      if (view !== 'Custom') {
-        this.renderTimeSheetHeader(this.dailyPlanFilters, () => {
-          this.loadProjection();
-        });
-      } else {
-        this.dailyPlanFilters.projection.dateRange = [this.dailyPlanFilters.projection.startDate, this.dailyPlanFilters.projection.endDate];
-      }
-    }
-  }
-
-  onChangeDate(): void {
-    if (this.dailyPlanFilters.projection.dateRange) {
-      this.dailyPlanFilters.projection.startDate = this.dailyPlanFilters.projection.dateRange[0];
-      this.dailyPlanFilters.projection.endDate = this.dailyPlanFilters.projection.dateRange[1];
-      this.loadProjection();
-    }
-  }
-
-  onChange = (date: any) => {
-    if (this.dailyPlanFilters.projection.view === 'Month' || this.dailyPlanFilters.projection.view === 'Year') {
-      this.dailyPlanFilters.projection.startMonth = new Date(date).getMonth();
-      this.dailyPlanFilters.projection.startYear = new Date(date).getFullYear();
-    } else {
-      this.dailyPlanFilters.projection.endDate = new Date(date);
-    }
-    this.renderTimeSheetHeader(this.dailyPlanFilters, () => {
-      this.loadProjection();
-    });
-  }
-
-  renderTimeSheetHeader(filters: any, cb): void {
-    const headerDates = [];
-    const firstDate = new Date(filters.projection?.startYear, filters.projection?.startMonth, 1);
-    let lastDate = new Date(filters.projection?.startYear, (filters.projection?.startMonth) + 1, 0);
-    let currentDate = new Date(firstDate.getTime());
-    if (filters.projection.view === 'Week') {
-      currentDate = new Date(filters.projection.endDate);
-    } else if (filters.projection?.view == 'Year') {
-      lastDate = new Date(filters.projection?.startYear + 1, (filters.projection?.startMonth), 0);
-    }
-    while (currentDate.getDay() !== this.weekStart) {
-      currentDate.setDate(currentDate.getDate() - 1);
-    }
-    if (filters.projection.view === 'Week') {
-      do {
-        const date = currentDate.getDate();
-        headerDates.push(new Date(currentDate));
-        currentDate.setDate(date + 1);
-      }
-      while (currentDate.getDay() !== this.weekStart);
-    }
-
-    filters.projection.startDate = headerDates[0] || firstDate;
-    filters.projection.endDate = headerDates[headerDates.length - 1] || lastDate;
-    cb();
-  }
-
-  prev(): void {
-    if (this.dailyPlanFilters.projection.view === 'Year') {
-      this.dailyPlanFilters.projection.startYear = this.dailyPlanFilters.projection.startYear - 1;
-    } else if (this.dailyPlanFilters.projection.view === 'Month') {
-      this.dailyPlanFilters.projection.startMonth = this.dailyPlanFilters.projection.startMonth - 1;
-    } else {
-      const d = new Date(this.dailyPlanFilters.projection.endDate);
-      const time = d.setDate(d.getDate() - 8);
-      this.dailyPlanFilters.projection.endDate = new Date(time).setHours(0, 0, 0, 0);
-    }
-    this.renderTimeSheetHeader(this.dailyPlanFilters, () => {
-      this.loadProjection();
-    });
-  }
-
-  next(): void {
-    if (this.dailyPlanFilters.projection.view === 'Year') {
-      this.dailyPlanFilters.projection.startYear = this.dailyPlanFilters.projection.startYear + 1;
-    } else if (this.dailyPlanFilters.projection.view === 'Month') {
-      this.dailyPlanFilters.projection.startMonth = this.dailyPlanFilters.projection.startMonth + 1;
-    }
-    this.renderTimeSheetHeader(this.dailyPlanFilters, () => {
-      this.loadProjection();
-    });
-  }
-
-  disabledDate = (current: Date): boolean => {
-    return differenceInCalendarDays(current, this.viewDate) < 0;
+    this.dailyPlanFilters.projection.calView = view;
+    this.changeInCalendar();
   }
 
   recreateProjection(): void {
@@ -1938,7 +1866,7 @@ export class DailyPlanComponent {
       this.isToggle = true;
     }
     if ($event === 'projection') {
-      this.loadProjection();
+      this.changeInCalendar();
     } else if (this.pageView == 'projection') {
       this.reloadDailyPlan()
     }
@@ -2325,7 +2253,7 @@ export class DailyPlanComponent {
       this.pageView = JSON.parse(localStorage['views']).dailyPlan;
     }
     if (this.pageView === 'projection') {
-      this.loadProjection();
+      this.changeInCalendar();
     } else {
       this.reloadDailyPlan();
     }

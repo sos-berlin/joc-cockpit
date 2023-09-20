@@ -5230,11 +5230,18 @@ export class XmlEditorComponent {
     if (objType !== 'NOTIFICATION') {
       link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
     }
-    if (this.preferences.isXSDNewWindow === 'newWindow') {
-      window.open(link, 'XSD, top=0,left=0' + windowProperties);
+
+    let newWindow;
+    if (this.preferences.isDocNewWindow === 'newWindow') {
+      newWindow = window.open('assets/preview.html', 'XSD, top=0,left=0' + windowProperties);
     } else {
-      window.open(link, '_blank');
+      newWindow = window.open('assets/preview.html', '_blank');
     }
+
+    const iframeContent = '<iframe width="100%" height="100%" frameborder="0" src="' + link + '"></iframe>';
+    setTimeout(() => {
+      newWindow.document.body.innerHTML = (iframeContent);
+    }, 50);
   }
 
   save2(self): void {

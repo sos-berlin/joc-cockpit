@@ -1,12 +1,7 @@
-<div class="box" style="max-height: calc(100vh - 208px);"
-     [ngStyle]="{'height': (filters.calendarView || data.length == 0) ? 'auto' : 'calc(100vh - 208px)'}" [ngClass]="{'scroll-y' : filters.calendarView, 'p-a': data.length > 0}">
-  <div [hidden]="!filters.calendarView" id="full-calendar-projection" style="height: 100%; width: 100%"></div>
-  <div [hidden]="filters.calendarView" id="gantt" #ztgantt style="height: 100%; width: 100%"></div>
+<div class="box scroll-y p-a" style="max-height: calc(100vh - 208px);" [ngStyle]="{'height': (data.length == 0) ? 'auto' : 'calc(100vh - 208px)'}">
+  <div class="calendar-lg" id="full-calendar-projection"></div>
 </div>
 
-<div class="m-t" *ngIf="data?.length === 0 && !filters.calendarView && isLoaded">
-  <app-empty-data></app-empty-data>
-</div>
 <div *ngIf="!isLoaded" class="spinner">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
