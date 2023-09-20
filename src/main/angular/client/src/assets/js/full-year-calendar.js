@@ -521,6 +521,11 @@
               let span2 = $(document.createElement(domType));
               span2.text(events[i].plannedShowTime + ' - ' + events[i].endTime);
               div1.append(span2);
+            } else if(events[i].numOfPeriods) {
+              let span2 = $(document.createElement('span'));
+              span2.text(events[i].numOfPeriods);
+              div1.addClass('periods-count');
+              div1.append(span2);
             } else {
               div1.text(events[i].plannedShowTime);
             }
@@ -785,6 +790,11 @@
       this.options.view = view;
       this.options.showBack = false;
     },
+
+    render: function () {
+      this._render();
+    },
+
     getView: function () {
       return this.options.view;
     },

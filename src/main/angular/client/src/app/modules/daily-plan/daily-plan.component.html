@@ -467,7 +467,33 @@
 <div [ngClass]="{'scroll-y max-ht': pageView !== 'projection'}">
   <div class="padding p-b-0">
     <div class="row m-t-xs">
-      <div class="col-lg-12">
+      <div class="col-lg-12" *ngIf="pageView == 'projection'">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="inline btn-group">
+              <div (click)="setView('Month')"
+                   [class.primary]="dailyPlanFilters.projection.calView === 'Month'"
+                   class="btn btn-default btn-sm" translate>
+                runtime.label.month
+              </div>
+              <div (click)="setView('Year')"
+                   [class.primary]="dailyPlanFilters.projection.calView === 'Year'"
+                   class="btn btn-default btn-sm" translate>
+                runtime.label.year
+              </div>
+            </div>
+            <button (click)="recreateProjection()" class="btn btn-grey btn-sm button-group-ellipsis pull-right">
+              <span translate>dailyPlan.button.recreate</span>
+            </button>
+          </div>
+          <div class="col-md-12 m-t">
+            <app-projection [projectionData]="projectionData" [isLoaded]="isLoaded"
+                            [filters]="dailyPlanFilters.projection" [preferences]="preferences"
+                            (onChange)="changeInCalendar($event)"></app-projection>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12" [hidden]="pageView === 'projection'">
         <div class="sticky leftPanel daily-plan" id="leftPanel">
           <div class="box m-b-0 max-ht-n-155" [hidden]="pageView == 'projection'">
             <div class="p-b b-b icon-hover">
@@ -538,32 +564,10 @@
               </div>
             </div>
           </div>
-          <perfect-scrollbar class="box m-b-0 scroll-y max-ht-n-155"  *ngIf="pageView == 'projection'">
-            <div class="p-a">
-              <div class="row form-group b-b p-b-sm">
-                <div class="col-md-6 _600">{{'Schedule' | translate}}</div>
-                <div class="col-md-6 text-right _600">{{'Total Orders' | translate}}</div>
-              </div>
-
-                <div class="row form-group b-b p-b-sm" *ngFor="let schedule of schedules">
-                  <div class="col-md-9">
-                    <a (click)="highlightSchedule(schedule.schedule)"><i (click)="coreService.navToInventoryTab(schedule.schedule, 'SCHEDULE');"
-                       *ngIf="permission.joc && permission.joc.inventory.view"
-                       class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                    {{schedule.schedule}}</a>
-                  </div>
-                  <div class="col-md-3 text-center"><div class="badge">{{schedule.totalOrders}}</div></div>
-                </div>
-
-              <div class="m-t" *ngIf="schedules?.length == 0 && isLoaded">
-                <app-empty-data></app-empty-data>
-              </div>
-            </div>
-          </perfect-scrollbar>
         </div>
         <div id="rightPanel">
           <div>
-            <div [hidden]="pageView == 'projection'" *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage))"
+            <div *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage))"
                  class="row m-b-12">
               <div class="col-lg-12">
                 <button (click)="expandCollapseDetails(true)" [disabled]="planOrders.length === 0"
@@ -632,81 +636,6 @@
                 </div>
               </div>
             </div>
-            <div *ngIf="pageView == 'projection'">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="timeline" *ngIf="!dailyPlanFilters.projection.calendarView" style="min-width: 50%">
-                    <nz-range-picker *ngIf="dailyPlanFilters.projection.view === 'Custom'" [(ngModel)]="dailyPlanFilters.projection.dateRange"
-                                     [nzAllowClear]="false" [nzDisabledDate]="disabledDate" (ngModelChange)="onChangeDate()"
-                                     class="m-r-12"></nz-range-picker>
-                    <div *ngIf="dailyPlanFilters.projection.view !== 'Custom'" class="timeline-header inline">
-                      <div class="btn-group">
-                        <div (click)="prev()" class="btn btn-default btn-sm">
-                          <i class="fa fa-angle-left text-md"></i>
-                        </div>
-                        <div class="btn btn-default btn-sm no-cursor">
-                          <nz-week-picker *ngIf="dailyPlanFilters.projection.view === 'Week'"
-                                          [nzFormat]="dateFormat"
-                                          [(ngModel)]="dailyPlanFilters.projection.endDate" [nzAllowClear]="false"
-                                          [nzDisabledDate]="disabledDate" (ngModelChange)="onChange($event )" ></nz-week-picker>
-                          <nz-month-picker *ngIf="dailyPlanFilters.projection.view === 'Month'"
-                                           [(ngModel)]="dailyPlanFilters.projection.endDate" [nzAllowClear]="false"
-                                           [nzDisabledDate]="disabledDate" (ngModelChange)="onChange($event)" ></nz-month-picker>
-                          <nz-year-picker *ngIf="dailyPlanFilters.projection.view === 'Year'"
-                                           [(ngModel)]="dailyPlanFilters.projection.endDate" [nzAllowClear]="false"
-                                           [nzDisabledDate]="disabledDate" (ngModelChange)="onChange($event)" ></nz-year-picker>
-                          {{dailyPlanFilters.projection.startDate | date : dateFormat }} - {{dailyPlanFilters.projection.endDate | date : dateFormat}}
-                        </div>
-                        <div (click)="next()" class="btn btn-default btn-sm">
-                          <i class="fa fa-angle-right text-md"></i>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="inline btn-group">
-                      <div (click)="setView('Week')"
-                           [class.primary]="dailyPlanFilters.projection.view === 'Week'"
-                           class="btn btn-default btn-sm" translate>
-                        monitor.button.week
-                      </div>
-                      <div (click)="setView('Month')"
-                           [class.primary]="dailyPlanFilters.projection.view === 'Month'"
-                           class="btn btn-default btn-sm" translate>
-                        runtime.label.month
-                      </div>
-                      <div (click)="setView('Year')"
-                           [class.primary]="dailyPlanFilters.projection.view === 'Year'"
-                           class="btn btn-default btn-sm" translate>
-                        runtime.label.year
-                      </div>
-                    </div>
-                  </div>
-                  <div class="inline btn-group" *ngIf="dailyPlanFilters.projection.calendarView">
-                      <div (click)="setView('Month')"
-                           [class.primary]="dailyPlanFilters.projection.calView === 'Month'"
-                           class="btn btn-default btn-sm" translate>
-                        runtime.label.month
-                      </div>
-                      <div (click)="setView('Year')"
-                           [class.primary]="dailyPlanFilters.projection.calView === 'Year'"
-                           class="btn btn-default btn-sm" translate>
-                        runtime.label.year
-                    </div>
-                  </div>
-                  <button (click)="recreateProjection()" class="btn btn-grey btn-sm button-group-ellipsis pull-right">
-                    <span translate>dailyPlan.button.recreate</span>
-                  </button>
-                  <div class="inline valign m-r-12 pull-right">
-                    <nz-switch [(ngModel)]="dailyPlanFilters.projection.calendarView"></nz-switch>
-                    <span class="p-l-sm pos-rel t-xxs">{{'dailyPlan.button.calendarView' | translate}}</span>
-                  </div>
-                </div>
-                <div class="col-md-12 m-t">
-                  <app-projection [projectionData]="projectionData" [isLoaded]="isLoaded" [isCalendarView]="dailyPlanFilters.projection.calendarView"
-                                  [filters]="dailyPlanFilters.projection" [searchText]="dailyPlanFilters.projection.searchText" [preferences]="preferences"
-                                  [toggle]="isToggle"></app-projection>
-                </div>
-              </div>
-            </div>
             <div *ngIf="pageView =='grid' && planOrders.length==0 && isLoaded" class=" text-center m-t text-uppercase">
               <app-empty-data></app-empty-data>
             </div>
@@ -721,7 +650,7 @@
               <a (click)="isAllSelected = false;resetCheckBox()" *ngIf="object.mapOfCheckedId.size === (totalOrders - totalFinishedOrders)"
                  class="text-primary p-l-xs" translate>common.label.clearSelection</a>
             </div>
-            <div *ngIf="pageView !=='grid' && pageView !== 'projection'" class="box p-a">
+            <div *ngIf="pageView !=='grid'" class="box p-a">
               <div class="table-responsive" id="dailyPlanTableId">
                 <nz-table
                   #ajaxTable
