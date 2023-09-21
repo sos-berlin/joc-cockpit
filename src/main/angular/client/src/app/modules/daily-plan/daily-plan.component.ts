@@ -827,9 +827,7 @@ export class DailyPlanComponent {
         this.projectionData = res.years;
         this.isLoaded = true;
       }, error: () => {
-        this.projectionData = {
-          
-        };
+        this.projectionData = {};
         this.isLoaded = true;
       }
     });

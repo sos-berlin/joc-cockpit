@@ -533,6 +533,16 @@
             cellContent.append(div1);
           }
           elt.append(cellContent);
+        } else {
+          if (events[0].numOfPeriods) {
+            console.log('???', events[0]);
+            let cellContent = $(document.createElement('div'));
+            let span2 = $(document.createElement('span'));
+            span2.text('(' + events[0].numOfPeriods + ')');
+            cellContent.addClass('plan-time year-periods-count');
+            cellContent.append(span2);
+            elt.append(cellContent);
+          }
         }
         elt.addClass(events[0].color === 'orange' ? 'selected-orange' : 'selected-blue');
       }

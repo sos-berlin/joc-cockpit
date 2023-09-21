@@ -16,6 +16,7 @@
 
 /* Main */
 @import "./mixins";
+
 .calendar {
   color: var(--text-color);
   direction: ltr;
@@ -24,14 +25,18 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+
   &.calendar-rtl {
     direction: rtl;
+
     table tr td span {
       float: right;
     }
   }
+
   table {
     margin: auto;
+
     td, th {
       text-align: center;
       width: 18px;
@@ -40,6 +45,7 @@
       font-size: 10px;
     }
   }
+
   .month-header {
     width: 100%;
     font-size: 16px;
@@ -59,10 +65,11 @@
     }
   }
 
-  .month-view  {
+  .month-view {
     height: auto !important;
     padding: 8px;
     width: 100% !important;
+
     table.month {
       tr {
         td {
@@ -87,11 +94,13 @@
             max-height: 64px;
             overflow: auto;
             margin-right: -10px;
+
             i {
               margin-right: 2px;
             }
           }
-          .periods-count{
+
+          .periods-count {
             text-align: center;
             font-style: normal;
             font-weight: 600;
@@ -102,6 +111,7 @@
             border-radius: 10px;
             background: rgba(255, 255, 255, 0.2);
           }
+
           .current-date {
             font-size: 18px;
 
@@ -126,50 +136,62 @@
 
   .calendar-header {
     width: 100%;
+
     table {
       width: 100%;
+
       th {
         font-size: 15px;
+
         &:hover {
           background: #eeeeee;
           cursor: pointer;
         }
+
         &.disabled {
           background: none;
           cursor: default;
           color: white;
+
           &:hover {
             background: none;
             cursor: default;
             color: white;
           }
         }
+
         &.prev, &.next {
           width: 20px;
         }
       }
     }
   }
+
   .year-title {
     font-weight: bold;
     text-align: center;
     width: auto;
   }
+
   .year-neighbor {
     color: #bbb;
   }
+
   .year-neighbor2 {
     color: #dddddd;
   }
+
   .months-container {
     width: 100%;
   }
+
   .month-container {
     min-width: 166px;
     text-align: center;
     padding-top: 6px;
     height: 178px;
   }
+
   table.month {
     th {
       &.month-title {
@@ -179,51 +201,60 @@
         font-weight: 600;
         cursor: pointer;
       }
+
       &.day-header {
         padding-top: 5px;
         padding-bottom: 2px;
         font-size: 11px;
       }
     }
+
     tr {
       td, th {
         padding: 0;
       }
+
       td {
         .day-content {
           padding: 3px 5px;
           border-radius: 50%;
           color: var(--text-color);
         }
-        .cal-day-weekend .date{
+
+        .cal-day-weekend .date {
           color: var(--text-muted);
         }
-        .current-date .date{
-            font-weight: 700;
-            font-family: Sans-Serif;
+
+        .current-date .date {
+          font-weight: 700;
+          font-family: Sans-Serif;
         }
       }
     }
   }
-  .selected-blue, .cal-day-plan{
+
+  .selected-blue, .cal-day-plan {
     background: var(--date-selected);
-    &:hover{
+
+    &:hover {
       background: var(--date-selected-hover) !important;
     }
   }
-  .selected-orange{
+
+  .selected-orange {
     background: var(--date-selected-exclude);
-    &:hover{
+
+    &:hover {
       background: var(--date-selected-exclude-hover);
     }
   }
 }
 
 .grab {
-    td.day .day-content:hover {
-      background: rgba(0, 0, 0, 0.2);
-      cursor: grab !important;
-    }
+  td.day .day-content:hover {
+    background: rgba(0, 0, 0, 0.2);
+    cursor: grab !important;
+  }
 }
 
 .table-striped .calendar table.month tr {
@@ -233,40 +264,49 @@
 }
 
 .calendar table.month {
-  td{
+  td {
     border: 1px solid transparent;
   }
+
   td.day .day-content:hover {
     background: rgba(0, 0, 0, 0.2);
     cursor: pointer;
   }
+
   td.day .selected:hover {
     background: var(--primary);
   }
+
   tr td {
     &.old, &.new, &.old:hover, &.new:hover {
       background: none;
       cursor: default;
     }
+
     &.disabled {
       color: #dddddd;
+
       &:hover {
         color: #dddddd;
       }
     }
   }
+
   td.day.disabled .day-content:hover {
     background: none;
     cursor: default;
   }
+
   tr td {
     &.range-start .day-content {
       background: var(--range-start) !important;
     }
+
     &.range-end .day-content {
       background: var(--range-start) !important;
     }
   }
+
   tr td.range {
     .day-content {
       background: var(--range-hover);
@@ -274,35 +314,118 @@
   }
 
 }
-.calendar-lg{
 
+.calendar-lg {
+  margin-bottom: 12px;
+
+  table.month {
+    width: 100%;
+    max-width: 288px;
+  }
+
+  .month-view {
+    table.month {
+      width: auto;
+      max-width: 100%;
+    }
+  }
+
+  .calendar-header {
+    margin-bottom: 12px;
+
+    table {
+      width: 100%;
+
+      th {
+        font-size: 16px;
+
+        &.prev, &.next {
+          font-size: 22px;
+        }
+      }
+    }
+  }
+
+  .month-container {
+    min-width: 190px;
+    height: 268px;
+  }
+
+  table.month tr td {
+    height: 36px;
+    width: 36px;
+
+    .day-content {
+      padding: 9px 8px;
+      border-radius: 0;
+    }
+  }
+
+  table td {
+    font-size: 12px;
+  }
+
+  table.month th.month-title {
+    font-size: 14px;
+    padding: 2px;
+  }
+
+  table.month th.day-header {
+    font-size: 13px;
+  }
+
+  .date{
+    position: relative;
+    top: -4px;
+  }
+
+  .day-content{
+    position: relative;
+  }
+
+  .year-periods-count{
+    position: absolute;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 9px;
+    margin-top: -6px;
+    left: 50%;
+   transform: translateX(-50%);
+  }
 }
-.calendar-sm{
-  .selected{
+
+.calendar-sm {
+  .selected {
     background: var(--primary);
     color: #fff !important;
-    .date{
+
+    .date {
       color: #fff !important;
     }
   }
+
   .month-header {
     font-size: 14px;
     padding-top: 16px;
     padding-bottom: 6px;
+
     i {
       font-size: 18px;
       margin-left: 16px;
       margin-right: 16px;
     }
   }
+
   .month-view {
     font-size: 11px;
+
     table.month {
       tr {
         td {
           width: auto;
           height: auto;
           border: 2px solid transparent;
+
           .day-content {
             padding: 8px 10px;
             font-size: 12px;
@@ -311,6 +434,7 @@
             // color: $default;
           }
         }
+
         th {
           &.day-header {
             font-size: 12px;
@@ -320,6 +444,7 @@
     }
   }
 }
+
 @-webkit-keyframes zoomIn {
   0% {
     opacity: 0;
@@ -344,7 +469,6 @@
   -webkit-animation-name: zoomIn;
   animation-name: zoomIn
 }
-
 
 
 .animated {
