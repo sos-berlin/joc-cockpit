@@ -1,4 +1,4 @@
-<div class="box scroll-y p-a" style="max-height: calc(100vh - 208px);" [ngStyle]="{'height': (data.length == 0) ? 'auto' : 'calc(100vh - 208px)'}">
+<div class="box scroll-y p-a" style="max-height: calc(100vh - 208px);height: calc(100vh - 208px)">
   <div class="calendar-lg" id="full-calendar-projection"></div>
 </div>
 
@@ -7,45 +7,57 @@
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
 </div>
+
 <nz-drawer (nzOnClose)="close()" [nzVisible]="isVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
     <div (click)="close()" class="close-btn"></div>
-    <div class="text-center m-b text">
-      <span class="_600 b-b p-b-sm m-l-sm">{{schedule.date | stringToDate1}}</span>
+    <div class="text-center m-b-sm text">
+      <span class="_600 b-b p-b-sm m-l-sm">
+        <i *ngIf="schedule?.list?.length > 0" class="fa fa-circle p-r-xs" [ngClass]="schedule.planned ? 'primary' : 'orange'"></i>
+          {{schedule.date}}</span>
     </div>
-    <div class="p-a">
-      <div *ngIf="schedule.list">
-        <perfect-scrollbar class="table-responsive" style="max-height: 84vh; overflow: auto;height: 100vh">
-          <div class="table-responsive">
-            <table class="table table-hover table-bordered ">
-              <thead>
-              <tr>
-                <th><span translate>inventory.label.schedule</span></th>
-                <th><span translate>runtime.label.period</span></th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let sch of schedule.list;">
-                <td class="cursor">
-                  <i class="icon-color tree-icon" nz-icon nzTheme="outline" nzType="schedule"></i>&nbsp;
-                  {{sch.text}}
-                </td>
-                <td>
-                  <div *ngFor="let p of sch.periods;">
-                    {{getPeriodStr(p.period)}}
-                  </div>
-                </td>
-              </tr>
-              <tr *ngIf="schedule.list?.length == 0">
-                <td colspan="2">
-                  <app-empty-data></app-empty-data>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-        </perfect-scrollbar>
-      </div>
+    <div class="p-a" *ngIf="schedule.list">
+      <perfect-scrollbar class="table-responsive" style="max-height: 90vh; overflow: auto;height: 92vh">
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered ">
+            <thead>
+            <tr>
+              <th><span translate>inventory.label.schedule</span></th>
+              <th><span translate>runtime.label.period</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let sch of schedule.list | orderBy: 'schedule'">
+              <td>
+                  <span class="show-in-single-line">
+                    <a class="cursor text-hover-primary" *ngIf="permission.joc && permission.joc.inventory.view"
+                       (click)="coreService.navToInventoryTab(sch['schedule'], 'SCHEDULE');"><i
+                      class="fa fa-pencil"></i>
+                    </a>
+                    <i class="icon-color tree-icon p-l-xs p-r-xxs" nz-icon nzTheme="outline" nzType="schedule"></i>
+                    {{sch['schedule']}}
+                  </span>
+              </td>
+              <td>
+                <div *ngFor="let p of sch['periods'];">
+                  {{getPeriodStr(p['period'])}}
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="schedule.list?.length == 0 && !schedule.loading">
+              <td colspan="2">
+                <app-empty-data></app-empty-data>
+              </td>
+            </tr>
+            <tr *ngIf="schedule.loading">
+              <td colspan="2">
+                <nz-spin></nz-spin>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </perfect-scrollbar>
     </div>
   </ng-container>
 </nz-drawer>

@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
 import {CoreService} from "../../../services/core.service";
+import {groupBy} from "underscore";
 
 declare const $;
 
@@ -12,6 +13,7 @@ export class ProjectionComponent {
   @Input() projectionData: any;
   @Input() filters: any;
   @Input() preferences: any;
+  @Input() permission: any;
   @Input() isLoaded: boolean;
 
   @Output() onChange: EventEmitter<any> = new EventEmitter();
@@ -24,7 +26,7 @@ export class ProjectionComponent {
 
   gantt: any;
 
-  constructor(private coreService: CoreService) {
+  constructor(public coreService: CoreService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -69,22 +71,30 @@ export class ProjectionComponent {
   open(event): void {
     this.isVisible = true;
     this.schedule = {
+      loading: true,
       list: []
     };
-
-    this.schedule.date = event.date;
-    const currentDate = new Date(event.date).setHours(0, 0, 0, 0);
-    for (let i in this.data) {
-      if (this.data[i].start_date) {
-        const startDate = new Date(this.data[i].start_date).setHours(0, 0, 0, 0);
-        if (startDate == currentDate) {
-          this.schedule.list.push(this.data[i])
-        } else if (startDate > currentDate) {
-          break;
+   
+    this.schedule.date = this.coreService.getDateByFormat(event.date, this.preferences.zone, 'YYYY-MM-DD');
+    this.coreService.post('daily_plan/projections/date', {
+      date: this.schedule.date
+    }).subscribe({
+      next: (res) => {
+        this.schedule.planned = res.planned;
+        const data = groupBy(res.periods, (res) => {
+          return res.schedule;
+        });
+        for (const key of Object.keys(data)) {
+          this.schedule.list.push(
+            {
+              schedule: key,
+              periods: data[key]
+            }
+          )
         }
-      }
-    }
-
+        this.schedule.loading = false;
+      }, error: () => this.schedule.loading = false
+    });
   }
 
   getPeriodStr(period): string {

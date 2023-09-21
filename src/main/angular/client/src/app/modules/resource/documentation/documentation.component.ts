@@ -13,9 +13,6 @@ import {OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
 import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
 
 declare const $: any;
-
-const API_URL = './api/';
-
 @Component({
   selector: 'app-show-modal-content',
   templateUrl: './show-dialog.html'
@@ -130,18 +127,7 @@ export class SingleDocumentationComponent {
   }
 
   previewDocument(document: any): void {
-    const link = API_URL + 'documentation/show?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId;
-    let newWindow;
-    if (this.preferences.isDocNewWindow === 'newWindow') {
-      newWindow = window.open('assets/preview.html', '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
-    } else {
-      newWindow = window.open('assets/preview.html', '_blank');
-    }
-
-    const iframeContent = '<iframe width="100%" height="100%" frameborder="0" src="' + link + '"></iframe>';
-    setTimeout(() => {
-      newWindow.document.body.innerHTML = (iframeContent);
-    }, 50);
+    this.coreService.showDocumentation(document.path, this.preferences);
   }
 
   showDocumentUsage(document: any): void {
@@ -575,18 +561,7 @@ export class DocumentationComponent {
   }
 
   previewDocument(document: any): void {
-    const link = API_URL + 'documentation/show?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId;
-    let newWindow;
-    if (this.preferences.isDocNewWindow === 'newWindow') {
-      newWindow = window.open('assets/preview.html', '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
-    } else {
-      newWindow = window.open('assets/preview.html', '_blank');
-    }
-
-    const iframeContent = '<iframe width="100%" height="100%" frameborder="0" src="' + link + '"></iframe>';
-    setTimeout(() => {
-      newWindow.document.body.innerHTML = (iframeContent);
-    }, 50);
+    this.coreService.showDocumentation(document.path, this.preferences)
   }
 
   showDocumentUsage(document: any): void {

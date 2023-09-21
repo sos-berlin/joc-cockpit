@@ -13,6 +13,7 @@ import {POPOUT_MODALS, PopoutData, PopupService} from "./popup.service";
 import {LogViewComponent} from "../components/log-view/log-view.component";
 
 declare const $: any;
+const API_URL = './api/';
 
 @Injectable({
   providedIn: 'root'
@@ -1090,18 +1091,56 @@ export class CoreService {
     });
   }
 
-  showDocumentation(document: string, preferences: any): void {
-    const link = './api/documentation/show?documentation=' + encodeURIComponent(document) + '&accessToken=' + this.authService.accessTokenId;
-    let newWindow;
-    if (preferences.isDocNewWindow === 'newWindow') {
-      newWindow = window.open('assets/preview.html', '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
-    } else {
-      newWindow = window.open('assets/preview.html', '_blank');
+  showDocumentation(path: string, preferences: any): void {
+    const link = API_URL + 'documentation/' + this.authService.accessTokenId + '/' + encodeURIComponent(path);
+
+    const myHeaders = new Headers();
+    myHeaders.append("X-Access-Token", this.authService.accessTokenId);
+    console.log(path, '>>>');
+    const ext = path.slice(path.lastIndexOf('.') + 1).toUpperCase();
+    const isXML = ext === 'XML';
+    if (isXML) {
+      this.openXMLFile(link, myHeaders, preferences);
+      return;
     }
-    const iframeContent = '<iframe width="100%" height="100%" frameborder="0" src="' + link + '"></iframe>';
-    setTimeout(() => {
-      newWindow.document.body.innerHTML = (iframeContent);
-    }, 50);
+    fetch(link, {
+      method: 'GET',
+      headers: myHeaders,
+    })
+      .then(response => response.blob())
+      .then(result => {
+        // Create a URL for the Blob
+        let blobUrl = URL.createObjectURL(result);
+        // Open a new window or tab with the Blob URL
+        if (preferences.isDocNewWindow === 'newWindow') {
+          window.open(blobUrl, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
+        } else {
+          window.open(blobUrl, '_blank');
+        }
+      })
+      .catch(error => console.log('error', error));
+  }
+
+  private openXMLFile(link, myHeaders, preferences): void {
+    let win;
+    if (preferences.isDocNewWindow === 'newWindow') {
+      win = window.open('assets/preview.html', '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
+    } else {
+      win = window.open('assets/preview.html', '_blank');
+    }
+    fetch(link, {
+      method: 'GET',
+      headers: myHeaders,
+    })
+      .then(response => response.text())
+      //.then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+      .then(result => {
+        console.log(result)
+        const pre  = document.createElement('pre');
+        pre.innerText = result;
+        win.document.body.appendChild(pre);
+      })
+      .catch(error => console.log('error', error));
   }
 
   parseProcessExecuted(regex: string): any {
@@ -1995,7 +2034,7 @@ export class CoreService {
               };
             } else {
               let text = lastPos.split(':')[0];
-              if(lastPos.split(':')[1] === '0') {
+              if (lastPos.split(':')[1] === '0') {
                 parentNode = {
                   title: this.upperFLetter(text),
                   key: text + item.orderId + item.logEvent + item.position,
@@ -2943,7 +2982,7 @@ export class CoreService {
             for (const i in sour.value) {
               const tempList = this.clone(target[x].list);
               sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
-                let type, index =0, isRequired = true;
+                let type, index = 0, isRequired = true;
                 for (const prop in tempList) {
                   if (tempList[prop].name === k1) {
                     type = tempList[prop].value.type;
