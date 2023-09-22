@@ -785,6 +785,7 @@
     "label.submitOrderBySchedule": "スケジュールオーダー登録",
     "label.removeOrderByWorkflow": "ワークフローオーダー削除",
     "label.removeOrderBySchedule": "スケジュールオーダー削除",
+    "label.numOfPeriods": "No. of Periods",
     "button.late": "遅延",
     "button.setStartTime": "開始時刻編集",
     "button.setParameter": "オーダー変数編集",

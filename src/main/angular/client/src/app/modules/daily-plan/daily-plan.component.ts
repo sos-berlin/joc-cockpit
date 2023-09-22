@@ -810,9 +810,20 @@ export class DailyPlanComponent {
     this.loadProjectionForCalendar();
   }
 
+  searchCal(data): void {
+    this.dailyPlanFilters.projection.filter = data;
+    this.loadProjectionForCalendar();
+  }
+
+  cancelCal(): void {
+    this.showSearchPanel = false;
+    this.dailyPlanFilters.projection.filter = {};
+    this.loadProjectionForCalendar();
+  }
+
   private loadProjectionForCalendar(): void {
     this.isLoaded = false;
-    let obj = {
+    let obj: any = {
       controllerIds: [],
       dateFrom: this.getDate(this.dailyPlanFilters.projection.calStartDate),
       dateTo: this.getDate(this.dailyPlanFilters.projection.calEndDate)
@@ -822,12 +833,45 @@ export class DailyPlanComponent {
       obj.controllerIds.push(this.schedulerIds.selected);
     }
 
+    if (this.dailyPlanFilters.projection.filter) {
+      if (this.dailyPlanFilters.projection.filter.workflowPaths?.length > 0) {
+        obj.workflowPaths = this.dailyPlanFilters.projection.filter.workflowPaths;
+      }
+      if (this.dailyPlanFilters.projection.filter.workflowFolders?.length > 0) {
+        obj.workflowFolders = this.dailyPlanFilters.projection.filter.workflowFolders;
+      }
+      if (this.dailyPlanFilters.projection.filter.schedulePaths?.length > 0) {
+        obj.schedules = this.dailyPlanFilters.projection.filter.schedulePaths;
+      }
+      if (this.dailyPlanFilters.projection.filter.scheduleFolders?.length > 0) {
+        obj.scheduleFolders = this.dailyPlanFilters.projection.filter.scheduleFolders;
+      }
+    }
+
     this.coreService.post('daily_plan/projections/calendar', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
-        this.projectionData = res.years;
+        this.projectionData = [];
+        for (const yearKey of Object.keys(res.years)) {
+          const yearData = res.years[yearKey];
+          for (const monthKey of Object.keys(yearData)) {
+            const monthData = yearData[monthKey];
+            for (const dateKey of Object.keys(monthData)) {
+              const dateData = monthData[dateKey];
+              if (dateKey) {
+                let planData: any = {};
+                const date = this.coreService.getDate(dateKey);
+                planData.startDate = date;
+                planData.endDate = date;
+                planData.color = dateData.planned ? 'blue' : 'orange';
+                planData.numOfPeriods = dateData.numOfPeriods;
+                this.projectionData.push(planData);
+              }
+            }
+          }
+        }
         this.isLoaded = true;
       }, error: () => {
-        this.projectionData = {};
+        this.projectionData = undefined;
         this.isLoaded = true;
       }
     });
@@ -1443,97 +1487,118 @@ export class DailyPlanComponent {
   }
 
   exportToExcel(): void {
-    let workflow = '', workflowAndOrder = '', schedule = '', scheduleAndOrder = '', order = '', state = '', late = '',
-      plannedStart = '',
-      exceptedEnd = '', expectedDuration = '',
-      startTime = '', endTime = '', duration = '', repeatInterval = '';
-    this.translate.get('dailyPlan.label.workflow').subscribe(translatedValue => {
-      workflow = translatedValue;
-    });
-    this.translate.get('dailyPlan.label.workflowAndOrder').subscribe(translatedValue => {
-      workflowAndOrder = translatedValue;
-    });
-    this.translate.get('dailyPlan.label.scheduleAndOrder').subscribe(translatedValue => {
-      scheduleAndOrder = translatedValue;
-    });
-    this.translate.get('dailyPlan.label.schedule').subscribe(translatedValue => {
-      schedule = translatedValue;
-    });
-    this.translate.get('dailyPlan.label.order').subscribe(translatedValue => {
-      order = translatedValue;
-    });
-    this.translate.get('dailyPlan.label.state').subscribe(translatedValue => {
-      state = translatedValue;
-    });
-    this.translate.get('dailyPlan.label.late').subscribe(translatedValue => {
-      late = translatedValue;
-    });
-    this.translate.get('dailyPlan.label.plannedStart').subscribe(translatedValue => {
-      plannedStart = translatedValue;
-    });
-    this.translate.get('dailyPlan.label.expectedEnd').subscribe(translatedValue => {
-      exceptedEnd = translatedValue;
-    });
-    this.translate.get('dailyPlan.label.expectedDuration').subscribe(translatedValue => {
-      expectedDuration = translatedValue;
-    });
-    this.translate.get('dailyPlan.label.startTime').subscribe(translatedValue => {
-      startTime = translatedValue;
-    });
-    this.translate.get('dailyPlan.label.endTime').subscribe(translatedValue => {
-      endTime = translatedValue;
-    });
-    this.translate.get('dailyPlan.label.repeatInterval').subscribe(translatedValue => {
-      repeatInterval = translatedValue;
-    });
-    this.translate.get('common.label.duration').subscribe(translatedValue => {
-      duration = translatedValue;
-    });
-
     let data = [];
-    for (let i = 0; i < this.planOrders.length; i++) {
-      let obj: any = {};
-      if (this.dailyPlanFilters.filter.groupBy === '') {
-        obj[order] = this.planOrders[i].orderId;
-        obj[schedule] = this.planOrders[i].schedulePath;
-        obj[workflow] = this.planOrders[i].workflowPath;
-      } else if (this.dailyPlanFilters.filter.groupBy === 'ORDER') {
-        obj[scheduleAndOrder] = this.planOrders[i].value[0].schedulePath;
-        obj[workflow] = this.planOrders[i].value[0].workflowPath;
-      } else {
-        obj[workflowAndOrder] = this.planOrders[i].value[0].workflowPath;
-      }
-      obj[state] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].status : '';
-      obj[late] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].late ? 'late' : '' : '';
-      obj[plannedStart] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].plannedStartTime : '';
-      obj[exceptedEnd] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].expectedEndTime : '';
-      obj[expectedDuration] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].expectedDuration : '';
-      obj[startTime] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].startTime : '';
-      obj[endTime] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].endTime : '';
-      obj[duration] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].duration : '';
-      obj[repeatInterval] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].period.repeat ? 'Repeat every ' + this.planOrders[i].period.repeat + 's' : '' : '';
+    if(this.pageView !== 'projection') {
+      let workflow = '', workflowAndOrder = '', schedule = '', scheduleAndOrder = '', order = '', state = '', late = '',
+        plannedStart = '',
+        exceptedEnd = '', expectedDuration = '',
+        startTime = '', endTime = '', duration = '', repeatInterval = '';
+      this.translate.get('dailyPlan.label.workflow').subscribe(translatedValue => {
+        workflow = translatedValue;
+      });
+      this.translate.get('dailyPlan.label.workflowAndOrder').subscribe(translatedValue => {
+        workflowAndOrder = translatedValue;
+      });
+      this.translate.get('dailyPlan.label.scheduleAndOrder').subscribe(translatedValue => {
+        scheduleAndOrder = translatedValue;
+      });
+      this.translate.get('dailyPlan.label.schedule').subscribe(translatedValue => {
+        schedule = translatedValue;
+      });
+      this.translate.get('dailyPlan.label.order').subscribe(translatedValue => {
+        order = translatedValue;
+      });
+      this.translate.get('dailyPlan.label.state').subscribe(translatedValue => {
+        state = translatedValue;
+      });
+      this.translate.get('dailyPlan.label.late').subscribe(translatedValue => {
+        late = translatedValue;
+      });
+      this.translate.get('dailyPlan.label.plannedStart').subscribe(translatedValue => {
+        plannedStart = translatedValue;
+      });
+      this.translate.get('dailyPlan.label.expectedEnd').subscribe(translatedValue => {
+        exceptedEnd = translatedValue;
+      });
+      this.translate.get('dailyPlan.label.expectedDuration').subscribe(translatedValue => {
+        expectedDuration = translatedValue;
+      });
+      this.translate.get('dailyPlan.label.startTime').subscribe(translatedValue => {
+        startTime = translatedValue;
+      });
+      this.translate.get('dailyPlan.label.endTime').subscribe(translatedValue => {
+        endTime = translatedValue;
+      });
+      this.translate.get('dailyPlan.label.repeatInterval').subscribe(translatedValue => {
+        repeatInterval = translatedValue;
+      });
+      this.translate.get('common.label.duration').subscribe(translatedValue => {
+        duration = translatedValue;
+      });
 
-      data.push(obj);
-      if (this.dailyPlanFilters.filter.groupBy) {
-        for (let j = 0; j < this.planOrders[i].value.length; j++) {
-          obj = {};
-          if (this.dailyPlanFilters.filter.groupBy === 'ORDER') {
-            obj[scheduleAndOrder] = this.planOrders[i].value[j].orderId;
-            obj[workflow] = this.planOrders[i].value[j].workflowPath;
-          } else {
-            obj[workflowAndOrder] = this.planOrders[i].value[0].orderId;
-          }
-          obj[state] = this.planOrders[i].value[j].status;
-          obj[late] = this.planOrders[i].value[j].late ? 'late' : '';
-          obj[plannedStart] = this.planOrders[i].value[j].plannedStartTime;
-          obj[exceptedEnd] = this.planOrders[i].value[j].expectedEndTime;
-          obj[expectedDuration] = this.planOrders[i].value[j].expectedDuration;
-          obj[startTime] = this.planOrders[i].value[j].startTime;
-          obj[endTime] = this.planOrders[i].value[j].endTime;
-          obj[duration] = this.planOrders[i].value[j].duration;
-          obj[repeatInterval] = this.planOrders[i].value[j].period.repeat ? 'Repeat every ' + this.planOrders[i].value[j].period.repeat + 's' : '';
-          data.push(obj);
+      for (let i = 0; i < this.planOrders.length; i++) {
+        let obj: any = {};
+        if (this.dailyPlanFilters.filter.groupBy === '') {
+          obj[order] = this.planOrders[i].orderId;
+          obj[schedule] = this.planOrders[i].schedulePath;
+          obj[workflow] = this.planOrders[i].workflowPath;
+        } else if (this.dailyPlanFilters.filter.groupBy === 'ORDER') {
+          obj[scheduleAndOrder] = this.planOrders[i].value[0].schedulePath;
+          obj[workflow] = this.planOrders[i].value[0].workflowPath;
+        } else {
+          obj[workflowAndOrder] = this.planOrders[i].value[0].workflowPath;
         }
+        obj[state] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].status : '';
+        obj[late] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].late ? 'late' : '' : '';
+        obj[plannedStart] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].plannedStartTime : '';
+        obj[exceptedEnd] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].expectedEndTime : '';
+        obj[expectedDuration] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].expectedDuration : '';
+        obj[startTime] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].startTime : '';
+        obj[endTime] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].endTime : '';
+        obj[duration] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].duration : '';
+        obj[repeatInterval] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].period.repeat ? 'Repeat every ' + this.planOrders[i].period.repeat + 's' : '' : '';
+
+        data.push(obj);
+        if (this.dailyPlanFilters.filter.groupBy) {
+          for (let j = 0; j < this.planOrders[i].value.length; j++) {
+            obj = {};
+            if (this.dailyPlanFilters.filter.groupBy === 'ORDER') {
+              obj[scheduleAndOrder] = this.planOrders[i].value[j].orderId;
+              obj[workflow] = this.planOrders[i].value[j].workflowPath;
+            } else {
+              obj[workflowAndOrder] = this.planOrders[i].value[0].orderId;
+            }
+            obj[state] = this.planOrders[i].value[j].status;
+            obj[late] = this.planOrders[i].value[j].late ? 'late' : '';
+            obj[plannedStart] = this.planOrders[i].value[j].plannedStartTime;
+            obj[exceptedEnd] = this.planOrders[i].value[j].expectedEndTime;
+            obj[expectedDuration] = this.planOrders[i].value[j].expectedDuration;
+            obj[startTime] = this.planOrders[i].value[j].startTime;
+            obj[endTime] = this.planOrders[i].value[j].endTime;
+            obj[duration] = this.planOrders[i].value[j].duration;
+            obj[repeatInterval] = this.planOrders[i].value[j].period.repeat ? 'Repeat every ' + this.planOrders[i].value[j].period.repeat + 's' : '';
+            data.push(obj);
+          }
+        }
+      }
+    } else {
+      let date = '', planned = '', numOfPeriods = '';
+      this.translate.get('user.label.date').subscribe(translatedValue => {
+        date = translatedValue;
+      });
+      this.translate.get('dashboard.label.planned').subscribe(translatedValue => {
+        planned = translatedValue;
+      });
+      this.translate.get('dailyPlan.label.numOfPeriods').subscribe(translatedValue => {
+        numOfPeriods = translatedValue;
+      });
+
+      for (let i = 0; i < this.planOrders.length; i++) {
+        let obj: any = {};
+        obj[date] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].status : '';
+        obj[planned] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].late ? 'late' : '' : '';
+        obj[numOfPeriods] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].plannedStartTime : '';
+        data.push(obj);
       }
     }
     this.excelService.exportAsExcelFile(data, 'JS7-dailyplan');

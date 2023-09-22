@@ -142,6 +142,13 @@
         </nz-tree-select>
       </div>
     </div>
+    <div class="m-b-xs row" *ngIf="filter.paths?.length > 0">
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
+               translate>inventory.label.handleRecursively</label>
+      <div class="col-md-2">
+        <label [(ngModel)]="filter.handleRecursively" name="handleRecursively" nz-checkbox></label>
+      </div>
+    </div>
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
              translate>dailyPlan.label.workflow</label>
