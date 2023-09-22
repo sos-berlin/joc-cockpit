@@ -535,7 +535,6 @@
           elt.append(cellContent);
         } else {
           if (events[0].numOfPeriods) {
-            console.log('???', events[0]);
             let cellContent = $(document.createElement('div'));
             let span2 = $(document.createElement('span'));
             span2.text('(' + events[0].numOfPeriods + ')');

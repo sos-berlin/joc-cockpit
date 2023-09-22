@@ -789,6 +789,7 @@
     "label.submitOrderBySchedule": "Soumettre l'Ordre pour la Planification",
     "label.removeOrderByWorkflow": "Supprimer l'Ordre du Workflow",
     "label.removeOrderBySchedule": "Supprimer l'Ordre de la Planification",
+    "label.numOfPeriods": "No. of Periods",
     "button.late": "En retard",
     "button.setStartTime": "Modifier l'heure de démarrage",
     "button.setParameter": "Modifier la Variable",

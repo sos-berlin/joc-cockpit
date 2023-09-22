@@ -789,6 +789,7 @@
     "label.submitOrderBySchedule": "Submit Order for Schedule",
     "label.removeOrderByWorkflow": "Remove Order for Workflow",
     "label.removeOrderBySchedule": "Remove Order for Schedule",
+    "label.numOfPeriods": "No. of Periods",
     "button.late": "Late",
     "button.setStartTime": "Modify Start Time",
     "button.setParameter": "Modify Variable",

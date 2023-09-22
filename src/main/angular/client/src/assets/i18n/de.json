@@ -789,6 +789,7 @@
     "label.submitOrderBySchedule": "Auftrag für Zeitplan übermitteln",
     "label.removeOrderByWorkflow": "Auftrag für Arbeitsablauf entfernen",
     "label.removeOrderBySchedule": "Auftrag für Zeitplan entfernen",
+    "label.numOfPeriods": "No. of Periods",
     "button.late": "Verspätet",
     "button.setStartTime": "Startzeit ändern",
     "button.setParameter": "Variable ändern",

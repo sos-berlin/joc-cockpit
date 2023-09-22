@@ -231,14 +231,6 @@ export class OrderSearchComponent {
     }
   }
 
-  loadData(node, $event): void {
-    if (!node.origin.type) {
-      if ($event) {
-        $event.stopPropagation();
-      }
-    }
-  }
-
   onSubmit(result): void {
     this.submitted = true;
     const configObj = {
@@ -447,14 +439,6 @@ export class TaskSearchComponent {
     for (let i = 0; i < this.allFilter.length; i++) {
       if (this.filter.name === this.allFilter[i].name && this.authService.currentUserData === this.allFilter[i].account && this.filter.name !== this.existingName) {
         this.isUnique = false;
-      }
-    }
-  }
-
-  loadData(node, $event): void {
-    if (!node.origin.type) {
-      if ($event) {
-        $event.stopPropagation();
       }
     }
   }
@@ -1169,7 +1153,7 @@ export class HistoryComponent {
     if (this.selectedFiltered1.paths && this.selectedFiltered1.paths.length > 0) {
       obj.folders = [];
       this.selectedFiltered1.paths.forEach((value) => {
-        obj.folders.push({folder: value, recursive: false});
+        obj.folders.push({folder: value, recursive: this.selectedFiltered1.handleRecursively});
       });
     }
     if (this.selectedFiltered1.workflowPath) {
@@ -1311,7 +1295,7 @@ export class HistoryComponent {
     if (this.selectedFiltered2.paths && this.selectedFiltered2.paths.length > 0) {
       obj.folders = [];
       this.selectedFiltered2.paths.forEach((value) => {
-        obj.folders.push({folder: value, recursive: false});
+        obj.folders.push({folder: value, recursive: this.selectedFiltered2.handleRecursively});
       });
     }
     if (this.selectedFiltered2.workflowPath) {
@@ -1765,7 +1749,7 @@ export class HistoryComponent {
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
         obj.paths.forEach((value) => {
-          filter.folders.push({folder: value, recursive: false});
+          filter.folders.push({folder: value, recursive: obj.handleRecursively});
         });
       }
       if (obj.workflowPath) {
@@ -1830,7 +1814,7 @@ export class HistoryComponent {
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
         obj.paths.forEach((value) => {
-          filter.folders.push({folder: value, recursive: false});
+          filter.folders.push({folder: value, recursive: obj.handleRecursively});
         });
       }
       if (obj.workflowPath) {
@@ -1869,12 +1853,6 @@ export class HistoryComponent {
 
       if (obj.controllerId) {
         filter.controllerId = obj.controllerId;
-      }
-      if (obj.paths && obj.paths.length > 0) {
-        filter.folders = [];
-        obj.paths.forEach((value) => {
-          filter.folders.push({folder: value, recursive: false});
-        });
       }
 
       this.convertDeployRequestBody(filter);
