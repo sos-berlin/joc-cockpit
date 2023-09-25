@@ -1,6 +1,6 @@
 <div *ngIf="showSearchPanel" class="row">
   <div class="col-md-12">
-    <div class="box p-t-sm p-b-12">
+    <div class="box p-t-sm p-b-12" style="padding-bottom: 8px">
       <form (ngSubmit)="onSubmit()">
         <div class="modal-header p-t-0 bg-transparent" [ngClass]="isHide ? 'b-b-0 p-b-0' : 'p-b-sm'">
           <h4 class="modal-title">
@@ -24,7 +24,7 @@
             </div>
           </div>
           <div *ngIf="filter.workflowFolders.length > 0" class="form-group row">
-            <label class="col-md-2" translate>common.label.folders</label>
+            <label class="col-md-2" translate>dailyPlan.label.workflowFolders</label>
             <div class="col-sm-6" style="max-height: 140px; overflow: auto">
               <div *ngFor="let path of filter.workflowFolders">
                 <span>{{path}}</span>
@@ -42,7 +42,7 @@
             </div>
           </div>
           <div *ngIf="filter.scheduleFolders.length > 0" class="form-group row">
-            <label class="col-md-2" translate>common.label.folders</label>
+            <label class="col-md-2" translate>dailyPlan.label.scheduleFolders</label>
             <div class="col-sm-6" style="max-height: 140px; overflow: auto">
               <div *ngFor="let path of filter.scheduleFolders">
                 <span class="">{{path}}</span>
@@ -65,7 +65,7 @@
     </div>
   </div>
 </div>
-<div class="box scroll-y p-a m-b">
+<div class="box h-full overflow-y p-a m-b">
   <div class="calendar-lg" id="full-calendar-projection"></div>
 </div>
 
@@ -74,57 +74,3 @@
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
 </div>
-
-<nz-drawer (nzOnClose)="close()" [nzVisible]="isVisible" nzPlacement="right">
-  <ng-container *nzDrawerContent>
-    <div (click)="close()" class="close-btn"></div>
-    <div class="text-center m-b-sm text">
-      <span class="_600 b-b p-b-sm m-l-sm">
-        <i *ngIf="schedule?.list?.length > 0" class="fa fa-circle p-r-xs" [ngClass]="schedule.planned ? 'text-primary' : 'orange'"></i>
-          {{schedule.date}}</span>
-    </div>
-    <div class="p-a" *ngIf="schedule.list">
-      <perfect-scrollbar class="table-responsive" style="max-height: 90vh; overflow: auto;height: 92vh">
-        <div class="table-responsive">
-          <table class="table table-hover table-bordered ">
-            <thead>
-            <tr>
-              <th><span translate>inventory.label.schedule</span></th>
-              <th><span translate>runtime.label.period</span></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let sch of schedule.list | orderBy: 'schedule'">
-              <td>
-                  <span class="show-in-single-line">
-                    <a class="cursor text-hover-primary" *ngIf="permission.joc && permission.joc.inventory.view"
-                       (click)="coreService.navToInventoryTab(sch['schedule'], 'SCHEDULE');"><i
-                      class="fa fa-pencil"></i>
-                    </a>
-                    <i class="icon-color tree-icon p-l-xs p-r-xxs" nz-icon nzTheme="outline" nzType="schedule"></i>
-                    {{sch['schedule']}}
-                  </span>
-              </td>
-              <td>
-                <div *ngFor="let p of sch['periods'];">
-                  {{getPeriodStr(p['period'])}}
-                </div>
-              </td>
-            </tr>
-            <tr *ngIf="schedule.list?.length == 0 && !schedule.loading">
-              <td colspan="2">
-                <app-empty-data></app-empty-data>
-              </td>
-            </tr>
-            <tr *ngIf="schedule.loading">
-              <td colspan="2">
-                <nz-spin></nz-spin>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </perfect-scrollbar>
-    </div>
-  </ng-container>
-</nz-drawer>

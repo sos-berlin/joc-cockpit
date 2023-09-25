@@ -58,6 +58,10 @@
   --range-start: rgba(255, 140, 0, .85);
   --btn-secondary: rgba(255, 140, 0, .87);
   --btn-secondary-hover: rgb(255, 140, 0);
+  --date-planned: rgba(14, 138, 139, .95);
+  --date-planned-hover: rgba(14, 138, 139, 0.85);
+  --date-unplanned: rgba(14, 138, 139, 0.7);
+  --date-unplanned-hover: rgba(14, 138, 139, 0.6);
 }
 
 /***
@@ -6016,6 +6020,10 @@ General CSS
   padding-top: 10px;
 }
 
+.p-b-12 {
+  padding-bottom: 12px !important;
+}
+
 .p-t-96 {
   padding-top: 96px;
 }
@@ -8763,6 +8771,10 @@ td .p-a-b-b-0 {
 
 .max-ht-n-155 {
   height: calc(100vh - 155px);
+}
+
+.max-ht-n-208 {
+  height: calc(100vh - 208px);
 }
 
 .max-ht-n-560 {

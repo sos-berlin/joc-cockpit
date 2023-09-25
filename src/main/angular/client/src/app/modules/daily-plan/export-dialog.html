@@ -1,0 +1,78 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>inventory.label.export</span>
+    <span *ngIf="path">:
+      {{path}}
+    </span>
+  </h4>
+  <button (click)="cancel()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a p-t p-b-xs">
+    <div class="form-group row">
+      <label class="col-md-2 form-control-label"
+             translate>dailyPlan.label.workflows</label>
+      <div class="col-sm-6">
+        <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="filter" [list]="filter"
+                          [nodes]="workflowTree" [pathAttribute]="'workflowFolders'"
+                          [type]="'WORKFLOW'"></app-multi-select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+        <div *ngFor="let path of filter.workflowFolders">
+          <span>{{path}}</span>
+          <i (click)="remove(path, true)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-2 form-control-label"
+             translate>dailyPlan.label.schedules</label>
+      <div class="col-sm-6">
+        <app-multi-select [addFolderPossible]="true" [attribute]="'schedulePaths'" [folders]="filter" [list]="filter"
+                          [nodes]="scheduleTree" [pathAttribute]="'scheduleFolders'"
+                          [type]="'SCHEDULE'"></app-multi-select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+        <div *ngFor="let path of filter.scheduleFolders">
+          <span class="">{{path}}</span>
+          <i (click)="remove(path)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-md-2" translate>common.placeholder.startDate
+      </label>
+      <div class="col-sm-6">
+        <app-date-input [attributeDate]="startDate"
+        ></app-date-input>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-2" translate>common.placeholder.endDate</label>
+      <div class="col-sm-6">
+        <app-date-input [attributeDate]="startDate"
+        ></app-date-input>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer text-left">
+    <button [disabled]="!myForm.form.valid || submitted || loading "
+            class="btn btn-primary btn-sm"
+            type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
+      common.button.cancel
+    </button>
+  </div>
+</form>
+

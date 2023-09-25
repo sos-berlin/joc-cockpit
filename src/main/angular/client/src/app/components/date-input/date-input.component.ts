@@ -23,6 +23,7 @@ export class DateInputComponent {
   @Input() isRequired = false;
   @Input() isAutoFocus = false;
   @Input() isPreviousDateDisabled = false;
+  @Input() isNextDateDisabled: any
   @Input() dateFormat = '';
   @Input() object: any = {};
   @Input() attributeDate = '';
@@ -48,11 +49,20 @@ export class DateInputComponent {
   }
 
   disabledDate = (current: Date): boolean => {
-    // Can not select days before today and today
-    if (!this.isPreviousDateDisabled) {
-      return false;
+    if (this.isPreviousDateDisabled && differenceInCalendarDays(current, new Date()) < 0) {
+      return true;
     }
-    return differenceInCalendarDays(current, new Date()) < 0;
+
+    const isoDateString = this.isNextDateDisabled;
+    const nextDate = new Date(isoDateString);
+
+    if (this.isNextDateDisabled && current >= nextDate) {
+      return true;
+    }
+
+    return false;
   }
+
+
 
 }

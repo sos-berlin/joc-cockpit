@@ -786,6 +786,8 @@
     "label.removeOrderByWorkflow": "Remove Order for Workflow",
     "label.removeOrderBySchedule": "Remove Order for Schedule",
     "label.numOfPeriods": "No. of Periods",
+    "label.workflowFolders": "Workflow Folders",
+    "label.scheduleFolders": "Schedule Folders",
     "button.late": "Late",
     "button.setStartTime": "Modify Start Time",
     "button.setParameter": "Modify Variable",
@@ -825,7 +827,11 @@
     "popup.differentModifyStartTime": "{{n1}} different planned start times",
     "tooltip.dateRangeSelectStep1": "Hold mouse and drag to select date range",
     "tooltip.dateRangeSelectStep2": "Or press Ctrl key and select start date and end date using mouse click",
-    "tooltip.dateRangeSelectStep3": "Or click calendar icon and then select start date and end date using mouse click"
+    "tooltip.dateRangeSelectStep3": "Or click calendar icon and then select start date and end date using mouse click",
+    "tab": {
+      "dailyPlan": "Daily Plan",
+      "projection": "Projection"
+    }
   },
   "deploymentService": {
     "label": {

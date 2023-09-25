@@ -161,8 +161,13 @@
         headerTable.append(nextDiv);
         header.append(headerTable);
       } else {
+
         let headerDiv = $(document.createElement('div'));
         headerDiv.addClass('month-header');
+        let prevIcon2 = $(document.createElement('i'));
+        prevIcon2.addClass('fa fa-angle-double-left');
+        headerDiv.append(prevIcon2);
+
         let prevIcon = $(document.createElement('i'));
         prevIcon.addClass('fa fa-angle-left');
         headerDiv.append(prevIcon);
@@ -177,6 +182,10 @@
         let nextDiv = $(document.createElement('i'));
         nextDiv.addClass('fa fa-angle-right');
         headerDiv.append(nextDiv);
+
+        let nextDiv2 = $(document.createElement('i'));
+        nextDiv2.addClass('fa fa-angle-double-right');
+        headerDiv.append(nextDiv2);
         if (this.options.showBack) {
           let backDiv = $(document.createElement('i'));
           backDiv.addClass('fa fa-arrow-left back-arrow');
@@ -537,7 +546,7 @@
           if (events[0].numOfPeriods) {
             let cellContent = $(document.createElement('div'));
             let span2 = $(document.createElement('span'));
-            span2.text('(' + events[0].numOfPeriods + ')');
+            span2.text( events[0].numOfPeriods);
             cellContent.addClass('plan-time year-periods-count');
             cellContent.append(span2);
             elt.append(cellContent);
@@ -583,6 +592,18 @@
       this.element.find('.month-header .fa-angle-right').click(function () {
         if (!$(this).hasClass('disabled')) {
           _this.setMonth(_this.options.startMonth + 1)
+        }
+      });
+
+      this.element.find('.month-header .fa-angle-double-left').click(function () {
+        if (!$(this).hasClass('disabled')) {
+          _this.setYear(_this.options.startYear - 1)
+        }
+      });
+
+      this.element.find('.month-header .fa-angle-double-right').click(function () {
+        if (!$(this).hasClass('disabled')) {
+          _this.setYear(_this.options.startYear + 1)
         }
       });
 
