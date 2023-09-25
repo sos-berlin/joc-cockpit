@@ -6,6 +6,7 @@
     [nzDisabledDate]="disabledDate"
     [(ngModel)]="object[attributeDate]"
     [nzFormat]="dateFormat"
+    (ngModelChange)="modelChange.emit($event)"
     [nzAllowClear]="!isTime && isAllowClear"
     [nzPlaceHolder]="placeholder | translate" [name]="name + 'Date'"></nz-date-picker>
   <ng-container *ngIf="isTime">

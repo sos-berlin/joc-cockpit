@@ -694,7 +694,7 @@ export class DailyPlanComponent {
   planOrders: any = [];
   isLoaded = false;
   isRefreshed = false;
-  dailyPlanFilters: any = {filter: {}};
+  dailyPlanFilters: any = {filter: {}, index: 0};
   pageView = '';
   savedFilter: any = {};
   selectedFiltered: any = {};
@@ -766,7 +766,7 @@ export class DailyPlanComponent {
 
   ngOnInit(): void {
     this.initConf();
-    if (this.pageView === 'grid' || this.pageView === 'projection') {
+    if (this.pageView === 'grid') {
       this.isToggle = true;
     }
   }
@@ -821,7 +821,7 @@ export class DailyPlanComponent {
     this.loadProjectionForCalendar();
   }
 
-  private loadProjectionForCalendar(): void {
+  loadProjectionForCalendar(): void {
     this.isLoaded = false;
     let obj: any = {
       controllerIds: [],
@@ -838,13 +838,25 @@ export class DailyPlanComponent {
         obj.workflowPaths = this.dailyPlanFilters.projection.filter.workflowPaths;
       }
       if (this.dailyPlanFilters.projection.filter.workflowFolders?.length > 0) {
-        obj.workflowFolders = this.dailyPlanFilters.projection.filter.workflowFolders;
+        obj.workflowFolders = [];
+        this.dailyPlanFilters.projection.filter.workflowFolders.forEach((path) => {
+          obj.scheduleFolders.push({
+            folder: path,
+            recursive: true
+          })
+        })
       }
       if (this.dailyPlanFilters.projection.filter.schedulePaths?.length > 0) {
         obj.schedules = this.dailyPlanFilters.projection.filter.schedulePaths;
       }
       if (this.dailyPlanFilters.projection.filter.scheduleFolders?.length > 0) {
-        obj.scheduleFolders = this.dailyPlanFilters.projection.filter.scheduleFolders;
+        obj.scheduleFolders = [];
+        this.dailyPlanFilters.projection.filter.scheduleFolders.forEach((path) => {
+          obj.scheduleFolders.push({
+            folder: path,
+            recursive: true
+          })
+        })
       }
     }
 
@@ -888,10 +900,12 @@ export class DailyPlanComponent {
     };
     if (this.selectedFiltered && this.selectedFiltered.name) {
       this.selectedDate = new Date();
+
       const dom = $('#full-calendar');
       if (dom && dom.data('calendar')) {
         dom.data('calendar').setSelectedDate(this.selectedDate);
       }
+
       this.applySearchFilter(obj, this.selectedFiltered);
       if (this.selectedFiltered.from && this.selectedFiltered.to) {
         this.getDatesByUrl([this.selectedFiltered.from, this.selectedFiltered.to], (dates) => {
@@ -1488,7 +1502,7 @@ export class DailyPlanComponent {
 
   exportToExcel(): void {
     let data = [];
-    if(this.pageView !== 'projection') {
+    if (this.dailyPlanFilters.tabIndex == 0) {
       let workflow = '', workflowAndOrder = '', schedule = '', scheduleAndOrder = '', order = '', state = '', late = '',
         plannedStart = '',
         exceptedEnd = '', expectedDuration = '',
@@ -1593,11 +1607,11 @@ export class DailyPlanComponent {
         numOfPeriods = translatedValue;
       });
 
-      for (let i = 0; i < this.planOrders.length; i++) {
+      for (let i = 0; i < this.projectionData.length; i++) {
         let obj: any = {};
-        obj[date] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].status : '';
-        obj[planned] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].late ? 'late' : '' : '';
-        obj[numOfPeriods] = this.dailyPlanFilters.filter.groupBy === '' ? this.planOrders[i].plannedStartTime : '';
+        obj[date] = this.projectionData[i].status;
+        obj[planned] = this.projectionData[i];
+        obj[numOfPeriods] = this.projectionData[i];
         data.push(obj);
       }
     }
@@ -1927,11 +1941,6 @@ export class DailyPlanComponent {
   receiveMessage($event): void {
     if ($event === 'grid' || $event === 'projection') {
       this.isToggle = true;
-    }
-    if ($event === 'projection') {
-      this.changeInCalendar();
-    } else if (this.pageView == 'projection') {
-      this.reloadDailyPlan()
     }
     this.pageView = $event;
     this.resetCheckBox();
@@ -2302,6 +2311,15 @@ export class DailyPlanComponent {
     }
   }
 
+  tabChange($event): void {
+    this.dailyPlanFilters.tabIndex = $event.index;
+    if (this.dailyPlanFilters.tabIndex === 1) {
+      this.changeInCalendar();
+    } else {
+      this.reloadDailyPlan()
+    }
+  }
+
   private initConf(): void {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
@@ -2315,7 +2333,7 @@ export class DailyPlanComponent {
     if (localStorage['views']) {
       this.pageView = JSON.parse(localStorage['views']).dailyPlan;
     }
-    if (this.pageView === 'projection') {
+    if (this.dailyPlanFilters.tabIndex !== 0) {
       this.changeInCalendar();
     } else {
       this.reloadDailyPlan();
@@ -2351,49 +2369,51 @@ export class DailyPlanComponent {
       this.isLoaded = false;
       this.loadOrderPlan();
     }
-    $('#full-calendar').calendar({
-      view: 'month',
-      rangeSelection: true,
-      language: this.coreService.getLocale(),
-      selectedDate: this.selectedDate,
-      clickDay: (e) => {
-        this.selectedDate = e.date;
-        this.isPastDate = this.selectedDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
-        this.submissionHistory = e.events;
-        this.selectedSubmissionId = null;
-        this.showSearchPanel = false;
-        this.isCalendarClick = false;
-        this.searchFilter = {};
-        this.isSearchHit = false;
-
-        if (this.selectedFiltered && this.selectedFiltered.name) {
-          this.changeFilter(null);
-        } else {
-          this.isLoaded = false;
-          this.loadOrderPlan();
-        }
-      },
-      renderEnd: (e) => {
-        const year = e.currentYear || new Date().getFullYear();
-        const month = (e.currentMonth || e.currentMonth === 0) ? e.currentMonth : new Date().getMonth();
-        this.selectedYear = year;
-        this.selectedMonth = month;
-        this.load(new Date(year, month, 1));
-        if (this.dateRanges && this.dateRanges.length > 1) {
-          $('#full-calendar').data('calendar').checkRange({from: this.dateRanges[0], to: this.dateRanges[1]});
-        }
-      },
-      rangeEnd: (e) => {
-        this.dateRanges = e.dateRanges;
-        this.isCalendarClick = false;
-        if (this.dateRanges && this.dateRanges.length > 0) {
-          this.resetCheckBox(true);
-          this.isPastDate = new Date(this.dateRanges[0]).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
-        } else {
+    setTimeout(() => {
+      $('#full-calendar').calendar({
+        view: 'month',
+        rangeSelection: true,
+        language: this.coreService.getLocale(),
+        selectedDate: this.selectedDate,
+        clickDay: (e) => {
+          this.selectedDate = e.date;
           this.isPastDate = this.selectedDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
+          this.submissionHistory = e.events;
+          this.selectedSubmissionId = null;
+          this.showSearchPanel = false;
+          this.isCalendarClick = false;
+          this.searchFilter = {};
+          this.isSearchHit = false;
+
+          if (this.selectedFiltered && this.selectedFiltered.name) {
+            this.changeFilter(null);
+          } else {
+            this.isLoaded = false;
+            this.loadOrderPlan();
+          }
+        },
+        renderEnd: (e) => {
+          const year = e.currentYear || new Date().getFullYear();
+          const month = (e.currentMonth || e.currentMonth === 0) ? e.currentMonth : new Date().getMonth();
+          this.selectedYear = year;
+          this.selectedMonth = month;
+          this.load(new Date(year, month, 1));
+          if (this.dateRanges && this.dateRanges.length > 1) {
+            $('#full-calendar').data('calendar').checkRange({from: this.dateRanges[0], to: this.dateRanges[1]});
+          }
+        },
+        rangeEnd: (e) => {
+          this.dateRanges = e.dateRanges;
+          this.isCalendarClick = false;
+          if (this.dateRanges && this.dateRanges.length > 0) {
+            this.resetCheckBox(true);
+            this.isPastDate = new Date(this.dateRanges[0]).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
+          } else {
+            this.isPastDate = this.selectedDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
+          }
         }
-      }
-    });
+      });
+    }, 100)
   }
 
   private refresh(args: { eventSnapshots: any[] }): void {

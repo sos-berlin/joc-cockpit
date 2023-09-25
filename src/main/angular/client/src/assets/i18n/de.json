@@ -790,6 +790,8 @@
     "label.removeOrderByWorkflow": "Auftrag für Arbeitsablauf entfernen",
     "label.removeOrderBySchedule": "Auftrag für Zeitplan entfernen",
     "label.numOfPeriods": "No. of Periods",
+    "label.workflowFolders": "Workflow Folders",
+    "label.scheduleFolders": "Schedule Folders",
     "button.late": "Verspätet",
     "button.setStartTime": "Startzeit ändern",
     "button.setParameter": "Variable ändern",
@@ -829,7 +831,11 @@
     "popup.differentModifyStartTime": "{{n1}} unterschiedliche geplante Startzeiten",
     "tooltip.dateRangeSelectStep1": "Mauszeiger gedrückt halten und ziehen, um Datumsbereich auszuwählen",
     "tooltip.dateRangeSelectStep2": "oder CTRL Taste gedrückt halten und Startdatum & Enddatum per Mausklick auswählen",
-    "tooltip.dateRangeSelectStep3": "oder Kalendersymbol anklicken und Startdatum & Enddatum per Mausklick auswählen"
+    "tooltip.dateRangeSelectStep3": "oder Kalendersymbol anklicken und Startdatum & Enddatum per Mausklick auswählen",
+    "tab": {
+      "dailyPlan": "Daily Plan",
+      "projection": "Projection"
+    }
   },
   "deploymentService": {
     "label": {

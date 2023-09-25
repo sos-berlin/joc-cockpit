@@ -193,6 +193,7 @@ export class CoreService {
     this.tabs._daliyPlan.filter.late = false;
     this.tabs._daliyPlan.filter.sortBy = 'plannedStartTime';
     this.tabs._daliyPlan.reverse = true;
+    this.tabs._daliyPlan.tabIndex = 0;
     this.tabs._daliyPlan.currentPage = '1';
     this.tabs._daliyPlan.selectedView = true;
 

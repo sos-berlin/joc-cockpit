@@ -45,7 +45,7 @@
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
                 <div class="col-sm-5">
-                  <app-date-input [object]="frequency" [attributeDate]="'startingWithW'" [isRequired]="true"
+                  <app-date-input [object]="frequency" [attributeDate]="'startingWithW'" [isPreviousDateDisabled]="calendar.configuration.from" [isNextDateDisabled]="calendar.configuration.to"
                                   [name]="'startingWithW'" [dateFormat]="dateFormat" [isAllowClear]="true"
                                   [placeholder]="'runtime.placeholder.startDate'" (modelChange)="onDateChange()"
                   ></app-date-input>
@@ -55,8 +55,8 @@
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validTo</label>
 
                 <div class="col-sm-5">
-                  <app-date-input [object]="frequency" [attributeDate]="'endOnW'" [isRequired]="true"
-                                  [name]="'endOnW'" [dateFormat]="dateFormat" [isAllowClear]="true"
+                  <app-date-input [object]="frequency" [attributeDate]="'endOnW'"
+                                  [name]="'endOnW'" [dateFormat]="dateFormat" [isAllowClear]="true" [isPreviousDateDisabled]="frequency.startingWithW" [isNextDateDisabled]="calendar.configuration.to"
                                   [placeholder]="'runtime.placeholder.endDate'" (modelChange)="onDateChange()"
                   ></app-date-input>
                 </div>
@@ -84,7 +84,8 @@
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
 
                 <div class="col-sm-5">
-                  <app-date-input [object]="frequency" [attributeDate]="'startingWithS'"
+                  <app-date-input [object]="frequency" [attributeDate]="'startingWithS'" [isPreviousDateDisabled]="calendar.configuration.from"
+                                  [isNextDateDisabled]="calendar.configuration.to"
                                   [name]="'startingWithS'" [dateFormat]="dateFormat" [isAllowClear]="true"
                                   [placeholder]="'runtime.placeholder.startDate'" (modelChange)="onDateChange()"
                   ></app-date-input>
@@ -94,6 +95,7 @@
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validTo</label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOnS'"
+                                  [isPreviousDateDisabled]="frequency.startingWithS" [isNextDateDisabled]="calendar.configuration.to"
                                   [name]="'endOnS'" [dateFormat]="dateFormat" [isAllowClear]="true"
                                   [placeholder]="'runtime.placeholder.endDate'" (modelChange)="onDateChange()"
                   ></app-date-input>
@@ -206,6 +208,7 @@
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWithM'"
+                                  [isPreviousDateDisabled]="calendar.configuration.from" [isNextDateDisabled]="calendar.configuration.to"
                                   [name]="'startingWithM'" [dateFormat]="dateFormat" [isAllowClear]="true"
                                   [placeholder]="'runtime.placeholder.startDate'" (modelChange)="onDateChange()"
                   ></app-date-input>
@@ -215,6 +218,7 @@
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validTo</label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOnM'"
+                                  [isPreviousDateDisabled]="frequency.startingWithM" [isNextDateDisabled]="calendar.configuration.to"
                                   [name]="'endOnM'" [dateFormat]="dateFormat" [isAllowClear]="true"
                                   [placeholder]="'runtime.placeholder.endDate'" (modelChange)="onDateChange()"
                   ></app-date-input>
@@ -242,16 +246,21 @@
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-sm-5">
-                  <app-date-input [object]="frequency" [attributeDate]="'startingWith'" [isRequired]="frequency.tab == 'every'"
+                  <app-date-input [object]="frequency" [attributeDate]="'startingWith'" [isRequired]="true"
+                                  [isPreviousDateDisabled]="calendar.configuration.from" [isNextDateDisabled]="calendar.configuration.to"
                                   [name]="'startingWith'" [dateFormat]="dateFormat" [isAllowClear]="true"
                                   [placeholder]="dateFormat | uppercase" (modelChange)="onDateChange()"
                   ></app-date-input>
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>runtime.label.validTo</label>
+                <label class="col-sm-3 form-control-label" translate>
+                  runtime.label.validTo
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
                 <div class="col-sm-5">
-                  <app-date-input [object]="frequency" [attributeDate]="'endOn'"
+                  <app-date-input [object]="frequency" [attributeDate]="'endOn'" [isRequired]="true"
+                                  [isPreviousDateDisabled]="frequency.startingWith" [isNextDateDisabled]="calendar.configuration.to"
                                   [name]="'endOn'" [dateFormat]="dateFormat" [isAllowClear]="true"
                                   [placeholder]="(dateFormat | uppercase)" (modelChange)="onDateChange()"
                   ></app-date-input>
@@ -394,7 +403,7 @@
       </div>
     </div>
     <button *ngIf="!editor.showYearView" type="button" class="btn btn-primary btn-sm b-85"
-            [disabled]="!editor.isEnable || (frequency.tab == 'every' && !frequency.startingWith)"
+            [disabled]="!editor.isEnable || (frequency.tab == 'every' && (!frequency.startingWith || !frequency.endOn))"
             (click)="addFrequency()">
       <span *ngIf="editor.create" translate>runtime.button.addNewFrequency</span>
       <span *ngIf="!editor.create" translate>runtime.button.updateFrequency</span>

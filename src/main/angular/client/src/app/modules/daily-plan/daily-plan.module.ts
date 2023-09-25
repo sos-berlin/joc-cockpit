@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {NzDrawerModule} from "ng-zorro-antd/drawer";
+import {NzTabsModule} from "ng-zorro-antd/tabs";
 import {
   DailyPlanComponent,
   FilterModalComponent,
@@ -11,17 +11,17 @@ import {
 import {SharedModule} from '../shared/shared.module';
 import {DailyPlanRoutingModule} from './daily-plan-routing.module';
 import {DailyPlanRegexValidator} from '../../directives/core.directive';
-import {ProjectionComponent} from "./projection/projection.component";
+import {ProjectionComponent, ShowProjectionModalComponent} from "./projection/projection.component";
 import {GroupByPipe} from '../../pipes/core.pipe';
 
 @NgModule({
   imports: [
     SharedModule,
     DailyPlanRoutingModule,
-    NzDrawerModule
+    NzTabsModule
   ],
   declarations: [DailyPlanComponent, GanttComponent, ProjectionComponent, RemovePlanModalComponent, FilterModalComponent,
-    SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent],
+    SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, ShowProjectionModalComponent],
   providers: [GroupByPipe]
 })
 export class DailyPlanModule {

@@ -1,8 +1,102 @@
-import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output, SimpleChanges} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {groupBy, isEmpty} from "underscore";
 import {CoreService} from "../../../services/core.service";
+import {SearchPipe} from "../../../pipes/core.pipe";
 
 declare const $;
+
+@Component({
+  selector: 'app-projection-dialog-modal-content',
+  templateUrl: './projection-dialog.html'
+})
+export class ShowProjectionModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedule: any = {};
+  preferences: any = {};
+  permission: any = {};
+  filter: any = {};
+  data: any = [];
+  loading = true;
+
+  searchableProperties = ['workflow', 'schedule']
+
+  constructor(public activeModal: NzModalRef, public coreService: CoreService,
+              private searchPipe: SearchPipe) {
+  }
+
+  ngOnInit(): void {
+    this.schedule = this.modalData.schedule;
+    this.permission = this.modalData.permission;
+    this.preferences = this.modalData.preferences;
+    this.filter = this.modalData.filter;
+    this.loadData();
+  }
+
+  private loadData(): void {
+    this.coreService.post('daily_plan/projections/date', this.modalData.obj).subscribe({
+      next: (res) => {
+        this.schedule.planned = res.planned;
+        const data = groupBy(res.periods, (res) => {
+          return res.schedule;
+        });
+        for (const key of Object.keys(data)) {
+          this.schedule.list.push(
+            {
+              schedule: key,
+              periods: data[key]
+            }
+          )
+        }
+        this.loading = false;
+        this.searchInResult();
+      }, error: () => this.loading = false
+    });
+  }
+
+  searchInResult(): void {
+    this.data = this.filter.searchText ? this.searchPipe.transform(this.schedule.list, this.filter.searchText, this.searchableProperties) : this.schedule.list;
+    this.data = [...this.data];
+  }
+
+  sort(propertyName: string): void {
+    this.filter.reverse = !this.filter.reverse;
+    this.filter.sortBy = propertyName;
+  }
+
+  getPeriodStr(period): string {
+    let periodStr = null;
+    if (period.begin) {
+      periodStr = this.coreService.getDateByFormat(period.begin, null, 'HH:mm:ss');
+    }
+    if (period.end) {
+      periodStr = periodStr + '-' + this.coreService.getDateByFormat(period.end, null, 'HH:mm:ss');
+    }
+    if (period.singleStart) {
+      periodStr = 'Single start: ' + this.coreService.getDateByFormat(period.singleStart, null, 'HH:mm:ss');
+    } else if (period.repeat) {
+      periodStr = periodStr + ' every ' + this.getTimeInString(period.repeat);
+    }
+    return periodStr;
+  }
+
+  private getTimeInString(time: any): string {
+    if (time.toString().substring(0, 2) === '00' && time.toString().substring(3, 5) === '00') {
+      return time.toString().substring(6, time.length) + ' seconds';
+    } else if (time.toString().substring(0, 2) === '00') {
+      return time.toString().substring(3, time.length) + ' minutes';
+    } else if ((time.toString().substring(0, 2) != '00' && time.length === 5) || (time.length > 5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) === '00'))) {
+      return time.toString().substring(0, 5) + ' hours';
+    } else {
+      return time;
+    }
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+
+}
 
 @Component({
   selector: 'app-projection',
@@ -38,19 +132,16 @@ export class ProjectionComponent {
   submitted: boolean;
 
 
-  constructor(public coreService: CoreService) {
+  constructor(public coreService: CoreService, private modal: NzModalService) {
   }
 
   ngOnInit(): void {
     if (this.filters.filter && !isEmpty(this.filters.filter)) {
       this.filter = this.filters.filter;
-      console.log(this.filter)
-      console.log(this.showSearchPanel, this.isHide)
       if (!this.showSearchPanel) {
         this.showSearchPanel = true;
         this.isHide = true;
       }
-      console.log(this.showSearchPanel, this.isHide, 'afetr.........')
     }
   }
 
@@ -86,55 +177,65 @@ export class ProjectionComponent {
       loading: true,
       list: []
     };
-
     this.schedule.date = this.coreService.getDateByFormat(event.date, this.preferences.zone, 'YYYY-MM-DD');
-    this.coreService.post('daily_plan/projections/date', {
+    const obj: any = {
       date: this.schedule.date
-    }).subscribe({
-      next: (res) => {
-        this.schedule.planned = res.planned;
-        const data = groupBy(res.periods, (res) => {
-          return res.schedule;
-        });
-        for (const key of Object.keys(data)) {
-          this.schedule.list.push(
-            {
-              schedule: key,
-              periods: data[key]
-            }
-          )
-        }
-        this.schedule.loading = false;
-      }, error: () => this.schedule.loading = false
+    };
+    if (this.filters.current) {
+      obj.controllerIds.push(this.schedulerId);
+    }
+    if (this.filters.filter) {
+      if (this.filters.filter.workflowPaths?.length > 0) {
+        obj.workflowPaths = this.filters.filter.workflowPaths;
+      }
+      if (this.filters.filter.workflowFolders?.length > 0) {
+        obj.workflowFolders = [];
+        this.filters.filter.workflowFolders.forEach((path) => {
+          obj.workflowFolders.push({
+            folder: path,
+            recursive: true
+          })
+        })
+      }
+      if (this.filters.filter.schedulePaths?.length > 0) {
+        obj.schedules = this.filters.filter.schedulePaths;
+      }
+      if (this.filters.filter.scheduleFolders?.length > 0) {
+        obj.scheduleFolders = [];
+        this.filters.filter.scheduleFolders.forEach((path) => {
+          obj.scheduleFolders.push({
+            folder: path,
+            recursive: true
+          })
+        })
+      }
+    }
+
+    if(!this.filters.showDetail) {
+      this.filters.showDetail = {
+        sortBy: 'schedule',
+        reverse: false,
+        currentPage: 1,
+        searchText: ''
+      };
+    }
+
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ShowProjectionModalComponent,
+      nzClassName: 'lg',
+      nzData: {
+        schedule: this.schedule,
+        permission: this.permission,
+        preferences: this.preferences,
+        filter: this.filters.showDetail,
+        obj
+      },
+      nzFooter: null,
+      nzAutofocus: undefined,
+      nzClosable: false,
+      nzMaskClosable: false
     });
-  }
-
-  getPeriodStr(period): string {
-    let periodStr = null;
-    if (period.begin) {
-      periodStr = this.coreService.getDateByFormat(period.begin, null, 'HH:mm:ss');
-    }
-    if (period.end) {
-      periodStr = periodStr + '-' + this.coreService.getDateByFormat(period.end, null, 'HH:mm:ss');
-    }
-    if (period.singleStart) {
-      periodStr = 'Single start: ' + this.coreService.getDateByFormat(period.singleStart, null, 'HH:mm:ss');
-    } else if (period.repeat) {
-      periodStr = periodStr + ' every ' + this.getTimeInString(period.repeat);
-    }
-    return periodStr;
-  }
-
-  private getTimeInString(time: any): string {
-    if (time.toString().substring(0, 2) === '00' && time.toString().substring(3, 5) === '00') {
-      return time.toString().substring(6, time.length) + ' seconds';
-    } else if (time.toString().substring(0, 2) === '00') {
-      return time.toString().substring(3, time.length) + ' minutes';
-    } else if ((time.toString().substring(0, 2) != '00' && time.length === 5) || (time.length > 5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) === '00'))) {
-      return time.toString().substring(0, 5) + ' hours';
-    } else {
-      return time;
-    }
   }
 
   private showCalendar(): void {
@@ -145,7 +246,6 @@ export class ProjectionComponent {
         language: this.coreService.getLocale(),
         view: this.filters.calView.toLowerCase(),
         renderEnd: (e) => {
-          console.log(e)
           let reload = false;
           if (this.filters.calView.toLowerCase() !== e.view) {
             this.filters.calView = e.view == 'month' ? 'Month' : 'Year';

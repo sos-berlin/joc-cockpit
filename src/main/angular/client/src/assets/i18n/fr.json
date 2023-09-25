@@ -790,6 +790,8 @@
     "label.removeOrderByWorkflow": "Supprimer l'Ordre du Workflow",
     "label.removeOrderBySchedule": "Supprimer l'Ordre de la Planification",
     "label.numOfPeriods": "No. of Periods",
+    "label.workflowFolders": "Workflow Folders",
+    "label.scheduleFolders": "Schedule Folders",
     "button.late": "En retard",
     "button.setStartTime": "Modifier l'heure de démarrage",
     "button.setParameter": "Modifier la Variable",
@@ -829,7 +831,11 @@
     "popup.differentModifyStartTime": "{{n1}} heures de démarrage différentes",
     "tooltip.dateRangeSelectStep1": "Maintenez la souris et faites glisser pour sélectionner la plage de dates",
     "tooltip.dateRangeSelectStep2": "Ou appuyez sur la touche CTRL et sélectionnez la date de début et la date de fin en cliquant avec la souris",
-    "tooltip.dateRangeSelectStep3": "Ou cliquez sur l'icône du calendrier, puis sélectionnez la date de début et la date de fin à l'aide d'un clic de souris"
+    "tooltip.dateRangeSelectStep3": "Ou cliquez sur l'icône du calendrier, puis sélectionnez la date de début et la date de fin à l'aide d'un clic de souris",
+    "tab": {
+      "dailyPlan": "Daily Plan",
+      "projection": "Projection"
+    }
   },
   "deploymentService": {
     "label": {

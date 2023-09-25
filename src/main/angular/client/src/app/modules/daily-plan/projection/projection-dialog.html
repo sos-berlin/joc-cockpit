@@ -1,0 +1,98 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>dailyPlan.tab.projection</span>
+    :
+    <i class="text-muted p-l-xs text">{{schedule.date}}</i>
+  </h4>
+  <button (click)="cancel()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<div class="modal-body p-a min-ht-200">
+  <div *ngIf="schedule.list">
+    <div class="search-box-field pull-right form-group">
+      <label>
+        <input (keyup)="searchInResult()" [(ngModel)]="filter.searchText"
+               placeholder="{{'common.placeholder.search' | translate}}"
+               type="search">
+      </label>
+      <i (click)="filter.searchText = '';searchInResult()" [hidden]="!filter.searchText"
+         class="fa fa-times search-close"></i>
+    </div>
+    <div>
+      <nz-table
+        #ajaxTable
+        [nzBordered]="true"
+        [nzData]="data | orderBy: filter.sortBy: filter.reverse"
+        [nzLoading]="loading"
+        [nzPageIndex]="filter.currentPage"
+        [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
+        [nzPageSize]="filter.entryPerPage || preferences.entryPerPage || 25"
+        [nzShowPagination]="true"
+        [nzShowSizeChanger]="true"
+        [nzSize]="'small'"
+      >
+        <thead>
+        <tr>
+          <th (click)="sort('workflow')">
+            <a><span class="p-r-xs" translate>dailyPlan.label.workflow</span>
+              <i *ngIf="filter.sortBy == 'workflow' && !filter.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="filter.sortBy == 'workflow' && filter.reverse"
+                 class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('schedule')">
+            <a><span class="p-r-xs" translate>dailyPlan.label.schedule</span>
+              <i *ngIf="filter.sortBy == 'schedule' && !filter.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="filter.sortBy == 'schedule' && filter.reverse"
+                 class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('period')">
+            <a><span class="p-r-xs" translate>runtime.label.period</span>
+              <i *ngIf="filter.sortBy == 'period' && !filter.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="filter.sortBy == 'period' && filter.reverse"
+                 class="fa fa-caret-down "></i></a>
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-template ngFor [ngForOf]="ajaxTable.data" let-sch>
+          <tr>
+            <td>
+
+            </td>
+            <td>
+              <span class="show-in-single-line">
+                <a class="cursor text-hover-primary" *ngIf="permission.joc && permission.joc.inventory.view"
+                   (click)="coreService.navToInventoryTab(sch['schedule'], 'SCHEDULE');"><i
+                  class="fa fa-pencil"></i>
+                </a>
+                <i class="icon-color tree-icon p-l-xs p-r-xxs" nz-icon nzTheme="outline" nzType="schedule"></i>
+                {{sch['schedule']}}
+              </span>
+            </td>
+            <td>
+              <div *ngFor="let p of sch['periods'];">
+                {{getPeriodStr(p['period'])}}
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        </tbody>
+      </nz-table>
+      <div *ngIf="ajaxTable.data.length >0"
+           class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+        <span *ngIf="ajaxTable.data.length >1" translate>order.label.ordersFound</span>
+        <span *ngIf="ajaxTable.data.length ==1" translate>order.label.orderFound</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
+    common.button.close
+  </button>
+</div>
+
