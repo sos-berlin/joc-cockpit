@@ -25,6 +25,112 @@ declare let jsgantt: any;
 declare const $: any;
 
 @Component({
+  selector: 'app-export-modal',
+  templateUrl: './export-dialog.html'
+})
+export class ExportComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+
+  schedulerId: any;
+  preferences: any;
+  origin: any;
+  display: any;
+  loading = true;
+  nodes: any = [];
+  path = '';
+  submitted = false;
+  showSearchPanel = false;
+  filter: any = {
+    workflowFolders: [],
+    scheduleFolders: []
+  };
+  filters: any;
+  workflowTree = [];
+  scheduleTree = [];
+  startDate: any
+  endDate: any
+
+  @Output() onChange: EventEmitter<any> = new EventEmitter();
+  @Output() onSearch: EventEmitter<any> = new EventEmitter();
+  @Output() onCancel: EventEmitter<any> = new EventEmitter();
+
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId;
+    this.preferences = this.modalData.preferences;
+    this.origin = this.modalData.origin;
+    this.display = this.modalData.display;
+    this.filters = this.modalData.filters
+    // this.path = this.origin.path;
+    console.log(this.filters,"KKKKKK")
+    if (this.filters.filter && !isEmpty(this.filters.filter)) {
+      this.filter = this.filters.filter;
+      console.log(this.filter,">>>>>")
+      console.log(this.showSearchPanel)
+      if (!this.showSearchPanel) {
+        this.showSearchPanel = true;
+      }
+      console.log(this.showSearchPanel, 'afetr.........')
+    }
+    if (this.workflowTree.length == 0) {
+      this.getWorkflowTree();
+    }
+    if (this.scheduleTree.length == 0) {
+      this.getScheduleTree();
+    }
+  }
+
+  ngOnChanges():void {
+    console.log(this.startDate,"S")
+  }
+
+  private getWorkflowTree(): void {
+    this.coreService.post('tree', {
+      controllerId: this.schedulerId,
+      forInventory: false,
+      types: ['WORKFLOW']
+    }).subscribe((res) => {
+      this.workflowTree = this.coreService.prepareTree(res, true);
+    });
+  }
+
+  private getScheduleTree(): void {
+    this.coreService.post('tree', {
+      controllerId: this.schedulerId,
+      forInventory: false,
+      types: ['SCHEDULE']
+    }).subscribe((res) => {
+      this.scheduleTree = this.coreService.prepareTree(res, true);
+    });
+  }
+
+  remove(path, flag = false): void {
+    if (flag) {
+      this.filter.workflowFolders.splice(this.filter.workflowFolders.indexOf(path), 1);
+    } else {
+      this.filter.scheduleFolders.splice(this.filter.scheduleFolders.indexOf(path), 1);
+    }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    this.filter.submit = true;
+    this.onSearch.emit(this.filter);
+    setTimeout(() => {
+      this.submitted = false;
+    }, 800);
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+
+
+}
+
+@Component({
   selector: 'app-create-plan-modal-content',
   templateUrl: './create-plan-dialog.html'
 })
@@ -847,7 +953,7 @@ export class DailyPlanComponent {
         })
       }
       if (this.dailyPlanFilters.projection.filter.schedulePaths?.length > 0) {
-        obj.schedules = this.dailyPlanFilters.projection.filter.schedulePaths;
+        obj.schedulePaths = this.dailyPlanFilters.projection.filter.schedulePaths;
       }
       if (this.dailyPlanFilters.projection.filter.scheduleFolders?.length > 0) {
         obj.scheduleFolders = [];
@@ -883,9 +989,32 @@ export class DailyPlanComponent {
         }
         this.isLoaded = true;
       }, error: () => {
-        this.projectionData = undefined;
+        this.projectionData = [];
         this.isLoaded = true;
       }
+    });
+  }
+
+  exportObject(node: any): void {
+    let origin = null;
+    if (node) {
+      origin = node.origin ? node.origin : node;
+    }
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ExportComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        schedulerId: this.schedulerIds.selected,
+        preferences: this.preferences,
+        display: this.preferences.auditLog,
+        filters: this.dailyPlanFilters.projection,
+        origin
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -1606,12 +1735,11 @@ export class DailyPlanComponent {
       this.translate.get('dailyPlan.label.numOfPeriods').subscribe(translatedValue => {
         numOfPeriods = translatedValue;
       });
-
       for (let i = 0; i < this.projectionData.length; i++) {
         let obj: any = {};
-        obj[date] = this.projectionData[i].status;
-        obj[planned] = this.projectionData[i];
-        obj[numOfPeriods] = this.projectionData[i];
+        obj[date] = this.getDate(this.projectionData[i].startDate);
+        obj[planned] = this.projectionData[i].color === 'blue' ? 'Yes' : 'No';
+        obj[numOfPeriods] = this.projectionData[i].numOfPeriods;
         data.push(obj);
       }
     }

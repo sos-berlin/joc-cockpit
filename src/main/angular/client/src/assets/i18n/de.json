@@ -788,6 +788,8 @@
     "label.numOfPeriods": "No. of Periods",
     "label.workflowFolders": "Workflow Folders",
     "label.scheduleFolders": "Schedule Folders",
+    "label.periodFound": "Period found",
+    "label.periodsFound": "Periods found",
     "button.late": "Verspätet",
     "button.setStartTime": "Startzeit ändern",
     "button.setParameter": "Variable ändern",
@@ -2766,7 +2768,7 @@
       "period_begin": "Benennt den Beginn der 24 Stunden Periode des Tagesplans auf Basis der angegebenen Zeitzone.",
       "days_ahead_plan": "Benennt die Anzahl Tage im Voraus, für die Aufträge erzeugt werden und den Zustand GEPLANT erhalten.",
       "days_ahead_submit": "Benennt die Anzahl Tage im Voraus, für die Aufträge, die sich im Zustand GEPLANT befinden, an die Controller übermittelt werden und den Zustand ÜBERMITTELT erhalten.",
-      "projections_ahead": "Projections ahead"
+      "projections_month_ahead": "Projections month ahead"
     },
     "joc": {
       "force_comments_for_audit_log": "Vereinbart, dass für alle Änderungen an Objekten, z.B. das Hinzufügen oder Abbrechen eines Auftrags vom Anwender eine Begründung angegeben werden muss, die in das Prüfprotokoll aufgenommen wird.",

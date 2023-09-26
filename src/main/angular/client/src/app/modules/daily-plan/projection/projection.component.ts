@@ -17,9 +17,11 @@ export class ShowProjectionModalComponent {
   permission: any = {};
   filter: any = {};
   data: any = [];
+  schedulerId = '';
+  isCurrentController: boolean;
   loading = true;
 
-  searchableProperties = ['workflow', 'schedule']
+  searchableProperties = ['workflow', 'schedule', 'periods']
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService,
               private searchPipe: SearchPipe) {
@@ -30,23 +32,32 @@ export class ShowProjectionModalComponent {
     this.permission = this.modalData.permission;
     this.preferences = this.modalData.preferences;
     this.filter = this.modalData.filter;
+    this.schedulerId = this.modalData.schedulerId;
+    this.isCurrentController = this.modalData.isCurrentController;
     this.loadData();
   }
 
   private loadData(): void {
     this.coreService.post('daily_plan/projections/date', this.modalData.obj).subscribe({
       next: (res) => {
-        this.schedule.planned = res.planned;
         const data = groupBy(res.periods, (res) => {
           return res.schedule;
         });
+
         for (const key of Object.keys(data)) {
-          this.schedule.list.push(
-            {
-              schedule: key,
-              periods: data[key]
-            }
-          )
+          for (const controller of Object.keys(res.meta)) {
+           
+            let workflows = res.meta[controller][key].workflowPaths || res.meta[controller][key].workflows;
+            workflows.forEach(workflow => {
+              this.schedule.list.push(
+                {
+                  schedule: key,
+                  periods: data[key],
+                  workflow: workflow
+                }
+              )
+            })
+          }
         }
         this.loading = false;
         this.searchInResult();
@@ -62,6 +73,14 @@ export class ShowProjectionModalComponent {
   sort(propertyName: string): void {
     this.filter.reverse = !this.filter.reverse;
     this.filter.sortBy = propertyName;
+  }
+
+  pageIndexChange($event: number): void {
+    this.filter.currentPage = $event;
+  }
+
+  pageSizeChange($event: number): void {
+    this.filter.entryPerPage = $event;
   }
 
   getPeriodStr(period): string {
@@ -109,13 +128,15 @@ export class ProjectionComponent {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() permission: any;
-  @Input() isLoaded: boolean;
+
   @Input() showSearchPanel: boolean;
+  @Input() isCurrentController: boolean;
 
   @Output() onChange: EventEmitter<any> = new EventEmitter();
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
 
+  isLoaded: boolean;
   filter: any = {
     workflowFolders: [],
     scheduleFolders: []
@@ -172,70 +193,65 @@ export class ProjectionComponent {
   }
 
   open(event): void {
-    this.isVisible = true;
-    this.schedule = {
-      loading: true,
-      list: []
-    };
-    this.schedule.date = this.coreService.getDateByFormat(event.date, this.preferences.zone, 'YYYY-MM-DD');
-    const obj: any = {
-      date: this.schedule.date
-    };
-    if (this.filters.current) {
-      obj.controllerIds.push(this.schedulerId);
-    }
-    if (this.filters.filter) {
-      if (this.filters.filter.workflowPaths?.length > 0) {
-        obj.workflowPaths = this.filters.filter.workflowPaths;
-      }
-      if (this.filters.filter.workflowFolders?.length > 0) {
-        obj.workflowFolders = [];
-        this.filters.filter.workflowFolders.forEach((path) => {
-          obj.workflowFolders.push({
-            folder: path,
-            recursive: true
-          })
-        })
-      }
-      if (this.filters.filter.schedulePaths?.length > 0) {
-        obj.schedules = this.filters.filter.schedulePaths;
-      }
-      if (this.filters.filter.scheduleFolders?.length > 0) {
-        obj.scheduleFolders = [];
-        this.filters.filter.scheduleFolders.forEach((path) => {
-          obj.scheduleFolders.push({
-            folder: path,
-            recursive: true
-          })
-        })
-      }
-    }
-
-    if(!this.filters.showDetail) {
-      this.filters.showDetail = {
-        sortBy: 'schedule',
-        reverse: false,
-        currentPage: 1,
-        searchText: ''
+    if (event.events?.length > 0) {
+      this.isVisible = true;
+      this.schedule = {
+        loading: true,
+        list: []
       };
-    }
+      this.schedule.date = this.coreService.getDateByFormat(event.date, this.preferences.zone, 'YYYY-MM-DD');
+      const obj: any = {
+        date: this.schedule.date
+      };
+      if (this.isCurrentController) {
+        obj.controllerIds = [this.schedulerId];
+      }
+      if (this.filters.filter) {
+        if (this.filters.filter.workflowPaths?.length > 0) {
+          obj.workflowPaths = this.filters.filter.workflowPaths;
+        }
+        if (this.filters.filter.workflowFolders?.length > 0) {
+          obj.workflowFolders = [];
+          this.filters.filter.workflowFolders.forEach((path) => {
+            obj.workflowFolders.push({
+              folder: path,
+              recursive: true
+            })
+          })
+        }
+        if (this.filters.filter.schedulePaths?.length > 0) {
+          obj.schedulePaths = this.filters.filter.schedulePaths;
+        }
+        if (this.filters.filter.scheduleFolders?.length > 0) {
+          obj.scheduleFolders = [];
+          this.filters.filter.scheduleFolders.forEach((path) => {
+            obj.scheduleFolders.push({
+              folder: path,
+              recursive: true
+            })
+          })
+        }
+      }
 
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: ShowProjectionModalComponent,
-      nzClassName: 'lg',
-      nzData: {
-        schedule: this.schedule,
-        permission: this.permission,
-        preferences: this.preferences,
-        filter: this.filters.showDetail,
-        obj
-      },
-      nzFooter: null,
-      nzAutofocus: undefined,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: ShowProjectionModalComponent,
+        nzClassName: 'lg',
+        nzData: {
+          schedule: this.schedule,
+          permission: this.permission,
+          preferences: this.preferences,
+          filter: this.filters.showDetail,
+          schedulerId: this.schedulerId,
+          isCurrentController: this.isCurrentController,
+          obj
+        },
+        nzFooter: null,
+        nzAutofocus: undefined,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    }
   }
 
   private showCalendar(): void {
@@ -245,6 +261,7 @@ export class ProjectionComponent {
       $('#full-calendar-projection').calendar({
         language: this.coreService.getLocale(),
         view: this.filters.calView.toLowerCase(),
+        dataSource: this.projectionData,
         renderEnd: (e) => {
           let reload = false;
           if (this.filters.calView.toLowerCase() !== e.view) {
@@ -261,8 +278,8 @@ export class ProjectionComponent {
           this.open(e);
         }
       });
+
       setTimeout(() => {
-        $('#full-calendar-projection').data('calendar').setDataSource(this.projectionData);
         this.isLoaded = true;
       }, 10);
     } else {

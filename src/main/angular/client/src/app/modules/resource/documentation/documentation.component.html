@@ -314,7 +314,7 @@
                       </div>
                     </td>
                     <td [innerHtml]="document.name | highlight : documentFilters.searchText"></td>
-                    <td [innerHtml]="document.path | highlight : documentFilters.searchText"></td>
+                    <td [innerHtml]="document.path1 | highlight : documentFilters.searchText"></td>
                     <td [innerHtml]="document.assignReference | highlight : documentFilters.searchText"></td>
                     <td [innerHtml]="document.type | highlight : documentFilters.searchText"></td>
                     <td [innerHtml]="document.modified | stringToDate"></td>

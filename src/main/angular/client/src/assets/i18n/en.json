@@ -788,6 +788,8 @@
     "label.numOfPeriods": "No. of Periods",
     "label.workflowFolders": "Workflow Folders",
     "label.scheduleFolders": "Schedule Folders",
+    "label.periodFound": "Period found",
+    "label.periodsFound": "Periods found",
     "button.late": "Late",
     "button.setStartTime": "Modify Start Time",
     "button.setParameter": "Modify Variable",
@@ -2766,7 +2768,7 @@
       "period_begin": "Specifies the begin of the 24 hours Daily Plan period with the indicated time zone.",
       "days_ahead_plan": "Specifies the number of days ahead for which orders are generated and are made available with the PLANNED state.",
       "days_ahead_submit": "Specifies the number of days ahead for which PLANNED orders are submitted to Controllers and are made available with the SUBMITTED state.",
-      "projections_ahead": "Projections ahead"
+      "projections_month_ahead": "Projections month ahead"
     },
     "joc": {
       "force_comments_for_audit_log": "Specifies that for any changes applied to an object such as to add an order, to cancel an order etc. a reason has to be added for the Audit Log.",

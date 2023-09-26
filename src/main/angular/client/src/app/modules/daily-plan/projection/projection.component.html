@@ -23,7 +23,7 @@
                                 [type]="'WORKFLOW'"></app-multi-select>
             </div>
           </div>
-          <div *ngIf="filter.workflowFolders.length > 0" class="form-group row">
+          <div *ngIf="filter.workflowFolders?.length > 0" class="form-group row">
             <label class="col-md-2" translate>dailyPlan.label.workflowFolders</label>
             <div class="col-sm-6" style="max-height: 140px; overflow: auto">
               <div *ngFor="let path of filter.workflowFolders">
@@ -41,7 +41,7 @@
                                 [type]="'SCHEDULE'"></app-multi-select>
             </div>
           </div>
-          <div *ngIf="filter.scheduleFolders.length > 0" class="form-group row">
+          <div *ngIf="filter.scheduleFolders?.length > 0" class="form-group row">
             <label class="col-md-2" translate>dailyPlan.label.scheduleFolders</label>
             <div class="col-sm-6" style="max-height: 140px; overflow: auto">
               <div *ngFor="let path of filter.scheduleFolders">
@@ -65,7 +65,7 @@
     </div>
   </div>
 </div>
-<div class="box h-full overflow-y p-a m-b">
+<div class="box overflow-y p-a m-b h-full max-ht-n-252" [ngClass]="{'max-ht-n-476': showSearchPanel && !isHide, 'max-ht-n-320': showSearchPanel && isHide}">
   <div class="calendar-lg" id="full-calendar-projection"></div>
 </div>
 

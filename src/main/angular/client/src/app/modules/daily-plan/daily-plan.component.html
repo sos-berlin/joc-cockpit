@@ -413,6 +413,11 @@
                     class="btn btn-grey btn-sm m-l-12">
               <i class="fa fa-share-square-o"></i>
             </button>
+            <button (click)="exportObject(null)" *ngIf="dailyPlanFilters.tabIndex !== 0"
+                    class="btn btn-sm btn-grey m-l-12">
+              <i nz-icon nzTheme="outline" nzType="export"></i>&nbsp;
+              <span translate>inventory.button.export</span>
+            </button>
             <app-toggle *ngIf="dailyPlanFilters.tabIndex == 0" (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
           <div *ngIf="dailyPlanFilters.tabIndex == 0" [ngClass]="{'show-block':object.mapOfCheckedId.size>0}" class="hide">
@@ -464,9 +469,9 @@
     </div>
   </div>
 </div>
-<div class='scroll-y max-ht'>
+<div class='max-ht'>
   <div class="padding p-t-sm p-b-0">
-    <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="dailyPlanFilters.tabIndex">
+    <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="dailyPlanFilters.tabIndex" >
       <nz-tab [nzTitle]="'dailyPlan.tab.dailyPlan' | translate">
         <div class="row">
           <div class="col-lg-12">
@@ -598,7 +603,7 @@
                   </div>
                 </div>
                 <div *ngIf="pageView==='grid' && plans.length>0">
-                  <div class="box p-a m-b-0">
+                  <div class="box p-a m-b-0 max-ht-n-252">
                     <div class="row">
                       <div class="col-md-12">
                         <app-gantt [data]="planOrders" [groupBy]="dailyPlanFilters.filter.groupBy" [preferences]="preferences"
@@ -621,7 +626,7 @@
                   <a (click)="isAllSelected = false;resetCheckBox()" *ngIf="object.mapOfCheckedId.size === (totalOrders - totalFinishedOrders)"
                      class="text-primary p-l-xs" translate>common.label.clearSelection</a>
                 </div>
-                <div *ngIf="pageView !=='grid'" class="box p-a">
+                <div *ngIf="pageView !=='grid'" class="box p-a max-ht-n-252" style="overflow: auto;">
                   <div class="table-responsive" id="dailyPlanTableId">
                     <nz-table
                       #ajaxTable
@@ -768,27 +773,21 @@
         </div>
       </nz-tab>
       <nz-tab [nzTitle]="'dailyPlan.tab.projection' | translate">
-        <div class="row m-t-n-xxs">
-          <div class="col-md-12">
-            <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary pos-rel" style="margin-top: 0;top:-10px">
-              <li class="nav-item">
-                <a (click)="setView('Month')"
-                   [ngClass]="{'active' : dailyPlanFilters.projection.calView === 'Month'}"
-                   class="nav-link">
-                  <span class="nav-text text-dark p-b-sm" translate>runtime.label.monthly</span>
-                </a>
-              </li>
-              <li class="nav-item dropdown-separator">
-                <span class="separator"></span>
-              </li>
-              <li class="nav-item">
-                <a (click)="setView('Year')"
-                   [ngClass]="{'active' : dailyPlanFilters.projection.calView === 'Year'}"
-                   class="nav-link">
-                  <span class="nav-text text-dark p-b-sm" translate>runtime.label.yearly</span>
-                </a>
-              </li>
-            </ul>
+        <div class="row m-t-n-xxs" >
+          <div class="col-md-12 m-b">
+            <div class="inline btn-group">
+              <div (click)="setView('Month')"
+                   [class.primary]="dailyPlanFilters.projection.calView === 'Month'"
+                   class="btn btn-default btn-sm" translate>
+                runtime.label.monthly
+              </div>
+              <div (click)="setView('Year')"
+                   [class.primary]="dailyPlanFilters.projection.calView === 'Year'"
+                   class="btn btn-default btn-sm" translate>
+                runtime.label.yearly
+              </div>
+            </div>
+
             <button (click)="showSearchPanel ? cancel() : advancedSearch()" class="btn btn-sm inline pull-right m-l btn-grey">
               <span translate>common.button.advancedSearch</span>
               <i class="fa p-l-xs" [ngClass]="!showSearchPanel ? 'fa-caret-down' : 'fa-caret-up'"></i>
@@ -797,10 +796,10 @@
               <span translate>dailyPlan.button.recreate</span>
             </button>
           </div>
-          <div class="col-md-12 m-t-sm">
-            <app-projection [projectionData]="projectionData" [isLoaded]="isLoaded" [permission]="permission" [schedulerId]="schedulerIds.selected"
+          <div class="col-md-12 ">
+            <app-projection [projectionData]="projectionData" [permission]="permission" [schedulerId]="schedulerIds.selected"
                             [showSearchPanel]="showSearchPanel" (onCancel)="cancelCal()" (onSearch)="searchCal($event)"
-                            [filters]="dailyPlanFilters.projection" [preferences]="preferences"
+                            [filters]="dailyPlanFilters.projection" [isCurrentController]="dailyPlanFilters.current" [preferences]="preferences"
                             (onChange)="changeInCalendar($event)"></app-projection>
           </div>
         </div>
