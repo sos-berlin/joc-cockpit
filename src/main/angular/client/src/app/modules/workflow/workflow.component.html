@@ -658,7 +658,7 @@
                           <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
                              *ngIf="permission.joc && permission.joc.inventory.view"
                              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                          <span [innerHtml]="workflow.path | highlight : workflowFilters.searchText"></span>
+                          <span [innerHtml]="workflow.path1 | highlight : workflowFilters.searchText"></span>
                         </span>
                       </td>
                       <td>

@@ -8777,9 +8777,21 @@ td .p-a-b-b-0 {
   height: calc(100vh - 208px);
 }
 
+.max-ht-n-252 {
+  height: calc(100vh - 252px);
+}
+
+.max-ht-n-476{
+  height: calc(100vh - 476px);
+}
+
+.max-ht-n-320{
+  height: calc(100vh - 320px);
+}
+
 .max-ht-n-560 {
   max-height: calc(100vh - 560px);
-  overflow: auto;
+  overflow-y: auto;
 }
 
 .ht-291 {
@@ -9491,5 +9503,24 @@ cdk-virtual-scroll-viewport {
     cursor: default;
   }
 }
+
+.color-change {
+  background-color: var(--primary) !important;
+  color: white;
+}
+
+.color-change svg  {
+  color: white;
+}
+
+
+.date-planned{
+  color: var(--date-planned);
+}
+
+.date-unplanned{
+  color: var(--date-unplanned);
+}
+
 
 

@@ -260,7 +260,7 @@
                           <i (click)="coreService.navToInventoryTab(calendar.path, calendar.type);"
                              *ngIf="permission.joc && permission.joc.inventory.view"
                              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                          <span [innerHtml]="calendar.path | highlight : calendarFilters.searchText"></span>
+                          <span [innerHtml]="calendar.path1 | highlight : calendarFilters.searchText"></span>
                         </span>
                     </td>
                     <td><span [innerHtml]="calendar.type | translate | highlight : calendarFilters.searchText"

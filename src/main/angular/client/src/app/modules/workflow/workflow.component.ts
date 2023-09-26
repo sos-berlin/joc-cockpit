@@ -211,6 +211,7 @@ export class SearchComponent {
     const obj: any = {
       regex: result.regex,
       paths: result.paths,
+      handleRecursively: result.handleRecursively,
       name: result.name,
       instructionStates: result.instructionStates,
       agentNames: result.agentNames,
@@ -304,7 +305,7 @@ export class SingleWorkflowComponent {
     }
     // Subscribe to changes in the route parameters (including query parameters).
     this.subscription2 = this.route.queryParamMap.subscribe(params => {
-      
+
       this.path = params.get('path');
       this.versionId = params.get('versionId');
       this.controllerId = params.get('controllerId');
@@ -1227,7 +1228,7 @@ export class WorkflowComponent {
       if (this.selectedFiltered.paths && this.selectedFiltered.paths.length > 0) {
         obj.folders = [];
         for (let i in this.selectedFiltered.paths) {
-          obj.folders.push({folder: this.selectedFiltered.paths[i], recursive: true});
+          obj.folders.push({folder: this.selectedFiltered.paths[i], recursive: this.selectedFiltered.handleRecursively});
         }
       }
     }
@@ -1294,7 +1295,7 @@ export class WorkflowComponent {
     if (this.searchFilter.paths && this.searchFilter.paths.length > 0) {
       obj.folders = [];
       for (let i in this.searchFilter.paths) {
-        obj.folders.push({folder: this.searchFilter.paths[i], recursive: false});
+        obj.folders.push({folder: this.searchFilter.paths[i], recursive: this.searchFilter.handleRecursively});
       }
     }
     if (this.searchFilter.instructionStates && this.searchFilter.instructionStates.length > 0) {

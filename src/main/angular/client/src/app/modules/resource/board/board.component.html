@@ -283,7 +283,7 @@
                           <i (click)="coreService.navToInventoryTab(board.path, 'NOTICEBOARD');"
                              *ngIf="permission.joc && permission.joc.inventory.view"
                              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                          <span [innerHtml]="board.path | highlight : boardsFilters.searchText"></span>
+                          <span [innerHtml]="board.path1 | highlight : boardsFilters.searchText"></span>
                         </span>
                       <td>
                         <span

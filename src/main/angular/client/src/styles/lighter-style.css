@@ -17,6 +17,10 @@
   --default-btn-hover: #f9f9f9;
   --date-selected: rgba(60, 144, 210, .5);
   --date-selected-hover: rgba(60, 144, 210, 0.65);
+  --date-planned: rgba(21, 145, 212, 0.95);
+  --date-planned-hover: rgba(21, 145, 212, 0.85);
+  --date-unplanned: rgba(21, 145, 212, 0.7);
+  --date-unplanned-hover: rgba(21, 145, 212, 0.6);
 }
 .bg-blue-color {
   background-color: #fafafa !important

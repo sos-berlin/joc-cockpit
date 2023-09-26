@@ -187,6 +187,12 @@ export class CoreService {
       calView: 'Month',
       currentYear: this.currentDate.getFullYear(),
       currentMonth: this.currentDate.getMonth(),
+      showDetail: {
+        sortBy: 'workflow',
+        reverse: false,
+        currentPage: 1,
+        searchText: ''
+      }
     };
     this.tabs._daliyPlan.filter.status = 'ALL';
     this.tabs._daliyPlan.filter.groupBy = '';
@@ -931,7 +937,7 @@ export class CoreService {
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
     ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(main|success|error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
       let div;// Now create a div element and append it to a non-appended span.
-      if(windowInstance){
+      if (windowInstance) {
         div = windowInstance.document.createElement('div');
       } else {
         div = window.document.createElement('div');
@@ -1075,7 +1081,7 @@ export class CoreService {
         lastClass = '';
       }
 
-      if(windowInstance){
+      if (windowInstance) {
         if (!domId) {
           windowInstance.document.getElementById('logs')?.appendChild(div);
         } else {
@@ -1093,11 +1099,9 @@ export class CoreService {
   }
 
   showDocumentation(path: string, preferences: any): void {
-    const link = API_URL + 'documentation/' + this.authService.accessTokenId + '/' + encodeURIComponent(path);
-
+    const link = API_URL + 'documentation' + path;
     const myHeaders = new Headers();
     myHeaders.append("X-Access-Token", this.authService.accessTokenId);
-    console.log(path, '>>>');
     const ext = path.slice(path.lastIndexOf('.') + 1).toUpperCase();
     const isXML = ext === 'XML';
     if (isXML) {
@@ -1134,12 +1138,12 @@ export class CoreService {
       headers: myHeaders,
     })
       .then(response => response.text())
-      //.then(str => new window.DOMParser().parseFromString(str, "text/xml"))
       .then(result => {
-        console.log(result)
-        const pre  = document.createElement('pre');
-        pre.innerText = result;
-        win.document.body.appendChild(pre);
+        setTimeout(() => {
+          const pre = document.createElement('pre');
+          pre.innerText = result;
+          win.document.body.appendChild(pre);
+        }, 10)
       })
       .catch(error => console.log('error', error));
   }
@@ -1679,9 +1683,10 @@ export class CoreService {
                 return;
               } else if (mainStr === 'true' || mainStr === 'false') {
                 return;
-              } else if (/^(now\()/i.test(mainStr) || /^(variable\()/i.test(data[type]) || /^(env\()/i.test(mainStr)
-                || /^(toFile\()/i.test(mainStr) || /^(replaceAll\()/i.test(mainStr) || /^(jobResourceVariable\()/g.test(mainStr)
-                || /^(scheduledOrEmpty\()/g.test(mainStr) || /^([0-9])+(.toString)$/g.test(data[type]) || /^(JobResource:)/g.test(data[type])) {
+              } else if (/^(now\s*\()/i.test(mainStr) || /^(variable\s*\()/i.test(data[type]) || /^(env\s*\()/i.test(mainStr)
+                || /^(toFile\s*\()/i.test(mainStr) || /^(replaceAll\s*\()/i.test(mainStr) || /^(jobResourceVariable\s*\()/g.test(mainStr)
+                || /^(scheduledOrEmpty\s*\()/g.test(mainStr) || /^([0-9])+(.toString)$/g.test(data[type]) || /^(JobResource:)/g.test(data[type])) {
+                data[type] = mainStr;
                 return;
               } else if (mainStr.substring(0, 1) === '$') {
                 const str = mainStr.substring(1, data[type].length);
@@ -1712,9 +1717,9 @@ export class CoreService {
           if (startChar === "$" || (startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
 
           } else if (env.value === 'true' || env.value === 'false') {
-          } else if (/^\d+$/.test(env.value) || (/^(now\()/i.test(env.value) || /^(variable\()/i.test(env.value) || /^(env\()/i.test(env.value)
-            || /^(toFile\()/i.test(env.value) || /^(replaceAll\()/i.test(env.value) || /^(jobResourceVariable\()/g.test(env.value)
-            || /^(scheduledOrEmpty\()/g.test(env.value) || /^([0-9])+(.toString)$/g.test(env.value) || /^(JobResource:)/g.test(env.value))) {
+          } else if (/^\d+$/.test(env.value) || (/^(now\s*\()/i.test(env.value) || /^(variable\s*\()/i.test(env.value) || /^(env\s*\()/i.test(env.value)
+            || /^(toFile\s*\()/i.test(env.value) || /^(replaceAll\s*\()/i.test(env.value) || /^(jobResourceVariable\s*\()/g.test(env.value)
+            || /^(scheduledOrEmpty\s*\()/g.test(env.value) || /^([0-9])+(.toString)$/g.test(env.value) || /^(JobResource:)/g.test(env.value))) {
           } else {
             let x = env.value.replace(/\\([\s\S])|(")/g, '\\$1$2').trim();
             if (x.match(/\\/)) {
@@ -1734,9 +1739,9 @@ export class CoreService {
     if (data[type]) {
       if (data[type] === 'true' || data[type] === 'false') {
       } else if (/^\d+$/.test(data[type])) {
-      } else if (/^(now\()/i.test(data[type]) || /^(variable\()/i.test(data[type]) || /^(env\()/i.test(data[type])
-        || /^(toFile\()/i.test(data[type]) || /^(replaceAll\()/i.test(data[type]) || /^(jobResourceVariable\()/g.test(data[type])
-        || /^(scheduledOrEmpty\()/g.test(data[type]) || /^([0-9])+(.toString)$/g.test(data[type]) || /^(JobResource:)/g.test(data[type])) {
+      } else if (/^(now\s*\()/i.test(data[type]) || /^(variable\s*\()/i.test(data[type]) || /^(env\s*\()/i.test(data[type])
+        || /^(toFile\s*\()/i.test(data[type]) || /^(replaceAll\s*\()/i.test(data[type]) || /^(jobResourceVariable\s*\()/g.test(data[type])
+        || /^(scheduledOrEmpty\s*\()/g.test(data[type]) || /^([0-9])+(.toString)$/g.test(data[type]) || /^(JobResource:)/g.test(data[type])) {
       } else if (typeof data[type] == 'string') {
         const startChar = data[type].substring(0, 1);
         const endChar = data[type].substring(data[type].length - 1);

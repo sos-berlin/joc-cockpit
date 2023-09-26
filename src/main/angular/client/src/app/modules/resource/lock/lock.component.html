@@ -260,7 +260,7 @@
                           <i (click)="coreService.navToInventoryTab(lock.path, 'LOCK');"
                              *ngIf="permission.joc && permission.joc.inventory.view"
                              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                          <span [innerHtml]="lock.path | highlight : locksFilters.searchText"></span>
+                          <span [innerHtml]="lock.path1 | highlight : locksFilters.searchText"></span>
                         </span>
                       <td>
                         <span

@@ -792,6 +792,8 @@
     "label.numOfPeriods": "No. of Periods",
     "label.workflowFolders": "Workflow Folders",
     "label.scheduleFolders": "Schedule Folders",
+    "label.periodFound": "Period found",
+    "label.periodsFound": "Periods found",
     "button.late": "遅延",
     "button.setStartTime": "開始時刻編集",
     "button.setParameter": "オーダー変数編集",
@@ -2770,7 +2772,7 @@
       "period_begin": "24時間のデイリープランの開始時間を、指定されたタイムゾーンで指定します。",
       "days_ahead_plan": "オーダーを生成し計画済状態で利用可能にする日数を指定します。",
       "days_ahead_submit": "計画済オーダーがコントローラーに送信され、保留状態で利用可能になる日数を指定します。",
-      "projections_ahead": "Projections ahead"
+      "projections_month_ahead": "Projections month ahead"
     },
     "joc": {
       "force_comments_for_audit_log": "trueに設定すると、オーダーの追加、キャンセルなど、オブジェクトに適用される変更について、操作ログにコメントを強制できます。",

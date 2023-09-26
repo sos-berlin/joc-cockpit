@@ -6,7 +6,7 @@ import {
   RemovePlanModalComponent,
   SearchComponent,
   CreatePlanModalComponent,
-  GanttComponent
+  GanttComponent, ExportComponent
 } from './daily-plan.component';
 import {SharedModule} from '../shared/shared.module';
 import {DailyPlanRoutingModule} from './daily-plan-routing.module';
@@ -21,7 +21,7 @@ import {GroupByPipe} from '../../pipes/core.pipe';
     NzTabsModule
   ],
   declarations: [DailyPlanComponent, GanttComponent, ProjectionComponent, RemovePlanModalComponent, FilterModalComponent,
-    SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, ShowProjectionModalComponent],
+    SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, ShowProjectionModalComponent, ExportComponent],
   providers: [GroupByPipe]
 })
 export class DailyPlanModule {
