@@ -266,8 +266,8 @@ export class ProjectionComponent {
           let reload = false;
           if (this.filters.calView.toLowerCase() !== e.view) {
             this.filters.calView = e.view == 'month' ? 'Month' : 'Year';
-          }
-          if (this.filters.currentYear !== e.currentYear || this.filters.currentMonth !== e.currentMonth) {
+            reload = true;
+          } else if (this.filters.currentYear !== e.currentYear || this.filters.currentMonth !== e.currentMonth) {
             reload = true;
           }
           if (reload && this.isLoaded) {
@@ -278,15 +278,16 @@ export class ProjectionComponent {
           this.open(e);
         }
       });
-
       setTimeout(() => {
         this.isLoaded = true;
       }, 10);
     } else {
-      dom.data('calendar').setYearView({
-        view: this.filters.calView.toLowerCase(),
-        year: this.filters.currentYear
-      });
+      if (this.filters.calView.toLowerCase() !== dom.data('calendar').getView()) {
+        dom.data('calendar').setYearView({
+          view: this.filters.calView.toLowerCase(),
+          year: this.filters.currentYear
+        });
+      }
       dom.data('calendar').setDataSource(this.projectionData);
       this.isLoaded = true;
     }

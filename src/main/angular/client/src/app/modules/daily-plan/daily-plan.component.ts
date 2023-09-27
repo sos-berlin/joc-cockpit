@@ -25,7 +25,7 @@ declare let jsgantt: any;
 declare const $: any;
 
 @Component({
-  selector: 'app-export-modal',
+  selector: 'app-projection-export-modal',
   templateUrl: './export-dialog.html'
 })
 export class ExportComponent {
@@ -808,6 +808,7 @@ export class DailyPlanComponent {
   temp_filter: any = {};
   filterList: any = [];
   projectionData: any;
+  surveyDate: any;
   schedules: any[] = [];
   showSearchPanel = false;
   selectedSubmissionId: number;
@@ -968,6 +969,7 @@ export class DailyPlanComponent {
 
     this.coreService.post('daily_plan/projections/calendar', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
+        this.surveyDate = res.surveyDate;
         this.projectionData = [];
         for (const yearKey of Object.keys(res.years)) {
           const yearData = res.years[yearKey];
@@ -1199,6 +1201,9 @@ export class DailyPlanComponent {
     };
     this.coreService.post('daily_plan/projections/recreate', obj).subscribe({
       next: () => {
+        setTimeout(()=>{
+          this.loadProjectionForCalendar()
+        }, 3000);
         this.resetAction(5000);
       }, error: () => this.resetAction()
     });
