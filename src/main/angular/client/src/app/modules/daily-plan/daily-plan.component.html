@@ -795,6 +795,12 @@
             <button (click)="recreateProjection()" class="btn btn-grey btn-sm button-group-ellipsis pull-right">
               <span translate>dailyPlan.button.recreate</span>
             </button>
+            <div class="inline pull-right" *ngIf="projectionData">
+              <div class="m-r-12 pos-rel t-3">
+                <label translate>dashboard.label.surveyDate</label>:
+                <label class="text-muted p-l-xs" translate>{{surveyDate | stringToDate}}</label>
+              </div>
+            </div>
           </div>
           <div class="col-md-12 ">
             <app-projection [projectionData]="projectionData" [permission]="permission" [schedulerId]="schedulerIds.selected"
