@@ -563,18 +563,6 @@ export class CalendarService {
     return toArray(datesObj);
   }
 
-  getTimeInString(time: any): string {
-    if (time.toString().substring(0, 2) === '00' && time.toString().substring(3, 5) === '00') {
-      return time.toString().substring(6, time.length) + ' seconds';
-    } else if (time.toString().substring(0, 2) === '00') {
-      return time.toString().substring(3, time.length) + ' minutes';
-    } else if ((time.toString().substring(0, 2) != '00' && time.length === 5) || (time.length > 5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) === '00'))) {
-      return time.toString().substring(0, 5) + ' hours';
-    } else {
-      return time;
-    }
-  }
-
   checkTime(time: string): string {
     if (/^\d{1,2}:\d{2}?$/i.test(time)) {
       time = time + ':00';

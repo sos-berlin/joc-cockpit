@@ -744,7 +744,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   toDate: any;
   calendarTitle = new Date().getFullYear();
 
-  constructor(private coreService: CoreService, public modal: NzModalService,
+  constructor(public coreService: CoreService, public modal: NzModalService,
               private calendarService: CalendarService, private ref: ChangeDetectorRef) {
   }
 
@@ -787,23 +787,6 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       }
     });
   }
-
-  getPeriodStr(period): string {
-    let periodStr = null;
-    if (period.begin) {
-      periodStr = period.begin;
-    }
-    if (period.end) {
-      periodStr = periodStr + '-' + period.end;
-    }
-    if (period.singleStart) {
-      periodStr = 'Single start: ' + period.singleStart;
-    } else if (period.repeat) {
-      periodStr = periodStr + ' every ' + this.calendarService.getTimeInString(period.repeat);
-    }
-    return periodStr;
-  }
-
   checkPeriod(value, period): boolean {
     if (!value || !period) {
       return false;

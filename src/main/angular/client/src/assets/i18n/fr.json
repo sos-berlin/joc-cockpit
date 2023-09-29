@@ -789,6 +789,7 @@
     "label.numOfPeriods": "No. of Periods",
     "label.workflowFolders": "Workflow Folders",
     "label.scheduleFolders": "Schedule Folders",
+    "label.withoutStartTime": "Without Start Time",
     "label.periodFound": "Period found",
     "label.periodsFound": "Periods found",
     "button.late": "En retard",

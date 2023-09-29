@@ -3030,4 +3030,32 @@ export class CoreService {
     }
   }
 
+  getPeriodStr(period): string {
+    let periodStr = null;
+    if (period.begin) {
+      periodStr = this.getDateByFormat(period.begin, null, 'HH:mm:ss');
+    }
+    if (period.end) {
+      periodStr = periodStr + '-' + this.getDateByFormat(period.end, null, 'HH:mm:ss');
+    }
+    if (period.singleStart) {
+      periodStr = 'Single start: ' + this.getDateByFormat(period.singleStart, null, 'HH:mm:ss');
+    } else if (period.repeat) {
+      periodStr = periodStr + ' every ' + this.getTimeInString(period.repeat);
+    }
+    return periodStr;
+  }
+
+  getTimeInString(time: any): string {
+    if (time.toString().substring(0, 2) === '00' && time.toString().substring(3, 5) === '00') {
+      return time.toString().substring(6, time.length) + ' seconds';
+    } else if (time.toString().substring(0, 2) === '00') {
+      return time.toString().substring(3, time.length) + ' minutes';
+    } else if ((time.toString().substring(0, 2) != '00' && time.length === 5) || (time.length > 5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) === '00'))) {
+      return time.toString().substring(0, 5) + ' hours';
+    } else {
+      return time;
+    }
+  }
+
 }

@@ -863,7 +863,7 @@ export class DeployComponent {
               self.object.update.push(obj);
             }
             self.object.releasables.push({
-              name: nodes[i].name,
+              path: nodes[i].name,
               objectType: nodes[i].type
             });
           }
@@ -954,13 +954,6 @@ export class DeployComponent {
             obj.addOrdersDateFrom = 'now';
           }
         }
-        // if (this.isRevoke) {
-        //   if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
-        //     obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-        //   } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
-        //     obj.cancelOrdersDateFrom = 'now';
-        //   }
-        // }
       }
     }
 
@@ -5208,7 +5201,7 @@ export class InventoryComponent {
         obj.update = [{objectType: data.objectType, path: PATH}];
       }
     } else {
-      obj.releasables = [{objectType: data.objectType, name: data.name}];
+      obj.releasables = [{objectType: data.objectType, path: data.name}];
     }
     if (this.preferences.auditLog) {
       let comments = {
@@ -5582,7 +5575,11 @@ export class InventoryComponent {
         let configuration = {};
         obj.name = res.name;
         if (type === InventoryObject.SCHEDULE) {
-          configuration = {controllerId: this.schedulerIds.selected};
+          configuration = {
+            controllerId: this.schedulerIds.selected,
+            planOrderAutomatically: true,
+            submitOrderToControllerWhenPlanned: true
+          };
         } else if (type === InventoryObject.LOCK) {
           configuration = {limit: 1, id: res.name};
         } else if (type === InventoryObject.FILEORDERSOURCE) {

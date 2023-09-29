@@ -106,7 +106,11 @@ export class TableComponent implements OnChanges, OnDestroy {
         let configuration = {};
         obj.name = res.name;
         if (obj.type === InventoryObject.SCHEDULE) {
-          configuration = {controllerId: this.schedulerId};
+          configuration = {
+            controllerId: this.schedulerId,
+            planOrderAutomatically: true,
+            submitOrderToControllerWhenPlanned: true
+          };
         } else if (obj.type === InventoryObject.LOCK) {
           configuration = {limit: 1, id: res.name};
         } else if (obj.type === InventoryObject.FILEORDERSOURCE) {
