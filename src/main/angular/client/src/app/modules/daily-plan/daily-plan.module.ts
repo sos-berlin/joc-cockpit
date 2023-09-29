@@ -6,12 +6,12 @@ import {
   RemovePlanModalComponent,
   SearchComponent,
   CreatePlanModalComponent,
-  GanttComponent, ExportComponent
+  GanttComponent
 } from './daily-plan.component';
 import {SharedModule} from '../shared/shared.module';
 import {DailyPlanRoutingModule} from './daily-plan-routing.module';
 import {DailyPlanRegexValidator} from '../../directives/core.directive';
-import {ProjectionComponent, ShowProjectionModalComponent} from "./projection/projection.component";
+import {ExportComponent, ProjectionComponent, ShowProjectionModalComponent} from "./projection/projection.component";
 import {GroupByPipe} from '../../pipes/core.pipe';
 
 @NgModule({

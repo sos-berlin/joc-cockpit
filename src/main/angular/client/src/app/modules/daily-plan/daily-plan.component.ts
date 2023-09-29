@@ -19,116 +19,12 @@ import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {DataService} from '../../services/data.service';
 import {ExcelService} from '../../services/excel.service';
+import {ExportComponent} from "./projection/projection.component";
 
 declare const JSGantt: any;
 declare let jsgantt: any;
 declare const $: any;
 
-@Component({
-  selector: 'app-projection-export-modal',
-  templateUrl: './export-dialog.html'
-})
-export class ExportComponent {
-  readonly modalData: any = inject(NZ_MODAL_DATA);
-
-  schedulerId: any;
-  preferences: any;
-  origin: any;
-  display: any;
-  loading = true;
-  nodes: any = [];
-  path = '';
-  submitted = false;
-  showSearchPanel = false;
-  filter: any = {
-    workflowFolders: [],
-    scheduleFolders: []
-  };
-  filters: any;
-  workflowTree = [];
-  scheduleTree = [];
-  startDate: any
-  endDate: any
-
-  @Output() onChange: EventEmitter<any> = new EventEmitter();
-  @Output() onSearch: EventEmitter<any> = new EventEmitter();
-  @Output() onCancel: EventEmitter<any> = new EventEmitter();
-
-  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
-  }
-
-  ngOnInit(): void {
-    this.schedulerId = this.modalData.schedulerId;
-    this.preferences = this.modalData.preferences;
-    this.origin = this.modalData.origin;
-    this.display = this.modalData.display;
-    this.filters = this.modalData.filters
-    // this.path = this.origin.path;
-    console.log(this.filters,"KKKKKK")
-    if (this.filters.filter && !isEmpty(this.filters.filter)) {
-      this.filter = this.filters.filter;
-      console.log(this.filter,">>>>>")
-      console.log(this.showSearchPanel)
-      if (!this.showSearchPanel) {
-        this.showSearchPanel = true;
-      }
-      console.log(this.showSearchPanel, 'afetr.........')
-    }
-    if (this.workflowTree.length == 0) {
-      this.getWorkflowTree();
-    }
-    if (this.scheduleTree.length == 0) {
-      this.getScheduleTree();
-    }
-  }
-
-  ngOnChanges():void {
-    console.log(this.startDate,"S")
-  }
-
-  private getWorkflowTree(): void {
-    this.coreService.post('tree', {
-      controllerId: this.schedulerId,
-      forInventory: false,
-      types: ['WORKFLOW']
-    }).subscribe((res) => {
-      this.workflowTree = this.coreService.prepareTree(res, true);
-    });
-  }
-
-  private getScheduleTree(): void {
-    this.coreService.post('tree', {
-      controllerId: this.schedulerId,
-      forInventory: false,
-      types: ['SCHEDULE']
-    }).subscribe((res) => {
-      this.scheduleTree = this.coreService.prepareTree(res, true);
-    });
-  }
-
-  remove(path, flag = false): void {
-    if (flag) {
-      this.filter.workflowFolders.splice(this.filter.workflowFolders.indexOf(path), 1);
-    } else {
-      this.filter.scheduleFolders.splice(this.filter.scheduleFolders.indexOf(path), 1);
-    }
-  }
-
-  onSubmit(): void {
-    this.submitted = true;
-    this.filter.submit = true;
-    this.onSearch.emit(this.filter);
-    setTimeout(() => {
-      this.submitted = false;
-    }, 800);
-  }
-
-  cancel(): void {
-    this.activeModal.destroy();
-  }
-
-
-}
 
 @Component({
   selector: 'app-create-plan-modal-content',
@@ -832,7 +728,6 @@ export class DailyPlanComponent {
   selectedYear: any;
   selectedMonth: any;
 
-  viewDate: Date = new Date();
   weekStart = 1;
   dateFormat: string;
 
@@ -885,13 +780,6 @@ export class DailyPlanComponent {
     this.pendingHTTPRequests$.next();
     this.pendingHTTPRequests$.complete();
     $('.scroll-y').remove();
-  }
-
-  highlightSchedule(data) {
-    const dom = (document.getElementById(data.replaceAll('/', '_')));
-    if (dom) {
-      $('#zt-gantt-grid-left-data').scrollTop(dom.offsetTop - 56);
-    }
   }
 
   private getDate(date): string {
@@ -1011,7 +899,7 @@ export class DailyPlanComponent {
         schedulerId: this.schedulerIds.selected,
         preferences: this.preferences,
         display: this.preferences.auditLog,
-        filters: this.dailyPlanFilters.projection,
+        isCurrentController: this.dailyPlanFilters.current,
         origin
       },
       nzFooter: null,

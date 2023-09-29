@@ -1,10 +1,221 @@
 import {Component, EventEmitter, inject, Input, Output, SimpleChanges} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
+import {TranslateService} from "@ngx-translate/core";
 import {groupBy, isEmpty} from "underscore";
 import {CoreService} from "../../../services/core.service";
 import {SearchPipe} from "../../../pipes/core.pipe";
+import {ExcelService} from "../../../services/excel.service";
 
 declare const $;
+
+@Component({
+  selector: 'app-projection-export-modal',
+  templateUrl: './export-dialog.html'
+})
+export class ExportComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerId: any;
+  dateFormat: any;
+  preferences: any;
+  submitted = false;
+  filter: any = {
+    workflowFolders: [],
+    scheduleFolders: []
+  };
+  workflowTree = [];
+  scheduleTree = [];
+
+  constructor(public activeModal: NzModalRef, public coreService: CoreService,
+              private translate: TranslateService, private excelService: ExcelService) {
+  }
+
+  ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId;
+    this.preferences = this.modalData.preferences;
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if (this.workflowTree.length == 0) {
+      this.getWorkflowTree();
+    }
+    if (this.scheduleTree.length == 0) {
+      this.getScheduleTree();
+    }
+  }
+
+  private getWorkflowTree(): void {
+    this.coreService.post('tree', {
+      controllerId: this.schedulerId,
+      forInventory: false,
+      types: ['WORKFLOW']
+    }).subscribe((res) => {
+      this.workflowTree = this.coreService.prepareTree(res, true);
+    });
+  }
+
+  private getScheduleTree(): void {
+    this.coreService.post('tree', {
+      controllerId: this.schedulerId,
+      forInventory: false,
+      types: ['SCHEDULE']
+    }).subscribe((res) => {
+      this.scheduleTree = this.coreService.prepareTree(res, true);
+    });
+  }
+
+  remove(path, flag = false): void {
+    if (flag) {
+      this.filter.workflowFolders.splice(this.filter.workflowFolders.indexOf(path), 1);
+    } else {
+      this.filter.scheduleFolders.splice(this.filter.scheduleFolders.indexOf(path), 1);
+    }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    this.filter.submit = true;
+    let obj: any = {
+      controllerIds: [],
+      withoutStartTime: this.filter.withoutStartTime,
+      dateFrom: this.coreService.getDateByFormat(this.filter.dateFrom, this.preferences.zone, 'YYYY-MM-DD'),
+      dateTo: this.coreService.getDateByFormat(this.filter.dateTo, this.preferences.zone, 'YYYY-MM-DD')
+    };
+
+    if (this.modalData.isCurrentController) {
+      obj.controllerIds.push(this.schedulerId);
+    }
+
+    if (this.filter.workflowPaths?.length > 0) {
+      obj.workflowPaths = this.filter.workflowPaths;
+    }
+    if (this.filter.workflowFolders?.length > 0) {
+      obj.workflowFolders = [];
+      this.filter.workflowFolders.forEach((path) => {
+        obj.scheduleFolders.push({
+          folder: path,
+          recursive: true
+        })
+      })
+    }
+    if (this.filter.schedulePaths?.length > 0) {
+      obj.schedulePaths = this.filter.schedulePaths;
+    }
+    if (this.filter.scheduleFolders?.length > 0) {
+      obj.scheduleFolders = [];
+      this.filter.scheduleFolders.forEach((path) => {
+        obj.scheduleFolders.push({
+          folder: path,
+          recursive: true
+        })
+      })
+    }
+
+    this.coreService.post('daily_plan/projections/dates', obj).subscribe({
+      next: (res) => {
+        const rows = [];
+        for (const yearKey of Object.keys(res.years)) {
+          const yearData = res.years[yearKey];
+          for (const monthKey of Object.keys(yearData)) {
+            const monthData = yearData[monthKey];
+            for (const dateKey of Object.keys(monthData)) {
+              const dateData = monthData[dateKey];
+              const group = groupBy(dateData.periods, (res) => {
+                return res.schedule;
+              });
+              for (const key of Object.keys(group)) {
+                for (const controller of Object.keys(res.meta)) {
+                  let workflows = res.meta[controller][key].workflowPaths || res.meta[controller][key].workflows;
+                  workflows.forEach(workflow => {
+                    rows.push(
+                      {
+                        date: dateKey,
+                        schedule: key,
+                        controller: controller,
+                        periods: group[key],
+                        workflow: workflow
+                      }
+                    )
+                  })
+                }
+              }
+            }
+          }
+        }
+
+        this.submitted = false;
+        this.exportXsl(rows);
+      }, error: () => this.submitted = false
+    });
+
+
+  }
+
+  private exportXsl(rows): void {
+    const data = [];
+    let date = '', workflow = '', schedule = '', period = '', controllerId = '';
+    this.translate.get('user.label.date').subscribe(translatedValue => {
+      date = translatedValue;
+    });
+    this.translate.get('dailyPlan.label.workflow').subscribe(translatedValue => {
+      workflow = translatedValue;
+    });
+    this.translate.get('dailyPlan.label.schedule').subscribe(translatedValue => {
+      schedule = translatedValue;
+    });
+    this.translate.get('runtime.label.period').subscribe(translatedValue => {
+      period = translatedValue;
+    });
+    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
+      controllerId = translatedValue;
+    });
+
+    for (let i = 0; i < rows.length; i++) {
+      let obj: any = {};
+      let periodStr = '';
+      obj[workflow] = rows[i].workflow;
+      obj[schedule] = rows[i].schedule;
+      if (!this.modalData.isCurrentController) {
+        obj[controllerId] = rows[i].controller;
+      }
+      const _date = this.coreService.getDateByFormat(rows[i].date, this.preferences.zone, 'YYYY-MM-DD');
+      rows[i].periods.forEach((p, index) => {
+        if (index == 0) {
+          periodStr = this.coreService.getPeriodStr(p['period']);
+        } else {
+          periodStr += ', ' + this.coreService.getPeriodStr(p['period']);
+        }
+      })
+
+      obj[_date] = periodStr;
+      let flag = true;
+      if (data.length > 0 && data[data.length - 1]) {
+        // Merge data for the same key
+        for (let j = 0; j < data.length; j++) {
+          if (data[j][_date] === obj[_date]) {
+            break;
+          } else {
+            if (data[j][workflow] === obj[workflow] && data[j][schedule] === obj[schedule] && data[j][controllerId] === obj[controllerId]) {
+              data[j][_date] = periodStr;
+              flag = false;
+              break;
+            }
+          }
+        }
+      }
+
+      if (flag) {
+        data.push(obj);
+      }
+    }
+
+    this.excelService.exportAsExcelFile(data, 'JS7-dailyplan-projection');
+    this.cancel();
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+
+}
+
 
 @Component({
   selector: 'app-projection-dialog-modal-content',
@@ -46,7 +257,6 @@ export class ShowProjectionModalComponent {
 
         for (const key of Object.keys(data)) {
           for (const controller of Object.keys(res.meta)) {
-           
             let workflows = res.meta[controller][key].workflowPaths || res.meta[controller][key].workflows;
             workflows.forEach(workflow => {
               this.schedule.list.push(
@@ -81,34 +291,6 @@ export class ShowProjectionModalComponent {
 
   pageSizeChange($event: number): void {
     this.filter.entryPerPage = $event;
-  }
-
-  getPeriodStr(period): string {
-    let periodStr = null;
-    if (period.begin) {
-      periodStr = this.coreService.getDateByFormat(period.begin, null, 'HH:mm:ss');
-    }
-    if (period.end) {
-      periodStr = periodStr + '-' + this.coreService.getDateByFormat(period.end, null, 'HH:mm:ss');
-    }
-    if (period.singleStart) {
-      periodStr = 'Single start: ' + this.coreService.getDateByFormat(period.singleStart, null, 'HH:mm:ss');
-    } else if (period.repeat) {
-      periodStr = periodStr + ' every ' + this.getTimeInString(period.repeat);
-    }
-    return periodStr;
-  }
-
-  private getTimeInString(time: any): string {
-    if (time.toString().substring(0, 2) === '00' && time.toString().substring(3, 5) === '00') {
-      return time.toString().substring(6, time.length) + ' seconds';
-    } else if (time.toString().substring(0, 2) === '00') {
-      return time.toString().substring(3, time.length) + ' minutes';
-    } else if ((time.toString().substring(0, 2) != '00' && time.length === 5) || (time.length > 5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) === '00'))) {
-      return time.toString().substring(0, 5) + ' hours';
-    } else {
-      return time;
-    }
   }
 
   cancel(): void {
@@ -172,7 +354,6 @@ export class ProjectionComponent {
         this.showCalendar();
       }
     }
-
     if (changes['showSearchPanel']?.currentValue) {
       if (this.workflowTree.length == 0) {
         this.getWorkflowTree();
@@ -258,7 +439,7 @@ export class ProjectionComponent {
     this.isLoaded = false;
     const dom = $('#full-calendar-projection');
     if (!dom.data('calendar')) {
-      $('#full-calendar-projection').calendar({
+      dom.calendar({
         language: this.coreService.getLocale(),
         view: this.filters.calView.toLowerCase(),
         dataSource: this.projectionData,

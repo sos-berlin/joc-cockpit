@@ -10,13 +10,19 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="form-group row">
-      <label class="col-md-3 form-control-label" translate>common.placeholder.startDate</label>
+      <label class="col-md-3 form-control-label" translate>common.placeholder.startDate
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-md-2">
-        <app-date-input [attributeDate]="startDate"></app-date-input>
+        <nz-date-picker [(ngModel)]="filter.dateFrom" [nzAllowClear]="false" [nzFormat]="dateFormat"
+                        name="from" required></nz-date-picker>
       </div>
-      <label class="col-md-2 form-control-label" translate>common.placeholder.endDate</label>
+      <label class="col-md-2 form-control-label" translate>common.placeholder.endDate
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-md-2">
-        <app-date-input [attributeDate]="startDate"></app-date-input>
+        <nz-date-picker [(ngModel)]="filter.dateTo" [nzAllowClear]="false" [nzFormat]="dateFormat"
+                        name="to" required></nz-date-picker>
       </div>
     </div>
     <div class="form-group row">
@@ -53,6 +59,12 @@
           <span class="">{{path}}</span>
           <i (click)="remove(path)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
         </div>
+      </div>
+    </div>
+    <div class="form-group row ">
+      <label class="col-md-3" translate>dailyPlan.label.withoutStartTime</label>
+      <div class="col-md-6">
+        <label [(ngModel)]="filter.withoutStartTime" name="late" nz-checkbox></label>
       </div>
     </div>
   </div>

@@ -89,7 +89,7 @@
             </td>
             <td>
               <div *ngFor="let p of sch['periods'];">
-                {{getPeriodStr(p['period'])}}
+                {{coreService.getPeriodStr(p['period'])}}
               </div>
             </td>
             <td *ngIf="!isCurrentController">
