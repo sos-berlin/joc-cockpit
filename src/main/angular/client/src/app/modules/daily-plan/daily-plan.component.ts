@@ -820,6 +820,7 @@ export class DailyPlanComponent {
     this.isLoaded = false;
     let obj: any = {
       controllerIds: [],
+      withoutStartTime: this.dailyPlanFilters.projection.withoutStartTime,
       dateFrom: this.getDate(this.dailyPlanFilters.projection.calStartDate),
       dateTo: this.getDate(this.dailyPlanFilters.projection.calEndDate)
     };
@@ -835,7 +836,7 @@ export class DailyPlanComponent {
       if (this.dailyPlanFilters.projection.filter.workflowFolders?.length > 0) {
         obj.workflowFolders = [];
         this.dailyPlanFilters.projection.filter.workflowFolders.forEach((path) => {
-          obj.scheduleFolders.push({
+          obj.workflowFolders.push({
             folder: path,
             recursive: true
           })
@@ -872,6 +873,7 @@ export class DailyPlanComponent {
                 planData.endDate = date;
                 planData.color = dateData.planned ? 'blue' : 'orange';
                 planData.numOfPeriods = dateData.numOfPeriods;
+                planData.numOfNonPeriods = dateData.numOfNonPeriods;
                 this.projectionData.push(planData);
               }
             }
@@ -1618,7 +1620,7 @@ export class DailyPlanComponent {
         }
       }
     } else {
-      let date = '', planned = '', numOfPeriods = '';
+      let date = '', planned = '', numOfPeriods = '', numOfNonPeriods = '';
       this.translate.get('user.label.date').subscribe(translatedValue => {
         date = translatedValue;
       });
@@ -1628,11 +1630,15 @@ export class DailyPlanComponent {
       this.translate.get('dailyPlan.label.numOfPeriods').subscribe(translatedValue => {
         numOfPeriods = translatedValue;
       });
+      this.translate.get('dailyPlan.label.numOfNonPeriods').subscribe(translatedValue => {
+        numOfNonPeriods = translatedValue;
+      });
       for (let i = 0; i < this.projectionData.length; i++) {
         let obj: any = {};
         obj[date] = this.getDate(this.projectionData[i].startDate);
         obj[planned] = this.projectionData[i].color === 'blue' ? 'Yes' : 'No';
         obj[numOfPeriods] = this.projectionData[i].numOfPeriods;
+        obj[numOfNonPeriods] = this.projectionData[i].numOfNonPeriods;
         data.push(obj);
       }
     }

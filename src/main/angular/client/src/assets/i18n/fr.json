@@ -787,6 +787,8 @@
     "label.removeOrderByWorkflow": "Supprimer l'Ordre du Workflow",
     "label.removeOrderBySchedule": "Supprimer l'Ordre de la Planification",
     "label.numOfPeriods": "No. of Periods",
+    "label.numOfNonPeriods": "No. of non-periods",
+    "label.unplanned": "Unplanned",
     "label.workflowFolders": "Workflow Folders",
     "label.scheduleFolders": "Schedule Folders",
     "label.withoutStartTime": "Without Start Time",

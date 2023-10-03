@@ -117,7 +117,7 @@ export class ExportComponent {
             const monthData = yearData[monthKey];
             for (const dateKey of Object.keys(monthData)) {
               const dateData = monthData[dateKey];
-              const group = groupBy(dateData.periods, (res) => {
+              const group = groupBy(dateData.periods || dateData.nonPeriods, (res) => {
                 return res.schedule;
               });
               for (const key of Object.keys(group)) {
@@ -176,13 +176,17 @@ export class ExportComponent {
         obj[controllerId] = rows[i].controller;
       }
       const _date = this.coreService.getDateByFormat(rows[i].date, this.preferences.zone, 'YYYY-MM-DD');
-      rows[i].periods.forEach((p, index) => {
-        if (index == 0) {
-          periodStr = this.coreService.getPeriodStr(p['period']);
-        } else {
-          periodStr += ', ' + this.coreService.getPeriodStr(p['period']);
-        }
-      })
+      if (rows[i].periods) {
+        rows[i].periods.forEach((p, index) => {
+          if (p['period']) {
+            if (index == 0) {
+              periodStr = this.coreService.getPeriodStr(p['period']);
+            } else {
+              periodStr += ', ' + this.coreService.getPeriodStr(p['period']);
+            }
+          }
+        })
+      }
 
       obj[_date] = periodStr;
       let flag = true;
@@ -251,7 +255,13 @@ export class ShowProjectionModalComponent {
   private loadData(): void {
     this.coreService.post('daily_plan/projections/date', this.modalData.obj).subscribe({
       next: (res) => {
-        const data = groupBy(res.periods, (res) => {
+        this.schedule.isPlanned = res.planned;
+        if (!this.modalData.obj.withoutStartTime) {
+          this.schedule.numOfPeriods = res.numOfPeriods;
+        } else {
+          this.schedule.numOfNonPeriods = res.numOfPeriods || res.numOfNonPeriods;
+        }
+        const data = groupBy(res.periods || res.nonPeriods, (res) => {
           return res.schedule;
         });
 
@@ -382,6 +392,7 @@ export class ProjectionComponent {
       };
       this.schedule.date = this.coreService.getDateByFormat(event.date, this.preferences.zone, 'YYYY-MM-DD');
       const obj: any = {
+        withoutStartTime: this.filters.withoutStartTime,
         date: this.schedule.date
       };
       if (this.isCurrentController) {
