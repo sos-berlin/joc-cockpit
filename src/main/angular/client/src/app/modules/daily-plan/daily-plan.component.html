@@ -787,15 +787,25 @@
                 runtime.label.yearly
               </div>
             </div>
-
-            <button (click)="showSearchPanel ? cancel() : advancedSearch()" class="btn btn-sm inline pull-right m-l btn-grey">
+            <div class="inline m-l-12 pos-rel t-xxs">
+              <i class="fa fa-stop date-planned"></i>
+              {{'common.label.planned' | translate}}
+              <i class="fa fa-stop date-unplanned p-l-sm"></i>
+              {{'dailyPlan.label.unplanned' | translate}}
+            </div>
+            <button (click)="showSearchPanel ? cancel() : advancedSearch()" class="btn btn-sm inline pull-right m-l-12 btn-grey">
               <span translate>common.button.advancedSearch</span>
               <i class="fa p-l-xs" [ngClass]="!showSearchPanel ? 'fa-caret-down' : 'fa-caret-up'"></i>
             </button>
             <button (click)="recreateProjection()" class="btn btn-grey btn-sm button-group-ellipsis pull-right">
               <span translate>dailyPlan.button.recreate</span>
             </button>
-            <div class="inline pull-right" *ngIf="projectionData">
+            <div class="inline pull-right m-r-12 pos-rel t-xxs">
+              <label (nzCheckedChange)="loadProjectionForCalendar()" [(ngModel)]="dailyPlanFilters.projection.withoutStartTime" name="withoutStartTime1" nz-checkbox>
+              {{'dailyPlan.label.withoutStartTime' | translate}}
+              </label>
+            </div>
+            <div class="inline pull-right b-r m-r-12" style="height: 26px" *ngIf="projectionData">
               <div class="m-r-12 pos-rel t-3">
                 <label translate>dashboard.label.surveyDate</label>:
                 <label class="text-muted p-l-xs" translate>{{surveyDate | stringToDate}}</label>
@@ -805,7 +815,8 @@
           <div class="col-md-12 ">
             <app-projection [projectionData]="projectionData" [permission]="permission" [schedulerId]="schedulerIds.selected"
                             [showSearchPanel]="showSearchPanel" (onCancel)="cancelCal()" (onSearch)="searchCal($event)"
-                            [filters]="dailyPlanFilters.projection" [isCurrentController]="dailyPlanFilters.current" [preferences]="preferences"
+                            [filters]="dailyPlanFilters.projection" [isCurrentController]="dailyPlanFilters.current"
+                            [preferences]="preferences"
                             (onChange)="changeInCalendar($event)"></app-projection>
           </div>
         </div>
@@ -819,7 +830,7 @@
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
 </div>
-<div *ngIf="!isLoaded || reloadState == 'yes'">
+<div *ngIf="(!isLoaded || reloadState == 'yes') && dailyPlanFilters.tabIndex == 0">
   <div (click)="reload()" class="bottom-btn">
     <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
     <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>

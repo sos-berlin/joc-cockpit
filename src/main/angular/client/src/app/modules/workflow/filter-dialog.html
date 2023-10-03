@@ -9,6 +9,6 @@
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
-<app-form-template (onCancel)="cancel(null)" [allFilter]="allFilter" [filter]="filter"
+<app-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
                    [listOfAgents]="listOfAgents" [permission]="permission" [preferences]="preferences"
                    [schedulerIds]="schedulerIds"></app-form-template>

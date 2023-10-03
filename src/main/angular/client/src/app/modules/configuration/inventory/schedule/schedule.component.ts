@@ -316,7 +316,9 @@ export class ScheduleComponent {
                     break;
                   }
                 }
-                return {name: k1, value: v1, type, isRequired};
+                const obj = {name: k1, value: v1, type, isRequired};
+                this.coreService.checkDataType(obj);
+                return obj;
               });
 
               for (const prop in target[x].list) {
@@ -344,12 +346,16 @@ export class ScheduleComponent {
 
               if (notExistArr.length > 0) {
                 notExistArr.forEach(item => {
-                  sour.value[i].push({
+                 
+                  const obj = {
                     name: item.name,
                     type: item.value.type,
                     value: (item.value.value || item.value.default),
                     isRequired: item.value.isRequired || item.isRequired
-                  })
+                  };
+                  this.coreService.checkDataType(obj);
+                
+                  sour.value[i].push(obj);
                 })
               }
             }
@@ -431,6 +437,9 @@ export class ScheduleComponent {
                 if (val1.default || val1.default == 0 || val1.default == false) {
                   obj.isRequired = false;
                 }
+                if(val1.value){
+                  this.coreService.checkDataType(val1);
+                }
                 val1.isRequired = obj.isRequired;
                 actualList.push(obj);
                 return {name: k1, value: val1};
@@ -450,6 +459,9 @@ export class ScheduleComponent {
                 for (let i = 0; i < this.schedule.configuration.orderParameterisations[prop].variables.length; i++) {
                   if (this.schedule.configuration.orderParameterisations[prop].variables[i].name === k) {
                     this.schedule.configuration.orderParameterisations[prop].variables[i].isExist = true;
+                    if(this.schedule.configuration.orderParameterisations[prop].variables[i].value){
+                      this.coreService.checkDataType(this.schedule.configuration.orderParameterisations[prop].variables[i]);
+                    }
                     break;
                   }
                 }
@@ -472,6 +484,9 @@ export class ScheduleComponent {
                 this.schedule.configuration.orderParameterisations[prop].variables[i].type = val.type;
                 this.schedule.configuration.orderParameterisations[prop].variables[i].facet = val.facet;
                 this.schedule.configuration.orderParameterisations[prop].variables[i].message = val.message;
+                if(this.schedule.configuration.orderParameterisations[prop].variables[i].value){
+                  this.coreService.checkDataType(this.schedule.configuration.orderParameterisations[prop].variables[i]);
+                }
                 let list;
                 if (val.list) {
                   list = [];

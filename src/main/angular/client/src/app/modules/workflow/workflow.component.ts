@@ -21,7 +21,7 @@ import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 declare const $: any;
 
 @Component({
-  selector: 'app-filter-modal-content',
+  selector: 'app-filter-workflow-content',
   templateUrl: './filter-dialog.html',
 })
 export class FilterModalComponent {
@@ -134,12 +134,14 @@ export class SearchComponent {
       for (let i in this.synchronizationStatusOptions) {
         if (this.synchronizationStatusOptions[i].value == item) {
           this.synchronizationStatusOptions[i].checked = true;
+          this.statusObj.syncStatus.push(item)
           break;
         }
       }
       for (let i in this.availabilityStatusOptions) {
         if (this.availabilityStatusOptions[i].value == item) {
           this.availabilityStatusOptions[i].checked = true;
+          this.statusObj.availabilityStatus.push(item)
           break;
         }
       }
@@ -233,14 +235,23 @@ export class SearchComponent {
     };
     this.coreService.post('configuration/save', configObj).subscribe({
       next: (res: any) => {
-        this.submitted = false;
-        configObj.id = res.id;
-        this.allFilter.push(configObj);
+        if (result.id) {
+          for (const i in this.allFilter) {
+            if (this.allFilter[i].id === result.id) {
+              this.allFilter[i] = configObj;
+              break;
+            }
+          }
+        } else {
+          configObj.id = res.id;
+          this.allFilter.push(configObj);
+        }
         if (this.isSearch) {
           this.filter.name = '';
         } else {
           this.onCancel.emit(configObj);
         }
+        this.submitted = false;
       }, error: () => this.submitted = false
     });
   }
@@ -912,11 +923,11 @@ export class WorkflowComponent {
             ((this.workflowFilters.expandedObjects.indexOf(path + res.workflows[i].versionId) > -1) ||
               (this.workflowFilters.expandedObjects.indexOf(path + 'CURRENT') > -1 && res.workflows[i].isCurrentVersion))) {
             this.showPanelFuc(res.workflows[i], false, this.workflowFilters?.mapObj?.get(path + res.workflows[i].versionId));
-            if(path) {
+            if (path) {
               request.workflowIds.push({path, versionId: res.workflows[i].versionId});
             }
           } else {
-            if(path) {
+            if (path) {
               request2.workflowIds.push({path, versionId: res.workflows[i].versionId});
             }
           }
@@ -1372,7 +1383,7 @@ export class WorkflowComponent {
     });
   }
 
-  action(type, obj, self): void {
+  action(type: string, obj: any, self: any): void {
     if (type === 'DELETE') {
       if (self.savedFilter.selected == obj.id) {
         self.savedFilter.selected = undefined;

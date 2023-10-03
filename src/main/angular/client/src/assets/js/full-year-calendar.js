@@ -530,9 +530,9 @@
               let span2 = $(document.createElement(domType));
               span2.text(events[i].plannedShowTime + ' - ' + events[i].endTime);
               div1.append(span2);
-            } else if(events[i].numOfPeriods) {
+            } else if(events[i].numOfPeriods || events[i].numOfPeriods == 0 || events[i].numOfNonPeriods || events[i].numOfNonPeriods == 0) {
               let span2 = $(document.createElement('span'));
-              span2.text(events[i].numOfPeriods);
+              span2.text(events[i].numOfPeriods || events[i].numOfNonPeriods);
               div1.addClass('periods-count');
               div1.append(span2);
             } else {
