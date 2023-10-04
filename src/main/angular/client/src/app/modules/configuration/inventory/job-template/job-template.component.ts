@@ -85,6 +85,14 @@ export class UpdateJobTemplatesComponent {
   ngOnInit(): void {
     this.preferences = this.modalData.preferences;
     this.data = this.modalData.data;
+   
+    const folders = [];
+    if (this.modalData.object && !this.modalData.object.type) {
+      folders.push({
+        folder: this.modalData.object.path,
+        recursive: !(this.modalData.object.dailyplan || this.modalData.object.object)
+      })
+    }
     this.treeObj = this.modalData.treeObj;
     this.job = this.modalData.job;
 
@@ -94,7 +102,13 @@ export class UpdateJobTemplatesComponent {
       this.required = true;
       this.display = true;
     }
-    if (this.data) {
+    if (this.data || folders.length > 0) {
+      const obj: any = {};
+      if (this.data) {
+        obj.jobTemplatePaths = [this.data.path];
+      } else {
+        obj.folders = folders;
+      }
       this.propagateJobs();
     }
   }
@@ -115,15 +129,6 @@ export class UpdateJobTemplatesComponent {
         this.isloaded = true;
       }
     })
-  }
-
-  switchView(): void {
-    if (!this.listView) {
-      this.nodes = [{path: '/', key: '/', name: '/', children: []}];
-      this.createTreeStructure();
-    } else {
-      this.filterList();
-    }
   }
 
   filterList(): void {
@@ -778,7 +783,7 @@ export class JobTemplateComponent {
   }
 
   updateJobs(): void {
-    const modal = this.modal.create({
+    this.modal.create({
       nzTitle: undefined,
       nzContent: UpdateJobTemplatesComponent,
       nzClassName: 'lg',
@@ -789,11 +794,6 @@ export class JobTemplateComponent {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-
-      }
     });
   }
 

@@ -4548,6 +4548,26 @@ export class InventoryComponent {
     })
   }
 
+  updateJobs(object): void{
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: UpdateJobTemplatesComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        object
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+
+      }
+    });
+  }
+
   editJson(data: any, isEdit: boolean): void {
     this.showJson({showJson: data, edit: isEdit});
   }

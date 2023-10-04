@@ -2028,7 +2028,7 @@ export class DailyPlanComponent {
             result.submissionHistoryItems[i].startDate = this.convertStringToDate(result.submissionHistoryItems[i].dailyPlanDate);
             result.submissionHistoryItems[i].endDate = result.submissionHistoryItems[i].startDate;
             this.submissionHistoryItems.push(result.submissionHistoryItems[i]);
-            if (this.selectedDate && this.selectedDate.getTime() === result.submissionHistoryItems[i].startDate) {
+            if (this.selectedDate && (result.submissionHistoryItems[i].startDate?._d?.getTime() == this.selectedDate.getTime())) {
               this.submissionHistory.push(result.submissionHistoryItems[i]);
             }
           }
@@ -2397,49 +2397,52 @@ export class DailyPlanComponent {
       this.loadOrderPlan();
     }
     setTimeout(() => {
-      $('#full-calendar').calendar({
-        view: 'month',
-        rangeSelection: true,
-        language: this.coreService.getLocale(),
-        selectedDate: this.selectedDate,
-        clickDay: (e) => {
-          this.selectedDate = e.date;
-          this.isPastDate = this.selectedDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
-          this.submissionHistory = e.events;
-          this.selectedSubmissionId = null;
-          this.showSearchPanel = false;
-          this.isCalendarClick = false;
-          this.searchFilter = {};
-          this.isSearchHit = false;
-
-          if (this.selectedFiltered && this.selectedFiltered.name) {
-            this.changeFilter(null);
-          } else {
-            this.isLoaded = false;
-            this.loadOrderPlan();
-          }
-        },
-        renderEnd: (e) => {
-          const year = e.currentYear || new Date().getFullYear();
-          const month = (e.currentMonth || e.currentMonth === 0) ? e.currentMonth : new Date().getMonth();
-          this.selectedYear = year;
-          this.selectedMonth = month;
-          this.load(new Date(year, month, 1));
-          if (this.dateRanges && this.dateRanges.length > 1) {
-            $('#full-calendar').data('calendar').checkRange({from: this.dateRanges[0], to: this.dateRanges[1]});
-          }
-        },
-        rangeEnd: (e) => {
-          this.dateRanges = e.dateRanges;
-          this.isCalendarClick = false;
-          if (this.dateRanges && this.dateRanges.length > 0) {
-            this.resetCheckBox(true);
-            this.isPastDate = new Date(this.dateRanges[0]).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
-          } else {
+      const dom = $('#full-calendar');
+      if (!dom.data('calendar')) {
+        dom.calendar({
+          view: 'month',
+          rangeSelection: true,
+          language: this.coreService.getLocale(),
+          selectedDate: this.selectedDate,
+          clickDay: (e) => {
+            this.selectedDate = e.date;
             this.isPastDate = this.selectedDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
+            this.submissionHistory = e.events;
+            this.selectedSubmissionId = null;
+            this.showSearchPanel = false;
+            this.isCalendarClick = false;
+            this.searchFilter = {};
+            this.isSearchHit = false;
+
+            if (this.selectedFiltered && this.selectedFiltered.name) {
+              this.changeFilter(null);
+            } else {
+              this.isLoaded = false;
+              this.loadOrderPlan();
+            }
+          },
+          renderEnd: (e) => {
+            const year = e.currentYear || new Date().getFullYear();
+            const month = (e.currentMonth || e.currentMonth === 0) ? e.currentMonth : new Date().getMonth();
+            this.selectedYear = year;
+            this.selectedMonth = month;
+            this.load(new Date(year, month, 1));
+            if (this.dateRanges && this.dateRanges.length > 1) {
+              $('#full-calendar').data('calendar').checkRange({from: this.dateRanges[0], to: this.dateRanges[1]});
+            }
+          },
+          rangeEnd: (e) => {
+            this.dateRanges = e.dateRanges;
+            this.isCalendarClick = false;
+            if (this.dateRanges && this.dateRanges.length > 0) {
+              this.resetCheckBox(true);
+              this.isPastDate = new Date(this.dateRanges[0]).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
+            } else {
+              this.isPastDate = this.selectedDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
+            }
           }
-        }
-      });
+        });
+      }
     }, 100)
   }
 

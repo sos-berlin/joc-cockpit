@@ -546,6 +546,12 @@
         nz-menu-item>
       <a translate>inventory.button.updateFromJobTemplates</a>
     </li>
+    <li *ngIf="(node.origin.type === 'JOBTEMPLATE' && node.origin.released) || node.origin.dailyPlan || (node.origin.object === 'JOBTEMPLATE' && node.origin.children.length > 0)" nz-menu-divider></li>
+    <li (click)="updateJobs(node.origin)" *ngIf="(!node.origin.object && !node.origin.type && permission.joc.inventory.manage && !node.origin.controller)
+     || (node.origin.type === 'JOBTEMPLATE' && node.origin.released) || (node.origin.object === 'JOBTEMPLATE' && node.origin.children.length > 0)"
+        nz-menu-item>
+      <a translate>inventory.button.updateJobs</a>
+    </li>
     <li *ngIf="node.origin.type" nz-menu-divider></li>
     <li (click)="editJson(node.origin, false)" *ngIf="node.origin.type"
         nz-menu-item>

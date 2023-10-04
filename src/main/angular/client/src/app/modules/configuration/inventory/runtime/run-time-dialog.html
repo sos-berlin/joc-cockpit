@@ -50,7 +50,7 @@
                       </td>
                       <td>
                         <div *ngFor="let p of calendar.periods; let x = index">
-                          <a (click)="updatePeriodInCalendar(calendar, x, p)">{{coreService.getPeriodStr(p)}}</a>
+                          <a (click)="updatePeriodInCalendar(calendar, x, p)">{{getPeriodStr(p)}}</a>
                           <a (click)="updatePeriodInCalendar(calendar, x, p)" class="text-xs text-hover-primary m-l-sm">
                             <i class="fa fa-pencil"></i></a>
                           <a (click)="removePeriodInCalendar(calendar, x)" class="text-xs text-hover-color m-l-sm">

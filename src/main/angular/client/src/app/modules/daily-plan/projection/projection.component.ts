@@ -150,7 +150,7 @@ export class ExportComponent {
 
   private exportXsl(rows): void {
     const data = [];
-    let date = '', workflow = '', schedule = '', period = '', controllerId = '';
+    let date = '', workflow = '', schedule = '', period = '', controllerId = '', yes = '';
     this.translate.get('user.label.date').subscribe(translatedValue => {
       date = translatedValue;
     });
@@ -166,7 +166,9 @@ export class ExportComponent {
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
     });
-
+    this.translate.get('common.label.yes').subscribe(translatedValue => {
+      yes = translatedValue;
+    });
     for (let i = 0; i < rows.length; i++) {
       let obj: any = {};
       let periodStr = '';
@@ -184,6 +186,8 @@ export class ExportComponent {
             } else {
               periodStr += ', ' + this.coreService.getPeriodStr(p['period']);
             }
+          } else {
+            periodStr = yes;
           }
         })
       }
