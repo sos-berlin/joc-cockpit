@@ -49,6 +49,10 @@
       <span translate>inventory.label.updateJobs</span>:
       {{data.name}}
     </span>
+    <span *ngIf="folder">
+      <span translate>inventory.label.updateJobs</span>:
+      {{folder.path}}
+    </span>
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -61,7 +65,7 @@
         <div [ngClass]="{'show': display}" class="hide">
           <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
         </div>
-        <div *ngIf="data" class="form-group row">
+        <div *ngIf="data || folder" class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.export.label.filter</label>
           </div>
@@ -98,14 +102,14 @@
             <label [(ngModel)]="object.overwriteAdmissionTime" name="overwriteAdmissionTime" nz-checkbox></label>
           </div>
         </div>
-        <div *ngIf="nodes.length && data" class="form-group row">
+        <div *ngIf="nodes.length && (data || folder)" class="form-group row">
           <div class="col-md-12">
             <label nz-checkbox [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
                    (nzCheckedChange)="selectAll($event)"></label>
             <label class="p-l-sm _600" translate>runtime.label.selectAll</label>
           </div>
         </div>
-        <div *ngIf="data" class="row">
+        <div *ngIf="data || folder" class="row">
           <div *ngFor="let item of nodes | orderBy: 'path'" class="col-md-12 m-b-sm">
             <label nz-checkbox [nzChecked]="object.setOfCheckedPath.has(item.path)"
                    (nzCheckedChange)="onItemChecked(item, $event)" ></label>
@@ -125,10 +129,10 @@
           </div>
         </div>
       </div>
-      <div *ngIf="nodes.length===0 && isloaded && data" class="m-t-md">
+      <div *ngIf="nodes.length===0 && isloaded && (data || folder)" class="m-t-md">
         <app-empty-data></app-empty-data>
       </div>
-      <div *ngIf="!isloaded && data" class="text-center m-t-md">
+      <div *ngIf="!isloaded && (data || folder)" class="text-center m-t-md">
         <nz-spin nzSimple></nz-spin>
       </div>
     </div>
@@ -165,7 +169,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button *ngIf="!isUpdated" [disabled]="submitted || (object.setOfCheckedPath.size == 0 && data)" class="btn btn-primary btn-sm"
+    <button *ngIf="!isUpdated" [disabled]="submitted || (object.setOfCheckedPath.size == 0 && (data || folder))" class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       <span translate>common.button.submit</span>

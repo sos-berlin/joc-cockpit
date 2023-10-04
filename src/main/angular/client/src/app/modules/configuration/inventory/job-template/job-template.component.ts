@@ -43,7 +43,7 @@ export class UpdateJobTemplatesComponent {
   loading = true;
   required = false;
   display = false;
-  listView = true;
+  folder: any;
   comments: any = {radio: 'predefined'};
   object = {
     overwriteNotification: false,
@@ -85,7 +85,7 @@ export class UpdateJobTemplatesComponent {
   ngOnInit(): void {
     this.preferences = this.modalData.preferences;
     this.data = this.modalData.data;
-   
+    this.folder = this.modalData.object;
     const folders = [];
     if (this.modalData.object && !this.modalData.object.type) {
       folders.push({
@@ -109,14 +109,12 @@ export class UpdateJobTemplatesComponent {
       } else {
         obj.folders = folders;
       }
-      this.propagateJobs();
+      this.propagateJobs(obj);
     }
   }
 
-  propagateJobs(): void {
-    this.coreService.post('job_templates/used', {
-      jobTemplatePaths: [this.data.path]
-    }).subscribe({
+  propagateJobs(obj): void {
+    this.coreService.post('job_templates/used', obj).subscribe({
       next: (res) => {
         this.isloaded = true;
         if (res.jobTemplates.length > 0) {
