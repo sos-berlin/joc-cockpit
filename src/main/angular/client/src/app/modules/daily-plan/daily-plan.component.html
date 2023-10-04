@@ -787,11 +787,13 @@
                 runtime.label.yearly
               </div>
             </div>
-            <div class="inline m-l-12 pos-rel t-xxs">
-              <i class="fa fa-stop date-planned"></i>
-              {{'common.label.planned' | translate}}
-              <i class="fa fa-stop date-unplanned p-l-sm"></i>
-              {{'dailyPlan.label.unplanned' | translate}}
+            <div class="inline m-l-12 b-l p-l-12" style="height: 26px">
+              <div class="pos-rel t-xxs">
+                <i class="fa fa-stop date-planned"></i>
+                {{'common.label.planned' | translate}}
+                <i class="fa fa-stop date-unplanned p-l-sm"></i>
+                {{'dailyPlan.label.unplanned' | translate}}
+              </div>
             </div>
             <button (click)="showSearchPanel ? cancel() : advancedSearch()" class="btn btn-sm inline pull-right m-l-12 btn-grey">
               <span translate>common.button.advancedSearch</span>
@@ -805,7 +807,7 @@
               {{'dailyPlan.label.withoutStartTime' | translate}}
               </label>
             </div>
-            <div class="inline pull-right b-r m-r-12" style="height: 26px" *ngIf="projectionData">
+            <div class="inline pull-right b-r m-r-12" style="height: 26px" *ngIf="projectionData && surveyDate">
               <div class="m-r-12 pos-rel t-3">
                 <label translate>dashboard.label.surveyDate</label>:
                 <label class="text-muted p-l-xs" translate>{{surveyDate | stringToDate}}</label>

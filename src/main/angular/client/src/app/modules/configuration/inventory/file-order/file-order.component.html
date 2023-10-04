@@ -38,7 +38,7 @@
           </button>
         </div>
       </div>
-      <form *ngIf="fileOrder.configuration">
+      <div *ngIf="fileOrder.configuration">
         <div class="form-group row">
           <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.name' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
@@ -165,7 +165,7 @@
                              name="delay"></nz-input-number>
           </div>
         </div>
-      </form>
+      </div>
     </div>
   </div>
   <div *ngIf="data.object" class="col-md-12">
