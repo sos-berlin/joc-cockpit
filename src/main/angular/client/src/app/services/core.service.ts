@@ -13,7 +13,6 @@ import {POPOUT_MODALS, PopoutData, PopupService} from "./popup.service";
 import {LogViewComponent} from "../components/log-view/log-view.component";
 
 declare const $: any;
-const API_URL = './api/';
 
 @Injectable({
   providedIn: 'root'
@@ -1099,53 +1098,26 @@ export class CoreService {
   }
 
   showDocumentation(path: string, preferences: any): void {
-    const link = API_URL + 'documentation' + path;
-    const myHeaders = new Headers();
-    myHeaders.append("X-Access-Token", this.authService.accessTokenId);
-    const ext = path.slice(path.lastIndexOf('.') + 1).toUpperCase();
-    const isXML = ext === 'XML';
-    if (isXML) {
-      this.openXMLFile(link, myHeaders, preferences);
-      return;
-    }
-    fetch(link, {
-      method: 'GET',
-      headers: myHeaders,
-    })
-      .then(response => response.blob())
-      .then(result => {
-        // Create a URL for the Blob
-        let blobUrl = URL.createObjectURL(result);
-        // Open a new window or tab with the Blob URL
-        if (preferences.isDocNewWindow === 'newWindow') {
-          window.open(blobUrl, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
-        } else {
-          window.open(blobUrl, '_blank');
-        }
-      })
-      .catch(error => console.log('error', error));
-  }
-
-  private openXMLFile(link, myHeaders, preferences): void {
+    const link = './api/documentation/show?documentation=' + encodeURIComponent(path) + '&accessToken=' + this.authService.accessTokenId;
     let win;
     if (preferences.isDocNewWindow === 'newWindow') {
       win = window.open('assets/preview.html', '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
     } else {
       win = window.open('assets/preview.html', '_blank');
     }
-    fetch(link, {
-      method: 'GET',
-      headers: myHeaders,
-    })
-      .then(response => response.text())
-      .then(result => {
-        setTimeout(() => {
-          const pre = document.createElement('pre');
-          pre.innerText = result;
-          win.document.body.appendChild(pre);
-        }, 10)
-      })
-      .catch(error => console.log('error', error));
+    const iframe = document.createElement('iframe');
+    iframe.src = link;
+    this.addFrame(win, iframe);
+  }
+
+  private addFrame(popupWindow, iframe): void {
+    if (popupWindow.document && popupWindow.document.body && popupWindow.document.body.getAttribute('id')) {
+      popupWindow.document.body.appendChild(iframe);
+    } else {
+      setTimeout(() => {
+        this.addFrame(popupWindow, iframe);
+      }, 400);
+    }
   }
 
   parseProcessExecuted(regex: string): any {
