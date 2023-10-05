@@ -3063,11 +3063,10 @@ export class CoreService {
       if (sour.type === 'Number') {
         if (typeof sour.value == 'boolean') {
           sour.value = sour.value == true ? 1 : 0;
-        } else {
+        } else if (typeof sour.value == 'string') {
           sour.value = (sour.value.toLowerCase() == 'true' || sour.value.toLowerCase() == 'yes' || sour.value.toLowerCase() == 'on') ? 1 : 0;
         }
-      }
-      if (sour.type === 'Boolean') {
+      } else if (sour.type === 'Boolean') {
         if (typeof sour.value == 'string') {
           sour.value = sour.value.toLowerCase() == 'true' || sour.value.toLowerCase() == 'yes' || sour.value.toLowerCase() == 'on';
         } else {

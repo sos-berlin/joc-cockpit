@@ -78,8 +78,8 @@ export class PopupService {
       const componentRef = viewContainerRef.createComponent(component);
 
       // Copy stylesheet link from parent window
-    //  this.styleSheetElement = this.getStyleSheetElement();
-     // windowInstance.document.head?.appendChild(this.styleSheetElement);
+      this.styleSheetElement = this.getStyleSheetElement();
+      windowInstance.document.head?.appendChild(this.styleSheetElement);
 
       // Clear popout modal content
       if (windowInstance.document.body) {

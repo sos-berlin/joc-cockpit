@@ -60,7 +60,7 @@ export class LogViewComponent {
 
   ngOnInit(): void {
     this.dataObject = POPOUT_MODALS['data'];
-    if (!this.dataObject.controllerId) {
+    if (!this.dataObject || !this.dataObject.controllerId) {
       setTimeout(() => {
         this.ngOnInit();
       }, 50);
