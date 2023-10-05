@@ -302,13 +302,6 @@ export class SingleDeployComponent {
           obj.addOrdersDateFrom = 'now';
         }
       }
-      // if (this.isRevoke) {
-      //   if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
-      //     obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-      //   } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
-      //     obj.cancelOrdersDateFrom = 'now';
-      //   }
-      // }
     }
     if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
       if (this.object.store.draftConfigurations.length === 0) {
@@ -495,7 +488,6 @@ export class DeployComponent {
   expandAll(): void {
     this.buildTree(this.path, null, () => {
       const self = this;
-
       function recursive(node: any): void {
         for (const i in node) {
           if (!node[i].isLeaf) {
@@ -4224,6 +4216,7 @@ export class InventoryComponent {
       this.modal.create({
         nzTitle: undefined,
         nzContent: SingleDeployComponent,
+        nzClassName: 'lg',
         nzData: {
           schedulerIds: this.getAllowedControllerOnly(),
           display: this.preferences.auditLog,
