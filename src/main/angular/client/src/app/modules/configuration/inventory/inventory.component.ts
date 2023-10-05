@@ -4305,6 +4305,7 @@ export class InventoryComponent {
       this.modal.create({
         nzTitle: undefined,
         nzContent: SingleDeployComponent,
+        nzClassName: 'lg',
         nzData: {
           schedulerIds: this.getAllowedControllerOnly(),
           display: this.preferences.auditLog,

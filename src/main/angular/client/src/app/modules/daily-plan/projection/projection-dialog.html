@@ -70,7 +70,7 @@
               <i *ngIf="filter.sortBy == 'schedule' && filter.reverse"
                  class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('period')">
+          <th (click)="sort('period')" *ngIf="schedule.numOfPeriods >= 0">
             <a><span class="p-r-xs" translate>runtime.label.period</span>
               <i *ngIf="filter.sortBy == 'period' && !filter.reverse"
                  class="fa fa-caret-up "></i>
@@ -107,9 +107,11 @@
                 {{sch['schedule']}}
               </span>
             </td>
-            <td>
+            <td *ngIf="schedule.numOfPeriods >= 0">
               <div *ngFor="let p of sch['periods'];">
-                {{coreService.getPeriodStr(p['period'])}}
+                <span *ngIf="p['period']">
+                  {{coreService.getPeriodStr(p['period'])}}
+                </span>
               </div>
             </td>
             <td *ngIf="!isCurrentController">
