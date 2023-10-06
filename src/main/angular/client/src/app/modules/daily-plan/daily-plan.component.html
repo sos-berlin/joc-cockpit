@@ -792,7 +792,7 @@
                 <i class="fa fa-stop date-planned"></i>
                 {{'common.label.planned' | translate}}
                 <i class="fa fa-stop date-unplanned p-l-sm"></i>
-                {{'dailyPlan.label.unplanned' | translate}}
+                {{'dailyPlan.label.projected' | translate}}
               </div>
             </div>
             <button (click)="showSearchPanel ? cancel() : advancedSearch()" class="btn btn-sm inline pull-right m-l-12 btn-grey">
@@ -803,8 +803,8 @@
               <span translate>dailyPlan.button.recreate</span>
             </button>
             <div class="inline pull-right m-r-12 pos-rel t-xxs">
-              <label (nzCheckedChange)="loadProjectionForCalendar()" [(ngModel)]="dailyPlanFilters.projection.withoutStartTime" name="withoutStartTime1" nz-checkbox>
-              {{'dailyPlan.label.withoutStartTime' | translate}}
+              <label [nz-tooltip]="'dailyPlan.tooltip.invertProjection'" (nzCheckedChange)="loadProjectionForCalendar()" [(ngModel)]="dailyPlanFilters.projection.withoutStartTime" name="withoutStartTime1" nz-checkbox>
+              {{'dailyPlan.label.invertProjection' | translate}}
               </label>
             </div>
             <div class="inline pull-right b-r m-r-12" style="height: 26px" *ngIf="projectionData && surveyDate">

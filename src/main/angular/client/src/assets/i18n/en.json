@@ -787,10 +787,10 @@
     "label.removeOrderBySchedule": "Remove Order for Schedule",
     "label.numOfPeriods": "No. of Periods",
     "label.numOfNonPeriods": "No. of non-periods",
-    "label.unplanned": "Unplanned",
+    "label.projected": "Projected",
     "label.workflowFolders": "Workflow Folders",
     "label.scheduleFolders": "Schedule Folders",
-    "label.withoutStartTime": "Without Start Time",
+    "label.invertProjection": "Invert Projection",
     "label.periodFound": "Period found",
     "label.periodsFound": "Periods found",
     "button.late": "Late",
@@ -833,6 +833,7 @@
     "tooltip.dateRangeSelectStep1": "Hold mouse and drag to select date range",
     "tooltip.dateRangeSelectStep2": "Or press Ctrl key and select start date and end date using mouse click",
     "tooltip.dateRangeSelectStep3": "Or click calendar icon and then select start date and end date using mouse click",
+    "tooltip.invertProjection": "Invert Projection",
     "tab": {
       "dailyPlan": "Daily Plan",
       "projection": "Projection"

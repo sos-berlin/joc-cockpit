@@ -1696,10 +1696,6 @@ export class XmlEditorComponent {
         } else if (!node.data || !isArray(node.data)) {
           node.data = [];
         }
-      } else {
-        if (node.data) {
-          this.checkJobResource(node.data);
-        }
       }
       if (node.data) {
         if (typeof node.data == 'string') {
@@ -2701,9 +2697,9 @@ export class XmlEditorComponent {
         this.scrollTreeToGivenId(this.selectedNode.uuid);
       }
     }
-    this.validConfig = false;
     this.extraInfo.released = false;
     this.isChange = true;
+    this.validateSer(false)
   }
 
   autoAddChild(child) {
@@ -3106,7 +3102,6 @@ export class XmlEditorComponent {
     }
     this.xpath();
     this.AddKeyReferencing();
-    this.autoValidate();
     this.nodes = [...this.nodes];
   }
 
@@ -3137,6 +3132,7 @@ export class XmlEditorComponent {
       }
     }
     this.nonValidattribute = {};
+
   }
 
   autoValidateRecursion(child): any {
@@ -3410,6 +3406,7 @@ export class XmlEditorComponent {
     }
     this.extraInfo.released = false;
     this.isChange = true;
+    this.validateSer(false);
   }
 
   getParent(node, list) {
@@ -3721,6 +3718,7 @@ export class XmlEditorComponent {
     this.extraInfo.released = false;
     this.isChange = true;
     this.printArraya(false);
+    this.validateSer(false);
   }
 
   renameTab(tab): void {
@@ -6112,7 +6110,7 @@ export class XmlEditorComponent {
     });
   }
 
-  private validateSer(): void {
+  private validateSer(flag = true): void {
     this.mainXml = this._showXml();
     if (!this.mainXml) {
       return;
@@ -6128,13 +6126,16 @@ export class XmlEditorComponent {
     this.coreService.post('xmleditor/validate', obj).subscribe({
       next: (res: any) => {
         if (res.validationError) {
-          this.showError(res.validationError);
+          if(flag) {
+            this.showError(res.validationError);
+          }
+          this.validConfig = false;
         } else {
           this.validConfig = true;
         }
       }, error: (error) => {
         this.validConfig = false;
-        if (error && error.error) {
+        if (flag && error && error.error) {
           this.showErrorToast(error.error.message, '');
         }
       }

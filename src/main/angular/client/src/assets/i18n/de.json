@@ -787,10 +787,10 @@
     "label.removeOrderBySchedule": "Auftrag für Zeitplan entfernen",
     "label.numOfPeriods": "No. of Periods",
     "label.numOfNonPeriods": "No. of non-periods",
-    "label.unplanned": "Unplanned",
+    "label.projected": "Projected",
     "label.workflowFolders": "Workflow Folders",
     "label.scheduleFolders": "Schedule Folders",
-    "label.withoutStartTime": "Without Start Time",
+    "label.invertProjection": "Invert Projection",
     "label.periodFound": "Period found",
     "label.periodsFound": "Periods found",
     "button.late": "Verspätet",
@@ -833,6 +833,7 @@
     "tooltip.dateRangeSelectStep1": "Mauszeiger gedrückt halten und ziehen, um Datumsbereich auszuwählen",
     "tooltip.dateRangeSelectStep2": "oder CTRL Taste gedrückt halten und Startdatum & Enddatum per Mausklick auswählen",
     "tooltip.dateRangeSelectStep3": "oder Kalendersymbol anklicken und Startdatum & Enddatum per Mausklick auswählen",
+    "tooltip.invertProjection": "Invert Projection",
     "tab": {
       "dailyPlan": "Daily Plan",
       "projection": "Projection"

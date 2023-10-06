@@ -8682,9 +8682,13 @@ export class WorkflowComponent {
           if (obj.retryDelays && typeof obj.retryDelays == 'string') {
             const arr = obj.retryDelays.split(',');
             obj.retryDelays = [];
-            arr.forEach((item) => {
-              obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item) || '1m'});
-            });
+            if(arr.length > 1) {
+              arr.forEach((item) => {
+                obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item) || '1m'});
+              });
+            } else {
+              obj.retryDelays = arr;
+            }
           } else {
             obj.retryDelays = [{value: '1m'}];
           }
