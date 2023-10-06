@@ -1098,16 +1098,16 @@ export class CoreService {
   }
 
   showDocumentation(path: string, preferences: any): void {
-    const link = './api/documentation/show?documentation=' + encodeURIComponent(path) + '&accessToken=' + this.authService.accessTokenId;
+    const link = window.location.origin + '/joc/api/documentation/show?documentation=' + encodeURIComponent(path) + '&accessToken=' + this.authService.accessTokenId;
     let win;
     if (preferences.isDocNewWindow === 'newWindow') {
-      win = window.open('assets/preview.html', '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
+      win = window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
     } else {
-      win = window.open('assets/preview.html', '_blank');
+      win = window.open(link, '_blank');
     }
-    const iframe = document.createElement('iframe');
-    iframe.src = link;
-    this.addFrame(win, iframe);
+  //  const iframe = document.createElement('iframe');
+  //  iframe.src = link;
+  //  this.addFrame(win, iframe);
   }
 
   private addFrame(popupWindow, iframe): void {

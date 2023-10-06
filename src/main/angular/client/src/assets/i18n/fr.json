@@ -791,10 +791,10 @@
     "label.removeOrderBySchedule": "Supprimer l'Ordre de la Planification",
     "label.numOfPeriods": "No. of Periods",
     "label.numOfNonPeriods": "No. of non-periods",
-    "label.unplanned": "Unplanned",
+    "label.projected": "Projected",
     "label.workflowFolders": "Workflow Folders",
     "label.scheduleFolders": "Schedule Folders",
-    "label.withoutStartTime": "Without Start Time",
+    "label.invertProjection": "Invert Projection",
     "label.periodFound": "Period found",
     "label.periodsFound": "Periods found",
     "button.late": "En retard",
@@ -837,6 +837,7 @@
     "tooltip.dateRangeSelectStep1": "Maintenez la souris et faites glisser pour sélectionner la plage de dates",
     "tooltip.dateRangeSelectStep2": "Ou appuyez sur la touche CTRL et sélectionnez la date de début et la date de fin en cliquant avec la souris",
     "tooltip.dateRangeSelectStep3": "Ou cliquez sur l'icône du calendrier, puis sélectionnez la date de début et la date de fin à l'aide d'un clic de souris",
+    "tooltip.invertProjection": "Invert Projection",
     "tab": {
       "dailyPlan": "Daily Plan",
       "projection": "Projection"

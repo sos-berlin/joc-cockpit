@@ -2071,7 +2071,10 @@ export class WorkflowService {
 
   convertDurationToHour(seconds: any): string {
     if (seconds === '0s') {
-      return '0s';
+      return seconds;
+    }
+    if (typeof seconds === 'string') {
+      return seconds;
     }
     if (seconds === 0) {
       return '0';
