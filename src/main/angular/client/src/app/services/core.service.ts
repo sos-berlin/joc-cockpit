@@ -3002,7 +3002,7 @@ export class CoreService {
     }
   }
 
-  getPeriodStr(period): string {
+  getPeriodStr(period, skip = false): string {
     let periodStr = null;
     if (period.begin) {
       periodStr = this.getDateByFormat(period.begin, null, 'HH:mm:ss');
@@ -3011,7 +3011,7 @@ export class CoreService {
       periodStr = periodStr + '-' + this.getDateByFormat(period.end, null, 'HH:mm:ss');
     }
     if (period.singleStart) {
-      periodStr = 'Single start: ' + this.getDateByFormat(period.singleStart, null, 'HH:mm:ss');
+      periodStr = (skip ? '' : 'Single start: ')+ this.getDateByFormat(period.singleStart, null, 'HH:mm:ss');
     } else if (period.repeat) {
       periodStr = periodStr + ' every ' + this.getTimeInString(period.repeat);
     }
@@ -3031,7 +3031,7 @@ export class CoreService {
   }
 
   checkDataType(sour) {
-    if (sour.value) {
+    if (sour.value || sour.value == 0 || sour.value == false) {
       if (sour.type === 'Number') {
         if (typeof sour.value == 'boolean') {
           sour.value = sour.value == true ? 1 : 0;
@@ -3044,6 +3044,8 @@ export class CoreService {
         } else {
           sour.value = sour.value == 1;
         }
+      } else if (sour.type === 'String' && typeof sour.value !== 'string') {
+        sour.value = sour.value.toString();
       }
     }
   }

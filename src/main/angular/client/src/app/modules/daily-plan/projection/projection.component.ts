@@ -182,9 +182,9 @@ export class ExportComponent {
         rows[i].periods.forEach((p, index) => {
           if (p['period']) {
             if (index == 0) {
-              periodStr = this.coreService.getPeriodStr(p['period']);
+              periodStr = this.coreService.getPeriodStr(p['period'], true);
             } else {
-              periodStr += ', ' + this.coreService.getPeriodStr(p['period']);
+              periodStr += ', ' + this.coreService.getPeriodStr(p['period'], true);
             }
           } else {
             periodStr = yes;
@@ -214,7 +214,7 @@ export class ExportComponent {
       }
     }
 
-    this.excelService.exportAsExcelFile(data, 'JS7-dailyplan-projection');
+    this.excelService.exportAsExcelFile(data, this.filter.withoutStartTime ? 'JS7-dailyplan-projection-inverted-periods' : 'JS7-dailyplan-projection-periods');
     this.cancel();
   }
 
