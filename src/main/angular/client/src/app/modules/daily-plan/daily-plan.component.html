@@ -803,7 +803,7 @@
               <span translate>dailyPlan.button.recreate</span>
             </button>
             <div class="inline pull-right m-r-12 pos-rel t-xxs">
-              <label [nz-tooltip]="'dailyPlan.tooltip.invertProjection'" (nzCheckedChange)="loadProjectionForCalendar()" [(ngModel)]="dailyPlanFilters.projection.withoutStartTime" name="withoutStartTime1" nz-checkbox>
+              <label [nz-tooltip]="'dailyPlan.tooltip.invertProjection' | translate" (nzCheckedChange)="loadProjectionForCalendar()" [(ngModel)]="dailyPlanFilters.projection.withoutStartTime" name="withoutStartTime1" nz-checkbox>
               {{'dailyPlan.label.invertProjection' | translate}}
               </label>
             </div>

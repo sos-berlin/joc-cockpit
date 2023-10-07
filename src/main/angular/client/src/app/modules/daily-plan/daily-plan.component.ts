@@ -872,8 +872,12 @@ export class DailyPlanComponent {
                 planData.startDate = date;
                 planData.endDate = date;
                 planData.color = dateData.planned ? 'blue' : 'orange';
-                planData.numOfPeriods = dateData.numOfPeriods;
-                planData.numOfNonPeriods = dateData.numOfNonPeriods;
+
+                if (this.dailyPlanFilters.projection.withoutStartTime) {
+                  planData.numOfNonPeriods = dateData.numOfNonPeriods;
+                } else {
+                  planData.numOfPeriods = dateData.numOfPeriods;
+                }
                 this.projectionData.push(planData);
               }
             }
@@ -1091,7 +1095,7 @@ export class DailyPlanComponent {
     };
     this.coreService.post('daily_plan/projections/recreate', obj).subscribe({
       next: () => {
-        setTimeout(()=>{
+        setTimeout(() => {
           this.loadProjectionForCalendar()
         }, 3000);
         this.resetAction(5000);
@@ -1637,12 +1641,16 @@ export class DailyPlanComponent {
         let obj: any = {};
         obj[date] = this.getDate(this.projectionData[i].startDate);
         obj[planned] = this.projectionData[i].color === 'blue' ? 'Yes' : 'No';
-        obj[numOfPeriods] = this.projectionData[i].numOfPeriods;
-        obj[numOfNonPeriods] = this.projectionData[i].numOfNonPeriods;
+
+        if (this.dailyPlanFilters.projection.withoutStartTime) {
+          obj[numOfNonPeriods] = this.projectionData[i].numOfNonPeriods;
+        } else {
+          obj[numOfPeriods] = this.projectionData[i].numOfPeriods;
+        }
         data.push(obj);
       }
     }
-    this.excelService.exportAsExcelFile(data, 'JS7-dailyplan');
+    this.excelService.exportAsExcelFile(data, this.dailyPlanFilters.tabIndex == 0 ? 'JS7-dailyplan' : 'JS7-dailyplan-projection');
   }
 
   /* ---- End Action ------ */
