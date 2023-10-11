@@ -123,6 +123,13 @@
           <i *ngIf="filter.sortBy == 'objectType' && filter.reverse"
              class="fa fa-caret-down "></i></a>
         </th>
+        <th (click)="sort('modified')">
+          <a><span class="p-r-xs" translate>inventory.label.lastModified</span>
+            <i *ngIf="filter.sortBy == 'modified' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'modified' && filter.reverse"
+               class="fa fa-caret-down "></i></a></th>
+
         <th (click)="sort('syncState._text')"
             *ngIf="inventoryService.checkDeploymentStatus.isChecked && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'">
           <a><span class="p-r-xs" translate>inventory.label.deploymentStatus</span>
@@ -265,6 +272,9 @@
               class="cursor">
             <span *ngIf="data.syncState" [ngClass]="coreService.getColor(data.syncState.severity, 'bg')"
                   class="label">{{data.syncState._text | translate}}</span>
+          </td>
+          <td>
+            {{data.modified | stringToDate}}
           </td>
         </tr>
       </ng-template>

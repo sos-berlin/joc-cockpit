@@ -3175,8 +3175,13 @@ export class WorkflowComponent {
             const cell = model.cells[prop];
             const bounds = this.editor.graph.getGraphBounds();
             let state = this.editor.graph.view.getState(cell);
-            this.editor.graph.view.setTranslate(((this.editor.graph.container.clientWidth / 2) - (state.width / 2) - (state.x - bounds.x)),
-              (bounds.y - (state.y - ((this.editor.graph.container.clientHeight / 2) - (state.height / 2)))));
+
+            $('#graph').animate({
+              scrollLeft: ((100) + (state.x - (state.width / 2))),
+              scrollTop: ((state.y - (state.height / 2)))
+            }, 200);
+            // this.editor.graph.view.setTranslate(((this.editor.graph.container.clientWidth / 2) - (state.width / 2) - (state.x - bounds.x)),
+            //   (bounds.y - (state.y - ((this.editor.graph.container.clientHeight / 2) - (state.height / 2)))));
             graph.clearSelection();
             graph.setSelectionCell(cell);
             this.initEditorConf(this.editor, false, false, true);
@@ -8682,13 +8687,9 @@ export class WorkflowComponent {
           if (obj.retryDelays && typeof obj.retryDelays == 'string') {
             const arr = obj.retryDelays.split(',');
             obj.retryDelays = [];
-            if(arr.length > 1) {
-              arr.forEach((item) => {
-                obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item) || '1m'});
-              });
-            } else {
-              obj.retryDelays = arr;
-            }
+            arr.forEach((item) => {
+              obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item) || '1m'});
+            });
           } else {
             obj.retryDelays = [{value: '1m'}];
           }
