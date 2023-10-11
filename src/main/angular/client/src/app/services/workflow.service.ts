@@ -2073,7 +2073,8 @@ export class WorkflowService {
     if (seconds === '0s') {
       return seconds;
     }
-    if (typeof seconds === 'string') {
+
+    if (typeof seconds == 'string' && isNaN(seconds)) {
       return seconds;
     }
     if (seconds === 0) {

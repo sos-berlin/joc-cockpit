@@ -587,6 +587,9 @@ export class LogComponent {
       if (dt[i].job) {
         col += ', <b>Job=' + dt[i].job + '</b>';
       }
+      if (dt[i].label) {
+        col += ', label=' + dt[i].lock.label;
+      }
       if(dt[i].position || dt[i].position == 0) {
         col += ', pos=' + dt[i].position;
       }
@@ -629,6 +632,9 @@ export class LogComponent {
           if (dt[i].lock.lockId) {
             col += 'id=' + dt[i].lock.lockId;
           }
+          if (dt[i].lock.label) {
+            col += ', label=' + dt[i].lock.label;
+          }
           if (dt[i].lock.limit) {
             col += ', limit=' + dt[i].lock.limit;
           }
@@ -653,7 +659,11 @@ export class LogComponent {
         col += ', Caught(cause=' + dt[i].caught.cause + ')';
       } else if (dt[i].logEvent === 'OrderRetrying' && dt[i].retrying) {
         const delayedUntil = (this.preferences.logTimezone && dt[i].retrying.delayedUntil) ? this.coreService.getLogDateFormat(dt[i].retrying.delayedUntil, this.preferences.zone) : dt[i].retrying.delayedUntil;
-        col += ', Retrying(delayedUntil=' + delayedUntil + ')';
+        col += ', Retrying(delayedUntil=' + delayedUntil;
+        if (dt[i].retrying.label) {
+          col += ', label=' + dt[i].retrying.label;
+        }
+        col += ')';
       } else if (dt[i].logEvent === 'OrderNoticesExpected' && dt[i].expectNotices) {
         col += ', Waiting for';
         for (let x in dt[i].expectNotices.waitingFor) {
