@@ -588,7 +588,7 @@ export class LogComponent {
         col += ', <b>Job=' + dt[i].job + '</b>';
       }
       if (dt[i].label) {
-        col += ', label=' + dt[i].lock.label;
+        col += ', label=' + dt[i].label;
       }
       if(dt[i].position || dt[i].position == 0) {
         col += ', pos=' + dt[i].position;
