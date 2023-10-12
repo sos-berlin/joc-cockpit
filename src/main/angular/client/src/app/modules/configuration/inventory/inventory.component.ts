@@ -1009,6 +1009,7 @@ export class ExportComponent {
     useShortPath: false,
     isRecursive: false,
     controllerId: '',
+    startFolder: '',
     forSigning: false,
     filename: '',
     fileFormat: 'ZIP',
@@ -1469,8 +1470,14 @@ export class ExportComponent {
 
   export(): void {
     const obj: any = {
+      useShortPath: this.exportObj.useShortPath,
       exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
     };
+
+    if(this.exportObj.startFolder){
+      obj.startFolder = this.exportObj.startFolder;
+    }
+
     if (this.comments.comment) {
       obj.auditLog = {};
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
@@ -1543,7 +1550,7 @@ export class ExportComponent {
   }
 
   private exportFolder(obj: any): void {
-    obj.useShortPath = this.exportObj.useShortPath;
+
     if (this.exportObj.forSigning) {
       obj.forSigning = {
         controllerId: this.exportObj.controllerId,
