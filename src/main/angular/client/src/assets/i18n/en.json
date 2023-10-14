@@ -1834,8 +1834,7 @@
       "label.released": "Released",
       "label.controller": "Controller",
       "label.dailyPlan": "Automation",
-      "label.useRelativePathOnly": "Use relative path",
-      "label.startFolder": "Start Folder"
+      "label.useRelativePathOnly": "Use relative path"
     },
     "repository": {
       "label.filter": "Filter",
@@ -2039,8 +2038,7 @@
         }
       },
       "export": {
-        "useRelativePathOnly": "When exporting scheduling objects then by default an absolute path is used. Users can specify a relative path to be used starting from the selected folder. If no folder is selected but scheduling objects only then using a relative path maps to exporting as top-level objects to the export archive file.",
-        "startFolder": "Start Folder"
+        "useRelativePathOnly": "When exporting scheduling objects then by default an absolute path is used. Users can specify a relative path to be used starting from the selected folder. If no folder is selected but scheduling objects only then using a relative path maps to exporting as top-level objects to the export archive file."
       }
     },
     "search": {

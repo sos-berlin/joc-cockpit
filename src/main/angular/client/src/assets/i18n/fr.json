@@ -1835,8 +1835,7 @@
       "label.released": "Publié",
       "label.controller": "Contrôleur",
       "label.dailyPlan": "Automatisation",
-      "label.useRelativePathOnly": "Utiliser le chemin relatif",
-      "label.startFolder": "Start Folder"
+      "label.useRelativePathOnly": "Utiliser le chemin relatif"
     },
     "repository": {
       "label.filter": "Filtre",
@@ -2040,8 +2039,7 @@
         }
       },
       "export": {
-        "useRelativePathOnly": "Lors de l'exportation d'objets, un chemin absolu est utilisé par défaut. Les utilisateurs peuvent spécifier un chemin relatif à utiliser à partir du dossier sélectionné. Si aucun dossier n'est sélectionné, mais uniquement des objets individuels, l'utilisation d'un chemin relatif correspond à l'exportation d'objets de premier niveau dans le fichier d'archive d'exportation.",
-        "startFolder": "Start Folder"
+        "useRelativePathOnly": "Lors de l'exportation d'objets, un chemin absolu est utilisé par défaut. Les utilisateurs peuvent spécifier un chemin relatif à utiliser à partir du dossier sélectionné. Si aucun dossier n'est sélectionné, mais uniquement des objets individuels, l'utilisation d'un chemin relatif correspond à l'exportation d'objets de premier niveau dans le fichier d'archive d'exportation."
       }
     },
     "search": {

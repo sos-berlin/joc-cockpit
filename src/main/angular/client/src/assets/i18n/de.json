@@ -1834,8 +1834,7 @@
       "label.released": "Freigegeben",
       "label.controller": "Controller",
       "label.dailyPlan": "Automation",
-      "label.useRelativePathOnly": "Relativen Pfad verwenden",
-      "label.startFolder": "Start Folder"
+      "label.useRelativePathOnly": "Relativen Pfad verwenden"
     },
     "repository": {
       "label.filter": "Filter",
@@ -2039,8 +2038,7 @@
         }
       },
       "export": {
-        "useRelativePathOnly": "Beim Export von Objekten wird standardmäßig ein absoluter Pfad verwendet. Benutzer können einen relativen Pfad angeben, der ab dem ausgewählten Ordner verwendet wird. Wenn kein Ordner ausgewählt ist, sondern nur Objekte, werden diese bei Verwendung eines relativen Pfades als oberste Objekte der Export Archiv-Datei hinzugefügt.",
-        "startFolder": "Start Folder"
+        "useRelativePathOnly": "Beim Export von Objekten wird standardmäßig ein absoluter Pfad verwendet. Benutzer können einen relativen Pfad angeben, der ab dem ausgewählten Ordner verwendet wird. Wenn kein Ordner ausgewählt ist, sondern nur Objekte, werden diese bei Verwendung eines relativen Pfades als oberste Objekte der Export Archiv-Datei hinzugefügt."
       }
     },
     "search": {
