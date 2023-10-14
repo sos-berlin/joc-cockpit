@@ -1838,8 +1838,7 @@
       "label.released": "リリース済",
       "label.controller": "コントローラー",
       "label.dailyPlan": "実行計画",
-      "label.useRelativePathOnly": "相対パスを使用してください",
-      "label.startFolder": "Start Folder"
+      "label.useRelativePathOnly": "相対パスを使用してください"
     },
     "repository": {
       "label.filter": "フィルター",
@@ -2043,8 +2042,7 @@
         }
       },
       "export": {
-        "useRelativePathOnly": "相対パスを使用してください",
-        "startFolder": "Start Folder"
+        "useRelativePathOnly": "相対パスを使用してください"
       }
     },
     "search": {

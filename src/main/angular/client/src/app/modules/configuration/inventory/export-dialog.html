@@ -53,15 +53,6 @@
                             [object]="exportObj"></app-select-input>
         </div>
       </div>
-      <div class="form-group row" >
-        <div class="col-md-3 form-control-label">
-          <label [nz-tooltip]="'inventory.tooltips.export.startFolder' | translate" translate>inventory.export.label.startFolder</label>
-        </div>
-        <div class="col-md-6">
-          <input [(ngModel)]="exportObj.startFolder" class="form-control"
-                 name="name" type="text"/>
-        </div>
-      </div>
 
       <div *ngIf="!origin || !origin.object" class="row m-b-12">
         <div class="col-md-3" translate>inventory.label.exportType</div>

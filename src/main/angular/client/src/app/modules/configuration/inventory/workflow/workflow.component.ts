@@ -1229,7 +1229,7 @@ export class ShowReferenceComponent {
   preferences: any;
   data: any = {};
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService, private calendarService: CalendarService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private calendarService: CalendarService) {
   }
 
   ngOnInit(): void {
@@ -1267,6 +1267,21 @@ export class ShowReferenceComponent {
     }
   }
 
+  getPeriodStr(period): string {
+    let periodStr = null;
+    if (period.begin) {
+      periodStr = period.begin;
+    }
+    if (period.end) {
+      periodStr = periodStr + '-' + period.end;
+    }
+    if (period.singleStart) {
+      periodStr = 'Single start: ' + period.singleStart;
+    } else if (period.repeat) {
+      periodStr = periodStr + ' every ' + this.coreService.getTimeInString(period.repeat);
+    }
+    return periodStr;
+  }
 }
 
 @Component({

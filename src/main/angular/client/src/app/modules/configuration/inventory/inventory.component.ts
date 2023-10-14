@@ -1009,7 +1009,6 @@ export class ExportComponent {
     useShortPath: false,
     isRecursive: false,
     controllerId: '',
-    startFolder: '',
     forSigning: false,
     filename: '',
     fileFormat: 'ZIP',
@@ -1474,15 +1473,21 @@ export class ExportComponent {
       exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
     };
 
-    if(this.exportObj.startFolder){
-      obj.startFolder = this.exportObj.startFolder;
+    if(this.path){
+      obj.startFolder = this.path;
     }
 
     if (this.comments.comment) {
       obj.auditLog = {};
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     }
-    if ((this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
+
+    let folders = [];
+    if (this.exportObj.exportType !== 'folders') {
+      this.checkFolderSelection(folders);
+    }
+
+    if ((folders.length > 0) || (this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
       (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
       (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
       (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0)) {
@@ -1527,7 +1532,47 @@ export class ExportComponent {
             deployConfigurations: this.object.deployConfigurations
           };
         }
+
+        if (folders.length > 0) {
+          if (!obj.shallowCopy.releasables) {
+            obj.shallowCopy.releasables = {
+              releasedConfigurations: folders,
+              draftConfigurations: folders
+            }
+          } else {
+            if (!obj.shallowCopy.releasables.releasedConfigurations) {
+              obj.shallowCopy.releasables.releasedConfigurations = folders;
+            } else {
+              obj.shallowCopy.releasables.releasedConfigurations = obj.shallowCopy.releasables.releasedConfigurations.concat(folders);
+            }
+
+            if (!obj.shallowCopy.releasables.draftConfigurations) {
+              obj.shallowCopy.releasables.draftConfigurations = folders;
+            } else {
+              obj.shallowCopy.releasables.draftConfigurations = obj.shallowCopy.releasables.draftConfigurations.concat(folders);
+            }
+          }
+          if (!obj.shallowCopy.deployables) {
+            obj.shallowCopy.releasables = {
+              deployConfigurations: folders,
+              draftConfigurations: folders
+            }
+          } else {
+            if (!obj.shallowCopy.deployables.deployConfigurations) {
+              obj.shallowCopy.deployables.deployConfigurations = folders;
+            } else {
+              obj.shallowCopy.deployables.deployConfigurations = obj.shallowCopy.deployables.deployConfigurations.concat(folders);
+            }
+
+            if (!obj.shallowCopy.deployables.draftConfigurations) {
+              obj.shallowCopy.deployables.draftConfigurations = folders;
+            } else {
+              obj.shallowCopy.deployables.draftConfigurations = obj.shallowCopy.deployables.draftConfigurations.concat(folders);
+            }
+          }
+        }
       }
+
 
       if (this.object.folders && this.object.folders.length > 0) {
         this.exportFolder(obj);
@@ -1547,6 +1592,44 @@ export class ExportComponent {
         this.submitted = false;
       }
     }
+  }
+
+  private checkFolderSelection(folders): void {
+    function recursive(nodes) {
+      for (let i in nodes.children) {
+        if (nodes.children[i] && !nodes.children[i].type) {
+          if (nodes.children[i].checked) {
+            folders.push({
+              configuration: {
+                path: nodes.children[i].path,
+                objectType: 'FOLDER'
+              }
+            });
+
+          }
+          if (nodes.children[i].children?.length > 0) {
+            recursive(nodes.children[i]);
+          }
+        }
+      }
+    }
+
+    this.nodes.forEach((x) => {
+      if (!x.type) {
+        if (x.checked) {
+          folders.push({
+            configuration: {
+              path: x.path,
+              objectType: 'FOLDER'
+            }
+          });
+        }
+
+        if (x.children?.length > 0) {
+          recursive(x);
+        }
+      }
+    })
   }
 
   private exportFolder(obj: any): void {
@@ -4549,7 +4632,7 @@ export class InventoryComponent {
     })
   }
 
-  updateJobs(object): void{
+  updateJobs(object): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: UpdateJobTemplatesComponent,
