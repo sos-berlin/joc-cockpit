@@ -36,7 +36,7 @@
       </div>
     </div>
     <div *ngIf="object.at === 'template' && selectedTemplates.paths.length > 0" class="form-group row">
-      <label class="col-md-3" translate>common.label.folders</label>
+      <label class="col-md-3" translate>dailyPlan.label.scheduleFolders</label>
       <div class="col-sm-6" style="max-height: 140px; overflow: auto">
         <div *ngFor="let path of selectedTemplates.paths">
           <span class="">{{path}}</span>
@@ -54,7 +54,7 @@
       </div>
     </div>
     <div *ngIf="object.at === 'template' && object.paths.length > 0" class="form-group row">
-      <label class="col-md-3" translate>common.label.folders</label>
+      <label class="col-md-3" translate>dailyPlan.label.workflowFolders</label>
       <div class="col-sm-6" style="max-height: 140px; overflow: auto">
         <div *ngFor="let path of object.paths">
           <span>{{path}}</span>

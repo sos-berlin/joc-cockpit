@@ -244,15 +244,13 @@
       </div>
     </div>
     <div>
-      <div *ngIf="arguments.length > 0" class="form-group row m-b-0 m-l-12">
+      <div *ngIf="arguments.length > 0" class="form-group row m-b-0 ">
         <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
         <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
       </div>
-      <div (cdkDropListDropped)="drop($event)" cdkDropList>
-        <div *ngFor="let argument of arguments; let i=index" cdkDrag class="form-group row m-b-0 m-l-12">
-          <div cdkDragHandle class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 3px;cursor: move">
-            <i aria-hidden="true" class="fa fa-bars"></i>
-          </div>
+      <div >
+        <div *ngFor="let argument of arguments; let i=index"  class="form-group row m-b-0 ">
+
           <div *ngIf="argument.isTextField" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
                class="col-sm-4 m-b-sm">
             <input #name="ngModel" [(ngModel)]="argument.name" autocomplete="off" class="form-control" name="name_{{i}}"

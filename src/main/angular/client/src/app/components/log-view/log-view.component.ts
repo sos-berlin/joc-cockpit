@@ -1,5 +1,5 @@
 import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
-import {isEmpty} from 'underscore';
+import {isArray, isEmpty} from 'underscore';
 import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {AuthService} from "../guard";
 import {CoreService} from '../../services/core.service';
@@ -726,13 +726,23 @@ export class LogViewComponent {
       } else if (dt[i].logEvent === 'OrderStarted' && dt[i].arguments) {
         col += ', arguments(';
         let arr: any = Object.entries(dt[i].arguments).map(([k1, v1]) => {
+
           if (v1 && typeof v1 == 'object') {
-            v1 = Object.entries(v1).map(([k1, v1]) => {
-              return {name: k1, value: v1};
-            });
+            if (isArray(v1)) {
+              v1.forEach((list, index) => {
+                v1[index] = Object.entries(list).map(([k1, v1]) => {
+                  return {name: k1, value: v1};
+                });
+              });
+            } else {
+              v1 = Object.entries(v1).map(([k1, v1]) => {
+                return {name: k1, value: v1};
+              });
+            }
           }
           return {name: k1, value: v1};
         });
+
         col = this.coreService.createLogOutputString(arr, col);
         col += ')';
       } else if (dt[i].logEvent === 'OrderProcessed' && dt[i].returnValues) {

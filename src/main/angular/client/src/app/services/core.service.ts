@@ -2810,25 +2810,36 @@ export class CoreService {
       if (isArray(arr[i].value)) {
         col += arr[i].name + '={';
         for (let j = 0; j < arr[i].value.length; j++) {
-          if (isArray(arr[i].value[j].value)) {
-            col += arr[i].value[j].name + '={';
-            for (let k = 0; k < arr[i].value[j].value.length; k++) {
-              if (arr[i].value[j].value[k].name) {
-                col += arr[i].value[j].value[k].name + '=' + arr[i].value[j].value[k].value;
-              } else if (arr[i].value[j].value[k].key) {
-                if (arr[i].value[j].value[k].value.value || arr[i].value[j].value[k].value.value == 0 || arr[i].value[j].value[k].value.value == false) {
-                  col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value.value;
-                } else {
-                  col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value;
-                }
-              }
-              if (arr[i].value[j].value.length - 1 != k) {
+         
+          if (isArray(arr[i].value[j])) {
+            arr[i].value[j].forEach((val, index) => {
+              col += val.name + '=' + val.value;
+              if (arr[i].value[j].length - 1 != index) {
                 col += ', ';
               }
-            }
-            col += '}';
+            });
           } else {
-            col += arr[i].value[j].name + '=' + arr[i].value[j].value;
+            if (isArray(arr[i].value[j].value)) {
+              col += arr[i].value[j].name + '={';
+              for (let k = 0; k < arr[i].value[j].value.length; k++) {
+                if (arr[i].value[j].value[k].name) {
+                  col += arr[i].value[j].value[k].name + '=' + arr[i].value[j].value[k].value;
+                } else if (arr[i].value[j].value[k].key) {
+                  if (arr[i].value[j].value[k].value.value || arr[i].value[j].value[k].value.value == 0 || arr[i].value[j].value[k].value.value == false) {
+                    col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value.value;
+                  } else {
+                    col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value;
+                  }
+                }
+                if (arr[i].value[j].value.length - 1 != k) {
+                  col += ', ';
+                }
+              }
+              col += '}';
+            } else {
+              col += arr[i].value[j].name + '=' + arr[i].value[j].value;
+            }
+
           }
           if (arr[i].value.length - 1 != j) {
             col += ', ';

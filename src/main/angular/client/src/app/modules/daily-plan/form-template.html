@@ -84,7 +84,7 @@
       </div>
     </div>
     <div *ngIf="filter.workflowFolders.length > 0" class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>common.label.folders</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>dailyPlan.label.workflowFolders</label>
       <div class="col-sm-6" style="max-height: 140px; overflow: auto">
         <div *ngFor="let path of filter.workflowFolders">
           <span>{{path}}</span>
@@ -102,7 +102,7 @@
       </div>
     </div>
     <div *ngIf="filter.scheduleFolders.length > 0" class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>common.label.folders</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>dailyPlan.label.scheduleFolders</label>
       <div class="col-sm-6" style="max-height: 140px; overflow: auto">
         <div *ngFor="let path of filter.scheduleFolders">
           <span class="">{{path}}</span>

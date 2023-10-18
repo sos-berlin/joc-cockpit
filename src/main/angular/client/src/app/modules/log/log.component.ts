@@ -1,6 +1,6 @@
 import {Component, HostListener, ViewChild, ElementRef} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {isEmpty} from 'underscore';
+import {isArray, isEmpty} from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
 import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {NzMessageService} from 'ng-zorro-antd/message';
@@ -703,10 +703,19 @@ export class LogComponent {
       } else if (dt[i].logEvent === 'OrderStarted' && dt[i].arguments) {
         col += ', arguments(';
         let arr: any = Object.entries(dt[i].arguments).map(([k1, v1]) => {
-          if (typeof v1 == 'object') {
-            v1 = Object.entries(v1).map(([k1, v1]) => {
-              return {name: k1, value: v1};
-            });
+
+          if (v1 && typeof v1 == 'object') {
+            if (isArray(v1)) {
+              v1.forEach((list, index) => {
+                v1[index] = Object.entries(list).map(([k1, v1]) => {
+                  return {name: k1, value: v1};
+                });
+              });
+            } else {
+              v1 = Object.entries(v1).map(([k1, v1]) => {
+                return {name: k1, value: v1};
+              });
+            }
           }
           return {name: k1, value: v1};
         });
