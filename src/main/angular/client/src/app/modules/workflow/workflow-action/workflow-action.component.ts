@@ -89,7 +89,8 @@ export class AddOrderModalComponent {
 
   order: any = {};
   arguments: any = [];
-  forkListVariables: any = [];
+  isForkList = false;
+
   dateFormat: any;
   display: any;
   required = false;
@@ -138,12 +139,13 @@ export class AddOrderModalComponent {
     this.getPositions();
     this.updateVariableList();
     this.checkClipboardContent();
-    this.isCollapsed = Array(this.forkListVariables.length).fill(false);
+    //this.isCollapsed = Array(this.forkListVariables.length).fill(false);
   }
 
   toggleCollapse(k: number): void {
+   
     if (this.preferences.listVariableCollapse) {
-      if (this.allValuesAssigned(this.forkListVariables[k])) {
+      if (this.allValuesAssigned(this.arguments[k])) {
         this.isCollapsed[k] = !this.isCollapsed[k];
       }
     } else {
@@ -156,13 +158,15 @@ export class AddOrderModalComponent {
   }
 
   collapseAll(): void {
-    for (let k = 0; k < this.forkListVariables.length; k++) {
-      if (this.preferences.listVariableCollapse) {
-        if (this.allValuesAssigned(this.forkListVariables[k])) {
+    for (let k = 0; k < this.arguments.length; k++) {
+      if (this.arguments[k].type == 'List') {
+        if (this.preferences.listVariableCollapse) {
+          if (this.allValuesAssigned(this.arguments[k])) {
+            this.isCollapsed[k] = true;
+          }
+        } else {
           this.isCollapsed[k] = true;
         }
-      } else {
-        this.isCollapsed[k] = true;
       }
     }
   }
@@ -190,26 +194,6 @@ export class AddOrderModalComponent {
       let tempArr = [];
       clipboardDataArray.forEach(clipboardItem => {
         let flag = true;
-        if (this.forkListVariables && this.forkListVariables.length > 0) {
-          this.forkListVariables.forEach((listVariables) => {
-            if (listVariables.name === clipboardItem.name) {
-              flag = false;
-              if (isArray(clipboardItem.value)) {
-                clipboardItem.value.forEach((innerArray) => {
-                  innerArray.forEach(item => {
-                    listVariables.actualList.forEach((actualList) => {
-                      actualList.list.forEach((argument) => {
-                        if (argument.name === item.name) {
-                          argument.value = item.value;
-                        }
-                      });
-                    });
-                  });
-                });
-              }
-            }
-          });
-        }
 
         if (this.variableList && this.variableList.length > 0) {
           this.variableList.forEach(variable => {
@@ -226,7 +210,21 @@ export class AddOrderModalComponent {
           this.arguments.forEach(variable => {
             if (variable.name === clipboardItem.name) {
               flag = false;
-              variable.value = clipboardItem.value;
+              if (isArray(clipboardItem.value)) {
+                clipboardItem.value.forEach((innerArray) => {
+                  innerArray.forEach(item => {
+                    variable.actualList.forEach((actualList) => {
+                      actualList.list.forEach((argument) => {
+                        if (argument.name === item.name) {
+                          argument.value = item.value;
+                        }
+                      });
+                    });
+                  });
+                });
+              } else {
+                variable.value = clipboardItem.value;
+              }
             }
           });
         }
@@ -312,6 +310,7 @@ export class AddOrderModalComponent {
             }
           }
         } else {
+          this.isForkList = true;
           const actualList = [];
           if (val.listParameters) {
             if (isArray(val.listParameters)) {
@@ -335,15 +334,18 @@ export class AddOrderModalComponent {
                 return {name: k1, value: val1};
               });
             }
-            this.forkListVariables.push({name: k, list: val.listParameters, actualList: [{list: actualList}]});
+            this.arguments.push({
+              name: k,
+              type: val.type,
+              isRequired: true,
+              actualList: [{list: actualList}],
+              list: val.listParameters
+            });
           }
         }
         return {name: k, value: val};
       });
       this.variableList = this.variableList.filter((item) => {
-        if (item.value.type === 'List') {
-          return false;
-        }
         return !item.value.final;
       });
     }
@@ -389,10 +391,14 @@ export class AddOrderModalComponent {
   updateSelectItems(): void {
     for (let i = 0; i < this.variableList.length; i++) {
       this.variableList[i].isSelected = false;
-      for (let j = 0; j < this.arguments.length; j++) {
-        if (this.variableList[i].name === this.arguments[j].name) {
-          this.variableList[i].isSelected = true;
-          break;
+      if(this.variableList[i].actualList?.length){
+        this.variableList[i].isSelected = true;
+      } else {
+        for (let j = 0; j < this.arguments.length; j++) {
+          if (this.variableList[i].name === this.arguments[j].name) {
+            this.variableList[i].isSelected = true;
+            break;
+          }
         }
       }
     }
@@ -450,19 +456,21 @@ export class AddOrderModalComponent {
         order.arguments = this.coreService.keyValuePair(argu);
       }
     }
-    if (this.forkListVariables && this.forkListVariables.length > 0) {
+    if (this.arguments && this.arguments.length > 0) {
       if (!order.arguments) {
         order.arguments = {};
       }
-      this.forkListVariables.forEach((item) => {
-        order.arguments[item.name] = [];
-        if (item.actualList?.length > 0) {
-          for (const i in item.actualList) {
-            const listObj = {};
-            item.actualList[i].list.forEach((data) => {
-              listObj[data.name] = data.value;
-            });
-            order.arguments[item.name].push(listObj);
+      this.arguments.forEach((item) => {
+        if(item.type === 'List') {
+          order.arguments[item.name] = [];
+          if (item.actualList?.length > 0) {
+            for (const i in item.actualList) {
+              const listObj = {};
+              item.actualList[i].list.forEach((data) => {
+                listObj[data.name] = data.value;
+              });
+              order.arguments[item.name].push(listObj);
+            }
           }
         }
       });
@@ -701,7 +709,6 @@ export class AddOrderModalComponent {
 
   private updateVariablesFromSchedule(orderParameterisations): void {
     this.arguments = [];
-    this.forkListVariables = [];
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
@@ -732,6 +739,7 @@ export class AddOrderModalComponent {
             }
           }
         } else {
+
           const actualList = [];
           if (val.listParameters) {
             if (!isArray(val.listParameters)) {
@@ -771,15 +779,24 @@ export class AddOrderModalComponent {
                 actualList.push({list: arr});
               }
             }
-            this.forkListVariables.push({name: k, list: val.listParameters, actualList});
+
+            for (let x in orderParameterisations.variables) {
+              if (k == x) {
+                this.arguments.push({
+                  name: k,
+                  isRequired: true,
+                  type: val.type,
+                  actualList,
+                  list: val.listParameters
+                });
+                break;
+              }
+            }
           }
         }
         return {name: k, value: val};
       });
       this.variableList = this.variableList.filter((item) => {
-        if (item.value.type === 'List') {
-          return false;
-        }
         return !item.value.final;
       });
     } else {
