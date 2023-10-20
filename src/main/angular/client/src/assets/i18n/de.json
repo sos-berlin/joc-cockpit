@@ -2807,7 +2807,8 @@
       "log_maximum_size": "Falls die Größe der Protokollausgaben eines Jobs diesen Wert überschreitet, wird der History Service die Ausgaben trunkieren und die ersten 100 KB verwenden. Die originale Protokolldatei des Jobs wird entfernt. Die Größe wird in MB angenommen.",
       "joc_reverse_proxy_url": "Wenn JOC Cockpit nicht über die originäre URL, sondern nur über einen Reverse Proxy Dienst erreichbar ist, gibt dieser Wert die zu verwendende URL an, zum Beispiel bei E-Mail Benachrichtigungen.",
       "allow_empty_arguments": "Standardmäßig werden leere Argumente von Aufträgen und Auftragsvorlagen nicht zugelassen, da dies die Aufträge zwingt, zwischen leeren und nicht gesetzten Variablen zu unterscheiden. Benutzer können das Verhalten aktivieren, um leere Argumente zuzulassen.",
-      "allow_undeclared_variables": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen."
+      "allow_undeclared_variables": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
+      "display_folders_in_views": "Display folders in views"
     },
     "user": {
       "welcome_got_it": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht länger angezeigt werden soll.",

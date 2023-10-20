@@ -521,6 +521,7 @@ export class WorkflowComponent {
   sideBar: any = {};
   reloadState = 'no';
   objectType = 'WORKFLOW';
+  isPathDisplay = true;
   numOfAllOrders: any = {};
   listOfAgents: any = [];
   object = {
@@ -769,6 +770,7 @@ export class WorkflowComponent {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     if (localStorage['views']) {
       this.pageView = JSON.parse(localStorage['views']).workflow;
     }
