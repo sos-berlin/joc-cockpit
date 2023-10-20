@@ -2774,6 +2774,7 @@ export class CoreService {
     sessionStorage['licenseType'] = result.licenseType;
     sessionStorage['allowEmptyArguments'] = result.allowEmptyArguments;
     sessionStorage['allowUndeclaredVariables'] = result.allowUndeclaredVariables;
+    sessionStorage['displayFoldersInViews'] = result.displayFoldersInViews;
     if (result.licenseValidFrom) {
       sessionStorage['licenseValidFrom'] = result.licenseValidFrom;
     }

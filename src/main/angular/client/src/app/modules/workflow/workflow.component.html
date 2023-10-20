@@ -488,7 +488,7 @@
                         <i *ngIf="workflowFilters.filter.sortBy == 'name' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('path1')" [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" rowspan="2">
+                    <th *ngIf="isPathDisplay" (click)="sort('path1')" [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" rowspan="2">
                       <a><span class="p-r-xs" translate>common.label.path</span>
                         <i *ngIf="workflowFilters.filter.sortBy == 'path1' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
@@ -653,7 +653,7 @@
                           </a>
                         </span>
                       </td>
-                      <td>
+                      <td *ngIf="isPathDisplay">
                         <span class="show-in-single-line">
                           <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
                              *ngIf="permission.joc && permission.joc.inventory.view"

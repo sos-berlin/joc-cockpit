@@ -243,7 +243,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     this.invalidMsg = '';
     if (res.invalidMsg) {
       this.invalidMsg = res.invalidMsg;
-      if (res.invalidMsg.match('workflowName')) {
+      if (res.invalidMsg.match('workflowName') && !res.invalidMsg.match('file')) {
         this.invalidMsg = 'inventory.message.workflowIsMissing';
       } else if (res.invalidMsg.match('agentName')) {
         this.invalidMsg = 'workflow.message.agentIsMissing';
