@@ -196,7 +196,7 @@
                       <i *ngIf="calendarFilters.filter.sortBy == 'name' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
+                    <th *ngIf="isPathDisplay" (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
                       <i *ngIf="calendarFilters.filter.sortBy == 'path1' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="calendarFilters.filter.sortBy == 'path1' && calendarFilters.reverse"
@@ -255,7 +255,7 @@
                         <span [innerHTML]="calendar.title | stringToLink"></span>
                       </i>
                     </td>
-                    <td>
+                    <td *ngIf="isPathDisplay">
                         <span class="show-in-single-line">
                           <i (click)="coreService.navToInventoryTab(calendar.path, calendar.type);"
                              *ngIf="permission.joc && permission.joc.inventory.view"

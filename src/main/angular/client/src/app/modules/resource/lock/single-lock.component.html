@@ -29,7 +29,7 @@
               <thead>
               <tr>
                 <th><span translate>resource.lock.label.name</span></th>
-                <th><span translate>common.label.path</span></th>
+                <th *ngIf="isPathDisplay"><span translate>common.label.path</span></th>
                 <th><span translate>resource.lock.label.deploymentDate</span></th>
                 <th><span translate>common.label.status</span></th>
                 <th><span translate>resource.lock.label.acquiredLockCount</span></th>
@@ -55,7 +55,7 @@
                       <i [innerHtml]="lock.title" class="text-muted"></i>
                     </span>
                   </td>
-                  <td>
+                  <td *ngIf="isPathDisplay">
                     <span class="show-in-single-line">
                       <i (click)="coreService.navToInventoryTab(lock.path, 'LOCK');"
                          *ngIf="permission.joc && permission.joc.inventory.view"
