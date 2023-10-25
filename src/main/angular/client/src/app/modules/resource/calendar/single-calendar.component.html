@@ -30,7 +30,7 @@
               <tr>
                 <th class="menu"><span translate>common.label.action</span></th>
                 <th><span translate>common.label.name</span></th>
-                <th><span translate>common.label.path</span></th>
+                <th *ngIf="isPathDisplay"><span translate>common.label.path</span></th>
                 <th><span translate>common.label.type</span></th>
                 <th><span translate>resource.calendar.label.validityFrom</span></th>
                 <th><span translate>resource.calendar.label.validityTo</span></th>
@@ -62,7 +62,7 @@
                   <span *ngIf="calendar.title">-</span>
                   <i class="text-muted">{{calendar.title}}</i>
                 </td>
-                <td [innerHtml]="calendar.path"></td>
+                <td *ngIf="isPathDisplay" [innerHtml]="calendar.path"></td>
                 <td><span [innerHtml]="calendar.type | translate" [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'"
                           class="label "></span></td>
                 <td [innerHtml]="calendar.from | stringToDate1:true"></td>
