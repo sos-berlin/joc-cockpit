@@ -1469,13 +1469,10 @@ export class ExportComponent {
 
   export(): void {
     const obj: any = {
+      startFolder: this.path || '/',
       useShortPath: this.exportObj.useShortPath,
       exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
     };
-
-    if(this.path){
-      obj.startFolder = this.path;
-    }
 
     if (this.comments.comment) {
       obj.auditLog = {};
