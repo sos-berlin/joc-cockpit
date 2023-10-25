@@ -424,11 +424,13 @@ export class DeployComponent {
   checkedObject = new Set();
   dateFormat: any = '';
   dateObj: any = {};
+  objectTypes: string[] = [];
   object: any = {
     isRecursive: false,
     delete: [],
     update: [],
     releasables: [],
+    objectTypes: [],
     store: {draftConfigurations: [], deployConfigurations: []},
     deleteObj: {deployConfigurations: []}
   };
@@ -460,6 +462,35 @@ export class DeployComponent {
     this.isRevoke = this.modalData.isRevoke;
     this.isChecked = this.modalData.isChecked;
     this.isSelectedObjects = this.modalData.isSelectedObjects;
+    if (this.data) {
+      if (this.releasable && (this.data.dailyPlan || (this.data.object &&
+        (this.data.object === InventoryObject.SCHEDULE || this.data.object === InventoryObject.JOBTEMPLATE || this.data.object === InventoryObject.INCLUDESCRIPT || this.data.object.match('CALENDAR'))))) {
+        if (this.data.dailyPlan) {
+          this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
+        } else {
+          this.objectTypes.push(this.data.object.match('CALENDAR') ? (InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR) : this.data.object);
+        }
+      } else if (!this.releasable) {
+        if (this.data.controller || this.data.object) {
+          if (this.data.controller) {
+            this.objectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
+              InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
+          } else {
+            this.objectTypes.push(this.data.object);
+          }
+        }
+      }
+    }
+    if (this.objectTypes.length === 0) {
+      if (!this.releasable) {
+        this.objectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
+          InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
+      } else {
+        this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
+      }
+    }
+
+    this.object.objectTypes = [...this.objectTypes];
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -488,6 +519,7 @@ export class DeployComponent {
   expandAll(): void {
     this.buildTree(this.path, null, () => {
       const self = this;
+
       function recursive(node: any): void {
         for (const i in node) {
           if (!node[i].isLeaf) {
@@ -585,6 +617,13 @@ export class DeployComponent {
     };
     if (this.data && this.data.object) {
       obj.objectTypes = this.data.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.object];
+    } else {
+      if (this.object.objectTypes.length > 0) {
+        obj.objectTypes = [];
+        this.object.objectTypes.forEach((item) => {
+          obj.objectTypes.push(item);
+        });
+      }
     }
     if (this.isRevoke) {
       obj.withoutDeployed = false;
@@ -716,8 +755,10 @@ export class DeployComponent {
     });
   }
 
-  getDeploymentVersion(e: NzFormatEmitEvent): void {
-    const node = e.node;
+  openFolder(node, skip = true): void {
+    if (skip) {
+      node.isExpanded = !node.isExpanded;
+    }
     if (node && node.origin && node.origin.expanded && !node.origin['isCall']) {
       if (!node.origin['type'] && !node.origin['object'] && !this.releasable) {
         node.origin['loading'] = true;
@@ -725,6 +766,11 @@ export class DeployComponent {
       }
       this.inventoryService.checkAndUpdateVersionList(node.origin);
     }
+  }
+
+  getDeploymentVersion(e: NzFormatEmitEvent): void {
+    const node = e.node;
+    this.openFolder(node, false);
   }
 
   getJSObject(): void {
@@ -1030,9 +1076,10 @@ export class ExportComponent {
     deployConfigurations: [],
     releasedConfigurations: []
   };
-  fileFormat=[{value: 'ZIP' , name:'ZIP'},
-    {value: 'TAR_GZ' , name:'TAR_GZ'}
+  fileFormat = [{value: 'ZIP', name: 'ZIP'},
+    {value: 'TAR_GZ', name: 'TAR_GZ'}
   ]
+
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
               private inventoryService: InventoryService) {
   }
@@ -1046,6 +1093,7 @@ export class ExportComponent {
       this.required = true;
       this.display = true;
     }
+
     this.exportObj.controllerId = this.schedulerIds.selected;
     this.securityLevel = sessionStorage['securityLevel'];
     if (this.origin) {
@@ -1339,8 +1387,10 @@ export class ExportComponent {
     this.nodes = [...this.nodes];
   }
 
-  getDeploymentVersion(e: NzFormatEmitEvent): void {
-    const node = e.node;
+  openFolder(node, skip = true): void {
+    if (skip) {
+      node.isExpanded = !node.isExpanded;
+    }
     if (node && node.origin && node.origin.expanded && !node.origin['isCall']) {
       if (!node.origin['type'] && !node.origin['object']) {
         node.origin['loading'] = true;
@@ -1348,6 +1398,11 @@ export class ExportComponent {
       }
       this.inventoryService.checkAndUpdateVersionList(node.origin, this.exportObj.exportType === 'folders');
     }
+  }
+
+  getDeploymentVersion(e: NzFormatEmitEvent): void {
+    const node = e.node;
+    this.openFolder(node, false);
   }
 
   checkBoxChange(e: NzFormatEmitEvent): void {
@@ -1569,7 +1624,6 @@ export class ExportComponent {
           }
         }
       }
-
 
       if (this.object.folders && this.object.folders.length > 0) {
         this.exportFolder(obj);
