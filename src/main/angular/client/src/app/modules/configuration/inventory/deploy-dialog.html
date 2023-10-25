@@ -29,6 +29,14 @@
                             [object]="selectedSchedulerIds"></app-select-input>
         </div>
       </div>
+      <div *ngIf="(!data || !data.object) && !isRevoke && !isDeleted && !isRemove && !isSelectedObjects" class="form-group row">
+        <label class="col-md-3 form-control-label" translate>inventory.label.objectTypes</label>
+        <div class="col-md-6">
+          <app-select-input (modelChange)="filterList()" [attributeName]="'objectTypes'" [isSearchable]="true" [placeholder]="'inventory.placeholder.objectTypes'"
+                            [listArray]="objectTypes" [name]="'objectTypes'" [isMultiple]="true"
+                            [object]="object"></app-select-input>
+        </div>
+      </div>
       <div *ngIf="!isRevoke && nodes.length > 0 && ((!data.controller && !data.dailyPlan && !data.object && !data.objectType) || ((data.object && (data.object == 'WORKFLOW' || data.object == 'SCHEDULE' || data.object.match('CALENDAR'))) || (data.objectType && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType.match('CALENDAR'))) || data.controller || data.dailyPlan))"
            class="form-group row">
         <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
@@ -102,7 +110,7 @@
               <i *ngIf="node.origin.loading" class="pos-abt" style="margin-left: -42px">
                 <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
               </i>
-              <div [ngClass]="{'m-t-xs' :node.origin.object}" class="node-content-wrapper2">
+              <div (click)="openFolder(node)" [ngClass]="{'m-t-xs' :node.origin.object}" class="node-content-wrapper2">
                 <i *ngIf="!node.origin.object && !node.origin.type" [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
                    class="w-14" nz-icon></i>
                 <i *ngIf="node.origin.object == 'WORKFLOW'" class="icon-color" nz-icon nzTheme="outline"
