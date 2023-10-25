@@ -21,6 +21,7 @@ export class SingleLockComponent {
   permission: any = {};
   locks: any = [];
   name = '';
+  isPathDisplay = false;
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService,
@@ -33,6 +34,7 @@ export class SingleLockComponent {
   ngOnInit(): void {
     this.name = this.route.snapshot.queryParamMap.get('name');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']);
     }
@@ -110,6 +112,7 @@ export class LockComponent {
   searchableProperties = ['id', 'path', 'limit', 'title', 'state', '_text', 'versionDate'];
   reloadState = 'no';
   isSearchVisible = false;
+  isPathDisplay = false;
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -328,6 +331,7 @@ export class LockComponent {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     if (localStorage['views']) {
       this.pageView = JSON.parse(localStorage['views']).lock;
     }

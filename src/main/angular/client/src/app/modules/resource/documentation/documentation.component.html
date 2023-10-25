@@ -250,7 +250,7 @@
                       <i *ngIf="documentFilters.filter.sortBy == 'name' && documentFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
+                    <th *ngIf="isPathDisplay" (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
                       <i *ngIf="documentFilters.filter.sortBy == 'path1' && !documentFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="documentFilters.filter.sortBy == 'path1' && documentFilters.reverse"
@@ -314,7 +314,7 @@
                       </div>
                     </td>
                     <td [innerHtml]="document.name | highlight : documentFilters.searchText"></td>
-                    <td [innerHtml]="document.path1 | highlight : documentFilters.searchText"></td>
+                    <td *ngIf="isPathDisplay" [innerHtml]="document.path1 | highlight : documentFilters.searchText"></td>
                     <td [innerHtml]="document.assignReference | highlight : documentFilters.searchText"></td>
                     <td [innerHtml]="document.type | highlight : documentFilters.searchText"></td>
                     <td [innerHtml]="document.modified | stringToDate"></td>

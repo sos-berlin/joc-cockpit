@@ -108,6 +108,7 @@ export class SingleBoardComponent {
   permission: any = {};
   boards: any = [];
   name: string;
+  isPathDisplay = false;
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService,
@@ -120,6 +121,7 @@ export class SingleBoardComponent {
   ngOnInit(): void {
     this.name = this.route.snapshot.queryParamMap.get('name');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']);
     }
@@ -274,6 +276,7 @@ export class BoardComponent {
     checked: false,
     indeterminate: false
   };
+  isPathDisplay = false;
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -293,6 +296,7 @@ export class BoardComponent {
 
   ngOnInit(): void {
     this.sideView = this.coreService.getSideView();
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     this.init();
   }
 

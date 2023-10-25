@@ -175,7 +175,7 @@
                       <i *ngIf="locksFilters.filter.sortBy == 'id' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
+                    <th *ngIf="isPathDisplay" (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
                       <i *ngIf="locksFilters.filter.sortBy == 'path1' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="locksFilters.filter.sortBy == 'path1' && locksFilters.reverse"
@@ -255,13 +255,14 @@
                           <i [innerHtml]="lock.title | stringToLink" class="text-muted"></i>
                         </span>
                       </td>
-                      <td>
+                      <td *ngIf="isPathDisplay">
                         <span class="show-in-single-line">
                           <i (click)="coreService.navToInventoryTab(lock.path, 'LOCK');"
                              *ngIf="permission.joc && permission.joc.inventory.view"
                              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                           <span [innerHtml]="lock.path1 | highlight : locksFilters.searchText"></span>
                         </span>
+                      </td>
                       <td>
                         <span
                           [innerHtml]="lock.versionDate | stringToDate | highlight : locksFilters.searchText"></span>

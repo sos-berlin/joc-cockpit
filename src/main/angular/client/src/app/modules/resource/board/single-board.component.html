@@ -31,7 +31,7 @@
                 <th *ngIf="permission.currentController && permission.currentController.noticeBoards.post"
                     nzWidth="55px"><span translate>common.label.action</span></th>
                 <th><span translate>resource.board.label.name</span></th>
-                <th><span translate>common.label.path</span></th>
+                <th *ngIf="isPathDisplay"><span translate>common.label.path</span></th>
                 <th nzWidth="130px"><span translate>resource.board.label.deploymentDate</span></th>
                 <th nzWidth="100px"><span translate>common.label.status</span></th>
                 <th nzWidth="100px"><span translate>resource.board.label.numOfNotices</span></th>
@@ -70,7 +70,7 @@
                       <i [innerHtml]="board.title" class="text-muted"></i>
                     </span>
                   </td>
-                  <td>
+                  <td *ngIf="isPathDisplay">
                     <span class="show-in-single-line">
                       <i (click)="coreService.navToInventoryTab(board.path, 'NOTICEBOARD');"
                          *ngIf="permission.joc && permission.joc.inventory.view"

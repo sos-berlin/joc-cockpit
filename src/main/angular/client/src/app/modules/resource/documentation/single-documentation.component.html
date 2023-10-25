@@ -30,7 +30,7 @@
               <tr>
                 <th class="menu"><span translate>common.label.action</span></th>
                 <th><span translate>resource.documentation.label.documentName</span></th>
-                <th><span translate>common.label.path</span></th>
+                <th *ngIf="isPathDisplay"><span translate>common.label.path</span></th>
                 <th><span translate>resource.documentation.label.reference</span></th>
                 <th><span translate>common.label.type</span></th>
                 <th><span translate>resource.documentation.label.lastUpdateTime</span></th>
@@ -68,7 +68,7 @@
                   </div>
                 </td>
                 <td [innerHtml]="document.name || '-'"></td>
-                <td>{{document.path}}</td>
+                <td *ngIf="isPathDisplay">{{document.path}}</td>
                 <td>{{document.assignReference}}</td>
                 <td [innerHtml]="document.type"></td>
                 <td [innerHtml]="document.modified | stringToDate"></td>

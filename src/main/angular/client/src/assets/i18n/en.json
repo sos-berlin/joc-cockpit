@@ -790,7 +790,7 @@
     "label.projected": "Projected",
     "label.workflowFolders": "Workflow Folders",
     "label.scheduleFolders": "Schedule Folders",
-    "label.invertProjection": "Invert Projection",
+    "label.invertProjection": "Inverted Projection",
     "label.periodFound": "Period found",
     "label.periodsFound": "Periods found",
     "button.late": "Late",
@@ -812,7 +812,7 @@
     "button.deployOrderTemplate": "Release Schedules",
     "button.groupByOrder": "Group By Order",
     "button.groupByScheduleTemplate": "Group By Schedule",
-    "button.recreate": "Re-Create",
+    "button.recreate": "Re-create",
     "button.calendarView": "Calendar View",
     "placeholder.selectOrderTemplate": "Select Schedules",
     "placeholder.selectSubmissionHistory": "Select Daily Plan History",
@@ -833,7 +833,7 @@
     "tooltip.dateRangeSelectStep1": "Hold mouse and drag to select date range",
     "tooltip.dateRangeSelectStep2": "Or press Ctrl key and select start date and end date using mouse click",
     "tooltip.dateRangeSelectStep3": "Or click calendar icon and then select start date and end date using mouse click",
-    "tooltip.invertProjection": "Invert Projection",
+    "tooltip.invertProjection": "By default the Projection indicates the days for which orders are executed and the number of orders. When inverting the projection then days are highlighted for which no orders are executed. This includes to limit the projection to certain folders holidng workflows or schedules.",
     "tab": {
       "dailyPlan": "Daily Plan",
       "projection": "Projection"
@@ -2054,7 +2054,7 @@
         "deployedOrReleased": "Deployed/Released",
         "undeployedOrUnreleased": "Undeployed/Unreleased",
         "validOrInvalid": "Valid/Invalid",
-        "filterBy": "Filter By",
+        "filterBy": "Filter by",
         "all": "All",
         "valid": "Valid",
         "invalid": "Invalid",
@@ -2772,7 +2772,7 @@
       "period_begin": "Specifies the begin of the 24 hours Daily Plan period with the indicated time zone.",
       "days_ahead_plan": "Specifies the number of days ahead for which orders are generated and are made available with the PLANNED state.",
       "days_ahead_submit": "Specifies the number of days ahead for which PLANNED orders are submitted to Controllers and are made available with the SUBMITTED state.",
-      "projections_month_ahead": "Projections month ahead"
+      "projections_month_ahead": "Specifies the number of months ahead for which projections are calculated that indicate future order execution."
     },
     "joc": {
       "force_comments_for_audit_log": "Specifies that for any changes applied to an object such as to add an order, to cancel an order etc. a reason has to be added for the Audit Log.",

@@ -85,6 +85,7 @@ export class SingleDocumentationComponent {
   preferences: any = {};
   permission: any = {};
   documents: any = [];
+  isPathDisplay = false;
   path?: string | null;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
@@ -94,6 +95,7 @@ export class SingleDocumentationComponent {
   ngOnInit(): void {
     this.path = this.route.snapshot.queryParamMap.get('path');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']);
     }
@@ -262,6 +264,7 @@ export class DocumentationComponent {
   reloadState = 'no';
   selectedPath = '';
   isProcessing = false;
+  isPathDisplay = false;
   searchableProperties = ['name', 'type', 'assignReference', 'path'];
 
   subscription1: Subscription;
@@ -704,6 +707,7 @@ export class DocumentationComponent {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     if (localStorage['views']) {
       this.pageView = JSON.parse(localStorage['views']).documentation;
     }
