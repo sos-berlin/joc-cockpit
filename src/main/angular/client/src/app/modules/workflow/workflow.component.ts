@@ -286,6 +286,7 @@ export class SingleWorkflowComponent {
   versionId: any;
   showPanel: any;
   sideBar: any = {};
+  isPathDisplay = false;
   date = '1d';
   subscription1: Subscription;
   subscription2: Subscription;
@@ -310,6 +311,7 @@ export class SingleWorkflowComponent {
   }
 
   ngOnInit(): void {
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     this.permission = JSON.parse(this.authService.permission) || {};
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']);
