@@ -7414,6 +7414,17 @@ tr.tr-border td:first-child {
   font-weight: 400;
 }
 
+.custom-tab{
+  margin-bottom: -6px;
+  .ant-tabs-tab {
+    margin-right: 12px;
+  }
+  .ant-tabs-nav .ant-tabs-tab {
+    padding-top: 0;
+    padding-bottom: 6px;
+  }
+}
+
 .ant-tabs-nav .ant-tabs-tab-active {
   font-weight: 600;
 }
