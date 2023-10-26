@@ -1701,6 +1701,8 @@
     "label.validationInfeasible": "有効性が検証できません",
     "label.validityApproved": "承認",
     "label.errorText": "エラーテキスト",
+    "label.tag": "Tag",
+    "label.tags": "Tags",
     "button.modifyVariableSet": "変数設定変更",
     "button.addOrderParameter": "オーダー変数追加",
     "button.setVersion": "バージョン設定",
@@ -1763,6 +1765,11 @@
     "button.updateFromJobTemplate": "ジョブテンプレートから更新",
     "button.updateFromJobTemplates": "ジョブテンプレートから更新",
     "button.makeJobTemplate": "ジョブテンプレートにする",
+    "button.addTags": "Add Tags",
+    "button.editTags": "Edit Tags",
+    "button.deleteTag": "Delete Tag",
+    "button.deleteTags": "Delete Tags",
+    "button.renameTag": "Rename Tag",
     "tooltip.setVersion": "バージョン設定",
     "placeholder.enterUniqueName": "ユニークなオブジェクト名を入力",
     "placeholder.enterFileName": "ファイル名を入力",
@@ -1820,6 +1827,11 @@
     "message.updateFromJobTemplate": "本当にジョブテンプレートから更新しますか？",
     "message.localChangesWillBeOverwritten": "この操作により、ローカルでの変更はすべて上書きされます",
     "message.changeDeductInWorkflow": "ワークフローの変数を変更し、変数を調整して再度スケジュールをリリースしてください",
+    "tab": {
+      "folders": "Folders",
+      "trash": "Trash",
+      "tagging": "Tagging"
+    },
     "cronTab": {
       "label.convertCron": "crontab変換",
       "label.folder": "フォルダー",
