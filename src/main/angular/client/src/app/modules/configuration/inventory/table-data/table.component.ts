@@ -17,7 +17,7 @@ import {CreateObjectModalComponent, DeployComponent, SingleDeployComponent} from
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
-import {SearchPipe, OrderPipe} from "../../../../pipes/core.pipe";
+import {OrderPipe, SearchPipe} from "../../../../pipes/core.pipe";
 import {AuthService} from "../../../../components/guard";
 
 @Component({

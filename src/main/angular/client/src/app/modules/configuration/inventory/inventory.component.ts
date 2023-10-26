@@ -424,13 +424,12 @@ export class DeployComponent {
   checkedObject = new Set();
   dateFormat: any = '';
   dateObj: any = {};
-  objectTypes: string[] = [];
+
   object: any = {
     isRecursive: false,
     delete: [],
     update: [],
     releasables: [],
-    objectTypes: [],
     store: {draftConfigurations: [], deployConfigurations: []},
     deleteObj: {deployConfigurations: []}
   };
@@ -462,35 +461,7 @@ export class DeployComponent {
     this.isRevoke = this.modalData.isRevoke;
     this.isChecked = this.modalData.isChecked;
     this.isSelectedObjects = this.modalData.isSelectedObjects;
-    if (this.data) {
-      if (this.releasable && (this.data.dailyPlan || (this.data.object &&
-        (this.data.object === InventoryObject.SCHEDULE || this.data.object === InventoryObject.JOBTEMPLATE || this.data.object === InventoryObject.INCLUDESCRIPT || this.data.object.match('CALENDAR'))))) {
-        if (this.data.dailyPlan) {
-          this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
-        } else {
-          this.objectTypes.push(this.data.object.match('CALENDAR') ? (InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR) : this.data.object);
-        }
-      } else if (!this.releasable) {
-        if (this.data.controller || this.data.object) {
-          if (this.data.controller) {
-            this.objectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
-              InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
-          } else {
-            this.objectTypes.push(this.data.object);
-          }
-        }
-      }
-    }
-    if (this.objectTypes.length === 0) {
-      if (!this.releasable) {
-        this.objectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
-          InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
-      } else {
-        this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
-      }
-    }
 
-    this.object.objectTypes = [...this.objectTypes];
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -617,13 +588,6 @@ export class DeployComponent {
     };
     if (this.data && this.data.object) {
       obj.objectTypes = this.data.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.object];
-    } else {
-      if (this.object.objectTypes.length > 0) {
-        obj.objectTypes = [];
-        this.object.objectTypes.forEach((item) => {
-          obj.objectTypes.push(item);
-        });
-      }
     }
     if (this.isRevoke) {
       obj.withoutDeployed = false;
