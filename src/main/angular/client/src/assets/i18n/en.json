@@ -1697,6 +1697,8 @@
     "label.validationInfeasible": "Validation not verifiable",
     "label.validityApproved": "Validity approved",
     "label.errorText": "Error Message",
+    "label.tag": "Tag",
+    "label.tags": "Tags",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",
     "button.setVersion": "Set Version",
@@ -1759,6 +1761,11 @@
     "button.updateFromJobTemplate": "Update from Job Template",
     "button.updateFromJobTemplates": "Update from Job Templates",
     "button.makeJobTemplate": "Make Job Template",
+    "button.addTags": "Add Tags",
+    "button.editTags": "Edit Tags",
+    "button.deleteTag": "Delete Tag",
+    "button.deleteTags": "Delete Tags",
+    "button.renameTag": "Rename Tag",
     "tooltip.setVersion": "Set Version",
     "placeholder.enterUniqueName": "Enter unique object name",
     "placeholder.enterFileName": "Enter file name",
@@ -1816,6 +1823,11 @@
     "message.updateFromJobTemplate": "Are you sure you want to update the job from the Job Template?",
     "message.localChangesWillBeOverwritten": "All local changes will be overwritten by this action",
     "message.changeDeductInWorkflow": "Changes to Workflow variables detected, please adjust variables and release the Schedule",
+    "tab": {
+      "folders": "Folders",
+      "trash": "Trash",
+      "tagging": "Tagging"
+    },
     "cronTab": {
       "label.convertCron": "Convert crontab",
       "label.folder": "Folder",

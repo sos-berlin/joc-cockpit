@@ -4,7 +4,7 @@
 }
 
 .a-3 {
-  top: 56px;
+  top: unset;
 }
 
 .trash, .rollback {
@@ -15,7 +15,7 @@
   position: absolute;
   cursor: pointer;
   right: 48px;
-  top: -2px;
+  margin-top: -2px;
   z-index: 99;
 
   &:hover {
@@ -43,17 +43,6 @@
 
   .r-82 {
     right: 82px;;
-  }
-}
-
-.sidebar-hover-effect {
-  .trash {
-    right: 16px;
-    top: 16px;
-  }
-
-  .r-82 {
-    right: 52px;;
   }
 }
 

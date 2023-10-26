@@ -4613,8 +4613,12 @@ export class WorkflowComponent {
   }
 
   checkDelayEntries(): void {
-    if (this.selectedNode.obj.maxTries < (this.selectedNode.obj.retryDelays.length)) {
-      this.selectedNode.obj.retryDelays.splice(this.selectedNode.obj.maxTries - 1, (this.selectedNode.obj.retryDelays.length + 1) - this.selectedNode.obj.maxTries);
+    if (this.selectedNode.obj.maxTries > -1) {
+      if (this.selectedNode.obj.maxTries < (this.selectedNode.obj.retryDelays.length)) {
+        this.selectedNode.obj.retryDelays.splice(this.selectedNode.obj.maxTries - 1, (this.selectedNode.obj.retryDelays.length + 1) - this.selectedNode.obj.maxTries);
+      }
+    } else {
+      this.selectedNode.obj.retryDelays = [{value: ''}];
     }
   }
 

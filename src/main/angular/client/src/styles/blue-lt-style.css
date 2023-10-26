@@ -34,9 +34,9 @@
   --btn-secondary: rgba(36, 148, 191, .87);
   --btn-secondary-hover: rgb(36, 148, 191);
   --date-planned: rgba(255, 140, 0, .95);
-  --date-planned-hover: rgba(255, 140, 0, 0.85);
-  --date-unplanned: rgba(255, 140, 0, 0.7);
-  --date-unplanned-hover: rgba(255, 140, 0, 0.6);
+  --date-planned-hover: rgba(255, 140, 0, 0.8);
+  --date-unplanned: rgba(36, 148, 191, 0.9);
+  --date-unplanned-hover: rgba(36, 148, 191, 0.8);
 }
 
 .bg-blue-color {

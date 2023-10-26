@@ -1524,10 +1524,13 @@ export class ExportComponent {
 
   export(): void {
     const obj: any = {
-      startFolder: this.path || '/',
       useShortPath: this.exportObj.useShortPath,
       exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
     };
+
+    if (this.path && this.path != 'path') {
+      obj.startFolder = this.path;
+    }
 
     if (this.comments.comment) {
       obj.auditLog = {};
@@ -2999,6 +3002,7 @@ export class InventoryComponent {
   permission: any = {};
   tree: any = [];
   trashTree: any = [];
+  tags: any = [];
   isLoading = true;
   pageView = 'grid';
   options: any = {};
@@ -3013,6 +3017,7 @@ export class InventoryComponent {
   inventoryConfig: any;
   isTreeLoaded = false;
   isTrash = false;
+  isTag = false;
   isSearchVisible = false;
   isNavigationComplete = true;
   revalidating = false;
@@ -3943,9 +3948,19 @@ export class InventoryComponent {
     }, 10);
   }
 
-  switchToTrash(): void {
+  switchToTagging(): void {
+    this.isTag = true;
+    this.isTrash = false;
+    this.coreService.post('tags', {}).subscribe((res) => {
+      console.log(res);
+      this.tags = res.tags;
+    });
+  }
+
+  switchToTrash(isTrash): void {
+    this.isTag = false;
     this.trashTree = [];
-    this.isTrash = !this.isTrash;
+    this.isTrash = isTrash;
     if (this.isTrash) {
       this.isTreeLoaded = false;
       this.initTrashTree('');
