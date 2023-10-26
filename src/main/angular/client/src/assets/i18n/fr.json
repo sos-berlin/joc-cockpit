@@ -1701,6 +1701,8 @@
     "label.validationInfeasible": "Validité non vérifiable",
     "label.validityApproved": "Validité approuvée",
     "label.errorText": "Message d'erreur",
+    "label.tag": "Tag",
+    "label.tags": "Tags",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addOrderParameter": "Ajouter un Modèle d'Ordre",
     "button.setVersion": "Définir la Version",
@@ -1763,6 +1765,11 @@
     "button.updateFromJobTemplate": "Mettre à jour du Modèle de Tâche",
     "button.updateFromJobTemplates": "Mettre à jour du Modèle de Tâche",
     "button.makeJobTemplate": "Comme Modèle de Tâche",
+    "button.addTags": "Add Tags",
+    "button.editTags": "Edit Tags",
+    "button.deleteTag": "Delete Tag",
+    "button.deleteTags": "Delete Tags",
+    "button.renameTag": "Rename Tag",
     "tooltip.setVersion": "Définir la version",
     "placeholder.enterUniqueName": "Entrer un nom d'objet unique",
     "placeholder.enterFileName": "Entrer le nom du fichier",
@@ -1820,6 +1827,11 @@
     "message.updateFromJobTemplate": "Vous êtes sûr de vouloir mettre à jour le Job à partir du Modèle de Tâche ?",
     "message.localChangesWillBeOverwritten": "Toutes les modifications locales seront écrasées par cette action",
     "message.changeDeductInWorkflow": "Modifications des variables du flux de travail détectées, veuillez ajuster les variables et relâcher la Plannification.",
+    "tab": {
+      "folders": "Folders",
+      "trash": "Trash",
+      "tagging": "Tagging"
+    },
     "cronTab": {
       "label.convertCron": "Convertir crontab",
       "label.folder": "Dossier",

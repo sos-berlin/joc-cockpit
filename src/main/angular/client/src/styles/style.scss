@@ -59,9 +59,9 @@
   --btn-secondary: rgba(255, 140, 0, .87);
   --btn-secondary-hover: rgb(255, 140, 0);
   --date-planned: rgba(14, 138, 139, .95);
-  --date-planned-hover: rgba(14, 138, 139, 0.85);
-  --date-unplanned: rgba(14, 138, 139, 0.7);
-  --date-unplanned-hover: rgba(14, 138, 139, 0.6);
+  --date-planned-hover: rgba(14, 138, 139, 0.8);
+  --date-unplanned: rgba(255, 163, 102, 0.9);
+  --date-unplanned-hover: rgba(255, 163, 102, 0.8);
 }
 
 /***
@@ -6962,7 +6962,9 @@ tr.tr-border td {
   }
 
 }
-
+.editor.sidebar-hover-effect {
+  padding-top: 8px;
+}
 .workflow.sidebar-hover-effect, deployment.sidebar-hover-effect {
   padding-top: 24px;
 }
@@ -6975,6 +6977,10 @@ tr.tr-border td {
 
   a.tree-search {
     top: 18px;
+  }
+
+  #treeSearch{
+    background: var(--bg-box);
   }
 }
 
@@ -7420,7 +7426,7 @@ tr.tr-border td:first-child {
     margin-right: 12px;
   }
   .ant-tabs-nav .ant-tabs-tab {
-    padding-top: 0;
+    padding-top: 6px;
     padding-bottom: 6px;
   }
 }

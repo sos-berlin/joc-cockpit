@@ -1118,8 +1118,8 @@ export class WorkflowService {
             v2 = endIf(json.instructions[x], v1, parent);
           } else if (json.instructions[x].TYPE === 'Retry') {
             _node.setAttribute('displayLabel', 'retry');
-            _node.setAttribute('maxTries', json.instructions[x].maxTries || '10');
-            _node.setAttribute('retryDelays', json.instructions[x].retryDelays ? json.instructions[x].retryDelays.toString() : '1m');
+            _node.setAttribute('maxTries', json.instructions[x].maxTries || '');
+            _node.setAttribute('retryDelays', json.instructions[x].retryDelays ? json.instructions[x].retryDelays.toString() : json.instructions[x].maxTries ? '1m' : '');
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);

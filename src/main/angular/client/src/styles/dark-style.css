@@ -31,9 +31,9 @@
   --btn-secondary: rgba(255, 140, 0, .87);
   --btn-secondary-hover: rgb(255, 140, 0);
   --date-planned: rgba(64, 169, 255, 0.95);
-  --date-planned-hover: rgba(64, 169, 255, 0.85);
-  --date-unplanned: rgba(64, 169, 255, 0.7);
-  --date-unplanned-hover: rgba(64, 169, 255, 0.6);
+  --date-planned-hover: rgba(64, 169, 255, 0.8);
+  --date-unplanned: rgba(255, 140, 0, 0.9);
+  --date-unplanned-hover: rgba(255, 140, 0, 0.8);
 }
 
 body {
