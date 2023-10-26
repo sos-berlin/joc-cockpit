@@ -31,7 +31,6 @@ export class ScheduleComponent {
   isUnique = true;
   objectType = InventoryObject.SCHEDULE;
   workflowTree = [];
-  forkListVariables = [];
   invalidMsg: string;
   workflow: any = {};
   variableList = [];
@@ -138,7 +137,12 @@ export class ScheduleComponent {
   addVariableToList(data): void {
     const arr = [];
     data.list.forEach(item => {
-      arr.push({name: item.name, type: item.value.type, value: (item.value.value || item.value.default), isRequired: (item.isRequired || item.value.isRequired)});
+      arr.push({
+        name: item.name,
+        type: item.value.type,
+        value: (item.value.value || item.value.default),
+        isRequired: (item.isRequired || item.value.isRequired)
+      });
     });
     let flag = false;
     for (const i in data.actualList) {
@@ -162,7 +166,6 @@ export class ScheduleComponent {
       orderName: '',
       variables: [],
       positions: {},
-      forkListVariables: this.coreService.clone(this.forkListVariables)
     };
     if (this.schedule.configuration.orderParameterisations) {
       if (!this.coreService.isLastEntryEmpty(this.schedule.configuration.orderParameterisations, 'orderName', '') || this.schedule.configuration.orderParameterisations.length < 2) {
@@ -171,26 +174,53 @@ export class ScheduleComponent {
         if (obj.variableList.length > 0) {
           for (const i in obj.variableList) {
             let val = obj.variableList[i].value;
-            if (!val.default && val.default !== false && val.default !== 0) {
-              if (!val.final) {
-                let list;
-                if (val.list) {
-                  list = [];
-                  val.list.forEach((item) => {
-                    let obj = {name: item}
-                    this.coreService.removeSlashToString(obj, 'name');
-                    list.push(obj);
+            if(isArray(val.listParameters)){
+              let actualList = [];
+              val.listParameters.forEach((item) => {
+                const _obj: any = {
+                  name: item.name,
+                  type: item.value.type,
+                  value: item.value.default,
+                  isRequired: true
+                };
+                if (item.default || item.default == 0 || item.default == false) {
+                  _obj.isRequired = false;
+                }
+                item.isRequired = _obj.isRequired;
+                actualList.push(_obj);
+              });
+
+              obj.variableList[i].isSelected = true;
+              obj.variables.push({
+                name: obj.variableList[i].name,
+                type: val.type,
+                isRequired: true,
+                list: val.listParameters,
+                actualList: [actualList]
+              });
+
+            } else {
+              if (!val.default && val.default !== false && val.default !== 0) {
+                if (!val.final) {
+                  let list;
+                  if (val.list) {
+                    list = [];
+                    val.list.forEach((item) => {
+                      let obj = {name: item}
+                      this.coreService.removeSlashToString(obj, 'name');
+                      list.push(obj);
+                    });
+                  }
+                  obj.variableList[i].isSelected = true;
+                  obj.variables.push({
+                    name: obj.variableList[i].name,
+                    type: val.type,
+                    isRequired: true,
+                    facet: val.facet,
+                    message: val.message,
+                    list
                   });
                 }
-                obj.variableList[i].isSelected = true;
-                obj.variables.push({
-                  name: obj.variableList[i].name,
-                  type: val.type,
-                  isRequired: true,
-                  facet: val.facet,
-                  message: val.message,
-                  list
-                });
               }
             }
           }
@@ -304,6 +334,7 @@ export class ScheduleComponent {
     for (let x in target) {
       if (target[x].name === sour.name) {
         if (sour.value) {
+
           if (sour.value.length > 0) {
             let notExistArr = [];
             for (const i in sour.value) {
@@ -316,6 +347,7 @@ export class ScheduleComponent {
                     break;
                   }
                 }
+
                 const obj = {name: k1, value: v1, type, isRequired};
                 this.coreService.checkDataType(obj);
                 return obj;
@@ -346,7 +378,6 @@ export class ScheduleComponent {
 
               if (notExistArr.length > 0) {
                 notExistArr.forEach(item => {
-                 
                   const obj = {
                     name: item.name,
                     type: item.value.type,
@@ -354,10 +385,10 @@ export class ScheduleComponent {
                     isRequired: item.value.isRequired || item.isRequired
                   };
                   this.coreService.checkDataType(obj);
-                
                   sour.value[i].push(obj);
                 })
               }
+
             }
           } else {
             const tempArr = [];
@@ -373,23 +404,8 @@ export class ScheduleComponent {
           }
 
         }
-        for (let x in this.forkListVariables) {
-          if (this.forkListVariables[x].name == sour.name) {
-            for (let i in sour.value) {
-              let arr = [];
-              for (let j in this.forkListVariables[x].list) {
-                for (let k in sour.value[i]) {
-                  if (this.forkListVariables[x].list[j].name == sour.value[i][k].name) {
-                    arr.push(sour.value[i][k]);
-                    break;
-                  }
-                }
-              }
-              sour.value[i] = arr;
-            }
-          }
-        }
-        target[x].actualList = sour.value;
+
+        sour.actualList = sour.value;
         break;
       }
     }
@@ -397,7 +413,7 @@ export class ScheduleComponent {
 
   updateVariableList(): void {
     this.variableList = [];
-    this.forkListVariables = [];
+    let forkListVariables = [];
     let variablesBeforeUpdate = {};
     for (const prop in this.schedule.configuration.orderParameterisations) {
       if (this.schedule.configuration.orderParameterisations[prop]) {
@@ -411,6 +427,7 @@ export class ScheduleComponent {
         if (val.type === 'List') {
           const actualList = [];
           if (val.listParameters) {
+
             if (isArray(val.listParameters)) {
               val.listParameters.forEach((item) => {
                 const obj: any = {
@@ -437,7 +454,7 @@ export class ScheduleComponent {
                 if (val1.default || val1.default == 0 || val1.default == false) {
                   obj.isRequired = false;
                 }
-                if(val1.value){
+                if (val1.value) {
                   this.coreService.checkDataType(val1);
                 }
                 val1.isRequired = obj.isRequired;
@@ -445,25 +462,48 @@ export class ScheduleComponent {
                 return {name: k1, value: val1};
               });
             }
-            this.forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
+
+            forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
             if (this.schedule.configuration.orderParameterisations.length === 0) {
               this.schedule.configuration.orderParameterisations.push(
                 {
                   orderName: '',
                   variables: [],
-                  positions: {},
-                  forkListVariables: this.coreService.clone(this.forkListVariables)
+                  positions: {}
                 });
             } else {
+              let isExist = false;
               for (const prop in this.schedule.configuration.orderParameterisations) {
                 for (let i = 0; i < this.schedule.configuration.orderParameterisations[prop].variables.length; i++) {
                   if (this.schedule.configuration.orderParameterisations[prop].variables[i].name === k) {
+                    this.schedule.configuration.orderParameterisations[prop].variables[i].isRequired = true;
                     this.schedule.configuration.orderParameterisations[prop].variables[i].isExist = true;
-                    if(this.schedule.configuration.orderParameterisations[prop].variables[i].value){
-                      this.coreService.checkDataType(this.schedule.configuration.orderParameterisations[prop].variables[i]);
-                    }
+                    this.schedule.configuration.orderParameterisations[prop].variables[i].type = val.type;
+                    this.schedule.configuration.orderParameterisations[prop].variables[i].list = val.listParameters;
+                    this.schedule.configuration.orderParameterisations[prop].variables[i].actualList = [actualList];
+                    isExist = true;
                     break;
                   }
+                }
+
+                if (!isExist) {
+                  let obj: any = {
+                    name: k,
+                    type: val.type,
+                    isRequired: true,
+                    list: val.listParameters,
+                    isExist: true,
+                    actualList: [actualList]
+                  };
+                  if (val.list) {
+                    obj.list = [];
+                    val.list.forEach((item) => {
+                      let obj1 = {name: item}
+                      this.coreService.removeSlashToString(obj1, 'name');
+                      obj.list.push(obj1);
+                    });
+                  }
+                  this.schedule.configuration.orderParameterisations[prop].variables.push(obj);
                 }
               }
             }
@@ -484,7 +524,7 @@ export class ScheduleComponent {
                 this.schedule.configuration.orderParameterisations[prop].variables[i].type = val.type;
                 this.schedule.configuration.orderParameterisations[prop].variables[i].facet = val.facet;
                 this.schedule.configuration.orderParameterisations[prop].variables[i].message = val.message;
-                if(this.schedule.configuration.orderParameterisations[prop].variables[i].value){
+                if (this.schedule.configuration.orderParameterisations[prop].variables[i].value) {
                   this.coreService.checkDataType(this.schedule.configuration.orderParameterisations[prop].variables[i]);
                 }
                 let list;
@@ -556,28 +596,21 @@ export class ScheduleComponent {
       }
 
       this.variableList = this.variableList.filter((item) => {
-        if (item.value.type === 'List') {
-          return false;
-        }
         return !item.value.final;
       });
 
       for (const prop in this.schedule.configuration.orderParameterisations) {
-        this.schedule.configuration.orderParameterisations[prop].forkListVariables = this.coreService.clone(this.forkListVariables);
         if (this.schedule.configuration.orderParameterisations[prop].variables && this.schedule.configuration.orderParameterisations[prop].variables.length > 0) {
           this.schedule.configuration.orderParameterisations[prop].variables = this.schedule.configuration.orderParameterisations[prop].variables.filter(item => {
             if (isArray(item.value)) {
-              this.setForkListVariables(item, this.schedule.configuration.orderParameterisations[prop].forkListVariables);
-              return false;
-            } else {
-              return true;
+              this.setForkListVariables(item, forkListVariables);
             }
+            return true;
           });
         }
       }
     } else if (this.schedule.configuration.orderParameterisations && this.schedule.configuration.orderParameterisations.length > 0) {
       for (const prop in this.schedule.configuration.orderParameterisations) {
-        delete this.schedule.configuration.orderParameterisations[prop].forkListVariables;
         if (!(this.workflow.orderPreparation?.allowUndeclared && this.allowUndeclaredVariables)) {
           this.schedule.configuration.orderParameterisations[prop].variables = [];
         } else {
@@ -593,25 +626,29 @@ export class ScheduleComponent {
       if (this.schedule.configuration.orderParameterisations?.length > 0) {
         let arr = [];
         for (let j in this.schedule.configuration.orderParameterisations[0].variables) {
-          arr.push({
-            name: this.schedule.configuration.orderParameterisations[0].variables[j].name,
-            value: this.schedule.configuration.orderParameterisations[0].variables[j].value
-          });
-        }
-        for (let j in this.schedule.configuration.orderParameterisations[0].forkListVariables) {
-          let value = [];
-          for (let x in this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList) {
-            let obj = {};
-            for (let y in this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x]) {
-              obj[this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x][y].name] = this.schedule.configuration.orderParameterisations[0].forkListVariables[j].actualList[x][y].value;
+          if (isArray(this.schedule.configuration.orderParameterisations[0].variables[j].value)) {
+
+            let value = [];
+            for (let x in this.schedule.configuration.orderParameterisations[0].variables[j].actualList) {
+              let obj = {};
+              for (let y in this.schedule.configuration.orderParameterisations[0].variables[j].actualList[x]) {
+                obj[this.schedule.configuration.orderParameterisations[0].variables[j].actualList[x][y].name] = this.schedule.configuration.orderParameterisations[0].variables[j].actualList[x][y].value;
+              }
+              value.push(obj);
             }
-            value.push(obj);
+            arr.push({
+              name: this.schedule.configuration.orderParameterisations[0].variables[j].name,
+              value: value
+            });
+
+          } else {
+            arr.push({
+              name: this.schedule.configuration.orderParameterisations[0].variables[j].name,
+              value: this.schedule.configuration.orderParameterisations[0].variables[j].value
+            });
           }
-          arr.push({
-            name: this.schedule.configuration.orderParameterisations[0].forkListVariables[j].name,
-            value: value
-          });
         }
+
         if (!isEqual((variablesBeforeUpdate), JSON.stringify(arr))) {
           this.translate.get('inventory.message.changeDeductInWorkflow').subscribe(translatedValue => {
             this.toasterService.warning(translatedValue);
@@ -619,6 +656,7 @@ export class ScheduleComponent {
         }
       }
     }
+
   }
 
   checkVariableType(argument): void {
@@ -698,11 +736,15 @@ export class ScheduleComponent {
       }
       this.schedule.configuration.orderParameterisations[prop].variableList = this.coreService.clone(this.variableList);
       for (let i = 0; i < this.schedule.configuration.orderParameterisations[prop].variableList.length; i++) {
-        this.schedule.configuration.orderParameterisations[prop].variableList[i].isSelected = false;
-        for (let j = 0; j < this.schedule.configuration.orderParameterisations[prop].variables.length; j++) {
-          if (this.schedule.configuration.orderParameterisations[prop].variableList[i].name === this.schedule.configuration.orderParameterisations[prop].variables[j].name) {
-            this.schedule.configuration.orderParameterisations[prop].variableList[i].isSelected = true;
-            break;
+        if (this.schedule.configuration.orderParameterisations[prop].variableList[i].actualList?.length) {
+          this.schedule.configuration.orderParameterisations[prop].variableList[i].isSelected = true;
+        } else {
+          this.schedule.configuration.orderParameterisations[prop].variableList[i].isSelected = false;
+          for (let j = 0; j < this.schedule.configuration.orderParameterisations[prop].variables.length; j++) {
+            if (this.schedule.configuration.orderParameterisations[prop].variableList[i].name === this.schedule.configuration.orderParameterisations[prop].variables[j].name) {
+              this.schedule.configuration.orderParameterisations[prop].variableList[i].isSelected = true;
+              break;
+            }
           }
         }
       }
@@ -862,29 +904,28 @@ export class ScheduleComponent {
         parameter.variables = parameter.variables.filter((variable) => {
           return !!variable.name;
         });
-        parameter.variables = parameter.variables.map(variable => ({name: variable.name, value: variable.value}));
-        parameter.variables = this.coreService.keyValuePair(parameter.variables);
-      }
-      if (parameter.forkListVariables) {
-        parameter.forkListVariables.forEach((item) => {
-          parameter.variables[item.name] = [];
-          if (item.actualList) {
-            for (const i in item.actualList) {
-              const listObj = {};
-              item.actualList[i].forEach((data) => {
-                if (!data.value && data.value != 0 && data.value != false) {
-                  isValid = false;
-                } else {
+        let variables= {};
+        parameter.variables.forEach((item) => {
+          if(item.type === 'List') {
+            variables[item.name] = [];
+            if (item.actualList?.length > 0) {
+              for (const i in item.actualList) {
+                const listObj = {};
+                item.actualList[i].forEach((data) => {
                   listObj[data.name] = data.value;
-                }
-              });
-              if (!isEmpty(listObj)) {
-                parameter.variables[item.name].push(listObj);
+                });
+                variables[item.name].push(listObj);
               }
             }
+          } else {
+            variables[item.name] = item.value;
+
           }
         });
+        parameter.variables = variables;
       }
+
+
       if (parameter.positions) {
         let newPositions;
         if (parameter.positions.blockPosition && this.blockPositions && this.blockPositions.has(parameter.positions.blockPosition)) {
@@ -1194,7 +1235,6 @@ export class ScheduleComponent {
     if (this.schedule.configuration.workflowNames.length === 0) {
       this.schedule.configuration.orderParameterisations = [];
       this.variableList = [];
-      this.forkListVariables = [];
       this.saveJSON();
     }
     if (data.add) {

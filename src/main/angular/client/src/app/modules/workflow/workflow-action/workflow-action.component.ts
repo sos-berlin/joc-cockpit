@@ -755,7 +755,7 @@ export class AddOrderModalComponent {
                   orderParameterisations.variables[x].forEach((key) => {
                     let arr = [];
                     for (let y in val.listParameters) {
-                      if (key[val.listParameters[y].name]) {
+                      if (key[val.listParameters[y].name] || key[val.listParameters[y].name] == false || key[val.listParameters[y].name] == 0) {
                         arr.push({
                           name: val.listParameters[y].name,
                           type: val.listParameters[y].value.type,
