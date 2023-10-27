@@ -1703,6 +1703,8 @@
     "label.errorText": "Fehlermeldung",
     "label.tag": "Tag",
     "label.tags": "Tags",
+    "label.addTags": "Add Tags",
+    "label.addTagsToWorkflow": "Add Tags to Workflow",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addOrderParameter": "Auftragsvorlage hinzufügen",
     "button.setVersion": "Version setzen",
@@ -1806,6 +1808,7 @@
     "placeholder.enterRemoteUri": "Ferne URI angeben",
     "placeholder.enterGitMessage": "Mitteilung angeben",
     "placeholder.objectTypes": "Objekttypen auswählen",
+    "placeholder.selectTags": "Select tags",
     "message.workflowIsMissing": "Arbeitsablauf ist erforderlich",
     "message.directoryIsMissing": "Verzeichnis ist erforderlich",
     "message.envOrArgumentIsMissing": "Mindestens eine Variable oder Umgebungsvariable muss angegeben werden",
@@ -1827,10 +1830,11 @@
     "message.updateFromJobTemplate": "Sind Sie sicher, dass Sie den Job aus der Job-Vorlage aktualisieren wollen?",
     "message.localChangesWillBeOverwritten": "Alle lokalen Änderungen werden durch diese Operation überschrieben",
     "message.changeDeductInWorkflow": "Änderungen an Variablen des Arbeitsablaufs erkannt, bitte die Variablen anpassen und den Zeitplan freigeben.",
+    "message.noTagFound": "No tag found",
     "tab": {
       "folders": "Folders",
       "trash": "Trash",
-      "tagging": "Tagging"
+      "tagging": "Tags"
     },
     "cronTab": {
       "label.convertCron": "crontab konvertieren",

@@ -1703,6 +1703,8 @@
     "label.errorText": "エラーテキスト",
     "label.tag": "Tag",
     "label.tags": "Tags",
+    "label.addTags": "Add Tags",
+    "label.addTagsToWorkflow": "Add Tags to Workflow",
     "button.modifyVariableSet": "変数設定変更",
     "button.addOrderParameter": "オーダー変数追加",
     "button.setVersion": "バージョン設定",
@@ -1806,6 +1808,7 @@
     "placeholder.enterRemoteUri": "リモートURI入力",
     "placeholder.enterGitMessage": "コミットメッセージ入力",
     "placeholder.objectTypes": "オブジェクトタイプ選択",
+    "placeholder.selectTags": "Select tags",
     "message.workflowIsMissing": "ワークフローが必要です",
     "message.directoryIsMissing": "必要なディレクトリがありません",
     "message.envOrArgumentIsMissing": "必要な環境変数または引数がありません",
@@ -1827,10 +1830,11 @@
     "message.updateFromJobTemplate": "本当にジョブテンプレートから更新しますか？",
     "message.localChangesWillBeOverwritten": "この操作により、ローカルでの変更はすべて上書きされます",
     "message.changeDeductInWorkflow": "ワークフローの変数を変更し、変数を調整して再度スケジュールをリリースしてください",
+    "message.noTagFound": "No tag found",
     "tab": {
       "folders": "Folders",
       "trash": "Trash",
-      "tagging": "Tagging"
+      "tagging": "Tags"
     },
     "cronTab": {
       "label.convertCron": "crontab変換",
