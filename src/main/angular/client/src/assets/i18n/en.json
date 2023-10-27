@@ -1703,6 +1703,8 @@
     "label.errorText": "Error Message",
     "label.tag": "Tag",
     "label.tags": "Tags",
+    "label.addTags": "Add Tags",
+    "label.addTagsToWorkflow": "Add Tags to Workflow",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",
     "button.setVersion": "Set Version",
@@ -1806,6 +1808,7 @@
     "placeholder.enterRemoteUri": "Enter Remote URI",
     "placeholder.enterGitMessage": "Enter message",
     "placeholder.objectTypes": "Select object types",
+    "placeholder.selectTags": "Select tags",
     "message.workflowIsMissing": "Workflow is missing, but is required",
     "message.directoryIsMissing": "Directory is missing, but is required",
     "message.envOrArgumentIsMissing": "At least one variable or environment variable must be specified",
@@ -1827,10 +1830,11 @@
     "message.updateFromJobTemplate": "Are you sure you want to update the job from the Job Template?",
     "message.localChangesWillBeOverwritten": "All local changes will be overwritten by this action",
     "message.changeDeductInWorkflow": "Changes to Workflow variables detected, please adjust variables and release the Schedule",
+    "message.noTagFound": "No tag found",
     "tab": {
       "folders": "Folders",
       "trash": "Trash",
-      "tagging": "Tagging"
+      "tagging": "Tags"
     },
     "cronTab": {
       "label.convertCron": "Convert crontab",

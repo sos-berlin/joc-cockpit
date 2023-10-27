@@ -11,7 +11,7 @@ import {InventoryService} from './inventory.service';
 import {SharedModule} from '../../shared/shared.module';
 import {CalendarService} from '../../../services/calendar.service';
 import {
-  CreateFolderModalComponent, CreateObjectModalComponent, DeployComponent, ExportComponent,
+  CreateFolderModalComponent, CreateObjectModalComponent, CreateTagModalComponent, DeployComponent, ExportComponent,
   GitComponent, InventoryComponent, JsonEditorModalComponent, NewDraftComponent, NotificationComponent,
   RepositoryComponent, ShowObjectsComponent, SingleDeployComponent
 } from './inventory.component';
@@ -56,7 +56,7 @@ import {TreeModalComponent} from "./runtime/tree-modal/tree.component";
 const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, CalendarComponent, ScheduleComponent, ScriptComponent, LockComponent,
   WorkflowComponent, BoardComponent, JobResourceComponent, JobTemplateComponent, FileOrderComponent, TableComponent, FrequencyModalComponent,
   JsonEditorModalComponent, SingleDeployComponent, DeployComponent, ExportComponent, CreateFolderModalComponent, CreateObjectModalComponent,
-  NotificationComponent, RepositoryComponent, GitComponent, ScriptEditorComponent, UpdateJobTemplatesComponent,
+  NotificationComponent, RepositoryComponent, GitComponent, ScriptEditorComponent, UpdateJobTemplatesComponent, CreateTagModalComponent,
   UpdateObjectComponent, FindAndReplaceComponent, ShowObjectsComponent, CycleInstructionComponent, UpdateJobComponent, PeriodComponent,
   ShowReferenceComponent, AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent,
   RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, NewDraftComponent, NoticeBoardEditorComponent];
