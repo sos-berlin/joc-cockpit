@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component, inject,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, inject, ViewChild} from '@angular/core';
 import {forkJoin, of, Subject, Subscription} from 'rxjs';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ToastrService} from 'ngx-toastr';
@@ -28,6 +23,99 @@ import {UpdateJobTemplatesComponent} from "./job-template/job-template.component
 import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
 
 declare const $: any;
+
+@Component({
+  selector: 'app-create-tag-template',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './create-tag-dialog.html'
+})
+export class CreateTagModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+
+  preferences: any;
+  data: any;
+  submitted = false;
+  display: any;
+  required = false;
+  object: any = {tags: []};
+  comments: any = {};
+  tags = [];
+  inputVisible = false;
+  inputValue = '';
+  @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
+
+
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private ref: ChangeDetectorRef) {
+  }
+
+  ngOnInit(): void {
+    this.preferences = this.modalData.preferences;
+    this.data = this.modalData.data;
+    this.display = this.preferences.auditLog;
+    if (this.data) {
+      this.fetchTags();
+    }
+    this.comments.radio = 'predefined';
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+    this.ref.detectChanges();
+  }
+
+  private fetchTags(): void {
+    this.coreService.post('tags', {}).subscribe((res) => {
+      this.tags = res.tags;
+    });
+  }
+
+  handleClose(removedTag: {}): void {
+    this.tags = this.tags.filter(tag => tag !== removedTag);
+  }
+
+  sliceTagName(tag: string): string {
+    const isLongTag = tag.length > 20;
+    return isLongTag ? `${tag.slice(0, 20)}...` : tag;
+  }
+
+  showInput(): void {
+    this.inputVisible = true;
+    setTimeout(() => {
+      this.inputElement?.nativeElement.focus();
+    }, 10);
+  }
+
+  handleInputConfirm(): void {
+    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1) {
+      this.tags = [...this.tags, this.inputValue];
+    }
+    this.inputValue = '';
+    this.inputVisible = false;
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    const obj = {
+      tags: this.tags,
+      auditLog: {}
+    };
+    if (this.data) {
+      obj.tags = this.object.tags;
+    }
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+    const URL = this.data ? 'tags/add' : '/inventory/workflow/tags/store'
+    this.coreService.post(URL, obj).subscribe({
+      next: () => {
+        this.activeModal.close('DONE');
+      }, error: () => {
+        this.submitted = false;
+        this.ref.detectChanges();
+      }
+    });
+
+  }
+
+}
 
 @Component({
   selector: 'app-show-objects',
@@ -2468,6 +2556,7 @@ export class GitComponent {
   private showResult(): void {
     this.modal.create({
       nzTitle: undefined,
+      nzAutofocus: null,
       nzContent: NotificationComponent,
       nzClassName: 'lg',
       nzData: {
@@ -3508,6 +3597,38 @@ export class InventoryComponent {
     }
   }
 
+  selectTag(tag: any, isArray = false): void {
+    if (this.preferences.expandOption === 'both' || isArray) {
+      tag.isExpanded = !tag.isExpanded;
+    }
+
+    const obj: any = {
+      tag: tag.name
+    };
+    if (this.inventoryService.checkDeploymentStatus.isChecked) {
+      obj.controllerId = this.schedulerIds.selected;
+    }
+
+    this.coreService.post('inventory/read/tag', obj).subscribe({
+      next: (res: any) => {
+        tag.children = res.workflows;
+      }
+    });
+  }
+
+  selectWorkflow(node, isList): void {
+    if (isList) {
+      this.type = InventoryObject.WORKFLOW;
+    } else {
+      node.type = InventoryObject.WORKFLOW;
+      this.type = node.type;
+      this.selectedData = node;
+      this.selectedData.path = node.path.substring(0, node.path.lastIndexOf('/')) || '/';
+      console.log(this.selectedData)
+      this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, '$ID');
+    }
+  }
+
   selectNode(node: NzTreeNode | NzFormatEmitEvent): void {
     if (node instanceof NzTreeNode) {
       if ((!node.origin['object'] && !node.origin['type'])) {
@@ -3526,8 +3647,17 @@ export class InventoryComponent {
       }
       this.type = node.origin['objectType'] || node.origin['object'] || node.origin['type'];
       this.selectedData = node.origin;
+      console.log(this.selectedData)
       this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, node.origin['objectType'] ? '$ID' : undefined);
     }
+  }
+
+  deleteTag(tag): void {
+
+  }
+
+  renameTag(tag): void {
+
   }
 
   updateObjects(data: any, isTrash: boolean, cb: any, isExpandConfiguration: boolean): void {
@@ -3915,9 +4045,19 @@ export class InventoryComponent {
   switchToTagging(): void {
     this.isTag = true;
     this.isTrash = false;
+    if (this.type) {
+      this.tempObjSelection = {
+        type: clone(this.type),
+        selectedData: this.coreService.clone(this.selectedData),
+        selectedObj: clone(this.selectedObj)
+      };
+    }
+    this.type = '';
     this.coreService.post('tags', {}).subscribe((res) => {
-      console.log(res);
-      this.tags = res.tags;
+      this.tags = res.tags.map((tag) => {
+        return {name: tag, children: []}
+      });
+      this.clearSelection();
     });
   }
 
@@ -5762,6 +5902,24 @@ export class InventoryComponent {
         this.updateTree(false);
       });
     }
+  }
+
+  addTags(node?): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateTagModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        preferences: this.preferences,
+        data: node.origin
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(() => {
+      this.tags = [];
+    });
   }
 
   private deleteObject(path: string, object: any, node: any, auditLog: any, cancelOrdersDateFrom = undefined): void {

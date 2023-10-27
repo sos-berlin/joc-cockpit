@@ -59,7 +59,7 @@ export class ConfigurationComponent implements AfterViewInit, OnDestroy {
           sidebar.height('calc(100vh - ' + (top - 19) + 'px' + ')');
         }
         if (this.router.url.match('inventory')) {
-          top = top - 22;
+          top = top + 18;
         }
         if (count < 5) {
           if (top < 165 && flag) {

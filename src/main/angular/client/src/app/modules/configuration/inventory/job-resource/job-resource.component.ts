@@ -447,6 +447,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         data.value = result;
+        this.saveJSON();
       }
     });
   }

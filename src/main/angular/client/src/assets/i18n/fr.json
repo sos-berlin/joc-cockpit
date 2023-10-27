@@ -1700,6 +1700,8 @@
     "label.errorText": "Message d'erreur",
     "label.tag": "Tag",
     "label.tags": "Tags",
+    "label.addTags": "Add Tags",
+    "label.addTagsToWorkflow": "Add Tags to Workflow",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addOrderParameter": "Ajouter un Modèle d'Ordre",
     "button.setVersion": "Définir la Version",
@@ -1803,6 +1805,7 @@
     "placeholder.enterRemoteUri": "Entrer le URI distant",
     "placeholder.enterGitMessage": "Entrer le message",
     "placeholder.objectTypes": "Sélectionnez les types d'objet",
+    "placeholder.selectTags": "Select tags",
     "message.workflowIsMissing": "Le Workflow est absent, mais il est nécessaire",
     "message.directoryIsMissing": "Le répertoire est absent, mais il est nécessaire",
     "message.envOrArgumentIsMissing": "Les variables d'environnement ou les arguments sont manquantes, mais sont nécessaires",
@@ -1824,10 +1827,11 @@
     "message.updateFromJobTemplate": "Vous êtes sûr de vouloir mettre à jour le Job à partir du Modèle de Tâche ?",
     "message.localChangesWillBeOverwritten": "Toutes les modifications locales seront écrasées par cette action",
     "message.changeDeductInWorkflow": "Modifications des variables du flux de travail détectées, veuillez ajuster les variables et relâcher la Plannification.",
+    "message.noTagFound": "No tag found",
     "tab": {
       "folders": "Folders",
       "trash": "Trash",
-      "tagging": "Tagging"
+      "tagging": "Tags"
     },
     "cronTab": {
       "label.convertCron": "Convertir crontab",

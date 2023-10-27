@@ -2511,6 +2511,10 @@ button.close {
   padding-bottom: 4px !important;
 }
 
+.p-b-xxs {
+  padding-bottom: 2px !important;
+}
+
 .p-a-xs {
   padding: 4px !important;
 }
@@ -9547,5 +9551,6 @@ cdk-virtual-scroll-viewport {
   color: var(--date-unplanned);
 }
 
-
-
+.custom-image-size img{
+  height: 88px !important;
+}
