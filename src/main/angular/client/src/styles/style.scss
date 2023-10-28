@@ -59,9 +59,9 @@
   --btn-secondary: rgba(255, 140, 0, .87);
   --btn-secondary-hover: rgb(255, 140, 0);
   --date-planned: rgba(14, 138, 139, .95);
-  --date-planned-hover: rgba(14, 138, 139, 0.85);
-  --date-unplanned: rgba(14, 138, 139, 0.7);
-  --date-unplanned-hover: rgba(14, 138, 139, 0.6);
+  --date-planned-hover: rgba(14, 138, 139, 0.8);
+  --date-unplanned: rgba(255, 163, 102, 0.9);
+  --date-unplanned-hover: rgba(255, 163, 102, 0.8);
 }
 
 /***
@@ -2511,6 +2511,10 @@ button.close {
   padding-bottom: 4px !important;
 }
 
+.p-b-xxs {
+  padding-bottom: 2px !important;
+}
+
 .p-a-xs {
   padding: 4px !important;
 }
@@ -4875,6 +4879,10 @@ input[type=search] {
   border-top: 1px solid var(--border-color);
 }
 
+.b-b-dark {
+  border-bottom: 1px solid var(--placholder-color);
+}
+
 .b-r {
   border-right: 1px solid var(--border-color);
 }
@@ -6962,7 +6970,9 @@ tr.tr-border td {
   }
 
 }
-
+.editor.sidebar-hover-effect {
+  padding-top: 8px;
+}
 .workflow.sidebar-hover-effect, deployment.sidebar-hover-effect {
   padding-top: 24px;
 }
@@ -6975,6 +6985,10 @@ tr.tr-border td {
 
   a.tree-search {
     top: 18px;
+  }
+
+  #treeSearch{
+    background: var(--bg-box);
   }
 }
 
@@ -7412,6 +7426,17 @@ tr.tr-border td:first-child {
 .ant-tabs-nav .ant-tabs-tab {
   padding: 12px;
   font-weight: 400;
+}
+
+.custom-tab{
+  margin-bottom: -6px;
+  .ant-tabs-tab {
+    margin-right: 12px;
+  }
+  .ant-tabs-nav .ant-tabs-tab {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
 }
 
 .ant-tabs-nav .ant-tabs-tab-active {
@@ -9526,5 +9551,6 @@ cdk-virtual-scroll-viewport {
   color: var(--date-unplanned);
 }
 
-
-
+.custom-image-size img{
+  height: 88px !important;
+}

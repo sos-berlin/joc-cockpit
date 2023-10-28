@@ -1,0 +1,65 @@
+<div class="modal-header">
+  <h4 class="modal-title" *ngIf="!data">
+    <span translate>inventory.label.addTags</span>
+  </h4>
+  <h4 class="modal-title" *ngIf="data">
+    <span translate>inventory.label.addTagsToWorkflow</span>
+    <span >: {{data.name}}</span>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a">
+    <div [ngClass]="{'show': display}" class="hide">
+      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-3 form-control-label" translate>inventory.label.tags
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-md-6" *ngIf="data">
+        <app-select-input [isSearchable]="true" [isMultiple]="true" [placeholder]="'inventory.placeholder.selectTags'" [name]="'tags'"
+                          [object]="object" [attributeName]="'roles'" [listArray]="tags" ></app-select-input>
+      </div>
+      <div class="col-md-6" *ngIf="!data">
+        <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
+          <nz-tag
+            *ngFor="let tag of tags; let i = index"
+            [nzMode]="i === 0 ? 'default' : 'closeable'"
+            (nzOnClose)="handleClose(tag)"
+          >
+            {{ sliceTagName(tag) }}
+          </nz-tag>
+          <nz-tag *ngIf="!inputVisible" class="editable-tag" nzNoAnimation (click)="showInput()">
+            <span nz-icon nzType="plus"></span>
+            New Tag
+          </nz-tag>
+          <input
+            #inputElement
+            nz-input
+            nzSize="small"
+            name="tag"
+            *ngIf="inputVisible"
+            type="text"
+            [(ngModel)]="inputValue"
+            style="width: 120px;"
+            (blur)="handleInputConfirm()"
+            (keydown.enter)="handleInputConfirm()"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
+            type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+      common.button.cancel
+    </button>
+  </div>
+</form>

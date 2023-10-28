@@ -24,6 +24,7 @@ export class SingleCalendarComponent {
   calendars: any = [];
   subscription: Subscription;
   name: string;
+  isPathDisplay = false;
   controllerId: string;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
@@ -61,6 +62,7 @@ export class SingleCalendarComponent {
   private init(): void {
     this.name = this.route.snapshot.queryParamMap.get('name');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']);
     }
@@ -101,6 +103,7 @@ export class CalendarComponent {
   searchableProperties = ['name', 'path', 'title', 'type'];
   reloadState = 'no';
   isSearchVisible = false;
+  isPathDisplay = false;
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -289,6 +292,7 @@ export class CalendarComponent {
 
   private init(): void {
     this.calendarFilters = this.coreService.getResourceTab().calendars;
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     this.coreService.getResourceTab().state = 'calendars';
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']);

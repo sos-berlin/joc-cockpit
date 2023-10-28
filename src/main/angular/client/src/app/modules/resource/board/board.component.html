@@ -198,7 +198,7 @@
                       <i *ngIf="boardsFilters.filter.sortBy == 'name' && boardsFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
+                    <th *ngIf="isPathDisplay" (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
                       <i *ngIf="boardsFilters.filter.sortBy == 'path1' && !boardsFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="boardsFilters.filter.sortBy == 'path1' && boardsFilters.reverse"
@@ -278,13 +278,14 @@
                           <i [innerHtml]="board.title | stringToLink" class="text-muted"></i>
                         </span>
                       </td>
-                      <td>
+                      <td *ngIf="isPathDisplay">
                         <span class="show-in-single-line">
                           <i (click)="coreService.navToInventoryTab(board.path, 'NOTICEBOARD');"
                              *ngIf="permission.joc && permission.joc.inventory.view"
                              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                           <span [innerHtml]="board.path1 | highlight : boardsFilters.searchText"></span>
                         </span>
+                      </td>
                       <td>
                         <span
                           [innerHtml]="board.versionDate | stringToDate | highlight : boardsFilters.searchText"></span>

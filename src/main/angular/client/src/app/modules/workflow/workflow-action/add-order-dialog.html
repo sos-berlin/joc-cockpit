@@ -14,7 +14,7 @@
           <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
         </div>
         <div *ngFor="let actualListArr of listVariables.actualList; let i=index"
-             [ngClass]="{'b-b m-b-sm': i !== listVariables.actualList.length - 1}"
+             [ngClass]="{'b-b-dark m-b-sm': i !== listVariables.actualList.length - 1}"
              class="form-group row m-b-0 m-l-12">
           <div (click)="addVariableToList(listVariables)"
                *ngIf="listVariables.actualList && (i === listVariables.actualList.length - 1)"

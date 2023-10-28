@@ -49,6 +49,8 @@ export class ConfigurationComponent implements AfterViewInit, OnDestroy {
         }
         if (this.router.url.match(/file_transfer/) || this.router.url.match(/other/)) {
           top = top + 44;
+        } else if (this.router.url.match(/inventory/)) {
+          top = top - 4;
         }
         $('.sticky').css('top', top + 2);
         const sidebar = $('#sidebar');
@@ -57,7 +59,7 @@ export class ConfigurationComponent implements AfterViewInit, OnDestroy {
           sidebar.height('calc(100vh - ' + (top - 19) + 'px' + ')');
         }
         if (this.router.url.match('inventory')) {
-          top = top - 22;
+          top = top + 18;
         }
         if (count < 5) {
           if (top < 165 && flag) {

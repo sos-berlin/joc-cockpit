@@ -119,7 +119,7 @@
           </label>
         </div>
       </div>
-      <div *ngIf="nodes.length > 0" class="form-group row">
+      <div *ngIf="nodes.length > 0 && (path && path != '/')" class="form-group row">
         <div class="col-md-3">
           <label [nz-tooltip]="'inventory.tooltips.export.useRelativePathOnly' | translate" translate>inventory.export.label.useRelativePathOnly</label>
         </div>
@@ -162,7 +162,7 @@
               <i *ngIf="node.origin.loading" class="pos-abt" style="margin-left: -42px">
                 <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
               </i>
-              <div [ngClass]="{'m-t-xs' :node.origin.object}" class="node-content-wrapper2">
+              <div (click)="openFolder(node)" [ngClass]="{'m-t-xs' :node.origin.object}" class="node-content-wrapper2">
                 <i *ngIf="!node.origin.object && !node.origin.type" [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
                    class="w-14" nz-icon></i>
                 <i *ngIf="node.origin.object == 'WORKFLOW'" class="icon-color" nz-icon nzTheme="outline"
