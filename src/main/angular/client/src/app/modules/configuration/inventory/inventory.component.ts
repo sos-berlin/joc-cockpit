@@ -34,6 +34,8 @@ export class CreateTagModalComponent {
 
   preferences: any;
   data: any;
+  tag: any;
+  isRename = false;
   submitted = false;
   display: any;
   required = false;
@@ -51,6 +53,10 @@ export class CreateTagModalComponent {
   ngOnInit(): void {
     this.preferences = this.modalData.preferences;
     this.data = this.modalData.data;
+    if (this.modalData.isRename) {
+      this.isRename = this.modalData.isRename;
+      this.tag = this.coreService.clone(this.modalData.tag);
+    }
     this.display = this.preferences.auditLog;
     if (this.data) {
       this.fetchTags();
@@ -64,8 +70,16 @@ export class CreateTagModalComponent {
   }
 
   private fetchTags(): void {
+    this.fetchWorkflowTags();
     this.coreService.post('tags', {}).subscribe((res) => {
       this.tags = res.tags;
+    });
+  }
+
+  private fetchWorkflowTags(): void {
+    this.coreService.post('inventory/workflow/tags', {path: (this.data.path + (this.data.path == '/' ? '' : '/') + this.data.name)}).subscribe((res) => {
+      this.object.tags = res.tags;
+      this.ref.detectChanges();
     });
   }
 
@@ -95,18 +109,23 @@ export class CreateTagModalComponent {
 
   onSubmit(): void {
     this.submitted = true;
-    const obj = {
+    const obj: any = {
       tags: this.tags,
       auditLog: {}
     };
     if (this.data) {
       obj.tags = this.object.tags;
+      obj.path = (this.data.path + (this.data.path == '/' ? '' : '/') + this.data.name);
+    } else if (this.isRename) {
+      delete obj.tags;
+      obj.name = this.modalData.tag.name;
+      obj.newName = this.tag.name;
     }
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    const URL = this.data ? 'tags/add' : '/inventory/workflow/tags/store'
+    const URL = this.data ? 'inventory/workflow/tags/store' : this.isRename ? 'tag/rename' : 'tags/add'
     this.coreService.post(URL, obj).subscribe({
       next: () => {
-        this.activeModal.close('DONE');
+        this.activeModal.close(this.isRename ? this.tag.name : 'DONE');
       }, error: () => {
         this.submitted = false;
         this.ref.detectChanges();
@@ -3057,6 +3076,7 @@ export class InventoryComponent {
   trashTree: any = [];
   tags: any = [];
   isLoading = true;
+  isTagLoaded = true;
   pageView = 'grid';
   options: any = {};
   data: any = {};
@@ -3153,6 +3173,8 @@ export class InventoryComponent {
           this.rename(res.rename);
         } else if (res.renameObject) {
           this.renameObject(res);
+        } else if (res.addTag) {
+          this.addTags(res.addTag);
         } else if (res.back) {
           this.backToListView();
         } else if (res.navigate) {
@@ -3652,14 +3674,6 @@ export class InventoryComponent {
     }
   }
 
-  deleteTag(tag): void {
-
-  }
-
-  renameTag(tag): void {
-
-  }
-
   updateObjects(data: any, isTrash: boolean, cb: any, isExpandConfiguration: boolean): void {
     if (!data.permitted) {
       cb([]);
@@ -4045,6 +4059,7 @@ export class InventoryComponent {
   switchToTagging(): void {
     this.isTag = true;
     this.isTrash = false;
+    this.isTagLoaded = false;
     if (this.type) {
       this.tempObjSelection = {
         type: clone(this.type),
@@ -4058,6 +4073,9 @@ export class InventoryComponent {
         return {name: tag, children: []}
       });
       this.clearSelection();
+      this.isTagLoaded = true;
+    }, () => {
+      this.isTagLoaded = true;
     });
   }
 
@@ -5912,15 +5930,99 @@ export class InventoryComponent {
       nzAutofocus: null,
       nzData: {
         preferences: this.preferences,
-        data: node.origin
+        data: node?.origin || node
       },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    }).afterClose.subscribe(() => {
-      this.tags = [];
+    }).afterClose.subscribe((res) => {
+      console.log(res)
     });
   }
+
+  deleteTag(tag): void {
+    const obj: any = {
+      tags: [tag.name]
+    };
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Tag',
+        operation: 'Delete',
+        name: tag.name
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzData: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          this._deleteTag(obj, tag.name);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzData: {
+          title: 'delete',
+          message: 'deleteTag',
+          type: 'Delete',
+          objectName: tag.name
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._deleteTag(obj, tag.name);
+        }
+      });
+    }
+  }
+
+  private _deleteTag(obj, tagName): void {
+    this.coreService.post('tags/delete', obj).subscribe(() => {
+      this.tags = this.tags.filter(tag => {
+        return tag.name != tagName;
+      })
+    });
+  }
+
+  renameTag(tag): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateTagModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        preferences: this.preferences,
+        tag: tag,
+        isRename: true
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe((res) => {
+      if (res) {
+        tag.name = res;
+      }
+    });
+  }
+
 
   private deleteObject(path: string, object: any, node: any, auditLog: any, cancelOrdersDateFrom = undefined): void {
     object.expanded = false;

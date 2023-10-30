@@ -2073,6 +2073,9 @@ export class WorkflowService {
     if (seconds === '0s') {
       return seconds;
     }
+    if (seconds === '1m') {
+      return seconds;
+    }
 
     if (typeof seconds == 'string' && isNaN(seconds)) {
       return seconds;
@@ -2627,6 +2630,8 @@ export class WorkflowService {
     if (job.executable.TYPE === 'Java' || job.executable.TYPE === 'JavaScript') {
       job.executable.internalType = job.executable.TYPE === 'Java' ? 'Java' : 'JavaScript_Graal';
       job.executable.TYPE = 'InternalExecutable';
+    } else if (job.executable.TYPE == 'InternalExecutable') {
+      job.executable.internalType = 'JITL';
     }
     if (job.jobResourceNames && (job.jobResourceNames.length == 0 || isEmpty(job.jobResourceNames))) {
       delete job['jobResourceNames'];

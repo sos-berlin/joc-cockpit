@@ -1,4 +1,4 @@
-<div (click)="openSearch()" [ngClass]="{'b-b-0 active': object.isTreeShow}" class="tag-input">
+<div (click)="openSearch()" [ngClass]="{'b-b-0 active': object.isTreeShow, 'disable-link': isDisabled}" class="tag-input">
   <span *ngIf="list[attribute]?.length == 0" class="placeholder">{{'common.placeholder.search' | translate}}</span>
   <ng-container *ngFor="let notice of list[attribute]">
     <nz-tag (nzOnClose)="removeItemFromList($event, notice)" nzMode="closeable">{{notice}}</nz-tag>

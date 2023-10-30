@@ -1,6 +1,9 @@
 <div class="modal-header">
-  <h4 class="modal-title" *ngIf="!data">
+  <h4 class="modal-title" *ngIf="!data && !isRename">
     <span translate>inventory.label.addTags</span>
+  </h4>
+  <h4 class="modal-title" *ngIf="isRename">
+    <span translate>inventory.label.renameTag</span>
   </h4>
   <h4 class="modal-title" *ngIf="data">
     <span translate>inventory.label.addTagsToWorkflow</span>
@@ -15,13 +18,13 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div class="form-group row">
+    <div class="form-group row" *ngIf="!isRename">
       <label class="col-md-3 form-control-label" translate>inventory.label.tags
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-md-6" *ngIf="data">
         <app-select-input [isSearchable]="true" [isMultiple]="true" [placeholder]="'inventory.placeholder.selectTags'" [name]="'tags'"
-                          [object]="object" [attributeName]="'roles'" [listArray]="tags" ></app-select-input>
+                          [object]="object" [attributeName]="'tags'" [listArray]="tags" ></app-select-input>
       </div>
       <div class="col-md-6" *ngIf="!data">
         <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
@@ -48,6 +51,22 @@
             (blur)="handleInputConfirm()"
             (keydown.enter)="handleInputConfirm()"
           />
+        </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="isRename">
+      <label class="col-md-3 form-control-label" translate>inventory.label.tagName
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
+        <input #name="ngModel" [(ngModel)]="tag.name" [appAutofocus]="true" autocomplete="off" class="form-control"
+               name="name" required type="text">
+        <div *ngIf="name.invalid && (name.dirty || name.touched)"
+             class="text-danger help-block">
+          <div *ngIf="(name.errors && name.errors.required)">
+            <div translate>common.message.requiredError</div>
+          </div>
+          <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
         </div>
       </div>
     </div>
