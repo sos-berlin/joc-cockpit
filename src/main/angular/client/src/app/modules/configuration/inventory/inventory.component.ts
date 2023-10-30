@@ -39,9 +39,10 @@ export class CreateTagModalComponent {
   submitted = false;
   display: any;
   required = false;
-  object: any = {tags: []};
+  //object: any = {tags: []};
   comments: any = {};
   tags = [];
+  allTags = [];
   inputVisible = false;
   inputValue = '';
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
@@ -72,14 +73,13 @@ export class CreateTagModalComponent {
   private fetchTags(): void {
     this.fetchWorkflowTags();
     this.coreService.post('tags', {}).subscribe((res) => {
-      this.tags = res.tags;
+      this.allTags = res.tags;
     });
   }
 
   private fetchWorkflowTags(): void {
     this.coreService.post('inventory/workflow/tags', {path: (this.data.path + (this.data.path == '/' ? '' : '/') + this.data.name)}).subscribe((res) => {
-      this.object.tags = res.tags;
-      this.ref.detectChanges();
+      this.tags = res.tags;
     });
   }
 
@@ -114,7 +114,6 @@ export class CreateTagModalComponent {
       auditLog: {}
     };
     if (this.data) {
-      obj.tags = this.object.tags;
       obj.path = (this.data.path + (this.data.path == '/' ? '' : '/') + this.data.name);
     } else if (this.isRename) {
       delete obj.tags;
@@ -3631,11 +3630,16 @@ export class InventoryComponent {
       obj.controllerId = this.schedulerIds.selected;
     }
 
-    this.coreService.post('inventory/read/tag', obj).subscribe({
-      next: (res: any) => {
-        tag.children = res.workflows;
-      }
-    });
+    if (tag.isExpanded) {
+      this.coreService.post('inventory/read/tag', obj).subscribe({
+        next: (res: any) => {
+          tag.children = res.workflows.map(workflow => {
+            workflow.path = workflow.path.substring(0, workflow.path.lastIndexOf('/')) || '/';
+            return workflow;
+          });
+        }
+      });
+    }
   }
 
   selectWorkflow(node, isList): void {
@@ -3906,7 +3910,9 @@ export class InventoryComponent {
   }
 
   onSearchInput(searchValue: string) {
-    this.searchTerm.next(searchValue);
+    if (!this.isTrash && !this.isTag) {
+      this.searchTerm.next(searchValue);
+    }
   }
 
   private searchObjects(value: string) {
@@ -4068,14 +4074,16 @@ export class InventoryComponent {
       };
     }
     this.type = '';
-    this.coreService.post('tags', {}).subscribe((res) => {
-      this.tags = res.tags.map((tag) => {
-        return {name: tag, children: []}
-      });
-      this.clearSelection();
-      this.isTagLoaded = true;
-    }, () => {
-      this.isTagLoaded = true;
+    this.coreService.post('tags', {}).subscribe({
+      next: (res) => {
+        this.tags = res.tags.map((tag) => {
+          return {name: tag, children: []}
+        });
+        this.clearSelection();
+        this.isTagLoaded = true;
+      }, error: () => {
+        this.isTagLoaded = true;
+      }
     });
   }
 
@@ -5923,6 +5931,7 @@ export class InventoryComponent {
   }
 
   addTags(node?): void {
+
     this.modal.create({
       nzTitle: undefined,
       nzContent: CreateTagModalComponent,
@@ -5936,7 +5945,28 @@ export class InventoryComponent {
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe((res) => {
-      console.log(res)
+
+      if (res) {
+        this.coreService.post('tags', {}).subscribe({
+          next: (res) => {
+            const _tempTags = this.coreService.clone(this.tags);
+            this.tags = res.tags.map((tag) => {
+              let obj = {
+                name: tag, children: []
+              };
+              for (let i = 0; i < _tempTags.length; i++) {
+                if (_tempTags[i].name == tag) {
+                  obj = this.coreService.clone(_tempTags[i]);
+                  _tempTags.splice(i, 1);
+                  break;
+                }
+              }
+              return obj;
+            });
+
+          }
+        });
+      }
     });
   }
 
