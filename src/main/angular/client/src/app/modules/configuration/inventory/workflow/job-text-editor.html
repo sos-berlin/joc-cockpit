@@ -192,7 +192,7 @@
                  title="{{'workflow.label.jobResourceNames' | translate}}"
                  translate>workflow.label.jobResourceNames</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
-            <app-multi-select (onSelectCall)="onChangeJobResource()" [attribute]="'list'" [list]="jobresources"
+            <app-multi-select [isDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" (onSelectCall)="onChangeJobResource()" [attribute]="'list'" [list]="jobresources"
                               [nodes]="jobResourcesTree"
                               [type]="'JOBRESOURCE'"></app-multi-select>
           </div>

@@ -13,6 +13,7 @@ export class MultiSelectComponent {
   @Input() list: any = {};
   @Input() addFolderPossible: boolean;
   @Input() isPath: boolean;
+  @Input() isDisabled: boolean;
   @Input() folders: any = {};
   object: any = {
     isTreeShow: false

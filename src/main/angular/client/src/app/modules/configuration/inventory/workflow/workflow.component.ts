@@ -8710,7 +8710,7 @@ export class WorkflowComponent {
               obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item) || '1m'});
             });
           } else {
-            obj.retryDelays = [{value: '1m'}];
+            obj.retryDelays = [{value: obj.maxTries ? '1m' : ''}];
           }
         } else if (cell.value.tagName === 'Cycle') {
           const val1 = cell.getAttribute('onlyOnePeriod');
