@@ -617,7 +617,7 @@
     "message.resetAgentConfirmation": "You are about to take over an Agent that possibly is not dedicated to the current Controller. Are you sure you want to continue?",
     "message.cannotCopyEmptyObject": "Copied object is empty!",
     "message.deleteTag": "Are you sure that you want to delete this tag?",
-    "message.deleteAllTag": "Are you sure that you want to delete all the selected tags?",
+    "message.deleteAllTag": "Are you sure that you want to delete the selected tags?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Export to .xlsx format",
     "tooltip.expandDetails": "Expand Details",
