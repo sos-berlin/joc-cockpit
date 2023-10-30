@@ -612,6 +612,8 @@
     "message.deleteSelectedNotice": "Are you sure you want to delete the selected notices?",
     "message.resetAgentConfirmation": "You are about to take over an Agent that possibly is not dedicated to the current Controller. Are you sure you want to continue?",
     "message.cannotCopyEmptyObject": "Copied object is empty!",
+    "message.deleteTag": "Are you sure that you want to delete this tag?",
+    "message.deleteAllTag": "Are you sure that you want to delete all the selected tags?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Export to .xlsx format",
     "tooltip.expandDetails": "Expand Details",
@@ -1701,6 +1703,8 @@
     "label.tags": "Tags",
     "label.addTags": "Add Tags",
     "label.addTagsToWorkflow": "Add Tags to Workflow",
+    "label.renameTag": "Rename Tag",
+    "label.tagName": "Tag Name",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",
     "button.setVersion": "Set Version",
@@ -2824,7 +2828,7 @@
       "joc_reverse_proxy_url": "If JOC Cockpit is not accessible from its original URL but from a reverse proxy service only then this value specifies the URL to be used, for example with e-mail notifications.",
       "allow_empty_arguments": "By default empty arguments are not allowed from Jobs and Job Templates as this forces jobs to distinguish between empty and unset variables. Users can enable the behavior to allow empty arguments.",
       "allow_undeclared_variables": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available with an order.",
-      "display_folders_in_views": "Display folders in views"
+      "display_folders_in_views": "Displays folders of scheduling objects in views. If this setting is set to 'false' then object names only will be displayed. In JS7 object names are unique."
     },
     "user": {
       "welcome_got_it": "Specifies that the welcome window that offers defaults and examples for download should no longer be displayed.",

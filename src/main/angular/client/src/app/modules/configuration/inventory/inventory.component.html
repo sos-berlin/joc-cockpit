@@ -299,7 +299,7 @@
                 </div>
               </ng-template>
             </div>
-            <div *ngIf="isTag" class="fade-in">
+            <div *ngIf="isTag && isTagLoaded" class="fade-in">
               <ng-template #tagTemplate let-node>
                 <div class="node-wrapper p-b-xxs">
                   <span *ngIf="node.type">
@@ -360,13 +360,16 @@
                     <span class="p-l-xs">{{tag.name}}</span>
                   </div>
                 </div>
-                <div class="p-l-md" *ngIf="tag.isExpanded">
-                  <div class="m-l-sm node-wrapper p-b-xxs">
+                <div class="p-l-md" *ngIf="tag.isExpanded && !tag.loading">
+                  <div class="m-l-sm node-wrapper p-b-xxs" *ngIf="tag.children?.length > 0">
                     <div (click)="selectWorkflow(tag, true)" class="node-content-wrapper">
                       <i class="icon-color" nz-icon nzTheme="outline"
                         nzType="apartment"></i>
                       <span class="p-l-xs">{{'Workflows' | translate}}</span>
                     </div>
+                  </div>
+                  <div class="m-l-sm node-wrapper p-b-xxs" *ngIf="tag.children?.length == 0" translate>
+                    common.message.noDataAvailable
                   </div>
                   <div class="p-l-12" *ngFor="let child of tag.children">
                     <ng-container [ngTemplateOutletContext]="{ $implicit: child}"
@@ -378,15 +381,18 @@
             <div *ngIf="!isTag && isTrash && isTreeLoaded && tree.length === 0" class="m-top-50">
               <app-empty-data></app-empty-data>
             </div>
-            <div *ngIf="isTag && tags && tags.length === 0" class="m-top-50">
+            <div *ngIf="isTag && tags && tags.length === 0 && isTagLoaded" class="m-top-50">
               <app-empty-data></app-empty-data>
+            </div>
+            <div *ngIf="isTag && !isTagLoaded" class="m-top-50 text-center">
+              <i><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
             </div>
           </perfect-scrollbar>
           <div [ngClass]="{'bg-white' : isTrash}" class="rg-right"><span></span></div>
         </div>
       </div>
       <div [ngStyle]="{'margin-left': sideView.inventory ? (sideView.inventory.width) + 'px' : 'auto'}" id="rightPanel">
-        <div *ngIf="isTag && tags && tags.length === 0" class="m-t-lg w-full d-inline-flex justify-content-center" >
+        <div *ngIf="isTag && tags && tags.length === 0 && isTagLoaded" class="m-t-lg w-full d-inline-flex justify-content-center" >
           <div class="box ht-291 p-a-lg w-half bg-transparent">
             <div class="box-body text-center">
               <div>
@@ -399,7 +405,6 @@
             </div>
           </div>
         </div>
-
         <div *ngIf="type == 'WORKFLOW'">
           <app-workflow [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash"
                         [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
