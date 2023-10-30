@@ -22,11 +22,7 @@
       <label class="col-md-3 form-control-label" translate>inventory.label.tags
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-md-6" *ngIf="data">
-        <app-select-input [isSearchable]="true" [isMultiple]="true" [placeholder]="'inventory.placeholder.selectTags'" [name]="'tags'"
-                          [object]="object" [attributeName]="'tags'" [listArray]="tags" ></app-select-input>
-      </div>
-      <div class="col-md-6" *ngIf="!data">
+      <div class="col-md-6">
         <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
           <nz-tag
             *ngFor="let tag of tags; let i = index"

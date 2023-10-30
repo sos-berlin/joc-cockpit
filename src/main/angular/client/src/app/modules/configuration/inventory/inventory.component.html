@@ -157,8 +157,11 @@
           <a class="text resize-cursor a-3 pos-abt r-18 z-index-99">
             <i (click)="showPanel()" class="fa fa-angle-double-right fa-lg"></i>
           </a>
-          <a (click)="treeSearch()" *ngIf="!isTrash" class="trash">
+          <a (click)="treeSearch()" *ngIf="!isTrash && !isTag" class="trash">
             <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
+          </a>
+          <a (click)="addTags()" *ngIf="isTag" class="trash">
+            <i [nzType]="'plus'" nz-icon nzTheme="outline"></i>
           </a>
 <!--          <a (click)="switchToTrash()" *ngIf="!isTrash" class="trash notify ">-->
 <!--            <i [nzType]="'delete'" nz-icon nzTheme="outline"></i>-->
@@ -305,11 +308,71 @@
                   <span *ngIf="node.type">
                     <span class="p-r-xs"></span>
                   </span>
-                  <button (click)="openMenu({origin: node}, $event)"
-                          class="btn-drop more-option-h"
-                          type="button">
+
+                  <button [nzDropdownMenu]="workflowMenu" class="btn-drop more-option-h" nz-dropdown
+                          nzTrigger="click" type="button">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
+                  <nz-dropdown-menu #workflowMenu="nzDropdownMenu">
+                    <ul nz-menu>
+
+                      <li (click)="renameObject(node);" *ngIf="permission.joc.inventory.manage"
+                          nz-menu-item>
+                        <a translate>inventory.button.rename</a>
+                      </li>
+                      <li (click)="addTags(node);" *ngIf="permission.joc.inventory.manage"
+                          nz-menu-item>
+                        <a translate>inventory.button.addTags</a>
+                      </li>
+                      <li *ngIf="permission.joc.inventory.manage && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" nz-menu-divider></li>
+                      <li (click)="deployObject(node, false);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [nzDisabled]="!node.hasDeployments && ((node.type && !node.valid))"
+                          nz-menu-item>
+                        <a translate>inventory.button.deploy</a>
+                      </li>
+                      <li (click)="revoke(node);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [nzDisabled]="(node.type && !node.hasDeployments)"
+                          nz-menu-item>
+                        <a translate>inventory.button.revoke</a>
+                      </li>
+                      <li *ngIf="permission.joc.inventory.manage" nz-menu-divider></li>
+                      <li (click)="removeObject(node);" *ngIf="permission.joc.inventory.manage" nz-menu-item>
+                        <a translate>inventory.button.remove</a>
+                      </li>
+                      <li (click)="deleteDraft(node);" *ngIf="permission.joc.inventory.manage" [nzDisabled]="node.deployed"
+                          nz-menu-item>
+                        <a translate>inventory.button.deleteDraft</a>
+                      </li>
+                      <li nz-menu-divider></li>
+                      <li (click)="newDraft(node)" nz-menu-item>
+                        <a translate>inventory.button.newDraft</a>
+                      </li>
+                      <li (click)="updateFromJobTemplates(node)"
+                          nz-menu-item>
+                        <a translate>inventory.button.updateFromJobTemplates</a>
+                      </li>
+
+                      <li nz-menu-divider></li>
+                      <li (click)="editJson(node, false)" nz-menu-item>
+                        <a translate>inventory.button.showJSON</a>
+                      </li>
+                      <li (click)="editJson(node, true)" *ngIf="permission.joc.inventory.manage"
+                          nz-menu-item>
+                        <a translate>inventory.button.editJSON</a>
+                      </li>
+                      <li nz-menu-divider></li>
+                      <li (click)="exportJSON(node)" nz-menu-item>
+                        <a translate>inventory.button.downloadJSON</a>
+                      </li>
+                      <li (click)="importJSON(node)" *ngIf="permission.joc.inventory.manage"
+                          nz-menu-item>
+                        <a translate>inventory.button.uploadJSON</a>
+                      </li>
+                      <li (click)="coreService.copyLink('configuration', (node.path + (node.path === '/' ? '' : '/') + node.name), 'WORKFLOW')"
+                          nz-menu-item>
+                        <a translate>common.button.copyLinkToObject</a>
+                      </li>
+                    </ul>
+
+                  </nz-dropdown-menu>
                   <div (click)="selectWorkflow(node, false)" [ngClass]="{'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.name === node.name && copyObj.type === node.type && copyObj.path === node.path),
                    'node-content-wrapper-active' : (node.name === selectedObj.name)}" class="node-content-wrapper">
                     <span [ngClass]="{'fa-circle-o': !node.valid, 'fa-circle dark-blue' : node.deployed || node.released, 'opacity7': node.syncState && (node.syncState._text === 'SUSPENDED' || node.syncState._text === 'SUSPENDING')}"
