@@ -711,62 +711,75 @@
             </div>
           </div>
           <div *ngIf="selectedNode.type === 'Retry'">
-            <div [ngClass]="{'has-error' : ((maxTries.dirty || maxTries.touched) && maxTries.invalid)}"
-                 class="form-group row">
-              <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.retry.maxTries' | translate) : ''"
-                     [nzTooltipMouseEnterDelay]="0.5"
-                     class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.maxTries
-
-              </label>
-              <div class="col-md-8 col-lg-9">
-                <nz-input-number #maxTries="ngModel" (nzBlur)="checkDelayEntries()" [(ngModel)]="selectedNode.obj.maxTries" [appAutofocus]="true"
-                                 [nzMin]="0" [nzStep]="1" name="maxTries">
-                </nz-input-number>
-                <div *ngIf="maxTries.invalid && (maxTries.dirty || maxTries.touched)" class="text-danger help-block">
-                  <div *ngIf="maxTries.errors.required">
-                    <div translate>common.message.requiredError</div>
-                  </div>
-                </div>
-              </div>
-            </div>
             <div class="form-group row">
-              <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.retry.delay' | translate) : ''"
-                     [nzTooltipMouseEnterDelay]="0.5"
-                     class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
-              <div class="col-md-8 col-lg-9">
-                <div (cdkDropListDropped)="dropDelay($event, selectedNode.obj.retryDelays)" cdkDropList>
-                  <div *ngFor="let argument of selectedNode.obj.retryDelays; let i = index"
-                       cdkDrag class="form-group row m-b-0 move-on-hover">
-                    <div cdkDragHandle class="pos-abt move-icon m-l-n-13"
-                         style="font-size: 18px;margin-top: 2px;cursor: move;">
-                      <i aria-hidden="true" class="fa fa-bars"></i>
+              <div class="col-md-4 col-lg-3" translate>workflow.label.tries</div>
+              <div  class="col-md-6 col-lg-8">
+                <nz-radio-group [(ngModel)]="selectedNode.obj.tries" >
+                  <label nz-radio nzValue="limited"><span
+                    translate>workflow.label.limited</span></label>
+                  <label nz-radio nzValue="unlimited"><span
+                    translate>workflow.label.unlimited</span></label>
+                </nz-radio-group>
+              </div>
+            </div>
+            <ng-container *ngIf="selectedNode.obj.tries == 'limited'">
+              <div [ngClass]="{'has-error' : ((maxTries.dirty || maxTries.touched) && maxTries.invalid)}"
+                   class="form-group row">
+                <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.retry.maxTries' | translate) : ''"
+                       [nzTooltipMouseEnterDelay]="0.5"
+                       class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.maxTries
+
+                </label>
+                <div class="col-md-8 col-lg-9">
+                  <nz-input-number #maxTries="ngModel" (nzBlur)="checkDelayEntries()" [(ngModel)]="selectedNode.obj.maxTries" [appAutofocus]="true"
+                                   [nzMin]="0" [nzStep]="1" name="maxTries">
+                  </nz-input-number>
+                  <div *ngIf="maxTries.invalid && (maxTries.dirty || maxTries.touched)" class="text-danger help-block">
+                    <div *ngIf="maxTries.errors.required">
+                      <div translate>common.message.requiredError</div>
                     </div>
-                    <div [ngClass]="{'has-error' : ((duration.dirty || duration.touched) && duration.invalid)}"
-                         class="col-md-12 m-b-sm">
-                      <label class="w-full">
-                        <input #duration="ngModel" [(ngModel)]="argument.value" appValidateOffset autocomplete="off" class="form-control"
-                               name="value{{i}}" placeholder="{{'workflow.placeholder.retryDelay' | translate}}"
-                               type="text">
-                      </label>
-                    </div>
-                    <div class="pos-abt r-n-xs">
-                      <a><i (click)="removeDelay(i, selectedNode.obj.retryDelays)"
-                            class="fa fa-times m-t-sm text-hover-color"></i></a>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group row" *ngIf="selectedNode.obj.maxTries > -1">
-                  <div *ngIf="selectedNode.obj.retryDelays && selectedNode.obj.maxTries > (selectedNode.obj.retryDelays.length + 1)"
-                       class="col-sm-12 m-b-sm">
-                    <a (click)="addDelay(selectedNode.obj.retryDelays);" class="text-u-l"
-                       translate>workflow.button.addDelay</a>
-                  </div>
-                  <div *ngIf="selectedNode.obj.maxTries > (selectedNode.obj.retryDelays.length + 1)" class="col-sm-12">
-                    <a (click)="addAllDelay();" class="text-u-l" translate>workflow.button.addAllDelay</a>
                   </div>
                 </div>
               </div>
-            </div>
+              <div class="form-group row">
+                <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.retry.delay' | translate) : ''"
+                       [nzTooltipMouseEnterDelay]="0.5"
+                       class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
+                <div class="col-md-8 col-lg-9">
+                  <div (cdkDropListDropped)="dropDelay($event, selectedNode.obj.retryDelays)" cdkDropList>
+                    <div *ngFor="let argument of selectedNode.obj.retryDelays; let i = index"
+                         cdkDrag class="form-group row m-b-0 move-on-hover">
+                      <div cdkDragHandle class="pos-abt move-icon m-l-n-13"
+                           style="font-size: 18px;margin-top: 2px;cursor: move;">
+                        <i aria-hidden="true" class="fa fa-bars"></i>
+                      </div>
+                      <div [ngClass]="{'has-error' : ((duration.dirty || duration.touched) && duration.invalid)}"
+                           class="col-md-12 m-b-sm">
+                        <label class="w-full">
+                          <input #duration="ngModel" [(ngModel)]="argument.value" appValidateOffset autocomplete="off" class="form-control"
+                                 name="value{{i}}" placeholder="{{'workflow.placeholder.retryDelay' | translate}}"
+                                 type="text">
+                        </label>
+                      </div>
+                      <div class="pos-abt r-n-xs">
+                        <a><i (click)="removeDelay(i, selectedNode.obj.retryDelays)"
+                              class="fa fa-times m-t-sm text-hover-color"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row" *ngIf="selectedNode.obj.maxTries > -1">
+                    <div *ngIf="selectedNode.obj.retryDelays && selectedNode.obj.maxTries > (selectedNode.obj.retryDelays.length + 1)"
+                         class="col-sm-12 m-b-sm">
+                      <a (click)="addDelay(selectedNode.obj.retryDelays);" class="text-u-l"
+                         translate>workflow.button.addDelay</a>
+                    </div>
+                    <div *ngIf="selectedNode.obj.maxTries > (selectedNode.obj.retryDelays.length + 1)" class="col-sm-12">
+                      <a (click)="addAllDelay();" class="text-u-l" translate>workflow.button.addAllDelay</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
           </div>
           <div *ngIf="selectedNode.type === 'StickySubagent'">
             <div *ngIf="hasLicense" class="form-group row">

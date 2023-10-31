@@ -144,11 +144,10 @@
            class="sticky leftPanel editor "
            id="leftPanel">
         <div class="pl-20 editor-tree">
-          <div>
+          <div  *ngIf="!isTrash">
             <nz-tabset class="custom-tab" [nzAnimated]="false" [nzType]="'line'">
               <nz-tab (nzClick)="switchToTrash(false)" [nzTitle]="'inventory.tab.folders' | translate"></nz-tab>
               <nz-tab (nzClick)="switchToTagging()" [nzTitle]="'inventory.tab.tagging' | translate"></nz-tab>
-              <nz-tab (nzClick)="switchToTrash(true)" [nzTitle]="'inventory.tab.trash' | translate"></nz-tab>
             </nz-tabset>
           </div>
           <a *ngIf="!isTrash" class="text resize-cursor a-1 pos-abt r-28 z-index-99">
@@ -157,18 +156,18 @@
           <a class="text resize-cursor a-3 pos-abt r-18 z-index-99">
             <i (click)="showPanel()" class="fa fa-angle-double-right fa-lg"></i>
           </a>
-          <a (click)="treeSearch()" *ngIf="!isTrash && !isTag" class="trash">
+          <a (click)="treeSearch()" *ngIf="!isTrash && !isTag" class="trash search-icon">
             <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
           </a>
-          <a (click)="addTags()" *ngIf="isTag" class="trash">
+          <a (click)="addTags()" *ngIf="isTag" class="trash search-icon">
             <i [nzType]="'plus'" nz-icon nzTheme="outline"></i>
           </a>
-<!--          <a (click)="switchToTrash()" *ngIf="!isTrash" class="trash notify ">-->
-<!--            <i [nzType]="'delete'" nz-icon nzTheme="outline"></i>-->
-<!--          </a>-->
-<!--          <a (click)="switchToTrash()" *ngIf="isTrash" class="rollback">-->
-<!--            <i [nzType]="'rollback'" nz-icon nzTheme="outline"></i>-->
-<!--          </a>-->
+          <a (click)="switchToTrash(true)" *ngIf="!isTrash" class="trash notify ">
+            <i [nzType]="'delete'" nz-icon nzTheme="outline"></i>
+          </a>
+          <a (click)="switchToTrash(false)" *ngIf="isTrash" class="rollback">
+            <i [nzType]="'rollback'" nz-icon nzTheme="outline"></i>
+          </a>
           <div>
             <input [(ngModel)]="searchNode.text" (blur)="clearSearchInput()" (ngModelChange)="onSearchInput($event)"
                    [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
@@ -213,7 +212,7 @@
             </nz-autocomplete>
           </div>
           <perfect-scrollbar class="tree-block">
-            <div *ngIf="!isTag" class="fade-in">
+            <div *ngIf="!isTag" class="fade-in" [ngClass]="{'m-t':  isTrash}">
               <nz-tree
                 #treeCtrl
                 [nzData]="isTrash ? trashTree : tree"
@@ -389,54 +388,59 @@
                          class="icon3-reload-error font11 pos-rel t-1 p-l-xxs"></i>
                     </span>
                     <span class="p-l-xs">{{node.name}}</span>
-                    <i *ngIf="node.repoControlled && !node.object"
+                    <i *ngIf="node.repoControlled"
                       aria-hidden="true" class="fa fa-github p-l-xs"></i>
                   </div>
                 </div>
               </ng-template>
-              <div class="w-full" *ngFor="let tag of tags">
-                <div class="node-wrapper p-l-xxs p-b-xxs">
-                  <span (click)="selectTag(tag, true)" class="cursor w-14 m-l-xxs m-t-n-1">
-                    <i *ngIf="!tag.isExpanded && !tag.loading" nz-icon nzTheme="outline"
-                       nzType="caret-right"></i>
-                    <i *ngIf="tag.isExpanded && !tag.loading" nz-icon nzTheme="outline"
-                       nzType="caret-down"></i>
-                    <i *ngIf="tag.loading"><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
-                  </span>
-                  <div class="btn-group dropdown">
-                    <button [nzDropdownMenu]="tagMenu" class="btn-drop more-option-h" nz-dropdown
-                            nzTrigger="click" type="button">
-                      <i class="fa fa-ellipsis-h"></i>
-                    </button>
-                    <nz-dropdown-menu #tagMenu="nzDropdownMenu" role="menu">
-                      <ul nz-menu>
-                        <li (click)="renameTag(tag);" nz-menu-item>
-                          <a translate>inventory.button.rename</a></li>
-                        <li (click)="deleteTag(tag);" *ngIf="permission.joc.inventory.manage" class="bg-hover-color"
-                            nz-menu-item>
-                          <a translate>inventory.button.delete</a></li>
-                      </ul>
-                    </nz-dropdown-menu>
-                  </div>
-                  <div class="node-content-wrapper" (click)="selectTag(tag)">
-                    <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
-                    <span class="p-l-xs">{{tag.name}}</span>
-                  </div>
-                </div>
-                <div class="p-l-md" *ngIf="tag.isExpanded && !tag.loading">
-                  <div class="m-l-sm node-wrapper p-b-xxs" *ngIf="tag.children?.length > 0">
-                    <div (click)="selectWorkflow(tag, true)" class="node-content-wrapper">
-                      <i class="icon-color" nz-icon nzTheme="outline"
-                        nzType="apartment"></i>
-                      <span class="p-l-xs">{{'Workflows' | translate}}</span>
+              <div (cdkDropListDropped)="drop($event)" cdkDropList class="role-list">
+                <div class="w-full role-box" *ngFor="let tag of tags" cdkDrag>
+                  <div class="node-wrapper p-l-xxs p-b-xxs">
+                    <div cdkDragHandle class="drag-handler pos-rel t-n-xxs m-l-xxs">
+                      <i aria-hidden="true" class="fa fa-bars"></i>
+                    </div>
+                    <span (click)="selectTag(tag, true)" class="cursor w-14 m-l-xs ">
+                      <i *ngIf="!tag.isExpanded && !tag.loading" nz-icon nzTheme="outline"
+                         nzType="caret-right"></i>
+                      <i *ngIf="tag.isExpanded && !tag.loading" nz-icon nzTheme="outline"
+                         nzType="caret-down"></i>
+                      <i *ngIf="tag.loading"><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
+                    </span>
+                    <div class="btn-group dropdown">
+                      <button [nzDropdownMenu]="tagMenu" class="btn-drop more-option-h" nz-dropdown
+                              nzTrigger="click" type="button">
+                        <i class="fa fa-ellipsis-h"></i>
+                      </button>
+                      <nz-dropdown-menu #tagMenu="nzDropdownMenu" role="menu">
+                        <ul nz-menu>
+                          <li (click)="renameTag(tag);" nz-menu-item>
+                            <a translate>inventory.button.rename</a></li>
+                          <li (click)="deleteTag(tag);" *ngIf="permission.joc.inventory.manage" class="bg-hover-color"
+                              nz-menu-item>
+                            <a translate>inventory.button.delete</a></li>
+                        </ul>
+                      </nz-dropdown-menu>
+                    </div>
+                    <div class="node-content-wrapper" (click)="selectTag(tag)">
+                      <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
+                      <span class="p-l-xs">{{tag.name}}</span>
                     </div>
                   </div>
-                  <div class="m-l-sm node-wrapper p-b-xxs" *ngIf="tag.children?.length == 0" translate>
-                    common.message.noDataAvailable
-                  </div>
-                  <div class="p-l-12" *ngFor="let child of tag.children">
-                    <ng-container [ngTemplateOutletContext]="{ $implicit: child}"
-                                  [ngTemplateOutlet]="tagTemplate"></ng-container>
+                  <div class="p-l-md" *ngIf="tag.isExpanded && !tag.loading">
+                    <div class="m-l-sm node-wrapper p-b-xxs" *ngIf="tag.children?.length > 0">
+                      <div (click)="selectWorkflow(tag, true)" class="node-content-wrapper">
+                        <i class="icon-color" nz-icon nzTheme="outline"
+                          nzType="apartment"></i>
+                        <span class="p-l-xs">{{'Workflows' | translate}}</span>
+                      </div>
+                    </div>
+                    <div class="m-l-sm node-wrapper p-b-xxs" *ngIf="tag.children?.length == 0" translate>
+                      common.message.noDataAvailable
+                    </div>
+                    <div class="p-l-12" *ngFor="let child of tag.children">
+                      <ng-container [ngTemplateOutletContext]="{ $implicit: child}"
+                                    [ngTemplateOutlet]="tagTemplate"></ng-container>
+                    </div>
                   </div>
                 </div>
               </div>

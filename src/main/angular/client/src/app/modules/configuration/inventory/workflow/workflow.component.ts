@@ -8250,6 +8250,10 @@ export class WorkflowComponent {
               obj.cell, 'predicate', predicate);
             graph.getModel().execute(edit);
           } else if (self.selectedNode.type === 'Retry') {
+            if (self.selectedNode.newObj.tries == 'unlimited') {
+              self.selectedNode.newObj.maxTries = '';
+              self.selectedNode.newObj.retryDelays = '';
+            }
             const edit = new mxCellAttributeChange(
               obj.cell, 'maxTries', self.selectedNode.newObj.maxTries);
             graph.getModel().execute(edit);
@@ -8703,6 +8707,7 @@ export class WorkflowComponent {
         } else if (cell.value.tagName === 'Retry') {
           obj.maxTries = cell.getAttribute('maxTries');
           obj.retryDelays = cell.getAttribute('retryDelays');
+          obj.tries = obj.maxTries ? 'limited' : 'unlimited';
           if (obj.retryDelays && typeof obj.retryDelays == 'string') {
             const arr = obj.retryDelays.split(',');
             obj.retryDelays = [];
@@ -8711,6 +8716,9 @@ export class WorkflowComponent {
             });
           } else {
             obj.retryDelays = [{value: obj.maxTries ? '1m' : ''}];
+          }
+          if (obj.tries == 'unlimited') {
+            obj.retryDelays = [{value: ''}];
           }
         } else if (cell.value.tagName === 'Cycle') {
           const val1 = cell.getAttribute('onlyOnePeriod');
