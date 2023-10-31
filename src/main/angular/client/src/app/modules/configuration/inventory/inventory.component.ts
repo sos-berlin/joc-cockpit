@@ -10,6 +10,7 @@ import {saveAs} from 'file-saver';
 import {catchError, debounceTime} from 'rxjs/operators';
 import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {NzMessageService} from 'ng-zorro-antd/message';
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {ActivatedRoute} from "@angular/router";
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {CoreService} from '../../../services/core.service';
@@ -21,12 +22,12 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 import {InventoryObject} from '../../../models/enums';
 import {UpdateJobTemplatesComponent} from "./job-template/job-template.component";
 import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
+import {WorkflowService} from "../../../services/workflow.service";
 
 declare const $: any;
 
 @Component({
   selector: 'app-create-tag-template',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './create-tag-dialog.html'
 })
 export class CreateTagModalComponent {
@@ -39,16 +40,16 @@ export class CreateTagModalComponent {
   submitted = false;
   display: any;
   required = false;
-  //object: any = {tags: []};
   comments: any = {};
   tags = [];
   allTags = [];
+  filteredOptions: string[] = [];
   inputVisible = false;
   inputValue = '';
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
 
-  constructor(private coreService: CoreService, public activeModal: NzModalRef, private ref: ChangeDetectorRef) {
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private workflowService: WorkflowService) {
   }
 
   ngOnInit(): void {
@@ -67,13 +68,17 @@ export class CreateTagModalComponent {
       this.required = true;
       this.display = true;
     }
-    this.ref.detectChanges();
+
+  }
+  onChange(value: string): void {
+    this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
   }
 
   private fetchTags(): void {
     this.fetchWorkflowTags();
     this.coreService.post('tags', {}).subscribe((res) => {
       this.allTags = res.tags;
+      this.filteredOptions = this.allTags
     });
   }
 
@@ -94,13 +99,14 @@ export class CreateTagModalComponent {
 
   showInput(): void {
     this.inputVisible = true;
+    this.filteredOptions = this.allTags;
     setTimeout(() => {
       this.inputElement?.nativeElement.focus();
     }, 10);
   }
 
   handleInputConfirm(): void {
-    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1) {
+    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
       this.tags = [...this.tags, this.inputValue];
     }
     this.inputValue = '';
@@ -127,7 +133,6 @@ export class CreateTagModalComponent {
         this.activeModal.close(this.isRename ? this.tag.name : 'DONE');
       }, error: () => {
         this.submitted = false;
-        this.ref.detectChanges();
       }
     });
 
@@ -3618,6 +3623,20 @@ export class InventoryComponent {
     }
   }
 
+  drop(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(this.tags, event.previousIndex, event.currentIndex);
+    let comments = {};
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+        comments = {comment: translatedValue};
+      });
+    }
+    this.coreService.post('tags/ordering', {
+      tags: this.tags.map(tag => tag.name),
+      auditLog: comments
+    }).subscribe()
+  }
+
   selectTag(tag: any, isArray = false): void {
     if (this.preferences.expandOption === 'both' || isArray) {
       tag.isExpanded = !tag.isExpanded;
@@ -5355,7 +5374,7 @@ export class InventoryComponent {
             this.onNavigate(result)
           }
         })
-      }, error: (err) => {
+      }, error: () => {
         this.revalidating = false;
       }
     })

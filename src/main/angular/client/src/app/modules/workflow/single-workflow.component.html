@@ -41,7 +41,7 @@
               <tr>
                 <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
                 <th rowspan="2"><span translate>common.label.name</span></th>
-                <th rowspan="2"><span translate>common.label.path</span></th>
+                <th *ngIf="isPathDisplay" rowspan="2"><span translate>common.label.path</span></th>
                 <th rowspan="2"><span translate>inventory.label.deploymentDate</span></th>
                 <th rowspan="2"><span translate>common.label.status</span></th>
                 <th rowspan="2"><span translate>workflow.label.noOfOrders</span></th>
@@ -96,12 +96,15 @@
                       <i (click)="coreService.showDocumentation(workflow.documentationName, preferences)"
                          *ngIf="workflow.documentationName"
                          class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                      <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
+                         *ngIf="permission.joc && permission.joc.inventory.view && !isPathDisplay"
+                         class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
                       <span class="text-dark">{{workflow.name}}</span>
                       <span *ngIf="workflow.title">-</span>
                       <i class="text-muted">{{workflow.title}}</i>
                     </span>
                   </td>
-                  <td>
+                  <td *ngIf="isPathDisplay">
                     <span class="show-in-single-line">
                       <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
                          *ngIf="permission.joc && permission.joc.inventory.view"

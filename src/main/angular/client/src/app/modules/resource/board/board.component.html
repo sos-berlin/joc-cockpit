@@ -273,6 +273,9 @@
                           <i (click)="coreService.showDocumentation(board.documentationName, preferences)"
                              *ngIf="board.documentationName"
                              class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                          <i (click)="coreService.navToInventoryTab(board.path, 'NOTICEBOARD');"
+                             *ngIf="permission.joc && permission.joc.inventory.view && !isPathDisplay"
+                             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                           <span [innerHtml]="board.name | highlight : boardsFilters.searchText"></span>
                           <i *ngIf="board.title"> - </i>
                           <i [innerHtml]="board.title | stringToLink" class="text-muted"></i>

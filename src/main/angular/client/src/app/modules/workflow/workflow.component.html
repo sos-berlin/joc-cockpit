@@ -645,6 +645,10 @@
                           <i (click)="coreService.showDocumentation(workflow.documentationName, preferences)"
                              *ngIf="workflow.documentationName"
                              class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                          <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
+                             *ngIf="permission.joc && permission.joc.inventory.view && !isPathDisplay"
+                             class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+
                           <a class="text-dark noExl">
                             <span (click)="showPanelFunc(workflow)" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"
                                   class="cursor primary-text-hover-color"></span>

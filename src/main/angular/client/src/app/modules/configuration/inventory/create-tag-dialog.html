@@ -35,18 +35,23 @@
             <span nz-icon nzType="plus"></span>
             New Tag
           </nz-tag>
-          <input
-            #inputElement
-            nz-input
-            nzSize="small"
-            name="tag"
-            *ngIf="inputVisible"
-            type="text"
-            [(ngModel)]="inputValue"
-            style="width: 120px;"
-            (blur)="handleInputConfirm()"
-            (keydown.enter)="handleInputConfirm()"
-          />
+          <div class="d-inline-block" *ngIf="inputVisible" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+            <input
+              #name="ngModel"
+              #inputElement
+              identifierValidation
+              [nzAutocomplete]="auto"
+              nz-input
+              name="tag"
+              type="text"
+              [(ngModel)]="inputValue"
+              (ngModelChange)="onChange($event)"
+              style="width: 128px;"
+              (blur)="handleInputConfirm()"
+              (keydown.enter)="handleInputConfirm()"
+            />
+            <nz-autocomplete [nzDataSource]="filteredOptions" #auto></nz-autocomplete>
+          </div>
         </div>
       </div>
     </div>
