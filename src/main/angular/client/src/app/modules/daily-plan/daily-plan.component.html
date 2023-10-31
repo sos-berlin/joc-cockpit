@@ -93,7 +93,8 @@
           <i (click)="coreService.navToInventoryTab(value.schedulePath, 'SCHEDULE');"
              *ngIf="permission.joc && permission.joc.inventory.view"
              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-          <span [innerHtml]="value.schedulePath | highlight : dailyPlanFilters.searchText"></span>
+          <span *ngIf="isPathDisplay" [innerHtml]="value.schedulePath | highlight : dailyPlanFilters.searchText"></span>
+          <span *ngIf="!isPathDisplay" [innerHtml]="value.schedulePath.substring(value.schedulePath.lastIndexOf('/') + 1) | highlight : dailyPlanFilters.searchText"></span>
         </span>
       </td>
       <td *ngIf="dailyPlanFilters.filter.groupBy !== 'WORKFLOW'">
@@ -101,9 +102,13 @@
           <i (click)="coreService.navToInventoryTab(value.workflowPath, 'WORKFLOW');"
              *ngIf="permission.joc && permission.joc.inventory.view"
              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-          <a (click)="coreService.showWorkflow(value.workflowPath);"
+          <a *ngIf="isPathDisplay" (click)="coreService.showWorkflow(value.workflowPath);"
              [innerHtml]="value.workflowPath | highlight : dailyPlanFilters.searchText"
              class="text-hover-primary"></a>
+           <a *ngIf="!isPathDisplay" (click)="coreService.showWorkflow(value.workflowPath);"
+              [innerHtml]="value.workflowPath.substring(value.workflowPath.lastIndexOf('/') + 1) | highlight : dailyPlanFilters.searchText"
+              class="text-hover-primary"></a>
+
          </span>
       </td>
       <td class="combine-two-label" nowrap>
@@ -218,16 +223,20 @@
              <i (click)="coreService.navToInventoryTab(plan.value[0].workflowPath, 'WORKFLOW');"
                 *ngIf="permission.joc && permission.joc.inventory.view"
                 class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-            <a (click)="coreService.showWorkflow(plan.value[0].workflowPath);"
+            <a *ngIf="isPathDisplay" (click)="coreService.showWorkflow(plan.value[0].workflowPath);"
                class="text-hover-primary">
               <span [innerHtml]="plan.value[0].workflowPath | highlight : dailyPlanFilters.searchText"></span>
             </a>
+            <a *ngIf="!isPathDisplay" (click)="coreService.showWorkflow(plan.value[0].workflowPath);"
+               [innerHtml]="plan.value[0].workflowPath.substring(plan.value[0].workflowPath.lastIndexOf('/') + 1) | highlight : dailyPlanFilters.searchText"
+               class="text-hover-primary"></a>
           </span>
           <span *ngIf="dailyPlanFilters.filter.groupBy !== 'WORKFLOW'">
             <i (click)="coreService.navToInventoryTab(plan.value[0].schedulePath, 'SCHEDULE');"
                *ngIf="permission.joc && permission.joc.inventory.view"
                class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-            <span [innerHtml]="plan.value[0].schedulePath | highlight : dailyPlanFilters.searchText"></span>
+            <span *ngIf="isPathDisplay" [innerHtml]="plan.value[0].schedulePath | highlight : dailyPlanFilters.searchText"></span>
+            <span *ngIf="!isPathDisplay" [innerHtml]="plan.value[0].schedulePath.substring(plan.value[0].schedulePath.lastIndexOf('/') + 1) | highlight : dailyPlanFilters.searchText"></span>
           </span>
           <i *ngIf="!plan.order && plan.value.length === 1 && plan.value[0] && plan.value[0].cyclicOrder" [nzTooltipPlacement]="'left'"
              [nzTooltipTitle]="tooltipTemplate" aria-hidden="true"
@@ -237,13 +246,16 @@
       <td
         *ngIf="!plan.order && plan.value.length === 1 && plan.value[0] && dailyPlanFilters.filter.groupBy !== 'WORKFLOW'">
          <span class="show-in-single-line">
-          <i (click)="coreService.navToInventoryTab(plan.value[0].workflowPath, 'WORKFLOW');"
-             *ngIf="permission.joc && permission.joc.inventory.view"
-             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-          <a (click)="coreService.showWorkflow(plan.value[0].workflowPath);"
-             class="text-hover-primary">
-             <span [innerHtml]="plan.value[0].workflowPath | highlight : dailyPlanFilters.searchText"></span>
-          </a>
+            <i (click)="coreService.navToInventoryTab(plan.value[0].workflowPath, 'WORKFLOW');"
+               *ngIf="permission.joc && permission.joc.inventory.view"
+               class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+            <a *ngIf="isPathDisplay" (click)="coreService.showWorkflow(plan.value[0].workflowPath);"
+               class="text-hover-primary">
+               <span [innerHtml]="plan.value[0].workflowPath | highlight : dailyPlanFilters.searchText"></span>
+            </a>
+           <a *ngIf="!isPathDisplay" (click)="coreService.showWorkflow(plan.value[0].workflowPath);"
+              [innerHtml]="plan.value[0].workflowPath.substring(plan.value[0].workflowPath.lastIndexOf('/') + 1) | highlight : dailyPlanFilters.searchText"
+              class="text-hover-primary"></a>
          </span>
       </td>
       <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]" class="combine-two-label" nowrap>

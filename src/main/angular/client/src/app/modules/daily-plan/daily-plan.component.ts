@@ -722,6 +722,7 @@ export class DailyPlanComponent {
   isProcessing = false;
   isVisible = false;
   isAllSelected = false;
+  isPathDisplay = false;
   totalOrders: number;
   totalFinishedOrders: number;
 
@@ -830,6 +831,7 @@ export class DailyPlanComponent {
     }
 
     if (this.dailyPlanFilters.projection.filter) {
+      // obj.withoutStartTime = this.dailyPlanFilters.projection.filter.withoutStartTime;
       if (this.dailyPlanFilters.projection.filter.workflowPaths?.length > 0) {
         obj.workflowPaths = this.dailyPlanFilters.projection.filter.workflowPaths;
       }
@@ -2362,6 +2364,7 @@ export class DailyPlanComponent {
     this.dailyPlanFilters = this.coreService.getDailyPlanTab();
     this.savedFilter = JSON.parse(this.saveService.dailyPlanFilters) || {};
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     if (!(this.dailyPlanFilters.current || this.dailyPlanFilters.current === false)) {
       this.dailyPlanFilters.current = this.preferences.currentController;
     }

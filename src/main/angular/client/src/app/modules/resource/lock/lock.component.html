@@ -250,6 +250,9 @@
                           <i (click)="coreService.showDocumentation(lock.documentationName, preferences)"
                              *ngIf="lock.documentationName"
                              class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                           <i (click)="coreService.navToInventoryTab(lock.path, 'LOCK');"
+                              *ngIf="permission.joc && permission.joc.inventory.view && !isPathDisplay"
+                              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                           <span [innerHtml]="lock.id | highlight : locksFilters.searchText"></span>
                           <i *ngIf="lock.title"> - </i>
                           <i [innerHtml]="lock.title | stringToLink" class="text-muted"></i>

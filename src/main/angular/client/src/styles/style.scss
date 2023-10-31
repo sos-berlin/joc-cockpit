@@ -2155,6 +2155,10 @@ button.close {
   top: -1px;
 }
 
+.t-n-xxs{
+  top: -2px;
+}
+
 .m-t-n-1 {
   margin-top: -1px;
 }
@@ -7434,7 +7438,7 @@ tr.tr-border td:first-child {
     margin-right: 12px;
   }
   .ant-tabs-nav .ant-tabs-tab {
-    padding-top: 6px;
+    padding-top: 2px;
     padding-bottom: 6px;
   }
 }
@@ -7443,6 +7447,7 @@ tr.tr-border td:first-child {
   font-weight: 600;
 }
 
+.ant-dropdown-menu-item,
 .ant-dropdown-menu-submenu-title,
 .ant-dropdown-menu-item > a,
 .ant-dropdown-menu-submenu-title > a {
