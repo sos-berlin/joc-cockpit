@@ -184,12 +184,46 @@
         <div [sideView]="sideView" appResizable class="sticky leftPanel workflow" id="leftPanel">
           <div *ngIf="tree.length>0">
             <div class="editor-tree">
-              <app-tree-navigation (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)" [defaultExpandedKeys]="workflowFilters.expandedKeys"
-                                   [defaultSelectedKeys]="workflowFilters.selectedkeys"
-                                   [schedulerId]="schedulerIds.selected"
-                                   [sideView]="sideView.workflow"
-                                   [tree]="tree"
-                                   [type]="'WORKFLOW'"></app-tree-navigation>
+              <div class="pl-20" style="padding-right:20px">
+                <nz-tabset class="custom-tab" [nzAnimated]="false" [nzType]="'line'">
+                  <nz-tab (nzClick)="switchToTagging(false)" [nzTitle]="'inventory.tab.folders' | translate"></nz-tab>
+                  <nz-tab (nzClick)="switchToTagging(true)" [nzTitle]="'inventory.tab.tagging' | translate"></nz-tab>
+                </nz-tabset>
+              </div>
+              <div class="pl-20" *ngIf="isTag">
+                <perfect-scrollbar class="tree-block">
+                  <div *ngIf="isTag && isTagLoaded" class="fade-in">
+                    <div class="w-full" *ngFor="let tag of tags">
+                        <div class="node-wrapper p-l-xxs p-b-xxs">
+                          <span (click)="selectTag(tag, true)" class="cursor w-14 m-l-xs ">
+                            <i *ngIf="!tag.isExpanded && !tag.loading" nz-icon nzTheme="outline"
+                               nzType="caret-right"></i>
+                            <i *ngIf="tag.isExpanded && !tag.loading" nz-icon nzTheme="outline"
+                               nzType="caret-down"></i>
+                            <i *ngIf="tag.loading"><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
+                          </span>
+                          <div class="node-content-wrapper" (click)="selectTag(tag)">
+                            <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
+                            <span class="p-l-xs">{{tag.name}}</span>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div *ngIf="isTag && tags && tags.length === 0 && isTagLoaded" class="m-top-50">
+                    <app-empty-data></app-empty-data>
+                  </div>
+                  <div *ngIf="isTag && !isTagLoaded" class="m-top-50 text-center">
+                    <i><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
+                  </div>
+                </perfect-scrollbar>
+                <div class="rg-right"><span></span></div>
+              </div>
+              <div *ngIf="!isTag" class="fade-in">
+                <app-tree-navigation (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)" [defaultExpandedKeys]="workflowFilters.expandedKeys"
+                                     [defaultSelectedKeys]="workflowFilters.selectedkeys"
+                                     [schedulerId]="schedulerIds.selected" [sideView]="sideView.workflow"
+                                     [tree]="tree" [type]="'WORKFLOW'"></app-tree-navigation>
+              </div>
             </div>
           </div>
         </div>

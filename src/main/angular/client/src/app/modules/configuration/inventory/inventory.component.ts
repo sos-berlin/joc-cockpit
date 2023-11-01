@@ -3229,6 +3229,7 @@ export class InventoryComponent {
     }
     this.inventoryConfig.copyObj = this.copyObj;
     this.inventoryConfig.isTrash = this.isTrash;
+    this.inventoryConfig.isTag = this.isTag;
     $('.scroll-y').remove();
   }
 
@@ -5438,10 +5439,13 @@ export class InventoryComponent {
       }
       this.inventoryConfig = this.coreService.getConfigurationTab().inventory;
       this.isTrash = this.inventoryConfig.isTrash;
+      this.isTag = this.inventoryConfig.isTag;
       this.initTree(null, null);
       if (this.isTrash) {
         this.clearSelection();
         this.initTrashTree(null);
+      } else if(this.isTag){
+        this.switchToTagging();
       }
     }
   }

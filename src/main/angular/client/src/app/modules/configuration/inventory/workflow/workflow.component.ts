@@ -8253,6 +8253,10 @@ export class WorkflowComponent {
             if (self.selectedNode.newObj.tries == 'unlimited') {
               self.selectedNode.newObj.maxTries = '';
               self.selectedNode.newObj.retryDelays = '';
+            } else {
+              if (!self.selectedNode.newObj.maxTries && self.selectedNode.newObj.maxTries !== 0) {
+                self.selectedNode.newObj.maxTries = 10;
+              }
             }
             const edit = new mxCellAttributeChange(
               obj.cell, 'maxTries', self.selectedNode.newObj.maxTries);
@@ -8707,7 +8711,7 @@ export class WorkflowComponent {
         } else if (cell.value.tagName === 'Retry') {
           obj.maxTries = cell.getAttribute('maxTries');
           obj.retryDelays = cell.getAttribute('retryDelays');
-          obj.tries = obj.maxTries ? 'limited' : 'unlimited';
+          obj.tries = (obj.maxTries || obj.maxTries == 0) ? 'limited' : 'unlimited';
           if (obj.retryDelays && typeof obj.retryDelays == 'string') {
             const arr = obj.retryDelays.split(',');
             obj.retryDelays = [];
@@ -8715,7 +8719,7 @@ export class WorkflowComponent {
               obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item) || '1m'});
             });
           } else {
-            obj.retryDelays = [{value: obj.maxTries ? '1m' : ''}];
+            obj.retryDelays = [{value: obj.maxTries ? '1m' : obj.maxTries == 0 ? '0' : ''}];
           }
           if (obj.tries == 'unlimited') {
             obj.retryDelays = [{value: ''}];
@@ -10240,7 +10244,7 @@ export class WorkflowComponent {
     function rearrangeCell(obj): void {
       const connection = obj.target;
       let droppedCells = obj.cells;
-      if(droppedCells.length > 1 && connection.parent && (connection.parent.id == 1 || connection.parent.id == '1')){
+      if (droppedCells.length > 1 && connection.parent && (connection.parent.id == 1 || connection.parent.id == '1')) {
         droppedCells = droppedCells.reverse()
       }
       for (let i in droppedCells) {

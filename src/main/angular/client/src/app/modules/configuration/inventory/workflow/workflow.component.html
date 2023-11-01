@@ -723,16 +723,15 @@
               </div>
             </div>
             <ng-container *ngIf="selectedNode.obj.tries == 'limited'">
-              <div [ngClass]="{'has-error' : ((maxTries.dirty || maxTries.touched) && maxTries.invalid)}"
-                   class="form-group row">
+              <div class="form-group row">
                 <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.retry.maxTries' | translate) : ''"
                        [nzTooltipMouseEnterDelay]="0.5"
                        class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.maxTries
-
+                  <sup class="text-danger text-sm">*</sup>
                 </label>
-                <div class="col-md-8 col-lg-9">
+                <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((maxTries.dirty || maxTries.touched) && maxTries.invalid)}">
                   <nz-input-number #maxTries="ngModel" (nzBlur)="checkDelayEntries()" [(ngModel)]="selectedNode.obj.maxTries" [appAutofocus]="true"
-                                   [nzMin]="0" [nzStep]="1" name="maxTries">
+                                   [nzMin]="0" [nzStep]="1" name="maxTries" [required]="selectedNode.obj.tries == 'limited'">
                   </nz-input-number>
                   <div *ngIf="maxTries.invalid && (maxTries.dirty || maxTries.touched)" class="text-danger help-block">
                     <div *ngIf="maxTries.errors.required">
