@@ -520,8 +520,11 @@ export class WorkflowComponent {
   savedFilter: any = {};
   filterList: any = [];
   data = [];
+  tags = [];
   sideBar: any = {};
   reloadState = 'no';
+  isTag = false;
+  isTagLoaded = false;
   objectType = 'WORKFLOW';
   isPathDisplay = true;
   numOfAllOrders: any = {};
@@ -1265,6 +1268,44 @@ export class WorkflowComponent {
 
   changeStatus(): void {
     this.loadWorkflow();
+  }
+
+  switchToTagging(flag): void{
+    this.isTag = flag;
+    this.isTagLoaded = false;
+    if(flag){
+      this.fetchWorkflowTags();
+    }
+  }
+
+  private fetchWorkflowTags(): void {
+    this.coreService.post('tags', {}).subscribe({
+      next: (res) => {
+        this.tags = res.tags.map((tag) => {
+          return {name: tag, children: []}
+        });
+        this.isTagLoaded = true;
+      }, error: () => this.isTagLoaded = true
+    });
+  }
+
+  selectTag(tag: any, isArray = false): void {
+    if (this.preferences.expandOption === 'both' || isArray) {
+      tag.isExpanded = !tag.isExpanded;
+    }
+
+    const obj: any = {
+      tag: tag.name,
+      controllerId: this.schedulerIds.selected
+    };
+
+    if (tag.isExpanded) {
+      this.coreService.post('inventory/read/tag', obj).subscribe({
+        next: (res: any) => {
+          tag.children = res.workflows;
+        }
+      });
+    }
   }
 
   showPanelFuc(workflow, flag = true, setObj?): void {
