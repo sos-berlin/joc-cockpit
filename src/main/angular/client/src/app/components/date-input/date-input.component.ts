@@ -55,8 +55,7 @@ export class DateInputComponent {
 
     const isoDateString = this.isNextDateDisabled;
     const nextDate = new Date(isoDateString);
-
-    if (this.isNextDateDisabled && current >= nextDate) {
+    if (this.isNextDateDisabled && differenceInCalendarDays(current, nextDate) > 0) {
       return true;
     }
 

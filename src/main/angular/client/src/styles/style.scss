@@ -60,8 +60,8 @@
   --btn-secondary-hover: rgb(255, 140, 0);
   --date-planned: rgba(14, 138, 139, .95);
   --date-planned-hover: rgba(14, 138, 139, 0.8);
-  --date-unplanned: rgba(255, 163, 102, 0.9);
-  --date-unplanned-hover: rgba(255, 163, 102, 0.8);
+  --date-unplanned: rgba(255, 140, 0, 0.87);
+  --date-unplanned-hover: rgba(255, 140, 0, 0.7);
 }
 
 /***
@@ -9289,6 +9289,12 @@ cdk-virtual-scroll-viewport {
     color: var(--text-color);
   }
 
+}
+
+.workflow-tree-search{
+  right: 44px;
+  top: unset;
+  margin-top: -4px;
 }
 
 #objectTreeSearch {

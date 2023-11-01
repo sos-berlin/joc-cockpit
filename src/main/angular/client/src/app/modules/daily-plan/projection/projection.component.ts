@@ -457,6 +457,8 @@ export class ProjectionComponent {
       dom.calendar({
         language: this.coreService.getLocale(),
         view: this.filters.calView.toLowerCase(),
+        startYear: this.filters.currentYear,
+        startMonth: this.filters.currentMonth,
         dataSource: this.projectionData,
         renderEnd: (e) => {
           let reload = false;

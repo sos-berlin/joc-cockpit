@@ -1,4 +1,4 @@
-<a (click)="objectTreeSearch()" class="tree-search">
+<a (click)="objectTreeSearch()" class="tree-search" [ngClass]="{'workflow-tree-search' :  type == 'WORKFLOW'}">
   <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
 </a>
 <div>

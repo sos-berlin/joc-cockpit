@@ -221,11 +221,11 @@
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.manageRoles</span></span>
             </a>
           </li>
-          <li *ngIf="!secondFactor && identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'"
+          <li *ngIf="!secondFactor && identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP' && identityServiceType !== 'OIDC'"
               class="nav-item dropdown-separator">
             <span class="separator"></span>
           </li>
-          <li *ngIf="identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'"
+          <li *ngIf="identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP' && identityServiceType !== 'OIDC'"
               class="nav-item">
             <a class="nav-link" routerLink="identity_service/account" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.users</span></span>
