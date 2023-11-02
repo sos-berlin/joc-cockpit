@@ -1696,6 +1696,8 @@
     "label.updateJobs": "Jobs aktualisieren",
     "label.overwriteNotification": "Benachrichtigungen aktualisieren",
     "label.overwriteAdmissionTime": "Zutrittszeiten aktualisieren",
+    "label.overwriteRequiredArguments": "Update from required arguments",
+    "label.overwriteOptionalArguments": "Update from optional arguments",
     "label.updateWorkflowsFromJobTemplates": "Arbeitsabläufe aus Job-Vorlagen aktualisieren",
     "label.switchUserExpertMode": "Mehr Optionen",
     "label.result": "Ergebnis",

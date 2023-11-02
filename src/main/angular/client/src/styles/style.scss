@@ -4374,10 +4374,11 @@ aside {
   margin-left: 290px;
 }
 
-li > a > i.remove {
+li a > i.remove {
   right: 10px;
   font-size: 15px;
   position: absolute;
+  margin-top: 3px;
 }
 
 #contextmenu-node {

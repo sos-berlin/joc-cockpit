@@ -8264,9 +8264,11 @@ export class WorkflowComponent {
             let str = '';
             if (self.selectedNode.newObj.retryDelays && self.selectedNode.newObj.retryDelays.length > 0) {
               self.selectedNode.newObj.retryDelays = self.selectedNode.newObj.retryDelays.forEach((item, index) => {
-                str += self.workflowService.convertStringToDuration(item.value, true);
-                if (self.selectedNode.newObj.retryDelays.length - 1 !== index) {
-                  str += ', ';
+                if(item.value || item.value == 0) {
+                  str += self.workflowService.convertStringToDuration(item.value, true);
+                  if (self.selectedNode.newObj.retryDelays.length - 1 !== index) {
+                    str += ', ';
+                  }
                 }
               });
             }
@@ -8711,17 +8713,18 @@ export class WorkflowComponent {
         } else if (cell.value.tagName === 'Retry') {
           obj.maxTries = cell.getAttribute('maxTries');
           obj.retryDelays = cell.getAttribute('retryDelays');
-          obj.tries = (obj.maxTries || obj.maxTries == 0) ? 'limited' : 'unlimited';
+          obj.tries = ((obj.maxTries > 0 || obj.maxTries == 0) && (obj.maxTries !== '')) ? 'limited' : 'unlimited';
           if (obj.retryDelays && typeof obj.retryDelays == 'string') {
             const arr = obj.retryDelays.split(',');
             obj.retryDelays = [];
             arr.forEach((item) => {
-              obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item) || '1m'});
+              obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item)});
             });
           } else {
-            obj.retryDelays = [{value: obj.maxTries ? '1m' : obj.maxTries == 0 ? '0' : ''}];
+            obj.retryDelays = [{value: obj.maxTries != '' ? '1m' : obj.maxTries == 0 ? '0' : ''}];
           }
-          if (obj.tries == 'unlimited') {
+
+          if (obj.tries == 'unlimited' || obj.retryDelays?.length == 0) {
             obj.retryDelays = [{value: ''}];
           }
         } else if (cell.value.tagName === 'Cycle') {
