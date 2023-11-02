@@ -1692,6 +1692,8 @@
     "label.updateJobs": "ジョブ更新",
     "label.overwriteNotification": "通知を上書き",
     "label.overwriteAdmissionTime": "許可時間を上書き",
+    "label.overwriteRequiredArguments": "Update from required arguments",
+    "label.overwriteOptionalArguments": "Update from optional arguments",
     "label.updateWorkflowsFromJobTemplates": "ジョブテンプレートからワークフローを更新",
     "label.switchUserExpertMode": "オプション",
     "label.result": "結果",

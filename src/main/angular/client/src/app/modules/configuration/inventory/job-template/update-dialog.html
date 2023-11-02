@@ -61,7 +61,7 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a min-ht-128">
     <div *ngIf="!isUpdated">
-      <div *ngIf="(isloaded && listOfWorkflows.length) || treeObj || job">
+      <div *ngIf="(isloaded && (listOfWorkflows.length || allJobTemplates.length)) || treeObj || job">
         <div [ngClass]="{'show': display}" class="hide">
           <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
         </div>
@@ -102,14 +102,31 @@
             <label [(ngModel)]="object.overwriteAdmissionTime" name="overwriteAdmissionTime" nz-checkbox></label>
           </div>
         </div>
-        <div *ngIf="nodes.length && (data || folder)" class="form-group row">
+        <div class="form-group row">
+          <div class="col-md-3">
+            <label translate>inventory.label.overwriteRequiredArguments</label>
+          </div>
+          <div class="col-md-9">
+            <label [(ngModel)]="object.overwriteValues" name="overwriteValues" nz-checkbox></label>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-3">
+            <label translate>inventory.label.overwriteOptionalArguments</label>
+          </div>
+          <div class="col-md-9">
+            <label [(ngModel)]="object.propagateOptionalArguments" name="propagateOptionalArguments" nz-checkbox></label>
+          </div>
+        </div>
+
+        <div *ngIf="(nodes.length && (data || folder)) || jobTemplates.length > 1" class="form-group row">
           <div class="col-md-12">
             <label nz-checkbox [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
                    (nzCheckedChange)="selectAll($event)"></label>
             <label class="p-l-sm _600" translate>runtime.label.selectAll</label>
           </div>
         </div>
-        <div *ngIf="data || folder" class="row">
+        <div *ngIf="(data || folder) || jobTemplates.length > 1" class="row">
           <div *ngFor="let item of nodes | orderBy: 'path'" class="col-md-12 m-b-sm">
             <label nz-checkbox [nzChecked]="object.setOfCheckedPath.has(item.path)"
                    (nzCheckedChange)="onItemChecked(item, $event)" ></label>
@@ -127,9 +144,36 @@
             </span>
             <span>{{item.path}}</span>
           </div>
+          <div *ngFor="let job of jobTemplates | orderBy: 'path'" class="col-md-12 m-b-xxs">
+
+            <label nz-checkbox [(nzChecked)]="job.checked"
+                   [nzIndeterminate]="job.indeterminate"
+                   (nzCheckedChange)="onTemplateChecked(job, $event)" ></label>
+            <i class="icon-jobs-icon icon-color tree-icon p-l-sm p-r-sm"></i>
+            <span [ngClass]="{'fa-circle dark-blue' : job.released}"
+                  class="fa fa-check-circle-o orange text-xs w-11 m-t-xs p-r-sm"></span>
+            <span>{{job.path}}</span>
+            <div *ngFor="let item of job.workflows | orderBy: 'path'" class="col-md-12 m-b-sm m-t-sm m-l">
+              <label nz-checkbox [nzChecked]="job.setOfCheckedPath.has(item.path)"
+                     (nzCheckedChange)="onWorkflowChecked(job, item, $event)" ></label>
+              <i class="icon-color p-l-sm p-r-sm" nz-icon nzTheme="outline"
+                 nzType="apartment"></i>
+              <span [ngClass]="{'fa-circle dark-blue' : item.deployed}"
+                    class="fa fa-check-circle-o orange text-xs w-11 m-t-xs p-r-sm"></span>
+              <span *ngIf="item.state" [nz-tooltip]="item.state._text | translate" class="p-l-xs p-r-sm">
+              <i *ngIf="item.state._text === 'IN_SYNC'"
+                 class="fa fa-refresh font11"></i>
+              <i *ngIf="item.state._text === 'UNKNOWN'"
+                 class="fa fa-exclamation-triangle font11"></i>
+              <i *ngIf="item.state._text === 'NOT_IN_SYNC'"
+                 class="icon3-reload-error font11 pos-rel t-1"></i>
+            </span>
+              <span>{{item.path}}</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div *ngIf="nodes.length===0 && isloaded && (data || folder)" class="m-t-md">
+      <div *ngIf="nodes.length===0 && jobTemplates.length===0 && isloaded && (data || folder)" class="m-t-md">
         <app-empty-data></app-empty-data>
       </div>
       <div *ngIf="!isloaded && (data || folder)" class="text-center m-t-md">

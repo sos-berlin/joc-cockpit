@@ -381,7 +381,9 @@ export class CoreService {
 
     this.tabs._configuration = {};
     this.tabs._configuration.state = 'inventory';
-    this.tabs._configuration.inventory = {};
+    this.tabs._configuration.inventory = {
+      selectedIndex : 0
+    };
     this.tabs._configuration.copiedParamObjects = {};
     this.tabs._configuration.copiedInstuctionObject = [];
 
@@ -2811,7 +2813,7 @@ export class CoreService {
       if (isArray(arr[i].value)) {
         col += arr[i].name + '={';
         for (let j = 0; j < arr[i].value.length; j++) {
-         
+
           if (isArray(arr[i].value[j])) {
             arr[i].value[j].forEach((val, index) => {
               col += val.name + '=' + val.value;

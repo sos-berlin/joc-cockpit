@@ -7,7 +7,7 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {clone, groupBy, isArray, isEmpty, isEqual, sortBy} from 'underscore';
+import {clone, isArray, isEmpty, isEqual} from 'underscore';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -36,8 +36,9 @@ export class UpdateJobTemplatesComponent {
   treeObj: any;
   job: any;
   submitted = false;
-  isExpandAll = false;
   listOfWorkflows = [];
+  jobTemplates = [];
+  allJobTemplates = [];
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   isloaded = false;
   loading = true;
@@ -48,6 +49,8 @@ export class UpdateJobTemplatesComponent {
   object = {
     overwriteNotification: false,
     overwriteAdmissionTime: false,
+    overwriteValues: false,
+    propagateOptionalArguments: false,
     setOfCheckedPath: new Set(),
     checked: false,
     indeterminate: false,
@@ -90,7 +93,7 @@ export class UpdateJobTemplatesComponent {
     if (this.modalData.object && !this.modalData.object.type) {
       folders.push({
         folder: this.modalData.object.path,
-        recursive: !(this.modalData.object.dailyplan || this.modalData.object.object)
+        recursive: !(this.modalData.object.dailyPlan || this.modalData.object.object)
       })
     }
     this.treeObj = this.modalData.treeObj;
@@ -118,7 +121,16 @@ export class UpdateJobTemplatesComponent {
       next: (res) => {
         this.isloaded = true;
         if (res.jobTemplates.length > 0) {
-          this.listOfWorkflows = res.jobTemplates[0].workflows;
+          if (res.jobTemplates.length == 1) {
+            this.listOfWorkflows = res.jobTemplates[0].workflows;
+          } else {
+            this.allJobTemplates = res.jobTemplates.map(job => {
+              job.tempWorkflows = this.coreService.clone(job.workflows)
+              job.setOfCheckedPath = new Set();
+              return job;
+            })
+            this.nodes = [];
+          }
         } else {
           this.nodes = [];
         }
@@ -131,156 +143,97 @@ export class UpdateJobTemplatesComponent {
 
   filterList(): void {
     this.object.setOfCheckedPath = new Set();
-    if (this.object.draft && this.object.deploy) {
-      this.nodes = this.coreService.clone(this.listOfWorkflows);
-    } else {
-      this.nodes = this.listOfWorkflows.filter((item) => {
-        if (this.object.draft && !item.deployed) {
-          return true;
-        } else if (this.object.deploy && item.deployed) {
-          return true;
-        }
-        return false;
-      })
-    }
-  }
+    this.object.checked = false;
+    this.object.indeterminate = false;
 
-  private createTreeStructure(): void {
-    const treeObj = [];
-    for (let i = 0; i < this.listOfWorkflows.length; i++) {
-      const path = this.listOfWorkflows[i].path;
-      const obj = {
-        name: this.listOfWorkflows[i].name,
-        path: path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1),
-        key: path,
-        title: path
-      };
-      treeObj.push(obj);
-    }
-
-    const arr = groupBy(sortBy(treeObj, (i: any) => {
-      return i.path.toLowerCase();
-    }), (result) => {
-      return result.path;
-    });
-    this.generateTree(arr);
-    if (this.nodes) {
-      this.nodes = [...this.nodes];
-    }
-  }
-
-  private generateTree(arr): void {
-    for (const [key, value] of Object.entries(arr)) {
-      if (key !== '/') {
-        const paths = key.split('/');
-        if (paths.length > 1) {
-          const pathArr = [];
-          for (let i = 0; i < paths.length; i++) {
-            if (paths[i]) {
-              if (i > 0 && pathArr[i - 1]) {
-                pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + paths[i]);
-              } else {
-                pathArr.push('/' + paths[i]);
-              }
-            } else {
-              pathArr.push('/');
-            }
+    if (this.allJobTemplates.length > 0) {
+      this.jobTemplates = this.allJobTemplates.filter((item) => {
+        item.workflows = item.tempWorkflows.filter((workflow) => {
+          if (this.object.draft && !workflow.deployed) {
+            return true;
+          } else if (this.object.deploy && workflow.deployed) {
+            return true;
           }
-          for (let i = 0; i < pathArr.length; i++) {
-            this.checkAndAddFolder(pathArr[i]);
-          }
-        }
-      }
-      this.checkFolderRecur(key, value);
-    }
-  }
-
-  private checkFolderRecur(_path, data): void {
-    let flag = false;
-    let arr = [];
-    if (data.length > 0) {
-      arr = UpdateJobTemplatesComponent.createTempArray(data);
-    }
-
-    function recursive(path, nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type) {
-          if (nodes[i].path === path) {
-            if (!nodes[i].children || nodes[i].children.length === 0) {
-              for (let j = 0; j < arr.length; j++) {
-                if (arr[j].name === nodes[i].name && arr[j].path === nodes[i].path && arr[j].type === nodes[i].type) {
-                  nodes[i].key = arr[j].key;
-                  arr.splice(j, 1);
-                  break;
-                }
-              }
-              nodes[i].children = arr;
-            } else {
-              nodes[i].children = nodes[i].children.concat(arr);
-            }
-            flag = true;
-            break;
-          }
-          if (!flag && nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
-        }
-      }
-    }
-
-    if (this.nodes && this.nodes[0]) {
-      this.nodes[0].expanded = true;
-      recursive(_path, this.nodes);
-    }
-  }
-
-  private checkAndAddFolder(mainPath): void {
-    let node: any;
-
-    function recursive(path, nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type) {
-          if (nodes[i].path === path.substring(0, path.lastIndexOf('/') + 1) || nodes[i].path === path.substring(0, path.lastIndexOf('/'))) {
-            node = nodes[i];
-            break;
-          }
-          if (nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
-        }
-      }
-    }
-
-    recursive(mainPath, this.nodes);
-    if (node) {
-      let falg = false;
-      for (let x = 0; x < node.children.length; x++) {
-        if (!node.children[x].type && !node.children[x].object && node.children[x].path === mainPath) {
-          falg = true;
-          break;
-        }
-      }
-      if (!falg && mainPath.substring(mainPath.lastIndexOf('/') + 1)) {
-        node.children.push({
-          name: mainPath.substring(mainPath.lastIndexOf('/') + 1),
-          path: mainPath,
-          key: mainPath,
-          title: mainPath,
-          children: []
+          return false;
         });
+        return item.workflows.length > 0;
+      });
+
+      console.log(this.jobTemplates)
+    } else {
+      if (this.object.draft && this.object.deploy) {
+        this.nodes = this.coreService.clone(this.listOfWorkflows);
+      } else {
+        this.nodes = this.listOfWorkflows.filter((item) => {
+          if (this.object.draft && !item.deployed) {
+            return true;
+          } else if (this.object.deploy && item.deployed) {
+            return true;
+          }
+          return false;
+        })
       }
     }
   }
 
   selectAll(value: boolean): void {
-    if (value) {
-      this.nodes.forEach(item => {
-        this.object.setOfCheckedPath.add(item.path);
+    if (this.jobTemplates.length > 0) {
+      this.object.indeterminate = false;
+      if (value) {
+        this.jobTemplates.forEach(item => {
+          item.checked = true;
+          item.workflows.forEach(workflow => {
+            item.setOfCheckedPath.add(workflow.path);
+          });
+        });
+      } else {
+        this.jobTemplates.forEach(item => {
+          item.checked = false;
+          item.setOfCheckedPath.clear();
+        });
+      }
+
+    } else {
+      if (value) {
+        this.nodes.forEach(item => {
+          this.object.setOfCheckedPath.add(item.path);
+        });
+      } else {
+        this.object.setOfCheckedPath.clear();
+      }
+      this.object.indeterminate = this.object.setOfCheckedPath.size > 0 && !this.object.checked;
+    }
+  }
+
+  onTemplateChecked(job: any, checked: boolean): void {
+    job.setOfCheckedPath.clear();
+    if (checked) {
+      job.checked = true;
+      job.workflows.forEach(workflow => {
+        job.setOfCheckedPath.add(workflow.path);
       });
     } else {
-      this.object.setOfCheckedPath.clear();
+      job.checked = false;
     }
-    this.object.indeterminate = this.object.setOfCheckedPath.size > 0 && !this.object.checked;
+    this.updateCheckAllCheckbox();
+  }
+
+  onWorkflowChecked(job, item: any, checked: boolean): void {
+    if (checked) {
+      job.setOfCheckedPath.add(item.path);
+    } else {
+      job.setOfCheckedPath.delete(item.path);
+    }
+    job.checked = job.setOfCheckedPath.size === job.workflows.length;
+    job.indeterminate = job.setOfCheckedPath.size > 0 && !job.checked;
+    this.updateCheckAllCheckbox();
+  }
+
+  private updateCheckAllCheckbox(): void{
+    const count = this.jobTemplates.filter(value => value.checked === true).length;
+    console.log(count, this.jobTemplates.length)
+    this.object.checked = count === this.jobTemplates.length;
+    this.object.indeterminate = count > 0 && !this.object.checked;
   }
 
   onItemChecked(item: any, checked: boolean): void {
@@ -299,12 +252,27 @@ export class UpdateJobTemplatesComponent {
     let request: any = {
       overwriteNotification: this.object.overwriteNotification,
       overwriteAdmissionTime: this.object.overwriteAdmissionTime,
+      overwriteValues: this.object.overwriteValues,
+      propagateOptionalArguments: this.object.propagateOptionalArguments,
     };
     if (this.data) {
-      request.jobTemplates = [{
-        path: this.data.path,
-        workflows: Array.from(this.object.setOfCheckedPath)
-      }];
+
+      if(this.jobTemplates.length > 0){
+        request.jobTemplates = [];
+        this.jobTemplates.forEach(job => {
+          if(job.checked || job.indeterminate) {
+            request.jobTemplates.push({
+              path: job.path,
+              workflows: Array.from(job.setOfCheckedPath)
+            });
+          }
+        });
+      } else {
+        request.jobTemplates = [{
+          path: this.data.path,
+          workflows: Array.from(this.object.setOfCheckedPath)
+        }];
+      }
     } else if (this.treeObj) {
       request.folder = this.treeObj.path;
       if (this.treeObj.type) {
@@ -1280,9 +1248,6 @@ export class JobTemplateComponent {
     }
   }
 
-  onChangeJobResource(value): void {
-    this.saveJSON();
-  }
 
   validateReturnCode(value, form): void {
     if (form.control['status'] === 'INVALID') {
@@ -1331,6 +1296,7 @@ export class JobTemplateComponent {
     }
     const job = this.coreService.clone(this.job.configuration);
     this.workflowService.convertJobObject(job);
+
     if (this.job.actual && !isEqual(this.job.actual, JSON.stringify(job))) {
       if (!flag) {
         if (this.history.length === 20) {
