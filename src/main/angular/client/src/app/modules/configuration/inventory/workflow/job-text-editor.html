@@ -29,7 +29,7 @@
                class="fa fa-exclamation-triangle font11"></i>
             <i *ngIf="state._text === 'NOT_IN_SYNC'"
                class="icon3-reload-error font11 pos-rel t-1"></i>
-          </span>
+        </span>
         <a (click)="navToJobTemp(selectedNode.job.jobTemplate.name)"
            class="text-primary cursor text-hover-primary">{{selectedNode.job.jobTemplate.name}}</a>
         <span class="btn-grey img-circle m-l-sm" style="padding: 3px 6px">
@@ -355,10 +355,8 @@
                   <div [ngClass]="{'has-error': obj.className || (className.invalid && (className.dirty && className.touched)), 'col-md-12': !isModal}"
                        class="col-md-11">
                     <label class="w-full">
-                      <input #className="ngModel"
+                      <input #className="ngModel" name="className"  placeholder="{{'workflow.placeholder.className' | translate}}" required
                              (blur)="onBlur();" [(ngModel)]="selectedNode.job.executable.className" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" class="form-control"
-                             name="className"
-                             placeholder="{{'workflow.placeholder.className' | translate}}" required
                              type="text">
                     </label>
                     <div *ngIf="obj.className || (className.invalid && (className.dirty && className.touched))"
@@ -625,7 +623,8 @@
                           <div [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}"
                                class="col-md-5 col-lg-5 m-b-sm p-r-0">
                             <label class="w-full">
-                              <input #ename="ngModel" [(ngModel)]="argu.name" (blur)="isStringValid(argu, ename, selectedNode.job.executable.arguments)" (ngModelChange)="onChange($event)" [disabled]="disableInput(argu.name)"
+                              <input #ename="ngModel" [(ngModel)]="argu.name" (blur)="isStringValid(argu, ename, selectedNode.job.executable.arguments)" (ngModelChange)="onChange($event)"
+                                     [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name && argu.name"
                                      [nzAutocomplete]="auto" class="form-control"
                                      identifierValidation
                                      name="name{{i}}"
@@ -650,7 +649,7 @@
                             <i (click)="openEditor(argu)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
                                style="right: 13px;top:1px;"></i>
                           </div>
-                          <div class="col-md-1 col-lg-1 p-l-0">
+                          <div *ngIf="!argu.isRequired" class="col-md-1 col-lg-1 p-l-0">
                             <i
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name)"
                               class="fa fa-scissors m-t-sm"></i>

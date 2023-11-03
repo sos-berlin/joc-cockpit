@@ -740,7 +740,7 @@
                   </div>
                 </div>
               </div>
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="selectedNode.obj.retryDelays?.length > 0">
                 <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.retry.delay' | translate) : ''"
                        [nzTooltipMouseEnterDelay]="0.5"
                        class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
@@ -766,16 +766,16 @@
                       </div>
                     </div>
                   </div>
-                  <div class="form-group row" *ngIf="selectedNode.obj.maxTries > -1">
-                    <div *ngIf="selectedNode.obj.retryDelays && selectedNode.obj.maxTries > (selectedNode.obj.retryDelays.length + 1)"
-                         class="col-sm-12 m-b-sm">
-                      <a (click)="addDelay(selectedNode.obj.retryDelays);" class="text-u-l"
-                         translate>workflow.button.addDelay</a>
-                    </div>
-                    <div *ngIf="selectedNode.obj.maxTries > (selectedNode.obj.retryDelays.length + 1)" class="col-sm-12">
-                      <a (click)="addAllDelay();" class="text-u-l" translate>workflow.button.addAllDelay</a>
-                    </div>
-                  </div>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="selectedNode.obj.maxTries > 0">
+                <div *ngIf="selectedNode.obj.retryDelays && selectedNode.obj.maxTries > (selectedNode.obj.retryDelays.length + 1)"
+                     class="col-sm-12 m-b-sm">
+                  <a (click)="addDelay(selectedNode.obj.retryDelays);" class="text-u-l"
+                     translate>workflow.button.addDelay</a>
+                </div>
+                <div *ngIf="selectedNode.obj.maxTries > (selectedNode.obj.retryDelays.length + 1)" class="col-sm-12">
+                  <a (click)="addAllDelay();" class="text-u-l" translate>workflow.button.addAllDelay</a>
                 </div>
               </div>
             </ng-container>

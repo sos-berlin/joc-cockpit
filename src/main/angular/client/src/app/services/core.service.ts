@@ -867,7 +867,7 @@ export class CoreService {
     })
   }
 
-  showLogWindow(order: any, task: any, job: any, id: string, transfer: any, viewRef: any): void {
+  showLogWindow(order: any, task: any, job: any, id: string, transfer: any, viewRef: ViewContainerRef): void {
     if (!order && !task) {
       return;
     }

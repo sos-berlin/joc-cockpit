@@ -74,7 +74,7 @@ export class PopupService {
   }
 
   createCDKPortal(data: any, windowInstance: any, component: Type<any>, viewContainerRef: ViewContainerRef) {
-    if (windowInstance) {
+    if (windowInstance && viewContainerRef) {
       const componentRef = viewContainerRef.createComponent(component);
 
       // Copy stylesheet link from parent window
