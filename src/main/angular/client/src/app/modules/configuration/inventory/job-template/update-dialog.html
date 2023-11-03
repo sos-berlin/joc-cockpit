@@ -213,7 +213,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button *ngIf="!isUpdated" [disabled]="submitted || (object.setOfCheckedPath.size == 0 && (data || folder))" class="btn btn-primary btn-sm"
+    <button *ngIf="!isUpdated" [disabled]="submitted || (!object.checked && !object.indeterminate && (data || folder))" class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       <span translate>common.button.submit</span>

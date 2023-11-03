@@ -4879,7 +4879,8 @@ export class InventoryComponent {
       nzClassName: 'lg',
       nzData: {
         preferences: this.preferences,
-        object
+        object: object.type ? undefined : object,
+        data: object.type ? object : undefined
       },
       nzFooter: null,
       nzClosable: false,

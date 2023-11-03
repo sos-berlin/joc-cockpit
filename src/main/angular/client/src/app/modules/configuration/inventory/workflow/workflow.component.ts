@@ -17,7 +17,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
 import {NzMessageService} from "ng-zorro-antd/message";
-import {clone, extend, isArray, isEmpty, isEqual, sortBy} from 'underscore';
+import {clone, extend, isArray, isEmpty, isEqual, isNaN, sortBy} from 'underscore';
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
 import {Router} from '@angular/router';
@@ -1544,16 +1544,18 @@ export class JobComponent {
       next: (res) => {
         this.jobTemplateData = res.jobTemplate;
         for (const key in res.jobTemplate.arguments) {
+          for (const i in this.selectedNode.job.executable?.arguments) {
+            if(key == this.selectedNode.job.executable?.arguments[i].name) {
+              this.selectedNode.job.executable.arguments[i].isRequired = res.jobTemplate.arguments[key].required;
+              break;
+            }
+          }
           if (res.jobTemplate.arguments.hasOwnProperty(key)) {
             this.argumentDefaults.push(key);
           }
         }
       }
     });
-  }
-
-  disableInput(arguName: string) {
-    return this.argumentDefaults.includes(arguName) || this.argumentDefaults.includes(`"${arguName}"`);
   }
 
   focusChange(): void {
@@ -1933,6 +1935,7 @@ export class JobComponent {
       this.coreService.showCopyMessage(this.message, operation === 'CUT' ? 'cut' : 'copied');
     }
   }
+
   private resetCheckedStates(type: string): void {
     switch (type) {
       case 'arguments':
@@ -1943,6 +1946,7 @@ export class JobComponent {
         break;
     }
   }
+
   private getList(type): Array<any> {
     if (type === 'arguments') {
       return this.selectedNode.job.executable.arguments;
@@ -2516,10 +2520,7 @@ export class JobComponent {
   }
 
   updateFromJobTemplate(): void {
-    // $('div.floating-action-menu').removeClass('active');
-    if (this.state._text !== 'IN_SYNC') {
-      this.updateFromJobTemplateFn.emit(this.selectedNode)
-    }
+    this.updateFromJobTemplateFn.emit(this.selectedNode)
   }
 }
 
@@ -2940,7 +2941,7 @@ export class WorkflowComponent {
   forkListAgentAssignment = '';
   stickySubagentAgentAssignment = '';
   selectedCellId = '';
-  sortingDirections: {[key: string]: 'asc' | 'desc'} = {};
+  sortingDirections: { [key: string]: 'asc' | 'desc' } = {};
 
 
   subscription1: Subscription;
@@ -3566,12 +3567,12 @@ export class WorkflowComponent {
     }
   }
 
-  removeClipboard(): void{
+  removeClipboard(): void {
     this.storedArguments = [];
     sessionStorage.removeItem('$SOS$copiedDeclaredArgument');
   }
 
-  fetchClipboard(): void{
+  fetchClipboard(): void {
     this.storedArguments = sessionStorage.getItem('$SOS$copiedDeclaredArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedDeclaredArgument')) : [];
   }
 
@@ -4358,7 +4359,12 @@ export class WorkflowComponent {
   addArgumentToList(data): void {
     const arr = [];
     data.list.forEach(item => {
-      arr.push({name: item.name, type: item.value.type, value: (item.value.value || item.value.default), isRequired: (item.isRequired || item.value.isRequired)});
+      arr.push({
+        name: item.name,
+        type: item.value.type,
+        value: (item.value.value || item.value.default),
+        isRequired: (item.isRequired || item.value.isRequired)
+      });
     });
     let flag = false;
     for (const i in data.actualList) {
@@ -4640,6 +4646,9 @@ export class WorkflowComponent {
     if (this.selectedNode.obj.maxTries > -1) {
       if (this.selectedNode.obj.maxTries < (this.selectedNode.obj.retryDelays.length)) {
         this.selectedNode.obj.retryDelays.splice(this.selectedNode.obj.maxTries - 1, (this.selectedNode.obj.retryDelays.length + 1) - this.selectedNode.obj.maxTries);
+      }
+      if(this.selectedNode.obj.retryDelays.length === 0 && this.selectedNode.obj.maxTries != 0){
+        this.selectedNode.obj.retryDelays = [{value: ''}];
       }
     } else {
       this.selectedNode.obj.retryDelays = [{value: ''}];
@@ -8278,17 +8287,22 @@ export class WorkflowComponent {
               self.selectedNode.newObj.maxTries = '';
               self.selectedNode.newObj.retryDelays = '';
             } else {
+              
               if (!self.selectedNode.newObj.maxTries && self.selectedNode.newObj.maxTries !== 0) {
-                self.selectedNode.newObj.maxTries = 10;
+                self.selectedNode.newObj.maxTries = 1;
               }
+              self.selectedNode.newObj.maxTries = self.selectedNode.newObj.maxTries > -1 ? self.selectedNode.newObj.maxTries : 1;
             }
             const edit = new mxCellAttributeChange(
               obj.cell, 'maxTries', self.selectedNode.newObj.maxTries);
             graph.getModel().execute(edit);
             let str = '';
             if (self.selectedNode.newObj.retryDelays && self.selectedNode.newObj.retryDelays.length > 0) {
+              self.selectedNode.newObj.retryDelays = self.selectedNode.newObj.retryDelays.filter(item => {
+                return !isNaN(self.workflowService.convertStringToDuration(item.value, true));
+              });
               self.selectedNode.newObj.retryDelays = self.selectedNode.newObj.retryDelays.forEach((item, index) => {
-                if(item.value || item.value == 0) {
+                if (item.value || item.value == 0) {
                   str += self.workflowService.convertStringToDuration(item.value, true);
                   if (self.selectedNode.newObj.retryDelays.length - 1 !== index) {
                     str += ', ';
@@ -8296,6 +8310,7 @@ export class WorkflowComponent {
                 }
               });
             }
+
             const edit2 = new mxCellAttributeChange(
               obj.cell, 'retryDelays', str);
             graph.getModel().execute(edit2);
@@ -8738,7 +8753,7 @@ export class WorkflowComponent {
           obj.maxTries = cell.getAttribute('maxTries');
           obj.retryDelays = cell.getAttribute('retryDelays');
           obj.tries = ((obj.maxTries > 0 || obj.maxTries == 0) && (obj.maxTries !== '')) ? 'limited' : 'unlimited';
-          if(obj.retryDelays == '0') {
+          if (obj.retryDelays == '0') {
             obj.retryDelays = [{value: '0'}];
           } else {
             if (obj.retryDelays && typeof obj.retryDelays == 'string') {
@@ -8748,7 +8763,7 @@ export class WorkflowComponent {
                 obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item)});
               });
             } else {
-              obj.retryDelays = [{value: obj.maxTries != '' ? '1m' : obj.maxTries == 0 ? '0' : ''}];
+              obj.retryDelays = [{value: ''}];
             }
           }
           if (obj.tries == 'unlimited' || obj.retryDelays?.length == 0) {
