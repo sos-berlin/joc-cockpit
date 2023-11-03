@@ -625,7 +625,7 @@
                           <div [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}"
                                class="col-md-5 col-lg-5 m-b-sm p-r-0">
                             <label class="w-full">
-                              <input #ename="ngModel" [(ngModel)]="argu.name" (blur)="isStringValid(argu, ename, selectedNode.job.executable.arguments)" (ngModelChange)="onChange($event)"
+                              <input #ename="ngModel" [(ngModel)]="argu.name" (blur)="isStringValid(argu, ename, selectedNode.job.executable.arguments)" (ngModelChange)="onChange($event)" [disabled]="disableInput(argu.name)"
                                      [nzAutocomplete]="auto" class="form-control"
                                      identifierValidation
                                      name="name{{i}}"
