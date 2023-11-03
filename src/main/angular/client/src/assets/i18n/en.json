@@ -3395,7 +3395,7 @@
     "label.outstandingAgents": "Outstanding with Agents",
     "label.jobTemplateReference": "Job Template Reference",
     "label.changedProperties": "Changed Properties",
-    "label.addRequiredArguments": "Added required Arguments",
+    "label.addRequiredArguments": "Arguments Added",
     "label.deleteArguments": "Deleted Arguments",
     "label.workflowTimeZone": "Workflow Time Zone",
     "label.subagentClusterIdExpr": "Subagent Cluster ID Expression",

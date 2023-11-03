@@ -3395,7 +3395,7 @@
     "label.outstandingAgents": "Ausstehend bei Agenten",
     "label.jobTemplateReference": "Verweis auf Job-Vorlage",
     "label.changedProperties": "Geänderte Eigenschaften",
-    "label.addRequiredArguments": "Hinzugefügte erforderliche Argumente",
+    "label.addRequiredArguments": "Hinzugefügte Argumente",
     "label.deleteArguments": "Gelöschte Argumente",
     "label.workflowTimeZone": "Zeitzone des Arbeitsablaufs",
     "label.subagentClusterIdExpr": "Subagenten Cluster-Kennung Ausdruck",

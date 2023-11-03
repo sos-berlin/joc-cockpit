@@ -2460,8 +2460,11 @@ export class DailyPlanComponent {
 
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      let flag = true;
+      let flag2 = true;
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType.match(/DailyPlanUpdated/)) {
+        if (args.eventSnapshots[j].eventType.match(/DailyPlanUpdated/) && flag) {
+          flag = false;
           if (args.eventSnapshots[j].message) {
             const d = new Date(args.eventSnapshots[j].message);
             if (d.getFullYear() == this.selectedYear && d.getMonth() == this.selectedMonth) {
@@ -2471,7 +2474,9 @@ export class DailyPlanComponent {
           if (!args.eventSnapshots[j].message || (args.eventSnapshots[j].message === this.coreService.getStringDate(this.selectedDate))) {
             this.refreshView();
           }
-          break;
+        } else if (args.eventSnapshots[j].eventType.match(/DailyPlanProjectionEvent/) && flag2) {
+          flag2 = false;
+          this.loadProjectionForCalendar();
         }
       }
     }
@@ -2593,9 +2598,9 @@ export class DailyPlanComponent {
     const allPlanned = planItems.every((order) => order.state._text === 'PLANNED');
     if (allPlanned && planItems.length > 0) {
      this.isDelete = false;
-     
+
     } else {
-    
+
       this.isDelete = true;
     }
 
