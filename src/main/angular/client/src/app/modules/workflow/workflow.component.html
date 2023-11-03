@@ -195,16 +195,15 @@
                   <div *ngIf="isTag && isTagLoaded" class="fade-in">
                     <div class="w-full" *ngFor="let tag of tags">
                         <div class="node-wrapper p-l-xxs p-b-xxs">
-                          <span (click)="selectTag(tag, true)" class="cursor w-14 m-l-xs ">
-                            <i *ngIf="!tag.isExpanded && !tag.loading" nz-icon nzTheme="outline"
-                               nzType="caret-right"></i>
-                            <i *ngIf="tag.isExpanded && !tag.loading" nz-icon nzTheme="outline"
-                               nzType="caret-down"></i>
-                            <i *ngIf="tag.loading"><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
+                          <span class="w-14 m-l-xs m-r-12">
+
+                          <label nz-checkbox [nzChecked]="selectedTags.has(tag)"
+                                 (nzCheckedChange)="onTagChecked(tag, $event)"></label>
+
                           </span>
                           <div class="node-content-wrapper" (click)="selectTag(tag)">
                             <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
-                            <span class="p-l-xs">{{tag.name}}</span>
+                            <span class="p-l-xs">{{tag}}</span>
                           </div>
                         </div>
                     </div>

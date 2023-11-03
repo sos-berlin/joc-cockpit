@@ -66,7 +66,6 @@ export class JobWizardComponent {
         this.job.hasRequiredArguments = param.required;
       }
       if(param.required) {
-        console.log(param.name)
         this.wizard.setOfCheckedValue.add(param.name);
       }
     });
@@ -243,6 +242,7 @@ export class JobWizardComponent {
           this.wizard.checked = false;
           this.wizard.indeterminate = false;
           this.checkRequiredParam(true);
+          this.isAnyRequiredVariable();
         }, error: () => {
           job.loading = false;
         }

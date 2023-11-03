@@ -537,6 +537,8 @@ export class WorkflowComponent {
     isResume: false,
   };
 
+  selectedTags = new Set();
+
   searchableProperties = ['name', 'path', 'versionDate', 'state', '_text'];
 
   filterState: any = [
@@ -706,6 +708,21 @@ export class WorkflowComponent {
       setTimeout(() => {
         this.isProcessing = false;
       }, 100);
+    }
+  }
+
+  onTagChecked(tag, checked: boolean): void {
+    if (checked) {
+      this.selectedTags.add(tag);
+    } else {
+      this.selectedTags.delete(tag);
+    }
+    if (this.selectedTags.size) {
+      const obj: any = {
+        tags: Array.from(this.selectedTags),
+        controllerId: this.schedulerIds.selected
+      };
+      this.getWorkflowList(obj);
     }
   }
 
@@ -1246,7 +1263,10 @@ export class WorkflowComponent {
       if (this.selectedFiltered.paths && this.selectedFiltered.paths.length > 0) {
         obj.folders = [];
         for (let i in this.selectedFiltered.paths) {
-          obj.folders.push({folder: this.selectedFiltered.paths[i], recursive: this.selectedFiltered.handleRecursively});
+          obj.folders.push({
+            folder: this.selectedFiltered.paths[i],
+            recursive: this.selectedFiltered.handleRecursively
+          });
         }
       }
     }
@@ -1270,10 +1290,10 @@ export class WorkflowComponent {
     this.loadWorkflow();
   }
 
-  switchToTagging(flag): void{
+  switchToTagging(flag): void {
     this.isTag = flag;
     this.isTagLoaded = false;
-    if(flag){
+    if (flag) {
       this.fetchWorkflowTags();
     }
   }
@@ -1281,31 +1301,19 @@ export class WorkflowComponent {
   private fetchWorkflowTags(): void {
     this.coreService.post('tags', {}).subscribe({
       next: (res) => {
-        this.tags = res.tags.map((tag) => {
-          return {name: tag, children: []}
-        });
+        this.tags = res.tags;
         this.isTagLoaded = true;
       }, error: () => this.isTagLoaded = true
     });
   }
 
-  selectTag(tag: any, isArray = false): void {
-    if (this.preferences.expandOption === 'both' || isArray) {
-      tag.isExpanded = !tag.isExpanded;
-    }
-
+  selectTag(tag: string): void {
+    this.selectedTags.clear();
     const obj: any = {
-      tag: tag.name,
+      tags: [tag],
       controllerId: this.schedulerIds.selected
     };
-
-    if (tag.isExpanded) {
-      this.coreService.post('inventory/read/tag', obj).subscribe({
-        next: (res: any) => {
-          tag.children = res.workflows;
-        }
-      });
-    }
+    this.getWorkflowList(obj);
   }
 
   showPanelFuc(workflow, flag = true, setObj?): void {
