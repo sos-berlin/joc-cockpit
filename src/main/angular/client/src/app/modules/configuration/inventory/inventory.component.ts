@@ -3102,6 +3102,7 @@ export class InventoryComponent {
   objectType: string | null = '';
   path: string | null = '';
   indexOfNextAdd = 0;
+  selectTagName: string;
 
   allObjects: any = [];
   objectHistory = [];
@@ -3230,6 +3231,9 @@ export class InventoryComponent {
     this.inventoryConfig.copyObj = this.copyObj;
     this.inventoryConfig.isTrash = this.isTrash;
     this.inventoryConfig.isTag = this.isTag;
+    if (this.isTag) {
+      this.inventoryConfig.selectTagName = this.selectTagName;
+    }
     $('.scroll-y').remove();
   }
 
@@ -3272,7 +3276,7 @@ export class InventoryComponent {
             this.inventoryConfig.expand_to = undefined;
             this.selectedObj = this.inventoryConfig.selectedObj || {};
             this.copyObj = this.inventoryConfig.copyObj;
-            if (this.inventoryConfig.selectedObj && this.inventoryConfig.selectedObj.path) {
+            if (this.inventoryConfig.selectedObj && this.inventoryConfig.selectedObj.path && !this.isTag) {
               this.updateFolders(this.inventoryConfig.selectedObj.path, false, (response: any) => {
                 this.isLoading = false;
                 this.type = this.inventoryConfig.selectedObj.type;
@@ -3286,15 +3290,17 @@ export class InventoryComponent {
             }
           } else if (!isEmpty(this.inventoryConfig.selectedObj) || (this.objectType && this.path)) {
             this.tree = tree;
-            this.selectedObj = this.inventoryConfig.selectedObj;
-            if (this.objectType && this.path) {
-              this.selectedObj = {
-                name: this.path.substring(this.path.lastIndexOf('/') + 1),
-                path: this.path.substring(0, this.path.lastIndexOf('/')) || '/',
-                type: this.objectType
-              };
+            if (!this.isTag) {
+              this.selectedObj = this.inventoryConfig.selectedObj;
+              if (this.objectType && this.path) {
+                this.selectedObj = {
+                  name: this.path.substring(this.path.lastIndexOf('/') + 1),
+                  path: this.path.substring(0, this.path.lastIndexOf('/')) || '/',
+                  type: this.objectType
+                };
+              }
+              this.recursivelyExpandTree();
             }
-            this.recursivelyExpandTree();
           } else {
             this.tree = tree;
             if (this.tree.length > 0) {
@@ -3638,11 +3644,11 @@ export class InventoryComponent {
     }).subscribe()
   }
 
-  selectTag(tag: any, isArray = false): void {
+  selectTag(tag: any, isArray = false, cb?): void {
     if (this.preferences.expandOption === 'both' || isArray) {
       tag.isExpanded = !tag.isExpanded;
     }
-
+    this.selectTagName = tag.name;
     const obj: any = {
       tag: tag.name
     };
@@ -3657,6 +3663,9 @@ export class InventoryComponent {
             workflow.path = workflow.path.substring(0, workflow.path.lastIndexOf('/')) || '/';
             return workflow;
           });
+          if (cb) {
+            cb();
+          }
         }
       });
     }
@@ -3670,7 +3679,6 @@ export class InventoryComponent {
       this.type = node.type;
       this.selectedData = node;
       this.selectedData.path = node.path.substring(0, node.path.lastIndexOf('/')) || '/';
-      console.log(this.selectedData)
       this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, '$ID');
     }
   }
@@ -4083,6 +4091,7 @@ export class InventoryComponent {
   }
 
   switchToTagging(): void {
+    this.inventoryConfig.selectedIndex = 1;
     this.isTag = true;
     this.isTrash = false;
     this.isTagLoaded = false;
@@ -4099,6 +4108,21 @@ export class InventoryComponent {
         this.tags = res.tags.map((tag) => {
           return {name: tag, children: []}
         });
+        for (let i in this.tags) {
+          if (this.inventoryConfig.selectTagName === this.tags[i].name) {
+            this.selectTag(this.tags[i], false, () => {
+              if (this.tags[i].children?.length > 0) {
+                for (let j in this.tags[i].children) {
+                  if (this.tags[i].children[j].name == this.inventoryConfig.selectedObj.name) {
+                    this.selectWorkflow(this.tags[i].children[j], false);
+                    break;
+                  }
+                }
+              }
+            });
+            break;
+          }
+        }
         this.clearSelection();
         this.isTagLoaded = true;
       }, error: () => {
@@ -5440,11 +5464,14 @@ export class InventoryComponent {
       this.inventoryConfig = this.coreService.getConfigurationTab().inventory;
       this.isTrash = this.inventoryConfig.isTrash;
       this.isTag = this.inventoryConfig.isTag;
+
       this.initTree(null, null);
+
       if (this.isTrash) {
         this.clearSelection();
         this.initTrashTree(null);
-      } else if(this.isTag){
+      } else if (this.isTag) {
+        this.isLoading = false;
         this.switchToTagging();
       }
     }

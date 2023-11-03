@@ -725,6 +725,7 @@ export class DailyPlanComponent {
   isPathDisplay = false;
   totalOrders: number;
   totalFinishedOrders: number;
+  isDelete = false;
 
   selectedYear: any;
   selectedMonth: any;
@@ -2589,6 +2590,15 @@ export class DailyPlanComponent {
   }
 
   private filterData(planItems): void {
+    const allPlanned = planItems.every((order) => order.state._text === 'PLANNED');
+    if (allPlanned && planItems.length > 0) {
+     this.isDelete = false;
+     
+    } else {
+    
+      this.isDelete = true;
+    }
+
     if (!planItems || planItems.length === 0) {
       this.dailyPlanFilters.currentPage = 1;
     }

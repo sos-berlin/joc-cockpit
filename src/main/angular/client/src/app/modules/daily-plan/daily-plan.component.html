@@ -510,7 +510,7 @@
                     <span translate>dailyPlan.button.createPlan</span>
                   </button>
                   <button (click)="deleteSubmission()"
-                          *ngIf="permission.joc && permission.joc.dailyPlan.manage" class="btn btn-grey btn-sm m-l-xs m-b-sm">
+                          *ngIf="permission.joc && permission.joc.dailyPlan.manage" class="btn btn-grey btn-sm m-l-xs m-b-sm" [disabled]="isDelete">
                     <i class="fa fa-trash"></i>&nbsp;
                     <span translate>dailyPlan.button.deleteSubmissions</span>
                   </button>
