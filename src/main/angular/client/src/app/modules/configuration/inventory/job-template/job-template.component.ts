@@ -231,7 +231,6 @@ export class UpdateJobTemplatesComponent {
 
   private updateCheckAllCheckbox(): void{
     const count = this.jobTemplates.filter(value => value.checked === true).length;
-    console.log(count, this.jobTemplates.length)
     this.object.checked = count === this.jobTemplates.length;
     this.object.indeterminate = count > 0 && !this.object.checked;
   }
@@ -255,7 +254,7 @@ export class UpdateJobTemplatesComponent {
       overwriteValues: this.object.overwriteValues,
       propagateOptionalArguments: this.object.propagateOptionalArguments,
     };
-    if (this.data) {
+    if (this.data || this.folder) {
 
       if(this.jobTemplates.length > 0){
         request.jobTemplates = [];
@@ -291,7 +290,7 @@ export class UpdateJobTemplatesComponent {
         ticketLink: this.comments.ticketLink
       }
     }
-    const URL = this.data ? 'job_templates/propagate' : this.job ? 'inventory/job/update' : 'inventory/workflows/update';
+    const URL = (this.data || this.folder) ? 'job_templates/propagate' : this.job ? 'inventory/job/update' : 'inventory/workflows/update';
     this.coreService.post(URL, request).subscribe({
       next: (res) => {
         if (res.workflows && res.workflows.length > 0) {
