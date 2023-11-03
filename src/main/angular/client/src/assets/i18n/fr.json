@@ -3399,7 +3399,7 @@
     "label.outstandingAgents": "En attendant les Agents",
     "label.jobTemplateReference": "Référence au Modèle de Tâche",
     "label.changedProperties": "Propriétés modifiées",
-    "label.addRequiredArguments": "Arguments nécessaires ajoutés",
+    "label.addRequiredArguments": "Arguments ajoutés",
     "label.deleteArguments": "Arguments supprimés",
     "label.workflowTimeZone": "Fuseau horaire du Workflow",
     "label.subagentClusterIdExpr": "Expression de l'identification du Cluster de Sous-agents",
