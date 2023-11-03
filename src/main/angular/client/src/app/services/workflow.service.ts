@@ -524,8 +524,10 @@ export class WorkflowService {
     delete instruction['label'];
     instruction.catch = catchObj;
     instruction.label = label;
-    instruction.maxTries = parseInt(maxTries, 10);
-    instruction.retryDelays = retryDelays;
+    if (maxTries || maxTries === 0) {
+      instruction.maxTries = parseInt(maxTries, 10);
+      instruction.retryDelays = retryDelays;
+    }
   }
 
   isValidObject(v: string): boolean {
@@ -1119,7 +1121,7 @@ export class WorkflowService {
           } else if (json.instructions[x].TYPE === 'Retry') {
             _node.setAttribute('displayLabel', 'retry');
             _node.setAttribute('maxTries', json.instructions[x].maxTries || '');
-            _node.setAttribute('retryDelays', json.instructions[x].retryDelays ? json.instructions[x].retryDelays.toString() : json.instructions[x].maxTries ? '1m' : '');
+            _node.setAttribute('retryDelays', json.instructions[x].retryDelays ? json.instructions[x].retryDelays.toString() : ((json.instructions[x].maxTries && json.instructions[x].maxTries != '') || json.instructions[x].maxTries == 0) ? '1m' : '');
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
@@ -2080,7 +2082,7 @@ export class WorkflowService {
     if (typeof seconds == 'string' && isNaN(seconds)) {
       return seconds;
     }
-    if (seconds === 0) {
+    if (seconds == 0) {
       return '0';
     }
     const w = Math.floor(((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) / (3600 * 7 * 24));
@@ -2630,9 +2632,7 @@ export class WorkflowService {
     if (job.executable.TYPE === 'Java' || job.executable.TYPE === 'JavaScript') {
       job.executable.internalType = job.executable.TYPE === 'Java' ? 'Java' : 'JavaScript_Graal';
       job.executable.TYPE = 'InternalExecutable';
-    } else if (job.executable.TYPE == 'InternalExecutable') {
-      job.executable.internalType = 'JITL';
-    }
+    } 
     if (job.jobResourceNames && (job.jobResourceNames.length == 0 || isEmpty(job.jobResourceNames))) {
       delete job['jobResourceNames'];
     }

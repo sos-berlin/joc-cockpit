@@ -1348,6 +1348,8 @@ export class JobComponent {
   copiedParamObjects: any = {};
   hasLicense: boolean;
   isTreeShow = false;
+  jobTemplateData: any
+  argumentDefaults = []
   subscription: Subscription;
 
   @ViewChild('codeMirror', {static: false}) cm: any;
@@ -1390,6 +1392,9 @@ export class JobComponent {
       this.updateVariableList();
     }
     this.initAutoComplete(100);
+    if (this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name) {
+      this.getTemplateData();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -1530,6 +1535,25 @@ export class JobComponent {
     if ($event.index === 0) {
       this.updateSelectItems();
     }
+  }
+
+  getTemplateData(): void {
+    this.coreService.post('job_template', {
+      jobTemplatePath: this.selectedNode.job.jobTemplate.name
+    }).subscribe({
+      next: (res) => {
+        this.jobTemplateData = res.jobTemplate;
+        for (const key in res.jobTemplate.arguments) {
+          if (res.jobTemplate.arguments.hasOwnProperty(key)) {
+            this.argumentDefaults.push(key);
+          }
+        }
+      }
+    });
+  }
+
+  disableInput(arguName: string) {
+    return this.argumentDefaults.includes(arguName) || this.argumentDefaults.includes(`"${arguName}"`);
   }
 
   focusChange(): void {
@@ -8714,16 +8738,19 @@ export class WorkflowComponent {
           obj.maxTries = cell.getAttribute('maxTries');
           obj.retryDelays = cell.getAttribute('retryDelays');
           obj.tries = ((obj.maxTries > 0 || obj.maxTries == 0) && (obj.maxTries !== '')) ? 'limited' : 'unlimited';
-          if (obj.retryDelays && typeof obj.retryDelays == 'string') {
-            const arr = obj.retryDelays.split(',');
-            obj.retryDelays = [];
-            arr.forEach((item) => {
-              obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item)});
-            });
+          if(obj.retryDelays == '0') {
+            obj.retryDelays = [{value: '0'}];
           } else {
-            obj.retryDelays = [{value: obj.maxTries != '' ? '1m' : obj.maxTries == 0 ? '0' : ''}];
+            if (obj.retryDelays && typeof obj.retryDelays == 'string') {
+              const arr = obj.retryDelays.split(',');
+              obj.retryDelays = [];
+              arr.forEach((item) => {
+                obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item)});
+              });
+            } else {
+              obj.retryDelays = [{value: obj.maxTries != '' ? '1m' : obj.maxTries == 0 ? '0' : ''}];
+            }
           }
-
           if (obj.tries == 'unlimited' || obj.retryDelays?.length == 0) {
             obj.retryDelays = [{value: ''}];
           }

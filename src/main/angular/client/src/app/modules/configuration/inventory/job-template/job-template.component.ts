@@ -1295,6 +1295,9 @@ export class JobTemplateComponent {
       return;
     }
     const job = this.coreService.clone(this.job.configuration);
+    if (job.executable.TYPE == 'InternalExecutable' && !job.executable.internalType) {
+       job.executable.internalType = 'JITL';
+    }
     this.workflowService.convertJobObject(job);
 
     if (this.job.actual && !isEqual(this.job.actual, JSON.stringify(job))) {
