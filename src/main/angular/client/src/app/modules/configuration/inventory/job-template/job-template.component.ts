@@ -108,7 +108,7 @@ export class UpdateJobTemplatesComponent {
     if (this.data || folders.length > 0) {
       const obj: any = {};
       if (this.data) {
-        obj.jobTemplatePaths = [this.data.path];
+        obj.jobTemplatePaths = [this.data.path1 ? this.data.path : this.data.path + (this.data.path == '/' ? '' : '/') + this.data.name ];
       } else {
         obj.folders = folders;
       }

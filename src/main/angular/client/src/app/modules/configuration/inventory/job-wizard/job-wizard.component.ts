@@ -39,7 +39,9 @@ export class JobWizardComponent {
   selectValue = [
     {label: 'True', value: 'true'},
     {label: 'False', value: 'false'}
-  ]
+  ];
+
+  allowEmptyArguments = false;
 
   private searchTerm = new Subject<string>();
 
@@ -48,6 +50,7 @@ export class JobWizardComponent {
 
   ngOnInit(): void {
     this.existingJob = this.modalData.existingJob;
+    this.allowEmptyArguments = sessionStorage['allowEmptyArguments'] == 'true';
     this.node = this.modalData.node;
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.getJitlJobs();
@@ -55,6 +58,18 @@ export class JobWizardComponent {
       .subscribe((searchValue: string) => {
         this.searchObjects(searchValue);
       });
+  }
+
+  isAnyRequiredVariable() {
+    this.job.params.forEach(param => {
+      if(!this.job.hasRequiredArguments) {
+        this.job.hasRequiredArguments = param.required;
+      }
+      if(param.required) {
+        console.log(param.name)
+        this.wizard.setOfCheckedValue.add(param.name);
+      }
+    });
   }
 
   tabChange($event): void {
@@ -176,6 +191,7 @@ export class JobWizardComponent {
       this.wizard.checked = false;
       this.wizard.indeterminate = false;
       this.checkRequiredParam();
+      this.isAnyRequiredVariable();
     });
   }
 

@@ -1393,7 +1393,7 @@ export class JobComponent {
     }
     this.initAutoComplete(100);
     if (this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name) {
-      this.getTemplateData();
+      // this.getTemplateData();
     }
   }
 
@@ -8287,12 +8287,12 @@ export class WorkflowComponent {
               self.selectedNode.newObj.maxTries = '';
               self.selectedNode.newObj.retryDelays = '';
             } else {
-              
               if (!self.selectedNode.newObj.maxTries && self.selectedNode.newObj.maxTries !== 0) {
                 self.selectedNode.newObj.maxTries = 1;
               }
               self.selectedNode.newObj.maxTries = self.selectedNode.newObj.maxTries > -1 ? self.selectedNode.newObj.maxTries : 1;
             }
+
             const edit = new mxCellAttributeChange(
               obj.cell, 'maxTries', self.selectedNode.newObj.maxTries);
             graph.getModel().execute(edit);

@@ -297,13 +297,6 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.listVariableCollapse</div>
-                  <div class="col-md-6">
-                     <label nz-checkbox [(ngModel)]="preferences.listVariableCollapse"
-                             (ngModelChange)="changeConfiguration()"></label>
-                  </div>
-                </div>
-                <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showLogs</div>
                   <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.isNewWindow" (ngModelChange)="changeConfiguration()" >
@@ -386,6 +379,15 @@
                   </div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.showMoreOptions"
+                           (ngModelChange)="changeConfiguration()"></label>
+                  </div>
+                </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark" translate>
+                    profile.label.listVariableCollapse
+                  </div>
+                  <div class="col-md-6">
+                    <label nz-checkbox [(ngModel)]="preferences.listVariableCollapse"
                            (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
