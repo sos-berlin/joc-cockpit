@@ -181,7 +181,7 @@
                          class="col-sm-5 m-b-sm p-r-0">
                       <nz-input-number #value="ngModel" (nzBlur)="checkCheckbox(param)" [(ngModel)]="param.newValue"
                                        [nzMin]="0" [nzStep]="1"
-                                       [required]="param.required"
+                                       [required]="param.required && !allowEmptyArguments"
                                        name="_value{{i}}" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                            class="text-danger help-block">
@@ -193,7 +193,7 @@
                   </ng-container>
                   <ng-container *ngSwitchCase="'Boolean'">
                     <div class="col-sm-5 m-b-sm p-r-0">
-                      <app-select-input (modelChange)="checkCheckbox(param)" [attributeName]="'newValue'" [isRequired]="param.required"
+                      <app-select-input (modelChange)="checkCheckbox(param)" [attributeName]="'newValue'" [isRequired]="param.required && !allowEmptyArguments"
                                         [placeholder]="'common.placeholder.selectValue'" [isAllowClear]="true"
                                         [listArray]="selectValue" [name]="'_value' + i" [optionLabel]="'label'" [optionValue]="'value'"
                                         [object]="param"></app-select-input>
@@ -203,7 +203,7 @@
                     <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                          class="col-sm-5 m-b-sm p-r-0">
                       <input #value="ngModel" (blur)="checkCheckbox(param)" (keydown)="onKeyPress($event)"
-                             [(ngModel)]="param.newValue" [facetValidation]="param.facet" [required]="param.required" autocomplete="off"
+                             [(ngModel)]="param.newValue" [facetValidation]="param.facet" [required]="param.required && !allowEmptyArguments" autocomplete="off"
                              class="form-control" name="_value{{i}}" placeholder="{{'common.placeholder.value' | translate}}"
                              type="text">
                       <i *ngIf="param.message" [nz-tooltip]="param.message" class="pos-abt cursor fa fa-info-circle"
@@ -220,7 +220,7 @@
                   <ng-container *ngSwitchDefault>
                     <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                          class="col-sm-5 m-b-sm p-r-0">
-                      <input #value="ngModel" (blur)="checkCheckbox(param)" [(ngModel)]="param.newValue" [required]="param.required"
+                      <input #value="ngModel" (blur)="checkCheckbox(param)" [(ngModel)]="param.newValue" [required]="param.required && !allowEmptyArguments"
                              autocomplete="off" class="form-control" name="newValue{{i}}"
                              type="text">
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
@@ -236,7 +236,7 @@
               <div *ngIf="param.list" [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}"
                    class="col-sm-5 m-b-sm p-r-0">
                 <nz-select #list="ngModel" [(ngModel)]="param.newValue" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                           [required]="param.required" name="list{{i}}" nzAllowClear>
+                           [required]="param.required && !allowEmptyArguments" name="list{{i}}" nzAllowClear>
                   <ng-container *ngFor="let option of param.list">
                     <nz-option [nzLabel]="option.name" [nzValue]="option.name" nzCustomContent>
                       <div>
@@ -292,9 +292,11 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button [disabled]="!myForm.form.valid || (!job.javaClass && !job.name) || (job && job.hasRequiredArguments && wizard.step === 1 && node)" class="btn btn-primary btn-sm"
+    <button [disabled]="!myForm.form.valid || (!job.javaClass && !job.name) || (job && job.hasRequiredArguments && wizard.step === 1 && node)"
+            class="btn btn-primary btn-sm"
             translate
-            type="submit">common.button.submit
+            type="submit">
+      {{ 'common.button.submit' | translate }}
     </button>
     <button (click)="next()" *ngIf="wizard.step === 1 && node" [disabled]="!job.javaClass && !job.name"
             class="btn btn-secondary btn-sm" translate type="button">workflow.wizard.button.next
