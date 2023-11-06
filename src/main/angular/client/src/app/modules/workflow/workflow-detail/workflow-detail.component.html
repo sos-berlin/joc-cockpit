@@ -212,7 +212,8 @@
                 <ng-container *ngIf="!item.hide && item.fileOrderSources">
                   <tr>
                     <td colspan="14" style="padding:0 !important;">
-                      <nz-table #innerChildTable [nzData]="item.fileOrderSources" [nzShowPagination]="false"
+                      <nz-table #innerChildTable [nzData]="item.fileOrderSources" [nzFrontPagination]="false"
+                                [nzShowPagination]="false"
                                 class="m-a-0 inner-table" nzSize="small">
               <thead>
               <tr>

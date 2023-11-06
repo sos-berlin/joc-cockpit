@@ -1,6 +1,6 @@
 <tr *ngIf="history.states && history.states.length> 0 && !history.loading">
   <td class="p-a-b-b-0" colspan="8">
-    <nz-table #innerChildTable [nzData]="history.states" [nzShowPagination]="false"
+    <nz-table #innerChildTable [nzData]="history.states" [nzFrontPagination]="false" [nzShowPagination]="false"
               class="m-a-0 inner-table" nzSize="small">
       <thead>
       <tr>
@@ -29,7 +29,8 @@
 <ng-template [ngForOf]="history.children" let-child let-i="index" ngFor>
   <tr *ngIf="child.task">
     <td class="p-a-b-b-0" colspan="8">
-      <nz-table #innerChildTaskTable [nzData]="[child.task]" [nzLoading]="history.loading" [nzShowPagination]="false"
+      <nz-table #innerChildTaskTable [nzData]="[child.task]" [nzLoading]="history.loading"
+                [nzFrontPagination]="false" [nzShowPagination]="false"
                 class="m-a-0 inner-table" nzSize="small">
         <thead *ngIf="(i > 0 && !history.children[i-1].task) || i==0">
         <tr>

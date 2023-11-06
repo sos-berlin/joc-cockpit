@@ -1706,7 +1706,7 @@ export class CoreService {
           }
         }
       } else if (env.value === "" || env.value === '') {
-        env.value = JSON.stringify(env.value);
+        //env.value = JSON.stringify(env.value);
       }
     });
   }
@@ -1718,6 +1718,8 @@ export class CoreService {
       } else if (/^(now\s*\()/i.test(data[type]) || /^(variable\s*\()/i.test(data[type]) || /^(env\s*\()/i.test(data[type])
         || /^(toFile\s*\()/i.test(data[type]) || /^(replaceAll\s*\()/i.test(data[type]) || /^(jobResourceVariable\s*\()/g.test(data[type])
         || /^(scheduledOrEmpty\s*\()/g.test(data[type]) || /^([0-9])+(.toString)$/g.test(data[type]) || /^(JobResource:)/g.test(data[type])) {
+      } else if (data[type] === "" || data[type] === '') {
+
       } else if (typeof data[type] == 'string') {
         const startChar = data[type].substring(0, 1);
         const endChar = data[type].substring(data[type].length - 1);

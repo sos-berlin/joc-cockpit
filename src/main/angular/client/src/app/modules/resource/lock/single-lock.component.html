@@ -22,6 +22,7 @@
               [nzBordered]="true"
               [nzData]="locks"
               [nzLoading]="loading"
+              [nzFrontPagination]="false"
               [nzShowPagination]="false"
               [nzShowSizeChanger]="false"
               [nzSize]="'small'"
@@ -80,7 +81,7 @@
                 </tr>
                 <tr *ngIf="lock.show">
                   <td class="order-history-template0" colspan="8" style="padding:0 !important;">
-                    <nz-table #nestedWorkflowsTable [nzData]="lock.workflows" [nzShowPagination]="false"
+                    <nz-table #nestedWorkflowsTable [nzData]="lock.workflows" [nzFrontPagination]="false" [nzShowPagination]="false"
                               [nzSize]="'small'" class="m-a-0 inner-table">
               <thead>
               <tr>
