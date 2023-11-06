@@ -321,7 +321,7 @@
                       </li>
                       <li (click)="addTags(node);" *ngIf="permission.joc.inventory.manage"
                           nz-menu-item>
-                        <a translate>inventory.button.addTags</a>
+                        <a translate>inventory.button.manageTags</a>
                       </li>
                       <li *ngIf="permission.joc.inventory.manage && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" nz-menu-divider></li>
                       <li (click)="deployObject(node, false);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [nzDisabled]="!node.hasDeployments && ((node.type && !node.valid))"
@@ -422,8 +422,8 @@
                       </nz-dropdown-menu>
                     </div>
                     <div class="node-content-wrapper" (click)="selectTag(tag)">
-                      <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
-                      <span class="p-l-xs">{{tag.name}}</span>
+                      <span class="icon-color p-r-xs" nz-icon nzType="tag" nzTheme="outline"></span>
+                      <span class="p-l-xxs">{{tag.name}}</span>
                     </div>
                   </div>
                   <div class="p-l-md" *ngIf="tag.isExpanded && !tag.loading">
@@ -589,7 +589,7 @@
     </li>
     <li (click)="addTags(node);" *ngIf="permission.joc.inventory.manage && node.origin.type === 'WORKFLOW'"
         nz-menu-item>
-      <a translate>inventory.button.addTags</a>
+      <a translate>inventory.button.manageTags</a>
     </li>
     <li (click)="exportObject(node);" *ngIf="!node.origin.type" [nzDisabled]="(node.origin.object && node.origin.children?.length === 0)"
         nz-menu-item>

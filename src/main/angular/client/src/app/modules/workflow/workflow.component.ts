@@ -523,7 +523,6 @@ export class WorkflowComponent {
   tags = [];
   sideBar: any = {};
   reloadState = 'no';
-  isTag = false;
   isTagLoaded = false;
   objectType = 'WORKFLOW';
   isPathDisplay = true;
@@ -597,9 +596,15 @@ export class WorkflowComponent {
       }
     }
 
+
+    if (this.workflowFilters.isTag) {
+      this.workflowFilters.selectedTags = this.selectedTags;
+    }
     if (this.child) {
       this.workflowFilters.expandedKeys = this.child.defaultExpandedKeys;
-      this.workflowFilters.selectedkeys = this.child.defaultSelectedKeys;
+      if (!this.workflowFilters.isTag) {
+        this.workflowFilters.selectedkeys = this.child.defaultSelectedKeys;
+      }
     }
     this.workflowFilters.showPanel = this.showPanel ? this.showPanel.path : '';
     this.coreService.setSideView(this.sideView);
@@ -808,6 +813,22 @@ export class WorkflowComponent {
     } else {
       this.savedFilter.selected = undefined;
       this.initTree();
+    }
+    if (this.workflowFilters.isTag) {
+      this.selectedTags = this.workflowFilters.selectedTags;
+      const dom = $('.scroll-y');
+      if (dom && dom.position()) {
+        let top = dom.position().top + 12;
+        top = top - $(window).scrollTop();
+        if (top < 70) {
+          top = 92;
+        }
+        if (top < 150 && top > 140) {
+          top = 150;
+        }
+        $('.sticky').css('top', top);
+      }
+      this.switchToTagging(true);
     }
   }
 
@@ -1291,10 +1312,12 @@ export class WorkflowComponent {
   }
 
   switchToTagging(flag): void {
-    this.isTag = flag;
+    this.workflowFilters.isTag = flag;
     this.isTagLoaded = false;
     if (flag) {
       this.fetchWorkflowTags();
+    } else {
+      this.selectedTags.clear();
     }
   }
 
@@ -1309,6 +1332,7 @@ export class WorkflowComponent {
 
   selectTag(tag: string): void {
     this.selectedTags.clear();
+    this.selectedTags.add(tag);
     const obj: any = {
       tags: [tag],
       controllerId: this.schedulerIds.selected
@@ -1610,6 +1634,16 @@ export class WorkflowComponent {
 
   hidePanel(): void {
     this.showPanel = '';
+  }
+
+  hideSidebarPanel(): void {
+    this.sideView.show = false;
+    this.coreService.hidePanel();
+  }
+
+  showSidebarPanel(): void {
+    this.sideView.show = true;
+    this.coreService.showLeftPanel();
   }
 
   expandDetails(): void {

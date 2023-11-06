@@ -6989,7 +6989,7 @@ tr.tr-border td {
   -webkit-transition: all .25s;
 
   a.tree-search {
-    top: 18px;
+    // top: 18px;
   }
 
   #treeSearch{
@@ -7021,8 +7021,12 @@ aside.sidebar-hover-effect {
   top: 57px;
 }
 
-.workflow .a-2, .deployment .a-2 {
-  top: 22px;
+.deployment .a-2 {
+   top: 22px;
+}
+
+.workflow .a-2{
+  top: 61px;
 }
 
 .a-3 {

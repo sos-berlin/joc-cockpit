@@ -530,7 +530,7 @@ export class ResizableDirective {
     } else if (this.el.nativeElement.attributes.id) {
       dom = $('#' + this.el.nativeElement.attributes.id.value);
       if (dom) {
-        dom.css('top', '191px');
+        //dom.css('top', '191px');
         if (this.sideView && this.sideView.width) {
           dom.css('width', this.sideView.width + 'px');
           $('#rightPanel').css({'margin-left': this.sideView.width + 'px'});

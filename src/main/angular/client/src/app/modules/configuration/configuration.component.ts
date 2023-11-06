@@ -52,6 +52,11 @@ export class ConfigurationComponent implements AfterViewInit, OnDestroy {
         } else if (this.router.url.match(/inventory/)) {
           top = top - 4;
         }
+
+        if (top < 150 && top > 140) {
+          top = 150;
+        }
+
         $('.sticky').css('top', top + 2);
         const sidebar = $('#sidebar');
         if (sidebar) {

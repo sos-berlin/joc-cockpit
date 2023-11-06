@@ -148,6 +148,9 @@ export class UpdateJobTemplatesComponent {
 
     if (this.allJobTemplates.length > 0) {
       this.jobTemplates = this.allJobTemplates.filter((item) => {
+        item.checked = false;
+        item.indeterminate = false;
+        item.setOfCheckedPath.clear();
         item.workflows = item.tempWorkflows.filter((workflow) => {
           if (this.object.draft && !workflow.deployed) {
             return true;
@@ -159,7 +162,6 @@ export class UpdateJobTemplatesComponent {
         return item.workflows.length > 0;
       });
 
-      console.log(this.jobTemplates)
     } else {
       if (this.object.draft && this.object.deploy) {
         this.nodes = this.coreService.clone(this.listOfWorkflows);

@@ -3645,6 +3645,7 @@ export class InventoryComponent {
   }
 
   selectTag(tag: any, isArray = false, cb?): void {
+    tag.loading = true;
     if (this.preferences.expandOption === 'both' || isArray) {
       tag.isExpanded = !tag.isExpanded;
     }
@@ -3659,6 +3660,7 @@ export class InventoryComponent {
     if (tag.isExpanded) {
       this.coreService.post('inventory/read/tag', obj).subscribe({
         next: (res: any) => {
+          tag.loading = false;
           tag.children = res.workflows.map(workflow => {
             workflow.path = workflow.path.substring(0, workflow.path.lastIndexOf('/')) || '/';
             return workflow;
@@ -3666,6 +3668,8 @@ export class InventoryComponent {
           if (cb) {
             cb();
           }
+        }, error: () =>{
+          tag.loading = false;
         }
       });
     }
@@ -3677,8 +3681,7 @@ export class InventoryComponent {
     } else {
       node.type = InventoryObject.WORKFLOW;
       this.type = node.type;
-      this.selectedData = node;
-      this.selectedData.path = node.path.substring(0, node.path.lastIndexOf('/')) || '/';
+      this.selectedData = this.coreService.clone(node);
       this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, '$ID');
     }
   }
