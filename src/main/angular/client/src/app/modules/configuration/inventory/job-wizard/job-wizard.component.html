@@ -32,6 +32,7 @@
                 <div class="table-responsive" style="max-height: 400px;overflow: auto">
                   <nz-table #ajaxTable [nzBordered]="true" [nzData]="(jobList | filter: wizard.searchText: ['assignReference', 'title', 'javaClass']) | orderBy: filter.sortBy:filter.reverse" [nzFrontPagination]="false"
                             [nzLoading]="loading"
+                            [nzFrontPagination]="false"
                             [nzShowPagination]="false"
                             [nzShowSizeChanger]="false" [nzSize]="'small'">
                     <thead>
@@ -59,7 +60,7 @@
                         class="cursor">
                       <td>
                           <span class="show-in-single-line">
-                            <i (click)="showDoc(item.docPath);$event.stopPropagation()" *ngIf="item.docPath"
+                            <i (click)="showDoc(item.assignReference || item.docPath);$event.stopPropagation()" *ngIf="item.docPath"
                                class="fa fa-book p-r-sm"></i>
                             <span [innerHTML]="item.assignReference | highlight:wizard.searchText"></span>
                           </span>
@@ -122,7 +123,7 @@
                           <i *ngIf="item.loading" class="w-14 m-r-sm m-t-n-1" style="display: inline-block">
                             <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
                           </i>
-                          <i (click)="showDoc(item.documentationName);$event.stopPropagation()" *ngIf="item.documentationName"
+                          <i (click)="showDoc(item.assignReference || item.documentationName);$event.stopPropagation()" *ngIf="item.documentationName"
                              class="fa fa-book p-r-sm"></i>
                           <i *ngIf="item.description" [nz-tooltip]="contentTemplate"
                              class="fa fa-info-circle p-r-sm"></i>
@@ -164,7 +165,7 @@
             <div *ngFor="let param of job.params; let i = index" class="form-group row m-b-0">
               <div class="col-sm-1 m-b-sm text-center">
                 <label nz-checkbox [nzChecked]="wizard.setOfCheckedValue.has(param.name)"
-                       [nzDisabled]="!(param.newValue || param.newValue == 0 || param.newValue == false)"
+                       [nzDisabled]="(!(param.newValue || param.newValue == 0 || param.newValue == false)) || param.required"
                        (nzCheckedChange)="onItemChecked(param, $event)"
                        style="position: relative;top:5px"></label>
               </div>
@@ -306,7 +307,7 @@
     </button>
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel
     </button>
-    <button (click)="showDoc(job.docPath || job.documentationName)" *ngIf="wizard.step === 2 && (job.docPath || job.documentationName)"
+    <button (click)="showDoc(job.assignReference || job.docPath || job.documentationName)" *ngIf="wizard.step === 2 && (job.docPath || job.documentationName)"
             class="btn btn-grey btn-sm pull-right"
             type="button">
       <i class="fa fa-book p-r-sm"></i>

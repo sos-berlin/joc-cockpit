@@ -352,7 +352,7 @@
         <div class="table-responsive text-overflow" [ngStyle]="{'max-height': 'calc(100vh - 360px)'}">
           <nz-table #ajaxTable [nzSize]="'small'" [nzNoResult]="'inventory.search.label.noDataMatched' | translate"
             [nzPageSize]="results.length" [nzBordered]="true" [nzShowPagination]="false" [nzData]="results | orderBy: 'path1':false:false"
-            [nzShowSizeChanger]="false">
+            [nzShowSizeChanger]="false" [nzFrontPagination]="false">
             <thead>
               <tr>
                 <th *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar" class="chk" [nzShowCheckbox]="true"

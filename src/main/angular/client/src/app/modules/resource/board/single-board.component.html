@@ -22,6 +22,7 @@
               [nzBordered]="true"
               [nzData]="boards"
               [nzLoading]="loading"
+              [nzFrontPagination]="false"
               [nzShowPagination]="false"
               [nzShowSizeChanger]="false"
               [nzSize]="'small'"
@@ -95,7 +96,7 @@
                   <tr>
                     <td class="menu"></td>
                     <td colspan="8" style="padding:0 !important;">
-                      <nz-table #innerTable [nzData]="['']" [nzShowPagination]="false"
+                      <nz-table #innerTable [nzData]="['']" [nzFrontPagination]="false" [nzShowPagination]="false"
                                 [nzSize]="'small'" class="m-a-0 inner-table">
               <thead>
               <tr>
@@ -119,7 +120,7 @@
             <tr>
               <td class="menu"></td>
               <td class="order-history-template0" colspan="8" style="padding:0 !important;">
-                <nz-table #nestedTable [nzData]="board.notices" [nzShowPagination]="false"
+                <nz-table #nestedTable [nzData]="board.notices" [nzShowPagination]="false" [nzFrontPagination]="false"
                           [nzSize]="'small'" class="m-a-0 inner-table">
                   <thead>
                   <tr>

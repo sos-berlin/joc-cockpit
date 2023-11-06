@@ -33,6 +33,7 @@
               [nzBordered]="true"
               [nzData]="workflows"
               [nzLoading]="loading"
+              [nzFrontPagination]="false"
               [nzShowPagination]="false"
               [nzShowSizeChanger]="false"
               [nzSize]="'small'"
@@ -161,7 +162,8 @@
                   <tr>
                     <td class="menu"></td>
                     <td colspan="15" style="padding:0 !important;">
-                      <nz-table #innerChildTable [nzData]="workflow.fileOrderSources" [nzShowPagination]="false"
+                      <nz-table #innerChildTable [nzData]="workflow.fileOrderSources"
+                                [nzFrontPagination]="false" [nzShowPagination]="false"
                                 class="m-a-0 inner-table" nzSize="small">
                         <thead>
                         <tr>

@@ -89,6 +89,7 @@ export class SearchComponent {
   submitted = false;
   isUnique = true;
   objectType = 'WORKFLOW';
+  tags: any = [];
   statusObj = {
     syncStatus: [],
     availabilityStatus: []
@@ -119,6 +120,7 @@ export class SearchComponent {
       this.existingName = this.coreService.clone(this.filter.name);
     }
     this.getFolderTree();
+    this.fetchTags();
     this.filter.instructionStates = this.filter.instructionStates ? this.filter.instructionStates : [];
     this.filter.states = this.filter.states ? this.filter.states : [];
 
@@ -161,6 +163,12 @@ export class SearchComponent {
           this.folders[0].expanded = true;
         }
       }
+    });
+  }
+
+  private fetchTags(): void {
+    this.coreService.post('tags', {}).subscribe((res) => {
+      this.tags = res.tags;
     });
   }
 
@@ -213,6 +221,7 @@ export class SearchComponent {
     const obj: any = {
       regex: result.regex,
       paths: result.paths,
+      tags: result.tags,
       handleRecursively: result.handleRecursively,
       name: result.name,
       instructionStates: result.instructionStates,
@@ -828,7 +837,13 @@ export class WorkflowComponent {
         }
         $('.sticky').css('top', top);
       }
-      this.switchToTagging(true);
+      this.switchToTagging(true, () => {
+        const obj: any = {
+          tags: Array.from(this.workflowFilters.selectedTags),
+          controllerId: this.schedulerIds.selected
+        };
+        this.getWorkflowList(obj);
+      });
     }
   }
 
@@ -850,7 +865,9 @@ export class WorkflowComponent {
           }
           this.isLoading = true;
           if (this.tree.length && !reload) {
-            this.loadWorkflow();
+            if (!this.workflowFilters.isTag) {
+              this.loadWorkflow();
+            }
           }
           let isFound = false;
           for (let x in this.workflowFilters.expandedKeys) {
@@ -1146,6 +1163,10 @@ export class WorkflowComponent {
     this.workflowFilters.expandedKeys = pathArr;
     this.workflowFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
     this.workflowFilters.expandedObjects = [data.path];
+    if (this.workflowFilters.isTag) {
+      this.workflowFilters.isTag = false;
+      this.workflowFilters.selectedIndex = 0;
+    }
     const obj = {
       controllerId: this.schedulerIds.selected,
       folders: [{folder: PATH, recursive: false}]
@@ -1311,22 +1332,32 @@ export class WorkflowComponent {
     this.loadWorkflow();
   }
 
-  switchToTagging(flag): void {
+  switchToTagging(flag, cb?): void {
     this.workflowFilters.isTag = flag;
+    this.workflows = [];
+    this.data = [];
     this.isTagLoaded = false;
     if (flag) {
-      this.fetchWorkflowTags();
+      this.fetchWorkflowTags(cb);
     } else {
       this.selectedTags.clear();
     }
   }
 
-  private fetchWorkflowTags(): void {
+  private fetchWorkflowTags(cb?): void {
     this.coreService.post('tags', {}).subscribe({
       next: (res) => {
         this.tags = res.tags;
         this.isTagLoaded = true;
-      }, error: () => this.isTagLoaded = true
+        if (cb) {
+          cb();
+        }
+      }, error: () => {
+        this.isTagLoaded = true;
+        if (cb) {
+          cb();
+        }
+      }
     });
   }
 
