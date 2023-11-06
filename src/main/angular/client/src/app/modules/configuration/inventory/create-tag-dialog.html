@@ -26,14 +26,14 @@
         <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
           <nz-tag
             *ngFor="let tag of tags; let i = index"
-            [nzMode]="i === 0 ? 'default' : 'closeable'"
+            [nzMode]="'closeable'"
             (nzOnClose)="handleClose(tag)"
           >
             {{ sliceTagName(tag) }}
           </nz-tag>
           <nz-tag *ngIf="!inputVisible" class="editable-tag" nzNoAnimation (click)="showInput()">
             <span nz-icon nzType="plus"></span>
-            New Tag
+            {{'inventory.button.newTag' | translate}}
           </nz-tag>
           <div class="d-inline-block" *ngIf="inputVisible" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
             <input
