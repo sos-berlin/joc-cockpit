@@ -307,115 +307,115 @@
                             class="chk"></td>
                         <td class="menu"></td>
                         <td colspan="8" style="padding:0 !important;">
-                          <nz-table #innerTable [nzData]="['']" [nzShowPagination]="false"
+                          <nz-table #innerTable [nzData]="['']" [nzFrontPagination]="false" [nzShowPagination]="false"
                                     [nzSize]="'small'" class="m-a-0 inner-table">
-                  <thead>
-                  <tr>
-                    <th><span translate>resource.board.label.postOrderToNoticeId</span></th>
-                    <th><span translate>resource.board.label.expectOrderToNoticeId</span></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <td>
-                      <span [innerHtml]="board.postOrderToNoticeId"></span>
-                    </td>
-                    <td>
-                      <span [innerHtml]="board.expectOrderToNoticeId"></span>
-                    </td>
-                  </tr>
-                  </tbody>
-                </nz-table>
-                </td>
-                </tr>
-                <tr>
-                  <td *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
-                      class="chk"></td>
-                  <td class="menu"></td>
-                  <td class="order-history-template0" colspan="8" style="padding:0 !important;">
-                    <nz-table #nestedTable [nzData]="board.notices" [nzLoading]="board.loading"
-                              [nzShowPagination]="false" [nzSize]="'small'" class="m-a-0 inner-table">
-                      <thead>
-                      <tr>
-                        <th *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
-                            [nzShowCheckbox]="true"
-                            [(nzChecked)]="board.checked"
-                            [nzDisabled]="board.numOfNotices === board.numOfExpectingOrders"
-                            [nzIndeterminate]="board.indeterminate"
-                            (nzCheckedChange)="checkAll($event, board)"
-                            class="chk"
-                        ></th>
-                        <th
-                          *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)"
-                          nzWidth="55px"><span translate>common.label.action</span></th>
-                        <th><span translate>resource.board.label.id</span></th>
-                        <th><span translate>common.label.state</span></th>
-                        <th><span translate>resource.board.label.expectingOrders</span></th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <ng-template [ngForOf]="nestedTable.data" let-notice
-                                   ngFor>
-                        <tr>
-                          <td
-                            *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" [nzChecked]="object.mapOfCheckedId.has(notice.id +'__' + board.path)"
-                            [nzDisabled]="notice.state._text === 'EXPECTED'"  (nzCheckedChange)="onItemChecked(board, notice, $event)"
-                            [nzShowCheckbox]="true"></td>
-                          <td
-                            *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)">
-                            <div class="btn-group dropdown">
-                              <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown
-                                      nzTrigger="click" type="button">
-                                <i class="fa fa-ellipsis-h"></i>
-                              </button>
-                              <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                                <ul nz-menu>
-                                  <li (click)="post(board, notice)" *ngIf="permission.currentController.noticeBoards.post"
-                                      [nzDisabled]="notice.state._text !== 'EXPECTED'"
-                                      nz-menu-item>
-                                    <a translate>resource.board.button.post</a>
-                                  </li>
-                                  <li (click)="delete(board, notice)" *ngIf="permission.currentController.noticeBoards.delete"
-                                      [nzDisabled]="notice.state._text === 'EXPECTED'"
-                                      nz-menu-item>
-                                    <a translate>resource.board.button.delete</a>
-                                  </li>
-                                </ul>
-                              </nz-dropdown-menu>
-                            </div>
-                          </td>
-                          <td>{{notice.id}}</td>
-                          <td><span [innerHtml]="notice.state._text | translate" [ngClass]="coreService.getColor(notice.state.severity, 'bg')"
-                                    class="label"></span></td>
-                          <td>{{notice.expectingOrders?.length}}</td>
-                        </tr>
-                        <ng-container *ngIf="notice.expectingOrders && notice.expectingOrders.length > 0">
+                          <thead>
                           <tr>
-                            <td class="custom-th"></td>
-                            <td class="custom-th"></td>
-                            <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
-                            <td class="custom-th" colspan="2"><span translate>order.label.workflow</span></td>
-                            <td class="custom-th"><span translate>order.label.position</span></td>
+                            <th><span translate>resource.board.label.postOrderToNoticeId</span></th>
+                            <th><span translate>resource.board.label.expectOrderToNoticeId</span></th>
                           </tr>
-                          <tr *ngFor="let order of notice.expectingOrders">
-                            <td></td>
-                            <td></td>
-                            <td><span class="p-l">{{order.orderId}}</span></td>
-                            <td colspan="2">
-                              <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');"
-                                 *ngIf="permission.joc && permission.joc.inventory.view"
-                                 class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-                              <a (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);"
-                                 class="text-hover-primary">{{order.workflowId.path}} </a>
+                          </thead>
+                          <tbody>
+                          <tr>
+                            <td>
+                              <span [innerHtml]="board.postOrderToNoticeId"></span>
                             </td>
-                            <td><span>{{order.positionString}}</span></td>
+                            <td>
+                              <span [innerHtml]="board.expectOrderToNoticeId"></span>
+                            </td>
                           </tr>
-                        </ng-container>
-                      </ng-template>
-                      </tbody>
-                    </nz-table>
-                  </td>
-                </tr>
+                          </tbody>
+                        </nz-table>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
+                          class="chk"></td>
+                      <td class="menu"></td>
+                      <td class="order-history-template0" colspan="8" style="padding:0 !important;">
+                        <nz-table #nestedTable [nzData]="board.notices" [nzLoading]="board.loading"
+                                  [nzFrontPagination]="false" [nzShowPagination]="false" [nzSize]="'small'" class="m-a-0 inner-table">
+                          <thead>
+                          <tr>
+                            <th *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
+                                [nzShowCheckbox]="true"
+                                [(nzChecked)]="board.checked"
+                                [nzDisabled]="board.numOfNotices === board.numOfExpectingOrders"
+                                [nzIndeterminate]="board.indeterminate"
+                                (nzCheckedChange)="checkAll($event, board)"
+                                class="chk"
+                            ></th>
+                            <th
+                              *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)"
+                              nzWidth="55px"><span translate>common.label.action</span></th>
+                            <th><span translate>resource.board.label.id</span></th>
+                            <th><span translate>common.label.state</span></th>
+                            <th><span translate>resource.board.label.expectingOrders</span></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <ng-template [ngForOf]="nestedTable.data" let-notice
+                                       ngFor>
+                            <tr>
+                              <td
+                                *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" [nzChecked]="object.mapOfCheckedId.has(notice.id +'__' + board.path)"
+                                [nzDisabled]="notice.state._text === 'EXPECTED'"  (nzCheckedChange)="onItemChecked(board, notice, $event)"
+                                [nzShowCheckbox]="true"></td>
+                              <td
+                                *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)">
+                                <div class="btn-group dropdown">
+                                  <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown
+                                          nzTrigger="click" type="button">
+                                    <i class="fa fa-ellipsis-h"></i>
+                                  </button>
+                                  <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                                    <ul nz-menu>
+                                      <li (click)="post(board, notice)" *ngIf="permission.currentController.noticeBoards.post"
+                                          [nzDisabled]="notice.state._text !== 'EXPECTED'"
+                                          nz-menu-item>
+                                        <a translate>resource.board.button.post</a>
+                                      </li>
+                                      <li (click)="delete(board, notice)" *ngIf="permission.currentController.noticeBoards.delete"
+                                          [nzDisabled]="notice.state._text === 'EXPECTED'"
+                                          nz-menu-item>
+                                        <a translate>resource.board.button.delete</a>
+                                      </li>
+                                    </ul>
+                                  </nz-dropdown-menu>
+                                </div>
+                              </td>
+                              <td>{{notice.id}}</td>
+                              <td><span [innerHtml]="notice.state._text | translate" [ngClass]="coreService.getColor(notice.state.severity, 'bg')"
+                                        class="label"></span></td>
+                              <td>{{notice.expectingOrders?.length}}</td>
+                            </tr>
+                            <ng-container *ngIf="notice.expectingOrders && notice.expectingOrders.length > 0">
+                              <tr>
+                                <td class="custom-th"></td>
+                                <td class="custom-th"></td>
+                                <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
+                                <td class="custom-th" colspan="2"><span translate>order.label.workflow</span></td>
+                                <td class="custom-th"><span translate>order.label.position</span></td>
+                              </tr>
+                              <tr *ngFor="let order of notice.expectingOrders">
+                                <td></td>
+                                <td></td>
+                                <td><span class="p-l">{{order.orderId}}</span></td>
+                                <td colspan="2">
+                                  <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');"
+                                     *ngIf="permission.joc && permission.joc.inventory.view"
+                                     class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                                  <a (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);"
+                                     class="text-hover-primary">{{order.workflowId.path}} </a>
+                                </td>
+                                <td><span>{{order.positionString}}</span></td>
+                              </tr>
+                            </ng-container>
+                          </ng-template>
+                          </tbody>
+                        </nz-table>
+                      </td>
+                    </tr>
                 </ng-container>
                 </ng-template>
                 </tbody>

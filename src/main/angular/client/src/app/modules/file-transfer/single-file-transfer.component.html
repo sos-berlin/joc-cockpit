@@ -20,6 +20,7 @@
           [nzBordered]="true"
           [nzData]="fileTransfers"
           [nzLoading]="!loading"
+          [nzFrontPagination]="false"
           [nzShowPagination]="false"
           [nzShowSizeChanger]="false"
           [nzSize]="'small'"
@@ -71,7 +72,7 @@
             <tr *ngIf="transfer.show">
               <td></td>
               <td colspan="12" style="padding: 0 !important;border-bottom: none!important;">
-                <nz-table [nzData]="['']" [nzShowPagination]="false" [nzSize]="'small'" class="m-a-0 inner-table"
+                <nz-table [nzData]="['']" [nzFrontPagination]="false" [nzShowPagination]="false" [nzSize]="'small'" class="m-a-0 inner-table"
                           id="fileTransferTable">
           <thead>
           <tr>
