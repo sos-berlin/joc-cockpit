@@ -182,42 +182,46 @@
     <div class="row m-t-xs">
       <div class="col-lg-12">
         <div [sideView]="sideView" appResizable class="sticky leftPanel workflow" id="leftPanel">
-          <div *ngIf="tree.length>0">
+          <div *ngIf="tree.length>0 || tags.length > 0">
             <div class="editor-tree">
               <div class="pl-20" style="padding-right:20px">
-                <nz-tabset class="custom-tab" [nzAnimated]="false" [nzType]="'line'">
-                  <nz-tab (nzClick)="switchToTagging(false)" [nzTitle]="'inventory.tab.folders' | translate"></nz-tab>
-                  <nz-tab (nzClick)="switchToTagging(true)" [nzTitle]="'inventory.tab.tagging' | translate"></nz-tab>
+                <nz-tabset class="custom-tab" [nzAnimated]="false" [(nzSelectedIndex)]="workflowFilters.selectedIndex" [nzType]="'line'">
+                  <nz-tab (nzClick)="switchToTagging(false);workflowFilters.selectedIndex = 0" [nzTitle]="'inventory.tab.folders' | translate"></nz-tab>
+                  <nz-tab (nzClick)="switchToTagging(true);workflowFilters.selectedIndex = 1;" [nzTitle]="'inventory.tab.tagging' | translate"></nz-tab>
                 </nz-tabset>
               </div>
-              <div class="pl-20" *ngIf="isTag">
+              <div class="pl-20" *ngIf="workflowFilters.isTag">
                 <perfect-scrollbar class="tree-block">
-                  <div *ngIf="isTag && isTagLoaded" class="fade-in">
+                  <a class="text resize-cursor a-1 pos-abt r-18">
+                    <i (click)="hideSidebarPanel()" class="fa fa-angle-double-left fa-lg"></i>
+                  </a>
+                  <a class="text resize-cursor a-2 pos-abt r-18">
+                    <i (click)="showSidebarPanel()" class="fa fa-angle-double-right fa-lg"></i>
+                  </a>
+                  <div *ngIf="workflowFilters.isTag && isTagLoaded" class="fade-in">
                     <div class="w-full" *ngFor="let tag of tags">
                         <div class="node-wrapper p-l-xxs p-b-xxs">
                           <span class="w-14 m-l-xs m-r-12">
-
-                          <label nz-checkbox [nzChecked]="selectedTags.has(tag)"
-                                 (nzCheckedChange)="onTagChecked(tag, $event)"></label>
-
+                            <label nz-checkbox [nzChecked]="selectedTags.has(tag)"
+                                   (nzCheckedChange)="onTagChecked(tag, $event)"></label>
                           </span>
-                          <div class="node-content-wrapper" (click)="selectTag(tag)">
+                          <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active': selectedTags.has(tag)}" (click)="selectTag(tag)">
                             <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
                             <span class="p-l-xs">{{tag}}</span>
                           </div>
                         </div>
                     </div>
                   </div>
-                  <div *ngIf="isTag && tags && tags.length === 0 && isTagLoaded" class="m-top-50">
+                  <div *ngIf="workflowFilters.isTag && tags && tags.length === 0 && isTagLoaded" class="m-top-50">
                     <app-empty-data></app-empty-data>
                   </div>
-                  <div *ngIf="isTag && !isTagLoaded" class="m-top-50 text-center">
+                  <div *ngIf="workflowFilters.isTag && !isTagLoaded" class="m-top-50 text-center">
                     <i><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
                   </div>
                 </perfect-scrollbar>
                 <div class="rg-right"><span></span></div>
               </div>
-              <div *ngIf="!isTag" class="fade-in">
+              <div *ngIf="!workflowFilters.isTag" class="fade-in">
                 <app-tree-navigation (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)" [defaultExpandedKeys]="workflowFilters.expandedKeys"
                                      [defaultSelectedKeys]="workflowFilters.selectedkeys"
                                      [schedulerId]="schedulerIds.selected" [sideView]="sideView.workflow"

@@ -145,7 +145,9 @@ export class CoreService {
       }
     };
 
-    this.tabs._workflow = {};
+    this.tabs._workflow = {
+      selectedIndex : 0
+    };
     this.tabs._workflow.filter = {};
     this.tabs._workflow.historyFilter = {
       sortBy: 'startTime',
