@@ -9283,7 +9283,7 @@ cdk-virtual-scroll-viewport {
   position: absolute;
   cursor: pointer;
   right: 44px;
-  top: -2px;
+  margin-top: -4px;
   z-index: 99;
 
   &:hover {
@@ -9297,7 +9297,6 @@ cdk-virtual-scroll-viewport {
 }
 
 .workflow-tree-search{
-  right: 44px;
   top: unset;
   margin-top: -4px;
 }

@@ -2918,6 +2918,7 @@ export class WorkflowComponent {
   cutCell: any = [];
   copyId: any = [];
   allNodes: any = [];
+  tags: any = [];
   skipXMLToJSONConversion = false;
   objectType = InventoryObject.WORKFLOW;
   invalidMsg: string;
@@ -3756,7 +3757,21 @@ export class WorkflowComponent {
           delete job.parameters;
           delete job.jobName;
           request.configuration = job;
-          this.coreService.post('inventory/store', request).subscribe();
+          this.coreService.post('inventory/store', request).subscribe((res) => {
+            console.log(res);
+            const obj = {
+              update: [{objectType: InventoryObject.JOBTEMPLATE, path: result.path}],
+              auditLog: {}
+            };
+            if (result.comments.comment) {
+              obj.auditLog = {
+                comment: result.comments.comment,
+                timeSpent: result.comments.timeSpent,
+                ticketLink: result.comments.ticketLink
+              }
+            }
+            this.coreService.post('inventory/release', obj).subscribe();
+          });
         }
       }
     });
@@ -4194,7 +4209,7 @@ export class WorkflowComponent {
           } else {
             res.configuration = {};
           }
-
+          this.fetchWorkflowTags(res.path);
           try {
             if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
               this.invalidMsg = 'workflow.message.emptyWorkflow';
@@ -4647,7 +4662,7 @@ export class WorkflowComponent {
       if (this.selectedNode.obj.maxTries < (this.selectedNode.obj.retryDelays.length)) {
         this.selectedNode.obj.retryDelays.splice(this.selectedNode.obj.maxTries - 1, (this.selectedNode.obj.retryDelays.length + 1) - this.selectedNode.obj.maxTries);
       }
-      if(this.selectedNode.obj.retryDelays.length === 0 && this.selectedNode.obj.maxTries != 0){
+      if (this.selectedNode.obj.retryDelays.length === 0 && this.selectedNode.obj.maxTries != 0) {
         this.selectedNode.obj.retryDelays = [{value: ''}];
       }
     } else {
@@ -11724,6 +11739,18 @@ export class WorkflowComponent {
         }
       }
     });
+  }
+
+  private fetchWorkflowTags(path): void {
+    this.tags = [];
+    this.coreService.post('inventory/workflow/tags', {path}).subscribe((res) => {
+      this.tags = res.tags;
+      this.ref.detectChanges();
+    });
+  }
+
+  addTags(): void {
+    this.dataService.reloadTree.next({addTag: this.data});
   }
 
 }

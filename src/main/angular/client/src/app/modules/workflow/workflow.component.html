@@ -182,7 +182,7 @@
     <div class="row m-t-xs">
       <div class="col-lg-12">
         <div [sideView]="sideView" appResizable class="sticky leftPanel workflow" id="leftPanel">
-          <div *ngIf="tree.length>0 || tags.length > 0">
+          <div *ngIf="tree.length>0 || allTags.length > 0">
             <div class="editor-tree">
               <div class="pl-20" style="padding-right:20px">
                 <nz-tabset class="custom-tab" [nzAnimated]="false" [(nzSelectedIndex)]="workflowFilters.selectedIndex" [nzType]="'line'">
@@ -197,9 +197,15 @@
                 <a (click)="showSidebarPanel()" class="text resize-cursor a-2 pos-abt r-22 z-index-99">
                   <i class="fa fa-angle-double-right fa-lg"></i>
                 </a>
-                <perfect-scrollbar class="tree-block m-t-0">
+                <perfect-scrollbar class="tree-block m-t-0" style="height: calc(100vh - 192px);">
                   <div *ngIf="workflowFilters.isTag && isTagLoaded" class="fade-in">
-                    <div class="w-full" *ngFor="let tag of tags">
+                    <div class="p-l-xxs m-b-sm">
+                      <a (click)="selectTags()">
+                        <i [nzType]="'plus'" nz-icon nzTheme="outline"></i>
+                        {{'workflow.label.selectTags' | translate}}
+                      </a>
+                    </div>
+                    <div class="w-full" *ngFor="let tag of workflowFilters.tags">
                         <div class="node-wrapper p-l-xxs p-b-xxs">
                           <span class="w-14 m-l-xs m-r-12">
                             <label nz-checkbox [nzChecked]="selectedTags.has(tag)"
@@ -212,7 +218,7 @@
                         </div>
                     </div>
                   </div>
-                  <div *ngIf="workflowFilters.isTag && tags && tags.length === 0 && isTagLoaded" class="m-top-50">
+                  <div *ngIf="workflowFilters.isTag && workflowFilters.tags && workflowFilters.tags.length === 0 && isTagLoaded" class="m-top-50">
                     <app-empty-data></app-empty-data>
                   </div>
                   <div *ngIf="workflowFilters.isTag && !isTagLoaded" class="m-top-50 text-center">

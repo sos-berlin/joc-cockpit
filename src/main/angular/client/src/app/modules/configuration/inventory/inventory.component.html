@@ -304,10 +304,6 @@
             <div *ngIf="isTag && isTagLoaded" class="fade-in">
               <ng-template #tagTemplate let-node>
                 <div class="node-wrapper p-b-xxs">
-                  <span *ngIf="node.type">
-                    <span class="p-r-xs"></span>
-                  </span>
-
                   <button [nzDropdownMenu]="workflowMenu" class="btn-drop more-option-h" nz-dropdown
                           nzTrigger="click" type="button">
                     <i class="fa fa-ellipsis-h"></i>
@@ -427,17 +423,10 @@
                     </div>
                   </div>
                   <div class="p-l-md" *ngIf="tag.isExpanded && !tag.loading">
-                    <div class="m-l-sm node-wrapper p-b-xxs" *ngIf="tag.children?.length > 0">
-                      <div (click)="selectWorkflow(tag, true)" class="node-content-wrapper">
-                        <i class="icon-color" nz-icon nzTheme="outline"
-                          nzType="apartment"></i>
-                        <span class="p-l-xs">{{'Workflows' | translate}}</span>
-                      </div>
-                    </div>
                     <div class="m-l-sm node-wrapper p-b-xxs" *ngIf="tag.children?.length == 0" translate>
                       common.message.noDataAvailable
                     </div>
-                    <div class="p-l-12" *ngFor="let child of tag.children">
+                    <div class="m-l-12" *ngFor="let child of tag.children">
                       <ng-container [ngTemplateOutletContext]="{ $implicit: child}"
                                     [ngTemplateOutlet]="tagTemplate"></ng-container>
                     </div>

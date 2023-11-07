@@ -510,7 +510,8 @@
                     <span translate>dailyPlan.button.createPlan</span>
                   </button>
                   <button (click)="deleteSubmission()"
-                          *ngIf="permission.joc && permission.joc.dailyPlan.manage" class="btn btn-grey btn-sm m-l-xs m-b-sm" [disabled]="isDelete">
+                          *ngIf="permission.joc && permission.joc.dailyPlan.manage"
+                          class="btn btn-grey btn-sm m-l-xs m-b-sm">
                     <i class="fa fa-trash"></i>&nbsp;
                     <span translate>dailyPlan.button.deleteSubmissions</span>
                   </button>
@@ -559,225 +560,287 @@
               </div>
             </div>
             <div id="rightPanel">
-              <div>
-                <div *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage))"
-                     class="row m-b-12">
-                  <div class="col-lg-12">
-                    <button (click)="expandCollapseDetails(true)" [disabled]="planOrders.length === 0"
-                            class="btn btn-sm btn-grey" nz-tooltip="{{'common.button.expandDetails' | translate}}">
-                      <i class="fa fa-expand text"></i>
-                    </button>
-                    <button (click)="expandCollapseDetails(false)"
-                            [disabled]="planOrders.length === 0"
-                            class="btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'common.button.collapseDetails' | translate}}">
-                      <i class="fa fa-compress text"></i>
-                    </button>
-                    <button (click)="groupByWorkflow('')"
-                            [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy===''}"
-                            class="btn btn-grey btn-sm hidden-btn-text">
-                      <i class="icon icon-orders-icon"></i>
-                      <span translate>dailyPlan.button.groupByOrder</span>
-                    </button>
-                    <button (click)="groupByWorkflow('ORDER')"
-                            [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='ORDER'}"
-                            class="btn btn-grey btn-sm hidden-btn-text">
-                      <i class="icon icon-calendar-icon"></i>
-                      <span translate>dailyPlan.button.groupByScheduleTemplate</span>
-                    </button>
-                    <button (click)="groupByWorkflow('WORKFLOW')"
-                            [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='WORKFLOW'}"
-                            class="btn btn-grey btn-sm hidden-btn-text">
-                      <i class="icon icon-workflows-icon"></i>
-                      <span translate>dailyPlan.button.groupByWorkflow</span>
-                    </button>
-                    <button (click)="showSearchPanel ? cancel() : advancedSearch()" class="btn btn-sm inline pull-right m-l btn-grey">
-                      <span translate>common.button.advancedSearch</span>
-                      <i class="fa p-l-xs" [ngClass]="!showSearchPanel ? 'fa-caret-down' : 'fa-caret-up'"></i>
-                    </button>
-                    <div class="search-box-field pull-right">
-                      <label>
-                        <input (keyup)="searchInResult()" [(ngModel)]="dailyPlanFilters.searchText"
-                               placeholder="{{'common.placeholder.search' | translate}}"
-                               type="search">
-                      </label>
-                      <i (click)="dailyPlanFilters.searchText = '';searchInResult()" [hidden]="!dailyPlanFilters.searchText"
-                         class="fa fa-times search-close"></i>
-                    </div>
+              <div class="row">
+                <div class="col-lg-2 col-sm-3 p-r-xs" *ngIf="allTags.length > 0">
+                  <div class="box m-b-0" style="height: calc(100% - 20px);">
+                    <perfect-scrollbar class="p-a" style="height: calc(100% - 20px);">
+                      <div *ngIf="isTagLoaded" class="fade-in">
+                        <div class="p-l-xs m-b-sm">
+                          <a (click)="selectTags()">
+                            <i [nzType]="'plus'" nz-icon nzTheme="outline"></i>
+                            {{'workflow.label.selectTags' | translate}}
+                          </a>
+                        </div>
+                        <div class="w-full" *ngFor="let tag of dailyPlanFilters.tags">
+                          <div class="node-wrapper p-l-xxs p-b-xxs">
+                            <span class="w-14 m-l-xs m-r-12">
+                              <label nz-checkbox [nzChecked]="selectedTags.has(tag)"
+                                     (nzCheckedChange)="onTagChecked(tag, $event)"></label>
+                            </span>
+                            <div class="node-content-wrapper"
+                                 [ngClass]="{'node-content-wrapper-active': selectedTags.has(tag)}"
+                                 (click)="selectTag(tag)">
+                              <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
+                              <span class="p-l-xs">{{tag}}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div *ngIf="dailyPlanFilters.tags && dailyPlanFilters.tags.length === 0 && isTagLoaded"
+                           class="m-top-50">
+                        <app-empty-data></app-empty-data>
+                      </div>
+                      <div *ngIf="dailyPlanFilters.isTag && !isTagLoaded" class="m-top-50 text-center">
+                        <i>
+                          <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
+                        </i>
+                      </div>
+                    </perfect-scrollbar>
                   </div>
                 </div>
-                <div *ngIf="showSearchPanel" class="row">
-                  <div class="col-md-12">
-                    <div class="box p-a m-b p-t-md">
-                      <app-form-template (onCancel)="cancel()" (onSearch)="search()" [allFilter]="filterList"
-                                         [filter]="searchFilter" [isSearch]="true"
-                                         [permission]="permission" [preferences]="preferences" [schedulerIds]="schedulerIds"></app-form-template>
-                    </div>
-                  </div>
-                </div>
-                <div *ngIf="pageView==='grid' && plans.length>0">
-                  <div class="box p-a m-b-0 max-ht-n-252">
-                    <div class="row">
-                      <div class="col-md-12">
-                        <app-gantt [data]="planOrders" [groupBy]="dailyPlanFilters.filter.groupBy" [preferences]="preferences"
-                                   [toggle]="isToggle"></app-gantt>
+                <div class="col-lg-10 col-sm-9" [ngClass]="{'col-lg-12 col-sm-12': allTags.length == 0}">
+                    <div
+                      *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage))"
+                      class="row m-b-12">
+                      <div class="col-lg-12">
+                        <button (click)="expandCollapseDetails(true)" [disabled]="planOrders.length === 0"
+                                class="btn btn-sm btn-grey" nz-tooltip="{{'common.button.expandDetails' | translate}}">
+                          <i class="fa fa-expand text"></i>
+                        </button>
+                        <button (click)="expandCollapseDetails(false)"
+                                [disabled]="planOrders.length === 0"
+                                class="btn btn-sm btn-grey m-l-sm m-r-sm"
+                                nz-tooltip="{{'common.button.collapseDetails' | translate}}">
+                          <i class="fa fa-compress text"></i>
+                        </button>
+                        <button (click)="groupByWorkflow('')"
+                                [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy===''}"
+                                class="btn btn-grey btn-sm hidden-btn-text">
+                          <i class="icon icon-orders-icon"></i>
+                          <span translate>dailyPlan.button.groupByOrder</span>
+                        </button>
+                        <button (click)="groupByWorkflow('ORDER')"
+                                [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='ORDER'}"
+                                class="btn btn-grey btn-sm hidden-btn-text">
+                          <i class="icon icon-calendar-icon"></i>
+                          <span translate>dailyPlan.button.groupByScheduleTemplate</span>
+                        </button>
+                        <button (click)="groupByWorkflow('WORKFLOW')"
+                                [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='WORKFLOW'}"
+                                class="btn btn-grey btn-sm hidden-btn-text">
+                          <i class="icon icon-workflows-icon"></i>
+                          <span translate>dailyPlan.button.groupByWorkflow</span>
+                        </button>
+                        <button (click)="showSearchPanel ? cancel() : advancedSearch()"
+                                class="btn btn-sm inline pull-right m-l btn-grey">
+                          <span translate>common.button.advancedSearch</span>
+                          <i class="fa p-l-xs" [ngClass]="!showSearchPanel ? 'fa-caret-down' : 'fa-caret-up'"></i>
+                        </button>
+                        <div class="search-box-field pull-right">
+                          <label>
+                            <input (keyup)="searchInResult()" [(ngModel)]="dailyPlanFilters.searchText"
+                                   placeholder="{{'common.placeholder.search' | translate}}"
+                                   type="search">
+                          </label>
+                          <i (click)="dailyPlanFilters.searchText = '';searchInResult()"
+                             [hidden]="!dailyPlanFilters.searchText"
+                             class="fa fa-times search-close"></i>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div *ngIf="pageView =='grid' && planOrders.length==0 && isLoaded" class=" text-center m-t text-uppercase">
-                  <app-empty-data></app-empty-data>
-                </div>
-                <div *ngIf="object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage)"
-                     class="text-center font14 box p-a-sm m-b-12">
-              <span *ngIf="object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders)" [translateParams]="{count: object.mapOfCheckedId.size}"
-                    translate>common.label.selectAllEntriesOfCurrentPage</span>
-                  <span *ngIf="object.mapOfCheckedId.size === (totalOrders - totalFinishedOrders)" [translateParams]="{count: (totalOrders - totalFinishedOrders)}"
-                        translate>common.label.allEntriesSelected</span>
-                  <a (click)="selectAll()" *ngIf="object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders)"
-                     [translateParams]="{count: (totalOrders - totalFinishedOrders)}" class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
-                  <a (click)="isAllSelected = false;resetCheckBox()" *ngIf="object.mapOfCheckedId.size === (totalOrders - totalFinishedOrders)"
-                     class="text-primary p-l-xs" translate>common.label.clearSelection</a>
-                </div>
-                <div *ngIf="pageView !=='grid'" class="box p-a max-ht-n-252" style="overflow: auto;">
-                  <div class="table-responsive" id="dailyPlanTableId">
-                    <nz-table
-                      #ajaxTable
-                      (nzPageIndexChange)="pageIndexChange($event)"
-                      (nzPageSizeChange)="pageSizeChange($event)"
-                      [nzBordered]="true"
-                      [nzData]="planOrders"
-                      [nzLoading]="!isLoaded"
-                      [nzPageIndex]="dailyPlanFilters.currentPage"
-                      [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
-                      [nzPageSize]="dailyPlanFilters.entryPerPage || preferences.entryPerPage || 25"
-                      [nzShowPagination]="planOrders.length > 0"
-                      [nzShowSizeChanger]="true"
-                      [nzSize]="'small'"
-                    >
-                      <thead>
-                      <tr>
-                        <th [(nzChecked)]="object.checked"
-                            [nzIndeterminate]="object.indeterminate"
-                            [nzShowCheckbox]="true"
-                            (nzCheckedChange)="checkAll()"
-                            class="chk">
-                        </th>
-                        <th class="menu"><span translate>common.label.action</span></th>
-                        <th (click)="sort('orderId')" *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'">
-                          <a><span class="p-r-xs" translate>dailyPlan.label.scheduleAndOrder</span>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && !dailyPlanFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && dailyPlanFilters.reverse"
-                               class="fa fa-caret-down"></i></a>
-                        </th>
-                        <th (click)="sort('orderId')" *ngIf="dailyPlanFilters.filter.groupBy === ''">
-                          <a>
-                            <span class="p-r-xs" translate>dailyPlan.label.order</span>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && !dailyPlanFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && dailyPlanFilters.reverse"
-                               class="fa fa-caret-down"></i></a>
-                        </th>
-                        <th (click)="sort('schedulePath')" *ngIf="dailyPlanFilters.filter.groupBy === ''">
-                          <a>
-                            <span class="p-r-xs" translate>dailyPlan.label.schedule</span>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'schedulePath' && !dailyPlanFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'schedulePath' && dailyPlanFilters.reverse"
-                               class="fa fa-caret-down"></i></a>
-                        </th>
-                        <th (click)="sort('workflowPath')">
-                          <a>
-                            <span *ngIf="dailyPlanFilters.filter.groupBy !== 'WORKFLOW'" class="p-r-xs" translate>dailyPlan.label.workflow</span>
-                            <span *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'" class="p-r-xs" translate>dailyPlan.label.workflowAndOrder</span>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflowPath' && !dailyPlanFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflowPath' && dailyPlanFilters.reverse"
-                               class="fa fa-caret-down"></i></a>
-                        </th>
-                        <th (click)="sort('status')">
-                          <a><span class="p-r-xs" translate>dailyPlan.label.state</span>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'status' && !dailyPlanFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'status' && dailyPlanFilters.reverse"
-                               class="fa fa-caret-down"></i></a>
-                        </th>
-                        <th (click)="sort('late')">
-                          <a><span class="p-r-xs" translate>dailyPlan.label.late</span>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'late' && !dailyPlanFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'late' && dailyPlanFilters.reverse"
-                               class="fa fa-caret-down"></i></a>
-                        </th>
-                        <th (click)="sort('plannedStartTime')">
-                          <a><span class="p-r-xs" translate>dailyPlan.label.plannedStart</span>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'plannedStartTime' && !dailyPlanFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'plannedStartTime' && dailyPlanFilters.reverse"
-                               class="fa fa-caret-down"></i></a>
-                        </th>
-                        <th (click)="sort('expectedEndTime')">
-                          <a><span class="p-r-xs" translate>dailyPlan.label.expectedEnd</span>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'expectedEndTime' && !dailyPlanFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'expectedEndTime' && dailyPlanFilters.reverse"
-                               class="fa fa-caret-down"></i></a>
-                        </th>
-                        <th (click)="sort('expectedDuration')">
-                          <a><span class="p-r-xs" translate>dailyPlan.label.expectedDuration</span>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration' && !dailyPlanFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration' && dailyPlanFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th (click)="sort('startTime')">
-                          <a><span class="p-r-xs" translate>dailyPlan.label.startTime</span>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'startTime' && !dailyPlanFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'startTime' && dailyPlanFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th (click)="sort('endTime')">
-                          <a><span class="p-r-xs" translate>dailyPlan.label.endTime</span>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'endTime' && !dailyPlanFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'endTime' && dailyPlanFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th (click)="sort('duration')">
-                          <a><span class="p-r-xs" translate>common.label.duration</span>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration1' && !dailyPlanFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration1' && dailyPlanFilters.reverse"
-                               class="fa fa-caret-down"></i></a>
-                        </th>
-                        <th (click)="sort('period.repeat')">
-                          <a><span class="p-r-xs" translate>dailyPlan.label.repeatInterval</span>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'period.repeat' && !dailyPlanFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="dailyPlanFilters.filter.sortBy == 'period.repeat' && dailyPlanFilters.reverse"
-                               class="fa fa-caret-down"></i></a>
-                        </th>
-                      </tr>
-                      </thead>
-                      <ng-container>
-                        <tbody>
-                        <ng-container *ngIf="dailyPlanFilters.filter.groupBy" [ngTemplateOutletContext]="{ $implicit: ajaxTable}"
-                                      [ngTemplateOutlet]="planTemplate"></ng-container>
-                        <ng-container *ngIf="!dailyPlanFilters.filter.groupBy" [ngTemplateOutletContext]="{ $implicit: ajaxTable.data, plan: null}"
-                                      [ngTemplateOutlet]="orderTemplate"></ng-container>
-                        </tbody>
-                      </ng-container>
-                    </nz-table>
-                  </div>
-                  <div *ngIf="ajaxTable.data.length >0" class="w-half label-top">
-                <span *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'" [translateParams]="{total: planOrders.length, orderCount: totalOrders}"
+                    <div *ngIf="showSearchPanel" class="row">
+                      <div class="col-md-12">
+                        <div class="box p-a m-b p-t-md">
+                          <app-form-template (onCancel)="cancel()" (onSearch)="search()" [allFilter]="filterList"
+                                             [filter]="searchFilter" [tags]="allTags" [isSearch]="true"
+                                             [permission]="permission" [preferences]="preferences"
+                                             [schedulerIds]="schedulerIds"></app-form-template>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="pageView==='grid' && plans.length>0">
+                      <div class="box p-a m-b-0 max-ht-n-252">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <app-gantt [data]="planOrders" [groupBy]="dailyPlanFilters.filter.groupBy"
+                                       [preferences]="preferences"
+                                       [toggle]="isToggle"></app-gantt>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="pageView =='grid' && planOrders.length==0 && isLoaded"
+                         class=" text-center m-t text-uppercase">
+                      <app-empty-data></app-empty-data>
+                    </div>
+                    <div
+                      *ngIf="object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage)"
+                      class="text-center font14 box p-a-sm m-b-12">
+                      <span *ngIf="object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders)"
+                            [translateParams]="{count: object.mapOfCheckedId.size}"
+                            translate>common.label.selectAllEntriesOfCurrentPage</span>
+                      <span *ngIf="object.mapOfCheckedId.size === (totalOrders - totalFinishedOrders)"
+                            [translateParams]="{count: (totalOrders - totalFinishedOrders)}"
+                            translate>common.label.allEntriesSelected</span>
+                      <a (click)="selectAll()"
+                         *ngIf="object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders)"
+                         [translateParams]="{count: (totalOrders - totalFinishedOrders)}" class="text-primary p-l-xs"
+                         translate>common.label.selectAllEntries</a>
+                      <a (click)="isAllSelected = false;resetCheckBox()"
+                         *ngIf="object.mapOfCheckedId.size === (totalOrders - totalFinishedOrders)"
+                         class="text-primary p-l-xs" translate>common.label.clearSelection</a>
+                    </div>
+                    <div *ngIf="pageView !=='grid'" class="box p-a max-ht-n-252" style="overflow: auto;">
+                      <div class="table-responsive" id="dailyPlanTableId">
+                        <nz-table
+                          #ajaxTable
+                          (nzPageIndexChange)="pageIndexChange($event)"
+                          (nzPageSizeChange)="pageSizeChange($event)"
+                          [nzBordered]="true"
+                          [nzData]="planOrders"
+                          [nzLoading]="!isLoaded"
+                          [nzPageIndex]="dailyPlanFilters.currentPage"
+                          [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
+                          [nzPageSize]="dailyPlanFilters.entryPerPage || preferences.entryPerPage || 25"
+                          [nzShowPagination]="planOrders.length > 0"
+                          [nzShowSizeChanger]="true"
+                          [nzSize]="'small'"
+                        >
+                          <thead>
+                          <tr>
+                            <th [(nzChecked)]="object.checked"
+                                [nzIndeterminate]="object.indeterminate"
+                                [nzShowCheckbox]="true"
+                                (nzCheckedChange)="checkAll()"
+                                class="chk">
+                            </th>
+                            <th class="menu"><span translate>common.label.action</span></th>
+                            <th (click)="sort('orderId')" *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'">
+                              <a><span class="p-r-xs" translate>dailyPlan.label.scheduleAndOrder</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down"></i></a>
+                            </th>
+                            <th (click)="sort('orderId')" *ngIf="dailyPlanFilters.filter.groupBy === ''">
+                              <a>
+                                <span class="p-r-xs" translate>dailyPlan.label.order</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down"></i></a>
+                            </th>
+                            <th (click)="sort('schedulePath')" *ngIf="dailyPlanFilters.filter.groupBy === ''">
+                              <a>
+                                <span class="p-r-xs" translate>dailyPlan.label.schedule</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'schedulePath' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'schedulePath' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down"></i></a>
+                            </th>
+                            <th (click)="sort('workflowPath')">
+                              <a>
+                                <span *ngIf="dailyPlanFilters.filter.groupBy !== 'WORKFLOW'" class="p-r-xs" translate>dailyPlan.label.workflow</span>
+                                <span *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'" class="p-r-xs" translate>dailyPlan.label.workflowAndOrder</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflowPath' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflowPath' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down"></i></a>
+                            </th>
+                            <th (click)="sort('status')">
+                              <a><span class="p-r-xs" translate>dailyPlan.label.state</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'status' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'status' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down"></i></a>
+                            </th>
+                            <th (click)="sort('late')">
+                              <a><span class="p-r-xs" translate>dailyPlan.label.late</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'late' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'late' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down"></i></a>
+                            </th>
+                            <th (click)="sort('plannedStartTime')">
+                              <a><span class="p-r-xs" translate>dailyPlan.label.plannedStart</span>
+                                <i
+                                  *ngIf="dailyPlanFilters.filter.sortBy == 'plannedStartTime' && !dailyPlanFilters.reverse"
+                                  class="fa fa-caret-up "></i>
+                                <i
+                                  *ngIf="dailyPlanFilters.filter.sortBy == 'plannedStartTime' && dailyPlanFilters.reverse"
+                                  class="fa fa-caret-down"></i></a>
+                            </th>
+                            <th (click)="sort('expectedEndTime')">
+                              <a><span class="p-r-xs" translate>dailyPlan.label.expectedEnd</span>
+                                <i
+                                  *ngIf="dailyPlanFilters.filter.sortBy == 'expectedEndTime' && !dailyPlanFilters.reverse"
+                                  class="fa fa-caret-up "></i>
+                                <i
+                                  *ngIf="dailyPlanFilters.filter.sortBy == 'expectedEndTime' && dailyPlanFilters.reverse"
+                                  class="fa fa-caret-down"></i></a>
+                            </th>
+                            <th (click)="sort('expectedDuration')">
+                              <a><span class="p-r-xs" translate>dailyPlan.label.expectedDuration</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sort('startTime')">
+                              <a><span class="p-r-xs" translate>dailyPlan.label.startTime</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'startTime' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'startTime' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sort('endTime')">
+                              <a><span class="p-r-xs" translate>dailyPlan.label.endTime</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'endTime' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'endTime' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sort('duration')">
+                              <a><span class="p-r-xs" translate>common.label.duration</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration1' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration1' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down"></i></a>
+                            </th>
+                            <th (click)="sort('period.repeat')">
+                              <a><span class="p-r-xs" translate>dailyPlan.label.repeatInterval</span>
+                                <i
+                                  *ngIf="dailyPlanFilters.filter.sortBy == 'period.repeat' && !dailyPlanFilters.reverse"
+                                  class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy == 'period.repeat' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down"></i></a>
+                            </th>
+                          </tr>
+                          </thead>
+                          <ng-container>
+                            <tbody>
+                            <ng-container *ngIf="dailyPlanFilters.filter.groupBy"
+                                          [ngTemplateOutletContext]="{ $implicit: ajaxTable}"
+                                          [ngTemplateOutlet]="planTemplate"></ng-container>
+                            <ng-container *ngIf="!dailyPlanFilters.filter.groupBy"
+                                          [ngTemplateOutletContext]="{ $implicit: ajaxTable.data, plan: null}"
+                                          [ngTemplateOutlet]="orderTemplate"></ng-container>
+                            </tbody>
+                          </ng-container>
+                        </nz-table>
+                      </div>
+                      <div *ngIf="ajaxTable.data.length >0" class="w-half label-top">
+                <span *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'"
+                      [translateParams]="{total: planOrders.length, orderCount: totalOrders}"
                       translate>dailyPlan.label.totalEntry</span>
-                    <span *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'" [translateParams]="{total: planOrders.length, orderCount: totalOrders}"
-                          translate>dailyPlan.label.totalWorkflowEntry</span>
-                    <span *ngIf="dailyPlanFilters.filter.groupBy === ''" [translateParams]="{total: planOrders.length}"
-                          translate>dailyPlan.label.totalOrderEntry</span>
-                  </div>
+                        <span *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'"
+                              [translateParams]="{total: planOrders.length, orderCount: totalOrders}"
+                              translate>dailyPlan.label.totalWorkflowEntry</span>
+                        <span *ngIf="dailyPlanFilters.filter.groupBy === ''"
+                              [translateParams]="{total: planOrders.length}"
+                              translate>dailyPlan.label.totalOrderEntry</span>
+                      </div>
+                    </div>
                 </div>
               </div>
             </div>
@@ -785,7 +848,7 @@
         </div>
       </nz-tab>
       <nz-tab [nzTitle]="'dailyPlan.tab.projection' | translate">
-        <div class="row m-t-n-xxs" >
+        <div class="row m-t-n-xxs">
           <div class="col-md-12 m-b">
             <div class="inline btn-group">
               <div (click)="setView('Month')"

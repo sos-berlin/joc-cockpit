@@ -100,6 +100,7 @@
   "JobParallelismLimitReached": "Limite de parallélisme des tâches atteinte",
   "OrderNotExisting": "L'Ordre n'existe pas",
   "WorkflowIsSuspended": "Workflow suspendu",
+  "AgentProcessLimitReached": "Agent Process Limit Reached",
   "UPTODATE": "à jour",
   "CONFLICT": "en conflit",
   "CHANGED": "modifié",
@@ -211,6 +212,7 @@
     "label.lostDirector": "Agent Directeur perdu",
     "label.primary": "Primaire",
     "label.secondary": "Secondaire",
+    "label.processLimit": "Process Limit",
     "button.createToken": "Créer un Jeton à usage unique",
     "button.addAgent": "Ajouter un Agent Autonome",
     "button.addSubagent": "Ajouter un Sous-agent",
@@ -252,6 +254,7 @@
     "tooltip.hidden": "Les Agents peuvent être masqués pour éviter qu'ils ne soient visibles dans l'interface utilisateur du JOC Cockpit. Ceci s'applique à la vue TABLEAU DE BORD ainsi qu'à toutes les occurrences où des Agents sont associés.",
     "tooltip.asStandaloneAgent": "Un Agent Autonome ou un Agent Directeur d'un Cluster peut agir comme un Observateur de Cluster. L'Agent spécifié sera créé en tant qu'Agent Autonome si cette case est cochée.",
     "tooltip.primaryDirectorId": "L'ID Agent Directeur est un identifiant unique d'un Agent Directeur qui ne peut pas être modifié pendant la durée de vie de l'Agent. Pour l'ID Agent, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
+    "tooltip.processLimit": "Process Limit",
     "cluster": {
       "tooltip.agentClusterName": "Le nom du Cluster d'Agents est un identifiant unique qui ne peut pas être modifié pendant la durée de vie du Cluster d'Agents. Pour le Nom du Cluster d'Agents, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
       "tooltip.subagentId": "L'ID Sous-agent est un identifiant unique qui ne peut être modifié pendant la durée de vie de l'Agent Directeur. Pour l'ID Sous-agent, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
@@ -259,6 +262,7 @@
       "tooltip.url": "L'URL d'un Agent Directeur spécifie le protocole, HTTP ou HTTPS, le nom d'hôte ou l'adresse IP et le port de l'Agent Directeur, par exemple http://localhost:4445.",
       "tooltip.withGenerateSubagentCluster": "Un Agent Directeur peut être configuré comme un cluster de Sous-agents distinct qui inclut ce seul Agent Directeur. Cela permet d'exécuter des tâches spécifiquement sur l'Agent Directeur.",
       "tooltip.agentNameAliases": "Des Noms d'Alias peuvent être attribués à un Cluster d'Agents. Le Cluster d'Agents peut être affecté à une tâche ou à une Source d'Ordre de Fichier en utilisant le Nom d'Alias. Pour le Nom d'Alias, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
+      "tooltip.processLimit": "Process Limit",
       "subagent": {
         "tooltip.clusterName": "Le nom du Cluster de Sous-agents est un identifiant unique qui ne peut pas être modifié pendant la durée de vie du Cluster de Sous-agents. Pour le Nom du Cluster de Sous-agents, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
         "tooltip.title": "Le Titre d'un Cluster de Sous-agent peut être spécifié à volonté."
@@ -566,6 +570,7 @@
     "placeholder.title": "Entrer le titre",
     "placeholder.enterSecond": "HH:MM:[SS] + SECONDS",
     "placeholder.processExecuted": "now-SECONDS, today, yesterday, -1(h|d|w|M|y) ou 08:00am to 08:00pm, -1(h|d|w|M|y) to -1(h|d|w|M|y)",
+    "placeholder.processLimit": "Enter a Process Limit",
     "message.noDataAvailable": "pas de données disponibles",
     "message.requiredError": "Une entrée dans ce champ est requise",
     "message.invalid": "Entrée non valide",
@@ -3414,6 +3419,7 @@
     "label.stopOnFailure": "Arrêt en cas d'échec",
     "label.references": "Références",
     "label.onlyOnePeriod": "Une seule période",
+    "label.selectTags": "Select Tags",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",

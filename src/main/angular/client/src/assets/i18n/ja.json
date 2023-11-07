@@ -100,6 +100,7 @@
   "JobParallelismLimitReached": "最大ジョブ並列数です",
   "OrderNotExisting": "オーダーはありません",
   "WorkflowIsSuspended": "ワークフロー一時停止",
+  "AgentProcessLimitReached": "Agent Process Limit Reached",
   "UPTODATE": "最新状態",
   "CONFLICT": "コンフリクト",
   "CHANGED": "更新",
@@ -211,6 +212,7 @@
     "label.lostDirector": "ロストディレクター",
     "label.primary": "プライマリー",
     "label.secondary": "セカンダリー",
+    "label.processLimit": "Process Limit",
     "button.createToken": "ワンタイムトークン作成",
     "button.addAgent": "単独エージェント追加",
     "button.addSubagent": "サブエージェント追加",
@@ -252,6 +254,7 @@
     "tooltip.hidden": "エージェントは、JOCコックピットに表示されないように非表示にすることができます。これは、ダッシュボードだけでなく、エージェントが割り当てられているすべての画面に適用されます。",
     "tooltip.asStandaloneAgent": "スタンドアロンエージェント",
     "tooltip.primaryDirectorId": "プライマリーディレクターID",
+    "tooltip.processLimit": "Process Limit",
     "cluster": {
       "tooltip.agentClusterName": "エージェントクラスター名は、エージェントクラスターの一意な識別子で、エージェントクラスターが存続している間は変更することができません。エージェントクラスター名には、ほとんどのユニコード文字、ドットおよびハイフンを使用できますが、スペース、先頭または末尾のドットまたはハイフンを使用できません。",
       "tooltip.subagentId": "サブエージェントIDはディレクターエージェントの一意な識別子で、ディレクターエージェントの存続期間中に変更することはできません。サブエージェントIDには、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、スペース、先頭または末尾のドットやハイフンを使用することはできません。",
@@ -259,6 +262,7 @@
       "tooltip.url": "URL は、プロトコル、HTTP または HTTPS、ホスト名または IP アドレス、およびエージェントのポート（例： http://localhost:4445 ）が指定されます。",
       "tooltip.withGenerateSubagentCluster": "ディレクターエージェントは、このディレクターエージェントを含む別のサブエージェントクラスターとして構成することができます。これにより、ジョブはディレクターエージェント上で別に実行することができます。",
       "tooltip.agentNameAliases": "エイリアス名はエージェントクラスターに割り当てることができます。エージェントクラスターは、エイリアス名を使用して、ジョブまたはファイルオーダーソースに割り当てることができます。エイリアス名には、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、スペース、先頭または末尾のドットまたはハイフンは使用できません。",
+      "tooltip.processLimit": "Process Limit",
       "subagent": {
         "tooltip.clusterName": "サブエージェントクラスター名は、サブエージェントクラスターの一意な識別子で、サブエージェントクラスターが存続する間は変更することができません。サブエージェント・クラスター名には、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、スペース、先頭または末尾のドットやハイフンを使用することはできません。",
         "tooltip.title": "タイトルは任意に指定可能です。"
@@ -566,6 +570,7 @@
     "placeholder.title": "タイトルを入力",
     "placeholder.enterSecond": "HH:MM:[SS] + SECONDS",
     "placeholder.processExecuted": "now-SECONDS, today, yesterday, -1(h|d|w|M|y) or 08:00am to 08:00pm, -1(h|d|w|M|y) to -1(h|d|w|M|y)",
+    "placeholder.processLimit": "Enter a Process Limit",
     "message.noDataAvailable": "データがありません",
     "message.requiredError": "必須入力項目",
     "message.invalid": "無効な入力です",
@@ -3414,6 +3419,7 @@
     "label.stopOnFailure": "失敗時停止",
     "label.references": "参照",
     "label.onlyOnePeriod": "１回のみ",
+    "label.selectTags": "Select Tags",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",

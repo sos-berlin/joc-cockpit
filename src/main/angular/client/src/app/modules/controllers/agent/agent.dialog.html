@@ -82,6 +82,15 @@
       <div *ngIf="agentNameAliases.length - 1 == i" class="p-l-0 m-l-0 col-sm-1" style="padding-top: 6px"><i
         (click)="addAlise()" class="cursor text-muted fa fa-plus"></i></div>
     </div>
+    <div class="form-group row">
+      <label class="col-sm-3 form-control-label"
+             nz-tooltip="{{isCluster ? ('agent.cluster.tooltip.processLimit' | translate) : ('agent.tooltip.processLimit' | translate)}}"
+             translate>agent.label.processLimit</label>
+      <div class=" col-sm-8">
+        <nz-input-number name="processLimit" [(ngModel)]="agent.processLimit"
+                         nzPlaceHolder="{{'common.placeholder.processLimit' | translate}}"></nz-input-number>
+      </div>
+    </div>
     <div *ngIf="!isCluster" class="form-group row">
       <label [nz-tooltip]="'agent.tooltip.url' | translate" class="col-sm-3 form-control-label" translate>agent.label.url
         <sup class="text-danger text-sm">*</sup>

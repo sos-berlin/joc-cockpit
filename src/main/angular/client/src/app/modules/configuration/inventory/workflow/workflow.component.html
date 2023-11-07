@@ -1486,6 +1486,18 @@
             </div>
           </div>
         </div>
+        <div class="box-body p-t-0">
+          <div class="b-t p-t-sm text-16 _500" translate>inventory.label.tags</div>
+          <div *ngIf="tags.length > 0">
+            <div class="p-l-sm p-t-sm" *ngFor="let tag of tags">
+              <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
+              <span class="p-l-6">{{tag}}</span>
+            </div>
+          </div>
+          <div class="m-t-sm p-l-sm">
+            <a (click)="addTags()" class="text-primary" translate>inventory.button.manageTags</a>
+          </div>
+        </div>
       </div>
 
       <div class="rg-right"><span></span></div>

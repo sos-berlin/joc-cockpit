@@ -41,10 +41,15 @@ export class CreateTagModalComponent {
   display: any;
   required = false;
   comments: any = {};
+  filters: any;
+  filter: any = {
+    tags: []
+  };
   tags = [];
   allTags = [];
   filteredOptions: string[] = [];
   inputVisible = false;
+  isUnique = true;
   inputValue = '';
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
@@ -53,29 +58,37 @@ export class CreateTagModalComponent {
   }
 
   ngOnInit(): void {
-    this.preferences = this.modalData.preferences;
-    this.data = this.modalData.data;
-    if (this.modalData.isRename) {
-      this.isRename = this.modalData.isRename;
-      this.tag = this.coreService.clone(this.modalData.tag);
+    if (this.modalData.filters) {
+      this.filters = this.modalData.filters;
+      this.filter.tags = this.modalData.filters.tags;
+      this.allTags = this.modalData.allTags;
+    } else {
+      this.preferences = this.modalData.preferences;
+      this.data = this.modalData.data;
+      if (this.modalData.isRename) {
+        this.isRename = this.modalData.isRename;
+        this.tag = this.coreService.clone(this.modalData.tag);
+      }
+      this.display = this.preferences.auditLog;
+      if (this.data) {
+        this.fetchTags();
+        this.fetchWorkflowTags();
+      } else if (this.isRename) {
+        this.fetchTags();
+      }
+      this.comments.radio = 'predefined';
+      if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+        this.required = true;
+        this.display = true;
+      }
     }
-    this.display = this.preferences.auditLog;
-    if (this.data) {
-      this.fetchTags();
-    }
-    this.comments.radio = 'predefined';
-    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
-      this.required = true;
-      this.display = true;
-    }
-
   }
+
   onChange(value: string): void {
     this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
   }
 
   private fetchTags(): void {
-    this.fetchWorkflowTags();
     this.coreService.post('tags', {}).subscribe((res) => {
       this.allTags = res.tags;
       this.filteredOptions = this.allTags
@@ -113,29 +126,43 @@ export class CreateTagModalComponent {
     this.inputVisible = false;
   }
 
-  onSubmit(): void {
-    this.submitted = true;
-    const obj: any = {
-      tags: this.tags,
-      auditLog: {}
-    };
-    if (this.data) {
-      obj.path = (this.data.path + (this.data.path == '/' ? '' : '/') + this.data.name);
-    } else if (this.isRename) {
-      delete obj.tags;
-      obj.name = this.modalData.tag.name;
-      obj.newName = this.tag.name;
-    }
-    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    const URL = this.data ? 'inventory/workflow/tags/store' : this.isRename ? 'tag/rename' : 'tags/add'
-    this.coreService.post(URL, obj).subscribe({
-      next: () => {
-        this.activeModal.close(this.isRename ? this.tag.name : 'DONE');
-      }, error: () => {
-        this.submitted = false;
+  checkValidInput(): void {
+    this.isUnique = true;
+    for (let i = 0; i < this.allTags.length; i++) {
+      if (this.tag.name === this.allTags[i] &&
+        this.tag.name === this.allTags[i] && this.tag.name !== this.modalData.tag?.name) {
+        this.isUnique = false;
       }
-    });
+    }
+  }
 
+  onSubmit(): void {
+    if (this.filters) {
+      this.filters.tags = this.filter.tags;
+      this.activeModal.close('DONE');
+    } else {
+      this.submitted = true;
+      const obj: any = {
+        tags: this.tags,
+        auditLog: {}
+      };
+      if (this.data) {
+        obj.path = (this.data.path + (this.data.path == '/' ? '' : '/') + this.data.name);
+      } else if (this.isRename) {
+        delete obj.tags;
+        obj.name = this.modalData.tag.name;
+        obj.newName = this.tag.name;
+      }
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+      const URL = this.data ? 'inventory/workflow/tags/store' : this.isRename ? 'tag/rename' : 'tags/add'
+      this.coreService.post(URL, obj).subscribe({
+        next: () => {
+          this.activeModal.close(this.isRename ? this.tag.name : 'DONE');
+        }, error: () => {
+          this.submitted = false;
+        }
+      });
+    }
   }
 
 }
@@ -3668,7 +3695,7 @@ export class InventoryComponent {
           if (cb) {
             cb();
           }
-        }, error: () =>{
+        }, error: () => {
           tag.loading = false;
         }
       });
@@ -6090,7 +6117,6 @@ export class InventoryComponent {
     this.modal.create({
       nzTitle: undefined,
       nzContent: CreateTagModalComponent,
-      nzClassName: 'lg',
       nzAutofocus: null,
       nzData: {
         preferences: this.preferences,
