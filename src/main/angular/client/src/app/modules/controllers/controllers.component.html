@@ -191,6 +191,13 @@
                               <i *ngIf="controller.sortBy == 'version' && controller.reverse"
                                  class="fa fa-caret-down "></i></a>
                           </th>
+                          <th (click)="sort(controller, 'processLimit')">
+                            <a><span class="p-r-xs" translate>agent.label.processLimit</span>
+                              <i *ngIf="controller.sortBy == 'processLimit' && !controller.reverse"
+                                 class="fa fa-caret-up "></i>
+                              <i *ngIf="controller.sortBy == 'processLimit' && controller.reverse"
+                                 class="fa fa-caret-down "></i></a>
+                          </th>
                           <th nzWidth="100px" (click)="sort(controller, 'syncState._text')">
                             <a><span class="p-r-xs" translate>common.label.status</span>
                               <i *ngIf="controller.sortBy == 'syncState._text' && !controller.reverse"
@@ -311,6 +318,7 @@
                                [ngClass]="agent.compatibility === 'COMPATIBLE' ? 'text-success' : agent.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'"></i>&nbsp;
                             <span [innerHtml]="agent.version"></span>
                           </td>
+                          <td>{{agent.processLimit}}</td>
                           <td (click)="editAgent(agent, controller)">
                             <label class="label" *ngIf="agent.syncState"
                                    [ngClass]="coreService.getColor(agent.syncState.severity, 'bg')"
@@ -399,6 +407,13 @@
                               <i *ngIf="controller.sortBy2 == 'version' && !controller.reverse2"
                                  class="fa fa-caret-up "></i>
                               <i *ngIf="controller.sortBy2 == 'version' && controller.reverse2"
+                                 class="fa fa-caret-down "></i></a>
+                          </th>
+                          <th (click)="sort(controller, 'processLimit', true)">
+                            <a><span class="p-r-xs" translate>agent.label.processLimit</span>
+                              <i *ngIf="controller.sortBy2 == 'processLimit' && !controller.reverse2"
+                                 class="fa fa-caret-up "></i>
+                              <i *ngIf="controller.sortBy2 == 'processLimit' && controller.reverse2"
                                  class="fa fa-caret-down "></i></a>
                           </th>
                           <th nzWidth="140px" (click)="sort(controller, 'clusterWatcher', true)">
@@ -520,6 +535,7 @@
                                  [ngClass]="clusterAgent.compatibility === 'COMPATIBLE' ? 'text-success' : clusterAgent.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'"></i>&nbsp;
                               <span [innerHtml]="clusterAgent.version"></span>
                             </td>
+                            <td>{{clusterAgent.processLimit}}</td>
                             <td
                               (click)="editAgent(clusterAgent, controller, true)">{{(clusterAgent.isClusterWatcher ? 'common.label.yes' : 'common.label.no') | translate}}</td>
                             <td>

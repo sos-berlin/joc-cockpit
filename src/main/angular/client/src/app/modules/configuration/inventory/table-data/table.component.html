@@ -165,7 +165,7 @@
                     <a translate>inventory.button.rename</a></li>
                   <li (click)="addTags(data);" *ngIf="permission.joc.inventory.manage && objectType === 'WORKFLOW'"
                       nz-menu-item>
-                    <a translate>inventory.button.addTags</a>
+                    <a translate>inventory.button.manageTags</a>
                   </li>
                   <li *ngIf="permission.joc.inventory.manage" nz-menu-divider>
                   <li (click)="deployObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'"

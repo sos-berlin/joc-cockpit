@@ -111,6 +111,17 @@
       </div>
     </div>
     <div class="form-group row">
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>inventory.label.tags</label>
+      <div class=" col-sm-6">
+        <nz-select [(ngModel)]="filter.tags" name="tag" nzAllowClear nzMode="multiple"
+                   nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
+                   nzShowSearch>
+          <nz-option *ngFor="let tag of tags" [nzLabel]="tag"
+                     [nzValue]="tag"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>common.label.state</label>
       <div [ngClass]="{'col-md-6': isSearch}" class="col-sm-8">
         <nz-radio-group name="state" [(ngModel)]="filter.state">

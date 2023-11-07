@@ -100,6 +100,7 @@
   "JobParallelismLimitReached": "Job Parallelism Limit Reached",
   "OrderNotExisting": "Order does not exist",
   "WorkflowIsSuspended": "Workflow is suspended",
+  "AgentProcessLimitReached": "Agent Process Limit Reached",
   "UPTODATE": "up to date",
   "CONFLICT": "in conflict",
   "CHANGED": "changed",
@@ -208,6 +209,7 @@
     "label.exportAgentConfiguration": "Export Agent Configuration",
     "label.importAgentConfiguration": "Import Agent Configuration",
     "label.clusterState": "Cluster Status",
+    "label.processLimit": "Process Limit",
     "button.createToken": "Create one-time Token",
     "button.addAgent": "Add Standalone Agent",
     "button.addSubagent": "Add Subagent",
@@ -248,6 +250,7 @@
     "tooltip.asStandaloneAgent": "A Standalone Agent or a Director Agent of an Agent Cluster can act as a Cluster Watch. The Agent specified will be created as a Standalone Agent if this checkbox is checked.",
     "tooltip.primaryDirectorId": "The Director Agent ID is a unique identifier of a Director Agent that cannot be changed during the Agent's lifetime. For Director Agent IDs most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
     "tooltip.hidden": "Agents can be hidden to prevent them from being displayed in the JOC Cockpit user interface. This applies to the DASHBOARD view as well as to all occurrences where Agents are assigned.",
+    "tooltip.processLimit": "Process Limit",
     "cluster": {
       "tooltip.agentClusterName": "The Agent Cluster Name is a unique identifier of the Agent Cluster that cannot be changed during the Agent Cluster's lifetime. For Agent Cluster Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.subagentId": "The Subagent ID is a unique identifier of a Director Agent that cannot be changed during the Director Agent's lifetime. For Subagent IDs most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -255,6 +258,7 @@
       "tooltip.url": "The URL of a Director Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Director Agent, e.g. http://localhost:4445",
       "tooltip.withGenerateSubagentCluster": "A Director Agent can be set up as a separate Subagent Cluster that includes this single Director Agent. This allows jobs to be run specifically on a Director Agent.",
       "tooltip.agentNameAliases": "An Agent Cluster can be assigned a number of Alias Names. The Agent Cluster can be assigned to a job or File Order Source using its Alias Name. For Alias Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+      "tooltip.processLimit": "Process Limit",
       "subagent": {
         "tooltip.clusterName": "The Subagent Cluster Name is a unique identifier of the Subagent Cluster that cannot be changed during the Subagent Cluster's lifetime. For Subagent Cluster Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "tooltip.title": "The Title of a Subagent Cluster can be specified as desired."
@@ -562,6 +566,7 @@
     "placeholder.title": "Enter the title",
     "placeholder.enterSecond": "HH:MM:[SS] + SECONDS",
     "placeholder.processExecuted": "now-SECONDS, today, yesterday, -1(h|d|w|M|y) or 08:00am to 08:00pm, -1(h|d|w|M|y) to -1(h|d|w|M|y)",
+    "placeholder.processLimit": "Enter a Process Limit",
     "message.noDataAvailable": "no data available",
     "message.requiredError": "Input to this field is required",
     "message.invalid": "Invalid Input",
@@ -3410,6 +3415,7 @@
     "label.stopOnFailure": "Stop On Failure",
     "label.references": "References",
     "label.onlyOnePeriod": "One period only",
+    "label.selectTags": "Select Tags",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",

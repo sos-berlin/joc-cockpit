@@ -17,6 +17,7 @@ import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
 import {ExcelService} from '../../services/excel.service';
 import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
+import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
 
 declare const $: any;
 
@@ -529,7 +530,7 @@ export class WorkflowComponent {
   savedFilter: any = {};
   filterList: any = [];
   data = [];
-  tags = [];
+  allTags = [];
   sideBar: any = {};
   reloadState = 'no';
   isTagLoaded = false;
@@ -825,25 +826,30 @@ export class WorkflowComponent {
     }
     if (this.workflowFilters.isTag) {
       this.selectedTags = this.workflowFilters.selectedTags;
-      const dom = $('.scroll-y');
-      if (dom && dom.position()) {
-        let top = dom.position().top + 12;
-        top = top - $(window).scrollTop();
-        if (top < 70) {
-          top = 92;
-        }
-        if (top < 150 && top > 140) {
-          top = 150;
-        }
-        $('.sticky').css('top', top);
-      }
+      this.calTop();
       this.switchToTagging(true, () => {
         const obj: any = {
           tags: Array.from(this.workflowFilters.selectedTags),
           controllerId: this.schedulerIds.selected
         };
         this.getWorkflowList(obj);
+        this.calTop();
       });
+    }
+  }
+
+  private calTop(): void{
+    const dom = $('.scroll-y');
+    if (dom && dom.position()) {
+      let top = dom.position().top + 12;
+      top = top - $(window).scrollTop();
+      if (top < 70) {
+        top = 92;
+      }
+      if (top < 150 && top > 140) {
+        top = 150;
+      }
+      $('.sticky').css('top', top);
     }
   }
 
@@ -951,6 +957,9 @@ export class WorkflowComponent {
     if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
       if (this.selectedFiltered.agentNames && this.selectedFiltered.agentNames.length > 0) {
         obj.agentNames = this.selectedFiltered.agentNames;
+      }
+      if (this.selectedFiltered.tags && this.selectedFiltered.tags.length > 0) {
+        obj.tags = this.selectedFiltered.tags;
       }
     } else {
       if (this.workflowFilters.filter.agentNames && this.workflowFilters.filter.agentNames.length > 0) {
@@ -1338,16 +1347,16 @@ export class WorkflowComponent {
     this.data = [];
     this.isTagLoaded = false;
     if (flag) {
-      this.fetchWorkflowTags(cb);
+      this.fetchTags(cb);
     } else {
       this.selectedTags.clear();
     }
   }
 
-  private fetchWorkflowTags(cb?): void {
+  private fetchTags(cb?): void {
     this.coreService.post('tags', {}).subscribe({
       next: (res) => {
-        this.tags = res.tags;
+        this.allTags = res.tags;
         this.isTagLoaded = true;
         if (cb) {
           cb();
@@ -1358,6 +1367,22 @@ export class WorkflowComponent {
           cb();
         }
       }
+    });
+  }
+
+  selectTags(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateTagModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        filters: this.workflowFilters,
+        allTags: this.allTags
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -1425,6 +1450,9 @@ export class WorkflowComponent {
     }
     if (this.searchFilter.agentNames && this.searchFilter.agentNames.length > 0) {
       obj.agentNames = this.searchFilter.agentNames;
+    }
+    if (this.searchFilter.tags && this.searchFilter.tags.length > 0) {
+      obj.tags = this.searchFilter.tags;
     }
 
     this.getWorkflowList(obj);
