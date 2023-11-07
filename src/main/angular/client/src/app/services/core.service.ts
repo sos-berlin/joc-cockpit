@@ -146,7 +146,8 @@ export class CoreService {
     };
 
     this.tabs._workflow = {
-      selectedIndex : 0
+      selectedIndex : 0,
+      tags: []
     };
     this.tabs._workflow.filter = {};
     this.tabs._workflow.historyFilter = {
@@ -182,7 +183,9 @@ export class CoreService {
     this.tabs._workflowDetail.panelSize2 = 450;
     this.tabs._workflowDetail.pageView = 'list';
 
-    this.tabs._daliyPlan = {};
+    this.tabs._daliyPlan = {
+      tags: []
+    };
     this.tabs._daliyPlan.filter = {};
     this.tabs._daliyPlan.projection = {
       calView: 'Month',

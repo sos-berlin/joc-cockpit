@@ -20,6 +20,7 @@ import {SaveService} from '../../services/save.service';
 import {DataService} from '../../services/data.service';
 import {ExcelService} from '../../services/excel.service';
 import {ExportComponent} from "./projection/projection.component";
+import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
 
 declare const JSGantt: any;
 declare let jsgantt: any;
@@ -496,7 +497,8 @@ export class FilterModalComponent {
   preferences: any = {};
   permission: any = {};
 
-  allFilter: any
+  allFilter: any;
+  tags: any;
   new = false;
   edit = false;
   filter: any;
@@ -508,6 +510,7 @@ export class FilterModalComponent {
 
   ngOnInit(): void {
     this.allFilter = this.modalData.allFilter;
+    this.tags = this.modalData.tags;
     this.new = this.modalData.new;
     this.edit = this.modalData.edit;
     this.filter = this.modalData.filter;
@@ -556,6 +559,7 @@ export class SearchComponent {
   @Input() preferences: any;
   @Input() allFilter: any;
   @Input() permission: any;
+  @Input() tags: any = [];
   @Input() isSearch: boolean;
 
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
@@ -725,13 +729,16 @@ export class DailyPlanComponent {
   isPathDisplay = false;
   totalOrders: number;
   totalFinishedOrders: number;
-  isDelete = false;
+
 
   selectedYear: any;
   selectedMonth: any;
 
   weekStart = 1;
   dateFormat: string;
+  allTags = [];
+  isTagLoaded = false;
+  selectedTags = new Set();
 
   object = {
     mapOfCheckedId: new Map(),
@@ -952,7 +959,9 @@ export class DailyPlanComponent {
       if (this.dailyPlanFilters.filter.late) {
         obj.late = true;
       }
-
+      if (this.dailyPlanFilters.tags) {
+        obj.tags = this.dailyPlanFilters.tags;
+      }
       obj.limit = this.preferences.maxDailyPlanRecords;
       this.coreService.post('daily_plan/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
         next: (res: any) => {
@@ -2377,6 +2386,7 @@ export class DailyPlanComponent {
     } else {
       this.reloadDailyPlan();
     }
+    this.fetchTags();
   }
 
   private reloadDailyPlan(): void {
@@ -2596,13 +2606,6 @@ export class DailyPlanComponent {
 
   private filterData(planItems): void {
     const allPlanned = planItems.every((order) => order.state._text === 'PLANNED');
-    if (allPlanned && planItems.length > 0) {
-     this.isDelete = false;
-
-    } else {
-
-      this.isDelete = true;
-    }
 
     if (!planItems || planItems.length === 0) {
       this.dailyPlanFilters.currentPage = 1;
@@ -2653,6 +2656,48 @@ export class DailyPlanComponent {
     }
   }
 
+  private fetchTags(): void {
+    this.coreService.post('tags', {}).subscribe({
+      next: (res) => {
+        this.allTags = res.tags;
+        this.isTagLoaded = true;
+      }, error: () => {
+        this.isTagLoaded = true;
+      }
+    });
+  }
+
+  onTagChecked(tag, checked: boolean): void {
+    if (checked) {
+      this.selectedTags.add(tag);
+    } else {
+      this.selectedTags.delete(tag);
+    }
+    this.loadOrderPlan();
+  }
+
+  selectTags(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateTagModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        filters: this.dailyPlanFilters,
+        allTags: this.allTags
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
+  selectTag(tag: string): void {
+    this.selectedTags.clear();
+    this.selectedTags.add(tag);
+    this.loadOrderPlan();
+  }
+
   /* ---- Begin Customization ------ */
 
   createCustomization(): void {
@@ -2664,6 +2709,7 @@ export class DailyPlanComponent {
         nzData: {
           permission: this.permission,
           allFilter: this.filterList,
+          tags: this.allTags,
           new: true
         },
         nzFooter: null,
@@ -2788,6 +2834,7 @@ export class DailyPlanComponent {
           nzData: {
             permission: this.permission,
             allFilter: this.filterList,
+            tags: this.allTags,
             filter: filterObj,
             edit: !isCopy
           },

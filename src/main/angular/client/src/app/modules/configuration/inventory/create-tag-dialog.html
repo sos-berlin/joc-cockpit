@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title" *ngIf="!data && !isRename">
-    <span translate>inventory.label.addTags</span>
+    <span *ngIf="!filters" translate>inventory.label.addTags</span>
+    <span *ngIf="filters" translate>workflow.label.selectTags</span>
   </h4>
   <h4 class="modal-title" *ngIf="isRename">
     <span translate>inventory.label.renameTag</span>
@@ -22,7 +23,7 @@
       <label class="col-md-3 form-control-label" translate>inventory.label.tags
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-md-6">
+      <div class="col-md-6" *ngIf="!filters">
         <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
           <nz-tag
             *ngFor="let tag of tags; let i = index"
@@ -54,14 +55,22 @@
           </div>
         </div>
       </div>
+      <div class="col-sm-6" *ngIf="filters">
+        <nz-select [(ngModel)]="filter.tags" name="tag" nzAllowClear nzMode="multiple"
+                   nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
+                   nzShowSearch>
+          <nz-option *ngFor="let tag of allTags" [nzLabel]="tag"
+                     [nzValue]="tag"></nz-option>
+        </nz-select>
+      </div>
     </div>
     <div class="form-group row" *ngIf="isRename">
       <label class="col-md-3 form-control-label" translate>inventory.label.tagName
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
-        <input #name="ngModel" [(ngModel)]="tag.name" [appAutofocus]="true" autocomplete="off" class="form-control"
-               name="name" required type="text">
+      <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}" class="col-md-6">
+        <input #name="ngModel" identifierValidation (blur)="checkValidInput()" [(ngModel)]="tag.name" [appAutofocus]="true" autocomplete="off" class="form-control"
+               name="name" required type="text" (ngModelChange)="isUnique = true">
         <div *ngIf="name.invalid && (name.dirty || name.touched)"
              class="text-danger help-block">
           <div *ngIf="(name.errors && name.errors.required)">
@@ -69,11 +78,14 @@
           </div>
           <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
         </div>
+        <div *ngIf="!isUnique && !(name.errors && name.errors.required)" class="help-block text-danger">
+          <div translate>common.message.uniqueError</div>
+        </div>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
+    <button [disabled]="!myForm.form.valid || submitted || !isUnique" class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}

@@ -926,6 +926,7 @@ export class XmlEditorComponent {
   @HostListener('window:beforeunload', ['$event'])
   beforeunload(): void {
     if (this.nodes && this.nodes.length > 0 && !this.isStore) {
+      this.isChange = true;
       this.storeXML();
     }
   }
@@ -941,6 +942,7 @@ export class XmlEditorComponent {
       }
     }
     if (this.nodes && this.nodes.length > 0 && !this.isStore) {
+      this.isChange = true;
       this.storeXML();
     }
     this.coreService.tabs._configuration.state = (this.objectType === 'YADE' || !this.objectType) ? 'file_transfer' : this.objectType.toLowerCase();
@@ -1354,6 +1356,7 @@ export class XmlEditorComponent {
     this.selectedTabIndex = index;
     if (this.activeTab.id > -1 && this.activeTab.id !== tab.id) {
       this.isLoading = true;
+      this.isChange = true;
       this.storeXML(this.activeTab, true);
     }
     if (this.activeTab.id !== tab.id) {
@@ -4958,6 +4961,7 @@ export class XmlEditorComponent {
         }
       }
     } else {
+      this.isChange = true;
       this.storeXML(this.activeTab, true);
       this.nodes = [];
       this.selectedNode = {};
@@ -5021,6 +5025,7 @@ export class XmlEditorComponent {
         this.submitXsd = true;
         this.prevXML = '';
         this.isLoading = false;
+        this.isChange = true;
         this.storeXML(this.activeTab);
       }, error: (error) => {
         this.isLoading = false;
@@ -5066,6 +5071,7 @@ export class XmlEditorComponent {
         this.showSelectSchema = false;
         this.prevXML = '';
         this.schemaIdentifier = res.schemaIdentifier;
+        this.isChange = true;
         this.storeXML(this.activeTab);
         this.path = res.schemaIdentifier;
         this.selectedXsd = res.schemaIdentifier;
@@ -6025,6 +6031,7 @@ export class XmlEditorComponent {
         this.selectedNodeDoc = this.checkText(this.nodes[0]);
         this.isLoading = false;
         this.submitXsd = true;
+        this.isChange = true;
         this.prevXML = '';
         if (_tempArrToExpand && _tempArrToExpand.length > 0) {
           setTimeout(() => {
@@ -6090,6 +6097,7 @@ export class XmlEditorComponent {
           this.path = res.schema;
           this.loadTree(res.schema, false);
           this.submitXsd = true;
+          this.isChange = true;
           this.extraInfo = {
             released: res.released,
             state: res.state,
