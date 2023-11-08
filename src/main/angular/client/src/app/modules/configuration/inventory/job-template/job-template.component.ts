@@ -352,6 +352,7 @@ export class JobTemplateComponent {
   objectType = InventoryObject.JOBTEMPLATE;
 
   indexOfNextAdd = 0;
+  selectedIndex = 0;
   history = [];
   isRuntimeVisible = false;
   jobResourcesTree = [];
