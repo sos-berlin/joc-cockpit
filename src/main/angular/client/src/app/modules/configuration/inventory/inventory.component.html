@@ -159,10 +159,10 @@
           <a (click)="treeSearch()" *ngIf="!isTrash && !isTag" class="trash search-icon">
             <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
           </a>
-          <a (click)="addTags()" *ngIf="isTag" class="trash search-icon">
+          <a (click)="addTags()" *ngIf="isTag" class="trash search-icon" [ngClass]="{'r-18': isTag}">
             <i [nzType]="'plus'" nz-icon nzTheme="outline"></i>
           </a>
-          <a (click)="switchToTrash(true)" *ngIf="!isTrash" class="trash notify ">
+          <a (click)="switchToTrash(true)" *ngIf="!isTrash && !isTag" class="trash notify">
             <i [nzType]="'delete'" nz-icon nzTheme="outline"></i>
           </a>
           <a (click)="switchToTrash(false)" *ngIf="isTrash" class="rollback">
