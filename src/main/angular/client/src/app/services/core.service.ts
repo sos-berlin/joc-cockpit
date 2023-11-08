@@ -19,6 +19,7 @@ declare const $: any;
 })
 export class CoreService {
   tabs: any = {};
+  selectedTags: any = [];
   dashboard: any = {};
   locales: any = [];
   expertMode: string | undefined | null;
@@ -146,8 +147,7 @@ export class CoreService {
     };
 
     this.tabs._workflow = {
-      selectedIndex : 0,
-      tags: []
+      selectedIndex : 0
     };
     this.tabs._workflow.filter = {};
     this.tabs._workflow.historyFilter = {
@@ -183,9 +183,7 @@ export class CoreService {
     this.tabs._workflowDetail.panelSize2 = 450;
     this.tabs._workflowDetail.pageView = 'list';
 
-    this.tabs._daliyPlan = {
-      tags: []
-    };
+    this.tabs._daliyPlan = {};
     this.tabs._daliyPlan.filter = {};
     this.tabs._daliyPlan.projection = {
       calView: 'Month',
@@ -399,6 +397,12 @@ export class CoreService {
     this.tabs._agentCluster.currentPage = '1';
 
     this.tabs._deployment = {};
+  }
+
+  removeDuplicates() {
+    this.selectedTags = this.selectedTags.filter((obj, index, self) =>
+      index === self.findIndex((o) => o.name === obj.name)
+    );
   }
 
   setSearchResult(type: string, result: any): void {

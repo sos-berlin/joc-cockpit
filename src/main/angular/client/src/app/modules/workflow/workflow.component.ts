@@ -2235,7 +2235,8 @@ export class WorkflowComponent {
   }
 
   selectTagOnSearch(tag): void{
-    this.workflowFilters.tags.push(tag);
+    this.coreService.selectedTags.push(tag);
+    this.coreService.removeDuplicates();
   }
 
   objectTreeSearch() {

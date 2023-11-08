@@ -2903,7 +2903,8 @@ export class DailyPlanComponent {
   }
 
   selectTagOnSearch(tag): void{
-    this.dailyPlanFilters.tags.push(tag);
+    this.coreService.selectedTags.push(tag);
+    this.coreService.removeDuplicates();
   }
 
   objectTreeSearch() {
