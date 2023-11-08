@@ -2922,6 +2922,27 @@ export class DailyPlanComponent {
     this.searchTerm.next(searchValue);
   }
 
+  selectAllTags(): void{
+    this.coreService.post('workflows/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe({
+      next: (res: any) => {
+        this.coreService.selectedTags = res.results;
+        this.coreService.selectedTags.forEach(tag => {
+          this.selectedTags.add(tag.name)
+        });
+        this.loadOrderPlan();
+      }
+    });
+  }
+
+  removeAllTags(): void{
+    this.coreService.selectedTags = [];
+    this.selectedTags.clear();
+    this.loadOrderPlan();
+  }
+
   reload(): void {
     if (this.reloadState === 'no') {
       this.planOrders = [];

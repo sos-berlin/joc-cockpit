@@ -3416,6 +3416,8 @@
     "label.references": "Referenzen",
     "label.onlyOnePeriod": "Nur eine Periode",
     "label.selectTags": "Schlagwörter auswählen",
+    "label.selectAllTags": "Select All Tags",
+    "label.removeAllTags": "Remove All Tags",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
