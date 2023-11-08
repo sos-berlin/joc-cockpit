@@ -9,6 +9,7 @@ export class MultiSelectComponent {
   @Input() type: string;
   @Input() attribute: string;
   @Input() pathAttribute: string;
+  @Input() controllerId: string;
   @Input() nodes: any = [];
   @Input() list: any = {};
   @Input() addFolderPossible: boolean;

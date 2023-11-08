@@ -272,13 +272,13 @@
               <span [ngClass]="data.objectType=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'" class="label">
                 {{data.objectType | translate}}</span>
           </td>
+          <td (click)="editObject(data)">
+            {{data.modified | stringToDate}}
+          </td>
           <td (click)="editObject(data)" *ngIf="inventoryService.checkDeploymentStatus.isChecked && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'"
               class="cursor">
             <span *ngIf="data.syncState" [ngClass]="coreService.getColor(data.syncState.severity, 'bg')"
                   class="label">{{data.syncState._text | translate}}</span>
-          </td>
-          <td>
-            {{data.modified | stringToDate}}
           </td>
         </tr>
       </ng-template>

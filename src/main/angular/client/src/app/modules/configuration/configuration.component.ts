@@ -50,7 +50,7 @@ export class ConfigurationComponent implements AfterViewInit, OnDestroy {
         if (this.router.url.match(/file_transfer/) || this.router.url.match(/other/)) {
           top = top + 44;
         } else if (this.router.url.match(/inventory/)) {
-          top = top - 4;
+          top = top - 2;
         }
 
         if (top < 150 && top > 140) {

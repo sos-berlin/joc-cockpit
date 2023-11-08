@@ -171,7 +171,7 @@
                  translate>workflow.label.jobClass</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <nz-select [(ngModel)]="job.configuration.executable.TYPE"
-                       name="executableType" (ngModelChange)="saveJSON()" >
+                       name="executableType" (ngModelChange)="reloadScript();saveJSON()" >
               <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ShellScriptExecutable'"></nz-option>
               <nz-option [nzLabel]="'workflow.label.jitl' | translate" [nzValue]="'InternalExecutable'"></nz-option>
               <nz-option [nzLabel]="'workflow.label.java' | translate" [nzValue]="'Java'"></nz-option>
@@ -189,7 +189,7 @@
                   <sup class="text-danger text-sm">*</sup>
                 </ng-template>
                 <div class="row">
-                  <div class="col-md-12">
+                  <div *ngIf="isDisplay" class="col-md-12">
                     <div *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" id="show-tree"
                          style="min-width: 150px;">
                       <app-search-input (onBlur)="onBlurTree($event)" (onSelect)="checkExpectNoticeExp($event)"

@@ -116,8 +116,8 @@
         <nz-select [(ngModel)]="filter.tags" name="tag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
                    nzShowSearch>
-          <nz-option *ngFor="let tag of tags" [nzLabel]="tag"
-                     [nzValue]="tag"></nz-option>
+          <nz-option *ngFor="let tag of tags" [nzLabel]="tag.name"
+                     [nzValue]="tag.name"></nz-option>
         </nz-select>
       </div>
     </div>

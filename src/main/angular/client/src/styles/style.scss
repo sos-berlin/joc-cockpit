@@ -9301,7 +9301,7 @@ cdk-virtual-scroll-viewport {
   margin-top: -4px;
 }
 
-#objectTreeSearch {
+#objectTreeSearch, #objectTagSearch, #dailyTagSearch {
   width: 10px;
   transition: all .5s ease-in-out;
   position: absolute;
@@ -9323,6 +9323,22 @@ cdk-virtual-scroll-viewport {
   }
 }
 
+#objectTagSearch {
+  margin-left: -2px;
+  &:focus {
+    width: calc(100% - 40px);
+  }
+}
+
+#dailyTagSearch {
+  background: var(--bg-box);
+  margin-left: -2px;
+  margin-top: -26px !important;
+  &:focus {
+    width: calc(100% - 34px);
+  }
+}
+
 .tree-search-icon {
   display: none;
   position: absolute;
@@ -9331,6 +9347,14 @@ cdk-virtual-scroll-viewport {
   color: var(--text-muted);
   background: var(--background-color);
   z-index: 999;
+}
+
+.dailyTagSearch {
+  .tree-search-icon {
+    top: 18px;
+    right: 28px;
+    background: var(--bg-box);
+  }
 }
 
 .input-tree-search:focus ~ .tree-search-icon {
