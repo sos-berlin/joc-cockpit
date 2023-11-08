@@ -549,7 +549,7 @@ export class WorkflowComponent {
     isResume: false,
   };
 
-  selectedTags = new Set();
+
   searchTag = {
     loading: false,
     token: '',
@@ -616,10 +616,6 @@ export class WorkflowComponent {
       }
     }
 
-
-    if (this.workflowFilters.isTag) {
-      this.workflowFilters.selectedTags = this.selectedTags;
-    }
     if (this.child) {
       this.workflowFilters.expandedKeys = this.child.defaultExpandedKeys;
       if (!this.workflowFilters.isTag) {
@@ -738,13 +734,13 @@ export class WorkflowComponent {
 
   onTagChecked(tag, checked: boolean): void {
     if (checked) {
-      this.selectedTags.add(tag);
+      this.coreService.checkedTags.add(tag);
     } else {
-      this.selectedTags.delete(tag);
+      this.coreService.checkedTags.delete(tag);
     }
-    if (this.selectedTags.size) {
+    if (this.coreService.checkedTags.size) {
       const obj: any = {
-        tags: Array.from(this.selectedTags),
+        tags: Array.from(this.coreService.checkedTags),
         controllerId: this.schedulerIds.selected
       };
       this.getWorkflowList(obj);
@@ -835,16 +831,12 @@ export class WorkflowComponent {
       this.initTree();
     }
     if (this.workflowFilters.isTag) {
-      this.selectedTags = this.workflowFilters.selectedTags;
       this.calTop();
-      this.switchToTagging(true, () => {
-        const obj: any = {
-          tags: Array.from(this.workflowFilters.selectedTags),
-          controllerId: this.schedulerIds.selected
-        };
-        this.getWorkflowList(obj);
+      this.switchToTagging(true);
+
+      setTimeout(() =>{
         this.calTop();
-      });
+      }, 100);
     }
     //200ms Delay in search
     this.searchTerm.pipe(debounceTime(200))
@@ -864,6 +856,7 @@ export class WorkflowComponent {
       if (top < 150 && top > 140) {
         top = 150;
       }
+
       $('.sticky').css('top', top);
     }
   }
@@ -1356,15 +1349,19 @@ export class WorkflowComponent {
     this.loadWorkflow();
   }
 
-  switchToTagging(flag, cb?): void {
+  switchToTagging(flag): void {
     this.workflowFilters.isTag = flag;
     this.workflows = [];
     this.data = [];
-    if (flag) {
-
+    const obj: any = {
+      controllerId: this.schedulerIds.selected
+    };
+    if(flag){
+      obj.tags = Array.from(this.coreService.checkedTags);
     } else {
-      this.selectedTags.clear();
+      obj.folders = [{folder: '/', recursive: true}];
     }
+    this.getWorkflowList(obj);
   }
 
 
@@ -1381,7 +1378,20 @@ export class WorkflowComponent {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    }).afterClose.subscribe(res => {
+      if (res) {
+        const obj: any = {
+          tags: [],
+          controllerId: this.schedulerIds.selected
+        };
+        this.coreService.selectedTags.forEach(tag => {
+          obj.tags.push(tag.name);
+          this.coreService.checkedTags.add(tag.name);
+        });
+        this.getWorkflowList(obj);
+      }
     });
+
   }
 
   selectAllTags(): void{
@@ -1397,7 +1407,7 @@ export class WorkflowComponent {
         };
         this.coreService.selectedTags.forEach(tag => {
           obj.tags.push(tag.name);
-          this.selectedTags.add(tag.name);
+          this.coreService.checkedTags.add(tag.name);
         });
 
         this.getWorkflowList(obj);
@@ -1407,7 +1417,7 @@ export class WorkflowComponent {
 
   removeAllTags(): void{
     this.coreService.selectedTags = [];
-    this.selectedTags.clear();
+    this.coreService.checkedTags.clear();
     const obj: any = {
       tags: [],
       controllerId: this.schedulerIds.selected
@@ -1416,8 +1426,8 @@ export class WorkflowComponent {
   }
 
   selectTag(tag: string): void {
-    this.selectedTags.clear();
-    this.selectedTags.add(tag);
+    this.coreService.checkedTags.clear();
+    this.coreService.checkedTags.add(tag);
     const obj: any = {
       tags: [tag],
       controllerId: this.schedulerIds.selected
