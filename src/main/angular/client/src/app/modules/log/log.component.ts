@@ -1,4 +1,4 @@
-import {Component, HostListener, ViewChild, ElementRef} from '@angular/core';
+import {Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {isArray, isEmpty} from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
@@ -47,6 +47,8 @@ export class LogComponent {
   treeStructure = [];
   nodes = [];
   isChildren: boolean;
+
+  expandedNodes = [];
 
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
@@ -172,7 +174,7 @@ export class LogComponent {
         }
       }, 0);
     } else {
-      if(close && close[0] && close[0].style) {
+      if (close && close[0] && close[0].style) {
         close[0].style.display = 'none';
         open[0].style.display = 'none';
       }
@@ -180,10 +182,14 @@ export class LogComponent {
   }
 
   openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
-    // do something if u want
     if (data instanceof NzTreeNode) {
       data.isExpanded = !data.isExpanded;
       data.origin['isExpanded'] = !data.origin['isExpanded'];
+      if (data.origin['isExpanded']) {
+        this.expandedNodes.push(data.origin.key);
+      } else {
+        this.expandedNodes.splice(this.expandedNodes.indexOf(data.origin.key), 1);
+      }
     } else {
       const node = data.node;
       if (node) {
@@ -590,7 +596,7 @@ export class LogComponent {
       if (dt[i].label) {
         col += ', label=' + dt[i].label;
       }
-      if(dt[i].position || dt[i].position == 0) {
+      if (dt[i].position || dt[i].position == 0) {
         col += ', pos=' + dt[i].position;
       }
       if (dt[i].agentDatetime) {
@@ -765,6 +771,7 @@ export class LogComponent {
       isChildren: this.isChildren
     };
     this.nodes = this.coreService.createTreeStructure(obj);
+    this.checkAndExpand();
     this.isChildren = obj.isChildren;
     this.loading = false;
   }
@@ -802,13 +809,30 @@ export class LogComponent {
     }
   }
 
+  private checkAndExpand(): void {
+    const self = this;
+    function traverseTree(data): void {
+      for (let i in data) {
+        if (data[i] && data[i].children && data[i].children.length > 0) {
+          if (self.expandedNodes.indexOf(data[i].key) > -1) {
+            data[i].expanded = true;
+          }
+          traverseTree(data[i].children);
+        }
+      }
+    }
+    traverseTree(this.nodes);
+  }
+
   expandAllTree(): void {
+    this.expandedNodes = [];
     this.traverseTree(this.nodes, true);
     this.nodes = [...this.nodes];
   }
 
   collapseAllTree(): void {
     this.traverseTree(this.nodes, false);
+    this.expandedNodes = [];
     this.nodes = [...this.nodes];
   }
 
@@ -816,6 +840,9 @@ export class LogComponent {
     for (let i in data) {
       if (data[i] && data[i].children && data[i].children.length > 0) {
         data[i].expanded = isExpand;
+        if(isExpand) {
+          this.expandedNodes.push(data[i].key);
+        }
         this.traverseTree(data[i].children, isExpand);
       }
     }

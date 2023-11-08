@@ -111,7 +111,7 @@
   <div class="sidebar sidebar-property-panel bg-white" id="property-panel">
     <div class="m-l-xs m-r-xs">
       <div style="padding: 12px">
-        <div *ngIf="isChildren" class="m-l m-b-xs">
+        <div *ngIf="isChildren" class="m-l-xs m-b-xs">
           <a class="text-primary-hover" (click)="expandAllTree();">
             <i class="fa fa-angle-double-down fa-lg"></i>
           </a>
@@ -131,8 +131,8 @@
                     [class.toggle-children-wrapper-expanded]="node.isExpanded"
                     [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
                     class="cursor w-14 m-l-xxs m-t-n-1">
-                  <i *ngIf="!node.isExpanded && !node.origin.loading" class="fa fa-caret-right"></i>
-                  <i *ngIf="node.isExpanded && !node.origin.loading" class="fa fa-caret-down"></i>
+                  <i *ngIf="!node.isExpanded" class="fa fa-caret-right"></i>
+                  <i *ngIf="node.isExpanded" class="fa fa-caret-down"></i>
               </span>
               <span *ngIf="node.origin.isLeaf || (!node.origin.children || node.origin.children.length === 0)"
                     class="w-16">
@@ -146,8 +146,8 @@
                 <i class="text-primary" *ngIf="node.origin.name1">&nbsp;({{node.origin.name1}})</i>
                 <i class="text-primary" *ngIf="node.origin.retryCount > 1 && node.origin.title == 'Retry'">&nbsp;(Total Tries {{node.origin.retryCount}})</i>
                 <span *ngIf="node.origin.logLevel == 'ERROR'">
-                    - (<i class="text-sm log_error">Failed</i>)
-                  </span>
+                  - (<i class="text-sm log_error">Failed</i>)
+                </span>
               </div>
             </div>
           </ng-template>

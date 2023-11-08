@@ -63,7 +63,7 @@ export class CreateTagModalComponent {
     if (this.modalData.filters) {
       this.filters = this.modalData.filters;
       this.controllerId = this.modalData.controllerId;
-      this.filter.tags = this.modalData.filters.tags;
+      this.filter.tags = this.coreService.selectedTags;
       this.fetchAllWorkflowTags();
     } else {
       this.preferences = this.modalData.preferences;
@@ -151,7 +151,8 @@ export class CreateTagModalComponent {
 
   onSubmit(): void {
     if (this.filters) {
-      this.filters.tags = this.filter.tags;
+      this.coreService.selectedTags = this.filter.tags;
+      this.coreService.removeDuplicates();
       this.activeModal.close('DONE');
     } else {
       this.submitted = true;

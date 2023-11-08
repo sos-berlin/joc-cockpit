@@ -598,7 +598,7 @@
                             </nz-autocomplete>
                           </div>
                         </div>
-                        <div class="w-full" *ngFor="let tag of dailyPlanFilters.tags | orderBy: 'ordering'">
+                        <div class="w-full" *ngFor="let tag of coreService.selectedTags | orderBy: 'ordering'">
                           <div class="node-wrapper p-l-xxs p-b-xxs">
                             <span class="w-14 m-l-xs m-r-12">
                               <label nz-checkbox [nzChecked]="selectedTags.has(tag.name)"
@@ -613,7 +613,7 @@
                           </div>
                         </div>
                       </div>
-                      <div *ngIf="dailyPlanFilters.tags && dailyPlanFilters.tags.length === 0"
+                      <div *ngIf="coreService.selectedTags && coreService.selectedTags.length === 0"
                            class="m-top-50">
                         <app-empty-data></app-empty-data>
                       </div>
