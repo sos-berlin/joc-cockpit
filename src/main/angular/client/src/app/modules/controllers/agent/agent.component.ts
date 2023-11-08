@@ -218,6 +218,7 @@ export class AgentModalComponent {
   display: any;
   required = false;
   secondaryDirector: any = {};
+  processLimitTry: string = 'unlimited';
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef) {
   }
@@ -238,6 +239,9 @@ export class AgentModalComponent {
     }
     if (this.data) {
       this.agent = this.coreService.clone(this.data);
+      if (this.agent.processLimit || this.agent.processLimit == 0) {
+        this.processLimitTry = 'limited';
+      }
       this.agent.subagents = sortBy(this.agent.subagents, 'isDirector');
       this.checkSecondaryDirector();
       delete this.agent.token;
@@ -274,6 +278,12 @@ export class AgentModalComponent {
 
   removeSubagent(list, index): void {
     list.splice(index, 1);
+  }
+
+  changeLimit(value): void {
+    if (value == 'unlimited') {
+      delete this.agent.processLimit;
+    }
   }
 
   private removeSubagents(obj, cb): void {

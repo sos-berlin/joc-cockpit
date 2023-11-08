@@ -6,7 +6,7 @@
 </div>
 <div *ngIf="object.isTreeShow" [ngStyle]="{'margin-top': list[attribute]?.length == 0 ? '-29px' : 'auto'}"
      class="z-index-9999 w-full" id="show-select-tree">
-  <app-search-input (onBlur)="onBlur($event)" (onSelect)="onSelect($event)" [addFolderPossible]="addFolderPossible" [changeDetect]="true"
+  <app-search-input [controllerId]="controllerId" (onBlur)="onBlur($event)" (onSelect)="onSelect($event)" [addFolderPossible]="addFolderPossible" [changeDetect]="true"
                     [folders]="folders" [isPath]="isPath" [list]="list[attribute]" [nodes]="nodes"
                     [pathAttribute]="pathAttribute" [type]="type"></app-search-input>
 </div>

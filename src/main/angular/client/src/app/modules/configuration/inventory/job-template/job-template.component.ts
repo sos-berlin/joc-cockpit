@@ -378,6 +378,7 @@ export class JobTemplateComponent {
   allowedDatatype = ['String', 'Number', 'Boolean'];
 
   isTreeShow = false;
+  isDisplay = true;
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -443,11 +444,13 @@ export class JobTemplateComponent {
 
   private getObject(): void {
     this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
+    this.isDisplay = false;
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, {
       path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
       objectType: this.objectType,
     }).subscribe((res: any) => {
+      this.isDisplay = true;
       this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;
@@ -734,6 +737,14 @@ export class JobTemplateComponent {
         this.documentationTree = this.coreService.prepareTree(res, true);
       });
     }
+  }
+
+  reloadScript(time = 5): void {
+    this.isDisplay = false;
+    setTimeout(() => {
+      this.isDisplay = true;
+      this.ref.detectChanges();
+    }, time);
   }
 
   release(): void {

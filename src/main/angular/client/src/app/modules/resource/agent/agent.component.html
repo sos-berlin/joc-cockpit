@@ -226,6 +226,12 @@
                     <i *ngIf="agentsFilters.filter.sortBy == 'version' && agentsFilters.reverse"
                        class="fa fa-caret-down "></i></a>
                   </th>
+                  <th (click)="sort('processLimit')"><a><span class="p-r-xs" translate>agent.label.processLimit</span>
+                    <i *ngIf="agentsFilters.filter.sortBy == 'processLimit' && !agentsFilters.reverse"
+                       class="fa fa-caret-up "></i>
+                    <i *ngIf="agentsFilters.filter.sortBy == 'processLimit' && agentsFilters.reverse"
+                       class="fa fa-caret-down "></i></a>
+                  </th>
                   <th (click)="sort('runningTasks')"><a><span class="p-r-xs" translate>agent.label.runningTasks</span>
                     <i *ngIf="agentsFilters.filter.sortBy == 'runningTasks' && !agentsFilters.reverse"
                        class="fa fa-caret-up "></i>
@@ -305,6 +311,7 @@
                       &nbsp;
                       {{cluster.version}}
                     </td>
+                    <td>{{cluster.processLimit}}</td>
                     <td>{{cluster.runningTasks}}</td>
                   </tr>
                   <ng-container *ngIf="cluster.showSubagent">

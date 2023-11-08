@@ -4,7 +4,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {clone, isArray, isEmpty} from 'underscore';
 import {Router} from '@angular/router';
-import {catchError, takeUntil} from 'rxjs/operators';
+import {catchError, debounceTime, takeUntil} from 'rxjs/operators';
 import {ToastrService} from 'ngx-toastr';
 import {NzMessageService} from "ng-zorro-antd/message";
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
@@ -592,6 +592,7 @@ export class SearchComponent {
     }
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getFolderTree();
+    this.fetchTags();
   }
 
   getFolderTree(): void {
@@ -608,6 +609,15 @@ export class SearchComponent {
       types: ['WORKFLOW']
     }).subscribe((res) => {
       this.workflowTree = this.coreService.prepareTree(res, false);
+    });
+  }
+
+  private fetchTags(): void {
+    this.coreService.post('workflows/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+      this.tags = res.results;
     });
   }
 
@@ -729,15 +739,11 @@ export class DailyPlanComponent {
   isPathDisplay = false;
   totalOrders: number;
   totalFinishedOrders: number;
-
-
   selectedYear: any;
   selectedMonth: any;
-
   weekStart = 1;
   dateFormat: string;
-  allTags = [];
-  isTagLoaded = false;
+
   selectedTags = new Set();
 
   object = {
@@ -757,6 +763,14 @@ export class DailyPlanComponent {
     {status: 'SUBMITTED', text: 'submitted'},
     {status: 'FINISHED', text: 'finished'}
   ];
+
+  searchTag = {
+    loading: false,
+    token: '',
+    tags: [],
+    text: ''
+  };
+  private searchTerm = new Subject<string>();
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -959,8 +973,8 @@ export class DailyPlanComponent {
       if (this.dailyPlanFilters.filter.late) {
         obj.late = true;
       }
-      if (this.dailyPlanFilters.tags) {
-        obj.tags = this.dailyPlanFilters.tags;
+      if (this.selectedTags.size) {
+        obj.tags = Array.from(this.selectedTags);
       }
       obj.limit = this.preferences.maxDailyPlanRecords;
       this.coreService.post('daily_plan/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
@@ -1194,6 +1208,12 @@ export class DailyPlanComponent {
         this.resetAction(5000);
         this.isCalendarClick = false;
         $('#full-calendar').data('calendar').clearRange();
+        if (this.dateRanges && this.dateRanges.length > 0) {
+          const _date = new Date(this.selectedDate).setHours(0, 0, 0, 0);
+          if (this.dateRanges[0] <= _date && this.dateRanges[1] >= _date) {
+            this.refreshView();
+          }
+        }
       }
     });
   }
@@ -1397,6 +1417,12 @@ export class DailyPlanComponent {
     this.coreService.post('daily_plan/orders/cancel', obj).subscribe({
       next: () => {
         this.resetAction(5000);
+        if (this.dateRanges && this.dateRanges.length > 0) {
+          const _date = new Date(this.selectedDate).setHours(0, 0, 0, 0);
+          if (this.dateRanges[0] <= _date && this.dateRanges[1] >= _date) {
+            this.refreshView();
+          }
+        }
       }, error: () => this.resetAction()
     });
     this.resetCheckBox();
@@ -1490,6 +1516,12 @@ export class DailyPlanComponent {
         this.isProcessing = true;
         this.resetCheckBox();
         this.resetAction(5000);
+        if (this.dateRanges && this.dateRanges.length > 0) {
+          const _date = new Date(this.selectedDate).setHours(0, 0, 0, 0);
+          if (this.dateRanges[0] <= _date && this.dateRanges[1] >= _date) {
+            this.refreshView();
+          }
+        }
       }
     });
   }
@@ -2386,7 +2418,11 @@ export class DailyPlanComponent {
     } else {
       this.reloadDailyPlan();
     }
-    this.fetchTags();
+    //200ms Delay in search
+    this.searchTerm.pipe(debounceTime(200))
+      .subscribe((searchValue: string) => {
+        this.searchObjects(searchValue);
+      });
   }
 
   private reloadDailyPlan(): void {
@@ -2605,8 +2641,6 @@ export class DailyPlanComponent {
   }
 
   private filterData(planItems): void {
-    const allPlanned = planItems.every((order) => order.state._text === 'PLANNED');
-
     if (!planItems || planItems.length === 0) {
       this.dailyPlanFilters.currentPage = 1;
     }
@@ -2656,17 +2690,6 @@ export class DailyPlanComponent {
     }
   }
 
-  private fetchTags(): void {
-    this.coreService.post('tags', {}).subscribe({
-      next: (res) => {
-        this.allTags = res.tags;
-        this.isTagLoaded = true;
-      }, error: () => {
-        this.isTagLoaded = true;
-      }
-    });
-  }
-
   onTagChecked(tag, checked: boolean): void {
     if (checked) {
       this.selectedTags.add(tag);
@@ -2684,7 +2707,7 @@ export class DailyPlanComponent {
       nzAutofocus: null,
       nzData: {
         filters: this.dailyPlanFilters,
-        allTags: this.allTags
+        controllerId: this.schedulerIds.selected
       },
       nzFooter: null,
       nzClosable: false,
@@ -2709,7 +2732,6 @@ export class DailyPlanComponent {
         nzData: {
           permission: this.permission,
           allFilter: this.filterList,
-          tags: this.allTags,
           new: true
         },
         nzFooter: null,
@@ -2834,7 +2856,6 @@ export class DailyPlanComponent {
           nzData: {
             permission: this.permission,
             allFilter: this.filterList,
-            tags: this.allTags,
             filter: filterObj,
             edit: !isCopy
           },
@@ -2853,6 +2874,52 @@ export class DailyPlanComponent {
   }
 
   /* ---- End Customization ------ */
+
+  /***************** Tag Search ***********/
+
+  private searchObjects(value: string) {
+    if (value !== '') {
+      const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
+      if (searchValueWithoutSpecialChars.length >= 2) {
+        this.searchTag.loading = true;
+        let request: any = {
+          search: value,
+          controllerId: this.schedulerIds.selected
+        };
+        if (this.searchTag.token) {
+          request.token = this.searchTag.token;
+        }
+        this.coreService.post('workflows/tag/search', request).subscribe({
+          next: (res: any) => {
+            this.searchTag.tags = res.results;
+            this.searchTag.token = res.token;
+            this.searchTag.loading = false;
+          }, error: () => this.searchTag.loading = true
+        });
+      }
+    } else {
+      this.searchTag.tags = [];
+    }
+  }
+
+  selectTagOnSearch(tag): void{
+    this.dailyPlanFilters.tags.push(tag);
+  }
+
+  objectTreeSearch() {
+    $('#dailyTagSearch').focus();
+    $('.daily-plan-tag  a').addClass('hide-on-focus');
+  }
+
+  clearSearchInput(): void {
+    this.searchTag.tags = [];
+    this.searchTag.text = '';
+    $('.daily-plan-tag  a').removeClass('hide-on-focus');
+  }
+
+  onSearchInput(searchValue: string) {
+    this.searchTerm.next(searchValue);
+  }
 
   reload(): void {
     if (this.reloadState === 'no') {

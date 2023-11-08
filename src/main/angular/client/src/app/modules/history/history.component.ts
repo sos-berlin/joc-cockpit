@@ -1929,7 +1929,7 @@ export class HistoryComponent {
     }
   }
 
-  advancedSearch(): void {
+  advancedSearch(skip = false): void {
     this.showSearchPanel = true;
     this.object.paths = [];
     this.object.orders = [];
@@ -1950,6 +1950,13 @@ export class HistoryComponent {
       endToDate: new Date(),
       endToTime: '23:59:59'
     };
+
+    if(skip){
+      delete this.orderSearch.endFromDate;
+      delete this.orderSearch.endFromTime;
+      delete this.orderSearch.endToDate;
+      delete this.orderSearch.endToTime;
+    }
 
     this.jobSearch = {
       radio: 'current',
@@ -3248,7 +3255,7 @@ export class HistoryComponent {
       }
       if (this.historyFilters.type === 'ORDER') {
         if (this.order.workflow) {
-          this.advancedSearch();
+          this.advancedSearch(true);
           this.orderSearch.workflowPath = this.order.workflow;
           if (this.order.fromDate) {
             this.orderSearch.fromDate = this.order.fromDate;
@@ -3261,7 +3268,7 @@ export class HistoryComponent {
         }
       } else if (this.historyFilters.type === 'TASK') {
         if (this.task.workflow) {
-          this.advancedSearch();
+          this.advancedSearch(true);
           this.jobSearch.workflowPath = this.task.workflow;
           if (this.task.fromDate) {
             this.jobSearch.fromDate = this.task.fromDate;

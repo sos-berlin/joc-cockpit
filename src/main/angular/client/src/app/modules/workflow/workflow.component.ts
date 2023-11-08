@@ -5,10 +5,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
 import {clone, isEmpty} from 'underscore';
-import {takeUntil} from 'rxjs/operators';
+import {debounceTime, takeUntil} from 'rxjs/operators';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {WorkflowActionComponent} from './workflow-action/workflow-action.component';
+import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
 import {PerfectScrollbarComponent} from "../perfect-scrollbar/perfect-scrollbar.component";
 import {AuthService} from '../../components/guard';
 import {SaveService} from '../../services/save.service';
@@ -17,7 +18,7 @@ import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
 import {ExcelService} from '../../services/excel.service';
 import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
-import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
+
 
 declare const $: any;
 
@@ -168,8 +169,11 @@ export class SearchComponent {
   }
 
   private fetchTags(): void {
-    this.coreService.post('tags', {}).subscribe((res) => {
-      this.tags = res.tags;
+    this.coreService.post('workflows/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+      this.tags = res.results;
     });
   }
 
@@ -530,10 +534,9 @@ export class WorkflowComponent {
   savedFilter: any = {};
   filterList: any = [];
   data = [];
-  allTags = [];
   sideBar: any = {};
   reloadState = 'no';
-  isTagLoaded = false;
+
   objectType = 'WORKFLOW';
   isPathDisplay = true;
   numOfAllOrders: any = {};
@@ -547,6 +550,13 @@ export class WorkflowComponent {
   };
 
   selectedTags = new Set();
+  searchTag = {
+    loading: false,
+    token: '',
+    tags: [],
+    text: ''
+  };
+  private searchTerm = new Subject<string>();
 
   searchableProperties = ['name', 'path', 'versionDate', 'state', '_text'];
 
@@ -836,9 +846,14 @@ export class WorkflowComponent {
         this.calTop();
       });
     }
+    //200ms Delay in search
+    this.searchTerm.pipe(debounceTime(200))
+      .subscribe((searchValue: string) => {
+        this.searchObjects(searchValue);
+      });
   }
 
-  private calTop(): void{
+  private calTop(): void {
     const dom = $('.scroll-y');
     if (dom && dom.position()) {
       let top = dom.position().top + 12;
@@ -1345,30 +1360,13 @@ export class WorkflowComponent {
     this.workflowFilters.isTag = flag;
     this.workflows = [];
     this.data = [];
-    this.isTagLoaded = false;
     if (flag) {
-      this.fetchTags(cb);
+
     } else {
       this.selectedTags.clear();
     }
   }
 
-  private fetchTags(cb?): void {
-    this.coreService.post('tags', {}).subscribe({
-      next: (res) => {
-        this.allTags = res.tags;
-        this.isTagLoaded = true;
-        if (cb) {
-          cb();
-        }
-      }, error: () => {
-        this.isTagLoaded = true;
-        if (cb) {
-          cb();
-        }
-      }
-    });
-  }
 
   selectTags(): void {
     this.modal.create({
@@ -1378,7 +1376,7 @@ export class WorkflowComponent {
       nzAutofocus: null,
       nzData: {
         filters: this.workflowFilters,
-        allTags: this.allTags
+        controllerId: this.schedulerIds.selected
       },
       nzFooter: null,
       nzClosable: false,
@@ -2206,5 +2204,52 @@ export class WorkflowComponent {
       this.loading = true;
       this.loadWorkflow();
     }
+  }
+
+  /***************** Tag Search ***********/
+
+  private searchObjects(value: string) {
+    if (value !== '') {
+      const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
+      if (searchValueWithoutSpecialChars.length >= 2) {
+        this.searchTag.loading = true;
+        let request: any = {
+          search: value,
+          controllerId: this.schedulerIds.selected
+        };
+        if (this.searchTag.token) {
+          request.token = this.searchTag.token;
+        }
+        this.coreService.post('workflows/tag/search', request).subscribe({
+          next: (res: any) => {
+            console.log(res)
+            this.searchTag.tags = res.results;
+            this.searchTag.token = res.token;
+            this.searchTag.loading = false;
+          }, error: () => this.searchTag.loading = true
+        });
+      }
+    } else {
+      this.searchTag.tags = [];
+    }
+  }
+
+  selectTagOnSearch(tag): void{
+    this.workflowFilters.tags.push(tag);
+  }
+
+  objectTreeSearch() {
+    $('#objectTagSearch').focus();
+    $('.editor-tree  a').addClass('hide-on-focus');
+  }
+
+  clearSearchInput(): void {
+    this.searchTag.tags = [];
+    this.searchTag.text = '';
+    $('.editor-tree  a').removeClass('hide-on-focus');
+  }
+
+  onSearchInput(searchValue: string) {
+    this.searchTerm.next(searchValue);
   }
 }
