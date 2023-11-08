@@ -3420,6 +3420,8 @@
     "label.references": "References",
     "label.onlyOnePeriod": "One period only",
     "label.selectTags": "Select Tags",
+    "label.selectAllTags": "Select All Tags",
+    "label.removeAllTags": "Remove All Tags",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",

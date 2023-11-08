@@ -1384,6 +1384,37 @@ export class WorkflowComponent {
     });
   }
 
+  selectAllTags(): void{
+    this.coreService.post('workflows/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe({
+      next: (res: any) => {
+        this.coreService.selectedTags = res.results;
+        const obj: any = {
+          tags: [],
+          controllerId: this.schedulerIds.selected
+        };
+        this.coreService.selectedTags.forEach(tag => {
+          obj.tags.push(tag.name);
+          this.selectedTags.add(tag.name);
+        });
+
+        this.getWorkflowList(obj);
+      }
+    });
+  }
+
+  removeAllTags(): void{
+    this.coreService.selectedTags = [];
+    this.selectedTags.clear();
+    const obj: any = {
+      tags: [],
+      controllerId: this.schedulerIds.selected
+    };
+    this.getWorkflowList(obj);
+  }
+
   selectTag(tag: string): void {
     this.selectedTags.clear();
     this.selectedTags.add(tag);

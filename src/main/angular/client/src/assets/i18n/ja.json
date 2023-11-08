@@ -3420,6 +3420,8 @@
     "label.references": "参照",
     "label.onlyOnePeriod": "１回のみ",
     "label.selectTags": "Select Tags",
+    "label.selectAllTags": "Select All Tags",
+    "label.removeAllTags": "Remove All Tags",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
