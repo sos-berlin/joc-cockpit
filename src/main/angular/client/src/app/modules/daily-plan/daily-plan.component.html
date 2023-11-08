@@ -607,11 +607,11 @@
                         <div class="w-full" *ngFor="let tag of coreService.selectedTags | orderBy: 'ordering'">
                           <div class="node-wrapper p-l-xxs p-b-xxs">
                             <span class="w-14 m-l-xs m-r-12">
-                              <label nz-checkbox [nzChecked]="selectedTags.has(tag.name)"
+                              <label nz-checkbox [nzChecked]="coreService.checkedTags.has(tag.name)"
                                      (nzCheckedChange)="onTagChecked(tag.name, $event)"></label>
                             </span>
                             <div class="node-content-wrapper"
-                                 [ngClass]="{'node-content-wrapper-active': selectedTags.has(tag.name)}"
+                                 [ngClass]="{'node-content-wrapper-active': coreService.checkedTags.has(tag.name)}"
                                  (click)="selectTag(tag.name)">
                               <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
                               <span class="p-l-xs">{{tag.name}}</span>

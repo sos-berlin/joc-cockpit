@@ -20,6 +20,7 @@ declare const $: any;
 export class CoreService {
   tabs: any = {};
   selectedTags: any = [];
+  checkedTags = new Set();
   dashboard: any = {};
   locales: any = [];
   expertMode: string | undefined | null;

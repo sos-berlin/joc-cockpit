@@ -744,7 +744,6 @@ export class DailyPlanComponent {
   weekStart = 1;
   dateFormat: string;
 
-  selectedTags = new Set();
 
   object = {
     mapOfCheckedId: new Map(),
@@ -798,6 +797,7 @@ export class DailyPlanComponent {
 
   ngOnDestroy(): void {
     this.dailyPlanFilters.selectedDate = this.selectedDate;
+
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.pendingHTTPRequests$.next();
@@ -973,8 +973,8 @@ export class DailyPlanComponent {
       if (this.dailyPlanFilters.filter.late) {
         obj.late = true;
       }
-      if (this.selectedTags.size) {
-        obj.tags = Array.from(this.selectedTags);
+      if (this.coreService.checkedTags.size) {
+        obj.tags = Array.from(this.coreService.checkedTags);
       }
       obj.limit = this.preferences.maxDailyPlanRecords;
       this.coreService.post('daily_plan/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
@@ -2692,9 +2692,9 @@ export class DailyPlanComponent {
 
   onTagChecked(tag, checked: boolean): void {
     if (checked) {
-      this.selectedTags.add(tag);
+      this.coreService.checkedTags.add(tag);
     } else {
-      this.selectedTags.delete(tag);
+      this.coreService.checkedTags.delete(tag);
     }
     this.loadOrderPlan();
   }
@@ -2712,12 +2712,19 @@ export class DailyPlanComponent {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    }).afterClose.subscribe(res => {
+      if (res) {
+        this.coreService.selectedTags.forEach(tag => {
+          this.coreService.checkedTags.add(tag.name);
+        });
+        this.loadOrderPlan();
+      }
     });
   }
 
   selectTag(tag: string): void {
-    this.selectedTags.clear();
-    this.selectedTags.add(tag);
+    this.coreService.checkedTags.clear();
+    this.coreService.checkedTags.add(tag);
     this.loadOrderPlan();
   }
 
@@ -2902,7 +2909,7 @@ export class DailyPlanComponent {
     }
   }
 
-  selectTagOnSearch(tag): void{
+  selectTagOnSearch(tag): void {
     this.coreService.selectedTags.push(tag);
     this.coreService.removeDuplicates();
   }
@@ -2922,7 +2929,7 @@ export class DailyPlanComponent {
     this.searchTerm.next(searchValue);
   }
 
-  selectAllTags(): void{
+  selectAllTags(): void {
     this.coreService.post('workflows/tag/search', {
       search: '',
       controllerId: this.schedulerIds.selected
@@ -2930,16 +2937,16 @@ export class DailyPlanComponent {
       next: (res: any) => {
         this.coreService.selectedTags = res.results;
         this.coreService.selectedTags.forEach(tag => {
-          this.selectedTags.add(tag.name)
+          this.coreService.checkedTags.add(tag.name)
         });
         this.loadOrderPlan();
       }
     });
   }
 
-  removeAllTags(): void{
+  removeAllTags(): void {
     this.coreService.selectedTags = [];
-    this.selectedTags.clear();
+    this.coreService.checkedTags.clear();
     this.loadOrderPlan();
   }
 
