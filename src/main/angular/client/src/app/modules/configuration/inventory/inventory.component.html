@@ -62,7 +62,7 @@
 <div class="sub-link">
   <div class="row">
     <div class="col-md-9">
-      <div>
+      <div class="inline">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
           <li class="nav-item">
             <a [routerLinkActive]="['active']" [routerLink]="['/configuration/inventory']" class="nav-link">
@@ -96,7 +96,7 @@
         </ul>
       </div>
       <div class="inline">
-        <a (click)="backToObject()" *ngIf="indexOfNextAdd > 0" class="text-hover-primary m-l-lg pos-rel t-10">
+        <a (click)="backToObject()" *ngIf="indexOfNextAdd > 0" class="text-hover-primary m-l-lg pos-abt" style="top: 0">
           <i class="fa fa-arrow-circle-left"></i>
           {{'inventory.button.backToObject' | translate}}
         </a>
@@ -708,14 +708,14 @@
         nz-menu-item>
       <a translate>inventory.button.updateFromJobTemplates</a>
     </li>
-    <li *ngIf="permission.joc.inventory.manage && ((!node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan && node.origin.children?.length > 0 && node.origin.children[1]?.children?.length > 0) || (node.origin.dailyPlan && node.origin.children?.length == 4 && node.origin.children[3]?.children?.length > 0)
-     || (node.origin.type === 'JOBTEMPLATE' && node.origin.released) || (node.origin.object === 'JOBTEMPLATE' && node.origin.children?.length > 0))" nz-menu-divider></li>
+
     <li (click)="updateJobs(node.origin)" *ngIf="permission.joc.inventory.manage && ((!node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan && node.origin.children?.length > 0 && node.origin.children[1]?.children?.length > 0) || (node.origin.dailyPlan && node.origin.children?.length == 4 && node.origin.children[3]?.children?.length > 0)
      || (node.origin.type === 'JOBTEMPLATE' && node.origin.released) || (node.origin.object === 'JOBTEMPLATE' && node.origin.children?.length > 0))"
         nz-menu-item>
       <a translate>inventory.button.updateJobs</a>
     </li>
-    <li *ngIf="node.origin.type" nz-menu-divider></li>
+    <li *ngIf="node.origin.type || (permission.joc.inventory.manage && ((!node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan && node.origin.children?.length > 0 && node.origin.children[1]?.children?.length > 0) || (node.origin.dailyPlan && node.origin.children?.length == 4 && node.origin.children[3]?.children?.length > 0)
+     || (node.origin.type === 'JOBTEMPLATE' && node.origin.released) || (node.origin.object === 'JOBTEMPLATE' && node.origin.children?.length > 0)))" nz-menu-divider></li>
     <li (click)="editJson(node.origin, false)" *ngIf="node.origin.type"
         nz-menu-item>
       <a translate>inventory.button.showJSON</a>

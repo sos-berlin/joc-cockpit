@@ -182,7 +182,7 @@
     <div class="row m-t-xs">
       <div class="col-lg-12">
         <div [sideView]="sideView" appResizable class="sticky leftPanel workflow" id="leftPanel">
-          <div *ngIf="tree.length>0 || allTags.length > 0">
+          <div>
             <div class="editor-tree">
               <div class="pl-20" style="padding-right:20px">
                 <nz-tabset class="custom-tab" [nzAnimated]="false" [(nzSelectedIndex)]="workflowFilters.selectedIndex" [nzType]="'line'">
@@ -190,39 +190,64 @@
                   <nz-tab (nzClick)="switchToTagging(true);workflowFilters.selectedIndex = 1;" [nzTitle]="'inventory.tab.tagging' | translate"></nz-tab>
                 </nz-tabset>
               </div>
+
               <div class="pl-20" *ngIf="workflowFilters.isTag">
+                <a (click)="objectTreeSearch()" class="tree-search workflow-tree-search">
+                  <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
+                </a>
+                <div>
+                  <input (blur)="clearSearchInput()" (ngModelChange)="onSearchInput($event)"
+                         [(ngModel)]="searchTag.text"
+                         [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
+                         class="input-tree-search"
+                         id="objectTagSearch"
+                         nz-input
+                  />
+
+                  <i [nzType]="searchTag.loading ? 'loading' : 'search'" class="tree-search-icon" nz-icon nzTheme="outline"></i>
+                  <nz-autocomplete #auto>
+                    <nz-auto-option (click)="selectTagOnSearch(tag)" *ngFor="let tag of searchTag.tags | orderBy: 'ordering'"
+                                    [nzValue]="tag.name" class="min-ht-opt">
+                      <div class="node-wrapper p-l-xs">
+                        <div class="node-content-wrapper2"
+                             nzTooltipPlacement="right">
+                          <span class="icon-color text-xs" nz-icon nzType="tag" nzTheme="outline"></span>
+                          <span class="p-l-sm">{{tag.name}}</span>
+                        </div>
+                      </div>
+                    </nz-auto-option>
+                  </nz-autocomplete>
+                </div>
                 <a (click)="hideSidebarPanel()" class="text resize-cursor a-1 pos-abt r-22 z-index-99">
                   <i class="fa fa-angle-double-left fa-lg"></i>
                 </a>
                 <a (click)="showSidebarPanel()" class="text resize-cursor a-2 pos-abt r-22 z-index-99">
                   <i class="fa fa-angle-double-right fa-lg"></i>
                 </a>
+
                 <perfect-scrollbar class="tree-block m-t-0" style="height: calc(100vh - 192px);">
-                  <div *ngIf="workflowFilters.isTag && isTagLoaded" class="fade-in">
+                  <div *ngIf="workflowFilters.isTag" class="fade-in">
                     <div class="p-l-xxs m-b-sm">
                       <a (click)="selectTags()">
                         <i [nzType]="'plus'" nz-icon nzTheme="outline"></i>
                         {{'workflow.label.selectTags' | translate}}
                       </a>
                     </div>
-                    <div class="w-full" *ngFor="let tag of workflowFilters.tags">
+                    <div class="w-full" *ngFor="let tag of workflowFilters.tags | orderBy: 'ordering'">
                         <div class="node-wrapper p-l-xxs p-b-xxs">
                           <span class="w-14 m-l-xs m-r-12">
-                            <label nz-checkbox [nzChecked]="selectedTags.has(tag)"
-                                   (nzCheckedChange)="onTagChecked(tag, $event)"></label>
+                            <label nz-checkbox [nzChecked]="selectedTags.has(tag.name)"
+                                   (nzCheckedChange)="onTagChecked(tag.name, $event)"></label>
                           </span>
-                          <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active': selectedTags.has(tag)}" (click)="selectTag(tag)">
+                          <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active': selectedTags.has(tag.name)}" (click)="selectTag(tag.name)">
                             <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
-                            <span class="p-l-xs">{{tag}}</span>
+                            <span class="p-l-xs">{{tag.name}}</span>
                           </div>
                         </div>
                     </div>
                   </div>
-                  <div *ngIf="workflowFilters.isTag && workflowFilters.tags && workflowFilters.tags.length === 0 && isTagLoaded" class="m-top-50">
+                  <div *ngIf="workflowFilters.isTag && workflowFilters.tags && workflowFilters.tags.length === 0" class="m-top-50">
                     <app-empty-data></app-empty-data>
-                  </div>
-                  <div *ngIf="workflowFilters.isTag && !isTagLoaded" class="m-top-50 text-center">
-                    <i><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
                   </div>
                 </perfect-scrollbar>
                 <div class="rg-right"><span></span></div>

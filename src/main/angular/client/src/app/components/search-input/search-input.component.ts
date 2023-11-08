@@ -28,6 +28,7 @@ export class SearchInputComponent {
   @Input() isPath: boolean;
   @Input() folders: any = {};
   @Input() changeDetect: boolean;
+  @Input() controllerId: string;
 
   _tree = [];
   obj = {
@@ -73,6 +74,10 @@ export class SearchInputComponent {
   }
 
   loadData(node, $event, isExpand = false): void {
+    if(this.type == 'TAG'){
+      this.onSelect.emit(node.origin.name);
+      return;
+    }
     if (!node || !node.origin) {
       return;
     }
@@ -163,7 +168,11 @@ export class SearchInputComponent {
         if (this.obj.token) {
           request.token = this.obj.token;
         }
-        this.coreService.post('inventory/quick/search', request).subscribe({
+        if(this.type == 'TAG'){
+         delete request.returnTypes;
+         request.controllerId = this.controllerId;
+        }
+        this.coreService.post(this.type == 'TAG' ? 'workflows/tag/search' : 'inventory/quick/search', request).subscribe({
           next: (res: any) => {
             this.obj.token = res.token;
             this.nodes = res.results.map(function (item) {

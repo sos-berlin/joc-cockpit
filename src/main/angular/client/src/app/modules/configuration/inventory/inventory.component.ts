@@ -41,6 +41,7 @@ export class CreateTagModalComponent {
   display: any;
   required = false;
   comments: any = {};
+  controllerId: string;
   filters: any;
   filter: any = {
     tags: []
@@ -51,6 +52,7 @@ export class CreateTagModalComponent {
   inputVisible = false;
   isUnique = true;
   inputValue = '';
+
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
 
@@ -60,8 +62,9 @@ export class CreateTagModalComponent {
   ngOnInit(): void {
     if (this.modalData.filters) {
       this.filters = this.modalData.filters;
+      this.controllerId = this.modalData.controllerId;
       this.filter.tags = this.modalData.filters.tags;
-      this.allTags = this.modalData.allTags;
+      this.fetchAllWorkflowTags();
     } else {
       this.preferences = this.modalData.preferences;
       this.data = this.modalData.data;
@@ -101,6 +104,16 @@ export class CreateTagModalComponent {
     });
   }
 
+  private fetchAllWorkflowTags() {
+    this.coreService.post('workflows/tag/search', {
+      search: '',
+      controllerId: this.controllerId
+    }).subscribe({
+      next: (res: any) => {
+        this.allTags = res.results;
+      }
+    });
+  }
   handleClose(removedTag: {}): void {
     this.tags = this.tags.filter(tag => tag !== removedTag);
   }
@@ -3731,7 +3744,6 @@ export class InventoryComponent {
       }
       this.type = node.origin['objectType'] || node.origin['object'] || node.origin['type'];
       this.selectedData = node.origin;
-      console.log(this.selectedData)
       this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, node.origin['objectType'] ? '$ID' : undefined);
     }
   }

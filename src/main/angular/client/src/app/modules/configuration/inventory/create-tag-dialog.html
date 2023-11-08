@@ -59,7 +59,7 @@
         <nz-select [(ngModel)]="filter.tags" name="tag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
                    nzShowSearch>
-          <nz-option *ngFor="let tag of allTags" [nzLabel]="tag"
+          <nz-option *ngFor="let tag of allTags | orderBy: 'ordering'" [nzLabel]="tag.name"
                      [nzValue]="tag"></nz-option>
         </nz-select>
       </div>

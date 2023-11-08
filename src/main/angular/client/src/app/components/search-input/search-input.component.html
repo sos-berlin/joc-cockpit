@@ -9,26 +9,28 @@
                   nzNoAnimation>
     <ng-template #nzTreeTemplate let-node>
       <div class="node-wrapper w-full">
-      <span (click)="openFolder(node);$event.stopPropagation()"
-            *ngIf="node.origin.loading || (!node.origin.type && !node.origin.objectType)"
-            [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-            [class.toggle-children-wrapper-expanded]="node.isExpanded"
-            [ngClass]="{'m-l-0': node.origin.path === '/'}" class="cursor w-14 m-l-xxs m-t-n-1">
-        <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzTheme="outline" nzType="caret-right"></i>
-        <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzTheme="outline" nzType="caret-down"></i>
-        <i *ngIf="node.origin.loading"><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
-      </span>
-        <span *ngIf="!node.origin.loading && node.origin.type" class="w-16">
-        <span class="fa fa-lg p-r-sm"></span>
-      </span>
+        <span (click)="openFolder(node);$event.stopPropagation()"
+              *ngIf="(node.origin.loading || (!node.origin.type && !node.origin.objectType)) && type != 'TAG'"
+              [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+              [class.toggle-children-wrapper-expanded]="node.isExpanded"
+              [ngClass]="{'m-l-0': node.origin.path === '/'}" class="cursor w-14 m-l-xxs m-t-n-1">
+          <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzTheme="outline" nzType="caret-right"></i>
+          <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzTheme="outline" nzType="caret-down"></i>
+          <i *ngIf="node.origin.loading"><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
+        </span>
+          <span *ngIf="!node.origin.loading && node.origin.type" class="w-16">
+          <span class="fa fa-lg p-r-sm"></span>
+        </span>
         <div (click)="loadData(node, $event);"
              [class.node-content-wrapper-active]="(list && (list.includes(node.origin.name) || list.includes(node.origin.path)))"
              [nz-tooltip]="node.origin.path?.substring(0, node.origin.path?.lastIndexOf('/')) || '/'" class="node-content-wrapper p-l-xs w-full"
              nzTooltipPlacement="right">
-          <i *ngIf="!node.origin.type && !node.origin.objectType" [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+          <i *ngIf="!node.origin.type && !node.origin.objectType && type != 'TAG'" [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
              class="w-14" nz-icon></i>
           <i *ngIf="node.origin.type || node.origin.objectType" [ngClass]="{'p-l-xs': node.origin.objectType}"
              class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+          <i *ngIf="type == 'TAG'" nz-icon nzType="tag" nzTheme="outline"
+             class="text-xs w-11 m-t-xs"></i>
           <span class="p-l-sm">{{node.origin.name}}</span>
           <i
             (click)="addFolder(node.origin.path);$event.stopPropagation()"
