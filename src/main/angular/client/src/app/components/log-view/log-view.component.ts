@@ -50,6 +50,7 @@ export class LogViewComponent {
   treeStructure: any[] = [];
   isChildren = false;
   nodes = [];
+  expandedNodes = [];
 
   @ViewChild('dataBody', {static: false}) dataBody!: ElementRef;
 
@@ -794,6 +795,7 @@ export class LogViewComponent {
       isChildren: this.isChildren
     };
     this.nodes = this.coreService.createTreeStructure(obj);
+    this.checkAndExpand();
     this.isChildren = obj.isChildren;
     this.loading = false;
   }
@@ -810,6 +812,20 @@ export class LogViewComponent {
     }, POPOUT_MODALS['windowInstance']);
   }
 
+  private checkAndExpand(): void {
+    const self = this;
+    function traverseTree(data): void {
+      for (let i in data) {
+        if (data[i] && data[i].children && data[i].children.length > 0) {
+          if (self.expandedNodes.indexOf(data[i].key) > -1) {
+            data[i].expanded = true;
+          }
+          traverseTree(data[i].children);
+        }
+      }
+    }
+    traverseTree(this.nodes);
+  }
   expandAll(): void {
     const x: any = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
@@ -831,11 +847,13 @@ export class LogViewComponent {
   }
 
   expandAllTree(): void {
+    this.expandedNodes = [];
     this.traverseTree(this.nodes, true);
     this.nodes = [...this.nodes];
   }
 
   collapseAllTree(): void {
+    this.expandedNodes = [];
     this.traverseTree(this.nodes, false);
     this.nodes = [...this.nodes];
   }
@@ -844,6 +862,9 @@ export class LogViewComponent {
     for (let i in data) {
       if (data[i] && data[i].children && data[i].children.length > 0) {
         data[i].expanded = isExpand;
+        if(isExpand) {
+          this.expandedNodes.push(data[i].key);
+        }
         this.traverseTree(data[i].children, isExpand);
       }
     }
@@ -853,6 +874,12 @@ export class LogViewComponent {
     // do something if u want
     if (data instanceof NzTreeNode) {
       data.isExpanded = !data.isExpanded;
+      data.origin['isExpanded'] = !data.origin['isExpanded'];
+      if (data.origin['isExpanded']) {
+        this.expandedNodes.push(data.origin.key);
+      } else {
+        this.expandedNodes.splice(this.expandedNodes.indexOf(data.origin.key), 1);
+      }
     } else {
       const node = data.node;
       if (node) {
