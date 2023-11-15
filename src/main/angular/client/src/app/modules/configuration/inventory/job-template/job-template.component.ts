@@ -121,7 +121,7 @@ export class UpdateJobTemplatesComponent {
       next: (res) => {
         this.isloaded = true;
         if (res.jobTemplates.length > 0) {
-          if (res.jobTemplates.length == 1) {
+          if (this.data && res.jobTemplates.length == 1) {
             this.listOfWorkflows = res.jobTemplates[0].workflows;
           } else {
             this.allJobTemplates = res.jobTemplates.map(job => {
@@ -257,10 +257,14 @@ export class UpdateJobTemplatesComponent {
       propagateOptionalArguments: this.object.propagateOptionalArguments,
     };
     if (this.data || this.folder) {
-
-      if(this.jobTemplates.length > 0){
+      if(this.data?.path){
+        request.jobTemplates = [{
+          path: this.data.path,
+          workflows: Array.from(this.object.setOfCheckedPath)
+        }];
+      } else if(this.jobTemplates?.length){
         request.jobTemplates = [];
-        this.jobTemplates.forEach(job => {
+        this.jobTemplates?.forEach(job => {
           if(job.checked || job.indeterminate) {
             request.jobTemplates.push({
               path: job.path,
@@ -268,11 +272,6 @@ export class UpdateJobTemplatesComponent {
             });
           }
         });
-      } else {
-        request.jobTemplates = [{
-          path: this.data.path,
-          workflows: Array.from(this.object.setOfCheckedPath)
-        }];
       }
     } else if (this.treeObj) {
       request.folder = this.treeObj.path;
