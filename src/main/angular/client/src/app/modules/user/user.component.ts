@@ -716,7 +716,10 @@ export class GenerateKeyComponent {
         });
         this.toasterService.success(msg);
         this.activeModal.close('ok');
-      }, error: () => this.submitted = false
+      }, error: () => {
+        this.submitted = false;
+        this.activeModal.destroy();
+      }
     });
   }
 }
