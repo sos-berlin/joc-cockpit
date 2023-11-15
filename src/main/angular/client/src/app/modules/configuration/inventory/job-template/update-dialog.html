@@ -144,7 +144,7 @@
             </span>
             <span>{{item.path}}</span>
           </div>
-          <div *ngFor="let job of jobTemplates | orderBy: 'path'" class="col-md-12 m-b-xxs">
+          <div *ngFor="let job of jobTemplates | orderBy: 'path'" class="col-md-12 m-b-xs">
 
             <label nz-checkbox [(nzChecked)]="job.checked"
                    [nzIndeterminate]="job.indeterminate"
@@ -153,7 +153,7 @@
             <span [ngClass]="{'fa-circle dark-blue' : job.released}"
                   class="fa fa-check-circle-o orange text-xs w-11 m-t-xs p-r-sm"></span>
             <span>{{job.path}}</span>
-            <div *ngFor="let item of job.workflows | orderBy: 'path'" class="col-md-12 m-b-sm m-t-sm m-l">
+            <div *ngFor="let item of job.workflows | orderBy: 'path'" class="col-md-12 m-t-sm m-l">
               <label nz-checkbox [nzChecked]="job.setOfCheckedPath.has(item.path)"
                      (nzCheckedChange)="onWorkflowChecked(job, item, $event)" ></label>
               <i class="icon-color p-l-sm p-r-sm" nz-icon nzTheme="outline"
