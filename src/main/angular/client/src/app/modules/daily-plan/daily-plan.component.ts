@@ -2509,15 +2509,16 @@ export class DailyPlanComponent {
       let flag = true;
       let flag2 = true;
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType.match(/DailyPlanUpdated/) && flag) {
-          flag = false;
+        if (args.eventSnapshots[j].eventType.match(/DailyPlanUpdated/)) {
           if (args.eventSnapshots[j].message) {
             const d = new Date(args.eventSnapshots[j].message);
-            if (d.getFullYear() == this.selectedYear && d.getMonth() == this.selectedMonth) {
+            if (d.getFullYear() == this.selectedYear && d.getMonth() == this.selectedMonth && flag) {
+              flag = false;
               this.load(null);
             }
           }
           if (!args.eventSnapshots[j].message || (args.eventSnapshots[j].message === this.coreService.getStringDate(this.selectedDate))) {
+            flag = false;
             this.refreshView();
           }
         } else if (args.eventSnapshots[j].eventType.match(/DailyPlanProjectionEvent/) && flag2) {
