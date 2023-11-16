@@ -282,8 +282,10 @@ export class UpdateJobComponent {
       obj.admissionTimeScheme = job.admissionTimeScheme;
     }
     if (job.executable) {
-      if (job.executable.TYPE !== obj.executable.TYPE) {
-        obj.executable.TYPE = job.executable.TYPE;
+      if (this.checkboxObjects.executableTYPE) {
+        if (job.executable.TYPE !== obj.executable.TYPE) {
+          obj.executable.TYPE = job.executable.TYPE;
+        }
       }
       if (this.checkboxObjects.className) {
         obj.executable.className = job.executable.className;
