@@ -9032,7 +9032,7 @@ td .ver-top {
   opacity: 0;
   z-index: 0;
   pointer-events: none;
-  max-width: 96.3%;
+  max-width: calc(100% - 24px);
 }
 
 .fav-list-search-box.ant-select-open {
@@ -9277,7 +9277,7 @@ cdk-virtual-scroll-viewport {
 }
 
 .tree-search {
-  padding: 4px 6px;
+  padding: 4px 7px;
   border-radius: 50%;
   background: var(--menu-hover);
   position: absolute;
