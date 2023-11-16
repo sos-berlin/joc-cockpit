@@ -3686,9 +3686,11 @@ export class InventoryComponent {
   }
 
   selectTag(tag: any, isArray = false, cb?): void {
-    tag.loading = true;
     if (this.preferences.expandOption === 'both' || isArray) {
       tag.isExpanded = !tag.isExpanded;
+    }
+    if (tag.isExpanded) {
+      tag.loading = true;
     }
     this.selectTagName = tag.name;
     const obj: any = {
@@ -3713,6 +3715,8 @@ export class InventoryComponent {
           tag.loading = false;
         }
       });
+    } else {
+      tag.loading = false;
     }
   }
 
