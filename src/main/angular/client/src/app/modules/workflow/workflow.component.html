@@ -227,21 +227,21 @@
 
                 <perfect-scrollbar class="tree-block m-t-0" style="height: calc(100vh - 192px);">
                   <div *ngIf="workflowFilters.isTag" class="fade-in">
-                    <div class="p-l-xxs m-b-sm">
+                    <div class="p-l-xxs m-b-12">
                       <a (click)="selectTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
-                        <i [nzType]="'plus'" nz-icon nzTheme="outline"></i>
+                        <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
 
                       </a>
-                      <a (click)="selectAllTags();" class="p-l" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
-                        <i nz-icon nzTheme="outline" nzType="plus-square"></i>
+                      <a (click)="selectAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
+                        <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
                       </a>
-                      <a (click)="removeAllTags();" class="p-l" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
-                        <i nz-icon nzTheme="outline" nzType="minus"></i>
+                      <a (click)="removeAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
+                        <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
                       </a>
                     </div>
                     <div class="w-full" *ngFor="let tag of coreService.selectedTags | orderBy: 'ordering'">
-                        <div class="node-wrapper p-l-xxs p-b-xxs">
-                          <span class="w-14 m-l-xs m-r-12">
+                        <div class="node-wrapper p-l-xs p-b-xxs">
+                          <span class="w-14 m-r-12">
                             <label nz-checkbox [nzChecked]="coreService.checkedTags.has(tag.name)"
                                    (nzCheckedChange)="onTagChecked(tag.name, $event)"></label>
                           </span>

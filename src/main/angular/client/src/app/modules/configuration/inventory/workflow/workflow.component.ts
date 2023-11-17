@@ -3127,15 +3127,17 @@ export class WorkflowComponent {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].path) {
+          const path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
           if (args.eventSnapshots[j].eventType.match(/ItemChanged/) && args.eventSnapshots[j].objectType === this.objectType) {
-            const path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
             if (args.eventSnapshots[j].path === path) {
               this.getWorkflowObject();
               break;
             }
           } else if (args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/)) {
             this.initTreeObject(true);
-            break;
+          } else if (args.eventSnapshots[j].eventType.match(/InventoryTagUpdated/) && (path == args.eventSnapshots[j].path
+            || this.data.name == args.eventSnapshots[j].path)) {
+            this.fetchWorkflowTags(args.eventSnapshots[j].path);
           }
         }
       }

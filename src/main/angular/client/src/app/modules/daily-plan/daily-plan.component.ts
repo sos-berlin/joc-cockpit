@@ -2888,7 +2888,7 @@ export class DailyPlanComponent {
   private searchObjects(value: string) {
     if (value !== '') {
       const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
-      if (searchValueWithoutSpecialChars.length >= 2) {
+      if (searchValueWithoutSpecialChars.length >= 1) {
         this.searchTag.loading = true;
         let request: any = {
           search: value,
@@ -2912,6 +2912,7 @@ export class DailyPlanComponent {
 
   selectTagOnSearch(tag): void {
     this.coreService.selectedTags.push(tag);
+    this.coreService.checkedTags.add(tag.name);
     this.coreService.removeDuplicates();
   }
 
