@@ -738,13 +738,12 @@ export class WorkflowComponent {
     } else {
       this.coreService.checkedTags.delete(tag);
     }
-    if (this.coreService.checkedTags.size) {
-      const obj: any = {
-        tags: Array.from(this.coreService.checkedTags),
-        controllerId: this.schedulerIds.selected
-      };
-      this.getWorkflowList(obj);
-    }
+
+    const obj: any = {
+      tags: Array.from(this.coreService.checkedTags),
+      controllerId: this.schedulerIds.selected
+    };
+    this.searchByTags(obj);
   }
 
   onItemChecked(workflow, checked: boolean): void {
@@ -834,7 +833,7 @@ export class WorkflowComponent {
       this.calTop();
       this.switchToTagging(true);
 
-      setTimeout(() =>{
+      setTimeout(() => {
         this.calTop();
       }, 100);
     }
@@ -1356,12 +1355,17 @@ export class WorkflowComponent {
     const obj: any = {
       controllerId: this.schedulerIds.selected
     };
-    if(flag){
+    if (flag) {
       obj.tags = Array.from(this.coreService.checkedTags);
     } else {
       obj.folders = [{folder: '/', recursive: true}];
     }
-    this.getWorkflowList(obj);
+    if (obj.tags?.length > 0 || obj.folders?.length > 0) {
+      this.getWorkflowList(obj);
+    } else {
+      this.workflows = [];
+      this.searchInResult();
+    }
   }
 
 
@@ -1388,13 +1392,13 @@ export class WorkflowComponent {
           obj.tags.push(tag.name);
           this.coreService.checkedTags.add(tag.name);
         });
-        this.getWorkflowList(obj);
+        this.searchByTags(obj);
       }
     });
 
   }
 
-  selectAllTags(): void{
+  selectAllTags(): void {
     this.coreService.post('workflows/tag/search', {
       search: '',
       controllerId: this.schedulerIds.selected
@@ -1409,20 +1413,19 @@ export class WorkflowComponent {
           obj.tags.push(tag.name);
           this.coreService.checkedTags.add(tag.name);
         });
-
-        this.getWorkflowList(obj);
+        this.searchByTags(obj);
       }
     });
   }
 
-  removeAllTags(): void{
+  removeAllTags(): void {
     this.coreService.selectedTags = [];
     this.coreService.checkedTags.clear();
     const obj: any = {
       tags: [],
       controllerId: this.schedulerIds.selected
     };
-    this.getWorkflowList(obj);
+    this.searchByTags(obj);
   }
 
   selectTag(tag: string): void {
@@ -1432,7 +1435,7 @@ export class WorkflowComponent {
       tags: [tag],
       controllerId: this.schedulerIds.selected
     };
-    this.getWorkflowList(obj);
+    this.searchByTags(obj);
   }
 
   showPanelFuc(workflow, flag = true, setObj?): void {
@@ -1455,6 +1458,15 @@ export class WorkflowComponent {
     workflow.show = false;
     delete workflow.configuration;
     this.updatePanelHeight();
+  }
+
+  private searchByTags(obj): void {
+    if (obj.tags.length > 0) {
+      this.getWorkflowList(obj);
+    } else {
+      this.workflows = [];
+      this.searchInResult();
+    }
   }
 
   /* ----------------------Advance Search --------------------- */
@@ -2252,7 +2264,7 @@ export class WorkflowComponent {
   private searchObjects(value: string) {
     if (value !== '') {
       const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
-      if (searchValueWithoutSpecialChars.length >= 2) {
+      if (searchValueWithoutSpecialChars.length >= 1) {
         this.searchTag.loading = true;
         let request: any = {
           search: value,
@@ -2275,8 +2287,9 @@ export class WorkflowComponent {
     }
   }
 
-  selectTagOnSearch(tag): void{
+  selectTagOnSearch(tag): void {
     this.coreService.selectedTags.push(tag);
+    this.coreService.checkedTags.add(tag.name);
     this.coreService.removeDuplicates();
   }
 
