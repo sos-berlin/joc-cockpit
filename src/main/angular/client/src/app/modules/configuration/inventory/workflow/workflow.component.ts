@@ -1410,6 +1410,9 @@ export class JobComponent {
     if (changes['orderPreparation']) {
       this.updateVariableList();
     }
+    if(changes['isModal']){
+      this.reloadScript();
+    }
   }
 
   ngOnDestroy(): void {
@@ -2155,6 +2158,7 @@ export class JobComponent {
       }
     }
     this.setJobProperties();
+    this.reloadScript();
   }
 
   getJobTemplate(): void {
