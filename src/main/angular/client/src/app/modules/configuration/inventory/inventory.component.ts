@@ -89,12 +89,15 @@ export class CreateTagModalComponent {
 
   onChange(value: string): void {
     this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    this.filteredOptions = this.filteredOptions.filter((tag) => {
+      return this.tags.indexOf(tag) !== -1;
+    })
   }
 
   private fetchTags(): void {
     this.coreService.post('tags', {}).subscribe((res) => {
       this.allTags = res.tags;
-      this.filteredOptions = this.allTags
+     // this.filteredOptions = this.allTags;
     });
   }
 
@@ -4178,6 +4181,31 @@ export class InventoryComponent {
     });
   }
 
+  private updateTags(): void {
+    this.coreService.post('tags', {}).subscribe({
+      next: (res) => {
+        const _tags = this.coreService.clone(this.tags);
+        console.log(_tags);
+        this.tags = res.tags.map((tag) => {
+          const obj: any = {
+            name: tag, children: []
+          };
+          for (let i = 0; i < _tags.length; i++) {
+            if (_tags[i].name === tag) {
+              obj.isExpanded = _tags[i].isExpanded;
+              if (obj.isExpanded) {
+                obj.children = _tags[i].children;
+              }
+              _tags.splice(i, 1);
+              break;
+            }
+          }
+          return obj;
+        });
+      }
+    });
+  }
+
   switchToTrash(isTrash): void {
     this.isTag = false;
     this.trashTree = [];
@@ -5817,6 +5845,8 @@ export class InventoryComponent {
               }
             }
           }
+        } else if (args.eventSnapshots[j].eventType.match(/InventoryTags/)) {
+          this.updateTags();
         }
       }
     }
@@ -6029,7 +6059,6 @@ export class InventoryComponent {
   }
 
   addTags(node?): void {
-
     this.modal.create({
       nzTitle: undefined,
       nzContent: CreateTagModalComponent,
@@ -6042,29 +6071,6 @@ export class InventoryComponent {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    }).afterClose.subscribe((res) => {
-
-      if (res) {
-        this.coreService.post('tags', {}).subscribe({
-          next: (res) => {
-            const _tempTags = this.coreService.clone(this.tags);
-            this.tags = res.tags.map((tag) => {
-              let obj = {
-                name: tag, children: []
-              };
-              for (let i = 0; i < _tempTags.length; i++) {
-                if (_tempTags[i].name == tag) {
-                  obj = this.coreService.clone(_tempTags[i]);
-                  _tempTags.splice(i, 1);
-                  break;
-                }
-              }
-              return obj;
-            });
-
-          }
-        });
-      }
     });
   }
 
