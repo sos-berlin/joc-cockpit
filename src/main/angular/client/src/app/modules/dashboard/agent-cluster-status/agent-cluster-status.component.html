@@ -20,7 +20,7 @@
   <div *ngIf="!isLoaded" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}" class="loading-center text-primary text">
     <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
   </div>
-  <div *ngIf="pieChartData.datasets.length==0 && isLoaded" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}"
+  <div *ngIf="agentClusters.length==0 && isLoaded" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}"
        class="vert-middle">
     <div>
       <app-empty-data></app-empty-data>
