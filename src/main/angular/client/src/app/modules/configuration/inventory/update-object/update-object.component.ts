@@ -26,6 +26,7 @@ export class UpdateObjectComponent {
   selectedSchedulerIds = [];
   zones = [];
   isTreeShow = false;
+  isDisplay = false;
   agentList = [];
   agents = {
     agentList: []
@@ -132,6 +133,16 @@ export class UpdateObjectComponent {
         this.agentList = this.coreService.clone(this.agents.agentList);
       });
     }
+    if(this.type === InventoryObject.INCLUDESCRIPT){
+      this.reloadScript();
+    }
+  }
+
+  reloadScript(): void {
+    this.isDisplay = false;
+    setTimeout(() => {
+      this.isDisplay = true;
+    }, 100);
   }
 
   changeWorkflow(data): void {
@@ -653,7 +664,7 @@ export class UpdateObjectComponent {
       obj.documentationName = object.documentationName;
     }
     if (this.checkboxObjects.workflowName) {
-      if (this.type === InventoryObject.SCHEDULE || this.type === InventoryObject.FILEORDERSOURCE) {
+      if (this.type === InventoryObject.FILEORDERSOURCE) {
         obj.workflowName = object.workflowName;
       }
     }
@@ -716,7 +727,9 @@ export class UpdateObjectComponent {
       if (this.checkboxObjects.submitOrderToControllerWhenPlanned) {
         obj.submitOrderToControllerWhenPlanned = object.submitOrderToControllerWhenPlanned;
       }
-      if (object.workflowName) {
+      if (this.checkboxObjects.workflowNames) {
+        obj.workflowNames = object.workflowNames;
+      if (object.workflowNames) {
         obj.orderParameterisations = [];
       }
       if (object.orderParameterisations && object.orderParameterisations.length > 0) {
@@ -798,6 +811,7 @@ export class UpdateObjectComponent {
         });
 
       }
+}
 
       if (object.configuration) {
         if (object.configuration.nonWorkingDayCalendars && object.configuration.nonWorkingDayCalendars.length === 0) {
