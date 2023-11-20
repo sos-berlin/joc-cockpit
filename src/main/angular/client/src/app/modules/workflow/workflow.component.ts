@@ -1465,6 +1465,7 @@ export class WorkflowComponent {
       this.getWorkflowList(obj);
     } else {
       this.workflows = [];
+      this.hidePanel();
       this.searchInResult();
     }
   }

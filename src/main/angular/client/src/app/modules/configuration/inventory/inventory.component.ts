@@ -90,14 +90,13 @@ export class CreateTagModalComponent {
   onChange(value: string): void {
     this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
     this.filteredOptions = this.filteredOptions.filter((tag) => {
-      return this.tags.indexOf(tag) !== -1;
+      return this.tags.indexOf(tag) == -1;
     })
   }
 
   private fetchTags(): void {
     this.coreService.post('tags', {}).subscribe((res) => {
       this.allTags = res.tags;
-     // this.filteredOptions = this.allTags;
     });
   }
 
@@ -117,6 +116,7 @@ export class CreateTagModalComponent {
       }
     });
   }
+
   handleClose(removedTag: {}): void {
     this.tags = this.tags.filter(tag => tag !== removedTag);
   }
