@@ -5,7 +5,7 @@
 
 #leftPanel.daily-plan {
   left: auto;
-  top: auto;
+  top: auto !important;
   width: 320px !important;
 }
 

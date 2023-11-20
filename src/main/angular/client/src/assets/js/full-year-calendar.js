@@ -173,11 +173,13 @@
         headerDiv.append(prevIcon);
         let titleCell = $(document.createElement('span'));
         titleCell.addClass('month-title');
+        let text;
         if (this.options.language.months) {
-          titleCell.text(this.options.language.months[this.options.startMonth] + ' ' + this.options.startYear);
+          text = this.options.language.months[this.options.startMonth] + ' ' + this.options.startYear;
         } else {
-          titleCell.text(dates['en'].months[this.options.startMonth] + ' ' + this.options.startYear);
+          text = (dates['en'].months[this.options.startMonth] + ' ' + this.options.startYear);
         }
+        titleCell.text(text);
         headerDiv.append(titleCell);
         let nextDiv = $(document.createElement('i'));
         nextDiv.addClass('fa fa-angle-right');
@@ -358,7 +360,7 @@
                         $(cells[i]).addClass('range-start');
                       }
                     } else if (_date !== _this.options.dateFrom || _date !== date) {
-                      $(cells[i]).removeClass('range');
+                      $(cells[i]).removeClass('range range-start range-end');
                     }
                   }
                 }
