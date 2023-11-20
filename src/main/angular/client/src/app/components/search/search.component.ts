@@ -100,6 +100,7 @@ export class SearchComponent {
           delete this.searchObj.selectedPath;
         }
       }
+      this.isJobSearch = (this.searchObj.returnType === this.ENUM.WORKFLOW);
       setTimeout(() => {
         if (this.searchObj.selectedPath) {
           const elem = document.getElementById(this.searchObj.selectedPath);

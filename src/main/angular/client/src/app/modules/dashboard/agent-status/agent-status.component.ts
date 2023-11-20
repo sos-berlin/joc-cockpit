@@ -130,8 +130,6 @@ export class AgentStatusComponent {
   prepareAgentClusterData(result): void {
     this.agentClusters = result.agents;
     this.mapObj.clear();
-    this.pieChartData.labels = [];
-    this.pieChartData.datasets = []
     this.groupBy(result.agents).forEach((value) => {
       if (this.pieChartData.datasets.length === 0) {
         this.pieChartData.datasets = [{
@@ -149,6 +147,8 @@ export class AgentStatusComponent {
   }
 
   getStatus(): void {
+    this.pieChartData.labels = [];
+    this.pieChartData.datasets = []
     this.coreService.post('agents', {
       controllerId: this.schedulerIds.selected,
       compact: true,
