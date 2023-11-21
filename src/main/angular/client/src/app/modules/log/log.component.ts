@@ -48,7 +48,6 @@ export class LogComponent {
   nodes = [];
   isChildren: boolean;
 
-  expandedNodes = [];
 
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
@@ -139,6 +138,13 @@ export class LogComponent {
     if (this.route.snapshot.queryParams['historyId']) {
       this.historyId = parseInt(this.route.snapshot.queryParams['historyId'], 10);
       this.orderId = this.route.snapshot.queryParams['orderId'];
+      if(this.historyId !== this.coreService.logViewDetails.historyId) {
+        this.coreService.logViewDetails = {
+          historyId: this.historyId,
+          expandedLogTree: [],
+          expandedLogPanel: new Set()
+        };
+      }
       this.loadOrderLog();
     } else if (this.route.snapshot.queryParams['taskId']) {
       this.taskId = parseInt(this.route.snapshot.queryParams['taskId'], 10);
@@ -186,9 +192,9 @@ export class LogComponent {
       data.isExpanded = !data.isExpanded;
       data.origin['isExpanded'] = !data.origin['isExpanded'];
       if (data.origin['isExpanded']) {
-        this.expandedNodes.push(data.origin.key);
+        this.coreService.logViewDetails.expandedLogTree.push(data.origin.key);
       } else {
-        this.expandedNodes.splice(this.expandedNodes.indexOf(data.origin.key), 1);
+        this.coreService.logViewDetails.expandedLogTree.splice(this.coreService.logViewDetails.expandedLogTree.indexOf(data.origin.key), 1);
       }
     } else {
       const node = data.node;
@@ -336,6 +342,7 @@ export class LogComponent {
           this.renderData(res.body, domId);
           document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
           document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
+          this.coreService.logViewDetails.expandedLogPanel.add('#ex_' + (i + 1));
           a.classList.remove('hide');
           a.classList.add('show');
           if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
@@ -352,6 +359,7 @@ export class LogComponent {
       if (!expand) {
         document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-up');
         document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-down');
+        this.coreService.logViewDetails.expandedLogPanel.delete('#ex_' + (i + 1));
         a.classList.remove('show');
         a.classList.add('hide');
         const z = document.getElementById('tx_id_' + (i + 1)).innerText;
@@ -796,6 +804,7 @@ export class LogComponent {
   }
 
   collapseAll(): void {
+    this.coreService.logViewDetails.expandedLogPanel.clear();
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       const a = document.getElementById('tx_log_' + (i + 1));
@@ -811,10 +820,21 @@ export class LogComponent {
 
   private checkAndExpand(): void {
     const self = this;
+
+    if (this.coreService.logViewDetails.expandedLogPanel.size) {
+      const x: any = document.getElementsByClassName('tx_order');
+      for (let i = 0; i < x.length; i++) {
+        const id = '#' + x[i]?.firstChild?.id;
+        if (this.coreService.logViewDetails.expandedLogPanel.has(id)) {
+          this.expandTask(i, true);
+        }
+      }
+    }
+
     function traverseTree(data): void {
       for (let i in data) {
         if (data[i] && data[i].children && data[i].children.length > 0) {
-          if (self.expandedNodes.indexOf(data[i].key) > -1) {
+          if (self.coreService.logViewDetails.expandedLogTree.indexOf(data[i].key) > -1) {
             data[i].expanded = true;
           }
           traverseTree(data[i].children);
@@ -825,14 +845,14 @@ export class LogComponent {
   }
 
   expandAllTree(): void {
-    this.expandedNodes = [];
+    this.coreService.logViewDetails.expandedLogTree = [];
     this.traverseTree(this.nodes, true);
     this.nodes = [...this.nodes];
   }
 
   collapseAllTree(): void {
     this.traverseTree(this.nodes, false);
-    this.expandedNodes = [];
+    this.coreService.logViewDetails.expandedLogTree = [];
     this.nodes = [...this.nodes];
   }
 
@@ -841,7 +861,7 @@ export class LogComponent {
       if (data[i] && data[i].children && data[i].children.length > 0) {
         data[i].expanded = isExpand;
         if(isExpand) {
-          this.expandedNodes.push(data[i].key);
+          this.coreService.logViewDetails.expandedLogTree.push(data[i].key);
         }
         this.traverseTree(data[i].children, isExpand);
       }
@@ -869,6 +889,13 @@ export class LogComponent {
     if (this.route.snapshot.queryParams['historyId']) {
       this.historyId = parseInt(this.route.snapshot.queryParams['historyId'], 10);
       this.orderId = this.route.snapshot.queryParams['orderId'];
+      if(this.historyId !== this.coreService.logViewDetails.historyId) {
+        this.coreService.logViewDetails = {
+          historyId: this.historyId,
+          expandedLogTree: [],
+          expandedLogPanel: new Set()
+        };
+      }
       this.loadOrderLog();
     } else if (this.route.snapshot.queryParams['taskId']) {
       this.taskId = parseInt(this.route.snapshot.queryParams['taskId'], 10);

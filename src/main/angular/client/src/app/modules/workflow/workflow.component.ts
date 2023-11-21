@@ -1977,7 +1977,7 @@ export class WorkflowComponent {
 
   private refreshView(flag, reload, request, callOrderCount): void {
     if (!this.isDropdownOpen && this.object.mapOfCheckedId.size === 0) {
-      if (flag) {
+      if (flag && !this.workflowFilters.isTag) {
         this.initTree(reload);
       }
       if (request && request.length > 0) {
