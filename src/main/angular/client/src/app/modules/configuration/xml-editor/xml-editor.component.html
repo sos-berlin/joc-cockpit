@@ -147,13 +147,13 @@
           </li>
         </ul>
       </div>
-      <div *ngIf="!isLoading && schemaIdentifier">
-        <div class="pos-abt" style="right: 13px;margin-top: 10px">
+      <div class="pos-abt" style="right: 13px;top: 4px">
+        <a *ngIf="!isLoading && schemaIdentifier" >
           <span translate>xml.label.assignedSchema</span>:
           <i (click)="downloadSchema(objectType, schemaIdentifier)" class="cursor fa fa-download p-l-sm"></i>
           <span (click)="showXSD(objectType, schemaIdentifier)"
                 class="text-hover-primary cursor _600 p-l-xs">{{schemaIdentifier}}</span>
-        </div>
+        </a>
       </div>
     </div>
   </div>
