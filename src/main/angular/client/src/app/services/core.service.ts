@@ -25,6 +25,12 @@ export class CoreService {
   locales: any = [];
   expertMode: string | undefined | null;
 
+  logViewDetails = {
+    historyId: '',
+    expandedLogTree: [],
+    expandedLogPanel: new Set()
+  }
+
   currentDate = new Date();
   preferences: any = {};
   xmlEditorPreferences: any = {};
@@ -148,7 +154,7 @@ export class CoreService {
     };
 
     this.tabs._workflow = {
-      selectedIndex : 0
+      selectedIndex: 0
     };
     this.tabs._workflow.filter = {};
     this.tabs._workflow.historyFilter = {
@@ -386,7 +392,7 @@ export class CoreService {
     this.tabs._configuration = {};
     this.tabs._configuration.state = 'inventory';
     this.tabs._configuration.inventory = {
-      selectedIndex : 0
+      selectedIndex: 0
     };
     this.tabs._configuration.copiedParamObjects = {};
     this.tabs._configuration.copiedInstuctionObject = [];
@@ -1117,9 +1123,9 @@ export class CoreService {
     } else {
       win = window.open(link, '_blank');
     }
-  //  const iframe = document.createElement('iframe');
-  //  iframe.src = link;
-  //  this.addFrame(win, iframe);
+    //  const iframe = document.createElement('iframe');
+    //  iframe.src = link;
+    //  this.addFrame(win, iframe);
   }
 
   private addFrame(popupWindow, iframe): void {
@@ -3037,7 +3043,7 @@ export class CoreService {
       periodStr = periodStr + '-' + this.getDateByFormat(period.end, null, 'HH:mm:ss');
     }
     if (period.singleStart) {
-      periodStr = (skip ? '' : 'Single start: ')+ this.getDateByFormat(period.singleStart, null, 'HH:mm:ss');
+      periodStr = (skip ? '' : 'Single start: ') + this.getDateByFormat(period.singleStart, null, 'HH:mm:ss');
     } else if (period.repeat) {
       periodStr = periodStr + ' every ' + this.getTimeInString(period.repeat);
     }
