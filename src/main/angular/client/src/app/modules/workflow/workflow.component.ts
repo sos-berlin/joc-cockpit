@@ -1313,18 +1313,29 @@ export class WorkflowComponent {
       }
       paths = this.workflowFilters.selectedkeys;
     }
-    for (let x in paths) {
-      obj.folders.push({folder: paths[x], recursive: false});
+
+    if (this.workflowFilters.isTag) {
+      obj.tags = Array.from(this.coreService.checkedTags);
+    } else {
+      for (let x in paths) {
+        obj.folders.push({folder: paths[x], recursive: false});
+      }
     }
     if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
       obj.regex = this.selectedFiltered.regex;
-      if (this.selectedFiltered.paths && this.selectedFiltered.paths.length > 0) {
-        obj.folders = [];
-        for (let i in this.selectedFiltered.paths) {
-          obj.folders.push({
-            folder: this.selectedFiltered.paths[i],
-            recursive: this.selectedFiltered.handleRecursively
-          });
+      if (this.workflowFilters.isTag) {
+        if (this.selectedFiltered.tags) {
+          obj.tags = this.selectedFiltered.tags;
+        }
+      } else {
+        if (this.selectedFiltered.paths && this.selectedFiltered.paths.length > 0) {
+          obj.folders = [];
+          for (let i in this.selectedFiltered.paths) {
+            obj.folders.push({
+              folder: this.selectedFiltered.paths[i],
+              recursive: this.selectedFiltered.handleRecursively
+            });
+          }
         }
       }
     }
@@ -1944,6 +1955,16 @@ export class WorkflowComponent {
                   }
                 }
               });
+            }
+          }
+        } else if (this.workflowFilters.isTag && args.eventSnapshots[j].eventType.match(/InventoryTaggingUpdated/)) {
+          console.log(args.eventSnapshots[j]);
+        } else if (this.workflowFilters.isTag && args.eventSnapshots[j].eventType.match(/InventoryTagDeleted/)) {
+          console.log(args.eventSnapshots[j]);
+          for(let i  =0 ; i < this.coreService.selectedTags.length; i++){
+            if(this.coreService.selectedTags[i].name === args.eventSnapshots[j].path){
+              this.coreService.selectedTags.splice(i, 1);
+              break;
             }
           }
         }
