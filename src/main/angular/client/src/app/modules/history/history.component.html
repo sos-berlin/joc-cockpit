@@ -1061,6 +1061,8 @@
                   <i (click)="downloadLog(jobHistory,jobHistory.controllerId);$event.stopPropagation()" *ngIf="historyFilters.current"
                      class="cursor fa fa-download  text-hover-primary p-r-xs"></i>
                   <span [innerHtml]="jobHistory.job | highlight : task.searchText"></span>
+                  <span *ngIf="jobHistory.label"> - </span>
+                  <span class="text-muted">{{jobHistory.label}}</span>
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null,viewContainerRef)">
