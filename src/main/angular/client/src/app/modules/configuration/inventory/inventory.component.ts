@@ -4185,7 +4185,6 @@ export class InventoryComponent {
     this.coreService.post('tags', {}).subscribe({
       next: (res) => {
         const _tags = this.coreService.clone(this.tags);
-        console.log(_tags);
         this.tags = res.tags.map((tag) => {
           const obj: any = {
             name: tag, children: []
@@ -4960,11 +4959,6 @@ export class InventoryComponent {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-
-      }
     });
   }
 
@@ -5817,7 +5811,6 @@ export class InventoryComponent {
     let paths = [];
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-
         if (args.eventSnapshots[j].eventType === 'AgentInventoryUpdated' && args.eventSnapshots[j].objectType === 'AGENT') {
           this.getAgents();
         }
@@ -5826,12 +5819,9 @@ export class InventoryComponent {
             this.updateTags();
           }
         } else if (args.eventSnapshots[j].path) {
-          if (this.isTag && args.eventSnapshots[j].eventType.match(/InventoryTagDeleted/)) {
+          if (this.isTag && args.eventSnapshots[j].eventType.match(/InventoryTaggingUpdated/)) {
             if (this.isTag) {
-              if (this.selectTagName == args.eventSnapshots[j].path) {
-                this.selectTagName = null;
-                this.type = null;
-              }
+              this.fetchWorkflowTags(args.eventSnapshots[j].path);
             }
           }
           if (args.eventSnapshots[j].eventType.match(/InventoryTagDeleted/)) {
@@ -5912,6 +5902,17 @@ export class InventoryComponent {
       this.objectHistory.push(this.coreService.clone(this.selectedObj));
       ++this.indexOfNextAdd;
     }
+  }
+
+  private fetchWorkflowTags(path): void {
+    this.coreService.post('inventory/workflow/tags', {path}).subscribe((res) => {
+      for (let i in this.tags) {
+        if (this.tags[i].isExpanded && res.tags.indexOf(this.tags[i].name) > -1) {
+          this.tags[i].isExpanded = false;
+          this.selectTag(this.tags[i], true);
+        }
+      }
+    });
   }
 
   private setSelectedObj(type, name, path, id): void {
