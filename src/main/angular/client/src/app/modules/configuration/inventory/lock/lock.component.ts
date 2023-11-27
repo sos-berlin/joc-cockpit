@@ -38,8 +38,10 @@ export class LockComponent implements OnChanges, OnDestroy {
   indexOfNextAdd = 0;
   history = [];
   lastModified: any = '';
+  isLocalChange = '';
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
 
   constructor(public coreService: CoreService, private dataService: DataService, private translate: TranslateService,
               private ref: ChangeDetectorRef, private router: Router, public inventoryService: InventoryService, private modal: NzModalService) {
@@ -56,6 +58,9 @@ export class LockComponent implements OnChanges, OnDestroy {
       } else if (res === 'UNDO') {
         this.undo();
       }
+    });
+    this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
     });
   }
 
@@ -86,8 +91,28 @@ export class LockComponent implements OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
     if (this.lock.name) {
       this.saveJSON();
+    }
+  }
+
+  private refresh(args: { eventSnapshots: any[] }): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].path) {
+          const path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+          if ((args.eventSnapshots[j].eventType.match(/InventoryObjectUpdated/) || args.eventSnapshots[j].eventType.match(/ItemChanged/)) && args.eventSnapshots[j].objectType === this.objectType) {
+            if (args.eventSnapshots[j].path === path) {
+              if (this.isLocalChange !== this.lock.path) {
+                this.getObject();
+              } else {
+                this.isLocalChange = '';
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -101,6 +126,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       obj.controllerId = this.schedulerId;
     }
     this.coreService.post(URL, obj).subscribe((res: any) => {
+      this.isLocalChange = '';
       this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;
@@ -305,6 +331,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.path === this.lock.path) {
+            this.isLocalChange = res.path;
             this.lastModified = res.configurationDate;
             this.lock.actual = JSON.stringify(this.lock.configuration);
             this.data.valid = res.valid;
