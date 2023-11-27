@@ -33,6 +33,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   @Input() isTrash: any;
 
   invalidMsg: string;
+  isLocalChange: string;
   favList = [];
   zones = [];
   agentList = [];
@@ -110,9 +111,20 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].path) {
+          const path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+          if ((args.eventSnapshots[j].eventType.match(/InventoryObjectUpdated/) || args.eventSnapshots[j].eventType.match(/ItemChanged/)) && args.eventSnapshots[j].objectType === this.objectType) {
+            if (args.eventSnapshots[j].path === path) {
+              if (this.isLocalChange !== this.fileOrder.path) {
+                this.getObject();
+              } else {
+                this.isLocalChange = '';
+              }
+            }
+          }
+        }
         if (args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/)) {
           this.getWorkflows();
-          break;
         }
       }
     }
@@ -138,6 +150,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       obj.controllerId = this.schedulerId;
     }
     this.coreService.post(URL, obj).subscribe((res: any) => {
+      this.isLocalChange = '';
       this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;
@@ -419,9 +432,11 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
           request.auditLog = {comment: translatedValue};
         });
       }
+
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.path === this.fileOrder.path) {
+            this.isLocalChange = res.path;
             this.lastModified = res.configurationDate;
             this.fileOrder.actual = JSON.stringify(this.fileOrder.configuration);
             this.data.valid = res.valid;

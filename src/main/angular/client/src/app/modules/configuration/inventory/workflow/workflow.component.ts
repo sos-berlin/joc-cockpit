@@ -2936,6 +2936,7 @@ export class WorkflowComponent {
   lastModified: any = '';
   hasLicense: boolean;
   allowUndeclaredVariables: boolean;
+  isLocalChange: string;
   positions: any;
   newPositions: any;
   blockPositionList: any;
@@ -3132,16 +3133,17 @@ export class WorkflowComponent {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].path) {
           const path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
-          if (args.eventSnapshots[j].eventType.match(/ItemChanged/) && args.eventSnapshots[j].objectType === this.objectType) {
+          if ((args.eventSnapshots[j].eventType.match(/InventoryObjectUpdated/) || args.eventSnapshots[j].eventType.match(/ItemChanged/)) && args.eventSnapshots[j].objectType === this.objectType) {
             if (args.eventSnapshots[j].path === path) {
-              this.getWorkflowObject();
-              break;
+              if (this.isLocalChange !== this.workflow.path) {
+                this.getWorkflowObject();
+              } else {
+                this.isLocalChange = '';
+              }
             }
           } else if (args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/)) {
             this.initTreeObject(true);
-          } else if (args.eventSnapshots[j].eventType.match(/InventoryTagUpdated/) && (path == args.eventSnapshots[j].path
-            || this.data.name == args.eventSnapshots[j].path)) {
-            this.fetchWorkflowTags(args.eventSnapshots[j].path);
+
           }
         }
       }
@@ -4192,6 +4194,7 @@ export class WorkflowComponent {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, obj).subscribe({
       next: (res: any) => {
+        this.isLocalChange = '';
         this.lastModified = res.configurationDate;
         this.isReferencedBy = res.isReferencedBy;
         this.isLoading = false;
@@ -11676,6 +11679,7 @@ export class WorkflowComponent {
       next: (res: any) => {
         this.isStore = false;
         if (res.path === this.workflow.path) {
+          this.isLocalChange = res.path;
           this.lastModified = res.configurationDate;
           this.workflow.actual = JSON.stringify(data);
           this.workflow.deployed = false;
