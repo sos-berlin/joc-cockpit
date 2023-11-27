@@ -3768,7 +3768,6 @@ export class WorkflowComponent {
           delete job.jobName;
           request.configuration = job;
           this.coreService.post('inventory/store', request).subscribe((res) => {
-            console.log(res);
             const obj = {
               update: [{objectType: InventoryObject.JOBTEMPLATE, path: result.path}],
               auditLog: {}
