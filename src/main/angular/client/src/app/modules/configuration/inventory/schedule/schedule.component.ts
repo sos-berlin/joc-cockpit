@@ -32,6 +32,7 @@ export class ScheduleComponent {
   objectType = InventoryObject.SCHEDULE;
   workflowTree = [];
   invalidMsg: string;
+  isLocalChange: string;
   workflow: any = {};
   variableList = [];
   documentationTree = [];
@@ -113,7 +114,16 @@ export class ScheduleComponent {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].path) {
-          if (args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/)) {
+          const path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+          if ((args.eventSnapshots[j].eventType.match(/InventoryObjectUpdated/) || args.eventSnapshots[j].eventType.match(/ItemChanged/)) && args.eventSnapshots[j].objectType === this.objectType) {
+            if (args.eventSnapshots[j].path === path) {
+              if (this.isLocalChange !== this.schedule.path) {
+                this.getObject();
+              } else {
+                this.isLocalChange = '';
+              }
+            }
+          } else if (args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/)) {
             this.getWorkflowTree();
             break;
           }
@@ -174,7 +184,7 @@ export class ScheduleComponent {
         if (obj.variableList.length > 0) {
           for (const i in obj.variableList) {
             let val = obj.variableList[i].value;
-            if(isArray(val.listParameters)){
+            if (isArray(val.listParameters)) {
               let actualList = [];
               val.listParameters.forEach((item) => {
                 const _obj: any = {
@@ -904,9 +914,9 @@ export class ScheduleComponent {
         parameter.variables = parameter.variables.filter((variable) => {
           return !!variable.name;
         });
-        let variables= {};
+        let variables = {};
         parameter.variables.forEach((item) => {
-          if(item.type === 'List') {
+          if (item.type === 'List') {
             variables[item.name] = [];
             if (item.actualList?.length > 0) {
               for (const i in item.actualList) {
@@ -1043,6 +1053,7 @@ export class ScheduleComponent {
         this.coreService.post('inventory/store', request).subscribe({
           next: (res: any) => {
             if (res.path === this.schedule.path) {
+              this.isLocalChange = res.path;
               this.lastModified = res.configurationDate;
               this.schedule.actual = JSON.stringify(obj);
               this.schedule.valid = res.valid;
@@ -1144,6 +1155,7 @@ export class ScheduleComponent {
       path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
       objectType: this.objectType,
     }).subscribe((res: any) => {
+      this.isLocalChange = '';
       this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;

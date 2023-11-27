@@ -36,6 +36,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   jobResource: any = {};
   invalidMsg: string;
+  isLocalChange: string;
   objectType = InventoryObject.JOBRESOURCE;
   documentationTree = [];
   indexOfNextAdd = 0;
@@ -52,6 +53,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   copiedParamObjects: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
 
   constructor(public coreService: CoreService, private dataService: DataService, private router: Router, private translate: TranslateService,
               private modal: NzModalService, private ref: ChangeDetectorRef, public inventoryService: InventoryService) {
@@ -78,6 +80,9 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       } else if (res === 'UNDO') {
         this.undo();
       }
+    });
+    this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
     });
   }
 
@@ -113,8 +118,28 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     this.cutOperation();
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
     if (this.jobResource.name) {
       this.saveJSON();
+    }
+  }
+
+  private refresh(args: { eventSnapshots: any[] }): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].path) {
+          const path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+          if ((args.eventSnapshots[j].eventType.match(/InventoryObjectUpdated/) || args.eventSnapshots[j].eventType.match(/ItemChanged/)) && args.eventSnapshots[j].objectType === this.objectType) {
+            if (args.eventSnapshots[j].path === path) {
+              if (this.isLocalChange !== this.jobResource.path) {
+                this.getObject();
+              } else {
+                this.isLocalChange = '';
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -494,6 +519,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.path === this.jobResource.path) {
+            this.isLocalChange = res.path;
             this.lastModified = res.configurationDate;
             this.jobResource.actual = JSON.stringify(this.jobResource.configuration);
             this.jobResource.valid = res.valid;
@@ -537,6 +563,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       obj.controllerId = this.schedulerId;
     }
     this.coreService.post(URL, obj).subscribe((res: any) => {
+      this.isLocalChange = '';
       this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;
