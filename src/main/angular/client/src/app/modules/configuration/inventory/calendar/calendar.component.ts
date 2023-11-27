@@ -1148,12 +1148,14 @@ export class CalendarComponent {
   editor: any = {isEnable: false, frequencyType: 'INCLUDE'};
   objectType = 'CALENDAR';
   invalidMsg: string;
+  isLocalChange: string;
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
   lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
   cType = [
     {label: 'runtime.label.workingDay', value: 'WORKINGDAYSCALENDAR'},
     {label: 'runtime.label.nonWorkingDay', value: 'NONWORKINGDAYSCALENDAR'}
@@ -1174,6 +1176,9 @@ export class CalendarComponent {
       } else if (res === 'UNDO') {
         this.undo();
       }
+    });
+    this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
     });
   }
 
@@ -1217,8 +1222,27 @@ export class CalendarComponent {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
     if (this.calendar.name) {
       this.saveJSON();
+    }
+  }
+  private refresh(args: { eventSnapshots: any[] }): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].path) {
+          const path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+          if ((args.eventSnapshots[j].eventType.match(/InventoryObjectUpdated/) || args.eventSnapshots[j].eventType.match(/ItemChanged/)) && args.eventSnapshots[j].objectType === this.objectType) {
+            if (args.eventSnapshots[j].path === path) {
+              if (this.isLocalChange !== this.calendar.path) {
+                this.getObject();
+              } else {
+                this.isLocalChange = '';
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -1462,6 +1486,7 @@ export class CalendarComponent {
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.path === this.calendar.path) {
+            this.isLocalChange = res.path;
             this.lastModified = res.configurationDate;
             this.calendar.actual = JSON.stringify(this.calendar.configuration);
             this.calendar.valid = res.valid;
@@ -1550,6 +1575,7 @@ export class CalendarComponent {
       path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
       objectType: this.data.objectType || this.data.type,
     }).subscribe((res: any) => {
+      this.isLocalChange = '';
       this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;

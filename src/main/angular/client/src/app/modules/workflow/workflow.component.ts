@@ -1960,7 +1960,6 @@ export class WorkflowComponent {
         } else if (this.workflowFilters.isTag && args.eventSnapshots[j].eventType.match(/InventoryTaggingUpdated/)) {
           console.log(args.eventSnapshots[j]);
         } else if (this.workflowFilters.isTag && args.eventSnapshots[j].eventType.match(/InventoryTagDeleted/)) {
-          console.log(args.eventSnapshots[j]);
           for(let i  =0 ; i < this.coreService.selectedTags.length; i++){
             if(this.coreService.selectedTags[i].name === args.eventSnapshots[j].path){
               this.coreService.selectedTags.splice(i, 1);

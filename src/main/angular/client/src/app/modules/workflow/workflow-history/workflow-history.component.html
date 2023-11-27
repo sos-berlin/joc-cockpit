@@ -217,7 +217,9 @@
                      [ngClass]="history.show ? 'fa-caret-up' : 'fa-caret-down'"
                      class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
                   <span [innerHtml]="history.job"></span>
-                </span>
+                         <span *ngIf="history.label"> - </span>
+                  <span class="text-muted">{{history.label}}</span>
+               </span>
             </td>
             <td [innerHtml]="history.position"></td>
             <td>
