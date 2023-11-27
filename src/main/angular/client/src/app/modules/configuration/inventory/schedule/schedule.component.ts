@@ -184,7 +184,7 @@ export class ScheduleComponent {
         if (obj.variableList.length > 0) {
           for (const i in obj.variableList) {
             let val = obj.variableList[i].value;
-            if(isArray(val.listParameters)){
+            if (isArray(val.listParameters)) {
               let actualList = [];
               val.listParameters.forEach((item) => {
                 const _obj: any = {
@@ -914,9 +914,9 @@ export class ScheduleComponent {
         parameter.variables = parameter.variables.filter((variable) => {
           return !!variable.name;
         });
-        let variables= {};
+        let variables = {};
         parameter.variables.forEach((item) => {
-          if(item.type === 'List') {
+          if (item.type === 'List') {
             variables[item.name] = [];
             if (item.actualList?.length > 0) {
               for (const i in item.actualList) {

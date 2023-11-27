@@ -1379,7 +1379,6 @@ export class WorkflowComponent {
     }
   }
 
-
   selectTags(): void {
     this.modal.create({
       nzTitle: undefined,
@@ -1958,10 +1957,12 @@ export class WorkflowComponent {
             }
           }
         } else if (this.workflowFilters.isTag && args.eventSnapshots[j].eventType.match(/InventoryTaggingUpdated/)) {
-          console.log(args.eventSnapshots[j]);
+          if (this.workflowFilters.isTag) {
+            this.fetchWorkflowTags(args.eventSnapshots[j].path);
+          }
         } else if (this.workflowFilters.isTag && args.eventSnapshots[j].eventType.match(/InventoryTagDeleted/)) {
-          for(let i  =0 ; i < this.coreService.selectedTags.length; i++){
-            if(this.coreService.selectedTags[i].name === args.eventSnapshots[j].path){
+          for (let i = 0; i < this.coreService.selectedTags.length; i++) {
+            if (this.coreService.selectedTags[i].name === args.eventSnapshots[j].path) {
               this.coreService.selectedTags.splice(i, 1);
               break;
             }
@@ -1994,6 +1995,23 @@ export class WorkflowComponent {
     }
   }
 
+  private fetchWorkflowTags(path): void {
+    let tags = Array.from(this.coreService.checkedTags);
+    if (tags && tags.length) {
+      this.coreService.post('inventory/workflow/tags', {path}).subscribe((res) => {
+        for (let i in res.tags) {
+          if (tags.indexOf(res.tags[i]) > -1) {
+            const obj: any = {
+              tags,
+              controllerId: this.schedulerIds.selected
+            };
+            this.searchByTags(obj);
+            break;
+          }
+        }
+      });
+    }
+  }
 
   private refreshView(flag, reload, request, callOrderCount): void {
     if (!this.isDropdownOpen && this.object.mapOfCheckedId.size === 0) {
@@ -2296,7 +2314,6 @@ export class WorkflowComponent {
         }
         this.coreService.post('workflows/tag/search', request).subscribe({
           next: (res: any) => {
-            console.log(res)
             this.searchTag.tags = res.results;
             this.searchTag.token = res.token;
             this.searchTag.loading = false;
