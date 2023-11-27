@@ -3137,8 +3137,9 @@ export class WorkflowComponent {
             if (args.eventSnapshots[j].path === path) {
               if (this.isLocalChange !== this.workflow.path) {
                 this.getWorkflowObject();
+              } else {
+                this.isLocalChange = '';
               }
-              this.isLocalChange = '';
             }
           } else if (args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/)) {
             this.initTreeObject(true);
@@ -4195,6 +4196,7 @@ export class WorkflowComponent {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, obj).subscribe({
       next: (res: any) => {
+        this.isLocalChange = '';
         this.lastModified = res.configurationDate;
         this.isReferencedBy = res.isReferencedBy;
         this.isLoading = false;

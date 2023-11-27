@@ -34,6 +34,7 @@ export class ScriptComponent {
   isUnique = true;
   objectType = InventoryObject.INCLUDESCRIPT;
   invalidMsg: string;
+  isLocalChange = '';
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
@@ -52,6 +53,7 @@ export class ScriptComponent {
   lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
 
   @ViewChild('codeMirror', {static: false}) cm: any;
 
@@ -64,12 +66,15 @@ export class ScriptComponent {
         }
       }
     });
-    this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
+    this.subscription2 = dataService.functionAnnounced$.subscribe(res => {
       if (res === 'REDO') {
         this.redo();
       } else if (res === 'UNDO') {
         this.undo();
       }
+    });
+    this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
     });
   }
 
@@ -117,8 +122,28 @@ export class ScriptComponent {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
     if (this.script.name) {
       this.saveJSON();
+    }
+  }
+
+  private refresh(args: { eventSnapshots: any[] }): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].path) {
+          const path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+          if ((args.eventSnapshots[j].eventType.match(/InventoryObjectUpdated/) || args.eventSnapshots[j].eventType.match(/ItemChanged/)) && args.eventSnapshots[j].objectType === this.objectType) {
+            if (args.eventSnapshots[j].path === path) {
+              if (this.isLocalChange !== this.script.path) {
+                this.getObject();
+              } else {
+                this.isLocalChange = '';
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -289,6 +314,7 @@ export class ScriptComponent {
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.path === this.script.path) {
+            this.isLocalChange = res.path;
             this.lastModified = res.configurationDate;
             this.script.actual = JSON.stringify(this.script.configuration);
             this.script.valid = res.valid;
@@ -310,6 +336,7 @@ export class ScriptComponent {
       path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
       objectType: this.objectType,
     }).subscribe((res: any) => {
+      this.isLocalChange = '';
       this.lastModified = res.configurationDate;
       if (this.cm && this.cm.codeMirror) {
         this.cm.codeMirror.setValue('');

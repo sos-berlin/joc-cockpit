@@ -54,7 +54,7 @@ export class UpdateJobTemplatesComponent {
     setOfCheckedPath: new Set(),
     checked: false,
     indeterminate: false,
-    isRecursive: false,
+    isRecursive: true,
     recursive: false,
     draft: true,
     deploy: true,
@@ -348,6 +348,7 @@ export class JobTemplateComponent {
 
   job: any = {};
   invalidMsg: string;
+  isLocalChange: string;
   objectType = InventoryObject.JOBTEMPLATE;
 
   indexOfNextAdd = 0;
@@ -382,6 +383,7 @@ export class JobTemplateComponent {
 
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
 
   @ViewChild('codeMirror', {static: false}) cm: any;
 
@@ -404,6 +406,9 @@ export class JobTemplateComponent {
       } else if (res === 'UNDO') {
         this.undo();
       }
+    });
+    this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
     });
   }
 
@@ -437,8 +442,28 @@ export class JobTemplateComponent {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
     if (this.job.name) {
       this.saveJSON();
+    }
+  }
+
+  private refresh(args: { eventSnapshots: any[] }): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].path) {
+          const path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+          if ((args.eventSnapshots[j].eventType.match(/InventoryObjectUpdated/) || args.eventSnapshots[j].eventType.match(/ItemChanged/)) && args.eventSnapshots[j].objectType === this.objectType) {
+            if (args.eventSnapshots[j].path === path) {
+              if (this.isLocalChange !== this.job.path) {
+                this.getObject();
+              } else {
+                this.isLocalChange = '';
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -450,6 +475,7 @@ export class JobTemplateComponent {
       path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
       objectType: this.objectType,
     }).subscribe((res: any) => {
+      this.isLocalChange = '';
       this.isDisplay = true;
       this.lastModified = res.configurationDate;
       this.history = [];
@@ -1335,6 +1361,7 @@ export class JobTemplateComponent {
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.path === this.job.path) {
+            this.isLocalChange = res.path;
             this.lastModified = res.configurationDate;
             this.job.actual = JSON.stringify(job);
             this.job.valid = res.valid;
