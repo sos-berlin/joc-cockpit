@@ -3766,7 +3766,6 @@ export class WorkflowComponent {
           delete job.jobName;
           request.configuration = job;
           this.coreService.post('inventory/store', request).subscribe((res) => {
-            console.log(res);
             const obj = {
               update: [{objectType: InventoryObject.JOBTEMPLATE, path: result.path}],
               auditLog: {}
@@ -7204,7 +7203,10 @@ export class WorkflowComponent {
             this.graph.setSelectionCell(vertex);
             this.graph.scrollCellToVisible(vertex);
             this.fireEvent(new mxEventObject(mxEvent.AFTER_ADD_VERTEX, 'vertex', vertex));
-            customizedChangeEvent();
+            setTimeout(() => {
+              customizedChangeEvent();
+            }, 5);
+
           }
           return vertex;
         };
@@ -8616,6 +8618,10 @@ export class WorkflowComponent {
         self.dataService.reloadWorkflowError.next({error: self.error});
         self.selectedNode.newObj = self.coreService.clone(self.selectedNode.obj);
         if (self.selectedNode && self.selectedNode.type === 'Job') {
+          self.selectedNode.newObj.defaultArguments = self.selectedNode.newObj.defaultArguments.filter((argu) => {
+            self.coreService.addSlashToString(argu, 'value');
+            return !argu.invalid;
+          });
           self.coreService.convertArrayToObject(self.selectedNode.newObj, 'defaultArguments', false);
         }
         if (self.selectedNode.type === 'If') {
