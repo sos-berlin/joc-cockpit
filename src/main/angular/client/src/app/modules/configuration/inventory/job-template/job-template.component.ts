@@ -54,7 +54,7 @@ export class UpdateJobTemplatesComponent {
     setOfCheckedPath: new Set(),
     checked: false,
     indeterminate: false,
-    isRecursive: false,
+    isRecursive: true,
     recursive: false,
     draft: true,
     deploy: true,
@@ -108,7 +108,7 @@ export class UpdateJobTemplatesComponent {
     if (this.data || folders.length > 0) {
       const obj: any = {};
       if (this.data) {
-        obj.jobTemplatePaths = [this.data.path1 ? this.data.path : this.data.path + (this.data.path == '/' ? '' : '/') + this.data.name ];
+        obj.jobTemplatePaths = [this.data.path1 ? this.data.path : this.data.path + (this.data.path == '/' ? '' : '/') + this.data.name];
       } else {
         obj.folders = folders;
       }
@@ -259,7 +259,7 @@ export class UpdateJobTemplatesComponent {
     if (this.data || this.folder) {
       if(this.data?.path){
         request.jobTemplates = [{
-          path: this.data.path,
+          path: this.data.path + (this.data.path == '/' ? '' : '/') + this.data.name,
           workflows: Array.from(this.object.setOfCheckedPath)
         }];
       } else if(this.jobTemplates?.length){

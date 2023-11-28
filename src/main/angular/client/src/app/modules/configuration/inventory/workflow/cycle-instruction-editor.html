@@ -71,7 +71,7 @@
                      (click)="removeFrequency(j , list, i)"><i class="fa fa-times"></i></a>
                 </div>
                 <div class="col-sm-7">
-                  <div *ngFor="let p of item.periods;">
+                  <div *ngFor="let p of item.periods | orderBy: 'startTime';">
                     <a (click)="editPeriod(p, item, i)">{{p.text}}</a>
                     <a (click)="editPeriod(p, item, i)" class="text-xs text-hover-primary m-l-sm">
                       <i class="fa fa-pencil"></i></a>

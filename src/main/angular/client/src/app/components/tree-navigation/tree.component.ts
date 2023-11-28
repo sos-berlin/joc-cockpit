@@ -67,7 +67,6 @@ export class TreeComponent {
         }
         if (ht > 400) {
           if(document.getElementsByClassName('workflow')?.length > 0){
-            console.log(top, 'top', document.getElementsByClassName('workflow'));
             top += 50;
           }
           $('.tree-block').height('calc(100vh - ' + (top + 24) + 'px' + ')');

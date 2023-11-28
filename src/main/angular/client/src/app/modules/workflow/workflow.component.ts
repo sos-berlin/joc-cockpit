@@ -1313,18 +1313,29 @@ export class WorkflowComponent {
       }
       paths = this.workflowFilters.selectedkeys;
     }
-    for (let x in paths) {
-      obj.folders.push({folder: paths[x], recursive: false});
+
+    if (this.workflowFilters.isTag) {
+      obj.tags = Array.from(this.coreService.checkedTags);
+    } else {
+      for (let x in paths) {
+        obj.folders.push({folder: paths[x], recursive: false});
+      }
     }
     if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
       obj.regex = this.selectedFiltered.regex;
-      if (this.selectedFiltered.paths && this.selectedFiltered.paths.length > 0) {
-        obj.folders = [];
-        for (let i in this.selectedFiltered.paths) {
-          obj.folders.push({
-            folder: this.selectedFiltered.paths[i],
-            recursive: this.selectedFiltered.handleRecursively
-          });
+      if (this.workflowFilters.isTag) {
+        if (this.selectedFiltered.tags) {
+          obj.tags = this.selectedFiltered.tags;
+        }
+      } else {
+        if (this.selectedFiltered.paths && this.selectedFiltered.paths.length > 0) {
+          obj.folders = [];
+          for (let i in this.selectedFiltered.paths) {
+            obj.folders.push({
+              folder: this.selectedFiltered.paths[i],
+              recursive: this.selectedFiltered.handleRecursively
+            });
+          }
         }
       }
     }
@@ -1367,7 +1378,6 @@ export class WorkflowComponent {
       this.searchInResult();
     }
   }
-
 
   selectTags(): void {
     this.modal.create({
@@ -1465,6 +1475,7 @@ export class WorkflowComponent {
       this.getWorkflowList(obj);
     } else {
       this.workflows = [];
+      this.hidePanel();
       this.searchInResult();
     }
   }
@@ -1945,6 +1956,17 @@ export class WorkflowComponent {
               });
             }
           }
+        } else if (this.workflowFilters.isTag && args.eventSnapshots[j].eventType.match(/InventoryTaggingUpdated/)) {
+          if (this.workflowFilters.isTag) {
+            this.fetchWorkflowTags(args.eventSnapshots[j].path);
+          }
+        } else if (this.workflowFilters.isTag && args.eventSnapshots[j].eventType.match(/InventoryTagDeleted/)) {
+          for (let i = 0; i < this.coreService.selectedTags.length; i++) {
+            if (this.coreService.selectedTags[i].name === args.eventSnapshots[j].path) {
+              this.coreService.selectedTags.splice(i, 1);
+              break;
+            }
+          }
         }
         if ((args.eventSnapshots[j].eventType === 'ProblemEvent' || args.eventSnapshots[j].eventType === 'ProblemAsHintEvent') && args.eventSnapshots[j].message) {
           this.resetAction();
@@ -1973,10 +1995,27 @@ export class WorkflowComponent {
     }
   }
 
+  private fetchWorkflowTags(path): void {
+    let tags = Array.from(this.coreService.checkedTags);
+    if (tags && tags.length) {
+      this.coreService.post('inventory/workflow/tags', {path}).subscribe((res) => {
+        for (let i in res.tags) {
+          if (tags.indexOf(res.tags[i]) > -1) {
+            const obj: any = {
+              tags,
+              controllerId: this.schedulerIds.selected
+            };
+            this.searchByTags(obj);
+            break;
+          }
+        }
+      });
+    }
+  }
 
   private refreshView(flag, reload, request, callOrderCount): void {
     if (!this.isDropdownOpen && this.object.mapOfCheckedId.size === 0) {
-      if (flag) {
+      if (flag && !this.workflowFilters.isTag) {
         this.initTree(reload);
       }
       if (request && request.length > 0) {
@@ -2275,7 +2314,6 @@ export class WorkflowComponent {
         }
         this.coreService.post('workflows/tag/search', request).subscribe({
           next: (res: any) => {
-            console.log(res)
             this.searchTag.tags = res.results;
             this.searchTag.token = res.token;
             this.searchTag.loading = false;

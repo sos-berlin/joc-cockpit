@@ -41,12 +41,13 @@ export class UpdateObjectComponent {
   submitted = false;
   isVisible = false;
   dateFormat: any;
-  forkListVariables = [];
+
   variableList = [];
   object: any = {};
   checkboxObjects: any = {};
   workflow: any = {};
   required = false;
+  allowUndeclaredVariables: boolean;
   cmOption: any = {
     lineNumbers: true,
     autoRefresh: true,
@@ -60,6 +61,7 @@ export class UpdateObjectComponent {
     gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
   };
   @ViewChild('codeMirror', {static: false}) cm;
+
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService,
               private authService: AuthService, private modal: NzModalService, private translate: TranslateService) {
   }
@@ -72,12 +74,13 @@ export class UpdateObjectComponent {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.allowUndeclaredVariables = sessionStorage['allowUndeclaredVariables'] == 'true';
     this.cmOption.tabSize = parseInt(this.preferences.tabSize) || 4;
     this.cmOption.extraKeys = {
       'Shift-Ctrl-Space': 'autocomplete',
       "Tab": (cm) => {
         let spaces = '';
-        for(let i =0; i < this.cmOption.tabSize; i++){
+        for (let i = 0; i < this.cmOption.tabSize; i++) {
           spaces += ' ';
         }
         cm.replaceSelection(spaces);
@@ -149,7 +152,6 @@ export class UpdateObjectComponent {
     if (this.object.workflowNames.length === 0) {
       this.object.orderParameterisations = [];
       this.variableList = [];
-      this.forkListVariables = [];
     }
     if (data.add) {
       this.getWorkflowInfo(data.add);
@@ -169,6 +171,7 @@ export class UpdateObjectComponent {
       });
     });
   }
+
   onSelect(name) {
     this.isTreeShow = false;
     this.object.workflowName = name;
@@ -192,13 +195,14 @@ export class UpdateObjectComponent {
 
   updateVariableList(): void {
     this.variableList = [];
-    this.forkListVariables = [];
+    let forkListVariables = [];
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
         if (val.type === 'List') {
           const actualList = [];
           if (val.listParameters) {
+
             if (isArray(val.listParameters)) {
               val.listParameters.forEach((item) => {
                 const obj: any = {
@@ -225,28 +229,99 @@ export class UpdateObjectComponent {
                 if (val1.default || val1.default == 0 || val1.default == false) {
                   obj.isRequired = false;
                 }
+                if (val1.value) {
+                  this.coreService.checkDataType(val1);
+                }
                 val1.isRequired = obj.isRequired;
                 actualList.push(obj);
                 return {name: k1, value: val1};
               });
             }
-            this.forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
+
+            forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
             if (this.object.orderParameterisations.length === 0) {
               this.object.orderParameterisations.push(
                 {
                   orderName: '',
-                  positions: {},
                   variables: [],
-                  forkListVariables: this.coreService.clone(this.forkListVariables)
+                  positions: {}
                 });
+            } else {
+              let isExist = false;
+              for (const prop in this.object.orderParameterisations) {
+                for (let i = 0; i < this.object.orderParameterisations[prop].variables.length; i++) {
+                  if (this.object.orderParameterisations[prop].variables[i].name === k) {
+                    this.object.orderParameterisations[prop].variables[i].isRequired = true;
+                    this.object.orderParameterisations[prop].variables[i].isExist = true;
+                    this.object.orderParameterisations[prop].variables[i].type = val.type;
+                    this.object.orderParameterisations[prop].variables[i].list = val.listParameters;
+                    this.object.orderParameterisations[prop].variables[i].actualList = [actualList];
+                    isExist = true;
+                    break;
+                  }
+                }
+
+                if (!isExist) {
+                  let obj: any = {
+                    name: k,
+                    type: val.type,
+                    isRequired: true,
+                    list: val.listParameters,
+                    isExist: true,
+                    actualList: [actualList]
+                  };
+                  if (val.list) {
+                    obj.list = [];
+                    val.list.forEach((item) => {
+                      let obj1 = {name: item}
+                      this.coreService.removeSlashToString(obj1, 'name');
+                      obj.list.push(obj1);
+                    });
+                  }
+                  this.object.orderParameterisations[prop].variables.push(obj);
+                }
+              }
             }
           }
         } else {
+          if (this.object.orderParameterisations.length === 0) {
+            if (!val.default && val.default !== false && val.default !== 0) {
+              if (!val.final) {
+                this.object.orderParameterisations.push({orderName: '', variables: [], positions: {}});
+              }
+            }
+          }
           for (const prop in this.object.orderParameterisations) {
             let isExist = false;
             for (let i = 0; i < this.object.orderParameterisations[prop].variables.length; i++) {
               if (this.object.orderParameterisations[prop].variables[i].name === k) {
+                this.object.orderParameterisations[prop].variables[i].isExist = true;
                 this.object.orderParameterisations[prop].variables[i].type = val.type;
+                this.object.orderParameterisations[prop].variables[i].facet = val.facet;
+                this.object.orderParameterisations[prop].variables[i].message = val.message;
+                if (this.object.orderParameterisations[prop].variables[i].value) {
+                  this.coreService.checkDataType(this.object.orderParameterisations[prop].variables[i]);
+                }
+                let list;
+                if (val.list) {
+                  list = [];
+                  let isFound = false;
+                  val.list.forEach((item) => {
+                    let obj = {name: item};
+                    if (this.object.orderParameterisations[prop].variables[i].value === item) {
+                      isFound = true;
+                    }
+                    this.coreService.removeSlashToString(obj, 'name');
+                    list.push(obj);
+                  });
+                  if (!isFound) {
+                    list.push({
+                      name: this.object.orderParameterisations[prop].variables[i].value,
+                      default: true
+                    });
+                  }
+                }
+                this.object.orderParameterisations[prop].variables[i].list = list;
                 if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
                   this.object.orderParameterisations[prop].variables[i].isRequired = true;
                 }
@@ -256,31 +331,38 @@ export class UpdateObjectComponent {
             }
             if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
               if (!val.final) {
-                this.object.orderParameterisations[prop].variables.push({name: k, type: val.type, isRequired: true});
+                let obj: any = {
+                  name: k,
+                  type: val.type,
+                  isRequired: true,
+                  facet: val.facet,
+                  isExist: true,
+                  message: val.message
+                };
+                if (val.list) {
+                  obj.list = [];
+                  val.list.forEach((item) => {
+                    let obj1 = {name: item}
+                    this.coreService.removeSlashToString(obj1, 'name');
+                    obj.list.push(obj1);
+                  });
+                }
+                this.object.orderParameterisations[prop].variables.push(obj);
               }
             }
           }
         }
         return {name: k, value: v};
       });
-      this.variableList = this.variableList.filter((item) => {
-        if (item.value.type === 'List') {
-          return false;
-        }
-        return !item.value.final;
-      });
 
 
       for (const prop in this.object.orderParameterisations) {
-        this.object.orderParameterisations[prop].forkListVariables = this.coreService.clone(this.forkListVariables);
         if (this.object.orderParameterisations[prop].variables && this.object.orderParameterisations[prop].variables.length > 0) {
           this.object.orderParameterisations[prop].variables = this.object.orderParameterisations[prop].variables.filter(item => {
-            if (isArray(item.value)) {
-              this.coreService.setForkListVariables(item, this.object.orderParameterisations[prop].forkListVariables);
-              return false;
-            } else {
-              return true;
+            if ((this.workflow.orderPreparation?.allowUndeclared && this.allowUndeclaredVariables)) {
+              item.isTextField = true;
             }
+            return true;
           });
         }
       }
@@ -347,7 +429,12 @@ export class UpdateObjectComponent {
   addVariableToList(data): void {
     const arr = [];
     data.list.forEach(item => {
-      arr.push({name: item.name, type: item.value.type, value: (item.value.value || item.value.default), isRequired: (item.isRequired || item.value.isRequired)});
+      arr.push({
+        name: item.name,
+        type: item.value.type,
+        value: (item.value.value || item.value.default),
+        isRequired: (item.isRequired || item.value.isRequired)
+      });
     });
     let flag = false;
     for (const i in data.actualList) {
@@ -367,22 +454,65 @@ export class UpdateObjectComponent {
   }
 
   addVariableSet(): void {
-    const variableSet: any = {
+    const obj: any = {
       orderName: '',
       positions: {},
-      variables: [],
-      forkListVariables: this.coreService.clone(this.forkListVariables)
+      variables: []
     };
     if (this.object.orderParameterisations) {
       if (!this.coreService.isLastEntryEmpty(this.object.orderParameterisations, 'orderName', '') || this.object.orderParameterisations.length < 2) {
-        this.object.orderParameterisations.push(variableSet);
-        variableSet.variableList = this.coreService.clone(this.variableList);
-        if (variableSet.variableList.length > 0) {
-          for (const i in variableSet.variableList) {
-            let val = variableSet.variableList[i].value;
-            if (!val.default && val.default !== false && val.default !== 0) {
-              if (!val.final) {
-                variableSet.variables.push({name: variableSet.variableList[i].name, type: val.type, isRequired: true});
+        this.object.orderParameterisations.push(obj);
+        obj.variableList = this.coreService.clone(this.variableList);
+        if (obj.variableList.length > 0) {
+          for (const i in obj.variableList) {
+            let val = obj.variableList[i].value;
+            if (isArray(val.listParameters)) {
+              let actualList = [];
+              val.listParameters.forEach((item) => {
+                const _obj: any = {
+                  name: item.name,
+                  type: item.value.type,
+                  value: item.value.default,
+                  isRequired: true
+                };
+                if (item.default || item.default == 0 || item.default == false) {
+                  _obj.isRequired = false;
+                }
+                item.isRequired = _obj.isRequired;
+                actualList.push(_obj);
+              });
+
+              obj.variableList[i].isSelected = true;
+              obj.variables.push({
+                name: obj.variableList[i].name,
+                type: val.type,
+                isRequired: true,
+                list: val.listParameters,
+                actualList: [actualList]
+              });
+
+            } else {
+              if (!val.default && val.default !== false && val.default !== 0) {
+                if (!val.final) {
+                  let list;
+                  if (val.list) {
+                    list = [];
+                    val.list.forEach((item) => {
+                      let obj = {name: item}
+                      this.coreService.removeSlashToString(obj, 'name');
+                      list.push(obj);
+                    });
+                  }
+                  obj.variableList[i].isSelected = true;
+                  obj.variables.push({
+                    name: obj.variableList[i].name,
+                    type: val.type,
+                    isRequired: true,
+                    facet: val.facet,
+                    message: val.message,
+                    list
+                  });
+                }
               }
             }
           }
@@ -404,6 +534,23 @@ export class UpdateObjectComponent {
         variableSet.variables.push(param);
       }
     }
+  }
+
+  addVariables(isNew = false, variableSet): void {
+    variableSet.variableList.forEach(variable => {
+      if (!variable.isSelected) {
+        variable.isSelected = true;
+        const param: any = {
+          name: variable.name,
+          value: ''
+        };
+        if (isNew) {
+          param.isTextField = true;
+        }
+        variableSet.variables.push(param);
+        this.checkVariableType(param)
+      }
+    });
   }
 
   removeVariableSet(index): void {
@@ -465,6 +612,11 @@ export class UpdateObjectComponent {
       })
     }
   }
+
+  updateEndNode(positions): void {
+    positions.endPositions = [...positions.endPositions];
+  }
+
 
   /*------------ END SCHEDULE -----------------*/
 
@@ -729,89 +881,98 @@ export class UpdateObjectComponent {
       }
       if (this.checkboxObjects.workflowNames) {
         obj.workflowNames = object.workflowNames;
-      if (object.workflowNames) {
-        obj.orderParameterisations = [];
-      }
-      if (object.orderParameterisations && object.orderParameterisations.length > 0) {
-        obj.orderParameterisations = this.coreService.clone(object.orderParameterisations);
-        let isEmptyExist = false;
-
-        obj.orderParameterisations = obj.orderParameterisations.filter(parameter => {
-          if (parameter.orderName === '' || !parameter.orderName) {
-            if (isEmptyExist) {
-              return false;
+        if (object.workflowNames) {
+          obj.orderParameterisations = [];
+        }
+        if (object.orderParameterisations && object.orderParameterisations.length > 0) {
+          obj.orderParameterisations = this.coreService.clone(object.orderParameterisations);
+          let isEmptyExist = false;
+          let isValid = true;
+          obj.orderParameterisations = obj.orderParameterisations.filter((parameter) => {
+            if (parameter.orderName === '' || !parameter.orderName) {
+              if (isEmptyExist) {
+                return false;
+              }
+              isEmptyExist = true;
             }
-            isEmptyExist = true;
-          }
-          if (parameter.variables) {
-            parameter.variables = parameter.variables.filter((variable) => {
-              return !!variable.name;
-            });
-            parameter.variables = parameter.variables.map(variable => ({name: variable.name, value: variable.value}));
-            parameter.variables = this.coreService.keyValuePair(parameter.variables);
-          }
-          if (parameter.forkListVariables) {
-            parameter.forkListVariables.forEach((item) => {
-              parameter.variables[item.name] = [];
-              if (item.actualList) {
-                for (const i in item.actualList) {
-                  const listObj = {};
-                  item.actualList[i].forEach((data) => {
-                    if (!data.value && data.value != 0 && data.value != false) {
-
-                    } else {
-                      listObj[data.name] = data.value;
+            if (parameter.variables) {
+              parameter.variables = parameter.variables.filter((variable) => {
+                return !!variable.name;
+              });
+              let variables = {};
+              parameter.variables.forEach((item) => {
+                if (item.type === 'List') {
+                  variables[item.name] = [];
+                  if (item.actualList?.length > 0) {
+                    for (const i in item.actualList) {
+                      const listObj = {};
+                      item.actualList[i].forEach((data) => {
+                        listObj[data.name] = data.value;
+                      });
+                      variables[item.name].push(listObj);
                     }
-                  });
-                  if (!isEmpty(listObj)) {
-                    parameter.variables[item.name].push(listObj);
                   }
-                }
-              }
-            });
-          }
-          if (parameter.positions) {
-            let newPositions;
-            if (parameter.positions.blockPosition && this.blockPositions && this.blockPositions.has(parameter.positions.blockPosition)) {
+                } else {
+                  variables[item.name] = item.value;
 
-              if (parameter.positions.blockPosition) {
-                let _newPositions = this.blockPositionList.get(parameter.positions.blockPosition);
-                if (_newPositions) {
-                  newPositions = new Map();
-                  _newPositions.forEach((item) => {
-                    newPositions.set(item.positionString, (item.position));
-                  });
-                }
-              }
-              parameter.positions.blockPosition = this.blockPositions.get(parameter.positions.blockPosition);
-            }
-            if (parameter.positions.startPosition) {
-
-              if (newPositions) {
-                if (newPositions.has(parameter.positions.startPosition)) {
-                  parameter.positions.startPosition = (newPositions.get(parameter.positions.startPosition))
-                }
-              } else if (this.positions && this.positions.has(parameter.positions.startPosition)) {
-                parameter.positions.startPosition = (this.positions.get(parameter.positions.startPosition))
-              }
-            }
-            if (parameter.positions.endPositions) {
-              parameter.positions.endPositions = parameter.positions.endPositions.map((item) => {
-                if (newPositions) {
-                  if (newPositions.has(item)) {
-                    return (newPositions.get(item))
-                  }
-                } else if (this.positions.has(item)) {
-                  return (this.positions.get(item))
                 }
               });
+              parameter.variables = variables;
             }
-          }
-          return true;
-        });
 
+
+            if (parameter.positions) {
+              let newPositions;
+              if (parameter.positions.blockPosition && this.blockPositions && this.blockPositions.has(parameter.positions.blockPosition)) {
+
+                if (parameter.positions.blockPosition) {
+                  let _newPositions = this.blockPositionList.get(parameter.positions.blockPosition);
+                  if (_newPositions) {
+                    newPositions = new Map();
+                    _newPositions.forEach((item) => {
+                      newPositions.set(item.positionString, (item.position));
+                    });
+                  }
+                }
+                parameter.positions.blockPosition = this.blockPositions.get(parameter.positions.blockPosition);
+              }
+              if (parameter.positions.startPosition) {
+
+                if (newPositions) {
+                  if (newPositions.has(parameter.positions.startPosition)) {
+                    parameter.positions.startPosition = (newPositions.get(parameter.positions.startPosition))
+                  }
+                } else if (this.positions && this.positions.has(parameter.positions.startPosition)) {
+                  parameter.positions.startPosition = (this.positions.get(parameter.positions.startPosition))
+                }
+              }
+              if (parameter.positions.endPositions) {
+                parameter.positions.endPositions = parameter.positions.endPositions.map((item) => {
+                  if (newPositions) {
+                    if (newPositions.has(item)) {
+                      return (newPositions.get(item))
+                    }
+                  } else if (this.positions.has(item)) {
+                    return (this.positions.get(item))
+                  }
+                });
+              }
+            }
+            delete parameter.positions['newPositions'];
+            return true;
+          });
+
+          obj.orderParameterisations = obj.orderParameterisations.map(item => {
+            return {
+              orderName: item.orderName,
+              variables: item.variables,
+              positions: item.positions,
+              forceJobAdmission: item.forceJobAdmission
+            };
+          });
+
+        }
       }
-}
 
       if (object.configuration) {
         if (object.configuration.nonWorkingDayCalendars && object.configuration.nonWorkingDayCalendars.length === 0) {

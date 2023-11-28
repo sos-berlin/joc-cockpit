@@ -350,6 +350,9 @@
   .ant-drawer-content-wrapper {
     width: 40% !important
   }
+  .cal-modal-body{
+    min-height: 716px;
+  }
 }
 
 @media (min-width: 992px) {

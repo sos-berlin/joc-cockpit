@@ -50,7 +50,7 @@ export class LogViewComponent {
   treeStructure: any[] = [];
   isChildren = false;
   nodes = [];
-  expandedNodes = [];
+
 
   @ViewChild('dataBody', {static: false}) dataBody!: ElementRef;
 
@@ -210,6 +210,13 @@ export class LogViewComponent {
     if (this.dataObject.historyId) {
       this.historyId = this.dataObject.historyId;
       this.orderId = this.dataObject.orderId;
+      if(this.historyId !== this.coreService.logViewDetails.historyId) {
+        this.coreService.logViewDetails = {
+          historyId: this.historyId,
+          expandedLogTree: [],
+          expandedLogPanel: new Set()
+        };
+      }
       this.loadOrderLog();
     } else if (this.dataObject.taskId) {
       this.taskId = this.dataObject.taskId;
@@ -347,6 +354,7 @@ export class LogViewComponent {
           this.renderData(res.body, domId);
           this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.remove('down');
           this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.add('up');
+          this.coreService.logViewDetails.expandedLogPanel.add('#ex_' + (i + 1));
           a.classList.remove('hide');
           a.classList.add('show');
           if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
@@ -363,6 +371,7 @@ export class LogViewComponent {
       if (!expand) {
         this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.remove('up');
         this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.add('down');
+        this.coreService.logViewDetails.expandedLogPanel.delete('#ex_' + (i + 1));
         a.classList.remove('show');
         a.classList.add('hide');
         const z = this.dataBody.nativeElement.querySelector('#tx_id_' + (i + 1)).innerText;
@@ -814,18 +823,31 @@ export class LogViewComponent {
 
   private checkAndExpand(): void {
     const self = this;
+
+    if (this.coreService.logViewDetails.expandedLogPanel.size) {
+      const x: any = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('tx_order');
+      for (let i = 0; i < x.length; i++) {
+        const id = '#' + x[i]?.firstChild?.id;
+        if (this.coreService.logViewDetails.expandedLogPanel.has(id)) {
+          this.expandTask(i, true);
+        }
+      }
+    }
+
     function traverseTree(data): void {
       for (let i in data) {
         if (data[i] && data[i].children && data[i].children.length > 0) {
-          if (self.expandedNodes.indexOf(data[i].key) > -1) {
+          if (self.coreService.logViewDetails.expandedLogTree.indexOf(data[i].key) > -1) {
             data[i].expanded = true;
           }
           traverseTree(data[i].children);
         }
       }
     }
+
     traverseTree(this.nodes);
   }
+
   expandAll(): void {
     const x: any = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
@@ -834,6 +856,7 @@ export class LogViewComponent {
   }
 
   collapseAll(): void {
+    this.coreService.logViewDetails.expandedLogPanel.clear();
     const x: any = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       const a = POPOUT_MODALS['windowInstance'].document.getElementById('tx_log_' + (i + 1));
@@ -847,13 +870,13 @@ export class LogViewComponent {
   }
 
   expandAllTree(): void {
-    this.expandedNodes = [];
+    this.coreService.logViewDetails.expandedLogTree = [];
     this.traverseTree(this.nodes, true);
     this.nodes = [...this.nodes];
   }
 
   collapseAllTree(): void {
-    this.expandedNodes = [];
+    this.coreService.logViewDetails.expandedLogTree = [];
     this.traverseTree(this.nodes, false);
     this.nodes = [...this.nodes];
   }
@@ -863,7 +886,7 @@ export class LogViewComponent {
       if (data[i] && data[i].children && data[i].children.length > 0) {
         data[i].expanded = isExpand;
         if(isExpand) {
-          this.expandedNodes.push(data[i].key);
+          this.coreService.logViewDetails.expandedLogTree.push(data[i].key);
         }
         this.traverseTree(data[i].children, isExpand);
       }
@@ -876,9 +899,9 @@ export class LogViewComponent {
       data.isExpanded = !data.isExpanded;
       data.origin['isExpanded'] = !data.origin['isExpanded'];
       if (data.origin['isExpanded']) {
-        this.expandedNodes.push(data.origin.key);
+        this.coreService.logViewDetails.expandedLogTree.push(data.origin.key);
       } else {
-        this.expandedNodes.splice(this.expandedNodes.indexOf(data.origin.key), 1);
+        this.coreService.logViewDetails.expandedLogTree.splice(this.coreService.logViewDetails.expandedLogTree.indexOf(data.origin.key), 1);
       }
     } else {
       const node = data.node;
@@ -974,6 +997,13 @@ export class LogViewComponent {
     if (this.dataObject.historyId) {
       this.historyId = this.dataObject.historyId;
       this.orderId = this.dataObject.orderId;
+      if(this.historyId !== this.coreService.logViewDetails.historyId) {
+        this.coreService.logViewDetails = {
+          historyId: this.historyId,
+          expandedLogTree: [],
+          expandedLogPanel: new Set()
+        };
+      }
       this.loadOrderLog();
     } else if (this.dataObject.taskId) {
       this.taskId = this.dataObject.taskId;

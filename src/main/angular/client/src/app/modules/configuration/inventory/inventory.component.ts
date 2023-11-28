@@ -90,14 +90,13 @@ export class CreateTagModalComponent {
   onChange(value: string): void {
     this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
     this.filteredOptions = this.filteredOptions.filter((tag) => {
-      return this.tags.indexOf(tag) !== -1;
+      return this.tags.indexOf(tag) == -1;
     })
   }
 
   private fetchTags(): void {
     this.coreService.post('tags', {}).subscribe((res) => {
       this.allTags = res.tags;
-     // this.filteredOptions = this.allTags;
     });
   }
 
@@ -117,6 +116,7 @@ export class CreateTagModalComponent {
       }
     });
   }
+
   handleClose(removedTag: {}): void {
     this.tags = this.tags.filter(tag => tag !== removedTag);
   }
@@ -4185,7 +4185,6 @@ export class InventoryComponent {
     this.coreService.post('tags', {}).subscribe({
       next: (res) => {
         const _tags = this.coreService.clone(this.tags);
-        console.log(_tags);
         this.tags = res.tags.map((tag) => {
           const obj: any = {
             name: tag, children: []
@@ -4960,11 +4959,6 @@ export class InventoryComponent {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-
-      }
     });
   }
 
@@ -5817,12 +5811,27 @@ export class InventoryComponent {
     let paths = [];
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-
         if (args.eventSnapshots[j].eventType === 'AgentInventoryUpdated' && args.eventSnapshots[j].objectType === 'AGENT') {
           this.getAgents();
         }
-        if (args.eventSnapshots[j].path) {
-          if (args.eventSnapshots[j].eventType.match(/Inventory/)) {
+        if (args.eventSnapshots[j].eventType.match(/InventoryTagsUpdated/)) {
+          if (this.isTag) {
+            this.updateTags();
+          }
+        } else if (args.eventSnapshots[j].path) {
+          if (this.isTag && args.eventSnapshots[j].eventType.match(/InventoryTaggingUpdated/)) {
+            if (this.isTag) {
+              this.fetchWorkflowTags(args.eventSnapshots[j].path);
+            }
+          }
+          if (args.eventSnapshots[j].eventType.match(/InventoryTagDeleted/)) {
+            if (this.isTag) {
+              if (this.selectTagName == args.eventSnapshots[j].path) {
+                this.selectTagName = null;
+                this.type = null;
+              }
+            }
+          } else if (args.eventSnapshots[j].eventType.match(/Inventory/)) {
             const isTrash = args.eventSnapshots[j].eventType.match(/Trash/);
             if (!this.isTrash && isTrash) {
             } else {
@@ -5845,8 +5854,6 @@ export class InventoryComponent {
               }
             }
           }
-        } else if (args.eventSnapshots[j].eventType.match(/InventoryTags/)) {
-          this.updateTags();
         }
       }
     }
@@ -5895,6 +5902,17 @@ export class InventoryComponent {
       this.objectHistory.push(this.coreService.clone(this.selectedObj));
       ++this.indexOfNextAdd;
     }
+  }
+
+  private fetchWorkflowTags(path): void {
+    this.coreService.post('inventory/workflow/tags', {path}).subscribe((res) => {
+      for (let i in this.tags) {
+        if (this.tags[i].isExpanded && res.tags.indexOf(this.tags[i].name) > -1) {
+          this.tags[i].isExpanded = false;
+          this.selectTag(this.tags[i], true);
+        }
+      }
+    });
   }
 
   private setSelectedObj(type, name, path, id): void {
@@ -6131,6 +6149,10 @@ export class InventoryComponent {
   private _deleteTag(obj, tagName): void {
     this.coreService.post('tags/delete', obj).subscribe(() => {
       this.tags = this.tags.filter(tag => {
+        if (this.selectTagName == tagName) {
+          this.selectTagName = null;
+          this.type = null;
+        }
         return tag.name != tagName;
       })
     });
