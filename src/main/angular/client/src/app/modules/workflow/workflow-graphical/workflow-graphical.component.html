@@ -115,8 +115,8 @@
               nz-menu-item>
             <a>{{'dailyPlan.button.setParameters' | translate}} ..</a>
           </li>
-          <li (click)="removeWhenTerminated()" *ngIf="!order.positionIsImplicitEnd && permission && permission.currentController && permission.currentController.orders.cancel
-             && order.state && (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED') && (order.positionString && !order.positionString.match('/fork'))" nz-menu-item>
+          <li (click)="removeWhenTerminated()" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel
+             && order.canLeave" nz-menu-item>
             <a translate>order.button.leaveWorkflow</a>
           </li>
           <li (click)="confirmOrder()" *ngIf="!order.positionIsImplicitEnd && permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'PROMPTING')"

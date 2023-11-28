@@ -139,11 +139,9 @@ export class LogComponent {
       this.historyId = parseInt(this.route.snapshot.queryParams['historyId'], 10);
       this.orderId = this.route.snapshot.queryParams['orderId'];
       if(this.historyId !== this.coreService.logViewDetails.historyId) {
-        this.coreService.logViewDetails = {
-          historyId: this.historyId,
-          expandedLogTree: [],
-          expandedLogPanel: new Set()
-        };
+        this.coreService.logViewDetails.historyId = this.historyId;
+        this.coreService.logViewDetails.expandedLogTree = [];
+        this.coreService.logViewDetails.expandedLogPanel = new Set();
       }
       this.loadOrderLog();
     } else if (this.route.snapshot.queryParams['taskId']) {
@@ -319,15 +317,20 @@ export class LogComponent {
       });
     }
 
-    if (x && x.length > 0) {
-      const dom = x[x.length - 1].childNodes[0];
-      if (dom) {
-        dom.click();
+    if (!this.coreService.logViewDetails.expandedAllLog && this.coreService.logViewDetails.expandedLogPanel.size == 0) {
+      if (x && x.length > 0) {
+        const dom = x[x.length - 1].childNodes[0];
+        if (dom) {
+          dom.click();
+        }
       }
     }
   }
 
   private expandTask(i, expand): void {
+    if (!expand) {
+      this.coreService.logViewDetails.expandedAllLog = false;
+    }
     const domId = 'tx_log_' + (i + 1);
     const jobs: any = {};
     jobs.controllerId = this.controllerId;
@@ -797,6 +800,7 @@ export class LogComponent {
   }
 
   expandAll(): void {
+    this.coreService.logViewDetails.expandedAllLog = true;
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       this.expandTask(i, true);
@@ -804,6 +808,7 @@ export class LogComponent {
   }
 
   collapseAll(): void {
+    this.coreService.logViewDetails.expandedAllLog = false;
     this.coreService.logViewDetails.expandedLogPanel.clear();
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
@@ -821,11 +826,11 @@ export class LogComponent {
   private checkAndExpand(): void {
     const self = this;
 
-    if (this.coreService.logViewDetails.expandedLogPanel.size) {
+    if (this.coreService.logViewDetails.expandedLogPanel.size || this.coreService.logViewDetails.expandedAllLog) {
       const x: any = document.getElementsByClassName('tx_order');
       for (let i = 0; i < x.length; i++) {
         const id = '#' + x[i]?.firstChild?.id;
-        if (this.coreService.logViewDetails.expandedLogPanel.has(id)) {
+        if (this.coreService.logViewDetails.expandedLogPanel.has(id) || this.coreService.logViewDetails.expandedAllLog) {
           this.expandTask(i, true);
         }
       }
@@ -889,13 +894,6 @@ export class LogComponent {
     if (this.route.snapshot.queryParams['historyId']) {
       this.historyId = parseInt(this.route.snapshot.queryParams['historyId'], 10);
       this.orderId = this.route.snapshot.queryParams['orderId'];
-      if(this.historyId !== this.coreService.logViewDetails.historyId) {
-        this.coreService.logViewDetails = {
-          historyId: this.historyId,
-          expandedLogTree: [],
-          expandedLogPanel: new Set()
-        };
-      }
       this.loadOrderLog();
     } else if (this.route.snapshot.queryParams['taskId']) {
       this.taskId = parseInt(this.route.snapshot.queryParams['taskId'], 10);
