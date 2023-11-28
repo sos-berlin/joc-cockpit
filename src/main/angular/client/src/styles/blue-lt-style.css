@@ -1210,3 +1210,22 @@ div.jsoneditor-value.jsoneditor-invalid {
 .bg-highlight {
     background-color: rgba(255, 0, 0, .56) !important
 }
+
+#log-body{
+  background-color: var(--bg-box)
+}
+.tx_order .caret{
+  border-left: 5px solid var(--bg-box);
+  border-right: 5px solid var(--bg-box);
+}
+.ant-select-dropdown-menu-item-active{
+  color: var(--bg-box);
+}
+
+.upload-progress-bar {
+  background-color: rgba(255, 140, 0, 0.2);
+}
+
+.progress-bar-value {
+  background-color: rgb(255, 140, 0);
+}
