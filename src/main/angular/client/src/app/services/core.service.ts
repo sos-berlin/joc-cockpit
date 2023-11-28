@@ -27,6 +27,7 @@ export class CoreService {
 
   logViewDetails = {
     historyId: '',
+    expandedAllLog: false,
     expandedLogTree: [],
     expandedLogPanel: new Set()
   }

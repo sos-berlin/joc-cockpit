@@ -1309,3 +1309,11 @@ div.jsoneditor-value.jsoneditor-invalid {
 .btn-search {
   background-color: #777;
 }
+
+.upload-progress-bar {
+  background-color: rgba(19, 149, 190, 0.2);
+}
+
+.progress-bar-value {
+  background-color: rgb(19, 149, 190);
+}
