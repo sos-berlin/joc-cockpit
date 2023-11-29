@@ -553,7 +553,7 @@
     "button.switchToRelativeDate": "Passer à une date relative",
     "button.copyArguments": "Copier les arguments",
     "button.showClipboard": "Afficher presse-papiers",
-    "button.copyOrderId": "Copy Order ID",
+    "button.copyOrderId": "Copie l'ID Ordre",
     "placeholder.search": "Filtrer les résultats",
     "placeholder.name": "Nom",
     "placeholder.value": "Valeur",
