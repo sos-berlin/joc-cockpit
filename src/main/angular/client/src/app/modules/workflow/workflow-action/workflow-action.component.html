@@ -34,6 +34,13 @@
           nz-menu-item>
         <a>{{'workflow.button.transitionOrders' | translate}}</a>
       </li>
+      <li nz-menu-divider></li>
+      <li (click)="coreService.showDocumentation(workflow.documentationName, preferences)" [nzDisabled]="!workflow.documentationName"
+          nz-menu-item>
+        <a>
+          <span translate>common.button.viewDocumentation</span>
+        </a>
+      </li>
       <li (click)="coreService.copyLink('workflow',workflow.path,  '', workflow.versionId)" nz-menu-item>
         <a translate>common.button.copyLinkToObject</a>
       </li>

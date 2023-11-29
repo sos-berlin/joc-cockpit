@@ -3083,4 +3083,8 @@ export class CoreService {
     }
   }
 
+  copyToClipboard(orderId, message) {
+    this.clipboardService.copy(orderId);
+    this.showCopyMessage(message);
+  }
 }

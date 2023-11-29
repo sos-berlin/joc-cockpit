@@ -29,6 +29,7 @@ export class ScheduleComponent {
   isVisible: boolean;
   dateFormat: any;
   isUnique = true;
+  isStore = false;
   objectType = InventoryObject.SCHEDULE;
   workflowTree = [];
   invalidMsg: string;
@@ -830,7 +831,17 @@ export class ScheduleComponent {
   }
 
   release(): void {
-    this.dataService.reloadTree.next({release: this.schedule});
+    this.checkRelease(50);
+  }
+
+  private checkRelease(time: number): void {
+    setTimeout(() => {
+      if (this.isStore) {
+        this.checkRelease(100);
+      } else {
+        this.dataService.reloadTree.next({release: this.schedule});
+      }
+    }, time);
   }
 
   backToListView(): void {
@@ -890,16 +901,16 @@ export class ScheduleComponent {
   }
 
   saveJSON(flag = false, skip = false, form?, data?): void {
+    if (this.isTrash || !this.permission.joc.inventory.manage) {
+      return;
+    }
     if (form && form.invalid) {
       data.value = '';
-      return;
     }
     if (!this.schedule.configuration.planOrderAutomatically) {
       this.schedule.configuration.submitOrderToControllerWhenPlanned = false;
     }
-    if (this.isTrash || !this.permission.joc.inventory.manage) {
-      return;
-    }
+
     const obj = this.coreService.clone(this.schedule.configuration);
     let isEmptyExist = false;
     let isValid = true;
@@ -1050,8 +1061,10 @@ export class ScheduleComponent {
             request.auditLog = {comment: translatedValue};
           });
         }
+        this.isStore = true;
         this.coreService.post('inventory/store', request).subscribe({
           next: (res: any) => {
+            this.isStore = false;
             if (res.path === this.schedule.path) {
               this.isLocalChange = res.path;
               this.lastModified = res.configurationDate;
@@ -1063,6 +1076,7 @@ export class ScheduleComponent {
               this.setErrorMessage(res);
             }
           }, error: () => {
+            this.isStore = false;
             this.ref.detectChanges();
           }
         });
