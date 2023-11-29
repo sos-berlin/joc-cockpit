@@ -368,7 +368,7 @@ export class SingleWorkflowComponent {
     workflow.show = true;
     $('#workflowTableId').css('height', 450);
     workflow.configuration = this.coreService.clone(workflow);
-    this.workflowService.convertTryToRetry(workflow.configuration, null, {}, {count: 0});
+    this.workflowService.convertTryToRetry(workflow.configuration, null, workflow.jobs, {count: 0});
   }
 
   viewHistory(data): void {
@@ -1459,7 +1459,7 @@ export class WorkflowComponent {
     workflow.show = true;
     workflow.configuration = this.coreService.clone(workflow);
     setTimeout(() => {
-      this.workflowService.convertTryToRetry(workflow.configuration, null, {}, {count: 0, setObj});
+      this.workflowService.convertTryToRetry(workflow.configuration, null,  workflow.jobs, {count: 0, setObj});
       this.updatePanelHeight();
     }, 0);
   }
@@ -1773,7 +1773,7 @@ export class WorkflowComponent {
     workflows.forEach((workflow) => {
       workflow.show = true;
       workflow.configuration = this.coreService.clone(workflow);
-      this.workflowService.convertTryToRetry(workflow.configuration, null, {}, {count: 0});
+      this.workflowService.convertTryToRetry(workflow.configuration, null, workflow.jobs, {count: 0});
       if (workflow.numOfOrders > 0) {
         workflowIds.push({path: workflow.path, versionId: workflow.versionId});
       }
@@ -1949,7 +1949,7 @@ export class WorkflowComponent {
                   this.workflows[i].state = res.workflow.state;
                   this.workflows[i].jobs = res.workflow.jobs;
                   if (this.workflows[i].show) {
-                    this.workflowService.convertTryToRetry(res.workflow, null, {}, {count: 0});
+                    this.workflowService.convertTryToRetry(res.workflow, null, res.workflow.jobs, {count: 0});
                     this.workflowService.compareAndMergeInstructions(this.workflows[i].configuration.instructions, res.workflow.instructions);
                   }
                 }

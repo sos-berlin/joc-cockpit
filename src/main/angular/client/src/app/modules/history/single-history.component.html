@@ -86,14 +86,13 @@
                   [innerHtml]="history.startTime | duration:history.endTime"></td>
             </tr>
             <tr *ngIf="history.show && history.arguments">
-              <td></td>
               <td colspan="10">
                 <app-order-variable [history]="true" [order]="history" [schedulerId]="controllerId"
                                     [type]="'arguments'"></app-order-variable>
               </td>
             </tr>
             <tr *ngIf="history.show">
-              <td colspan="11" style="padding:0 !important;">
+              <td colspan="10" style="padding:0 !important;">
                 <app-order-history-template [historyView]="{}" [history]="history"
                                             [permission]="permission" [schedulerId]="controllerId" class="order-history-template0"
                                             style="display: block"
@@ -170,7 +169,6 @@
                   [innerHtml]="jobHistory.exitCode"></td>
             </tr>
             <tr *ngIf="jobHistory.show">
-              <td></td>
               <td colspan="10">
                 <app-order-variable [history]="true" [order]="jobHistory" [schedulerId]="controllerId"
                                     [type]="'arguments'"></app-order-variable>

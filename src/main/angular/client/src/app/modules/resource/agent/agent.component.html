@@ -410,7 +410,7 @@
                       <ng-container *ngIf="subagent.show">
                         <tr>
                           <td *ngIf="permission.currentController && permission.currentController.switchOver"></td>
-                          <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
+                          <td class="custom-th" colspan="2"><span class="p-l" translate>order.label.orderId</span></td>
                           <td class="custom-th" colspan="2"><span translate>order.label.workflow</span></td>
                           <td class="custom-th" colspan="2"><span translate>order.label.position</span></td>
                           <td class="custom-th"><span translate>order.label.state</span></td>
@@ -419,7 +419,7 @@
                         <ng-container *ngIf="!subagent.loading">
                           <tr *ngFor="let order of subagent.orders">
                             <td *ngIf="permission.currentController && permission.currentController.switchOver"></td>
-                            <td><span class="p-l">{{order.orderId}}</span></td>
+                            <td colspan="2"><span class="p-l">{{order.orderId}}</span></td>
                             <td colspan="2">
                               <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');"
                                  class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
@@ -438,7 +438,7 @@
                         </ng-container>
                         <ng-container *ngIf="subagent.loading">
                           <tr>
-                            <td colspan="8">
+                            <td colspan="9">
                               <div class="text-center m-t m-b">
                                 <nz-spin nzSimple></nz-spin>
                               </div>
@@ -447,7 +447,7 @@
                         </ng-container>
                         <ng-container *ngIf="!subagent.loading && (!subagent.orders || subagent.orders.length  === 0)">
                           <tr>
-                            <td colspan="8">
+                            <td colspan="9">
                               <div style="margin-top: 8px; margin-bottom: 5px">
                                 <app-empty-data></app-empty-data>
                               </div>
@@ -460,7 +460,7 @@
                   <ng-container *ngIf="cluster.show && !cluster.subagents">
                     <tr>
                       <td *ngIf="permission.currentController && permission.currentController.switchOver"></td>
-                      <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
+                      <td class="custom-th" colspan="2"><span class="p-l" translate>order.label.orderId</span></td>
                       <td class="custom-th" colspan="2"><span translate>order.label.workflow</span></td>
                       <td class="custom-th" colspan="2"><span translate>order.label.position</span></td>
                       <td class="custom-th"><span translate>order.label.state</span></td>
@@ -469,7 +469,7 @@
                     <ng-container *ngIf="!cluster.loading">
                       <tr *ngFor="let order of cluster.orders">
                         <td *ngIf="permission.currentController && permission.currentController.switchOver"></td>
-                        <td><span class="p-l">{{order.orderId}}</span></td>
+                        <td colspan="2"><span class="p-l">{{order.orderId}}</span></td>
                         <td colspan="2">
                           <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');"
                              class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
@@ -488,7 +488,7 @@
                     </ng-container>
                     <ng-container *ngIf="cluster.loading">
                       <tr>
-                        <td colspan="8">
+                        <td colspan="9">
                           <div class="text-center m-t m-b">
                             <nz-spin nzSimple></nz-spin>
                           </div>
@@ -497,7 +497,7 @@
                     </ng-container>
                     <ng-container *ngIf="!cluster.loading && (!cluster.orders || cluster.orders.length  === 0)">
                       <tr>
-                        <td colspan="8">
+                        <td colspan="9">
                           <div style="margin-top: 8px; margin-bottom: 5px">
                             <app-empty-data></app-empty-data>
                           </div>
