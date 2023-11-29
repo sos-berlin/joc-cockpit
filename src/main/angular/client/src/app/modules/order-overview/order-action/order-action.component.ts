@@ -215,6 +215,11 @@ export class OrderActionComponent {
     })
   }
 
+
+  copyOrderId(orderId): void {
+    this.coreService.copyToClipboard(orderId, this.message);
+  }
+
   private resetAction(): void {
     setTimeout(() => {
       this.isChanged.emit(false);

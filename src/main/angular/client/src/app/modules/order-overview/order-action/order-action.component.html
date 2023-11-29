@@ -66,8 +66,12 @@
           nz-menu-item>
         <a>{{'order.button.showLog' | translate}}</a>
       </li>
+      <li nz-menu-divider></li>
       <li (click)="coreService.copyLink('order',order.orderId, order.workflowId.path)" nz-menu-item>
         <a translate>common.button.copyLinkToObject</a>
+      </li>
+      <li (click)="copyOrderId(order.orderId)" nz-menu-item>
+        <a translate>common.button.copyOrderId</a>
       </li>
     </ul>
   </nz-dropdown-menu>

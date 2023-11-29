@@ -63,9 +63,13 @@
               <li (click)="coreService.copyArguments(value, 'variables', message)" nz-menu-item [nzDisabled]="!value.variables || value.variables?.length == 0">
                 <a translate>common.button.copyArguments</a>
               </li>
+              <li nz-menu-divider></li>
               <li (click)="coreService.copyLink('order',value.orderId, value.workflowPath)" [nzDisabled]="value.state && value.state._text !== 'FINISHED'"
                   nz-menu-item>
                 <a translate>common.button.copyLinkToObject</a>
+              </li>
+              <li (click)="copyOrderId(value.orderId)" nz-menu-item>
+                <a translate>common.button.copyOrderId</a>
               </li>
             </ul>
           </nz-dropdown-menu>

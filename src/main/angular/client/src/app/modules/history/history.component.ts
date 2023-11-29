@@ -3999,6 +3999,10 @@ export class HistoryComponent {
 
   /* --------------------------Customizations End-----------------------*/
 
+  copyOrderId(orderId): void {
+    this.coreService.copyToClipboard(orderId, this.message);
+  }
+
   reload(): void {
     if (this.isSubmissionLoading) {
       this.pendingHTTPRequests$.next();

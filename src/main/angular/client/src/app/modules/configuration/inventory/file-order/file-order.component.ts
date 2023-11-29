@@ -45,6 +45,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   history = [];
   lastModified: any = '';
   isTreeShow = false;
+  isStore = false;
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -351,7 +352,17 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   deploy(): void {
-    this.dataService.reloadTree.next({deploy: this.fileOrder});
+    this.checkForDeploy(50);
+  }
+
+  private checkForDeploy(time: number): void {
+    setTimeout(() => {
+      if (this.isStore) {
+        this.checkForDeploy(100);
+      } else {
+        this.dataService.reloadTree.next({deploy: this.fileOrder});
+      }
+    }, time);
   }
 
   backToListView(): void {
@@ -432,9 +443,10 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
           request.auditLog = {comment: translatedValue};
         });
       }
-
+      this.isStore = true;
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
+          this.isStore = false;
           if (res.path === this.fileOrder.path) {
             this.isLocalChange = res.path;
             this.lastModified = res.configurationDate;
@@ -445,7 +457,10 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
             this.data.deployed = false;
             this.setErrorMessage(res);
           }
-        }, error: () => this.ref.detectChanges()
+        }, error: () => {
+          this.isStore = false;
+          this.ref.detectChanges()
+        }
       });
     }
   }

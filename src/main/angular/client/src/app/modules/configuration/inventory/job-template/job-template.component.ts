@@ -355,6 +355,7 @@ export class JobTemplateComponent {
   selectedIndex = 0;
   history = [];
   isRuntimeVisible = false;
+  isStore = false;
   jobResourcesTree = [];
   documentationTree = [];
   scriptTree: any = [];
@@ -774,7 +775,17 @@ export class JobTemplateComponent {
   }
 
   release(): void {
-    this.dataService.reloadTree.next({release: this.job});
+    this.checkRelease(50);
+  }
+
+  private checkRelease(time: number): void {
+    setTimeout(() => {
+      if (this.isStore) {
+        this.checkRelease(100);
+      } else {
+        this.dataService.reloadTree.next({release: this.job});
+      }
+    }, time);
   }
 
   backToListView(): void {
@@ -1358,8 +1369,10 @@ export class JobTemplateComponent {
           request.auditLog = {comment: translatedValue};
         });
       }
+      this.isStore = true;
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
+          this.isStore = false;
           if (res.path === this.job.path) {
             this.isLocalChange = res.path;
             this.lastModified = res.configurationDate;
@@ -1371,6 +1384,7 @@ export class JobTemplateComponent {
             this.setErrorMessage(res);
           }
         }, error: () => {
+          this.isStore = false;
           this.ref.detectChanges();
         }
       });

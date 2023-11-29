@@ -1141,6 +1141,7 @@ export class CalendarComponent {
   submitted = false;
   required = false;
   display = false;
+  isStore = false;
   calendar: any = {};
   dateFormat: any;
   dateFormatM: any;
@@ -1483,8 +1484,10 @@ export class CalendarComponent {
           request.auditLog = {comment: translatedValue};
         });
       }
+      this.isStore = true;
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
+          this.isStore = false;
           if (res.path === this.calendar.path) {
             this.isLocalChange = res.path;
             this.lastModified = res.configurationDate;
@@ -1500,15 +1503,27 @@ export class CalendarComponent {
             }
             this.ref.detectChanges();
           }
-        }, error: () => this.ref.detectChanges()
+        }, error: () => {
+          this.isStore = false;
+          this.ref.detectChanges()
+        }
       });
     }
   }
 
   release(): void {
-    this.dataService.reloadTree.next({release: this.calendar});
+    this.checkRelease(50);
   }
 
+  private checkRelease(time: number): void {
+    setTimeout(() => {
+      if (this.isStore) {
+        this.checkRelease(100);
+      } else {
+        this.dataService.reloadTree.next({release: this.calendar});
+      }
+    }, time);
+  }
   private openModel(frequency, data): void {
     this.editor.hidePervious = !!data;
     this.editor.showYearView = false;

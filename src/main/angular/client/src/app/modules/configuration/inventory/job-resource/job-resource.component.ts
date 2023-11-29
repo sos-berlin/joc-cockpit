@@ -37,6 +37,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   jobResource: any = {};
   invalidMsg: string;
   isLocalChange: string;
+  isStore = false;
   objectType = InventoryObject.JOBRESOURCE;
   documentationTree = [];
   indexOfNextAdd = 0;
@@ -222,7 +223,17 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   deploy(): void {
-    this.dataService.reloadTree.next({deploy: this.jobResource});
+    this.checkForDeploy(50);
+  }
+
+  private checkForDeploy(time: number): void {
+    setTimeout(() => {
+      if (this.isStore) {
+        this.checkForDeploy(100);
+      } else {
+        this.dataService.reloadTree.next({deploy: this.jobResource});
+      }
+    }, time);
   }
 
   backToListView(): void {
@@ -516,8 +527,10 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
           request.auditLog = {comment: translatedValue};
         });
       }
+      this.isStore = true;
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
+          this.isStore = false;
           if (res.path === this.jobResource.path) {
             this.isLocalChange = res.path;
             this.lastModified = res.configurationDate;
@@ -530,6 +543,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
             this.ref.detectChanges();
           }
         }, error: () => {
+          this.isStore = false;
           this.ref.detectChanges();
         }
       });

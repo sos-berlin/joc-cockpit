@@ -2952,6 +2952,10 @@ export class DailyPlanComponent {
     this.loadOrderPlan();
   }
 
+  copyOrderId(orderId): void {
+    this.coreService.copyToClipboard(orderId, this.message);
+  }
+
   reload(): void {
     if (this.reloadState === 'no') {
       this.planOrders = [];

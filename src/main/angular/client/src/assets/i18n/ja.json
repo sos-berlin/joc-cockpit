@@ -553,6 +553,7 @@
     "button.switchToRelativeDate": "相対日付に切替",
     "button.copyArguments": "変数コピー",
     "button.showClipboard": "クリップボード表示",
+    "button.copyOrderId": "Copy Order ID",
     "placeholder.search": "検索",
     "placeholder.name": "名称",
     "placeholder.value": "値",

@@ -553,6 +553,7 @@
     "button.switchToRelativeDate": "Switch to relative date",
     "button.copyArguments": "Copy arguments",
     "button.showClipboard": "Show clipboard",
+    "button.copyOrderId": "Copy Order ID",
     "placeholder.search": "Filter results",
     "placeholder.name": "Name",
     "placeholder.value": "Value",

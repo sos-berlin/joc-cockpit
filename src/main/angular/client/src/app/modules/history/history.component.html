@@ -840,6 +840,9 @@
                       <li (click)="coreService.copyLink('order',history.orderId, history.workflow)" nz-menu-item>
                         <a translate>common.button.copyLinkToObject</a>
                       </li>
+                      <li (click)="copyOrderId(history.orderId)" nz-menu-item>
+                        <a translate>common.button.copyOrderId</a>
+                      </li>
                     </ul>
                   </nz-dropdown-menu>
                 </div>

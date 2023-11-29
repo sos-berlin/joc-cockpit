@@ -307,6 +307,10 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
+  copyOrderId(orderId): void {
+    this.coreService.copyToClipboard(orderId, this.message);
+  }
+
   navToHistory(type: string): void {
     const filter = this.coreService.getHistoryTab();
     filter.type = type;
