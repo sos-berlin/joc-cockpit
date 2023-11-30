@@ -466,6 +466,11 @@
                                     class="btn btn-sm btn-grey m-l-12">
                               <i nz-icon nzTheme="outline" nzType="upload"></i>
                             </button>
+                            <button (click)="deleteCertificate('certificate')" [disabled]="!caCertificates.keyID"
+                                    *ngIf="permission.joc.administration.certificates.manage" [nz-tooltip]="'profile.keyManagement.tooltip.deleteCertificate' | translate"
+                                    class="btn btn-sm btn-grey m-l-12">
+                              <i class="fa fa-trash"></i>
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -515,6 +520,11 @@
                               [nz-tooltip]="'profile.keyManagement.tooltip.generate' | translate"
                               class="btn btn-sm btn-grey m-l-12">
                               <i nz-icon nzTheme="outline" nzType="file-protect"></i>
+                            </button>
+                            <button (click)="deleteCertificate('Key')" [disabled]="!keys.keyID"
+                                    *ngIf="permission.joc.administration.certificates.manage" [nz-tooltip]="'profile.keyManagement.tooltip.deleteKey' | translate"
+                                    class="btn btn-sm btn-grey m-l-12">
+                              <i class="fa fa-trash"></i>
                             </button>
                           </div>
                         </div>

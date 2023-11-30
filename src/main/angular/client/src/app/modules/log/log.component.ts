@@ -47,6 +47,7 @@ export class LogComponent {
   treeStructure = [];
   nodes = [];
   isChildren: boolean;
+  logPanelWidth: number;
 
 
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
@@ -149,26 +150,25 @@ export class LogComponent {
       this.loadJobLog();
     }
 
+    const self = this;
     const panel = $('.property-panel');
-    const dom = document.getElementById('property-panel');
     const logDom = document.getElementById('log-body');
-    const close: any = document.getElementsByClassName('sidebar-close');
-    const open: any = document.getElementsByClassName('sidebar-open');
+    const transitionCSS = {transition: 'none'};
 
-    $(open, panel).click(() => {
-      close[0].style.right = '300px';
-      dom.style.width = '300px';
-      logDom.style['margin-right'] = '292px';
-      dom.style.opacity = '1';
-      open[0].style.right = '-20px';
+    $('.sidebar-open', panel).click(() => {
+      self.logPanelWidth = localStorage['logPanelWidth'] ? parseInt(localStorage['logPanelWidth'], 10) : 300;
+      logDom.style['margin-right'] = self.logPanelWidth + 'px';
+      $('.sidebar-close').css({...transitionCSS, right: self.logPanelWidth + 'px'});
+      $('#property-panel').css({...transitionCSS, width: self.logPanelWidth + 'px'}).show();
+      $('.sidebar-open').css({...transitionCSS, right: '-20px'});
       sessionStorage['isLogTreeOpen'] = true;
     });
 
-    $(close, panel).click(() => {
-      open[0].style.right = '0';
-      dom.style.opacity = '0';
-      close[0].style.right = '-20px';
+    $('.sidebar-close', panel).click(() => {
       logDom.style['margin-right'] = 'auto';
+      $('.property-panel').css(transitionCSS).hide();
+      $('.sidebar-open').css({...transitionCSS, right: '0'});
+      $('.sidebar-close').css({...transitionCSS, right: '-20px'});
       sessionStorage['isLogTreeOpen'] = false;
     });
     if (!this.taskId) {

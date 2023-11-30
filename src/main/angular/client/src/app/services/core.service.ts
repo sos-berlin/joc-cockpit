@@ -1958,6 +1958,7 @@ export class CoreService {
         key: item.orderId + item.logEvent + item.position,
         name: '',
         orderId: item.orderId,
+        label: item.label,
         count: item.count,
         logLevel: item.logLevel,
         position: item.position,
@@ -2002,6 +2003,7 @@ export class CoreService {
                 key: 'try' + item.orderId + item.logEvent + item.position,
                 name: '',
                 logLevel: item.logLevel,
+                label: item.label,
                 position: item.position.substring(0, item.position.lastIndexOf(':')),
                 isLeaf: false,
                 count: item.count,
@@ -2024,6 +2026,7 @@ export class CoreService {
                 key: 'catch' + item.orderId + item.logEvent + item.position,
                 name: '',
                 logLevel: item.logLevel,
+                label: item.label,
                 position: item.position.substring(0, item.position.lastIndexOf(':')),
                 isLeaf: false,
                 count: item.count,
@@ -2055,6 +2058,9 @@ export class CoreService {
       if (item.job) {
         data.title = 'Job';
         data.name = item.job;
+        if(!data.label) {
+          data.label = item.label;
+        }
         data.isLeaf = true;
         delete data.children;
       }
@@ -2319,6 +2325,7 @@ export class CoreService {
           title: 'If',
           key: 'if' + item.orderId + item.logEvent + item.position,
           name: '',
+          label: item.label,
           logLevel: item.logLevel,
           position: item.position.substring(0, item.position.lastIndexOf(':')),
           isLeaf: false,

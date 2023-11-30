@@ -527,6 +527,23 @@ export class ResizableDirective {
           }
         });
       }
+    } else if (this.el.nativeElement.attributes.class?.value.match('sidebar-log-panel')) {
+      dom = $('#property-panel');
+      if (dom) {
+        dom.resizable({
+          minWidth: 22,
+          maxWidth: 768,
+          handles: 'w',
+          resize: (e, x) => {
+            const wt = x.size.width;
+            const transitionCSS = {transition: 'none'};
+            $('.property-panel').css({ width: wt + 'px'});
+            $('#log-body').css({...transitionCSS, 'margin-right': wt + 'px'});
+            $('.sidebar-close').css({...transitionCSS, right: wt + 'px'});
+            localStorage['logPanelWidth'] = wt;
+          }
+        });
+      }
     } else if (this.el.nativeElement.attributes.id) {
       dom = $('#' + this.el.nativeElement.attributes.id.value);
       if (dom) {

@@ -46,6 +46,7 @@ export class LogViewComponent {
   controllerId = '';
   lastScrollTop = 0;
   delta = 20;
+  logPanelWidth: number;
   dataObject: PopoutData;
   treeStructure: any[] = [];
   isChildren = false;
@@ -229,24 +230,42 @@ export class LogViewComponent {
       }
     }
 
+    const self = this;
     $(POPOUT_MODALS['windowInstance'].document).on("keydown", disableF5);
-    // const panel = $('.property-panel');
-    const dom = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-property-panel');
+    const panel = POPOUT_MODALS['windowInstance'].document.getElementById('property-panel');
     const close = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-close');
     const open = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-open');
+    const transitionCSS = {transition: 'none'};
+    if (panel) {
+      $(panel).resizable({
+        minWidth: 22,
+        maxWidth: 768,
+        handles: 'w',
+        resize: (e, x) => {
+          const wt = x.size.width;
+          const transitionCSS = {transition: 'none'};
+          $(panel).css({width: wt + 'px'});
+          this.dataBody.nativeElement.setAttribute('style', 'margin-right: ' + wt + 'px');
+          $(close).css({...transitionCSS, right: (wt - 2) + 'px'});
+          localStorage['logPanelWidth'] = wt;
+        }
+      });
+    }
+
     $(open).click(() => {
-      close[0].style.right = '300px';
-      dom[0].style.width = '302px';
-      this.dataBody.nativeElement.setAttribute('style', 'margin-right: 308px');
-      open[0].style.right = '-20px';
+      self.logPanelWidth = localStorage['logPanelWidth'] ? parseInt(localStorage['logPanelWidth'], 10) : 300;
+      this.dataBody.nativeElement.setAttribute('style', 'margin-right: ' + (self.logPanelWidth + 8) + 'px');
+      $(close).css({...transitionCSS, right: (self.logPanelWidth - 2) + 'px'});
+      $(panel).css({...transitionCSS, width: self.logPanelWidth + 'px'}).show();
+      $(open).css({...transitionCSS, right: '-20px'});
       sessionStorage['isLogTreeOpen'] = true;
     });
 
     $(close).click(() => {
-      open[0].style.right = '0';
-      dom[0].style.width = '0';
-      close[0].style.right = '-20px';
       this.dataBody.nativeElement.setAttribute('style', 'margin-right: 10px');
+      $(panel).css(transitionCSS).hide();
+      $(open).css({...transitionCSS, right: '0'});
+      $(close).css({...transitionCSS, right: '-20px'});
       sessionStorage['isLogTreeOpen'] = false;
     });
 
