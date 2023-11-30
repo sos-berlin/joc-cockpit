@@ -158,7 +158,7 @@ gridster-item {
 }
 
 .log_error, .log_stderr {
-  color: #ff5252 !important;
+  color: #b51d1d !important;
 }
 
 .log_warn {
@@ -1212,14 +1212,14 @@ div.jsoneditor-value.jsoneditor-invalid {
 }
 
 #log-body{
-  background-color: var(--bg-box)
+  background-color: #37414e
 }
 .tx_order .caret{
-  border-left: 5px solid var(--bg-box);
-  border-right: 5px solid var(--bg-box);
+  border-left: 5px solid #37414e;
+  border-right: 5px solid #37414e;
 }
 .ant-select-dropdown-menu-item-active{
-  color: var(--bg-box);
+  color: #37414e;
 }
 
 .upload-progress-bar {

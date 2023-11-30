@@ -388,6 +388,10 @@
       margin-left: 8px !important;
     }
 
+    .m-l-xs {
+      margin-left: 4px !important;
+    }
+
     .m-t {
       margin-top: 16px !important;
     }
@@ -525,8 +529,122 @@
       margin-right: 3px;
     }
 
-    .cursor, .resize-cursor {
-      cursor: pointer !important;
+    .resizable.no-transition {
+      transition: none !important;
+    }
+
+    .ui-resizable {
+      position: relative;
+    }
+
+    .ui-resizable-handle {
+      position: absolute;
+      font-size: 1px;
+      display: block;
+      -ms-touch-action: none;
+      touch-action: none;
+    }
+
+    .ui-resizable-disabled .ui-resizable-handle, .ui-resizable-autohide .ui-resizable-handle {
+      display: none;
+    }
+
+    .ui-resizable-n {
+      cursor: row-resize;
+      height: 7px;
+      width: 100%;
+      top: -5px;
+      left: 0;
+    }
+
+    .ui-resizable-s {
+      cursor: row-resize;
+      height: 10px;
+      width: 100%;
+      bottom: -5px;
+      left: 0;
+    }
+
+    .ui-resizable-e {
+      cursor: col-resize;
+      width: 10px;
+      right: -5px;
+      top: 0;
+      height: 100%;
+    }
+
+    .ui-resizable-w {
+      cursor: col-resize;
+      width: 10px;
+      left: 0;
+      top: 0;
+      height: 100%;
+    }
+
+    .ui-resizable-se {
+      cursor: col-resize;
+      width: 12px;
+      height: 12px;
+      right: 1px;
+      bottom: 1px;
+    }
+
+    .ui-resizable-sw {
+      cursor: col-resize;
+      width: 9px;
+      height: 9px;
+      left: -5px;
+      bottom: -5px;
+    }
+
+    .ui-resizable-nw {
+      cursor: col-resize;
+      width: 9px;
+      height: 9px;
+      left: -5px;
+      top: -5px;
+    }
+
+    .ui-resizable-ne {
+      cursor: col-resize;
+      width: 9px;
+      height: 9px;
+      right: -5px;
+      top: -5px;
+    }
+
+    .rg-right {
+      display: block;
+      width: 15px;
+      height: 15px;
+      line-height: 15px;
+      position: absolute;
+      z-index: 1;
+      -ms-user-select: none;
+      -webkit-user-select: none;
+      user-select: none;
+      background: 0 0;
+    }
+
+    .rg-right span {
+      position: absolute;
+      box-sizing: border-box;
+      display: block;
+      border-left: 1px solid #ccc;
+      border-right: 1px solid #ccc;
+      top: 46%;
+      margin: -10px 0 0 4px;
+      height: 20px;
+      width: 7px;
+    }
+
+    .rg-right {
+      width: 16px;
+      height: 100%;
+      right: auto;
+      top: 0;
+      margin-right: 0;
+      background: var(--box-color);
     }
 
   </style>
