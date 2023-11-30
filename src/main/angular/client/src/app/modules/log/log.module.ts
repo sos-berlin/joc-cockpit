@@ -7,16 +7,13 @@ import {NzTreeModule} from 'ng-zorro-antd/tree';
 import {NzCheckboxModule} from 'ng-zorro-antd/checkbox';
 import {LogComponent} from './log.component';
 import {LogRoutingModule} from './log-routing.module';
+import {ResizableDirective} from "../../directives/core.directive";
+import {SharedModule} from "../shared/shared.module";
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    TranslateModule,
-    LogRoutingModule,
-    NzToolTipModule,
-    NzTreeModule,
-    NzCheckboxModule
+    SharedModule,
+    LogRoutingModule
   ],
   declarations: [LogComponent]
 })

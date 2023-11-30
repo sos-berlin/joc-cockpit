@@ -60,7 +60,7 @@
     <div class="sidebar-close">
       <i nz-icon nzTheme="outline" nzType="caret-right"></i>
     </div>
-    <div class="sidebar sidebar-property-panel bg-white" id="property-panel">
+    <div class="resizable sidebar sidebar-log-panel bg-white" id="property-panel">
       <div style="margin-top: 26px">
         <div style="padding: 12px">
           <div *ngIf="isChildren" class="m-l m-b-sm">
@@ -98,6 +98,7 @@
                         class="_600">{{node.origin.title | translate}}</span>
                   <span *ngIf="!node.origin.end && !node.origin.name && !node.origin.title"
                         class="text-muted">{{node.origin.logEvent}}</span>
+                  <span class="text-muted m-l-xs" *ngIf="node.origin.label">({{node.origin.label}})</span>
                   <i *ngIf="node.origin.name1" class="text-primary">&nbsp;({{node.origin.name1}})</i>
                   <i *ngIf="node.origin.retryCount > 1 && node.origin.title == 'Retry'" class="text-primary">&nbsp;(Total
                     Tries {{node.origin.retryCount}})</i>
@@ -110,6 +111,7 @@
           </div>
         </div>
       </div>
+      <div class="rg-right"><span></span></div>
     </div>
   </div>
   <pre #dataBody *ngIf="!error" class="log p-t-sm p-r-sm p-b-sm" id="logs"></pre>

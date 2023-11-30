@@ -766,11 +766,12 @@
                class="col-sm-4"
                translate>user.label.iamOidcFlowType
         </label>
-        <div class="col-sm-6">
+        <div class="col-sm-8">
           <nz-radio-group [(ngModel)]="currentObj.iamOidcFlowType" name="type">
             <label nz-radio nzValue="AUTHENTICATION"><span
               translate>user.label.iamOidcAuthenticationCodeFlow</span></label>
             <label nz-radio nzValue="IMPLICIT"><span translate>user.label.iamOidcImplicitFlow</span></label>
+            <label nz-radio nzValue="CLIENT-CREDENTIAL"><span translate>user.label.iamOidcClientCredentialsFlow</span></label>
           </nz-radio-group>
         </div>
       </div>

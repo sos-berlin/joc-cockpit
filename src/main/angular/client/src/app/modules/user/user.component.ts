@@ -657,6 +657,7 @@ export class GenerateKeyComponent {
   caObj: any = {};
   required = false;
   comments: any = {};
+  useSSLcA = false;
   key: any = {
     keyAlg: 'RSA'
   };
@@ -707,6 +708,9 @@ export class GenerateKeyComponent {
     if (this.comments.ticketLink) {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
+    if(this.useSSLcA){
+      obj.useSslCa = this.useSSLcA;
+    }
     const URL = this.type === 'key' ? 'profile/key/generate' : 'profile/ca/generate';
     this.coreService.post(URL, obj).subscribe({
       next: () => {
@@ -725,8 +729,47 @@ export class GenerateKeyComponent {
 }
 
 @Component({
-  selector: 'app-user',
-  templateUrl: './user.component.html'
+    selector: 'app-remove-key-modal',
+    templateUrl: './remove-key-dialog.html'
+})
+export class RemoveKeyModalComponent {
+    readonly modalData: any = inject(NZ_MODAL_DATA);
+    submissionsDelete: boolean;
+    submitted = false;
+    submittedValue = ''
+
+    constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService,
+                public translate: TranslateService, public toasterService: ToastrService) {
+    }
+
+    ngOnInit(): void {
+        this.submissionsDelete = this.modalData.submissionsDelete;
+        this.submittedValue = this.modalData.submittedValue;
+    }
+
+    onSubmit(): void {
+        this.submitted = true;
+        if (this.submittedValue === 'certificate') {
+            const obj = {}
+            this.coreService.post('profile/key/delete', obj).subscribe({
+                next: () => {
+                    this.activeModal.close();
+                }
+            });
+        }else{
+            const obj = {}
+            this.coreService.post('profile/key/ca/delete', obj).subscribe({
+                next: () => {
+                    this.activeModal.close();
+                }
+            });
+        }
+    }
+}
+
+@Component({
+    selector: 'app-user',
+    templateUrl: './user.component.html'
 })
 export class UserComponent {
   zones: any = {};
@@ -1237,6 +1280,22 @@ export class UserComponent {
       }
     });
   }
+
+    deleteCertificate(type: string): void {
+        const modal = this.modal.create({
+            nzTitle: undefined,
+            nzContent: RemoveKeyModalComponent,
+            nzClassName: 'lg',
+            nzData: {
+                submissionsDelete: true,
+                submittedValue: type,
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+        });
+
+    }
 
   showKey(type = 'key'): void {
     this.modal.create({

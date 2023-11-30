@@ -1,0 +1,33 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+    <span>
+      <span>{{'profile.keyManagement.label.deleteCertificate' | translate}}</span>
+    </span>
+    </h4>
+    <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+        <span aria-hidden="true" class="fa fa-times-circle"></span>
+    </button>
+</div>
+<form #myForm="ngForm">
+    <div class="modal-body p-a">
+        <div class="text-center">
+            <div *ngIf="submissionsDelete">
+                <div class="m-t text">
+                    <p class="m-t">
+                        <span>{{'profile.keyManagement.popup.deleteSubmissions' | translate}}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button (click)="onSubmit()"
+                class="btn btn-danger btn-sm" type="button">
+            <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+            {{'common.button.delete' | translate}}
+        </button>
+        <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+            common.button.cancel
+        </button>
+    </div>
+</form>

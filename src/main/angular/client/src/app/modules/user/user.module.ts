@@ -6,7 +6,8 @@ import {
   GenerateKeyComponent,
   GitModalComponent,
   FavoriteListComponent,
-  EditFavoriteModalComponent
+  EditFavoriteModalComponent,
+  RemoveKeyModalComponent
 } from './user.component';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import {SharedModule} from '../shared/shared.module';
@@ -20,7 +21,8 @@ import {UserRoutingModule} from './user-routing.module';
     GitModalComponent,
     GenerateKeyComponent,
     FavoriteListComponent,
-    EditFavoriteModalComponent
+    EditFavoriteModalComponent,
+    RemoveKeyModalComponent
   ],
   imports: [
     SharedModule,

@@ -108,7 +108,7 @@
   <div class="sidebar-close">
     <i class="fa fa-caret-right"></i>
   </div>
-  <div class="sidebar sidebar-property-panel bg-white" id="property-panel">
+  <div appResizable class="sidebar sidebar-log-panel bg-white" id="property-panel">
     <div class="m-l-xs m-r-xs">
       <div style="padding: 12px">
         <div *ngIf="isChildren" class="m-l-xs m-b-xs">
@@ -143,6 +143,7 @@
                 <span class="_600" *ngIf="node.origin.end">{{node.origin.end | translate}}</span>
                 <span class="_600" *ngIf="!node.origin.end && !node.origin.name">{{node.origin.title | translate}}</span>
                 <span class="text-muted" *ngIf="!node.origin.end && !node.origin.name && !node.origin.title">{{node.origin.logEvent}}</span>
+                <span class="text-muted m-l-xs" *ngIf="node.origin.label">({{node.origin.label}})</span>
                 <i class="text-primary" *ngIf="node.origin.name1">&nbsp;({{node.origin.name1}})</i>
                 <i class="text-primary" *ngIf="node.origin.retryCount > 1 && node.origin.title == 'Retry'">&nbsp;(Total Tries {{node.origin.retryCount}})</i>
                 <span *ngIf="node.origin.logLevel == 'ERROR'">
@@ -152,9 +153,9 @@
             </div>
           </ng-template>
         </div>
-
       </div>
     </div>
+    <div class="rg-right"><span></span></div>
   </div>
 </div>
 <div class="spinner" *ngIf="loading || isLoading">
