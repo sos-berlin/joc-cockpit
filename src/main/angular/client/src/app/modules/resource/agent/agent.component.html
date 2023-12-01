@@ -412,7 +412,7 @@
                           <td *ngIf="permission.currentController && permission.currentController.switchOver"></td>
                           <td class="custom-th" colspan="2"><span class="p-l" translate>order.label.orderId</span></td>
                           <td class="custom-th" colspan="2"><span translate>order.label.workflow</span></td>
-                          <td class="custom-th" colspan="2"><span translate>order.label.position</span></td>
+                          <td class="custom-th" colspan="2"><span translate>workflow.label.label</span></td>
                           <td class="custom-th"><span translate>order.label.state</span></td>
                           <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
                         </tr>
@@ -427,7 +427,8 @@
                                  class="text-hover-primary">{{order.workflowId.path}} </a>
                             </td>
                             <td colspan="2">
-                              <span>{{order.positionString}}</span>
+                              <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label" [nz-tooltip]="order.positionString"></span>
+                              <span *ngIf="!order.label" [innerHtml]="order.positionString"></span>
                             </td>
                             <td>
                               <span [ngClass]="coreService.getColor(order.state.severity,'bg')"
@@ -462,7 +463,7 @@
                       <td *ngIf="permission.currentController && permission.currentController.switchOver"></td>
                       <td class="custom-th" colspan="2"><span class="p-l" translate>order.label.orderId</span></td>
                       <td class="custom-th" colspan="2"><span translate>order.label.workflow</span></td>
-                      <td class="custom-th" colspan="2"><span translate>order.label.position</span></td>
+                      <td class="custom-th" colspan="2"><span translate>worklfow.label.label</span></td>
                       <td class="custom-th"><span translate>order.label.state</span></td>
                       <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
                     </tr>
@@ -477,7 +478,8 @@
                              class="text-hover-primary">{{order.workflowId.path}} </a>
                         </td>
                         <td colspan="2">
-                          <span>{{order.positionString}}</span>
+                          <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label" [nz-tooltip]="order.positionString"></span>
+                          <span *ngIf="!order.label" [innerHtml]="order.positionString"></span>
                         </td>
                         <td>
                           <span [ngClass]="coreService.getColor(order.state.severity,'bg')"

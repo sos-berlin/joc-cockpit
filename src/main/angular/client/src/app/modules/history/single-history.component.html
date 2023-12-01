@@ -29,7 +29,7 @@
           <tr>
             <th><span translate>history.label.orderId</span></th>
             <th><span translate>history.label.workflow</span></th>
-            <th><span translate>history.label.position</span></th>
+            <th><span translate>workflow.label.label</span></th>
             <th><span translate>history.label.status</span></th>
             <th><span translate>history.label.orderState</span></th>
             <th><span translate>history.label.plannedTime</span></th>
@@ -65,7 +65,8 @@
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, controllerId, null,viewContainerRef)">
-                <span [innerHtml]="history.position"></span>
+                <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nz-tooltip]="history.position"></span>
+                <span *ngIf="!history.label" [innerHtml]="history.position"></span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, controllerId, null,viewContainerRef)">
                 <span *ngIf="history.state" [innerHtml]="history.state._text | translate" [ngClass]="coreService.getColor(history.state.severity,'bg')"
@@ -118,7 +119,7 @@
           <tr>
             <th><span translate>history.label.job</span></th>
             <th><span translate>history.label.workflow</span></th>
-            <th><span translate>history.label.position</span></th>
+            <th><span translate>workflow.label.label</span></th>
             <th><span translate>history.label.status</span></th>
             <th><span translate>history.label.startTime</span></th>
             <th><span translate>history.label.endTime</span></th>
@@ -150,7 +151,8 @@
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null,viewContainerRef)">
-                <span [innerHtml]="jobHistory.position"></span>
+                <span class="cur-point" *ngIf="jobHistory.label" [innerHtml]="jobHistory.label" [nz-tooltip]="jobHistory.position"></span>
+                <span *ngIf="!jobHistory.label" [innerHtml]="jobHistory.position"></span>
               </td>
               <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null,viewContainerRef)">
                 <span [innerHtml]="jobHistory.state._text | translate"

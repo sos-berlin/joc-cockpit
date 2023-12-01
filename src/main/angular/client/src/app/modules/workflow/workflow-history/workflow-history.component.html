@@ -21,11 +21,11 @@
                class="fa fa-caret-up "></i>
             <i *ngIf="workflowFilters.historyFilter.sortBy == 'orderId' && workflowFilters.historyFilter.reverse"
                class="fa fa-caret-down "></i></a></th>
-          <th (click)="sort('position','orderHistory')" class="dynamic-thead"><a><span
-            class="p-r-xs" translate>history.label.position</span>
-            <i *ngIf="workflowFilters.historyFilter.sortBy == 'position' && !workflowFilters.historyFilter.reverse"
+          <th (click)="sort('label','orderHistory')" class="dynamic-thead"><a><span
+            class="p-r-xs" translate>workflow.label.label</span>
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'label' && !workflowFilters.historyFilter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="workflowFilters.historyFilter.sortBy == 'position' && workflowFilters.historyFilter.reverse"
+            <i *ngIf="workflowFilters.historyFilter.sortBy == 'label' && workflowFilters.historyFilter.reverse"
                class="fa fa-caret-down "></i></a></th>
           <th (click)="sort('state._text','orderHistory')" class="dynamic-thead"><a>
             <span class="p-r-xs" translate>history.label.status</span>
@@ -107,7 +107,10 @@
                 <span [innerHtml]="history.orderId"></span>
               </span>
             </td>
-            <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)" [innerHtml]="history.position"></td>
+            <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
+              <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nz-tooltip]="history.position"></span>
+              <span *ngIf="!history.label" [innerHtml]="history.position"></span>
+            </td>
             <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
               <span [innerHtml]="history.state._text | translate" [ngClass]="coreService.getColor(history.state.severity,'bg')"
                     class="label"></span>
@@ -162,12 +165,12 @@
                class="fa fa-caret-up "></i>
             <i *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'job' && workflowFilters.taskHistoryFilter.reverse"
                class="fa fa-caret-down "></i></th>
-          <th (click)="sort('position','taskHistory')"><span class="p-r-xs" translate>history.label.position</span>
+          <th (click)="sort('label','taskHistory')"><span class="p-r-xs" translate>workflow.label.label</span>
             <i
-              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'position' && !workflowFilters.taskHistoryFilter.reverse"
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'label' && !workflowFilters.taskHistoryFilter.reverse"
               class="fa fa-caret-up "></i>
             <i
-              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'position' && workflowFilters.taskHistoryFilter.reverse"
+              *ngIf="workflowFilters.taskHistoryFilter.sortBy == 'label' && workflowFilters.taskHistoryFilter.reverse"
               class="fa fa-caret-down "></i></th>
           <th (click)="sort('state._text','taskHistory')"><span class="p-r-xs" translate>history.label.status</span>
             <i
@@ -228,7 +231,10 @@
                   <span class="text-muted">{{history.label}}</span>
                </span>
             </td>
-            <td [innerHtml]="history.position"></td>
+            <td>
+              <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nz-tooltip]="history.position"></span>
+              <span *ngIf="!history.label" [innerHtml]="history.position"></span>
+            </td>
             <td>
               <span [innerHtml]="history.state._text | translate" [ngClass]="coreService.getColor(history.state.severity,'bg')"
                     class="label"></span>
@@ -267,12 +273,12 @@
       >
         <thead>
         <tr>
-          <th (click)="sort('position','jobHistory')"><span class="p-r-xs" translate>history.label.position</span>
+          <th (click)="sort('label','jobHistory')"><span class="p-r-xs" translate>workflow.label.label</span>
             <i
-              *ngIf="workflowFilters.jobHistoryFilter.sortBy == 'position' && !workflowFilters.jobHistoryFilter.reverse"
+              *ngIf="workflowFilters.jobHistoryFilter.sortBy == 'label' && !workflowFilters.jobHistoryFilter.reverse"
               class="fa fa-caret-up "></i>
             <i
-              *ngIf="workflowFilters.jobHistoryFilter.sortBy == 'position' && workflowFilters.jobHistoryFilter.reverse"
+              *ngIf="workflowFilters.jobHistoryFilter.sortBy == 'label' && workflowFilters.jobHistoryFilter.reverse"
               class="fa fa-caret-down "></i></th>
           <th (click)="sort('state._text','jobHistory')"><span class="p-r-xs" translate>history.label.status</span>
             <i
@@ -321,7 +327,10 @@
         <tbody>
         <ng-template [ngForOf]="jobHistoryTable.data" let-history ngFor>
           <tr (click)="coreService.showLogWindow(null, history, null, history.controllerId, null,viewContainerRef)" class="cursor">
-            <td [innerHtml]="history.position"></td>
+            <td>
+              <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nz-tooltip]="history.position"></span>
+              <span *ngIf="!history.label" [innerHtml]="history.position"></span>
+            </td>
             <td>
             <span [innerHtml]="history.state._text | translate" [ngClass]="coreService.getColor(history.state.severity,'bg')"
                   class="label"></span>

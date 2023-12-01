@@ -241,6 +241,9 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   private validateJSON(json): void {
     const obj = this.coreService.clone(json);
     obj.path = this.data.path;
+    if (obj.directoryExpr) {
+      this.coreService.addSlashToString(obj, 'directoryExpr');
+    }
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
       this.fileOrder.valid = res.valid;
       if (this.fileOrder.path === this.data.path) {
