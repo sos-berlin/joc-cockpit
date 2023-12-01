@@ -2774,7 +2774,7 @@ export class HistoryComponent {
   /* --------------------------Actions -----------------------*/
 
   private exportToExcelOrder(): any {
-    let controllerId = '', workflow = '', orderId = '', status = '', orderState = '', position = '',
+    let controllerId = '', workflow = '', orderId = '', status = '', orderState = '', label = '',
       startTime = '', endTime = '', duration = '', plannedTime = '';
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
@@ -2791,8 +2791,8 @@ export class HistoryComponent {
     this.translate.get('history.label.orderState').subscribe(translatedValue => {
       orderState = translatedValue;
     });
-    this.translate.get('history.label.position').subscribe(translatedValue => {
-      position = translatedValue;
+    this.translate.get('workflow.label.label').subscribe(translatedValue => {
+      label = translatedValue;
     });
     this.translate.get('history.label.plannedTime').subscribe(translatedValue => {
       plannedTime = translatedValue;
@@ -2814,7 +2814,11 @@ export class HistoryComponent {
       }
       obj[orderId] = this.historys[i].orderId;
       obj[workflow] = this.historys[i].workflow;
-      obj[position] = this.historys[i].position;
+      if (this.historys[i].label) {
+        obj[label] = this.historys[i].label;
+      } else {
+        obj[label] = this.historys[i].position;
+      }
       this.translate.get(this.historys[i].state._text).subscribe(translatedValue => {
         obj[status] = translatedValue;
       });
@@ -2831,7 +2835,7 @@ export class HistoryComponent {
   }
 
   private exportToExcelTask(): any {
-    let controllerId = '', workflow = '', job = '', status = '', position = '', plannedTime = '',
+    let controllerId = '', workflow = '', job = '', status = '', label = '', plannedTime = '',
       startTime = '', endTime = '', duration = '', criticality = '', returnCode = '';
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
@@ -2845,8 +2849,8 @@ export class HistoryComponent {
     this.translate.get('history.label.status').subscribe(translatedValue => {
       status = translatedValue;
     });
-    this.translate.get('history.label.position').subscribe(translatedValue => {
-      position = translatedValue;
+    this.translate.get('workflow.label.label').subscribe(translatedValue => {
+      label = translatedValue;
     });
     this.translate.get('history.label.plannedTime').subscribe(translatedValue => {
       plannedTime = translatedValue;
@@ -2874,7 +2878,11 @@ export class HistoryComponent {
       }
       obj[job] = this.taskHistorys[i].job;
       obj[workflow] = this.taskHistorys[i].workflow;
-      obj[position] = this.taskHistorys[i].position;
+      if (this.taskHistorys[i].label) {
+        obj[label] = this.taskHistorys[i].label;
+      } else {
+        obj[label] = this.taskHistorys[i].position;
+      }
       this.translate.get(this.taskHistorys[i].state._text).subscribe(translatedValue => {
         obj[status] = translatedValue;
       });

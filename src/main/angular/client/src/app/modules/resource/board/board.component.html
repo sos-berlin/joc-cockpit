@@ -395,7 +395,7 @@
                                 <td class="custom-th"></td>
                                 <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
                                 <td class="custom-th" colspan="2"><span translate>order.label.workflow</span></td>
-                                <td class="custom-th"><span translate>order.label.position</span></td>
+                                <td class="custom-th"><span translate>workflow.label.label</span></td>
                               </tr>
                               <tr *ngFor="let order of notice.expectingOrders">
                                 <td></td>
@@ -408,7 +408,10 @@
                                   <a (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);"
                                      class="text-hover-primary">{{order.workflowId.path}} </a>
                                 </td>
-                                <td><span>{{order.positionString}}</span></td>
+                                <td>
+                                  <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label" [nz-tooltip]="order.positionString"></span>
+                                  <span *ngIf="!order.label" [innerHtml]="order.positionString"></span>
+                                </td>
                               </tr>
                             </ng-container>
                           </ng-template>

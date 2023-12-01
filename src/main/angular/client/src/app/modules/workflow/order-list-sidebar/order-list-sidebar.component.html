@@ -89,11 +89,11 @@
             <i *ngIf="filter.sortBy == 'workflowId.path' && filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
-        <th (click)="sort('positionString')">
-          <a><span class="p-r-xs" translate>order.label.position</span>
-            <i *ngIf="filter.sortBy == 'positionString' && !filter.reverse"
+        <th (click)="sort('label')">
+          <a><span class="p-r-xs" translate>workflow.label.label</span>
+            <i *ngIf="filter.sortBy == 'label' && !filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="filter.sortBy == 'positionString' && filter.reverse"
+            <i *ngIf="filter.sortBy == 'label' && filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
         <th (click)="sort('label')" *ngIf="isSingleWorkflow">
@@ -181,7 +181,8 @@
             </span>
           </td>
           <td style="max-width: 160px">
-            <span [innerHtml]="order.positionString"></span>
+            <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label" [nz-tooltip]="order.positionString"></span>
+            <span *ngIf="!order.label" [innerHtml]="order.positionString"></span>
           </td>
           <td *ngIf="isSingleWorkflow"><span>{{order.label}}</span></td>
           <td (mouseover)="getObstacles(order)" class="combine-two-label" nowrap>

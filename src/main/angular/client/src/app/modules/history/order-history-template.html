@@ -37,7 +37,7 @@
         <tr>
           <th><span [ngStyle]="{'padding-left': 6 + (6 * (history.level > 10 ? 11 : history.level)) + 'px'}" translate>history.label.job</span>
           </th>
-          <th><span translate>history.label.position</span></th>
+          <th><span translate>workflow.label.label</span></th>
           <th><span translate>history.label.status</span></th>
           <th><span translate>history.label.startTime</span></th>
           <th><span translate>history.label.endTime</span></th>
@@ -53,7 +53,10 @@
                   class="show-in-single-line w-full">{{ch.job}}</span>
           </td>
           <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,viewContainerRef)"
-              class="show-in-single-line w-full">{{ch.position}}</td>
+              class="show-in-single-line w-full">
+            <span class="cur-point" *ngIf="ch.label" [nz-tooltip]="ch.position">{{ch.label}}</span>
+            <span *ngIf="!ch.label">{{ch.position}}</span>
+          </td>
           <td (click)="coreService.showLogWindow(null,ch,null,ch.controllerId,null,viewContainerRef)">
               <span *ngIf="ch.state" [innerHtml]="ch.state._text | translate" [ngClass]="coreService.getColor(ch.state.severity,'bg')"
                     class="label"></span>
@@ -117,7 +120,8 @@
     </td>
     <td
       (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,viewContainerRef)">
-      <span [innerHtml]="child.order.position" class="show-in-single-line w-full"></span>
+      <span class="show-in-single-line w-full cur-point" *ngIf="child.order.label" [nz-tooltip]="child.order.position">{{child.order.label}}</span>
+      <span class="show-in-single-line w-full" *ngIf="!child.order.label">{{child.order.position}}</span>
     </td>
     <td
       (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,viewContainerRef)">

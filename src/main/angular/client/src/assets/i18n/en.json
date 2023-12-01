@@ -1713,6 +1713,7 @@
     "label.errorText": "Error Message",
     "label.tag": "Tag",
     "label.tags": "Tags",
+    "label.listOfTags": "List of Tags",
     "label.addTags": "Add Tags",
     "label.addTagsToWorkflow": "Manage Tags of Workflow",
     "label.renameTag": "Rename Tag",

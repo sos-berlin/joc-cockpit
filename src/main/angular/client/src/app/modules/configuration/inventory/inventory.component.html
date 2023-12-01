@@ -576,7 +576,8 @@
         nz-menu-item>
       <a translate>inventory.button.rename</a>
     </li>
-    <li (click)="addTags(node);" *ngIf="permission.joc.inventory.manage && node.origin.type === 'WORKFLOW'"
+    <li (click)="addTags(node);" *ngIf="permission.joc.inventory.manage && (node.origin.type === 'WORKFLOW' || node.origin.object === 'WORKFLOW' ||
+     node.origin.controller || (!node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan))"
         nz-menu-item>
       <a translate>inventory.button.manageTags</a>
     </li>

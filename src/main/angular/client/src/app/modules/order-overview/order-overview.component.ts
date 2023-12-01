@@ -1221,7 +1221,7 @@ export class OrderOverviewComponent {
     this.translate.get('order.label.state').subscribe(translatedValue => {
       status = translatedValue;
     });
-    this.translate.get('order.label.position').subscribe(translatedValue => {
+    this.translate.get('workflow.label.label').subscribe(translatedValue => {
       position = translatedValue;
     });
     this.translate.get('order.label.scheduledFor').subscribe(translatedValue => {
@@ -1233,7 +1233,7 @@ export class OrderOverviewComponent {
       let obj: any = {};
       obj[order] = this.data[i].orderId;
       obj[workflow] = this.data[i].workflowId.path;
-      obj[position] = this.data[i].positionString;
+      obj[position] = this.data[i].label || this.data[i].positionString;
       this.translate.get(this.data[i].state._text).subscribe(translatedValue => {
         obj[status] = translatedValue;
       });
