@@ -1713,6 +1713,7 @@
     "label.errorText": "Fehlermeldung",
     "label.tag": "Schlagwort",
     "label.tags": "Schlagwörter",
+    "label.listOfTags": "List of Tags",
     "label.addTags": "Schlagwörter hinzufügen",
     "label.addTagsToWorkflow": "Schlagwörter des Arbeitsabläufs verwalten",
     "label.renameTag": "Schlagwort umbenennen",

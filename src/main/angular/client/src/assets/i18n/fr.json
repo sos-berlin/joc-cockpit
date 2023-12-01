@@ -1713,6 +1713,7 @@
     "label.errorText": "Message d'erreur",
     "label.tag": "Mot-clé",
     "label.tags": "Mots-clés",
+    "label.listOfTags": "List of Tags",
     "label.addTags": "Ajouter des Mots-clés",
     "label.addTagsToWorkflow": "Gérer les Mots-clés du Workflow",
     "label.renameTag": "Renommer Mot-clé",

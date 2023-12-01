@@ -553,9 +553,9 @@
                           </div>
                         </ng-template>
                         <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
-                          <span translate>order.label.position </span>:
-                          <span [innerHtml]="order.positionString | highlight : orderFilters.searchText"
-                                class="text-black-dk"></span>
+                          <span translate>workflow.label.label </span>:
+                          <span class="text-black-dk cur-point" *ngIf="order.label" [innerHtml]="order.label | highlight : orderFilters.searchText" [nz-tooltip]="order.positionString"></span>
+                          <span class="text-black-dk" *ngIf="!order.label" [innerHtml]="order.positionString | highlight : orderFilters.searchText"></span>
                         </div>
                         <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
                           <span translate>order.label.workflow </span>:
@@ -647,11 +647,11 @@
                         <i *ngIf="orderFilters.filter.sortBy == 'workflowId.path' && orderFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('positionString')">
-                      <a><span class="p-r-xs" translate>order.label.position</span>
-                        <i *ngIf="orderFilters.filter.sortBy == 'positionString' && !orderFilters.reverse"
+                    <th (click)="sort('label')">
+                      <a><span class="p-r-xs" translate>workflow.label.label</span>
+                        <i *ngIf="orderFilters.filter.sortBy == 'label' && !orderFilters.reverse"
                            class="fa fa-caret-up "></i>
-                        <i *ngIf="orderFilters.filter.sortBy == 'positionString' && orderFilters.reverse"
+                        <i *ngIf="orderFilters.filter.sortBy == 'label' && orderFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
                     <th (click)="sort('state._text')">
@@ -725,7 +725,8 @@
                         </span>
                       </td>
                       <td>
-                        <span [innerHtml]="order.positionString | highlight : orderFilters.searchText"></span>
+                        <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label | highlight : orderFilters.searchText" [nz-tooltip]="order.positionString"></span>
+                        <span *ngIf="!order.label" [innerHtml]="order.positionString | highlight : orderFilters.searchText"></span>
                       </td>
                       <td (mouseover)="getObstacles(order)" class="combine-two-label" nowrap>
                         <span
@@ -858,7 +859,7 @@
                           <thead>
                           <tr>
                             <th><span translate>history.label.orderId</span></th>
-                            <th><span translate>history.label.position</span></th>
+                            <th><span translate>workflow.label.label</span></th>
                             <th><span translate>history.label.status</span></th>
                             <th><span translate>history.label.plannedTime</span></th>
                             <th><span translate>history.label.startTime</span></th>
@@ -878,7 +879,10 @@
                                   <span>{{history.orderId}}</span>
                                 </span>
                               </td>
-                              <td [innerHtml]="history.position"></td>
+                              <td>
+                                <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nz-tooltip]="history.position"></span>
+                                <span *ngIf="!history.label" [innerHtml]="history.position"></span>
+                              </td>
                               <td>
                                 <span [innerHtml]="history.state._text | translate" [ngClass]="coreService.getColor(history.state.severity,'bg')"
                                       class="label"></span>

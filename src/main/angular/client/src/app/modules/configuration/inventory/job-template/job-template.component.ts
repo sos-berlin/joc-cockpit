@@ -55,7 +55,7 @@ export class UpdateJobTemplatesComponent {
     checked: false,
     indeterminate: false,
     isRecursive: true,
-    recursive: false,
+    recursive: true,
     draft: true,
     deploy: true,
   };

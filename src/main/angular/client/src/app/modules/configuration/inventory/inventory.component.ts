@@ -46,6 +46,12 @@ export class CreateTagModalComponent {
   filter: any = {
     tags: []
   };
+  object = {
+    expanded: new Set(),
+    deleteTags: new Set(),
+    tagsObject: {},
+    isRecursive: false
+  };
   tags = [];
   allTags = [];
   filteredOptions: string[] = [];
@@ -74,8 +80,13 @@ export class CreateTagModalComponent {
       }
       this.display = this.preferences.auditLog;
       if (this.data) {
-        this.fetchTags();
-        this.fetchWorkflowTags();
+        if (this.data.type) {
+          this.fetchTags();
+          this.fetchWorkflowTags();
+        } else {
+          this.object.isRecursive = (!this.data.controller && !this.data.object);
+          this.fetchUsedTags();
+        }
       } else if (this.isRename) {
         this.fetchTags();
       }
@@ -104,6 +115,33 @@ export class CreateTagModalComponent {
     this.coreService.post('inventory/workflow/tags', {path: (this.data.path + (this.data.path == '/' ? '' : '/') + this.data.name)}).subscribe((res) => {
       this.tags = res.tags;
     });
+  }
+
+  private fetchUsedTags(): void {
+    this.coreService.post('tags/used', {
+      folders: [
+        {folder: this.data.path, recursive: this.object.isRecursive}
+      ]
+    }).subscribe({
+      next: (res) => {
+        delete res.deliveryDate;
+        this.object.tagsObject = res;
+      }
+    });
+  }
+
+  expandAll(): void{
+    for(let i in this.object.tagsObject){
+      this.object.expanded.add(i);
+    }
+  }
+
+  collapseAll(): void{
+    this.object.expanded.clear();
+  }
+
+  handleRecursive(): void {
+    this.fetchUsedTags();
   }
 
   private fetchAllWorkflowTags() {
@@ -153,6 +191,7 @@ export class CreateTagModalComponent {
   }
 
   onSubmit(): void {
+
     if (this.filters) {
       this.coreService.selectedTags = this.filter.tags;
       this.coreService.removeDuplicates();
@@ -160,17 +199,21 @@ export class CreateTagModalComponent {
     } else {
       this.submitted = true;
       const obj: any = {
-        tags: this.tags,
         auditLog: {}
       };
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+      if (!this.data.type && !this.isRename) {
+        this.storeFolderTags(obj);
+        return;
+      }
+
       if (this.data) {
+        obj.tags = this.tags;
         obj.path = (this.data.path + (this.data.path == '/' ? '' : '/') + this.data.name);
       } else if (this.isRename) {
-        delete obj.tags;
         obj.name = this.modalData.tag.name;
         obj.newName = this.tag.name;
       }
-      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       const URL = this.data ? 'inventory/workflow/tags/store' : this.isRename ? 'tag/rename' : 'tags/add'
       this.coreService.post(URL, obj).subscribe({
         next: () => {
@@ -180,6 +223,24 @@ export class CreateTagModalComponent {
         }
       });
     }
+  }
+
+  private storeFolderTags(obj): void {
+    obj.folders = [{
+      folder: this.data.path,
+      recursive: this.object.isRecursive
+    }];
+    obj.addTags = this.tags;
+    obj.deleteTags = Array.from(this.object.deleteTags);
+    this.coreService.post('inventory/workflow/tags/store/folder',
+      obj
+    ).subscribe({
+      next: (res) => {
+        this.activeModal.close('DONE');
+      }, error: () => {
+        this.submitted = false;
+      }
+    });
   }
 
 }

@@ -1713,6 +1713,7 @@
     "label.errorText": "エラーテキスト",
     "label.tag": "タグ",
     "label.tags": "タグ",
+    "label.listOfTags": "List of Tags",
     "label.addTags": "タグ追加",
     "label.addTagsToWorkflow": "ワークフローのタグ管理",
     "label.renameTag": "タグ名変更",
