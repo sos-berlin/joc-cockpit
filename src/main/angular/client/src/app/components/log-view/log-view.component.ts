@@ -41,6 +41,7 @@ export class LogViewComponent {
   taskCanceller: any;
   runningCanceller: any;
   scrolled = false;
+  loaded = false;
   isExpandCollapse = false;
   taskCount = 1;
   controllerId = '';
@@ -61,6 +62,7 @@ export class LogViewComponent {
   }
 
   ngOnInit(): void {
+    this.loaded = false;
     this.dataObject = POPOUT_MODALS['data'];
     if (!this.dataObject || !this.dataObject.controllerId) {
       setTimeout(() => {
@@ -184,6 +186,7 @@ export class LogViewComponent {
   }
 
   init(): void {
+    this.loaded = true;
     this.calWindowSize();
     if (!this.preferences.logFilter || this.preferences.logFilter.length === 0) {
       this.preferences.logFilter = {
@@ -230,36 +233,40 @@ export class LogViewComponent {
       }
     }
 
-    const self = this;
-    $(POPOUT_MODALS['windowInstance'].document).on("keydown", disableF5);
-    const panel = POPOUT_MODALS['windowInstance'].document.getElementById('property-panel');
-    const close = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-close');
-    const open = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-open');
-    const transitionCSS = {transition: 'none'};
-    if (panel) {
-      $(panel).resizable({
-        minWidth: 22,
-        maxWidth: 768,
-        handles: 'w',
-        resize: (e, x) => {
-          const wt = x.size.width;
-          const transitionCSS = {transition: 'none'};
-          $(panel).css({width: wt + 'px'});
-          this.dataBody.nativeElement.setAttribute('style', 'margin-right: ' + wt + 'px');
-          $(close).css({...transitionCSS, right: (wt - 2) + 'px'});
-          localStorage['logPanelWidth'] = wt;
-        }
-      });
-    }
+    setTimeout(() => {
 
-    $(open).click(() => {
-      self.logPanelWidth = localStorage['logPanelWidth'] ? parseInt(localStorage['logPanelWidth'], 10) : 300;
-      this.dataBody.nativeElement.setAttribute('style', 'margin-right: ' + (self.logPanelWidth + 8) + 'px');
-      $(close).css({...transitionCSS, right: (self.logPanelWidth - 2) + 'px'});
-      $(panel).css({...transitionCSS, width: self.logPanelWidth + 'px'}).show();
-      $(open).css({...transitionCSS, right: '-20px'});
-      sessionStorage['isLogTreeOpen'] = true;
-    });
+
+      const self = this;
+      $(POPOUT_MODALS['windowInstance'].document).on("keydown", disableF5);
+      const panel = POPOUT_MODALS['windowInstance'].document.getElementById('property-panel');
+      const close = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-close');
+      const open = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-open');
+      const transitionCSS = {transition: 'none'};
+      if (panel) {
+        $(panel).resizable({
+          minWidth: 22,
+          maxWidth: 768,
+          handles: 'w',
+          resize: (e, x) => {
+            const wt = x.size.width;
+            const transitionCSS = {transition: 'none'};
+            $(panel).css({width: wt + 'px'});
+            this.dataBody.nativeElement.setAttribute('style', 'margin-right: ' + wt + 'px');
+            $(close).css({...transitionCSS, right: (wt - 2) + 'px'});
+            localStorage['logPanelWidth'] = wt;
+          }
+        });
+      }
+
+      $(open).click(() => {
+        self.logPanelWidth = localStorage['logPanelWidth'] ? parseInt(localStorage['logPanelWidth'], 10) : 300;
+        this.dataBody.nativeElement.setAttribute('style', 'margin-right: ' + (self.logPanelWidth + 8) + 'px');
+        $(close).css({...transitionCSS, right: (self.logPanelWidth - 2) + 'px'});
+        
+        $(panel).css({...transitionCSS, width: self.logPanelWidth + 'px'}).show();
+        $(open).css({...transitionCSS, right: '-20px'});
+        sessionStorage['isLogTreeOpen'] = true;
+      });
 
     $(close).click(() => {
       this.dataBody.nativeElement.setAttribute('style', 'margin-right: 10px');
@@ -269,18 +276,20 @@ export class LogViewComponent {
       sessionStorage['isLogTreeOpen'] = false;
     });
 
-    if (!this.taskId) {
-      setTimeout(() => {
-        if (sessionStorage['isLogTreeOpen'] == 'true' || sessionStorage['isLogTreeOpen'] == true) {
-          $(open).click();
+      if (!this.taskId) {
+        setTimeout(() => {
+          if (sessionStorage['isLogTreeOpen'] == 'true' || sessionStorage['isLogTreeOpen'] == true) {
+            $(open).click();
+          }
+         
+        }, 500)
+      } else {
+        if (close && close[0] && close[0].style) {
+          close[0].style.display = 'none';
+          open[0].style.display = 'none';
         }
-      }, 500)
-    } else {
-      if (close && close[0] && close[0].style) {
-        close[0].style.display = 'none';
-        open[0].style.display = 'none';
       }
-    }
+    }, 5)
   }
 
   loadOrderLog(): void {
@@ -541,6 +550,9 @@ export class LogViewComponent {
               && this.treeStructure[x]['consumeNotices'] == dt[i].consumeNotices && this.treeStructure[x]['moved'] == dt[i].moved
               && this.treeStructure[x]['question'] == dt[i].question && this.treeStructure[x]['cycle'] == dt[i].cycle && this.treeStructure[x]['attached'] == dt[i].attached)) {
             if (this.treeStructure[x]['orderId'] == dt[i].orderId) {
+              if(dt[i].label){
+                this.treeStructure[x]['label'] = dt[i].label;
+              }
               flag = true;
               break;
             }

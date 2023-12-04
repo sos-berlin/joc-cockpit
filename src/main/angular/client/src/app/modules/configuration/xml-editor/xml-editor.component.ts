@@ -1878,14 +1878,12 @@ export class XmlEditorComponent {
     if (this.lastScrollId !== id) {
       this.lastScrollId = clone(id);
     }
-    this.scrollTree(id, () => {
-      this.selectedNode.expanded = true;
-      this.getParentToExpand(this.selectedNode);
-      this.updateTree();
-      setTimeout(() => {
-        this.scrollTree(this.selectedNode.uuid, undefined);
-      }, 0);
-    });
+    this.selectedNode.expanded = true;
+    this.getParentToExpand(this.selectedNode);
+    this.updateTree();
+    setTimeout(() => {
+      this.scrollTree(this.selectedNode.uuid);
+    }, 0);
   }
 
   getParentToExpand(node): void {
@@ -5914,14 +5912,17 @@ export class XmlEditorComponent {
     }
   }
 
-  private scrollTree(id, cb): void {
+  private scrollTree(id): void {
     const dom = $('#' + id);
     if (dom && dom.offset() && this.componentRef) {
-      this.componentRef.directiveRef.scrollToTop((dom.offset().top - 348), 500);
-    } else {
-      if (cb) {
-        cb();
+      if(this.componentRef.directiveRef.instance.lastScrollTop > dom.offset().top){
+        this.componentRef.directiveRef.scrollToY(dom.offset().top, 0);
+      } else {
+        this.componentRef.directiveRef.scrollToY(this.componentRef.directiveRef.instance.lastScrollTop, 0);
       }
+      setTimeout(() => {
+        this.componentRef.directiveRef.scrollToY(dom.offset().top, 500);
+      }, 0)
     }
   }
 

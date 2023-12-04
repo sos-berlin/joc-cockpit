@@ -2556,14 +2556,14 @@
       "placeholder.pastePrivateKey": "Paste Private Key here",
       "placeholder.pastePublicKey": "Paste Public Key here",
       "placeholder.pasteCertificate": "Paste Certificate here",
-      "tooltip.import": "Import public/private key from external CA",
-      "tooltip.updateKey": "Update public/private key",
-      "tooltip.deleteKey": "Delete private/public key",
-      "tooltip.generate": "Generate public/private key",
+      "tooltip.import": "Import Public/Private Key from external CA",
+      "tooltip.updateKey": "Update Public/Private Key",
+      "tooltip.deleteKey": "Delete Private/Public Key",
+      "tooltip.generate": "Generate Public/Private Key",
       "tooltip.importCertificate": "Import Certificate",
       "tooltip.updateCertificate": "Update Certificate",
       "tooltip.deleteCertificate": "Delete Certificate",
-      "popup.deleteSubmissions": "Are you sure you want to delete Certificate?"
+      "popup.deleteSubmissions": "Are you sure that you want to delete the Certificate?"
     },
     "gitManagement": {
       "label.manageGitCredentials": "Manage Git Credentials",

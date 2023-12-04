@@ -531,7 +531,6 @@ export class FileUploaderComponent {
           }
         },
         error: (err) => {
-          console.log(err)
           this.uploading = false;
           this.showProgressBar = false;
           this.uploadError = true;
