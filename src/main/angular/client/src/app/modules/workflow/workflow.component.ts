@@ -427,38 +427,48 @@ export class SingleWorkflowComponent {
           this.getWorkflowList({
             controllerId: this.controllerId,
             workflowId: {path: this.path, versionId: this.versionId ? this.versionId : undefined}
-          });
+          }, true);
           break;
         }
       }
     }
   }
 
-  private getWorkflowList(obj): void {
+  private getWorkflowList(obj, isReload = false): void {
     this.coreService.post('workflow', obj).subscribe({
       next: (res: any) => {
         this.loading = false;
-        const request = {
-          compact: true,
-          controllerId: this.controllerId,
-          workflowIds: []
-        };
-        const path = res.workflow.path;
-        res.workflow.name = path.substring(path.lastIndexOf('/') + 1);
-        if (!res.workflow.ordersSummary) {
-          res.workflow.ordersSummary = {};
+        if (isReload) {
+          this.workflows[0].suspended = res.workflow.suspended;
+          this.workflows[0].state = res.workflow.state;
+          this.workflows[0].jobs = res.workflow.jobs;
+          if (this.workflows[0].show) {
+            this.workflowService.convertTryToRetry(res.workflow, null, res.workflow.jobs, {count: 0});
+            this.workflowService.compareAndMergeInstructions(this.workflows[0].configuration.instructions, res.workflow.instructions);
+          }
+        } else {
+          const request = {
+            compact: true,
+            controllerId: this.controllerId,
+            workflowIds: []
+          };
+          const path = res.workflow.path;
+          res.workflow.name = path.substring(path.lastIndexOf('/') + 1);
+          if (!res.workflow.ordersSummary) {
+            res.workflow.ordersSummary = {};
+          }
+          if (path) {
+            request.workflowIds.push({path, versionId: res.workflow.versionId});
+          }
+          this.workflows = [res.workflow];
+          if (request.workflowIds.length > 0) {
+            this.getOrders(request);
+          }
+          if (this.permission && this.permission.joc && (this.permission.currentController.orders.view || this.permission.joc.auditLog.view)) {
+            this.showPanel = this.workflows[0];
+          }
+          this.showPanelFuc(this.workflows[0]);
         }
-        if (path) {
-          request.workflowIds.push({path, versionId: res.workflow.versionId});
-        }
-        this.workflows = [res.workflow];
-        if (request.workflowIds.length > 0) {
-          this.getOrders(request);
-        }
-        if (this.permission && this.permission.joc && (this.permission.currentController.orders.view || this.permission.joc.auditLog.view)) {
-          this.showPanel = this.workflows[0];
-        }
-        this.showPanelFuc(this.workflows[0]);
       }, error: () => this.loading = false
     });
   }
