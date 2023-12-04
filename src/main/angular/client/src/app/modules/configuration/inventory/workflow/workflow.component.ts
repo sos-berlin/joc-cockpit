@@ -8620,11 +8620,15 @@ export class WorkflowComponent {
         self.dataService.reloadWorkflowError.next({error: self.error});
         self.selectedNode.newObj = self.coreService.clone(self.selectedNode.obj);
         if (self.selectedNode && self.selectedNode.type === 'Job') {
-          self.selectedNode.newObj.defaultArguments = self.selectedNode.newObj.defaultArguments.filter((argu) => {
-            self.coreService.addSlashToString(argu, 'value');
-            return !argu.invalid;
-          });
-          self.coreService.convertArrayToObject(self.selectedNode.newObj, 'defaultArguments', false);
+          if (self.selectedNode.newObj.defaultArguments) {
+            if (isArray(self.selectedNode.newObj.defaultArguments)) {
+              self.selectedNode.newObj.defaultArguments = self.selectedNode.newObj.defaultArguments.filter((argu) => {
+                self.coreService.addSlashToString(argu, 'value');
+                return !argu.invalid;
+              });
+            }
+            self.coreService.convertArrayToObject(self.selectedNode.newObj, 'defaultArguments', false);
+          }
         }
         if (self.selectedNode.type === 'If') {
           self.selectedNode.newObj.predicate = self.selectedNode.newObj.predicate.replace(/<[^>]+>/gm, '').replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<')

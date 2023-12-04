@@ -2058,7 +2058,7 @@ export class CoreService {
       if (item.job) {
         data.title = 'Job';
         data.name = item.job;
-        if(!data.label) {
+        if(item.label) {
           data.label = item.label;
         }
         data.isLeaf = true;
@@ -2373,6 +2373,9 @@ export class CoreService {
         if (node.children[i].position == data.position && (node.children[i].title == data.title || (node.children[i].title == 'Try' && data.title == 'Retry') || (node.children[i].title == 'Retry' && data.title == 'Try'))) {
           node.children[i].name = data.name;
           node.children[i].logEvent = data.logEvent;
+          if(data.label) {
+            node.children[i].label = data.label;
+          }
           node.children[i].logLevel = data.logLevel;
           node.children[i].children = data.children;
           ++node.children[i].count;
