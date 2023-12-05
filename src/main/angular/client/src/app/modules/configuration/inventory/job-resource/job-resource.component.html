@@ -157,6 +157,7 @@
                     <div class="form-group row">
                       <div class="col-sm-12">
                         <a (click)="addArgu()" class="text-u-l m-l-11" translate>workflow.button.addArgument</a>
+                        <a *ngIf="hasMailProperty" (click)="testMail()" class="text-u-l m-l-12" translate>inventory.button.testMail</a>
                       </div>
                     </div>
                   </div>

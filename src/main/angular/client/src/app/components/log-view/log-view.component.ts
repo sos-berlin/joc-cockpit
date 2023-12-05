@@ -108,6 +108,7 @@ export class LogViewComponent {
     } else {
       this.init();
     }
+     this.restoreExpandedState(this.nodes);
   }
 
   ngOnDestroy() {
@@ -262,26 +263,26 @@ export class LogViewComponent {
         self.logPanelWidth = localStorage['logPanelWidth'] ? parseInt(localStorage['logPanelWidth'], 10) : 300;
         this.dataBody.nativeElement.setAttribute('style', 'margin-right: ' + (self.logPanelWidth + 8) + 'px');
         $(close).css({...transitionCSS, right: (self.logPanelWidth - 2) + 'px'});
-        
+
         $(panel).css({...transitionCSS, width: self.logPanelWidth + 'px'}).show();
         $(open).css({...transitionCSS, right: '-20px'});
         sessionStorage['isLogTreeOpen'] = true;
       });
 
-    $(close).click(() => {
-      this.dataBody.nativeElement.setAttribute('style', 'margin-right: 10px');
-      $(panel).css(transitionCSS).hide();
-      $(open).css({...transitionCSS, right: '0'});
-      $(close).css({...transitionCSS, right: '-20px'});
-      sessionStorage['isLogTreeOpen'] = false;
-    });
+      $(close).click(() => {
+        this.dataBody.nativeElement.setAttribute('style', 'margin-right: 10px');
+        $(panel).css(transitionCSS).hide();
+        $(open).css({...transitionCSS, right: '0'});
+        $(close).css({...transitionCSS, right: '-20px'});
+        sessionStorage['isLogTreeOpen'] = false;
+      });
 
       if (!this.taskId) {
         setTimeout(() => {
           if (sessionStorage['isLogTreeOpen'] == 'true' || sessionStorage['isLogTreeOpen'] == true) {
             $(open).click();
           }
-         
+
         }, 500)
       } else {
         if (close && close[0] && close[0].style) {
@@ -356,7 +357,7 @@ export class LogViewComponent {
       });
     }
 
-    if(!this.coreService.logViewDetails.expandedAllLog && this.coreService.logViewDetails.expandedLogPanel.size == 0) {
+    if (!this.coreService.logViewDetails.expandedAllLog && this.coreService.logViewDetails.expandedLogPanel.size == 0) {
       if (x && x.length > 0) {
         const dom = x[x.length - 1].childNodes[0];
         if (dom) {
@@ -552,6 +553,9 @@ export class LogViewComponent {
             if (this.treeStructure[x]['orderId'] == dt[i].orderId) {
               if(dt[i].label){
                 this.treeStructure[x]['label'] = dt[i].label;
+              }
+              if (dt[i].logLevel) {
+                this.treeStructure[x]['logLevel'] = dt[i].logLevel
               }
               flag = true;
               break;
@@ -945,6 +949,17 @@ export class LogViewComponent {
         node.isExpanded = !node.isExpanded;
       }
     }
+  }
+  restoreExpandedState(nodes: NzTreeNode[]): void {
+    nodes.forEach(node => {
+      if (this.coreService.logViewDetails.expandedLogTree.includes(node.key)) {
+        node.isExpanded = true;
+        node.origin['isExpanded'] = true;
+      }
+      if (node.children && node.children.length > 0) {
+        this.restoreExpandedState(node.children);
+      }
+    });
   }
 
   selectNode(node: any): void {
