@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -11,7 +11,7 @@ import {isArray, isEmpty, isEqual} from 'underscore';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
@@ -19,13 +19,51 @@ import {ValueEditorComponent} from '../../../../components/value-editor/value.co
 import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
+import {NotificationComponent} from "../inventory.component";
+
+@Component({
+  selector: 'app-test-mail',
+  templateUrl: './test-mail-dialog.html'
+})
+export class TestMailComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  data: any;
+  object = {
+    jobResourceName: '',
+    recipient: '',
+    subject: ''
+  };
+  submitted = false;
+
+  constructor(private activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.data = this.modalData.data;
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    this.coreService.post('utilities/send_email', this.object).subscribe({
+      next: (res) => {
+        this.activeModal.close(res);
+      }, error: () => {
+        this.submitted = false;
+      }
+    });
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+}
 
 @Component({
   selector: 'app-job-resource',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './job-resource.component.html'
 })
-export class JobResourceComponent implements OnChanges, OnDestroy {
+export class JobResourceComponent {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -42,6 +80,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
+
   object = {
     checked1: false,
     indeterminate1: false,
@@ -226,6 +265,21 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     this.checkForDeploy(50);
   }
 
+  testMail(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: TestMailComponent,
+      nzClassName: 'lg',
+      nzData: {
+        data: this.jobResource,
+      },
+      nzFooter: null,
+      nzAutofocus: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
   private checkForDeploy(time: number): void {
     setTimeout(() => {
       if (this.isStore) {
@@ -317,6 +371,10 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         this.addArgu();
       }
     }
+  }
+
+  get hasMailProperty(): boolean {
+    return this.jobResource.configuration.arguments.some(obj => obj.name && obj.name.includes('mail'));
   }
 
   isStringValid(data, notValid): void {

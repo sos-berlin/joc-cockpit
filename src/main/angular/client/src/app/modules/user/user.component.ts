@@ -517,10 +517,10 @@ export class ImportKeyModalComponent {
   }
 
   ngOnInit(): void {
-  this.schedulerId = this.modalData.schedulerId;
-  this.display = this.modalData.display;
-  this.securityLevel = this.modalData.securityLevel;
-  this.type = this.modalData.type;
+    this.schedulerId = this.modalData.schedulerId;
+    this.display = this.modalData.display;
+    this.securityLevel = this.modalData.securityLevel;
+    this.type = this.modalData.type;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -535,7 +535,7 @@ export class ImportKeyModalComponent {
   beforeUpload = (file: NzUploadFile): boolean => {
     this.uploadError = false;
     this.fileList.push(file);
-    if(this.coreService.sanitizeFileName(file.name)) {
+    if (this.coreService.sanitizeFileName(file.name)) {
       let msg = '';
       this.translate.get('error.message.invalidFileName').subscribe(translatedValue => {
         msg = translatedValue;
@@ -616,12 +616,12 @@ export class ImportKeyModalComponent {
       formData.append('comment', this.comments.comment);
     }
     if (this.comments.timeSpent) {
-      formData.append('timeSpent',this.comments.timeSpent);
+      formData.append('timeSpent', this.comments.timeSpent);
     }
     if (this.comments.ticketLink) {
       formData.append('ticketLink', this.comments.ticketLink);
     }
-    if(this.type === 'key'){
+    if (this.type === 'key') {
       formData.append('importKeyFilter', JSON.stringify({keyAlgorithm: this.key.keyAlg}));
     }
     this.uploading = true;
@@ -694,6 +694,8 @@ export class GenerateKeyComponent {
     };
     if (this.type === 'ca') {
       obj = this.caObj;
+    } else if (this.type === 'key') {
+      obj.dn = this.caObj.dn;
     }
     if (this.expiry.dateValue === 'date') {
       obj.validUntil = this.key.date;
@@ -708,7 +710,7 @@ export class GenerateKeyComponent {
     if (this.comments.ticketLink) {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
-    if(this.useSSLcA){
+    if (this.useSSLcA) {
       obj.useSslCa = this.useSSLcA;
     }
     const URL = this.type === 'key' ? 'profile/key/generate' : 'profile/ca/generate';
@@ -729,47 +731,58 @@ export class GenerateKeyComponent {
 }
 
 @Component({
-    selector: 'app-remove-key-modal',
-    templateUrl: './remove-key-dialog.html'
+  selector: 'app-remove-key-modal',
+  templateUrl: './remove-key-dialog.html'
 })
 export class RemoveKeyModalComponent {
-    readonly modalData: any = inject(NZ_MODAL_DATA);
-    submissionsDelete: boolean;
-    submitted = false;
-    submittedValue = ''
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  submitted: boolean;
+  display: boolean;
+  type: string;
+  comments: any = {};
 
-    constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService,
-                public translate: TranslateService, public toasterService: ToastrService) {
-    }
+  constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService,
+              public translate: TranslateService, public toasterService: ToastrService) {
+  }
 
-    ngOnInit(): void {
-        this.submissionsDelete = this.modalData.submissionsDelete;
-        this.submittedValue = this.modalData.submittedValue;
-    }
+  ngOnInit(): void {
+    this.type = this.modalData.type;
+    this.display = this.modalData.display;
+    this.comments = this.modalData.comments;
+    if (this.comments)
+      this.comments.radio = 'predefined';
+  }
 
-    onSubmit(): void {
-        this.submitted = true;
-        if (this.submittedValue === 'certificate') {
-            const obj = {}
-            this.coreService.post('profile/key/delete', obj).subscribe({
-                next: () => {
-                    this.activeModal.close();
-                }
-            });
-        }else{
-            const obj = {}
-            this.coreService.post('profile/key/ca/delete', obj).subscribe({
-                next: () => {
-                    this.activeModal.close();
-                }
-            });
-        }
+  onSubmit(): void {
+    this.submitted = true;
+    let obj: any = {};
+    if(this.display) {
+      obj.auditLog = {};
+      if (this.comments.comment) {
+        obj.auditLog.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.auditLog.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.auditLog.ticketLink = this.comments.ticketLink;
+      }
     }
+    this.coreService.post(this.type === 'certificate' ? 'profile/key/ca/delete' : 'profile/key/delete', obj).subscribe({
+      next: () => {
+        this.activeModal.close('DONE');
+      },
+      error: () => {
+        this.submitted = false;
+        this.activeModal.destroy();
+      }
+    });
+  }
 }
 
 @Component({
-    selector: 'app-user',
-    templateUrl: './user.component.html'
+  selector: 'app-user',
+  templateUrl: './user.component.html'
 })
 export class UserComponent {
   zones: any = {};
@@ -1281,21 +1294,24 @@ export class UserComponent {
     });
   }
 
-    deleteCertificate(type: string): void {
-        const modal = this.modal.create({
-            nzTitle: undefined,
-            nzContent: RemoveKeyModalComponent,
-            nzClassName: 'lg',
-            nzData: {
-                submissionsDelete: true,
-                submittedValue: type,
-            },
-            nzFooter: null,
-            nzClosable: false,
-            nzMaskClosable: false
-        });
-
-    }
+  deleteCertificate(type: string): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: RemoveKeyModalComponent,
+      nzClassName: 'lg',
+      nzData: {
+        display: this.preferences.auditLog,
+        type,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.getKeys();
+      }
+    });
+  }
 
   showKey(type = 'key'): void {
     this.modal.create({
