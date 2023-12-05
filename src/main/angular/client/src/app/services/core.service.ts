@@ -1958,7 +1958,6 @@ export class CoreService {
         key: item.orderId + item.logEvent + item.position,
         name: '',
         orderId: item.orderId,
-        label: item.label,
         count: item.count,
         logLevel: item.logLevel,
         position: item.position,
@@ -1967,6 +1966,10 @@ export class CoreService {
         name1: item.name1,
         children: []
       };
+
+      if (item.label) {
+        data.label = item.label;
+      }
 
       let parentNode: any;
       let lastPos;

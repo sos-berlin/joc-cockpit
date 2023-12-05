@@ -37,7 +37,7 @@ import {LockComponent} from './lock/lock.component';
 import {BoardComponent} from './board/board.component';
 import {CalendarComponent, FrequencyModalComponent} from './calendar/calendar.component';
 import {FileOrderComponent} from './file-order/file-order.component';
-import {JobResourceComponent} from './job-resource/job-resource.component';
+import {JobResourceComponent, TestMailComponent} from './job-resource/job-resource.component';
 import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from './runtime/runtime.component';
 import {JobWizardComponent} from './job-wizard/job-wizard.component';
 import {
@@ -58,7 +58,7 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
   JsonEditorModalComponent, SingleDeployComponent, DeployComponent, ExportComponent, CreateFolderModalComponent, CreateObjectModalComponent,
   NotificationComponent, RepositoryComponent, GitComponent, ScriptEditorComponent, UpdateJobTemplatesComponent, CreateTagModalComponent,
   UpdateObjectComponent, FindAndReplaceComponent, ShowObjectsComponent, CycleInstructionComponent, UpdateJobComponent, PeriodComponent,
-  ShowReferenceComponent, AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent,
+  ShowReferenceComponent, AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent, TestMailComponent,
   RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, NewDraftComponent, NoticeBoardEditorComponent];
 
 @NgModule({

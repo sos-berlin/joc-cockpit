@@ -10,15 +10,18 @@
 </div>
 <form #myForm="ngForm">
     <div class="modal-body p-a">
-        <div class="text-center">
-            <div *ngIf="submissionsDelete">
-                <div class="m-t text">
-                    <p class="m-t">
-                        <span>{{'profile.keyManagement.popup.deleteSubmissions' | translate}}</span>
-                    </p>
-                </div>
-            </div>
+      <div class="row" *ngIf="display">
+        <div class="col-md-12">
+          <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
         </div>
+      </div>
+      <div class="text-center" *ngIf="!display">
+        <div class="m-t text">
+          <p class="m-t">
+            <span>{{'profile.keyManagement.popup.deleteSubmissions' | translate}}</span>
+          </p>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
         <button (click)="onSubmit()"

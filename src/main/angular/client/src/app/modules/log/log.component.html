@@ -138,14 +138,19 @@
                     class="w-16">
                   <span class="fa fa-lg p-r-sm"></span>
               </span>
-              <div class="node-content-wrapper" (click)="selectNode(node)">
-                <span *ngIf="node.origin.name">{{node.origin.name}}</span>
-                <span class="_600" *ngIf="node.origin.end">{{node.origin.end | translate}}</span>
-                <span class="_600" *ngIf="!node.origin.end && !node.origin.name">{{node.origin.title | translate}}</span>
-                <span class="text-muted" *ngIf="!node.origin.end && !node.origin.name && !node.origin.title">{{node.origin.logEvent}}</span>
-                <span class="text-muted m-l-xs" *ngIf="node.origin.label">({{node.origin.label}})</span>
-                <i class="text-primary" *ngIf="node.origin.name1">&nbsp;({{node.origin.name1}})</i>
-                <i class="text-primary" *ngIf="node.origin.retryCount > 1 && node.origin.title == 'Retry'">&nbsp;(Total Tries {{node.origin.retryCount}})</i>
+              <div (click)="selectNode(node)" class="node-content-wrapper">
+                  <span
+                    *ngIf="node.origin.name"
+                    [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}"> {{node.origin.name}} </span>
+                <span *ngIf="node.origin.end" class="_600" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >{{node.origin.end | translate}}</span>
+                <span *ngIf="!node.origin.end && !node.origin.name"
+                      class="_600" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >{{node.origin.title | translate}}</span>
+                <span *ngIf="!node.origin.end && !node.origin.name && !node.origin.title"
+                      class="text-muted" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >{{node.origin.logEvent}}</span>
+                <span *ngIf="node.origin.label" class="text-muted m-l-xs" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >({{node.origin.label}})</span>
+                <i *ngIf="node.origin.name1" class="text-primary">&nbsp;({{node.origin.name1}})</i>
+                <i *ngIf="node.origin.retryCount > 1 && node.origin.title == 'Retry'" class="text-primary">&nbsp;(Total
+                  Tries {{node.origin.retryCount}})</i>
                 <span *ngIf="node.origin.logLevel == 'ERROR'">
                   - (<i class="text-sm log_error">Failed</i>)
                 </span>

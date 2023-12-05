@@ -53,14 +53,14 @@
     </div>
   </div>
   <!-- BEGIN SLIDER -->
-  <div class="property-panel hidden-sm">
+  <div *ngIf="loaded" class="property-panel">
     <div class="sidebar-open">
       <i nz-icon nzTheme="outline" nzType="caret-left"></i>
     </div>
     <div class="sidebar-close">
       <i nz-icon nzTheme="outline" nzType="caret-right"></i>
     </div>
-    <div class="resizable sidebar sidebar-log-panel bg-white" id="property-panel">
+    <div #treeBody class="resizable sidebar sidebar-log-panel bg-white" id="property-panel">
       <div style="margin-top: 26px">
         <div style="padding: 12px">
           <div *ngIf="isChildren" class="m-l m-b-sm">
@@ -92,13 +92,15 @@
                 <span *ngIf="node.origin.isLeaf || !node.origin.children || node.origin.children.length === 0"
                       class="w-16" style="visibility: hidden">.</span>
                 <div (click)="selectNode(node)" class="node-content-wrapper">
-                  <span *ngIf="node.origin.name">{{node.origin.name}}</span>
-                  <span *ngIf="node.origin.end" class="_600">{{node.origin.end | translate}}</span>
+                  <span
+                    *ngIf="node.origin.name"
+                    [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}"> {{node.origin.name}} </span>
+                  <span *ngIf="node.origin.end" class="_600" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >{{node.origin.end | translate}}</span>
                   <span *ngIf="!node.origin.end && !node.origin.name"
-                        class="_600">{{node.origin.title | translate}}</span>
+                        class="_600" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >{{node.origin.title | translate}}</span>
                   <span *ngIf="!node.origin.end && !node.origin.name && !node.origin.title"
-                        class="text-muted">{{node.origin.logEvent}}</span>
-                  <span class="text-muted m-l-xs" *ngIf="node.origin.label">({{node.origin.label}})</span>
+                        class="text-muted" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >{{node.origin.logEvent}}</span>
+                  <span *ngIf="node.origin.label" class="text-muted m-l-xs" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >({{node.origin.label}})</span>
                   <i *ngIf="node.origin.name1" class="text-primary">&nbsp;({{node.origin.name1}})</i>
                   <i *ngIf="node.origin.retryCount > 1 && node.origin.title == 'Retry'" class="text-primary">&nbsp;(Total
                     Tries {{node.origin.retryCount}})</i>
