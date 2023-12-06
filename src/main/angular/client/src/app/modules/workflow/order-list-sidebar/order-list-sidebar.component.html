@@ -1,5 +1,5 @@
-<div *ngIf="isProcessing" class="operation-status-info">
-  <div id='prog-bar-cont'>
+<div *ngIf="isProcessing" class="operation-status-info" style="width: 40%; right: auto;top:8px">
+  <div id='prog-bar-cont' style="width: 100%">
     <div id="prog-bar">
       <div id="background"></div>
     </div>
@@ -54,7 +54,7 @@
   <a (click)="resetCheckBox()" *ngIf="setOfCheckedId.size === data.length" class="text-primary p-l-xs" translate>common.label.clearSelection</a>
 </div>
 <div class="p-a-sm">
-  <perfect-scrollbar class="table-responsive" style="max-height: 84vh; overflow: auto;height: 100vh">
+  <perfect-scrollbar class="table-responsive" style="max-height: 86vh; overflow: auto;height: 100vh">
     <nz-table
       #ajaxTable
       (nzPageIndexChange)="pageIndexChange($event)"

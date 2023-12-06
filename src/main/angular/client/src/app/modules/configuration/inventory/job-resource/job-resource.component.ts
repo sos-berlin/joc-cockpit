@@ -40,6 +40,7 @@ export class TestMailComponent {
 
   ngOnInit(): void {
     this.data = this.modalData.data;
+    this.object.jobResourceName = this.data.name;
   }
 
   onSubmit(): void {
