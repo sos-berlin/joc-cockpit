@@ -1872,7 +1872,7 @@ export class WorkflowComponent {
       compact: true,
       controllerId: this.schedulerIds.selected,
       workflowIds: workflowIds,
-      states: state == 'COMPLETED' ? ["FINISHED", "CANCELLED"] : [state]
+      states: state == 'COMPLETED' ? ["FINISHED", "CANCELLED"] : state === 'ALL' ? [] : [state]
     };
     this.getOrdersOnState(request);
   }
