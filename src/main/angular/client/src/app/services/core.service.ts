@@ -28,8 +28,9 @@ export class CoreService {
   logViewDetails = {
     historyId: '',
     expandedAllLog: false,
-    expandedLogTree: [],
-    expandedLogPanel: new Set()
+    expandedLogPanel: new Set(),
+    expandedAllTree: false,
+    expandedLogTree: []
   }
 
   currentDate = new Date();

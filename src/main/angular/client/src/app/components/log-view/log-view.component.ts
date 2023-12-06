@@ -108,7 +108,6 @@ export class LogViewComponent {
     } else {
       this.init();
     }
-     this.restoreExpandedState(this.nodes);
   }
 
   ngOnDestroy() {
@@ -235,8 +234,6 @@ export class LogViewComponent {
     }
 
     setTimeout(() => {
-
-
       const self = this;
       $(POPOUT_MODALS['windowInstance'].document).on("keydown", disableF5);
       const panel = POPOUT_MODALS['windowInstance'].document.getElementById('property-panel');
@@ -875,7 +872,7 @@ export class LogViewComponent {
     function traverseTree(data): void {
       for (let i in data) {
         if (data[i] && data[i].children && data[i].children.length > 0) {
-          if (self.coreService.logViewDetails.expandedLogTree.indexOf(data[i].key) > -1) {
+          if (self.coreService.logViewDetails.expandedLogTree.indexOf(data[i].key) > -1 || self.coreService.logViewDetails.expandedAllTree) {
             data[i].expanded = true;
           }
           traverseTree(data[i].children);
@@ -910,12 +907,14 @@ export class LogViewComponent {
   }
 
   expandAllTree(): void {
+    this.coreService.logViewDetails.expandedAllTree = true;
     this.coreService.logViewDetails.expandedLogTree = [];
     this.traverseTree(this.nodes, true);
     this.nodes = [...this.nodes];
   }
 
   collapseAllTree(): void {
+    this.coreService.logViewDetails.expandedAllTree = false;
     this.coreService.logViewDetails.expandedLogTree = [];
     this.traverseTree(this.nodes, false);
     this.nodes = [...this.nodes];
@@ -934,13 +933,13 @@ export class LogViewComponent {
   }
 
   openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
-    // do something if u want
     if (data instanceof NzTreeNode) {
       data.isExpanded = !data.isExpanded;
       data.origin['isExpanded'] = !data.origin['isExpanded'];
       if (data.origin['isExpanded']) {
         this.coreService.logViewDetails.expandedLogTree.push(data.origin.key);
       } else {
+        this.coreService.logViewDetails.expandedAllTree = false;
         this.coreService.logViewDetails.expandedLogTree.splice(this.coreService.logViewDetails.expandedLogTree.indexOf(data.origin.key), 1);
       }
     } else {
@@ -949,17 +948,6 @@ export class LogViewComponent {
         node.isExpanded = !node.isExpanded;
       }
     }
-  }
-  restoreExpandedState(nodes: NzTreeNode[]): void {
-    nodes.forEach(node => {
-      if (this.coreService.logViewDetails.expandedLogTree.includes(node.key)) {
-        node.isExpanded = true;
-        node.origin['isExpanded'] = true;
-      }
-      if (node.children && node.children.length > 0) {
-        this.restoreExpandedState(node.children);
-      }
-    });
   }
 
   selectNode(node: any): void {

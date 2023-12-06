@@ -192,6 +192,7 @@ export class LogComponent {
       if (data.origin['isExpanded']) {
         this.coreService.logViewDetails.expandedLogTree.push(data.origin.key);
       } else {
+        this.coreService.logViewDetails.expandedAllTree = false;
         this.coreService.logViewDetails.expandedLogTree.splice(this.coreService.logViewDetails.expandedLogTree.indexOf(data.origin.key), 1);
       }
     } else {
@@ -839,7 +840,7 @@ export class LogComponent {
     function traverseTree(data): void {
       for (let i in data) {
         if (data[i] && data[i].children && data[i].children.length > 0) {
-          if (self.coreService.logViewDetails.expandedLogTree.indexOf(data[i].key) > -1) {
+          if (self.coreService.logViewDetails.expandedLogTree.indexOf(data[i].key) > -1  || self.coreService.logViewDetails.expandedAllTree) {
             data[i].expanded = true;
           }
           traverseTree(data[i].children);
@@ -850,14 +851,16 @@ export class LogComponent {
   }
 
   expandAllTree(): void {
+    this.coreService.logViewDetails.expandedAllTree = true;
     this.coreService.logViewDetails.expandedLogTree = [];
     this.traverseTree(this.nodes, true);
     this.nodes = [...this.nodes];
   }
 
   collapseAllTree(): void {
-    this.traverseTree(this.nodes, false);
+    this.coreService.logViewDetails.expandedAllTree = false;
     this.coreService.logViewDetails.expandedLogTree = [];
+    this.traverseTree(this.nodes, false);
     this.nodes = [...this.nodes];
   }
 

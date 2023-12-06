@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {HttpEvent, HttpInterceptor, HttpHandler, HttpHeaders} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor} from '@angular/common/http';
+import {Observable, Subject} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
@@ -47,6 +47,10 @@ export class AuthInterceptor implements HttpInterceptor {
             req = req.clone({
               headers: req.headers.set('X-Access-Token', this.authService.accessTokenId)
             });
+          } else {
+            if (req.url.match('store')) {
+              return new Subject();
+            }
           }
           if (!req.url.match('touch')) {
             req.requestTimeStamp = new Date().getTime();
@@ -93,7 +97,24 @@ export class AuthInterceptor implements HttpInterceptor {
                   return;
                 }
               } else if (err.status && err.status !== 434 && err.status !== 502) {
+                // Convert Blob to text
+                if(err.error instanceof Blob) {
+                  const reader = new FileReader();
+                  reader.onload = () => {
+                    const dataAsString = reader.result as string;
+                    // Parse the string into a JavaScript object (assuming it's JSON)
+                    const dataObject = JSON.parse(dataAsString);
 
+                    console.log('Converted Object:', dataObject);
+                    if (dataObject?.error?.message) {
+                      this.toasterService.error(dataObject.error.message);
+                    }
+
+                    // Now you can work with the dataObject
+                  };
+                  reader.readAsText(err.error);
+                  return;
+                }
                 if (req.url.match('inventory/path') && err.status === 420) {
                   return;
                 }
