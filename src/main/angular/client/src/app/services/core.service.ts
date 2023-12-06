@@ -2115,6 +2115,9 @@ export class CoreService {
                     if (data.name) {
                       nodes[i].name = data.name;
                     }
+                    if (data.label) {
+                      nodes[i].label = data.label;
+                    }
                     nodes[i].logEvent = data.logEvent;
                     nodes[i].logLevel = data.logLevel;
                     nodes[i].children = data.children;
@@ -2126,6 +2129,9 @@ export class CoreService {
                         nodes[prop].logEvent = data.logEvent;
                         nodes[prop].logLevel = data.logLevel;
                         nodes[prop].children = data.children;
+                        if (data.label) {
+                          nodes[prop].label = data.label;
+                        }
                         if ((nodes[prop].title == data.title || (nodes[prop].title == 'Try' && data.title == 'Retry') || (nodes[prop].title == 'Retry' && data.title == 'Try'))) {
 
                         } else {

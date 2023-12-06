@@ -509,6 +509,9 @@ export class LogComponent {
               && this.treeStructure[x].consumeNotices == dt[i].consumeNotices && this.treeStructure[x].moved == dt[i].moved
               && this.treeStructure[x].question == dt[i].question && this.treeStructure[x].cycle == dt[i].cycle && this.treeStructure[x].attached == dt[i].attached)) {
             flag = true;
+            if (dt[i].logLevel) {
+              this.treeStructure[x]['logLevel'] = dt[i].logLevel
+            }
             break;
           }
         }

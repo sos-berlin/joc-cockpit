@@ -1267,7 +1267,11 @@
                 <a class="text-hover-primary" (click)="removeClipboard()" translate>common.button.clear</a>
               </div>
             </ng-template>
-            <label class="col-md-12 _600" translate>order.label.variables</label>
+            <label class="col-md-12 _600 font14">
+              <span translate>order.label.variables</span>
+              <i (click)="expandCollapseVariable()" class="cursor fa fa-lg p-l-sm"
+                 [ngClass]="isExpandVariable ? 'fa-angle-up' : 'fa-angle-down' "></i>
+            </label>
             <a *ngIf="variableDeclarations.parameters?.length > 0" (click)="copyArguments()" class="anchor-with-icon pos-abt m-t-n-1" [ngStyle]="{'right': storedArguments?.length > 0 ? '90px' : '42px'}"
                nz-tooltip="{{'common.button.copyArguments' | translate}}">
               <i class="fa fa-copy"></i>
@@ -1288,184 +1292,197 @@
               <i *ngIf="fullScreen" class="fa fa-minus-square-o"></i>
             </a>
           </div>
-          <div *ngIf="variableDeclarations.parameters.length > 0" class="form-group row m-b-0 m-l-sm">
-            <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
-            <div class="col-md-3 col-lg-3 m-b-sm" translate>common.label.type</div>
-            <div class="col-md-5 col-lg-5 m-b-sm" translate>common.label.value</div>
-          </div>
-          <div (cdkDropListDropped)="drop($event)" cdkDropList>
-
-            <div *ngFor="let variable of variableDeclarations.parameters; let i = index"
-                 cdkDrag class="form-group row m-b-0 m-l-sm">
-              <div cdkDragHandle class="pos-abt"
-                   style="margin-left: -13px;font-size: 18px;margin-top: 2px;cursor: move">
-                <i aria-hidden="true" class="fa fa-bars"></i>
-              </div>
-              <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
-                   class="col-md-4 col-lg-4 m-b-sm p-r-0">
-                <input #name="ngModel" (blur)="checkDuplicateEntries(variable, i, variableDeclarations.parameters)" [(ngModel)]="variable.name" [readonly]="isTrash" autocomplete="off"
-                       class="form-control" identifierValidation name="name{{i}}"
-                       placeholder="{{'common.placeholder.name' | translate}}"
-                       type="text">
-                <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
-                  <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
-                </div>
-              </div>
-              <div class="col-md-3 col-lg-3 m-b-sm p-r-0">
-                <nz-select [(ngModel)]="variable.value.type" [nzDisabled]="isTrash"
-                           name="type{{i}}" (ngModelChange)="changeDataType($event, variable)">
-                  <nz-option *ngFor="let dataType of allowedDatatype" [nzLabel]="dataType | translate"
-                             [nzValue]="dataType"></nz-option>
-                </nz-select>
-              </div>
-              <div *ngIf="variable.value.type !== 'Final'" [ngSwitch]="variable.value.type"
-                   class="col-md-4 col-lg-4 m-b-sm p-r-0">
-                <nz-input-number (nzBlur)="updateOtherProperties('variable')" *ngSwitchCase="'Number'" [(ngModel)]="variable.value.default" [nzDisabled]="isTrash"
-                                 [nzMin]="0"
-                                 [nzStep]="1" name="value{{i}}"
-                                 nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                <nz-select *ngSwitchCase="'Boolean'"
-                           [(ngModel)]="variable.value.default" [nzDisabled]="isTrash" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                           name="value{{i}}" nzAllowClear  (ngModelChange)="updateOtherProperties('variable')">
-                  <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                  <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                </nz-select>
-                <i (click)="addList(variable)" *ngIf="variable.value.type === 'Number' || variable.value.type === 'Boolean'"
-                   [ngClass]="{'text-primary': variable.value.list && variable.value.list.length > 0}"
-                   [nz-tooltip]="'workflow.tooltip.listEntryMode' | translate"
-                   class="pos-abt cursor text-primary-hover"
-                   nz-icon nzTheme="outline" nzType="unordered-list" style="right: 1px;top:0px;"></i>
-                <ng-container *ngSwitchDefault>
-                  <input #value="ngModel" (blur)="updateOtherProperties('variable')"
-                         (keydown)="onKeyPress($event)" [(ngModel)]="variable.value.default" [disabled]="variable.value.type === 'List'" [facetValidation]="variable.value.facet"
-                         autocomplete="off" class="form-control" name="value{{i}}"
-                         placeholder="{{'common.placeholder.value' | translate}}" type="text">
-                  <i (click)="addFacet(variable)"
-                     *ngIf="variable.value.type === 'String'" [ngClass]="{'text-primary': variable.value.facet}"
-                     [nz-tooltip]="'workflow.tooltip.facetEntryMode' | translate" class="pos-abt cursor text-primary-hover" nz-icon
-                     nzTheme="outline" nzType="snippets" style="right: 36px;top:1px;"></i>
-                  <i (click)="addList(variable)"
-                     *ngIf="variable.value.type === 'String'"
-                     [ngClass]="{'text-primary': variable.value.list && variable.value.list.length > 0}"
-                     [nz-tooltip]="'workflow.tooltip.listEntryMode' | translate" class="pos-abt cursor text-primary-hover" nz-icon
-                     nzTheme="outline" nzType="unordered-list" style="right: 18px;top:1px;"></i>
-                  <i (click)="openEditor(variable.value)"
-                     [hidden]="variable.value.type === 'List'" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
-                     nzTheme="outline" nzType="form" style="right: 1px;top:1px;"></i>
-                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                       class="text-danger help-block">
-                    <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>
-                  </div>
-                </ng-container>
-              </div>
-              <div *ngIf="variable.value.type === 'Final'" [ngClass]="{'has-error' : ((final.dirty || final.touched) && final.invalid)}"
-                   class="col-md-4 col-lg-4 m-b-sm p-r-0">
-                <input #final="ngModel" (blur)="updateOtherProperties('variable')" (keydown)="onKeyPress($event)" [(ngModel)]="variable.value.final" autocomplete="off" class="form-control"
-                       name="final{{i}}" placeholder="{{'workflow.placeholder.final' | translate}}"
-                       required type="text">
-                <i (click)="openEditor(variable.value, 'final')" class="pos-abt cursor" nz-icon nzTheme="outline"
-                   nzType="form" style="right: 1px;top:1px;"></i>
-                <div *ngIf="final.invalid && final.errors && (final.dirty || final.touched)"
-                     class="text-danger help-block">
-                  <div *ngIf="final.errors.required">
-                    <div translate>common.message.requiredError</div>
+          <ng-container *ngIf="isExpandVariable">
+            <div *ngIf="variableDeclarations.parameters.length > 0" class="form-group row m-b-0 m-l-sm">
+              <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
+              <div class="col-md-3 col-lg-3 m-b-sm" translate>common.label.type</div>
+              <div class="col-md-5 col-lg-5 m-b-sm" translate>common.label.value</div>
+            </div>
+            <div (cdkDropListDropped)="drop($event)" cdkDropList>
+              <ng-container *ngFor="let variable of variableDeclarations.parameters; let i = index">
+                <div *ngIf="variable.value.type === 'List'" class="form-group row m-b-0 m-l-sm">
+                  <div class="col-md-12 m-b-sm" *ngIf="variable.value.type === 'List'">
+                    <label>
+                      <span class="p-r-xs" translate>workflow.label.children</span>:
+                      {{variable.name}}
+                      <i (click)="variable.isExpand = !variable.isExpand" class="cursor fa fa-lg p-l-sm"
+                         [ngClass]="!variable.isExpand ? 'fa-angle-up' : 'fa-angle-down' "></i>
+                    </label>
                   </div>
                 </div>
-              </div>
-              <div class="col-md-1 col-lg-1">
-                <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
-              </div>
-              <ng-container *ngIf="variable.value.type === 'List'" class="b-b p-b-sm">
-                <div class="row col-md-12">
-                  <div class="col-md-4 col-lg-4 m-b-sm" translate>
-                    common.label.name
-                    <i class="fa fa-caret-down cursor text-16 p-l-xxs"
-                       (click)="sortDescending(variable)">
-                    </i>
-                    <i class="fa fa-caret-up cursor text-16 p-l-sm"
-                       (click)="sortAscending(variable)">
-                    </i>
+                <div *ngIf="!variable.isExpand || variable.value.type !== 'List'" cdkDrag class="form-group row m-b-0 m-l-sm">
+                  <div cdkDragHandle class="pos-abt"
+                       style="margin-left: -9px;font-size: 18px;margin-top: 2px;cursor: move">
+                    <i aria-hidden="true" class="fa fa-bars"></i>
                   </div>
-                  <div class="col-md-3 col-lg-3 m-b-sm" style="padding-left: 20px" translate>
-                    common.label.type
-                  </div>
-                  <div class="col-md-5 col-lg-5 m-b-sm" style="padding-left: 26px" translate>common.label.value</div>
-                </div>
-                <div class="col-md-12" (cdkDropListDropped)="nestedDrop($event,variable)" cdkDropList>
-                  <div *ngFor="let param of variable.value.listParameters; let j = index"
-                       [ngClass]="{'m-b-0': j !== variable.value.listParameters.length - 1}"
-                       class="form-group row p-r-0" cdkDrag>
-                    <div (click)="addVariableToList(variable.value)"
-                         *ngIf="j === variable.value.listParameters.length - 1"
-                         class="pos-abt cursor" style="margin-top: 7px;left:-24px;font-size:15px;z-index: 999">
-                      <a class="text-primary-hover cursor"><i class="fa fa-plus"></i></a>
+                  <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
+                       class="col-md-4 col-lg-4 m-b-sm p-r-0">
+                    <input #name="ngModel" (blur)="checkDuplicateEntries(variable, i, variableDeclarations.parameters)" [(ngModel)]="variable.name" [readonly]="isTrash" autocomplete="off"
+                           class="form-control" identifierValidation name="name{{i}}"
+                           placeholder="{{'common.placeholder.name' | translate}}"
+                           type="text">
+                    <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
+                      <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
                     </div>
-                    <!-- Drag Handle -->
-                    <div cdkDragHandle class="pos-abt" style="margin-left: -8px;font-size: 15px;margin-top: 6px;cursor: move">
-                      <i aria-hidden="true" class="fa fa-bars"></i>
-                    </div>
-                    <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
-                         class="col-md-4 col-lg-4 m-b-sm p-r-0">
-                      <input #name="ngModel" (blur)="checkDuplicateEntries(param, j, variable.value.listParameters)" [(ngModel)]="param.name" [readonly]="isTrash" autocomplete="off"
-                             class="form-control" identifierValidation name="name{{i}}{{j}}"
-                             placeholder="{{'common.placeholder.name' | translate}}"
-                             type="text">
-                      <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
+                  </div>
+                  <div class="col-md-3 col-lg-3 m-b-sm p-r-0">
+                    <nz-select [(ngModel)]="variable.value.type" [nzDisabled]="isTrash"
+                               name="type{{i}}" (ngModelChange)="changeDataType($event, variable)">
+                      <nz-option *ngFor="let dataType of allowedDatatype" [nzLabel]="dataType | translate"
+                                 [nzValue]="dataType"></nz-option>
+                    </nz-select>
+                  </div>
+                  <div *ngIf="variable.value.type !== 'Final'" [ngSwitch]="variable.value.type"
+                       class="col-md-4 col-lg-4 m-b-sm p-r-0">
+                    <nz-input-number (nzBlur)="updateOtherProperties('variable')" *ngSwitchCase="'Number'" [(ngModel)]="variable.value.default" [nzDisabled]="isTrash"
+                                     [nzMin]="0"
+                                     [nzStep]="1" name="value{{i}}"
+                                     nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+                    <nz-select *ngSwitchCase="'Boolean'"
+                               [(ngModel)]="variable.value.default" [nzDisabled]="isTrash" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+                               name="value{{i}}" nzAllowClear  (ngModelChange)="updateOtherProperties('variable')">
+                      <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                      <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                    </nz-select>
+                    <i (click)="addList(variable)" *ngIf="variable.value.type === 'Number' || variable.value.type === 'Boolean'"
+                       [ngClass]="{'text-primary': variable.value.list && variable.value.list.length > 0}"
+                       [nz-tooltip]="'workflow.tooltip.listEntryMode' | translate"
+                       class="pos-abt cursor text-primary-hover"
+                       nz-icon nzTheme="outline" nzType="unordered-list" style="right: 1px;top:0px;"></i>
+                    <ng-container *ngSwitchDefault>
+                      <input #value="ngModel" (blur)="updateOtherProperties('variable')"
+                             (keydown)="onKeyPress($event)" [(ngModel)]="variable.value.default" [disabled]="variable.value.type === 'List'" [facetValidation]="variable.value.facet"
+                             autocomplete="off" class="form-control" name="value{{i}}"
+                             placeholder="{{'common.placeholder.value' | translate}}" type="text">
+                      <i (click)="addFacet(variable)"
+                         *ngIf="variable.value.type === 'String'" [ngClass]="{'text-primary': variable.value.facet}"
+                         [nz-tooltip]="'workflow.tooltip.facetEntryMode' | translate" class="pos-abt cursor text-primary-hover" nz-icon
+                         nzTheme="outline" nzType="snippets" style="right: 36px;top:1px;"></i>
+                      <i (click)="addList(variable)"
+                         *ngIf="variable.value.type === 'String'"
+                         [ngClass]="{'text-primary': variable.value.list && variable.value.list.length > 0}"
+                         [nz-tooltip]="'workflow.tooltip.listEntryMode' | translate" class="pos-abt cursor text-primary-hover" nz-icon
+                         nzTheme="outline" nzType="unordered-list" style="right: 18px;top:1px;"></i>
+                      <i (click)="openEditor(variable.value)"
+                         [hidden]="variable.value.type === 'List'" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                         nzTheme="outline" nzType="form" style="right: 1px;top:1px;"></i>
+                      <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                            class="text-danger help-block">
-                        <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+                        <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>
+                      </div>
+                    </ng-container>
+                  </div>
+                  <div *ngIf="variable.value.type === 'Final'" [ngClass]="{'has-error' : ((final.dirty || final.touched) && final.invalid)}"
+                       class="col-md-4 col-lg-4 m-b-sm p-r-0">
+                    <input #final="ngModel" (blur)="updateOtherProperties('variable')" (keydown)="onKeyPress($event)" [(ngModel)]="variable.value.final" autocomplete="off" class="form-control"
+                           name="final{{i}}" placeholder="{{'workflow.placeholder.final' | translate}}"
+                           required type="text">
+                    <i (click)="openEditor(variable.value, 'final')" class="pos-abt cursor" nz-icon nzTheme="outline"
+                       nzType="form" style="right: 1px;top:1px;"></i>
+                    <div *ngIf="final.invalid && final.errors && (final.dirty || final.touched)"
+                         class="text-danger help-block">
+                      <div *ngIf="final.errors.required">
+                        <div translate>common.message.requiredError</div>
                       </div>
                     </div>
-                    <div class="col-md-3 col-lg-3 m-b-sm p-r-0">
-                      <nz-select [(ngModel)]="param.value.type" [nzDisabled]="isTrash"
-                                 name="type{{i}}{{j}}" (ngModelChange)="updateOtherProperties('variable')" >
-                        <nz-option [nzLabel]="'String' | translate" [nzValue]="'String'"></nz-option>
-                        <nz-option [nzLabel]="'Number' | translate" [nzValue]="'Number'"></nz-option>
-                        <nz-option [nzLabel]="'Boolean' | translate" [nzValue]="'Boolean'"></nz-option>
-                      </nz-select>
-                    </div>
-                    <div [ngSwitch]="param.value.type" class="col-md-4 col-lg-4 m-b-sm p-r-0">
-                      <nz-input-number (nzBlur)="updateOtherProperties('variable')" *ngSwitchCase="'Number'" [(ngModel)]="param.value.default" [nzDisabled]="isTrash"
-                                       [nzMin]="0"
-                                       [nzStep]="1" name="value{{i}}{{j}}"
-                                       nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                      <nz-select *ngSwitchCase="'Boolean'"
-                                 [(ngModel)]="param.value.default" [nzDisabled]="isTrash" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                                 name="value{{i}}{{j}}" nzAllowClear  (ngModelChange)="updateOtherProperties('variable')">
-                        <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                        <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                      </nz-select>
-                      <ng-container *ngSwitchDefault>
-                        <input (blur)="updateOtherProperties('variable')"
-                               (keydown)="onKeyPress($event)" [(ngModel)]="param.value.default"
-                               autocomplete="off" class="form-control" name="value{{i}}{{j}}"
-                               placeholder="{{'common.placeholder.value' | translate}}" type="text">
-                        <i (click)="openEditor(param.value)"
-                           [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
-                           nzTheme="outline" nzType="form" style="right: 1px;top:1px;"></i>
-                      </ng-container>
-                    </div>
-                    <div *ngIf="variable.value.listParameters.length > 1" class="col-md-1 col-lg-1">
-                      <a><i (click)="removeVariableFromList(variable.value.listParameters, j)"
-                            class="fa fa-times m-t-sm text-hover-color"></i></a>
-                    </div>
                   </div>
+                  <div class="col-md-1 col-lg-1">
+                    <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                  </div>
+                  <ng-container *ngIf="variable.value.type === 'List'" class="b-b p-b-sm">
+                    <div class="row col-md-12">
+                      <div class="col-md-4 col-lg-4 m-b-sm" translate>
+                        common.label.name
+                        <i class="fa fa-caret-down cursor text-16 p-l-xxs"
+                           (click)="sortDescending(variable)">
+                        </i>
+                        <i class="fa fa-caret-up cursor text-16 p-l-sm"
+                           (click)="sortAscending(variable)">
+                        </i>
+                      </div>
+                      <div class="col-md-3 col-lg-3 m-b-sm" style="padding-left: 20px" translate>
+                        common.label.type
+                      </div>
+                      <div class="col-md-5 col-lg-5 m-b-sm" style="padding-left: 26px" translate>common.label.value</div>
+                    </div>
+                    <div class="col-md-12" (cdkDropListDropped)="nestedDrop($event,variable)" cdkDropList>
+                      <div *ngFor="let param of variable.value.listParameters; let j = index"
+                           [ngClass]="{'m-b-0': j !== variable.value.listParameters.length - 1}"
+                           class="form-group row p-r-0" cdkDrag>
+                        <div (click)="addVariableToList(variable.value)"
+                             *ngIf="j === variable.value.listParameters.length - 1"
+                             class="pos-abt cursor" style="margin-top: 7px;left:-24px;font-size:15px;z-index: 999">
+                          <a class="text-primary-hover cursor"><i class="fa fa-plus"></i></a>
+                        </div>
+                        <!-- Drag Handle -->
+                        <div cdkDragHandle class="pos-abt" style="margin-left: -8px;font-size: 15px;margin-top: 6px;cursor: move">
+                          <i aria-hidden="true" class="fa fa-bars"></i>
+                        </div>
+                        <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
+                             class="col-md-4 col-lg-4 m-b-sm p-r-0">
+                          <input #name="ngModel" (blur)="checkDuplicateEntries(param, j, variable.value.listParameters)" [(ngModel)]="param.name" [readonly]="isTrash" autocomplete="off"
+                                 class="form-control" identifierValidation name="name{{i}}{{j}}"
+                                 placeholder="{{'common.placeholder.name' | translate}}"
+                                 type="text">
+                          <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+                          </div>
+                        </div>
+                        <div class="col-md-3 col-lg-3 m-b-sm p-r-0">
+                          <nz-select [(ngModel)]="param.value.type" [nzDisabled]="isTrash"
+                                     name="type{{i}}{{j}}" (ngModelChange)="updateOtherProperties('variable')" >
+                            <nz-option [nzLabel]="'String' | translate" [nzValue]="'String'"></nz-option>
+                            <nz-option [nzLabel]="'Number' | translate" [nzValue]="'Number'"></nz-option>
+                            <nz-option [nzLabel]="'Boolean' | translate" [nzValue]="'Boolean'"></nz-option>
+                          </nz-select>
+                        </div>
+                        <div [ngSwitch]="param.value.type" class="col-md-4 col-lg-4 m-b-sm p-r-0">
+                          <nz-input-number (nzBlur)="updateOtherProperties('variable')" *ngSwitchCase="'Number'" [(ngModel)]="param.value.default" [nzDisabled]="isTrash"
+                                           [nzMin]="0"
+                                           [nzStep]="1" name="value{{i}}{{j}}"
+                                           nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+                          <nz-select *ngSwitchCase="'Boolean'"
+                                     [(ngModel)]="param.value.default" [nzDisabled]="isTrash" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+                                     name="value{{i}}{{j}}" nzAllowClear  (ngModelChange)="updateOtherProperties('variable')">
+                            <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                            <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                          </nz-select>
+                          <ng-container *ngSwitchDefault>
+                            <input (blur)="updateOtherProperties('variable')"
+                                   (keydown)="onKeyPress($event)" [(ngModel)]="param.value.default"
+                                   autocomplete="off" class="form-control" name="value{{i}}{{j}}"
+                                   placeholder="{{'common.placeholder.value' | translate}}" type="text">
+                            <i (click)="openEditor(param.value)"
+                               [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                               nzTheme="outline" nzType="form" style="right: 1px;top:1px;"></i>
+                          </ng-container>
+                        </div>
+                        <div *ngIf="variable.value.listParameters.length > 1" class="col-md-1 col-lg-1">
+                          <a><i (click)="removeVariableFromList(variable.value.listParameters, j)"
+                                class="fa fa-times m-t-sm text-hover-color"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+
                 </div>
               </ng-container>
-
             </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-sm-12">
-              <a (click)="addVariable()" class="text-u-l" translate>order.button.addVariable</a>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <a (click)="addVariable()" class="text-u-l" translate>order.button.addVariable</a>
+              </div>
             </div>
-          </div>
-
+          </ng-container>
         </div>
-        <div class="box-body p-t-0" *ngIf="isReferencedBy">
-          <div *ngIf="isReferencedBy.fileOrderSources || isReferencedBy.schedules || isReferencedBy.workflows"
-               class="b-t p-t-sm text-16 _500" translate>workflow.label.references
+        <div class="box-body p-t-0" *ngIf="isReferencedBy && (isReferencedBy.fileOrderSources || isReferencedBy.schedules || isReferencedBy.workflows)">
+          <div class="b-t p-t-sm font14 _500" translate>
+            workflow.label.references
+            <i (click)="expandCollapseReferences()" class="cursor fa fa-lg p-l-sm"
+               [ngClass]="isExpandReference ? 'fa-angle-up' : 'fa-angle-down' "></i>
           </div>
-          <div *ngIf="isReferencedBy.fileOrderSources || isReferencedBy.schedules || isReferencedBy.workflows">
+          <div *ngIf="isExpandReference">
             <div *ngIf="isReferencedBy.fileOrderSources" class="p-l-sm p-t-sm">
               <i class="icon-orders-icon icon-color tree-icon"></i>
               <a (click)="getReferences('FILEORDERSOURCE')"
@@ -1487,8 +1504,12 @@
           </div>
         </div>
         <div class="box-body p-t-0">
-          <div class="b-t p-t-sm text-16 _500" translate>inventory.label.tags</div>
-          <div *ngIf="tags.length > 0">
+          <div class="b-t p-t-sm font14 _500" translate>
+            inventory.label.tags
+            <i (click)="expandCollapseTags()" class="cursor fa fa-lg p-l-sm"
+               [ngClass]="isExpandTag ? 'fa-angle-up' : 'fa-angle-down' "></i>
+          </div>
+          <div *ngIf="isExpandTag">
             <div class="p-l-sm p-t-sm" *ngFor="let tag of tags">
               <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
               <span class="p-l-6">{{tag}}</span>
