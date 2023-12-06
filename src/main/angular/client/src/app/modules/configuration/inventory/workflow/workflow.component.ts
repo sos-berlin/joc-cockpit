@@ -2936,6 +2936,9 @@ export class WorkflowComponent {
   lastModified: any = '';
   hasLicense: boolean;
   allowUndeclaredVariables: boolean;
+  isExpandVariable = true;;
+  isExpandReference = true;
+  isExpandTag = true;
   isLocalChange: string;
   positions: any;
   newPositions: any;
@@ -11773,6 +11776,18 @@ export class WorkflowComponent {
 
   addTags(): void {
     this.dataService.reloadTree.next({addTag: this.data});
+  }
+
+  expandCollapseVariable():  void{
+    this.isExpandVariable = !this.isExpandVariable;
+  }
+
+  expandCollapseReferences():  void{
+    this.isExpandReference = !this.isExpandReference;
+  }
+
+  expandCollapseTags():  void{
+    this.isExpandTag = !this.isExpandTag;
   }
 
 }
