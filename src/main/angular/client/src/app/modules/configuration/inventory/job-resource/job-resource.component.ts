@@ -375,7 +375,7 @@ export class JobResourceComponent {
   }
 
   get hasMailProperty(): boolean {
-    return this.jobResource.configuration.arguments.some(obj => obj.name && obj.name.includes('mail'));
+    return this.jobResource.configuration.arguments.some(obj => obj.name && obj.name.match(/mail\.[a-zA-Z]/) !== null);
   }
 
   isStringValid(data, notValid): void {
