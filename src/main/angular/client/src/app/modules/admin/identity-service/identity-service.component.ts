@@ -184,10 +184,12 @@ export class SettingModalComponent {
                 this.currentObj.iamFidoProtocolType = 'FIDO2';
               }
             } else if (this.data['identityServiceType'] === 'OIDC' || this.data['identityServiceType'] == 'OIDC-JOC') {
-              if (this.currentObj.iamOidcClientId) {
-                this.currentObj.iamOidcFlowType = this.currentObj.iamOidcClientSecret ? 'AUTHENTICATION' : 'IMPLICIT';
-              } else {
-                this.currentObj.iamOidcFlowType = 'AUTHENTICATION';
+              if (!this.currentObj.iamOidcFlowType) {
+                if (this.currentObj.iamOidcClientId) {
+                  this.currentObj.iamOidcFlowType = this.currentObj.iamOidcClientSecret ? 'AUTHENTICATION' : 'IMPLICIT';
+                } else {
+                  this.currentObj.iamOidcFlowType = 'AUTHENTICATION';
+                }
               }
             }
             if (this.data['identityServiceType'] == 'OIDC') {

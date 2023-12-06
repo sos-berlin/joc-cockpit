@@ -771,7 +771,7 @@
             <label nz-radio nzValue="AUTHENTICATION"><span
               translate>user.label.iamOidcAuthenticationCodeFlow</span></label>
             <label nz-radio nzValue="IMPLICIT"><span translate>user.label.iamOidcImplicitFlow</span></label>
-            
+            <label nz-radio nzValue="CLIENT-CREDENTIAL"><span translate>user.label.iamOidcClientCredentialsFlow</span></label>
           </nz-radio-group>
         </div>
       </div>
@@ -795,7 +795,7 @@
           </div>
         </div>
       </div>
-      <ng-container *ngIf="currentObj.iamOidcFlowType == 'AUTHENTICATION'">
+      <ng-container *ngIf="currentObj.iamOidcFlowType == 'AUTHENTICATION' || currentObj.iamOidcFlowType == 'CLIENT-CREDENTIAL'">
         <div class="form-group row">
           <label [nz-tooltip]="'user.tooltips.oidc.iamOidcClientSecret' | translate" [nzTooltipMouseEnterDelay]="0.5"
                  class="col-sm-4 form-control-label" translate>user.label.iamOidcClientSecret
