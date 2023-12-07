@@ -795,7 +795,7 @@
           </div>
         </div>
       </div>
-      <ng-container *ngIf="currentObj.iamOidcFlowType == 'AUTHENTICATION' || currentObj.iamOidcFlowType == 'CLIENT-CREDENTIAL'">
+      <ng-container *ngIf="currentObj.iamOidcFlowType == 'AUTHENTICATION'">
         <div class="form-group row">
           <label [nz-tooltip]="'user.tooltips.oidc.iamOidcClientSecret' | translate" [nzTooltipMouseEnterDelay]="0.5"
                  class="col-sm-4 form-control-label" translate>user.label.iamOidcClientSecret
@@ -821,7 +821,7 @@
           </div>
         </div>
       </ng-container>
-      <div class="form-group row">
+      <div class="form-group row" *ngIf="currentObj.iamOidcFlowType !== 'CLIENT-CREDENTIAL'">
         <label [nz-tooltip]="'user.tooltips.oidc.iamOidcUserAttribute' | translate" [nzTooltipMouseEnterDelay]="0.5"
                class="col-sm-4 form-control-label" translate>user.label.iamOidcUserAttribute
         </label>

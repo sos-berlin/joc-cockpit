@@ -552,6 +552,8 @@ export class SettingModalComponent {
         obj.oidc = this.currentObj;
         if (this.currentObj.iamOidcFlowType == 'IMPLICIT') {
           obj.oidc.iamOidcClientSecret = '';
+        } else if (this.currentObj.iamOidcFlowType == 'CLIENT-CREDENTIAL') {
+          obj.oidc.iamOidcClientSecret = '';
         }
         if (this.data['identityServiceType'] == 'OIDC') {
           if (obj.oidc.iamOidcGroupClaims && obj.oidc.iamOidcGroupClaims.length > 0) {
