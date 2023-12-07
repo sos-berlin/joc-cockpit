@@ -105,7 +105,6 @@ export class AuthInterceptor implements HttpInterceptor {
                     // Parse the string into a JavaScript object (assuming it's JSON)
                     const dataObject = JSON.parse(dataAsString);
 
-                    console.log('Converted Object:', dataObject);
                     if (dataObject?.error?.message) {
                       this.toasterService.error(dataObject.error.message);
                     }

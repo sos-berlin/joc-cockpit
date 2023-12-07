@@ -582,7 +582,7 @@ export class ImportKeyModalComponent {
               self.fileList[i]['index'] = 3;
             } else {
               let msg;
-              self.translate.get('profile.message.invalidKeyFileSelected').subscribe(translatedValue => {
+              self.translate.get('profile.keyManagement.message.invalidKeyFileSelected').subscribe(translatedValue => {
                 msg = translatedValue;
               });
               self.toasterService.error(msg);

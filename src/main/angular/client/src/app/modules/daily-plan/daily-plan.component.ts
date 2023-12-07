@@ -2914,6 +2914,7 @@ export class DailyPlanComponent {
     this.coreService.selectedTags.push(tag);
     this.coreService.checkedTags.add(tag.name);
     this.coreService.removeDuplicates();
+    this.loadOrderPlan();
   }
 
   objectTreeSearch() {
