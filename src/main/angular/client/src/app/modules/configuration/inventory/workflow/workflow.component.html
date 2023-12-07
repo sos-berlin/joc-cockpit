@@ -1305,12 +1305,12 @@
                     <label>
                       <span class="p-r-xs" translate>workflow.label.children</span>:
                       {{variable.name}}
-                      <i (click)="variable.isExpand = !variable.isExpand" class="cursor fa fa-lg p-l-sm"
-                         [ngClass]="!variable.isExpand ? 'fa-angle-up' : 'fa-angle-down' "></i>
+                      <i (click)="variable.isCollpase = !variable.isCollpase" class="cursor fa fa-lg p-l-sm"
+                         [ngClass]="!variable.isCollpase ? 'fa-angle-up' : 'fa-angle-down' "></i>
                     </label>
                   </div>
                 </div>
-                <div *ngIf="!variable.isExpand || variable.value.type !== 'List'" cdkDrag class="form-group row m-b-0 m-l-sm">
+                <div *ngIf="!variable.isCollpase || variable.value.type !== 'List'" cdkDrag class="form-group row m-b-0 m-l-sm">
                   <div cdkDragHandle class="pos-abt"
                        style="margin-left: -9px;font-size: 18px;margin-top: 2px;cursor: move">
                     <i aria-hidden="true" class="fa fa-bars"></i>

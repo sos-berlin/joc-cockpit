@@ -32,11 +32,13 @@
     </div>
     <nz-upload
       [(nzFileList)]="fileList"
-      [nzAccept]="'.json'"
+      [nzAccept]="'.asc, .crt, .key'"
       [nzBeforeUpload]="beforeUpload"
-      [nzShowButton]="fileList.length < 1"
-      [nzType]="fileList.length === 1 ? null : 'drag'"
+      [nzShowButton]="fileList.length === 0"
+      [nzType]="fileList.length > 0 ? null : 'drag'"
       nzListType="picture"
+      [nzMultiple]="true"
+      [nzLimit]="2"
     >
       <div *ngIf="fileList.length === 0">
         <i class="icon-upload-icon"></i>
@@ -48,7 +50,8 @@
         <div class="progress-bar-value" [ngClass]="{'success': !uploading}"></div>
       </div>
     </div>
-    <nz-upload *ngIf="fileList.length === 0" [nzAccept]="fileType" [nzBeforeUpload]="beforeUpload">
+    <nz-upload *ngIf="fileList.length === 0" [nzAccept]="'.asc, .crt, .key'" [nzLimit]="2" [nzMultiple]="true"
+               [nzBeforeUpload]="beforeUpload">
       <div class="p-t-sm">
         <button class="btn btn-default btn-sm" type="button">
           <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
