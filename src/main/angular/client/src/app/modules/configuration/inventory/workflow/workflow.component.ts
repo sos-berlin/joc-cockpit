@@ -1660,6 +1660,15 @@ export class JobComponent {
       this.selectedNode.job.parallelism = result.parallelism;
       this.selectedNode.job.jobResourceNames = result.jobResourceNames || [];
     }
+    if (!this.selectedNode.job.notification) {
+      this.selectedNode.job.notification = {
+        mail: {}
+      };
+    } else {
+      if (!this.selectedNode.job.notification?.mail) {
+        this.selectedNode.job.notification.mail = {};
+      }
+    }
     this.ref.detectChanges();
   }
 
@@ -4322,6 +4331,32 @@ export class WorkflowComponent {
     }
     this.updateOrderPreparation();
     this.fetchClipboard();
+  
+    let len = 0;
+    let len2 = 0;
+    this.variableDeclarations.parameters.forEach((variable) => {
+      len += 1;
+      if (variable.value.type == 'List') {
+        console.log(variable.value.listParameters.length);
+        len2 += variable.value.listParameters.length;
+        len2 = len2 + 1;
+      }
+    });
+    console.log(len, len * 30);
+    if (len > 0) {
+      let ht = $('#property-panel').height();
+      ht = ht - 280;
+
+      if(ht < (len2 * 30)){
+        //this.isExpandVariable = false;
+        this.variableDeclarations.parameters.forEach((variable) => {
+          variable.isCollpase = true;
+        });
+      }
+      if (ht < ((len + 1) * 30)) {
+        this.isExpandVariable = false;
+      }
+    }
   }
 
   private updateOrderPreparation(): void {

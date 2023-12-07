@@ -2339,6 +2339,11 @@ export class WorkflowComponent {
     this.coreService.selectedTags.push(tag);
     this.coreService.checkedTags.add(tag.name);
     this.coreService.removeDuplicates();
+    const obj: any = {
+      tags: Array.from(this.coreService.checkedTags),
+      controllerId: this.schedulerIds.selected
+    };
+    this.searchByTags(obj);
   }
 
   objectTreeSearch() {

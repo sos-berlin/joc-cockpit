@@ -23,7 +23,7 @@
           <a (click)="setFilter('ALL')"
              class="primary-text-hover-color"
              translate>order.label.allOrders</a></span>
-      <a (click)="setFilter('ALL')" [innerHtml]="(snapshot.pending || 0) + (snapshot.inProgress || 0) + (snapshot.running || 0) + (snapshot.suspended || 0) + (snapshot.calling || 0)
+      <a (click)="setFilter('ALL')" [innerHtml]="(snapshot.pending || 0) + (snapshot.inProgress || 0) + (snapshot.running || 0) + (snapshot.suspended || 0)
             + (snapshot.waiting || 0) + (snapshot.scheduled || 0) + (snapshot.prompting || 0) + (snapshot.blocked || 0) + (snapshot.failed || 0)
               + (snapshot.terminated || 0)"
          [ngClass]="{'_600': state =='ALL'}"
