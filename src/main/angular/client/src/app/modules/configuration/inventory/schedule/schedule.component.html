@@ -1,8 +1,20 @@
-<ng-template #listVariableTemplate let-listVariables let-x="x" let-j="j">
+<ng-template #listVariableTemplate let-j="j" let-listVariables let-x="x">
   <div>
-    <div class="m-b-sm">{{'order.label.variableList' | translate}}:
-      <b>{{listVariables.name}}</b>
+    <div class="m-b-sm" style="display: flex; padding-right: 10px">{{'order.label.variableList' | translate}}:
+      <b style="padding-right: 10px">{{listVariables.name}}</b>
+      <div class="m-b-sm">
+        <a (click)="copyIndlArguments(j)" *ngIf="schedule.configuration.orderParameterisations?.length > 0"
+           nz-tooltip="{{'common.button.copyArguments' | translate}}"
+           style="padding-right: 10px">
+          <i class="fa fa-copy"></i>
+        </a>
+        <a (click)="handleIndlPaste(storedArguments[0])" *ngIf="storedArguments?.length > 0"
+           nz-tooltip="{{'common.button.paste' | translate}}">
+          <i class="fa fa-paste"></i>
+        </a>
+      </div>
     </div>
+
     <div *ngIf="listVariables.list" class="p-a-sm b-a m-b">
       <div class="form-group row m-b-0 m-l-12">
         <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
@@ -241,6 +253,7 @@
                   <div *ngIf="orderName.invalid && (orderName.dirty || orderName.touched)" class="text-danger help-block">
                     <div *ngIf="orderName.errors['invalidIdentifier']" translate>common.message.invalid</div>
                   </div>
+
                   <div [hidden]="schedule.configuration.orderParameterisations.length == 1"
                        class="pos-abt r-t-n-28">
                     <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
@@ -290,7 +303,24 @@
                   </label>
                 </div>
               </div>
-
+            <div *ngFor="let variable of variableSet.variables; let i = index" class="form-group row m-b-0">
+              <label *ngIf="i==0" class="_600 font14 p-l-12">
+                <span translate>order.label.variables</span>
+              </label>
+              <div *ngIf="i==0" class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm">
+                <a (click)="copyArguments()" *ngIf="schedule.configuration.orderParameterisations?.length > 0"
+                   [ngStyle]="{'right': storedArguments?.length > 0 ? '90px' : '42px'}" class="anchor-with-icon"
+                   nz-tooltip="{{'common.button.copyArguments' | translate}}"
+                   style="padding-right: 10px">
+                  <i class="fa fa-copy"></i>
+                </a>
+                <a (click)="handleIndlPaste(storedArguments[0])" *ngIf="storedArguments?.length > 0"
+                   class="anchor-with-icon "
+                   nz-tooltip="{{'common.button.paste' | translate}}" style="right: 66px;">
+                  <i class="fa fa-paste"></i>
+                </a>
+              </div>
+            </div>
               <div *ngFor="let variable of variableSet.variables; let i = index" class="form-group row m-b-0">
                 <div *ngIf="i==0" class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
                 <div *ngIf="i==0" class="col-md-6 col-lg-8 col-xl-9 m-b-sm" translate>common.label.value</div>

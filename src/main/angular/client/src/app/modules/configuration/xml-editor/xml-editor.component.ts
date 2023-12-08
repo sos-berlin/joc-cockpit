@@ -5915,14 +5915,26 @@ export class XmlEditorComponent {
   private scrollTree(id): void {
     const dom = $('#' + id);
     if (dom && dom.offset() && this.componentRef) {
-      if(this.componentRef.directiveRef.instance.lastScrollTop > dom.offset().top){
+      const containerHeight = this.componentRef.directiveRef.instance.containerHeight;
+      const scrollbarTop = this.componentRef.directiveRef.instance.lastScrollTop;
+      const scrollbarBottom = scrollbarTop + containerHeight + 200;
+      if (dom.offset().top <= scrollbarBottom) {
+        return;
+      }
+      if (this.componentRef.directiveRef.instance.lastScrollTop === 0) {
+        this.componentRef.directiveRef.scrollToY(dom.offset().top - 343, 500);
+      } else if (this.componentRef.directiveRef.instance.lastScrollTop > dom.offset().top) {
         this.componentRef.directiveRef.scrollToY(dom.offset().top, 0);
+        setTimeout(() => {
+          this.componentRef.directiveRef.scrollToY(dom.offset().top, 500);
+        }, 0)
       } else {
         this.componentRef.directiveRef.scrollToY(this.componentRef.directiveRef.instance.lastScrollTop, 0);
+        setTimeout(() => {
+          this.componentRef.directiveRef.scrollToY(dom.offset().top, 500);
+        }, 0)
       }
-      setTimeout(() => {
-        this.componentRef.directiveRef.scrollToY(dom.offset().top, 500);
-      }, 0)
+
     }
   }
 

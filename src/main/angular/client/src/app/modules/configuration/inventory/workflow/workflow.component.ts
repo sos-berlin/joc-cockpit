@@ -2945,7 +2945,7 @@ export class WorkflowComponent {
   lastModified: any = '';
   hasLicense: boolean;
   allowUndeclaredVariables: boolean;
-  isExpandVariable = true;;
+  isExpandVariable = true;
   isExpandReference = true;
   isExpandTag = true;
   isLocalChange: string;
@@ -4207,6 +4207,9 @@ export class WorkflowComponent {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, obj).subscribe({
       next: (res: any) => {
+        this.fetchWorkflowTags(res.path, () => {
+          this.autoExpandVariable(res.path);
+        });
         this.isLocalChange = '';
         this.lastModified = res.configurationDate;
         this.isReferencedBy = res.isReferencedBy;
@@ -4231,7 +4234,6 @@ export class WorkflowComponent {
           } else {
             res.configuration = {};
           }
-          this.fetchWorkflowTags(res.path);
           try {
             if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
               this.invalidMsg = 'workflow.message.emptyWorkflow';
@@ -4331,32 +4333,6 @@ export class WorkflowComponent {
     }
     this.updateOrderPreparation();
     this.fetchClipboard();
-  
-    let len = 0;
-    let len2 = 0;
-    this.variableDeclarations.parameters.forEach((variable) => {
-      len += 1;
-      if (variable.value.type == 'List') {
-        console.log(variable.value.listParameters.length);
-        len2 += variable.value.listParameters.length;
-        len2 = len2 + 1;
-      }
-    });
-    console.log(len, len * 30);
-    if (len > 0) {
-      let ht = $('#property-panel').height();
-      ht = ht - 280;
-
-      if(ht < (len2 * 30)){
-        //this.isExpandVariable = false;
-        this.variableDeclarations.parameters.forEach((variable) => {
-          variable.isCollpase = true;
-        });
-      }
-      if (ht < ((len + 1) * 30)) {
-        this.isExpandVariable = false;
-      }
-    }
   }
 
   private updateOrderPreparation(): void {
@@ -8612,7 +8588,6 @@ export class WorkflowComponent {
             obj.cell, 'label', self.selectedNode.newObj.label);
           graph.getModel().execute(editLabel);
         } finally {
-
           graph.getModel().endUpdate();
           if (!self.coreService.expertMode && self.hasLicense) {
             if (self.selectedNode.type === 'ForkList') {
@@ -11801,10 +11776,13 @@ export class WorkflowComponent {
     });
   }
 
-  private fetchWorkflowTags(path): void {
+  private fetchWorkflowTags(path, cb?): void {
     this.tags = [];
     this.coreService.post('inventory/workflow/tags', {path}).subscribe((res) => {
       this.tags = res.tags;
+      if (cb) {
+        cb();
+      }
       this.ref.detectChanges();
     });
   }
@@ -11813,16 +11791,80 @@ export class WorkflowComponent {
     this.dataService.reloadTree.next({addTag: this.data});
   }
 
-  expandCollapseVariable():  void{
+  expandCollapseVariable(): void {
     this.isExpandVariable = !this.isExpandVariable;
   }
 
-  expandCollapseReferences():  void{
+  expandCollapseReferences(): void {
     this.isExpandReference = !this.isExpandReference;
   }
 
-  expandCollapseTags():  void{
+  expandCollapseTags(): void {
     this.isExpandTag = !this.isExpandTag;
+  }
+
+  /**
+   * Function to auto expand the variable section
+   */
+  private autoExpandVariable(key): void {
+    if (this.workflowService.expandedProperties.has(key)) {
+      let data = this.workflowService.expandedProperties.get(key)
+      this.isExpandVariable = data.isExpandVariable;
+      this.isExpandReference = data.isExpandReference;
+      this.isExpandReference = data.isExpandReference;
+    } else {
+      let len = 0;
+      let len2 = 0;
+      this.isExpandVariable = true;
+      this.isExpandReference = true;
+      this.isExpandReference = true;
+      this.variableDeclarations.parameters.forEach((variable) => {
+        len += 1;
+        if (variable.value.type == 'List') {
+          len2 += variable.value.listParameters.length;
+          len2 = len2 + 1;
+        }
+      });
+
+      if (len > 0) {
+        let ht = $('#property-panel').height();
+        ht = ht - 320;
+        let sum = 0;
+        if (this.tags.length > 0) {
+          sum = sum + (this.tags.length * 16)
+        }
+
+        if (this.isReferencedBy?.fileOrderSources || this.isReferencedBy?.schedules || this.isReferencedBy?.workflows) {
+          sum = sum + 22;
+          if (this.isReferencedBy.fileOrderSources) {
+            sum = sum + (this.isReferencedBy.fileOrderSources * 12);
+          }
+          if (this.isReferencedBy.schedules) {
+            sum = sum + (this.isReferencedBy.schedules * 12);
+          }
+          if (this.isReferencedBy.workflows) {
+            sum = sum + (this.isReferencedBy.workflows * 12);
+          }
+        }
+        ht = ht - sum;
+        if (ht < ((len + len2) * 30) + sum) {
+          this.variableDeclarations.parameters.forEach((variable) => {
+            variable.isCollpase = true;
+          });
+        }
+        if (ht < ((len + 1) * 30)) {
+          this.isExpandVariable = false;
+        }
+      }
+      if (this.tags.length > 5 && !this.isExpandVariable && !this.isExpandReference) {
+        this.isExpandTag = false;
+      }
+      this.workflowService.expandedProperties.set(key, {
+        isExpandVariable: this.isExpandVariable,
+        isExpandReference: this.isExpandReference,
+        isExpandTag: this.isExpandTag
+      });
+    }
   }
 
 }
