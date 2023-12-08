@@ -16,6 +16,7 @@ declare const $: any;
 @Injectable()
 export class WorkflowService {
   preferences: any = {};
+  expandedProperties: any = new Map();
   theme = '';
   private jobPath = '';
 
@@ -2632,7 +2633,7 @@ export class WorkflowService {
     if (job.executable.TYPE === 'Java' || job.executable.TYPE === 'JavaScript') {
       job.executable.internalType = job.executable.TYPE === 'Java' ? 'Java' : 'JavaScript_Graal';
       job.executable.TYPE = 'InternalExecutable';
-    } 
+    }
     if (job.jobResourceNames && (job.jobResourceNames.length == 0 || isEmpty(job.jobResourceNames))) {
       delete job['jobResourceNames'];
     }

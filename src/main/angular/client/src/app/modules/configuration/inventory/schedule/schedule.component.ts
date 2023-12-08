@@ -44,6 +44,7 @@ export class ScheduleComponent {
   blockPositionList: any;
   lastModified: any = '';
   allowUndeclaredVariables: boolean;
+  storedArguments = [];
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -135,6 +136,57 @@ export class ScheduleComponent {
 
   openRuntimeEditor(): void {
     this.isVisible = true;
+  }
+
+  copyArguments(): void {
+    let newData = JSON.stringify(this.schedule.configuration.orderParameterisations);
+    let storedData = sessionStorage.getItem('$SOS$copiedSheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedSheduledArgument')) : [];
+    storedData = [newData];
+
+    // Update the stored data in sessionStorage
+    sessionStorage.setItem('$SOS$copiedSheduledArgument', JSON.stringify(storedData));
+    this.fetchClipboard();
+  }
+
+  copyIndlArguments(index): void {
+    let newData = JSON.stringify(this.schedule.configuration.orderParameterisations);
+    let storedData = sessionStorage.getItem('$SOS$copiedSheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedSheduledArgument')) : [];
+    storedData = [newData];
+
+    // Update the stored data in sessionStorage
+    sessionStorage.setItem('$SOS$copiedSheduledArgument', JSON.stringify(storedData));
+    this.fetchClipboard();
+  }
+
+  handleIndlPaste(data) {
+    if (!data || data.type) {
+      data = this.storedArguments[0];
+    }
+
+    if (data && typeof data == 'string') {
+      const clipboardDataArray = JSON.parse(data);
+      if (!Array.isArray(clipboardDataArray)) {
+        return;
+      }
+
+      clipboardDataArray.forEach(argu => {
+        const existingVariableIndex = this.schedule.configuration.orderParameterisations.findIndex(variable => variable.name === argu.name);
+        if (existingVariableIndex === -1) {
+          // Variable not found, add it to the end of the array
+          this.schedule.configuration.orderParameterisations.push(argu);
+        } else {
+          // Variable found, replace it at its original position
+          this.schedule.configuration.orderParameterisations.splice(existingVariableIndex, 1, argu);
+        }
+      });
+
+    }
+  }
+
+
+
+  fetchClipboard(): void {
+    this.storedArguments = sessionStorage.getItem('$SOS$copiedSheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedSheduledArgument')) : [];
   }
 
   closeCalendarView(): void {
