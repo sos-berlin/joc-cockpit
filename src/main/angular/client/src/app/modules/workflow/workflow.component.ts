@@ -1390,6 +1390,7 @@ export class WorkflowComponent {
   }
 
   selectTags(): void {
+    const temp = this.coreService.clone(this.coreService.selectedTags);
     this.modal.create({
       nzTitle: undefined,
       nzContent: CreateTagModalComponent,
@@ -1409,9 +1410,19 @@ export class WorkflowComponent {
           controllerId: this.schedulerIds.selected
         };
         this.coreService.selectedTags.forEach(tag => {
-          obj.tags.push(tag.name);
-          this.coreService.checkedTags.add(tag.name);
+          let flag = true;
+          for (let i = 0; i < temp.length; i++) {
+            if (tag.name == temp[i].name) {
+              temp.splice(i, 1);
+              flag = false;
+              break;
+            }
+          }
+          if (flag) {
+            this.coreService.checkedTags.add(tag.name);
+          }
         });
+        obj.tags = Array.from(this.coreService.checkedTags);
         this.searchByTags(obj);
       }
     });
@@ -1469,7 +1480,7 @@ export class WorkflowComponent {
     workflow.show = true;
     workflow.configuration = this.coreService.clone(workflow);
     setTimeout(() => {
-      this.workflowService.convertTryToRetry(workflow.configuration, null,  workflow.jobs, {count: 0, setObj});
+      this.workflowService.convertTryToRetry(workflow.configuration, null, workflow.jobs, {count: 0, setObj});
       this.updatePanelHeight();
     }, 0);
   }

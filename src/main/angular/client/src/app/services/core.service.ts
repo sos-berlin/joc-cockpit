@@ -3089,7 +3089,11 @@ export class CoreService {
         if (typeof sour.value == 'boolean') {
           sour.value = sour.value == true ? 1 : 0;
         } else if (typeof sour.value == 'string') {
-          sour.value = (sour.value.toLowerCase() == 'true' || sour.value.toLowerCase() == 'yes' || sour.value.toLowerCase() == 'on') ? 1 : 0;
+          if(sour.value) {
+            sour.value = (sour.value.toLowerCase() == 'true' || sour.value.toLowerCase() == 'yes' || sour.value.toLowerCase() == 'on') ? 1 : 0;
+          } else {
+            sour.value = null;
+          }
         }
       } else if (sour.type === 'Boolean') {
         if (typeof sour.value == 'string') {

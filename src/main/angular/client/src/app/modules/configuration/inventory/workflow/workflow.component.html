@@ -1298,9 +1298,9 @@
               <div class="col-md-3 col-lg-3 m-b-sm" translate>common.label.type</div>
               <div class="col-md-5 col-lg-5 m-b-sm" translate>common.label.value</div>
             </div>
-            <div (cdkDropListDropped)="drop($event)" cdkDropList>
+            <div id="declare-var" (cdkDropListDropped)="drop($event)" cdkDropList>
               <ng-container *ngFor="let variable of variableDeclarations.parameters; let i = index">
-                <div *ngIf="variable.value.type === 'List'" class="form-group row m-b-0 m-l-sm">
+                <div *ngIf="variable.value.type === 'List'" class="form-group row m-b-0 m-l-sm m-r-n-30">
                   <div class="col-md-12 m-b-sm" *ngIf="variable.value.type === 'List'">
                     <label>
                       <span class="p-r-xs" translate>workflow.label.children</span>:
@@ -1308,9 +1308,17 @@
                       <i (click)="variable.isCollpase = !variable.isCollpase" class="cursor fa fa-lg p-l-sm"
                          [ngClass]="!variable.isCollpase ? 'fa-angle-up' : 'fa-angle-down' "></i>
                     </label>
+                    <a *ngIf="variableDeclarations.parameters?.length > 0" (click)="copyIndlArguments(i)" class="anchor-with-icon pos-abt m-t-n-1" [ngStyle]="{'right': storedArguments?.length > 0 ? '50px' : '27px'}"
+                       nz-tooltip="{{'common.button.copyArguments' | translate}}">
+                      <i class="fa fa-copy"></i>
+                    </a>
+                    <a *ngIf="storedArguments?.length > 0" (click)="handlePaste(storedArguments[0])" class="anchor-with-icon pos-abt m-t-n-1"
+                       nz-tooltip="{{'common.button.paste' | translate}}" style="right: 27px;">
+                      <i class="fa fa-paste"></i>
+                    </a>
                   </div>
                 </div>
-                <div *ngIf="!variable.isCollpase || variable.value.type !== 'List'" cdkDrag class="form-group row m-b-0 m-l-sm">
+                <div *ngIf="!variable.isCollpase || variable.value.type !== 'List'" cdkDrag class="form-group row m-b-0 m-l-sm m-r-n-30">
                   <div cdkDragHandle class="pos-abt"
                        style="margin-left: -9px;font-size: 18px;margin-top: 2px;cursor: move">
                     <i aria-hidden="true" class="fa fa-bars"></i>
@@ -1407,8 +1415,8 @@
                     </div>
                     <div class="col-md-12" (cdkDropListDropped)="nestedDrop($event,variable)" cdkDropList>
                       <div *ngFor="let param of variable.value.listParameters; let j = index"
-                           [ngClass]="{'m-b-0': j !== variable.value.listParameters.length - 1}"
-                           class="form-group row p-r-0" cdkDrag>
+                           [ngClass]="{'b-b m-b-sm': j === variable.value.listParameters.length - 1}"
+                           class=" row p-r-0" cdkDrag>
                         <div (click)="addVariableToList(variable.value)"
                              *ngIf="j === variable.value.listParameters.length - 1"
                              class="pos-abt cursor" style="margin-top: 7px;left:-24px;font-size:15px;z-index: 999">

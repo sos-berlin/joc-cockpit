@@ -2701,6 +2701,7 @@ export class DailyPlanComponent {
   }
 
   selectTags(): void {
+    const temp = this.coreService.clone(this.coreService.selectedTags);
     this.modal.create({
       nzTitle: undefined,
       nzContent: CreateTagModalComponent,
@@ -2716,7 +2717,17 @@ export class DailyPlanComponent {
     }).afterClose.subscribe(res => {
       if (res) {
         this.coreService.selectedTags.forEach(tag => {
-          this.coreService.checkedTags.add(tag.name);
+          let flag = true;
+          for (let i = 0; i < temp.length; i++) {
+            if (tag.name == temp[i].name) {
+              temp.splice(i, 1);
+              flag = false;
+              break;
+            }
+          }
+          if (flag) {
+            this.coreService.checkedTags.add(tag.name);
+          }
         });
         this.loadOrderPlan();
       }

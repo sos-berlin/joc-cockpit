@@ -202,9 +202,11 @@ export class CreateTagModalComponent {
         auditLog: {}
       };
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-      if (!this.data.type && !this.isRename) {
-        this.storeFolderTags(obj);
-        return;
+      if (this.data) {
+        if (!this.data?.type && !this.isRename) {
+          this.storeFolderTags(obj);
+          return;
+        }
       }
 
       if (this.data) {
@@ -213,6 +215,8 @@ export class CreateTagModalComponent {
       } else if (this.isRename) {
         obj.name = this.modalData.tag.name;
         obj.newName = this.tag.name;
+      } else {
+        obj.tags = this.tags;
       }
       const URL = this.data ? 'inventory/workflow/tags/store' : this.isRename ? 'tag/rename' : 'tags/add'
       this.coreService.post(URL, obj).subscribe({
