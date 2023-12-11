@@ -14,7 +14,11 @@
         <form #myForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
           <div>
             <div class="form-group row">
-              <label class="col-sm-4 form-control-label" translate>runtime.label.repeatInterval</label>
+              <label class="col-sm-4 form-control-label" translate>
+                runtime.label.repeatInterval
+                <i nz-tooltip="{{'workflow.tooltip.warningMessageForShortIntervalSelection' | translate}}" *ngIf="period.frequency == 'repeat' && isRepeatIntervalShort"
+                   class="p-l-xs fa fa-info-circle"></i>
+              </label>
               <div class="col-sm-8">
                 <nz-select [(ngModel)]="period.frequency" name="frequency">
                   <nz-option [nzLabel]="'runtime.label.singleStart' | translate" nzValue="singleStart"></nz-option>

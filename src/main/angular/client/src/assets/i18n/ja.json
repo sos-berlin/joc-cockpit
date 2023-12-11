@@ -3549,6 +3549,7 @@
     "tooltip.removeJobTemplateReference": "参照ジョブテンプレート削除",
     "tooltip.singleClickToSelect": "命令をシングルクリックするとハイライトされ、プロパティエディタが開き、そのプロパティを更新することができます",
     "tooltip.doubleClickToSelect": "命令をダブルクリックするとハイライトされ、その上に新しい命令をドロップすると、新しい命令がその親として追加されます",
+    "tooltip.warningMessageForShortIntervalSelection": "Cyclic orders for short intervals can cause performance penalties. Consider switching to cyclic workflows using Cycle Instructions.",
     "findAndReplace": {
       "label.find": "検索",
       "label.replace": "置換",

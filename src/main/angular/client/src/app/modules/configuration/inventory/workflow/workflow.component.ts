@@ -2896,6 +2896,7 @@ export class WorkflowComponent {
   boardTree = [];
   scriptTree = [];
   storedArguments = [];
+  storedIndlArguments = [];
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
   dummyXml: any;
@@ -3566,9 +3567,44 @@ export class WorkflowComponent {
     this.fetchClipboard();
   }
 
+  copyIndlArguments(): void {
+    let storedData = sessionStorage.getItem('$SOS$copiedIndlDeclaredArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedIndlDeclaredArgument')) : [];
+    storedData.push(JSON.stringify(this.variableDeclarations.parameters));
+    if (storedData.length > 20) {
+      storedData.shift(); // Remove the first element (oldest)
+    }
+    sessionStorage.setItem('$SOS$copiedIndlDeclaredArgument', JSON.stringify(storedData));
+    this.coreService.showCopyMessage(this.message);
+    this.fetchIndlClipboard();
+  }
+
   handlePaste(data) {
     if (!data || data.type) {
       data = this.storedArguments[0];
+    }
+    if (data && typeof data == 'string') {
+      const clipboardDataArray = JSON.parse(data);
+      if (!isArray(clipboardDataArray)) {
+        return;
+      }
+      clipboardDataArray.forEach(argu => {
+        let flag = true;
+        for (let i in this.variableDeclarations.parameters) {
+          if (argu.name == this.variableDeclarations.parameters[i].name) {
+            flag = false;
+          }
+        }
+        if (flag) {
+          this.variableDeclarations.parameters.push(argu);
+        }
+      })
+      this.updateOtherProperties('variable');
+    }
+  }
+
+  handleIndlPaste(data) {
+    if (!data || data.type) {
+      data = this.storedIndlArguments[0];
     }
     if (data && typeof data == 'string') {
       const clipboardDataArray = JSON.parse(data);
@@ -3597,6 +3633,10 @@ export class WorkflowComponent {
 
   fetchClipboard(): void {
     this.storedArguments = sessionStorage.getItem('$SOS$copiedDeclaredArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedDeclaredArgument')) : [];
+  }
+
+  fetchIndlClipboard(): void {
+    this.storedIndlArguments = sessionStorage.getItem('$SOS$copiedIndlDeclaredArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedIndlDeclaredArgument')) : [];
   }
 
   fitToScreen(): void {
@@ -3779,7 +3819,7 @@ export class WorkflowComponent {
           delete job.parameters;
           delete job.jobName;
           request.configuration = job;
-          this.coreService.post('inventory/store', request).subscribe((res) => {
+          this.coreService.post('inventory/store', request).subscribe(() => {
             const obj = {
               update: [{objectType: InventoryObject.JOBTEMPLATE, path: result.path}],
               auditLog: {}
@@ -11849,7 +11889,7 @@ export class WorkflowComponent {
         ht = ht - sum;
         if (ht < ((len + len2) * 30) + sum) {
           this.variableDeclarations.parameters.forEach((variable) => {
-            variable.isCollpase = true;
+            variable.isCollapse = true;
           });
         }
         if (ht < ((len + 1) * 30)) {

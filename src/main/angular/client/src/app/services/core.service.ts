@@ -24,6 +24,7 @@ export class CoreService {
   dashboard: any = {};
   locales: any = [];
   expertMode: string | undefined | null;
+  scheduleExpandedProperties: any = new Map();
 
   logViewDetails = {
     historyId: '',
@@ -92,6 +93,16 @@ export class CoreService {
   }
 
   private init(): void {
+    this.selectedTags = [];
+    this.checkedTags = new Set();
+    this.scheduleExpandedProperties = new Map();
+    this.logViewDetails = {
+      historyId: '',
+      expandedAllLog: false,
+      expandedLogPanel: new Set(),
+      expandedAllTree: false,
+      expandedLogTree: []
+    };
     this.preferences = {
       isFirst: true,
       controllers: new Set()
