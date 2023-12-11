@@ -1090,7 +1090,7 @@ export class HistoryComponent {
   orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position'];
   taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position'];
   deploymentSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'state'];
-  submissionSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'state'];
+  submissionSearchableProperties = ['date', 'countSubmitted', 'countTotal'];
   yadeSearchableProperties = ['controllerId', 'profile', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
   isSubmissionLoading = false;

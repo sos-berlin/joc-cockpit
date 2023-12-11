@@ -1305,8 +1305,8 @@
                     <label>
                       <span class="p-r-xs" translate>workflow.label.children</span>:
                       {{variable.name}}
-                      <i (click)="variable.isCollpase = !variable.isCollpase" class="cursor fa fa-lg p-l-sm"
-                         [ngClass]="!variable.isCollpase ? 'fa-angle-up' : 'fa-angle-down' "></i>
+                      <i (click)="variable.isCollapse = !variable.isCollapse" class="cursor fa fa-lg p-l-sm"
+                         [ngClass]="!variable.isCollapse ? 'fa-angle-up' : 'fa-angle-down' "></i>
                     </label>
                     <a *ngIf="variableDeclarations.parameters?.length > 0" (click)="copyIndlArguments(i)" class="anchor-with-icon pos-abt m-t-n-1" [ngStyle]="{'right': storedArguments?.length > 0 ? '50px' : '27px'}"
                        nz-tooltip="{{'common.button.copyArguments' | translate}}">
@@ -1318,7 +1318,7 @@
                     </a>
                   </div>
                 </div>
-                <div *ngIf="!variable.isCollpase || variable.value.type !== 'List'" cdkDrag class="form-group row m-b-0 m-l-sm m-r-n-30">
+                <div *ngIf="!variable.isCollapse || variable.value.type !== 'List'" cdkDrag class="form-group row m-b-0 m-l-sm m-r-n-30">
                   <div cdkDragHandle class="pos-abt"
                        style="margin-left: -9px;font-size: 18px;margin-top: 2px;cursor: move">
                     <i aria-hidden="true" class="fa fa-bars"></i>
