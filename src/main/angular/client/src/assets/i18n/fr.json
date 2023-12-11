@@ -3549,7 +3549,7 @@
     "tooltip.removeJobTemplateReference": "Supprimer la référence au Modèle de Tâche",
     "tooltip.singleClickToSelect": "Un simple clic met en évidence une instruction et permet de modifier ses propriétés.",
     "tooltip.doubleClickToSelect": "Un double-clic met une instruction en évidence. Si une nouvelle instruction est déposée dessus, elle sera ajoutée en tant que parent.",
-    "tooltip.warningMessageForShortIntervalSelection": "Cyclic orders for short intervals can cause performance penalties. Consider switching to cyclic workflows using Cycle Instructions.",
+    "tooltip.warningMessageForShortIntervalSelection": "Les commandes cycliques pour de courts intervalles de répétition peuvent entraîner des pénalités de performance. Envisagez de passer à des flux de travail cycliques à l'aide de l'instruction de cycle.",
     "findAndReplace": {
       "label.find": "Rechercher",
       "label.replace": "Remplacer",

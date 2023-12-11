@@ -3549,7 +3549,7 @@
     "tooltip.removeJobTemplateReference": "Remove Job Template Reference",
     "tooltip.singleClickToSelect": "Single-clicking highlights an instruction and makes its properties available for editing.",
     "tooltip.doubleClickToSelect": "Double-clicking highlights an instruction. If a new instruction is dropped onto it then the new instruction will be added as its parent.",
-    "tooltip.warningMessageForShortIntervalSelection": "Cyclic orders for short intervals can cause performance penalties. Consider switching to cyclic workflows using Cycle Instructions.",
+    "tooltip.warningMessageForShortIntervalSelection": "Cyclic orders for short repeat intervals can cause performance penalties. Consider switching to cyclic workflows using Cycle Instructions.",
     "findAndReplace": {
       "label.find": "Search",
       "label.replace": "Replace",

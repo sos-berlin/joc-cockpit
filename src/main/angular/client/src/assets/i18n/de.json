@@ -3549,7 +3549,7 @@
     "tooltip.removeJobTemplateReference": "Verweis auf Job-Vorlage entfernen",
     "tooltip.singleClickToSelect": "Einfaches Klicken markiert die Anweisung und lässt das Editieren der Eigenschaften zu.",
     "tooltip.doubleClickToSelect": "Doppeltes Klicken markiert die Anweisung. Wird eine neue Anweisung auf dieser Anweisung abgelegt, dann umfasst die neue Anweisung die vorhandene.",
-    "tooltip.warningMessageForShortIntervalSelection": "Cyclic orders for short intervals can cause performance penalties. Consider switching to cyclic workflows using Cycle Instructions.",
+    "tooltip.warningMessageForShortIntervalSelection": "Zyklische Aufträge für kurze Wiederholungsintervalle können zu Leistungseinbußen führen. Erwägen Sie den Wechsel zu zyklischen Arbeitsabläufen unter Verwendung von Cycle Anweisungen.",
     "findAndReplace": {
       "label.find": "Suchen",
       "label.replace": "Ersetzen",
