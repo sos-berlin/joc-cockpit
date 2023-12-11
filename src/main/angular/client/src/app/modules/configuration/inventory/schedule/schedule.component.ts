@@ -45,6 +45,7 @@ export class ScheduleComponent {
   lastModified: any = '';
   allowUndeclaredVariables: boolean;
   storedArguments = [];
+  storedIndlArguments = [];
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -107,6 +108,7 @@ export class ScheduleComponent {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
+    this.storeExpandedProperties();
     if (this.schedule.name) {
       this.saveJSON();
     }
@@ -138,55 +140,110 @@ export class ScheduleComponent {
     this.isVisible = true;
   }
 
-  copyArguments(): void {
-    let newData = JSON.stringify(this.schedule.configuration.orderParameterisations);
-    let storedData = sessionStorage.getItem('$SOS$copiedSheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedSheduledArgument')) : [];
+  copyArguments(index: number): void {
+    let newData = JSON.stringify(this.schedule.configuration.orderParameterisations[index]);
+    let storedData = sessionStorage.getItem('$SOS$copiedScheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedScheduledArgument')) : [];
     storedData = [newData];
-
-    // Update the stored data in sessionStorage
-    sessionStorage.setItem('$SOS$copiedSheduledArgument', JSON.stringify(storedData));
+    sessionStorage.setItem('$SOS$copiedScheduledArgument', JSON.stringify(storedData));
     this.fetchClipboard();
+
   }
 
-  copyIndlArguments(index): void {
-    let newData = JSON.stringify(this.schedule.configuration.orderParameterisations);
-    let storedData = sessionStorage.getItem('$SOS$copiedSheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedSheduledArgument')) : [];
-    storedData = [newData];
-
-    // Update the stored data in sessionStorage
-    sessionStorage.setItem('$SOS$copiedSheduledArgument', JSON.stringify(storedData));
-    this.fetchClipboard();
-  }
-
-  handleIndlPaste(data) {
+  handlePaste(data: any, index: number): void {
     if (!data || data.type) {
       data = this.storedArguments[0];
     }
 
-    if (data && typeof data == 'string') {
-      const clipboardDataArray = JSON.parse(data);
-      if (!Array.isArray(clipboardDataArray)) {
-        return;
-      }
+    if (data && typeof data === 'string') {
+      const clipboardData = JSON.parse(data);
 
-      clipboardDataArray.forEach(argu => {
-        const existingVariableIndex = this.schedule.configuration.orderParameterisations.findIndex(variable => variable.name === argu.name);
-        if (existingVariableIndex === -1) {
-          // Variable not found, add it to the end of the array
-          this.schedule.configuration.orderParameterisations.push(argu);
+      if (Array.isArray(clipboardData)) {
+        clipboardData.forEach(argu => {
+          const pasteIndex = index;
+          const existingIndex = this.schedule.configuration.orderParameterisations.findIndex(
+            scheduleArgu => scheduleArgu.name === argu.name
+          );
+
+          if (existingIndex !== -1) {
+            this.schedule.configuration.orderParameterisations[pasteIndex] = argu;
+          } else {
+            this.schedule.configuration.orderParameterisations.splice(pasteIndex, 0, argu);
+          }
+        });
+      } else if (typeof clipboardData === 'object') {
+        const pasteIndex = index; // Specify the index where you want to paste
+
+        const existingIndex = this.schedule.configuration.orderParameterisations.findIndex(
+          scheduleArgu => scheduleArgu.name === clipboardData.name
+        );
+
+        if (existingIndex !== -1) {
+          this.schedule.configuration.orderParameterisations[pasteIndex] = clipboardData;
         } else {
-          // Variable found, replace it at its original position
-          this.schedule.configuration.orderParameterisations.splice(existingVariableIndex, 1, argu);
+          this.schedule.configuration.orderParameterisations.splice(pasteIndex, 0, clipboardData);
         }
-      });
+      }
+    }
+  }
 
+  copyIndlArguments(index): void {
+    let newData = JSON.stringify(this.schedule.configuration.orderParameterisations[index]);
+
+    let storedData = sessionStorage.getItem('$SOS$copiedScheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedScheduledArgument')) : [];
+    storedData = [newData];
+
+    sessionStorage.setItem('$SOS$copiedIndlSheduledArgument', JSON.stringify(storedData));
+    this.fetchIndlClipboard();
+  }
+
+  handleIndlPaste(data: any, index: number): void {
+
+
+    if (!data || data.type) {
+      data = this.storedIndlArguments[0];
+    }
+
+    if (data && typeof data === 'string') {
+    
+      const clipboardData = JSON.parse(data);
+
+      if (Array.isArray(clipboardData)) {
+       
+        clipboardData.forEach(argu => {
+          const pasteIndex = index;
+          const existingIndex = this.schedule.configuration.orderParameterisations.findIndex(
+            scheduleArgu => scheduleArgu.name === argu.name
+          );
+
+          if (existingIndex !== -1) {
+            this.schedule.configuration.orderParameterisations[pasteIndex] = argu;
+          } else {
+            this.schedule.configuration.orderParameterisations.splice(pasteIndex, 0, argu);
+          }
+        });
+      } else if (typeof clipboardData === 'object') {
+        const pasteIndex = index;
+
+        const existingIndex = this.schedule.configuration.orderParameterisations.findIndex(
+          scheduleArgu => scheduleArgu.name === clipboardData.name
+        );
+
+        if (existingIndex !== -1) {
+          this.schedule.configuration.orderParameterisations[pasteIndex] = clipboardData;
+        } else {
+          this.schedule.configuration.orderParameterisations.splice(pasteIndex, 0, clipboardData);
+        }
+      }
     }
   }
 
 
-
   fetchClipboard(): void {
-    this.storedArguments = sessionStorage.getItem('$SOS$copiedSheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedSheduledArgument')) : [];
+    this.storedArguments = sessionStorage.getItem('$SOS$copiedScheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedScheduledArgument')) : [];
+  }
+
+  fetchIndlClipboard(): void {
+    this.storedIndlArguments = sessionStorage.getItem('$SOS$copiedIndlSheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedIndlSheduledArgument')) : [];
   }
 
   closeCalendarView(): void {
@@ -308,7 +365,7 @@ export class ScheduleComponent {
   }
 
   addVariables(isNew = false, variableSet): void {
-    variableSet.variableList.forEach(variable => {
+    variableSet.variableList.forEach((variable, index) => {
       if (!variable.isSelected) {
         variable.isSelected = true;
         const param: any = {
@@ -318,8 +375,9 @@ export class ScheduleComponent {
         if (isNew) {
           param.isTextField = true;
         }
-        variableSet.variables.push(param);
-        this.checkVariableType(param)
+        //push the param to the variables array in specific index
+        variableSet.variables.splice(index, 0, param);
+        this.checkVariableType(variableSet.variables, index);
       }
     });
     this.saveJSON();
@@ -719,44 +777,61 @@ export class ScheduleComponent {
         }
       }
     }
-
+    this.autoExpandVariable(this.schedule.path);
   }
 
-  checkVariableType(argument): void {
-    const obj = this.workflow.orderPreparation.parameters[argument.name];
+  checkVariableType(list, index: number): void {
+    const obj = this.workflow.orderPreparation.parameters[list[index].name];
     if (obj) {
-      argument.type = obj.type;
-      argument.facet = obj.facet;
-      argument.message = obj.message;
+      let indexOfObject = -1, _index = 0;
+      for (let i in this.workflow.orderPreparation.parameters) {
+        if (i === list[index].name) {
+          indexOfObject = _index;
+          break;
+        }
+        ++_index;
+      }
+
+      list[index].type = obj.type;
+      list[index].facet = obj.facet;
+      list[index].message = obj.message;
       if (!obj.default && obj.default !== false && obj.default !== 0) {
-        delete argument.value;
-        argument.isRequired = true;
+        delete list[index].value;
+        list[index].isRequired = true;
       } else {
         if (obj.type === 'String') {
           this.coreService.removeSlashToString(obj, 'default');
-          argument.value = obj.default;
+          list[index].value = obj.default;
         } else if (obj.type === 'Boolean') {
-          argument.value = (obj.default === true || obj.default === 'true');
+          list[index].value = (obj.default === true || obj.default === 'true');
         } else {
-          argument.value = obj.default;
+          list[index].value = obj.default;
         }
       }
+
       if (obj.list) {
-        argument.list = [];
+        list[index].list = [];
         let isFound = false;
         obj.list.forEach((item) => {
           let obj = {name: item};
-          if (argument.value === item) {
+          if (list[index].value === item) {
             isFound = true;
           }
           this.coreService.removeSlashToString(obj, 'name');
-          argument.list.push(obj);
+          list[index].list.push(obj);
         });
         if (!isFound) {
-          argument.list.push({name: argument.value, default: true});
+          list[index].list.push({name: list[index].value, default: true});
         }
       }
+      if (index !== indexOfObject && indexOfObject !== -1) {
+        // Remove the object from the current index
+        const [removedObject] = list.splice(index, 1);
+        // Insert the removed object at the new index
+        list.splice(indexOfObject, 0, removedObject);
+      }
     }
+
     this.updateSelectItems();
   }
 
@@ -1212,10 +1287,28 @@ export class ScheduleComponent {
     });
   }
 
+  private storeExpandedProperties(): void {
+    if(this.schedule.configuration?.orderParameterisations){
+      let data: any = {};
+      this.schedule.configuration.orderParameterisations.forEach((variable, index) => {
+        data[index] = {
+          isCollapseVariable: variable.isCollapseVariable
+        };
+        variable.variables.forEach((item) => {
+          if (item.type === 'List') {
+            data[index][item.name] = {isCollapse: item.isCollapse};
+          }
+        });
+      });
+      this.coreService.scheduleExpandedProperties.set(this.schedule.path, data);
+    }
+  }
+
   private getObject(): void {
     if (this.workflowTree.length === 0) {
       this.getWorkflowTree();
     }
+    this.storeExpandedProperties();
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, {
       path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
@@ -1368,5 +1461,68 @@ export class ScheduleComponent {
       }
     }
     this.ref.detectChanges();
+  }
+
+  /** Auto expand variables */
+
+  /**
+   * Function to auto expand the variable section
+   */
+  private autoExpandVariable(key): void {
+    if (this.coreService.scheduleExpandedProperties.has(key)) {
+      let data = this.coreService.scheduleExpandedProperties.get(key);
+      this.schedule.configuration.orderParameterisations.forEach((variable, index) => {
+        variable.variables.forEach((item) => {
+          if (item.type === 'List') {
+            if (data[index.toString()][item.name].isCollapse) {
+              item.isCollapse = true;
+            }
+          }
+        });
+        if (data[index.toString()].isCollapseVariable) {
+          variable.isCollapseVariable = true;
+        }
+      });
+    } else {
+      let len = 0;
+      let len2 = 0;
+      this.schedule.configuration.orderParameterisations.forEach((variable) => {
+        variable.variables.forEach((item) => {
+          len += 1;
+          if (item.type === 'List') {
+            if (this.schedule.configuration.orderParameterisations.length > 1) {
+              item.isCollapse = true;
+            } else {
+              len2 += item.list.length;
+              len2 = len2 + 1;
+            }
+          }
+        });
+        if (this.schedule.configuration.orderParameterisations.length > 1) {
+          variable.isCollapseVariable = true;
+        }
+      });
+
+      if (len > 0) {
+        const clientHeight = 480;
+        // get the top position of the right panel
+        const top = document.getElementById('rightPanel').offsetTop;
+        const height = document.body.clientHeight - (clientHeight + top);
+        if (height < ((len + len2) * 30) + 16) {
+          this.schedule.configuration.orderParameterisations.forEach((variable) => {
+            variable.variables.forEach((item) => {
+              if (item.type === 'List') {
+                item.isCollapse = true;
+              }
+            });
+          });
+        }
+        if (height < ((len + 1) * 30) && this.schedule.configuration.orderParameterisations.length == 1) {
+          this.schedule.configuration.orderParameterisations.forEach((variable) => {
+            variable.isCollapseVariable = true;
+          });
+        }
+      }
+    }
   }
 }
