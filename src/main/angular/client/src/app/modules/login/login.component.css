@@ -1,33 +1,49 @@
-.m-r-165{
+.m-r-165 {
   margin-right: 165px
 }
-.top-50{
+
+.top-50 {
   top: 50px;
 }
-.min-ht{
+
+.min-ht {
   min-height: 80px;
 }
-.logo-ht{
+
+.logo-ht {
   height: 126px;
   width: auto;
 }
-.m-t-72{
+
+.m-t-72 {
   margin-top: 72px
 }
+
 .horz-line-text {
   display: flex;
   flex-direction: row;
   margin: 4px 4px 12px;
 }
-.horz-line-text:before, .horz-line-text:after{
+
+.horz-line-text:before, .horz-line-text:after {
   content: "";
   flex: 1 1;
   border-bottom: 1px solid;
   margin: auto;
 }
+
 .horz-line-text:before {
   margin-right: 10px
 }
+
 .horz-line-text:after {
   margin-left: 10px
+}
+
+.login-pswd-hide-icon {
+  position: absolute;
+  margin-top: 11px;
+  right: 14px;
+  cursor: pointer;
+  z-index: 99;
 }

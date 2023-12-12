@@ -58,7 +58,10 @@
             </div>
             <div *ngIf="!showRegister && !showLogin" class="md-form-group">
               <input [(ngModel)]="user.password" autocomplete="off" class="md-input" id="password" name="password"
-                     type="password">
+                     type="{{!passwordField ? 'password' : 'text'}}">
+              <i (click)="passwordField = !passwordField"
+                 [ngClass]="!passwordField ? 'fa-eye' : 'fa-eye-slash'"
+                 class="fa login-pswd-hide-icon"></i>
               <label class="font14" for="password"> {{'login.label.password' | translate}}</label>
             </div>
             <div *ngIf="defaultSetting.enableRememberMe && !showRegister && !showLogin" class="m-b-md">

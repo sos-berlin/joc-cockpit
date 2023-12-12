@@ -699,7 +699,7 @@ export class PeriodComponent {
   get isRepeatIntervalShort(): boolean {
     if(this.period?.period?.repeat){
       const [hours, minutes, seconds] = this.period.period.repeat.split(':').map(Number);
-      return (hours * 3600 + minutes * 60 + seconds) < 1800;
+      return (hours * 3600 + minutes * 60 + seconds) <= 1800;
     }
     return false;
   }

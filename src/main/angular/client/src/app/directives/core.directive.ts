@@ -2,11 +2,12 @@ import {
   AfterViewInit,
   Directive,
   ElementRef,
+  EventEmitter,
   forwardRef,
   HostListener,
   Input,
   OnChanges,
-  Output, EventEmitter
+  Output
 } from '@angular/core';
 import {AbstractControl, NG_VALIDATORS, NgModel, ValidationErrors, Validator} from '@angular/forms';
 import {SaveService} from '../services/save.service';
@@ -18,28 +19,48 @@ declare const $: any;
   providers: [NgModel]
 })
 export class TimeValidatorDirective {
+  isEnter = false;
+  isBackslash = false;
 
   constructor(private model: NgModel) {
   }
 
+  @HostListener('keydown', ['$event'])
+  onKeyPress(event): void {
+    if (event.key === 'Enter' || event.which === 13) {
+      this.isEnter = true;
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    if (event.key === 'Backspace' || event.which === 8) {
+      this.isBackslash = true;
+    }
+  }
+
   @HostListener('input', ['$event.target'])
   onInputChange(target): void {
-    if (target.value) {
-      if (target.value.length === 2 && /^([0-2][0-9])?$/i.test(target.value)) {
-        if (target.value >= 24) {
-          this.model.valueAccessor.writeValue('24:00:00');
-        } else {
+    if (this.isEnter || this.isBackslash) {
+      this.isEnter = false;
+      this.isBackslash = false;
+      return;
+    } else {
+      if (target.value) {
+        if (target.value.length === 2 && /^([0-2][0-9])?$/i.test(target.value)) {
+          if (target.value >= 24) {
+            this.model.valueAccessor.writeValue('24:00:00');
+          } else {
+            this.model.valueAccessor.writeValue(target.value + ':');
+          }
+        } else if (target.value.length === 5 && /^([0-2][0-9]):([0-5][0-9])?$/i.test(target.value)) {
           this.model.valueAccessor.writeValue(target.value + ':');
-        }
-      } else if (target.value.length === 5 && /^([0-2][0-9]):([0-5][0-9])?$/i.test(target.value)) {
-        this.model.valueAccessor.writeValue(target.value + ':');
-      } else {
-        if (target.value.length > 1 && target.value.length < 3 && !(/^([0-2][0-9])?$/i.test(target.value))) {
-          this.model.valueAccessor.writeValue('');
-        } else if (target.value.length === 5 && !(/^([0-2][0-9]):([0-5][0-9])?$/i.test(target.value))) {
-          this.model.valueAccessor.writeValue(target.value.substring(0, 3));
-        } else if (target.value.length === 8 && !(/^([0-2][0-9]):([0-5][0-9]):([0-5][0-9])?$/i.test(target.value))) {
-          this.model.valueAccessor.writeValue(target.value.substring(0, 6) + '00');
+        } else {
+          if (target.value.length > 1 && target.value.length < 3 && !(/^([0-2][0-9])?$/i.test(target.value))) {
+            this.model.valueAccessor.writeValue('');
+          } else if (target.value.length === 5 && !(/^([0-2][0-9]):([0-5][0-9])?$/i.test(target.value))) {
+            this.model.valueAccessor.writeValue(target.value.substring(0, 3));
+          } else if (target.value.length === 8 && !(/^([0-2][0-9]):([0-5][0-9]):([0-5][0-9])?$/i.test(target.value))) {
+            this.model.valueAccessor.writeValue(target.value.substring(0, 6) + '00');
+          }
         }
       }
     }
@@ -519,7 +540,7 @@ export class ResizableDirective {
             const wt = x.size.width;
             const transitionCSS = {transition: 'none'};
             $('#outlineContainer').css({...transitionCSS, right: wt + 10 + 'px'});
-            $('.property-panel').css({ width: wt + 'px'});
+            $('.property-panel').css({width: wt + 'px'});
             $('.sidebar-close').css({...transitionCSS, right: wt + 'px'});
             $('.graph-container').css({...transitionCSS, 'margin-right': wt + 'px'});
             $('.toolbar').css({...transitionCSS, 'margin-right': (wt - 12) + 'px'});
@@ -537,7 +558,7 @@ export class ResizableDirective {
           resize: (e, x) => {
             const wt = x.size.width;
             const transitionCSS = {transition: 'none'};
-            $('.property-panel').css({ width: wt + 'px'});
+            $('.property-panel').css({width: wt + 'px'});
             $('#log-body').css({...transitionCSS, 'margin-right': wt + 'px'});
             $('.sidebar-close').css({...transitionCSS, right: wt + 'px'});
             localStorage['logPanelWidth'] = wt;
@@ -548,7 +569,7 @@ export class ResizableDirective {
       dom = $('#' + this.el.nativeElement.attributes.id.value);
       if (dom) {
         if (this.el.nativeElement.attributes.class?.value.match('resource')) {
-           dom.css('top', '191px');
+          dom.css('top', '191px');
         }
         if (this.sideView && this.sideView.width) {
           dom.css('width', this.sideView.width + 'px');
@@ -699,8 +720,42 @@ export class MaximumDirective {
 export class TimeValidatorReqexDirective implements Validator {
 
   regex = /^(?:(\d+)h\s*,?\s*)?(?:(\d+)m\s*,?\s*)?(?:(\d+)s)?$/;
+  isEnter = false;
+  isBackslash = false;
 
   @Output() timeChanged = new EventEmitter<string>();
+
+
+  @HostListener('keydown', ['$event'])
+  onKeyPress(event): void {
+    if (event.key === 'Enter' || event.which === 13) {
+      this.isEnter = true;
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    if (event.key === 'Backspace' || event.which === 8) {
+      this.isBackslash = true;
+    }
+  }
+
+  @HostListener('input', ['$event.target'])
+  onInputChange(target): void {
+    if (this.isEnter || this.isBackslash) {
+      this.isEnter = false;
+      this.isBackslash = false;
+      return;
+    } else {
+      if (target.value) {
+        if (target.value.length === 2 && /^([0-2][0-9])?$/i.test(target.value)) {
+          if (target.value <= 24) {
+            this.timeChanged.emit(target.value + ':');
+          }
+        } else if (target.value.length === 5 && /^([0-2][0-9]):([0-5][0-9])?$/i.test(target.value)) {
+          this.timeChanged.emit(target.value + ':');
+        }
+      }
+    }
+  }
 
   @HostListener('focusout', ['$event.target'])
   onFocusout(target): void {
