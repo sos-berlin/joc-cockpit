@@ -171,57 +171,6 @@ export class ScheduleComponent {
           }
         });
       } else if (typeof clipboardData === 'object') {
-        const pasteIndex = index; // Specify the index where you want to paste
-
-        const existingIndex = this.schedule.configuration.orderParameterisations.findIndex(
-          scheduleArgu => scheduleArgu.name === clipboardData.name
-        );
-
-        if (existingIndex !== -1) {
-          this.schedule.configuration.orderParameterisations[pasteIndex] = clipboardData;
-        } else {
-          this.schedule.configuration.orderParameterisations.splice(pasteIndex, 0, clipboardData);
-        }
-      }
-    }
-  }
-
-  copyIndlArguments(index): void {
-    let newData = JSON.stringify(this.schedule.configuration.orderParameterisations[index]);
-
-    let storedData = sessionStorage.getItem('$SOS$copiedScheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedScheduledArgument')) : [];
-    storedData = [newData];
-
-    sessionStorage.setItem('$SOS$copiedIndlSheduledArgument', JSON.stringify(storedData));
-    this.fetchIndlClipboard();
-  }
-
-  handleIndlPaste(data: any, index: number): void {
-
-
-    if (!data || data.type) {
-      data = this.storedIndlArguments[0];
-    }
-
-    if (data && typeof data === 'string') {
-    
-      const clipboardData = JSON.parse(data);
-
-      if (Array.isArray(clipboardData)) {
-       
-        clipboardData.forEach(argu => {
-          const pasteIndex = index;
-          const existingIndex = this.schedule.configuration.orderParameterisations.findIndex(
-            scheduleArgu => scheduleArgu.name === argu.name
-          );
-
-          if (existingIndex !== -1) {
-            this.schedule.configuration.orderParameterisations[pasteIndex] = argu;
-          } else {
-            this.schedule.configuration.orderParameterisations.splice(pasteIndex, 0, argu);
-          }
-        });
-      } else if (typeof clipboardData === 'object') {
         const pasteIndex = index;
 
         const existingIndex = this.schedule.configuration.orderParameterisations.findIndex(
@@ -237,6 +186,44 @@ export class ScheduleComponent {
     }
   }
 
+   copyIndlArguments(index1, index2): void {
+    let newData = JSON.stringify(this.schedule.configuration.orderParameterisations[index1].variables[index2]);
+
+    let storedData = sessionStorage.getItem('$SOS$copiedScheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedScheduledArgument')) : [];
+    storedData = [newData];
+
+    sessionStorage.setItem('$SOS$copiedIndlSheduledArgument', JSON.stringify(storedData));
+    this.fetchIndlClipboard();
+  }
+
+  handleIndlPaste(data: any, index1: number, index2: number): void {
+
+    if (!data || data.type) {
+      data = this.storedIndlArguments[0];
+    }
+
+    if (data && typeof data === 'string') {
+      const clipboardData = JSON.parse(data);
+      if (typeof clipboardData === 'object') {
+
+        const existingParameter = this.schedule.configuration.orderParameterisations[index1].variables.find(
+          scheduleArgu => scheduleArgu.name === clipboardData.name
+        );
+
+        if (existingParameter && existingParameter.actualList && clipboardData.actualList) {
+          existingParameter.actualList = clipboardData.actualList;
+        }
+      }
+    }
+  }
+
+  getStoredIndlArgumentsName(): string | undefined {
+    if (this.storedIndlArguments?.length > 0) {
+      const parsedArguments = JSON.parse(this.storedIndlArguments[0]);
+      return parsedArguments?.name;
+    }
+    return undefined;
+  }
 
   fetchClipboard(): void {
     this.storedArguments = sessionStorage.getItem('$SOS$copiedScheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedScheduledArgument')) : [];

@@ -1959,6 +1959,67 @@ export class CoreService {
       string.slice(1);
   }
 
+  private checkParentNode(lastPos, data, item, nodes): any {
+    let parentNode: any;
+    if (lastPos == 'try+0:0') {
+      parentNode = {
+        title: 'Try',
+        key: 'try' + item.orderId + item.logEvent + item.position,
+        name: '',
+        logLevel: item.logLevel,
+        label: item.label,
+        position: item.position.substring(0, item.position.lastIndexOf(':')),
+        isLeaf: false,
+        count: item.count,
+        logEvent: item.logEvent,
+        orderId: item.orderId,
+        children: []
+      };
+      if (item.logEvent === 'OrderRetrying') {
+        data.title = 'Retry';
+      }
+      for (let x in nodes) {
+        if (nodes[x].title == parentNode.title && nodes[x].name == parentNode.name && nodes[x].position == parentNode.position && nodes[x].orderId == parentNode.orderId) {
+          parentNode = null;
+          break;
+        }
+      }
+    } else if (lastPos == 'catch+0:0' && item.logEvent == 'OrderCaught') {
+      data = {
+        title: 'Catch',
+        key: 'catch' + item.orderId + item.logEvent + item.position,
+        name: '',
+        logLevel: item.logLevel,
+        label: item.label,
+        position: item.position.substring(0, item.position.lastIndexOf(':')),
+        isLeaf: false,
+        count: item.count,
+        logEvent: item.logEvent,
+        orderId: item.orderId,
+        children: []
+      };
+    } else {
+      let text = lastPos.split(':')[0];
+      if (lastPos.split(':')[1] === '0') {
+        parentNode = {
+          title: this.upperFLetter(text),
+          key: text + item.orderId + item.logEvent + item.position,
+          name: '',
+          logLevel: item.logLevel,
+          position: item.position,
+          position1: item.position.substring(0, item.position.lastIndexOf(':')),
+          isLeaf: false,
+          count: item.count,
+          logEvent: item.logEvent,
+          orderId: item.orderId,
+          children: []
+        };
+      }
+    }
+
+    return parentNode;
+  }
+
   createTreeStructure(mainObj: any): any {
     let nodes: any = [];
     mainObj.treeStructure.forEach((item: any) => {
@@ -1982,16 +2043,17 @@ export class CoreService {
       if (item.label) {
         data.label = item.label;
       }
-
       let parentNode: any;
       let lastPos;
       if (item.logEvent === 'OrderForked') {
+        let _tempArr = item.position.split('/');
+        lastPos = _tempArr[_tempArr.length - 1];
+        parentNode = this.checkParentNode(lastPos, data, item, nodes);
         data.title = 'Fork';
       } else if (item.logEvent === 'OrderJoined') {
         data.title = 'Join';
         data.isLeaf = true;
         delete data.children;
-
         let _tempArr = item.position.split('/');
         _tempArr.splice(_tempArr.length - 1, 1)
         let pos = _tempArr.join('/');
@@ -2003,7 +2065,12 @@ export class CoreService {
         let _tempArr = item.position.split('/');
         lastPos = _tempArr[_tempArr.length - 1];
         if (lastPos) {
-          if (lastPos.match(/branch/)) {
+          // write a regex to check if string has fork+ and some text after tin it
+
+
+
+
+          if (lastPos.match(/branch/) || /fork\+.+/g.test(lastPos)) {
             if (item.expectNotices || item.postNotice || item.consumeNotices
               || item.moved || item.attached || item.cycle || item.question) {
               data.name = item.logEvent;
@@ -2012,68 +2079,14 @@ export class CoreService {
             }
             data.title = data.name;
           } else {
-            if (lastPos == 'try+0:0') {
-              parentNode = {
-                title: 'Try',
-                key: 'try' + item.orderId + item.logEvent + item.position,
-                name: '',
-                logLevel: item.logLevel,
-                label: item.label,
-                position: item.position.substring(0, item.position.lastIndexOf(':')),
-                isLeaf: false,
-                count: item.count,
-                logEvent: item.logEvent,
-                orderId: item.orderId,
-                children: []
-              };
-              if (item.logEvent === 'OrderRetrying') {
-                data.title = 'Retry';
-              }
-              for (let x in nodes) {
-                if (nodes[x].title == parentNode.title && nodes[x].name == parentNode.name && nodes[x].position == parentNode.position && nodes[x].orderId == parentNode.orderId) {
-                  parentNode = null;
-                  break;
-                }
-              }
-            } else if (lastPos == 'catch+0:0' && item.logEvent == 'OrderCaught') {
-              data = {
-                title: 'Catch',
-                key: 'catch' + item.orderId + item.logEvent + item.position,
-                name: '',
-                logLevel: item.logLevel,
-                label: item.label,
-                position: item.position.substring(0, item.position.lastIndexOf(':')),
-                isLeaf: false,
-                count: item.count,
-                logEvent: item.logEvent,
-                orderId: item.orderId,
-                children: []
-              };
-            } else {
-              let text = lastPos.split(':')[0];
-              if (lastPos.split(':')[1] === '0') {
-                parentNode = {
-                  title: this.upperFLetter(text),
-                  key: text + item.orderId + item.logEvent + item.position,
-                  name: '',
-                  logLevel: item.logLevel,
-                  position: item.position,
-                  position1: item.position.substring(0, item.position.lastIndexOf(':')),
-                  isLeaf: false,
-                  count: item.count,
-                  logEvent: item.logEvent,
-                  orderId: item.orderId,
-                  children: []
-                };
-              }
-            }
+            parentNode = this.checkParentNode(lastPos, data, item, nodes);
           }
         }
       }
       if (item.job) {
         data.title = 'Job';
         data.name = item.job;
-        if(item.label) {
+        if (item.label) {
           data.label = item.label;
         }
         data.isLeaf = true;
@@ -2098,8 +2111,9 @@ export class CoreService {
             ifInstructionRecursion(nodes, item, data);
             obj.flag = true;
             break;
-          } else if ((lastPos && lastPos.match('branch') && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question))) {
-            if (nodes[i].position == item.position || (nodes[i].position.substring(0, nodes[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
+          } else if ((lastPos && (lastPos.match('branch') || /fork\+.+/g.test(lastPos)) && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question))) {
+            if (nodes[i].position == item.position || (nodes[i].position.substring(0, nodes[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))
+              || (nodes[i].title == 'Try' && nodes[i].position.indexOf('try+') > -1 && nodes[i].position == item.position.substring(0, item.position.indexOf(':')))) {
               checkAndUpdate(nodes[i], data);
               obj.flag = true;
               break;
@@ -2196,7 +2210,7 @@ export class CoreService {
               break;
             } else if (nodes[i].children && nodes[i].children.length > 0) {
               mainObj.isChildren = true;
-              if (!parentNode && ((item.position.match('try') && (data.title != 'Try' && data.title != 'Retry')) || (item.position.match('catch') || data.title == 'Catch'))) {
+              if (!parentNode && ((item.position.match('try') && (data.title != 'Try' && data.title != 'Retry' && (!/fork\+.+/g.test(lastPos)))) || (item.position.match('catch') || data.title == 'Catch'))) {
                 let isCheck = false;
                 if (/(try\+)(\d)/gm.test(item.position)) {
                   let arr = /(try\+)(\d)/gm.exec(item.position);
@@ -2255,7 +2269,7 @@ export class CoreService {
           }
         }
 
-        if ((lastPos && lastPos.match('branch') && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question))) {
+        if ((lastPos && (lastPos.match('branch') || /fork\+.+/g.test(lastPos)) && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question))) {
           if (node.children[i].position == item.position || (node.children[i].position.indexOf(':') > -1 && node.children[i].position.substring(0, node.children[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
             checkAndUpdate(node.children[i], data);
             obj.flag = true;
@@ -2381,6 +2395,26 @@ export class CoreService {
       }
     }
 
+    function matchExactPosition(node: any, data: any): boolean{
+      let flag = false;
+      for (let i in node.children) {
+        if (node.children[i].position == data.position) {
+          if (node.children[i].children) {
+            node.children[i].children.push(data);
+          } else {
+            node.children.push(data);
+          }
+          flag = true;
+          break;
+        } else if (flag == false) {
+          if (node.children[i].children?.length) {
+            flag = matchExactPosition(node.children[i], data);
+          }
+        }
+      }
+
+      return flag;
+    }
     function checkAndUpdate(node: any, data: any) {
       let flag = false;
       for (let i in node.children) {
@@ -2394,7 +2428,7 @@ export class CoreService {
         if (node.children[i].position == data.position && (node.children[i].title == data.title || (node.children[i].title == 'Try' && data.title == 'Retry') || (node.children[i].title == 'Retry' && data.title == 'Try'))) {
           node.children[i].name = data.name;
           node.children[i].logEvent = data.logEvent;
-          if(data.label) {
+          if (data.label) {
             node.children[i].label = data.label;
           }
           node.children[i].logLevel = data.logLevel;
@@ -2405,18 +2439,28 @@ export class CoreService {
         }
       }
       if (!flag) {
-        const _tempArr = data.position.split('/');
-        if (_tempArr.length > 1) {
-          const lastPos = _tempArr[_tempArr.length - 1];
-          if (lastPos.match(/fork+/) && !lastPos.match(/branch/) && node.title == 'Fork') {
-            node.title = 'ForkList'
+        let check = false;
+        for (let i in node.children) {
+          if(check){
+            break;
+          } else if (node.children[i].children?.length) {
+            check = matchExactPosition(node.children[i], data);
           }
         }
-        if (node.children) {
-          if (data.title == 'Join' && node.children[node.children.length - 1].title == 'ForkList') {
-            data.end = 'ForkList-End';
+        if (!check) {
+          const _tempArr = data.position.split('/');
+          if (_tempArr.length > 1) {
+            const lastPos = _tempArr[_tempArr.length - 1];
+            if (lastPos.match(/fork+/) && !/fork\+.+/g.test(lastPos) && node.title == 'Fork') {
+              node.title = 'ForkList'
+            }
           }
-          node.children.push(data);
+          if (node.children) {
+            if (data.title == 'Join' && node.children[node.children.length - 1].title == 'ForkList') {
+              data.end = 'ForkList-End';
+            }
+            node.children.push(data);
+          }
         }
       }
     }
@@ -3100,7 +3144,7 @@ export class CoreService {
         if (typeof sour.value == 'boolean') {
           sour.value = sour.value == true ? 1 : 0;
         } else if (typeof sour.value == 'string') {
-          if(sour.value) {
+          if (sour.value) {
             sour.value = (sour.value.toLowerCase() == 'true' || sour.value.toLowerCase() == 'yes' || sour.value.toLowerCase() == 'on') ? 1 : 0;
           } else {
             sour.value = null;

@@ -1410,7 +1410,7 @@ export class JobComponent {
     if (changes['orderPreparation']) {
       this.updateVariableList();
     }
-    if(changes['isModal']){
+    if (changes['isModal']) {
       this.reloadScript();
     }
   }
@@ -1548,7 +1548,7 @@ export class JobComponent {
         this.jobTemplateData = res.jobTemplate;
         for (const key in res.jobTemplate.arguments) {
           for (const i in this.selectedNode.job.executable?.arguments) {
-            if(key == this.selectedNode.job.executable?.arguments[i].name) {
+            if (key == this.selectedNode.job.executable?.arguments[i].name) {
               this.selectedNode.job.executable.arguments[i].isRequired = res.jobTemplate.arguments[key].required;
               break;
             }
@@ -3127,7 +3127,6 @@ export class WorkflowComponent {
     this.updateOtherProperties('childvariable');
   }
 
-
   sortDescending(variable: any): void {
     const variableId = variable.id || variable.name;
     variable.value.listParameters.sort((a, b) => {
@@ -3139,7 +3138,6 @@ export class WorkflowComponent {
     this.sortingDirections[variableId] = 'desc';
     this.updateOtherProperties('childvariable');
   }
-
 
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
@@ -3550,33 +3548,31 @@ export class WorkflowComponent {
   }
 
   copyArguments(): void {
-    // Get existing data from sessionStorage (if any)
     let storedData = sessionStorage.getItem('$SOS$copiedDeclaredArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedDeclaredArgument')) : [];
-
-    // Add the new data to the array
     storedData.push(JSON.stringify(this.variableDeclarations.parameters));
-
-    // Check if the length exceeds 20, remove the oldest entry
     if (storedData.length > 20) {
-      storedData.shift(); // Remove the first element (oldest)
+      storedData.shift();
     }
-
-    // Update the stored data in sessionStorage
     sessionStorage.setItem('$SOS$copiedDeclaredArgument', JSON.stringify(storedData));
     this.coreService.showCopyMessage(this.message);
     this.fetchClipboard();
   }
 
-  copyIndlArguments(): void {
+  copyIndlArguments(index): void {
     let storedData = sessionStorage.getItem('$SOS$copiedIndlDeclaredArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedIndlDeclaredArgument')) : [];
-    storedData.push(JSON.stringify(this.variableDeclarations.parameters));
+    storedData = [JSON.stringify(this.variableDeclarations.parameters[index])];
+
     if (storedData.length > 20) {
-      storedData.shift(); // Remove the first element (oldest)
+      storedData.shift();
     }
+
     sessionStorage.setItem('$SOS$copiedIndlDeclaredArgument', JSON.stringify(storedData));
     this.coreService.showCopyMessage(this.message);
     this.fetchIndlClipboard();
+
+
   }
+
 
   handlePaste(data) {
     if (!data || data.type) {
@@ -3602,29 +3598,36 @@ export class WorkflowComponent {
     }
   }
 
-  handleIndlPaste(data) {
+  handleIndlPaste(data): void {
     if (!data || data.type) {
       data = this.storedIndlArguments[0];
     }
-    if (data && typeof data == 'string') {
+
+    if (data && typeof data === 'string') {
       const clipboardDataArray = JSON.parse(data);
-      if (!isArray(clipboardDataArray)) {
-        return;
+      const existingParameter = this.variableDeclarations.parameters.find(
+        parameter => parameter.name === clipboardDataArray.name
+      );
+      if (existingParameter && existingParameter.value.listParameters && clipboardDataArray.value.listParameters) {
+        existingParameter.value = clipboardDataArray.value;
+        if (clipboardDataArray.value && clipboardDataArray.value.type === 'List' && clipboardDataArray.value.listParameters) {
+          existingParameter.value.listParameters = clipboardDataArray.value.listParameters;
+        }
       }
-      clipboardDataArray.forEach(argu => {
-        let flag = true;
-        for (let i in this.variableDeclarations.parameters) {
-          if (argu.name == this.variableDeclarations.parameters[i].name) {
-            flag = false;
-          }
-        }
-        if (flag) {
-          this.variableDeclarations.parameters.push(argu);
-        }
-      })
+
+
       this.updateOtherProperties('variable');
     }
   }
+
+  getStoredIndlArgumentsName(): string | undefined {
+    if (this.storedIndlArguments?.length > 0) {
+      const parsedArguments = JSON.parse(this.storedIndlArguments[0]);
+      return parsedArguments?.name;
+    }
+    return undefined;
+  }
+
 
   removeClipboard(): void {
     this.storedArguments = [];
@@ -4307,7 +4310,6 @@ export class WorkflowComponent {
               this.navToJob(this.workflow.configuration, this.workflowService.getJobValue());
               this.workflowService.setJobValue('')
             }
-
           } catch (e) {
             console.error(e);
           }

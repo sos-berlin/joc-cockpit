@@ -14,7 +14,7 @@
            nz-tooltip="{{'common.button.copyArguments' | translate}}">
           <i class="fa fa-copy"></i>
         </a>
-        <a class="cursor p-l-12" (click)="handleIndlPaste(storedIndlArguments[0], j)" *ngIf="storedIndlArguments?.length > 0"
+        <a class="cursor p-l-12" (click)="handleIndlPaste(storedIndlArguments[0], j, x)" *ngIf="storedIndlArguments?.length > 0 && getStoredIndlArgumentsName() === listVariables?.name"
            nz-tooltip="{{'common.button.paste' | translate}}">
           <i class="fa fa-paste"></i>
         </a>
