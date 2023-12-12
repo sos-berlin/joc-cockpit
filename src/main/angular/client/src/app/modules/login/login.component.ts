@@ -34,6 +34,7 @@ export class LoginComponent {
   fido2ndFactorServiceItems = [];
   showRegister = false;
   showLogin = false;
+  passwordField = false;
   userObject: any = {};
 
   subscription: Subscription;
