@@ -604,6 +604,11 @@ export class ImportKeyModalComponent {
     for (let i = 0; i < this.fileList.length; i++) {
       setTimeout(() => {
         this.upload(this.fileList[i]);
+        if (i == this.fileList.length - 1) {
+          setTimeout(() => {
+            this.submitted = false;
+          }, 100);
+        }
       }, 10 * i);
     }
   }
