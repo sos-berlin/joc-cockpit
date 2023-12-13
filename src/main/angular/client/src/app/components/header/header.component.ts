@@ -258,6 +258,7 @@ export class HeaderComponent {
               if (res.eventSnapshots[j].eventType === 'JOCStateChanged') {
                 this.isJocActive();
               } else if (res.eventSnapshots[j].eventType === 'NodeLossProblemEvent') {
+                res.eventSnapshots[j].date = parseInt(this.eventId) * 1000;
                 this.problemEvent = res.eventSnapshots[j];
                 sessionStorage['$SOS$NODELOSS'] = JSON.stringify(res.eventSnapshots[j]);
               }
