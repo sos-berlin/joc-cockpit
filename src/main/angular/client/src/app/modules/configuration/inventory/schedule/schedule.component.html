@@ -10,7 +10,7 @@
         </label>
       </div>
       <div class="text-right col-sm-3 col-xl-3">
-        <a class="cursor" (click)="copyIndlArguments(j)"
+        <a class="cursor" (click)="copyIndlArguments(j, x)"
            nz-tooltip="{{'common.button.copyArguments' | translate}}">
           <i class="fa fa-copy"></i>
         </a>
@@ -314,6 +314,13 @@
                     <span translate>order.label.variables</span>
                     <i (click)="variableSet.isCollapseVariable = !variableSet.isCollapseVariable" class="cursor fa fa-lg p-l-sm"
                        [ngClass]="!variableSet.isCollapseVariable ? 'fa-angle-up' : 'fa-angle-down' "></i>
+
+                    <a *ngIf="isForkListVariable" (click)="expandAll(variableSet.variables);" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="p-l-sm pos-rel t-3">
+                      <i class="fa fa-angle-double-down text-16"></i>
+                    </a>
+                    <a *ngIf="isForkListVariable" (click)="collapseAll(variableSet.variables);" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="m-l-xs pos-rel t-3">
+                      <i class="fa fa-angle-double-up text-16"></i>
+                    </a>
                   </label>
                   <div class="text-right col-sm-3 col-xl-3">
                     <a (click)="copyArguments(j)" class="cursor"
