@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, inject} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, inject, HostListener} from '@angular/core';
 import {isEmpty, unique, isArray, isEqual, clone} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TreeModalComponent} from './tree-modal/tree.component';
@@ -653,6 +653,7 @@ export class PeriodComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
 
   isNew: boolean;
+  isDisplay: boolean;
   data: any = {};
   period: any = {period: {}};
   when_holiday_options = [
@@ -666,6 +667,15 @@ export class PeriodComponent {
     {label: 'runtime.label.repeat', value: 'repeat'}
   ]
   constructor(public activeModal: NzModalRef, private calendarService: CalendarService) {
+  }
+
+  @HostListener('window:click', ['$event'])
+  onClick(): void {
+    if (this.isDisplay) {
+      setTimeout(() => {
+        $('#repeatId').click();
+      }, 10);
+    }
   }
 
   ngOnInit(): void {
@@ -696,12 +706,29 @@ export class PeriodComponent {
     }
   }
 
-  get isRepeatIntervalShort(): boolean {
-    if(this.period?.period?.repeat){
-      const [hours, minutes, seconds] = this.period.period.repeat.split(':').map(Number);
-      return (hours * 3600 + minutes * 60 + seconds) <= 1800;
+  isRepeatIntervalShort($event): void {
+    if ($event) {
+      const [hours, minutes, seconds] = $event.split(':').map(Number);
+      let sum = 0;
+      if (hours) {
+        sum += hours * 3600;
+      }
+      if (minutes) {
+        sum += minutes * 60;
+      }
+      if (seconds) {
+        sum += seconds;
+      }
+      
+      if ((minutes || minutes == 0) && sum < 1800) {
+        $('#repeatId').click();
+        this.isDisplay = true;
+      } else {
+        this.isDisplay = false;
+      }
+    } else {
+      this.isDisplay = false;
     }
-    return false;
   }
 
   onSubmit(): void {

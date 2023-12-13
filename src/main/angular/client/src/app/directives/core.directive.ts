@@ -779,6 +779,15 @@ export class TimeValidatorReqexDirective implements Validator {
       } else {
         this.timeChanged.emit('00:00:00');
       }
+    } else {
+      if (value.length === 5 && !(/^([0-2][0-9]):([0-5][0-9])?$/i.test(value))) {
+        this.timeChanged.emit(value.substring(0, 3));
+      } else if (value.length === 8 && !(/^([0-2][0-9]):([0-5][0-9]):([0-5][0-9])?$/i.test(value))) {
+        this.timeChanged.emit(value.substring(0, 6) + '00');
+      }
+      if (!((/^([0-2][0-9]):([0-5][0-9])?$/i.test(value)) || /^([0-2][0-9]):([0-5][0-9]):([0-5][0-9])?$/i.test(value))) {
+        this.timeChanged.emit('00:00:00');
+      }
     }
   }
 
