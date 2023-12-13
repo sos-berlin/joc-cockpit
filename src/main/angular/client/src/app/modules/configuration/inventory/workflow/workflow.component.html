@@ -1308,7 +1308,8 @@
                       <i (click)="variable.isCollapse = !variable.isCollapse" class="cursor fa fa-lg p-l-sm"
                          [ngClass]="!variable.isCollapse ? 'fa-angle-up' : 'fa-angle-down' "></i>
                     </label>
-                    <a *ngIf="variableDeclarations.parameters?.length > 0" (click)="copyIndlArguments(i)" class="anchor-with-icon pos-abt m-t-n-1" [ngStyle]="{'right': storedArguments?.length > 0 ? '50px' : '27px'}"
+                    <a *ngIf="variableDeclarations.parameters?.length > 0" (click)="copyIndlArguments(i)" class="anchor-with-icon pos-abt m-t-n-1"
+                       [ngStyle]="{'right': (storedIndlArguments?.length > 0 && getStoredIndlArgumentsName() === variable?.name) ? '50px' : '27px'}"
                        nz-tooltip="{{'common.button.copyArguments' | translate}}">
                       <i class="fa fa-copy"></i>
                     </a>

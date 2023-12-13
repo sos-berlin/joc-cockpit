@@ -27,6 +27,7 @@ export class ScheduleComponent {
 
   schedule: any = {};
   isVisible: boolean;
+  isForkListVariable: boolean;
   dateFormat: any;
   isUnique = true;
   isStore = false;
@@ -186,7 +187,7 @@ export class ScheduleComponent {
     }
   }
 
-   copyIndlArguments(index1, index2): void {
+  copyIndlArguments(index1, index2): void {
     let newData = JSON.stringify(this.schedule.configuration.orderParameterisations[index1].variables[index2]);
 
     let storedData = sessionStorage.getItem('$SOS$copiedScheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedScheduledArgument')) : [];
@@ -520,6 +521,7 @@ export class ScheduleComponent {
   }
 
   updateVariableList(): void {
+    this.isForkListVariable = false;
     this.variableList = [];
     let forkListVariables = [];
     let variablesBeforeUpdate = {};
@@ -533,9 +535,9 @@ export class ScheduleComponent {
       this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
         if (val.type === 'List') {
+          this.isForkListVariable = true;
           const actualList = [];
           if (val.listParameters) {
-
             if (isArray(val.listParameters)) {
               val.listParameters.forEach((item) => {
                 const obj: any = {
@@ -1275,7 +1277,7 @@ export class ScheduleComponent {
   }
 
   private storeExpandedProperties(): void {
-    if(this.schedule.configuration?.orderParameterisations){
+    if (this.schedule.configuration?.orderParameterisations) {
       let data: any = {};
       this.schedule.configuration.orderParameterisations.forEach((variable, index) => {
         data[index] = {
@@ -1455,6 +1457,23 @@ export class ScheduleComponent {
   /**
    * Function to auto expand the variable section
    */
+
+  expandAll(variables): void {
+    variables.forEach((item) => {
+      if (item.type === 'List') {
+        item.isCollapse = false;
+      }
+    });
+  }
+
+  collapseAll(variables): void {
+    variables.forEach((item) => {
+      if (item.type === 'List') {
+        item.isCollapse = true;
+      }
+    });
+  }
+
   private autoExpandVariable(key): void {
     if (this.coreService.scheduleExpandedProperties.has(key)) {
       let data = this.coreService.scheduleExpandedProperties.get(key);
@@ -1502,11 +1521,6 @@ export class ScheduleComponent {
                 item.isCollapse = true;
               }
             });
-          });
-        }
-        if (height < ((len + 1) * 30) && this.schedule.configuration.orderParameterisations.length == 1) {
-          this.schedule.configuration.orderParameterisations.forEach((variable) => {
-            variable.isCollapseVariable = true;
           });
         }
       }

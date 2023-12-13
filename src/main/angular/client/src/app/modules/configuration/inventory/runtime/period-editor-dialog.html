@@ -16,8 +16,6 @@
             <div class="form-group row">
               <label class="col-sm-4 form-control-label" translate>
                 runtime.label.repeatInterval
-                <i nz-tooltip="{{'workflow.tooltip.warningMessageForShortIntervalSelection' | translate}}" *ngIf="period.frequency == 'repeat' && isRepeatIntervalShort"
-                   class="p-l-xs fa fa-info-circle"></i>
               </label>
               <div class="col-sm-8">
                 <nz-select [(ngModel)]="period.frequency" name="frequency">
@@ -32,18 +30,22 @@
                    class="col-sm-3">
                 <input #startTime="ngModel" [(ngModel)]="period.period.singleStart" [appAutofocus]="true" autocomplete="off" class="form-control"
                        maxlength="8" name="startTime" placeholder="HH:MM:SS"
-                       timevalidator
-                       type="text" validTimeReqex>
+                       timevalidator type="text" validTimeReqex>
                 <div *ngIf="startTime.errors && (startTime.dirty || startTime.touched)" class="help-block text-danger">
                   <div *ngIf="!startTime.valid" translate>common.message.invalid</div>
                 </div>
               </div>
             </div>
+
             <div *ngIf="period.frequency=='repeat'" class="form-group row">
-              <label class="col-sm-4 form-control-label" translate>runtime.label.repeatTime</label>
+              <label  class="col-sm-4 form-control-label" translate>
+                runtime.label.repeatTime
+                <i *ngIf="isDisplay" id="repeatId" [nzTooltipArrowPointAtCenter]="true" nz-tooltip="{{'workflow.tooltip.warningMessageForShortIntervalSelection' | translate}}"
+                   [nzTooltipVisible]="true" [nzTooltipTrigger]="'click'" class="p-l-sm fa fa-info-circle"></i>
+              </label>
               <div [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}" class="col-sm-3">
                 <input #repeat="ngModel" [(ngModel)]="period.period.repeat" class="form-control" maxlength="8" name="repeat" placeholder="HH:MM:SS"
-                       timevalidator type="text" validTimeReqex>
+                       timevalidator (ngModelChange)="isRepeatIntervalShort($event)" type="text" validTimeReqex>
                 <div *ngIf="repeat.errors && (repeat.dirty || repeat.touched)" class="help-block text-danger">
                   <div *ngIf="!repeat.valid" translate>common.message.invalid</div>
                 </div>
@@ -53,8 +55,7 @@
               <label class="col-sm-4 form-control-label" translate>runtime.label.begin</label>
               <div [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}" class="col-sm-3">
                 <input #begin="ngModel" [(ngModel)]="period.period.begin" class="form-control" maxlength="8" name="begin" placeholder="HH:MM:SS"
-                       timevalidator
-                       type="text" validTimeReqex>
+                       timevalidator type="text" validTimeReqex>
                 <div *ngIf="begin.errors && (begin.dirty || begin.touched)" class="help-block text-danger">
                   <div *ngIf="!begin.valid" translate>common.message.invalid</div>
                 </div>
@@ -62,8 +63,7 @@
               <label class="col-sm-2 form-control-label text-right" translate>runtime.label.end</label>
               <div [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}" class="col-sm-3">
                 <input #end="ngModel" [(ngModel)]="period.period.end" class="form-control" maxlength="8" name="end" placeholder="HH:MM:SS"
-                       timevalidator
-                       type="text" validTimeReqex>
+                       timevalidator type="text" validTimeReqex>
                 <div *ngIf="end.errors && (end.dirty || end.touched)" class="help-block text-danger">
                   <div *ngIf="!end.valid" translate>common.message.invalid</div>
                 </div>
