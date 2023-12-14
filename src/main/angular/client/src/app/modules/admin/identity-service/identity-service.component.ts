@@ -178,7 +178,7 @@ export class SettingModalComponent {
         const data = JSON.parse(res.configuration.configurationItem);
         if (this.data) {
           if (data) {
-            this.currentObj = data.vault || data.keycloak || data.oidc || data.fido || {};
+            this.currentObj = data.keycloak || data.oidc || data.fido || {};
             if (data.fido) {
               if (!this.currentObj.iamFidoProtocolType) {
                 this.currentObj.iamFidoProtocolType = 'FIDO2';
@@ -219,7 +219,7 @@ export class SettingModalComponent {
                   this.userObj.iamLdapHost = from < to ? this.currentObj.iamLdapServerUrl.substring(from, to) : '';
                 }
               }
-              if(res.configuration.objectType === 'LDAP'){
+              if (res.configuration.objectType === 'LDAP') {
                 if (!this.currentObj.iamLdapGroupRolesMap) {
                   this.currentObj.iamLdapGroupRolesMap = {items: []};
                 }
@@ -441,14 +441,7 @@ export class SettingModalComponent {
       let data;
       try {
         data = JSON.parse(_event.target.result);
-        if (self.data?.['identityServiceType'].match('VAULT')) {
-          for (const prop in data) {
-            if (prop && prop.match('iamVault')) {
-              self.currentObj = data;
-              break;
-            }
-          }
-        } else if (self.data?.['identityServiceType'].match('KEYCLOAK')) {
+        if (self.data?.['identityServiceType'].match('KEYCLOAK')) {
           for (const prop in data) {
             if (prop && prop.match('iamKeycloak')) {
               self.currentObj = data;
@@ -542,9 +535,7 @@ export class SettingModalComponent {
     this.iconUpload();
     let obj: any = {};
     if (this.data && this.data?.['identityServiceType']) {
-      if (this.data?.['identityServiceType'].match('VAULT')) {
-        obj.vault = this.currentObj;
-      } else if (this.data?.['identityServiceType'].match('KEYCLOAK')) {
+      if (this.data?.['identityServiceType'].match('KEYCLOAK')) {
         obj.keycloak = this.currentObj;
       } else if (this.data?.['identityServiceType'].match('LDAP')) {
         obj.ldap = {expert: this.coreService.clone(this.currentObj), simple: this.userObj};
@@ -691,7 +682,7 @@ export class SettingModalComponent {
         formData.append('comment', this.comments.comment);
       }
       if (this.comments.timeSpent) {
-        formData.append('timeSpent',this.comments.timeSpent);
+        formData.append('timeSpent', this.comments.timeSpent);
       }
       if (this.comments.ticketLink) {
         formData.append('ticketLink', this.comments.ticketLink);
@@ -851,7 +842,7 @@ export class IdentityServiceModalComponent {
       if (res.configuration.configurationItem) {
         const data = JSON.parse(res.configuration.configurationItem);
         if (data) {
-          if (data.vault || data.ldap || data.keycloak || data.oidc || data.fido) {
+          if (data.ldap || data.keycloak || data.oidc || data.fido) {
             this.removeSettingId = res.configuration.id;
             this.settingObj = res.configuration.configurationItem;
           }

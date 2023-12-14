@@ -29,7 +29,7 @@
               <span [innerHtml]="authService.currentUserData | decodeSpace" class="text-black-lt"></span>
             </div>
           </div>
-          <div *ngIf="identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE'" class="row m-t">
+          <div *ngIf="identityServiceType === 'JOC'" class="row m-t">
             <div class="col-md-4 col-lg-3"><span class="text-dark" translate>user.label.password</span></div>
             <div class="col-md-8 col-lg-9">
               <a (click)="changePassword()" class="text-u-l text-hover-primary"

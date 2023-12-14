@@ -198,11 +198,11 @@ export class AccountModalComponent {
         roles: []
       };
     }
-    if (this.copy || (type !== 'JOC' && type !== 'VAULT-JOC-ACTIVE')) {
+    if (this.copy || (type !== 'JOC')) {
       this.isPasswordVisible = false;
       delete this.currentUser.password;
     }
-    if (this.newUser && (this.identityServiceType === 'JOC' || this.identityServiceType === 'VAULT-JOC-ACTIVE')) {
+    if (this.newUser && (this.identityServiceType === 'JOC')) {
       this.currentUser.forcePasswordChange = true;
     }
   }

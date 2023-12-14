@@ -67,7 +67,7 @@
               [object]="currentUser" [attributeName]="'roles'" [listArray]="allRoles" ></app-select-input>
       </div>
     </div>
-    <div *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')" class="form-group row">
+    <div *ngIf="(identityServiceType === 'JOC')" class="form-group row">
       <label class="col-sm-4" translate>user.label.forcePasswordChange</label>
       <div class="col-sm-6">
         <label nz-checkbox [(ngModel)]="currentUser.forcePasswordChange" [nzDisabled]="currentUser.isDisabled || newUser"

@@ -244,8 +244,8 @@ export class AdminComponent {
           if (sessionStorage['secondFactor'] && this.route.match('/role')) {
             this.router.navigate(['/users/identity_service/account']).then();
           } else {
-            if ((sessionStorage['identityServiceType'] === 'VAULT' || sessionStorage['identityServiceType'] === 'KEYCLOAK'
-              || sessionStorage['identityServiceType'] === 'LDAP' || sessionStorage['identityServiceType'] === 'OIDC') && this.route.match('/users/identity_service/account')) {
+            if ((sessionStorage['identityServiceType'] === 'KEYCLOAK' || sessionStorage['identityServiceType'] === 'LDAP'
+              || sessionStorage['identityServiceType'] === 'OIDC') && this.route.match('/users/identity_service/account')) {
               this.selectedUser = null;
               this.router.navigate(['/users/identity_service/role']).then();
             }

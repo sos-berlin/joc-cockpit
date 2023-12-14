@@ -46,7 +46,7 @@
             <i *ngIf="usr.sortBy == 'roles' && usr.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
-        <th (click)="sort('forcePasswordChange')" *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')"
+        <th (click)="sort('forcePasswordChange')" *ngIf="(identityServiceType === 'JOC')"
             nzWidth="20%">
           <a><span class="p-r-xs" translate>user.label.forcePasswordChange</span>
             <i *ngIf="usr.sortBy == 'forcePasswordChange' && !usr.reverse"
@@ -96,11 +96,11 @@
                 <li (click)="copyUser(account)" *ngIf="identityServiceType !== 'FIDO'" nz-menu-item>
                   <a translate>common.button.duplicate</a>
                 </li>
-                <li (click)="resetPassword(account)" *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')"
+                <li (click)="resetPassword(account)" *ngIf="(identityServiceType === 'JOC')"
                     nz-menu-item>
                   <a translate>user.button.resetPassword</a>
                 </li>
-                <li (click)="forcePasswordChange(account)" *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')"
+                <li (click)="forcePasswordChange(account)" *ngIf="(identityServiceType === 'JOC')"
                     [nzDisabled]="account.forcePasswordChange" nz-menu-item>
                   <a translate>user.button.forcePasswordChange</a>
                 </li>
@@ -138,7 +138,7 @@
         <td>
           <div *ngFor="let role of account.roles"><span [innerHtml]="role | highlight: searchKey"></span></div>
         </td>
-        <td *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')">
+        <td *ngIf="(identityServiceType === 'JOC')">
           <span>{{(account.forcePasswordChange ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
         <td><span>{{(account.blocked ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
         <td><span>{{(account.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
