@@ -569,7 +569,7 @@
     "placeholder.endTime": "終了時間",
     "placeholder.enterComment": "コメントを入力",
     "placeholder.title": "タイトルを入力",
-    "placeholder.enterSecond": "HH:MM:[SS] + SECONDS",
+    "placeholder.enterSecond": "HH:MM:[SS] or SECONDS",
     "placeholder.processExecuted": "now-SECONDS, today, yesterday, -1(h|d|w|M|y) or 08:00am to 08:00pm, -1(h|d|w|M|y) to -1(h|d|w|M|y)",
     "placeholder.processLimit": "プロセス上限入力",
     "message.noDataAvailable": "データがありません",
