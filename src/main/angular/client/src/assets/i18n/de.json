@@ -569,7 +569,7 @@
     "placeholder.endTime": "Endezeit",
     "placeholder.enterComment": "Begründung eingeben",
     "placeholder.title": "Titel eingeben",
-    "placeholder.enterSecond": "HH:MM:[SS] + SEKUNDEN",
+    "placeholder.enterSecond": "HH:MM:[SS] oder SEKUNDEN",
     "placeholder.processExecuted": "now-SEKUNDEN, today, yesterday, -1(h|d|w|M|y) oder 08:00am bis 08:00pm, -1(h|d|w|M|y) bis -1(h|d|w|M|y)",
     "placeholder.processLimit": "Prozess Limit eingeben",
     "message.noDataAvailable": "keine Daten verfügbar",

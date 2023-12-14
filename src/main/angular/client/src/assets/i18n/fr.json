@@ -569,7 +569,7 @@
     "placeholder.endTime": "Heure de fin",
     "placeholder.enterComment": "Saisir une Justification",
     "placeholder.title": "Entrer le titre",
-    "placeholder.enterSecond": "HH:MM:[SS] + SECONDS",
+    "placeholder.enterSecond": "HH:MM:[SS] ou SECONDS",
     "placeholder.processExecuted": "now-SECONDS, today, yesterday, -1(h|d|w|M|y) ou 08:00am to 08:00pm, -1(h|d|w|M|y) to -1(h|d|w|M|y)",
     "placeholder.processLimit": "Entrer la Limite de Processus",
     "message.noDataAvailable": "pas de données disponibles",
