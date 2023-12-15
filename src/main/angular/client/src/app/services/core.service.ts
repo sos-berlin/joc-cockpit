@@ -416,6 +416,12 @@ export class CoreService {
     this.tabs._agentCluster.reverse = false;
     this.tabs._agentCluster.currentPage = '1';
 
+    this.tabs._controller = {
+      searchText: '',
+      filter: {
+        state: 'ALL'
+      }
+    };
     this.tabs._deployment = {};
   }
 
@@ -495,6 +501,10 @@ export class CoreService {
 
   getAgentClusterTab(): any {
     return this.tabs._agentCluster;
+  }
+
+  getControllerTab(): any {
+    return this.tabs._controller;
   }
 
   getYadeTab(): any {
@@ -2066,11 +2076,7 @@ export class CoreService {
         lastPos = _tempArr[_tempArr.length - 1];
         if (lastPos) {
           // write a regex to check if string has fork+ and some text after tin it
-
-
-
-
-          if (lastPos.match(/branch/) || /fork\+.+/g.test(lastPos)) {
+          if (/fork\+.+/g.test(lastPos)) {
             if (item.expectNotices || item.postNotice || item.consumeNotices
               || item.moved || item.attached || item.cycle || item.question) {
               data.name = item.logEvent;
@@ -2111,7 +2117,7 @@ export class CoreService {
             ifInstructionRecursion(nodes, item, data);
             obj.flag = true;
             break;
-          } else if ((lastPos && (lastPos.match('branch') || /fork\+.+/g.test(lastPos)) && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question))) {
+          } else if ((lastPos && (/fork\+.+/g.test(lastPos)) && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question))) {
             if (nodes[i].position == item.position || (nodes[i].position.substring(0, nodes[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))
               || (nodes[i].title == 'Try' && nodes[i].position.indexOf('try+') > -1 && nodes[i].position == item.position.substring(0, item.position.indexOf(':')))) {
               checkAndUpdate(nodes[i], data);
@@ -2269,7 +2275,7 @@ export class CoreService {
           }
         }
 
-        if ((lastPos && (lastPos.match('branch') || /fork\+.+/g.test(lastPos)) && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question))) {
+        if ((lastPos && (/fork\+.+/g.test(lastPos)) && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question))) {
           if (node.children[i].position == item.position || (node.children[i].position.indexOf(':') > -1 && node.children[i].position.substring(0, node.children[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
             checkAndUpdate(node.children[i], data);
             obj.flag = true;
@@ -2452,7 +2458,8 @@ export class CoreService {
           if (_tempArr.length > 1) {
             const lastPos = _tempArr[_tempArr.length - 1];
             if (lastPos.match(/fork+/) && !/fork\+.+/g.test(lastPos) && node.title == 'Fork') {
-              node.title = 'ForkList'
+              node.title = 'ForkList';
+              node.children = [];
             }
           }
           if (node.children) {
