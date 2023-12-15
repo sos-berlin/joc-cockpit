@@ -12,6 +12,7 @@ import {DataService} from '../../services/data.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {AgentModalComponent, SubagentModalComponent} from "./agent/agent.component";
 import {FileUploaderComponent} from "../../components/file-uploader/file-uploader.component";
+import {SearchPipe} from "../../pipes/core.pipe";
 
 @Component({
   selector: 'app-export-modal',
@@ -232,11 +233,13 @@ export class ControllersComponent {
   currentSecurityLevel: string;
   permission: any = {};
   preferences: any = {};
+  agentsFilters: any = {};
   loading = false;
   isLoaded = false;
   hasLicense = false;
   isActionMenuVisible = false;
   agentVersions: any = [];
+  searchableProperties = ['agentId', 'agentName', 'url'];
   object = {
     mapOfCheckedId2: new Map(),
     mapOfCheckedId3: new Map(),
@@ -247,6 +250,7 @@ export class ControllersComponent {
   subscription1: Subscription;
 
   constructor(public coreService: CoreService, private modal: NzModalService, private message: NzMessageService,
+              private searchPipe: SearchPipe,
               private authService: AuthService, private dataService: DataService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -256,6 +260,7 @@ export class ControllersComponent {
   ngOnInit(): void {
     this.isJOCActive = sessionStorage['$SOS$ISJOCACTIVE'] == 'YES';
     this.permission = JSON.parse(this.authService.permission) || {};
+    this.agentsFilters = this.coreService.getControllerTab();
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
@@ -360,6 +365,7 @@ export class ControllersComponent {
             this.mergeAgentVersions(agent);
             this.mergeTokenData(null, agent.agentId, agent);
           });
+          this.filterAgentList(controller);
           if (cb) {
             cb();
           }
@@ -402,6 +408,7 @@ export class ControllersComponent {
             }
           }
         });
+        this.filterAgentList(controller);
       }, error: () => {
         controller.agentClusters = [];
         controller.isLoading = false;
@@ -1722,4 +1729,45 @@ export class ControllersComponent {
   showCopyMessage(): void {
     this.coreService.showCopyMessage(this.message);
   }
+
+  expandDetails(): void {
+    this.controllers.forEach((controller) => {
+      console.log(controller);
+      this.expand(controller.controllerId);
+      this.getAgents(controller, null);
+    });
+  }
+
+  collapseDetails(): void {
+    this.controllers.forEach((controller) => {
+      this.collapse(controller.controllerId);
+    });
+  }
+
+  loadAgents(state): void {
+    this.agentsFilters.filter.state = state;
+    this.searchInResult();
+  }
+
+  searchInResult(): void {
+    this.controllers.forEach((controller) => {
+      this.filterAgentList(controller);
+    });
+  }
+
+  private filterAgentList(controller): void {
+    if (controller.agents) {
+      controller.filteredAgents = this.agentsFilters.searchText ? this.searchPipe.transform(controller.agents, this.agentsFilters.searchText, this.searchableProperties) : controller.agents;
+      controller.filteredAgents = controller.filteredAgents.filter((agent) => {
+        return agent.syncState._text === this.agentsFilters.filter.state || this.agentsFilters.filter.state === 'ALL';
+      });
+    }
+    if (controller.agentClusters) {
+      controller.filteredAgentClusters = this.agentsFilters.searchText ? this.searchPipe.transform(controller.agentClusters, this.agentsFilters.searchText, this.searchableProperties) : controller.agentClusters;
+      controller.filteredAgentClusters = controller.filteredAgentClusters.filter((agent) => {
+        return agent.syncState._text === this.agentsFilters.filter.state || this.agentsFilters.filter.state === 'ALL';
+      });
+    }
+  }
+
 }
