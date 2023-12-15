@@ -36,6 +36,7 @@
   --orange: #FF8000;
   --yellow-green: #b3b300;
   --light-green: #90EE90;
+  --error-code: #a94442;
   --bg-green: #7ab97a;
   --bg-blue: #1591d4;
   --bg-gold: #efcc00;
@@ -4396,7 +4397,7 @@ li a > i.remove {
 
 .has-error {
   .checkbox, .checkbox-inline, .control-label, .form-control-feedback, .help-block, .radio, .radio-inline, &.checkbox label, &.checkbox-inline label, &.radio label, &.radio-inline label {
-    color: #a94442;
+    color: var(--error-code);
   }
 }
 
@@ -4432,7 +4433,7 @@ li a > i.remove {
 .has-error {
   .form-control, .ant-picker, .ant-select, .ant-select-selection, .ant-select:not(.ant-select-customize-input) .ant-select-selector,
   .ant-input, .ant-input-number {
-    border-color: #a94442 !important;
+    border-color: var(--error-code) !important;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 
@@ -4444,13 +4445,13 @@ li a > i.remove {
   }
 
   .md-input {
-    border-color: #a94442 !important;
+    border-color: var(--error-code) !important;
   }
 
   .input-group-addon {
-    color: #a94442;
+    color: var(--error-code);
     background-color: #f2dede;
-    border-color: #a94442;
+    border-color: var(--error-code);
   }
 }
 
@@ -8645,13 +8646,13 @@ div.jsoneditor-navigation-bar {
 
 .error-input {
   div.jsoneditor {
-    border-color: #a94442 !important;
+    border-color: var(--error-code) !important;
   }
 }
 
 .center-block {
   .error-input {
-    border-color: #a94442 !important;
+    border-color: var(--error-code) !important;
   }
 }
 
@@ -9440,16 +9441,22 @@ cdk-virtual-scroll-viewport {
 }
 
 .ant-btn-text:hover, .ant-btn-text:focus {
-  color: var(--text-color);
+  color: var(--text-color) !important;
   background: var(--background-color);
 }
 
+.ant-btn-text:hover, .ant-btn-text:focus {
+  span {
+    color: var(--text-color) !important;
+  }
+}
+
 .upload-error .ant-upload-list-picture .ant-upload-list-item {
-  border-color: #a94442;
+  border-color: var(--error-code);
 }
 
 .upload-error .ant-upload-span span {
-  color: #a94442;
+  color: var(--error-code);
 }
 
 .ant-upload-list-picture,

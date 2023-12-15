@@ -7,11 +7,32 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
-            <button *ngIf="object.mapOfCheckedId.size === 0 && object.mapOfCheckedId2.size === 0 && object.mapOfCheckedId3.size === 0 && isJOCActive"
-                    (click)="addController()" class="btn btn-grey btn-sm">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>controller.button.newController</span>
-            </button>
+            <ng-container *ngIf="object.mapOfCheckedId.size === 0 && object.mapOfCheckedId2.size === 0 && object.mapOfCheckedId3.size === 0 && isJOCActive">
+              <div class="btn-group">
+                <button (click)="loadAgents('ALL')" [ngClass]="{'btn-primary': agentsFilters.filter.state=='ALL'}"
+                        class="btn btn-grey btn-sm" translate>agent.button.allAgent
+                </button>
+                <button (click)="loadAgents('IN_SYNC')" [ngClass]="{'btn-primary': agentsFilters.filter.state=='IN_SYNC'}"
+                        class="btn btn-grey btn-sm text-capitalize" translate>IN_SYNC
+                </button>
+                <button (click)="loadAgents('NOT_IN_SYNC')" [ngClass]="{'btn-primary': agentsFilters.filter.state=='NOT_IN_SYNC'}"
+                        class="btn btn-grey btn-sm text-capitalize" translate>NOT_IN_SYNC
+                </button>
+                <button (click)="loadAgents('NOT_DEPLOYED')"
+                        [ngClass]="{'btn-primary': agentsFilters.filter.state=='NOT_DEPLOYED'}"
+                        class="btn btn-grey btn-sm text-capitalize" translate>NOT_DEPLOYED
+                </button>
+                <button (click)="loadAgents('UNKNOWN')" [ngClass]="{'btn-primary': agentsFilters.filter.state=='UNKNOWN'}"
+                        class="btn btn-grey btn-sm text-capitalize" translate>agent.button.unknown
+                </button>
+              </div>
+              <button
+                (click)="addController()"
+                *ngIf="isJOCActive" class="btn btn-grey btn-sm m-l-12">
+                <i class="fa fa-plus"></i>&nbsp;
+                <span translate>controller.button.newController</span>
+              </button>
+            </ng-container>
             <div class="show-inline" *ngIf="(object.mapOfCheckedId.size>0 || object.mapOfCheckedId2.size > 0) && object.mapOfCheckedId3.size === 0">
               <button class="btn btn-grey btn-sm m-l-12" (click)="deployAll()" translate>inventory.button.deploy</button>
               <button class="btn btn-grey btn-sm m-l-12" (click)="revokeAll()" translate>agent.button.revoke</button>
@@ -35,9 +56,31 @@
     </div>
   </div>
 </div>
+<div class="sub-link">
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <button (click)="collapseDetails()"
+              class="btn btn-sm btn-grey pull-right m-l-12" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
+        <i class="fa fa-compress text"></i>
+      </button>
+      <button (click)="expandDetails()"
+              class="btn btn-sm btn-grey pull-right m-l-12" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
+        <i class="fa fa-expand text"></i>
+      </button>
+      <div class="search-box-field pull-right">
+        <label>
+          <input (keyup)="searchInResult()" [(ngModel)]="agentsFilters.searchText" placeholder="{{'common.placeholder.search' | translate}}"
+                 type="search">
+        </label>
+        <i (click)="agentsFilters.searchText = '';searchInResult()" [hidden]="!agentsFilters.searchText"
+           class="fa fa-times search-close"></i>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="scroll-y max-ht">
   <div class="padding p-b-0">
-    <div class="row m-b m-t-xs">
+    <div class="row m-b ">
       <div class="col-md-12">
         <div class="box p-a p-b-sm text-overflow">
           <div class="resizable" appResizable id="mainContainer">
@@ -304,14 +347,14 @@
                             </div>
                           </td>
                           <td (click)="editAgent(agent, controller)">
-                            <span [innerHtml]="agent.agentId"></span>
+                            <span [innerHtml]="agent.agentId | highlight : agentsFilters.searchText"></span>
                             <i *ngIf="agent.title"> - </i>
                             <i class="text-muted">{{agent.title}}</i>
                           </td>
-                          <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentName"></span></td>
+                          <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentName | highlight : agentsFilters.searchText"></span></td>
                           <td [nzBreakWord] (click)="editAgent(agent, controller)"><span
                             [innerHtml]="agent.agentNameAliases || '-'"></span></td>
-                          <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.url"></span></td>
+                          <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.url | highlight : agentsFilters.searchText"></span></td>
                           <td (click)="editAgent(agent, controller)">
                             <i *ngIf="agent.compatibility" class="fa fa-check"
                                [nz-tooltip]="agent.compatibility | translate"
@@ -514,14 +557,14 @@
                                    *ngIf="permission.joc && permission.joc.administration.controllers.manage"
                                    (click)="addSubagent(clusterAgent, controller)"></i>
                                 <a class="text-dark p-l-xxs" (click)="editAgent(clusterAgent, controller, true)">
-                                  <span [innerHtml]="clusterAgent.agentId"></span>
+                                  <span [innerHtml]="clusterAgent.agentId | highlight : agentsFilters.searchText"></span>
                                   <i *ngIf="clusterAgent.title"> - </i>
                                   <i class="text-muted">{{clusterAgent.title}}</i>
                                 </a>
                               </span>
                             </td>
                             <td (click)="editAgent(clusterAgent, controller, true)"><span
-                              [innerHtml]="clusterAgent.agentName"></span></td>
+                              [innerHtml]="clusterAgent.agentName | highlight : agentsFilters.searchText"></span></td>
                             <td [nzBreakWord] (click)="editAgent(clusterAgent, controller, true)"><span
                               [innerHtml]="clusterAgent.agentNameAliases || '-'"></span></td>
                             <td (click)="editAgent(clusterAgent, controller, true)">
