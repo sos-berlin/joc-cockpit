@@ -1021,6 +1021,10 @@ span.cm-meta {
   color: #f0dfaf!important;
 }
 
+.cm-matchhighlight {
+  background-color: #096d09;
+}
+
 span.cm-header {
   color: #f0efd0!important;
 }
