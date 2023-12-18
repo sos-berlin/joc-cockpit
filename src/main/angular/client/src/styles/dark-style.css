@@ -1100,6 +1100,10 @@ div.CodeMirror-selected {
   color: #D8FA3C !important;
 }
 
+.cm-matchhighlight {
+  background-color: #5b805b;
+}
+
 .cm-builtin {
   color: #66D9EF !important;
 }

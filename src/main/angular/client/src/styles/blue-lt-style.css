@@ -1090,6 +1090,10 @@ span.cm-variable {
   color: #abcdef
 }
 
+.cm-matchhighlight {
+  background-color: #096d09;
+}
+
 .jsgantt-chart .jsgantt-task-row:nth-child(even) {
   background-color: var(--background-color);
 }
