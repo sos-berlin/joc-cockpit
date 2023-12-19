@@ -5415,7 +5415,11 @@ export class WorkflowComponent {
 
     function findFirstNode(data): void {
       for (const prop in node.cells) {
+        if (!node.cells[prop]?.edge && node.cells[prop]?.edges?.length === 0) {
+          graph.getModel().remove(node.cells[prop]);
 
+          continue;
+        }
         if (node.cells[prop]?.value?.tagName === 'Job') {
           let name = node.cells[prop].getAttribute('jobName');
           let count = 1;
@@ -7132,6 +7136,19 @@ export class WorkflowComponent {
               deleteInstructionFromJSON(cells);
             }
           } else {
+            if (cells.length === 1) {
+              let _cells = [];
+              cells.forEach((cell) => {
+                if (cell.id && self.nodeMap.has(cell.id)) {
+                  const targetCell = graph.getModel().getCell(self.nodeMap.get(cell.id));
+                  if (targetCell) {
+                    _cells.push(targetCell);
+                  }
+                  self.nodeMap.delete(cell.id)
+                }
+              });
+              cells = cells.concat(_cells);
+            }
             // in cells or descendant of cells
             cells = this.getDeletableCells(this.addAllEdges(cells));
             this.model.beginUpdate();
@@ -9653,7 +9670,7 @@ export class WorkflowComponent {
           _node = doc.createElement('Retry');
           _node.setAttribute('displayLabel', 'retry');
           _node.setAttribute('maxTries', '10');
-          _node.setAttribute('retryDelays', '1m');
+          _node.setAttribute('retryDelays', '60');
           _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'retry');
         } else if (title.match('cycle')) {
