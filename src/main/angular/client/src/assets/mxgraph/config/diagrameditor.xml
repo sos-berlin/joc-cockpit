@@ -61,7 +61,7 @@
       </Cycle>
     </add>
     <add as="Retry">
-      <Retry displayLabel="retry" maxTries="10" retryDelays="0">
+      <Retry displayLabel="retry" maxTries="10" retryDelays="60">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
