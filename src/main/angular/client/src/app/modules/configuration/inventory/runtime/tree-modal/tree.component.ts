@@ -22,6 +22,7 @@ export class TreeModalComponent {
   isExpandAll = false;
   loading = false;
   isSubmitted = false;
+  calendar: any;
   objectList: any = [];
   obj = {
     loading: false,
@@ -40,6 +41,7 @@ export class TreeModalComponent {
     this.preferences = this.modalData.preferences;
     this.type = this.modalData.type;
     this.object = this.modalData.object;
+    this.calendar = this.modalData.calendar;
     this.init();
     this.searchTerm.pipe(debounceTime(200))
       .subscribe((searchValue: string) => {

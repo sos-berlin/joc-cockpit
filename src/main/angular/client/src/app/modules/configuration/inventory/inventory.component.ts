@@ -5879,7 +5879,7 @@ export class InventoryComponent {
         if (args.eventSnapshots[j].eventType === 'AgentInventoryUpdated' && args.eventSnapshots[j].objectType === 'AGENT') {
           this.getAgents();
         }
-        if (args.eventSnapshots[j].eventType.match(/InventoryTagsUpdated/)) {
+        if (args.eventSnapshots[j].eventType.match(/InventoryTagsUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryTagAdded/)) {
           if (this.isTag) {
             this.updateTags();
           }
