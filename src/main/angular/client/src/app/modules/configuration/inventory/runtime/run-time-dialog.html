@@ -44,6 +44,9 @@
                           <i class="fa fa-calendar text-success"></i>&nbsp;
                           {{calendar.calendarName}} <i *ngIf="calendar.title">-</i> {{calendar.title}}
                         </a>
+                        <a (click)="editWorkingCal(calendar)"
+                           class="text-xs text-hover-primary m-l-sm"><i class="fa fa-pencil"></i>
+                        </a>
                         <a (click)="removeWorkingCal(i)"
                            class="text-xs text-hover-primary m-l-sm"><i class="fa fa-times text-hover-color"></i>
                         </a>

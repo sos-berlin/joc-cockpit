@@ -811,7 +811,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     this.openTreeModal('NONWORKINGDAYSCALENDAR');
   }
 
-  private openTreeModal(type: string): void{
+  private openTreeModal(type: string, calendar?): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: TreeModalComponent,
@@ -819,6 +819,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         schedulerId: this.schedulerId,
         preferences: this.preferences,
         type: type,
+        calendar,
         object: 'Calendar'
       },
       nzFooter: null,
@@ -827,11 +828,22 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        if(type === 'NONWORKINGDAYSCALENDAR') {
+        if (type === 'NONWORKINGDAYSCALENDAR') {
           this.nonWorkingDayCalendars = this.nonWorkingDayCalendars.concat(result);
           unique(this.nonWorkingDayCalendars);
         } else {
-          this.calendars = this.calendars.concat(result);
+          if (calendar) {
+            if (result.length) {
+              for (let i in this.calendars) {
+                if (this.calendars[i].calendarName === calendar.calendarName) {
+                  this.calendars[i].calendarName = result[0].calendarName;
+                  break;
+                }
+              }
+            }
+          } else {
+            this.calendars = this.calendars.concat(result);
+          }
         }
         this.ref.detectChanges();
       }
@@ -1041,6 +1053,10 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
   getPlan(): void {
     $('#full-calendar').data('calendar').setYearView({view: this.viewCalObj.calendarView, year: this.calendarTitle});
+  }
+
+  editWorkingCal(calendar): void {
+    this.openTreeModal('WORKINGDAYSCALENDAR', calendar);
   }
 
   removeWorkingCal(index): void {
