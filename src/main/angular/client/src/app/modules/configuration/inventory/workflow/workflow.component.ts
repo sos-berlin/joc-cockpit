@@ -5416,8 +5416,8 @@ export class WorkflowComponent {
     function findFirstNode(data): void {
       for (const prop in node.cells) {
         if (!node.cells[prop]?.edge && node.cells[prop]?.edges?.length === 0) {
-          graph.getModel().remove(node.cells[prop]);
-
+          node.cells[prop].setParent(graph.getDefaultParent());
+          graph.removeCells([node.cells[prop]], true);
           continue;
         }
         if (node.cells[prop]?.value?.tagName === 'Job') {

@@ -42,9 +42,8 @@
         </div>
         <ng-container *ngIf="node.isExpanded">
           <div *ngFor="let cal of node.origin.calendars" class="m-b-xs m-l-22">
-            <label nz-checkbox [(ngModel)]="cal.isChecked" name="'chk-'+ {{cal.id}}"
-            ></label>
-            <span class="p-l-sm m-t-xs"><i class="fa fa-calendar text-sm">&nbsp;</i>{{cal.name}}</span>
+            <label *ngIf="!calendar" nz-checkbox [(ngModel)]="cal.isChecked" name="'chk-'+ {{cal.id}}"></label>
+            <span (click)="selectObject(cal.name)" class="m-t-xs" [ngClass]="{'p-l-sm': !calendar, 'cursor': calendar}"><i class="fa fa-calendar p-r-xs text-sm"></i>{{cal.name}}</span>
           </div>
         </ng-container>
       </ng-template>
