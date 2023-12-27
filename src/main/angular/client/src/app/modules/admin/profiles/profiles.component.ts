@@ -152,11 +152,7 @@ export class ProfilesComponent {
   }
 
   showMaster(account: any): void {
-    if (sessionStorage['identityServiceType'] !== 'VAULT') {
-      this.router.navigate(['/users/identity_service/role'], {queryParams: {account}}).then();
-    } else {
-      this.router.navigate(['/users/identity_service/role']).then();
-    }
+    this.router.navigate(['/users/identity_service/role'], {queryParams: {account}}).then();
   }
 
   sort(key: string): void {

@@ -1950,6 +1950,10 @@ button.close {
   right: -8px;
 }
 
+.r-sm {
+  right: 8px !important;
+}
+
 .pos-rlt {
   z-index: 1;
 }
@@ -3379,8 +3383,13 @@ body div.mxPopupMenu {
   border-radius: 50%;
 }
 
-.more-option i:hover, .more-option-h i:hover {
+.more-option i:hover, .more-option-h i:hover, .more-option-v i:hover {
   background: var(--menu-hover);
+}
+
+.more-option-v i {
+  padding: 3px 8px;
+  border-radius: 50%;
 }
 
 .move-icon {
@@ -5264,6 +5273,30 @@ app-gauge > .gauge > .value {
   .overview {
     max-height: 100%;
     overflow: hidden;
+  }
+}
+
+.job-execution{
+  app-gauge {
+    width: 70px;
+    height: 68px;
+    padding: 0;
+  }
+  svg text {
+    fill: var(--text-color);
+  }
+
+  .ant-collapse {
+    background-color: transparent;
+    border: none;
+  }
+
+  .ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    padding: 6px 2px;
+  }
+
+  canvas{
+    height: 420px !important;
   }
 }
 
@@ -8259,6 +8292,24 @@ tr.tr-border td:first-child {
   margin-bottom: 12px;
 }
 
+.show-chart {
+  display: none;
+}
+
+.ant-collapse-content {
+  border-top: none;
+}
+
+.ant-collapse-item-active {
+  .show-chart {
+    display: block;
+  }
+
+  .ant-collapse-content {
+    border-top: 1px solid var(--border-color);
+  }
+}
+
 .order-count {
   margin-left: 8px;
   color: var(--white) !important;
@@ -9430,6 +9481,19 @@ cdk-virtual-scroll-viewport {
 
   .ant-picker-suffix {
     margin-top: -4px;
+  }
+}
+
+.custom-timeline {
+  top: 1px !important;
+  height: 26px !important;
+
+  .ant-picker-suffix {
+    margin-top: 0;
+  }
+
+  .ant-picker-input > input {
+    padding-bottom: 2px;
   }
 }
 

@@ -243,6 +243,16 @@
             </span>
           </a>
         </li>
+        <li *ngIf="((showViews && showViews.history != undefined) ? showViews.history : (permission.currentController && (permission.currentController.orders.view || permission.joc.fileTransfer.view || permission.currentController.deployments.view || permission.joc.dailyPlan.view)))"
+            class="nav-item">
+          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/reporting">
+            <span class="nav-text">
+              <i class="text-white pos-abt" nz-icon nzType="fund" nzTheme="outline"></i>
+              <i class="text-white " nz-icon nzType="fund" nzTheme="outline"></i>
+              <span class="ico text-white _600" translate>header.label.reporting</span>
+            </span>
+          </a>
+        </li>
         <li *ngIf="((showViews && showViews.auditLog != undefined) ? showViews.auditLog : (permission.joc && permission.joc.auditLog.view))"
             class="nav-item">
           <a [routerLinkActive]="['active']" class="nav-link" routerLink="/audit_log">

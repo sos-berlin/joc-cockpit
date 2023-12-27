@@ -270,7 +270,17 @@ export class CoreService {
         currentPage: '1'
       }
     };
-
+    this.tabs._reporting = {
+      current: true,
+      view: 'Week',
+      groupBy: 'DATE',
+      startYear: this.tabs._monitor.currentDate.getFullYear(),
+      startMonth: this.tabs._monitor.currentDate.getMonth(),
+      currentYear: this.tabs._monitor.currentDate.getFullYear(),
+      currentMonth: this.tabs._monitor.currentDate.getMonth(),
+      startDate: new Date().setHours(0, 0, 0, 0),
+      endDate: new Date().setHours(0, 0, 0, 0),
+    };
     this.tabs._orderOverview = {};
     this.tabs._orderOverview.overview = true;
     this.tabs._orderOverview.filter = {};
@@ -475,6 +485,10 @@ export class CoreService {
     return this.tabs._history;
   }
 
+  getReportingTab(): any {
+    return this.tabs._reporting;
+  }
+
   getOrderOverviewTab(): any {
     return this.tabs._orderOverview;
   }
@@ -636,6 +650,15 @@ export class CoreService {
         cb(false);
       }
     });
+  }
+
+  plainData(url: string, options: any): Observable<any> {
+    const headers: any = {
+      Accept: 'text/plain',
+      responseType: 'text/plain',
+      observe: 'response'
+    };
+    return this.http.post(url, options, headers);
   }
 
   getColor(d: number, type: string): string {
@@ -1534,6 +1557,11 @@ export class CoreService {
       return 0;
     }
     return moment(moment(date).tz(preferences.zone)).diff(moment());
+  }
+
+  getDuration(startDate: any, endDate: any): number {
+
+    return moment(endDate).diff(startDate) / 1000;
   }
 
   calDuration(n: any, r: any): string {

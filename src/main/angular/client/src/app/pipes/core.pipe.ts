@@ -583,3 +583,42 @@ export class StringToLinkPipe implements PipeTransform {
     return text;
   }
 }
+
+@Pipe({
+  name: 'secondsToTime'
+})
+export class SecondsToTimePipe implements PipeTransform {
+  transform(seconds: number): string {
+    if (!seconds) {
+      return '0s';
+    }
+    const days = Math.floor(seconds / (3600 * 24));
+    seconds -= days * 3600 * 24;
+    const hrs = Math.floor(seconds / 3600);
+    seconds -= hrs * 3600;
+    const mnts = Math.floor(seconds / 60);
+    seconds -= mnts * 60;
+    // if value is less than 1 min then return only seconds
+    if (days === 0 && hrs === 0 && mnts === 0) {
+      return seconds + 's';
+    } else if (days === 0 && hrs === 0) {
+      return this.convertToDecimal(mnts, seconds) + 'm';
+    } else if (days === 0 && hrs != 0 && mnts != 0 && seconds === 0) {
+      return this.convertToDecimal(hrs, mnts) + 'h';
+    } else if (days === 0 && hrs != 0 && mnts != 0 && seconds !== 0) {
+      return hrs + 'h ' + mnts + 'm ' + seconds + 's';
+    } else if (days === 0 && hrs != 0 && mnts == 0 && seconds !== 0) {
+      return hrs + 'h ' + seconds + 's';
+    } else if (days === 0 && hrs != 0 && mnts == 0 && seconds === 0) {
+      return hrs + 'h';
+    } else if (days === 0 && hrs === 0 && mnts !== 0 && seconds === 0) {
+      return mnts + 'm';
+    }
+    return days + 'd ' + hrs + 'h ' + mnts + 'm ' + seconds + 's';
+  }
+
+  // write a function to return 2hours 30 minutes to 2.5 hours
+  private convertToDecimal(hours, minutes) {
+    return (hours + minutes / 60).toFixed(2);
+  }
+}
