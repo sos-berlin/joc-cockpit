@@ -953,7 +953,7 @@ export class IdentityServiceComponent {
   }
 
   showUser({identityService}: { identityService: any }): void {
-    if (identityService.identityServiceType !== 'UNKNOWN' && identityService.identityServiceType !== 'CERTIFICATE') {
+    if (identityService.identityServiceType !== 'UNKNOWN' && (identityService.identityServiceType == 'CERTIFICATE' && !identityService.secondFactor)) {
       sessionStorage['identityServiceName'] = identityService.identityServiceName;
       sessionStorage['identityServiceType'] = identityService.identityServiceType;
       if (identityService.secondFactor) {
