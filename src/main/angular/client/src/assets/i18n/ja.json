@@ -2993,6 +2993,7 @@
     "label.priority": "プライオリティ",
     "label.subject": "件名",
     "label.body": "本文",
+    "label.to": "To",
     "label.cc": "CC",
     "label.bcc": "BCC",
     "label.recipient": "宛先",

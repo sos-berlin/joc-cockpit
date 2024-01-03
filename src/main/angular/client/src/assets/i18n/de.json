@@ -2993,6 +2993,7 @@
     "label.priority": "Priority",
     "label.subject": "Subject",
     "label.body": "Body",
+    "label.to": "To",
     "label.cc": "Cc",
     "label.bcc": "Bcc",
     "label.recipient": "Empfänger",

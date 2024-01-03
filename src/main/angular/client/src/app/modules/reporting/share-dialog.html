@@ -1,0 +1,61 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>Share</span>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a">
+    <div class="form-group row">
+      <label [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyRegistrationEmail' | translate"
+             [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+             translate>user.label.to
+      </label>
+      <div class="col-sm-6">
+        <input
+          [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+          class="form-control"
+          name="toRegistration" type="text">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
+             [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+             translate>user.label.cc
+      </label>
+      <div class="col-sm-6">
+        <input
+          [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+          class="form-control"
+          name="ccRegistration" type="text">
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="imageUrl">
+      <div class="col-sm-12 m-b-sm">
+        <label class="_600">Attachment</label>
+      </div>
+      <div class="col-sm-12">
+        <img [nzSrc]="imageUrl"
+             alt=""
+             height="100%"
+             nz-image
+             width="100%"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button [disabled]="!myForm.form.valid || submitted"
+            class="btn btn-primary btn-sm" type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{ 'Share' | translate }}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+      {{ 'common.button.cancel' | translate }}
+    </button>
+  </div>
+</form>

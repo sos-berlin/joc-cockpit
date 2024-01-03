@@ -38,6 +38,7 @@
     "date-holidays": "^3.21.2",
     "file-saver": "^2.0.5",
     "font-awesome": "^4.7.0",
+    "html2canvas": "^1.4.1",
     "jsoneditor": "^9.10.2",
     "jwk-to-pem": "^2.0.5",
     "moment-timezone": "^0.5.42",

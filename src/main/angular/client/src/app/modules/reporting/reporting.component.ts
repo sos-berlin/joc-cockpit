@@ -1,11 +1,47 @@
-import {Component} from '@angular/core';
+import {Component, ElementRef, inject, ViewChild} from '@angular/core';
 import {differenceInCalendarDays} from "date-fns";
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {Chart} from "chart.js";
+import {Subject, Subscription} from "rxjs";
+import {takeUntil} from "rxjs/operators";
+import html2canvas from 'html2canvas';
 import {CoreService} from "../../services/core.service";
 import {GroupByPipe} from "../../pipes/core.pipe";
 import {AuthService} from "../../components/guard";
+import {DataService} from "../../services/data.service";
 
-declare const jsPDF;
+@Component({
+  selector: 'app-share-modal-content',
+  templateUrl: './share-dialog.html'
+})
+export class ShareModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  submitted: any
+  imageUrl: string | undefined;
+
+  constructor(public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    this.getImage();
+  }
+
+  private getImage(): void {
+    html2canvas(this.modalData.content, {
+      allowTaint: true,
+      useCORS: true,
+      scale: 2,
+      scrollY: -window.scrollY,
+      scrollX: -window.scrollX,
+    }).then((canvas) => {
+      this.imageUrl = canvas.toDataURL('image/png');
+
+    });
+  }
+
+  onSubmit(): void {
+  }
+}
 
 @Component({
   selector: 'app-reporting',
@@ -17,7 +53,6 @@ export class ReportingComponent {
   preferences: any = {};
   permission: any = {};
   isLoading: boolean;
-  showTable: boolean;
   reloadState = 'no';
   weekStart = 1;
   dateFormat: string;
@@ -27,6 +62,7 @@ export class ReportingComponent {
   data: any = [];
   agentData: any = [];
   barChart: any;
+  barChart2: any;
   lineChart: any;
 
   colors = ['#90C7F5', '#C2b280', '#Aaf0d1', '#B38b6d', '#B2beb5', '#D4af37', '#8c92ac',
@@ -36,9 +72,9 @@ export class ReportingComponent {
     searchText: '',
     successValue: 0,
     successCount: 0,
+    inprogressCount: 0,
     failedValue: 0,
     failedCount: 0,
-    workflowCount: 0,
     failedDuration: 0,
     failedDurationValue: 0,
     successDuration: 0,
@@ -46,7 +82,18 @@ export class ReportingComponent {
     workflows: []
   };
 
-  constructor(private coreService: CoreService, private groupBy: GroupByPipe, private authService: AuthService) {
+  subscription: Subscription;
+  private pendingHTTPRequests$ = new Subject<void>();
+
+  /** Reporting */
+  @ViewChild('content') content: ElementRef;
+
+
+  constructor(private modal: NzModalService, private coreService: CoreService, private groupBy: GroupByPipe,
+              private authService: AuthService, private dataService: DataService) {
+    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
+    });
   }
 
   ngOnInit(): void {
@@ -63,9 +110,25 @@ export class ReportingComponent {
     }
   }
 
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    this.pendingHTTPRequests$.next();
+    this.pendingHTTPRequests$.complete();
+  }
+
+  private refresh(args: { eventSnapshots: any[] }): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if ((args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' || args.eventSnapshots[j].eventType === 'HistoryTaskStarted' || args.eventSnapshots[j].eventType === 'HistoryTaskUpdated') && this.isLoading) {
+          this.loadData();
+          break;
+        }
+      }
+    }
+  }
+
   private groupByData(data: any): any {
     const groupBy = this.groupBy.transform(data, 'WORKFLOW_PATH');
-    this.object.workflowCount = groupBy.length;
     this.object.workflows = [];
     for (let i in groupBy) {
       const obj = {
@@ -78,10 +141,14 @@ export class ReportingComponent {
       const groupByOrderIds = this.groupBy.transform(groupBy[i].value, 'ORDER_ID');
 
       for (let k in groupByOrderIds) {
+        let duration = 0;
+        groupByOrderIds[k].value.forEach((item) => {
+          duration += item.DURATION;
+        });
         orderIds.push({
           orderId: groupByOrderIds[k].key,
-          startDate: groupByOrderIds[k].value[groupByOrderIds.length - 1]?.START_TIME,
-          count: groupByOrderIds[k].value.length
+          startDate: groupByOrderIds[k].value[groupByOrderIds[k].value.length - 1]?.START_TIME,
+          duration: duration
         });
       }
 
@@ -104,13 +171,15 @@ export class ReportingComponent {
     obj.dateFrom = new Date(this.filter.startDate);
     obj.dateTo = new Date(d);
     obj.timeZone = this.preferences.zone;
-    this.coreService.plainData('reporting/order_steps', obj).subscribe({
+    this.coreService.plainData('reporting/order_steps', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         const csvString = res.body;
         const rows = csvString.trim().split('\n');
         const headers = rows[0].split(';');
         const data = [];
         this.object.failedCount = 0;
+        this.object.inprogressCount = 0;
+        this.object.successCount = 0;
         this.object.failedDuration = 0;
         this.object.successDuration = 0;
         const agents = {};
@@ -118,7 +187,7 @@ export class ReportingComponent {
           const row = rows[i].split(';');
           const rowData = {};
           let startTime = new Date(row[headers.indexOf('START_TIME')]);
-          let endTime = new Date(row[headers.indexOf('START_TIME')]);
+          let endTime = row[headers.indexOf('END_TIME')] ? new Date(row[headers.indexOf('END_TIME')]) : new Date();
           for (let j = 0; j < headers.length; j++) {
             if (headers[j] === 'ORDER_ID') {
               rowData[headers[j]] = row[j].substring(0, 24);
@@ -146,14 +215,20 @@ export class ReportingComponent {
 
           if (rowData['ERROR_STATE']?.toUpperCase() == 'FAILED') {
             this.object.failedDuration += rowData['DURATION'];
+            this.object.failedCount += 1;
           } else {
-            this.object.successDuration += rowData['DURATION'];
+            if (row[headers.indexOf('END_TIME')]) {
+              this.object.successDuration += rowData['DURATION'];
+            } else {
+              this.object.inprogressCount += 1;
+            }
           }
-          this.object.failedCount += rowData['ERROR_STATE']?.toUpperCase() == 'FAILED' ? 1 : 0;
+
           data.push(rowData);
         }
+
         const totalAvg = (this.object.failedDuration + this.object.successDuration) / data.length;
-        this.object.successCount = data.length - this.object.failedCount;
+        this.object.successCount = data.length - (this.object.failedCount + this.object.inprogressCount);
         this.object.successValue = +((this.object.successCount / data.length * 100).toFixed(2));
         this.object.failedValue = +((this.object.failedCount / data.length * 100).toFixed(2));
         this.object.successDurationValue = +(((this.object.successDuration / data.length) / totalAvg * 100).toFixed(2));
@@ -176,11 +251,7 @@ export class ReportingComponent {
   }
 
   updateGraphData(workflow): void {
-    this.jobExecutionData(workflow);
-  }
-
-  jobExecutionData(workflow): void {
-
+    console.log(workflow)
     const jobData = workflow.data.data.reverse();
     // Organize data by job name and store durations directly under job names
     const groupedData = {};
@@ -199,6 +270,9 @@ export class ReportingComponent {
 
     if (this.lineChart) {
       this.lineChart.destroy();
+    }
+    if (this.barChart2) {
+      this.barChart2.destroy();
     }
 
     // Extract unique sorted job names after sorting by start time
@@ -244,7 +318,30 @@ export class ReportingComponent {
 
     // Chart options
     const chartOptions = {
-      legend: false,
+      scales: {
+        x: {
+          adapters: {
+            type: 'time',
+            time: {
+              unit: 'hour', // Adjust the time unit as needed
+              displayFormats: {
+                hour: 'MMM D HH:mm' // Format for displaying the time on x-axis
+              }
+            }
+          },
+          title: {display: false, text: 'Start Time'}
+        },
+        y: {title: {display: true, text: 'Duration'}, beginAtZero: true}
+      }
+
+    };
+
+    const chartOptions2 = {
+      plugins: {
+        legend: {
+          display: false,
+        }
+      },
       scales: {
         x: {
           adapters: {
@@ -257,20 +354,44 @@ export class ReportingComponent {
             }
 
           },
-          title: {display: false, text: 'Start Time'}
+          title: {display: false, text: 'Workflow Start Time'}
         },
-        y: {title: {display: true, text: 'Duration'}, beginAtZero: true}
+        y: {title: {display: true, text: 'Total Duration'}, beginAtZero: true}
       }
 
     };
 
-// Render the line chart
+    // Render the line chart
     const canvas = document.getElementById(workflow.workflowPath) as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
     this.lineChart = new Chart(ctx, {
       type: 'line',
       data: chartData,
       options: chartOptions
+    });
+
+    const workflowData = workflow.data.order.reverse();
+    const chartData2 = {
+      labels: workflowData.map(item => item.startDate),
+      datasets: [{
+        label: '',
+        data: workflowData.map(item => {
+          return {
+            x: item.startDate,
+            y: item.duration // Duration
+          };
+        }),
+        borderWidth: 1,
+        fill: false
+      }]
+    };
+
+    const canvas2 = document.getElementById('workflow_' + workflow.workflowPath) as HTMLCanvasElement;
+    const ctx2 = canvas2.getContext('2d');
+    this.barChart2 = new Chart(ctx2, {
+      type: 'bar',
+      data: chartData2,
+      options: chartOptions2
     });
 
   }
@@ -351,17 +472,35 @@ export class ReportingComponent {
   }
 
   showDataByCount(count): void {
+    let labels = new Set();
     for (let i in this.agentData.datasets) {
       this.agentData.datasets[i].data = this.agentData.datasets[i].groupByData.map((item) => {
+        if (item.length >= count) {
+          item.forEach((obj) => {
+            labels.add(obj.START_TIME);
+          });
+        }
         return item.length >= count ? item.length : 0;
       });
     }
+    this.agentData.labels = Array.from(labels);
     this.barChart.update()
   }
 
+  failedExecution(workflow): void{
+console.log(workflow);
+  }
+
   reload(): void {
-    this.reloadState = 'yes';
-    this.loadData();
+    if (this.reloadState === 'no') {
+      this.data = [];
+      this.reloadState = 'yes';
+      this.isLoading = true;
+      this.pendingHTTPRequests$.next();
+    } else if (this.reloadState === 'yes') {
+      this.isLoading = false;
+      this.loadData();
+    }
   }
 
   /** Date filters */
@@ -441,23 +580,50 @@ export class ReportingComponent {
   }
 
   toggleView(): void {
-    this.showTable = !this.showTable;
+    this.filter.showAgentTable = !this.filter.showAgentTable;
+  }
+
+  toggleJobView(): void {
+    this.filter.showJobTable = !this.filter.showJobTable;
   }
 
   /** Reporting */
 
   createReport(): void {
+    const content = this.content.nativeElement;
 
+
+    html2canvas(content, {
+      allowTaint: true,
+      useCORS: true,
+      scale: 2,
+    }).then((canvas) => {
+
+      const imgData = canvas.toDataURL('image/png');
+
+
+      const downloadLink = document.createElement('a');
+      downloadLink.href = imgData;
+      downloadLink.download = 'Test.png';
+
+
+      downloadLink.click();
+    });
   }
 
-  private downloadReport(): void {
-    // Create a new instance of jsPDF
-    var doc = new jsPDF();
+  shareReport(): void {
+    const content = this.content.nativeElement;
 
-    // Add content to the PDF
-    doc.text("Hello, this is a simple PDF created using jsPDF!", 10, 10);
-
-    // Save the PDF
-    doc.save("example.pdf");
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ShareModalComponent,
+      nzClassName: 'lg',
+      nzData: {content: content},
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
+
+
 }
