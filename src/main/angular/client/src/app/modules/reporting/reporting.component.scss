@@ -1,0 +1,80 @@
+.pdfDownload {
+  background: #ffffff;
+  border: solid 1px #e6e6e6;
+  border-radius: 2px;
+  display: inline-block;
+  height: 100px;
+  line-height: 100px;
+  margin: 5px;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  width: 100px;
+}
+
+.pdfDownload span {
+  background: #f2594b;
+  border-radius: 4px;
+  color: #ffffff;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: normal;
+  padding: 5px 10px;
+  position: relative;
+  text-transform: uppercase;
+  z-index: 1;
+}
+
+.pdfDownload span:last-child {
+  margin-left: -20px;
+}
+
+.pdfDownload:before,
+.pdfDownload:after {
+  background: #ffffff;
+  border: solid 3px #9fb4cc;
+  border-radius: 4px;
+  content: '';
+  display: block;
+  height: 35px;
+  left: 50%;
+  margin: -17px 0 0 -12px;
+  position: absolute;
+  top: 50%;
+  /*transform:translate(-50%,-50%);*/
+
+  width: 25px;
+}
+
+.pdfDownload:hover:before,
+.pdfDownload:hover:after {
+  background: #e2e8f0;
+}
+/*.pdfDownload:before{transform:translate(-30%,-60%);}*/
+
+.pdfDownload:before {
+  margin: -23px 0 0 -5px;
+}
+
+.pdfDownload:hover {
+  background: #e2e8f0;
+  border-color: #9fb4cc;
+}
+
+.pdfDownload:active {
+  background: #dae0e8;
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, .25);
+}
+
+.pdfDownload span:first-child {
+  display: none;
+}
+
+.pdfDownload:hover span:first-child {
+  display: inline-block;
+}
+
+.pdfDownload:hover span:last-child {
+  display: none;
+}

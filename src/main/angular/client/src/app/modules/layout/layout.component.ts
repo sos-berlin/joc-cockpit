@@ -36,6 +36,7 @@ export class LayoutComponent {
   subscription6: any = Subscription;
   isLogout = false;
   loading = false;
+  isHide = false;
   sessionTimeout = 0;
   isTouch = false;
   isProfileLoaded = false;
@@ -53,7 +54,7 @@ export class LayoutComponent {
   @ViewChild(HeaderComponent, {static: false}) child: any;
   @ViewChild('customTpl', {static: true}) customTpl: any;
 
-  constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
+  constructor(public coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
               private dataService: DataService, public translate: TranslateService, private toasterService: ToastrService, private popoutService: PopupService,
               private nzConfigService: NzConfigService, private modal: NzModalService, private oauthService: OIDCAuthService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -922,5 +923,17 @@ export class LayoutComponent {
         sessionStorage['welcomeGotIt'] = true;
       });
     });
+  }
+
+  hideDownloadPanel(flag: boolean): void {
+    $('#download-panel').toggle('animate__fadeOutDown');
+
+    setTimeout(() => {
+      if (flag) {
+        $('.download-bar-hide').removeClass('opacity0').addClass('fadeIn');
+      } else {
+        $('.download-bar-hide').addClass('opacity0').removeClass('fadeIn');
+      }
+    }, 0);
   }
 }

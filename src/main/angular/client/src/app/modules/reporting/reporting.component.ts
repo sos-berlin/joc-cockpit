@@ -5,38 +5,159 @@ import {Chart} from "chart.js";
 import {Subject, Subscription} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 import html2canvas from 'html2canvas';
+import {jsPDF} from 'jspdf';
 import {CoreService} from "../../services/core.service";
 import {GroupByPipe} from "../../pipes/core.pipe";
 import {AuthService} from "../../components/guard";
 import {DataService} from "../../services/data.service";
+import {FileUploaderComponent} from "../../components/file-uploader/file-uploader.component";
+
+
+@Component({
+  selector: 'app-download-modal-content',
+  templateUrl: './download-dialog.html'
+})
+export class DownloadModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  submitted: any
+  loading: boolean = false;
+  object: any = {};
+  preferences: any = {};
+
+  dates = [{
+    name: 'Last Month',
+  }, {
+    name: 'Last 3 Months',
+  }, {
+    name: 'Last 6 Months',
+  }, {
+    name: 'Last Year',
+  }];
+  templates = [];
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.templates = this.modalData.templates;
+    this.preferences = this.modalData.preferences;
+  }
+
+  download(): void {
+    this.loading = false;
+    const obj: any = {
+      columns: ["ID", "CONTROLLER_ID", "ORDER_ID", "WORKFLOW_PATH", "WORKFLOW_VERSION_ID", "WORKFLOW_NAME", "POSITION", "JOB_NAME", "CRITICALITY", "AGENT_ID", "AGENT_NAME", "START_TIME", "END_TIME", "ERROR_STATE", "CREATED", "MODIFIED"]
+    };
+    let arr = [];
+    if (this.object.period.name == 'Last Month') {
+      arr = this.getStartAndEndDatesOfLastMonth();
+    } else if (this.object.period.name == 'Last 3 Months') {
+      arr = this.getStartAndEndDatesOfLast3Months();
+    } else if (this.object.period.name == 'Last 6 Months') {
+      arr = this.getStartAndEndDatesOfLast6Months();
+    } else if (this.object.period.name == 'Last Year') {
+      arr = this.getStartAndEndDatesOfLastYear();
+
+    }
+    obj.dateFrom = arr[0];
+    obj.dateTo = arr[1];
+    obj.timeZone = this.preferences.zone;
+    this.activeModal.close();
+    this.coreService.reportDownloadingStart = true;
+    this.coreService.downloadCsv('reporting/order_steps', obj, this.object.period.name + '.csv');
+  }
+
+
+  // write a function to get start and end date of last month
+  private getStartAndEndDatesOfLastMonth() {
+    const date = new Date();
+    const firstDay = new Date(date.getFullYear(), date.getMonth() - 1, 1);
+    const lastDay = new Date(date.getFullYear(), date.getMonth(), 0);
+    return [firstDay, lastDay];
+  }
+
+  // write a function to get start and end date of last 3 months
+  private getStartAndEndDatesOfLast3Months() {
+    const date = new Date();
+    const firstDay = new Date(date.getFullYear(), date.getMonth() - 3, 1);
+    const lastDay = new Date(date.getFullYear(), date.getMonth(), 0);
+    return [firstDay, lastDay];
+  }
+
+  private getStartAndEndDatesOfLast6Months() {
+    const date = new Date();
+    const firstDay = new Date(date.getFullYear(), date.getMonth() - 6, 1);
+    const lastDay = new Date(date.getFullYear(), date.getMonth(), 0);
+    return [firstDay, lastDay];
+  }
+
+  private getStartAndEndDatesOfLastYear() {
+    const date = new Date();
+    const firstDay = new Date(date.getFullYear() - 1, date.getMonth(), 1);
+    const lastDay = new Date(date.getFullYear(), date.getMonth(), 0);
+    return [firstDay, lastDay];
+  }
+
+  onSubmit(): void {
+    console.log(this.object);
+    this.download();
+  }
+}
 
 @Component({
   selector: 'app-share-modal-content',
-  templateUrl: './share-dialog.html'
+  templateUrl: './share-dialog.html',
+  styleUrls: ['./reporting.component.scss']
 })
 export class ShareModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   submitted: any
   imageUrl: string | undefined;
+  loading: boolean = false;
 
   constructor(public activeModal: NzModalRef) {
   }
 
   ngOnInit(): void {
-    this.getImage();
+    this.imageUrl = this.modalData;
   }
 
-  private getImage(): void {
-    html2canvas(this.modalData.content, {
-      allowTaint: true,
-      useCORS: true,
-      scale: 2,
-      scrollY: -window.scrollY,
-      scrollX: -window.scrollX,
-    }).then((canvas) => {
-      this.imageUrl = canvas.toDataURL('image/png');
+  private async getImage() {
+    this.loading = true;
+    // Get DOM elements
+    const contentElement = this.modalData.content.querySelector('#content');
+    const innerData1Element = this.modalData.content.querySelector('.table-responsive');
+    const innerData2Element = this.modalData.content.querySelector('.table-responsive2');
 
+    const initialMaxHeightContent = contentElement.style.maxHeight;
+    const initialMaxHeightInnerData1 = innerData1Element.style.maxHeight;
+    const initialMaxHeightInnerData2 = innerData2Element.style.maxHeight;
+
+    // Set maxHeight to inherit for capturing full content
+    contentElement.style.maxHeight = 'inherit';
+    innerData1Element.style.maxHeight = 'inherit';
+    innerData2Element.style.maxHeight = 'inherit';
+
+    // Create canvas from HTML content
+    const canvas = await html2canvas(contentElement, {
+      scale: 1
     });
+
+    // Restore initial maxHeight values
+    contentElement.style.maxHeight = initialMaxHeightContent;
+    innerData1Element.style.maxHeight = initialMaxHeightInnerData1;
+    innerData2Element.style.maxHeight = initialMaxHeightInnerData2;
+
+    // Create PDF
+    const pdf = new jsPDF();
+    const pageWidth = 210; // Width of A4 page in mm
+    const pageHeight = (canvas.height * pageWidth) / canvas.width; // Maintain aspect ratio
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pageWidth, pageHeight);
+
+    // Save PDF
+    pdf.save('report.pdf');
+    this.imageUrl = canvas.toDataURL('image/png');
+    this.loading = false;
   }
 
   onSubmit(): void {
@@ -64,7 +185,105 @@ export class ReportingComponent {
   barChart: any;
   barChart2: any;
   lineChart: any;
+  loading = false;
+  agentGrouped: any;
 
+  templates = [
+    {
+      title: 'Reports focused on increase/decrease of job executions',
+      data: {
+        chartType: 'Line',
+        groupBy: 'JOB_NAME'
+      }
+    },
+    {
+      title: 'Reports focused on load indicating periods of low and high parallelism of job executions per month',
+      data: {
+        chartType: 'Bar',
+        groupBy: 'START_TIME'
+      }
+    },
+    {
+      title: 'Reports focused on load indicating periods of low and high parallelism of job executions per year',
+      data: {
+        chartType: 'Bar',
+        groupBy: 'START_TIME'
+      }
+    },
+    {
+      title: 'Reports focused on job executions per month',
+      data: {
+        chartType: 'Line',
+        groupBy: 'JOB_NAME'
+      }
+    },
+    {
+      title: 'Reports focused on job executions per year',
+      data: {
+        chartType: 'Line',
+        groupBy: 'JOB_NAME'
+      }
+    },
+    {
+      title: 'Reports focused on orders per month',
+      data: {
+        chartType: 'Line',
+        groupBy: 'ORDER_ID'
+      }
+    },
+    {
+      title: 'Reports focused on orders per year',
+      data: {
+        chartType: 'Line',
+        groupBy: 'ORDER_ID'
+      }
+    },
+    {
+      title: 'Reports focused on frequently failed job per month',
+      data: {
+        chartType: 'BAR',
+        isFailed: true,
+        groupBy: 'JOB_NAME'
+      }
+    },
+    {
+      title: 'Reports focused on frequently failed job per year',
+      data: {
+        chartType: 'BAR',
+        isFailed: true,
+        groupBy: 'JOB_NAME'
+      }
+    },
+    {
+      title: 'Reports focused on Agent load indicating job executions per Agent per month',
+      data: {
+        chartType: 'BAR',
+        groupBy: 'AGENT_NAME'
+      }
+    },
+    {
+      title: 'Reports focused on Agent load indicating job executions per Agent per year',
+      data: {
+        chartType: 'BAR',
+        groupBy: 'AGENT_NAME'
+      }
+    },
+    {
+      title: 'Reports focused on parallel job executions per Agent per month',
+      data: {
+        chartType: 'BAR',
+        groupBy: 'AGENT_NAME',
+        groupBy2: 'START_TIME'
+      }
+    },
+    {
+      title: 'Reports focused on parallel job executions per Agent per year',
+      data: {
+        chartType: 'BAR',
+        groupBy: 'AGENT_NAME',
+        groupBy2: 'START_TIME'
+      }
+    }];
   colors = ['#90C7F5', '#C2b280', '#Aaf0d1', '#B38b6d', '#B2beb5', '#D4af37', '#8c92ac',
     '#FFCF8c', '#CDEB8B', '#FFC7C7', '#8B8BB4', '#Eedc82', '#B87333', '#97B0FF', '#D4af37', '#856088'];
 
@@ -82,6 +301,8 @@ export class ReportingComponent {
     workflows: []
   };
 
+  index: number;
+
   subscription: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
 
@@ -90,7 +311,7 @@ export class ReportingComponent {
 
 
   constructor(private modal: NzModalService, private coreService: CoreService, private groupBy: GroupByPipe,
-              private authService: AuthService, private dataService: DataService) {
+              private authService: AuthService, private dataService: DataService, private elementRef: ElementRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -101,6 +322,7 @@ export class ReportingComponent {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.filter = this.coreService.getReportingTab();
+    this.index = this.filter.tabIndex || 0;
     if (this.filter.view !== 'Custom') {
       this.coreService.renderTimeSheetHeader({filter: this.filter}, this.weekStart, () => {
         this.loadData();
@@ -115,6 +337,11 @@ export class ReportingComponent {
     this.pendingHTTPRequests$.next();
     this.pendingHTTPRequests$.complete();
   }
+
+  tabChange($event): void {
+    this.filter.tabIndex = $event.index;
+  }
+
 
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
@@ -251,7 +478,6 @@ export class ReportingComponent {
   }
 
   updateGraphData(workflow): void {
-    console.log(workflow)
     const jobData = workflow.data.data.reverse();
     // Organize data by job name and store durations directly under job names
     const groupedData = {};
@@ -314,7 +540,6 @@ export class ReportingComponent {
         };
       })
     };
-
 
     // Chart options
     const chartOptions = {
@@ -467,8 +692,10 @@ export class ReportingComponent {
       this.barChart.destroy();
     }
     const canvas = document.getElementById('bar-chart') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-    this.barChart = new Chart(ctx, config);
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      this.barChart = new Chart(ctx, config);
+    }
   }
 
   showDataByCount(count): void {
@@ -487,8 +714,66 @@ export class ReportingComponent {
     this.barChart.update()
   }
 
-  failedExecution(workflow): void{
-console.log(workflow);
+  failedExecution(isChecked: boolean, workflow): void {
+    const jobData = workflow.data.data.reverse();
+    // Organize data by job name and store durations directly under job names
+    const groupedData = {};
+    const jobNames = new Set();
+    jobData.forEach(job => {
+      if (!isChecked || job['ERROR_STATE']?.toUpperCase() == 'FAILED') {
+        if (!groupedData[job.JOB_NAME]) {
+          groupedData[job.JOB_NAME] = [];
+        }
+        jobNames.add(job.JOB_NAME);
+        groupedData[job.JOB_NAME].push({
+          DURATION: job.DURATION,
+          START_TIME: job.START_TIME,
+          ERROR_STATE: job.ERROR_STATE
+        });
+      }
+    });
+
+    // Extract unique sorted job names after sorting by start time
+    const uniqueJobNames = Array.from(jobNames);
+    console.log(uniqueJobNames)
+    const chartData = {
+      labels: jobData.filter(job => uniqueJobNames.includes(job.JOB_NAME))
+        .map(job => job.START_TIME).filter((obj, index, self) =>
+          index === self.findIndex((o) => o === obj)
+        ),
+      datasets: uniqueJobNames.map((jobName: any) => {
+        const errorStates = groupedData[jobName].map(item => item.ERROR_STATE);
+
+        const pointBackgroundColors = errorStates.map(state => {
+          return state === 'failed' ? 'red' : 'green';
+        });
+
+        const pointStyles = errorStates.map(state => {
+          return state === 'failed' ? 'circle' : 'rect';
+        });
+
+        const pointRadii = errorStates.map(state => {
+          return state === 'failed' ? 5 : 3;
+        });
+        return {
+          label: jobName,
+          data: groupedData[jobName].map(item => {
+            return {
+              x: item.START_TIME,
+              y: item.DURATION // Duration
+            };
+          }),
+          borderWidth: 1,
+          fill: false,
+          pointRadius: pointRadii,
+          pointBackgroundColor: pointBackgroundColors,
+          pointStyle: pointStyles
+        };
+      })
+    };
+    console.log(chartData.labels)
+    this.lineChart.data = chartData;
+    this.lineChart.update();
   }
 
   reload(): void {
@@ -589,41 +874,87 @@ console.log(workflow);
 
   /** Reporting */
 
-  createReport(): void {
-    const content = this.content.nativeElement;
+  async createReport() {
+    this.loading = true;
+    // Get DOM elements
+    const contentElement = this.elementRef.nativeElement.querySelector('#content');
+    const innerData1Element = this.elementRef.nativeElement.querySelector('.table-responsive');
+    const innerData2Element = this.elementRef.nativeElement.querySelector('.table-responsive2');
 
+    const initialMaxHeightContent = contentElement.style.maxHeight;
+    const initialMaxHeightInnerData1 = innerData1Element.style.maxHeight;
+    const initialMaxHeightInnerData2 = innerData2Element.style.maxHeight;
 
-    html2canvas(content, {
-      allowTaint: true,
-      useCORS: true,
-      scale: 2,
-    }).then((canvas) => {
+    // Set maxHeight to inherit for capturing full content
+    contentElement.style.maxHeight = 'inherit';
+    innerData1Element.style.maxHeight = 'inherit';
+    innerData2Element.style.maxHeight = 'inherit';
 
-      const imgData = canvas.toDataURL('image/png');
-
-
-      const downloadLink = document.createElement('a');
-      downloadLink.href = imgData;
-      downloadLink.download = 'Test.png';
-
-
-      downloadLink.click();
+    // Create canvas from HTML content
+    const canvas = await html2canvas(contentElement, {
+      scale: 1
     });
+
+    // Restore initial maxHeight values
+    contentElement.style.maxHeight = initialMaxHeightContent;
+    innerData1Element.style.maxHeight = initialMaxHeightInnerData1;
+    innerData2Element.style.maxHeight = initialMaxHeightInnerData2;
+
+    // Create PDF
+    const pdf = new jsPDF();
+    const pageWidth = 210; // Width of A4 page in mm
+    const pageHeight = (canvas.height * pageWidth) / canvas.width; // Maintain aspect ratio
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pageWidth, pageHeight);
+
+    // Save PDF
+    pdf.save('report.pdf');
+    this.loading = false;
   }
 
-  shareReport(): void {
-    const content = this.content.nativeElement;
-
+  shareReport() {
+    const element = this.elementRef.nativeElement
     this.modal.create({
       nzTitle: undefined,
       nzContent: ShareModalComponent,
       nzClassName: 'lg',
-      nzData: {content: content},
+      nzData: {content: element},
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
     });
   }
 
+  downloadReport() {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: DownloadModalComponent,
+      //     nzClassName: 'lg',
+      nzFooter: null,
+      nzData: {templates: this.templates, preferences: this.preferences},
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
 
+  importJson() {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: FileUploaderComponent,
+      nzClassName: 'lg',
+      nzData: {
+        type: 'JSON',
+      },
+      nzFooter: null,
+      nzAutofocus: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(res => {
+      if (res) {
+        this.agentGrouped = res
+        console.log(res, "res.data")
+        this.groupByAgent(this.agentGrouped);
+      }
+    })
+  }
 }

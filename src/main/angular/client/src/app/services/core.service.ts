@@ -24,6 +24,7 @@ export class CoreService {
   dashboard: any = {};
   locales: any = [];
   expertMode: string | undefined | null;
+  reportDownloadingStart = false;
   scheduleExpandedProperties: any = new Map();
 
   logViewDetails = {
@@ -660,6 +661,27 @@ export class CoreService {
     };
     return this.http.post(url, options, headers);
   }
+
+  downloadCsv(url: string, body: any, fileName): void {
+    const headers: any = {
+      Accept: 'text/plain',
+      responseType: 'text/plain',
+      observe: 'response'
+    };
+    this.http.post(url, body, headers).subscribe({
+      next: (response: any) => {
+        const blob = new Blob([response.body], {type: 'text/csv'});
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+        this.reportDownloadingStart = false;
+      }, complete: () => {
+        this.reportDownloadingStart = false;
+      }
+    });
+  }
+
 
   getColor(d: number, type: string): string {
     if (d === 0) {
@@ -2429,7 +2451,7 @@ export class CoreService {
       }
     }
 
-    function matchExactPosition(node: any, data: any): boolean{
+    function matchExactPosition(node: any, data: any): boolean {
       let flag = false;
       for (let i in node.children) {
         if (node.children[i].position == data.position) {
@@ -2449,6 +2471,7 @@ export class CoreService {
 
       return flag;
     }
+
     function checkAndUpdate(node: any, data: any) {
       let flag = false;
       for (let i in node.children) {
@@ -2475,7 +2498,7 @@ export class CoreService {
       if (!flag) {
         let check = false;
         for (let i in node.children) {
-          if(check){
+          if (check) {
             break;
           } else if (node.children[i].children?.length) {
             check = matchExactPosition(node.children[i], data);

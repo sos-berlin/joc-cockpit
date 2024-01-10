@@ -2369,6 +2369,7 @@
     "message.noVariableAvailable": "aucune variable disponible",
     "message.orderModificationNotAllowed": "L'état de l'ordre {{state}} ne permet pas de modification",
     "message.noLogHistoryFound": "Aucun journal n'a été trouvé pour cet ordre",
+    "message.confirmAllSelectedOrders": "Are you sure that you want to confirm all the selected orders?",
     "tooltip.cycleEndTime": "Cette option permet de spécifier l'heure de fin du cycle. Les utilisateurs peuvent spécifier une période plus courte que celle prédéfinie pour la fin du cycle. L'ordre reprendra à partir de la position choisie par l'utilisateur et l'heure de fin spécifiée sera vérifiée lorsque l'ordre reviendra au début du cycle. Les heures de fin de cycle dépassant la période prédéfinie seront ignorées.",
     "treeView": {
       "label": {
