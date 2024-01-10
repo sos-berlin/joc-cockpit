@@ -28,6 +28,7 @@ import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.co
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {AbstractControl, NG_VALIDATORS, Validator} from "@angular/forms";
 import {OrderActionComponent} from "./order-action/order-action.component";
+import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.component";
 
 declare const $;
 
@@ -234,6 +235,7 @@ export class OrderOverviewComponent {
     isSuspend: false,
     isSuspendWithKill: false,
     isResume: false,
+    isPrompt: false,
   };
 
   filterBtn: any = [
@@ -985,6 +987,9 @@ export class OrderOverviewComponent {
           this.object.isCancelWithKill = true;
           this.object.isSuspendWithKill = true;
         }
+        if (order.state._text === 'PROMPTING') {
+          this.object.isPrompt = true;
+        }
         if (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING' && order.state._text !== 'BLOCKED') {
           this.object.isModify = false;
           this.object.isModifyStartTime = false;
@@ -1127,6 +1132,10 @@ export class OrderOverviewComponent {
     this._bulkOperation('Cancel', 'cancel', isKill);
   }
 
+  confirmAllOrder(): void {
+    this._bulkOperation('Confirm', 'confirm', false);
+  }
+
   _bulkOperation(operation, url, isKill = false): void {
     const obj: any = {
       controllerId: this.schedulerIds.selected
@@ -1181,17 +1190,49 @@ export class OrderOverviewComponent {
         }
       });
     } else {
-      this.isProcessing = true;
-      this.coreService.post('orders/' + url, obj).subscribe({
-        next: () => {
-          if (cb) {
-            cb();
-          }
-          this.resetCheckBox();
-          this.resetAction(5000);
-        }, error: () => this.resetAction()
-      });
+      if (operation == 'Confirm') {
+        this.confirmOrder(obj, url, cb);
+      } else {
+        this.isProcessing = true;
+        this.coreService.post('orders/' + url, obj).subscribe({
+          next: () => {
+            if (cb) {
+              cb();
+            }
+            this.resetCheckBox();
+            this.resetAction(5000);
+          }, error: () => this.resetAction()
+        });
+      }
     }
+  }
+
+  confirmOrder(obj, url, cb): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmModalComponent,
+      nzData: {
+        title: 'confirm',
+        question: 'order.message.confirmAllSelectedOrders'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        this.isProcessing = true;
+        this.coreService.post('orders/' + url, obj).subscribe({
+          next: () => {
+            if (cb) {
+              cb();
+            }
+            this.resetCheckBox();
+            this.resetAction(5000);
+          }, error: () => this.resetAction()
+        });
+      }
+    });
   }
 
   resetCheckBox(): void {
@@ -1207,6 +1248,7 @@ export class OrderOverviewComponent {
       isSuspend: false,
       isSuspendWithKill: false,
       isResume: false,
+      isPrompt: false,
     };
   }
 

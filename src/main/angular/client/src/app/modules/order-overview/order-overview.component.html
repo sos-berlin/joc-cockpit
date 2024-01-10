@@ -124,6 +124,11 @@
                     [disabled]="!object.isResume" class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.resume</span>
             </button>
+            <button (click)="confirmAllOrder()" *ngIf="permission.currentController.orders.modify && object.isPrompt"
+                    class="btn btn-grey btn-sm m-l-12"><i
+              class="fa fa fa-check-circle-o p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.confirm</span>
+            </button>
+
           </div>
         </div>
       </div>
