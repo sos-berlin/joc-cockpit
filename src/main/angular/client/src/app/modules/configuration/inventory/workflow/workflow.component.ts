@@ -5805,7 +5805,60 @@ export class WorkflowComponent {
 
     findFirstNode(jsonObject);
 
+    function traverseJSONObject(nodeId, obj) {
+      function getObject(json): void {
+        if (json.instructions) {
+          for (let x = 0; x < json.instructions.length; x++) {
+            if (json.instructions[x].id == nodeId) {
+              json.instructions.push(obj);
+              break;
+            }
+            if (json.instructions[x].instructions) {
+              getObject(json.instructions[x]);
+            }
+            if (json.instructions[x].catch) {
+              if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+                getObject(json.instructions[x].catch);
+              }
+            }
+            if (json.instructions[x].then) {
+              getObject(json.instructions[x].then);
+            }
+            if (json.instructions[x].else) {
+              getObject(json.instructions[x].else);
+            }
+            if (json.instructions[x].branches) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                getObject(json.instructions[x].branches[i]);
+              }
+            }
+          }
+        }
+      }
 
+      getObject(jsonObject)
+    }
+
+    function checkRemainingNodes(node) {
+      node.edges.forEach(edge => {
+        if (edge.source && edge.source.id !== node.id) {
+         let targetId = edge.source.id;
+          if (self.workflowService.checkClosingCell(edge.source.value.tagName)) {
+            targetId = edge.source.getAttribute('targetId');
+          }
+
+          const obj = createObject(node);
+          traverseJSONObject(targetId, obj);
+        }
+      });
+    }
+
+    if (nodes.length > 0) {
+      nodes.forEach((node) => {
+        checkRemainingNodes(node);
+      });
+    }
+    
     const jobs = Array.from(jobMap.keys());
     arrOfJobs.forEach((cell) => {
       const jobName = cell.getAttribute('jobName');
