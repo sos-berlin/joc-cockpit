@@ -32,7 +32,7 @@
               translate>dashboard.message.confirmNodeLoss</span>
       </span>
       <span *ngIf="updateFromJobTemplate" class="text" translate>inventory.message.updateFromJobTemplate</span>
-      <span *ngIf="question" class="text">{{question}}</span>
+      <span *ngIf="question" class="text">{{question | translate}}</span>
       <span *ngIf="message2" class="text">
         {{'workflow.message.' + message2 | translate}}
       </span>

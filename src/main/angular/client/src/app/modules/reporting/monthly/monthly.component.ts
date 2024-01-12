@@ -1,170 +1,29 @@
-import {Component, ElementRef, inject, ViewChild} from '@angular/core';
-import {differenceInCalendarDays} from "date-fns";
-import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
-import {Chart} from "chart.js";
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {Subject, Subscription} from "rxjs";
+import {NzModalService} from "ng-zorro-antd/modal";
+import {CoreService} from "../../../services/core.service";
+import {GroupByPipe} from "../../../pipes/core.pipe";
+import {AuthService} from "../../../components/guard";
+import {DataService} from "../../../services/data.service";
 import {takeUntil} from "rxjs/operators";
-import html2canvas from 'html2canvas';
-import {jsPDF} from 'jspdf';
-import {CoreService} from "../../services/core.service";
-import {GroupByPipe} from "../../pipes/core.pipe";
-import {AuthService} from "../../components/guard";
-import {DataService} from "../../services/data.service";
-import {FileUploaderComponent} from "../../components/file-uploader/file-uploader.component";
-
+import {Chart} from "chart.js";
+import {differenceInCalendarDays} from "date-fns";
+import html2canvas from "html2canvas";
+import {jsPDF} from "jspdf";
+import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
+import {DownloadModalComponent, ShareModalComponent} from "../reporting.component";
 
 @Component({
-  selector: 'app-download-modal-content',
-  templateUrl: './download-dialog.html'
+  selector: 'app-monthly',
+  templateUrl: './monthly.component.html',
+  styleUrls: ['./monthly.component.scss']
 })
-export class DownloadModalComponent {
-  readonly modalData: any = inject(NZ_MODAL_DATA);
-  submitted: any
-  loading: boolean = false;
-  object: any = {
-    type: 'monthly',
-    name: '',
-    columns: ["ID", "CONTROLLER_ID", "ORDER_ID", "WORKFLOW_PATH", "WORKFLOW_VERSION_ID", "WORKFLOW_NAME", "POSITION", "JOB_NAME", "CRITICALITY", "AGENT_ID", "AGENT_NAME", "START_TIME", "END_TIME", "ERROR_STATE", "CREATED", "MODIFIED"]
-  };
-  preferences: any = {};
-
-  today = new Date();
-  templates = [];
-
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
-  }
-
-  ngOnInit(): void {
-    this.templates = this.modalData.templates;
-    this.preferences = this.modalData.preferences;
-  }
-
-  download(): void {
-    this.loading = false;
-    const obj = {
-      columns: this.object.columns,
-      timeZone: this.preferences.zone,
-      dateFrom: this.object.dateFrom,
-      dateTo: this.object.dateTo,
-    };
-
-    this.activeModal.close();
-    this.coreService.reportDownloadingStart = true;
-    this.coreService.downloadCsv('reporting/order_steps', obj, this.object.name + '.csv');
-  }
-
-  // write a function to get start and end date of month by giving single date
-  private getStartAndEndDatesOfMonth(date) {
-    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-    return [firstDay, lastDay];
-  }
-
-  // write a function to get start and end date of year by giving single date
-  private getStartAndEndDatesOfYear(date) {
-    const firstDay = new Date(date.getFullYear(), 0, 1);
-    const lastDay = new Date(date.getFullYear(), 11, 31);
-    return [firstDay, lastDay];
-  }
-
-  disabledDate = (current: Date): boolean =>
-    // Can not select days before today and today
-    differenceInCalendarDays(current, this.today) > 0;
-
-  onChange(date) {
-    let arr = [];
-    if (this.object.type === 'monthly') {
-      arr = this.getStartAndEndDatesOfMonth(date);
-      this.object.name = date.getMonth() + '-' + date.getFullYear();
-    } else {
-      arr = this.getStartAndEndDatesOfYear(date);
-      this.object.name = date.getFullYear();
-    }
-    this.object.dateFrom = arr[0];
-    this.object.dateTo = arr[1];
-    console.log(this.object)
-  }
-
-  onSubmit(): void {
-    console.log(this.object);
-    this.download();
-  }
-}
-
-@Component({
-  selector: 'app-share-modal-content',
-  templateUrl: './share-dialog.html',
-  styleUrls: ['./reporting.component.scss']
-})
-export class ShareModalComponent {
-  readonly modalData: any = inject(NZ_MODAL_DATA);
-  submitted: any
-  imageUrl: string | undefined;
-  loading: boolean = false;
-
-  constructor(public activeModal: NzModalRef) {
-  }
-
-  ngOnInit(): void {
-    this.imageUrl = this.modalData;
-  }
-
-  private async getImage() {
-    this.loading = true;
-    // Get DOM elements
-    const contentElement = this.modalData.content.querySelector('#content');
-    const innerData1Element = this.modalData.content.querySelector('.table-responsive');
-    const innerData2Element = this.modalData.content.querySelector('.table-responsive2');
-
-    const initialMaxHeightContent = contentElement.style.maxHeight;
-    const initialMaxHeightInnerData1 = innerData1Element.style.maxHeight;
-    const initialMaxHeightInnerData2 = innerData2Element.style.maxHeight;
-
-    // Set maxHeight to inherit for capturing full content
-    contentElement.style.maxHeight = 'inherit';
-    innerData1Element.style.maxHeight = 'inherit';
-    innerData2Element.style.maxHeight = 'inherit';
-
-    // Create canvas from HTML content
-    const canvas = await html2canvas(contentElement, {
-      scale: 1
-    });
-
-    // Restore initial maxHeight values
-    contentElement.style.maxHeight = initialMaxHeightContent;
-    innerData1Element.style.maxHeight = initialMaxHeightInnerData1;
-    innerData2Element.style.maxHeight = initialMaxHeightInnerData2;
-
-    // Create PDF
-    const pdf = new jsPDF();
-    const pageWidth = 210; // Width of A4 page in mm
-    const pageHeight = (canvas.height * pageWidth) / canvas.width; // Maintain aspect ratio
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pageWidth, pageHeight);
-
-    // Save PDF
-    pdf.save('report.pdf');
-    this.imageUrl = canvas.toDataURL('image/png');
-    this.loading = false;
-  }
-
-  onSubmit(): void {
-  }
-}
-
-@Component({
-  selector: 'app-reporting',
-  templateUrl: './reporting.component.html',
-  styleUrls: ['./reporting.component.scss']
-})
-export class ReportingComponent {
+export class MonthlyComponent {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
   isLoading: boolean;
-  reloadState = 'no';
-  weekStart = 1;
   dateFormat: string;
-  viewDate: Date = new Date();
   clickData: any;
   filter: any = {};
   data: any = [];
@@ -174,119 +33,6 @@ export class ReportingComponent {
   lineChart: any;
   loading = false;
   agentGrouped: any;
-
-  templates = [
-    {
-      title: 'Reports focused on increase/decrease of job executions',
-      id: 'temp_1',
-      data: {
-        chartType: 'Line',
-        groupBy: 'JOB_NAME'
-      }
-    },
-    {
-      title: 'Reports focused on load indicating periods of low and high parallelism of job executions per month',
-      id: 'temp_2',
-      data: {
-        chartType: 'Bar',
-        groupBy: 'START_TIME'
-      }
-    },
-    {
-      title: 'Reports focused on load indicating periods of low and high parallelism of job executions per year',
-      id: 'temp_3',
-      data: {
-        chartType: 'Bar',
-        groupBy: 'START_TIME'
-      }
-    },
-    {
-      title: 'Reports focused on job executions per month',
-      id: 'temp_4',
-      data: {
-        chartType: 'Line',
-        groupBy: 'JOB_NAME'
-      }
-    },
-    {
-      title: 'Reports focused on job executions per year',
-      id: 'temp_5',
-      data: {
-        chartType: 'Line',
-        groupBy: 'JOB_NAME'
-      }
-    },
-    {
-      title: 'Reports focused on orders per month',
-      id: 'temp_6',
-      data: {
-        chartType: 'Line',
-        groupBy: 'ORDER_ID'
-      }
-    },
-    {
-      title: 'Reports focused on orders per year',
-      id: 'temp_7',
-      data: {
-        chartType: 'Line',
-        groupBy: 'ORDER_ID'
-      }
-    },
-    {
-      title: 'Reports focused on frequently failed job per month',
-      id: 'temp_8',
-      data: {
-        chartType: 'BAR',
-        isFailed: true,
-        groupBy: 'JOB_NAME'
-      }
-    },
-    {
-      title: 'Reports focused on frequently failed job per year',
-      id: 'temp_9',
-      data: {
-        chartType: 'BAR',
-        isFailed: true,
-        groupBy: 'JOB_NAME'
-      }
-    },
-    {
-      title: 'Reports focused on Agent load indicating job executions per Agent per month',
-      id: 'temp_10',
-      data: {
-        chartType: 'BAR',
-        groupBy: 'AGENT_NAME'
-      }
-    },
-    {
-      title: 'Reports focused on Agent load indicating job executions per Agent per year',
-      id: 'temp_11',
-      data: {
-        chartType: 'BAR',
-        groupBy: 'AGENT_NAME'
-      }
-    },
-    {
-      title: 'Reports focused on parallel job executions per Agent per month',
-      id: 'temp_12',
-      data: {
-        chartType: 'BAR',
-        groupBy: 'AGENT_NAME',
-        groupBy2: 'START_TIME'
-      }
-    },
-    {
-      title: 'Reports focused on parallel job executions per Agent per year',
-      id: 'temp_13',
-      data: {
-        chartType: 'BAR',
-        groupBy: 'AGENT_NAME',
-        groupBy2: 'START_TIME'
-      }
-    }];
-  colors = ['#90C7F5', '#C2b280', '#Aaf0d1', '#B38b6d', '#B2beb5', '#D4af37', '#8c92ac',
-    '#FFCF8c', '#CDEB8B', '#FFC7C7', '#8B8BB4', '#Eedc82', '#B87333', '#97B0FF', '#D4af37', '#856088'];
-
   object = {
     searchText: '',
     successValue: 0,
@@ -321,15 +67,6 @@ export class ReportingComponent {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.filter = this.coreService.getReportingTab();
-    this.index = this.filter.tabIndex || 0;
-    if (this.filter.view !== 'Custom') {
-      this.coreService.renderTimeSheetHeader({filter: this.filter}, this.weekStart, () => {
-        this.loadData();
-      });
-    } else {
-      this.loadData();
-    }
   }
 
   countJobExecutionsPerMonth(data): void {
@@ -458,7 +195,6 @@ export class ReportingComponent {
 
     console.log(sortedData, 'Top 10 failed workflows per month');
   }
-
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
     this.pendingHTTPRequests$.next();
@@ -517,17 +253,7 @@ export class ReportingComponent {
 
   loadData(): void {
     this.isLoading = false;
-    const obj: any = {
-      columns: ["ID", "CONTROLLER_ID", "ORDER_ID", "WORKFLOW_PATH", "WORKFLOW_VERSION_ID", "WORKFLOW_NAME", "POSITION", "JOB_NAME", "CRITICALITY", "AGENT_ID", "AGENT_NAME", "START_TIME", "END_TIME", "ERROR_STATE", "CREATED", "MODIFIED"]
-    };
-    const d = new Date(this.filter.endDate).setDate(new Date(this.filter.endDate).getDate() + 1);
-    obj.controllerId = this.filter.current ? this.schedulerIds.selected : '';
-    obj.dateFrom = new Date(this.filter.startDate);
-    obj.dateTo = new Date(d);
-    obj.timeZone = this.preferences.zone;
-    this.coreService.plainData('reporting/order_steps', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
-      next: (res: any) => {
-        const csvString = res.body;
+        const csvString: any = 'res.body';
         const rows = csvString.trim().split('\n');
         const headers = rows[0].split(';');
         const data = [];
@@ -597,12 +323,7 @@ export class ReportingComponent {
 
         this.data = data;
         this.isLoading = true;
-      },
-      error: () => {
-        this.data = [];
-        this.isLoading = true;
-      }
-    });
+
   }
 
   updateGraphData(workflow): void {
@@ -904,80 +625,6 @@ export class ReportingComponent {
     this.lineChart.update();
   }
 
-  reload(): void {
-    if (this.reloadState === 'no') {
-      this.data = [];
-      this.reloadState = 'yes';
-      this.isLoading = true;
-      this.pendingHTTPRequests$.next();
-    } else if (this.reloadState === 'yes') {
-      this.isLoading = false;
-      this.loadData();
-    }
-  }
-
-  /** Date filters */
-  setView(view): void {
-    this.filter.view = view;
-    if (view !== 'Custom') {
-      this.coreService.renderTimeSheetHeader({filter: this.filter}, this.weekStart, () => {
-        this.loadData();
-      });
-    } else {
-      this.filter.dateRange = [this.filter.startDate, this.filter.endDate];
-    }
-  }
-
-  onChangeDate(): void {
-    if (this.filter.dateRange) {
-      this.filter.startDate = this.filter.dateRange[0];
-      this.filter.endDate = this.filter.dateRange[1];
-      this.loadData();
-    }
-  }
-
-  prev(): void {
-    if (this.filter.view === 'Month') {
-      this.filter.startMonth = this.filter.startMonth - 1;
-    } else {
-      const d = new Date(this.filter.endDate);
-      const time = d.setDate(d.getDate() - 8);
-      this.filter.endDate = new Date(time).setHours(0, 0, 0, 0);
-    }
-    this.coreService.renderTimeSheetHeader({filter: this.filter}, this.weekStart, () => {
-      this.loadData();
-    });
-  }
-
-  next(): void {
-    if (this.filter.view === 'Month') {
-      this.filter.startMonth = this.filter.startMonth + 1;
-    } else {
-      const d = new Date(this.filter.endDate);
-      const time = d.setDate(d.getDate() + 1);
-      this.filter.endDate = new Date(time).setHours(0, 0, 0, 0);
-    }
-    this.coreService.renderTimeSheetHeader({filter: this.filter}, this.weekStart, () => {
-      this.loadData();
-    });
-  }
-
-  onChange = (date: Date) => {
-    if (this.filter.view === 'Month') {
-      this.filter.startMonth = new Date(date).getMonth();
-      this.filter.startYear = new Date(date).getFullYear();
-    } else {
-      this.filter.endDate = new Date(date).setHours(0, 0, 0, 0);
-    }
-    this.coreService.renderTimeSheetHeader({filter: this.filter}, this.weekStart, () => {
-      this.loadData();
-    });
-  }
-
-  disabledDate = (current: Date): boolean => {
-    return differenceInCalendarDays(current, this.viewDate) > 0;
-  }
-
   /** Graph functions */
 
   getValue(val): string {
@@ -1002,43 +649,6 @@ export class ReportingComponent {
 
   /** Reporting */
 
-  async createReport() {
-    this.loading = true;
-    // Get DOM elements
-    const contentElement = this.elementRef.nativeElement.querySelector('#content');
-    const innerData1Element = this.elementRef.nativeElement.querySelector('.table-responsive');
-    const innerData2Element = this.elementRef.nativeElement.querySelector('.table-responsive2');
-
-    const initialMaxHeightContent = contentElement.style.maxHeight;
-    const initialMaxHeightInnerData1 = innerData1Element.style.maxHeight;
-    const initialMaxHeightInnerData2 = innerData2Element.style.maxHeight;
-
-    // Set maxHeight to inherit for capturing full content
-    contentElement.style.maxHeight = 'inherit';
-    innerData1Element.style.maxHeight = 'inherit';
-    innerData2Element.style.maxHeight = 'inherit';
-
-    // Create canvas from HTML content
-    const canvas = await html2canvas(contentElement, {
-      scale: 1
-    });
-
-    // Restore initial maxHeight values
-    contentElement.style.maxHeight = initialMaxHeightContent;
-    innerData1Element.style.maxHeight = initialMaxHeightInnerData1;
-    innerData2Element.style.maxHeight = initialMaxHeightInnerData2;
-
-    // Create PDF
-    const pdf = new jsPDF();
-    const pageWidth = 210; // Width of A4 page in mm
-    const pageHeight = (canvas.height * pageWidth) / canvas.width; // Maintain aspect ratio
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pageWidth, pageHeight);
-
-    // Save PDF
-    pdf.save('report.pdf');
-    this.loading = false;
-  }
-
   shareReport() {
     const element = this.elementRef.nativeElement
     this.modal.create({
@@ -1047,18 +657,6 @@ export class ReportingComponent {
       nzClassName: 'lg',
       nzData: {content: element},
       nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-  }
-
-  downloadReport() {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: DownloadModalComponent,
-      //     nzClassName: 'lg',
-      nzFooter: null,
-      nzData: {templates: this.templates, preferences: this.preferences},
       nzClosable: false,
       nzMaskClosable: false
     });

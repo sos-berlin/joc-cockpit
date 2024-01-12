@@ -1,0 +1,126 @@
+<div>
+  <div class="row">
+
+    <div class="col-md-12">
+      <div class="box">
+        <div class="box-header b-b">
+          <h3>
+            <span translate>Parallel Job Executions on Agents</span>
+          </h3>
+        </div>
+        <div class="box-tool r-sm">
+          <div *ngIf="clickData" class="m-r-xs">
+                <span (click)="clickData = null" class="text-hover-primary cursor-pointer">
+                  <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+                  Back
+                </span>
+          </div>
+          <a *ngIf="!clickData" (click)="toggleView()" class="text-hover-primary">
+            <span *ngIf="filter.showAgentTable" nz-icon nzType="bar-chart" nzTheme="outline"></span>
+            <span *ngIf="!filter.showAgentTable" nz-icon nzType="table" nzTheme="outline"></span>
+          </a>
+          <button *ngIf="!clickData" [nzDropdownMenu]="option2" class="m-l-0 btn-drop more-option-v" nz-dropdown
+                  nzTrigger="click"
+                  type="button">
+            <i class="fa fa-ellipsis-v"></i>
+          </button>
+          <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
+            <ul nz-menu>
+              <li nz-menu-item (click)="showDataByCount(2)">
+                <a translate>Show count more than 2</a>
+              </li>
+              <li nz-menu-item (click)="showDataByCount(5)">
+                <a translate>Show count more than 5</a>
+              </li>
+              <li nz-menu-item (click)="showDataByCount(10)">
+                <a translate>Show count more than 10</a>
+              </li>
+              <li nz-menu-item (click)="showDataByCount(15)">
+                <a translate>Show count more than 15</a>
+              </li>
+              <li nz-menu-item (click)="showDataByCount(20)">
+                <a translate>Show count more than 20</a>
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        </div>
+        <div class="box-body">
+          <perfect-scrollbar class="table-responsive2"
+                             style="max-height: calc(100vh - 360px); min-height: 80px; overflow: auto;">
+
+            <div [hidden]="filter.showAgentTable || clickData">
+              <canvas id="bar-chart"></canvas>
+            </div>
+            <div class="job-execution" *ngIf="filter.showAgentTable">
+              <nz-collapse>
+                <nz-collapse-panel *ngFor="let agent of agentData.datasets"
+                                   [nzHeader]="agent.label" [nzActive]="agent.active">
+                  <div>
+                    <div class="p-a-sm" style="padding-bottom: 4px !important;"
+                         *ngFor="let items of agent.groupByData; let i = index">
+                      <label class="_600 m-b-xxs">{{agentData.labels[i]}} <i
+                        class="p-l-xs text-muted">({{items.length}})</i></label>
+                      <table class="table table-bordered table-hover" style="margin-bottom: 0 !important;">
+                        <thead *ngIf="i == 0">
+                        <tr>
+                          <th width="40%"><span translate>Workflow</span></th>
+                          <th><span translate>Job</span></th>
+                          <th width="100px"><span translate>Status</span></th>
+                          <th width="80px"><span translate>Duration</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of items;">
+                          <td width="40%">{{item.WORKFLOW_NAME}}</td>
+                          <td>{{item.JOB_NAME}}</td>
+                          <td width="100px">
+                                <span [innerHtml]="(item.ERROR_STATE || 'successful') | translate"
+                                      class="label {{item.ERROR_STATE ? 'bg-red' : 'bg-green'}}"></span>
+                          </td>
+                          <td width="80px">{{item.DURATION | secondsToTime}}</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="text-center p-a-10" *ngIf="agent.groupByData.length == 0">
+                      <app-empty-data></app-empty-data>
+                    </div>
+                  </div>
+                </nz-collapse-panel>
+              </nz-collapse>
+            </div>
+          </perfect-scrollbar>
+
+          <div class="job-execution" *ngIf="clickData">
+            <perfect-scrollbar style="max-height: calc(100vh - 360px); min-height: 80px; overflow: auto;">
+              <div class="_600 p-b-sm">
+                <span class="font14">{{clickData.agentName}}</span> - {{clickData.label}} <i
+                class="p-l-xs text-muted _300">({{clickData.list.length}})</i>
+              </div>
+              <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th width="40%"><span translate>Workflow</span></th>
+                  <th><span translate>Job</span></th>
+                  <th width="100px"><span translate>Status</span></th>
+                  <th width="80px"><span translate>Duration</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of clickData.list;">
+                  <td width="40%">{{item.WORKFLOW_NAME}}</td>
+                  <td>{{item.JOB_NAME}}</td>
+                  <td width="100px"><span [innerHtml]="(item.ERROR_STATE || 'successful') | translate"
+                                          class="label {{item.ERROR_STATE ? 'bg-red' : 'bg-green'}}"></span>
+                  </td>
+                  <td width="80px">{{item.DURATION | secondsToTime}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </perfect-scrollbar>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

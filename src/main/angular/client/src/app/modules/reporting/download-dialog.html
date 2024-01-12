@@ -10,24 +10,26 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
     <div class="form-group row">
-      <label class="col-md-3 col-sm-4 form-control-label" translate>Period</label>
+      <label class="col-md-3 col-sm-4" translate>Choose Period</label>
       <div class="col-md-6 col-sm-8">
-        <app-select-input [isRequired]="true" [attributeName]="'period'" [isAllowClear]="true" [ignoreTranslate]="true"
-                          [placeholder]="'Choose Period'" [optionLabel]="'name'" [listArray]="dates" [name]="'date'"
-                          [object]="object"></app-select-input>
+        <nz-radio-group [(ngModel)]="object.type" name="type">
+          <label nz-radio nzValue="monthly"><span translate>Monthly</span></label>
+          <label nz-radio nzValue="yearly"><span translate>Yearly</span></label>
+        </nz-radio-group>
       </div>
     </div>
-<!--    <div class="form-group row">-->
-<!--      <label class="col-md-3 col-sm-4 form-control-label" translate>Report Type</label>-->
-<!--      <div class="col-md-6 col-sm-8">-->
-<!--        <app-select-input [attributeName]="'template'" [isAllowClear]="true" [ignoreTranslate]="true"-->
-<!--                          [placeholder]="'Choose Report Template'" [optionLabel]="'title'" [listArray]="templates" [name]="'reportType'"-->
-<!--                          [object]="object"></app-select-input>-->
-<!--      </div>-->
-<!--    </div>-->
+    <div class="form-group row">
+      <label class="col-md-3 col-sm-4" translate></label>
+      <div class="col-md-6 col-sm-8">
+        <nz-date-picker *ngIf="object.type == 'monthly'" nzMode="month" name="month" [nzDisabledDate]="disabledDate"
+                        [(ngModel)]="object.date" (ngModelChange)="onChange($event)"></nz-date-picker>
+        <nz-date-picker *ngIf="object.type == 'yearly'" nzMode="year" name="year" [nzDisabledDate]="disabledDate"
+                        [(ngModel)]="object.date" (ngModelChange)="onChange($event)"></nz-date-picker>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
-    <button [disabled]="!myForm.form.valid || submitted"
+    <button [disabled]="!object.date || submitted"
             class="btn btn-primary btn-sm" type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{ 'Download' | translate }}

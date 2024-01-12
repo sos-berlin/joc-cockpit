@@ -6,12 +6,12 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline valign" style="top: -8px !important;">
+          <div *ngIf="index == 0" class="inline valign" style="top: -8px !important;">
             <label nz-checkbox [(ngModel)]="filter.current" (ngModelChange)="loadData()" name="current">
               {{'common.label.currentController' | translate}}
             </label>
           </div>
-          <div class="inline">
+          <div *ngIf="index == 0" class="inline">
             <div class="timeline">
               <div class="inline btn-group pull-right">
                 <div (click)="setView('Week')"
@@ -52,7 +52,7 @@
               </div>
             </div>
           </div>
-          <div class="inline valign" style="top: -9px !important;">
+          <div  *ngIf="index == 0" class="inline valign" style="top: -9px !important;">
             <button nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportList" class="btn btn-grey btn-sm m-l-12">
               <span nz-icon nzType="export" nzTheme="outline"></span>
               Export Report
@@ -67,6 +67,14 @@
                 </li>
               </ul>
             </nz-dropdown-menu>
+            <button class="btn btn-grey btn-sm m-l-12" (click)="downloadReport()">
+              <span nz-icon nzType="download" nzTheme="outline"></span>
+              Download Data
+            </button>
+
+          </div>
+          <div  *ngIf="index !== 0" class="inline valign" >
+
             <button class="btn btn-grey btn-sm m-l-12" (click)="downloadReport()">
               <span nz-icon nzType="download" nzTheme="outline"></span>
               Download Data
@@ -431,12 +439,11 @@
         </div>
       </nz-tab>
       <nz-tab [nzTitle]="'Monthly Report' | translate">
-        <div class="row">
-          <div class="col-md-12 text-center">
-            Need to upload your file to see the report
-          </div>
-        </div>
+        <app-monthly></app-monthly>
       </nz-tab>
+<!--      <nz-tab [nzTitle]="'Yearly Report' | translate">-->
+<!--        <app-yearly></app-yearly>-->
+<!--      </nz-tab>-->
     </nz-tabset>
   </div>
 

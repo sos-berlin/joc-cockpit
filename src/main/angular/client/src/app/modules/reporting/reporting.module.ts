@@ -6,13 +6,17 @@ import {SharedModule} from "../shared/shared.module";
 import {DownloadModalComponent, ReportingComponent, ShareModalComponent} from "./reporting.component";
 import {GroupByPipe, SecondsToTimePipe} from "../../pipes/core.pipe";
 import {GaugeModule} from "../gauge/gauge.module";
+import { MonthlyComponent } from './monthly/monthly.component';
+import { YearlyComponent } from './yearly/yearly.component';
 
 @NgModule({
   declarations: [
     ReportingComponent,
     SecondsToTimePipe,
     DownloadModalComponent,
-    ShareModalComponent
+    ShareModalComponent,
+    MonthlyComponent,
+    YearlyComponent
   ],
   imports: [
     ReportingRoutingModule,
