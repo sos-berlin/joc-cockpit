@@ -2367,6 +2367,7 @@
     "message.noVariableAvailable": "変数はありません",
     "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません",
     "message.noLogHistoryFound": "このオーダーにはログがありません",
+    "message.confirmAllSelectedOrders": "Are you sure that you want o confirm all the selected orders?",
     "tooltip.cycleEndTime": "秒でのサイクル終了時間",
     "treeView": {
       "label": {

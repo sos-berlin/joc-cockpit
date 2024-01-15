@@ -704,7 +704,11 @@ export class ModifyStartTimeModalComponent {
         obj.scheduledFor = 'now + ' + this.order.atTime;
       } else {
         this.coreService.getDateAndTime(this.order);
-        obj.scheduledFor = this.coreService.getDateByFormat(this.order.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
+        if(this.order.fromTime) {
+          obj.scheduledFor = this.coreService.getDateByFormat(this.order.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
+        } else {
+          obj.scheduledFor = this.coreService.getDateByFormat(this.order.fromDate, null, 'YYYY-MM-DD');
+        }
         obj.timeZone = this.dateType.timeZone;
       }
     } else {

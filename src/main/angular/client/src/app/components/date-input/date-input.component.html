@@ -12,13 +12,13 @@
   <ng-container *ngIf="isTime">
     <div [ngClass]="{'has-error': (dateAndTime.dirty || dateAndTime.touched) && dateAndTime.invalid}"
          class="time-picker">
-      <input #dateAndTime="ngModel" [(ngModel)]="object[attributeTime]" [disabled]="isDisable" [required]="isRequired" class="form-control"
+      <input #dateAndTime="ngModel" [(ngModel)]="object[attributeTime]" [disabled]="isDisable" [required]="isTimeRequired" class="form-control"
              [name]="name + 'Time'" (timeChanged)="onTimeChanged($event, attributeTime)"
              placeholder="HH:MM:SS" timevalidatorReqex
              type="text">
       <nz-time-picker [(ngModel)]="object[attributeTime + '1']"
                       (ngModelChange)="selectTime($event, false, attributeTime)"
-                      [nzAllowEmpty]="false" [name]="name + 'TimeIcon'"></nz-time-picker>
+                      [nzAllowEmpty]="isTimeRequired == false" [name]="name + 'TimeIcon'"></nz-time-picker>
     </div>
 
     <a *ngIf="isAllowClear" class="text-hover-primary p-l-sm"
