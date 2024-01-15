@@ -147,7 +147,7 @@ export class CalendarModalComponent {
         const obj = {
           startDate: this.coreService.getDate(x),
           endDate: this.coreService.getDate(x),
-          color: '#007da6'
+          color: 'blue'
         };
 
         this.planItems.push(obj);
@@ -159,7 +159,7 @@ export class CalendarModalComponent {
         this.planItems.push({
           startDate: this.coreService.getDate(x),
           endDate: this.coreService.getDate(x),
-          color: '#eb8814'
+          color: 'orange'
         });
       }
     }
