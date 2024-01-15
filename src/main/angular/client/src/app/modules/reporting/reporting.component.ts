@@ -82,11 +82,9 @@ export class DownloadModalComponent {
     }
     this.object.dateFrom = arr[0];
     this.object.dateTo = arr[1];
-    console.log(this.object)
   }
 
   onSubmit(): void {
-    console.log(this.object);
     this.download();
   }
 }
@@ -368,7 +366,6 @@ export class ReportingComponent {
       }
     });
 
-    console.log(jobExecutionsPerMonth);
   }
 
   countOrderPerMonth(data): void {
@@ -396,7 +393,6 @@ export class ReportingComponent {
       }
     });
 
-    console.log(ordersPerMonth);
   }
 
 
@@ -456,7 +452,6 @@ export class ReportingComponent {
         }, {});
     });
 
-    console.log(sortedData, 'Top 10 failed workflows per month');
   }
 
   ngOnDestroy(): void {
@@ -863,7 +858,6 @@ export class ReportingComponent {
 
     // Extract unique sorted job names after sorting by start time
     const uniqueJobNames = Array.from(jobNames);
-    console.log(uniqueJobNames)
     const chartData = {
       labels: jobData.filter(job => uniqueJobNames.includes(job.JOB_NAME))
         .map(job => job.START_TIME).filter((obj, index, self) =>
@@ -899,7 +893,6 @@ export class ReportingComponent {
         };
       })
     };
-    console.log(chartData.labels)
     this.lineChart.data = chartData;
     this.lineChart.update();
   }
@@ -1079,12 +1072,9 @@ export class ReportingComponent {
     });
     modal.afterClose.subscribe(res => {
       if (res) {
-        console.log(res)
         this.agentGrouped = JSON.parse(res.content)
         this.groupByAgent(this.agentGrouped.groupedData);
         this.object = this.agentGrouped.objectData;
-        console.log(this.object)
-        console.log(this.agentGrouped)
       }
     })
   }

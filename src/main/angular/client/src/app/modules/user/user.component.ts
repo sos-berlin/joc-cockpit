@@ -569,8 +569,8 @@ export class ImportKeyModalComponent {
       const reader = new FileReader();
       reader.readAsText(item, 'UTF-8');
       reader.onload = onLoadFile;
-
       function onLoadFile(_event) {
+
         try {
           const data = _event.target.result;
           if (typeof data === 'string') {
