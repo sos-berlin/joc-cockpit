@@ -762,6 +762,10 @@ export class TimeValidatorReqexDirective implements Validator {
     const value = target.value.trim();
 
     const matches = this.regex.exec(value);
+    if(!value){
+      this.timeChanged.emit('');
+      return;
+    }
     if (matches) {
       let hours = parseInt(matches[1] || '0', 10);
       let minutes = parseInt(matches[2] || '0', 10);

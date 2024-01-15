@@ -2367,6 +2367,7 @@
     "message.noVariableAvailable": "keine Variablen vorhanden",
     "message.orderModificationNotAllowed": "Der Auftagszustand {{state}} erlaubt keine Änderung",
     "message.noLogHistoryFound": "Kein Protokoll für diesen Auftrag gefunden",
+    "message.confirmAllSelectedOrders": "Are you sure that you want to confirm all the selected orders?",
     "tooltip.cycleEndTime": "Gibt optional die Endzeit des Zyklus an. Der Anwender kann eine kürzere als die vordefinierte Zeitspanne für das Ende des Zyklus angeben. Der Auftrag wird an der vom Anwender gewählten Position fortgesetzt, und die angegebene Endzeit wird überprüft, wenn der Auftrag zum Beginn des Zyklus zurückkehrt. Zyklusendzeiten, die die vordefinierte Zyklusdauer überschreiten, werden ignoriert.",
     "treeView": {
       "label": {

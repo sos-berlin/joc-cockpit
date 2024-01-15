@@ -21,6 +21,7 @@ export class DateInputComponent {
   @Input() isAllowClear = false;
   @Input() isDisable = false;
   @Input() isRequired = false;
+  @Input() isTimeRequired: any;
   @Input() isAutoFocus = false;
   @Input() isPreviousDateDisabled = false;
   @Input() isNextDateDisabled: any
@@ -33,6 +34,12 @@ export class DateInputComponent {
   @Output() modelChange = new EventEmitter<any>();
 
   constructor(private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    if (this.isTimeRequired == undefined) {
+      this.isTimeRequired = this.isRequired;
+    }
   }
 
   selectTime(time, isEditor = false, val = 'from'): void {
@@ -52,16 +59,9 @@ export class DateInputComponent {
     if (this.isPreviousDateDisabled && differenceInCalendarDays(current, new Date()) < 0) {
       return true;
     }
-
     const isoDateString = this.isNextDateDisabled;
     const nextDate = new Date(isoDateString);
-    if (this.isNextDateDisabled && differenceInCalendarDays(current, nextDate) > 0) {
-      return true;
-    }
-
-    return false;
+    return this.isNextDateDisabled && differenceInCalendarDays(current, nextDate) > 0;
   }
-
-
 
 }

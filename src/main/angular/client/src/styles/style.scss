@@ -1950,6 +1950,10 @@ button.close {
   right: -8px;
 }
 
+.r-sm {
+  right: 8px !important;
+}
+
 .pos-rlt {
   z-index: 1;
 }
@@ -2156,7 +2160,7 @@ button.close {
   top: -1px;
 }
 
-.t-n-xxs{
+.t-n-xxs {
   top: -2px;
 }
 
@@ -2479,7 +2483,7 @@ button.close {
   margin-right: 2px !important;
 }
 
-.m-r-n-30{
+.m-r-n-30 {
   margin-right: -30px;
 }
 
@@ -3379,8 +3383,13 @@ body div.mxPopupMenu {
   border-radius: 50%;
 }
 
-.more-option i:hover, .more-option-h i:hover {
+.more-option i:hover, .more-option-h i:hover, .more-option-v i:hover {
   background: var(--menu-hover);
+}
+
+.more-option-v i {
+  padding: 3px 8px;
+  border-radius: 50%;
 }
 
 .move-icon {
