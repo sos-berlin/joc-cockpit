@@ -968,6 +968,7 @@ export class OrderOverviewComponent {
     this.object.isTerminate = true;
     this.object.isResume = true;
     let workflow = null;
+    let count = 0;
     this.object.mapOfCheckedId.forEach(order => {
       if (order.state) {
         if (order.state._text !== 'SUSPENDED' && order.state._text !== 'FAILED') {
@@ -988,7 +989,7 @@ export class OrderOverviewComponent {
           this.object.isSuspendWithKill = true;
         }
         if (order.state._text === 'PROMPTING') {
-          this.object.isPrompt = true;
+          ++count;
         }
         if (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING' && order.state._text !== 'BLOCKED') {
           this.object.isModify = false;
@@ -1001,6 +1002,9 @@ export class OrderOverviewComponent {
         }
       }
     });
+    if(count == this.object.mapOfCheckedId.size){
+      this.object.isPrompt = true;
+    }
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
   }
 
