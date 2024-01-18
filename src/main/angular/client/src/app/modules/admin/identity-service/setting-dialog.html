@@ -701,7 +701,7 @@
                   </div>
                   <div class="col-md-6 m-b-sm">
                      <app-select-input [isSearchable]="true" [isMultiple]="true" [placeholder]="'user.placeholder.selectRoles'" [isRequired]="(item.ldapGroupDn && item.ldapGroupDn.length > 0) ? true : false"  [name]="'roles' + i"
-                    [object]="item" [attributeName]="'roles'" (modelChange)="changeConfiguration($event)" [listArray]="allRoles"  ></app-select-input>
+                    [object]="item" [attributeName]="'roles'" [listArray]="allRoles"  ></app-select-input>
                   </div>
                   <div class="col-md-1">
                     <a (click)="removeGroupRoles(i)" class="cursor"><i
