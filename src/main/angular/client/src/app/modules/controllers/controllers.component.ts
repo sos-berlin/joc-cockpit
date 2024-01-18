@@ -1732,7 +1732,6 @@ export class ControllersComponent {
 
   expandDetails(): void {
     this.controllers.forEach((controller) => {
-      console.log(controller);
       this.expand(controller.controllerId);
       this.getAgents(controller, null);
     });
