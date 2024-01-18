@@ -953,16 +953,17 @@ export class IdentityServiceComponent {
   }
 
   showUser({identityService}: { identityService: any }): void {
-    if (identityService.identityServiceType !== 'UNKNOWN' && (identityService.identityServiceType == 'CERTIFICATE' && !identityService.secondFactor)) {
-      sessionStorage['identityServiceName'] = identityService.identityServiceName;
-      sessionStorage['identityServiceType'] = identityService.identityServiceType;
-      if (identityService.secondFactor) {
-        sessionStorage['secondFactor'] = identityService.secondFactor;
-        this.router.navigate(['/users/identity_service/account']).then();
-      } else {
-        sessionStorage.removeItem('secondFactor');
-        this.router.navigate(['/users/identity_service/role']).then();
-      }
+    if (identityService.identityServiceType === 'UNKNOWN' || (identityService.identityServiceType == 'CERTIFICATE' && identityService.secondFactor)) {
+      return;
+    }
+    sessionStorage['identityServiceName'] = identityService.identityServiceName;
+    sessionStorage['identityServiceType'] = identityService.identityServiceType;
+    if (identityService.secondFactor) {
+      sessionStorage['secondFactor'] = identityService.secondFactor;
+      this.router.navigate(['/users/identity_service/account']).then();
+    } else {
+      sessionStorage.removeItem('secondFactor');
+      this.router.navigate(['/users/identity_service/role']).then();
     }
   }
 
