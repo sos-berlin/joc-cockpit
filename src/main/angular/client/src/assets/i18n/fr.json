@@ -424,6 +424,7 @@
     "label.specificDate": "Date spécifique",
     "label.relativeDate": "Date relative",
     "label.relativeTime": "Heure relative",
+    "label.relativeTimeFromCurrentTime": "Relative Time from Current Start Time",
     "label.processExecuted": "Processus exécuté",
     "label.selectController": "Choisissez le Contrôleur",
     "placeholder.setEndDate": "Définir la date de fin",

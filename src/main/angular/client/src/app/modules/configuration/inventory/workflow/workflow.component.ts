@@ -5086,7 +5086,7 @@ export class WorkflowComponent {
           this.blockPositionList.set(item.positionString, item.positions);
         });
 
-        if (this.selectedNode.obj) {
+        if (this.selectedNode?.obj) {
           let newPositions;
           if (this.selectedNode.obj.blockPosition) {
             if (isArray(this.selectedNode.obj.blockPosition)) {
@@ -5798,7 +5798,6 @@ export class WorkflowComponent {
           obj.instructions = [];
           findNext(list, cell, obj);
         }
-
       }
       return obj;
     }
@@ -5817,6 +5816,14 @@ export class WorkflowComponent {
               getObject(json.instructions[x]);
             }
             if (json.instructions[x].catch) {
+              
+              if (json.instructions[x].catch.id == nodeId) {
+                if (!json.instructions[x].catch.instructions) {
+                  json.instructions[x].catch.instructions = [];
+                }
+                json.instructions[x].catch.instructions.push(obj);
+                break;
+              }
               if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
                 getObject(json.instructions[x].catch);
               }
@@ -5842,12 +5849,21 @@ export class WorkflowComponent {
     function checkRemainingNodes(node) {
       node.edges.forEach(edge => {
         if (edge.source && edge.source.id !== node.id) {
-         let targetId = edge.source.id;
+          let targetId = edge.source.id;
           if (self.workflowService.checkClosingCell(edge.source.value.tagName)) {
             targetId = edge.source.getAttribute('targetId');
           }
+          const obj: any = createObject(node);
 
-          const obj = createObject(node);
+          if (obj.TYPE === 'Try') {
+            obj.instructions = [];
+            obj.catch = {
+              id: (+(node.id) + 1) + '',
+              instructions: []
+            };
+            delete obj.parentId;
+          }
+
           traverseJSONObject(targetId, obj);
         }
       });
@@ -5855,10 +5871,12 @@ export class WorkflowComponent {
 
     if (nodes.length > 0) {
       nodes.forEach((node) => {
-        checkRemainingNodes(node);
+        if (!self.workflowService.checkClosingCell(node.value.tagName) && node.value.tagName !== 'Catch') {
+          checkRemainingNodes(node);
+        }
       });
     }
-    
+
     const jobs = Array.from(jobMap.keys());
     arrOfJobs.forEach((cell) => {
       const jobName = cell.getAttribute('jobName');

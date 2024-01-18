@@ -38,7 +38,7 @@ import {
   RelativeDateValidator,
   RelativeDateRegexValidator,
   FacetValidator,
-  UrlValidator
+  UrlValidator, NegativeTimeRegexValidator
 } from '../../directives/core.directive';
 import {ToggleComponent} from '../../components/toggle/toggle.component';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
@@ -79,7 +79,7 @@ const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModa
   CalendarModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
   ModifyStartTimeModalComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
-const DIRECTIVES = [TimeValidatorDirective,TimeValidatorReqexDirective, TimeRegexValidator, RegexValidator, RelativeDateValidator,
+const DIRECTIVES = [TimeValidatorDirective,TimeValidatorReqexDirective, TimeRegexValidator, NegativeTimeRegexValidator, RegexValidator, RelativeDateValidator,
   RelativeDateRegexValidator, UrlValidator, ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator,
   FacetValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,

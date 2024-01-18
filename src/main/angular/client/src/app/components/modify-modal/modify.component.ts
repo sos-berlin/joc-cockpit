@@ -702,6 +702,11 @@ export class ModifyStartTimeModalComponent {
         obj.scheduledFor = 'never';
       } else if (this.dateType.at === 'later') {
         obj.scheduledFor = 'now + ' + this.order.atTime;
+      } else if (this.dateType.at === 'cur') {
+        if (!/^[+-]/.test(this.order.atTimeFromCur)) {
+          this.order.atTimeFromCur = "+" + this.order.atTimeFromCur;
+        }
+        obj.scheduledFor = 'cur ' + this.order.atTimeFromCur;
       } else {
         this.coreService.getDateAndTime(this.order);
         if(this.order.fromTime) {
