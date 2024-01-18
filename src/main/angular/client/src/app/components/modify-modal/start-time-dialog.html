@@ -52,6 +52,7 @@
                 <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
                 <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
                 <label nz-radio nzValue="later"><span translate>common.label.relativeDate</span></label>
+                <label nz-radio nzValue="cur"><span translate>common.label.relativeTimeFromCurrentTime</span></label>
                 <label *ngIf="!isDailyPlan" nz-radio nzValue="never"><span translate>common.label.never</span></label>
               </nz-radio-group>
             </div>
@@ -63,6 +64,18 @@
             <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
               <input validTimeReqex type="text" #time="ngModel" class="form-control" required
                      name="atTime" [(ngModel)]="order.atTime" placeholder="{{'common.placeholder.enterSecond' | translate}}">
+              <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
+                <div *ngIf="!time.valid" translate>common.message.invalid</div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="dateType.at == 'cur'" class="form-group row">
+            <label class="col-md-3 form-control-label" translate>common.label.time
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
+              <input nValidTimeRegex type="text" #time="ngModel" class="form-control" required
+                     name="atTime" [(ngModel)]="order.atTimeFromCur" placeholder="±HH:MM:[SS] or ±SECONDS">
               <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
                 <div *ngIf="!time.valid" translate>common.message.invalid</div>
               </div>

@@ -193,6 +193,32 @@ export class TimeRegexValidator implements Validator {
 }
 
 @Directive({
+  selector: '[nValidTimeRegex]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => NegativeTimeRegexValidator), multi: true}
+  ]
+})
+export class NegativeTimeRegexValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v) {
+      if (/^\s*$/i.test(v) ||
+        /^[+-]?((?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?|\d+)$/.test(v)
+        || v === '24:00' || v === '+24:00' || v === '-24:00' || v === '24:00:00'
+        || v === '+24:00:00' || v === '-24:00:00'
+      ) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+    return {
+      nValidTimeRegex: true
+    };
+  }
+}
+
+@Directive({
   selector: '[relativeDateValidator]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => RelativeDateValidator), multi: true}

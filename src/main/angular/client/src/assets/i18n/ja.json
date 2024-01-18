@@ -423,6 +423,7 @@
     "label.specificDate": "特定日付",
     "label.relativeDate": "相対日付",
     "label.relativeTime": "相対時刻",
+    "label.relativeTimeFromCurrentTime": "Relative Time from Current Start Time",
     "label.processExecuted": "実行済",
     "label.selectController": "コントローラー選択",
     "placeholder.setEndDate": "終了日時設定",
