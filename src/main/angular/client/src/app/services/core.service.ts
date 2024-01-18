@@ -2677,10 +2677,14 @@ export class CoreService {
             json.instructions[x].TYPE = 'Job';
           }
           if (order) {
-            if (!flag) {
-              json.instructions[x].show = true;
-            }
+
             if (json.instructions[x].positionString) {
+              if (!flag) {
+                if (order.positionString.indexOf(json.instructions[x].positionString) > -1 || json.instructions[x].positionString == order.positionString) {
+                  json.instructions[x].show = true;
+                  json.show = true;
+                }
+              }
               if (positions.indexOf(json.instructions[x].positionString) > -1) {
                 json.instructions[x].enabled = true;
               }
@@ -2782,14 +2786,17 @@ export class CoreService {
           }
           if (json.instructions[x].catch) {
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-              if (!flag && order) {
-                json.instructions[x].catch.show = true;
-              }
+
               recursive(json.instructions[x].catch);
               if (order) {
                 if (json.instructions[x].catch.positionString) {
+                  if (!flag) {
+                    if (order.positionString.indexOf(json.instructions[x].catch.positionString) > -1 || json.instructions[x].catch.positionString == order.positionString) {
+                      json.instructions[x].catch.show = true;
+                    }
+                  }
+
                   if (order.positionString && order.positionString == json.instructions[x].catch.positionString) {
-                    flag = true;
                     json.instructions[x].catch.order = order;
                   }
                 }
@@ -2798,25 +2805,29 @@ export class CoreService {
           }
 
           if (json.instructions[x].then && json.instructions[x].then.instructions) {
-            if (!flag && order) {
-              json.instructions[x].then.show = true;
-            }
+
             recursive(json.instructions[x].then);
             if (json.instructions[x].then.positionString && order) {
+              if (!flag) {
+                if (order.positionString.indexOf(json.instructions[x].then.positionString) > -1 || json.instructions[x].then.positionString == order.positionString) {
+                  json.instructions[x].then.show = true;
+                }
+              }
               if (order.positionString && order.positionString == json.instructions[x].then.positionString) {
-                flag = true;
                 json.instructions[x].then.order = order;
               }
             }
           }
           if (json.instructions[x].else && json.instructions[x].else.instructions) {
-            if (!flag && order) {
-              json.instructions[x].else.show = true;
-            }
+
             recursive(json.instructions[x].else);
             if (json.instructions[x].else.positionString && order) {
+              if (!flag) {
+                if (order.positionString.indexOf(json.instructions[x].else.positionString) > -1 || json.instructions[x].else.positionString == order.positionString) {
+                  json.instructions[x].else.show = true;
+                }
+              }
               if (order.positionString && order.positionString == json.instructions[x].else.positionString) {
-                flag = true;
                 json.instructions[x].else.order = order;
               }
             }
@@ -2839,13 +2850,15 @@ export class CoreService {
             });
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
               if (json.instructions[x].branches[i]) {
-                if (!flag && order) {
-                  json.instructions[x].branches[i].show = true;
-                }
+
                 recursive(json.instructions[x].branches[i], json.instructions[x]);
                 if (order && json.instructions[x].branches[i].positionString) {
+                  if (!flag) {
+                    if (order.positionString.indexOf(json.instructions[x].branches[i].positionString) > -1 || json.instructions[x].branches[i].positionString == order.positionString) {
+                      json.instructions[x].branches[i].show = true;
+                    }
+                  }
                   if (order.positionString && order.positionString == json.instructions[x].branches[i].positionString) {
-                    flag = true;
                     json.instructions[x].branches[i].order = order;
                   }
                 }

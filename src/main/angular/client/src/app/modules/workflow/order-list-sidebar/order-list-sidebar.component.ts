@@ -18,10 +18,10 @@ import {
 import {OrderActionComponent} from '../../order-overview/order-action/order-action.component';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
 import {OrderPipe} from "../../../pipes/core.pipe";
+import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 
 @Component({
   selector: 'app-order-list-sidebar',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './order-list-sidebar.component.html'
 })
 export class OrderListSidebarComponent implements OnChanges {
@@ -51,6 +51,7 @@ export class OrderListSidebarComponent implements OnChanges {
     isSuspend: false,
     isSuspendWithKill: false,
     isResume: false,
+    isPrompt: false,
     isTerminate: false
   };
 
@@ -97,9 +98,6 @@ export class OrderListSidebarComponent implements OnChanges {
     }
   }
 
-  trackByFn(index: number, el: any): number {
-    return el.orderId;
-  }
 
   changedHandler(flag: boolean): void {
     this.isProcessing = flag;
@@ -164,11 +162,13 @@ export class OrderListSidebarComponent implements OnChanges {
     const orders = allOrder ? this.data : this.getCurrentData(this.data, this.filter);
     this.object.isCancel = false;
     this.object.isCancelWithKill = false;
+    this.object.isPrompt = false;
     this.object.isModify = true;
     this.object.isSuspend = true;
     this.object.isSuspendWithKill = false;
     this.object.isResume = true;
     this.object.isTerminate = true;
+    let count = 0;
     orders.forEach(item => {
       if (this.setOfCheckedId.has(item.orderId)) {
         if (item.state) {
@@ -189,12 +189,19 @@ export class OrderListSidebarComponent implements OnChanges {
             this.object.isCancelWithKill = true;
             this.object.isSuspendWithKill = true;
           }
+          if (item.state._text === 'PROMPTING') {
+            ++count;
+          }
           if (item.state._text !== 'SCHEDULED' && item.state._text !== 'PENDING' && item.state._text !== 'BLOCKED') {
             this.object.isModify = false;
           }
         }
       }
     });
+
+    if(count == this.setOfCheckedId.size){
+      this.object.isPrompt = true;
+    }
     this.checked = this.setOfCheckedId.size === orders.length;
     this.indeterminate = this.setOfCheckedId.size > 0 && !this.checked;
   }
@@ -355,6 +362,10 @@ export class OrderListSidebarComponent implements OnChanges {
     this._bulkOperation('Cancel', 'cancel', isKill);
   }
 
+  confirmAllOrder(): void {
+    this._bulkOperation('Confirm', 'confirm', false);
+  }
+
   _bulkOperation(operation, url, isKill = false): void {
     const obj: any = {
       controllerId: this.schedulerId,
@@ -392,14 +403,43 @@ export class OrderListSidebarComponent implements OnChanges {
         }
       });
     } else {
-      this.isProcessing = true;
-      this.coreService.post('orders/' + url, obj).subscribe({
-        next: () => {
-          this.resetCheckBox();
-          this.resetAction(5000);
-        }, error: () => this.resetAction()
-      });
+      if (operation == 'Confirm') {
+        this.confirmOrder(obj, url);
+      } else {
+        this.isProcessing = true;
+        this.coreService.post('orders/' + url, obj).subscribe({
+          next: () => {
+            this.resetCheckBox();
+            this.resetAction(5000);
+          }, error: () => this.resetAction()
+        });
+      }
     }
+  }
+
+  private confirmOrder(obj, url): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmModalComponent,
+      nzData: {
+        title: 'confirm',
+        question: 'order.message.confirmAllSelectedOrders'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        this.isProcessing = true;
+        this.coreService.post('orders/' + url, obj).subscribe({
+          next: () => {
+            this.resetCheckBox();
+            this.resetAction(5000);
+          }, error: () => this.resetAction()
+        });
+      }
+    });
   }
 
   getObstacles(order): void {
