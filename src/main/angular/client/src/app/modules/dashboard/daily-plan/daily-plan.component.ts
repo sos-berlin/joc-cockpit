@@ -54,7 +54,8 @@ export class DailyPlanComponent {
     d.setDate(new Date().getDate() + 1);
     const obj = {
       controllerIds: [this.schedulerIds.selected],
-      dailyPlanDateFrom: this.coreService.getStringDate(this.filters.date === '0d' ? null : d)
+      dailyPlanDateFrom: this.coreService.getStringDate(this.filters.date === '0d' ? null : d),
+      dailyPlanDateTo: this.coreService.getStringDate(this.filters.date === '0d' ? null : d)
     };
 
     this.coreService.post('daily_plan/orders/summary', obj).subscribe({
