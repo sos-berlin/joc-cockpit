@@ -842,7 +842,7 @@
     "popup.submitOrderCount": "本当に{{count}}オーダーを登録しますか?",
     "popup.modifyOrdersCount": "{{n1}}オーダーを変更します",
     "popup.modifyCyclicOrdersCount": "(合計{{n2}})回の {{n1}}周期的オーダーを変更します。 ",
-    "popup.cannotModifyStartTime": "{{n1}}シングルオーダーと{{n2}}周期的オーダーのため、開始時間を変更できません。",
+    "popup.modifySingleAndCyclicOrdersCount": "This will modify {{s1}} single orders and {{n1}} cyclic orders (total {{n2}})",
     "popup.differentModifyStartTime": "{{n1}}異なる開始計画時間です。",
     "tooltip.dateRangeSelectStep1": "選択した期間をドラッグしてください",
     "tooltip.dateRangeSelectStep2": "またはCTRLキーを押さえながら開始日と終了日をクリックするか",

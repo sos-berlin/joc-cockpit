@@ -1543,7 +1543,7 @@ export class CoreService {
     return moment(date).format(format);
   }
 
-  getStringDate(date: any): string {
+  getStringDate(date?): string {
     if (!date) {
       return moment().format('YYYY-MM-DD');
     }
