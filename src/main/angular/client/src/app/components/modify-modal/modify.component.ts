@@ -575,10 +575,10 @@ export class ModifyStartTimeModalComponent {
   isDailyPlan = false;
   submitted = false;
   dateFormat: any;
-  errorMsg = false;
   dateType: any = {at: 'date', forceJobAdmission: false};
   zones = [];
   period: any = {};
+  s1 = 0;
   n1 = 0;
   n2 = 0;
   display: any;
@@ -610,16 +610,18 @@ export class ModifyStartTimeModalComponent {
     let isCyclic = false;
     let isStandalone = false;
     if (this.plan && this.plan.value) {
+      this.n1 = 0;
       this.plan.value.forEach((order) => {
-        this.n1 = this.n1 + 1;
         if (order.cyclicOrder) {
           this.n2 = this.n2 + order.cyclicOrder.count;
+          this.n1 = this.n1 + 1;
         }
         if (order.cyclicOrder && !isCyclic) {
           isCyclic = true;
         }
-        if (!order.cyclicOrder && !isStandalone) {
+        if (!order.cyclicOrder) {
           isStandalone = true;
+          this.s1 = this.s1 + 1;
         }
       });
     } else if (this.orders && this.orders.size > 0) {
@@ -627,29 +629,76 @@ export class ModifyStartTimeModalComponent {
       this.orders.forEach((order) => {
         if (order.cyclicOrder) {
           this.n2 = this.n2 + order.cyclicOrder.count;
-        } else {
           this.n1 = this.n1 + 1;
         }
         if (order.cyclicOrder && !isCyclic) {
           isCyclic = true;
         }
-        if (!order.cyclicOrder && !isStandalone) {
+        if (!order.cyclicOrder) {
           isStandalone = true;
+          this.s1 = this.s1 + 1;
         }
       });
-      if (this.n1 == 0 && this.n2 > 0) {
+      if (this.n1 == 0 && this.n2 > 0 && this.s1 == 0) {
         this.n1 = this.orders.size;
       }
     }
+    if (this.n1 == 0 && this.n2 === 0 && this.s1 > 0) {
+      this.n1 = this.s1;
+    }
     if (isCyclic && isStandalone) {
-      this.order = null;
-      this.errorMsg = true;
+      this.order.cyclicOrder = null;
+      
     } else if (isCyclic) {
       this.order.cyclicOrder = {};
+
+    }
+
+    if (this.order.period || (this.orders?.size == 1) || (this.plan?.value?.length == 1)) {
+      let period;
+      if (this.order.period) {
+        period = this.order.period;
+        period.date = this.order.plannedDate;
+      } else if (this.orders?.size) {
+        this.orders.forEach((order) => {
+          if (order.cyclicOrder) {
+            period = order.period;
+            period.date = order.plannedDate;
+          }
+        });
+      } else if (this.plan?.value?.length) {
+        this.plan.value.forEach((order) => {
+          if (order.cyclicOrder) {
+            period = order.period;
+            period.date = order.plannedDate;
+          }
+        });
+      }
+      if (period) {
+        if (typeof period.begin == 'string' && period.begin.match('2000-01-01')) {
+          period.begin = period.begin.replace('2000-01-01', period.date.split('T')[0]);
+        }
+        this.period.begin = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, period.begin), this.preferences.dateFormat);
+        this.period.end = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, period.end), this.preferences.dateFormat);
+        this.period.repeat = this.secondsToHMS(period.repeat);
+        this.order.scheduleDate = this.coreService.getDateByFormat(period.begin, this.preferences.zone, 'YYYY-MM-DD');
+      }
     }
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.dateType.timeZone = this.preferences.zone;
+  }
+
+  private secondsToHMS(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+
+    const formattedHours = String(hours).padStart(2, '0');
+    const formattedMinutes = String(minutes).padStart(2, '0');
+    const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+
+    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   }
 
   static checkTime(time): string {
@@ -722,6 +771,9 @@ export class ModifyStartTimeModalComponent {
         begin: ModifyStartTimeModalComponent.checkTime(this.period.begin),
         end: ModifyStartTimeModalComponent.checkTime(this.period.end),
       };
+      if(this.order.scheduleDate) {
+        obj.scheduledFor = this.coreService.getDateByFormat(this.order.scheduleDate, null, 'YYYY-MM-DD');
+      }
       obj.timeZone = this.dateType.timeZone;
     }
     obj.auditLog = {};

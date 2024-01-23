@@ -841,7 +841,7 @@
     "popup.submitOrderCount": "Êtes-vous sûr de vouloir soumettre les {{count}} ordres?",
     "popup.modifyOrdersCount": "Cette modification affectera {{n1}} ordres",
     "popup.modifyCyclicOrdersCount": "Cette modification affectera {{n1}} ordres cycliques (total {{n2}})",
-    "popup.cannotModifyStartTime": "Cette modification n'est pas possible à cause de {{n1}} ordres individuels et {{n2}} ordres cycliques",
+    "popup.modifySingleAndCyclicOrdersCount": "This will modify {{s1}} single orders and {{n1}} cyclic orders (total {{n2}})",
     "popup.differentModifyStartTime": "{{n1}} heures de démarrage différentes",
     "tooltip.dateRangeSelectStep1": "Maintenez la souris et faites glisser pour sélectionner la plage de dates",
     "tooltip.dateRangeSelectStep2": "Ou appuyez sur la touche CTRL et sélectionnez la date de début et la date de fin en cliquant avec la souris",

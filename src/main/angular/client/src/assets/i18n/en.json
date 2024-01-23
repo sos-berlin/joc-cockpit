@@ -841,7 +841,7 @@
     "popup.submitOrderCount": "Are you sure you want to submit {{count}} orders?",
     "popup.modifyOrdersCount": "This will modify {{n1}} order",
     "popup.modifyCyclicOrdersCount": "This will modify {{n1}} cyclic orders (total {{n2}})",
-    "popup.cannotModifyStartTime": "Cannot modify start time as {{n1}} single orders and {{n2}} cyclic orders have been found",
+    "popup.modifySingleAndCyclicOrdersCount": "This will modify {{s1}} single orders and {{n1}} cyclic orders (total {{n2}})",
     "popup.differentModifyStartTime": "{{n1}} different planned start times",
     "tooltip.dateRangeSelectStep1": "Hold mouse and drag to select date range",
     "tooltip.dateRangeSelectStep2": "Or press Ctrl key and select start date and end date using mouse click",
