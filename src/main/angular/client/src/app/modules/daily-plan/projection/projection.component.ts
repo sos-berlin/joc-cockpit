@@ -270,13 +270,23 @@ export class ShowProjectionModalComponent {
         });
 
         for (const key of Object.keys(data)) {
+
+          const uniqueArray =  data[key].reduce((accumulator, current) => {
+            const existingObject = accumulator.find(obj => obj.schedule === current.schedule && obj.period.singleStart === current.period.singleStart);
+            if (!existingObject) {
+              accumulator.push(current);
+            }
+            return accumulator;
+          }, []);
+
           for (const controller of Object.keys(res.meta)) {
             let workflows = res.meta[controller][key].workflowPaths || res.meta[controller][key].workflows;
             workflows.forEach(workflow => {
+
               this.schedule.list.push(
                 {
                   schedule: key,
-                  periods: data[key],
+                  periods: uniqueArray,
                   workflow: workflow
                 }
               )

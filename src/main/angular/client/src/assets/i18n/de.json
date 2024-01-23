@@ -841,7 +841,7 @@
     "popup.submitOrderCount": "Sind Sie sicher, dass Sie {{count}} Aufträge übermitteln wollen?",
     "popup.modifyOrdersCount": "Die Änderung betrifft {{n1}} Aufträge",
     "popup.modifyCyclicOrdersCount": "Die Änderung betrifft {{n1}} zyklische Aufträge (Summe {{n2}})",
-    "popup.cannotModifyStartTime": "Startzeit kann nicht geändert werden, da {{n1}} einzelne Aufträge und {{n2}} zyklische Aufträge vorhanden sind",
+    "popup.modifySingleAndCyclicOrdersCount": "This will modify {{s1}} single orders and {{n1}} cyclic orders (total {{n2}})",
     "popup.differentModifyStartTime": "{{n1}} unterschiedliche geplante Startzeiten",
     "tooltip.dateRangeSelectStep1": "Mauszeiger gedrückt halten und ziehen, um Datumsbereich auszuwählen",
     "tooltip.dateRangeSelectStep2": "oder CTRL Taste gedrückt halten und Startdatum & Enddatum per Mausklick auswählen",
