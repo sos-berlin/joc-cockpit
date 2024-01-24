@@ -654,39 +654,70 @@ export class ModifyStartTimeModalComponent {
 
     }
 
-    if (this.order.period || (this.orders?.size == 1) || (this.plan?.value?.length == 1)) {
+    if (this.order.period || this.order.cyclicOrder || (this.orders?.size == 1) || (this.plan?.value?.length == 1)) {
+      let orderId;
       let period;
-      if (this.order.period) {
-        period = this.order.period;
-        period.date = this.order.plannedDate;
+      if (this.order.period || this.order.cyclicOrder) {
+        period = this.order.period || {};
+        period.date = this.order.plannedDate || new Date(this.order.scheduledFor);
+        orderId = this.order.orderId;
       } else if (this.orders?.size) {
         this.orders.forEach((order) => {
           if (order.cyclicOrder) {
-            period = order.period;
-            period.date = order.plannedDate;
+            period = order.period || {};
+            period.date = order.plannedDate || new Date(order.scheduledFor);
+            orderId = order.orderId;
           }
         });
       } else if (this.plan?.value?.length) {
         this.plan.value.forEach((order) => {
           if (order.cyclicOrder) {
-            period = order.period;
-            period.date = order.plannedDate;
+            period = order.period || {};
+            period.date = order.plannedDate || new Date(order.scheduledFor);
+            orderId = order.orderId;
           }
         });
       }
       if (period) {
-        if (typeof period.begin == 'string' && period.begin.match('2000-01-01')) {
-          period.begin = period.begin.replace('2000-01-01', period.date.split('T')[0]);
+        if (period && period.begin) {
+          this.updatePeriod(period);
+        } else {
+          this.fetchOrderInfo(orderId, period);
         }
-        this.period.begin = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, period.begin), this.preferences.dateFormat);
-        this.period.end = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, period.end), this.preferences.dateFormat);
-        this.period.repeat = this.secondsToHMS(period.repeat);
-        this.order.scheduleDate = this.coreService.getDateByFormat(period.begin, this.preferences.zone, 'YYYY-MM-DD');
       }
     }
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.dateType.timeZone = this.preferences.zone;
+  }
+
+  private fetchOrderInfo(orderID, period): void {
+    this.coreService.post('daily_plan/orders', {
+      dailyPlanDateFrom: this.coreService.getDateByFormat(period.date, this.preferences.zone, 'YYYY-MM-DD'),
+      orderIds: [orderID]
+    }).subscribe({
+      next: (res) => {
+        if (res.plannedOrderItems?.length === 1) {
+          period = {...period,...res.plannedOrderItems[0].period};
+          this.updatePeriod(period);
+        }
+      }
+    });
+  }
+
+  private updatePeriod(period): void{
+    if (typeof period.begin == 'string' && period.begin.match('2000-01-01')) {
+      if(typeof period.date == 'string') {
+        period.begin = period.begin.replace('2000-01-01', period.date.split('T')[0]);
+      } else {
+        const dateStr = period.date.getFullYear() +'-' +(period.date.getMonth() + 1 < 9 ? '0' : '') + (period.date.getMonth() + 1) +'-' + (period.date.getDate() < 9 ? '0' : '') +  period.date.getDate();
+        period.begin = period.begin.replace('2000-01-01', dateStr);
+      }
+    }
+    this.period.begin = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, period.begin), this.preferences.dateFormat);
+    this.period.end = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, period.end), this.preferences.dateFormat);
+    this.period.repeat = this.secondsToHMS(period.repeat);
+    this.order.scheduleDate = this.coreService.getDateByFormat(period.begin, this.preferences.zone, 'YYYY-MM-DD');
   }
 
   private secondsToHMS(seconds) {
