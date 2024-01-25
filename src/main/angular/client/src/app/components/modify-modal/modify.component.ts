@@ -347,7 +347,12 @@ export class ChangeParameterModalComponent {
   addVariableToList(data): void {
     const arr = [];
     data.list.forEach(item => {
-      arr.push({name: item.name, type: item.value.type, value: (item.value.value || item.value.default), isRequired: (item.isRequired || item.value.isRequired)});
+      arr.push({
+        name: item.name,
+        type: item.value.type,
+        value: (item.value.value || item.value.default),
+        isRequired: (item.isRequired || item.value.isRequired)
+      });
     });
     let flag = false;
     for (const i in data.actualList) {
@@ -648,20 +653,22 @@ export class ModifyStartTimeModalComponent {
     }
     if (isCyclic && isStandalone) {
       this.order.cyclicOrder = null;
-      
     } else if (isCyclic) {
-      this.order.cyclicOrder = {};
-
+      if (this.n1 > 1) {
+        this.order.cyclicOrder = null;
+      } else {
+        this.order.cyclicOrder = {};
+      }
     }
 
     if (this.order.period || this.order.cyclicOrder || (this.orders?.size == 1) || (this.plan?.value?.length == 1)) {
       let orderId;
       let period;
-      if (this.order.period || this.order.cyclicOrder) {
+      if ((this.order.period || this.order.cyclicOrder) && this.order.orderId) {
         period = this.order.period || {};
         period.date = this.order.plannedDate || new Date(this.order.scheduledFor);
         orderId = this.order.orderId;
-      } else if (this.orders?.size) {
+      } else if (this.orders?.size == 1) {
         this.orders.forEach((order) => {
           if (order.cyclicOrder) {
             period = order.period || {};
@@ -669,7 +676,7 @@ export class ModifyStartTimeModalComponent {
             orderId = order.orderId;
           }
         });
-      } else if (this.plan?.value?.length) {
+      } else if (this.plan?.value?.length == 1) {
         this.plan.value.forEach((order) => {
           if (order.cyclicOrder) {
             period = order.period || {};
@@ -692,25 +699,27 @@ export class ModifyStartTimeModalComponent {
   }
 
   private fetchOrderInfo(orderID, period): void {
-    this.coreService.post('daily_plan/orders', {
-      dailyPlanDateFrom: this.coreService.getDateByFormat(period.date, this.preferences.zone, 'YYYY-MM-DD'),
-      orderIds: [orderID]
-    }).subscribe({
-      next: (res) => {
-        if (res.plannedOrderItems?.length === 1) {
-          period = {...period,...res.plannedOrderItems[0].period};
-          this.updatePeriod(period);
+    if (orderID) {
+      this.coreService.post('daily_plan/orders', {
+        dailyPlanDateFrom: this.coreService.getDateByFormat(period.date, this.preferences.zone, 'YYYY-MM-DD'),
+        orderIds: [orderID]
+      }).subscribe({
+        next: (res) => {
+          if (res.plannedOrderItems?.length === 1 && res.plannedOrderItems[0].period) {
+            period = {...period, ...res.plannedOrderItems[0].period};
+            this.updatePeriod(period);
+          }
         }
-      }
-    });
+      });
+    }
   }
 
-  private updatePeriod(period): void{
+  private updatePeriod(period): void {
     if (typeof period.begin == 'string' && period.begin.match('2000-01-01')) {
-      if(typeof period.date == 'string') {
+      if (typeof period.date == 'string') {
         period.begin = period.begin.replace('2000-01-01', period.date.split('T')[0]);
       } else {
-        const dateStr = period.date.getFullYear() +'-' +(period.date.getMonth() + 1 < 9 ? '0' : '') + (period.date.getMonth() + 1) +'-' + (period.date.getDate() < 9 ? '0' : '') +  period.date.getDate();
+        const dateStr = period.date.getFullYear() + '-' + (period.date.getMonth() + 1 < 9 ? '0' : '') + (period.date.getMonth() + 1) + '-' + (period.date.getDate() < 9 ? '0' : '') + period.date.getDate();
         period.begin = period.begin.replace('2000-01-01', dateStr);
       }
     }
@@ -775,6 +784,7 @@ export class ModifyStartTimeModalComponent {
         obj.orderIds.push(k);
       });
     }
+
     if (isEmpty(this.period)) {
       if (this.dateType.at === 'now') {
         obj.scheduledFor = 'now';
@@ -789,7 +799,7 @@ export class ModifyStartTimeModalComponent {
         obj.scheduledFor = 'cur ' + this.order.atTimeFromCur;
       } else {
         this.coreService.getDateAndTime(this.order);
-        if(this.order.fromTime) {
+        if (this.order.fromTime) {
           obj.scheduledFor = this.coreService.getDateByFormat(this.order.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
         } else {
           obj.scheduledFor = this.coreService.getDateByFormat(this.order.fromDate, null, 'YYYY-MM-DD');
@@ -802,7 +812,7 @@ export class ModifyStartTimeModalComponent {
         begin: ModifyStartTimeModalComponent.checkTime(this.period.begin),
         end: ModifyStartTimeModalComponent.checkTime(this.period.end),
       };
-      if(this.order.scheduleDate) {
+      if (this.order.scheduleDate) {
         obj.scheduledFor = this.coreService.getDateByFormat(this.order.scheduleDate, null, 'YYYY-MM-DD');
       }
       obj.timeZone = this.dateType.timeZone;
