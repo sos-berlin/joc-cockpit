@@ -5804,19 +5804,24 @@ export class WorkflowComponent {
 
     findFirstNode(jsonObject);
 
-    function traverseJSONObject(nodeId, obj) {
+    function traverseJSONObject(nodeId, obj): boolean {
+      let isMatch = false;
       function getObject(json): void {
         if (json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
             if (json.instructions[x].id == nodeId) {
-              json.instructions.push(obj);
+              if(json.instructions[x].instructions) {
+                json.instructions[x].instructions.push(obj);
+              } else {
+                json.instructions.push(obj);
+              }
+              isMatch = true;
               break;
             }
             if (json.instructions[x].instructions) {
               getObject(json.instructions[x]);
             }
             if (json.instructions[x].catch) {
-              
               if (json.instructions[x].catch.id == nodeId) {
                 if (!json.instructions[x].catch.instructions) {
                   json.instructions[x].catch.instructions = [];
@@ -5843,18 +5848,16 @@ export class WorkflowComponent {
         }
       }
 
-      getObject(jsonObject)
+      getObject(jsonObject);
+      return isMatch;
     }
 
     function checkRemainingNodes(node) {
       node.edges.forEach(edge => {
         if (edge.source && edge.source.id !== node.id) {
-          let targetId = edge.source.id;
-          if (self.workflowService.checkClosingCell(edge.source.value.tagName)) {
-            targetId = edge.source.getAttribute('targetId');
-          }
-          const obj: any = createObject(node);
 
+          let targetId = edge.source.id;
+          const obj: any = createObject(node);
           if (obj.TYPE === 'Try') {
             obj.instructions = [];
             obj.catch = {
@@ -5863,8 +5866,12 @@ export class WorkflowComponent {
             };
             delete obj.parentId;
           }
+          const isMatch = traverseJSONObject(targetId, obj);
+          if (!isMatch && self.workflowService.checkClosingCell(edge.source.value.tagName) && targetId != edge.source.getAttribute('targetId')) {
+            targetId = edge.source.getAttribute('targetId');
+            traverseJSONObject(targetId, obj);
+          }
 
-          traverseJSONObject(targetId, obj);
         }
       });
     }
