@@ -526,6 +526,12 @@ export class ScheduleComponent {
     let forkListVariables = [];
     let variablesBeforeUpdate = {};
     for (const prop in this.schedule.configuration.orderParameterisations) {
+      if (this.schedule.configuration.orderParameterisations[prop].variables && !isArray(this.schedule.configuration.orderParameterisations[prop].variables)) {
+        this.schedule.configuration.orderParameterisations[prop].variables = this.coreService.convertObjectToArray(this.schedule.configuration.orderParameterisations[prop], 'variables');
+        if (!this.schedule.configuration.orderParameterisations[prop].variables.positions) {
+          this.schedule.configuration.orderParameterisations[prop].variables.positions = {};
+        }
+      }
       if (this.schedule.configuration.orderParameterisations[prop]) {
         variablesBeforeUpdate = JSON.stringify(this.schedule.configuration.orderParameterisations[prop].variables);
         break;
@@ -578,7 +584,13 @@ export class ScheduleComponent {
               this.schedule.configuration.orderParameterisations.push(
                 {
                   orderName: '',
-                  variables: [],
+                  variables: [{
+                    name: k,
+                    isExist: true,
+                    type: val.type,
+                    list: val.listParameters,
+                    actualList: [actualList]
+                  }],
                   positions: {}
                 });
             } else {
@@ -1026,7 +1038,10 @@ export class ScheduleComponent {
     if (!this.schedule.configuration.planOrderAutomatically) {
       this.schedule.configuration.submitOrderToControllerWhenPlanned = false;
     }
-
+    if (this.schedule.configuration.workflowNames?.length === 0) {
+      this.schedule.configuration.orderParameterisations = [];
+      this.variableList = [];
+    }
     const obj = this.coreService.clone(this.schedule.configuration);
     let isEmptyExist = false;
     let isValid = true;
@@ -1283,11 +1298,13 @@ export class ScheduleComponent {
         data[index] = {
           isCollapseVariable: variable.isCollapseVariable
         };
-        variable.variables.forEach((item) => {
-          if (item.type === 'List') {
-            data[index][item.name] = {isCollapse: item.isCollapse};
-          }
-        });
+        if (isArray(variable.variables)) {
+          variable.variables.forEach((item) => {
+            if (item.type === 'List') {
+              data[index][item.name] = {isCollapse: item.isCollapse};
+            }
+          });
+        }
       });
       this.coreService.scheduleExpandedProperties.set(this.schedule.path, data);
     }
@@ -1480,12 +1497,12 @@ export class ScheduleComponent {
       this.schedule.configuration.orderParameterisations.forEach((variable, index) => {
         variable.variables.forEach((item) => {
           if (item.type === 'List') {
-            if (data[index.toString()][item.name].isCollapse) {
+            if (data[index.toString()] && data[index.toString()][item.name]?.isCollapse) {
               item.isCollapse = true;
             }
           }
         });
-        if (data[index.toString()].isCollapseVariable) {
+        if (data[index.toString()]?.isCollapseVariable) {
           variable.isCollapseVariable = true;
         }
       });
