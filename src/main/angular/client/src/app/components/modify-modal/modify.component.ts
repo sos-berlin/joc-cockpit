@@ -654,38 +654,17 @@ export class ModifyStartTimeModalComponent {
     if (isCyclic && isStandalone) {
       this.order.cyclicOrder = null;
     } else if (isCyclic) {
-      if (this.n1 > 1) {
+      if (this.n1 > 1 || this.plan?.value?.length || this.orders?.size) {
         this.order.cyclicOrder = null;
       } else {
         this.order.cyclicOrder = {};
       }
     }
-
-    if (this.order.period || this.order.cyclicOrder || (this.orders?.size == 1) || (this.plan?.value?.length == 1)) {
-      let orderId;
-      let period;
-      if ((this.order.period || this.order.cyclicOrder) && this.order.orderId) {
-        period = this.order.period || {};
+    if (!isEmpty(this.order.cyclicOrder)) {
+      if (this.order.cyclicOrder && this.order.orderId) {
+        let period = this.order.period || {};
         period.date = this.order.plannedDate || new Date(this.order.scheduledFor);
-        orderId = this.order.orderId;
-      } else if (this.orders?.size == 1) {
-        this.orders.forEach((order) => {
-          if (order.cyclicOrder) {
-            period = order.period || {};
-            period.date = order.plannedDate || new Date(order.scheduledFor);
-            orderId = order.orderId;
-          }
-        });
-      } else if (this.plan?.value?.length == 1) {
-        this.plan.value.forEach((order) => {
-          if (order.cyclicOrder) {
-            period = order.period || {};
-            period.date = order.plannedDate || new Date(order.scheduledFor);
-            orderId = order.orderId;
-          }
-        });
-      }
-      if (period) {
+        let orderId = this.order.orderId;
         if (period && period.begin) {
           this.updatePeriod(period);
         } else {
@@ -693,6 +672,7 @@ export class ModifyStartTimeModalComponent {
         }
       }
     }
+
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.dateType.timeZone = this.preferences.zone;
@@ -806,7 +786,7 @@ export class ModifyStartTimeModalComponent {
         }
         obj.timeZone = this.dateType.timeZone;
       }
-    } else {
+    } else if(this.period.begin){
       obj.cycle = {
         repeat: ModifyStartTimeModalComponent.checkTime(this.period.repeat),
         begin: ModifyStartTimeModalComponent.checkTime(this.period.begin),
