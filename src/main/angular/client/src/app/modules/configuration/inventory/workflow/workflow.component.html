@@ -1126,9 +1126,13 @@
                     <ng-container *ngSwitchCase="'Boolean'">
                       <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                            class="col-md-6 col-lg-6 m-b-sm">
-                        <nz-select #value="ngModel" [(ngModel)]="variable.value"
-                                   [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                                   [required]="variable.isRequired" name="value{{i}}" nzAllowClear>
+                        <input  *ngIf="variable.value != false && variable.value != true && variable.value != undefined && variable.value != null" [(ngModel)]="variable.value" autocomplete="off" class="form-control pos-rel z-index-99" name="bool_value_{{i}}"
+                               placeholder="$var"
+                               type="text">
+                        <nz-select #value="ngModel" [(ngModel)]="variable.value" [ngClass]="{'overlap-box' : variable.value != false && variable.value != true && variable.value != ''}"
+                                   [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzPlaceHolder]="(variable.value != false && variable.value != true && variable.value != '') ? '' : ('common.placeholder.selectValue' | translate)"
+                                   [required]="variable.isRequired" name="value{{i}}" [nzAllowClear]="(variable.value != false && variable.value != true && variable.value != '') ? false : true">
+                          <nz-option [nzLabel]="'$var'" [nzValue]="'$'"></nz-option>
                           <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                           <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                         </nz-select>

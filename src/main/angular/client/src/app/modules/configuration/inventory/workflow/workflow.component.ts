@@ -5805,16 +5805,60 @@ export class WorkflowComponent {
 
     findFirstNode(jsonObject);
 
-    function traverseJSONObject(nodeId, obj): boolean {
+    function traverseJSONObject(nodeId, obj, edge): boolean {
       let isMatch = false;
+
       function getObject(json): void {
         if (json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
             if (json.instructions[x].id == nodeId) {
-              if(json.instructions[x].instructions) {
+              if (json.instructions[x].instructions) {
                 json.instructions[x].instructions.push(obj);
+                console.log(JSON.stringify(json.instructions[x]))
               } else {
-                json.instructions.push(obj);
+                if(json.instructions[x].TYPE == 'If'){
+                  if(!json.instructions[x].then) {
+                    json.instructions[x].then = {
+                      instructions: [obj]
+                    }
+                  } else {
+                    if (edge.getAttribute('displayLabel') === 'then') {
+                      if (!json.instructions[x].then) {
+                        json.instructions[x].then = {
+                          instructions: [obj]
+                        };
+                      }
+                    } else if (edge.getAttribute('displayLabel') === 'else') {
+                      if (!json.instructions[x].else) {
+                        json.instructions[x].else = {
+                          instructions: [obj]
+                        };
+                      }
+                    } else if (edge.getAttribute('displayLabel') === 'endIf') {
+                      if (!json.instructions[x].else) {
+                        json.instructions[x].else = {
+                          instructions: [obj]
+                        };
+                      }
+                    }
+                  }
+                  console.log(edge)
+                } else if (json.instructions[x].TYPE == 'Fork') {
+                  if (!json.instructions[x].branches) {
+                    json.instructions[x].branches = [];
+                  }
+                  const result = edge.getAttribute('result');
+                  const branchObj = {
+                    id: edge.getAttribute('displayLabel'),
+                    result: result ? JSON.parse(result) : result,
+                    instructions: []
+                  };
+
+                  json.instructions[x].branches.push(branchObj);
+                } else {
+                  json.instructions.push(obj);
+                }
+                console.log(JSON.stringify(json))
               }
               isMatch = true;
               break;
@@ -5867,10 +5911,10 @@ export class WorkflowComponent {
             };
             delete obj.parentId;
           }
-          const isMatch = traverseJSONObject(targetId, obj);
+          const isMatch = traverseJSONObject(targetId, obj, edge);
           if (!isMatch && self.workflowService.checkClosingCell(edge.source.value.tagName) && targetId != edge.source.getAttribute('targetId')) {
             targetId = edge.source.getAttribute('targetId');
-            traverseJSONObject(targetId, obj);
+            traverseJSONObject(targetId, obj, edge);
           }
 
         }
