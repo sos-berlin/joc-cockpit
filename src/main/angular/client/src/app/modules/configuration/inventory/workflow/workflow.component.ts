@@ -2908,6 +2908,7 @@ export class WorkflowComponent {
   display = false;
   propertyPanelWidth: number;
   selectedNode: any;
+  isDisplay: boolean;
   node: any;
   isReferencedBy: any;
   title = '';
@@ -8438,7 +8439,7 @@ export class WorkflowComponent {
             graph.getModel().execute(edit6);
             let blockPosition;
             if (self.selectedNode.newObj.blockPosition) {
-              if (self.selectedNode.newObj.blockPosition) {
+              if (self.blockPositions) {
                 if (typeof self.selectedNode.newObj.blockPosition === 'string' && self.blockPositions.has(self.selectedNode.newObj.blockPosition)) {
                   blockPosition = JSON.stringify(self.blockPositions.get(self.selectedNode.newObj.blockPosition));
                 } else if (isArray(self.selectedNode.newObj.blockPosition) && self.blockPositions.has(JSON.stringify(self.selectedNode.newObj.blockPosition))) {
@@ -8744,6 +8745,7 @@ export class WorkflowComponent {
      * Updates the properties panel
      */
     function selectionChanged(): void {
+      self.isDisplay = false;
       if (self.selectedNode && self.permission.joc && self.permission.joc.inventory.manage) {
         if (self.selectedNode.type === 'Job' && self.selectedNode.periodList) {
           if (!self.selectedNode.job.admissionTimeScheme) {
@@ -9066,6 +9068,10 @@ export class WorkflowComponent {
         } else if (cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'ConsumeNotices') {
           obj.noticeBoardNames = cell.getAttribute('noticeBoardNames');
           self.coreService.removeSlashToString(obj, 'noticeBoardNames');
+          setTimeout(() => {
+            self.isDisplay = true;
+            self.ref.detectChanges();
+          }, 100);
         } else if (cell.value.tagName === 'Prompt') {
           obj.question = cell.getAttribute('question');
           self.coreService.removeSlashToString(obj, 'question');
