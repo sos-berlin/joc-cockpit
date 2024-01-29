@@ -139,3 +139,9 @@
 .input-search.ant-select-focused ~ .search-icon {
   display: inline-block;
 }
+
+.overlap-box{
+  position: absolute;
+  top:0;
+  z-index: 0;
+}
