@@ -157,8 +157,12 @@ gridster-item {
   color: #9a99ff;
 }
 
-.log_error, .log_stderr {
-  color: #ff4949 !important;
+.log-body-new-window .log_detail {
+  color: rgb(48, 48, 255);
+}
+
+.log-body-new-window .log_error, .log_stderr {
+  color: #d53b02 !important;
 }
 
 .log_warn {
@@ -1222,8 +1226,22 @@ div.jsoneditor-value.jsoneditor-invalid {
   border-left: 5px solid var(--background-color);
   border-right: 5px solid var(--background-color)
 }
+
+#upper-header {
+  background: #a6adb4 !important;
+}
+
+.log-body-new-window {
+  background-color: #a6adb4 !important;
+}
+
 .ant-select-dropdown-menu-item-active{
   color: var(--background-color)
+}
+
+.log-body-new-window .tx_order .caret{
+  border-left: 5px solid #a6adb4;
+  border-right: 5px solid #a6adb4
 }
 
 .upload-progress-bar {
