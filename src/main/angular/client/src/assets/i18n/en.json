@@ -423,8 +423,8 @@
     "label.processCompleted": "Process completed",
     "label.specificDate": "Specific Date",
     "label.relativeDate": "Relative Date",
-    "label.relativeTime": "Relative Time",
-    "label.relativeTimeFromCurrentTime": "Relative Time from Current Start Time",
+    "label.relativeTime": "Relative to Current Time",
+    "label.relativeTimeFromCurrentTime": "Relative to Start Time",
     "label.processExecuted": "Process executed",
     "label.selectController": "Choose Controller",
     "placeholder.setEndDate": "Set end time",
@@ -847,7 +847,7 @@
     "tooltip.dateRangeSelectStep1": "Hold mouse and drag to select date range",
     "tooltip.dateRangeSelectStep2": "Or press Ctrl key and select start date and end date using mouse click",
     "tooltip.dateRangeSelectStep3": "Or click calendar icon and then select start date and end date using mouse click",
-    "tooltip.invertProjection": "By default the Projection indicates the days for which orders are executed and the number of orders. When inverting the projection then days are highlighted for which no orders are executed. This includes to limit the projection to certain folders holidng workflows or schedules.",
+    "tooltip.invertProjection": "By default the Projection indicates the days for which orders are executed and the number of orders. When inverting the projection then days are highlighted for which schedules exist that will not create orders. When clicking the related day then schedules without orders will be displayed. This includes to limit the projection to certain folders holding workflows or schedules.",
     "tab": {
       "dailyPlan": "Daily Plan",
       "projection": "Projection"
@@ -2370,7 +2370,7 @@
     "message.noVariableAvailable": "no variable available",
     "message.orderModificationNotAllowed": "The order state {{state}} does not allow modification",
     "message.noLogHistoryFound": "No log found for this order",
-    "message.confirmAllSelectedOrders": "Are you sure that you want to confirm all the selected orders?",
+    "message.confirmAllSelectedOrders": "Are you sure that you want to confirm all selected orders?",
     "tooltip.cycleEndTime": "Optionally specifies the cycle end time. Users can specify a shorter period than predefined for the cycle to terminate. The order will be resumed from the position choosen by the user and the specified end time will be checked when the order returns to the begin of the cycle. Cycle end times exceeding the predefined cycle period will be ignored.",
     "treeView": {
       "label": {
