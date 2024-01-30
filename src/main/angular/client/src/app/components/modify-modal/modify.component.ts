@@ -668,6 +668,10 @@ export class ModifyStartTimeModalComponent {
         if (period && period.begin) {
           this.updatePeriod(period);
         } else {
+          period.date = this.coreService.getDateByFormat(period.date, this.preferences.zone, 'YYYY-MM-DD');
+          if(period.date == '10000-01-01'){
+            period.date = '9999-12-31';
+          }
           this.fetchOrderInfo(orderId, period);
         }
       }
@@ -681,7 +685,7 @@ export class ModifyStartTimeModalComponent {
   private fetchOrderInfo(orderID, period): void {
     if (orderID) {
       this.coreService.post('daily_plan/orders', {
-        dailyPlanDateFrom: this.coreService.getDateByFormat(period.date, this.preferences.zone, 'YYYY-MM-DD'),
+        dailyPlanDateFrom: period.date,
         orderIds: [orderID]
       }).subscribe({
         next: (res) => {
