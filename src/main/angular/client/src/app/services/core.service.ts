@@ -2561,6 +2561,11 @@ export class CoreService {
       jobMap = new Map();
     }
 
+    // Function to check if string starts with a specific pattern
+    function startsWithPattern(str, pattern) {
+      return str.startsWith(pattern);
+    }
+
     function recursive(json: any, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -2680,7 +2685,7 @@ export class CoreService {
 
             if (json.instructions[x].positionString) {
               if (!flag) {
-                if (order.positionString.indexOf(json.instructions[x].positionString) > -1 || json.instructions[x].positionString == order.positionString) {
+                if (startsWithPattern(order.positionString, json.instructions[x].positionString) || json.instructions[x].positionString == order.positionString) {
                   json.instructions[x].show = true;
                   json.show = true;
                 }
@@ -2791,7 +2796,7 @@ export class CoreService {
               if (order) {
                 if (json.instructions[x].catch.positionString) {
                   if (!flag) {
-                    if (order.positionString.indexOf(json.instructions[x].catch.positionString) > -1 || json.instructions[x].catch.positionString == order.positionString) {
+                    if (startsWithPattern(order.positionString, json.instructions[x].catch.positionString) || json.instructions[x].catch.positionString == order.positionString) {
                       json.instructions[x].catch.show = true;
                     }
                   }
@@ -2809,7 +2814,7 @@ export class CoreService {
             recursive(json.instructions[x].then);
             if (json.instructions[x].then.positionString && order) {
               if (!flag) {
-                if (order.positionString.indexOf(json.instructions[x].then.positionString) > -1 || json.instructions[x].then.positionString == order.positionString) {
+                if (startsWithPattern(order.positionString, json.instructions[x].then.positionString) || json.instructions[x].then.positionString == order.positionString) {
                   json.instructions[x].then.show = true;
                 }
               }
@@ -2823,7 +2828,7 @@ export class CoreService {
             recursive(json.instructions[x].else);
             if (json.instructions[x].else.positionString && order) {
               if (!flag) {
-                if (order.positionString.indexOf(json.instructions[x].else.positionString) > -1 || json.instructions[x].else.positionString == order.positionString) {
+                if (startsWithPattern(order.positionString, json.instructions[x].else.positionString) || json.instructions[x].else.positionString == order.positionString) {
                   json.instructions[x].else.show = true;
                 }
               }
@@ -2854,7 +2859,7 @@ export class CoreService {
                 recursive(json.instructions[x].branches[i], json.instructions[x]);
                 if (order && json.instructions[x].branches[i].positionString) {
                   if (!flag) {
-                    if (order.positionString.indexOf(json.instructions[x].branches[i].positionString) > -1 || json.instructions[x].branches[i].positionString == order.positionString) {
+                    if (startsWithPattern(order.positionString, json.instructions[x].branches[i].positionString) || json.instructions[x].branches[i].positionString == order.positionString) {
                       json.instructions[x].branches[i].show = true;
                     }
                   }
