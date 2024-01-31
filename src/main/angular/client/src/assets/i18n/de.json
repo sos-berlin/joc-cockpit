@@ -422,8 +422,8 @@
     "label.processCompleted": "Prozess beendet",
     "label.specificDate": "Bestimmtes Datum",
     "label.relativeDate": "Relatives Datum",
-    "label.relativeTime": "Relative Uhrzeit",
-    "label.relativeTimeFromCurrentTime": "Relative Time from Current Start Time",
+    "label.relativeTime": "Relativ zur Uhrzeit",
+    "label.relativeTimeFromCurrentTime": "Relativ zur Start Time",
     "label.processExecuted": "Prozess ausgeführt",
     "label.selectController": "Controller auswählen",
     "placeholder.setEndDate": "Endezeit setzen",
@@ -841,12 +841,12 @@
     "popup.submitOrderCount": "Sind Sie sicher, dass Sie {{count}} Aufträge übermitteln wollen?",
     "popup.modifyOrdersCount": "Die Änderung betrifft {{n1}} Aufträge",
     "popup.modifyCyclicOrdersCount": "Die Änderung betrifft {{n1}} zyklische Aufträge (Summe {{n2}})",
-    "popup.modifySingleAndCyclicOrdersCount": "This will modify {{s1}} single orders and {{n1}} cyclic orders (total {{n2}})",
+    "popup.modifySingleAndCyclicOrdersCount": "Die Änderung betrifft {{s1}} einzelne Aufträge und {{n1}} zyklische Aufträge (Total {{n2}})",
     "popup.differentModifyStartTime": "{{n1}} unterschiedliche geplante Startzeiten",
     "tooltip.dateRangeSelectStep1": "Mauszeiger gedrückt halten und ziehen, um Datumsbereich auszuwählen",
     "tooltip.dateRangeSelectStep2": "oder CTRL Taste gedrückt halten und Startdatum & Enddatum per Mausklick auswählen",
     "tooltip.dateRangeSelectStep3": "oder Kalendersymbol anklicken und Startdatum & Enddatum per Mausklick auswählen",
-    "tooltip.invertProjection": "Standardmäßig zeigt die Projektion die Tage, an denen Aufträge ausgeführt werden, und die Anzahl der Aufträge an. Wenn Sie die Projektion umkehren, werden die Tage hervorgehoben, an denen keine Aufträge ausgeführt werden. Dies gilt auch für die Einschränkung der Projektion auf bestimmte Ordner mit Arbeitsabläufen oder Zeitplänen.",
+    "tooltip.invertProjection": "Standardmäßig zeigt die Projektion die Tage, an denen Aufträge ausgeführt werden, und die Anzahl der Aufträge. Wenn Sie die Projektion umkehren, werden die Tage hervorgehoben, für die Zeitpläne existieren, die keine Aufträge erzeugen. Wird der Tag angeklickt, dann werden die entsprechenden Zeitpläne angezeigt. Dies gilt auch für die Einschränkung der Projektion auf bestimmte Ordner mit Arbeitsabläufen oder Zeitplänen.",
     "tab": {
       "dailyPlan": "Tagesplan",
       "projection": "Projektion"
@@ -2368,7 +2368,7 @@
     "message.noVariableAvailable": "keine Variablen vorhanden",
     "message.orderModificationNotAllowed": "Der Auftagszustand {{state}} erlaubt keine Änderung",
     "message.noLogHistoryFound": "Kein Protokoll für diesen Auftrag gefunden",
-    "message.confirmAllSelectedOrders": "Are you sure that you want to confirm all the selected orders?",
+    "message.confirmAllSelectedOrders": "Sind Sie sicher, dass Sie alle ausgewählten Aufträge bestätigen wollen?",
     "tooltip.cycleEndTime": "Gibt optional die Endzeit des Zyklus an. Der Anwender kann eine kürzere als die vordefinierte Zeitspanne für das Ende des Zyklus angeben. Der Auftrag wird an der vom Anwender gewählten Position fortgesetzt, und die angegebene Endzeit wird überprüft, wenn der Auftrag zum Beginn des Zyklus zurückkehrt. Zyklusendzeiten, die die vordefinierte Zyklusdauer überschreiten, werden ignoriert.",
     "treeView": {
       "label": {
