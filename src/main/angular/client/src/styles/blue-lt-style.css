@@ -1235,6 +1235,14 @@ div.jsoneditor-value.jsoneditor-invalid {
   background-color: #a6adb4 !important;
 }
 
+.log-body-new-window .bg-white {
+  background-color: #949da5 !important;
+}
+
+.log-body-new-window #property-panel .rg-right {
+  background-color: #949da5 !important;
+}
+
 .ant-select-dropdown-menu-item-active{
   color: var(--background-color)
 }
