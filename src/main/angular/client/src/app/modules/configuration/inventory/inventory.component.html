@@ -606,7 +606,7 @@
                 [nzTitle]="'inventory.button.git' | translate"
                 nz-submenu>
               <ul>
-                <li (click)="gitClone(node.origin, 'LOCAL');" [nzDisabled]="node.origin.repoControlled" nz-menu-item>
+                <li (click)="gitClone(node.origin, 'LOCAL');" nz-menu-item>
                   <a translate>inventory.button.clone</a>
                 </li>
                 <li (click)="gitPull(node.origin, 'LOCAL');" *ngIf="node.origin.path !== '/'" [nzDisabled]="!node.origin.repoControlled"
@@ -637,7 +637,7 @@
                 [nzTitle]="'inventory.button.git' | translate"
                 nz-submenu>
               <ul>
-                <li (click)="gitClone(node.origin, 'ROLLOUT');" [nzDisabled]="node.origin.repoControlled" nz-menu-item>
+                <li (click)="gitClone(node.origin, 'ROLLOUT');" nz-menu-item>
                   <a translate>inventory.button.clone</a>
                 </li>
                 <li (click)="gitPull(node.origin, 'ROLLOUT');" *ngIf="node.origin.path !== '/'" [nzDisabled]="!node.origin.repoControlled"
