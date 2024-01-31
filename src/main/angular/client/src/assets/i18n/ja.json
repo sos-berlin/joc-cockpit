@@ -423,7 +423,7 @@
     "label.specificDate": "特定日付",
     "label.relativeDate": "相対日付",
     "label.relativeTime": "相対時刻",
-    "label.relativeTimeFromCurrentTime": "Relative Time from Current Start Time",
+    "label.relativeTimeFromCurrentTime": "現在の開始時刻からの相対時間",
     "label.processExecuted": "実行済",
     "label.selectController": "コントローラー選択",
     "placeholder.setEndDate": "終了日時設定",
@@ -841,7 +841,7 @@
     "popup.submitOrderCount": "本当に{{count}}オーダーを登録しますか?",
     "popup.modifyOrdersCount": "{{n1}}オーダーを変更します",
     "popup.modifyCyclicOrdersCount": "(合計{{n2}})回の {{n1}}周期的オーダーを変更します。 ",
-    "popup.modifySingleAndCyclicOrdersCount": "This will modify {{s1}} single orders and {{n1}} cyclic orders (total {{n2}})",
+    "popup.modifySingleAndCyclicOrdersCount": "{{s1}}個のシングルオーダーと{{n1}}個の周期的オーダー（合計{{n2}}個）を修正します",
     "popup.differentModifyStartTime": "{{n1}}異なる開始計画時間です。",
     "tooltip.dateRangeSelectStep1": "選択した期間をドラッグしてください",
     "tooltip.dateRangeSelectStep2": "またはCTRLキーを押さえながら開始日と終了日をクリックするか",
@@ -2368,7 +2368,7 @@
     "message.noVariableAvailable": "変数はありません",
     "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません",
     "message.noLogHistoryFound": "このオーダーにはログがありません",
-    "message.confirmAllSelectedOrders": "Are you sure that you want o confirm all the selected orders?",
+    "message.confirmAllSelectedOrders": "本当に選択した全オーダーを確認しますか?",
     "tooltip.cycleEndTime": "秒でのサイクル終了時間",
     "treeView": {
       "label": {
