@@ -5814,7 +5814,6 @@ export class WorkflowComponent {
             if (json.instructions[x].id == nodeId) {
               if (json.instructions[x].instructions) {
                 json.instructions[x].instructions.push(obj);
-                console.log(JSON.stringify(json.instructions[x]))
               } else {
                 if(json.instructions[x].TYPE == 'If'){
                   if(!json.instructions[x].then) {
@@ -5842,7 +5841,6 @@ export class WorkflowComponent {
                       }
                     }
                   }
-                  console.log(edge)
                 } else if (json.instructions[x].TYPE == 'Fork') {
                   if (!json.instructions[x].branches) {
                     json.instructions[x].branches = [];
@@ -5858,7 +5856,6 @@ export class WorkflowComponent {
                 } else {
                   json.instructions.push(obj);
                 }
-                console.log(JSON.stringify(json))
               }
               isMatch = true;
               break;
@@ -5900,7 +5897,6 @@ export class WorkflowComponent {
     function checkRemainingNodes(node) {
       node.edges.forEach(edge => {
         if (edge.source && edge.source.id !== node.id) {
-
           let targetId = edge.source.id;
           const obj: any = createObject(node);
           if (obj.TYPE === 'Try') {
@@ -5916,7 +5912,6 @@ export class WorkflowComponent {
             targetId = edge.source.getAttribute('targetId');
             traverseJSONObject(targetId, obj, edge);
           }
-
         }
       });
     }
@@ -11002,6 +10997,7 @@ export class WorkflowComponent {
     }
     const self = this;
 
+
     function recursive(json): void {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -11067,6 +11063,19 @@ export class WorkflowComponent {
     let flag = true;
     const ids = new Map();
     const labels = new Map();
+
+    function parseString(scheduleObj): object {
+      if (scheduleObj && typeof scheduleObj === 'string') {
+        try {
+          scheduleObj = JSON.parse(scheduleObj);
+          if(typeof scheduleObj === 'string'){
+            scheduleObj = parseString(scheduleObj);
+          }
+        } catch (e) {
+        }
+      }
+      return scheduleObj;
+    }
 
     function recursive(json): void {
       if (json.instructions && (flag || !isValidate)) {
@@ -11462,12 +11471,7 @@ export class WorkflowComponent {
             delete json.instructions[x].instructions;
             delete json.instructions[x].schedule;
             delete json.instructions[x].onlyOnePeriod;
-            if (scheduleObj && typeof scheduleObj === 'string') {
-              try {
-                scheduleObj = JSON.parse(scheduleObj);
-              } catch (e) {
-              }
-            }
+            scheduleObj = parseString(scheduleObj);
             if (scheduleObj && scheduleObj.schemes && scheduleObj.schemes.length > 0) {
               json.instructions[x].schedule = scheduleObj;
             }

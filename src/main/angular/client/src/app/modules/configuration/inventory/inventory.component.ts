@@ -5259,6 +5259,7 @@ export class InventoryComponent {
               object.loading = true;
               this.coreService.post('inventory/remove', obj).subscribe({
                 next: () => {
+                  object.loading = false;
                   this.clearCopyObject(object);
                   if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
                     this.clearSelection();
@@ -5296,6 +5297,7 @@ export class InventoryComponent {
               object.loading = true;
               this.coreService.post('inventory/remove', obj).subscribe({
                 next: () => {
+                  object.loading = false;
                   this.clearCopyObject(object);
                   if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
                     this.clearSelection();
