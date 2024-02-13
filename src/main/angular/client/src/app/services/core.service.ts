@@ -25,6 +25,7 @@ export class CoreService {
   locales: any = [];
   expertMode: string | undefined | null;
   reportDownloadingStart = false;
+  reportStartRunning = false;
   scheduleExpandedProperties: any = new Map();
 
   logViewDetails = {
@@ -281,6 +282,20 @@ export class CoreService {
       currentMonth: this.tabs._monitor.currentDate.getMonth(),
       startDate: new Date().setHours(0, 0, 0, 0),
       endDate: new Date().setHours(0, 0, 0, 0),
+      manageList: {
+        filter: {
+          sortBy: 'created',
+          reverse: true,
+          currentPage: '1'
+        }
+      },
+      runningList: {
+        filter: {
+          sortBy: 'created',
+          reverse: true,
+          currentPage: '1'
+        }
+      }
     };
     this.tabs._orderOverview = {};
     this.tabs._orderOverview.overview = true;
@@ -662,24 +677,18 @@ export class CoreService {
     return this.http.post(url, options, headers);
   }
 
-  downloadCsv(url: string, body: any, fileName): void {
-    const headers: any = {
-      Accept: 'text/plain',
-      responseType: 'text/plain',
-      observe: 'response'
-    };
-    this.http.post(url, body, headers).subscribe({
-      next: (response: any) => {
-        const blob = new Blob([response.body], {type: 'text/csv'});
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = fileName;
-        link.click();
-        this.reportDownloadingStart = false;
-      }, complete: () => {
-        this.reportDownloadingStart = false;
-      }
-    });
+  startDataDownload(): void {
+    this.reportDownloadingStart = true;
+    setTimeout(() => {
+      this.reportDownloadingStart = false;
+    }, 5000);
+  }
+
+  startReport(): void {
+    this.reportStartRunning = true;
+    setTimeout(() => {
+      this.reportStartRunning = false;
+    }, 10000);
   }
 
 

@@ -1,0 +1,119 @@
+<div class="row m-b-sm m-t-n-xs">
+  <div class="col-lg-offset-6 col-lg-6 col-md-offset-0 col-md-12">
+    <div class="notify-tool">
+      <div class="search-box-field pull-right">
+        <label>
+          <input (keyup)="searchInResult()" [(ngModel)]="filters.searchText" placeholder="{{'common.placeholder.search' | translate}}"
+                 type="search">
+        </label>
+        <i (click)="filters.searchText = '';searchInResult()" [hidden]="!filters.searchText"
+           class="fa fa-times search-close"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="m-t-sm box p-a">
+    <div class="table-responsive">
+      <nz-table
+        #ajaxTable
+        [nzBordered]="true"
+        [nzData]="data"
+        [nzLoading]="!isLoaded"
+        [nzPageIndex]="filters.filter.currentPage"
+        [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
+        [nzPageSize]="filters.filter.entryPerPage || preferences.entryPerPage || 25"
+        [nzShowPagination]="data.length > 0"
+        [nzShowSizeChanger]="true"
+        [nzSize]="'small'"
+      >
+        <thead>
+        <tr>
+
+<!--          <th class="menu"><span-->
+<!--            translate>common.label.action</span></th>-->
+          <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
+            <i *ngIf="filters.filter.sortBy == 'name' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'name' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('title')"><a><span class="p-r-xs" translate>common.label.title</span>
+            <i *ngIf="filters.filter.sortBy == 'title' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'title' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('template')"><a><span class="p-r-xs" translate>Template</span>
+            <i *ngIf="filters.filter.sortBy == 'template' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'template' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('freqency')"><a><span class="p-r-xs" translate>Frequency</span>
+            <i *ngIf="filters.filter.sortBy == 'freqency' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'freqency' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('startFrom')"><a><span class="p-r-xs" translate>Start From</span>
+            <i *ngIf="filters.filter.sortBy == 'startFrom' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'startFrom' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('created')" ><a><span class="p-r-xs" translate>monitor.notification.label.created</span>
+            <i *ngIf="filters.filter.sortBy == 'created' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'created' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-template [ngForOf]="ajaxTable.data" let-item
+                     ngFor>
+          <tr class="cursor" (click)="onSelect(item)">
+<!--            <td >-->
+<!--              <div class="btn-group dropdown">-->
+<!--                <button [nzDropdownMenu]="option" class="btn-drop more-option-h"-->
+<!--                        nz-dropdown nzTrigger="click" type="button">-->
+<!--                  <i class="fa fa-ellipsis-h"></i>-->
+<!--                </button>-->
+<!--                <nz-dropdown-menu #option="nzDropdownMenu" role="menu">-->
+<!--                  <ul nz-menu>-->
+<!--                    <li nz-menu-item>-->
+<!--                      <a translate>Manage</a>-->
+<!--                    </li>-->
+<!--                  </ul>-->
+<!--                </nz-dropdown-menu>-->
+<!--              </div>-->
+<!--            </td>-->
+
+            <td><span [innerHtml]="item.name | highlight : filters.searchText"></span></td>
+            <td><span [innerHtml]="item.title | highlight : filters.searchText"></span></td>
+            <td><span [innerHtml]="item.template | highlight : filters.searchText"></span></td>
+            <td><span [innerHtml]="item.frequency | highlight : filters.searchText"></span></td>
+            <td><span [innerHtml]="item.startFrom"></span></td>
+            <td><span [innerHtml]="item.created | stringToDate | highlight : filters.searchText"></span></td>
+          </tr>
+        </ng-template>
+        </tbody>
+      </nz-table>
+    </div>
+    <div *ngIf="ajaxTable.data.length >0"
+         class="w-half label-top"><span
+      translate>common.label.total</span> {{data.length}}
+      <span *ngIf="ajaxTable.data.length >1" translate>inventory.label.entriesFound</span>
+      <span *ngIf="ajaxTable.data.length ==1" translate>inventory.label.entryFound</span>
+    </div>
+  </div>
+</div>
+
+<nz-drawer (nzOnClose)="closePanel()" [nzWidth]="'100% !important'" [nzVisible]="isVisible" nzPlacement="right">
+  <ng-container *nzDrawerContent>
+    <div (click)="closePanel()" class="close-btn z-index-9999 m-l-xxs"></div>
+    <app-monthly *ngIf="isVisible" [report]="selectedReport"></app-monthly>
+  </ng-container>
+</nz-drawer>

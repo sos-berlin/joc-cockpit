@@ -6239,6 +6239,10 @@ input:-webkit-autofill {
   overflow: auto;
 }
 
+.modal-title {
+  word-break: break-all;
+}
+
 .cdk-global-scrollblock {
   overflow: auto;
 }
@@ -9544,6 +9548,24 @@ cdk-virtual-scroll-viewport {
   height: 88px !important;
 }
 
-.overlap-box .ant-select-selector{
+.overlap-box .ant-select-selector {
   border: none transparent !important;
+}
+
+.download-bar {
+  position: fixed;
+  z-index: 999999;
+  bottom: 14px;
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  width: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.download-bar-hide {
+  bottom: 8px;
+  border-radius: 50%;
+  width: auto;
+  padding: 6px 10px;
 }

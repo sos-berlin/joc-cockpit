@@ -511,7 +511,6 @@ export class AgentComponent {
       this.editor = null;
     }
     this.getClusters();
-    this.getClusterAgents();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -524,12 +523,13 @@ export class AgentComponent {
     this.isActionMenuVisible = value;
   }
 
-  private getClusters(): void {
+  private getClusters(cb?): void {
     this.coreService.post('agents/cluster', {
       controllerId: this.controllerId,
       agentIds: [this.agentId]
     }).subscribe({
       next: (data: any) => {
+        if(cb) cb();
         this.clusters = data.subagentClusters;
         if (this.selectedCluster.subagentClusterId) {
           let isFound = false;
@@ -541,7 +541,6 @@ export class AgentComponent {
             }
           }
           if (!isFound && this.selectedCluster.ordering !== undefined) {
-
             this.backToListView();
           }
         }
@@ -549,6 +548,7 @@ export class AgentComponent {
         this.clusters = this.orderPipe.transform(this.clusters, this.clusterFilter.filter.sortBy, this.clusterFilter.reverse);
         this.searchInResult();
       }, error: () => {
+        if(cb) cb();
         this.isLoading = false;
       }
     });
@@ -563,6 +563,7 @@ export class AgentComponent {
         data.agents.forEach((agent) => {
           this.clusterAgents = agent.subagents;
         });
+        this.updateList();
       }
     });
   }
@@ -853,39 +854,43 @@ export class AgentComponent {
 
   selectedClusterFn(cluster): void {
     if (this.permission.joc && this.permission.joc.administration.controllers.manage) {
+      this.getClusterAgents();
       this.reset();
-      this.selectedCluster = this.coreService.clone(cluster);
-      if (this.editor && this.editor.graph) {
-        this.updateCluster();
-        this.updateList();
-      } else {
-        this.createEditor(() => {
+      this.isLoading = true;
+      this.getClusters(() => {
+        this.selectedCluster = this.coreService.clone(cluster);
+        if (this.editor && this.editor.graph) {
           this.updateCluster();
           this.updateList();
-          let dom = $('#graph');
-          dom.css({opacity: 1});
+        } else {
+          this.createEditor(() => {
+            this.updateCluster();
+            this.updateList();
+            let dom = $('#graph');
+            dom.css({opacity: 1});
 
-          /**
-           * Changes the zoom on mouseWheel events
-           */
-          dom.bind('mousewheel DOMMouseScroll', (event) => {
-            if (this.editor) {
-              if (event.ctrlKey) {
-                event.preventDefault();
-                if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-                  this.editor.execute('zoomIn');
-                } else {
-                  this.editor.execute('zoomOut');
+            /**
+             * Changes the zoom on mouseWheel events
+             */
+            dom.bind('mousewheel DOMMouseScroll', (event) => {
+              if (this.editor) {
+                if (event.ctrlKey) {
+                  event.preventDefault();
+                  if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+                    this.editor.execute('zoomIn');
+                  } else {
+                    this.editor.execute('zoomOut');
+                  }
                 }
               }
-            }
+            });
+            AgentComponent.setHeight();
+            setTimeout(() => {
+              this.actual();
+            }, 0)
           });
-          AgentComponent.setHeight();
-          setTimeout(() => {
-            this.actual();
-          }, 0)
-        });
-      }
+        }
+      });
     }
   }
 

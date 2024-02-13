@@ -1,0 +1,103 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span *ngIf="isSync" translate>Sync Data on Disk</span>
+    <span *ngIf="!isSync" translate>Run Report</span>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a">
+    <ng-container *ngIf="!isSync; else elseBlock">
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>common.label.name
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
+          <input #name="ngModel" [(ngModel)]="object.name" [appAutofocus]="true" autocomplete="off" class="form-control"
+
+                 name="name" placeholder="{{'Enter report name' | translate}}" required type="text">
+          <div *ngIf="name.invalid && (name.dirty || name.touched)"
+               class="text-danger help-block">
+            <div *ngIf="(name.errors && name.errors.required)">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>common.label.title
+
+        </label>
+        <div class="col-md-6">
+          <input [(ngModel)]="object.title" class="form-control"
+                 name="title" placeholder="{{'Enter report title' | translate}}" type="text">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>
+          Choose Template
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-md-6">
+          <app-select-input [isSearchable]="true" [placeholder]="'Select Template'" [name]="'template'"
+                            [object]="object" [attributeName]="'template'" [listArray]="templates" [optionLabel]="'title'" [optionValue]="'id'"></app-select-input>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>
+          Choose Frequencies
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-md-6">
+          <app-select-input [isSearchable]="true" [isMultiple]="true" [placeholder]="'Select Frequencies'" [name]="'frequencies'"
+                            [object]="object" [attributeName]="'frequencies'" [listArray]="frequencies" [optionLabel]="'name'" [optionValue]="'name'"></app-select-input>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="object.template != 'temp_8' && object.template != 'temp_9'">
+        <label class="col-md-3 form-control-label" translate>
+          Number
+        </label>
+        <div class="col-md-6">
+          <nz-input-number name="number" [(ngModel)]="object.number" [nzMin]="5" [nzStep]="5"></nz-input-number>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>
+          Start From
+        </label>
+        <div class="col-md-6">
+          <app-date-input [object]="object" [ignoreThirdParam]="true" [attributeDate]="'startDate'" [isRequired]="false"
+                          [isTime]="false" [isAllowClear]="true" [name]="'startDate'" [dateFormat]="dateFormat"
+                          [placeholder]="( dateFormat | uppercase )"
+          ></app-date-input>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #elseBlock>
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>
+          Start From
+        </label>
+        <div class="col-md-6">
+          <app-date-input [object]="object" [ignoreThirdParam]="true" [attributeDate]="'startDate'" [isRequired]="false"
+                          [isTime]="false" [isAllowClear]="true" [name]="'startDate'" [dateFormat]="dateFormat"
+                          [placeholder]="( dateFormat | uppercase )"
+          ></app-date-input>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="!myForm.form.valid || submitted"
+            class="btn btn-primary btn-sm" type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{ 'Run' | translate }}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+      {{ 'common.button.cancel' | translate }}
+    </button>
+  </div>
+</form>

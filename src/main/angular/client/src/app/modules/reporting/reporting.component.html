@@ -6,12 +6,12 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div *ngIf="index == 0" class="inline valign" style="top: -8px !important;">
+          <div *ngIf="index == 2" class="inline valign" style="top: -8px !important;">
             <label nz-checkbox [(ngModel)]="filter.current" (ngModelChange)="loadData()" name="current">
               {{'common.label.currentController' | translate}}
             </label>
           </div>
-          <div *ngIf="index == 0" class="inline">
+          <div *ngIf="index == 2" class="inline">
             <div class="timeline">
               <div class="inline btn-group pull-right">
                 <div (click)="setView('Week')"
@@ -52,7 +52,7 @@
               </div>
             </div>
           </div>
-          <div  *ngIf="index == 0" class="inline valign" style="top: -9px !important;">
+          <div  *ngIf="index == 2" class="inline valign" style="top: -9px !important;">
             <button nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportList" class="btn btn-grey btn-sm m-l-12">
               <span nz-icon nzType="export" nzTheme="outline"></span>
               Export Report
@@ -67,21 +67,17 @@
                 </li>
               </ul>
             </nz-dropdown-menu>
-            <button class="btn btn-grey btn-sm m-l-12" (click)="downloadReport()">
-              <span nz-icon nzType="download" nzTheme="outline"></span>
-              Download Data
-            </button>
+
 
           </div>
-          <div  *ngIf="index !== 0" class="inline valign" >
-
+          <div  *ngIf="index == 0" class="inline valign" >
             <button class="btn btn-grey btn-sm m-l-12" (click)="downloadReport()">
-              <span nz-icon nzType="download" nzTheme="outline"></span>
-              Download Data
+              <span nz-icon nzType="file-sync" nzTheme="outline"></span>
+              Synchronize Data On Disk
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" (click)="importJson()" >
-              <span nz-icon nzType="upload" nzTheme="outline"></span>
-              Upload Report
+            <button class="btn btn-grey btn-sm m-l-12" (click)="runReport()">
+              <span nz-icon nzType="play-circle" nzTheme="outline"></span>
+              Run Report
             </button>
           </div>
         </div>
@@ -91,18 +87,23 @@
 </div>
 <div #content id="content" class="scroll-y max-ht">
 
-
   <div class="padding p-b-0">
     <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="index">
-      <nz-tab [nzTitle]="'Daily Report' | translate">
+      <nz-tab [nzTitle]="'Manage Report Runs' | translate">
+        <app-manage-report [permission]="permission" [preferences]="preferences" [filters]="filter.manageList"></app-manage-report>
+      </nz-tab>
+      <nz-tab [nzTitle]="'Report Run History' | translate">
+        <app-running-history [permission]="permission" [preferences]="preferences" [filters]="filter.runningList"></app-running-history>
+      </nz-tab>
+      <nz-tab [nzTitle]="'Daily Reports' | translate">
         <div>
           <div class="row">
             <div class="col-md-6 col-lg-3">
               <div class="box">
-                <div class="box-body">
+                <div class="box-body p-b-xs">
                   <div class="row">
                     <div class="col-sm-12">
-                      <div class="job-execution col-sm-4" style="display: flex;justify-content: center">
+                      <div class="job-execution show-block" >
                         <app-gauge
                           [animated]="true"
                           [animationDuration]="1"
@@ -114,7 +115,7 @@
                         >
                         </app-gauge>
                       </div>
-                      <div class="col-sm-8 pos-rel t-xs">
+                      <div class="pos-rel show-block m-l-12" style="top: -12px">
                         <span class="text-lg _600">{{object.successCount}} <i
                           class="text-md _400">out of {{data.length}}</i></span>
                         <div>Successfully Jobs Executions</div>
@@ -126,10 +127,10 @@
             </div>
             <div class="col-md-6 col-lg-3">
               <div class="box">
-                <div class="box-body">
+                <div class="box-body p-b-xs">
                   <div class="row">
                     <div class="col-sm-12">
-                      <div class="job-execution col-sm-4" style="display: flex;justify-content: center">
+                      <div class="job-execution show-block" >
                         <app-gauge
                           [animated]="true"
                           [animationDuration]="1"
@@ -141,14 +142,14 @@
                         >
                         </app-gauge>
                       </div>
-                      <div class="col-sm-8 pos-rel t-xs">
-                    <span class="text-lg _600">
-                      {{object.successDuration | secondsToTime}} /
-                      <i class="text-md _400" *ngIf="object.successDuration == 0">0s per job</i>
-                      <i class="text-md _400"
-                         *ngIf="object.successDuration > 0">{{(((object.successDuration / object.successCount)).toFixed(2)) || 0}}
-                        s per job</i>
-                    </span>
+                      <div class=" pos-rel show-block m-l-12" style="top: -12px">
+                        <span class="text-lg _600">
+                          {{object.successDuration | secondsToTime}} /
+                          <i class="text-md _400" *ngIf="object.successDuration == 0">0s per job</i>
+                          <i class="text-md _400"
+                             *ngIf="object.successDuration > 0">{{(((object.successDuration / object.successCount)).toFixed(2)) || 0}}
+                            s per job</i>
+                        </span>
                         <div>Avg Successful Job Execution Duration</div>
                       </div>
                     </div>
@@ -159,10 +160,10 @@
 
             <div class="col-md-6 col-lg-3">
               <div class="box">
-                <div class="box-body">
+                <div class="box-body p-b-xs">
                   <div class="row">
                     <div class="col-sm-12">
-                      <div class="job-execution col-sm-4" style="display: flex;justify-content: center">
+                      <div class="job-execution show-block">
                         <app-gauge
                           [animated]="true"
                           [animationDuration]="1"
@@ -174,7 +175,7 @@
                         >
                         </app-gauge>
                       </div>
-                      <div class="col-sm-8 pos-rel t-xs">
+                      <div class="pos-rel show-block m-l-12" style="top: -12px">
                         <span class="text-lg _600">{{object.failedCount}}</span>
                         <div>Failed Jobs Executions</div>
                       </div>
@@ -186,10 +187,10 @@
 
             <div class="col-md-6 col-lg-3">
               <div class="box">
-                <div class="box-body">
+                <div class="box-body p-b-xs">
                   <div class="row">
                     <div class="col-sm-12">
-                      <div class="job-execution col-sm-4" style="display: flex;justify-content: center">
+                      <div class="job-execution show-block" >
                         <app-gauge
                           [animated]="true"
                           [animationDuration]="1"
@@ -201,14 +202,14 @@
                         >
                         </app-gauge>
                       </div>
-                      <div class="col-sm-8 pos-rel t-xs">
-                    <span class="text-lg _600">
-                      {{object.failedDuration | secondsToTime}} /
-                      <i class="text-md _400" *ngIf="object.failedDuration == 0">0s per job</i>
-                      <i class="text-md _400"
-                         *ngIf="object.failedDuration > 0">{{(((object.failedDuration / object.failedCount)).toFixed(2)) || 0}}
-                        s per job</i>
-                    </span>
+                      <div class="pos-rel show-block m-l-12" style="top: -12px">
+                        <span class="text-lg _600">
+                          {{object.failedDuration | secondsToTime}} /
+                          <i class="text-md _400" *ngIf="object.failedDuration == 0">0s per job</i>
+                          <i class="text-md _400"
+                             *ngIf="object.failedDuration > 0">{{(((object.failedDuration / object.failedCount)).toFixed(2)) || 0}}
+                            s per job</i>
+                        </span>
                         <div>Avg Failed Job Execution Duration</div>
                       </div>
                     </div>
@@ -323,10 +324,10 @@
                 </div>
                 <div class="box-tool r-sm">
                   <div *ngIf="clickData" class="m-r-xs">
-                <span (click)="clickData = null" class="text-hover-primary cursor-pointer">
-                  <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
-                  Back
-                </span>
+                    <span (click)="clickData = null" class="text-hover-primary cursor-pointer">
+                      <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+                      Back
+                    </span>
                   </div>
                   <a *ngIf="!clickData" (click)="toggleView()" class="text-hover-primary">
                     <span *ngIf="filter.showAgentTable" nz-icon nzType="bar-chart" nzTheme="outline"></span>
@@ -438,12 +439,6 @@
           </div>
         </div>
       </nz-tab>
-      <nz-tab [nzTitle]="'Monthly Report' | translate">
-        <app-monthly></app-monthly>
-      </nz-tab>
-<!--      <nz-tab [nzTitle]="'Yearly Report' | translate">-->
-<!--        <app-yearly></app-yearly>-->
-<!--      </nz-tab>-->
     </nz-tabset>
   </div>
 

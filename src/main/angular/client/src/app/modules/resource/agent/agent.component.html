@@ -355,7 +355,7 @@
                         <i *ngIf="cluster.sortBy == 'version' && cluster.reverse"
                            class="fa fa-caret-down "></i></a>
                       </td>
-                      <td (click)="sort('runningTasks', cluster)" class="custom-th"><a><span class="p-r-xs" translate>agent.label.runningTasks</span>
+                      <td colspan="2" (click)="sort('runningTasks', cluster)" class="custom-th"><a><span class="p-r-xs" translate>agent.label.runningTasks</span>
                         <i *ngIf="cluster.sortBy == 'runningTasks' && !cluster.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="cluster.sortBy == 'runningTasks' && cluster.reverse"
@@ -405,7 +405,7 @@
                           &nbsp;
                           {{subagent.version}}
                         </td>
-                        <td>{{subagent.runningTasks}}</td>
+                        <td colspan="2">{{subagent.runningTasks}}</td>
                       </tr>
                       <ng-container *ngIf="subagent.show">
                         <tr>

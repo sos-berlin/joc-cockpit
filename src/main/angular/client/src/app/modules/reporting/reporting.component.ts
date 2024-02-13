@@ -14,78 +14,78 @@ import {FileUploaderComponent} from "../../components/file-uploader/file-uploade
 
 
 @Component({
-  selector: 'app-download-modal-content',
-  templateUrl: './download-dialog.html'
+  selector: 'app-run-modal-content',
+  templateUrl: './run-dialog.html'
 })
-export class DownloadModalComponent {
+export class RunModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   submitted: any
-  loading: boolean = false;
   object: any = {
-    type: 'monthly',
     name: '',
-    columns: ["ID", "CONTROLLER_ID", "ORDER_ID", "WORKFLOW_PATH", "WORKFLOW_VERSION_ID", "WORKFLOW_NAME", "POSITION", "JOB_NAME", "CRITICALITY", "AGENT_ID", "AGENT_NAME", "START_TIME", "END_TIME", "ERROR_STATE", "CREATED", "MODIFIED"]
+    number: 10,
   };
-  preferences: any = {};
-
+  dateFormat: any;
+  isSync: boolean;
   today = new Date();
   templates = [];
+  frequencies = [
+    {name: 'Weekly'},
+    {name: 'Every 2 weeks'},
+    {name: 'Monthly'},
+    {name: 'Every 3 months'},
+    {name: 'Every 6 months'},
+    {name: 'Yearly'},
+    {name: 'Every 3 years'}
+  ];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
     this.templates = this.modalData.templates;
-    this.preferences = this.modalData.preferences;
-  }
-
-  download(): void {
-    this.loading = false;
-    const obj = {
-      columns: this.object.columns,
-      timeZone: this.preferences.zone,
-      dateFrom: this.object.dateFrom,
-      dateTo: this.object.dateTo,
-    };
-
-    this.activeModal.close();
-    this.coreService.reportDownloadingStart = true;
-    this.coreService.downloadCsv('reporting/order_steps', obj, this.object.name + '.csv');
-  }
-
-  // write a function to get start and end date of month by giving single date
-  private getStartAndEndDatesOfMonth(date) {
-    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-    return [firstDay, lastDay];
-  }
-
-  // write a function to get start and end date of year by giving single date
-  private getStartAndEndDatesOfYear(date) {
-    const firstDay = new Date(date.getFullYear(), 0, 1);
-    const lastDay = new Date(date.getFullYear(), 11, 31);
-    return [firstDay, lastDay];
-  }
-
-  disabledDate = (current: Date): boolean =>
-    // Can not select days before today and today
-    differenceInCalendarDays(current, this.today) > 0;
-
-  onChange(date) {
-    let arr = [];
-    if (this.object.type === 'monthly') {
-      arr = this.getStartAndEndDatesOfMonth(date);
-      this.object.name = date.getMonth() + '-' + date.getFullYear();
-    } else {
-      arr = this.getStartAndEndDatesOfYear(date);
-      this.object.name = date.getFullYear();
-    }
-    this.object.dateFrom = arr[0];
-    this.object.dateTo = arr[1];
+    this.isSync = this.modalData.isSync;
+    const preferences = this.modalData.preferences;
+    this.dateFormat = this.coreService.getDateFormat(preferences.dateFormat);
   }
 
   onSubmit(): void {
-    this.download();
+    this.submitted = true;
+    if(this.isSync){
+      this.coreService.plainData('reporting/load', {
+        dateFrom : this.coreService.getStringDate(this.object.startDate)
+      }).subscribe({
+        next: (res) => {
+          this.coreService.startDataDownload();
+          this.activeModal.close('Done');
+        }, error: (err) => {
+          console.log(err)
+          this.submitted = false;
+        }
+      });
+      return;
+    }
+    const obj: any = {
+      name: this.object.name,
+      title: this.object.title,
+      template: this.object.template,
+      number: this.object.number,
+      frequencies: this.object.frequencies.join(',')
+    };
+    if(this.object.startDate){
+      obj.startDate = this.coreService.getStringDate(this.object.startDate )
+    }
+    this.coreService.post('run-script', obj).subscribe({
+      next: (res) => {
+        console.log(res)
+        this.coreService.startReport();
+        this.activeModal.close('Done');
+        this.submitted = false;
+      }, error: (err) => {
+        console.log(err)
+        this.submitted = false;
+      }
+    })
+
   }
 }
 
@@ -175,64 +175,64 @@ export class ReportingComponent {
 
   templates = [
     {
-      title: 'Reports focused on increase/decrease of job executions',
-      id: 'temp_1',
+      title: 'Top most frequently failed workflows',
+      id: 'template_1',
       data: {
         chartType: 'Line',
-        groupBy: 'JOB_NAME'
+        groupBy: 'WORKFLOW'
       }
     },
     {
-      title: 'Reports focused on load indicating periods of low and high parallelism of job executions per month',
-      id: 'temp_2',
+      title: 'Top most frequently failed jobs',
+      id: 'template_2',
       data: {
         chartType: 'Bar',
         groupBy: 'START_TIME'
       }
     },
     {
-      title: 'Reports focused on load indicating periods of low and high parallelism of job executions per year',
-      id: 'temp_3',
+      title: 'Top most with most parallel job execution',
+      id: 'template_3',
       data: {
         chartType: 'Bar',
         groupBy: 'START_TIME'
       }
     },
     {
-      title: 'Reports focused on job executions per month',
-      id: 'temp_4',
+      title: 'Top most periods of low and high parallelism of job executions',
+      id: 'template_4',
       data: {
         chartType: 'Line',
         groupBy: 'JOB_NAME'
       }
     },
     {
-      title: 'Reports focused on job executions per year',
-      id: 'temp_5',
+      title: 'Total number of job executions per month',
+      id: 'template_5',
       data: {
         chartType: 'Line',
         groupBy: 'JOB_NAME'
       }
     },
     {
-      title: 'Reports focused on orders per month',
-      id: 'temp_6',
+      title: 'Total number of order executions per month',
+      id: 'template_6',
       data: {
         chartType: 'Line',
         groupBy: 'ORDER_ID'
       }
     },
     {
-      title: 'Reports focused on orders per year',
-      id: 'temp_7',
+      title: 'Top most workflows with the longest execution time',
+      id: 'template_7',
       data: {
         chartType: 'Line',
         groupBy: 'ORDER_ID'
       }
     },
     {
-      title: 'Reports focused on frequently failed job per month',
-      id: 'temp_8',
+      title: 'Top most jobs with the longest execution time',
+      id: 'template_8',
       data: {
         chartType: 'BAR',
         isFailed: true,
@@ -240,8 +240,8 @@ export class ReportingComponent {
       }
     },
     {
-      title: 'Reports focused on frequently failed job per year',
-      id: 'temp_9',
+      title: 'Top most periods during which mostly orders executed',
+      id: 'template_9',
       data: {
         chartType: 'BAR',
         isFailed: true,
@@ -249,37 +249,11 @@ export class ReportingComponent {
       }
     },
     {
-      title: 'Reports focused on Agent load indicating job executions per Agent per month',
-      id: 'temp_10',
+      title: 'The period during which jobs are mostly executed',
+      id: 'template_10',
       data: {
         chartType: 'BAR',
         groupBy: 'AGENT_NAME'
-      }
-    },
-    {
-      title: 'Reports focused on Agent load indicating job executions per Agent per year',
-      id: 'temp_11',
-      data: {
-        chartType: 'BAR',
-        groupBy: 'AGENT_NAME'
-      }
-    },
-    {
-      title: 'Reports focused on parallel job executions per Agent per month',
-      id: 'temp_12',
-      data: {
-        chartType: 'BAR',
-        groupBy: 'AGENT_NAME',
-        groupBy2: 'START_TIME'
-      }
-    },
-    {
-      title: 'Reports focused on parallel job executions per Agent per year',
-      id: 'temp_13',
-      data: {
-        chartType: 'BAR',
-        groupBy: 'AGENT_NAME',
-        groupBy2: 'START_TIME'
       }
     }];
   colors = ['#90C7F5', '#C2b280', '#Aaf0d1', '#B38b6d', '#B2beb5', '#D4af37', '#8c92ac',
@@ -317,6 +291,7 @@ export class ReportingComponent {
 
   ngOnInit(): void {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.filter = this.coreService.getReportingTab();
@@ -513,7 +488,6 @@ export class ReportingComponent {
   loadData(): void {
     this.isLoading = false;
     const obj: any = {
-      columns: ["ID", "CONTROLLER_ID", "ORDER_ID", "WORKFLOW_PATH", "WORKFLOW_VERSION_ID", "WORKFLOW_NAME", "POSITION", "JOB_NAME", "CRITICALITY", "AGENT_ID", "AGENT_NAME", "START_TIME", "END_TIME", "ERROR_STATE", "CREATED", "MODIFIED"]
     };
     const d = new Date(this.filter.endDate).setDate(new Date(this.filter.endDate).getDate() + 1);
     obj.controllerId = this.filter.current ? this.schedulerIds.selected : '';
@@ -1048,9 +1022,22 @@ export class ReportingComponent {
   downloadReport() {
     this.modal.create({
       nzTitle: undefined,
-      nzContent: DownloadModalComponent,
-      //     nzClassName: 'lg',
+      nzContent: RunModalComponent,
       nzFooter: null,
+      nzAutofocus: null,
+      nzData: {templates: this.templates, preferences: this.preferences, isSync: true},
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
+  runReport() {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: RunModalComponent,
+      nzClassName: 'lg',
+      nzFooter: null,
+      nzAutofocus: null,
       nzData: {templates: this.templates, preferences: this.preferences},
       nzClosable: false,
       nzMaskClosable: false
