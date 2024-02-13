@@ -1,0 +1,8 @@
+{
+  "title": "Total number of job executions per month",
+  "id": "template_5",
+  "data": {
+    "chartType": "BAR",
+    "groupBy": "JOB_NAME"
+  }
+}

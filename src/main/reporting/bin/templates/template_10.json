@@ -1,0 +1,8 @@
+{
+  "title": "Top most periods during which mostly jobs executed",
+  "id": "template_10",
+  "data": {
+    "chartType": "BAR",
+    "groupBy": "START_TIME"
+  }
+}

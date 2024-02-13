@@ -1,0 +1,8 @@
+{
+  "title": "Top most workflows with the longest execution time",
+  "id": "template_7",
+  "data": {
+    "chartType": "BAR",
+    "groupBy": "WORKFLOW"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "title": "Total number of order executions per month",
+  "id": "template_6",
+  "data": {
+    "chartType": "BAR",
+    "groupBy": "ORDER_ID"
+  }
+}

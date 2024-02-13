@@ -1,0 +1,8 @@
+{
+  "title": "Top most frequently failed jobs",
+  "id": "template_2",
+  "data": {
+    "chartType": "HORIZONTAL BAR",
+    "groupBy": "JOB_NAME"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "title": "Top most periods of low and high parallelism of job executions",
+  "id": "template_4",
+  "data": {
+    "chartType": "LINE",
+    "groupBy": "START_TIME"
+  }
+}
