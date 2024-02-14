@@ -80,7 +80,11 @@ export class MonthlyComponent {
         this.data = JSON.parse(res.data);
         console.log(this.data, 'this.data')
         this.isLoading = true;
-        this.initGraph();
+        if(this.data.title.match('low and high parallelism') || this.data.title.match('Total number')) {
+          this.initLineChart();
+        } else {
+          this.initGraph();
+        }
       }, error: (err) => {
         console.error(err);
       }
@@ -181,6 +185,75 @@ export class MonthlyComponent {
     }
   }
 
+  initLineChart(): void{
+    console.log('Line Chart');
+    const data = {
+      labels: [],
+      datasets: []
+    };
+    this.dataset = [];
+    let count =0 ;
+    for (let i in this.data.data) {
+      if (i === 'topHighParallelismPeriods' || i === 'topLowParallelismPeriods') {
+        console.log(this.data.data[i]);
+        const obj = {
+          label: i === 'topHighParallelismPeriods' ? 'High Parallelism Periods' : 'Low Parallelism Periods',
+          data: [],
+        };
+        ++count;
+        if (count > 1) {
+          obj.data = new Array(data.datasets[count].data.length).fill(null);
+        }
+        for (let j in this.data.data[i]) {
+          obj.data.push(this.data.data[i][j].data.length);
+          data.labels.push(this.data.data[i][j].period)
+        }
+        data.datasets.push(obj);
+      }
+    }
+    console.log(data)
+    let delayed;
+    const self = this;
+    if (this.barChart) {
+      this.barChart.destroy();
+    }
+    const canvas = document.getElementById('bar-chart') as HTMLCanvasElement;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      this.barChart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+          maintainAspectRatio: false,
+          onClick: function (event, elements) {
+            if (elements.length > 0) {
+              const clickedIndex = elements[0].index;
+              self.clickData = self.dataset[clickedIndex];
+            }
+          },
+          animation: {
+            onComplete: () => {
+              delayed = true;
+            },
+            delay: (context) => {
+              let delay = 0;
+              if (context.type === 'data' && context.mode === 'default' && !delayed) {
+                delay = context.dataIndex * 10 + context.datasetIndex * 100;
+              }
+              return delay;
+            },
+          },
+          responsive: true,
+          scales: {
+            y: {
+              title: {display: true, text: 'Jobs'},
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+  }
 
   getValue(val): string {
     return (isNaN(val) ? 0 : val.toFixed(2)) + ' %';
