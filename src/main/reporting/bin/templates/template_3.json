@@ -1,9 +1,11 @@
 {
-  "title": "Top most with most parallel job execution",
-  "id": "template_3",
+  "title": "Top ${size} agents with most parallel job execution",
+  "id": "3",
+  "type": "JOB",
   "data": {
     "chartType": "BAR",
     "groupBy": "AGENT_NAME",
-    "groupBy2": "START_TIME"
+    "groupBy2": "START_TIME",
+    "duration": "15m"
   }
 }

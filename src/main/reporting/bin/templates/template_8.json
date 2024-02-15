@@ -1,8 +1,10 @@
 {
-  "title": "Top most jobs with the longest execution time",
-  "id": "template_8",
+  "title": "Top ${size} jobs with the longest execution time",
+  "id": "8",
+  "type": "JOB",
   "data": {
-    "chartType": "LINE",
-    "groupBy": "START_TIME"
+    "chartType": "BAR",
+    "groupBy": "START_TIME",
+    "execution" : "DURATION"
   }
 }

@@ -63,11 +63,10 @@ export class RunningHistoryComponent {
 
 
   private getData(): void {
-    this.coreService.post('report_history', {}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+    this.coreService.post('reporting/report/history', {}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoaded = true;
-        this.reportHistory = this.orderPipe.transform(res.reportHistory, this.filters.filter.sortBy, this.filters.filter.reverse);
-
+        this.reportHistory = this.orderPipe.transform(res.reports, this.filters.filter.sortBy, this.filters.filter.reverse);
         this.searchInResult();
       }, error: () => this.isLoaded = true
     });

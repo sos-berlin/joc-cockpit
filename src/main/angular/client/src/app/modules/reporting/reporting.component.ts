@@ -22,20 +22,20 @@ export class RunModalComponent {
   submitted: any
   object: any = {
     name: '',
-    number: 10,
+    size: 10,
   };
   dateFormat: any;
   isSync: boolean;
   today = new Date();
   templates = [];
   frequencies = [
-    {name: 'Weekly'},
-    {name: 'Every 2 weeks'},
-    {name: 'Monthly'},
-    {name: 'Every 3 months'},
-    {name: 'Every 6 months'},
-    {name: 'Yearly'},
-    {name: 'Every 3 years'}
+    {name: 'WEEKLY'},
+    {name: 'TWO_WEEKS'},
+    {name: 'MONTHLY'},
+    {name: 'THREE_MONTHS'},
+    {name: 'SIX_MONTHS'},
+    {name: 'YEARLY'},
+    {name: 'THREE_YEARS'}
   ];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
@@ -51,8 +51,8 @@ export class RunModalComponent {
   onSubmit(): void {
     this.submitted = true;
     if(this.isSync){
-      this.coreService.plainData('reporting/load', {
-        dateFrom : this.coreService.getStringDate(this.object.startDate)
+      this.coreService.plainData('reporting/data/load', {
+        dateFrom : this.coreService.getStringDate(this.object.dateFrom)
       }).subscribe({
         next: (res) => {
           this.coreService.startDataDownload();
@@ -67,14 +67,14 @@ export class RunModalComponent {
     const obj: any = {
       name: this.object.name,
       title: this.object.title,
-      template: this.object.template,
-      number: this.object.number,
-      frequencies: this.object.frequencies.join(',')
+      templateId: this.object.templateId,
+      size: this.object.size,
+      frequencies: this.object.frequencies
     };
-    if(this.object.startDate){
-      obj.startDate = this.coreService.getStringDate(this.object.startDate )
+    if(this.object.dateFrom){
+      obj.dateFrom = this.coreService.getStringDate(this.object.dateFrom )
     }
-    this.coreService.post('run-script', obj).subscribe({
+    this.coreService.post('reporting/report/run', obj).subscribe({
       next: (res) => {
         console.log(res)
         this.coreService.startReport();
@@ -175,64 +175,64 @@ export class ReportingComponent {
 
   templates = [
     {
-      title: 'Top most frequently failed workflows',
-      id: 'template_1',
+      title: 'Top ${size} frequently failed workflows',
+      id: '1',
       data: {
         chartType: 'Line',
         groupBy: 'WORKFLOW'
       }
     },
     {
-      title: 'Top most frequently failed jobs',
-      id: 'template_2',
+      title: 'Top ${size} frequently failed jobs',
+      id: '2',
       data: {
         chartType: 'Bar',
         groupBy: 'START_TIME'
       }
     },
     {
-      title: 'Top most with most parallel job execution',
-      id: 'template_3',
+      title: 'Top ${size} with most parallel job execution',
+      id: '3',
       data: {
         chartType: 'Bar',
         groupBy: 'START_TIME'
       }
     },
     {
-      title: 'Top most periods of low and high parallelism of job executions',
-      id: 'template_4',
+      title: 'Top ${size} periods of low and high parallelism of job executions',
+      id: '4',
       data: {
         chartType: 'Line',
         groupBy: 'JOB_NAME'
       }
     },
     {
-      title: 'Total number of job executions per month',
-      id: 'template_5',
+      title: 'Total number of job executions per frequency',
+      id: '5',
       data: {
         chartType: 'Line',
         groupBy: 'JOB_NAME'
       }
     },
     {
-      title: 'Total number of order executions per month',
-      id: 'template_6',
+      title: 'Total number of order executions per frequency',
+      id: '6',
       data: {
         chartType: 'Line',
         groupBy: 'ORDER_ID'
       }
     },
     {
-      title: 'Top most workflows with the longest execution time',
-      id: 'template_7',
+      title: 'Top ${size} workflows with the longest execution time',
+      id: '7',
       data: {
         chartType: 'Line',
         groupBy: 'ORDER_ID'
       }
     },
     {
-      title: 'Top most jobs with the longest execution time',
-      id: 'template_8',
+      title: 'Top ${size} jobs with the longest execution time',
+      id: '8',
       data: {
         chartType: 'BAR',
         isFailed: true,
@@ -240,8 +240,8 @@ export class ReportingComponent {
       }
     },
     {
-      title: 'Top most periods during which mostly orders executed',
-      id: 'template_9',
+      title: 'Top ${size} periods during which mostly orders executed',
+      id: '9',
       data: {
         chartType: 'BAR',
         isFailed: true,
@@ -250,7 +250,7 @@ export class ReportingComponent {
     },
     {
       title: 'The period during which jobs are mostly executed',
-      id: 'template_10',
+      id: '10',
       data: {
         chartType: 'BAR',
         groupBy: 'AGENT_NAME'
@@ -443,10 +443,7 @@ export class ReportingComponent {
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if ((args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' || args.eventSnapshots[j].eventType === 'HistoryTaskStarted' || args.eventSnapshots[j].eventType === 'HistoryTaskUpdated') && this.isLoading) {
-          this.loadData();
-          break;
-        }
+
       }
     }
   }

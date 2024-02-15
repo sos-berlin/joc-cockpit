@@ -202,7 +202,7 @@ export class MonthlyComponent {
         };
         ++count;
         if (count > 1) {
-          obj.data = new Array(data.datasets[count].data.length).fill(null);
+          obj.data = new Array(data.datasets[0].data.length).fill(null);
         }
         for (let j in this.data.data[i]) {
           obj.data.push(this.data.data[i][j].data.length);

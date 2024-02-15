@@ -101,15 +101,15 @@ async function checkAndCreateDirectory(directoryPath) {
     if (!fs.existsSync(directoryPath)) {
         // Create the directory if it doesn't exist
         try {
-            await fs.mkdirSync(directoryPath);
+            await fs.mkdirSync(directoryPath, {recursive: true});
         } catch (e) {
             console.error(e);
             logger.error(e);
+            process.exit(1);
         }
         console.log(`Directory '${directoryPath}' created successfully.`);
     } else {
         console.log(`Directory '${directoryPath}' already exists.`);
-       // logger.log(`Directory '${directoryPath}' already exists.`);
     }
 }
 

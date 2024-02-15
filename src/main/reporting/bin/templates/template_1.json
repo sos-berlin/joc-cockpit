@@ -1,8 +1,10 @@
 {
-  "title": "Top most frequently failed workflows",
-  "id": "template_1",
+  "title": "Top ${size} frequently failed workflows",
+  "id": "1",
+  "type": "ORDER",
   "data": {
-    "chartType": "HORIZONTAL BAR",
-    "groupBy": "WORKFLOW_NAME"
+    "chartType": "BAR",
+    "groupBy": "WORKFLOW_NAME",
+    "status": "FAILED"
   }
 }

@@ -1,8 +1,9 @@
 {
-  "title": "Total number of job executions per month",
-  "id": "template_5",
+  "title": "Total number of job executions per ${frequency}",
+  "id": "5",
+  "type": "JOB",
   "data": {
-    "chartType": "BAR",
+    "chartType": "CARD",
     "groupBy": "JOB_NAME"
   }
 }

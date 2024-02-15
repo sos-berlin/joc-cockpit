@@ -42,8 +42,8 @@
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-md-6">
-          <app-select-input [isSearchable]="true" [placeholder]="'Select Template'" [name]="'template'"
-                            [object]="object" [attributeName]="'template'" [listArray]="templates" [optionLabel]="'title'" [optionValue]="'id'"></app-select-input>
+          <app-select-input [isSearchable]="true" [placeholder]="'Select Template'" [name]="'templateId'"
+                            [object]="object" [attributeName]="'templateId'" [listArray]="templates" [optionLabel]="'title'" [optionValue]="'id'"></app-select-input>
         </div>
       </div>
       <div class="form-group row">
@@ -56,12 +56,12 @@
                             [object]="object" [attributeName]="'frequencies'" [listArray]="frequencies" [optionLabel]="'name'" [optionValue]="'name'"></app-select-input>
         </div>
       </div>
-      <div class="form-group row" *ngIf="object.template != 'temp_8' && object.template != 'temp_9'">
+      <div class="form-group row">
         <label class="col-md-3 form-control-label" translate>
           Number
         </label>
         <div class="col-md-6">
-          <nz-input-number name="number" [(ngModel)]="object.number" [nzMin]="5" [nzStep]="5"></nz-input-number>
+          <nz-input-number name="size" [(ngModel)]="object.size" [nzMin]="5" [nzStep]="5"></nz-input-number>
         </div>
       </div>
       <div class="form-group row">
@@ -69,8 +69,8 @@
           Start From
         </label>
         <div class="col-md-6">
-          <app-date-input [object]="object" [ignoreThirdParam]="true" [attributeDate]="'startDate'" [isRequired]="false"
-                          [isTime]="false" [isAllowClear]="true" [name]="'startDate'" [dateFormat]="dateFormat"
+          <app-date-input [object]="object" [ignoreThirdParam]="true" [attributeDate]="'dateFrom'" [isRequired]="false"
+                          [isTime]="false" [isAllowClear]="true" [name]="'dateFrom'" [dateFormat]="dateFormat"
                           [placeholder]="( dateFormat | uppercase )"
           ></app-date-input>
         </div>
@@ -82,8 +82,8 @@
           Start From
         </label>
         <div class="col-md-6">
-          <app-date-input [object]="object" [ignoreThirdParam]="true" [attributeDate]="'startDate'" [isRequired]="false"
-                          [isTime]="false" [isAllowClear]="true" [name]="'startDate'" [dateFormat]="dateFormat"
+          <app-date-input [object]="object" [ignoreThirdParam]="true" [attributeDate]="'dateFrom'" [isRequired]="false"
+                          [isTime]="false" [isAllowClear]="true" [name]="'dateFrom'" [dateFormat]="dateFormat"
                           [placeholder]="( dateFormat | uppercase )"
           ></app-date-input>
         </div>

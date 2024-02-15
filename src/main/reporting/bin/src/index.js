@@ -10,12 +10,12 @@ const {isNumber} = require("lodash");
  */
 function parseCommandLineArguments() {
     commander
-        .requiredOption('-t, --templateFilePath <jsonFile>', 'Template absolute file path')
-        .requiredOption('-i, --inputDirectory <inputDirectory>', 'Input directory from where data files will be taken')
-        .requiredOption('-p, --frequencies <frequencies>', 'Processing frequencies (comma-separated, e.g., "every 3 months, every 6 months, monthly")')
+        .option('-t, --templateFilePath <jsonFile>', 'Template absolute file path')
+        .option('-i, --inputDirectory <inputDirectory>', 'Input directory from where data files will be taken')
+        .option('-p, --frequencies <frequencies>', 'Processing frequencies (comma-separated, e.g., "every 3 months, every 6 months, monthly")')
         .option('-o, --outputDirectory <outputDirectory>', 'Output directory where final reports will be created')
         .option('-s, --startDate <startDate>', 'Start date for input file selection e.g. YYYY-MM-DD')
-        .option('-n, --number <number>', 'Define the size of report')
+        .option('-n, --size <size>', 'Define the size of report')
         .parse(process.argv);
 
     const options = commander.opts();
@@ -58,12 +58,12 @@ function validateProcessingFrequencies(options) {
             if (!Object.values(ProcessingFrequencies).includes(freq)) {
                 console.error(`Invalid processing frequency: ${freq}. Please provide a valid value.`);
                 logger.error(`Invalid processing frequency: ${freq}. Please provide a valid value.`);
+                logger.error(`e.g., "weekly, every 2 weeks, monthly, every 3 months, every 6 months, yearly and every 3 years`);
                 process.exit(1);
             }
         });
     }
 }
-
 
 /**
  * Check if required parameters are provided.
@@ -72,6 +72,13 @@ function validateProcessingFrequencies(options) {
 function validateRequiredParameters(options) {
     if (!options.templateFilePath || !options.inputDirectory || !options.frequencies) {
         console.error('Usage: node index.js -d <directory> -t <templatePath> -o <outputPath> -i <inputPath> -p <frequencies>');
+        if (!options.templateFilePath) {
+            logger.error("error: required option '-t, --templateFilePath <jsonFile>' not specified")
+        } else if (!options.inputDirectory) {
+            logger.error("error: required option '-i, --inputDirectory <inputDirectory>' not specified")
+        } else {
+            logger.error("error: required option '-p, --frequencies <frequencies>' not specified")
+        }
         logger.error('Usage: node index.js -d <directory> -t <templatePath> -o <outputPath> -i <inputPath> -p <frequencies>');
         process.exit(1);
     } else {
@@ -111,10 +118,10 @@ function isValidDate(userInput) {
  * @param {Object} options - Command line options.
  */
 function validateNumAndDate(options) {
-    if (options.number || options.startDate) {
-        if (options.number && !isNumber(+options.number)) {
-            console.error(`Invalid number: ${options.number}. Please provide a valid value.`);
-            logger.error(`Invalid number: ${options.number}. Please provide a valid value.`);
+    if (options.size || options.startDate) {
+        if (options.size && !isNumber(+options.size)) {
+            console.error(`Invalid size: ${options.size}. Please provide a valid value.`);
+            logger.error(`Invalid size: ${options.size}. Please provide a valid value.`);
             process.exit(1);
         } else if (options.startDate && (typeof options.startDate != 'string' || !isValidDate(options.startDate))) {
             console.error(`Invalid start date: ${options.startDate}. Please provide a valid value.`);

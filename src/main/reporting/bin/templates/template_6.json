@@ -1,8 +1,9 @@
 {
-  "title": "Total number of order executions per month",
-  "id": "template_6",
+  "title": "Total number of order executions per frequency",
+  "id": "6",
+  "type": "ORDER",
   "data": {
-    "chartType": "BAR",
+    "chartType": "CARD",
     "groupBy": "ORDER_ID"
   }
 }

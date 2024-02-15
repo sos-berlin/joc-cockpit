@@ -1,8 +1,10 @@
 {
-  "title": "Top most frequently failed jobs",
-  "id": "template_2",
+  "title": "Top ${size} frequently failed jobs",
+  "id": "2",
+  "type": "JOB",
   "data": {
-    "chartType": "HORIZONTAL BAR",
-    "groupBy": "JOB_NAME"
+    "chartType": "BAR",
+    "groupBy": "JOB_NAME",
+    "status": "FAILED"
   }
 }

@@ -4,92 +4,6 @@ const _ = require('lodash');
 const logger = require('./logger');
 const utils = require("./utils");
 
-/**
- * Calculate the maximum parallel job execution for agents.
- * @param {Array} jobData - Job execution data.
- * @param {number} size - Default is 10.
- * @returns {Array} - Agents with the most parallel job execution.
- */
-function calculateMaxParallelExecution(jobData, size) {
-    // Convert date strings to moment objects and sort by start time
-    jobData.forEach(entry => {
-        entry.START_TIME = moment(entry.START_TIME, 'YYYY-MM-DD HH:mm:ss');
-        entry.END_TIME = moment(entry.END_TIME, 'YYYY-MM-DD HH:mm:ss');
-    });
-
-    jobData.sort((a, b) => a.START_TIME - b.START_TIME);
-
-    // Group job data by agent name
-    const groupedByAgent = _.groupBy(jobData, 'AGENT_NAME');
-    const results = [];
-
-    for (const agent in groupedByAgent) {
-        const agentData = _.sortBy(groupedByAgent[agent], 'START_TIME');
-        let currentJobs = [];
-        let maxParallelJobs = 0;
-        let maxParallelJobData = [];
-
-        // Loop through each job for the current agent
-        for (const job of agentData) {
-
-            // Check if the job completely overlaps with current parallel jobs
-            const overlappingJobs = currentJobs.filter(j => (j.START_TIME.isBefore(job.START_TIME) && j.END_TIME.isAfter(job.START_TIME)) || (j.START_TIME.isSameOrBefore(job.START_TIME) && j.END_TIME.isSameOrAfter(job.END_TIME)));
-
-            // Add the current job to the list
-            currentJobs.push(job);
-
-            // Update the maximum parallel jobs count and details
-            if (overlappingJobs.length + 1 > maxParallelJobs) {
-                maxParallelJobs = overlappingJobs.length + 1;
-                maxParallelJobData = [...currentJobs];
-            }
-
-            // Remove completed jobs from the current list
-            currentJobs = currentJobs.filter(j => j.END_TIME.isAfter(job.START_TIME));
-        }
-
-        // Append the result for the current agent with details of max parallel job data
-        results.push({agentName: agent, count: maxParallelJobs, data: maxParallelJobData});
-    }
-
-    // Sort the results by MaxParallelJobs in descending order
-    const sortedResults = _.orderBy(results, ['count'], ['desc']);
-
-    // Limit the number of results based on the 'size' parameter
-    return sortedResults.slice(0, size);
-}
-
-/**
- * Find frequently failed jobs from job execution data.
- * @param {Array} data - Job execution data.
- * @param {number} size - Number of frequently failed jobs to return.
- * @returns {Object} - Frequently failed jobs data.
- */
-function frequentlyFailedJobs(data, size) {
-    const failedJobs = {};
-
-    if (!Array.isArray(data)) {
-        return {};
-    }
-
-    data = data.filter(item => item['STATE'] === '2');
-    data.forEach(item => {
-        const jobName = item['WORKFLOW_NAME'] + '__' + item['JOB_NAME'];
-        if (!failedJobs[jobName]) {
-            failedJobs[jobName] = {count: 0, workflow: item['WORKFLOW_NAME'], job: item['JOB_NAME'], data: []};
-        }
-        failedJobs[jobName].count++;
-        item['DURATION'] = moment(item['END_TIME']).diff(item['START_TIME']) / 1000;
-        failedJobs[jobName].data.push(item);
-    });
-    return Object.entries(failedJobs)
-        .sort((a, b) => b[1].count - a[1].count)
-        .slice(0, size)
-        .reduce((resultObj, [key, {count, data, workflow, job}]) => {
-            resultObj[key] = {count, data, workflow, job};
-            return resultObj;
-        }, {});
-}
 
 /**
  * Find low and high parallelism jobs from job execution data.
@@ -98,7 +12,6 @@ function frequentlyFailedJobs(data, size) {
  * @returns {Object} - Frequently failed jobs data.
  */
 function lowAndHighParallelism(data, size) {
-
     const groupedData = data.reduce((acc, curr) => {
         const startTime = curr.START_TIME.split(' ')[0];
         if (!acc[startTime]) {
@@ -108,7 +21,6 @@ function lowAndHighParallelism(data, size) {
         return acc;
     }, {});
 
-    // Merge data and calculate duration
     const mergedData = Object.values(groupedData).flatMap(group => {
         return group.reduce((acc, curr, index) => {
             if (index === 0) {
@@ -116,17 +28,15 @@ function lowAndHighParallelism(data, size) {
             } else {
                 const prevEndTime = new Date(group[index - 1].END_TIME).getTime();
                 const currStartTime = new Date(curr.START_TIME).getTime();
-                const duration = moment(prevEndTime).diff(currStartTime) / 1000; // Duration in seconds
+                const duration = (currStartTime - prevEndTime) / 1000; // Duration in seconds
                 acc.push({...curr, duration});
                 return acc;
             }
         }, []);
     });
 
-    // Sort merged data by start time
     mergedData.sort((a, b) => new Date(a.START_TIME) - new Date(b.START_TIME));
 
-    // Calculate parallelism for each period
     const periods = [];
     let currentPeriod = [];
 
@@ -146,12 +56,22 @@ function lowAndHighParallelism(data, size) {
         }
     });
 
-    // Sort periods by parallelism
     periods.sort((a, b) => b.length - a.length);
 
-    // Get top ${size} periods of low and high parallelism
-    const topLowParallelismPeriods = periods.slice(0, size);
-    const topHighParallelismPeriods = periods.slice(-size).reverse();
+    const topLowParallelismPeriods = periods.slice(0, size).map(period => {
+        return {
+            period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
+            data: period
+        };
+    });
+
+    const topHighParallelismPeriods = periods.slice(-size).reverse().map(period => {
+        return {
+            period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
+            data: period
+        };
+    });
+
     return {topLowParallelismPeriods, topHighParallelismPeriods};
 }
 
@@ -212,7 +132,7 @@ function getTotalOrderExecutionsPerMonth(data) {
 function getTopMostLongestExecutionJobs(data, size) {
     // Calculate the duration for each job execution
     data.forEach(item => {
-        item.duration =  moment(item.END_TIME).diff(item.START_TIME) / 1000; // Duration in milliseconds
+        item.duration = moment(item.END_TIME).diff(item.START_TIME) / 1000; // Duration in milliseconds
     });
 
     // Sort the data based on the duration in descending order
@@ -225,6 +145,7 @@ function getTopMostLongestExecutionJobs(data, size) {
 }
 
 function getTopMostPeriodsMostOrdersExecuted(data, size) {
+    console.log('getTopMostPeriodsMostOrdersExecuted', data, size)
     // Group orders by start time
     const ordersByPeriod = {};
     data.forEach(item => {
@@ -258,6 +179,7 @@ function getTopMostPeriodsMostOrdersExecuted(data, size) {
 
     return topMostPeriods;
 }
+
 
 function getTopMostPeriodsMostJobsExecuted(data, size) {
     // Group jobs by start time
@@ -348,7 +270,6 @@ function getTopMostWorkflowsByExecutionTime(data, size) {
 
     // Sort workflows by total execution time in descending order
     workflowExecutionTimes.sort((a, b) => b.TOTAL_EXECUTION_TIME - a.TOTAL_EXECUTION_TIME);
-
     // Get top ${size} workflows
     return workflowExecutionTimes.slice(0, size);
 }
@@ -369,7 +290,7 @@ async function readJSONData(directory, file, options, templateData) {
         if (data.match('}{')) {
             data = data.replaceAll('}{', ',');
         }
-        await writeReportData(options, data, directory, file, templateData, options.number);
+        await writeReportData(options, data, directory, file, templateData, options.size);
     } catch (error) {
         console.error('Error while reading template data', error);
         logger.error('Error while reading template data', error);
@@ -399,6 +320,143 @@ async function readDataDirectory(directory, options, templateData) {
 }
 
 /**
+ * Dynamically filters and groups data based on provided templates and size.
+ * @param {object} templates - The templates object containing groupBy and status properties.
+ * @param {Array} data - The data array to be filtered and grouped.
+ * @param {number} size - The size limit for the grouped data.
+ * @returns {Array} - The filtered and grouped data.
+ */
+function dynamicData(templates, data, size) {
+
+    // Check if templates contain groupBy property and data object
+    if (templates?.data?.groupBy) {
+        // Filter data based on the status
+        if (templates.data.status === "FAILED") {
+            data = data.filter(item => item.STATE === '2');
+        } else if (templates.data.status === "SUCCESS") {
+            data = data.filter(item => item.STATE === '1');
+        }
+
+        // Group data dynamically based on the groupBy property
+        const groupedData = Object.entries(data.reduce((groups, item) => {
+            let key = item[templates.data.groupBy];
+            if (templates.data.groupBy === 'JOB_NAME') {
+                key = item['WORKFLOW_NAME'] + '__' + item['JOB_NAME'];
+            }
+
+            if (!groups[key]) {
+                groups[key] = {count: 0, workflow: item['WORKFLOW_NAME'], job: item['JOB_NAME'], data: []};
+            }
+            groups[key].count++;
+            groups[key].data.push(item);
+            return groups;
+        }, {}))
+            .sort((a, b) => b[1].count - a[1].count) // Sort by count in descending order
+            // Slice to get only the specified size
+            .slice(0, size)
+            // Map to transform the data format
+            .map(([key, value]) => {
+                // Add overlapping data
+                const overlappingData = [];
+                value.data.forEach(item => {
+                    item.duration = moment(item.END_TIME).diff(item.START_TIME) / 1000; // Duration in seconds
+                    const overlaps = value.data.filter(otherItem =>
+                        (moment(otherItem.START_TIME).isBefore(item.END_TIME) && moment(otherItem.END_TIME).isAfter(item.START_TIME) && otherItem !== item)
+                    );
+                    overlappingData.push(...overlaps);
+                });
+
+                return {
+                    [templates.data.groupBy.toLowerCase()]: key,
+                    count: value.count,
+                    data: value.data.concat(overlappingData)
+                };
+            });
+
+
+        if (templates.data.groupBy === 'WORKFLOW_NAME' && templates.data.execution === "DURATION") {
+            const workflowExecutionTimes = Object.values(groupedData).map(({ data }) => {
+                const executionTimes = data.map(entry => new Date(entry.END_TIME) - new Date(entry.START_TIME));
+                const workflows = data.map(entry => entry.WORKFLOW_NAME);
+                const totalExecutionTime = executionTimes.reduce((total, time) => total + time, 0);
+                return { workflows, totalExecutionTime };
+            });
+
+            workflowExecutionTimes.sort((a, b) => b.totalExecutionTime - a.totalExecutionTime);
+
+            return workflowExecutionTimes.slice(0, size);
+        } else if (templates.data.groupBy === 'AGENT_NAME' && templates.data.groupBy2 === "START_TIME"){
+            data.forEach(entry => {
+                entry.START_TIME = moment(entry.START_TIME, 'YYYY-MM-DD HH:mm:ss');
+                entry.END_TIME = moment(entry.END_TIME, 'YYYY-MM-DD HH:mm:ss');
+            });
+
+            data.sort((a, b) => a.START_TIME - b.START_TIME);
+
+            const results = Object.entries(_.groupBy(data, 'AGENT_NAME')).map(([agent, agentData]) => {
+                let maxParallelJobs = 0;
+                let maxParallelJobData = [];
+
+                agentData.reduce((currentJobs, job) => {
+                    const overlappingJobs = currentJobs.filter(j => (j.START_TIME.isBefore(job.START_TIME) && j.END_TIME.isAfter(job.START_TIME)) || (j.START_TIME.isSameOrBefore(job.START_TIME) && j.END_TIME.isSameOrAfter(job.END_TIME)));
+
+                    currentJobs.push(job);
+
+                    if (overlappingJobs.length + 1 > maxParallelJobs) {
+                        maxParallelJobs = overlappingJobs.length + 1;
+                        maxParallelJobData = [...currentJobs];
+                    }
+
+                    return currentJobs.filter(j => j.END_TIME.isAfter(job.START_TIME));
+                }, []);
+
+                return { agentName: agent, count: maxParallelJobs, data: maxParallelJobData };
+            });
+
+            return _.orderBy(results, ['count'], ['desc']).slice(0, size);
+        } else if (templates.data.groupBy === 'START_TIME' && templates.data.execution === "PARALLELISM"){
+                const groupedData = Object.values(data.reduce((acc, curr) => {
+                    const startTime = curr.START_TIME.split(' ')[0];
+                    acc[startTime] = acc[startTime] || [];
+                    acc[startTime].push(curr);
+                    return acc;
+                }, {})).flatMap(group => {
+                    return group.reduce((acc, curr, index) => {
+                        if (index === 0 || new Date(group[index - 1].END_TIME).getTime() <= new Date(curr.START_TIME).getTime()) {
+                            acc.push(curr);
+                        } else {
+                            acc.push({...curr, duration: (new Date(curr.START_TIME).getTime() - new Date(group[index - 1].END_TIME).getTime()) / 1000});
+                        }
+                        return acc;
+                    }, []);
+                }).sort((a, b) => new Date(a.START_TIME) - new Date(b.START_TIME));
+
+                const periods = [];
+                let currentPeriod = [];
+
+                groupedData.forEach(job => {
+                    const lastJob = currentPeriod[currentPeriod.length - 1];
+                    if (!lastJob || new Date(lastJob.END_TIME).getTime() <= new Date(job.START_TIME).getTime()) {
+                        currentPeriod.push(job);
+                    } else {
+                        periods.push(currentPeriod);
+                        currentPeriod = [job];
+                    }
+                });
+
+                const sortedPeriods = periods.sort((a, b) => b.length - a.length);
+                return {
+                    topLowParallelismPeriods: sortedPeriods.slice(0, size).map(period => ({ period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`, data: period })),
+                    topHighParallelismPeriods: sortedPeriods.slice(-size).reverse().map(period => ({ period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`, data: period }))
+                };
+
+        }
+
+        return groupedData;
+    }
+}
+
+/**
  * Write report data based on template type.
  * @param {object} options - Cmd parameters.
  * @param {string} data - Data to write.
@@ -411,50 +469,43 @@ async function writeReportData(options, data, directory, fileName, templateData,
     const runId = directory.match(/\d+/)[0];
     const jsonObject = {
         title: templateData.title,
-        chartType: templateData.ChartType
+        type: templateData.type,
+        chartType: templateData.data.chartType
     };
     let groupedData;
     switch (templateData.id) {
-        case 'template_1':
-            groupedData = getTopMostFailedWorkflows(JSON.parse(data), size);
-            break;
-        case 'template_2':
-            groupedData = frequentlyFailedJobs(JSON.parse(data), size);
-            break;
-        case 'template_3':
+        case '3':
             groupedData = calculateMaxParallelExecution(JSON.parse(data), size);
             break;
-        case 'template_4':
+        case '4':
             groupedData = lowAndHighParallelism(JSON.parse(data), size);
             break;
-        case 'template_5':
+        case '5':
             groupedData = getTotalExecutionsPerMonth(JSON.parse(data));
             break;
-        case 'template_6':
+        case '6':
             groupedData = getTotalOrderExecutionsPerMonth(JSON.parse(data));
             break;
-        case 'template_7':
+        case '7':
             groupedData = getTopMostWorkflowsByExecutionTime(JSON.parse(data), size);
             break;
-        case 'template_8':
+        case '8':
             groupedData = getTopMostLongestExecutionJobs(JSON.parse(data), size);
             break;
-        case 'template_9':
+        case '9':
             groupedData = getTopMostPeriodsMostOrdersExecuted(JSON.parse(data), size);
             break;
-        case 'template_10':
+        case '10':
             groupedData = getTopMostPeriodsMostJobsExecuted(JSON.parse(data), size);
             break;
-
         default:
-            console.log(`Given template is not yet implemented...`);
-            process.exit(1);
+            groupedData = dynamicData(templateData, JSON.parse(data), size);
             break;
     }
     if (groupedData) {
         jsonObject.data = groupedData;
         let outputDir;
-        if(options.outputDirectory){
+        if (options.outputDirectory) {
             outputDir = path.join(options.outputDirectory, fileName);
         } else {
             outputDir = path.join('report/' + runId, fileName);

@@ -1,6 +1,7 @@
 {
-  "title": "Top most periods during which mostly orders executed",
-  "id": "template_9",
+  "title": "Top ${size} periods during which mostly orders executed",
+  "id": "9",
+  "type": "ORDER",
   "data": {
     "chartType": "BAR",
     "groupBy": "START_TIME"

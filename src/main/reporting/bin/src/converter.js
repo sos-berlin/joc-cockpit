@@ -156,10 +156,15 @@ async function checkFileNameWithFrequency(runId, directoryPath, files, frequency
             }
             data[key].push(file);
         } else {
-            if (data[fileYear]) {
-                data[fileYear].push(file);
+            let key = fileYear;
+            if (frequencyInterval === 3) {
+                let endYear = +fileYear + 2;
+                key = `${fileYear}-${endYear}`;
+            }
+            if (data[key]) {
+                data[key].push(file);
             } else {
-                data[fileYear] = [file]
+                data[key] = [file]
             }
         }
     }
@@ -183,7 +188,7 @@ function getKeyBasedOnFrequency(year, month, frequencyInterval) {
         return `${year}-${month.toString().padStart(2, '0')}`;
     } else {
         const quarter = Math.ceil(month / frequencyInterval);
-        if(frequencyInterval === 3) {
+        if (frequencyInterval === 3) {
             return `${year}-Q${quarter}`;
         } else {
             return `${year}-H${quarter}`;
@@ -274,62 +279,56 @@ function getWeekNumber(inputDate) {
  */
 async function init(options) {
     try {
-        // Check the template and based on this read orders or jobs data directory
-        if (/template_(1|6|7|9)/.test(options.templateFilePath)) {
-            options['inputDirectory'] += '/orders';
-        } else {
-            options['inputDirectory'] += '/jobs';
-        }
-        if (!options.templateFilePath.match('template_')) {
-            console.error('Please enter valid template file name');
-            logger.error('Please enter valid template file name');
-            return;
-        }
-        const inputFiles = await utils.readInputDirectory(options['inputDirectory']);
-        if (!inputFiles || inputFiles.length === 0) {
-            logger.error('No data files found');
-            return;
-        } else {
-            console.log('Read ' + options['inputDirectory'] + ' directory and receive ' + inputFiles.length + ' files')
-        }
+        console.log('Reading ' + options.templateFilePath + ' template file.')
+        utils.readJsonFile(options.templateFilePath)
+            .then(async (templateData) => {
 
-        const runId = utils.generateUnique16BitString();
-        await utils.checkAndCreateDirectory(path.join('tmp', runId));
-
-        if (options.frequencies) {
-            for (const frequency of options.frequencies) {
-                let frequencyType = '';
-                let interval = 0;
-
-                switch (frequency) {
-                    case 'weekly':
-                    case 'every2weeks':
-                        interval = (frequency === 'weekly') ? 1 : 2;
-                        frequencyType = 'WEEK';
-                        break;
-                    case 'monthly':
-                    case 'every3months':
-                    case 'every6months':
-                        interval = (frequency === 'monthly') ? 1 : (frequency === 'every3months') ? 3 : 6;
-                        frequencyType = 'MONTH';
-                        break;
-                    case 'yearly':
-                    case 'every3years':
-                        interval = (frequency === 'yearly') ? 1 : 3;
-                        frequencyType = 'YEAR';
-                        break;
-                    default:
-                        console.error(`Invalid processing frequency: ${frequency}. Please provide a valid value (e.g., monthly, 3months, 6months, yearly).`);
-                        continue; // Skip the invalid frequency
+                // Check the template and based on this read orders or jobs data directory
+                options['inputDirectory'] += JSON.parse(templateData).type === 'ORDER' ? '/orders' : '/jobs';
+                const inputFiles = await utils.readInputDirectory(options['inputDirectory']);
+                if (!inputFiles || inputFiles.length === 0) {
+                    logger.error('Data input directory is empty');
+                    process.exit(1);
+                } else {
+                    console.log('Read ' + options['inputDirectory'] + ' directory and receive ' + inputFiles.length + ' files')
                 }
-                console.log('Start report processing for frequency ', frequency)
-                await checkFileNameWithFrequency(runId, options['inputDirectory'], inputFiles, frequencyType, interval, options.startDate);
-            }
-            console.log('Reading ' + options.templateFilePath + ' template file.')
-            utils.readJsonFile(options.templateFilePath)
-                .then((templateData) => generate(templateData, runId, options))
-                .catch(e => handleError('Error while reading template data from ' + options.templateFilePath, e));
-        }
+
+                const runId = utils.generateUnique16BitString();
+                await utils.checkAndCreateDirectory(path.join('tmp', runId));
+
+                if (options.frequencies) {
+                    for (const frequency of options.frequencies) {
+                        let frequencyType = '';
+                        let interval = 0;
+                        switch (frequency) {
+                            case 'weekly':
+                            case 'every2weeks':
+                                interval = (frequency === 'weekly') ? 1 : 2;
+                                frequencyType = 'WEEK';
+                                break;
+                            case 'monthly':
+                            case 'every3months':
+                            case 'every6months':
+                                interval = (frequency === 'monthly') ? 1 : (frequency === 'every3months') ? 3 : 6;
+                                frequencyType = 'MONTH';
+                                break;
+                            case 'yearly':
+                            case 'every3years':
+                                interval = (frequency === 'yearly') ? 1 : 3;
+                                frequencyType = 'YEAR';
+                                break;
+                            default:
+                                console.error(`Invalid processing frequency: ${frequency}. Please provide a valid value (e.g., monthly, 3months, 6months, yearly).`);
+                                continue; // Skip the invalid frequency
+                        }
+                        console.log('Start report processing for frequency ', frequency)
+                        await checkFileNameWithFrequency(runId, options['inputDirectory'], inputFiles, frequencyType, interval, options.startDate);
+                    }
+
+                    await generate(templateData, runId, options);
+                }
+            })
+            .catch(e => handleError('Error while reading template data from ' + options.templateFilePath, e));
     } catch (error) {
         handleError('', error);
     }
