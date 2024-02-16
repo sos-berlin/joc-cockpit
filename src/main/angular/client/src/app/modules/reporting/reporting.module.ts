@@ -7,9 +7,10 @@ import {SharedModule} from "../shared/shared.module";
 import {RunModalComponent, ReportingComponent, ShareModalComponent} from "./reporting.component";
 import {GroupByPipe, SecondsToTimePipe} from "../../pipes/core.pipe";
 import {GaugeModule} from "../gauge/gauge.module";
-import { MonthlyComponent } from './monthly/monthly.component';
 import {RunningHistoryComponent} from "./running-history/running-history.component";
 import {ManageReportComponent} from "./manage-report/manage-report.component";
+import {AllReportComponent} from "./all-report/all-report.component";
+import {FrequencyReportComponent} from "./frequency-report/frequency-report.component";
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import {ManageReportComponent} from "./manage-report/manage-report.component";
     ShareModalComponent,
     ManageReportComponent,
     RunningHistoryComponent,
-    MonthlyComponent,
+    AllReportComponent,
+    FrequencyReportComponent
   ],
   imports: [
     ReportingRoutingModule,

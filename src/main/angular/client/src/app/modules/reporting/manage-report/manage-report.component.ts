@@ -20,9 +20,10 @@ export class ManageReportComponent {
   isLoaded = false;
   reports = [];
   data = [];
+  selectedReport = {};
+  isVisible = false;
 
-
-  searchableProperties = ['name', 'title', 'template', 'status', 'frequency', 'created'];
+  searchableProperties = ['title', 'dateFrom', 'dateTo', 'frequency', 'created'];
 
   subscription1: Subscription;
 
@@ -63,13 +64,20 @@ export class ManageReportComponent {
 
 
   private getData(): void {
-    this.coreService.post('manage_report', {}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+    this.coreService.post('reporting/report/history', {}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoaded = true;
         this.reports = this.orderPipe.transform(res.reports, this.filters.sortBy, this.filters.reverse);
+        this.reports.forEach((report) => {
+          console.log(report.title, report.size);
+          if(report.title?.includes('${size}')){
+            report.title = report.title.replace('${size}', report.size || 10)
+          }
+        })
         this.searchInResult();
       }, error: () => this.isLoaded = true
     });
+    this.searchInResult();
   }
 
   sort(propertyName): void {
@@ -89,6 +97,15 @@ export class ManageReportComponent {
     if (this.reports.length === 0) {
       this.filters.filter.currentPage = 1;
     }
+  }
+
+  onSelect(data): void {
+    this.isVisible = true;
+    this.selectedReport = data;
+  }
+
+  closePanel(): void {
+    this.isVisible = false;
   }
 
 }

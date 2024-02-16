@@ -51,16 +51,22 @@
             <i *ngIf="filters.filter.sortBy == 'template' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('freqency')"><a><span class="p-r-xs" translate>Frequency</span>
-            <i *ngIf="filters.filter.sortBy == 'freqency' && !filters.filter.reverse"
+          <th (click)="sort('frequencies')"><a><span class="p-r-xs" translate>Frequencies</span>
+            <i *ngIf="filters.filter.sortBy == 'frequencies' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'freqency' && filters.filter.reverse"
+            <i *ngIf="filters.filter.sortBy == 'frequencies' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('startFrom')"><a><span class="p-r-xs" translate>Start From</span>
-            <i *ngIf="filters.filter.sortBy == 'startFrom' && !filters.filter.reverse"
+          <th (click)="sort('dateFrom')"><a><span class="p-r-xs" translate>Date From</span>
+            <i *ngIf="filters.filter.sortBy == 'dateFrom' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'startFrom' && filters.filter.reverse"
+            <i *ngIf="filters.filter.sortBy == 'dateFrom' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('created')" ><a><span class="p-r-xs" translate>Size</span>
+            <i *ngIf="filters.filter.sortBy == 'created' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'created' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
           <th (click)="sort('created')" ><a><span class="p-r-xs" translate>monitor.notification.label.created</span>
@@ -74,28 +80,13 @@
         <tbody>
         <ng-template [ngForOf]="ajaxTable.data" let-item
                      ngFor>
-          <tr class="cursor" (click)="onSelect(item)">
-<!--            <td >-->
-<!--              <div class="btn-group dropdown">-->
-<!--                <button [nzDropdownMenu]="option" class="btn-drop more-option-h"-->
-<!--                        nz-dropdown nzTrigger="click" type="button">-->
-<!--                  <i class="fa fa-ellipsis-h"></i>-->
-<!--                </button>-->
-<!--                <nz-dropdown-menu #option="nzDropdownMenu" role="menu">-->
-<!--                  <ul nz-menu>-->
-<!--                    <li nz-menu-item>-->
-<!--                      <a translate>Manage</a>-->
-<!--                    </li>-->
-<!--                  </ul>-->
-<!--                </nz-dropdown-menu>-->
-<!--              </div>-->
-<!--            </td>-->
-
+          <tr>
             <td><span [innerHtml]="item.name | highlight : filters.searchText"></span></td>
             <td><span [innerHtml]="item.title | highlight : filters.searchText"></span></td>
             <td><span [innerHtml]="item.template | highlight : filters.searchText"></span></td>
-            <td><span [innerHtml]="item.frequency | highlight : filters.searchText"></span></td>
-            <td><span [innerHtml]="item.startFrom"></span></td>
+            <td><div *ngFor="let frequency of item.frequencies" [innerHtml]="frequency | translate | highlight : filters.searchText"></div></td>
+            <td><span [innerHtml]="item.dateFrom"></span></td>
+            <td><span [innerHtml]="item.size | highlight : filters.searchText"></span></td>
             <td><span [innerHtml]="item.created | stringToDate | highlight : filters.searchText"></span></td>
           </tr>
         </ng-template>
@@ -110,10 +101,3 @@
     </div>
   </div>
 </div>
-
-<nz-drawer (nzOnClose)="closePanel()" [nzWidth]="'100% !important'" [nzVisible]="isVisible" nzPlacement="right">
-  <ng-container *nzDrawerContent>
-    <div (click)="closePanel()" class="close-btn z-index-9999 m-l-xxs"></div>
-    <app-monthly *ngIf="isVisible" [report]="selectedReport"></app-monthly>
-  </ng-container>
-</nz-drawer>

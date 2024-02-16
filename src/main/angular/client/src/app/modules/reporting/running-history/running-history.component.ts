@@ -16,10 +16,8 @@ export class RunningHistoryComponent {
   @Input() permission: any;
   @Input() preferences: any = {};
   @Input() filters: any = {};
+  @Input() templates: any = [];
 
-
-  selectedReport = {};
-  isVisible = false;
   isLoaded = false;
   reportHistory = [];
   data = [];
@@ -63,10 +61,14 @@ export class RunningHistoryComponent {
 
 
   private getData(): void {
-    this.coreService.post('reporting/report/history', {}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+    this.coreService.post('reporting/run/history', {}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoaded = true;
-        this.reportHistory = this.orderPipe.transform(res.reports, this.filters.filter.sortBy, this.filters.filter.reverse);
+        this.reportHistory = this.orderPipe.transform(res.runs, this.filters.filter.sortBy, this.filters.filter.reverse);
+        this.reportHistory.forEach((report) => {
+          const template = this.templates.find(template => template.id == report.templateId);
+          if (template) report.template = template.title;
+        })
         this.searchInResult();
       }, error: () => this.isLoaded = true
     });
@@ -90,15 +92,6 @@ export class RunningHistoryComponent {
     if (this.reportHistory.length === 0) {
       this.filters.filter.currentPage = 1;
     }
-  }
-
-  onSelect(data): void {
-    this.isVisible = true;
-    this.selectedReport = data;
-  }
-
-  closePanel(): void {
-    this.isVisible = false;
   }
 
 }

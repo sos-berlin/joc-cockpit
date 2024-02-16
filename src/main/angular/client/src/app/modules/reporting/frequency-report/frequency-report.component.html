@@ -1,0 +1,108 @@
+<div class="p-a p-t-0">
+  <div class="_600 text-md m-b-sm text-center pos-rel t-n-12"><span
+    class="p-b-xs b-b">{{report.title}} | <i class="text-muted">{{report.dateFrom}} - {{report.dateTo}}</i></span>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box">
+        <div class="box-header b-b">
+          <h3>
+            <span translate>{{report.title}}</span>
+          </h3>
+        </div>
+        <div class="box-tool r-sm">
+          <div *ngIf="clickData" class="m-r-xs">
+                <span (click)="clickData = null" class="text-hover-primary cursor-pointer">
+                  <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+                  Back
+                </span>
+          </div>
+          <a *ngIf="!clickData" (click)="toggleView()" class="text-hover-primary">
+            <span *ngIf="filter.showTable" nz-icon nzType="bar-chart" nzTheme="outline"></span>
+            <span *ngIf="!filter.showTable" nz-icon nzType="table" nzTheme="outline"></span>
+          </a>
+        </div>
+        <div class="box-body">
+          <perfect-scrollbar class="table-responsive2"
+                             style="max-height: calc(100vh - 224px); min-height: 80px; overflow: auto;">
+            <div [hidden]="filter.showTable || clickData">
+              <canvas id="bar-chart"></canvas>
+            </div>
+            <div class="job-execution" *ngIf="filter.showTable">
+              <nz-collapse>
+                <nz-collapse-panel *ngFor="let items of dataset"
+                                   [nzHeader]="items.job || items.job_name || items.workflow_name || items.agent_name"
+                                   [nzActive]="items.active">
+                  <div>
+                    <div class="p-a-sm" style="padding-bottom: 4px !important;">
+                      <table class="table table-bordered table-hover" style="margin-bottom: 0 !important;">
+                        <thead>
+                        <tr>
+                          <th width="40%"><span translate>Workflow</span></th>
+                          <th><span translate>Agent Name</span></th>
+                          <th width="80px"><span translate>Criticality</span></th>
+                          <th width="150px"><span translate>Start Date</span></th>
+                          <th width="150px"><span translate>End Date</span></th>
+                          <th width="80px"><span translate>Duration</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of items.data;">
+                          <td width="40%">{{item.WORKFLOW_PATH}}</td>
+                          <td>{{item.AGENT_NAME}}</td>
+                          <td width="80px">{{item.CRITICALITY}}</td>
+                          <td width="150px">{{item.START_TIME | stringToDate}}</td>
+                          <td width="150px">{{item.END_TIME | stringToDate}}</td>
+                          <td width="80px">{{item.DURATION | secondsToTime}}</td>
+                        </tr>
+                        <tr class="text-center p-a-10" *ngIf="items.data?.length == 0">
+                          <td colspan="6">
+                            <app-empty-data></app-empty-data>
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </nz-collapse-panel>
+              </nz-collapse>
+              <div class="text-center p-a-10" *ngIf="dataset.length == 0">
+                <app-empty-data></app-empty-data>
+              </div>
+            </div>
+            <div class="job-execution" *ngIf="clickData">
+              <div class="_600 p-b-sm">
+                <span class="font14">{{clickData.workflow}}</span> - {{clickData.job}} <i
+                class="p-l-xs text-muted _300">({{clickData.data?.length}})</i>
+              </div>
+              <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th width="40%"><span translate>Workflow</span></th>
+                  <th><span translate>Job</span></th>
+                  <th><span translate>Agent Name</span></th>
+                  <th width="80px"><span translate>Criticality</span></th>
+                  <th width="150px"><span translate>Start Date</span></th>
+                  <th width="150px"><span translate>End Date</span></th>
+                  <th width="80px"><span translate>Duration</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of clickData.data;">
+                  <td width="40%">{{item.WORKFLOW_NAME}}</td>
+                  <td>{{item.JOB_NAME}}</td>
+                  <td>{{item.AGENT_NAME}}</td>
+                  <td width="80px">{{item.CRITICALITY}}</td>
+                  <td width="150px">{{item.START_TIME | stringToDate}}</td>
+                  <td width="150px">{{item.END_TIME | stringToDate}}</td>
+                  <td width="80px">{{item.DURATION | secondsToTime}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </perfect-scrollbar>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

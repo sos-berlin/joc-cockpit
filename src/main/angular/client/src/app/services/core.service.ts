@@ -284,7 +284,7 @@ export class CoreService {
       endDate: new Date().setHours(0, 0, 0, 0),
       manageList: {
         filter: {
-          sortBy: 'created',
+          sortBy: 'dateFrom',
           reverse: true,
           currentPage: '1'
         }

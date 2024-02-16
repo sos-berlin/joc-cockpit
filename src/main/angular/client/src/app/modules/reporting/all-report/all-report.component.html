@@ -1,0 +1,359 @@
+
+<div #content id="content" class="scroll-y max-ht">
+
+  <div class="padding p-b-0">
+
+        <div>
+          <div class="row">
+            <div class="col-md-6 col-lg-3">
+              <div class="box">
+                <div class="box-body p-b-xs">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="job-execution show-block" >
+                        <app-gauge
+                          [animated]="true"
+                          [animationDuration]="1"
+                          [color]="successColor"
+                          [dialEndAngle]="-90.001"
+                          [dialStartAngle]="-90"
+                          [label]="getValue"
+                          [value]="object.successValue"
+                        >
+                        </app-gauge>
+                      </div>
+                      <div class="pos-rel show-block m-l-12" style="top: -12px">
+                        <span class="text-lg _600">{{object.successCount}} <i
+                          class="text-md _400">out of {{data.length}}</i></span>
+                        <div>Successfully Jobs Executions</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+              <div class="box">
+                <div class="box-body p-b-xs">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="job-execution show-block" >
+                        <app-gauge
+                          [animated]="true"
+                          [animationDuration]="1"
+                          [color]="successColor"
+                          [dialEndAngle]="-90.001"
+                          [dialStartAngle]="-90"
+                          [label]="getValue"
+                          [value]="object.successDurationValue"
+                        >
+                        </app-gauge>
+                      </div>
+                      <div class=" pos-rel show-block m-l-12" style="top: -12px">
+                        <span class="text-lg _600">
+                          {{object.successDuration | secondsToTime}} /
+                          <i class="text-md _400" *ngIf="object.successDuration == 0">0s per job</i>
+                          <i class="text-md _400"
+                             *ngIf="object.successDuration > 0">{{(((object.successDuration / object.successCount)).toFixed(2)) || 0}}
+                            s per job</i>
+                        </span>
+                        <div>Avg Successful Job Execution Duration</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+              <div class="box">
+                <div class="box-body p-b-xs">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="job-execution show-block">
+                        <app-gauge
+                          [animated]="true"
+                          [animationDuration]="1"
+                          [color]="failedColor"
+                          [dialEndAngle]="-90.001"
+                          [dialStartAngle]="-90"
+                          [label]="getValue"
+                          [value]="object.failedValue"
+                        >
+                        </app-gauge>
+                      </div>
+                      <div class="pos-rel show-block m-l-12" style="top: -12px">
+                        <span class="text-lg _600">{{object.failedCount}}</span>
+                        <div>Failed Jobs Executions</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+              <div class="box">
+                <div class="box-body p-b-xs">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="job-execution show-block" >
+                        <app-gauge
+                          [animated]="true"
+                          [animationDuration]="1"
+                          [color]="failedColor"
+                          [dialEndAngle]="-90.001"
+                          [dialStartAngle]="-90"
+                          [label]="getValue"
+                          [value]="object.failedDurationValue"
+                        >
+                        </app-gauge>
+                      </div>
+                      <div class="pos-rel show-block m-l-12" style="top: -12px">
+                        <span class="text-lg _600">
+                          {{object.failedDuration | secondsToTime}} /
+                          <i class="text-md _400" *ngIf="object.failedDuration == 0">0s per job</i>
+                          <i class="text-md _400"
+                             *ngIf="object.failedDuration > 0">{{(((object.failedDuration / object.failedCount)).toFixed(2)) || 0}}
+                            s per job</i>
+                        </span>
+                        <div>Avg Failed Job Execution Duration</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="box">
+                <div class="box-header b-b">
+                  <h3>
+                    <span translate>Job Execution Per Workflow </span>
+                  </h3>
+                </div>
+                <div class="box-tool r-sm">
+                  <div class="show-block">
+                    <input class="pos-rel" [(ngModel)]="object.searchText" style="top: -4px"
+                           placeholder="{{'common.placeholder.search' | translate}}"
+                           type="search">
+                  </div>
+                  <a *ngIf="!clickData" (click)="toggleJobView()" class="text-hover-primary m-l-12">
+                    <span *ngIf="filter.showJobTable" nz-icon nzType="bar-chart" nzTheme="outline"></span>
+                    <span *ngIf="!filter.showJobTable" nz-icon nzType="table" nzTheme="outline"></span>
+                  </a>
+                  <button [nzDropdownMenu]="option" class="m-l-0 btn-drop more-option-v show-block" nz-dropdown
+                          nzTrigger="click"
+                          type="button">
+                    <i class="fa fa-ellipsis-v"></i>
+                  </button>
+                  <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                    <ul nz-menu>
+                      <li nz-menu-item (click)="filter.reverse = !filter.reverse">
+                        <a translate>Sort By
+                          <span *ngIf="filter.reverse"><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i></span>
+                          <span *ngIf="!filter.reverse"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></span>
+                        </a>
+                      </li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+                <div class="box-body job-execution">
+                  <perfect-scrollbar class="table-responsive"
+                                     style="max-height: calc(100vh - 360px); min-height: 80px; overflow: auto;">
+                    <nz-collapse nzAccordion>
+                      <nz-collapse-panel
+                        *ngFor="let workflow of object.workflows | filter:object.searchText:['name'] | orderBy: 'name': filter.reverse"
+                        [nzHeader]="workflow.name" [nzActive]="workflow.active"
+                        (nzActiveChange)="updateGraphData(workflow)">
+                        <div class="show-chart">
+                          <div [hidden]="filter.showJobTable">
+                            <div class="m-t-sm">
+                              <div class="col-md-12 m-b-sm">
+                                <label class="_600">Workflow Execution</label>
+                              </div>
+                              <canvas id="workflow_{{workflow.workflowPath}}"></canvas>
+                            </div>
+                            <div class="m-t-sm b-t p-t-12">
+                              <div class="col-md-12">
+                                <label class="_600">Job Execution</label>
+                                <label class="pull-right" nz-checkbox [(ngModel)]="filter.onlyFailedJobs"
+                                       (ngModelChange)="failedExecution($event, workflow)">
+                                  Show only Failed executions
+                                </label>
+                              </div>
+                              <canvas id="{{workflow.workflowPath}}"></canvas>
+                            </div>
+                          </div>
+                          <div class="job-execution" *ngIf="filter.showJobTable">
+                            <table class="table table-hover" style="margin-bottom: 0 !important;">
+                              <thead>
+                              <tr>
+                                <th><span translate>Start Time</span></th>
+                                <th><span translate>Job</span></th>
+                                <th><span translate>Status</span></th>
+                                <th><span translate>Duration</span></th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <tr *ngFor="let item of workflow.data.data;">
+                                <td width="40%">{{item.START_TIME}}</td>
+                                <td>{{item.JOB_NAME}}</td>
+                                <td width="100px">
+                                <span [innerHtml]="(item.ERROR_STATE || 'successful') | translate"
+                                      class="label {{item.ERROR_STATE ? 'bg-red' : 'bg-green'}}"></span>
+                                </td>
+                                <td width="80px">{{item.DURATION | secondsToTime}}</td>
+                              </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </nz-collapse-panel>
+                    </nz-collapse>
+                    <div *ngIf="isLoading && (object.workflows | filter:object.searchText:['workflowPath']).length ===0"
+                         class="col-md-12 vert-middle">
+                      <div class="m-t-ms">
+                        <app-empty-data [title]="'common.message.noDataMatched'"></app-empty-data>
+                      </div>
+                    </div>
+                  </perfect-scrollbar>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="box">
+                <div class="box-header b-b">
+                  <h3>
+                    <span translate>Parallel Job Executions on Agents</span>
+                  </h3>
+                </div>
+                <div class="box-tool r-sm">
+                  <div *ngIf="clickData" class="m-r-xs">
+                    <span (click)="clickData = null" class="text-hover-primary cursor-pointer">
+                      <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+                      Back
+                    </span>
+                  </div>
+                  <a *ngIf="!clickData" (click)="toggleView()" class="text-hover-primary">
+                    <span *ngIf="filter.showAgentTable" nz-icon nzType="bar-chart" nzTheme="outline"></span>
+                    <span *ngIf="!filter.showAgentTable" nz-icon nzType="table" nzTheme="outline"></span>
+                  </a>
+                  <button *ngIf="!clickData" [nzDropdownMenu]="option2" class="m-l-0 btn-drop more-option-v" nz-dropdown
+                          nzTrigger="click"
+                          type="button">
+                    <i class="fa fa-ellipsis-v"></i>
+                  </button>
+                  <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
+                    <ul nz-menu>
+                      <li nz-menu-item (click)="showDataByCount(2)">
+                        <a translate>Show count more than 2</a>
+                      </li>
+                      <li nz-menu-item (click)="showDataByCount(5)">
+                        <a translate>Show count more than 5</a>
+                      </li>
+                      <li nz-menu-item (click)="showDataByCount(10)">
+                        <a translate>Show count more than 10</a>
+                      </li>
+                      <li nz-menu-item (click)="showDataByCount(15)">
+                        <a translate>Show count more than 15</a>
+                      </li>
+                      <li nz-menu-item (click)="showDataByCount(20)">
+                        <a translate>Show count more than 20</a>
+                      </li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+                <div class="box-body">
+                  <perfect-scrollbar class="table-responsive2"
+                                     style="max-height: calc(100vh - 360px); min-height: 80px; overflow: auto;">
+
+                    <div [hidden]="filter.showAgentTable || clickData">
+                      <canvas id="bar-chart"></canvas>
+                    </div>
+                    <div class="job-execution" *ngIf="filter.showAgentTable">
+                      <nz-collapse>
+                        <nz-collapse-panel *ngFor="let agent of agentData.datasets"
+                                           [nzHeader]="agent.label" [nzActive]="agent.active">
+                          <div>
+                            <div class="p-a-sm" style="padding-bottom: 4px !important;"
+                                 *ngFor="let items of agent.groupByData; let i = index">
+                              <label class="_600 m-b-xxs">{{agentData.labels[i]}} <i
+                                class="p-l-xs text-muted">({{items.length}})</i></label>
+                              <table class="table table-bordered table-hover" style="margin-bottom: 0 !important;">
+                                <thead *ngIf="i == 0">
+                                <tr>
+                                  <th width="40%"><span translate>Workflow</span></th>
+                                  <th><span translate>Job</span></th>
+                                  <th width="100px"><span translate>Status</span></th>
+                                  <th width="80px"><span translate>Duration</span></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let item of items;">
+                                  <td width="40%">{{item.WORKFLOW_NAME}}</td>
+                                  <td>{{item.JOB_NAME}}</td>
+                                  <td width="100px">
+                                <span [innerHtml]="(item.ERROR_STATE || 'successful') | translate"
+                                      class="label {{item.ERROR_STATE ? 'bg-red' : 'bg-green'}}"></span>
+                                  </td>
+                                  <td width="80px">{{item.DURATION | secondsToTime}}</td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                            <div class="text-center p-a-10" *ngIf="agent.groupByData.length == 0">
+                              <app-empty-data></app-empty-data>
+                            </div>
+                          </div>
+                        </nz-collapse-panel>
+                      </nz-collapse>
+                    </div>
+                  </perfect-scrollbar>
+
+                  <div class="job-execution" *ngIf="clickData">
+                    <perfect-scrollbar style="max-height: calc(100vh - 360px); min-height: 80px; overflow: auto;">
+                      <div class="_600 p-b-sm">
+                        <span class="font14">{{clickData.agentName}}</span> - {{clickData.label}} <i
+                        class="p-l-xs text-muted _300">({{clickData.list.length}})</i>
+                      </div>
+                      <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                          <th width="40%"><span translate>Workflow</span></th>
+                          <th><span translate>Job</span></th>
+                          <th width="100px"><span translate>Status</span></th>
+                          <th width="80px"><span translate>Duration</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of clickData.list;">
+                          <td width="40%">{{item.WORKFLOW_NAME}}</td>
+                          <td>{{item.JOB_NAME}}</td>
+                          <td width="100px"><span [innerHtml]="(item.ERROR_STATE || 'successful') | translate"
+                                                  class="label {{item.ERROR_STATE ? 'bg-red' : 'bg-green'}}"></span>
+                          </td>
+                          <td width="80px">{{item.DURATION | secondsToTime}}</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </perfect-scrollbar>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+  </div>
+
+
+</div>
+
+
+<div *ngIf="loading" class="spinner">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
+</div>
