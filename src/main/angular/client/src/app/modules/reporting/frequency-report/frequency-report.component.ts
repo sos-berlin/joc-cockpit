@@ -37,23 +37,26 @@ export class FrequencyReportComponent {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    console.log(this.report)
     this.loadData();
   }
 
 
   loadData(): void {
     this.isLoading = false;
-    this.isLoading = true;
+    this.coreService.post('reporting/report/history', {compact: false, ids: [this.report.id]}).subscribe({
+      next: (res: any) => {
+        this.isLoading = true;
+        if(res.reports.length > 0) {
+          this.report.data = res.reports[0].data;
+          if (this.report.data.length > 0 && this.report.data[0].data) {
+            this.initGraph();
+          } else {
+            this.initLineChart();
+          }
+        }
+      }, error: () => this.isLoading = true
+    });
 
-    if (this.report.template?.match('low and high parallelism') || this.report.template?.match('Total number')) {
-      this.initLineChart();
-    } else {
-      this.initGraph();
-    }
-    setTimeout(() => {
-      this.isLoading = true;
-    }, 1000);
   }
 
   initGraph(): void {
@@ -151,33 +154,43 @@ export class FrequencyReportComponent {
   }
 
   initLineChart(): void {
-    console.log('Line Chart');
     const data = {
       labels: [],
       datasets: []
     };
     this.dataset = [];
-    let count = 0;
     for (let i in this.report.data) {
-      if (i === 'topHighParallelismPeriods' || i === 'topLowParallelismPeriods') {
+      if (this.report.data[i].topHighParallelismPeriods || this.report.data[i].topLowParallelismPeriods) {
         console.log(this.report.data[i]);
         const obj = {
           label: i === 'topHighParallelismPeriods' ? 'High Parallelism Periods' : 'Low Parallelism Periods',
           data: [],
         };
-        ++count;
-        if (count > 1) {
-          console.log(data.datasets)
+
+        if (i != '0') {
+          console.log(data.datasets, '>>>>>>>>')
           obj.data = new Array(data.datasets[0].data.length).fill(null);
         }
         for (let j in this.report.data[i]) {
-          obj.data.push(this.report.data[i][j].data.length);
+          console.log(this.report.data[i][j],  j, i, 'Line -----178')
+         // obj.data.push(this.report.data[i][j].data.length);
           data.labels.push(this.report.data[i][j].period)
         }
         data.datasets.push(obj);
+      } else {
+        if(data.datasets.length === 0){
+          data.datasets =[{label: this.report.data[i].workflow ? 'Workflows' : 'Execution Time', data: []}]
+        }
+        if(this.report.data[i].workflow){
+          data.labels.push(this.report.data[i].workflow);
+          data.datasets[0].data.push(this.report.data[i].totalExecutionTime || 0);
+        } else {
+          data.labels.push(this.report.data[i].START_TIME);
+          data.datasets[0].data.push(this.report.data[i].duration);
+        }
       }
     }
-    console.log(data)
+    console.log(data,' ?????')
     let delayed;
     const self = this;
     if (this.barChart) {

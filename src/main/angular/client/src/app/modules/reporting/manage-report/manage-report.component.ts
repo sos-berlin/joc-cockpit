@@ -63,7 +63,7 @@ export class ManageReportComponent {
 
 
   private getData(): void {
-    this.coreService.post('reporting/report/history', {compact: false}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+    this.coreService.post('reporting/report/history', {compact: true}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoaded = true;
         this.reports = this.orderPipe.transform(res.reports, this.filters.sortBy, this.filters.reverse);

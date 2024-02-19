@@ -173,16 +173,20 @@ function dynamicData(templates, data, size) {
             });
 
             const sortedPeriods = periods.sort((a, b) => b.length - a.length);
-            return {
-                topLowParallelismPeriods: sortedPeriods.slice(0, size).map(period => ({
-                    period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
-                    data: period.map(({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration}) => ({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }))
-                })),
-                topHighParallelismPeriods: sortedPeriods.slice(-size).reverse().map(period => ({
-                    period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
-                    data: period.map(({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }) => ({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }))
-                }))
-            };
+            return [
+                {
+                    'topLowParallelismPeriods': sortedPeriods.slice(0, size).map(period => ({
+                        period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
+                        data: period.map(({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration}) => ({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }))
+                    }))
+                },
+                {
+                    'topHighParallelismPeriods': sortedPeriods.slice(-size).reverse().map(period => ({
+                        period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
+                        data: period.map(({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }) => ({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }))
+                    }))
+                }
+            ];
         } else if (templates.data.groupBy === 'START_TIME' && templates.data.execution === "DURATION") {
             // Calculate the duration for each job execution
             data.forEach(item => {
