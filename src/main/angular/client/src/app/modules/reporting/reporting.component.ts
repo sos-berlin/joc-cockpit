@@ -163,89 +163,7 @@ export class ReportingComponent {
 
   loading = false;
 
-  templates = [
-    {
-      title: 'Top ${size} frequently failed workflows',
-      id: '1',
-      data: {
-        chartType: 'Line',
-        groupBy: 'WORKFLOW'
-      }
-    },
-    {
-      title: 'Top ${size} frequently failed jobs',
-      id: '2',
-      data: {
-        chartType: 'Bar',
-        groupBy: 'START_TIME'
-      }
-    },
-    {
-      title: 'Top ${size} with most parallel job execution',
-      id: '3',
-      data: {
-        chartType: 'Bar',
-        groupBy: 'START_TIME'
-      }
-    },
-    {
-      title: 'Top ${size} periods of low and high parallelism of job executions',
-      id: '4',
-      data: {
-        chartType: 'Line',
-        groupBy: 'JOB_NAME'
-      }
-    },
-    {
-      title: 'Total number of job executions per frequency',
-      id: '5',
-      data: {
-        chartType: 'Line',
-        groupBy: 'JOB_NAME'
-      }
-    },
-    {
-      title: 'Total number of order executions per frequency',
-      id: '6',
-      data: {
-        chartType: 'Line',
-        groupBy: 'ORDER_ID'
-      }
-    },
-    {
-      title: 'Top ${size} workflows with the longest execution time',
-      id: '7',
-      data: {
-        chartType: 'Line',
-        groupBy: 'ORDER_ID'
-      }
-    },
-    {
-      title: 'Top ${size} jobs with the longest execution time',
-      id: '8',
-      data: {
-        chartType: 'BAR',
-        isFailed: true,
-        groupBy: 'JOB_NAME'
-      }
-    },
-    {
-      title: 'Top ${size} periods during which mostly orders executed',
-      id: '9',
-      data: {
-        chartType: 'BAR',
-        isFailed: true,
-        groupBy: 'JOB_NAME'
-      }
-    },
-    {
-      title: 'The period during which jobs are mostly executed',
-      id: '10',
-      data: {
-        chartType: 'BAR',
-        groupBy: 'AGENT_NAME'
-      }
-    }];
+  templates = [];
 
   index: number;
 
@@ -265,6 +183,7 @@ export class ReportingComponent {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.filter = this.coreService.getReportingTab();
     this.index = this.filter.tabIndex || 0;
+    this.getTemplates();
   }
 
 
@@ -283,6 +202,15 @@ export class ReportingComponent {
 
       }
     }
+  }
+
+  private getTemplates(): void {
+    this.coreService.post('reporting/templates', {}).subscribe({
+      next: (res: any) => {
+        this.loading = true;
+        this.templates = res.templates;
+      }, error: () => this.loading = true
+    });
   }
 
 

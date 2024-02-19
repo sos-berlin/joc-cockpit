@@ -63,10 +63,10 @@
             <i *ngIf="filters.filter.sortBy == 'dateFrom' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('created')" ><a><span class="p-r-xs" translate>Size</span>
-            <i *ngIf="filters.filter.sortBy == 'created' && !filters.filter.reverse"
+          <th (click)="sort('size')" ><a><span class="p-r-xs" translate>Size</span>
+            <i *ngIf="filters.filter.sortBy == 'size' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'created' && filters.filter.reverse"
+            <i *ngIf="filters.filter.sortBy == 'size' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
           <th (click)="sort('created')" ><a><span class="p-r-xs" translate>monitor.notification.label.created</span>

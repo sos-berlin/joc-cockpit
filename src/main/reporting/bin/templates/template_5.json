@@ -4,6 +4,6 @@
   "type": "JOB",
   "data": {
     "chartType": "CARD",
-    "groupBy": "JOB_NAME"
+    "groupBy": "START_TIME"
   }
 }

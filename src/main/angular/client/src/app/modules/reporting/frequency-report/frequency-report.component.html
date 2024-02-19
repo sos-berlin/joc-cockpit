@@ -1,13 +1,13 @@
 <div class="p-a p-t-0">
   <div class="_600 text-md m-b-sm text-center pos-rel t-n-12"><span
-    class="p-b-xs b-b">{{report.title}} | <i class="text-muted">{{report.dateFrom}} - {{report.dateTo}}</i></span>
+    class="p-b-xs b-b">{{report.name}} | <i class="text-muted">{{report.dateFrom}} - {{report.dateTo}}</i></span>
   </div>
   <div class="row">
     <div class="col-md-12">
       <div class="box">
         <div class="box-header b-b">
           <h3>
-            <span translate>{{report.title}}</span>
+            <span translate>{{report.title || report.template}}</span>
           </h3>
         </div>
         <div class="box-tool r-sm">
@@ -48,12 +48,12 @@
                         </thead>
                         <tbody>
                         <tr *ngFor="let item of items.data;">
-                          <td width="40%">{{item.WORKFLOW_PATH}}</td>
+                          <td width="40%">{{item.WORKFLOW_NAME}}</td>
                           <td>{{item.AGENT_NAME}}</td>
                           <td width="80px">{{item.CRITICALITY}}</td>
                           <td width="150px">{{item.START_TIME | stringToDate}}</td>
                           <td width="150px">{{item.END_TIME | stringToDate}}</td>
-                          <td width="80px">{{item.DURATION | secondsToTime}}</td>
+                          <td width="80px">{{item.duration | secondsToTime}}</td>
                         </tr>
                         <tr class="text-center p-a-10" *ngIf="items.data?.length == 0">
                           <td colspan="6">
@@ -95,7 +95,7 @@
                   <td width="80px">{{item.CRITICALITY}}</td>
                   <td width="150px">{{item.START_TIME | stringToDate}}</td>
                   <td width="150px">{{item.END_TIME | stringToDate}}</td>
-                  <td width="80px">{{item.DURATION | secondsToTime}}</td>
+                  <td width="80px">{{item.duration | secondsToTime}}</td>
                 </tr>
                 </tbody>
               </table>

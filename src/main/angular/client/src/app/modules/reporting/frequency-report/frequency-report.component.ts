@@ -45,7 +45,8 @@ export class FrequencyReportComponent {
   loadData(): void {
     this.isLoading = false;
     this.isLoading = true;
-    if (this.report.title.match('low and high parallelism') || this.report.title.match('Total number')) {
+
+    if (this.report.template?.match('low and high parallelism') || this.report.template?.match('Total number')) {
       this.initLineChart();
     } else {
       this.initGraph();
@@ -60,7 +61,7 @@ export class FrequencyReportComponent {
       labels: [],
       datasets: [
         {
-          label: this.report.title.includes('workflows') ? 'Workflows' : this.report.title.includes('parallel') ? 'Agents' : 'Jobs',
+          label: this.report.template?.includes('workflows') ? 'Workflows' : this.report.template?.includes('parallel') ? 'Agents' : 'Jobs',
           data: []
         }
       ]
@@ -71,25 +72,27 @@ export class FrequencyReportComponent {
         count: this.report.data[i].count,
         data: this.report.data[i].data
       };
-      if (this.report.data[i].job_name && this.report.data[i].job_name.includes('__')) {
+      if (this.report.data[i].job && this.report.data[i].job_name.includes('__')) {
         const arr = this.report.data[i].job_name.split('__');
         obj.workflow = arr[0];
         obj.job = arr[1];
         data.labels.push(arr[1]);
-      } else if (this.report.data[i].workflow_name || this.report.data[i].WOKFLOW_NAME) {
-        data.labels.push(this.report.data[i].workflow_name || this.report.data[i].WOKFLOW_NAME);
-      } else if (this.report.data[i].job_name || this.report.data[i].JOB_NAME) {
-        data.labels.push(this.report.data[i].job_name || this.report.data[i].JOB_NAME);
+      } else if (this.report.data[i].workflow_name || this.report.data[i].WOKFLOW_NAME || this.report.data[i].workflow) {
+        data.labels.push(this.report.data[i].workflow_name || this.report.data[i].WOKFLOW_NAME || this.report.data[i].workflow);
+      } else if (this.report.data[i].job_name || this.report.data[i].JOB_NAME || this.report.data[i].jobe) {
+        data.labels.push(this.report.data[i].job_name || this.report.data[i].JOB_NAME || this.report.data[i].job);
       } else if (this.report.data[i].agentName || this.report.data[i].agent_name) {
         data.labels.push(this.report.data[i].agentName || this.report.data[i].agent_name);
       } else if (this.report.data[i].startTime || this.report.data[i].start_time) {
         data.labels.push(this.report.data[i].startTime || this.report.data[i].start_time);
+      } else if (this.report.data[i].startTime || this.report.data[i].order_id) {
+        data.labels.push(this.report.data[i].startTime || this.report.data[i].order_id);
       }
 
       this.dataset.push(obj);
       if (this.report.data[i].duration || this.report.data[i].totalExecutionTime) {
         let dur = this.report.data[i].duration || this.report.data[i].totalExecutionTime;
-        data.datasets[0].data.push(dur / 1000);
+        data.datasets[0].data.push(dur);
       } else if (this.report.data[i].count || this.report.data[i].count == 0) {
         data.datasets[0].data.push(this.report.data[i].count);
       } else if (this.report.data[i].maxParallelJobs || this.report.data[i].maxParallelJobs === 0) {
@@ -137,7 +140,7 @@ export class FrequencyReportComponent {
             y: {
               title: {
                 display: true,
-                text: this.report.title.includes('execution time') ? 'Execution Time in Seconds' : (this.report.title.includes('workflows') ? 'Workflow' : this.report.title.includes('parallel') ? 'Agents' : 'Job' + ' Counts')
+                text: this.report.template?.includes('execution time') ? 'Execution Time in Seconds' : ((this.report.template?.includes('workflows') ? 'Workflow' : this.report.template?.includes('parallel') ? 'Agents' : 'Job') + ' Counts')
               },
               beginAtZero: true
             }

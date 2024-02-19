@@ -32,10 +32,22 @@
         <tr>
           <th *ngIf="permission.currentController && permission.currentController.orders.modify" class="menu"><span
             translate>common.label.action</span></th>
+          <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
+            <i *ngIf="filters.filter.sortBy == 'name' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'name' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
           <th (click)="sort('title')"><a><span class="p-r-xs" translate>common.label.title</span>
             <i *ngIf="filters.filter.sortBy == 'title' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'title' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('template')"><a><span class="p-r-xs" translate>Template</span>
+            <i *ngIf="filters.filter.sortBy == 'template' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'template' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
           <th (click)="sort('frequency')"><a><span class="p-r-xs" translate>Frequency</span>
@@ -83,7 +95,9 @@
                 </nz-dropdown-menu>
               </div>
             </td>
+            <td (click)="onSelect(item)"><span [innerHtml]="item.name | highlight : filters.searchText"></span></td>
             <td (click)="onSelect(item)"><span [innerHtml]="item.title | highlight : filters.searchText"></span></td>
+            <td><span [innerHtml]="item.template | highlight : filters.searchText"></span></td>
             <td (click)="onSelect(item)"><span [innerHtml]="item.frequency | translate | highlight : filters.searchText"></span></td>
             <td (click)="onSelect(item)"><span [innerHtml]="item.dateFrom | highlight : filters.searchText"></span></td>
             <td (click)="onSelect(item)"><span [innerHtml]="item.dateTo | highlight : filters.searchText"></span></td>

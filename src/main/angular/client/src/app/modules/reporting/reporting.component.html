@@ -85,9 +85,9 @@
     </div>
   </div>
 </div>
-<div #content id="content" class="scroll-y max-ht">
+<div class="scroll-y max-ht">
 
-  <div class="padding p-b-0">
+  <div class="padding p-b-0" *ngIf="loading">
     <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="index">
       <nz-tab [nzTitle]="'Report Run History' | translate">
         <div *ngIf="index == 0">
@@ -96,9 +96,15 @@
       </nz-tab>
       <nz-tab [nzTitle]="'Manage Report Runs' | translate">
         <div *ngIf="index == 1">
-          <app-manage-report [permission]="permission" [preferences]="preferences" [filters]="filter.manageList"></app-manage-report>
+          <app-manage-report [permission]="permission" [preferences]="preferences" [filters]="filter.manageList" [templates]="templates"></app-manage-report>
         </div>
       </nz-tab>
     </nz-tabset>
   </div>
+  <div *ngIf="!loading" class="spinner">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
+  </div>
 </div>
+

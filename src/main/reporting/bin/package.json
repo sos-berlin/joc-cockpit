@@ -2,10 +2,10 @@
   "name": "reporting",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
+    "start": "node src/index.js",
     "postinstall": "cyclonedx-npm --output-file ./reporting-sbom.json"
   },
   "author": "SOS",

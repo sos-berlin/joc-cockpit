@@ -5,6 +5,6 @@
   "data": {
     "chartType": "BAR",
     "groupBy": "WORKFLOW_NAME",
-    "execution": "duration"
+    "execution": "DURATION"
   }
 }

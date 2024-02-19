@@ -16,6 +16,7 @@ export class ManageReportComponent {
   @Input() permission: any;
   @Input() preferences: any = {};
   @Input() filters: any = {};
+  @Input() templates: any = [];
 
   isLoaded = false;
   reports = [];
@@ -23,7 +24,7 @@ export class ManageReportComponent {
   selectedReport = {};
   isVisible = false;
 
-  searchableProperties = ['title', 'dateFrom', 'dateTo', 'frequency', 'created'];
+  searchableProperties = ['name', 'title', 'template', 'dateFrom', 'dateTo', 'frequency', 'created'];
 
   subscription1: Subscription;
 
@@ -40,8 +41,6 @@ export class ManageReportComponent {
   }
 
   ngOnInit(): void {
-    console.log(this.filters)
-    console.log(this.preferences)
     this.getData();
   }
 
@@ -54,7 +53,7 @@ export class ManageReportComponent {
   refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].objectType === 'MONITORINGNOTIFICATION') {
+        if (args.eventSnapshots[j].objectType === 'XYZ') {
           this.getData();
           break;
         }
@@ -64,20 +63,20 @@ export class ManageReportComponent {
 
 
   private getData(): void {
-    this.coreService.post('reporting/report/history', {}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+    this.coreService.post('reporting/report/history', {compact: false}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoaded = true;
         this.reports = this.orderPipe.transform(res.reports, this.filters.sortBy, this.filters.reverse);
         this.reports.forEach((report) => {
-          console.log(report.title, report.size);
-          if(report.title?.includes('${size}')){
-            report.title = report.title.replace('${size}', report.size || 10)
+          const template = this.templates.find(template => template.templateId == report.templateId);
+          if (template) report.template = template.title;
+          if(report.template?.includes('${size}')){
+            report.template = report.template.replace('${size}', report.size || 10)
           }
         })
         this.searchInResult();
       }, error: () => this.isLoaded = true
     });
-    this.searchInResult();
   }
 
   sort(propertyName): void {

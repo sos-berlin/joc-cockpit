@@ -66,7 +66,7 @@ export class RunningHistoryComponent {
         this.isLoaded = true;
         this.reportHistory = this.orderPipe.transform(res.runs, this.filters.filter.sortBy, this.filters.filter.reverse);
         this.reportHistory.forEach((report) => {
-          const template = this.templates.find(template => template.id == report.templateId);
+          const template = this.templates.find(template => template.templateId == report.templateId);
           if (template) report.template = template.title;
         })
         this.searchInResult();
