@@ -30,7 +30,7 @@
       >
         <thead>
         <tr>
-          <th *ngIf="permission.currentController && permission.currentController.orders.modify" class="menu"><span
+          <th class="menu"><span
             translate>common.label.action</span></th>
           <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
             <i *ngIf="filters.filter.sortBy == 'name' && !filters.filter.reverse"
@@ -44,31 +44,31 @@
             <i *ngIf="filters.filter.sortBy == 'title' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('template')"><a><span class="p-r-xs" translate>Template</span>
+          <th (click)="sort('template')"><a><span class="p-r-xs" translate>reporting.label.template</span>
             <i *ngIf="filters.filter.sortBy == 'template' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'template' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('frequency')"><a><span class="p-r-xs" translate>Frequency</span>
+          <th (click)="sort('frequency')"><a><span class="p-r-xs" translate>reporting.label.frequency</span>
             <i *ngIf="filters.filter.sortBy == 'frequency' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'frequency' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('dateFrom')"><a><span class="p-r-xs" translate>Date From</span>
+          <th (click)="sort('dateFrom')"><a><span class="p-r-xs" translate>reporting.label.dateFrom</span>
             <i *ngIf="filters.filter.sortBy == 'dateFrom' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'dateFrom' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('dateTo')"><a><span class="p-r-xs" translate>Date To</span>
+          <th (click)="sort('dateTo')"><a><span class="p-r-xs" translate>reporting.label.dateTo</span>
             <i *ngIf="filters.filter.sortBy == 'dateTo' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'dateTo' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('created')" ><a><span class="p-r-xs" translate>monitor.notification.label.created</span>
+          <th (click)="sort('created')" ><a><span class="p-r-xs" translate>reporting.label.created</span>
             <i *ngIf="filters.filter.sortBy == 'created' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'created' && filters.filter.reverse"
@@ -80,7 +80,7 @@
         <ng-template [ngForOf]="ajaxTable.data" let-item
                      ngFor>
           <tr class="cursor" >
-            <td (click)="onSelect(item)">
+            <td >
               <div class="btn-group dropdown">
                 <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
                         nz-dropdown nzTrigger="click" type="button">
@@ -88,8 +88,8 @@
                 </button>
                 <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                   <ul nz-menu>
-                    <li nz-menu-item>
-                      <a translate>Manage</a>
+                    <li nz-menu-item (click)="onSelect(item)">
+                      <a translate>reporting.button.showReport</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -119,6 +119,6 @@
 <nz-drawer (nzOnClose)="closePanel()" [nzWidth]="'100% !important'" [nzVisible]="isVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
     <div (click)="closePanel()" class="close-btn z-index-9999 m-l-xxs"></div>
-    <app-frequency-report *ngIf="isVisible" [report]="selectedReport"></app-frequency-report>
+    <app-frequency-report *ngIf="isVisible"  [templates]="reports" [report]="selectedReport"></app-frequency-report>
   </ng-container>
 </nz-drawer>

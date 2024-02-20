@@ -2702,6 +2702,41 @@
     "tab.nationalHoliday": "Nationale Feiertage",
     "tab.every": "Wiederkehrende Tage"
   },
+  "reporting": {
+    "label": {
+      "template": "Template",
+      "templates": "Templates",
+      "frequency": "Frequency",
+      "frequencies": "Frequencies",
+      "dateFrom": "Date From",
+      "dateTo": "Date To",
+      "size": "Hits",
+      "created": "Created",
+      "startMonth": "Start Month",
+      "endMonth": "End Month",
+      "chooseTemplate": "Choose Template",
+      "chooseFrequencies": "Choose Frequencies",
+      "syncDataOnDisk": "Sync Data on Disk",
+      "runReport": "Run Report"
+    },
+    "button" : {
+      "synchronizeDataOnDisk": "Synchronize Data On Disk",
+      "runReport": "Run Report",
+      "run": "Run",
+      "sync": "Sync",
+      "showReport": "Show Report"
+    },
+    "placeholder": {
+      "enterName": "Enter report name",
+      "enterTitle": "Enter report title",
+      "selectTemplate": "Select Template",
+      "selectFrequencies": "Select Frequencies"
+    },
+    "tab": {
+      "reportRunHistory": "Report Run History",
+      "manageReportRuns": "Manage Report Runs"
+    }
+  },
   "resource": {
     "label.boards": "Notizbretter",
     "label.locks": "Ressourcen-Sperren",

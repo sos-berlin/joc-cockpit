@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -7,6 +7,7 @@ import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
+import {RunModalComponent} from "../reporting.component";
 
 @Component({
   selector: 'app-running-history',
@@ -17,6 +18,10 @@ export class RunningHistoryComponent {
   @Input() preferences: any = {};
   @Input() filters: any = {};
   @Input() templates: any = [];
+
+  @Output() syncReport: EventEmitter<any> = new EventEmitter();
+  @Output() reportRun: EventEmitter<any> = new EventEmitter();
+
 
   isLoaded = false;
   reportHistory = [];
@@ -93,5 +98,25 @@ export class RunningHistoryComponent {
       this.filters.filter.currentPage = 1;
     }
   }
+
+  /** Actions */
+
+  edit(item): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: RunModalComponent,
+      nzClassName: 'lg',
+      nzFooter: null,
+      nzAutofocus: null,
+      nzData: {templates: this.templates, preferences: this.preferences, template: item},
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
+  delete(item): void{
+
+  }
+
 
 }

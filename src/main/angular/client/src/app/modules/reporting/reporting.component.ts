@@ -15,7 +15,8 @@ import {DataService} from "../../services/data.service";
 })
 export class RunModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
-  submitted: any
+  submitted = false;
+  isUnique = true;
   object: any = {
     name: '',
     size: 10,
@@ -44,6 +45,18 @@ export class RunModalComponent {
     this.dateFormat = this.coreService.getDateFormat(preferences.dateFormat);
   }
 
+  checkReportName(): void{
+    this.isUnique = true;
+    if(this.modalData.reports) {
+      for (let i = 0; i < this.modalData.reports.length; i++) {
+        if (this.object.name === this.modalData.reports[i].name) {
+          this.isUnique = false;
+          break;
+        }
+      }
+    }
+  }
+
   onSubmit(): void {
     this.submitted = true;
     if (this.isSync) {
@@ -53,8 +66,7 @@ export class RunModalComponent {
         next: () => {
           this.coreService.startDataDownload();
           this.activeModal.close('Done');
-        }, error: (err) => {
-          console.log(err)
+        }, error: () => {
           this.submitted = false;
         }
       });
@@ -72,12 +84,10 @@ export class RunModalComponent {
     }
     this.coreService.post('reporting/report/run', obj).subscribe({
       next: (res) => {
-        console.log(res)
         this.coreService.startReport();
         this.activeModal.close('Done');
         this.submitted = false;
       }, error: (err) => {
-        console.log(err)
         this.submitted = false;
       }
     })
@@ -214,18 +224,6 @@ export class ReportingComponent {
   }
 
 
-  shareReport() {
-    const element = this.elementRef.nativeElement
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: ShareModalComponent,
-      nzClassName: 'lg',
-      nzData: {content: element},
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-  }
 
   downloadReport() {
     this.modal.create({

@@ -6,78 +6,14 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div *ngIf="index == 2" class="inline valign" style="top: -8px !important;">
-            <label nz-checkbox [(ngModel)]="filter.current" (ngModelChange)="loadData()" name="current">
-              {{'common.label.currentController' | translate}}
-            </label>
-          </div>
-          <div *ngIf="index == 2" class="inline">
-            <div class="timeline">
-              <div class="inline btn-group pull-right">
-                <div (click)="setView('Week')"
-                     [class.primary]="filter.view === 'Week'"
-                     class="btn btn-default btn-sm" translate>
-                  monitor.button.week
-                </div>
-                <div (click)="setView('Month')"
-                     [class.primary]="filter.view === 'Month'"
-                     class="btn btn-default btn-sm" translate>
-                  monitor.button.month
-                </div>
-              </div>
-              <nz-range-picker *ngIf="filter.view === 'Custom'" [(ngModel)]="filter.dateRange"
-                               [nzAllowClear]="false" (ngModelChange)="onChangeDate()"
-                               class="pull-right m-l-12 m-r-12 custom-timeline"></nz-range-picker>
-              <div *ngIf="filter.view !== 'Custom'" class="timeline-header pull-right inline m-l-12 m-r-12">
-                <div class="btn-group">
-                  <div (click)="prev()" class="btn btn-default btn-sm">
-                    <i class="fa fa-angle-left text-md"></i>
-                  </div>
-                  <div class="btn btn-default btn-sm no-cursor">
-                    <nz-week-picker *ngIf="filter.view === 'Week'"
-                                    [nzFormat]="dateFormat"
-                                    [(ngModel)]="filter.endDate" [nzAllowClear]="false"
-                                    [nzDisabledDate]="disabledDate"
-                                    (ngModelChange)="onChange($event )"></nz-week-picker>
-                    <nz-month-picker *ngIf="filter.view === 'Month'"
-                                     [(ngModel)]="filter.endDate" [nzAllowClear]="false"
-                                     [nzDisabledDate]="disabledDate"
-                                     (ngModelChange)="onChange($event)"></nz-month-picker>
-                    {{filter.startDate | date : dateFormat }} - {{filter.endDate | date : dateFormat}}
-                  </div>
-                  <div (click)="next()" class="btn btn-default btn-sm">
-                    <i class="fa fa-angle-right text-md"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div  *ngIf="index == 2" class="inline valign" style="top: -9px !important;">
-            <button nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportList" class="btn btn-grey btn-sm m-l-12">
-              <span nz-icon nzType="export" nzTheme="outline"></span>
-              Export Report
-            </button>
-            <nz-dropdown-menu #exportList="nzDropdownMenu">
-              <ul nz-menu>
-                <li (click)="createReport()" nz-menu-item>
-                  <a translate>Export as a Pdf</a>
-                </li>
-                <li (click)="shareReport()" nz-menu-item>
-                  <a translate>Share by Mail</a>
-                </li>
-              </ul>
-            </nz-dropdown-menu>
-
-
-          </div>
-          <div  *ngIf="index == 0" class="inline valign" >
-            <button class="btn btn-grey btn-sm m-l-12" (click)="downloadReport()">
-              <span nz-icon nzType="file-sync" nzTheme="outline"></span>
-              Synchronize Data On Disk
-            </button>
-            <button class="btn btn-grey btn-sm m-l-12" (click)="runReport()">
+          <div *ngIf="index == 0" class="inline valign" >
+<!--            <button class="btn btn-grey btn-sm m-l-12" (click)="downloadReport()" translate>-->
+<!--              <span nz-icon nzType="file-sync" nzTheme="outline"></span>-->
+<!--              reporting.button.synchronizeDataOnDisk-->
+<!--            </button>-->
+            <button class="btn btn-grey btn-sm m-l-12" (click)="runReport()" translate>
               <span nz-icon nzType="play-circle" nzTheme="outline"></span>
-              Run Report
+              reporting.button.runReport
             </button>
           </div>
         </div>
@@ -89,12 +25,12 @@
 
   <div class="padding p-b-0" *ngIf="loading">
     <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="index">
-      <nz-tab [nzTitle]="'Report Run History' | translate">
+      <nz-tab [nzTitle]="'reporting.tab.manageReportRuns' | translate">
         <div *ngIf="index == 0">
-          <app-running-history [permission]="permission" [preferences]="preferences" [filters]="filter.runningList" [templates]="templates"></app-running-history>
+          <app-running-history (syncReport)="downloadReport()" (reportRun)="runReport()" [permission]="permission" [preferences]="preferences" [filters]="filter.runningList" [templates]="templates"></app-running-history>
         </div>
       </nz-tab>
-      <nz-tab [nzTitle]="'Manage Report Runs' | translate">
+      <nz-tab [nzTitle]="'reporting.tab.reportRunHistory' | translate">
         <div *ngIf="index == 1">
           <app-manage-report [permission]="permission" [preferences]="preferences" [filters]="filter.manageList" [templates]="templates"></app-manage-report>
         </div>

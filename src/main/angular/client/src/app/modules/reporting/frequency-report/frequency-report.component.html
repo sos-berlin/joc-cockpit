@@ -21,13 +21,36 @@
             <span *ngIf="filter.showTable" nz-icon nzType="bar-chart" nzTheme="outline"></span>
             <span *ngIf="!filter.showTable" nz-icon nzType="table" nzTheme="outline"></span>
           </a>
+          <button [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+                  class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
+                  type="button" (nzVisibleChange)="compareData($event)">Compare With
+            <span class="text-primary"></span>
+            <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
+          </button>
+
+          <nz-dropdown-menu #customization="nzDropdownMenu">
+            <ul nz-menu>
+              <ng-container *ngFor="let item of templates">
+                <li nz-menu-item *ngIf="item.template === report.template && item.frequency === report.frequency && item.dateFrom != report.dateFrom">
+                  <label nz-checkbox [(ngModel)]="item.checked" (ngModelChange)="onTemplateChange(item)">
+                    {{ item.name + '-' + item.dateFrom }}
+                  </label>
+                </li>
+              </ng-container>
+            </ul>
+          </nz-dropdown-menu>
+
         </div>
         <div class="box-body">
-          <perfect-scrollbar class="table-responsive2"
-                             style="max-height: calc(100vh - 224px); min-height: 80px; overflow: auto;">
-            <div [hidden]="filter.showTable || clickData">
+          <perfect-scrollbar class="table-responsive2" style="max-height: calc(100vh - 224px); min-height: 80px; overflow: auto;">
+            <div [hidden]="filter.showTable || clickData || filter.showComaprison">
               <canvas id="bar-chart"></canvas>
             </div>
+            <div class="col-md-6">
+              <div id="charts-container" [hidden]="filter.showTable" *ngIf="filter.showComaprison">
+              </div>
+            </div>
+
             <div class="job-execution" *ngIf="filter.showTable">
               <nz-collapse>
                 <nz-collapse-panel *ngFor="let items of dataset"

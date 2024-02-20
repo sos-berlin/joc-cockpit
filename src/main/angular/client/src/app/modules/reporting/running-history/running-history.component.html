@@ -31,8 +31,8 @@
         <thead>
         <tr>
 
-<!--          <th class="menu"><span-->
-<!--            translate>common.label.action</span></th>-->
+          <th class="menu"><span
+            translate>common.label.action</span></th>
           <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
             <i *ngIf="filters.filter.sortBy == 'name' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
@@ -45,31 +45,31 @@
             <i *ngIf="filters.filter.sortBy == 'title' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('template')"><a><span class="p-r-xs" translate>Template</span>
+          <th (click)="sort('template')"><a><span class="p-r-xs" translate>reporting.label.template</span>
             <i *ngIf="filters.filter.sortBy == 'template' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'template' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('frequencies')"><a><span class="p-r-xs" translate>Frequencies</span>
+          <th (click)="sort('frequencies')"><a><span class="p-r-xs" translate>reporting.label.frequencies</span>
             <i *ngIf="filters.filter.sortBy == 'frequencies' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'frequencies' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('dateFrom')"><a><span class="p-r-xs" translate>Date From</span>
+          <th (click)="sort('dateFrom')"><a><span class="p-r-xs" translate>reporting.label.dateFrom</span>
             <i *ngIf="filters.filter.sortBy == 'dateFrom' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'dateFrom' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('size')" ><a><span class="p-r-xs" translate>Size</span>
+          <th (click)="sort('size')" ><a><span class="p-r-xs" translate>reporting.label.size</span>
             <i *ngIf="filters.filter.sortBy == 'size' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'size' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('created')" ><a><span class="p-r-xs" translate>monitor.notification.label.created</span>
+          <th (click)="sort('created')" ><a><span class="p-r-xs" translate>reporting.label.created</span>
             <i *ngIf="filters.filter.sortBy == 'created' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'created' && filters.filter.reverse"
@@ -81,6 +81,24 @@
         <ng-template [ngForOf]="ajaxTable.data" let-item
                      ngFor>
           <tr>
+            <td>
+              <div class="btn-group dropdown">
+                <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                        nz-dropdown nzTrigger="click" type="button">
+                  <i class="fa fa-ellipsis-h"></i>
+                </button>
+                <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="edit(item)">
+                      <a translate>common.button.edit</a>
+                    </li>
+                    <li nz-menu-item (click)="delete(item)">
+                      <a translate>common.button.delete</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </td>
             <td><span [innerHtml]="item.name | highlight : filters.searchText"></span></td>
             <td><span [innerHtml]="item.title | highlight : filters.searchText"></span></td>
             <td><span [innerHtml]="item.template | highlight : filters.searchText"></span></td>
