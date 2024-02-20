@@ -99,7 +99,7 @@
                             <arguments>
                                 <argument>install</argument>
                             </arguments>
-                            <workingDirectory>${basedir}/target/reporting/bin</workingDirectory>
+                            <workingDirectory>${basedir}/target/reporting/app</workingDirectory>
                             <target>
                                 <echo message="Npm install" />
                             </target>
@@ -185,7 +185,7 @@
                                 <include>reporting/**</include>
                             </includes>
                             <excludes>
-                                <exclude>reporting/bin/.gitignore</exclude>
+                                <exclude>reporting/app/.gitignore</exclude>
 							</excludes>
                         </resource>                        
                     </webResources>
