@@ -1,5 +1,5 @@
 {
-  "title": "Total number of order executions per frequency",
+  "title": "Total number of order executions per ${frequency}",
   "id": "6",
   "type": "ORDER",
   "data": {

@@ -52,6 +52,7 @@ import {ScriptComponent} from './script/script.component';
 import {FavoriteListComponent} from "./favorite-list/favorite-list.component";
 import {JobTemplateComponent, UpdateJobTemplatesComponent} from './job-template/job-template.component';
 import {TreeModalComponent} from "./runtime/tree-modal/tree.component";
+import { ReportComponent } from './report/report.component';
 
 const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, CalendarComponent, ScheduleComponent, ScriptComponent, LockComponent,
   WorkflowComponent, BoardComponent, JobResourceComponent, JobTemplateComponent, FileOrderComponent, TableComponent, FrequencyModalComponent,
@@ -59,7 +60,7 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
   NotificationComponent, RepositoryComponent, GitComponent, ScriptEditorComponent, UpdateJobTemplatesComponent, CreateTagModalComponent,
   UpdateObjectComponent, FindAndReplaceComponent, ShowObjectsComponent, CycleInstructionComponent, UpdateJobComponent, PeriodComponent,
   ShowReferenceComponent, AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent, TestMailComponent,
-  RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, NewDraftComponent, NoticeBoardEditorComponent];
+  RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, NewDraftComponent, NoticeBoardEditorComponent, ReportComponent];
 
 @NgModule({
   imports: [

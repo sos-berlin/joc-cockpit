@@ -1,5 +1,5 @@
 {
-  "title": "Top ${size} jobs with the longest execution time",
+  "title": "Top ${hits} jobs with the longest execution time",
   "id": "8",
   "type": "JOB",
   "data": {

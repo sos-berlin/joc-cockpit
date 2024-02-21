@@ -1,5 +1,5 @@
 {
-  "title": "Top ${size} agents with most parallel job execution",
+  "title": "Top ${hits} agents with most parallel job execution",
   "id": "3",
   "type": "JOB",
   "data": {

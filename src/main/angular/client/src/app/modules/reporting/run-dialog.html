@@ -1,7 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="isSync" translate>reporting.label.syncDataOnDisk</span>
-    <span *ngIf="!isSync" translate>reporting.label.runReport</span>
+    <span translate>reporting.label.runReport</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -10,91 +9,90 @@
 
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
-    <ng-container *ngIf="!isSync; else elseBlock">
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>common.label.name
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div [ngClass]="{'has-error' : !isUnique || ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
-          <input #name="ngModel" [(ngModel)]="object.name" [appAutofocus]="true" autocomplete="off" class="form-control"
-                 name="name" (blur)="checkReportName()" placeholder="{{'reporting.placeholder.enterName' | translate}}" required type="text">
-          <div *ngIf="name.invalid && (name.dirty || name.touched)"
-               class="text-danger help-block">
-            <div *ngIf="(name.errors && name.errors.required)">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
-          <div *ngIf="!isUnique" class="help-block text-danger">
-            <div translate>common.message.uniqueError</div>
+    <div class="form-group row">
+      <label class="col-md-3 form-control-label" translate>common.label.name
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div [ngClass]="{'has-error' : !isUnique || ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
+        <input #name="ngModel" [(ngModel)]="object.name" [appAutofocus]="true" autocomplete="off" class="form-control"
+               name="name" (blur)="checkReportName()" placeholder="{{'reporting.placeholder.enterName' | translate}}"
+               required type="text">
+        <div *ngIf="name.invalid && (name.dirty || name.touched)"
+             class="text-danger help-block">
+          <div *ngIf="(name.errors && name.errors.required)">
+            <div translate>common.message.requiredError</div>
           </div>
         </div>
+        <div *ngIf="!isUnique" class="help-block text-danger">
+          <div translate>common.message.uniqueError</div>
+        </div>
       </div>
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>common.label.title
+    </div>
+    <div class="form-group row">
+      <label class="col-md-3 form-control-label" translate>common.label.title
 
-        </label>
-        <div class="col-md-6">
-          <input [(ngModel)]="object.title" class="form-control"
-                 name="title" placeholder="{{'reporting.placeholder.enterTitle' | translate}}" type="text">
-        </div>
+      </label>
+      <div class="col-md-6">
+        <input [(ngModel)]="object.title" class="form-control"
+               name="title" placeholder="{{'reporting.placeholder.enterTitle' | translate}}" type="text">
       </div>
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>
-          reporting.label.chooseTemplate
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-md-6">
-          <app-select-input [isSearchable]="true" [placeholder]="'reporting.placeholder.selectTemplate' | translate" [name]="'templateId'"
-                            [object]="object" [attributeName]="'templateId'" [listArray]="templates" [optionLabel]="'title'" [optionValue]="'templateId'"></app-select-input>
-        </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-3 form-control-label" translate>
+        reporting.label.chooseTemplate
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-md-6">
+        <app-select-input [isSearchable]="true" [placeholder]="'reporting.placeholder.selectTemplate' | translate"
+                          [name]="'templateId'"
+                          [object]="object" [attributeName]="'templateId'" [listArray]="templates"
+                          [optionLabel]="'title'" [optionValue]="'templateId'"></app-select-input>
       </div>
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>
-          reporting.label.startMonth
-        </label>
-        <div class="col-md-6">
-          <nz-date-picker nzMode="month" [(ngModel)]="object.dateFrom" required [nzPlaceHolder]="'YYYY-MM'" name="dateFrom"></nz-date-picker>
-        </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-3 form-control-label" translate>
+        reporting.label.monthFrom
+      </label>
+      <div class="col-md-6">
+        <nz-date-picker nzMode="month" [(ngModel)]="object.monthFrom" [nzPlaceHolder]="'YYYY-MM'"
+                        name="monthFrom"></nz-date-picker>
       </div>
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>
-          reporting.label.chooseFrequencies
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-md-6">
-          <app-select-input [isSearchable]="true" [isMultiple]="true" [placeholder]="'reporting.placeholder.selectFrequencies' | translate" [name]="'frequencies'"
-                            [object]="object" [attributeName]="'frequencies'" [listArray]="frequencies" [optionLabel]="'name'" [optionValue]="'name'"></app-select-input>
-        </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-3 form-control-label" translate>
+        reporting.label.monthTo
+      </label>
+      <div class="col-md-6">
+        <nz-date-picker nzMode="month" [(ngModel)]="object.monthTo" [nzPlaceHolder]="'YYYY-MM'"
+                        name="monthTo"></nz-date-picker>
       </div>
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>
-          reporting.label.size
-        </label>
-        <div class="col-md-6">
-          <nz-input-number name="size" [(ngModel)]="object.size" [nzMin]="5" [nzStep]="5"></nz-input-number>
-        </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-3 form-control-label" translate>
+        reporting.label.chooseFrequencies
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-md-6">
+        <app-select-input [isSearchable]="true" [isMultiple]="true"
+                          [placeholder]="'reporting.placeholder.selectFrequencies' | translate" [name]="'frequencies'"
+                          [object]="object" [attributeName]="'frequencies'" [listArray]="frequencies"
+                          [optionLabel]="'name'" [optionValue]="'name'"></app-select-input>
       </div>
-
-    </ng-container>
-    <ng-template #elseBlock>
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>
-          reporting.label.dateFrom
-        </label>
-        <div class="col-md-6">
-          <app-date-input [object]="object" [ignoreThirdParam]="true" [attributeDate]="'dateFrom'" [isRequired]="false"
-                          [isTime]="false" [isAllowClear]="true" [name]="'dateFrom'" [dateFormat]="dateFormat"
-                          [placeholder]="( dateFormat | uppercase )"
-          ></app-date-input>
-        </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-3 form-control-label" translate>
+        reporting.label.hits
+      </label>
+      <div class="col-md-6">
+        <nz-input-number name="hits" [(ngModel)]="object.hits" [nzMin]="1" [nzMax]="100" [nzStep]="5"></nz-input-number>
       </div>
-    </ng-template>
+    </div>
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || !isUnique || submitted"
             class="btn btn-primary btn-sm" type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{ (isSync ? 'reporting.button.sync' : 'reporting.button.run') | translate }}
+      {{ 'reporting.button.run' | translate }}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
       {{ 'common.button.cancel' | translate }}

@@ -20,7 +20,7 @@ async function readJSONData(directory, file, options, templateData) {
         if (data.match('}{')) {
             data = data.replaceAll('}{', ',');
         }
-        await writeReportData(options, data, directory, file, templateData, options.size);
+        await writeReportData(options, data, directory, file, templateData, options.hits);
     } catch (error) {
         console.error('Error while reading template data', error);
         logger.error('Error while reading template data', error);
@@ -50,13 +50,13 @@ async function readDataDirectory(directory, options, templateData) {
 }
 
 /**
- * Dynamically filters and groups data based on provided templates and size.
+ * Dynamically filters and groups data based on provided templates and hits.
  * @param {object} templates - The templates object containing groupBy and status properties.
  * @param {Array} data - The data array to be filtered and grouped.
- * @param {number} size - The size limit for the grouped data.
+ * @param {number} hits - The hits limit for the grouped data.
  * @returns {Array} - The filtered and grouped data.
  */
-function dynamicData(templates, data, size) {
+function dynamicData(templates, data, hits) {
     // Check if templates contain groupBy property
     if (templates?.data?.groupBy) {
         // Filter data based on the status
@@ -93,8 +93,8 @@ function dynamicData(templates, data, size) {
             // Sort workflows by total execution time in descending order
             workflowExecutionTimes.sort((a, b) => b.totalExecutionTime - a.totalExecutionTime);
 
-            // Get top ${size} workflows
-            return workflowExecutionTimes.slice(0, size).map(({ workflow, totalExecutionTime }) => ({
+            // Get top ${hits} workflows
+            return workflowExecutionTimes.slice(0, hits).map(({ workflow, totalExecutionTime }) => ({
                 workflow,
                 totalExecutionTime,
                 // Add additional fields
@@ -135,7 +135,7 @@ function dynamicData(templates, data, size) {
                 return { agentName: agent, count: maxParallelJobs, data: maxParallelJobData };
             });
 
-            return _.orderBy(results, ['count'], ['desc']).slice(0, size);
+            return _.orderBy(results, ['count'], ['desc']).slice(0, hits);
         } else if (templates.data.groupBy === 'START_TIME' && templates.data.execution === "PARALLELISM") {
             const groupedData = Object.values(data.reduce((acc, curr) => {
                 const startTime = curr.START_TIME.split(' ')[0];
@@ -175,13 +175,13 @@ function dynamicData(templates, data, size) {
             const sortedPeriods = periods.sort((a, b) => b.length - a.length);
             return [
                 {
-                    'topLowParallelismPeriods': sortedPeriods.slice(0, size).map(period => ({
+                    'topLowParallelismPeriods': sortedPeriods.slice(0, hits).map(period => ({
                         period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
                         data: period.map(({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration}) => ({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }))
                     }))
                 },
                 {
-                    'topHighParallelismPeriods': sortedPeriods.slice(-size).reverse().map(period => ({
+                    'topHighParallelismPeriods': sortedPeriods.slice(-hits).reverse().map(period => ({
                         period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
                         data: period.map(({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }) => ({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }))
                     }))
@@ -194,7 +194,7 @@ function dynamicData(templates, data, size) {
             });
 
             // Extract the required fields and return the modified data array
-            return data.slice(0, size).map(({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }) => ({
+            return data.slice(0, hits).map(({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }) => ({
                 WORKFLOW_NAME,
                 JOB_NAME,
                 AGENT_NAME,
@@ -219,8 +219,8 @@ function dynamicData(templates, data, size) {
                 return groups;
             }, {}))
                 .sort((a, b) => b[1].count - a[1].count) // Sort by count in descending order
-                // Slice to get only the specified size
-                .slice(0, size)
+                // Slice to get only the specified hits
+                .slice(0, hits)
 
 
                 // Map to transform the data format
@@ -261,9 +261,9 @@ function dynamicData(templates, data, size) {
  * @param {string} directory - directory.
  * @param {string} fileName - Filename.
  * @param {object} templateData - Template Data.
- * @param {number} size - Default 10.
+ * @param {number} hits - Default 10.
  */
-async function writeReportData(options, data, directory, fileName, templateData, size = 10) {
+async function writeReportData(options, data, directory, fileName, templateData, hits = 10) {
     const runId = directory.match(/\d+/)[0];
     const jsonObject = {
         title: templateData.title,
@@ -272,7 +272,7 @@ async function writeReportData(options, data, directory, fileName, templateData,
     };
     let groupedData;
 
-    groupedData = dynamicData(templateData, JSON.parse(data), size);
+    groupedData = dynamicData(templateData, JSON.parse(data), hits);
 
     if (groupedData) {
         jsonObject.data = groupedData;

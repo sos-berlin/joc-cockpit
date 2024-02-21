@@ -70,8 +70,8 @@ export class ManageReportComponent {
         this.reports.forEach((report) => {
           const template = this.templates.find(template => template.templateId == report.templateId);
           if (template) report.template = template.title;
-          if(report.template?.includes('${size}')){
-            report.template = report.template.replace('${size}', report.size || 10)
+          if(report.template?.includes('${hits}')){
+            report.template = report.template.replace('${hits}', report.hits || 10)
           }
         })
         this.searchInResult();

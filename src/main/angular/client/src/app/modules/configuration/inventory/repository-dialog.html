@@ -97,6 +97,7 @@
                 <i *ngIf="node.origin.object == 'SCHEDULE'" class="icon-color" nz-icon nzTheme="outline"
                    nzType="schedule"></i>
                 <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
+                <i *ngIf="node.origin.object == 'REPORT'" class="fa fa-file-image-o w-13"></i>
                 <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" class="icon-color" nz-icon
                    nzTheme="outline" nzType="calendar"></i>
                 <span *ngIf="node.origin.type" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released || node.origin.deployId || node.origin.releaseId), 'fa-circle text-dark': node.origin.lastModified}"

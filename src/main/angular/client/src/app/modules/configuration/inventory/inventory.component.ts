@@ -1286,12 +1286,13 @@ export class ExportComponent {
       }
       this.path = this.origin.path;
       if (this.origin.dailyPlan || (this.origin.object &&
-        (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.JOBTEMPLATE || this.origin.object === InventoryObject.INCLUDESCRIPT || this.origin.object.match('CALENDAR')))) {
+        (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.JOBTEMPLATE || this.origin.object === InventoryObject.INCLUDESCRIPT ||
+          this.origin.object === InventoryObject.REPORT || this.origin.object.match('CALENDAR')))) {
         this.exportType = this.origin.object || 'DAILYPLAN';
         this.filter.controller = false;
         this.filter.deploy = false;
         if (this.origin.dailyPlan) {
-          this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
+          this.objectTypes.push(InventoryObject.REPORT, InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
         } else {
           this.objectTypes.push(this.origin.object.match('CALENDAR') ? (InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR) : this.origin.object);
         }
@@ -1312,7 +1313,7 @@ export class ExportComponent {
     if (this.objectTypes.length === 0) {
       this.objectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
         InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
-      this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
+      this.objectTypes.push(InventoryObject.REPORT, InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
     }
     this.exportObj.objectTypes = [...this.objectTypes];
     this.buildTree(this.path);
@@ -1360,7 +1361,7 @@ export class ExportComponent {
     if (this.exportObj.exportType !== 'folders') {
       deployObjectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
         InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
-      releaseObjectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
+      releaseObjectTypes.push(InventoryObject.REPORT, InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
     }
 
     const APIs = [];
@@ -1972,7 +1973,8 @@ export class RepositoryComponent {
     if (this.origin) {
       this.path = this.origin.path;
       if (this.origin.object) {
-        if (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.JOBTEMPLATE || this.origin.object === InventoryObject.INCLUDESCRIPT || this.origin.object.match('CALENDAR')) {
+        if (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.JOBTEMPLATE || this.origin.object === InventoryObject.INCLUDESCRIPT ||
+          this.origin.object === InventoryObject.REPORT || this.origin.object.match('CALENDAR')) {
           this.type = this.origin.object;
           this.filter.envIndependent = false;
           this.filter.deploy = false;
@@ -2035,6 +2037,10 @@ export class RepositoryComponent {
         if ((configuration.git?.git_hold_script_includes && configuration.git?.git_hold_script_includes.value == category)
           || (!configuration.git?.git_hold_script_includes && res.defaultGlobals.git?.git_hold_script_includes && res.defaultGlobals.git?.git_hold_script_includes.default == category)) {
           this.listOfReleaseables.push(InventoryObject.INCLUDESCRIPT);
+        }
+        if ((configuration.git?.git_hold_reports && configuration.git?.git_hold_reports.value == category)
+          || (!configuration.git?.git_hold_reports && res.defaultGlobals.git?.git_hold_reports && res.defaultGlobals.git?.git_hold_reports.default == category)) {
+          this.listOfReleaseables.push(InventoryObject.REPORT);
         }
         this.init();
       }, error: () => {
@@ -3527,7 +3533,8 @@ export class InventoryComponent {
                 data.children.splice(0, index, children[0]);
                 data.children.splice(1, index, children[1]);
 
-                const parentNode = (self.selectedObj.type === InventoryObject.SCHEDULE || self.selectedObj.type === InventoryObject.JOBTEMPLATE || self.selectedObj.type === InventoryObject.INCLUDESCRIPT || (self.selectedObj.type && self.selectedObj.type.match(/CALENDAR/))) ? children[1] : children[0];
+                const parentNode = (self.selectedObj.type === InventoryObject.SCHEDULE || self.selectedObj.type === InventoryObject.JOBTEMPLATE || self.selectedObj.type === InventoryObject.INCLUDESCRIPT ||
+                  self.selectedObj.type === InventoryObject.REPORT || (self.selectedObj.type && self.selectedObj.type.match(/CALENDAR/))) ? children[1] : children[0];
                 if (self.selectedObj.path === parentNode.path) {
                   parentNode.expanded = true;
                   for (let j = 0; j < parentNode.children.length; j++) {
@@ -3920,6 +3927,14 @@ export class InventoryComponent {
           path: data.path,
           key: (KEY + 'JobTemplates$')
         },
+        {
+          name: 'Reports',
+          title: 'Reports',
+          object: InventoryObject.REPORT,
+          children: [],
+          path: data.path,
+          key: (KEY + 'Reports$')
+        }
       ];
     }
     const obj: any = {
@@ -3935,7 +3950,7 @@ export class InventoryComponent {
           || res.noticeBoards.length || res.locks.length)) {
           controllerObj.isArrow = true;
         }
-        if (res.schedules && (res.schedules.length || res.includeScripts.length || res.calendars.length || res.jobTemplates.length)) {
+        if (res.schedules && (res.schedules.length || res.includeScripts?.length || res.calendars?.length || res.jobTemplates?.length  || res.reports?.length)) {
           dailyPlanObj.isArrow = true;
         }
         for (let i = 0; i < controllerObj.controllerArr.length; i++) {
@@ -3973,6 +3988,8 @@ export class InventoryComponent {
             resObject = res.schedules;
           } else if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.INCLUDESCRIPT) {
             resObject = res.includeScripts;
+          } else if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.REPORT) {
+            resObject = res.reports;
           } else if (dailyPlanObj.dailyPlanArr[i].object === 'CALENDAR') {
             resObject = res.calendars;
           } else if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.JOBTEMPLATE) {
@@ -4122,6 +4139,8 @@ export class InventoryComponent {
         return "LOCK";
       } else if (qualifier === 'i') {
         return "INCLUDESCRIPT";
+      } else if (qualifier === 'rp') {
+        return "REPORT";
       } else if (qualifier === 's') {
         return "SCHEDULE";
       } else if (qualifier === 'c') {
@@ -4143,6 +4162,7 @@ export class InventoryComponent {
       'FILEORDERSOURCE',
       'JOBTEMPLATE',
       'INCLUDESCRIPT',
+      'REPORT',
       'WORKINGDAYSCALENDAR'
     ];
     return Object.keys(object).sort((a, b) => order.indexOf(a) - order.indexOf(b));
@@ -4376,7 +4396,7 @@ export class InventoryComponent {
       const data = node.origin.children;
       this.updateObjects(node.origin, false, (children: any) => {
         if (children.length > 0) {
-          if ((type.match('CALENDAR') || type === InventoryObject.SCHEDULE || type === InventoryObject.JOBTEMPLATE || type === InventoryObject.INCLUDESCRIPT)) {
+          if ((type.match('CALENDAR') || type === InventoryObject.SCHEDULE || type === InventoryObject.JOBTEMPLATE || type === InventoryObject.INCLUDESCRIPT || type === InventoryObject.REPORT)) {
             children[1].expanded = true;
           } else {
             children[0].expanded = true;
@@ -5217,11 +5237,11 @@ export class InventoryComponent {
       path = object.path;
     }
 
-    if ((object.object === InventoryObject.INCLUDESCRIPT || object.object === InventoryObject.FILEORDERSOURCE ||
+    if ((object.object === InventoryObject.INCLUDESCRIPT || object.object === InventoryObject.REPORT || object.object === InventoryObject.FILEORDERSOURCE ||
       object.object === InventoryObject.LOCK || object.object === InventoryObject.JOBRESOURCE || object.object === InventoryObject.JOBTEMPLATE ||
-      object.object === InventoryObject.NOTICEBOARD) || (object.type === InventoryObject.INCLUDESCRIPT || object.type === InventoryObject.FILEORDERSOURCE ||
-      object.type === InventoryObject.LOCK || object.type === InventoryObject.JOBRESOURCE || object.type === InventoryObject.JOBTEMPLATE ||
-      object.type === InventoryObject.NOTICEBOARD)) {
+      object.object === InventoryObject.NOTICEBOARD) || (object.type === InventoryObject.INCLUDESCRIPT || object.type === InventoryObject.REPORT ||
+      object.type === InventoryObject.FILEORDERSOURCE || object.type === InventoryObject.LOCK || object.type === InventoryObject.JOBRESOURCE ||
+      object.type === InventoryObject.JOBTEMPLATE || object.type === InventoryObject.NOTICEBOARD)) {
       const obj = this.getObjectArr(object, false);
       if (this.preferences.auditLog) {
         let comments = {
@@ -5385,7 +5405,7 @@ export class InventoryComponent {
       if (object.objectType) {
         let isDraftOnly = true;
         let isDeployObj = true;
-        if (object.type.match(/CALENDAR/) || object.type === InventoryObject.SCHEDULE || object.type === InventoryObject.JOBTEMPLATE || object.type === InventoryObject.INCLUDESCRIPT) {
+        if (object.type.match(/CALENDAR/) || object.type === InventoryObject.SCHEDULE || object.type === InventoryObject.JOBTEMPLATE || object.type === InventoryObject.INCLUDESCRIPT || object.type === InventoryObject.REPORT) {
           isDeployObj = false;
           if (object.hasReleases) {
             isDraftOnly = false;
@@ -5666,7 +5686,7 @@ export class InventoryComponent {
   private backToListView(): void {
     const parent = this.treeCtrl.getTreeNodeByKey(this.selectedObj.path);
     if (parent && parent.origin.children && this.selectedObj.type) {
-      const index = (this.selectedObj.type.match('CALENDAR') || this.selectedObj.type === InventoryObject.SCHEDULE || this.selectedObj.type === InventoryObject.JOBTEMPLATE || this.selectedObj.type === InventoryObject.INCLUDESCRIPT) ? 1 : 0;
+      const index = (this.selectedObj.type.match('CALENDAR') || this.selectedObj.type === InventoryObject.SCHEDULE || this.selectedObj.type === InventoryObject.JOBTEMPLATE || this.selectedObj.type === InventoryObject.INCLUDESCRIPT || this.selectedObj.type === InventoryObject.REPORT) ? 1 : 0;
       const child = parent.origin.children[index];
       for (let i = 0; i < child.children.length; i++) {
         if (child.children[i].object === this.selectedObj.type || (this.selectedObj.type && this.selectedObj.type.match('CALENDAR') && child.children[i].object && child.children[i].object.match('CALENDAR'))) {
@@ -5779,7 +5799,7 @@ export class InventoryComponent {
             this.updateObjects(node.origin, false, (children) => {
               if (children.length > 0) {
                 if (res.objectType !== 'FOLDER' && this.copyObj.type) {
-                  if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.JOBTEMPLATE || this.copyObj.type === InventoryObject.INCLUDESCRIPT)) {
+                  if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.JOBTEMPLATE || this.copyObj.type === InventoryObject.INCLUDESCRIPT || this.copyObj.type === InventoryObject.REPORT)) {
                     children[1].expanded = true;
                   } else {
                     children[0].expanded = true;
@@ -5797,7 +5817,7 @@ export class InventoryComponent {
             return;
           }
           if (this.copyObj.type) {
-            if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.JOBTEMPLATE || this.copyObj.type === InventoryObject.INCLUDESCRIPT) {
+            if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.JOBTEMPLATE || this.copyObj.type === InventoryObject.INCLUDESCRIPT || this.copyObj.type === InventoryObject.REPORT) {
               data = object.children[1];
             } else {
               data = object.children[0];
@@ -6095,6 +6115,8 @@ export class InventoryComponent {
           };
         } else if (type === InventoryObject.LOCK) {
           configuration = {limit: 1, id: res.name};
+        } else if (obj.type === InventoryObject.REPORT) {
+          configuration = {hits: 10};
         } else if (type === InventoryObject.FILEORDERSOURCE) {
           configuration = {delay: 2};
         } else if (type === InventoryObject.WORKINGDAYSCALENDAR || type === InventoryObject.NONWORKINGDAYSCALENDAR) {

@@ -124,9 +124,10 @@ async function combineCsvToJson(directory, csvFilePaths) {
  * @param files
  * @param frequencyType
  * @param frequencyInterval
- * @param startDate
+ * @param monthFrom
+ * @param monthTo
  */
-async function checkFileNameWithFrequency(runId, directoryPath, files, frequencyType, frequencyInterval, startDate) {
+async function checkFileNameWithFrequency(runId, directoryPath, files, frequencyType, frequencyInterval, monthFrom, monthTo) {
     let data = {};
     // Example usage:
     const uniqueString = utils.generateUnique16BitString();
@@ -135,9 +136,19 @@ async function checkFileNameWithFrequency(runId, directoryPath, files, frequency
         const fileNameParts = file.split('.')[0].split('-');
         const fileYear = parseInt(fileNameParts[0], 10);
         const fileMonth = parseInt(fileNameParts[1], 10);
-        if (startDate) {
-            let startFrom = new Date(startDate);
-            if (!(fileYear >= startFrom.getFullYear() && fileMonth >= (startFrom.getMonth() + 1))) {
+        if (monthFrom) {
+            const arr = monthFrom.split('-');
+            const fromYear = parseInt(arr[0], 10);
+            const fromMonth = parseInt(arr[1], 10);
+            if(fileYear < fromYear || (fileYear == fromYear && fileMonth < fromMonth)){
+                continue;
+            }
+        }
+        if (monthTo) {
+            const arr = monthTo.split('-');
+            const fromYear = parseInt(arr[0], 10);
+            const fromMonth = parseInt(arr[1], 10);
+            if(fileYear > fromYear || (fileYear == fromYear && fileMonth > fromMonth)){
                 continue;
             }
         }
@@ -322,7 +333,7 @@ async function init(options) {
                                 continue; // Skip the invalid frequency
                         }
                         console.log('Start report processing for frequency ', frequency)
-                        await checkFileNameWithFrequency(runId, options['inputDirectory'], inputFiles, frequencyType, interval, options.startDate);
+                        await checkFileNameWithFrequency(runId, options['inputDirectory'], inputFiles, frequencyType, interval, options.monthFrom, options.monthTo);
                     }
 
                     await generate(templateData, runId, options);

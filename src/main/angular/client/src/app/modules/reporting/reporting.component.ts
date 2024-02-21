@@ -19,10 +19,8 @@ export class RunModalComponent {
   isUnique = true;
   object: any = {
     name: '',
-    size: 10,
+    hits: 10,
   };
-  dateFormat: any;
-  isSync: boolean;
   today = new Date();
   templates = [];
   frequencies = [
@@ -40,9 +38,7 @@ export class RunModalComponent {
 
   ngOnInit(): void {
     this.templates = this.modalData.templates;
-    this.isSync = this.modalData.isSync;
     const preferences = this.modalData.preferences;
-    this.dateFormat = this.coreService.getDateFormat(preferences.dateFormat);
   }
 
   checkReportName(): void{
@@ -59,31 +55,21 @@ export class RunModalComponent {
 
   onSubmit(): void {
     this.submitted = true;
-    if (this.isSync) {
-      this.coreService.plainData('reporting/data/load', {
-        dateFrom: this.coreService.getStringDate(this.object.dateFrom)
-      }).subscribe({
-        next: () => {
-          this.coreService.startDataDownload();
-          this.activeModal.close('Done');
-        }, error: () => {
-          this.submitted = false;
-        }
-      });
-      return;
-    }
     const obj: any = {
       name: this.object.name,
       title: this.object.title,
       templateId: this.object.templateId,
-      size: this.object.size,
+      hits: this.object.hits,
       frequencies: this.object.frequencies
     };
-    if (this.object.dateFrom) {
-      obj.dateFrom = this.coreService.getStringDate(this.object.dateFrom)
+    if (this.object.monthFrom) {
+      obj.monthFrom = this.coreService.getDateByFormat(this.object.monthFrom, null, 'YYYY-MM')
+    }
+    if (this.object.monthTo) {
+      obj.monthTo = this.coreService.getDateByFormat(this.object.monthTo, null, 'YYYY-MM')
     }
     this.coreService.post('reporting/report/run', obj).subscribe({
-      next: (res) => {
+      next: () => {
         this.coreService.startReport();
         this.activeModal.close('Done');
         this.submitted = false;

@@ -57,10 +57,10 @@ const routes: Routes = [
         data: {breadcrumb: 'breadcrumb.label.history'}
       },
       {
-        path: 'reporting',
+        path: 'reports',
         loadChildren: () => import('./../reporting/reporting.module').then(m => m.ReportingModule),
         canActivate: [AuthGuard],
-        data: {breadcrumb: 'breadcrumb.label.reporting'}
+        data: {breadcrumb: 'breadcrumb.label.reports'}
       },
       {
         path: 'file_transfer',

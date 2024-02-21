@@ -1,4 +1,5 @@
 const winston = require('winston');
+const debug = require('debug');
 
 // Configure winston logger
 const logger = winston.createLogger({
@@ -10,5 +11,14 @@ const logger = winston.createLogger({
         winston.format.simple()
     ),
 });
+
+// Enable debug mode if DEBUG environment variable is set
+if (process.env.DEBUG) {
+    debug.enabled = true;
+    logger.add(new winston.transports.Console({
+        format: winston.format.simple(),
+        level: 'debug'
+    }));
+}
 
 module.exports = logger;

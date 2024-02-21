@@ -1,5 +1,5 @@
 {
-  "title": "Top ${size} workflows with the longest execution time",
+  "title": "Top ${hits} workflows with the longest execution time",
   "id": "7",
   "type": "ORDER",
   "data": {

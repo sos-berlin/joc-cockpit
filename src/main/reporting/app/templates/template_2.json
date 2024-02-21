@@ -1,5 +1,5 @@
 {
-  "title": "Top ${size} frequently failed jobs",
+  "title": "Top ${hits} frequently failed jobs",
   "id": "2",
   "type": "JOB",
   "data": {

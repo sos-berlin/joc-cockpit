@@ -106,12 +106,12 @@
           <label [(ngModel)]="filter.draft" class="m-l-md" name="draft" nz-checkbox  (ngModelChange)="filterList()">
             {{'inventory.export.label.draft'| translate}}
           </label>
-          <label *ngIf="!(exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'JOBTEMPLATE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR'))" [(ngModel)]="filter.deploy" [disabled]="!filter.controller" class="m-l-md"
+          <label *ngIf="!(exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'JOBTEMPLATE' || exportType === 'INCLUDESCRIPT' || exportType === 'REPORT' || exportType.match('CALENDAR'))" [(ngModel)]="filter.deploy" [disabled]="!filter.controller" class="m-l-md"
                  name="deploy" (ngModelChange)="filterList()"
                  nz-checkbox>
             {{'inventory.export.label.deployed'| translate}}
           </label>
-          <label *ngIf="exportType === 'BOTH' || exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'JOBTEMPLATE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR')"
+          <label *ngIf="exportType === 'BOTH' || exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'JOBTEMPLATE' || exportType === 'INCLUDESCRIPT' || exportType === 'REPORT' || exportType.match('CALENDAR')"
                  [(ngModel)]="filter.release" [disabled]="exportObj.forSigning || !filter.dailyPlan"
                  class="m-l-md" name="release" (ngModelChange)="filterList()"
                  nz-checkbox>
@@ -175,6 +175,7 @@
                 <i *ngIf="node.origin.object == 'SCHEDULE'" class="icon-color" nz-icon nzTheme="outline"
                    nzType="schedule"></i>
                 <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
+                <i *ngIf="node.origin.object == 'REPORT'" class="fa fa-file-image-o w-13"></i>
                 <i *ngIf="node.origin.object == 'JOBTEMPLATE'" class="icon-jobs-icon icon-color tree-icon"></i>
                 <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" class="icon-color" nz-icon
                    nzTheme="outline" nzType="calendar"></i>

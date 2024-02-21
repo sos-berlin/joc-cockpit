@@ -1,5 +1,5 @@
 {
-  "title": "Top ${size} periods of low and high parallelism of job executions",
+  "title": "Top ${hits} periods of low and high parallelism of job executions",
   "id": "4",
   "type": "JOB",
   "data": {

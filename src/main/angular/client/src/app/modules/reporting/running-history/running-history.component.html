@@ -57,16 +57,22 @@
             <i *ngIf="filters.filter.sortBy == 'frequencies' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('dateFrom')"><a><span class="p-r-xs" translate>reporting.label.dateFrom</span>
-            <i *ngIf="filters.filter.sortBy == 'dateFrom' && !filters.filter.reverse"
+          <th (click)="sort('monthFrom')"><a><span class="p-r-xs" translate>reporting.label.monthFrom</span>
+            <i *ngIf="filters.filter.sortBy == 'monthFrom' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'dateFrom' && filters.filter.reverse"
+            <i *ngIf="filters.filter.sortBy == 'monthFrom' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('size')" ><a><span class="p-r-xs" translate>reporting.label.size</span>
-            <i *ngIf="filters.filter.sortBy == 'size' && !filters.filter.reverse"
+          <th (click)="sort('monthTo')"><a><span class="p-r-xs" translate>reporting.label.monthTo</span>
+            <i *ngIf="filters.filter.sortBy == 'monthTo' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'size' && filters.filter.reverse"
+            <i *ngIf="filters.filter.sortBy == 'monthTo' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('hits')" ><a><span class="p-r-xs" translate>reporting.label.hits</span>
+            <i *ngIf="filters.filter.sortBy == 'hits' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'hits' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
           <th (click)="sort('created')" ><a><span class="p-r-xs" translate>reporting.label.created</span>
@@ -103,8 +109,9 @@
             <td><span [innerHtml]="item.title | highlight : filters.searchText"></span></td>
             <td><span [innerHtml]="item.template | highlight : filters.searchText"></span></td>
             <td><div *ngFor="let frequency of item.frequencies" [innerHtml]="frequency | translate | highlight : filters.searchText"></div></td>
-            <td><span [innerHtml]="item.dateFrom"></span></td>
-            <td><span [innerHtml]="item.size | highlight : filters.searchText"></span></td>
+            <td><span [innerHtml]="item.monthFrom"></span></td>
+            <td><span [innerHtml]="item.monthTo"></span></td>
+            <td><span [innerHtml]="item.hits | highlight : filters.searchText"></span></td>
             <td><span [innerHtml]="item.created | stringToDate | highlight : filters.searchText"></span></td>
           </tr>
         </ng-template>

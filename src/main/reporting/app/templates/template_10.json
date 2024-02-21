@@ -1,5 +1,5 @@
 {
-  "title": "Top ${size} periods during which mostly jobs executed",
+  "title": "Top ${hits} periods during which mostly jobs executed",
   "id": "10",
   "type": "JOB",
   "data": {

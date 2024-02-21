@@ -10,6 +10,7 @@
       <span *ngIf="objectType === 'LOCK'" translate>inventory.label.locks</span>
       <span *ngIf="objectType === 'SCHEDULE'" translate>inventory.label.orders</span>
       <span *ngIf="objectType === 'INCLUDESCRIPT'" translate>inventory.label.scripts</span>
+      <span *ngIf="objectType === 'REPORT'" translate>inventory.label.reports</span>
       <span *ngIf="objectType && objectType.match('CALENDAR')" translate>inventory.label.calendars</span>
     </span>
     <div class="inline">
@@ -37,15 +38,16 @@
         <span *ngIf="objectType === 'LOCK'" translate>inventory.button.newLock</span>
         <span *ngIf="objectType === 'SCHEDULE'" translate>inventory.button.newOrder</span>
         <span *ngIf="objectType === 'INCLUDESCRIPT'" translate>inventory.button.newScript</span>
+        <span *ngIf="objectType === 'REPORT'" translate>inventory.button.newReport</span>
         <span *ngIf="objectType && objectType.match('CALENDAR')" translate>inventory.button.newCalendar</span>
         <span *ngIf="objectType === 'JOBTEMPLATE'" translate>inventory.button.newJobTemplate</span>
       </button>
       <button (click)="deployAll()" *ngIf="mapOfCheckedId.size > 0" class="btn btn-sm btn-grey m-l-12">
         <i class="fa fa-rocket p-r-xs"></i>
         <span *ngIf="!objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'JOBTEMPLATE'
-        && objectType !== 'INCLUDESCRIPT'" translate>inventory.button.deploy</span>
+        && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT'" translate>inventory.button.deploy</span>
         <span *ngIf="(objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE'
-        || objectType === 'INCLUDESCRIPT')" translate>inventory.button.release</span>
+        || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT')" translate>inventory.button.release</span>
       </button>
       <button (click)="removeAll()" *ngIf="mapOfCheckedId.size > 0" class="btn btn-sm btn-grey m-l-12">
         <i class="fa fa-trash p-r-xs"></i>
@@ -104,14 +106,14 @@
           <i *ngIf="filter.sortBy == 'valid' && filter.reverse"
              class="fa fa-caret-down "></i></a></th>
         <th (click)="sort('deployed')"
-            *ngIf="!objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'">
+            *ngIf="!objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT'">
           <a><span class="p-r-xs" translate>common.label.status</span>
             <i *ngIf="filter.sortBy == 'deployed' && !filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filter.sortBy == 'deployed' && filter.reverse"
                class="fa fa-caret-down "></i></a></th>
         <th (click)="sort('released')"
-            *ngIf="objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType.match('CALENDAR')">
+            *ngIf="objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT' || objectType.match('CALENDAR')">
           <a><span class="p-r-xs" translate>common.label.status</span>
             <i *ngIf="filter.sortBy == 'released' && !filter.reverse"
                class="fa fa-caret-up "></i>
@@ -131,7 +133,7 @@
                class="fa fa-caret-down "></i></a></th>
 
         <th (click)="sort('syncState._text')"
-            *ngIf="inventoryService.checkDeploymentStatus.isChecked && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'">
+            *ngIf="inventoryService.checkDeploymentStatus.isChecked && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT'">
           <a><span class="p-r-xs" translate>inventory.label.deploymentStatus</span>
             <i *ngIf="filter.sortBy == 'syncState._text' && !filter.reverse"
                class="fa fa-caret-up "></i>
@@ -168,22 +170,22 @@
                     <a translate>inventory.button.manageTags</a>
                   </li>
                   <li *ngIf="permission.joc.inventory.manage" nz-menu-divider>
-                  <li (click)="deployObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'"
+                  <li (click)="deployObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT'"
                       [nzDisabled]="!data.hasDeployments && !data.valid"
                       nz-menu-item>
                     <a translate>inventory.button.deploy</a>
                   </li>
-                  <li (click)="revoke(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR')  && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'"
+                  <li (click)="revoke(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR')  && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT'"
                       [nzDisabled]="!data.hasDeployments"
                       nz-menu-item>
                     <a translate>inventory.button.revoke</a>
                   </li>
-                  <li (click)="releaseObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT'"
+                  <li (click)="releaseObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT'"
                       [nzDisabled]="!data.valid"
                       nz-menu-item>
                     <a translate>inventory.button.release</a>
                   </li>
-                  <li (click)="recallObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT'"
+                  <li (click)="recallObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT'"
                       [nzDisabled]="!data.released"
                       nz-menu-item>
                     <a translate>inventory.button.recall</a>
@@ -255,16 +257,16 @@
                   translate>inventory.label.notValid</span>
           </td>
           <td (click)="editObject(data)" class="cursor">
-              <span *ngIf="data.deployed && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'"
+              <span *ngIf="data.deployed && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT'"
                     class="label bg-dark-blue"
                     translate>inventory.label.deployed</span>
-            <span *ngIf="!data.deployed && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'"
+            <span *ngIf="!data.deployed && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT'"
                   class="label bg-orange"
                   translate>inventory.label.notDeployed</span>
-            <span *ngIf="data.released && (objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType.match('CALENDAR'))"
+            <span *ngIf="data.released && (objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT' || objectType.match('CALENDAR'))"
                   class="label bg-dark-blue"
                   translate>inventory.label.released</span>
-            <span *ngIf="!data.released && (objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType.match('CALENDAR'))"
+            <span *ngIf="!data.released && (objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT' || objectType.match('CALENDAR'))"
                   class="label bg-orange"
                   translate>inventory.label.notReleased</span>
           </td>
@@ -275,7 +277,7 @@
           <td (click)="editObject(data)">
             {{data.modified | stringToDate}}
           </td>
-          <td (click)="editObject(data)" *ngIf="inventoryService.checkDeploymentStatus.isChecked && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'"
+          <td (click)="editObject(data)" *ngIf="inventoryService.checkDeploymentStatus.isChecked && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT'"
               class="cursor">
             <span *ngIf="data.syncState" [ngClass]="coreService.getColor(data.syncState.severity, 'bg')"
                   class="label">{{data.syncState._text | translate}}</span>

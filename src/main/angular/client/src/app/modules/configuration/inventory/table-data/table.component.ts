@@ -113,6 +113,8 @@ export class TableComponent implements OnChanges, OnDestroy {
           };
         } else if (obj.type === InventoryObject.LOCK) {
           configuration = {limit: 1, id: res.name};
+        } else if (obj.type === InventoryObject.REPORT) {
+          configuration = {hits: 10};
         } else if (obj.type === InventoryObject.FILEORDERSOURCE) {
           configuration = {delay: 2};
         } else if (obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR') {
@@ -370,7 +372,8 @@ export class TableComponent implements OnChanges, OnDestroy {
           objectType: this.objectType,
           list: Array.from(this.mapOfCheckedId.values())
         },
-        releasable: (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.JOBTEMPLATE || this.objectType === InventoryObject.INCLUDESCRIPT),
+        releasable: (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.JOBTEMPLATE
+          || this.objectType === InventoryObject.INCLUDESCRIPT || this.objectType === InventoryObject.REPORT),
         isSelectedObjects: true,
         isChecked: this.inventoryService.checkDeploymentStatus.isChecked
       },
@@ -498,7 +501,8 @@ export class TableComponent implements OnChanges, OnDestroy {
     if (object) {
       let isDraftOnly = true;
       if (type === 'delete_draft') {
-        if (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.JOBTEMPLATE || this.objectType === InventoryObject.INCLUDESCRIPT) {
+        if (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.JOBTEMPLATE ||
+          this.objectType === InventoryObject.INCLUDESCRIPT || this.objectType === InventoryObject.REPORT) {
           if (object.hasReleases) {
             object.released = true;
             isDraftOnly = false;
@@ -522,7 +526,8 @@ export class TableComponent implements OnChanges, OnDestroy {
           if (this.dataObj.children[i].name === key) {
             let isDraftOnly = true;
             if (type === 'delete_draft') {
-              if (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.JOBTEMPLATE || this.objectType === InventoryObject.INCLUDESCRIPT) {
+              if (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.JOBTEMPLATE || this.objectType === InventoryObject.INCLUDESCRIPT
+                || this.objectType === InventoryObject.REPORT) {
                 if (this.dataObj.children[i].hasReleases) {
                   this.dataObj.children[i].released = true;
                   isDraftOnly = false;
@@ -571,7 +576,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       configuration.timeZone = this.preferences.zone;
     }
     const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.JOBTEMPLATE || this.objectType === InventoryObject.INCLUDESCRIPT
-      || this.objectType === InventoryObject.WORKFLOW || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType === InventoryObject.JOBRESOURCE);
+      || this.objectType === InventoryObject.REPORT || this.objectType === InventoryObject.WORKFLOW || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType === InventoryObject.JOBRESOURCE);
     if (!path) {
       return;
     }
