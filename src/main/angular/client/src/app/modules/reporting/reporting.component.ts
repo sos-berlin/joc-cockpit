@@ -211,16 +211,8 @@ export class ReportingComponent {
 
 
 
-  downloadReport() {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: RunModalComponent,
-      nzFooter: null,
-      nzAutofocus: null,
-      nzData: {templates: this.templates, preferences: this.preferences, isSync: true},
-      nzClosable: false,
-      nzMaskClosable: false
-    });
+  searchInResult(){
+
   }
 
   runReport() {

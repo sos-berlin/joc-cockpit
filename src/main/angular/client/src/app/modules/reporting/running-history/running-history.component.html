@@ -1,20 +1,5 @@
-<div class="row m-b-sm m-t-n-xs">
-  <div class="col-lg-offset-6 col-lg-6 col-md-offset-0 col-md-12">
-    <div class="notify-tool">
-      <div class="search-box-field pull-right">
-        <label>
-          <input (keyup)="searchInResult()" [(ngModel)]="filters.searchText" placeholder="{{'common.placeholder.search' | translate}}"
-                 type="search">
-        </label>
-        <i (click)="filters.searchText = '';searchInResult()" [hidden]="!filters.searchText"
-           class="fa fa-times search-close"></i>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div>
-  <div class="m-t-sm box p-a">
+  <div class="box p-a">
     <div class="table-responsive">
       <nz-table
         #ajaxTable
@@ -30,7 +15,6 @@
       >
         <thead>
         <tr>
-
           <th class="menu"><span
             translate>common.label.action</span></th>
           <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
@@ -51,28 +35,22 @@
             <i *ngIf="filters.filter.sortBy == 'template' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('frequencies')"><a><span class="p-r-xs" translate>reporting.label.frequencies</span>
-            <i *ngIf="filters.filter.sortBy == 'frequencies' && !filters.filter.reverse"
+          <th (click)="sort('frequency')"><a><span class="p-r-xs" translate>reporting.label.frequency</span>
+            <i *ngIf="filters.filter.sortBy == 'frequency' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'frequencies' && filters.filter.reverse"
+            <i *ngIf="filters.filter.sortBy == 'frequency' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('monthFrom')"><a><span class="p-r-xs" translate>reporting.label.monthFrom</span>
-            <i *ngIf="filters.filter.sortBy == 'monthFrom' && !filters.filter.reverse"
+          <th (click)="sort('dateFrom')"><a><span class="p-r-xs" translate>reporting.label.dateFrom</span>
+            <i *ngIf="filters.filter.sortBy == 'dateFrom' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'monthFrom' && filters.filter.reverse"
+            <i *ngIf="filters.filter.sortBy == 'dateFrom' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('monthTo')"><a><span class="p-r-xs" translate>reporting.label.monthTo</span>
-            <i *ngIf="filters.filter.sortBy == 'monthTo' && !filters.filter.reverse"
+          <th (click)="sort('dateTo')"><a><span class="p-r-xs" translate>reporting.label.dateTo</span>
+            <i *ngIf="filters.filter.sortBy == 'dateTo' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'monthTo' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('hits')" ><a><span class="p-r-xs" translate>reporting.label.hits</span>
-            <i *ngIf="filters.filter.sortBy == 'hits' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'hits' && filters.filter.reverse"
+            <i *ngIf="filters.filter.sortBy == 'dateTo' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
           <th (click)="sort('created')" ><a><span class="p-r-xs" translate>reporting.label.created</span>
@@ -86,8 +64,8 @@
         <tbody>
         <ng-template [ngForOf]="ajaxTable.data" let-item
                      ngFor>
-          <tr>
-            <td>
+          <tr class="cursor" >
+            <td >
               <div class="btn-group dropdown">
                 <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
                         nz-dropdown nzTrigger="click" type="button">
@@ -95,23 +73,19 @@
                 </button>
                 <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                   <ul nz-menu>
-                    <li nz-menu-item (click)="edit(item)">
-                      <a translate>common.button.edit</a>
-                    </li>
-                    <li nz-menu-item (click)="delete(item)">
-                      <a translate>common.button.delete</a>
+                    <li nz-menu-item (click)="onSelect(item)">
+                      <a translate>reporting.button.showReport</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
             </td>
-            <td><span [innerHtml]="item.name | highlight : filters.searchText"></span></td>
-            <td><span [innerHtml]="item.title | highlight : filters.searchText"></span></td>
+            <td (click)="onSelect(item)"><span [innerHtml]="item.name | highlight : filters.searchText"></span></td>
+            <td (click)="onSelect(item)"><span [innerHtml]="item.title | highlight : filters.searchText"></span></td>
             <td><span [innerHtml]="item.template | highlight : filters.searchText"></span></td>
-            <td><div *ngFor="let frequency of item.frequencies" [innerHtml]="frequency | translate | highlight : filters.searchText"></div></td>
-            <td><span [innerHtml]="item.monthFrom"></span></td>
-            <td><span [innerHtml]="item.monthTo"></span></td>
-            <td><span [innerHtml]="item.hits | highlight : filters.searchText"></span></td>
+            <td (click)="onSelect(item)"><span [innerHtml]="item.frequency | translate | highlight : filters.searchText"></span></td>
+            <td (click)="onSelect(item)"><span [innerHtml]="item.dateFrom | highlight : filters.searchText"></span></td>
+            <td (click)="onSelect(item)"><span [innerHtml]="item.dateTo | highlight : filters.searchText"></span></td>
             <td><span [innerHtml]="item.created | stringToDate | highlight : filters.searchText"></span></td>
           </tr>
         </ng-template>
@@ -126,3 +100,10 @@
     </div>
   </div>
 </div>
+
+<nz-drawer (nzOnClose)="closePanel()" [nzWidth]="'100% !important'" [nzVisible]="isVisible" nzPlacement="right">
+  <ng-container *nzDrawerContent>
+    <div (click)="closePanel()" class="close-btn z-index-9999 m-l-xxs"></div>
+    <app-frequency-report *ngIf="isVisible"  [templates]="reports" [report]="selectedReport"></app-frequency-report>
+  </ng-container>
+</nz-drawer>

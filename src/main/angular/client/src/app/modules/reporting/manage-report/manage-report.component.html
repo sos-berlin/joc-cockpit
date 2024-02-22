@@ -1,124 +1,207 @@
-<div class="row m-b-sm m-t-n-xs">
-  <div class="col-lg-offset-6 col-lg-6 col-md-offset-0 col-md-12">
-    <div class="notify-tool">
-      <div class="search-box-field pull-right">
-        <label>
-          <input (keyup)="searchInResult()" [(ngModel)]="filters.searchText" placeholder="{{'common.placeholder.search' | translate}}"
-                 type="search">
-        </label>
-        <i (click)="filters.searchText = '';searchInResult()" [hidden]="!filters.searchText"
-           class="fa fa-times search-close"></i>
+<div class="row">
+  <div class="col-sm-12">
+    <div [sideView]="sideView.report" appResizable class="sticky leftPanel resource" id="leftPanel">
+      <div *ngIf="tree.length>0">
+        <app-tree-navigation (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)"
+                             [defaultExpandedKeys]="filters.expandedKeys"
+                             [defaultSelectedKeys]="filters.selectedkeys" [schedulerId]="schedulerIds.selected"
+                             [sideView]="sideView.report" [tree]="tree" [type]="'REPORT'"></app-tree-navigation>
+      </div>
+    </div>
+    <div id="rightPanel">
+      <div [ngClass]="{'show': isLoading}" class="hide">
+        <div *ngIf="pageView=='grid' && data.length > 0" [hidden]="loading" class="row ">
+          <div *ngFor="let item of data  | groupBy: 'path1'" class="w-full">
+            <div class="col-sm-12 m-b-10">
+              <span class="text inline"><i class="fa fa-folder-o"></i>&nbsp; {{item.key}}</span>
+            </div>
+            <div *ngFor="let lock of item.value"
+                 class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+              <div class="box card">
+                <div class="box-body">
+                  <div class="text-left block-ellipsis">
+                        <span class="text-left">
+                          <i class="fa fa-lock text-sm "></i>&nbsp;
+                          <span [innerHtml]="lock.name | highlight : filters.searchText"></span>
+                        </span>
+                  </div>
+                  <div class="btn-group dropdown pull-right abt-dropdown ">
+                    <a [nzDropdownMenu]="option2" class=" more-option text-black-lt" nz-dropdown nzPlacement="bottomRight"
+                       nzTrigger="click">
+                      <i class="text fa fa-ellipsis-h"></i></a>
+                    <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
+                      <ul nz-menu>
+                        <li (click)="coreService.copyLink('lock',lock.id)" nz-menu-item>
+                          <a translate>common.button.copyLinkToObject</a>
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                  <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
+                    <span translate>resource.lock.label.deploymentDate </span>:
+                    <span [innerHtml]="lock.versionDate | stringToDate | highlight : filters.searchText"
+                          class="text-black-dk"></span>
+                  </div>
+                  <div class="text-sm text-left text-muted p-t-xs">
+                    <span translate>common.label.status </span>:
+                    <span [innerHtml]="lock.state._text | translate | highlight : filters.searchText"
+                          [ngClass]="coreService.getColor(lock.state.severity, 'text')"></span>
+                  </div>
+                  <div class="text-sm  text-left text-muted p-t-sm">
+                    <span [innerHtml]="lock.acquiredLockCount || '0'" class="text-black _600"></span>
+                    {{'resource.lock.label.acquiredLockCount' | translate}}
+                  </div>
+                  <div class="text-sm  text-left text-muted p-t-sm">
+                    <span [innerHtml]="lock.ordersHoldingLocksCount || '0'" class="text-black _600"></span>
+                    {{'resource.lock.label.ordersHoldingLocks' | translate}}
+                  </div>
+                  <div class="text-sm  text-left text-muted p-t-sm">
+                    <span [innerHtml]="lock.ordersWaitingForLocksCount || '0'" class="text-black _600"></span>
+                    {{'resource.lock.label.ordersWaitingForLocks' | translate}}
+                  </div>
+                  <div class="text-sm  text-left text-muted p-t-sm">
+                        <span [innerHtml]="lock.limit | highlight : filters.searchText"
+                              class="text-black _600"></span>
+                    {{'resource.lock.label.limit' | translate}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="(pageView=='list' || !pageView) && tree.length > 0" class="box p-a">
+          <div class="table-responsive">
+            <nz-table
+              #ajaxTable
+              [nzBordered]="true"
+              [nzData]="data"
+              [nzLoading]="loading"
+              [nzPageIndex]="filters.filter.currentPage"
+              [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
+              [nzPageSize]="filters.filter.entryPerPage || preferences.entryPerPage || 25"
+              [nzShowPagination]="data.length > 0"
+              [nzShowSizeChanger]="true"
+              [nzSize]="'small'"
+            >
+              <thead>
+              <tr>
+
+                <th class="menu"><span
+                  translate>common.label.action</span></th>
+                <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
+                  <i *ngIf="filters.filter.sortBy == 'name' && !filters.filter.reverse"
+                     class="fa fa-caret-up "></i>
+                  <i *ngIf="filters.filter.sortBy == 'name' && filters.filter.reverse"
+                     class="fa fa-caret-down "></i></a>
+                </th>
+                <th *ngIf="isPathDisplay" (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
+                  <i *ngIf="filters.filter.sortBy == 'path1' && !filters.filter.reverse"
+                     class="fa fa-caret-up "></i>
+                  <i *ngIf="filters.filter.sortBy == 'path1' && filters.filter.reverse"
+                     class="fa fa-caret-down "></i></a>
+                </th>
+                <th (click)="sort('template')"><a><span class="p-r-xs" translate>reporting.label.template</span>
+                  <i *ngIf="filters.filter.sortBy == 'template' && !filters.filter.reverse"
+                     class="fa fa-caret-up "></i>
+                  <i *ngIf="filters.filter.sortBy == 'template' && filters.filter.reverse"
+                     class="fa fa-caret-down "></i></a>
+                </th>
+                <th (click)="sort('frequencies')"><a><span class="p-r-xs" translate>reporting.label.frequencies</span>
+                  <i *ngIf="filters.filter.sortBy == 'frequencies' && !filters.filter.reverse"
+                     class="fa fa-caret-up "></i>
+                  <i *ngIf="filters.filter.sortBy == 'frequencies' && filters.filter.reverse"
+                     class="fa fa-caret-down "></i></a>
+                </th>
+                <th (click)="sort('monthFrom')"><a><span class="p-r-xs" translate>reporting.label.monthFrom</span>
+                  <i *ngIf="filters.filter.sortBy == 'monthFrom' && !filters.filter.reverse"
+                     class="fa fa-caret-up "></i>
+                  <i *ngIf="filters.filter.sortBy == 'monthFrom' && filters.filter.reverse"
+                     class="fa fa-caret-down "></i></a>
+                </th>
+                <th (click)="sort('monthTo')"><a><span class="p-r-xs" translate>reporting.label.monthTo</span>
+                  <i *ngIf="filters.filter.sortBy == 'monthTo' && !filters.filter.reverse"
+                     class="fa fa-caret-up "></i>
+                  <i *ngIf="filters.filter.sortBy == 'monthTo' && filters.filter.reverse"
+                     class="fa fa-caret-down "></i></a>
+                </th>
+                <th (click)="sort('hits')"><a><span class="p-r-xs" translate>reporting.label.hits</span>
+                  <i *ngIf="filters.filter.sortBy == 'hits' && !filters.filter.reverse"
+                     class="fa fa-caret-up "></i>
+                  <i *ngIf="filters.filter.sortBy == 'hits' && filters.filter.reverse"
+                     class="fa fa-caret-down "></i></a>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-template [ngForOf]="ajaxTable.data" let-item
+                           ngFor>
+                <tr>
+                  <td>
+                    <div class="btn-group dropdown">
+                      <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                              nz-dropdown nzTrigger="click" type="button">
+                        <i class="fa fa-ellipsis-h"></i>
+                      </button>
+                      <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                        <ul nz-menu>
+                          <li nz-menu-item (click)="run(item)">
+                            <a translate>reporting.button.run</a>
+                          </li>
+                        </ul>
+                      </nz-dropdown-menu>
+                    </div>
+                  </td>
+
+                  <td>
+                    <span class="w-full">
+                      <i (click)="coreService.navToInventoryTab(item.path, 'REPORT');"
+                         *ngIf="permission.joc && permission.joc.inventory.view && !isPathDisplay"
+                         class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                      <span [innerHtml]="item.name | highlight : filters.searchText"></span>
+                      <i *ngIf="item.title"> - </i>
+                      <i [innerHtml]="item.title | stringToLink" class="text-muted"></i>
+                    </span>
+                  </td>
+                  <td *ngIf="isPathDisplay">
+                    <span class="show-in-single-line">
+                      <i (click)="coreService.navToInventoryTab(item.path, 'REPORT');"
+                         *ngIf="permission.joc && permission.joc.inventory.view"
+                         class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                      <span [innerHtml]="item.path1 | highlight : filters.searchText"></span>
+                    </span>
+                  </td>
+                  <td><span [innerHtml]="item.template | highlight : filters.searchText"></span></td>
+                  <td>
+                    <div *ngFor="let frequency of item.frequencies"
+                         [innerHtml]="frequency | translate | highlight : filters.searchText"></div>
+                  </td>
+                  <td><span [innerHtml]="item.monthFrom"></span></td>
+                  <td><span [innerHtml]="item.monthTo"></span></td>
+                  <td><span [innerHtml]="item.hits | highlight : filters.searchText"></span></td>
+                </tr>
+              </ng-template>
+              </tbody>
+            </nz-table>
+          </div>
+          <div *ngIf="ajaxTable.data.length >0"
+               class="w-half label-top"><span
+            translate>common.label.total</span> {{data.length}}
+            <span *ngIf="ajaxTable.data.length >1" translate>inventory.label.entriesFound</span>
+            <span *ngIf="ajaxTable.data.length ==1" translate>inventory.label.entryFound</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
-
-<div>
-  <div class="m-t-sm box p-a">
-    <div class="table-responsive">
-      <nz-table
-        #ajaxTable
-        [nzBordered]="true"
-        [nzData]="data"
-        [nzLoading]="!isLoaded"
-        [nzPageIndex]="filters.filter.currentPage"
-        [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
-        [nzPageSize]="filters.filter.entryPerPage || preferences.entryPerPage || 25"
-        [nzShowPagination]="data.length > 0"
-        [nzShowSizeChanger]="true"
-        [nzSize]="'small'"
-      >
-        <thead>
-        <tr>
-          <th class="menu"><span
-            translate>common.label.action</span></th>
-          <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
-            <i *ngIf="filters.filter.sortBy == 'name' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'name' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('title')"><a><span class="p-r-xs" translate>common.label.title</span>
-            <i *ngIf="filters.filter.sortBy == 'title' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'title' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('template')"><a><span class="p-r-xs" translate>reporting.label.template</span>
-            <i *ngIf="filters.filter.sortBy == 'template' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'template' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('frequency')"><a><span class="p-r-xs" translate>reporting.label.frequency</span>
-            <i *ngIf="filters.filter.sortBy == 'frequency' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'frequency' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('dateFrom')"><a><span class="p-r-xs" translate>reporting.label.dateFrom</span>
-            <i *ngIf="filters.filter.sortBy == 'dateFrom' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'dateFrom' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('dateTo')"><a><span class="p-r-xs" translate>reporting.label.dateTo</span>
-            <i *ngIf="filters.filter.sortBy == 'dateTo' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'dateTo' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('created')" ><a><span class="p-r-xs" translate>reporting.label.created</span>
-            <i *ngIf="filters.filter.sortBy == 'created' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'created' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <ng-template [ngForOf]="ajaxTable.data" let-item
-                     ngFor>
-          <tr class="cursor" >
-            <td >
-              <div class="btn-group dropdown">
-                <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
-                        nz-dropdown nzTrigger="click" type="button">
-                  <i class="fa fa-ellipsis-h"></i>
-                </button>
-                <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                  <ul nz-menu>
-                    <li nz-menu-item (click)="onSelect(item)">
-                      <a translate>reporting.button.showReport</a>
-                    </li>
-                  </ul>
-                </nz-dropdown-menu>
-              </div>
-            </td>
-            <td (click)="onSelect(item)"><span [innerHtml]="item.name | highlight : filters.searchText"></span></td>
-            <td (click)="onSelect(item)"><span [innerHtml]="item.title | highlight : filters.searchText"></span></td>
-            <td><span [innerHtml]="item.template | highlight : filters.searchText"></span></td>
-            <td (click)="onSelect(item)"><span [innerHtml]="item.frequency | translate | highlight : filters.searchText"></span></td>
-            <td (click)="onSelect(item)"><span [innerHtml]="item.dateFrom | highlight : filters.searchText"></span></td>
-            <td (click)="onSelect(item)"><span [innerHtml]="item.dateTo | highlight : filters.searchText"></span></td>
-            <td><span [innerHtml]="item.created | stringToDate | highlight : filters.searchText"></span></td>
-          </tr>
-      </ng-template>
-      </tbody>
-      </nz-table>
-    </div>
-    <div *ngIf="ajaxTable.data.length >0"
-         class="w-half label-top"><span
-      translate>common.label.total</span> {{data.length}}
-      <span *ngIf="ajaxTable.data.length >1" translate>inventory.label.entriesFound</span>
-      <span *ngIf="ajaxTable.data.length ==1" translate>inventory.label.entryFound</span>
-    </div>
+<div *ngIf="!isLoading" class="spinner">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
+</div>
+<div *ngIf="loading || reloadState == 'yes'">
+  <div (click)="reload()" class="bottom-btn">
+    <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
+    <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
   </div>
 </div>
-
-<nz-drawer (nzOnClose)="closePanel()" [nzWidth]="'100% !important'" [nzVisible]="isVisible" nzPlacement="right">
-  <ng-container *nzDrawerContent>
-    <div (click)="closePanel()" class="close-btn z-index-9999 m-l-xxs"></div>
-    <app-frequency-report *ngIf="isVisible"  [templates]="reports" [report]="selectedReport"></app-frequency-report>
-  </ng-container>
-</nz-drawer>

@@ -76,6 +76,9 @@ export class SettingModalComponent {
   jobResourcesTree: any = [];
   currentObj: any = {};
   userObj: any = {};
+  versionCompatibility: any = {
+    isCheck: false
+  };
   allRoles: string[] = [];
   passwordFields: any = {
     first: false,
@@ -179,6 +182,9 @@ export class SettingModalComponent {
         if (this.data) {
           if (data) {
             this.currentObj = data.keycloak || data.oidc || data.fido || {};
+            if (data.keycloak) {
+              this.versionCompatibility.isCheck = data.keycloak?.iamKeycloakVersionCompatibility == 16;
+            }
             if (data.fido) {
               if (!this.currentObj.iamFidoProtocolType) {
                 this.currentObj.iamFidoProtocolType = 'FIDO2';
@@ -345,6 +351,14 @@ export class SettingModalComponent {
 
   changeField(): void {
     this.currentObj.iamLdapServerUrl = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
+  }
+
+  checkVersionCompatibility(isChecked: boolean, obj: any): void {
+    if (isChecked) {
+      obj.iamKeycloakVersionCompatibility = 16;
+    } else {
+      delete obj['iamKeycloakVersionCompatibility'];
+    }
   }
 
   checkConfirmation(isChecked: boolean, type: string): void {

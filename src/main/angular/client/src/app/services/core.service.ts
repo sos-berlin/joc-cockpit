@@ -45,6 +45,7 @@ export class CoreService {
     orderOverview: {width: 270, show: true},
     lock: {width: 270, show: true},
     board: {width: 270, show: true},
+    report: {width: 270, show: true},
     calendar: {width: 270, show: true},
     documentation: {width: 270, show: true},
     inventory: {width: 300, show: true},
@@ -137,6 +138,11 @@ export class CoreService {
         request: {}
       },
       calendar: {
+        panel: false,
+        result: [],
+        request: {}
+      },
+      report: {
         panel: false,
         result: [],
         request: {}
@@ -273,25 +279,19 @@ export class CoreService {
       }
     };
     this.tabs._reporting = {
-      current: true,
-      view: 'Week',
-      groupBy: 'DATE',
-      startYear: this.tabs._monitor.currentDate.getFullYear(),
-      startMonth: this.tabs._monitor.currentDate.getMonth(),
-      currentYear: this.tabs._monitor.currentDate.getFullYear(),
-      currentMonth: this.tabs._monitor.currentDate.getMonth(),
-      startDate: new Date().setHours(0, 0, 0, 0),
-      endDate: new Date().setHours(0, 0, 0, 0),
+
       manageList: {
+        expandedKeys : ['/'],
+        selectedkeys : ['/'],
         filter: {
-          sortBy: 'dateFrom',
+          sortBy: 'name',
           reverse: true,
           currentPage: '1'
         }
       },
-      runningList: {
+      runHistory: {
         filter: {
-          sortBy: 'created',
+          sortBy: 'dateFrom',
           reverse: true,
           currentPage: '1'
         }
@@ -690,7 +690,6 @@ export class CoreService {
       this.reportStartRunning = false;
     }, 10000);
   }
-
 
   getColor(d: number, type: string): string {
     if (d === 0) {

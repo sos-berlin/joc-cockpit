@@ -222,7 +222,8 @@
         <label [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakVersionCompatibility' | translate" [nzTooltipMouseEnterDelay]="0.5"
                class="col-sm-4 form-control-label" translate>user.label.iamKeycloakVersionCompatibility</label>
         <div class="col-sm-6">
-          <label nz-checkbox [(ngModel)]="userObj.iamKeycloakCompatibility" name="iamKeycloakVersionCompatibility"></label>
+          <label nz-checkbox [(ngModel)]="versionCompatibility.isCheck" (ngModelChange)="checkVersionCompatibility($event, currentObj)"
+                 name="iamKeycloakVersionCompatibility"></label>
         </div>
       </div>
     </div>
@@ -789,7 +790,7 @@
                      placeholder="{{'user.placeholder.group' | translate}}" type="text">
             </div>
             <div class="col-md-6 m-b-sm">
-              <app-select-input  [attributeName]="'roles'" [isMultiple]="true" [isSearchable]="true"
+              <app-select-input [attributeName]="'roles'" [isMultiple]="true" [isSearchable]="true"
                                 [listArray]="allRoles" [name]="'roles'+ i" [isRequired]="(item.oidcGroup && item.oidcGroup.length > 0) ? true : false"
                                 [object]="item"></app-select-input>
             </div>

@@ -6,32 +6,58 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div *ngIf="index == 0" class="inline valign" >
-            <button class="btn btn-grey btn-sm m-l-12" (click)="runReport()" translate>
-              <span nz-icon nzType="play-circle" nzTheme="outline"></span>
-              reporting.button.runReport
-            </button>
-          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-<div class="scroll-y max-ht">
-
+<div class="sub-link">
+  <div class="row">
+    <div class="col-md-8">
+      <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+        <li class="nav-item">
+          <a [ngClass]="{'active': index == 0}" (click)="index = 0" class="nav-link">
+            <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.manageReportRuns</span></span>
+          </a>
+        </li>
+        <li class="nav-item dropdown-separator">
+          <span class="separator"></span>
+        </li>
+        <li class="nav-item">
+          <a (click)="index = 1" class="nav-link" [ngClass]="{'active': index == 1}">
+            <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.reportRunHistory</span></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-4 text-right">
+      <div class="search-box-field pull-right" *ngIf="index == 0">
+        <label>
+          <input (keyup)="searchInResult()" [(ngModel)]="filter.manageList.searchText"
+                 placeholder="{{'common.placeholder.search' | translate}}" type="search">
+        </label>
+        <i (click)="filter.manageList.searchText = '';searchInResult()" [hidden]="!filter.manageList.searchText"
+           class="fa fa-times search-close"></i>
+      </div>
+      <div class="search-box-field pull-right" *ngIf="index == 1">
+        <label>
+          <input (keyup)="searchInResult()" [(ngModel)]="filter.runHistory.searchText"
+                 placeholder="{{'common.placeholder.search' | translate}}" type="search">
+        </label>
+        <i (click)="filter.runHistory.searchText = '';searchInResult()" [hidden]="!filter.runHistory.searchText"
+           class="fa fa-times search-close"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="scroll-y max-ht2">
   <div class="padding p-b-0" *ngIf="loading">
-    <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="index">
-      <nz-tab [nzTitle]="'reporting.tab.manageReportRuns' | translate">
-        <div *ngIf="index == 0">
-          <app-running-history (syncReport)="downloadReport()" (reportRun)="runReport()" [permission]="permission" [preferences]="preferences" [filters]="filter.runningList" [templates]="templates"></app-running-history>
-        </div>
-      </nz-tab>
-      <nz-tab [nzTitle]="'reporting.tab.reportRunHistory' | translate">
-        <div *ngIf="index == 1">
-          <app-manage-report [permission]="permission" [preferences]="preferences" [filters]="filter.manageList" [templates]="templates"></app-manage-report>
-        </div>
-      </nz-tab>
-    </nz-tabset>
+    <div *ngIf="index == 0">
+      <app-manage-report (reportRun)="runReport()" [permission]="permission" [preferences]="preferences" [filters]="filter.manageList" [templates]="templates"></app-manage-report>
+    </div>
+    <div *ngIf="index == 1">
+      <app-running-history  [permission]="permission" [preferences]="preferences" [filters]="filter.runHistory" [templates]="templates"></app-running-history>
+    </div>
   </div>
   <div *ngIf="!loading" class="spinner">
     <div class="cssload-inner cssload-one"></div>
