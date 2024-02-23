@@ -311,6 +311,14 @@
                  type="text">
         </div>
       </div>
+      <div class="form-group row">
+        <label [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakVersionCompatibility' | translate" [nzTooltipMouseEnterDelay]="0.5"
+               class="col-sm-4 form-control-label" translate>user.label.iamKeycloakVersionCompatibility</label>
+        <div class="col-sm-6">
+          <label nz-checkbox [(ngModel)]="versionCompatibility.isCheck" (ngModelChange)="checkVersionCompatibility($event, currentObj)"
+                 name="iamKeycloakVersionCompatibility"></label>
+        </div>
+      </div>
     </div>
     <!------------------------------------BEGIN LDAP--------------------------------------------->
     <div *ngIf="data && data['identityServiceType'].match('LDAP')">
