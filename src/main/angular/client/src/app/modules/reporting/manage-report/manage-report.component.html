@@ -15,15 +15,15 @@
             <div class="col-sm-12 m-b-10">
               <span class="text inline"><i class="fa fa-folder-o"></i>&nbsp; {{item.key}}</span>
             </div>
-            <div *ngFor="let lock of item.value"
+            <div *ngFor="let item of item.value"
                  class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
               <div class="box card">
                 <div class="box-body">
                   <div class="text-left block-ellipsis">
-                        <span class="text-left">
-                          <i class="fa fa-lock text-sm "></i>&nbsp;
-                          <span [innerHtml]="lock.name | highlight : filters.searchText"></span>
-                        </span>
+                    <span class="text-left">
+                      <i class="fa fa-file-image-o text-sm "></i>&nbsp;
+                      <span [innerHtml]="item.name | highlight : filters.searchText"></span>
+                    </span>
                   </div>
                   <div class="btn-group dropdown pull-right abt-dropdown ">
                     <a [nzDropdownMenu]="option2" class=" more-option text-black-lt" nz-dropdown nzPlacement="bottomRight"
@@ -31,38 +31,30 @@
                       <i class="text fa fa-ellipsis-h"></i></a>
                     <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
                       <ul nz-menu>
-                        <li (click)="coreService.copyLink('lock',lock.id)" nz-menu-item>
-                          <a translate>common.button.copyLinkToObject</a>
+                        <li (click)="run(item)" nz-menu-item>
+                          <a translate>reporting.button.run</a>
                         </li>
                       </ul>
                     </nz-dropdown-menu>
                   </div>
                   <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
-                    <span translate>resource.lock.label.deploymentDate </span>:
-                    <span [innerHtml]="lock.versionDate | stringToDate | highlight : filters.searchText"
+                    <span translate>reporting.label.template </span>:
+                    <span [innerHtml]="item.template | highlight : filters.searchText"
                           class="text-black-dk"></span>
                   </div>
-                  <div class="text-sm text-left text-muted p-t-xs">
-                    <span translate>common.label.status </span>:
-                    <span [innerHtml]="lock.state._text | translate | highlight : filters.searchText"
-                          [ngClass]="coreService.getColor(lock.state.severity, 'text')"></span>
+                  <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
+                    <span translate>reporting.label.monthFrom </span>:
+                    <span [innerHtml]="item.monthFrom | highlight : filters.searchText"
+                          class="text-black-dk"></span>
+                  </div>
+                  <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
+                    <span translate>reporting.label.monthTo </span>:
+                    <span [innerHtml]="item.monthTo | highlight : filters.searchText"
+                          class="text-black-dk"></span>
                   </div>
                   <div class="text-sm  text-left text-muted p-t-sm">
-                    <span [innerHtml]="lock.acquiredLockCount || '0'" class="text-black _600"></span>
-                    {{'resource.lock.label.acquiredLockCount' | translate}}
-                  </div>
-                  <div class="text-sm  text-left text-muted p-t-sm">
-                    <span [innerHtml]="lock.ordersHoldingLocksCount || '0'" class="text-black _600"></span>
-                    {{'resource.lock.label.ordersHoldingLocks' | translate}}
-                  </div>
-                  <div class="text-sm  text-left text-muted p-t-sm">
-                    <span [innerHtml]="lock.ordersWaitingForLocksCount || '0'" class="text-black _600"></span>
-                    {{'resource.lock.label.ordersWaitingForLocks' | translate}}
-                  </div>
-                  <div class="text-sm  text-left text-muted p-t-sm">
-                        <span [innerHtml]="lock.limit | highlight : filters.searchText"
-                              class="text-black _600"></span>
-                    {{'resource.lock.label.limit' | translate}}
+                    <span [innerHtml]="item.hits || '10'" class="text-black _600"></span>
+                    {{'reporting.label.hits' | translate}}
                   </div>
                 </div>
               </div>
@@ -85,8 +77,14 @@
             >
               <thead>
               <tr>
-
-                <th class="menu"><span
+                <th *ngIf="permission.joc && permission.joc.reports.manage"
+                    [(nzChecked)]="object.checked"
+                    [nzIndeterminate]="object.indeterminate"
+                    [nzShowCheckbox]="true"
+                    (nzCheckedChange)="checkAll($event)"
+                    class="chk"
+                ></th>
+                <th *ngIf="permission.joc && permission.joc.reports.manage" class="menu"><span
                   translate>common.label.action</span></th>
                 <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
                   <i *ngIf="filters.filter.sortBy == 'name' && !filters.filter.reverse"
@@ -136,7 +134,11 @@
               <ng-template [ngForOf]="ajaxTable.data" let-item
                            ngFor>
                 <tr>
-                  <td>
+                  <td *ngIf="permission.joc && permission.joc.reports.manage"
+                      [nzShowCheckbox]="true" [nzChecked]="object.setOfCheckedId.has(item.path)"
+                      (nzCheckedChange)="onItemChecked(item, $event)"
+                  ></td>
+                  <td *ngIf="permission.joc && permission.joc.reports.manage">
                     <div class="btn-group dropdown">
                       <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
                               nz-dropdown nzTrigger="click" type="button">
@@ -190,10 +192,28 @@
             <span *ngIf="ajaxTable.data.length ==1" translate>inventory.label.entryFound</span>
           </div>
         </div>
+        <div *ngIf="pageView=='grid' &&  isLoading && !loading  && data.length==0 && tree.length>0"
+             class="text-center m-t h6">
+          <app-empty-data></app-empty-data>
+        </div>
       </div>
+    </div>
+    <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t">
+      <app-empty-data></app-empty-data>
     </div>
   </div>
 </div>
+<nz-drawer (nzOnClose)="closeSearch()" [nzVisible]="isSearchVisible" nzPlacement="right">
+  <ng-container *nzDrawerContent>
+    <div (click)="closeSearch()" class="close-btn"></div>
+    <div *ngIf="isSearchVisible">
+      <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>
+      </div>
+      <app-inventory-search (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)" [controllerId]="schedulerIds.selected"
+                            [isReport]="true"></app-inventory-search>
+    </div>
+  </ng-container>
+</nz-drawer>
 <div *ngIf="!isLoading" class="spinner">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>

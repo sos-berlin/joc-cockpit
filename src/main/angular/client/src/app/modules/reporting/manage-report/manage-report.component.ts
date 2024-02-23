@@ -6,9 +6,9 @@ import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
-import {RunModalComponent} from "../reporting.component";
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {TreeComponent} from "../../../components/tree-navigation/tree.component";
+import {SharingDataService} from "../sharing-data.service";
 
 @Component({
   selector: 'app-manage-report',
@@ -31,20 +31,29 @@ export class ManageReportComponent {
   schedulerIds: any = {};
   isPathDisplay = false;
   isLoading = false;
+  isSearchVisible = false;
   loading: boolean;
   reloadState = 'no';
   pageView: any;
 
+  object = {
+    setOfCheckedId: new Set(),
+    mapOfCheckedId: new Set(),
+    checked: false,
+    indeterminate: false
+  };
   searchableProperties = ['name', 'title', 'path', 'template', 'frequencies', 'monthFrom', 'monthTo', 'hits'];
 
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
+  subscription4: Subscription;
 
   private pendingHTTPRequests$ = new Subject<void>();
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private orderPipe: OrderPipe,
-              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe) {
+              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -52,6 +61,19 @@ export class ManageReportComponent {
     });
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
+    });
+    this.subscription3 = sharingDataService.functionAnnounced$.subscribe((res: any) => {
+      if (res.pageView) {
+        this.pageView = res.pageView;
+      } else if (res.sortBy) {
+        this.sort(res.sortBy);
+      } else if (res.search) {
+        console.log(res.search);
+        this.isSearchVisible = true;
+      }
+    });
+    this.subscription4 = sharingDataService.searchKeyAnnounced$.subscribe(res => {
+      this.searchInResult();
     });
   }
 
@@ -68,6 +90,8 @@ export class ManageReportComponent {
     }
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
+    this.subscription4.unsubscribe();
     this.pendingHTTPRequests$.next();
     this.pendingHTTPRequests$.complete();
   }
@@ -111,6 +135,44 @@ export class ManageReportComponent {
     } else {
       this.isLoading = true;
     }
+  }
+
+  closeSearch(): void {
+    this.isSearchVisible = false;
+  }
+
+  onNavigate(data): void {
+    const pathArr = [];
+    const arr = data.path.split('/');
+    this.filters.selectedkeys = [];
+    const len = arr.length - 1;
+    if (len > 1) {
+      for (let i = 0; i < len; i++) {
+        if (arr[i]) {
+          if (i > 0 && pathArr[i - 1]) {
+            pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+          } else {
+            pathArr.push('/' + arr[i]);
+          }
+        } else {
+          pathArr.push('/');
+        }
+      }
+    }
+    if (pathArr.length === 0) {
+      pathArr.push('/');
+    }
+    const PATH = data.path.substring(0, data.path.lastIndexOf('/')) || '/';
+    this.filters.expandedKeys = pathArr;
+    this.filters.selectedkeys.push(pathArr[pathArr.length - 1]);
+    this.filters.expandedObjects = [data.path];
+    const obj = {
+      controllerId: this.schedulerIds.selected,
+      folders: [{folder: PATH, recursive: false}]
+    };
+    this.reports = [];
+    this.loading = true;
+    this.getReportList(obj);
   }
 
   receiveAction($event): void {
@@ -172,7 +234,8 @@ export class ManageReportComponent {
         this.loading = false;
         this.reports = this.orderPipe.transform(res.reports, this.filters.filter.sortBy, this.filters.filter.reverse);
         this.reports.forEach((report) => {
-          report.name =  report.path.substring(report.path.lastIndexOf('/') + 1);
+          report.name = report.path.substring(report.path.lastIndexOf('/') + 1);
+          report.path1 = report.path.substring(0, report.path.lastIndexOf('/')) || '/';
           const template = this.templates.find(template => template.templateId == report.templateId);
           if (template) report.template = template.title;
         })
@@ -207,15 +270,64 @@ export class ManageReportComponent {
 
   /** Actions */
 
+  checkAll(value: boolean): void {
+    if (value && this.reports.length > 0) {
+      const documents = this.getCurrentData(this.data, this.filters);
+      documents.forEach(item => {
+        this.object.mapOfCheckedId.add(item.path);
+      });
+    } else {
+      this.object.mapOfCheckedId.clear();
+    }
+    this.refreshCheckedStatus();
+  }
+
+  onItemChecked(document: any, checked: boolean): void {
+    if (!checked && this.object.mapOfCheckedId.size > (this.filters.filter.entryPerPage || this.preferences.entryPerPage)) {
+      const orders = this.getCurrentData(this.data, this.filters);
+      if (orders.length < this.data.length) {
+        this.object.mapOfCheckedId.clear();
+        orders.forEach(item => {
+          this.object.mapOfCheckedId.add(item.path);
+        });
+      }
+    }
+    if (checked) {
+      this.object.mapOfCheckedId.add(document.path);
+    } else {
+      this.object.mapOfCheckedId.delete(document.path);
+    }
+    const documents = this.getCurrentData(this.data, this.filters);
+    this.object.checked = this.object.mapOfCheckedId.size === documents.length;
+    this.refreshCheckedStatus();
+  }
+
+  refreshCheckedStatus(): void {
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
+  }
+
+
   run(item): void {
-    this.coreService.post('reporting/report/run', {
+    this.coreService.post('reporting/reports/run', {
       reportPaths: [item.path]
     }).subscribe({
       next: () => {
         this.coreService.startReport();
       }
     })
+  }
 
+  runAll(): void {
+    // this.modal.create({
+    //   nzTitle: undefined,
+    //   nzContent: RunModalComponent,
+    //   nzClassName: 'lg',
+    //   nzFooter: null,
+    //   nzAutofocus: null,
+    //   nzData: {templates: this.templates, preferences: this.preferences},
+    //   nzClosable: false,
+    //   nzMaskClosable: false
+    // });
   }
 
   reload(): void {

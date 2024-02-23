@@ -1,4 +1,4 @@
-import {Component, ElementRef, inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {Subscription} from "rxjs";
 import html2canvas from 'html2canvas';
@@ -7,7 +7,7 @@ import {CoreService} from "../../services/core.service";
 import {GroupByPipe} from "../../pipes/core.pipe";
 import {AuthService} from "../../components/guard";
 import {DataService} from "../../services/data.service";
-
+import {SharingDataService} from "./sharing-data.service";
 
 @Component({
   selector: 'app-run-modal-content',
@@ -38,19 +38,6 @@ export class RunModalComponent {
 
   ngOnInit(): void {
     this.templates = this.modalData.templates;
-    const preferences = this.modalData.preferences;
-  }
-
-  checkReportName(): void{
-    this.isUnique = true;
-    if(this.modalData.reports) {
-      for (let i = 0; i < this.modalData.reports.length; i++) {
-        if (this.object.name === this.modalData.reports[i].name) {
-          this.isUnique = false;
-          break;
-        }
-      }
-    }
   }
 
   onSubmit(): void {
@@ -73,7 +60,7 @@ export class RunModalComponent {
         this.coreService.startReport();
         this.activeModal.close('Done');
         this.submitted = false;
-      }, error: (err) => {
+      }, error: () => {
         this.submitted = false;
       }
     })
@@ -150,7 +137,6 @@ export class ReportingComponent {
 
   preferences: any = {};
   permission: any = {};
-  isLoading: boolean;
 
   dateFormat: string;
 
@@ -163,14 +149,9 @@ export class ReportingComponent {
 
   index: number;
 
-  subscription: Subscription;
-
 
   constructor(private modal: NzModalService, private coreService: CoreService, private groupBy: GroupByPipe,
-              private authService: AuthService, private dataService: DataService, private elementRef: ElementRef) {
-    this.subscription = dataService.eventAnnounced$.subscribe(res => {
-      this.refresh(res);
-    });
+              private authService: AuthService, private sharingDataService: SharingDataService) {
   }
 
   ngOnInit(): void {
@@ -183,19 +164,10 @@ export class ReportingComponent {
   }
 
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
-
-  tabChange($event): void {
-    this.filter.tabIndex = $event.index;
-  }
-
-
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-
+        // TODO
       }
     }
   }
@@ -210,22 +182,25 @@ export class ReportingComponent {
   }
 
 
+  receiveMessage($event: any): void {
+    this.sharingDataService.announceFunction({pageView : $event});
+  }
 
-  searchInResult(){
+  searchInResult(searchKey) {
+    this.sharingDataService.announceSearchKey(searchKey);
+  }
 
+  search(): void{
+    this.sharingDataService.announceFunction({search : true});
+  }
+
+  sort(sortBy): void{
+    this.filter.manageList.filter.sortBy = sortBy;
+    this.sharingDataService.announceFunction({sortBy : sortBy});
   }
 
   runReport() {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: RunModalComponent,
-      nzClassName: 'lg',
-      nzFooter: null,
-      nzAutofocus: null,
-      nzData: {templates: this.templates, preferences: this.preferences},
-      nzClosable: false,
-      nzMaskClosable: false
-    });
+    this.sharingDataService.announceFunction({run : true});
   }
 
 }

@@ -295,6 +295,13 @@ export class CoreService {
           reverse: true,
           currentPage: '1'
         }
+      },
+      generateReport: {
+        filter: {
+          sortBy: 'dateFrom',
+          reverse: true,
+          currentPage: '1'
+        }
       }
     };
     this.tabs._orderOverview = {};

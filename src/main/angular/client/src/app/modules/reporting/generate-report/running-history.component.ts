@@ -10,10 +10,10 @@ import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {SharingDataService} from "../sharing-data.service";
 
 @Component({
-  selector: 'app-running-history',
+  selector: 'app-generate-report',
   templateUrl: './running-history.component.html'
 })
-export class RunningHistoryComponent {
+export class GenerateReportComponent {
   @Input() permission: any;
   @Input() preferences: any = {};
   @Input() filters: any = {};
@@ -25,7 +25,7 @@ export class RunningHistoryComponent {
   selectedReport = {};
   isVisible = false;
 
-  searchableProperties = ['path', 'title', 'template', 'dateFrom', 'dateTo', 'frequency', 'created'];
+  searchableProperties = ['name', 'title', 'template', 'dateFrom', 'dateTo', 'frequency', 'created'];
 
   subscription1: Subscription;
   subscription2: Subscription;

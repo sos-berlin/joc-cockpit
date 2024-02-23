@@ -11,6 +11,8 @@ import {RunningHistoryComponent} from "./running-history/running-history.compone
 import {ManageReportComponent} from "./manage-report/manage-report.component";
 import {AllReportComponent} from "./all-report/all-report.component";
 import {FrequencyReportComponent} from "./frequency-report/frequency-report.component";
+import {SharingDataService} from "./sharing-data.service";
+import {GenerateReportComponent} from "./generate-report/running-history.component";
 
 
 @NgModule({
@@ -22,6 +24,7 @@ import {FrequencyReportComponent} from "./frequency-report/frequency-report.comp
     ManageReportComponent,
     RunningHistoryComponent,
     AllReportComponent,
+    GenerateReportComponent,
     FrequencyReportComponent
   ],
   imports: [
@@ -32,7 +35,7 @@ import {FrequencyReportComponent} from "./frequency-report/frequency-report.comp
     NzTabsModule,
     GaugeModule.forRoot(),
   ],
-  providers: [GroupByPipe]
+  providers: [GroupByPipe, SharingDataService]
 })
 export class ReportingModule {
 }

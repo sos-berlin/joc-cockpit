@@ -6,6 +6,41 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
+          <div *ngIf="index == 0" class="inline">
+            <div class="btn-group dropdown">
+              <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
+                      nzTrigger="click">
+                <span translate>common.label.sortBy</span>
+                <span class="text-primary">
+                  <span *ngIf="filter.manageList.filter.sortBy =='name'">
+                    {{'common.label.name' | translate}}
+                    <i *ngIf="!filter.manageList.reverse" class="fa fa-caret-up"></i>
+                    <i *ngIf="filter.manageList.reverse" class="fa fa-caret-down"></i>
+                  </span>
+                  <span *ngIf="filter.manageList.filter.sortBy =='path1'">
+                    {{'common.label.path' | translate}}
+                    <i *ngIf="!filter.manageList.reverse" class="fa fa-caret-up"></i>
+                    <i *ngIf="filter.manageList.reverse" class="fa fa-caret-down"></i>
+                  </span>
+                </span>
+              </button>
+              <nz-dropdown-menu #sortBy="nzDropdownMenu">
+                <ul nz-menu>
+                  <li (click)="sort('name')" nz-menu-item>
+                    <a translate>resource.lock.label.name</a>
+                  </li>
+                  <li (click)="sort('path1')" nz-menu-item>
+                    <a translate>common.label.path</a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+            <button class="btn btn-grey btn-sm m-l-12" (click)="runReport()" translate>
+              <span nz-icon nzType="play-circle" nzTheme="outline"></span>
+              reporting.button.runReport
+            </button>
+            <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+          </div>
         </div>
       </div>
     </div>
@@ -28,23 +63,46 @@
             <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.reportRunHistory</span></span>
           </a>
         </li>
+        <li class="nav-item dropdown-separator">
+          <span class="separator"></span>
+        </li>
+        <li class="nav-item">
+          <a (click)="index = 2" class="nav-link" [ngClass]="{'active': index == 2}">
+            <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.generateReport</span></span>
+          </a>
+        </li>
+
       </ul>
     </div>
     <div class="col-md-4 text-right">
-      <div class="search-box-field pull-right" *ngIf="index == 0">
-        <label>
-          <input (keyup)="searchInResult()" [(ngModel)]="filter.manageList.searchText"
-                 placeholder="{{'common.placeholder.search' | translate}}" type="search">
-        </label>
-        <i (click)="filter.manageList.searchText = '';searchInResult()" [hidden]="!filter.manageList.searchText"
-           class="fa fa-times search-close"></i>
-      </div>
+      <ng-container *ngIf="index == 0">
+        <button (click)="search()" class="btn btn-sm inline pull-right m-l btn-grey">
+          <i class="fa fa-search"></i>&nbsp;
+          <span translate>common.button.search</span>
+        </button>
+        <div class="search-box-field pull-right">
+          <label>
+            <input (keyup)="searchInResult(filter.manageList.searchText)" [(ngModel)]="filter.manageList.searchText"
+                   placeholder="{{'common.placeholder.search' | translate}}" type="search">
+          </label>
+          <i (click)="filter.manageList.searchText = '';searchInResult(filter.manageList.searchText)" [hidden]="!filter.manageList.searchText"
+             class="fa fa-times search-close"></i>
+        </div>
+      </ng-container>
       <div class="search-box-field pull-right" *ngIf="index == 1">
         <label>
-          <input (keyup)="searchInResult()" [(ngModel)]="filter.runHistory.searchText"
+          <input (keyup)="searchInResult(filter.runHistory.searchText)" [(ngModel)]="filter.runHistory.searchText"
                  placeholder="{{'common.placeholder.search' | translate}}" type="search">
         </label>
-        <i (click)="filter.runHistory.searchText = '';searchInResult()" [hidden]="!filter.runHistory.searchText"
+        <i (click)="filter.runHistory.searchText = '';searchInResult(filter.runHistory.searchText)" [hidden]="!filter.runHistory.searchText"
+           class="fa fa-times search-close"></i>
+      </div>
+      <div class="search-box-field pull-right" *ngIf="index == 2">
+        <label>
+          <input (keyup)="searchInResult(filter.generateReport.searchText)" [(ngModel)]="filter.generateReport.searchText"
+                 placeholder="{{'common.placeholder.search' | translate}}" type="search">
+        </label>
+        <i (click)="filter.generateReport.searchText = '';searchInResult(filter.generateReport.searchText)" [hidden]="!filter.generateReport.searchText"
            class="fa fa-times search-close"></i>
       </div>
     </div>
@@ -57,6 +115,9 @@
     </div>
     <div *ngIf="index == 1">
       <app-running-history  [permission]="permission" [preferences]="preferences" [filters]="filter.runHistory" [templates]="templates"></app-running-history>
+    </div>
+    <div *ngIf="index == 2">
+      <app-generate-report  [permission]="permission" [preferences]="preferences" [filters]="filter.generateReport" [templates]="templates"></app-generate-report>
     </div>
   </div>
   <div *ngIf="!loading" class="spinner">

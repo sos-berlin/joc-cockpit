@@ -19,6 +19,7 @@ export class SearchComponent {
   @Input() isWorkflow = false;
   @Input() isBoard = false;
   @Input() isLock = false;
+  @Input() isReport = false;
   @Input() isCalendar = false;
   permission: any = {};
   preferences: any = {};
@@ -79,7 +80,7 @@ export class SearchComponent {
     this.deployTypes = Object.keys(this.ENUM).filter(key => isNaN(+key));
     this.getAgents();
     this.getFolderTree();
-    const savedObj: any = this.coreService.getSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory');
+    const savedObj: any = this.coreService.getSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : this.isReport ? 'report' : 'inventory');
     this.panel.active = savedObj.panel;
     if (!isEmpty(savedObj.request)) {
       this.searchObj = savedObj.request;
@@ -113,7 +114,7 @@ export class SearchComponent {
       if (savedObj.request?.selectedPath) {
         delete savedObj.request.selectedPath;
       }
-      if (!this.isWorkflow && !this.isBoard && !this.isLock && !this.isCalendar) {
+      if (!this.isWorkflow && !this.isBoard && !this.isLock && !this.isCalendar && !this.isReport) {
         this.searchObj.returnType = this.ENUM.WORKFLOW;
       } else {
         if (this.isWorkflow) {
@@ -122,6 +123,8 @@ export class SearchComponent {
           this.type = this.ENUM.NOTICEBOARD;
         } else if (this.isLock) {
           this.type = this.ENUM.LOCK;
+        } else if (this.isReport) {
+          this.type = this.ENUM.REPORT;
         } else if (this.isCalendar) {
           this.type = 'CALENDAR';
         }
@@ -156,7 +159,7 @@ export class SearchComponent {
       });
     }
 
-    if (!this.isWorkflow && !this.isLock && !this.isBoard && !this.isCalendar) {
+    if (!this.isWorkflow && !this.isLock && !this.isBoard && !this.isCalendar && !this.isReport) {
       if (!this.searchObj.deployedOrReleased) {
         this.searchObj.deployedOrReleased = 'all';
       }
@@ -167,8 +170,8 @@ export class SearchComponent {
   }
 
   ngOnDestroy(): void {
-    const savedObj: any = this.coreService.getSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory');
-    this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory',
+    const savedObj: any = this.coreService.getSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isReport ? 'report' : this.isCalendar ? 'calendar' : 'inventory');
+    this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isReport ? 'report' : this.isCalendar ? 'calendar' : 'inventory',
       {...savedObj, panel: this.panel.active, request: this.searchObj});
   }
 
@@ -204,8 +207,8 @@ export class SearchComponent {
   getFolderTree(): void {
     this.searchObj.folders = [];
     const obj: any = {};
-    if (this.isWorkflow || this.isBoard || this.isLock || this.isCalendar) {
-      obj.types = this.isWorkflow ? [this.ENUM.WORKFLOW] : this.isBoard ? [this.ENUM.NOTICEBOARD] : this.isLock ? [this.ENUM.LOCK] : ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
+    if (this.isWorkflow || this.isBoard || this.isLock || this.isCalendar || this.isReport) {
+      obj.types = this.isWorkflow ? [this.ENUM.WORKFLOW] : this.isBoard ? [this.ENUM.NOTICEBOARD] : this.isLock ? [this.ENUM.LOCK] : this.isReport ? [this.ENUM.REPORT] : ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
       obj.controllerId = this.controllerId;
     } else {
       obj.forInventory = true;
@@ -306,7 +309,7 @@ export class SearchComponent {
     if (this.searchObj.deployedOrReleased == 'deployed' && this.searchObj.currentController) {
       obj.controllerId = this.controllerId;
     }
-    if (!this.isWorkflow && !this.isBoard && !this.isLock && !this.isCalendar) {
+    if (!this.isWorkflow && !this.isBoard && !this.isLock && !this.isCalendar && !this.isReport) {
       this.url = 'inventory/search';
       if (this.searchObj.deployedOrReleased == 'deployed') {
         obj.deployedOrReleased = true;
@@ -337,6 +340,8 @@ export class SearchComponent {
         this.url = 'notice/boards/search';
       } else if (this.isLock) {
         this.url = 'locks/search';
+      } else if (this.isReport) {
+        this.url = 'reporting/search';
       } else if (this.isCalendar) {
         this.url = 'calendars/search';
       }
@@ -350,13 +355,13 @@ export class SearchComponent {
           item.path1 = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
         })
         this.isControllerId = false;
-        if (!this.isWorkflow && !this.isBoard && !this.isLock && !this.isCalendar) {
+        if (!this.isWorkflow && !this.isBoard && !this.isLock && !this.isReport && !this.isCalendar) {
           if (this.results.length > 0 && this.results[0].controllerId) {
             this.isControllerId = true;
           }
           this.isJobSearch = (obj.returnType === this.ENUM.WORKFLOW);
         }
-        this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory',
+        this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isReport ? 'report' : this.isCalendar ? 'calendar' : 'inventory',
           {panel: this.panel.active, request: this.searchObj, result: this.results});
         this.submitted = false;
       }, error: () => {
@@ -372,7 +377,7 @@ export class SearchComponent {
     this.object.mapOfCheckedId = new Set();
     this.object.checked = false;
     this.object.indeterminate = false;
-    this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory',
+    this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isReport ? 'report' : this.isCalendar ? 'calendar' : 'inventory',
       {panel: false, request: {}, result: []});
   }
 

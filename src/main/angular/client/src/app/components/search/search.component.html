@@ -108,7 +108,7 @@
                             [listArray]="deployTypes"></app-select-input>
         </div>
       </div>
-      <nz-collapse [nzBordered]="false" *ngIf="searchObj.returnType !== 'JOBTEMPLATE'">
+      <nz-collapse [nzBordered]="false" *ngIf="searchObj.returnType !== 'JOBTEMPLATE' && searchObj.returnType !== 'REPORT'">
         <nz-collapse-panel [nzHeader]="'inventory.search.label.advanced' | translate" [nzActive]="panel.active"
           (nzActiveChange)="onChange($event)">
           <div class="p-a b-a m-t">
