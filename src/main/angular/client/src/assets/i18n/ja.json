@@ -2946,6 +2946,7 @@
     "label.iamKeycloakTrustStoreType": "Keycloak トラストストアタイプ",
     "label.iamKeycloakClientSecret": "Keycloak クライアントシークレット",
     "label.iamKeycloakRealm": "Keycloak Realm",
+    "label.iamKeycloakVersionCompatibility": "Version 16 or smaller",
     "label.iamLdapSearchBase": "LDAP Search Base",
     "label.iamLdapGroupSearchBase": "LDAP Group Search Base",
     "label.iamLdapUserDnTemplate": "LDAP User Dn Template",
@@ -3211,7 +3212,8 @@
         "iamKeycloakTrustStorePassword": "Keycloak トラストストアパスワード",
         "iamKeycloakTrustStoreType": "Keycloak トラストストアタイプ",
         "iamKeycloakClientSecret": "Keycloak クライアントシークレット",
-        "iamKeycloakRealm": "Keycloak Realm"
+        "iamKeycloakRealm": "Keycloak Realm",
+        "iamKeycloakVersionCompatibility": "Version 16 or smaller"
       },
       "oidc": {
         "iamOidcName": "OIDC名",

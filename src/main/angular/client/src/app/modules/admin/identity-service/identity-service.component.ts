@@ -76,6 +76,9 @@ export class SettingModalComponent {
   jobResourcesTree: any = [];
   currentObj: any = {};
   userObj: any = {};
+  versionCompatibility: any = {
+    isCheck: false
+  };
   allRoles: string[] = [];
   passwordFields: any = {
     first: false,
@@ -178,16 +181,21 @@ export class SettingModalComponent {
         const data = JSON.parse(res.configuration.configurationItem);
         if (this.data) {
           if (data) {
-            this.currentObj = data.vault || data.keycloak || data.oidc || data.fido || {};
+            this.currentObj = data.keycloak || data.oidc || data.fido || {};
+            if (data.keycloak) {
+              this.versionCompatibility.isCheck = data.keycloak?.iamKeycloakVersionCompatibility == 16;
+            }
             if (data.fido) {
               if (!this.currentObj.iamFidoProtocolType) {
                 this.currentObj.iamFidoProtocolType = 'FIDO2';
               }
             } else if (this.data['identityServiceType'] === 'OIDC' || this.data['identityServiceType'] == 'OIDC-JOC') {
-              if (this.currentObj.iamOidcClientId) {
-                this.currentObj.iamOidcFlowType = this.currentObj.iamOidcClientSecret ? 'AUTHENTICATION' : 'IMPLICIT';
-              } else {
-                this.currentObj.iamOidcFlowType = 'AUTHENTICATION';
+              if (!this.currentObj.iamOidcFlowType) {
+                if (this.currentObj.iamOidcClientId) {
+                  this.currentObj.iamOidcFlowType = this.currentObj.iamOidcClientSecret ? 'AUTHENTICATION' : 'IMPLICIT';
+                } else {
+                  this.currentObj.iamOidcFlowType = 'AUTHENTICATION';
+                }
               }
             }
             if (this.data['identityServiceType'] == 'OIDC') {
@@ -217,7 +225,7 @@ export class SettingModalComponent {
                   this.userObj.iamLdapHost = from < to ? this.currentObj.iamLdapServerUrl.substring(from, to) : '';
                 }
               }
-              if(res.configuration.objectType === 'LDAP'){
+              if (res.configuration.objectType === 'LDAP') {
                 if (!this.currentObj.iamLdapGroupRolesMap) {
                   this.currentObj.iamLdapGroupRolesMap = {items: []};
                 }
@@ -343,6 +351,14 @@ export class SettingModalComponent {
 
   changeField(): void {
     this.currentObj.iamLdapServerUrl = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
+  }
+
+  checkVersionCompatibility(isChecked: boolean, obj: any): void {
+    if (isChecked) {
+      obj.iamKeycloakVersionCompatibility = 16;
+    } else {
+      delete obj['iamKeycloakVersionCompatibility'];
+    }
   }
 
   checkConfirmation(isChecked: boolean, type: string): void {
