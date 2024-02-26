@@ -69,10 +69,10 @@ export class RunningHistoryComponent {
 
 
   private getData(): void {
-    this.coreService.post('reporting/report/history', {compact: true}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+    this.coreService.post('reporting/run/history', {compact: true}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoaded = true;
-        this.reports = this.orderPipe.transform(res.reports, this.filters.sortBy, this.filters.reverse);
+        this.reports = this.orderPipe.transform(res.runs, this.filters.sortBy, this.filters.reverse);
         this.reports.forEach((report) => {
           const template = this.templates.find(template => template.templateId == report.templateId);
           if (template) report.template = template.title;

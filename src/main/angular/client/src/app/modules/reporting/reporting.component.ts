@@ -55,7 +55,7 @@ export class RunModalComponent {
     if (this.object.monthTo) {
       obj.monthTo = this.coreService.getDateByFormat(this.object.monthTo, null, 'YYYY-MM')
     }
-    this.coreService.post('reporting/report/run', obj).subscribe({
+    this.coreService.post('reporting/reports/run', obj).subscribe({
       next: () => {
         this.coreService.startReport();
         this.activeModal.close('Done');
