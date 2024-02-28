@@ -1,12 +1,10 @@
 import {Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
-import {Subscription} from "rxjs";
 import html2canvas from 'html2canvas';
 import {jsPDF} from 'jspdf';
 import {CoreService} from "../../services/core.service";
 import {GroupByPipe} from "../../pipes/core.pipe";
 import {AuthService} from "../../components/guard";
-import {DataService} from "../../services/data.service";
 import {SharingDataService} from "./sharing-data.service";
 
 @Component({
@@ -16,45 +14,21 @@ import {SharingDataService} from "./sharing-data.service";
 export class RunModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   submitted = false;
-  isUnique = true;
-  object: any = {
-    name: '',
-    hits: 10,
-  };
-  today = new Date();
-  templates = [];
-  frequencies = [
-    {name: 'WEEKLY'},
-    {name: 'TWO_WEEKS'},
-    {name: 'MONTHLY'},
-    {name: 'THREE_MONTHS'},
-    {name: 'SIX_MONTHS'},
-    {name: 'YEARLY'},
-    {name: 'THREE_YEARS'}
-  ];
+
+  reportPaths = [];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
-    this.templates = this.modalData.templates;
+    this.reportPaths = this.modalData.reportPaths;
   }
 
   onSubmit(): void {
     this.submitted = true;
     const obj: any = {
-      name: this.object.name,
-      title: this.object.title,
-      templateId: this.object.templateId,
-      hits: this.object.hits,
-      frequencies: this.object.frequencies
+      reportPaths: this.reportPaths
     };
-    if (this.object.monthFrom) {
-      obj.monthFrom = this.coreService.getDateByFormat(this.object.monthFrom, null, 'YYYY-MM')
-    }
-    if (this.object.monthTo) {
-      obj.monthTo = this.coreService.getDateByFormat(this.object.monthTo, null, 'YYYY-MM')
-    }
     this.coreService.post('reporting/reports/run', obj).subscribe({
       next: () => {
         this.coreService.startReport();
@@ -64,7 +38,6 @@ export class RunModalComponent {
         this.submitted = false;
       }
     })
-
   }
 }
 
@@ -144,6 +117,7 @@ export class ReportingComponent {
   data: any = [];
 
   loading = false;
+  display = false;
 
   templates = [];
 
@@ -161,15 +135,6 @@ export class ReportingComponent {
     this.filter = this.coreService.getReportingTab();
     this.index = this.filter.tabIndex || 0;
     this.getTemplates();
-  }
-
-
-  private refresh(args: { eventSnapshots: any[] }): void {
-    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
-      for (let j = 0; j < args.eventSnapshots.length; j++) {
-        // TODO
-      }
-    }
   }
 
   private getTemplates(): void {
@@ -201,6 +166,10 @@ export class ReportingComponent {
 
   runReport() {
     this.sharingDataService.announceFunction({run : true});
+  }
+
+  checkRunBtn(data): void{
+    this.display = data.display;
   }
 
 }

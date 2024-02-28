@@ -9,6 +9,7 @@ import {AuthService} from '../../../components/guard';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {TreeComponent} from "../../../components/tree-navigation/tree.component";
 import {SharingDataService} from "../sharing-data.service";
+import {RunModalComponent} from "../reporting.component";
 
 @Component({
   selector: 'app-manage-report',
@@ -38,7 +39,6 @@ export class ManageReportComponent {
 
   object = {
     setOfCheckedId: new Set(),
-    mapOfCheckedId: new Set(),
     checked: false,
     indeterminate: false
   };
@@ -68,8 +68,9 @@ export class ManageReportComponent {
       } else if (res.sortBy) {
         this.sort(res.sortBy);
       } else if (res.search) {
-        console.log(res.search);
         this.isSearchVisible = true;
+      } else if (res.run) {
+        this.runAll();
       }
     });
     this.subscription4 = sharingDataService.searchKeyAnnounced$.subscribe(res => {
@@ -274,38 +275,38 @@ export class ManageReportComponent {
     if (value && this.reports.length > 0) {
       const documents = this.getCurrentData(this.data, this.filters);
       documents.forEach(item => {
-        this.object.mapOfCheckedId.add(item.path);
+        this.object.setOfCheckedId.add(item.path);
       });
     } else {
-      this.object.mapOfCheckedId.clear();
+      this.object.setOfCheckedId.clear();
     }
     this.refreshCheckedStatus();
   }
 
   onItemChecked(document: any, checked: boolean): void {
-    if (!checked && this.object.mapOfCheckedId.size > (this.filters.filter.entryPerPage || this.preferences.entryPerPage)) {
+    if (!checked && this.object.setOfCheckedId.size > (this.filters.filter.entryPerPage || this.preferences.entryPerPage)) {
       const orders = this.getCurrentData(this.data, this.filters);
       if (orders.length < this.data.length) {
-        this.object.mapOfCheckedId.clear();
+        this.object.setOfCheckedId.clear();
         orders.forEach(item => {
-          this.object.mapOfCheckedId.add(item.path);
+          this.object.setOfCheckedId.add(item.path);
         });
       }
     }
     if (checked) {
-      this.object.mapOfCheckedId.add(document.path);
+      this.object.setOfCheckedId.add(document.path);
     } else {
-      this.object.mapOfCheckedId.delete(document.path);
+      this.object.setOfCheckedId.delete(document.path);
     }
     const documents = this.getCurrentData(this.data, this.filters);
-    this.object.checked = this.object.mapOfCheckedId.size === documents.length;
+    this.object.checked = this.object.setOfCheckedId.size === documents.length;
     this.refreshCheckedStatus();
   }
 
   refreshCheckedStatus(): void {
-    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
+    this.object.indeterminate = this.object.setOfCheckedId.size > 0 && !this.object.checked;
+    this.reportRun.emit({display: this.object.checked || this.object.indeterminate});
   }
-
 
   run(item): void {
     this.coreService.post('reporting/reports/run', {
@@ -318,16 +319,15 @@ export class ManageReportComponent {
   }
 
   runAll(): void {
-    // this.modal.create({
-    //   nzTitle: undefined,
-    //   nzContent: RunModalComponent,
-    //   nzClassName: 'lg',
-    //   nzFooter: null,
-    //   nzAutofocus: null,
-    //   nzData: {templates: this.templates, preferences: this.preferences},
-    //   nzClosable: false,
-    //   nzMaskClosable: false
-    // });
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: RunModalComponent,
+      nzFooter: null,
+      nzAutofocus: null,
+      nzData: {reportPaths: Array.from(this.object.setOfCheckedId)},
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
   reload(): void {
@@ -343,3 +343,7 @@ export class ManageReportComponent {
     }
   }
 }
+
+
+
+

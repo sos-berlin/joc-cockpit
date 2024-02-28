@@ -35,7 +35,7 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <button class="btn btn-grey btn-sm m-l-12" (click)="runReport()" translate>
+            <button *ngIf="display" class="btn btn-grey btn-sm m-l-12" (click)="runReport()" translate>
               <span nz-icon nzType="play-circle" nzTheme="outline"></span>
               reporting.button.runReport
             </button>
@@ -111,7 +111,7 @@
 <div class="scroll-y max-ht2">
   <div class="padding p-b-0" *ngIf="loading">
     <div *ngIf="index == 0">
-      <app-manage-report (reportRun)="runReport()" [permission]="permission" [preferences]="preferences" [filters]="filter.manageList" [templates]="templates"></app-manage-report>
+      <app-manage-report (reportRun)="checkRunBtn($event)" [permission]="permission" [preferences]="preferences" [filters]="filter.manageList" [templates]="templates"></app-manage-report>
     </div>
     <div *ngIf="index == 1">
       <app-running-history  [permission]="permission" [preferences]="preferences" [filters]="filter.runHistory" [templates]="templates"></app-running-history>

@@ -4,6 +4,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
 import {CoreService} from "../../../services/core.service";
 import {GroupByPipe} from "../../../pipes/core.pipe";
 import {AuthService} from "../../../components/guard";
+import {isArray} from "underscore";
 
 @Component({
   selector: 'app-frequency-report',
@@ -37,7 +38,12 @@ export class FrequencyReportComponent {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.selectedIds = this.report.map(item => item.id);
+    
+    if(isArray(this.report)) {
+      this.selectedIds = this.report.map(item => item.id);
+    } else {
+      this.selectedIds = [this.report.id];
+    }
     this.loadData();
 
   }

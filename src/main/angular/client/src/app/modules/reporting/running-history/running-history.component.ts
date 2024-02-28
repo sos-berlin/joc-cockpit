@@ -23,9 +23,8 @@ export class RunningHistoryComponent {
   reports = [];
   data = [];
   selectedReport = {};
-  isVisible = false;
 
-  searchableProperties = ['path', 'title', 'template', 'dateFrom', 'dateTo', 'frequency', 'created'];
+  searchableProperties = ['path', 'title', 'template', 'state', '_text', 'monthFrom', 'monthTo', 'frequencies'];
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -105,15 +104,6 @@ export class RunningHistoryComponent {
     if (this.reports.length === 0) {
       this.filters.filter.currentPage = 1;
     }
-  }
-
-  onSelect(data): void {
-    this.isVisible = true;
-    this.selectedReport = data;
-  }
-
-  closePanel(): void {
-    this.isVisible = false;
   }
 
 }
