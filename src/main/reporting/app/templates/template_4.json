@@ -5,7 +5,6 @@
   "data": {
     "chartType": "LINE",
     "groupBy": "START_TIME",
-    "execution": "PARALLELISM",
-    "duration": "15m"
+    "execution": "PARALLELISM"
   }
 }

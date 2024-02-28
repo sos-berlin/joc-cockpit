@@ -1,15 +1,14 @@
 const commander = require('commander');
+const {isNumber} = require("lodash");
+const winston = require('winston');
 const init = require('./src/converter');
 const logger = require('./src/logger');
 const ProcessingFrequencies = require('./src/config/frequencies');
-const {isNumber} = require("lodash");
-const winston = require('winston');
-
 
 commander.on('--help', function () {
     console.log('.....');
     console.log('node run-report.js -t template.json -i inputDir -p "every 3 months, weekly" -o outputDir');
-    console.log('...');
+    console.log('.....');
 });
 
 commander.option('--debug', 'Enable debug mode');
@@ -23,6 +22,7 @@ function parseCommandLineArguments() {
         .option('-i, --inputDirectory <inputDirectory>', 'Input directory from where data files will be taken')
         .option('-p, --frequencies <frequencies>', 'Processing frequencies (comma-separated, e.g., "every 3 months, every 6 months, monthly")')
         .option('-o, --outputDirectory <outputDirectory>', 'Output directory where final reports will be created')
+        .option('-c, --controllerId <controllerId>', 'Controller Id for which the report needs to be generated')
         .option('-s, --monthFrom <monthFrom>', 'Month from for input file selection e.g. YYYY-MM')
         .option('-e, --monthTo <monthTo>', 'Month to for input file selection e.g. YYYY-MM')
         .option('-n, --hits <hits>', 'Define the hits of report')

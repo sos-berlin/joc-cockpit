@@ -1,9 +1,10 @@
 {
-  "title": "Total number of order executions per ${frequency}",
+  "title": "Top ${hits} frequently failed workflows with cancelled orders",
   "id": "6",
   "type": "ORDER",
   "data": {
-    "chartType": "CARD",
-    "groupBy": "ORDER_ID"
+    "groupBy": "WORKFLOW_NAME",
+    "status": "FAILED",
+    "orderState": "CANCELLED"
   }
 }

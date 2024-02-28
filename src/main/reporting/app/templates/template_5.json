@@ -1,9 +1,11 @@
 {
-  "title": "Total number of job executions per ${frequency}",
+  "title": "Top ${hits} high criticality failed jobs",
   "id": "5",
   "type": "JOB",
   "data": {
-    "chartType": "CARD",
-    "groupBy": "START_TIME"
+    "chartType": "BAR",
+    "groupBy": "JOB_NAME",
+    "status": "FAILED",
+    "criticality": "HIGH"
   }
 }

@@ -53,10 +53,10 @@ async function readDataDirectory(directory, options, templateData) {
  * Dynamically filters and groups data based on provided templates and hits.
  * @param {object} templates - The templates object containing groupBy and status properties.
  * @param {Array} data - The data array to be filtered and grouped.
- * @param {number} hits - The hits limit for the grouped data.
+ * @param {object} options - Additional options.
  * @returns {Array} - The filtered and grouped data.
  */
-function dynamicData(templates, data, hits) {
+function dynamicData(templates, data, options) {
     // Check if templates contain groupBy property
     if (templates?.data?.groupBy) {
         // Filter data based on the status
@@ -66,13 +66,24 @@ function dynamicData(templates, data, hits) {
             data = data.filter(item => item.STATE === '1');
         }
 
+        if (templates.data.orderState === 'CANCELLED') {
+            data = data.filter(item => item.ORDER_STATE === '7');
+        }
+
+        if (templates.data.criticality === 'HIGH') {
+            data = data.filter(item => item.CRITICALITY === '2');
+        }
+
+        if (options.controllerId) {
+            data = data.filter(item => item.CONTROLLER_ID === options.controllerId);
+        }
         // Group data dynamically based on the groupBy property
 
         if (templates.data.groupBy === 'WORKFLOW_NAME' && templates.data.execution === "DURATION") {
             // Calculate execution time for each workflow
             const executionTimes = data.map(item => {
                 const executionTime = item.duration = moment(item.END_TIME).diff(item.START_TIME) // in milliseconds
-                const duration =  executionTime / 1000; // Convert to seconds
+                const duration = executionTime / 1000; // Convert to seconds
                 return {...item, executionTime: executionTime, duration};
             });
 
@@ -87,18 +98,25 @@ function dynamicData(templates, data, hits) {
             const workflowExecutionTimes = Object.keys(groupedData).map(workflow => {
                 const executions = groupedData[workflow];
                 const totalExecutionTime = executions.reduce((sum, entry) => sum + entry.executionTime, 0);
-                return { workflow, totalExecutionTime };
+                return {workflow, totalExecutionTime};
             });
 
             // Sort workflows by total execution time in descending order
             workflowExecutionTimes.sort((a, b) => b.totalExecutionTime - a.totalExecutionTime);
 
             // Get top ${hits} workflows
-            return workflowExecutionTimes.slice(0, hits).map(({ workflow, totalExecutionTime }) => ({
+            return workflowExecutionTimes.slice(0, options.hits).map(({workflow, totalExecutionTime}) => ({
                 workflow,
                 totalExecutionTime,
                 // Add additional fields
-                data: groupedData[workflow].map(({ START_TIME, duration, JOB_NAME, AGENT_NAME, STATE, WORKFLOW_NAME }) => ({
+                data: groupedData[workflow].map(({
+                                                     START_TIME,
+                                                     duration,
+                                                     JOB_NAME,
+                                                     AGENT_NAME,
+                                                     STATE,
+                                                     WORKFLOW_NAME
+                                                 }) => ({
                     START_TIME,
                     duration,
                     JOB_NAME,
@@ -126,16 +144,30 @@ function dynamicData(templates, data, hits) {
 
                     if (overlappingJobs.length + 1 > maxParallelJobs) {
                         maxParallelJobs = overlappingJobs.length + 1;
-                        maxParallelJobData = currentJobs.map(({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, START_TIME, STATE, duration }) => ({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, START_TIME, STATE, duration }));
+                        maxParallelJobData = currentJobs.map(({
+                                                                  WORKFLOW_NAME,
+                                                                  JOB_NAME,
+                                                                  AGENT_NAME,
+                                                                  START_TIME,
+                                                                  STATE,
+                                                                  duration
+                                                              }) => ({
+                            WORKFLOW_NAME,
+                            JOB_NAME,
+                            AGENT_NAME,
+                            START_TIME,
+                            STATE,
+                            duration
+                        }));
                     }
 
                     return currentJobs.filter(j => j.END_TIME.isAfter(job.START_TIME));
                 }, []);
 
-                return { agentName: agent, count: maxParallelJobs, data: maxParallelJobData };
+                return {agentName: agent, count: maxParallelJobs, data: maxParallelJobData};
             });
 
-            return _.orderBy(results, ['count'], ['desc']).slice(0, hits);
+            return _.orderBy(results, ['count'], ['desc']).slice(0, options.hits);
         } else if (templates.data.groupBy === 'START_TIME' && templates.data.execution === "PARALLELISM") {
             const groupedData = Object.values(data.reduce((acc, curr) => {
                 const startTime = curr.START_TIME.split(' ')[0];
@@ -173,20 +205,66 @@ function dynamicData(templates, data, hits) {
             });
 
             const sortedPeriods = periods.sort((a, b) => b.length - a.length);
-            return [
-                {
-                    'topLowParallelismPeriods': sortedPeriods.slice(0, hits).map(period => ({
-                        period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
-                        data: period.map(({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration}) => ({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }))
-                    }))
-                },
-                {
-                    'topHighParallelismPeriods': sortedPeriods.slice(-hits).reverse().map(period => ({
-                        period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
-                        data: period.map(({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }) => ({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }))
-                    }))
-                }
-            ];
+
+            const topLowCounts = sortedPeriods.slice(0, options.hits).reduce((acc, period) => acc + period.length, 0);
+            const topHighCounts = sortedPeriods.slice(-options.hits).reduce((acc, period) => acc + period.length, 0);
+            const count = topLowCounts + topHighCounts;
+
+            return [{
+                count,
+                data: [
+                    {
+                        count: topLowCounts,
+                        'topLowParallelismPeriods': sortedPeriods.slice(0, options.hits).map(period => ({
+                            period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
+                            data: period.map(({
+                                                  WORKFLOW_NAME,
+                                                  JOB_NAME,
+                                                  AGENT_NAME,
+                                                  ORDER_ID,
+                                                  START_TIME,
+                                                  ORDER_STATE,
+                                                  STATE,
+                                                  duration
+                                              }) => ({
+                                WORKFLOW_NAME,
+                                JOB_NAME,
+                                AGENT_NAME,
+                                ORDER_ID,
+                                START_TIME,
+                                ORDER_STATE,
+                                STATE,
+                                duration
+                            }))
+                        }))
+                    },
+                    {
+                        count: topHighCounts,
+                        'topHighParallelismPeriods': sortedPeriods.slice(-options.hits).reverse().map(period => ({
+                            period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
+                            data: period.map(({
+                                                  WORKFLOW_NAME,
+                                                  JOB_NAME,
+                                                  AGENT_NAME,
+                                                  ORDER_ID,
+                                                  START_TIME,
+                                                  ORDER_STATE,
+                                                  STATE,
+                                                  duration
+                                              }) => ({
+                                WORKFLOW_NAME,
+                                JOB_NAME,
+                                AGENT_NAME,
+                                ORDER_ID,
+                                START_TIME,
+                                ORDER_STATE,
+                                STATE,
+                                duration
+                            }))
+                        }))
+                    }
+                ]
+            }];
         } else if (templates.data.groupBy === 'START_TIME' && templates.data.execution === "DURATION") {
             // Calculate the duration for each job execution
             data.forEach(item => {
@@ -194,25 +272,39 @@ function dynamicData(templates, data, hits) {
             });
 
             // Extract the required fields and return the modified data array
-            return data.slice(0, hits).map(({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, ORDER_ID, START_TIME, ORDER_STATE, STATE, duration }) => ({
+            return data.slice(0, options.hits).map(({WORKFLOW_NAME, JOB_NAME, duration}) => ({
                 WORKFLOW_NAME,
                 JOB_NAME,
-                AGENT_NAME,
-                ORDER_ID,
-                START_TIME,
-                ORDER_STATE,
-                STATE,
                 duration,
+                data: data.map(({
+                                    WORKFLOW_NAME,
+                                    JOB_NAME,
+                                    AGENT_NAME,
+                                    ORDER_ID,
+                                    START_TIME,
+                                    ORDER_STATE,
+                                    STATE,
+                                    duration
+                                }) => ({
+                    WORKFLOW_NAME,
+                    JOB_NAME,
+                    AGENT_NAME,
+                    ORDER_ID,
+                    START_TIME,
+                    ORDER_STATE,
+                    STATE,
+                    duration,
+                }))
             }));
         } else {
-            const groupedData = Object.entries(data.reduce((groups, item) => {
+            return Object.entries(data.reduce((groups, item) => {
                 let key = item[templates.data.groupBy];
                 if (templates.data.groupBy === 'JOB_NAME') {
                     key = item['WORKFLOW_NAME'] + '__' + item['JOB_NAME'];
                 }
 
                 if (!groups[key]) {
-                    groups[key] = { count: 0, workflow: item['WORKFLOW_NAME'], job: item['JOB_NAME'], data: [] };
+                    groups[key] = {count: 0, workflow: item['WORKFLOW_NAME'], job: item['JOB_NAME'], data: []};
                 }
                 groups[key].count++;
                 groups[key].data.push(item);
@@ -220,8 +312,7 @@ function dynamicData(templates, data, hits) {
             }, {}))
                 .sort((a, b) => b[1].count - a[1].count) // Sort by count in descending order
                 // Slice to get only the specified hits
-                .slice(0, hits)
-
+                .slice(0, options.hits)
 
                 // Map to transform the data format
                 .map(([key, value]) => {
@@ -236,7 +327,16 @@ function dynamicData(templates, data, hits) {
                         count: value.count,
                         workflow: value.workflow,
                         job: value.job,
-                        data: value.data.concat(overlappingData).map(({ WORKFLOW_NAME, JOB_NAME, START_TIME, duration, AGENT_NAME, ORDER_STATE, STATE, ORDER_ID }) => ({
+                        data: value.data.concat(overlappingData).map(({
+                                                                          WORKFLOW_NAME,
+                                                                          JOB_NAME,
+                                                                          START_TIME,
+                                                                          duration,
+                                                                          AGENT_NAME,
+                                                                          ORDER_STATE,
+                                                                          STATE,
+                                                                          ORDER_ID
+                                                                      }) => ({
                             WORKFLOW_NAME,
                             JOB_NAME,
                             AGENT_NAME,
@@ -248,7 +348,6 @@ function dynamicData(templates, data, hits) {
                         }))
                     };
                 });
-            return groupedData;
         }
 
     }
@@ -272,7 +371,7 @@ async function writeReportData(options, data, directory, fileName, templateData,
     };
     let groupedData;
 
-    groupedData = dynamicData(templateData, JSON.parse(data), hits);
+    groupedData = dynamicData(templateData, JSON.parse(data), options);
 
     if (groupedData) {
         jsonObject.data = groupedData;
