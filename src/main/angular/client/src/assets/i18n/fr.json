@@ -1965,6 +1965,7 @@
         "title": "The Title of the Report can be specified as desired.",
         "template": "Template",
         "frequencies": "Frequencies",
+        "controllerId": "controllerId",
         "hits": "Hits",
         "monthFrom": "Month From",
         "monthTo": "Month To"

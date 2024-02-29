@@ -122,12 +122,6 @@
                   <i *ngIf="filters.filter.sortBy == 'monthTo' && filters.filter.reverse"
                      class="fa fa-caret-down "></i></a>
                 </th>
-                <th (click)="sort('hits')"><a><span class="p-r-xs" translate>reporting.label.hits</span>
-                  <i *ngIf="filters.filter.sortBy == 'hits' && !filters.filter.reverse"
-                     class="fa fa-caret-up "></i>
-                  <i *ngIf="filters.filter.sortBy == 'hits' && filters.filter.reverse"
-                     class="fa fa-caret-down "></i></a>
-                </th>
               </tr>
               </thead>
               <tbody>
@@ -161,7 +155,7 @@
                          class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                       <span [innerHtml]="item.name | highlight : filters.searchText"></span>
                       <i *ngIf="item.title"> - </i>
-                      <i [innerHtml]="item.title | stringToLink" class="text-muted"></i>
+                      <i [innerHtml]="item.title" class="text-muted"></i>
                     </span>
                   </td>
                   <td *ngIf="isPathDisplay">
@@ -177,9 +171,8 @@
                     <div *ngFor="let frequency of item.frequencies"
                          [innerHtml]="frequency | translate | highlight : filters.searchText"></div>
                   </td>
-                  <td><span [innerHtml]="item.monthFrom"></span></td>
-                  <td><span [innerHtml]="item.monthTo"></span></td>
-                  <td><span [innerHtml]="item.hits | highlight : filters.searchText"></span></td>
+                  <td><span [innerHtml]="item.monthFrom | highlight : filters.searchText"></span></td>
+                  <td><span [innerHtml]="item.monthTo | highlight : filters.searchText"></span></td>
                 </tr>
               </ng-template>
               </tbody>

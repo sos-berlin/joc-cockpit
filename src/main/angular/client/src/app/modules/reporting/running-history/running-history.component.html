@@ -44,7 +44,7 @@
               <i *ngIf="filters.filter.sortBy == 'frequencies' && filters.filter.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('errorText')"><a>
+            <th (click)="sort('errorText')" nzWidth="20%" style="width: 20% !important;"><a>
               <span class="p-r-xs" translate>inventory.label.errorText</span>
               <i *ngIf="filters.filter.sortBy == 'errorText' && !filters.filter.reverse"
                  class="fa fa-caret-up "></i>
@@ -93,8 +93,8 @@
                         class="label"></span>
               </td>
               <td><div *ngFor="let frequency of item.frequencies" [innerHtml]="frequency | translate | highlight : filters.searchText"></div></td>
-              <td class="text-danger">
-                <span  [innerHtml]="item.errorText"></span>
+              <td nzWidth="20%" style="width: 20% !important;" class="text-danger">
+                <span [innerHtml]="item.errorText"></span>
               </td>
               <td><span [innerHtml]="item.monthFrom | highlight : filters.searchText"></span></td>
               <td><span [innerHtml]="item.monthTo | highlight : filters.searchText"></span></td>

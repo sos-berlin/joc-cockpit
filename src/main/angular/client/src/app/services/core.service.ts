@@ -291,14 +291,14 @@ export class CoreService {
       },
       runHistory: {
         filter: {
-          sortBy: 'dateFrom',
+          sortBy: 'modified',
           reverse: true,
           currentPage: '1'
         }
       },
       generateReport: {
         filter: {
-          sortBy: 'dateFrom',
+          sortBy: 'modified',
           reverse: true,
           currentPage: '1'
         }

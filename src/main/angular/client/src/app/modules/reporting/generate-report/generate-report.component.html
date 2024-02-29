@@ -82,12 +82,12 @@
             </td>
             <td (click)="onSelect(item)">
               <span class="w-full">
-                  <i (click)="coreService.navToInventoryTab(item.path, 'REPORT');"
-                     *ngIf="permission.joc && permission.joc.inventory.view"
-                     class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                  <span [innerHtml]="item.path | highlight : filters.searchText"></span>
-                  <i *ngIf="item.title"> - </i>
-                  <i [innerHtml]="item.title | stringToLink" class="text-muted"></i>
+                <i (click)="coreService.navToInventoryTab(item.path, 'REPORT');"
+                   *ngIf="permission.joc && permission.joc.inventory.view"
+                   class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                <span [innerHtml]="item.path | highlight : filters.searchText"></span>
+                <i *ngIf="item.title"> - </i>
+                <i [innerHtml]="item.title" class="text-muted"></i>
               </span>
             </td>
             <td (click)="onSelect(item)"><span [innerHtml]="item.controllerId | highlight : filters.searchText"></span></td>

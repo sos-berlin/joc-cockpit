@@ -69,7 +69,7 @@
         </div>
       </div>
 
-      <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar">
+      <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar && !isReport">
         <label class="col-md-4 col-lg-3 block-ellipsis-job"
           [nz-tooltip]="'inventory.search.tooltips.deployedOrReleased' | translate"
           translate>inventory.search.label.filterBy</label>
@@ -81,14 +81,14 @@
           </nz-radio-group>
         </div>
       </div>
-      <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar && searchObj.deployedOrReleased === 'deployed'">
+      <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar && !isReport && searchObj.deployedOrReleased === 'deployed'">
         <label class="col-md-3 col-lg-3 block-ellipsis-job"
           translate>inventory.search.label.currentController</label>
         <div class="col-md-3 col-lg-9">
           <label nz-checkbox [(ngModel)]="searchObj.currentController" name="currentController"></label>
         </div>
       </div>
-      <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar && searchObj.deployedOrReleased == 'undeployed'">
+      <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar && !isReport && searchObj.deployedOrReleased == 'undeployed'">
         <label class="col-md-4 col-lg-3 block-ellipsis-job"
                [nz-tooltip]="'inventory.search.tooltips.validOrInvalid' | translate"
                translate>inventory.search.label.validOrInvalid</label>
@@ -100,7 +100,7 @@
           </nz-radio-group>
         </div>
       </div>
-      <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar">
+      <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar && !isReport">
         <label class="col-md-4 col-lg-3 form-control-label"
           [nz-tooltip]="'inventory.search.tooltips.return' | translate" translate>inventory.search.label.return</label>
         <div class="col-md-8 col-lg-9">
@@ -355,7 +355,7 @@
             [nzShowSizeChanger]="false" [nzFrontPagination]="false">
             <thead>
               <tr>
-                <th *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar" class="chk" [nzShowCheckbox]="true"
+                <th *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar && !isReport" class="chk" [nzShowCheckbox]="true"
                   [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
                   (nzCheckedChange)="checkAll($event)"></th>
                 <th nowrap *ngIf="isControllerId"><span translate>common.label.controllerId</span></th>
@@ -367,12 +367,12 @@
             <tbody>
               <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
                 <tr id="{{data.path}}" class="cursor" [ngClass]="{'disabled-row' : !data.permitted,  'light-bg':(searchObj.selectedPath == data.path && searchObj.returnType == data.objectType)}">
-                  <td *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar" [nzShowCheckbox]="true"
+                  <td *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar && !isReport" [nzShowCheckbox]="true"
                     [nzChecked]="object.mapOfCheckedId.has(data.name)" (nzCheckedChange)="onItemChecked(data, $event)">
                   </td>
                   <td (click)="navToObject(data)" *ngIf="isControllerId">{{data.controllerId}}</td>
                   <td (click)="navToObject(data)">
-                    <span *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar"
+                    <span *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar && !isReport "
                       class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"
                       [ngClass]="{'fa-circle-o': !data.valid , 'fa-circle dark-blue' : data.deployed || data.released}"></span>
                     <span class="p-l-xs" [innerHTML]="data.name"></span>
@@ -381,7 +381,7 @@
                   </td>
                   <td>
                     <span class="show-in-single-line">
-                      <i *ngIf="(isWorkflow || isLock || isBoard || isCalendar) && data.permitted"
+                      <i *ngIf="(isWorkflow || isLock || isBoard || isCalendar || isReport ) && data.permitted"
                         (click)="coreService.navToInventoryTab(data.path, this.type);$event.stopPropagation();"
                         class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                       <span> {{data.path1}}</span>
