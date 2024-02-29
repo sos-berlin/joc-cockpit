@@ -33,6 +33,7 @@ export class TableComponent implements OnChanges, OnDestroy {
   @Input() objectType: any;
   @Input() copyObj: any;
   @Input() isTrash: any;
+  @Input() securityLevel: any;
 
   searchKey: any;
   data: any = [];

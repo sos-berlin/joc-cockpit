@@ -20,6 +20,12 @@
               <i *ngIf="filters.filter.sortBy == 'path' && filters.filter.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
+            <th (click)="sort('controllerId')"><a><span class="p-r-xs" translate>common.label.controllerId</span>
+              <i *ngIf="filters.filter.sortBy == 'controllerId' && !filters.filter.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="filters.filter.sortBy == 'controllerId' && filters.filter.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
             <th (click)="sort('template')"><a><span class="p-r-xs" translate>reporting.label.template</span>
               <i *ngIf="filters.filter.sortBy == 'template' && !filters.filter.reverse"
                  class="fa fa-caret-up "></i>
@@ -38,6 +44,13 @@
               <i *ngIf="filters.filter.sortBy == 'frequencies' && filters.filter.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
+            <th (click)="sort('errorText')"><a>
+              <span class="p-r-xs" translate>inventory.label.errorText</span>
+              <i *ngIf="filters.filter.sortBy == 'errorText' && !filters.filter.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="filters.filter.sortBy == 'errorText' && filters.filter.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
             <th (click)="sort('monthFrom')"><a><span class="p-r-xs" translate>reporting.label.monthFrom</span>
               <i *ngIf="filters.filter.sortBy == 'monthFrom' && !filters.filter.reverse"
                  class="fa fa-caret-up "></i>
@@ -50,6 +63,14 @@
               <i *ngIf="filters.filter.sortBy == 'monthTo' && filters.filter.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
+            <th (click)="sort('modified')"><a>
+              <span class="p-r-xs" translate>inventory.label.lastModified</span>
+              <i *ngIf="filters.filter.sortBy == 'modified' && !filters.filter.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="filters.filter.sortBy == 'modified' && filters.filter.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+
           </tr>
         </thead>
         <tbody>
@@ -62,17 +83,22 @@
                      class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                   <span [innerHtml]="item.path | highlight : filters.searchText"></span>
                   <i *ngIf="item.title"> - </i>
-                  <i [innerHtml]="item.title | stringToLink" class="text-muted"></i>
+                  <i [innerHtml]="item.title" class="text-muted"></i>
                 </span>
               </td>
+              <td><span [innerHtml]="item.controllerId | highlight : filters.searchText"></span></td>
               <td><span [innerHtml]="item.template | highlight : filters.searchText"></span></td>
               <td>
                   <span *ngIf="item.state" [innerHtml]="item.state._text | translate" [ngClass]="coreService.getColor(item.state.severity,'bg')"
                         class="label"></span>
               </td>
               <td><div *ngFor="let frequency of item.frequencies" [innerHtml]="frequency | translate | highlight : filters.searchText"></div></td>
+              <td class="text-danger">
+                <span  [innerHtml]="item.errorText"></span>
+              </td>
               <td><span [innerHtml]="item.monthFrom | highlight : filters.searchText"></span></td>
               <td><span [innerHtml]="item.monthTo | highlight : filters.searchText"></span></td>
+              <td><span [innerHtml]="item.modified | stringToDate | highlight : filters.searchText"></span></td>
             </tr>
           </ng-template>
         </tbody>

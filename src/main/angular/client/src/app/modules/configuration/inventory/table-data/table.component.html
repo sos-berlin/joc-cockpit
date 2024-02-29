@@ -45,7 +45,7 @@
       <button (click)="deployAll()" *ngIf="mapOfCheckedId.size > 0" class="btn btn-sm btn-grey m-l-12">
         <i class="fa fa-rocket p-r-xs"></i>
         <span *ngIf="!objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'JOBTEMPLATE'
-        && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT'" translate>inventory.button.deploy</span>
+        && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT' && securityLevel !== 'HIGH'" translate>inventory.button.deploy</span>
         <span *ngIf="(objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE'
         || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT')" translate>inventory.button.release</span>
       </button>
@@ -170,7 +170,7 @@
                     <a translate>inventory.button.manageTags</a>
                   </li>
                   <li *ngIf="permission.joc.inventory.manage" nz-menu-divider>
-                  <li (click)="deployObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT'"
+                  <li (click)="deployObject(data)" *ngIf="permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT'"
                       [nzDisabled]="!data.hasDeployments && !data.valid"
                       nz-menu-item>
                     <a translate>inventory.button.deploy</a>

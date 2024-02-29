@@ -5,19 +5,17 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  SimpleChanges, ViewChild
+  SimpleChanges
 } from '@angular/core';
 import {clone, isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
-import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
+import {AuthService} from "../../../../components/guard";
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
-import {InventoryService} from '../inventory.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
-import {ScriptEditorComponent} from "../workflow/workflow.component";
 
 @Component({
   selector: 'app-report',
@@ -42,6 +40,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
   indexOfNextAdd = 0;
   history = [];
   templates = [];
+  schedulerIds: any;
   frequencies = [
     {name: 'WEEKLY'},
     {name: 'TWO_WEEKS'},
@@ -59,7 +58,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
 
 
   constructor(public coreService: CoreService, private translate: TranslateService, private dataService: DataService,
-              private ref: ChangeDetectorRef, private modal: NzModalService) {
+              private authService: AuthService, private ref: ChangeDetectorRef, private modal: NzModalService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.report.actual) {
@@ -77,6 +76,10 @@ export class ReportComponent implements OnChanges, OnDestroy {
     this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
+  }
+
+  ngOnInit(): void{
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -259,7 +262,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
 
       const request: any = {
         configuration: obj,
-        valid: !obj.frequencies || !obj.templateId,
+        valid: !obj.frequencies || !obj.templateName,
         path: this.report.path,
         objectType: this.objectType
       };

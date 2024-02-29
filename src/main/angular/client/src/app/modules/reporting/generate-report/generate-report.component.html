@@ -23,10 +23,10 @@
             <i *ngIf="filters.filter.sortBy == 'path' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('title')"><a><span class="p-r-xs" translate>common.label.title</span>
-            <i *ngIf="filters.filter.sortBy == 'title' && !filters.filter.reverse"
+          <th (click)="sort('controllerId')"><a><span class="p-r-xs" translate>common.label.controllerId</span>
+            <i *ngIf="filters.filter.sortBy == 'controllerId' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'title' && filters.filter.reverse"
+            <i *ngIf="filters.filter.sortBy == 'controllerId' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
           <th (click)="sort('template')"><a><span class="p-r-xs" translate>reporting.label.template</span>
@@ -80,8 +80,17 @@
                 </nz-dropdown-menu>
               </div>
             </td>
-            <td (click)="onSelect(item)"><span [innerHtml]="item.path | highlight : filters.searchText"></span></td>
-            <td (click)="onSelect(item)"><span [innerHtml]="item.title | highlight : filters.searchText"></span></td>
+            <td (click)="onSelect(item)">
+              <span class="w-full">
+                  <i (click)="coreService.navToInventoryTab(item.path, 'REPORT');"
+                     *ngIf="permission.joc && permission.joc.inventory.view"
+                     class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <span [innerHtml]="item.path | highlight : filters.searchText"></span>
+                  <i *ngIf="item.title"> - </i>
+                  <i [innerHtml]="item.title | stringToLink" class="text-muted"></i>
+              </span>
+            </td>
+            <td (click)="onSelect(item)"><span [innerHtml]="item.controllerId | highlight : filters.searchText"></span></td>
             <td><span [innerHtml]="item.template | highlight : filters.searchText"></span></td>
             <td (click)="onSelect(item)"><span [innerHtml]="item.frequency | translate | highlight : filters.searchText"></span></td>
             <td (click)="onSelect(item)"><span [innerHtml]="item.dateFrom | highlight : filters.searchText"></span></td>

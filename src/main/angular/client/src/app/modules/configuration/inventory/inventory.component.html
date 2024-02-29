@@ -322,7 +322,7 @@
                         <a translate>inventory.button.manageTags</a>
                       </li>
                       <li *ngIf="permission.joc.inventory.manage && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" nz-menu-divider></li>
-                      <li (click)="deployObject(node, false);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [nzDisabled]="!node.hasDeployments && ((node.type && !node.valid))"
+                      <li (click)="deployObject(node, false);" *ngIf="permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [nzDisabled]="!node.hasDeployments && ((node.type && !node.valid))"
                           nz-menu-item>
                         <a translate>inventory.button.deploy</a>
                       </li>
@@ -464,12 +464,12 @@
           </div>
         </div>
         <div *ngIf="type == 'WORKFLOW'">
-          <app-workflow [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash"
+          <app-workflow [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash" [securityLevel]="securityLevel"
                         [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
                         [schedulerId]="schedulerIds.selected"></app-workflow>
         </div>
         <div *ngIf="type == 'FILEORDERSOURCE'">
-          <app-file-order [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash"
+          <app-file-order [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash" [securityLevel]="securityLevel"
                           [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
                           [schedulerId]="schedulerIds.selected"></app-file-order>
         </div>
@@ -479,17 +479,17 @@
                             [schedulerId]="schedulerIds.selected"></app-job-template>
         </div>
         <div *ngIf="type == 'JOBRESOURCE'">
-          <app-job-resource [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash"
+          <app-job-resource [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash" [securityLevel]="securityLevel"
                             [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
                             [schedulerId]="schedulerIds.selected"></app-job-resource>
         </div>
         <div *ngIf="type == 'NOTICEBOARD'">
-          <app-board [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash"
+          <app-board [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash" [securityLevel]="securityLevel"
                      [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
                      [schedulerId]="schedulerIds.selected"></app-board>
         </div>
         <div *ngIf="type == 'LOCK'">
-          <app-lock [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash"
+          <app-lock [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash" [securityLevel]="securityLevel"
                     [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
                     [schedulerId]="schedulerIds.selected"></app-lock>
         </div>
@@ -666,7 +666,7 @@
     </li>
     <li *ngIf="(node.origin.type || node.origin.controller || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan))
                        && permission.joc.inventory.manage && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" nz-menu-divider></li>
-    <li (click)="deployObject(node, false);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && !node.origin.object.match('CALENDAR') && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT' && node.origin.object !== 'REPORT' && node.origin.object !== 'JOBTEMPLATE')
+    <li (click)="deployObject(node, false);" *ngIf="permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && !node.origin.object.match('CALENDAR') && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT' && node.origin.object !== 'REPORT' && node.origin.object !== 'JOBTEMPLATE')
      || (node.origin.type && !node.origin.type.match('CALENDAR') && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'JOBTEMPLATE' && node.origin.type !== 'INCLUDESCRIPT' && node.origin.type !== 'REPORT') || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))" [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children?.length === 0) || (node.origin.type && !node.origin.valid))"
         nz-menu-item>
       <a translate>inventory.button.deploy</a>

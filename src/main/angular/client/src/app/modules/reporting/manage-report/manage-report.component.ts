@@ -102,7 +102,9 @@ export class ManageReportComponent {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/Item/) && args.eventSnapshots[j].objectType === 'REPORT') {
           this.initTree();
-          break;
+
+        } else if (args.eventSnapshots[j].eventType.match(/Reports/) && args.eventSnapshots[j].objectType === 'REPORT') {
+          this.coreService.reportStartRunning = false;
         }
       }
     }
@@ -237,7 +239,7 @@ export class ManageReportComponent {
         this.reports.forEach((report) => {
           report.name = report.path.substring(report.path.lastIndexOf('/') + 1);
           report.path1 = report.path.substring(0, report.path.lastIndexOf('/')) || '/';
-          const template = this.templates.find(template => template.templateId == report.templateId);
+          const template = this.templates.find(template => template.templateName == report.templateName);
           if (template) report.template = template.title;
         })
         this.searchInResult();

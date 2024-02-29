@@ -23,6 +23,7 @@ export class BoardComponent {
   @Input() copyObj: any;
   @Input() reload: any;
   @Input() isTrash: any;
+  @Input() securityLevel: any;
 
   board: any = {};
   boardObj: any = {

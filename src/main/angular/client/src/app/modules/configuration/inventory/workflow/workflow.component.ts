@@ -2884,6 +2884,7 @@ export class WorkflowComponent {
   @Input() copyObj: any;
   @Input() reload: any;
   @Input() isTrash: any;
+  @Input() securityLevel: any;
   @ViewChild('codeMirror', {static: false}) cm;
 
   searchNode = {

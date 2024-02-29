@@ -11,7 +11,7 @@ import {SharingDataService} from "../sharing-data.service";
 
 @Component({
   selector: 'app-generate-report',
-  templateUrl: './running-history.component.html'
+  templateUrl: './generate-report.component.html'
 })
 export class GenerateReportComponent {
   @Input() permission: any;
@@ -59,28 +59,25 @@ export class GenerateReportComponent {
   refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].objectType === 'XYZ') {
+        if (args.eventSnapshots[j].eventType === 'ReportsUpdated' && args.eventSnapshots[j].objectType === 'REPORT') {
           this.getData();
-          break;
         }
       }
     }
   }
 
 
+
   private getData(): void {
-    this.coreService.post('reporting/report/history', {compact: true}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+    this.coreService.post('reporting/reports/generated', {compact: true}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoaded = true;
         this.reports = this.orderPipe.transform(res.reports, this.filters.sortBy, this.filters.reverse);
         this.reports.forEach((report) => {
-          const template = this.templates.find(template => template.templateId == report.templateId);
+          const template = this.templates.find(template => template.templateName == report.templateName);
           if (template) report.template = template.title;
           if(report.template?.includes('${hits}')){
             report.template = report.template.replace('${hits}', report.hits || 10)
-          }
-          if(report.template?.includes('${size}')){
-            report.template = report.template.replace('${size}', report.hits || 10)
           }
         })
         this.searchInResult();

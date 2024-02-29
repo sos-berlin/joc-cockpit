@@ -12,7 +12,7 @@ import {ManageReportComponent} from "./manage-report/manage-report.component";
 import {AllReportComponent} from "./all-report/all-report.component";
 import {FrequencyReportComponent} from "./frequency-report/frequency-report.component";
 import {SharingDataService} from "./sharing-data.service";
-import {GenerateReportComponent} from "./generate-report/running-history.component";
+import {GenerateReportComponent} from "./generate-report/generate-report.component";
 
 
 @NgModule({
