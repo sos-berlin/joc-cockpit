@@ -14,7 +14,9 @@ import {SharingDataService} from "./sharing-data.service";
 export class RunModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   submitted = false;
-
+  display = false;
+  required = false;
+  comments: any = {};
   reportPaths = [];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
@@ -22,13 +24,22 @@ export class RunModalComponent {
 
   ngOnInit(): void {
     this.reportPaths = this.modalData.reportPaths;
+    this.comments.radio = 'predefined';
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.required = true;
+      this.display = true;
+    } else {
+      this.display = this.modalData.preferences.auditLog;
+    }
   }
 
   onSubmit(): void {
     this.submitted = true;
     const obj: any = {
-      reportPaths: this.reportPaths
+      reportPaths: this.reportPaths,
+      auditLog: {}
     };
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     this.coreService.post('reporting/reports/run', obj).subscribe({
       next: () => {
         this.coreService.startReport();

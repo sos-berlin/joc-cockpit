@@ -9,7 +9,10 @@
 
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
-    <div class="row text-center">
+    <div [ngClass]="{'show': display}" class="hide">
+      <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
+    </div>
+    <div class="row text-center" *ngIf="!display">
       <div class="col-sm-12 m-t m-b">
         Are you sure to run all the selected reports?
       </div>

@@ -170,7 +170,6 @@ export class ManageReportComponent {
     this.filters.selectedkeys.push(pathArr[pathArr.length - 1]);
     this.filters.expandedObjects = [data.path];
     const obj = {
-      controllerId: this.schedulerIds.selected,
       folders: [{folder: PATH, recursive: false}]
     };
     this.reports = [];
@@ -187,8 +186,7 @@ export class ManageReportComponent {
     data.isSelected = true;
     this.loading = true;
     const obj = {
-      folders: [{folder: data.path, recursive}],
-      controllerId: this.schedulerIds.selected
+      folders: [{folder: data.path, recursive}]
     };
     this.getReportList(obj);
   }
@@ -213,8 +211,7 @@ export class ManageReportComponent {
   loadReports(skipChild = false): void {
     this.reloadState = 'no';
     const obj = {
-      folders: [],
-      controllerId: this.schedulerIds.selected
+      folders: []
     };
     this.reports = [];
     this.loading = true;
@@ -231,7 +228,6 @@ export class ManageReportComponent {
   }
 
   private getReportList(obj): void {
-    obj.limit = this.preferences.maxBoardRecords;
     this.coreService.post('reporting/reports', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.loading = false;
@@ -314,13 +310,25 @@ export class ManageReportComponent {
   }
 
   run(item): void {
-    this.coreService.post('reporting/reports/run', {
-      reportPaths: [item.path]
-    }).subscribe({
-      next: () => {
-        this.coreService.startReport();
-      }
-    })
+    if(!this.preferences.auditLog) {
+      this.coreService.post('reporting/reports/run', {
+        reportPaths: [item.path]
+      }).subscribe({
+        next: () => {
+          this.coreService.startReport();
+        }
+      })
+    } else {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: RunModalComponent,
+        nzFooter: null,
+        nzAutofocus: null,
+        nzData: {reportPaths: [item.path], preferences: this.preferences},
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    }
   }
 
   runAll(): void {
@@ -329,7 +337,7 @@ export class ManageReportComponent {
       nzContent: RunModalComponent,
       nzFooter: null,
       nzAutofocus: null,
-      nzData: {reportPaths: Array.from(this.object.setOfCheckedId)},
+      nzData: {reportPaths: Array.from(this.object.setOfCheckedId), preferences: this.preferences},
       nzClosable: false,
       nzMaskClosable: false
     });

@@ -59,24 +59,6 @@ async function readDataDirectory(directory, options, templateData) {
 function dynamicData(templates, data, options) {
     // Check if templates contain groupBy property
     if (templates?.data?.groupBy) {
-        // Filter data based on the status
-        if (templates.data.status === "FAILED") {
-            data = data.filter(item => item.STATE === '2');
-        } else if (templates.data.status === "SUCCESS") {
-            data = data.filter(item => item.STATE === '1');
-        }
-
-        if (templates.data.orderState === 'CANCELLED') {
-            data = data.filter(item => item.ORDER_STATE === '7');
-        }
-
-        if (templates.data.criticality === 'HIGH') {
-            data = data.filter(item => item.CRITICALITY === '2');
-        }
-
-        if (options.controllerId) {
-            data = data.filter(item => item.CONTROLLER_ID === options.controllerId);
-        }
         // Group data dynamically based on the groupBy property
 
         if (templates.data.groupBy === 'WORKFLOW_NAME' && templates.data.execution === "DURATION") {
@@ -170,7 +152,7 @@ function dynamicData(templates, data, options) {
             return _.orderBy(results, ['count'], ['desc']).slice(0, options.hits);
         } else if (templates.data.groupBy === 'START_TIME' && templates.data.execution === "PARALLELISM") {
             const groupedData = Object.values(data.reduce((acc, curr) => {
-                const startTime = curr.START_TIME.split(' ')[0];
+                const startTime = curr.START_TIME?.split(' ')[0];
                 acc[startTime] = acc[startTime] || [];
                 acc[startTime].push(curr);
                 return acc;

@@ -5586,6 +5586,19 @@ tr.disabled-row td:not(.menu) {
   }
 }
 
+.month-picker {
+  display: inline-block;
+  .ant-picker {
+    width: 0;
+    height: 0;
+    right: 30px;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+  }
+}
+
 .date-picker {
   display: inline-block;
   // background-position: 150px !important;

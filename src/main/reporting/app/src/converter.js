@@ -11,13 +11,14 @@ const moment = require("moment");
  * @param {Array} weeks - Array of week objects.
  * @param {number} frequencyInterval - Interval for frequency.
  * @param {string} runId - Identifier for the run.
+ * @param {Object} options - Additional parameters.
+ * @param {Object} templateData - Template Data.
  */
-async function checkDateFromContent(filePath, weeks, frequencyInterval, runId) {
+async function checkDateFromContent(filePath, weeks, frequencyInterval, runId, options, templateData) {
     try {
         let obj = {};
-
-        let data = await utils.convertCsvToJson(filePath);
-
+        let data = await utils.convertCsvToJson(filePath, options.controllerId, templateData);
+        console.log(`CSV file ${filePath} is converted successfully into JSON.`);
         data = data.reverse();
         for (const rowData of data) {
             const contentDate = new Date(rowData.START_TIME).setHours(0, 0, 0, 0);
@@ -92,9 +93,9 @@ async function writeJsonToFile(outputPath, jsonData) {
     }
 }
 
-async function processCsvFiles(directory, csvFilePaths, outputJsonPath) {
+async function processCsvFiles(csvFilePaths, outputJsonPath, templateData, options) {
     try {
-        const combinedJsonData = await combineCsvToJson(directory, csvFilePaths);
+        const combinedJsonData = await combineCsvToJson(csvFilePaths, templateData, options);
         await writeJsonToFile(outputJsonPath, combinedJsonData);
     } catch (error) {
         console.error(error.message);
@@ -103,16 +104,17 @@ async function processCsvFiles(directory, csvFilePaths, outputJsonPath) {
 
 /**
  * Process CSV files and combine them into JSON.
- * @param {string} directory - Directory path.
  * @param {Array} csvFilePaths - Array of CSV file paths.
+ * @param {Object} templateData - Template Data.
+ * @param {Object} options - Command-line options.
  * @returns {Array} Combined JSON data.
  */
-async function combineCsvToJson(directory, csvFilePaths) {
-    const combinedData = [];
+async function combineCsvToJson(csvFilePaths, templateData, options) {
+    let combinedData = [];
     for (const csvFilePath of csvFilePaths) {
-        const filePath = path.join(directory, csvFilePath);
-        const jsonData = await utils.convertCsvToJson(filePath);
-        combinedData.push(...jsonData);
+        const filePath = path.join(options.inputDirectory, csvFilePath);
+        const jsonData = await utils.convertCsvToJson(filePath, options.controllerId, templateData);
+        combinedData = combinedData.concat(jsonData);
     }
     return combinedData;
 }
@@ -120,14 +122,13 @@ async function combineCsvToJson(directory, csvFilePaths) {
 /**
  * Process the files based on frequency type and interval
  * @param runId - Temporary created directory
- * @param directoryPath
  * @param files
  * @param frequencyType
  * @param frequencyInterval
- * @param monthFrom
- * @param monthTo
+ * @param templateData
+ * @param options
  */
-async function checkFileNameWithFrequency(runId, directoryPath, files, frequencyType, frequencyInterval, monthFrom, monthTo) {
+async function checkFileNameWithFrequency(runId, files, frequencyType, frequencyInterval, templateData, options) {
     let data = {};
     // Example usage:
     const uniqueString = utils.generateUnique16BitString();
@@ -136,19 +137,19 @@ async function checkFileNameWithFrequency(runId, directoryPath, files, frequency
         const fileNameParts = file.split('.')[0].split('-');
         const fileYear = parseInt(fileNameParts[0], 10);
         const fileMonth = parseInt(fileNameParts[1], 10);
-        if (monthFrom) {
-            const arr = monthFrom.split('-');
+        if (options.monthFrom) {
+            const arr = options.monthFrom.split('-');
             const fromYear = parseInt(arr[0], 10);
             const fromMonth = parseInt(arr[1], 10);
-            if(fileYear < fromYear || (fileYear == fromYear && fileMonth < fromMonth)){
+            if (fileYear < fromYear || (fileYear == fromYear && fileMonth < fromMonth)) {
                 continue;
             }
         }
-        if (monthTo) {
-            const arr = monthTo.split('-');
+        if (options.monthTo) {
+            const arr = options.monthTo.split('-');
             const fromYear = parseInt(arr[0], 10);
             const fromMonth = parseInt(arr[1], 10);
-            if(fileYear > fromYear || (fileYear == fromYear && fileMonth > fromMonth)){
+            if (fileYear > fromYear || (fileYear == fromYear && fileMonth > fromMonth)) {
                 continue;
             }
         }
@@ -157,7 +158,7 @@ async function checkFileNameWithFrequency(runId, directoryPath, files, frequency
             const userInputEnd = getEndOfMonth(userInputStart);
             const allDatesBetweenWeeks = getAllDatesBetweenWeeks(userInputStart, userInputEnd);
             if (allDatesBetweenWeeks.length > 0) {
-                await checkDateFromContent(path.join(directoryPath, file), allDatesBetweenWeeks, frequencyInterval, runId);
+                await checkDateFromContent(path.join(options['inputDirectory'], file), allDatesBetweenWeeks, frequencyInterval, runId, options, templateData);
             }
             data.file = tmpFileName;
         } else if (frequencyType === 'MONTH') {
@@ -181,7 +182,7 @@ async function checkFileNameWithFrequency(runId, directoryPath, files, frequency
     }
     if (!data.file) {
         for (let prop in data) {
-            await processCsvFiles(directoryPath, data[prop], path.join('tmp/' + runId, prop + '.json'));
+            await processCsvFiles(data[prop], path.join('tmp/' + runId, prop + '.json'), templateData, options);
         }
     }
 }
@@ -333,13 +334,16 @@ async function init(options) {
                                 continue; // Skip the invalid frequency
                         }
                         console.log('Start report processing for frequency ', frequency)
-                        await checkFileNameWithFrequency(runId, options['inputDirectory'], inputFiles, frequencyType, interval, options.monthFrom, options.monthTo);
+                        await checkFileNameWithFrequency(runId, inputFiles, frequencyType, interval, JSON.parse(templateData).data, options);
                     }
 
                     await generate(templateData, runId, options);
                 }
             })
-            .catch(e => handleError('Error while reading template data from ' + options.templateFilePath, e));
+            .catch(e => {
+                handleError('Error while reading template data from ' + options.templateFilePath, e);
+                handleError('...Process exit', new Error());
+            });
     } catch (error) {
         handleError('', error);
     }
