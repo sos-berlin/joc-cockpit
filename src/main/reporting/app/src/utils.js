@@ -1,5 +1,6 @@
 const fs = require('fs');
-const logger = require('./logger');
+let logger = require('./logger');
+logger = new logger().getLogger();
 
 /**
  * Read files from a directory.
@@ -45,73 +46,6 @@ function deleteDirectory(directoryPath) {
     });
 }
 
-// Function to process data in chunks asynchronously
-async function processDataInChunks(headers, dataArray, chunkSize, processChunk, controllerId, templateData) {
-    let index = 0;
-    let arr = [];
-
-    async function processNextChunk() {
-        const chunk = dataArray.slice(index, index + chunkSize);
-        await processChunk(headers, chunk, arr, controllerId, templateData)
-        index += chunkSize;
-        // If there are more chunks to process, schedule the next chunk after a delay
-        if (index < dataArray.length) {
-            return new Promise(resolve => {
-                setTimeout(async () => {
-                    await processNextChunk();
-                    resolve(); // Recursively call processNextChunk asynchronously
-                }, 10);
-
-            });
-        }
-    }
-
-    // Start processing the first chunk
-    await processNextChunk();
-    return arr;
-}
-
-// Sample function to process each chunk
-async function processChunk(headers, lines, jsonArray, controllerId, templateData) {
-    // Iterate over each line (starting from 1, as 0 is the header)
-    await new Promise(resolve => {
-        for (let i = 0; i < lines.length; i++) {
-            const values = lines[i].trim().split(';');
-            // Create an object with header keys and corresponding values
-            const obj = {};
-            for (let j = 0; j < headers.length; j++) {
-                obj[headers[j]] = values[j];
-            }
-            let flag = false;
-            if (controllerId) {
-                flag = obj.CONTROLLER_ID === options.controllerId;
-            } else {
-                flag = true;
-            }
-            if (templateData && flag) {
-                // Filter data based on the status
-                if (templateData.status === "FAILED") {
-                    flag = obj.STATE === '2';
-                } else if (templateData.status === "SUCCESS") {
-                    flag = obj.STATE === '1';
-                }
-                if (templateData.orderState === 'CANCELLED') {
-                    flag = obj.ORDER_STATE === '7';
-                }
-
-                if (templateData.criticality === 'HIGH') {
-                    flag = obj.CRITICALITY === '2';
-                }
-            }
-            if(flag) {
-                jsonArray.push(obj);
-            }
-        }
-        resolve();
-    });
-}
-
-
 /**
  * Convert CSV to JSON.
  * @param {string} csvFilePath - Path to the CSV file.
@@ -123,18 +57,69 @@ async function convertCsvToJson(csvFilePath, controllerId, templateData) {
 
     try {
         console.log(`Converting file ${csvFilePath} into JSON...`);
-        const csvData = await fs.readFileSync(csvFilePath, 'utf8');
-        // Split CSV data into lines
-        const lines = csvData.split('\n');
+        return new Promise((resolve, reject) => {
+            // Create a readable stream to read the input file
+            const readStream = fs.createReadStream(csvFilePath, {encoding: 'utf-8'});
+            // Event listener for 'data' event, triggered when data is available to read
+            const arr = [];
+            let headers = [];
+            readStream.on('data', (chunk) => {
+                // Split CSV data into lines
+                let lines = chunk.split('\n');
 
-        // Extract header (first line)
-        const headers = lines[0].trim().split(';');
+                // Extract header (first line)
+                if (headers.length === 0) {
+                    headers = lines[0].trim().split(';');
+                    lines = lines.splice(0, 1);
+                }
 
-        // Define the chunk size
-        const chunkSize = 1000; // Adjust as needed based on your processing requirements
+                for (let i = 0; i < lines.length; i++) {
+                    const values = lines[i].trim().split(';');
+                    // Create an object with header keys and corresponding values
+                    const obj = {};
+                    for (let j = 0; j < headers.length; j++) {
+                        obj[headers[j]] = values[j];
+                    }
+                    let flag = false;
+                    if (controllerId) {
+                        flag = obj.CONTROLLER_ID === options.controllerId;
+                    } else {
+                        flag = true;
+                    }
+                    if (templateData && flag) {
+                        // Filter data based on the status
+                        if (templateData.status === "FAILED") {
+                            flag = obj.STATE === '2';
+                        } else if (templateData.status === "SUCCESS") {
+                            flag = obj.STATE === '1';
+                        }
+                        if (templateData.orderState === 'CANCELLED') {
+                            flag = obj.ORDER_STATE === '7';
+                        }
 
-        // Process data in chunks
-        return await processDataInChunks(headers, lines, chunkSize, processChunk, controllerId, templateData);
+                        if (templateData.criticality === 'HIGH') {
+                            flag = obj.CRITICALITY === '2';
+                        }
+                    }
+                    if (flag) {
+                        arr.push(obj);
+                    }
+                }
+
+            });
+
+            // Event listener for 'close' event, triggered when file reading is finished
+            readStream.on('close', async () => {
+                console.log('File reading is finished...');
+                resolve(arr);
+            });
+            // Event listener for 'error' event, triggered when an error occurs
+            readStream.on('error', (error) => {
+                console.error('Error reading file:', error);
+                logger.error('Error reading file:', error);
+                reject(error); // Reject the promise with the error
+            });
+        });
     } catch (error) {
         console.error('Error processing CSV:' + csvFilePath, error.message);
         logger.error('Error processing CSV:' + csvFilePath, error.message);

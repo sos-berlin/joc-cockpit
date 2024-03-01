@@ -1,17 +1,23 @@
+const path = require('path');
+const fs = require('fs');
 const commander = require('commander');
 const {isNumber} = require("lodash");
 const winston = require('winston');
 const init = require('./src/converter');
-const logger = require('./src/logger');
+const CustomLogger = require('./src/logger');
+
 const ProcessingFrequencies = require('./src/config/frequencies');
+
+let logger;
 
 commander.on('--help', function () {
     console.log('.....');
-    console.log('node run-report.js -t template.json -i inputDir -p "every 3 months, weekly" -o outputDir');
+    console.log('node run-report -t template.json -i inputDir -p "every 3 months, weekly" -o outputDir -c controllerID');
     console.log('.....');
 });
 
 commander.option('--debug', 'Enable debug mode');
+
 /**
  * Parse command line arguments using Commander.
  * @returns {Object} Parsed options.
@@ -26,10 +32,16 @@ function parseCommandLineArguments() {
         .option('-s, --monthFrom <monthFrom>', 'Month from for input file selection e.g. YYYY-MM')
         .option('-e, --monthTo <monthTo>', 'Month to for input file selection e.g. YYYY-MM')
         .option('-n, --hits <hits>', 'Define the hits of report')
+        .option('-d, --logDir <directory>', 'Specify the log directory')
         .parse(process.argv);
 
     const options = commander.opts();
-
+    // Define the command line options
+    const logDirectory = options.logDir ? path.resolve(options.logDir) : 'logs';
+    console.log(logDirectory)
+    logger = new CustomLogger(logDirectory);
+    // Ensure the log directory exists
+    fs.mkdirSync(logDirectory, {recursive: true});
     // If processingFrequencies is provided, split them into an array
     if (typeof options.frequencies === 'string') {
         options.frequencies = options.frequencies.split(',').map(freq => freq.trim());
@@ -161,7 +173,6 @@ async function main(options) {
  */
 function run() {
     const options = parseCommandLineArguments();
-
     if (options.debug) {
         // Enable debug mode in Winston logger
         logger.add(new winston.transports.Console({

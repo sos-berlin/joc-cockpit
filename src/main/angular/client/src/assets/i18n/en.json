@@ -2835,8 +2835,8 @@
     },
     "tab": {
       "reportRunHistory": "Report Run History",
-      "manageReportRuns": "Manage Report Runs",
-      "generateReport": "Generate Report"
+      "reportRuns": "Report Runs",
+      "reports": "Reports"
     }
   },
   "settings": {

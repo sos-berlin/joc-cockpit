@@ -1,47 +1,83 @@
 <div class="p-a p-t-0">
   <div class="row">
     <div class="col-md-12">
-      <div class="box-header b-b">
+      <div class="text-center b-b m-t-11">
+          <h5 class="card-title">{{ report.title }}</h5>
+      </div>
+      <div class="m-t-35" style="float: right">
+        <button [nzDropdownMenu]="addReports" [nzPlacement]="'bottomRight'"
+                class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
+                type="button">Add Card
+          <span class="text-primary"></span>
+          <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
+        </button>
 
+        <nz-dropdown-menu #addReports="nzDropdownMenu">
+          <ul nz-menu>
+            <ng-container *ngFor="let item of multiReports">
+              <li nz-menu-item *ngIf="item.data">
+                <label nz-checkbox [(ngModel)]="item.checked" (ngModelChange)="onTemplateChange(item)">
+                  {{ item.title + '-' + item.dateFrom }}
+                </label>
+              </li>
+            </ng-container>
+          </ul>
+        </nz-dropdown-menu>
       </div>
       <div class="box-body">
-        <ng-container *ngFor="let report of compareMultiReports">
-          <div class="col-md-4 card h-6xx m-r-12" style="width: 24%">
+        <div *ngIf="filter.showData" class="m-r-xs">
+                <span (click)="toggleView()" class="text-hover-primary cursor-pointer">
+                  <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+                  Back
+                </span>
+        </div>
+        <ng-container *ngFor="let reports of multiReports">
+          <div [hidden]="filter.showData" *ngIf="reports.data.length" class="col-md-3 col-lg-2 card m-r-12">
             <div class="card-body">
               <div class="m-b-sm">
-                <h5 class="card-title">{{ report.title }}</h5>
+                <h5 class="card-title">{{ report.template }}</h5>
               </div>
               <div class="_600 text-md m-t-sm m-b-sm text-center pos-rel"><span
-                class="p-b-xs b-b"><i class="text-muted">{{ report.dateFrom }} - {{ report.dateTo }}</i></span>
+                class="p-b-xs b-b"><i class="text-muted">{{ reports.dateFrom }} - {{ reports.dateTo }}</i></span>
               </div>
-
-              <div class="donut-chart-container m-t-md  m-b-sm" [attr.id]="'donut-chart-container-' + report.id">
-
-              </div>
-                <div class="m-t-sm">
-                <perfect-scrollbar class="list-responsive" style="height: 212px; overflow: auto;">
-                  <ul>0
-                    <ng-container *ngFor="let item of report.data">
-                      <li style="display: flex; align-items: center; justify-content: space-evenly">
-                        <span>{{ item.start_time }}</span>
-                        <span>{{ item.count }}</span>
-                      </li>
-                      <li class="text-center p-a-10" *ngIf="item.data?.length === 0">
-                        <app-empty-data></app-empty-data>
-                      </li>
-                    </ng-container>
-                  </ul>
+              <div >
+                <perfect-scrollbar style="height: 400px">
+                  <div class="donut-chart-container m-t-md m-b-sm" [attr.id]="'donut-chart-container-' + reports.id">
+                  </div>
+                  <div class="donut-chart-legends" >
+                  </div>
                 </perfect-scrollbar>
               </div>
-              <button class="btn btn-primary btn-sm" type="button">
-                <span >Show Report</span>
+              <div class="m-t-sm">
+              </div>
+              <button (click)="toggleView(reports)" class="btn btn-primary btn-sm" type="button">
+                <span>Show Report</span>
               </button>
+              <button [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+                      class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
+                      type="button" (nzVisibleChange)="compareData($event)">Compare With
+                <span class="text-primary"></span>
+                <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
+              </button>
+
+              <nz-dropdown-menu #customization="nzDropdownMenu">
+                <ul nz-menu>
+                  <ng-container *ngFor="let item of templates">
+                    <li nz-menu-item *ngIf="item.title === reports.title && item.frequency === reports.frequency && item.dateFrom != reports.dateFrom">
+                      <label nz-checkbox [(ngModel)]="item.checked" (ngModelChange)="onTemplateChange(item)">
+                        {{ item.title + '-' + item.dateFrom }}
+                      </label>
+                    </li>
+                  </ng-container>
+                </ul>
+              </nz-dropdown-menu>
             </div>
           </div>
         </ng-container>
+        <div [hidden]="!filter.showData">
+          <canvas id="bar-chart"></canvas>
+        </div>
       </div>
-
-
     </div>
   </div>
 </div>

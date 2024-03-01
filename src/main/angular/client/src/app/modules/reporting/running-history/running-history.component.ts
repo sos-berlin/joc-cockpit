@@ -27,6 +27,7 @@ export class RunningHistoryComponent {
 
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
 
   private pendingHTTPRequests$ = new Subject<void>();
 
@@ -41,6 +42,13 @@ export class RunningHistoryComponent {
     this.subscription2 = sharingDataService.searchKeyAnnounced$.subscribe(res => {
       this.searchInResult();
     });
+
+    this.subscription3 = sharingDataService.functionAnnounced$.subscribe((res: any) => {
+      if (res.state) {
+        console.log(res.state);
+        this.getData()
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -50,6 +58,7 @@ export class RunningHistoryComponent {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
     this.pendingHTTPRequests$.next();
     this.pendingHTTPRequests$.complete();
   }
@@ -59,7 +68,7 @@ export class RunningHistoryComponent {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/Report/) && args.eventSnapshots[j].objectType === 'REPORT') {
           this.getData();
-	  break;
+          break;
         }
       }
     }
@@ -67,14 +76,19 @@ export class RunningHistoryComponent {
 
 
   private getData(): void {
-    this.coreService.post('reporting/run/history', {compact: true}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+    console.log(this.filters);
+    let obj: any = {compact: true};
+    if (this.filters.filter.state !== 'ALL') {
+      obj.states = [this.filters.filter.state];
+    }
+    this.coreService.post('reporting/run/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoaded = true;
         this.reports = this.orderPipe.transform(res.runs, this.filters.sortBy, this.filters.reverse);
         this.reports.forEach((report) => {
           const template = this.templates.find(template => template.templateName == report.templateName);
           if (template) report.template = template.title;
-          if(report.template?.includes('${hits}')){
+          if (report.template?.includes('${hits}')) {
             report.template = report.template.replace('${hits}', report.hits || 10)
           }
         })

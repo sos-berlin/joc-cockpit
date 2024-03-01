@@ -1,7 +1,8 @@
 const path = require('path');
 const moment = require('moment');
 const _ = require('lodash');
-const logger = require('./logger');
+let logger = require('./logger');
+logger = new logger().getLogger();
 const utils = require("./utils");
 
 
@@ -46,6 +47,7 @@ async function readDataDirectory(directory, options, templateData) {
     for (const file of inputFiles) {
         await readJSONData(directory, file, options, JSON.parse(templateData));
     }
+
     await utils.deleteDirectory('tmp/' + runId)
 }
 

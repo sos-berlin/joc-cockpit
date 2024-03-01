@@ -52,7 +52,7 @@ import {ScriptComponent} from './script/script.component';
 import {FavoriteListComponent} from "./favorite-list/favorite-list.component";
 import {JobTemplateComponent, UpdateJobTemplatesComponent} from './job-template/job-template.component';
 import {TreeModalComponent} from "./runtime/tree-modal/tree.component";
-import { ReportComponent } from './report/report.component';
+import {MonthValidator, ReportComponent} from './report/report.component';
 
 const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, CalendarComponent, ScheduleComponent, ScriptComponent, LockComponent,
   WorkflowComponent, BoardComponent, JobResourceComponent, JobTemplateComponent, FileOrderComponent, TableComponent, FrequencyModalComponent,
@@ -79,6 +79,7 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
     EnvVariableValidator,
     DurationValidator,
     OffsetValidator,
+    MonthValidator,
     TimeRangeRegexValidator,
     DurationWithPercentageRegexValidator,
     ...COMPONENTS

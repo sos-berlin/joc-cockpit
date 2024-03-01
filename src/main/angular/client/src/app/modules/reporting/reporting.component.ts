@@ -159,27 +159,32 @@ export class ReportingComponent {
 
 
   receiveMessage($event: any): void {
-    this.sharingDataService.announceFunction({pageView : $event});
+    this.sharingDataService.announceFunction({pageView: $event});
   }
 
   searchInResult(searchKey) {
     this.sharingDataService.announceSearchKey(searchKey);
   }
 
-  search(): void{
-    this.sharingDataService.announceFunction({search : true});
+  search(): void {
+    this.sharingDataService.announceFunction({search: true});
   }
 
-  sort(sortBy): void{
+  sort(sortBy): void {
     this.filter.manageList.filter.sortBy = sortBy;
-    this.sharingDataService.announceFunction({sortBy : sortBy});
+    this.sharingDataService.announceFunction({sortBy: sortBy});
   }
 
-  runReport() {
-    this.sharingDataService.announceFunction({run : true});
+  runReport(): void {
+    this.sharingDataService.announceFunction({run: true});
   }
 
-  checkRunBtn(data): void{
+  changeState(state): void {
+    this.filter.runHistory.filter.state = state;
+    this.sharingDataService.announceFunction({state: state});
+  }
+
+  checkRunBtn(data): void {
     this.display = data.display;
   }
 

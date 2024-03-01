@@ -2720,37 +2720,6 @@
     "tab.nationalHoliday": "Jours fériés",
     "tab.every": "Jours Récurrents"
   },
-  "reporting": {
-    "label": {
-      "template": "Template",
-      "templates": "Templates",
-      "frequency": "Frequency",
-      "frequencies": "Frequencies",
-      "dateFrom": "Date From",
-      "dateTo": "Date To",
-      "hits": "Hits",
-      "created": "Created",
-      "monthFrom": "Month From",
-      "monthTo": "Month To",
-      "chooseTemplate": "Choose Template",
-      "chooseFrequencies": "Choose Frequencies",
-      "runReport": "Run Report"
-    },
-    "button" : {
-      "runReport": "Run Report",
-      "run": "Run",
-      "showReport": "Show Report"
-    },
-    "placeholder": {
-      "selectTemplate": "Select Template",
-      "selectFrequencies": "Select Frequencies"
-    },
-    "tab": {
-      "reportRunHistory": "Report Run History",
-      "manageReportRuns": "Manage Report Runs",
-      "generateReport": "Generate Report"
-    }
-  },
   "resource": {
     "label.boards": "Tableaux de Condition",
     "label.locks": "Verrous de Ressource",
@@ -2837,6 +2806,37 @@
       "button.editDocument": "Modifier la Documentation",
       "placeholder.assignReference": "Attribuer une référence à une documentation",
       "message.documentNotUsed": "Ce Document n'est pas encore utilisé"
+    }
+  },
+  "reporting": {
+    "label": {
+      "template": "Template",
+      "templates": "Templates",
+      "frequency": "Frequency",
+      "frequencies": "Frequencies",
+      "dateFrom": "Date From",
+      "dateTo": "Date To",
+      "hits": "Hits",
+      "created": "Created",
+      "monthFrom": "Month From",
+      "monthTo": "Month To",
+      "chooseTemplate": "Choose Template",
+      "chooseFrequencies": "Choose Frequencies",
+      "runReport": "Run Report"
+    },
+    "button" : {
+      "runReport": "Run Report",
+      "run": "Run",
+      "showReport": "Show Report"
+    },
+    "placeholder": {
+      "selectTemplate": "Select Template",
+      "selectFrequencies": "Select Frequencies"
+    },
+    "tab": {
+      "reportRunHistory": "Report Run History",
+      "reportRuns": "Report Runs",
+      "reports": "Reports"
     }
   },
   "settings": {

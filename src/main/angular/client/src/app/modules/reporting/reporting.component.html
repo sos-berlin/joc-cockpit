@@ -41,6 +41,28 @@
             </button>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
+          <div *ngIf="index == 1" class="inline">
+            <div class="btn-group m-l-12 ">
+              <button (click)="changeState('ALL')"
+                      [ngClass]="{'btn-primary': filter.runHistory.filter.state=='ALL'}"
+                      class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.allStatus
+              </button>
+              <button (click)="changeState('SUCCESSFUL')"
+                      [ngClass]="{'btn-primary': filter.runHistory.filter.state=='SUCCESSFUL'}"
+                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
+                common.button.successful
+              </button>
+              <button (click)="changeState('FAILED')"
+                      [ngClass]="{'btn-primary': filter.runHistory.filter.state=='FAILED'}"
+                      class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.failed
+              </button>
+              <button (click)="changeState('IN_PROGRESS')"
+                      [ngClass]="{'btn-primary': filter.runHistory.filter.state=='IN_PROGRESS'}"
+                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
+                common.button.incomplete
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -52,7 +74,7 @@
       <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
         <li class="nav-item">
           <a [ngClass]="{'active': index == 0}" (click)="index = 0" class="nav-link">
-            <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.manageReportRuns</span></span>
+            <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.reportRuns</span></span>
           </a>
         </li>
         <li class="nav-item dropdown-separator">
@@ -68,7 +90,7 @@
         </li>
         <li class="nav-item">
           <a (click)="index = 2" class="nav-link" [ngClass]="{'active': index == 2}">
-            <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.generateReport</span></span>
+            <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.reports</span></span>
           </a>
         </li>
 

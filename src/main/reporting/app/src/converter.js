@@ -1,9 +1,11 @@
 const fs = require('fs');
 const path = require('path');
-const logger = require('./logger');
+let logger = require('./logger');
+logger = new logger().getLogger();
 const generate = require('./generator');
 const utils = require('./utils');
 const moment = require("moment");
+
 
 /**
  * Check content date from file and organize based on weeks.

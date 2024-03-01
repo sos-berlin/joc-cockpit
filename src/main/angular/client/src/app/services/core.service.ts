@@ -291,6 +291,7 @@ export class CoreService {
       },
       runHistory: {
         filter: {
+          state: 'ALL',
           sortBy: 'modified',
           reverse: true,
           currentPage: '1'

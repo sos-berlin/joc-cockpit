@@ -1,13 +1,14 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, Directive, forwardRef,
   Input,
   OnChanges,
   OnDestroy,
   SimpleChanges
 } from '@angular/core';
 import {clone, isEmpty, isEqual} from 'underscore';
+import {AbstractControl, NG_VALIDATORS, Validator} from "@angular/forms";
 import {Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -16,6 +17,32 @@ import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
+
+
+@Directive({
+  selector: '[appMonthValidate]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => MonthValidator), multi: true}
+  ]
+})
+export class MonthValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      if (v == '') {
+        return null;
+      }
+      if (/^\s*(([1-9][0-9]*)\s*[mMyY]?|(\d{4})-(0[1-9]|1[0-2]))\s*$/.test(v)) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+    return {
+      invalidMonth: true
+    };
+  }
+}
 
 @Component({
   selector: 'app-report',
@@ -78,7 +105,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
     });
   }
 
-  ngOnInit(): void{
+  ngOnInit(): void {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
   }
 
@@ -240,17 +267,17 @@ export class ReportComponent implements OnChanges, OnDestroy {
     }
   }
 
+  changeDate(type, data): void {
+    this.report.configuration[type] = this.coreService.getDateByFormat(data, null, 'YYYY-MM');
+    this.saveJSON();
+  }
+
   saveJSON(flag = false): void {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
     const obj = this.coreService.clone(this.report.configuration);
-    if (obj.monthFrom) {
-      obj.monthFrom = this.coreService.getDateByFormat(obj.monthFrom, null, 'YYYY-MM')
-    }
-    if (obj.monthTo) {
-      obj.monthTo = this.coreService.getDateByFormat(obj.monthTo, null, 'YYYY-MM')
-    }
+
     if (!isEqual(this.report.actual, JSON.stringify(obj))) {
       if (!flag) {
         if (this.history.length === 20) {
@@ -319,7 +346,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
       } else {
         res.configuration = {};
       }
-      if(this.templates.length == 0){
+      if (this.templates.length == 0) {
         this.getTemplates();
       }
 
@@ -365,4 +392,5 @@ export class ReportComponent implements OnChanges, OnDestroy {
     }
     this.ref.detectChanges();
   }
+
 }

@@ -2720,37 +2720,6 @@
     "tab.nationalHoliday": "国民の祝日",
     "tab.every": "繰返し日数"
   },
-  "reporting": {
-    "label": {
-      "template": "Template",
-      "templates": "Templates",
-      "frequency": "Frequency",
-      "frequencies": "Frequencies",
-      "dateFrom": "Date From",
-      "dateTo": "Date To",
-      "hits": "Hits",
-      "created": "Created",
-      "monthFrom": "Month From",
-      "monthTo": "Month To",
-      "chooseTemplate": "Choose Template",
-      "chooseFrequencies": "Choose Frequencies",
-      "runReport": "Run Report"
-    },
-    "button" : {
-      "runReport": "Run Report",
-      "run": "Run",
-      "showReport": "Show Report"
-    },
-    "placeholder": {
-      "selectTemplate": "Select Template",
-      "selectFrequencies": "Select Frequencies"
-    },
-    "tab": {
-      "reportRunHistory": "Report Run History",
-      "manageReportRuns": "Manage Report Runs",
-      "generateReport": "Generate Report"
-    }
-  },
   "resource": {
     "label.boards": "通知ボード",
     "label.locks": "ロック",
@@ -2837,6 +2806,37 @@
       "button.editDocument": "ドキュメント編集",
       "placeholder.assignReference": "ドキュメント参照の割当",
       "message.documentNotUsed": "このドキュメントは使われていません"
+    }
+  },
+  "reporting": {
+    "label": {
+      "template": "Template",
+      "templates": "Templates",
+      "frequency": "Frequency",
+      "frequencies": "Frequencies",
+      "dateFrom": "Date From",
+      "dateTo": "Date To",
+      "hits": "Hits",
+      "created": "Created",
+      "monthFrom": "Month From",
+      "monthTo": "Month To",
+      "chooseTemplate": "Choose Template",
+      "chooseFrequencies": "Choose Frequencies",
+      "runReport": "Run Report"
+    },
+    "button" : {
+      "runReport": "Run Report",
+      "run": "Run",
+      "showReport": "Show Report"
+    },
+    "placeholder": {
+      "selectTemplate": "Select Template",
+      "selectFrequencies": "Select Frequencies"
+    },
+    "tab": {
+      "reportRunHistory": "Report Run History",
+      "reportRuns": "Report Runs",
+      "reports": "Reports"
     }
   },
   "settings": {
