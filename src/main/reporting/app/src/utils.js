@@ -1,5 +1,7 @@
 const fs = require('fs');
+const readline = require('readline');
 let logger = require('./logger');
+const moment = require("moment/moment");
 logger = new logger().getLogger();
 
 /**
@@ -58,69 +60,82 @@ async function convertCsvToJson(csvFilePath, controllerId, templateData) {
     try {
         console.log(`Converting file ${csvFilePath} into JSON...`);
         return new Promise((resolve, reject) => {
-            // Create a readable stream to read the input file
-            const readStream = fs.createReadStream(csvFilePath, {encoding: 'utf-8'});
-            // Event listener for 'data' event, triggered when data is available to read
-            const arr = [];
-            let headers = [];
-            readStream.on('data', (chunk) => {
-                // Split CSV data into lines
-                let lines = chunk.split('\n');
+                // Create a readable stream to read the input file
+                const readStream = fs.createReadStream(csvFilePath, {encoding: 'utf-8'});
+                // Create an interface to read the stream line by line
+                const rl = readline.createInterface({
+                    input: readStream,
+                    crlfDelay: Infinity // To recognize all instances of CR LF ('\r\n') as a single line break
+                });
 
-                // Extract header (first line)
-                if (headers.length === 0) {
-                    headers = lines[0].trim().split(';');
-                    lines = lines.splice(0, 1);
-                }
-
-                for (let i = 0; i < lines.length; i++) {
-                    const values = lines[i].trim().split(';');
-                    // Create an object with header keys and corresponding values
-                    const obj = {};
-                    for (let j = 0; j < headers.length; j++) {
-                        obj[headers[j]] = values[j];
-                    }
-                    let flag = false;
-                    if (controllerId) {
-                        flag = obj.CONTROLLER_ID === options.controllerId;
+                // Event listener for 'data' event, triggered when data is available to read
+                const arr = [];
+                let headers = [];
+                rl.on('line', (line) => {
+                    // Extract header (first line)
+                    if (headers.length === 0) {
+                        headers = line.trim().split(';');
                     } else {
-                        flag = true;
-                    }
-                    if (templateData && flag) {
-                        // Filter data based on the status
-                        if (templateData.status === "FAILED") {
-                            flag = obj.STATE === '2';
-                        } else if (templateData.status === "SUCCESS") {
-                            flag = obj.STATE === '1';
+                        const values = line.trim().split(';');
+                        // Create an object with header keys and corresponding values
+                        const obj = {};
+                        for (let j = 0; j < headers.length; j++) {
+                            obj[headers[j]] = values[j];
                         }
-                        if (templateData.orderState === 'CANCELLED') {
-                            flag = obj.ORDER_STATE === '7';
+                        let flag = false;
+                        if (controllerId) {
+                            flag = obj.CONTROLLER_ID === options.controllerId;
+                        } else {
+                            flag = true;
                         }
+                        if (templateData && flag) {
+                            if (templateData.execution === "DURATION") {
+                                if (templateData.groupBy === 'WORKFLOW_NAME') {
+                                    flag = obj.STATE !== '2';
+                                }
+                                if ((obj.STATE === undefined && !obj.END_TIME) || (obj.STATE && obj.END_TIME == 0)) {
+                                    flag = false;
+                                }
+                            }
 
-                        if (templateData.criticality === 'HIGH') {
-                            flag = obj.CRITICALITY === '2';
+                            // Filter data based on the status
+                            if (templateData.status === "FAILED") {
+                                flag = obj.STATE === '2';
+                            } else if (templateData.status === "SUCCESS") {
+                                flag = obj.STATE === '1';
+                            }
+
+                            if (flag && templateData.orderState === 'CANCELLED') {
+                                flag = obj.ORDER_STATE === '7';
+                            }
+                            if (flag && templateData.criticality === 'HIGH') {
+                                flag = obj.CRITICALITY === '2';
+                            }
+                        }
+                        //console.log(flag, 'flag', obj)
+                        if (flag) {
+                            obj.duration = moment(obj.END_TIME).diff(obj.START_TIME) / 1000; // Duration in seconds
+                            arr.push(obj);
                         }
                     }
-                    if (flag) {
-                        arr.push(obj);
-                    }
-                }
+                });
 
-            });
-
-            // Event listener for 'close' event, triggered when file reading is finished
-            readStream.on('close', async () => {
-                console.log('File reading is finished...');
-                resolve(arr);
-            });
-            // Event listener for 'error' event, triggered when an error occurs
-            readStream.on('error', (error) => {
-                console.error('Error reading file:', error);
-                logger.error('Error reading file:', error);
-                reject(error); // Reject the promise with the error
-            });
-        });
-    } catch (error) {
+                // Event listener for 'close' event, triggered when file reading is finished
+                readStream.on('close', async () => {
+                    console.log('File reading is finished...');
+                    resolve(arr);
+                });
+                // Event listener for 'error' event, triggered when an error occurs
+                readStream.on('error', (error) => {
+                    console.error('Error reading file:', error);
+                    logger.error('Error reading file:', error);
+                    reject(error); // Reject the promise with the error
+                });
+            }
+        )
+            ;
+    } catch
+        (error) {
         console.error('Error processing CSV:' + csvFilePath, error.message);
         logger.error('Error processing CSV:' + csvFilePath, error.message);
         throw error;

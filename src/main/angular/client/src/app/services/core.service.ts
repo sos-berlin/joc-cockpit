@@ -24,7 +24,6 @@ export class CoreService {
   dashboard: any = {};
   locales: any = [];
   expertMode: string | undefined | null;
-  reportDownloadingStart = false;
   reportStartRunning = false;
   scheduleExpandedProperties: any = new Map();
 
@@ -683,13 +682,6 @@ export class CoreService {
       observe: 'response'
     };
     return this.http.post(url, options, headers);
-  }
-
-  startDataDownload(): void {
-    this.reportDownloadingStart = true;
-    setTimeout(() => {
-      this.reportDownloadingStart = false;
-    }, 5000);
   }
 
   startReport(): void {

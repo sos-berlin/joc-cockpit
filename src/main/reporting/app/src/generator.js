@@ -66,7 +66,7 @@ function dynamicData(templates, data, options) {
         if (templates.data.groupBy === 'WORKFLOW_NAME' && templates.data.execution === "DURATION") {
             // Calculate execution time for each workflow
             const executionTimes = data.map(item => {
-                const executionTime = item.duration = moment(item.END_TIME).diff(item.START_TIME) // in milliseconds
+                const executionTime = item.duration // in milliseconds
                 const duration = executionTime / 1000; // Convert to seconds
                 return {...item, executionTime: executionTime, duration};
             });
@@ -123,24 +123,18 @@ function dynamicData(templates, data, options) {
 
                 agentData.reduce((currentJobs, job) => {
                     const overlappingJobs = currentJobs.filter(j => (j.START_TIME.isBefore(job.START_TIME) && j.END_TIME.isAfter(job.START_TIME)) || (j.START_TIME.isSameOrBefore(job.START_TIME) && j.END_TIME.isSameOrAfter(job.END_TIME)));
-
                     currentJobs.push(job);
-
                     if (overlappingJobs.length + 1 > maxParallelJobs) {
                         maxParallelJobs = overlappingJobs.length + 1;
                         maxParallelJobData = currentJobs.map(({
                                                                   WORKFLOW_NAME,
                                                                   JOB_NAME,
-                                                                  AGENT_NAME,
                                                                   START_TIME,
-                                                                  STATE,
                                                                   duration
                                                               }) => ({
                             WORKFLOW_NAME,
                             JOB_NAME,
-                            AGENT_NAME,
                             START_TIME,
-                            STATE,
                             duration
                         }));
                     }
@@ -230,19 +224,13 @@ function dynamicData(templates, data, options) {
                                                   WORKFLOW_NAME,
                                                   JOB_NAME,
                                                   AGENT_NAME,
-                                                  ORDER_ID,
                                                   START_TIME,
-                                                  ORDER_STATE,
-                                                  STATE,
                                                   duration
                                               }) => ({
                                 WORKFLOW_NAME,
                                 JOB_NAME,
                                 AGENT_NAME,
-                                ORDER_ID,
                                 START_TIME,
-                                ORDER_STATE,
-                                STATE,
                                 duration
                             }))
                         }))
@@ -250,10 +238,6 @@ function dynamicData(templates, data, options) {
                 ]
             }];
         } else if (templates.data.groupBy === 'START_TIME' && templates.data.execution === "DURATION") {
-            // Calculate the duration for each job execution
-            data.forEach(item => {
-                item.duration = moment(item.END_TIME).diff(item.START_TIME) / 1000; // Duration in seconds
-            });
 
             // Extract the required fields and return the modified data array
             return data.slice(0, options.hits).map(({WORKFLOW_NAME, JOB_NAME, duration}) => ({
@@ -288,7 +272,7 @@ function dynamicData(templates, data, options) {
                 }
 
                 if (!groups[key]) {
-                    groups[key] = {count: 0, workflow: item['WORKFLOW_NAME'], job: item['JOB_NAME'], data: []};
+                    groups[key] = {count: 0, data: []};
                 }
                 groups[key].count++;
                 groups[key].data.push(item);
@@ -300,36 +284,10 @@ function dynamicData(templates, data, options) {
 
                 // Map to transform the data format
                 .map(([key, value]) => {
-                    // Add overlapping data
-                    const overlappingData = [];
-                    value.data.forEach(item => {
-                        item.duration = moment(item.END_TIME).diff(item.START_TIME) / 1000; // Duration in seconds
-                    });
-
                     return {
                         [templates.data.groupBy.toLowerCase()]: key,
                         count: value.count,
-                        workflow: value.workflow,
-                        job: value.job,
-                        data: value.data.concat(overlappingData).map(({
-                                                                          WORKFLOW_NAME,
-                                                                          JOB_NAME,
-                                                                          START_TIME,
-                                                                          duration,
-                                                                          AGENT_NAME,
-                                                                          ORDER_STATE,
-                                                                          STATE,
-                                                                          ORDER_ID
-                                                                      }) => ({
-                            WORKFLOW_NAME,
-                            JOB_NAME,
-                            AGENT_NAME,
-                            ORDER_ID,
-                            START_TIME,
-                            ORDER_STATE,
-                            STATE,
-                            duration,
-                        }))
+                        data: value.data.map(({START_TIME}) => START_TIME)
                     };
                 });
         }

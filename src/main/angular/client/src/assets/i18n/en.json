@@ -2822,7 +2822,8 @@
       "monthTo": "Month To",
       "chooseTemplate": "Choose Template",
       "chooseFrequencies": "Choose Frequencies",
-      "runReport": "Run Report"
+      "runReport": "Run Report",
+      "reportRunning": "Report is running..."
     },
     "button" : {
       "runReport": "Run Report",
@@ -2869,7 +2870,8 @@
       "notification_history_age": "Specifies the retention period of the Notification History. Any history entries older than the value specified will be purged.",
       "max_pool_size": "The max. connection pool size specifies the number of database connection used. For environmentns with larger numbers of daily task history entries to purge it can be benefitial to increase this value for example to 10. Users have to check that their DBMS allows an increased number of connections to be used.",
       "profile_age": "Specifies the max. number of days that a Profile has not been used from login by a user account before it is purged.",
-      "failed_login_history_age": "Specifies the max. number of days for which entries in the history of failed logins are retained before they are purged."
+      "failed_login_history_age": "Specifies the max. number of days for which entries in the history of failed logins are retained before they are purged.",
+      "reporting_age": "Reporting age"
     },
     "dailyplan": {
       "time_zone": "Specifies the time zone that is applied to the start time of the Daily Plan Service and period of the Daily Plan.",
@@ -2899,7 +2901,7 @@
       "show_view_auditlog": "Specifies that independently from user permissions the AUDIT LOG view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed.",
       "show_view_configuration": "Specifies that independently from user permissions the CONFIGURATION view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed.",
       "show_view_monitor": "Specifies that independently from user permissions the MONITOR view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed.",
-      "show_view_reports": "Specifies that independently from user permissions the REPORTS view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed.",
+      "show_view_report": "Specifies that independently from user permissions the REPORTS view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed.",
       "controller_connection_joc_password": "The password is used for authentication of the JOC service account (running in JOC Cockpit) with the Controller. If HTTP connections are used then the password is the only means for authentication. If HTTPS connections with mutual authentication are used then the password is not relevant as certificate based authentication is in place. An empty password can be specified with the corresponding password in the Controller's private.conf file being \"plain:\". If the password is modified in the JOC Cockpit Settings page then it has to be modified in the Controller's private.conf file too to make the passwords match. It is recommended to first modify the password in the active Controller instance's private.conf file and then in the Settings page. Then restart the Controller instance from the Dashboard view. JOC Cockpit will reconnect to the active Controller instance. If a Controller Cluster is used, then apply the same change to the passive Controller instance's private.conf file.",
       "controller_connection_history_password": "The password is used for authentication of the History service account (running in JOC Cockpit) with the Controller. If HTTP connections are used then the password is the only means for authentication. If HTTPS connections with mutual authentication are used then the password is not relevant as certificate based authentication is in place. An empty password can be specified with the corresponding password in the Controller's private.conf file being \"plain:\". If the password is modified in the JOC Cockpit Settings page then it has to be modified in the Controller's private.conf file too to make the passwords match. It is recommended to first modify the password in the active Controller instance's private.conf file and then in the Settings page. Then restart the Controller instance from the Dashboard view. JOC Cockpit will reconnect to the active Controller instance. If a Controller Cluster is used, then apply the same change to the passive Controller instance's private.conf file.",
       "encoding": "The Encoding is applied if JOC Cockpit is operated for Windows environments. Windows does not support Unicode but makes use of code pages. In case that the Windows code page cannot be detected automatically users can specify the code page, for details see https://kb.sos-berlin.com/x/h7J2B",

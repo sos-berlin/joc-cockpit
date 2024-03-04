@@ -5528,7 +5528,7 @@ div.min-ht-widget-controller-status {
   }
 }
 
-tr.disabled-row td:not(.menu) {
+tr.disabled-row td:not(.menu):not(.chk) {
   opacity: .7;
   pointer-events: none !important;
   cursor: not-allowed !important;
@@ -5891,7 +5891,7 @@ General CSS
     }
 
     &.chk {
-      width: 36px !important;
+      width: 46px !important;
     }
   }
 

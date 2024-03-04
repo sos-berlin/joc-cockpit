@@ -61,18 +61,17 @@
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
 </div>
-<div class="download-bar box-shadow-z1 animated" id="download-panel" *ngIf="coreService.reportDownloadingStart || coreService.reportStartRunning">
+<div class="download-bar box-shadow-z1 animated" id="download-panel" *ngIf="coreService.reportStartRunning">
   <div class="row p-a-10 p-l p-r">
     <div class="col-md-6 ">
       <i  class="fa fa-spin fa-spinner"></i>&nbsp;
-      <span *ngIf="coreService.reportStartRunning">Report is running...</span>
-      <span *ngIf="!coreService.reportStartRunning">Downloading...</span>
+      <span *ngIf="coreService.reportStartRunning" translate>reporting.label.reportRunning</span>
     </div>
     <div class="col-md-6 text-right">
-      <a (click)="hideDownloadPanel(true)" class="text-primary text-u-l">Hide</a>
+      <a (click)="hideDownloadPanel(true)" class="text-primary text-u-l" translate>agent.button.hide</a>
     </div>
   </div>
 </div>
-<div class="download-bar box-shadow-z1 download-bar-hide animated opacity0" *ngIf="coreService.reportDownloadingStart || coreService.reportStartRunning">
+<div class="download-bar box-shadow-z1 download-bar-hide animated opacity0" *ngIf="coreService.reportStartRunning">
   <i [nz-tooltip]="'Show reporting progress' | translate" class="text-hover-primary cursor" (click)="hideDownloadPanel(false)" nz-icon nzType="arrow-up" nzTheme="outline"></i>
 </div>

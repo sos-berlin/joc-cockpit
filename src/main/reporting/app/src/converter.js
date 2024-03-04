@@ -62,8 +62,8 @@ async function checkDateFromContent(filePath, weeks, frequencyInterval, runId, o
                                 await fs.writeFileSync(path.join('tmp/' + runId, fileName), jsonData);
                                 console.log('Data has been written to file successfully', path.join('tmp/' + runId, fileName));
                             } catch (err) {
-                                console.error('Error writing data to file:', err);
-                                logger.error('Error writing data to file:', err);
+                                console.error('Error in writing data to file:', err);
+                                logger.error('Error in writing data to file:', err);
                             }
                         } else {
                             await utils.writeOutputFile(path.join('tmp/' + runId, fileName), outputArray);
