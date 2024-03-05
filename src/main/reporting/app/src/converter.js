@@ -1,10 +1,105 @@
 const fs = require('fs');
 const path = require('path');
+const moment = require("moment");
+const {promisify} = require('util');
 let logger = require('./logger');
 logger = new logger().getLogger();
 const generate = require('./generator');
 const utils = require('./utils');
-const moment = require("moment");
+
+const appendFileAsync = promisify(fs.appendFile);
+
+class PriorityQueue {
+    constructor(compareFunction) {
+        this.heap = [];
+        this.compare = compareFunction;
+    }
+
+    enqueue(item) {
+        this.heap.push(item);
+        this.bubbleUp();
+    }
+
+    dequeue() {
+        const max = this.heap[0];
+        const end = this.heap.pop();
+        if (this.heap.length > 0) {
+            this.heap[0] = end;
+            this.sinkDown();
+        }
+        return max;
+    }
+
+    bubbleUp() {
+        let index = this.heap.length - 1;
+        while (index > 0) {
+            const parentIndex = Math.floor((index - 1) / 2);
+            if (this.compare(this.heap[index], this.heap[parentIndex]) < 0) {
+                break;
+            }
+            [this.heap[parentIndex], this.heap[index]] = [this.heap[index], this.heap[parentIndex]];
+            index = parentIndex;
+        }
+    }
+
+    sinkDown() {
+        let index = 0;
+        const length = this.heap.length;
+        while (true) {
+            let leftChildIndex = 2 * index + 1;
+            let rightChildIndex = 2 * index + 2;
+            let swap = null;
+
+            if (leftChildIndex < length && this.compare(this.heap[leftChildIndex], this.heap[index]) > 0) {
+                swap = leftChildIndex;
+            }
+            if (rightChildIndex < length && this.compare(this.heap[rightChildIndex], this.heap[index]) > 0 &&
+                this.compare(this.heap[rightChildIndex], this.heap[leftChildIndex]) > 0) {
+                swap = rightChildIndex;
+            }
+            if (swap === null) break;
+
+            [this.heap[index], this.heap[swap]] = [this.heap[swap], this.heap[index]];
+            index = swap;
+        }
+    }
+
+    peek() {
+        return this.heap[0];
+    }
+
+    size() {
+        return this.heap.length;
+    }
+}
+
+async function* chunkGenerator(array, chunkSize) {
+    for (let i = 0; i < array.length; i += chunkSize) {
+        yield array.slice(i, i + chunkSize);
+    }
+}
+
+async function getTopEntries(array, k, compareFunction, chunkSize = 1000) {
+    const pq = new PriorityQueue(compareFunction);
+    let count = 0;
+
+    for await (const chunk of chunkGenerator(array, chunkSize)) {
+        for (const entry of chunk) {
+            pq.enqueue(entry);
+            if (pq.size() > k) {
+                pq.dequeue();
+            }
+        }
+        count += chunk.length;
+        if (count >= k) break; // Stop processing chunks once we have enough top entries
+    }
+
+    const result = [];
+    while (pq.size() > 0) {
+        result.unshift(pq.dequeue());
+    }
+    return result;
+}
 
 
 /**
@@ -58,20 +153,19 @@ async function checkDateFromContent(filePath, weeks, frequencyInterval, runId, o
                             result = JSON.parse(result);
                             outputArray = [...result, ...outputArray];
                             try {
-                                const jsonData = JSON.stringify(outputArray, null, 2); // Convert data to JSON string with indentation
-                                await fs.writeFileSync(path.join('tmp/' + runId, fileName), jsonData);
+                                await writeJsonToFile(path.join('tmp/' + runId, fileName), outputArray);
                                 console.log('Data has been written to file successfully', path.join('tmp/' + runId, fileName));
                             } catch (err) {
                                 console.error('Error in writing data to file:', err);
                                 logger.error('Error in writing data to file:', err);
                             }
                         } else {
-                            await utils.writeOutputFile(path.join('tmp/' + runId, fileName), outputArray);
+                            await writeJsonToFile(path.join('tmp/' + runId, fileName), outputArray);
                         }
                     });
                 } catch (err) {
                     // File doesn't exist or other error occurred
-                    await utils.writeOutputFile(path.join('tmp/' + runId, fileName), outputArray);
+                    await writeJsonToFile(path.join('tmp/' + runId, fileName), outputArray);
                 }
 
             }
@@ -88,9 +182,23 @@ async function checkDateFromContent(filePath, weeks, frequencyInterval, runId, o
  */
 async function writeJsonToFile(outputPath, jsonData) {
     try {
-        const jsonString = JSON.stringify(jsonData, null, 2);
-        await fs.promises.writeFile(outputPath, jsonString);
+      
+        const dataLength = jsonData.length;
+        const chunkSize = 1024; // Adjust the chunk size as needed
+
+        for (let i = 0; i < dataLength; i += chunkSize) {
+            const chunk = jsonData.slice(i, i + chunkSize);
+            let jsonString = '';
+            if(i === 0){
+                jsonString = JSON.stringify(chunk, null, 2).slice(1, -1) + '\n'
+            } else {
+                jsonString = ',' + JSON.stringify(chunk, null, 2).slice(1, -1) + '\n'
+            }
+            await appendFileAsync(outputPath, jsonString);
+        }
+        console.log(`JSON data has been written to file ${outputPath} successfully.`);
     } catch (error) {
+        console.error('Error writing JSON file:', error);
         throw new Error(`Error writing JSON file: ${error.message}`);
     }
 }
@@ -98,7 +206,15 @@ async function writeJsonToFile(outputPath, jsonData) {
 async function processCsvFiles(csvFilePaths, outputJsonPath, templateData, options) {
     try {
         const combinedJsonData = await combineCsvToJson(csvFilePaths, templateData, options);
-        await writeJsonToFile(outputJsonPath, combinedJsonData);
+        if (templateData.execution === "DURATION") {
+            // Example comparator function to compare objects based on 'duration' property
+            const compareByDuration = (a, b) => b.duration - a.duration;
+            // Get top 10 entries based on duration
+            const top10Entries = await getTopEntries(combinedJsonData, options.hits, compareByDuration);
+            await writeJsonToFile(outputJsonPath, top10Entries);
+        } else {
+            await writeJsonToFile(outputJsonPath, combinedJsonData);
+        }
     } catch (error) {
         console.error(error.message);
     }
@@ -339,7 +455,7 @@ async function init(options) {
                         await checkFileNameWithFrequency(runId, inputFiles, frequencyType, interval, JSON.parse(templateData).data, options);
                     }
 
-                    await generate(templateData, runId, options);
+                   await generate(templateData, runId, options);
                 }
             })
             .catch(e => {

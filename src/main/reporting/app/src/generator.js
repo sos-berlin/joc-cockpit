@@ -1,6 +1,8 @@
+const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
 const _ = require('lodash');
+const readline = require('readline');
 let logger = require('./logger');
 logger = new logger().getLogger();
 const utils = require("./utils");
@@ -17,11 +19,94 @@ async function readJSONData(directory, file, options, templateData) {
     const filePath = path.join(directory, file);
     console.log(`Read ${filePath} file and start data processing...`)
     try {
-        let data = await utils.readJsonFile(filePath);
-        if (data.match('}{')) {
-            data = data.replaceAll('}{', ',');
+        if (templateData.data.groupBy === 'START_TIME' && !templateData.data.execution) {
+            return new Promise((resolve, reject) => {
+                // Create a readable stream to read the input file
+                const readStream = fs.createReadStream(filePath, {encoding: 'utf-8'});
+                // Create an interface to read the stream line by line
+                const rl = readline.createInterface({
+                    input: readStream,
+                    crlfDelay: Infinity // To recognize all instances of CR LF ('\r\n') as a single line break
+                });
+                const jsonObject = {
+                    title: templateData.title,
+                    type: templateData.type,
+                    chartType: templateData.data.chartType,
+                    data: []
+                };
+                const groupedData = {};
+                rl.on('line', (line) => {
+                    try {
+                        if (line) {
+                            line = line.replace(/,\s*$/, '');
+                            if(line) {
+                                try {
+                                    const data = JSON.parse(line);
+
+                                    if (typeof data == 'string') {
+                                        let _data = JSON.parse(data);
+                                        const startTime = _data.START_TIME;
+                                        // Group the data by category
+                                        if (!groupedData[startTime]) {
+                                            groupedData[startTime] = [];
+                                        }
+                                        groupedData[startTime].push(_data);
+                                    }
+                                } catch (e) {
+                                    console.log('line', line, '>>>')
+                                    console.log(e)
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.log(e);
+                    }
+                });
+
+                // Event listener for 'close' event, triggered when file reading is finished
+                readStream.on('close', async () => {
+                    console.log('Creation of report data is finished...');
+                    jsonObject.data = Object.entries(groupedData).map(([key, value]) => {
+                        return {
+                            period: key, count: value.length, data: value.map(item => {
+                                return {
+                                    WORKFLOW_NAME: item.WORKFLOW_NAME,
+                                    JOB_NAME: item.JOB_NAME,
+                                    START_TIME: item.START_TIME
+                                }
+                            })
+                        }
+                    }).sort((a, b) => b.count - a.count) // Sort by count in descending order
+                        // Slice to get only the specified hits
+                        .slice(0, options.hits);
+                    // jsonObject.data = arr;
+                    if (jsonObject.data) {
+                        const runId = directory.match(/\d+/)[0];
+                        let outputDir;
+                        if (options.outputDirectory) {
+                            outputDir = path.join(options.outputDirectory, file);
+                        } else {
+                            outputDir = path.join('report/' + runId, file);
+                        }
+                        await utils.writeOutputFile(outputDir, jsonObject);
+                    }
+
+                    resolve();
+                });
+                // Event listener for 'error' event, triggered when an error occurs
+                readStream.on('error', (error) => {
+                    console.error('Error reading file:', error);
+                    logger.error('Error reading file:', error);
+                    reject(error); // Reject the promise with the error
+                });
+            });
+        } else {
+            let data = await utils.readJsonFile(filePath);
+            if (data.match('}{')) {
+                data = data.replaceAll('}{', ',');
+            }
+            await writeReportData(options, data, directory, file, templateData, options.hits);
         }
-        await writeReportData(options, data, directory, file, templateData, options.hits);
     } catch (error) {
         console.error('Error while reading template data', error);
         logger.error('Error while reading template data', error);
@@ -47,8 +132,7 @@ async function readDataDirectory(directory, options, templateData) {
     for (const file of inputFiles) {
         await readJSONData(directory, file, options, JSON.parse(templateData));
     }
-
-    await utils.deleteDirectory('tmp/' + runId)
+    //  await utils.deleteDirectory('tmp/' + runId)
 }
 
 /**
@@ -64,50 +148,16 @@ function dynamicData(templates, data, options) {
         // Group data dynamically based on the groupBy property
 
         if (templates.data.groupBy === 'WORKFLOW_NAME' && templates.data.execution === "DURATION") {
-            // Calculate execution time for each workflow
-            const executionTimes = data.map(item => {
-                const executionTime = item.duration // in milliseconds
-                const duration = executionTime / 1000; // Convert to seconds
-                return {...item, executionTime: executionTime, duration};
-            });
-
-            // Group data by workflow
-            const groupedData = executionTimes.reduce((acc, entry) => {
-                acc[entry.WORKFLOW_NAME] = acc[entry.WORKFLOW_NAME] || [];
-                acc[entry.WORKFLOW_NAME].push(entry);
-                return acc;
-            }, {});
-
-            // Calculate total execution time for each workflow
-            const workflowExecutionTimes = Object.keys(groupedData).map(workflow => {
-                const executions = groupedData[workflow];
-                const totalExecutionTime = executions.reduce((sum, entry) => sum + entry.executionTime, 0);
-                return {workflow, totalExecutionTime};
-            });
-
             // Sort workflows by total execution time in descending order
-            workflowExecutionTimes.sort((a, b) => b.totalExecutionTime - a.totalExecutionTime);
+            data.sort((a, b) => b.duration - a.duration);
 
             // Get top ${hits} workflows
-            return workflowExecutionTimes.slice(0, options.hits).map(({workflow, totalExecutionTime}) => ({
-                workflow,
-                totalExecutionTime,
+            return data.map(({WORKFLOW_NAME, START_TIME, duration}) => ({
+                WORKFLOW_NAME,
+                START_TIME,
+                duration,
                 // Add additional fields
-                data: groupedData[workflow].map(({
-                                                     START_TIME,
-                                                     duration,
-                                                     JOB_NAME,
-                                                     AGENT_NAME,
-                                                     STATE,
-                                                     WORKFLOW_NAME
-                                                 }) => ({
-                    START_TIME,
-                    duration,
-                    JOB_NAME,
-                    AGENT_NAME,
-                    STATE,
-                    WORKFLOW_NAME
-                }))
+                data: []
             }));
         } else if (templates.data.groupBy === 'AGENT_NAME' && templates.data.groupBy2 === "START_TIME") {
             data.forEach(entry => {
@@ -147,6 +197,7 @@ function dynamicData(templates, data, options) {
 
             return _.orderBy(results, ['count'], ['desc']).slice(0, options.hits);
         } else if (templates.data.groupBy === 'START_TIME' && templates.data.execution === "PARALLELISM") {
+            //TODO
             const groupedData = Object.values(data.reduce((acc, curr) => {
                 const startTime = curr.START_TIME?.split(' ')[0];
                 acc[startTime] = acc[startTime] || [];
@@ -183,86 +234,49 @@ function dynamicData(templates, data, options) {
             });
 
             const sortedPeriods = periods.sort((a, b) => b.length - a.length);
+            return {
+                'topLowParallelismPeriods': sortedPeriods.slice(0, options.hits).map(period => ({
+                    period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
+                    data: period.map(({
+                                          WORKFLOW_NAME,
+                                          JOB_NAME,
+                                          AGENT_NAME,
+                                          START_TIME,
+                                          duration
+                                      }) => ({
+                        WORKFLOW_NAME,
+                        JOB_NAME,
+                        AGENT_NAME,
+                        START_TIME,
+                        duration
+                    }))
+                })),
+                'topHighParallelismPeriods': sortedPeriods.slice(-options.hits).reverse().map(period => ({
+                    period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
+                    data: period.map(({
+                                          WORKFLOW_NAME,
+                                          JOB_NAME,
+                                          AGENT_NAME,
+                                          START_TIME,
+                                          duration
+                                      }) => ({
+                        WORKFLOW_NAME,
+                        JOB_NAME,
+                        AGENT_NAME,
+                        START_TIME,
+                        duration
+                    }))
+                }))
 
-            const topLowCounts = sortedPeriods.slice(0, options.hits).reduce((acc, period) => acc + period.length, 0);
-            const topHighCounts = sortedPeriods.slice(-options.hits).reduce((acc, period) => acc + period.length, 0);
-            const count = topLowCounts + topHighCounts;
-
-            return [{
-                count,
-                data: [
-                    {
-                        count: topLowCounts,
-                        'topLowParallelismPeriods': sortedPeriods.slice(0, options.hits).map(period => ({
-                            period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
-                            data: period.map(({
-                                                  WORKFLOW_NAME,
-                                                  JOB_NAME,
-                                                  AGENT_NAME,
-                                                  ORDER_ID,
-                                                  START_TIME,
-                                                  ORDER_STATE,
-                                                  STATE,
-                                                  duration
-                                              }) => ({
-                                WORKFLOW_NAME,
-                                JOB_NAME,
-                                AGENT_NAME,
-                                ORDER_ID,
-                                START_TIME,
-                                ORDER_STATE,
-                                STATE,
-                                duration
-                            }))
-                        }))
-                    },
-                    {
-                        count: topHighCounts,
-                        'topHighParallelismPeriods': sortedPeriods.slice(-options.hits).reverse().map(period => ({
-                            period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
-                            data: period.map(({
-                                                  WORKFLOW_NAME,
-                                                  JOB_NAME,
-                                                  AGENT_NAME,
-                                                  START_TIME,
-                                                  duration
-                                              }) => ({
-                                WORKFLOW_NAME,
-                                JOB_NAME,
-                                AGENT_NAME,
-                                START_TIME,
-                                duration
-                            }))
-                        }))
-                    }
-                ]
-            }];
+            };
         } else if (templates.data.groupBy === 'START_TIME' && templates.data.execution === "DURATION") {
-
             // Extract the required fields and return the modified data array
-            return data.slice(0, options.hits).map(({WORKFLOW_NAME, JOB_NAME, duration}) => ({
+            return data.map(({WORKFLOW_NAME, JOB_NAME, START_TIME, duration}) => ({
                 WORKFLOW_NAME,
                 JOB_NAME,
+                START_TIME,
                 duration,
-                data: data.map(({
-                                    WORKFLOW_NAME,
-                                    JOB_NAME,
-                                    AGENT_NAME,
-                                    ORDER_ID,
-                                    START_TIME,
-                                    ORDER_STATE,
-                                    STATE,
-                                    duration
-                                }) => ({
-                    WORKFLOW_NAME,
-                    JOB_NAME,
-                    AGENT_NAME,
-                    ORDER_ID,
-                    START_TIME,
-                    ORDER_STATE,
-                    STATE,
-                    duration,
-                }))
+                data: []
             }));
         } else {
             return Object.entries(data.reduce((groups, item) => {
@@ -311,12 +325,10 @@ async function writeReportData(options, data, directory, fileName, templateData,
         type: templateData.type,
         chartType: templateData.data.chartType
     };
-    let groupedData;
+    data = '[' + data + ']';
+    jsonObject.data = dynamicData(templateData, JSON.parse(data), options);
 
-    groupedData = dynamicData(templateData, JSON.parse(data), options);
-
-    if (groupedData) {
-        jsonObject.data = groupedData;
+    if (jsonObject.data) {
         let outputDir;
         if (options.outputDirectory) {
             outputDir = path.join(options.outputDirectory, fileName);

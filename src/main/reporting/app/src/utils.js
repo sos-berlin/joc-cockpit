@@ -89,15 +89,6 @@ async function convertCsvToJson(csvFilePath, controllerId, templateData) {
                             flag = true;
                         }
                         if (templateData && flag) {
-                            if (templateData.execution === "DURATION") {
-                                if (templateData.groupBy === 'WORKFLOW_NAME') {
-                                    flag = obj.STATE !== '2';
-                                }
-                                if ((obj.STATE === undefined && !obj.END_TIME) || (obj.STATE && obj.END_TIME == 0)) {
-                                    flag = false;
-                                }
-                            }
-
                             // Filter data based on the status
                             if (templateData.status === "FAILED") {
                                 flag = obj.STATE === '2';
@@ -112,10 +103,26 @@ async function convertCsvToJson(csvFilePath, controllerId, templateData) {
                                 flag = obj.CRITICALITY === '2';
                             }
                         }
-                        //console.log(flag, 'flag', obj)
+
                         if (flag) {
                             obj.duration = moment(obj.END_TIME).diff(obj.START_TIME) / 1000; // Duration in seconds
-                            arr.push(obj);
+                            delete obj.ID;
+                            delete obj.MODIFIED;
+                            delete obj.WORKFLOW_VERSION_ID;
+                            delete obj.POSITION;
+                            delete obj.AGENT_ID;
+                            delete obj.CREATED;
+                            delete obj.WORKFLOW_PATH;
+                            delete obj.CONTROLLER_ID;
+                            delete obj.ERROR;
+                            if(obj.JOB_NAME){
+                                delete obj.ORDER_ID;
+                            }
+                            if (templateData.groupBy === 'START_TIME' && !templateData.execution) {
+                                arr.push(JSON.stringify(obj));
+                            } else {
+                                arr.push(obj);
+                            }
                         }
                     }
                 });

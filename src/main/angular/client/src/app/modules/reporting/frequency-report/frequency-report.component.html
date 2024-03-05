@@ -4,7 +4,7 @@
       <div class="text-center b-b m-t-11">
           <h5 class="card-title">{{ report.template }}</h5>
       </div>
-      <div class="m-t-35" style="float: right">
+      <div class="m-t-35" style="float: right" [hidden]="filter.showComaprison || filter.showReport">
         <button [nzDropdownMenu]="addReports" [nzPlacement]="'bottomRight'"
                 class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
                 type="button">Add Card
@@ -15,8 +15,8 @@
         <nz-dropdown-menu #addReports="nzDropdownMenu">
           <ul nz-menu>
             <ng-container *ngFor="let item of multiReports">
-              <li nz-menu-item *ngIf="item.data">
-                <label nz-checkbox [(ngModel)]="item.checked" (ngModelChange)="onTemplateChange(item.id)">
+              <li nz-menu-item *ngIf="item.data.length">
+                <label nz-checkbox [(ngModel)]="item.checked" (ngModelChange)="onCardChange(item.id)">
                   {{ item.title + '-' + item.dateFrom }}
                 </label>
               </li>
@@ -25,16 +25,18 @@
         </nz-dropdown-menu>
       </div>
       <div class="box-body">
-        <div *ngIf="filter.showData" class="m-r-xs">
+        <div *ngIf="filter.showReport || filter.showComaprison" class="m-r-xs">
           <span (click)="toggleView()" class="text-hover-primary cursor-pointer">
             <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
             {{'common.button.back' | translate}}
           </span>
         </div>
         <ng-container *ngFor="let reports of addCardItems">
-          <div [hidden]="filter.showData" *ngIf="reports.data.length" class="col-lg-4 col-xl-3 m-b-sm">
+          <div [hidden]="filter.showReport || filter.showComaprison" *ngIf="reports.data.length" class="col-lg-4 col-xl-3 m-b-sm">
             <div class="card">
               <div class="card-body">
+                <div class="cur-point right" (click)="removeCard(reports.id)"><i class="fa fa-times fa-lg" aria-hidden="true"></i>
+                </div>
                 <div class="m-b-sm">
                   <h5 class="card-title">{{ reports.path }}</h5>
                 </div>
@@ -59,7 +61,7 @@
                       <ng-container *ngFor="let item of templates">
                         <li nz-menu-item
                             *ngIf="item.title === reports.title && item.frequency === reports.frequency && item.dateFrom != reports.dateFrom">
-                          <label nz-checkbox [(ngModel)]="item.checked" (ngModelChange)="onTemplateChange(item)">
+                          <label nz-checkbox [(ngModel)]="item.checked" (ngModelChange)="onCardChange(item)">
                             {{ item.title + '-' + item.dateFrom }}
                           </label>
                         </li>
@@ -71,10 +73,17 @@
             </div>
           </div>
         </ng-container>
-        <div [hidden]="!filter.showData">
+        <div [hidden]="!filter.showReport">
           <canvas id="bar-chart"></canvas>
         </div>
+        <div [hidden]="!filter.showComaprison">
+          <p>todo</p>
+        </div>
+        <div *ngIf="hasNoData()">
+          <app-empty-data></app-empty-data>
+        </div>
       </div>
+
     </div>
   </div>
 </div>
