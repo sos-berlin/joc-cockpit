@@ -128,7 +128,7 @@ export class FrequencyReportComponent {
       for (const item of report.data) {
         let label;
         let key ;
-        chartData.datasets[0].data.push(item.count);
+        chartData.datasets[0].data.push(item.duration || item.count);
         totalJobCount += item.duration ? item.duration : item.count;
 
         switch (report.templateName) {
@@ -163,18 +163,16 @@ export class FrequencyReportComponent {
             key = 'workflows'
             break;
           case 'WORKFLOWS_LONGEST_EXECUTION_TIMES':
-            label = `${item.WORKFLOW_NAME} - (${item.duration})`;
-            chartData.datasets[0].data.push(item.duration);
-            key = "workflows";
+            label = `${item.WORKFLOW_NAME} - (${this.formatDuration(item.duration)})`;
+            key = "";
             break;
           case 'JOBS_LONGEST_EXECUTION_TIMES':
-            label = `${item.WORKFLOW_NAME}/${item.JOB_NAME} - (${item.duration})`;
-            chartData.datasets[0].data.push(item.duration);
-            key = "workflows";
+            label = `${item.WORKFLOW_NAME}/${item.JOB_NAME} - (${this.formatDuration(item.duration)})`;
+            key = "";
             break;
           case 'PERIODS_MOST_ORDER_EXECUTIONS':
-            label = `${item.start_time} - (${item.count})`;
-            key =  'orders'
+            label = `${item.period} - (${item.count})`;
+            key =  'workflows'
             break;
           case 'PERIODS_MOST_JOB_EXECUTIONS':
             label = `${item.period} - (${item.count})`;
@@ -189,8 +187,18 @@ export class FrequencyReportComponent {
         chartData.datasets[0].hoverBorderColor.push('#e0e0e2');
       }
 
-      this.createChart(chartData, totalJobCount, report.id);
+      const formattedTotalJobCount = report.data[0]?.duration ? this.formatDuration(totalJobCount) : totalJobCount;
+      this.createChart(chartData, formattedTotalJobCount, report.id);
     }
+  }
+
+  formatDuration(durationInSeconds: any): any {
+    const days = Math.floor(durationInSeconds / (60 * 60 * 24));
+    const hours = Math.floor((durationInSeconds % (60 * 60 * 24)) / (60 * 60));
+    const minutes = Math.floor((durationInSeconds % (60 * 60)) / 60);
+    const seconds = durationInSeconds % 60;
+
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   }
 
 
@@ -328,8 +336,6 @@ export class FrequencyReportComponent {
     legendContainer.style.position = 'relative';
     legendContainer.style.marginTop = '10px';
     legendContainer.style.padding = '2px';
-    legendContainer.style.display = 'flex';
-    legendContainer.style.justifyContent = 'center';
     legendContainer.id = legendContainerId;
     legendContainer.classList.add('html-legend-container');
     if(container){
@@ -452,7 +458,7 @@ export class FrequencyReportComponent {
   }
 
   toggleView(report?: any): void {
-    
+
     if(this.filter.showComaprison){
       this.filter.showComaprison = !this.filter.showComaprison;
     }else{

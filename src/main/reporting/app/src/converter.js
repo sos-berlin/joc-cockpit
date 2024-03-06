@@ -117,7 +117,11 @@ async function checkDateFromContent(filePath, weeks, frequencyInterval, runId, o
         let data = await utils.convertCsvToJson(filePath, options.controllerId, templateData);
         console.log(`CSV file ${filePath} is converted successfully into JSON.`);
         data = data.reverse();
-        for (const rowData of data) {
+        for (const item of data) {
+            let rowData = item;
+            if (typeof rowData == 'string') {
+                rowData = JSON.parse(item);
+            }
             const contentDate = new Date(rowData.START_TIME).setHours(0, 0, 0, 0);
             for (let i = 0; i < weeks.length; i++) {
                 const startDate = new Date(weeks[i].startDate).setHours(0, 0, 0, 0);
@@ -127,7 +131,7 @@ async function checkDateFromContent(filePath, weeks, frequencyInterval, runId, o
                 if (!isNaN(startDate) && !isNaN(endDate)) {
                     if (contentDate >= startDate && contentDate <= endDate) {
                         const prop = `${weeks[i].startDate}_${textEndDate}`;
-                        obj[prop] ? obj[prop].push(rowData) : obj[prop] = [rowData];
+                        obj[prop] ? obj[prop].push(item) : obj[prop] = [item];
                     }
                 } else {
                     handleError(`Invalid date at index ${i} in weeks array.`, null);
@@ -148,26 +152,11 @@ async function checkDateFromContent(filePath, weeks, frequencyInterval, runId, o
                 try {
                     // Check if the file exists synchronously
                     fs.accessSync(path.join('tmp/' + runId, fileName), fs.constants.F_OK);
-                    await utils.readJsonFile(path.join('tmp/' + runId, fileName)).then(async (result) => {
-                        if (typeof result == 'string') {
-                            result = JSON.parse(result);
-                            outputArray = [...result, ...outputArray];
-                            try {
-                                await writeJsonToFile(path.join('tmp/' + runId, fileName), outputArray);
-                                console.log('Data has been written to file successfully', path.join('tmp/' + runId, fileName));
-                            } catch (err) {
-                                console.error('Error in writing data to file:', err);
-                                logger.error('Error in writing data to file:', err);
-                            }
-                        } else {
-                            await writeJsonToFile(path.join('tmp/' + runId, fileName), outputArray);
-                        }
-                    });
+                    await writeJsonToFile(path.join('tmp/' + runId, fileName), outputArray, true);
                 } catch (err) {
                     // File doesn't exist or other error occurred
                     await writeJsonToFile(path.join('tmp/' + runId, fileName), outputArray);
                 }
-
             }
         }
     } catch (error) {
@@ -175,12 +164,14 @@ async function checkDateFromContent(filePath, weeks, frequencyInterval, runId, o
     }
 }
 
+
 /**
  * Write JSON data to file.
  * @param {string} outputPath - Path to write the file.
  * @param {object} jsonData - Data to be written.
+ * @param {boolean} addComma - Add comma to starting or not.
  */
-async function writeJsonToFile(outputPath, jsonData) {
+async function writeJsonToFile(outputPath, jsonData, addComma = false) {
     try {
       
         const dataLength = jsonData.length;
@@ -189,7 +180,7 @@ async function writeJsonToFile(outputPath, jsonData) {
         for (let i = 0; i < dataLength; i += chunkSize) {
             const chunk = jsonData.slice(i, i + chunkSize);
             let jsonString = '';
-            if(i === 0){
+            if (i === 0 && !addComma) {
                 jsonString = JSON.stringify(chunk, null, 2).slice(1, -1) + '\n'
             } else {
                 jsonString = ',' + JSON.stringify(chunk, null, 2).slice(1, -1) + '\n'
@@ -250,7 +241,8 @@ async function checkFileNameWithFrequency(runId, files, frequencyType, frequency
     let data = {};
     // Example usage:
     const uniqueString = utils.generateUnique16BitString();
-    const tmpFileName = path.join('tmp/' + runId, uniqueString + '.json')
+    const tmpFileName = path.join('tmp/' + runId, uniqueString + '.json');
+    let previousKey = '';
     for (const file of files) {
         const fileNameParts = file.split('.')[0].split('-');
         const fileYear = parseInt(fileNameParts[0], 10);
@@ -290,6 +282,13 @@ async function checkFileNameWithFrequency(runId, files, frequencyType, frequency
             if (frequencyInterval === 3) {
                 let endYear = +fileYear + 2;
                 key = `${fileYear}-${endYear}`;
+                if (!previousKey) {
+                    previousKey = key;
+                } else {
+                    if (previousKey.includes(fileYear) || previousKey.includes((+fileYear - 1))) {
+                        key = previousKey;
+                    }
+                }
             }
             if (data[key]) {
                 data[key].push(file);

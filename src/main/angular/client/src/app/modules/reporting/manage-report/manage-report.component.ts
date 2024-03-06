@@ -74,6 +74,7 @@ export class ManageReportComponent {
       }
     });
     this.subscription4 = sharingDataService.searchKeyAnnounced$.subscribe(res => {
+      this.reset();
       this.searchInResult();
     });
   }
@@ -240,7 +241,8 @@ export class ManageReportComponent {
           if(report.template?.includes('${hits}')){
             report.template = report.template.replace('${hits}', report.hits || 10)
           }
-        })
+        });
+        this.reset();
         this.searchInResult();
       }, error: () => this.loading = false
     });
@@ -250,6 +252,7 @@ export class ManageReportComponent {
     this.filters.filter.reverse = !this.filters.filter.reverse;
     this.filters.filter.sortBy = propertyName;
     this.data = this.orderPipe.transform(this.data, this.filters.filter.sortBy, this.filters.filter.reverse);
+    this.reset();
   }
 
 
@@ -302,6 +305,30 @@ export class ManageReportComponent {
     const documents = this.getCurrentData(this.data, this.filters);
     this.object.checked = this.object.setOfCheckedId.size === documents.length;
     this.refreshCheckedStatus();
+  }
+
+  reset(): void {
+    this.object = {
+      setOfCheckedId: new Set(),
+      checked: false,
+      indeterminate: false
+    };
+  }
+
+  pageIndexChange($event: number): void {
+    this.filters.filter.currentPage = $event;
+    if (this.object.setOfCheckedId.size !== this.data.length) {
+      this.reset();
+    }
+  }
+
+  pageSizeChange($event: number): void {
+    this.filters.filter.entryPerPage = $event;
+    if (this.object.setOfCheckedId.size !== this.data.length) {
+      if (this.object.checked) {
+        this.checkAll(true);
+      }
+    }
   }
 
   refreshCheckedStatus(): void {

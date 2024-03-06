@@ -65,6 +65,8 @@
           <div class="table-responsive">
             <nz-table
               #ajaxTable
+              (nzPageIndexChange)="pageIndexChange($event)"
+              (nzPageSizeChange)="pageSizeChange($event)"
               [nzBordered]="true"
               [nzData]="data"
               [nzLoading]="loading"

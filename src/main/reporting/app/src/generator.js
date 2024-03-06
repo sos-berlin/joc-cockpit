@@ -53,8 +53,7 @@ async function readJSONData(directory, file, options, templateData) {
                                         groupedData[startTime].push(_data);
                                     }
                                 } catch (e) {
-                                    console.log('line', line, '>>>')
-                                    console.log(e)
+                                    console.log(e);
                                 }
                             }
                         }
@@ -71,8 +70,7 @@ async function readJSONData(directory, file, options, templateData) {
                             period: key, count: value.length, data: value.map(item => {
                                 return {
                                     WORKFLOW_NAME: item.WORKFLOW_NAME,
-                                    JOB_NAME: item.JOB_NAME,
-                                    START_TIME: item.START_TIME
+                                    JOB_NAME: item.JOB_NAME
                                 }
                             })
                         }
@@ -275,7 +273,7 @@ function dynamicData(templates, data, options) {
                 WORKFLOW_NAME,
                 JOB_NAME,
                 START_TIME,
-                duration,
+                duration: duration !== null ? duration : 0,
                 data: []
             }));
         } else {

@@ -298,7 +298,7 @@ export class CoreService {
       },
       generateReport: {
         filter: {
-          sortBy: 'modified',
+          sortBy: 'created',
           reverse: true,
           currentPage: '1'
         }

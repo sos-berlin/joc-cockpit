@@ -3,7 +3,7 @@
       <nz-table
         #ajaxTable
         [nzBordered]="true"
-        [nzData]="data"
+        [nzData]="data | orderBy: filters.filter.sortBy: filters.filter.reverse"
         [nzLoading]="!isLoaded"
         [nzPageIndex]="filters.filter.currentPage"
         [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
@@ -42,6 +42,12 @@
               <i *ngIf="filters.filter.sortBy == 'frequencies' && !filters.filter.reverse"
                  class="fa fa-caret-up "></i>
               <i *ngIf="filters.filter.sortBy == 'frequencies' && filters.filter.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort('numOfReports')"><a><span class="p-r-xs" translate>reporting.label.numOfReports</span>
+              <i *ngIf="filters.filter.sortBy == 'numOfReports' && !filters.filter.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="filters.filter.sortBy == 'numOfReports' && filters.filter.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort('errorText')" nzWidth="20%" style="width: 20% !important;"><a>
@@ -93,6 +99,7 @@
                         class="label"></span>
               </td>
               <td><div *ngFor="let frequency of item.frequencies" [innerHtml]="frequency | translate | highlight : filters.searchText"></div></td>
+              <td><span>{{item.numOfReports}}</span></td>
               <td nzWidth="20%" style="width: 20% !important;" class="text-danger">
                 <span [innerHtml]="item.errorText"></span>
               </td>
