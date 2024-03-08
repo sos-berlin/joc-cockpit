@@ -12,14 +12,32 @@
 
 .donut-chart-container {
   width: 100%;
-  height: 372px;
+  height: 338px;
 }
 
-.flex-evenly {
+.flex {
   display: flex;
-  justify-content: space-between;
 }
 
 .right {
   float: right;
+}
+
+.table-view{
+  height: 338px;
+}
+
+nz-collapse-panel{
+  border-bottom: none !important;
+}
+.flex-container {
+  display: flex;
+}
+
+.flex-item {
+  border: 1px solid #ddd;
+  padding: 2px;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: normal;
 }

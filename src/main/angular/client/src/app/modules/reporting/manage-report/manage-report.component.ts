@@ -343,6 +343,7 @@ export class ManageReportComponent {
       }).subscribe({
         next: () => {
           this.coreService.startReport();
+          this.reset();
         }
       })
     } else {
@@ -354,6 +355,10 @@ export class ManageReportComponent {
         nzData: {reportPaths: [item.path], preferences: this.preferences},
         nzClosable: false,
         nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this.reset();
+        }
       });
     }
   }
@@ -367,6 +372,10 @@ export class ManageReportComponent {
       nzData: {reportPaths: Array.from(this.object.setOfCheckedId), preferences: this.preferences},
       nzClosable: false,
       nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.reset();
+      }
     });
   }
 

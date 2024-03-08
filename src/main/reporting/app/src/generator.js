@@ -130,7 +130,7 @@ async function readDataDirectory(directory, options, templateData) {
     for (const file of inputFiles) {
         await readJSONData(directory, file, options, JSON.parse(templateData));
     }
-    //  await utils.deleteDirectory('tmp/' + runId)
+    await utils.deleteDirectory('tmp/' + runId)
 }
 
 /**

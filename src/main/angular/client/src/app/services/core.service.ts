@@ -1768,9 +1768,13 @@ export class CoreService {
             }
             try {
               data[type] = JSON.parse(data[type]);
+              if ((startChar === '"' && endChar === '"')) {
+                data['default1'] = '""';
+              }
             } catch (e) {
               if ((startChar === '"' && endChar === '"')) {
                 data[type] = mainStr;
+                data['default1'] = '""';
               }
             }
           }

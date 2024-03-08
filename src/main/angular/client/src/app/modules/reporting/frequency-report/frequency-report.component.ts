@@ -111,13 +111,6 @@ export class FrequencyReportComponent {
   }
 
 
-  compareData(visible: boolean): void {
-    if (!visible) {
-      this.filter.showComaprison = !this.filter.showComaprison;
-    }
-  }
-
-
   generateDonutCharts(reportId?: any): void {
     const reportsToProcess = reportId ? [this.addCardItems.find(item => item.id === reportId?.id)] : this.addCardItems;
     for (const report of reportsToProcess) {
@@ -127,9 +120,9 @@ export class FrequencyReportComponent {
 
       for (const item of report.data) {
         let label;
-        let key ;
+        let key;
         chartData.datasets[0].data.push(item.duration || item.count);
-        totalJobCount += item.duration ? item.duration : item.count;
+        totalJobCount += (typeof item.duration === 'number' && !isNaN(item.duration)) ? item.duration : item.count || 0;
 
         switch (report.templateName) {
           case 'WORKFLOWS_FREQUENTLY_FAILED':
@@ -172,14 +165,13 @@ export class FrequencyReportComponent {
             break;
           case 'PERIODS_MOST_ORDER_EXECUTIONS':
             label = `${item.period} - (${item.count})`;
-            key =  'workflows'
+            key = 'workflows'
             break;
           case 'PERIODS_MOST_JOB_EXECUTIONS':
             label = `${item.period} - (${item.count})`;
-            key =  'jobs'
+            key = 'jobs'
             break;
         }
-
         chartData.labels.push(label);
         chartData.uniqueKeys.key = key;
         chartData.datasets[0].borderColor.push('white');
@@ -187,12 +179,12 @@ export class FrequencyReportComponent {
         chartData.datasets[0].hoverBorderColor.push('#e0e0e2');
       }
 
-      const formattedTotalJobCount = report.data[0]?.duration ? this.formatDuration(totalJobCount) : totalJobCount;
+      const formattedTotalJobCount = report.data[0]?.duration || report.data[0]?.duration === 0 ? this.formatDuration(totalJobCount) : totalJobCount;
       this.createChart(chartData, formattedTotalJobCount, report.id);
     }
   }
 
-  formatDuration(durationInSeconds: any): any {
+  formatDuration(durationInSeconds: number): any {
     const days = Math.floor(durationInSeconds / (60 * 60 * 24));
     const hours = Math.floor((durationInSeconds % (60 * 60 * 24)) / (60 * 60));
     const minutes = Math.floor((durationInSeconds % (60 * 60)) / 60);
@@ -380,8 +372,8 @@ export class FrequencyReportComponent {
         data: report.data[i].data
       };
 
-      if (report.data[i].startTime || report.data[i].start_time) {
-        data.labels.push(report.data[i].startTime || report.data[i].start_time);
+      if (report.data[i].startTime || report.data[i].WORKFLOW_NAME) {
+        data.labels.push(report.data[i].startTime || report.data[i].WORKFLOW_NAME);
       } else if (report.data[i].job_name && report.data[i].job_name.includes('__')) {
         const arr = report.data[i].job_name.split('__');
         obj.workflow = arr[0];
@@ -395,11 +387,16 @@ export class FrequencyReportComponent {
         data.labels.push(report.data[i].agentName || report.data[i].agent_name);
       } else if (report.data[i].order_id) {
         data.labels.push(report.data[i].order_id);
+       
+
+      } else if (report.data[i].period) {
+        data.labels.push(report.data[i].period);
+        
       }
 
       this.dataset.push(obj);
-      if (report.data[i].duration || report.data[i].totalExecutionTime) {
-        let dur = report.data[i].duration || report.data[i].totalExecutionTime;
+      if (report.data[i].duration || report.data[i].WORKFLOW_NAME) {
+        let dur = report.data[i].duration || report.data[i].WORKFLOW_NAME;
         data.datasets[0].data.push(dur);
       } else if (report.data[i].count || report.data[i].count == 0) {
         data.datasets[0].data.push(report.data[i].count);
@@ -457,16 +454,16 @@ export class FrequencyReportComponent {
     }
   }
 
-  toggleView(report?: any): void {
-
-    if(this.filter.showComaprison){
-      this.filter.showComaprison = !this.filter.showComaprison;
-    }else{
-      this.filter.showReport = !this.filter.showReport;
-      if (report) {
-        this.initGraph(report);
-      }
+  toggleReportView(report?: any): void {
+    this.filter.showReport = !this.filter.showReport;
+    if (report) {
+      this.initGraph(report);
     }
+  }
+
+  toggleCardView(reports: any) {
+    reports.showTable = !reports.showTable;
+    console.log(this.addCardItems,"?????")
   }
 
   hasNoData(): boolean {

@@ -4,7 +4,7 @@
       <div class="text-center b-b m-t-11">
           <h5 class="card-title">{{ report.template }}</h5>
       </div>
-      <div class="m-t-35" style="float: right" [hidden]="filter.showComaprison || filter.showReport">
+      <div class="m-t-35" style="float: right" [hidden]="filter.showReport">
         <button [nzDropdownMenu]="addReports" [nzPlacement]="'bottomRight'"
                 class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
                 type="button">Add Card
@@ -25,17 +25,30 @@
         </nz-dropdown-menu>
       </div>
       <div class="box-body">
-        <div *ngIf="filter.showReport || filter.showComaprison" class="m-r-xs">
-          <span (click)="toggleView()" class="text-hover-primary cursor-pointer">
+        <div *ngIf="filter.showReport" class="m-r-xs">
+          <span (click)="toggleReportView()" class="text-hover-primary cursor-pointer">
             <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
             {{'common.button.back' | translate}}
           </span>
         </div>
         <ng-container *ngFor="let reports of addCardItems">
-          <div [hidden]="filter.showReport || filter.showComaprison" *ngIf="reports.data.length" class="col-lg-4 col-xl-3 m-b-sm">
+          <div [hidden]="filter.showReport" *ngIf="reports.data.length" class="col-lg-4 col-xl-3 m-b-sm">
             <div class="card">
               <div class="card-body">
-                <div class="cur-point right" (click)="removeCard(reports.id)"><i class="fa fa-times fa-lg" aria-hidden="true"></i>
+                <div class="right flex">
+                  <div>
+                    <a (click)="toggleReportView(reports)" class="text-hover-primary cur-point m-r-xs">
+                      <span *ngIf="!reports.showReport" nz-icon nzType="bar-chart" nzTheme="outline" class="text-16"></span>
+                    </a>
+
+                    <a (click)="toggleCardView(reports)" class="text-hover-primary cur-point m-r-xs">
+                      <span *ngIf="reports.showTable" nz-icon nzType="pie-chart" nzTheme="outline" class="text-16"></span>
+                      <span *ngIf="!reports.showTable" nz-icon nzType="table" nzTheme="outline" class="text-16"></span>
+                    </a>
+                  </div>
+                  <div class="cur-point" (click)="removeCard(reports.id)">
+                    <i class="fa fa-times fa-lg" aria-hidden="true"></i>
+                  </div>
                 </div>
                 <div class="m-b-sm">
                   <h5 class="card-title">{{ reports.path }}</h5>
@@ -43,31 +56,144 @@
                 <div class="_600 text-md m-t-sm m-b-sm text-center pos-rel"><span
                   class="p-b-xs b-b"><i class="text-muted">{{ reports.dateFrom }} - {{ reports.dateTo }}</i></span>
                 </div>
-                <div class="donut-chart-container m-t-md m-b-sm b-b" [attr.id]="'donut-chart-container-' + reports.id">
+                <div [hidden]="reports.showTable">
+                  <div class="donut-chart-container m-t-md m-b-sm" [attr.id]="'donut-chart-container-' + reports.id">
+                  </div>
                 </div>
-                <div class="flex-evenly">
-                  <button (click)="toggleView(reports)" class="btn btn-primary btn-sm" type="button">
-                     <span translate>reporting.button.showReport</span>
-                  </button>
-                  <button [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
-                          class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
-                          type="button" (nzVisibleChange)="compareData($event)">Compare With
-                    <span class="text-primary"></span>
-                    <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
-                  </button>
+                <div class="table-view m-t-md m-b-sm" *ngIf="reports.showTable">
+                  <perfect-scrollbar class="table-responsive2"
+                                     style="max-height: calc(100vh - 360px); min-height: 80px; overflow: auto;">
+                    <div class="job-execution" *ngIf="reports.templateName === 'PERIODS_MOST_JOB_EXECUTIONS' || reports.templateName === 'PERIODS_MOST_ORDER_EXECUTIONS'">
+                      <nz-collapse>
+                        <nz-collapse-panel *ngFor="let data of reports.data"
+                                           [nzHeader]="data.period + ' - ' + ' (' + data.count + ')' "
+                                           [nzActive]="data.period.active">
+                          <div>
+                            <div *ngFor="let item of data.data; let i = index" style="padding-bottom: 0px !important;">
+                              <div *ngIf="i == 0" class="flex-container">
+                                <div class="flex-item" style="width: 100%;font-weight: bold;"><span
+                                  translate>Workflow</span></div>
+                                <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>Job</span>
+                                </div>
+                              </div>
+                              <div class="flex-container">
+                                <div class="flex-item" style="width: 100%;">{{ item.WORKFLOW_NAME }}</div>
+                                <div class="flex-item" style="width: 100%;">{{ item.JOB_NAME ? item.JOB_NAME : '-' }}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </nz-collapse-panel>
+                      </nz-collapse>
+                    </div>
+                    <div class="job-execution" *ngIf="reports.templateName === 'WORKFLOWS_FREQUENTLY_FAILED' || reports.templateName === 'JOBS_FREQUENTLY_FAILED'">
 
-                  <nz-dropdown-menu #customization="nzDropdownMenu">
-                    <ul nz-menu>
-                      <ng-container *ngFor="let item of templates">
-                        <li nz-menu-item
-                            *ngIf="item.title === reports.title && item.frequency === reports.frequency && item.dateFrom != reports.dateFrom">
-                          <label nz-checkbox [(ngModel)]="item.checked" (ngModelChange)="onCardChange(item)">
-                            {{ item.title + '-' + item.dateFrom }}
-                          </label>
-                        </li>
-                      </ng-container>
-                    </ul>
-                  </nz-dropdown-menu>
+
+                      <nz-collapse>
+                        <nz-collapse-panel *ngFor="let data of reports.data"
+                                           [nzHeader]="(data.job_name ? data.job_name.replace('__', '/') : data.workflow_name) + ' - ' + ' (' + data.count + ')' "
+                                           [nzActive]="(data.job_name ? data.job_name.active : data.workflow_name.active)">
+                          <div>
+                              <div *ngFor="let item of data.data; let i = index" style="padding-bottom: 0px !important;">
+                                <div *ngIf="i == 0" class="flex-container">
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>Period</span></div>
+                                </div>
+                                <div class="flex-container">
+                                  <div class="flex-item" style="width: 100%;">{{item}}</div>
+                                </div>
+                              </div>
+                          </div>
+                        </nz-collapse-panel>
+                      </nz-collapse>
+                    </div>
+                    <div class="job-execution" *ngIf="reports.templateName === 'WORKFLOWS_LONGEST_EXECUTION_TIMES' || reports.templateName === 'JOBS_LONGEST_EXECUTION_TIMES'">
+
+
+                      <nz-collapse>
+                        <nz-collapse-panel *ngFor="let data of reports.data"
+                                           [nzHeader]="(data.JOB_NAME ? data.WORKFLOW_NAME + '/' + data.JOB_NAME : data.WORKFLOW_NAME) + ' - ' + ' (' + formatDuration(data.duration) + ')' "
+                                           [nzActive]="(data.JOB_NAME ? data.JOB_NAME.active : data.WORKFLOW_NAME.active)">
+                          <div>
+                              <div style="padding-bottom: 0px !important;">
+                                <div class="flex-container">
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>Start Time</span></div>
+                                </div>
+                                <div class="flex-container">
+                                  <div class="flex-item" style="width: 100%;">{{data.START_TIME}}</div>
+                                </div>
+                              </div>
+                          </div>
+                        </nz-collapse-panel>
+                      </nz-collapse>
+                    </div>
+                    <div class="job-execution" *ngIf="reports.templateName === 'AGENTS_PARALLEL_JOB_EXECUTIONS'">
+                      <nz-collapse>
+                        <nz-collapse-panel *ngFor="let data of reports.data"
+                                           [nzHeader]="data.agentName + ' - ' + ' (' + data.count + ')' " [nzActive]="data.agentName.active">
+                          <div>
+                            <div *ngFor="let item of data.data; let i = index" style="padding-bottom: 0px !important;">
+                              <div *ngIf="i == 0" class="flex-container">
+                                <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Workflow</span></div>
+                                <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Job</span></div>
+                                <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Start Time</span></div>
+                                <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Duration</span></div>
+                              </div>
+                              <div class="flex-container">
+                                <div class="flex-item" style="width: 25%;">{{item.WORKFLOW_NAME}}</div>
+                                <div class="flex-item" style="width: 25%;">{{item.JOB_NAME}}</div>
+                                <div class="flex-item" style="width: 25%;">{{item.START_TIME}}</div>
+                                <div class="flex-item" style="width: 25%;">{{item.duration}}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </nz-collapse-panel>
+                      </nz-collapse>
+                    </div>
+                    <div class="job-execution" *ngIf="reports.templateName === 'JOBS_EXECUTIONS_FREQUENCY' || reports.templateName === 'ORDERS_EXECUTIONS_FREQUENCY'">
+                      <nz-collapse>
+                        <nz-collapse-panel *ngFor="let data of reports.data"
+                                           [nzHeader]="(data.job_name ? data.job_name.replace('__', '/') : data.workflow_name) + ' - ' + ' (' + data.count + ')' "
+                                           [nzActive]="(data.job_name ? data.job_name.active : data.workflow_name.active)">
+                          <div>
+                            <div *ngFor="let item of data.data; let i = index" class="p-a-sm"
+                                 style="padding-bottom: 4px !important;">
+                              <div *ngIf="i == 0" class="flex-container">
+                                <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>Period</span></div>
+                              </div>
+                              <div class="flex-container">
+                                <div class="flex-item" style="width: 100%;">{{ item }}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </nz-collapse-panel>
+                      </nz-collapse>
+                    </div>
+                    <div class="job-execution" *ngIf="reports.templateName === 'JOBS_HIGH_LOW_EXECUTION_PERIODS'">
+                      <nz-collapse>
+                        <nz-collapse-panel *ngFor="let data of reports.data"
+                                           [nzHeader]="data.agentName + ' - ' + ' (' + data.count + ')' " [nzActive]="data.agentName.active">
+                          <div>
+                            <div class="p-a-sm" style="padding-bottom: 4px !important;">
+                              <div *ngFor="let item of data.data; let i = index" style="padding-bottom: 0px !important;">
+                                <div *ngIf="i == 0" class="flex-container">
+                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Workflow</span></div>
+                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Job</span></div>
+                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Start Time</span></div>
+                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Duration</span></div>
+                                </div>
+                                <div class="flex-container">
+                                  <div class="flex-item" style="width: 25%;">{{item.WORKFLOW_NAME}}</div>
+                                  <div class="flex-item" style="width: 25%;">{{item.JOB_NAME}}</div>
+                                  <div class="flex-item" style="width: 25%;">{{item.START_TIME}}</div>
+                                  <div class="flex-item" style="width: 25%;">{{item.duration}}</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </nz-collapse-panel>
+                      </nz-collapse>
+                    </div>
+                  </perfect-scrollbar>
                 </div>
               </div>
             </div>
@@ -76,10 +202,7 @@
         <div [hidden]="!filter.showReport">
           <canvas id="bar-chart"></canvas>
         </div>
-        <div [hidden]="!filter.showComaprison">
-          <p>todo</p>
-        </div>
-        <div *ngIf="hasNoData()">
+        <div *ngIf="hasNoData() && isLoading">
           <app-empty-data></app-empty-data>
         </div>
       </div>
