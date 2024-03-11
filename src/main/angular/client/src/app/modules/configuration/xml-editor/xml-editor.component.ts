@@ -4818,6 +4818,7 @@ export class XmlEditorComponent {
               }
               this.getXsdSchema();
             } else {
+              this.extraInfo.released = false;
               this.xmlToJsonService(res.uploadData);
             }
           } else {
@@ -5124,17 +5125,19 @@ export class XmlEditorComponent {
       nzMaskClosable: false
     });
     modal.afterClose.subscribe(res => {
-      if (res && res.configurationJson) {
-        this.updateXML(res);
-      } else if (this.objectType === 'NOTIFICATION') {
-        let obj = {
-          objectType: this.objectType
-        };
-        this.coreService.post('notification', obj).subscribe({
-          next: (res: any) => {
-            this.updateXML(res);
-          }
-        });
+      if (res) {
+        if (res.configurationJson) {
+          this.updateXML(res);
+        } else if (this.objectType === 'NOTIFICATION') {
+          let obj = {
+            objectType: this.objectType
+          };
+          this.coreService.post('notification', obj).subscribe({
+            next: (res: any) => {
+              this.updateXML(res);
+            }
+          });
+        }
       }
     });
   }
@@ -5883,8 +5886,8 @@ export class XmlEditorComponent {
   }
 
   private compare(str1, str2): boolean {
-    let a = str1.replace(/\s/g, '');
-    let b = str2.replace(/\s/g, '');
+    let a = str1.replace(/\s|\\n/g, '');
+    let b = str2.replace(/\s|\\n/g, '');
     return isEqual(a, b);
   }
 

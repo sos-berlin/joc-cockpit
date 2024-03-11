@@ -36,6 +36,7 @@ declare const mxEventObject: any;
 declare const mxActor: any;
 declare const mxPoint: any;
 declare const mxCellRenderer: any;
+declare const mxCellHighlight: any;
 declare const $: any;
 
 @Component({
@@ -606,6 +607,7 @@ export class WorkflowGraphicalComponent {
     graph.addMouseListener({
       currentState: null,
       currentIconSet: null,
+      currentHighlight: null,
       mouseDown: function (sender, me) {
         // Hides icons on mouse down
         if (this.currentState != null) {
@@ -620,7 +622,11 @@ export class WorkflowGraphicalComponent {
         let tmp = graph.view.getState(me.getCell());
         // Ignores everything but vertices
         if (graph.isMouseDown || (tmp != null && !graph.getModel().isVertex(tmp.cell))) {
-          tmp = null;
+          if(tmp && tmp.cell && tmp.cell.value.tagName === 'Connection') {
+
+          } else {
+            tmp = null;
+          }
         }
         if (tmp != this.currentState) {
           if (this.currentState != null) {
@@ -628,18 +634,35 @@ export class WorkflowGraphicalComponent {
           }
           this.currentState = tmp;
           if (this.currentState != null) {
-            this.dragEnter(me.getEvent(), this.currentState);
+            this.dragEnter(me.getEvent(), this.currentState, tmp?.cell?.value?.tagName === 'Connection' ? tmp.cell :  null);
           }
         }
       },
       mouseUp: function () {
       },
-      dragEnter: function (evt, state) {
-        if (this.currentIconSet == null) {
-          this.currentIconSet = new mxIconSet(state);
+      dragEnter: function (evt, state, cell) {
+        if (cell) {
+          if (state.style) {
+            this.currentHighlight = new mxCellHighlight(graph, !(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || !self.preferences.theme) ? '#FF8000' : '#1171a6');
+            this.currentHighlight.highlight(state);
+          }
+        } else {
+          if (this.currentHighlight != null) {
+            this.currentHighlight.destroy();
+            this.currentHighlight = null;
+          }
+          if (this.currentIconSet == null) {
+            this.currentIconSet = new mxIconSet(state);
+          }
         }
       },
-      dragLeave: function () {
+      dragLeave: function (evt, state) {
+        if (state != null) {
+          if (this.currentHighlight != null) {
+            this.currentHighlight.destroy();
+            this.currentHighlight = null;
+          }
+        }
         if (this.currentIconSet != null) {
           this.currentIconSet.destroy();
           this.currentIconSet = null;

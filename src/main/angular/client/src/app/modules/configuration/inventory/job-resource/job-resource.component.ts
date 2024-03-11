@@ -72,6 +72,7 @@ export class JobResourceComponent {
   @Input() copyObj: any;
   @Input() reload: any;
   @Input() isTrash: any;
+  @Input() securityLevel: any;
 
   jobResource: any = {};
   invalidMsg: string;

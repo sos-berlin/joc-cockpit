@@ -2884,6 +2884,7 @@ export class WorkflowComponent {
   @Input() copyObj: any;
   @Input() reload: any;
   @Input() isTrash: any;
+  @Input() securityLevel: any;
   @ViewChild('codeMirror', {static: false}) cm;
 
   searchNode = {
@@ -11750,7 +11751,12 @@ export class WorkflowComponent {
           delete value.value.message;
         }
         if (!value.value.default && value.value.default !== false && value.value.default !== 0) {
-          delete value.value.default;
+          if (value.value.default1) {
+            value.value.default = "\"\"";
+            delete value.value.default1
+          } else {
+            delete value.value.default;
+          }
         }
         if (value.value.type === 'List') {
           delete value.value.final;

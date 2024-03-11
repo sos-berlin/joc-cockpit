@@ -190,7 +190,7 @@
                         [nzShowPagination]="false" [nzFrontPagination]="false">
                         <thead>
                         <tr>
-                          <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" nzWidth="46px"
+                          <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="chk"
                               [nzShowCheckbox]="true"
                               [nzDisabled]="object.mapOfCheckedId3.size > 0"
                               [(nzChecked)]="controller.checked"
@@ -288,7 +288,7 @@
                         <tbody cdkDropList (cdkDropListDropped)="agentsReordering($event, controller.agents)">
                         <tr [ngClass]="{'disabled-row': agent.disabled}" *ngFor="let agent of ajaxTable.data"
                             class="cursor move-on-hover" cdkDrag>
-                          <td *ngIf="permission.joc && permission.joc.administration.controllers.manage"
+                          <td class="chk" *ngIf="permission.joc && permission.joc.administration.controllers.manage"
                               [nzShowCheckbox]="true" [nzDisabled]="object.mapOfCheckedId3.size > 0" [nzChecked]="object.mapOfCheckedId.has(agent.agentId)"
                               (nzCheckedChange)="onItemChecked(controller, agent, $event)">
                             <div class="pos-abt move-icon text-16 cur-m t-1"
@@ -608,7 +608,7 @@
                                         [nzShowPagination]="false" [nzFrontPagination]="false">
                                 <thead>
                                 <tr class="order-history-template0">
-                                  <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" nzWidth="46px"
+                                  <th class="chk" *ngIf="permission.joc && permission.joc.administration.controllers.manage" nzWidth="46px"
                                       [nzShowCheckbox]="true"
                                       [nzDisabled]="object.mapOfCheckedId.size > 0 || object.mapOfCheckedId2.size > 0"
                                       [(nzChecked)]="clusterAgent.checked"
@@ -628,7 +628,7 @@
                                 <tr class="order-history-template0 move-on-hover cursor" cdkDrag
                                     *ngFor="let sub of subagentClusterTable.data"
                                     [ngClass]="{'disabled-row': sub.disabled}">
-                                  <td *ngIf="permission.joc && permission.joc.administration.controllers.manage"
+                                  <td class="chk" *ngIf="permission.joc && permission.joc.administration.controllers.manage"
                                       [nzDisabled]="object.mapOfCheckedId.size > 0 || object.mapOfCheckedId2.size > 0"
                                       [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId3.has(sub.subagentId)"
                                       (nzCheckedChange)="onItemCheckedSubagent(clusterAgent, sub, $event)">
