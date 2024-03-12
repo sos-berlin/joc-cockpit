@@ -2946,7 +2946,7 @@
     "label.iamKeycloakTrustStoreType": "Keycloak Truststore Type",
     "label.iamKeycloakClientSecret": "Keycloak Client Secret",
     "label.iamKeycloakRealm": "Keycloak Realm",
-    "label.iamKeycloakVersionCompatibility": "Version 16 or smaller",
+    "label.iamKeycloakVersionCompatibility": "Version 16 or earlier",
     "label.iamLdapSearchBase": "LDAP Search Base",
     "label.iamLdapGroupSearchBase": "LDAP Group Search Base",
     "label.iamLdapUserDnTemplate": "LDAP User DN Template",
@@ -3213,7 +3213,7 @@
         "iamKeycloakTrustStoreType": "The Keycloak Truststore Type can be PKCS12 or JKS (deprecated).",
         "iamKeycloakClientSecret": "The Keycloak Client Secret is registered with Keycloak and has to match the value specified with the Identity Service settings.",
         "iamKeycloakRealm": "The Keycloak Realm is registered with Keycloak and has to match the value specified with the Identity Service settings.",
-        "iamKeycloakVersionCompatibility": "Version 16 or smaller"
+        "iamKeycloakVersionCompatibility": "Version 16 or earlier"
       },
       "oidc": {
         "iamOidcName": "The name of the Identity Service using OIDC.",

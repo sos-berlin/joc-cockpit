@@ -507,7 +507,6 @@ export class BoardComponent {
     this.coreService.post('notice/boards', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.reset();
-        this.loading = false;
         if (res.noticeBoards && res.noticeBoards.length === 0) {
           this.boardsFilters.currentPage = 1;
         }

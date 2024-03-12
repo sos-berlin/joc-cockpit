@@ -31,6 +31,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   @Input() copyObj: any;
   @Input() reload: any;
   @Input() isTrash: any;
+  @Input() securityLevel: any;
 
   invalidMsg: string;
   isLocalChange: string;

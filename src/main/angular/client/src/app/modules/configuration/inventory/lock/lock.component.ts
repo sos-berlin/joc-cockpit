@@ -31,6 +31,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   @Input() copyObj: any;
   @Input() reload: any;
   @Input() isTrash: any;
+  @Input() securityLevel: any;
 
   lock: any = {};
   objectType = InventoryObject.LOCK;

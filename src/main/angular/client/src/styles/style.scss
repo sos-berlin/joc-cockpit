@@ -5503,7 +5503,7 @@ div.min-ht-widget-controller-status {
   }
 }
 
-tr.disabled-row td:not(.menu) {
+tr.disabled-row td:not(.menu):not(.chk) {
   opacity: .7;
   pointer-events: none !important;
   cursor: not-allowed !important;
@@ -5853,7 +5853,7 @@ General CSS
     }
 
     &.chk {
-      width: 36px !important;
+      width: 46px !important;
     }
   }
 
@@ -6212,6 +6212,10 @@ input:-webkit-autofill {
 .modal-body {
   max-height: calc(100vh - 158px);
   overflow: auto;
+}
+
+.modal-title {
+  word-break: break-all;
 }
 
 .cdk-global-scrollblock {

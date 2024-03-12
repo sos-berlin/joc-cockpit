@@ -214,7 +214,7 @@
                               [nzIndeterminate]="controller.indeterminate"
                               [nzShowCheckbox]="true"
                               (nzCheckedChange)="checkAll($event, controller)"
-                              nzWidth="46px"
+                              class="chk"
                           ></th>
                           <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="menu">
                             <span translate>common.label.action</span></th>
@@ -300,7 +300,7 @@
                         <tbody (cdkDropListDropped)="agentsReordering($event, controller.filteredAgents)" cdkDropList>
                         <tr *ngFor="let agent of ajaxTable.data" [ngClass]="{'disabled-row': agent.disabled}"
                             cdkDrag class="cursor move-on-hover">
-                          <td *ngIf="permission.joc && permission.joc.administration.controllers.manage" [nzChecked]="object.mapOfCheckedId.has(agent.agentId)"
+                          <td class="chk" *ngIf="permission.joc && permission.joc.administration.controllers.manage" [nzChecked]="object.mapOfCheckedId.has(agent.agentId)"
                               [nzDisabled]="object.mapOfCheckedId3.size > 0"
                               [nzShowCheckbox]="true"
                               (nzCheckedChange)="onItemChecked(controller, agent, $event)"
@@ -427,7 +427,7 @@
                               [nzIndeterminate]="controller.indeterminate2"
                               [nzShowCheckbox]="true"
                               (nzCheckedChange)="checkAll($event, controller, true)"
-                              nzWidth="46px"
+                              class="chk"
                           ></th>
                           <th class="menu"><span translate>common.label.action</span></th>
                           <th (click)="sort(controller, 'agentId', true)">
@@ -492,7 +492,7 @@
                                cdkDropList>
                         <ng-container *ngFor="let clusterAgent of agentClusterTable.data; let i = index">
                           <tr [ngClass]="{'disabled-row': clusterAgent.disabled}" cdkDrag class="cursor move-on-hover">
-                            <td *ngIf="permission.joc && permission.joc.administration.controllers.manage"
+                            <td class="chk" *ngIf="permission.joc && permission.joc.administration.controllers.manage"
                                 [nzChecked]="object.mapOfCheckedId2.has(clusterAgent.agentId)" [nzDisabled]="object.mapOfCheckedId3.size > 0"
                                 [nzShowCheckbox]="true"
                                 (nzCheckedChange)="onItemChecked(controller, clusterAgent, $event, true)"
@@ -628,7 +628,7 @@
                                       [nzIndeterminate]="clusterAgent.indeterminate"
                                       [nzShowCheckbox]="true"
                                       (nzCheckedChange)="checkAllSubagent($event, clusterAgent)"
-                                      nzWidth="46px"
+                                      class="chk"
                                   ></th>
                                   <th nzWidth="56px"><span translate>common.label.action</span></th>
                                   <th><span translate>agent.label.subagentId</span></th>
@@ -643,7 +643,7 @@
                                 <tr *ngFor="let sub of subagentClusterTable.data" [ngClass]="{'disabled-row': sub.disabled}"
                                     cdkDrag
                                     class="order-history-template0 move-on-hover cursor">
-                                  <td *ngIf="permission.joc && permission.joc.administration.controllers.manage"
+                                  <td class="chk" *ngIf="permission.joc && permission.joc.administration.controllers.manage"
                                       [nzChecked]="object.mapOfCheckedId3.has(sub.subagentId)" [nzDisabled]="object.mapOfCheckedId.size > 0 || object.mapOfCheckedId2.size > 0"
                                       [nzShowCheckbox]="true" (nzCheckedChange)="onItemCheckedSubagent(clusterAgent, sub, $event)">
                                     <div cdkDragHandle class="pos-abt move-icon text-16 cur-m t-1" style="left: -1px;">
