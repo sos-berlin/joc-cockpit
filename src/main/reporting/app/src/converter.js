@@ -152,10 +152,26 @@ async function checkDateFromContent(filePath, weeks, frequencyInterval, runId, o
                 try {
                     // Check if the file exists synchronously
                     fs.accessSync(path.join('tmp/' + runId, fileName), fs.constants.F_OK);
-                    await writeJsonToFile(path.join('tmp/' + runId, fileName), outputArray, true);
+                    if (templateData.execution === "DURATION") {
+                        // Example comparator function to compare objects based on 'duration' property
+                        const compareByDuration = (a, b) => b.duration - a.duration;
+                        // Get top 10 entries based on duration
+                        const top10Entries = await getTopEntries(outputArray, options.hits, compareByDuration);
+                        await writeJsonToFile(path.join('tmp/' + runId, fileName), top10Entries, true);
+                    } else {
+                        await writeJsonToFile(path.join('tmp/' + runId, fileName), outputArray, true);
+                    }
                 } catch (err) {
                     // File doesn't exist or other error occurred
-                    await writeJsonToFile(path.join('tmp/' + runId, fileName), outputArray);
+                    if (templateData.execution === "DURATION") {
+                        // Example comparator function to compare objects based on 'duration' property
+                        const compareByDuration = (a, b) => b.duration - a.duration;
+                        // Get top 10 entries based on duration
+                        const top10Entries = await getTopEntries(outputArray, options.hits, compareByDuration);
+                        await writeJsonToFile(path.join('tmp/' + runId, fileName), top10Entries);
+                    } else {
+                        await writeJsonToFile(path.join('tmp/' + runId, fileName), outputArray);
+                    }
                 }
             }
         }
