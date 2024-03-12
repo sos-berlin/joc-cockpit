@@ -35,9 +35,23 @@ nz-collapse-panel{
 }
 
 .flex-item {
-  border: 1px solid #ddd;
-  padding: 2px;
   box-sizing: border-box;
+  padding: 2px;
   overflow: hidden;
   white-space: normal;
+}
+
+/* Only add border to the right and bottom */
+.flex-item {
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+/* For the last item in each row, remove the right border */
+.flex-item:last-child {
+  border-right: none;
+}
+
+.card{
+  height: 470px;
 }

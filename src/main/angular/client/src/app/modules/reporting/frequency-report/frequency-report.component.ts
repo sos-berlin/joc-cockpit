@@ -1,11 +1,11 @@
 import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {Chart} from "chart.js";
 import {NzModalService} from "ng-zorro-antd/modal";
+import {isArray} from "underscore";
+import PerfectScrollbar from 'perfect-scrollbar';
 import {CoreService} from "../../../services/core.service";
 import {GroupByPipe} from "../../../pipes/core.pipe";
 import {AuthService} from "../../../components/guard";
-import {isArray} from "underscore";
-import PerfectScrollbar from 'perfect-scrollbar';
 
 @Component({
   selector: 'app-frequency-report',
@@ -73,12 +73,10 @@ export class FrequencyReportComponent {
         }
       }, error: () => this.isLoading = true
     });
-
   }
 
   onCardChange(cardId: any) {
     const index = this.multiReports.findIndex(report => report.id === cardId);
-
     if (index !== -1) {
       if (!this.multiReports[index].checked) {
         const addCardIndex = this.addCardItems.findIndex(report => report.id === cardId);
@@ -92,12 +90,10 @@ export class FrequencyReportComponent {
           setTimeout(() => {
             this.generateDonutCharts(this.multiReports[index]);
           }, 100)
-
         }
       }
     }
   }
-
 
   removeCard(cardId: any): void {
     const index = this.addCardItems.findIndex(report => report.id === cardId);
@@ -109,7 +105,6 @@ export class FrequencyReportComponent {
       }
     }
   }
-
 
   generateDonutCharts(reportId?: any): void {
     const reportsToProcess = reportId ? [this.addCardItems.find(item => item.id === reportId?.id)] : this.addCardItems;
@@ -193,6 +188,14 @@ export class FrequencyReportComponent {
     return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   }
 
+  parseDuration(durationString): any {
+    const parts = durationString.split(' ');
+    const days = parseInt(parts[0].replace('d', '')) || 0;
+    const hours = parseInt(parts[1].replace('h', '')) || 0;
+    const minutes = parseInt(parts[2].replace('m', '')) || 0;
+    const seconds = parseInt(parts[3].replace('s', '')) || 0;
+    return days * 24 * 60 * 60 + hours * 60 * 60 + minutes * 60 + seconds;
+  }
 
   initializeChartData() {
     return {
@@ -263,13 +266,37 @@ export class FrequencyReportComponent {
 
           li.onclick = () => {
             const {type} = chart.config;
-            if (type === 'pie' || type === 'doughnut') {
-              chart.toggleDataVisibility(item.index);
+            const dataIndex = item.index;
+            let dataValue = chartData.datasets[0].data[dataIndex];
+
+            if (type === 'doughnut') {
+              if (chartData.uniqueKeys.key === "") {
+                let totalSeconds = this.parseDuration(totalJobCount);
+                chart.toggleDataVisibility(dataIndex);
+                if (dataValue === undefined) {
+                  dataValue = 0
+                }
+                if (chart._hiddenIndices[dataIndex]) {
+                  totalSeconds -= dataValue;
+                } else {
+                  totalSeconds += dataValue;
+                }
+                totalJobCount = this.formatDuration(totalSeconds);
+              } else {
+                const isVisible = chart._hiddenIndices[dataIndex];
+                chart.toggleDataVisibility(dataIndex);
+                if (!isVisible) {
+                  totalJobCount -= dataValue;
+                } else {
+                  totalJobCount += dataValue;
+                }
+              }
             } else {
-              chart.setDatasetVisibility(item.datasetIndex, !chart.isDatasetVisible(item.datasetIndex));
+              chart.setDatasetVisibility(item.index, !chart.isDatasetVisible(item.index));
             }
             chart.update();
           };
+
 
           const boxSpan = document.createElement('span');
           boxSpan.style.background = item.fillStyle;
@@ -330,14 +357,13 @@ export class FrequencyReportComponent {
     legendContainer.style.padding = '2px';
     legendContainer.id = legendContainerId;
     legendContainer.classList.add('html-legend-container');
-    if(container){
+    if (container) {
       container.appendChild(legendContainer);
     }
     // Initialize Perfect Scrollbar
     const ps = new PerfectScrollbar(legendContainer);
     return legendContainer;
   }
-
 
   getOrCreateLegendList(chart, id): HTMLElement {
     const legendContainer = document.getElementById(id);
@@ -353,7 +379,6 @@ export class FrequencyReportComponent {
 
     return listContainer;
   }
-
 
   initGraph(report): void {
     const data = {
@@ -387,11 +412,8 @@ export class FrequencyReportComponent {
         data.labels.push(report.data[i].agentName || report.data[i].agent_name);
       } else if (report.data[i].order_id) {
         data.labels.push(report.data[i].order_id);
-       
-
       } else if (report.data[i].period) {
         data.labels.push(report.data[i].period);
-        
       }
 
       this.dataset.push(obj);
@@ -463,7 +485,6 @@ export class FrequencyReportComponent {
 
   toggleCardView(reports: any) {
     reports.showTable = !reports.showTable;
-    console.log(this.addCardItems,"?????")
   }
 
   hasNoData(): boolean {

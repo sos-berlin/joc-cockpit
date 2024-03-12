@@ -11751,7 +11751,12 @@ export class WorkflowComponent {
           delete value.value.message;
         }
         if (!value.value.default && value.value.default !== false && value.value.default !== 0) {
-          delete value.value.default;
+          if (value.value.default1) {
+            value.value.default = "\"\"";
+            delete value.value.default1
+          } else {
+            delete value.value.default;
+          }
         }
         if (value.value.type === 'List') {
           delete value.value.final;
