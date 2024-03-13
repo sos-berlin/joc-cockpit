@@ -298,6 +298,7 @@ export class CoreService {
       },
       generateReport: {
         filter: {
+          state: 'All',
           sortBy: 'created',
           reverse: true,
           currentPage: '1'
@@ -1747,6 +1748,7 @@ export class CoreService {
         } else if (typeof data[type] == 'string') {
           const startChar = data[type].substring(0, 1);
           if (startChar !== '$') {
+
             const endChar = data[type].substring(data[type].length - 1);
             const mainStr = data[type].substring(1, data[type].length - 1);
             if ((startChar === '"' && endChar === '"')) {

@@ -8,10 +8,12 @@ export class SharingDataService {
   private dataAnnouncedSource = new Subject<any>();
   private searchKeySource = new Subject<string>();
   private functionSource = new Subject<Object>();
+  private filterSource = new Subject<Object>();
 
   dataAnnounced$ = this.dataAnnouncedSource.asObservable();
   searchKeyAnnounced$ = this.searchKeySource.asObservable();
   functionAnnounced$ = this.functionSource.asObservable();
+  filterAnnounced$ = this.filterSource.asObservable();
 
   announceData(data: any): void {
     this.dataAnnouncedSource.next(data);
@@ -23,6 +25,10 @@ export class SharingDataService {
 
   announceFunction(data: any): void {
     this.functionSource.next(data);
+  }
+
+  announceFilter(data: any): void {
+    this.filterSource.next(data);
   }
 
   ngOnDestroy(): void {

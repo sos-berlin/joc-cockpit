@@ -734,6 +734,12 @@ export class LayoutComponent {
     preferences.expandOption = 'both';
     preferences.currentController = true;
     preferences.logTimezone = true;
+    preferences.orientation = 'north';
+    preferences.interRankCellSpacing = 40;
+    preferences.intraCellSpacing = 30;
+    preferences.interHierarchySpacing = 50;
+    preferences.edgeRounded = true;
+
     if (sessionStorage['$SOS$FORCELOGING'] === 'true' || sessionStorage['$SOS$FORCELOGING'] === true) {
       preferences.auditLog = true;
     }
@@ -772,6 +778,22 @@ export class LayoutComponent {
       if (!data.tabSize) {
         data.tabSize = 4;
       }
+      if (!data.orientation) {
+        data.orientation = 'north';
+      }
+      if (!data.interRankCellSpacing) {
+        data.interRankCellSpacing = 40;
+      }
+      if (!data.intraCellSpacing) {
+        data.intraCellSpacing = 30;
+      }
+      if (!data.interHierarchySpacing) {
+        data.interHierarchySpacing = 50;
+      }
+      if (data.edgeRounded == undefined) {
+        data.edgeRounded = true;
+      }
+
       if (!data.orderOverviewPageView) {
         data.orderOverviewPageView = 'list';
       }

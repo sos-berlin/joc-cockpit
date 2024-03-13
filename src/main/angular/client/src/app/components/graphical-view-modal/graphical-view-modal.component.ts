@@ -101,14 +101,14 @@ export class GraphicalViewModalComponent {
   actual(): void {
     if (this.graph) {
       this.graph.zoomActual();
-      this.graph.center(true, true, 0.5, 0.1);
+      this.workflowService.center(this.graph);
     }
   }
 
   fit(): void {
     if (this.graph) {
       this.graph.fit();
-      this.graph.center(true, true, 0.5, 0.1);
+      this.workflowService.center(this.graph);
     }
   }
 
@@ -203,7 +203,7 @@ export class GraphicalViewModalComponent {
       } finally {
         this.model.endUpdate();
       }
-      WorkflowService.executeLayout(graph);
+      WorkflowService.executeLayout(graph, self.preferences);
 
       return cells;
     };
@@ -270,7 +270,7 @@ export class GraphicalViewModalComponent {
     } finally {
       // Updates the display
       this.graph.getModel().endUpdate();
-      WorkflowService.executeLayout(this.graph);
+      WorkflowService.executeLayout(this.graph, this.preferences);
       GraphicalViewModalComponent.changeCellStyle(this.graph);
     }
   }

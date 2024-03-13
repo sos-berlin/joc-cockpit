@@ -3397,6 +3397,8 @@ export class WorkflowComponent {
             self.workflowService.init(!(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || !self.preferences.theme) ? 'dark' : 'light', editor.graph);
             const outln = document.getElementById('outlineContainer');
             outln.innerHTML = '';
+            mxOutline.prototype.minScale = 0.001;
+            mxOutline.prototype.enabled = true;
             new mxOutline(self.editor.graph, outln);
             cb();
           }
@@ -3537,7 +3539,7 @@ export class WorkflowComponent {
     this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomActual();
-      this.center();
+      this.workflowService.center(this.editor.graph);
     }
   }
 
@@ -3545,7 +3547,7 @@ export class WorkflowComponent {
     this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.fit();
-      this.center();
+      this.workflowService.center(this.editor.graph);
     }
   }
 
@@ -4991,22 +4993,6 @@ export class WorkflowComponent {
     });
   }
 
-  private center(): void {
-    const dom = document.getElementById('graph');
-    let x = 0.5;
-    let y = 0.2;
-    let flag = true;
-    if (dom && this.editor) {
-      if (dom.clientWidth !== dom.scrollWidth) {
-        x = 0;
-      }
-      if (dom.clientHeight !== dom.scrollHeight) {
-        y = 0;
-        flag = false;
-      }
-      this.editor.graph.center(true, flag, x, y);
-    }
-  }
 
   private reloadWorkflow(obj): void {
     this.closeMenu();
@@ -5279,7 +5265,7 @@ export class WorkflowComponent {
     } finally {
       // Updates the display
       graph.getModel().endUpdate();
-      WorkflowService.executeLayout(graph);
+      WorkflowService.executeLayout(graph, this.preferences);
       this.skipXMLToJSONConversion = true;
     }
 
@@ -5323,7 +5309,7 @@ export class WorkflowComponent {
     } finally {
       // Updates the display
       graph.getModel().endUpdate();
-      WorkflowService.executeLayout(graph);
+      WorkflowService.executeLayout(graph, this.preferences);
     }
   }
 
@@ -5390,7 +5376,7 @@ export class WorkflowComponent {
     if (this.editor && this.editor.graph) {
       setTimeout(() => {
         if (flag) {
-          this.center();
+          this.workflowService.center(this.editor.graph);
         } else {
           this.actual();
         }
@@ -5816,8 +5802,8 @@ export class WorkflowComponent {
               if (json.instructions[x].instructions) {
                 json.instructions[x].instructions.push(obj);
               } else {
-                if(json.instructions[x].TYPE == 'If'){
-                  if(!json.instructions[x].then) {
+                if (json.instructions[x].TYPE == 'If') {
+                  if (!json.instructions[x].then) {
                     json.instructions[x].then = {
                       instructions: [obj]
                     }
@@ -7223,7 +7209,7 @@ export class WorkflowComponent {
             _graph.container.focus();
           }
           if (flag) {
-            WorkflowService.executeLayout(graph);
+            WorkflowService.executeLayout(graph, self.preferences);
           }
         };
 
@@ -7305,7 +7291,7 @@ export class WorkflowComponent {
           } finally {
             this.model.endUpdate();
           }
-          WorkflowService.executeLayout(graph);
+          WorkflowService.executeLayout(graph, self.preferences);
           return cells;
         };
 
@@ -7565,7 +7551,7 @@ export class WorkflowComponent {
         initGraph();
         self.centered();
 
-        WorkflowService.executeLayout(graph);
+        WorkflowService.executeLayout(graph, self.preferences);
 
         const mgr = new mxAutoSaveManager(graph);
         mgr.save = function () {
@@ -9956,7 +9942,7 @@ export class WorkflowComponent {
           }
           customizedChangeEvent();
         }
-        WorkflowService.executeLayout(graph);
+        WorkflowService.executeLayout(graph, self.preferences);
       }
       result = '';
     }
@@ -11069,7 +11055,7 @@ export class WorkflowComponent {
       if (scheduleObj && typeof scheduleObj === 'string') {
         try {
           scheduleObj = JSON.parse(scheduleObj);
-          if(typeof scheduleObj === 'string'){
+          if (typeof scheduleObj === 'string') {
             scheduleObj = parseString(scheduleObj);
           }
         } catch (e) {
@@ -11786,7 +11772,6 @@ export class WorkflowComponent {
       if (variableDeclarations.parameters && isEmpty(variableDeclarations.parameters)) {
         delete variableDeclarations.parameters;
       }
-
       if (!isEqual(JSON.stringify(this.orderPreparation), JSON.stringify(variableDeclarations)) || type == 'allowUndeclared') {
         this.orderPreparation = variableDeclarations;
         flag = true;

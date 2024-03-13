@@ -67,7 +67,7 @@ export class ShareModalComponent {
   }
 
   ngOnInit(): void {
-    this.imageUrl = this.modalData;
+    this.getImage().then(r => this.loading = false);
   }
 
   private async getImage() {
@@ -105,7 +105,6 @@ export class ShareModalComponent {
     // Save PDF
     pdf.save('report.pdf');
     this.imageUrl = canvas.toDataURL('image/png');
-    this.loading = false;
   }
 
   onSubmit(): void {
@@ -133,7 +132,7 @@ export class ReportingComponent {
   templates = [];
 
   index: number;
-
+  filteredTemplate: string;
 
   constructor(private modal: NzModalService, private coreService: CoreService, private groupBy: GroupByPipe,
               private authService: AuthService, private sharingDataService: SharingDataService) {
@@ -182,6 +181,21 @@ export class ReportingComponent {
   changeState(state): void {
     this.filter.runHistory.filter.state = state;
     this.sharingDataService.announceFunction({state: state});
+  }
+
+  filterBy(data?): void {
+    if(data?.templateName){
+      this.sharingDataService.announceFilter({templateName: data?.templateName});
+      this.filteredTemplate = data?.title
+    }else if (data?.state){
+      this.filter.generateReport.filter.state = data?.state;
+      this.sharingDataService.announceFilter({state: data});
+    }else{
+      this.filteredTemplate = ''
+      this.sharingDataService.announceFilter({allTemplate: data?.allTemplate});
+
+    }
+
   }
 
   checkRunBtn(data): void {

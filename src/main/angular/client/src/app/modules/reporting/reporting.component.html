@@ -63,6 +63,57 @@
               </button>
             </div>
           </div>
+          <div *ngIf="index == 2" class="inline">
+            <div class="btn-group m-l-12 ">
+              <button (click)="filterBy({state: 'All'})"
+                      [ngClass]="{'btn-primary': filter.generateReport.filter.state=='All'}"
+                      class="btn btn-grey btn-sm button-group-ellipsis" translate>All
+              </button>
+              <button (click)="filterBy({state: 'lastMonth'})"
+                      [ngClass]="{'btn-primary': filter.generateReport.filter.state=='lastMonth'}"
+                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
+                Last Month
+              </button>
+              <button (click)="filterBy({state: 'last3Months'})"
+                      [ngClass]="{'btn-primary': filter.generateReport.filter.state=='last3Months'}"
+                      class="btn btn-grey btn-sm button-group-ellipsis" translate>Last 3 Months
+              </button>
+              <button (click)="filterBy({state: 'last6Months'})"
+                      [ngClass]="{'btn-primary': filter.generateReport.filter.state=='last6Months'}"
+                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
+                Last 6 Months
+              </button>
+              <button (click)="filterBy({state: 'lastYear'})"
+                      [ngClass]="{'btn-primary': filter.generateReport.filter.state=='lastYear'}"
+                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
+                Last year
+              </button>
+            </div>
+            <button [nzDropdownMenu]="filteration" [nzPlacement]="'bottomRight'"
+                    class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
+                    type="button">Filter By
+              <span *ngIf="filteredTemplate">: </span>
+              <span class="text-primary"></span>
+              <i *ngIf="!filteredTemplate" class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
+              <span class="text-primary">
+               <span>{{ filteredTemplate }}</span>
+              </span>
+            </button>
+            <span *ngIf="filteredTemplate" (click)="filterBy({allTemplate: 'All'})" class="p-l-xs cur-point"> <i class="fa fa-times-circle-o fa-lg" aria-hidden="true"></i></span>
+
+            <nz-dropdown-menu #filteration="nzDropdownMenu">
+              <ul nz-menu>
+                <ng-container *ngFor="let item of templates">
+                  <li nz-menu-item (click)="filterBy(item)">
+                    <label>
+                      {{ item.title }}
+                    </label>
+                  </li>
+                </ng-container>
+              </ul>
+            </nz-dropdown-menu>
+          </div>
+
         </div>
       </div>
     </div>

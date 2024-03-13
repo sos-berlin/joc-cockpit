@@ -843,6 +843,12 @@ export class UserComponent {
     {value: '50', name: '50'},
     {value: '100', name: '100'}];
 
+
+  orientation = [{value: 'north', name: 'North'},
+    {value: 'south', name: 'South'},
+    {value: 'east', name: 'East'},
+    {value: 'west', name: 'West'}];
+
   dateTimeFormat = [
     {index: 1, value: 'DD.MM.YYYY HH:mm:ss', name: 'Default (DD.MM.YYYY HH:mm:ss)'},
     {disable: true, value: '', name: '-----------------------------------------'},

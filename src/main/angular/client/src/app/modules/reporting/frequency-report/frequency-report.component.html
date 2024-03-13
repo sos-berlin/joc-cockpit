@@ -1,4 +1,4 @@
-<div class="p-a p-t-0">
+<div class="p-a p-t-0" >
   <div class="row">
     <div class="col-md-12">
       <div class="text-center b-b m-t-11">
@@ -24,8 +24,8 @@
           </ul>
         </nz-dropdown-menu>
       </div>
-      <div class="box-body">
-        <div *ngIf="filter.showReport" class="m-r-xs">
+      <div [ngClass]="{'row m-t': !filter.showReport, 'box-body p-a-0 p-t': filter.showReport}">
+        <div *ngIf="filter.showReport" class="">
           <span (click)="toggleReportView()" class="text-hover-primary cursor-pointer">
             <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
             {{'common.button.back' | translate}}
@@ -36,22 +36,19 @@
             <perfect-scrollbar class="card">
                 <div class="card-body">
                   <div class="right flex">
-                    <div>
-                      <a (click)="toggleReportView(reports)" class="text-hover-primary cur-point m-r-xs">
-                        <span *ngIf="!reports.showReport" nz-icon nzType="bar-chart" nzTheme="outline" class="text-16"></span>
+                      <a (click)="toggleReportView(reports)" *ngIf="!reports.showReport" class="text-hover-primary cur-point m-r-sm">
+                        <span nz-icon nzType="bar-chart" nzTheme="outline" class="text-md"></span>
                       </a>
-
-                      <a (click)="toggleCardView(reports)" class="text-hover-primary cur-point m-r-xs">
-                        <span *ngIf="reports.showTable" nz-icon nzType="pie-chart" nzTheme="outline" class="text-16"></span>
-                        <span *ngIf="!reports.showTable" nz-icon nzType="table" nzTheme="outline" class="text-16"></span>
+                      <a (click)="toggleCardView(reports)" class="text-hover-primary cur-point m-r-sm">
+                        <span *ngIf="reports.showTable" nz-icon nzType="pie-chart" nzTheme="outline" class="text-md"></span>
+                        <span *ngIf="!reports.showTable" nz-icon nzType="table" nzTheme="outline" class="text-md"></span>
                       </a>
-                    </div>
-                    <div class="cur-point" (click)="removeCard(reports.id)">
-                      <i class="fa fa-times fa-lg" aria-hidden="true"></i>
-                    </div>
+                      <a class="cur-point" (click)="removeCard(reports.id)">
+                        <span nz-icon nzType="close" nzTheme="outline" class="text-md"></span>
+                      </a>
                   </div>
                   <div class="m-b-sm">
-                    <h5 class="card-title">{{ reports.path }}</h5>
+                    <h5 class="card-title font14">{{ reports.path }}</h5>
                   </div>
                   <div class="_600 text-md m-t-sm m-b-sm text-center pos-rel"><span
                     class="p-b-xs b-b"><i class="text-muted">{{ reports.dateFrom }} - {{ reports.dateTo }}</i></span>
@@ -72,8 +69,8 @@
                               <div *ngFor="let item of data.data; let i = index" style="padding-bottom: 0px !important;">
                                 <div *ngIf="i == 0" class="flex-container">
                                   <div class="flex-item" style="width: 100%;font-weight: bold;"><span
-                                    translate>Workflow</span></div>
-                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>Job</span>
+                                    translate>history.label.workflow</span></div>
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.job</span>
                                   </div>
                                 </div>
                                 <div class="flex-container">
@@ -96,7 +93,7 @@
                             <div>
                               <div *ngFor="let item of data.data; let i = index" style="padding-bottom: 0px !important;">
                                 <div *ngIf="i == 0" class="flex-container">
-                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>Period</span></div>
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>runtime.label.period</span></div>
                                 </div>
                                 <div class="flex-container">
                                   <div class="flex-item" style="width: 100%;">{{item}}</div>
@@ -116,7 +113,7 @@
                             <div>
                               <div style="padding-bottom: 0px !important;">
                                 <div class="flex-container">
-                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>Start Time</span></div>
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.startTime</span></div>
                                 </div>
                                 <div class="flex-container">
                                   <div class="flex-item" style="width: 100%;">{{data.START_TIME}}</div>
@@ -133,10 +130,10 @@
                             <div>
                               <div *ngFor="let item of data.data; let i = index" style="padding-bottom: 0px !important;">
                                 <div *ngIf="i == 0" class="flex-container">
-                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Workflow</span></div>
-                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Job</span></div>
-                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Start Time</span></div>
-                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Duration</span></div>
+                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.workflow</span></div>
+                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.job</span></div>
+                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.startTime</span></div>
+                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.duration</span></div>
                                 </div>
                                 <div class="flex-container">
                                   <div class="flex-item" style="width: 25%;">{{item.WORKFLOW_NAME}}</div>
@@ -158,7 +155,7 @@
                               <div *ngFor="let item of data.data; let i = index" class="p-a-sm"
                                    style="padding-bottom: 4px !important;">
                                 <div *ngIf="i == 0" class="flex-container">
-                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>Period</span></div>
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>runtime.label.period</span></div>
                                 </div>
                                 <div class="flex-container">
                                   <div class="flex-item" style="width: 100%;">{{ item }}</div>
@@ -176,10 +173,10 @@
                               <div class="p-a-sm" style="padding-bottom: 4px !important;">
                                 <div *ngFor="let item of data.data; let i = index" style="padding-bottom: 0px !important;">
                                   <div *ngIf="i == 0" class="flex-container">
-                                    <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Workflow</span></div>
-                                    <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Job</span></div>
-                                    <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Start Time</span></div>
-                                    <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>Duration</span></div>
+                                    <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.workflow</span></div>
+                                    <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.job</span></div>
+                                    <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.startTime</span></div>
+                                    <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.duration</span></div>
                                   </div>
                                   <div class="flex-container">
                                     <div class="flex-item" style="width: 25%;">{{item.WORKFLOW_NAME}}</div>
