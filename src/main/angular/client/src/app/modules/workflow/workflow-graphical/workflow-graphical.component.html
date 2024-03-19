@@ -69,6 +69,40 @@
         <!-- Creates a container for the outline -->
         <div #outlineContainer id="outlineContainer"></div>
       </div>
+      <!-- BEGIN SLIDER -->
+      <div  class="property-panel left-property-panel hidden-sm">
+        <div class="sidebar-open">
+          <i class="fa fa-caret-right"></i>
+        </div>
+        <div class="sidebar-close">
+          <i class="fa fa-caret-left"></i>
+        </div>
+        <div class="sidebar sidebar-property-panel bg-white" id="left-property-panel">
+          <div class="m-l-xxs m-b-xs">
+            <a class="text-primary-hover" (click)="expandAllTree();">
+              <i class="fa fa-angle-double-down fa-lg"></i>
+            </a>
+            <a class="m-l-sm text-primary-hover" (click)="collapseAllTree();">
+              <i class="fa fa-angle-double-up fa-lg"></i>
+            </a>
+          </div>
+          <div class="fade-in">
+            <nz-tree
+              [nzShowExpand]="true"
+              [nzData]="nodes"
+              [nzTreeTemplate]="nzTreeTemplate"
+            ></nz-tree>
+            <ng-template #nzTreeTemplate let-node>
+              <div class="node-wrapper" id="{{node.origin.key}}" [ngClass]="{'disable-link':node.origin.disabled}">
+                <div (click)="selectNode(node.origin.key)" class="node-content-wrapper">
+                  <span *ngIf="node.origin.name"> {{node.origin.name}} </span>
+                  <span class="_600">{{node.origin.title | translate}}</span>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul *ngIf="order" nz-menu>
           <li (click)="cancelOrder()" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"

@@ -4127,6 +4127,17 @@ export class WorkflowComponent {
           const top = (_top + $('#rightPanel').position().top);
           const ht = 'calc(100vh - ' + (top + 22) + 'px)';
           dom.css({height: ht, 'scroll-top': '0'});
+          const outln = $('#outlineContainer');
+          if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
+            outln.css({
+              height: '112px',
+              top: 'calc(100vh - ' + (top + 96) + 'px',
+              width: dom.width() + 'px',
+              'scroll-left': '0'
+            });
+          } else {
+            outln.css({height: ht, 'scroll-top': '0'});
+          }
           $('#graph').animate({
             height: ht,
             scrollTop: 0
@@ -5344,23 +5355,32 @@ export class WorkflowComponent {
 
     $('.sidebar-open', panel).click(() => {
       self.propertyPanelWidth = localStorage['propertyPanelWidth'] ? parseInt(localStorage['propertyPanelWidth'], 10) : 460;
-      $('#outlineContainer').css({...transitionCSS, right: self.propertyPanelWidth + 10 + 'px'});
+      const outln = $('#outlineContainer');
+      outln.css({...transitionCSS, right: self.propertyPanelWidth + 10 + 'px'});
+
       $('.graph-container').css({...transitionCSS, 'margin-right': self.propertyPanelWidth + 'px'});
       $('.toolbar').css({...transitionCSS, 'margin-right': (self.propertyPanelWidth - 12) + 'px'});
       $('.sidebar-close').css({...transitionCSS, right: self.propertyPanelWidth + 'px'});
       $('#property-panel').css({...transitionCSS, width: self.propertyPanelWidth + 'px'}).show();
       $('.sidebar-open').css({...transitionCSS, right: '-20px'});
+      if (self.preferences.orientation == 'east' || self.preferences.orientation == 'west') {
+        outln.css({width: $('.graph-container').width() + 'px'});
+      }
       self.centered(true);
     });
 
     $('.sidebar-close', panel).click(() => {
       self.propertyPanelWidth = 0;
-      $('#outlineContainer').css({...transitionCSS, right: '10px'});
+      const outln = $('#outlineContainer');
+      outln.css({...transitionCSS, right: '10px'});
       $('.graph-container').css({...transitionCSS, 'margin-right': '0'});
       $('.toolbar').css({...transitionCSS, 'margin-right': '-12px'});
       $('.sidebar-open').css({...transitionCSS, right: '0'});
       $('#property-panel').css(transitionCSS).hide();
       $('.sidebar-close').css({...transitionCSS, right: '-20px'});
+      if (self.preferences.orientation == 'east' || self.preferences.orientation == 'west') {
+        outln.css({width: $('.graph-container').width() + 'px'});
+      }
       self.centered(true);
     });
 

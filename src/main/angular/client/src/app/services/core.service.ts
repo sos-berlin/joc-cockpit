@@ -208,6 +208,7 @@ export class CoreService {
     this.tabs._workflowDetail.date = '1d';
     this.tabs._workflowDetail.panelSize = 0;
     this.tabs._workflowDetail.panelSize2 = 450;
+    this.tabs._workflowDetail.leftTreePanelSizeVisible = false;
     this.tabs._workflowDetail.pageView = 'list';
 
     this.tabs._daliyPlan = {};

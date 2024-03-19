@@ -1,7 +1,9 @@
 import {Component, ElementRef, Input, ViewChild} from '@angular/core';
-import {Chart} from "chart.js";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {isArray} from "underscore";
+import html2canvas from 'html2canvas';
+import {jsPDF} from "jspdf";
+import {Chart} from "chart.js";
 import PerfectScrollbar from 'perfect-scrollbar';
 import {CoreService} from "../../../services/core.service";
 import {GroupByPipe} from "../../../pipes/core.pipe";
@@ -18,23 +20,36 @@ export class FrequencyReportComponent {
   schedulerIds: any = {};
   preferences: any = {};
   isLoading: boolean;
+  loading: boolean;
   dateFormat: string;
   clickData: any;
   filter: any = {};
   barChart: any;
+
   dataset: any = [];
   selectedTemplates: string[] = [];
   dateFrom: any[] = [];
   dateTo: any[] = [];
   multiReports: any[] = [];
   addCardItems: any[] = [];
+  filterData: any[] = [];
+  frequencies = [
+    {name: 'WEEKLY'},
+    {name: 'TWO_WEEKS'},
+    {name: 'MONTHLY'},
+    {name: 'THREE_MONTHS'},
+    {name: 'SIX_MONTHS'},
+    {name: 'YEARLY'},
+    {name: 'THREE_YEARS'}
+  ];
+  filteredFrequency: string;
 
   /** Reporting */
   @ViewChild('content') content: ElementRef;
 
 
   constructor(private modal: NzModalService, private coreService: CoreService, private groupBy: GroupByPipe,
-              private authService: AuthService) {
+              private authService: AuthService, private elementRef: ElementRef) {
 
   }
 
@@ -61,6 +76,7 @@ export class FrequencyReportComponent {
       next: (res: any) => {
         this.isLoading = true;
         this.multiReports = res.reports
+        this.filterData = res.reports
         this.addCardItems = [...this.multiReports];
         if (res.reports.length > 0) {
           this.report.data = res.reports[0].data;
@@ -232,16 +248,23 @@ export class FrequencyReportComponent {
         const perc = totalJobCount;
         ctx.save();
         ctx.textAlign = 'center';
+
+        // Set text color based on theme
+        if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
+          ctx.fillStyle = 'white';
+        } else {
+          ctx.fillStyle = 'black';
+        }
+
         ctx.font = '16px sans-serif';
         ctx.fillText(perc, xCoor, yCoor);
-        ctx.font = '16px sans-serif';
         ctx.fillText(chartData.uniqueKeys?.key, xCoor, yCoor + 20);
         ctx.restore();
       }
     };
 
     const legendContainerId = `htmlLegend-${reportId}`;
-    const legendContainer = this.createLegendContainer(legendContainerId, container);
+    this.createLegendContainer(legendContainerId, container);
 
     const htmlLegendPlugin = {
       id: 'htmlLegend',
@@ -341,7 +364,7 @@ export class FrequencyReportComponent {
       }
     };
 
-    const chart = new Chart(canvas, {
+    new Chart(canvas, {
       type: 'doughnut',
       data: chartData,
       plugins: [innerLabelPlugin, htmlLegendPlugin],
@@ -349,7 +372,7 @@ export class FrequencyReportComponent {
     });
   }
 
-  createLegendContainer(legendContainerId: string, container: HTMLElement): HTMLElement {
+  createLegendContainer(legendContainerId: string, container: HTMLElement) {
     const legendContainer = document.createElement('div');
     legendContainer.style.height = '140px';
     legendContainer.style.position = 'relative';
@@ -361,8 +384,7 @@ export class FrequencyReportComponent {
       container.appendChild(legendContainer);
     }
     // Initialize Perfect Scrollbar
-    const ps = new PerfectScrollbar(legendContainer);
-    return legendContainer;
+    new PerfectScrollbar(legendContainer);
   }
 
   getOrCreateLegendList(chart, id): HTMLElement {
@@ -489,5 +511,88 @@ export class FrequencyReportComponent {
 
   hasNoData(): boolean {
     return this.addCardItems.every(item => !item.data || item.data.length === 0);
+  }
+
+  filterBy(data?): void {
+    if (data?.name) {
+      this.filteredFrequency = data.name;
+      this.addCardItems = this.filterData.filter(item => item.frequency === data.name);
+      this.multiReports = [...this.addCardItems];
+      let arr = [];
+      this.multiReports.forEach(item => {
+        if(item.checked){
+          arr.push(item);
+        }
+      });
+      this.addCardItems= arr;
+
+      this.destroyElements()
+      setTimeout(() => {
+        this.generateDonutCharts();
+      }, 100)
+    } else {
+      this.filteredFrequency = '';
+      this.destroyElements()
+      this.loadData()
+    }
+  }
+
+  destroyElements(): void {
+    const chartElements = document.getElementsByClassName('donut-chart');
+    const legendElements = document.getElementsByClassName('html-legend-container');
+
+    for (let i = chartElements.length - 1; i >= 0; i--) {
+      chartElements[i].remove();
+    }
+    for (let i = legendElements.length - 1; i >= 0; i--) {
+      legendElements[i].remove();
+    }
+  }
+
+  exportTheReport(): void {
+    this.createReport();
+    // this.modal.create({
+    //   nzTitle: undefined,
+    //   nzContent: ShareModalComponent,
+    //   nzFooter: null,
+    //   nzAutofocus: null,
+    //   nzData: {},
+    //   nzClosable: false,
+    //   nzMaskClosable: false
+    // });
+  }
+
+  async createReport() {
+    this.loading = true;
+    // Get DOM elements
+    const contentElement = this.elementRef.nativeElement.querySelector('#content');
+    const height = contentElement.clientHeight;
+
+    const initialMaxHeightContent = contentElement.style.maxHeight;
+
+    //Set maxHeight to inherit for capturing full content
+    contentElement.style.maxHeight = 'inherit';
+    let scale = 1;
+    if (this.addCardItems.length > 48) {
+      scale = 3;
+    } else if (this.addCardItems.length > 24){
+      scale = 2;
+    }
+    // Create canvas from HTML content
+    const canvas = await html2canvas(contentElement, {
+      scale: scale
+    });
+
+    // Restore initial maxHeight values
+    contentElement.style.maxHeight = initialMaxHeightContent;
+
+    // Create PDF
+    const pdf = new jsPDF();
+    const pageWidth = 210; // Width of A4 page in mm
+    const pageHeight = (height * pageWidth) / canvas.width; // Maintain aspect ratio
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pageWidth, pageHeight);
+    // Save PDF
+    pdf.save('report.pdf');
+    this.loading = false;
   }
 }
