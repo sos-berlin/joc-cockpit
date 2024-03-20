@@ -7813,6 +7813,11 @@ tr.tr-border td:first-child {
   }
 }
 
+.ant-tree .ant-tree-treenode-disabled .ant-tree-node-content-wrapper {
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
 .ant-tree .ant-tree-node-content-wrapper {
   padding: 0;
 }

@@ -2946,7 +2946,7 @@
     "label.iamKeycloakTrustStoreType": "Type du Keycloak Truststore",
     "label.iamKeycloakClientSecret": "Keycloak Client Secret",
     "label.iamKeycloakRealm": "Keycloak Realm",
-    "label.iamKeycloakVersionCompatibility": "Version 16 ou antérieure",
+    "label.iamKeycloakVersionCompatibility": "Keycloak Version 16 ou antérieure",
     "label.iamLdapSearchBase": "LDAP Search Base",
     "label.iamLdapGroupSearchBase": "LDAP Group Search Base",
     "label.iamLdapUserDnTemplate": "LDAP User DN Template",
