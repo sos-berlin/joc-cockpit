@@ -69,13 +69,13 @@ export class DependentWorkflowComponent {
   }
 
   ngOnInit(): void {
-  this.workflow = this.modalData.workflow || {};
-  this.permission  = this.modalData.permission || {};
-  this.preferences  = this.modalData.preferences || {};
-  this.controllerId = this.modalData.controllerId;
-  this.recursiveCals  = this.modalData.recursiveCals;
-  this.view = this.modalData.view;
-  this.workflowFilters = this.modalData.workflowFilters;
+    this.workflow = this.modalData.workflow || {};
+    this.permission = this.modalData.permission || {};
+    this.preferences = this.modalData.preferences || {};
+    this.controllerId = this.modalData.controllerId;
+    this.recursiveCals = this.modalData.recursiveCals;
+    this.view = this.modalData.view;
+    this.workflowFilters = this.modalData.workflowFilters;
     let flag = false;
     if (this.view) {
       this.pageView = this.view;
@@ -153,7 +153,7 @@ export class DependentWorkflowComponent {
     if (this.permission && this.permission.currentController && !this.permission.currentController.orders.view) {
       return;
     }
-    if(!workflow.path){
+    if (!workflow.path) {
       return;
     }
     const obj: any = {
@@ -232,6 +232,7 @@ export class WorkflowGraphicalComponent {
   job: any;
   stopInstruction: any;
   graph: any;
+  nodes = [];
   vertixMap = new Map();
   mapObj = new Map();
   nodeMap = new Map();
@@ -263,7 +264,54 @@ export class WorkflowGraphicalComponent {
     if (this.workflowFilters && this.workflowFilters.panelSize > 0) {
       ht = this.workflowFilters.panelSize + 'px';
     }
+    if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
+      const containerElement: HTMLElement = this.outlineContainer.nativeElement;
+      containerElement.style.width = (dom.width() - 2) + 'px';
+      containerElement.style.height = '112px';
+      containerElement.style.top = 'auto';
+      containerElement.style.bottom = '16px';
+    } else {
+      dom.css({width: 'calc(100% - 154px)'});
+    }
     this.coreService.slimscrollFunc(dom, ht, this.graph);
+
+    const panel = $('.left-property-panel');
+    const transitionCSS = {transition: 'none'};
+
+    $('.sidebar-open', panel).click(() => {
+      let propertyPanelWidth = 360;
+      this.workflowFilters.leftTreePanelSizeVisible = true;
+      $('.graph-container').css({...transitionCSS, 'margin-left': propertyPanelWidth + 'px'});
+      $('.toolbar').css({...transitionCSS, 'margin-left': (propertyPanelWidth - 12) + 'px'});
+      $('.sidebar-close').css({...transitionCSS, left: propertyPanelWidth + 'px', display: 'block'});
+      $('#left-property-panel').css({...transitionCSS, width: propertyPanelWidth + 'px'}).show();
+      $('.sidebar-open').css({...transitionCSS, display: 'none'});
+      if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
+        const outln = $('#outlineContainer');
+        outln.css({width: $('.graph-container').width() + 'px'});
+      }
+      this.workflowService.center(this.graph);
+    });
+
+    $('.sidebar-close', panel).click(() => {
+      this.workflowFilters.leftTreePanelSizeVisible = false;
+      $('.graph-container').css({...transitionCSS, 'margin-left': '0'});
+      $('.toolbar').css({...transitionCSS, 'margin-left': '-12px'});
+      $('.sidebar-open').css({...transitionCSS, left: '1px', display: 'block'});
+      $('#left-property-panel').css(transitionCSS).hide();
+      $('.sidebar-close').css({...transitionCSS, display: 'none'});
+      if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
+        const outln = $('#outlineContainer');
+        outln.css({width: $('.graph-container').width() + 'px'});
+      }
+      this.workflowService.center(this.graph);
+    });
+
+    if (window.innerWidth > 1024 && this.workflowFilters.leftTreePanelSizeVisible) {
+      setTimeout(() => {
+        $('.sidebar-open').click();
+      }, 100);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -275,6 +323,7 @@ export class WorkflowGraphicalComponent {
       this.nodeMap = new Map();
       this.workflowArr = [];
       this.updateWorkflow(true);
+      this.recursiveUpdate();
     }
   }
 
@@ -330,6 +379,7 @@ export class WorkflowGraphicalComponent {
     this.workflowArr = [];
     this.initEditorConf();
     this.updateWorkflow();
+    this.recursiveUpdate();
     setTimeout(() => {
       this.actual();
       $('#graph').animate({
@@ -372,14 +422,14 @@ export class WorkflowGraphicalComponent {
   actual(): void {
     if (this.graph) {
       this.graph.zoomActual();
-      this.graph.center(true, true, 0.5, 0.1);
+      this.workflowService.center(this.graph);
     }
   }
 
   fit(): void {
     if (this.graph) {
       this.graph.fit();
-      this.graph.center(true, true, 0.5, 0.1);
+      this.workflowService.center(this.graph);
     }
   }
 
@@ -616,13 +666,15 @@ export class WorkflowGraphicalComponent {
         }
       },
       mouseMove: function (sender, me) {
+
         if (this.currentState != null && me.getState() == this.currentState) {
           return;
         }
         let tmp = graph.view.getState(me.getCell());
+
         // Ignores everything but vertices
         if (graph.isMouseDown || (tmp != null && !graph.getModel().isVertex(tmp.cell))) {
-          if(tmp && tmp.cell && tmp.cell.value.tagName === 'Connection') {
+          if (tmp && tmp.cell && tmp.cell.value.tagName === 'Connection') {
 
           } else {
             tmp = null;
@@ -634,7 +686,7 @@ export class WorkflowGraphicalComponent {
           }
           this.currentState = tmp;
           if (this.currentState != null) {
-            this.dragEnter(me.getEvent(), this.currentState, tmp?.cell?.value?.tagName === 'Connection' ? tmp.cell :  null);
+            this.dragEnter(me.getEvent(), this.currentState, tmp?.cell?.value?.tagName === 'Connection' ? tmp.cell : null);
           }
         }
       },
@@ -691,7 +743,7 @@ export class WorkflowGraphicalComponent {
       } finally {
         this.model.endUpdate();
       }
-      WorkflowService.executeLayout(graph);
+      WorkflowService.executeLayout(graph, self.preferences);
       self.updateOrdersInGraph(false);
       return cells;
     };
@@ -910,7 +962,7 @@ export class WorkflowGraphicalComponent {
               setTimeout(() => {
                 let outLen = graph.getIncomingEdges(w1);
                 if (outLen?.length > 0) {
-                  WorkflowService.executeLayout(self.graph);
+                  WorkflowService.executeLayout(self.graph, self.preferences);
                 }
               }, 5)
             }
@@ -1312,10 +1364,15 @@ export class WorkflowGraphicalComponent {
           _node.setAttribute('order', JSON.stringify(orders[i]));
           let x = node.geometry.x + node.geometry.width + 50 + (i * 8);
           let y = node.geometry.y - 40 + (i * 8);
+          if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
+            x = node.geometry.x + (node.geometry.width / 2) + 50 + (i * 8);
+            y = node.geometry.y - node.geometry.height - 40 + (i * 8);
+          }
           if (count > 0 && (count * len) < 3) {
             x = x + (count * 8);
             y = y + (count * 8);
           }
+
           const v1 = graph.insertVertex(parent, null, _node, x, y, 120, 36, 'order');
           // Create badge to show total orders count
           if ((orders.length > 1 && count === -1 && (i === 2 || i === orders.length - 1)) || (branchOrders && branchOrders.length > 0 && (i === 2 || i === orders.length - 1))) {
@@ -1337,6 +1394,114 @@ export class WorkflowGraphicalComponent {
       }
     }
     return edge;
+  }
+
+  private recursiveUpdate(): void {
+    const self = this;
+    let nodes: any = {
+      children: []
+    };
+
+    function recursive(json, obj) {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+          let child: any = {
+            title: json.instructions[x].TYPE,
+            key: json.instructions[x].uuid
+          };
+          if (json.instructions[x].jobName) {
+            child.title += ' - ' + json.instructions[x].jobName;
+          } else if (json.instructions[x].noticeBoardNames && json.instructions[x].noticeBoardNames.length > 0) {
+            child.title += ' - ' + (json.instructions[x].TYPE === 'PostNotices' ? json.instructions[x].noticeBoardNames.join(',') : json.instructions[x].noticeBoardNames);
+          } else if (json.instructions[x].demands && json.instructions[x].demands.length > 0) {
+            child.title += ' - ' + json.instructions[x].demands[0].lockName;
+          }
+          if (json.instructions[x].label) {
+            child.title += ' (' + json.instructions[x].label + ')';
+          }
+          if (!self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
+            child.isLeaf = true;
+          } else {
+            child.children = [];
+          }
+          obj.children.push(child);
+
+          if (json.instructions[x].TYPE === 'Fork') {
+            if (json.instructions[x].branches) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                if (json.instructions[x].branches[i].instructions) {
+                  let obj1 = {
+                    title: 'branch - ' + json.instructions[x].branches[i].id,
+                    disabled: true,
+                    key: json.instructions[x].uuid + json.instructions[x].branches[i].id,
+                    children: []
+                  };
+                  child.children.push(obj1);
+                  recursive(json.instructions[x].branches[i], obj1);
+                }
+              }
+            }
+          }
+
+          if (json.instructions[x].instructions) {
+            recursive(json.instructions[x], child);
+          }
+
+          if (json.instructions[x].then && json.instructions[x].then.instructions) {
+            recursive(json.instructions[x].then, child);
+          }
+          if (json.instructions[x].else && json.instructions[x].else.instructions) {
+            let obj = {title: "Else", disabled: true, key: json.instructions[x].uuid + 'else', children: []};
+            child.children.push(obj);
+            recursive(json.instructions[x].else, obj);
+          }
+          if (json.instructions[x].catch && json.instructions[x].catch.instructions) {
+            let obj = {title: "Catch", disabled: true, key: json.instructions[x].uuid + 'catch', children: []};
+            child.children.push(obj);
+            recursive(json.instructions[x].catch, obj);
+          }
+        }
+      }
+    }
+
+    recursive(this.workFlowJson, nodes);
+    this.nodes = nodes.children;
+  }
+
+  expandAllTree(): void {
+    this.traverseTree(this.nodes, true);
+    this.nodes = [...this.nodes];
+  }
+
+  collapseAllTree(): void {
+    this.traverseTree(this.nodes, false);
+    this.nodes = [...this.nodes];
+  }
+
+  private traverseTree(data, isExpand): void {
+    for (let i in data) {
+      if (data[i] && data[i].children && data[i].children.length > 0) {
+        data[i].expanded = isExpand;
+        this.traverseTree(data[i].children, isExpand);
+      }
+    }
+  }
+
+  selectNode(uuid): void {
+    const model = this.graph.getModel();
+    if (model.cells) {
+      for (const prop in model.cells) {
+        if (model.cells[prop].getAttribute('uuid') === uuid) {
+          const cell = model.cells[prop];
+          let state = this.graph.view.getState(cell);
+          $('#graph').animate({
+            scrollLeft: ((100) + (state.x - (state.width / 2))),
+            scrollTop: ((state.y - (state.height / 2)))
+          }, 200);
+          break;
+        }
+      }
+    }
   }
 
   private updateWorkflow(isRemove = false): void {
@@ -1370,7 +1535,7 @@ export class WorkflowGraphicalComponent {
     } finally {
       // Updates the display
       this.graph.getModel().endUpdate();
-      WorkflowService.executeLayout(this.graph);
+      WorkflowService.executeLayout(this.graph, this.preferences);
       this.updateOrdersInGraph(false);
     }
   }

@@ -236,8 +236,8 @@
               <span *ngIf="!history.label" [innerHtml]="history.position"></span>
             </td>
             <td>
-            <span [innerHtml]="history.state._text | translate" [ngClass]="coreService.getColor(history.state.severity,'bg')"
-                  class="label"></span>
+              <span [innerHtml]="history.state._text | translate" [ngClass]="coreService.getColor(history.state.severity,'bg')"
+                    class="label"></span>
             </td>
             <td [innerHtml]="history.startTime | stringToDate"></td>
             <td [innerHtml]="history.endTime | stringToDate"></td>
