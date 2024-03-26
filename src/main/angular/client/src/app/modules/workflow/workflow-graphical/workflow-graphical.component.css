@@ -43,9 +43,9 @@
   position: absolute;
   overflow: hidden;
   top: 0;
-  right: 10px;
-  width: 170px;
-  height: 150px;
+  right: 2px;
+  width: 150px;
+  height: 100%;
   border: 1px solid var(--border-color);
 }
 

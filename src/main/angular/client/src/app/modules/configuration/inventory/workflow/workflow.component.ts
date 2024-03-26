@@ -2888,7 +2888,8 @@ export class WorkflowComponent {
   @ViewChild('codeMirror', {static: false}) cm;
 
   searchNode = {
-    text: ''
+    text: '',
+    isVisible: false
   }
   jobResourcesTree = [];
   documentationTree = [];
@@ -3249,7 +3250,7 @@ export class WorkflowComponent {
             graph.clearSelection();
             graph.setSelectionCell(cell);
             this.initEditorConf(this.editor, false, false, true);
-            this.searchNode = {text: ''};
+            this.searchNode = {text: '', isVisible: false};
             $('#searchTree input').blur();
             $('#workflowHeader').removeClass('hide-on-focus')
             break;
@@ -3261,14 +3262,18 @@ export class WorkflowComponent {
 
   @HostListener('window:click', ['$event'])
   onClick(event): void {
-    const dom = $('#searchTree');
-    if (!dom.hasClass('ant-select-focused')) {
-      if (event.target.id === 'search-container') {
-        dom.addClass('ant-select-focused');
-      } else {
-        $('#workflowHeader').removeClass('hide-on-focus');
+    this.searchNode.isVisible = true;
+    setTimeout(() => {
+      const dom = $('#searchTree');
+      if (!dom.hasClass('ant-select-focused')) {
+        if (event.target.id === 'search-container') {
+          this.ref.detectChanges();
+          dom.addClass('ant-select-focused');
+        } else {
+          $('#workflowHeader').removeClass('hide-on-focus');
+        }
       }
-    }
+    }, 10);
   }
 
   changeAgentSelection($event) {
@@ -3397,6 +3402,8 @@ export class WorkflowComponent {
             self.workflowService.init(!(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || !self.preferences.theme) ? 'dark' : 'light', editor.graph);
             const outln = document.getElementById('outlineContainer');
             outln.innerHTML = '';
+            mxOutline.prototype.minScale = 0.001;
+            mxOutline.prototype.enabled = true;
             new mxOutline(self.editor.graph, outln);
             cb();
           }
@@ -3537,7 +3544,7 @@ export class WorkflowComponent {
     this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomActual();
-      this.center();
+      this.workflowService.center(this.editor.graph);
     }
   }
 
@@ -3545,7 +3552,7 @@ export class WorkflowComponent {
     this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.fit();
-      this.center();
+      this.workflowService.center(this.editor.graph);
     }
   }
 
@@ -3563,16 +3570,12 @@ export class WorkflowComponent {
   copyIndlArguments(index): void {
     let storedData = sessionStorage.getItem('$SOS$copiedIndlDeclaredArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedIndlDeclaredArgument')) : [];
     storedData = [JSON.stringify(this.variableDeclarations.parameters[index])];
-
     if (storedData.length > 20) {
       storedData.shift();
     }
-
     sessionStorage.setItem('$SOS$copiedIndlDeclaredArgument', JSON.stringify(storedData));
     this.coreService.showCopyMessage(this.message);
     this.fetchIndlClipboard();
-
-
   }
 
 
@@ -4117,6 +4120,7 @@ export class WorkflowComponent {
     if (this.editor) {
       setTimeout(() => {
         const dom = $('.graph-container');
+
         if (dom && dom.position()) {
           let _top = dom.position().top;
           if (_top > 40) {
@@ -4125,8 +4129,22 @@ export class WorkflowComponent {
           const top = (_top + $('#rightPanel').position().top);
           const ht = 'calc(100vh - ' + (top + 22) + 'px)';
           dom.css({height: ht, 'scroll-top': '0'});
-          $('#graph').animate({
-            height: ht,
+          const outln = $('#outlineContainer');
+          const graphEle = $('#graph');
+          if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
+            outln.css({
+              height: '112px',
+              top: 'calc(100vh - ' + (top + 89) + 'px',
+              width: dom.width() + 'px',
+              'scroll-left': '0'
+            });
+            graphEle.css({height: 'calc(100vh - ' + (top + 124) + 'px)'});
+          } else {
+            graphEle.css({width: 'calc(100% - 154px)'});
+            outln.css({height: ht, 'scroll-top': '0'});
+          }
+
+          graphEle.animate({
             scrollTop: 0
           }, 300);
         }
@@ -4991,22 +5009,6 @@ export class WorkflowComponent {
     });
   }
 
-  private center(): void {
-    const dom = document.getElementById('graph');
-    let x = 0.5;
-    let y = 0.2;
-    let flag = true;
-    if (dom && this.editor) {
-      if (dom.clientWidth !== dom.scrollWidth) {
-        x = 0;
-      }
-      if (dom.clientHeight !== dom.scrollHeight) {
-        y = 0;
-        flag = false;
-      }
-      this.editor.graph.center(true, flag, x, y);
-    }
-  }
 
   private reloadWorkflow(obj): void {
     this.closeMenu();
@@ -5279,7 +5281,7 @@ export class WorkflowComponent {
     } finally {
       // Updates the display
       graph.getModel().endUpdate();
-      WorkflowService.executeLayout(graph);
+      WorkflowService.executeLayout(graph, this.preferences);
       this.skipXMLToJSONConversion = true;
     }
 
@@ -5323,7 +5325,7 @@ export class WorkflowComponent {
     } finally {
       // Updates the display
       graph.getModel().endUpdate();
-      WorkflowService.executeLayout(graph);
+      WorkflowService.executeLayout(graph, this.preferences);
     }
   }
 
@@ -5358,23 +5360,32 @@ export class WorkflowComponent {
 
     $('.sidebar-open', panel).click(() => {
       self.propertyPanelWidth = localStorage['propertyPanelWidth'] ? parseInt(localStorage['propertyPanelWidth'], 10) : 460;
-      $('#outlineContainer').css({...transitionCSS, right: self.propertyPanelWidth + 10 + 'px'});
+      const outln = $('#outlineContainer');
+      outln.css({...transitionCSS, right: self.propertyPanelWidth + 10 + 'px'});
+
       $('.graph-container').css({...transitionCSS, 'margin-right': self.propertyPanelWidth + 'px'});
       $('.toolbar').css({...transitionCSS, 'margin-right': (self.propertyPanelWidth - 12) + 'px'});
       $('.sidebar-close').css({...transitionCSS, right: self.propertyPanelWidth + 'px'});
       $('#property-panel').css({...transitionCSS, width: self.propertyPanelWidth + 'px'}).show();
       $('.sidebar-open').css({...transitionCSS, right: '-20px'});
+      if (self.preferences.orientation == 'east' || self.preferences.orientation == 'west') {
+        outln.css({width: $('.graph-container').width() + 'px'});
+      }
       self.centered(true);
     });
 
     $('.sidebar-close', panel).click(() => {
       self.propertyPanelWidth = 0;
-      $('#outlineContainer').css({...transitionCSS, right: '10px'});
+      const outln = $('#outlineContainer');
+      outln.css({...transitionCSS, right: '10px'});
       $('.graph-container').css({...transitionCSS, 'margin-right': '0'});
       $('.toolbar').css({...transitionCSS, 'margin-right': '-12px'});
       $('.sidebar-open').css({...transitionCSS, right: '0'});
       $('#property-panel').css(transitionCSS).hide();
       $('.sidebar-close').css({...transitionCSS, right: '-20px'});
+      if (self.preferences.orientation == 'east' || self.preferences.orientation == 'west') {
+        outln.css({width: $('.graph-container').width() + 'px'});
+      }
       self.centered(true);
     });
 
@@ -5390,7 +5401,7 @@ export class WorkflowComponent {
     if (this.editor && this.editor.graph) {
       setTimeout(() => {
         if (flag) {
-          this.center();
+          this.workflowService.center(this.editor.graph);
         } else {
           this.actual();
         }
@@ -5816,8 +5827,8 @@ export class WorkflowComponent {
               if (json.instructions[x].instructions) {
                 json.instructions[x].instructions.push(obj);
               } else {
-                if(json.instructions[x].TYPE == 'If'){
-                  if(!json.instructions[x].then) {
+                if (json.instructions[x].TYPE == 'If') {
+                  if (!json.instructions[x].then) {
                     json.instructions[x].then = {
                       instructions: [obj]
                     }
@@ -7223,7 +7234,7 @@ export class WorkflowComponent {
             _graph.container.focus();
           }
           if (flag) {
-            WorkflowService.executeLayout(graph);
+            WorkflowService.executeLayout(graph, self.preferences);
           }
         };
 
@@ -7305,7 +7316,7 @@ export class WorkflowComponent {
           } finally {
             this.model.endUpdate();
           }
-          WorkflowService.executeLayout(graph);
+          WorkflowService.executeLayout(graph, self.preferences);
           return cells;
         };
 
@@ -7565,7 +7576,7 @@ export class WorkflowComponent {
         initGraph();
         self.centered();
 
-        WorkflowService.executeLayout(graph);
+        WorkflowService.executeLayout(graph, self.preferences);
 
         const mgr = new mxAutoSaveManager(graph);
         mgr.save = function () {
@@ -9956,7 +9967,7 @@ export class WorkflowComponent {
           }
           customizedChangeEvent();
         }
-        WorkflowService.executeLayout(graph);
+        WorkflowService.executeLayout(graph, self.preferences);
       }
       result = '';
     }
@@ -11069,7 +11080,7 @@ export class WorkflowComponent {
       if (scheduleObj && typeof scheduleObj === 'string') {
         try {
           scheduleObj = JSON.parse(scheduleObj);
-          if(typeof scheduleObj === 'string'){
+          if (typeof scheduleObj === 'string') {
             scheduleObj = parseString(scheduleObj);
           }
         } catch (e) {
@@ -11786,7 +11797,6 @@ export class WorkflowComponent {
       if (variableDeclarations.parameters && isEmpty(variableDeclarations.parameters)) {
         delete variableDeclarations.parameters;
       }
-
       if (!isEqual(JSON.stringify(this.orderPreparation), JSON.stringify(variableDeclarations)) || type == 'allowUndeclared') {
         this.orderPreparation = variableDeclarations;
         flag = true;

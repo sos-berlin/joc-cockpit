@@ -22,7 +22,6 @@ export class WorkflowService {
 
   constructor(public translate: TranslateService, public coreService: CoreService,
               private stringDatePipe: StringDatePipe) {
-    mxHierarchicalLayout.prototype.interRankCellSpacing = 45;
     mxTooltipHandler.prototype.delay = 0;
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']);
@@ -32,8 +31,11 @@ export class WorkflowService {
   /**
    * Reformat the layout
    */
-  static executeLayout(graph: any): void {
-    const layout = new mxHierarchicalLayout(graph);
+  static executeLayout(graph: any, prefrences): void {
+    mxHierarchicalLayout.prototype.interRankCellSpacing = prefrences.interRankCellSpacing;
+    mxHierarchicalLayout.prototype.intraCellSpacing = prefrences.intraCellSpacing;
+    mxHierarchicalLayout.prototype.interHierarchySpacing = prefrences.interHierarchySpacing;
+    const layout = new mxHierarchicalLayout(graph, prefrences.orientation);
     layout.execute(graph.getDefaultParent());
   }
 
@@ -170,8 +172,12 @@ export class WorkflowService {
     symbol.labelBackgroundColor = 'transparent';
     symbol.fontSize = '12';
     symbol.align = 'center';
-    symbol.verticalAlign = 'top';
-    symbol.verticalLabelPosition = 'bottom';
+    if (name.match('try') || name == 'job' || name.match('if') || name.match('cycle')) {
+      symbol.verticalAlign = 'top';
+      symbol.verticalLabelPosition = 'bottom';
+    } else {
+      symbol.fontSize = '70';
+    }
     if (graph) {
       graph.getStylesheet().putCellStyle(name, symbol);
     } else {
@@ -452,12 +458,13 @@ export class WorkflowService {
     graph.getStylesheet().putCellStyle('order', orderStyle);
 
     const style2 = graph.getStylesheet().getDefaultEdgeStyle();
-    style2[mxConstants.STYLE_ROUNDED] = true;
+    style2[mxConstants.STYLE_ROUNDED] = this.preferences.edgeRounded;
     style2.shape = 'connector';
     style2.fontSize = '10';
     style2.verticalAlign = 'center';
-    style2.edgeStyle = 'elbowEdgeStyle';
+    style2.edgeStyle = 'orthogonalEdgeStyle';
     style2.endArrow = 'classic';
+
     if (theme === 'dark') {
       style2.fontColor = '#ffffff';
       style2.strokeColor = '#ffffff';
@@ -840,11 +847,9 @@ export class WorkflowService {
         } else {
           connectInstruction(v1, start, '', '', defaultParent);
         }
-
         if (mapObj.cell && !isFound && wf && boardType !== 'AddOrder' && boardType !== 'PostNotices' && boardType !== 'ExpectNotices' && boardType !== 'ConsumeNotices') {
           connectInstruction(wf, mapObj.cell, '', '', defaultParent);
         }
-
         if (last.TYPE !== 'ImplicitEnd') {
           let end = vertexMap.get(last.uuid);
           if (self.isInstructionCollapsible(last.TYPE)) {
@@ -2812,6 +2817,29 @@ export class WorkflowService {
       delete job.executable['returnCodeMeaning'];
     }
     return job;
+  }
+
+  center(graph): void {
+    const dom = document.getElementById('graph');
+    let x = 0.5;
+    let y = 0.2;
+    if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
+      x = 0.2;
+      y = 0.5;
+    }
+    let flag = true;
+    if (graph) {
+      if (dom) {
+        if (dom.clientWidth !== dom.scrollWidth) {
+          x = 0;
+        }
+        if (dom.clientHeight !== dom.scrollHeight) {
+          y = 0;
+          flag = false;
+        }
+      }
+      graph.center(true, flag, x, y);
+    }
   }
 
 }

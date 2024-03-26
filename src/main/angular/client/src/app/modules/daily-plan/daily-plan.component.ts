@@ -132,6 +132,7 @@ export class CreatePlanModalComponent {
         });
       }
     }
+    obj.includeNonAutoPlannedOrders = this.object.includeNonAutoPlannedOrders;
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     if (this.dateRanges && this.dateRanges.length > 0) {
@@ -253,8 +254,10 @@ export class RemovePlanModalComponent {
         obj.orderIds.push(order.orderId);
       });
     }
-    obj.dailyPlanDateFrom = this.coreService.getStringDate(this.selectedDate);
-    obj.dailyPlanDateTo = this.coreService.getStringDate(this.selectedDate);
+    if (this.selectedDate) {
+      obj.dailyPlanDateFrom = this.coreService.getStringDate(this.selectedDate);
+      obj.dailyPlanDateTo = this.coreService.getStringDate(this.selectedDate);
+    }
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     this.coreService.post('daily_plan/orders/submit', obj).subscribe({
@@ -1326,7 +1329,6 @@ export class DailyPlanComponent {
       nzData: {
         schedulerId: this.schedulerIds.selected,
         orders: this.object.mapOfCheckedId,
-        selectedDate: this.selectedDate,
         isSubmit: true
       },
       nzFooter: null,
@@ -1409,7 +1411,7 @@ export class DailyPlanComponent {
   private cancelByDateRange(auditLog): void {
     this.isProcessing = true;
     let obj = {
-      controllerId: this.schedulerIds.selected,
+      controllerIds: [this.schedulerIds.selected],
       dailyPlanDateFrom: this.coreService.getStringDate(this.dateRanges[0]),
       dailyPlanDateTo: this.coreService.getStringDate(this.dateRanges[1]),
       auditLog
@@ -1439,11 +1441,13 @@ export class DailyPlanComponent {
   cancelCyclicOrder(orders, isMultiple): void {
     let orderIds = isMultiple ? orders : orders.orderId ? [orders.orderId] : orders.map((order) => order.orderId);
     const obj: any = {
-      controllerId: this.schedulerIds.selected,
-      orderIds,
-      dailyPlanDateFrom: this.coreService.getStringDate(this.selectedDate),
-      dailyPlanDateTo: this.coreService.getStringDate(this.selectedDate)
+      controllerIds: [this.schedulerIds.selected],
+      orderIds
     };
+    if (!orderIds || orderIds.length == 0) {
+      obj.dailyPlanDateFrom = this.coreService.getStringDate(this.selectedDate);
+      obj.dailyPlanDateTo = this.coreService.getStringDate(this.selectedDate);
+    }
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
@@ -1503,7 +1507,6 @@ export class DailyPlanComponent {
         schedulerId: this.schedulerIds.selected,
         orders: this.object.mapOfCheckedId,
         timeZone: this.preferences.zone,
-        selectedDate: this.selectedDate,
         dateRange: this.dateRanges
       },
       nzFooter: null,
@@ -2517,7 +2520,7 @@ export class DailyPlanComponent {
               this.load(null);
             }
           }
-          if (!args.eventSnapshots[j].message || (args.eventSnapshots[j].message === this.coreService.getStringDate(this.selectedDate))) {
+          if ((!args.eventSnapshots[j].message || (args.eventSnapshots[j].message === this.coreService.getStringDate(this.selectedDate))) || this.isSearchHit) {
             flag = false;
             this.refreshView();
           }
@@ -2532,7 +2535,11 @@ export class DailyPlanComponent {
   private refreshView(): void {
     if (!this.isVisible && this.object.mapOfCheckedId.size === 0) {
       this.resetAction();
-      this.loadOrderPlan();
+      if (this.isSearchHit) {
+        this.search();
+      } else {
+        this.loadOrderPlan();
+      }
     } else {
       setTimeout(() => {
         this.refreshView();
