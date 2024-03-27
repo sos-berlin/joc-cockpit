@@ -86,11 +86,23 @@
             <a class="m-l-sm text-primary-hover" (click)="collapseAllTree();">
               <i class="fa fa-angle-double-up fa-lg"></i>
             </a>
+            <a (click)="objectTreeSearch()" class="tree-search tree-search1">
+              <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
+            </a>
+            <input (blur)="clearSearchInput()" (ngModelChange)="searchNodes($event)"
+                   [(ngModel)]="searchNode.text"
+                   [placeholder]="'workflow.placeholder.findNode' | translate"
+                   class="input-tree-search"
+                   id="workflowTreeSearch"
+                   nz-input
+            />
+
+            <i [nzType]="searchNode.loading ? 'loading' : 'search'" class="graphical-tree-search-icon" nz-icon nzTheme="outline"></i>
           </div>
           <div class="fade-in">
             <nz-tree
               [nzShowExpand]="true"
-              [nzData]="nodes"
+              [nzData]="filteredNodes"
               [nzTreeTemplate]="nzTreeTemplate"
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>

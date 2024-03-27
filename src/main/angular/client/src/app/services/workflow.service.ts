@@ -1111,7 +1111,7 @@ export class WorkflowService {
           } else if (json.instructions[x].TYPE === 'If') {
             _node.setAttribute('displayLabel', 'if');
             _node.setAttribute('predicate', json.instructions[x].predicate);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('if', colorCode, self.theme) : 'if');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('if', colorCode, self.theme) : 'if');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1128,7 +1128,7 @@ export class WorkflowService {
             _node.setAttribute('displayLabel', 'retry');
             _node.setAttribute('maxTries', json.instructions[x].maxTries || (json.instructions[x].maxTries == 0 ? 0 : ''));
             _node.setAttribute('retryDelays', json.instructions[x].retryDelays ? json.instructions[x].retryDelays.toString() : '');
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1205,7 +1205,7 @@ export class WorkflowService {
             if (json.instructions[x].onlyOnePeriod !== undefined) {
               _node.setAttribute('onlyOnePeriod', json.instructions[x].onlyOnePeriod);
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('cycle', colorCode, self.theme) : 'cycle');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('cycle', colorCode, self.theme) : 'cycle');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1218,7 +1218,7 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Try') {
             _node.setAttribute('displayLabel', 'try');
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('try', colorCode, self.theme) : 'try');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('try', colorCode, self.theme) : 'try');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1480,7 +1480,7 @@ export class WorkflowService {
       if (target.id) {
         _node.setAttribute('targetId', target.id);
       }
-      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('if', colorCode, self.theme) : 'if');
+      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('if', colorCode, self.theme) : 'if');
       mapObj.nodeMap.set(target.id.toString(), v1.id.toString());
       let flag = true;
       if (branches.then && branches.then.instructions) {
@@ -1529,9 +1529,9 @@ export class WorkflowService {
       } else if (type === 'Options') {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeOptions', colorCode, self.theme) : 'closeOptions');
       } else if (type === 'Retry') {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
       } else if (type === 'ConsumeNotices') {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToSymbol('closeConsumeNotices', colorCode, self.theme) : 'closeConsumeNotices');
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToSymbol('closeConsumeNotices', colorCode, self.theme) : 'closeConsumeNotices');
       }
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
@@ -1608,7 +1608,7 @@ export class WorkflowService {
       if (targetId) {
         _node.setAttribute('targetId', targetId);
       }
-      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('try', colorCode, self.theme) : 'try');
+      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('try', colorCode, self.theme) : 'try');
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
       connectInstruction(x, v1, 'endTry', 'endTry', parent);

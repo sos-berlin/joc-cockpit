@@ -10,7 +10,7 @@ import {ActivatedRoute} from '@angular/router';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {isArray, sortBy} from 'underscore';
-import {Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {WorkflowService} from '../../../services/workflow.service';
@@ -153,7 +153,7 @@ export class DependentWorkflowComponent {
     if (this.permission && this.permission.currentController && !this.permission.currentController.orders.view) {
       return;
     }
-    if (!workflow.path) {
+    if(!workflow.path){
       return;
     }
     const obj: any = {
@@ -242,6 +242,12 @@ export class WorkflowGraphicalComponent {
   countArr = [];
   sideBar: any = {};
   isProcessing = false;
+  filteredNodes: any[] = [];
+  searchNode = {
+    loading: false,
+    token: '',
+    text: ''
+  }
 
   workflowArr = [];
 
@@ -596,17 +602,19 @@ export class WorkflowGraphicalComponent {
     mxGraph.prototype.allowDanglingEdges = false;
     mxGraph.prototype.cellsLocked = true;
     mxGraph.prototype.foldingEnabled = true;
-    mxConstants.VERTEX_SELECTION_COLOR = null;
+    mxConstants.VERTEX_SELECTION_DASHED = false;
+    mxConstants.VERTEX_SELECTION_COLOR = '#0099ff';
+    mxConstants.VERTEX_SELECTION_STROKEWIDTH = 2;
+    mxConstants.CURSOR_MOVABLE_VERTEX = 'pointer';
 
     // Enables snapping waypoints to terminals
     mxEdgeHandler.prototype.snapToTerminals = true;
 
-    mxConstants.CURSOR_MOVABLE_VERTEX = 'pointer';
     graph.setConnectable(false);
     graph.setHtmlLabels(true);
     graph.setTooltips(true);
     graph.setDisconnectOnMove(false);
-    graph.setCellsSelectable(false);
+    //graph.setCellsSelectable(true);
     graph.collapseToPreferredSize = false;
     graph.constrainChildren = false;
     graph.extendParentsOnAdd = false;
@@ -1466,6 +1474,7 @@ export class WorkflowGraphicalComponent {
 
     recursive(this.workFlowJson, nodes);
     this.nodes = nodes.children;
+    this.filteredNodes = this.nodes
   }
 
   expandAllTree(): void {
@@ -1494,14 +1503,19 @@ export class WorkflowGraphicalComponent {
         if (model.cells[prop].getAttribute('uuid') === uuid) {
           const cell = model.cells[prop];
           let state = this.graph.view.getState(cell);
-          $('#graph').animate({
-            scrollLeft: ((100) + (state.x - (state.width / 2))),
-            scrollTop: ((state.y - (state.height / 2)))
+          const dom = $('#graph');
+          dom.animate({
+            scrollLeft: ((state.x + (state.width / 2))) - (dom.width() /2),
+            scrollTop: ((state.y + (state.height / 2)) - (dom.height() /2))
           }, 200);
+          this.graph.clearSelection();
+          this.graph.setSelectionCell(cell);
           break;
         }
       }
     }
+    this.filteredNodes = this.nodes
+    this.searchNode.text = '';
   }
 
   private updateWorkflow(isRemove = false): void {
@@ -1761,5 +1775,32 @@ export class WorkflowGraphicalComponent {
       }, time);
     }
   }
+
+  searchNodes(keyword: string): void {
+    if (!keyword.trim()) {
+      this.filteredNodes = this.nodes;
+      return;
+    }
+    this.filteredNodes = this.nodes.filter(node =>
+      (node.title || '').toLowerCase().includes(keyword.toLowerCase())
+    );
+  }
+
+  objectTreeSearch() {
+    $('#workflowTreeSearch').focus();
+    $('.editor-tree  a').addClass('hide-on-focus');
+    $('.tree-search').addClass('hide-on-focus');
+    }
+
+  clearSearchInput(): void {
+
+    this.searchNode.text = '';
+    $('.editor-tree  a').removeClass('hide-on-focus');
+    $('.tree-search').removeClass('hide-on-focus');
+    setTimeout(() =>{
+      this.filteredNodes = this.nodes
+    },100)
+  }
+
 }
 
