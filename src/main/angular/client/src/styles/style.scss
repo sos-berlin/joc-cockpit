@@ -6506,12 +6506,6 @@ body tr.mxPopupMenuItemHover {
   }
 }
 
-.left-property-panel {
-  top: 49%;
-  right: auto;
-  left: 0;
-}
-
 .tab-ht {
   min-height: 70px !important;
 }
@@ -6578,16 +6572,26 @@ body tr.mxPopupMenuItemHover {
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
 }
 
-.left-property-panel  {
+.left-property-panel {
+  top: 0;
+  right: auto;
+  left: -20px;
+  height: 100%;
+  min-height: 230px;
+  position: absolute;
   .sidebar {
-    height: calc(100vh - 292px);
-    top: 292px;
+    position: absolute;
+    height: 100%;
+    top: 0;
     left: 0 !important;
     right: auto !important;
     padding-left: 20px;
     padding-top: 12px;
     display: none;
     overflow: hidden;
+  }
+  .sidebar-open, .sidebar-close{
+    top: 140px;
   }
 }
 
@@ -8808,7 +8812,7 @@ td .p-a-b-b-0 {
 }
 
 .max-ht-n-252 {
-  height: calc(100vh - 252px);
+  height: calc(100vh - 266px);
 }
 
 .max-ht-n-476 {
@@ -9292,7 +9296,7 @@ cdk-virtual-scroll-viewport {
   margin-top: -4px;
 }
 
-#objectTreeSearch, #objectTagSearch, #dailyTagSearch {
+#objectTreeSearch, #objectTagSearch, #dailyTagSearch, #workflowTreeSearch {
   width: 10px;
   transition: all .5s ease-in-out;
   position: absolute;
@@ -9332,6 +9336,9 @@ cdk-virtual-scroll-viewport {
   }
 }
 
+#workflowTreeSearch{
+  background: var(--bg-box);
+}
 .tree-search-icon {
   display: none;
   position: absolute;
@@ -9339,6 +9346,16 @@ cdk-virtual-scroll-viewport {
   font-size: 18px;
   color: var(--text-muted);
   background: var(--background-color);
+  z-index: 999;
+}
+
+.graphical-tree-search-icon {
+  display: none;
+  position: absolute;
+  right: 32px;
+  font-size: 18px;
+  color: var(--text-muted);
+  background: var(--bg-box);
   z-index: 999;
 }
 
@@ -9351,6 +9368,10 @@ cdk-virtual-scroll-viewport {
 }
 
 .input-tree-search:focus ~ .tree-search-icon {
+  display: inline-block;
+}
+
+.input-tree-search:focus ~ .graphical-tree-search-icon {
   display: inline-block;
 }
 

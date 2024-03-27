@@ -7,6 +7,9 @@
   left: auto;
   top: auto !important;
   width: 320px !important;
+  position: absolute !important;
+  height: 100%;
+  overflow: auto;
 }
 
 #rightPanel {

@@ -3238,15 +3238,12 @@ export class WorkflowComponent {
         for (const prop in model.cells) {
           if (model.cells[prop].getAttribute('uuid') === value) {
             const cell = model.cells[prop];
-            const bounds = this.editor.graph.getGraphBounds();
             let state = this.editor.graph.view.getState(cell);
-
-            $('#graph').animate({
-              scrollLeft: ((100) + (state.x - (state.width / 2))),
-              scrollTop: ((state.y - (state.height / 2)))
+            const dom = $('#graph');
+            dom.animate({
+              scrollLeft: ((state.x - (state.width / 2))) - (dom.width() /2),
+              scrollTop: ((state.y - (state.height / 2)) - (dom.height() /2))
             }, 200);
-            // this.editor.graph.view.setTranslate(((this.editor.graph.container.clientWidth / 2) - (state.width / 2) - (state.x - bounds.x)),
-            //   (bounds.y - (state.y - ((this.editor.graph.container.clientHeight / 2) - (state.height / 2)))));
             graph.clearSelection();
             graph.setSelectionCell(cell);
             this.initEditorConf(this.editor, false, false, true);
@@ -7492,13 +7489,13 @@ export class WorkflowComponent {
                       cells[0].value.tagName === 'Options' || cells[0].value.tagName === 'ConsumeNotices') {
                       v1 = createEndVertex(parent, cells[0].value.tagName);
                     } else if (cells[0].value.tagName === 'If') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 72, 72, 'if');
                     } else if (cells[0].value.tagName === 'Retry') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 72, 72, 'retry');
                     } else if (cells[0].value.tagName === 'Cycle') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 75, 75, 'cycle');
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 72, 72, 'cycle');
                     } else {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 72, 72, 'try');
                       v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
                       graph.insertEdge(parent, null, getConnectionNode('try'), cells[0], v2);
                       graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
@@ -7928,7 +7925,7 @@ export class WorkflowComponent {
       if (name === 'If') {
         label1 = 'then';
         label2 = 'endIf';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', parentCell.id), 0, 0, 75, 75, 'if');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', parentCell.id), 0, 0, 72, 72, 'if');
       } else if (name === 'Fork') {
         label1 = 'branch';
         label2 = 'join';
@@ -7936,7 +7933,7 @@ export class WorkflowComponent {
       } else if (name === 'Retry') {
         label1 = 'retry';
         label2 = 'endRetry';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', parentCell.id), 0, 0, 75, 75, 'retry');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', parentCell.id), 0, 0, 72, 72, 'retry');
       } else if (name === 'Lock') {
         label1 = 'lock';
         label2 = 'endLock';
@@ -7956,7 +7953,7 @@ export class WorkflowComponent {
       } else if (name === 'Cycle') {
         label1 = 'cycle';
         label2 = 'endCycle';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', parentCell.id), 0, 0, 75, 75, 'cycle');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', parentCell.id), 0, 0, 72, 72, 'cycle');
       } else if (name === 'ForkList') {
         label1 = 'forkList';
         label2 = 'endForkList';
@@ -8026,7 +8023,7 @@ export class WorkflowComponent {
       let _sour, _tar;
       if (cellName === 'Try') {
         let v2, v3, _middle;
-        v2 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', parentCell.id), 0, 0, 75, 75, 'try');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', parentCell.id), 0, 0, 72, 72, 'try');
         v3 = graph.insertVertex(parent, null, getCellNode('Catch', 'catch', parentCell.id), 0, 0, 100, 40, 'dashRectangle');
         if (cell) {
           if (cell.edges) {
@@ -9800,19 +9797,19 @@ export class WorkflowComponent {
           _node.setAttribute('displayLabel', 'if');
           _node.setAttribute('predicate', '$returnCode > 0');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'if');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'if');
         } else if (title.match('retry')) {
           _node = doc.createElement('Retry');
           _node.setAttribute('displayLabel', 'retry');
           _node.setAttribute('maxTries', '10');
           _node.setAttribute('retryDelays', '60');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'retry');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'retry');
         } else if (title.match('cycle')) {
           _node = doc.createElement('Cycle');
           _node.setAttribute('displayLabel', 'cycle');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'cycle');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'cycle');
         } else if (title.match('lock')) {
           _node = doc.createElement('Lock');
           _node.setAttribute('displayLabel', 'lock');
@@ -9837,7 +9834,7 @@ export class WorkflowComponent {
           _node = doc.createElement('Try');
           _node.setAttribute('displayLabel', 'try');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'try');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'try');
         } else if (title.match('await')) {
           _node = doc.createElement('ExpectNotices');
           _node.setAttribute('displayLabel', 'expectNotices');
@@ -9892,16 +9889,16 @@ export class WorkflowComponent {
             if (clickedCell.value.tagName === 'Fork') {
               v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, 'join');
             } else if (clickedCell.value.tagName === 'If') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 72, 72, 'if');
             } else if (clickedCell.value.tagName === 'Retry') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 72, 72, 'retry');
             } else if (clickedCell.value.tagName === 'ForkList' || clickedCell.value.tagName === 'Lock' || clickedCell.value.tagName === 'StickySubagent' ||
               clickedCell.value.tagName === 'Options' || clickedCell.value.tagName === 'ConsumeNotices') {
               v1 = createEndVertex(parent, clickedCell.value.tagName);
             } else if (clickedCell.value.tagName === 'Cycle') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 75, 75, 'cycle');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 72, 72, 'cycle');
             } else {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 72, 72, 'try');
               v2 = graph.insertVertex(clickedCell, null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
               graph.insertEdge(parent, null, getConnectionNode('try'), clickedCell, v2);
               graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
@@ -10166,21 +10163,21 @@ export class WorkflowComponent {
           v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 68, 68, 'join');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'If') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', cell.id), 0, 0, 75, 75, 'if');
+          v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', cell.id), 0, 0, 72, 72, 'if');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Retry') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, 75, 75, 'retry');
+          v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, 72, 72, 'retry');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'ForkList' || cell.value.tagName === 'Lock' || cell.value.tagName === 'StickySubagent' ||
           cell.value.tagName === 'Options' || cell.value.tagName === 'ConsumeNotices') {
           v1 = createEndVertex(parent, cell.value.tagName, cell.id);
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Cycle') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', cell.id), 0, 0, 75, 75, 'cycle');
+          v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', cell.id), 0, 0, 72, 72, 'cycle');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Try') {
           v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'catch', cell.id), 0, 0, 100, 40, 'dashRectangle');
-          v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', cell.id), 0, 0, 75, 75, 'try');
+          v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', cell.id), 0, 0, 72, 72, 'try');
           graph.insertEdge(parent, null, getConnectionNode('try'), cell, v2);
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
           graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
