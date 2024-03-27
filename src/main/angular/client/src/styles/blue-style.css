@@ -1243,3 +1243,14 @@ div.jsoneditor-value.jsoneditor-invalid {
 .progress-bar-value {
   background-color: rgb(255, 140, 0);
 }
+
+.card {
+  background-color: var(--background-color);
+}
+
+.tableCollapse{
+  background-color: var(--background-color)
+}
+#bar-chart {
+  background-color: var(--background-color)
+}
