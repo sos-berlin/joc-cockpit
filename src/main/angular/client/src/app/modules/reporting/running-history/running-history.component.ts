@@ -75,7 +75,6 @@ export class RunningHistoryComponent {
 
 
   private getData(): void {
-    console.log(this.filters);
     let obj: any = {compact: true};
     if (this.filters.filter.state !== 'ALL') {
       obj.states = [this.filters.filter.state];

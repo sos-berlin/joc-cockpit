@@ -35,7 +35,6 @@ export class WorkflowService {
     mxHierarchicalLayout.prototype.interRankCellSpacing = prefrences.interRankCellSpacing;
     mxHierarchicalLayout.prototype.intraCellSpacing = prefrences.intraCellSpacing;
     mxHierarchicalLayout.prototype.interHierarchySpacing = prefrences.interHierarchySpacing;
-
     const layout = new mxHierarchicalLayout(graph, prefrences.orientation);
     layout.execute(graph.getDefaultParent());
   }
@@ -173,8 +172,12 @@ export class WorkflowService {
     symbol.labelBackgroundColor = 'transparent';
     symbol.fontSize = '12';
     symbol.align = 'center';
-    symbol.verticalAlign = 'top';
-    symbol.verticalLabelPosition = 'bottom';
+    if (name.match('try') || name == 'job' || name.match('if') || name.match('cycle')) {
+      symbol.verticalAlign = 'top';
+      symbol.verticalLabelPosition = 'bottom';
+    } else {
+      symbol.fontSize = '70';
+    }
     if (graph) {
       graph.getStylesheet().putCellStyle(name, symbol);
     } else {
@@ -249,6 +252,7 @@ export class WorkflowService {
       }
     }
   }
+
 
   getStyleOfSymbol(name: string, image: string): any {
     let svg;
@@ -401,6 +405,7 @@ export class WorkflowService {
     style[mxConstants.STYLE_SHAPE] = 'rectangle';
     style.fontSize = '12';
     graph.getStylesheet().putDefaultVertexStyle(style);
+
 
     const expectStyle: any = {};
     expectStyle.shape = 'offPageConnector';
@@ -844,11 +849,9 @@ export class WorkflowService {
         } else {
           connectInstruction(v1, start, '', '', defaultParent);
         }
-
         if (mapObj.cell && !isFound && wf && boardType !== 'AddOrder' && boardType !== 'PostNotices' && boardType !== 'ExpectNotices' && boardType !== 'ConsumeNotices') {
           connectInstruction(wf, mapObj.cell, '', '', defaultParent);
         }
-
         if (last.TYPE !== 'ImplicitEnd') {
           let end = vertexMap.get(last.uuid);
           if (self.isInstructionCollapsible(last.TYPE)) {

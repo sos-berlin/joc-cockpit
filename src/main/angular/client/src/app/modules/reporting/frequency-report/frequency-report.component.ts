@@ -15,17 +15,17 @@ import {AuthService} from "../../../components/guard";
   styleUrls: ['./frequency-report.component.scss']
 })
 export class FrequencyReportComponent {
-  @Input({required: true}) report: any;
+  @Input({required: true}) readonly report: any;
   @Input({required: true}) templates: any;
   schedulerIds: any = {};
   preferences: any = {};
   isLoading: boolean;
   loading: boolean;
+  isPathDisplay = true;
   dateFormat: string;
   clickData: any;
   filter: any = {};
   barChart: any;
-
   dataset: any = [];
   selectedTemplates: string[] = [];
   dateFrom: any[] = [];
@@ -43,6 +43,7 @@ export class FrequencyReportComponent {
     {name: 'THREE_YEARS'}
   ];
   filteredFrequency: string;
+  template: string;
 
   /** Reporting */
   @ViewChild('content') content: ElementRef;
@@ -56,6 +57,7 @@ export class FrequencyReportComponent {
   ngOnInit(): void {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     if (isArray(this.report)) {
       this.selectedTemplates = this.report.map(item => item.templateName);
@@ -64,6 +66,8 @@ export class FrequencyReportComponent {
     } else {
       this.selectedTemplates = [this.report.templateName];
     }
+
+    this.template = this.templates.find(template => template.templateName === this.report.templateName).title;
     this.loadData();
   }
 
@@ -78,8 +82,10 @@ export class FrequencyReportComponent {
         this.multiReports = res.reports
         this.filterData = res.reports
         this.addCardItems = [...this.multiReports];
+        this.addCardItems.forEach((report) => {
+          report.name = report.path.substring(report.path.lastIndexOf('/') + 1);
+        });
         if (res.reports.length > 0) {
-          this.report.data = res.reports[0].data;
           setTimeout(() => {
             this.generateDonutCharts()
             this.multiReports.forEach(item => {
@@ -200,7 +206,21 @@ export class FrequencyReportComponent {
     const hours = Math.floor((durationInSeconds % (60 * 60 * 24)) / (60 * 60));
     const minutes = Math.floor((durationInSeconds % (60 * 60)) / 60);
     const seconds = durationInSeconds % 60;
-
+    if (days == 0 && hours == 0 && minutes == 0 && seconds == 0) {
+      return `< 1 sec`;
+    } else if (days == 0 && hours == 0 && minutes == 0) {
+      return `${seconds}s`;
+    } else if (days == 0 && hours == 0) {
+      if (seconds == 0) {
+        return `${minutes}m`;
+      }
+      return `${minutes}m ${seconds}s`;
+    } else if (days == 0) {
+      if (seconds == 0) {
+        return `${hours}h ${minutes}m`;
+      }
+      return `${hours}h ${minutes}m ${seconds}s`;
+    }
     return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   }
 

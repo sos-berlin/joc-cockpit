@@ -813,7 +813,7 @@ export class SingleHistoryComponent {
     this.auditLogId = this.route.snapshot.queryParamMap.get('auditLogId');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
     if (this.router.url.match('/history/order?')) {
-      this.isOrderExist();
+      //this.isOrderExist();
     }
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']);

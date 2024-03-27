@@ -6580,12 +6580,14 @@ body tr.mxPopupMenuItemHover {
 
 .left-property-panel  {
   .sidebar {
+    height: calc(100vh - 292px);
     top: 292px;
     left: 0 !important;
     right: auto !important;
     padding-left: 20px;
     padding-top: 12px;
     display: none;
+    overflow: hidden;
   }
 }
 

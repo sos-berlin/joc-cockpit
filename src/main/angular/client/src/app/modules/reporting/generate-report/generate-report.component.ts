@@ -47,12 +47,12 @@ export class GenerateReportComponent {
     });
     this.subscription3 = sharingDataService.filterAnnounced$.subscribe((res: any) => {
       if (res.templateName) {
-        this.templateName.push(res.templateName);
+        this.templateName = [res.templateName];
         this.getData()
-      }else if (res.state) {
+      } else if (res.state) {
         this.getDateRange(res.state)
         this.getData()
-      }else if (res.allTemplate) {
+      } else if (res.allTemplate) {
         this.templateName = [];
         this.getData()
       }
@@ -82,16 +82,20 @@ export class GenerateReportComponent {
   }
 
 
-
   private getData(): void {
-    this.coreService.post('reporting/reports/generated', {compact: true, templateNames: this.templateName, dateFrom: this.fromDate, dateTo: this.toDate}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+    this.coreService.post('reporting/reports/generated', {
+      compact: true,
+      templateNames: this.templateName,
+      dateFrom: this.fromDate,
+      dateTo: this.toDate
+    }).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoaded = true;
         this.reports = res.reports;
         this.reports.forEach((report) => {
           const template = this.templates.find(template => template.templateName == report.templateName);
           if (template) report.template = template.title;
-          if(report.template?.includes('${hits}')){
+          if (report.template?.includes('${hits}')) {
             report.template = report.template.replace('${hits}', report.hits || 10)
           }
         })
@@ -127,8 +131,7 @@ export class GenerateReportComponent {
     this.isVisible = false;
   }
 
-   getDateRange(timePeriod): any {
-    console.log("time",timePeriod)
+  getDateRange(timePeriod): any {
     const currentDate = new Date();
     let fromDate, toDate;
 
@@ -158,16 +161,14 @@ export class GenerateReportComponent {
         toDate = null;
         break;
     }
-    if(fromDate != undefined && toDate != undefined) {
-        this.fromDate = fromDate.toISOString().split('T')[0],
-        this.toDate = toDate.toISOString().split('T')[0]
-    }else{
+    if (fromDate != undefined && toDate != undefined) {
+      this.fromDate = fromDate.toISOString().split('T')[0];
+      this.toDate = toDate.toISOString().split('T')[0]
+    } else {
       this.fromDate = fromDate;
       this.toDate = toDate;
     }
-
   }
-
 }
 
 

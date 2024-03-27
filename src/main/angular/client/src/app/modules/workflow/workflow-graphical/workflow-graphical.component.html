@@ -72,12 +72,13 @@
       <!-- BEGIN SLIDER -->
       <div  class="property-panel left-property-panel hidden-sm">
         <div class="sidebar-open">
-          <i class="fa fa-caret-right"></i>
-        </div>
-        <div class="sidebar-close">
           <i class="fa fa-caret-left"></i>
         </div>
+        <div class="sidebar-close">
+          <i class="fa fa-caret-right"></i>
+        </div>
         <div class="sidebar sidebar-property-panel bg-white" id="left-property-panel">
+          <perfect-scrollbar class="tree-block">
           <div class="m-l-xxs m-b-xs">
             <a class="text-primary-hover" (click)="expandAllTree();">
               <i class="fa fa-angle-double-down fa-lg"></i>
@@ -101,6 +102,7 @@
               </div>
             </ng-template>
           </div>
+          </perfect-scrollbar>
         </div>
       </div>
       <nz-dropdown-menu #menu="nzDropdownMenu">

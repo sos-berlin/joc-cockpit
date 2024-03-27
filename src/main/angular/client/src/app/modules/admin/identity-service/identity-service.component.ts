@@ -357,7 +357,7 @@ export class SettingModalComponent {
     if (isChecked) {
       obj.iamKeycloakVersionCompatibility = 16;
     } else {
-      delete obj['iamKeycloakVersionCompatibility'];
+      obj.iamKeycloakVersionCompatibility = '';
     }
   }
 

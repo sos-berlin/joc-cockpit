@@ -113,6 +113,6 @@
 <nz-drawer (nzOnClose)="closePanel()" [nzWidth]="'100% !important'" [nzVisible]="isVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
     <div (click)="closePanel()" class="close-btn z-index-9999 m-l-xxs"></div>
-    <app-frequency-report *ngIf="isVisible"  [templates]="reports" [report]="selectedReport"></app-frequency-report>
+    <app-frequency-report *ngIf="isVisible"  [templates]="templates" [report]="selectedReport"></app-frequency-report>
   </ng-container>
 </nz-drawer>

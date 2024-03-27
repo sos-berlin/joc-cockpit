@@ -2888,7 +2888,8 @@ export class WorkflowComponent {
   @ViewChild('codeMirror', {static: false}) cm;
 
   searchNode = {
-    text: ''
+    text: '',
+    isVisible: false
   }
   jobResourcesTree = [];
   documentationTree = [];
@@ -3249,7 +3250,7 @@ export class WorkflowComponent {
             graph.clearSelection();
             graph.setSelectionCell(cell);
             this.initEditorConf(this.editor, false, false, true);
-            this.searchNode = {text: ''};
+            this.searchNode = {text: '', isVisible: false};
             $('#searchTree input').blur();
             $('#workflowHeader').removeClass('hide-on-focus')
             break;
@@ -3261,14 +3262,18 @@ export class WorkflowComponent {
 
   @HostListener('window:click', ['$event'])
   onClick(event): void {
-    const dom = $('#searchTree');
-    if (!dom.hasClass('ant-select-focused')) {
-      if (event.target.id === 'search-container') {
-        dom.addClass('ant-select-focused');
-      } else {
-        $('#workflowHeader').removeClass('hide-on-focus');
+    this.searchNode.isVisible = true;
+    setTimeout(() => {
+      const dom = $('#searchTree');
+      if (!dom.hasClass('ant-select-focused')) {
+        if (event.target.id === 'search-container') {
+          this.ref.detectChanges();
+          dom.addClass('ant-select-focused');
+        } else {
+          $('#workflowHeader').removeClass('hide-on-focus');
+        }
       }
-    }
+    }, 10);
   }
 
   changeAgentSelection($event) {
@@ -3565,16 +3570,12 @@ export class WorkflowComponent {
   copyIndlArguments(index): void {
     let storedData = sessionStorage.getItem('$SOS$copiedIndlDeclaredArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedIndlDeclaredArgument')) : [];
     storedData = [JSON.stringify(this.variableDeclarations.parameters[index])];
-
     if (storedData.length > 20) {
       storedData.shift();
     }
-
     sessionStorage.setItem('$SOS$copiedIndlDeclaredArgument', JSON.stringify(storedData));
     this.coreService.showCopyMessage(this.message);
     this.fetchIndlClipboard();
-
-
   }
 
 
@@ -4119,6 +4120,7 @@ export class WorkflowComponent {
     if (this.editor) {
       setTimeout(() => {
         const dom = $('.graph-container');
+
         if (dom && dom.position()) {
           let _top = dom.position().top;
           if (_top > 40) {
@@ -4128,18 +4130,21 @@ export class WorkflowComponent {
           const ht = 'calc(100vh - ' + (top + 22) + 'px)';
           dom.css({height: ht, 'scroll-top': '0'});
           const outln = $('#outlineContainer');
+          const graphEle = $('#graph');
           if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
             outln.css({
               height: '112px',
-              top: 'calc(100vh - ' + (top + 96) + 'px',
+              top: 'calc(100vh - ' + (top + 89) + 'px',
               width: dom.width() + 'px',
               'scroll-left': '0'
             });
+            graphEle.css({height: 'calc(100vh - ' + (top + 124) + 'px)'});
           } else {
+            graphEle.css({width: 'calc(100% - 154px)'});
             outln.css({height: ht, 'scroll-top': '0'});
           }
-          $('#graph').animate({
-            height: ht,
+
+          graphEle.animate({
             scrollTop: 0
           }, 300);
         }

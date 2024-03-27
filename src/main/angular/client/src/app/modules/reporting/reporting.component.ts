@@ -184,18 +184,16 @@ export class ReportingComponent {
   }
 
   filterBy(data?): void {
-    if(data?.templateName){
+    if (data?.templateName) {
       this.sharingDataService.announceFilter({templateName: data?.templateName});
       this.filteredTemplate = data?.title
-    }else if (data?.state){
+    } else if (data?.state) {
       this.filter.generateReport.filter.state = data?.state;
       this.sharingDataService.announceFilter({state: data});
-    }else{
+    } else {
       this.filteredTemplate = ''
       this.sharingDataService.announceFilter({allTemplate: data?.allTemplate});
-
     }
-
   }
 
   checkRunBtn(data): void {

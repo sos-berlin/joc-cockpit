@@ -153,7 +153,7 @@ export class DependentWorkflowComponent {
     if (this.permission && this.permission.currentController && !this.permission.currentController.orders.view) {
       return;
     }
-    if(!workflow.path){
+    if (!workflow.path) {
       return;
     }
     const obj: any = {
@@ -266,10 +266,12 @@ export class WorkflowGraphicalComponent {
     }
     if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
       const containerElement: HTMLElement = this.outlineContainer.nativeElement;
-      containerElement.style.width = (dom.width() - 12) + 'px';
+      containerElement.style.width = (dom.width() - 2) + 'px';
       containerElement.style.height = '112px';
       containerElement.style.top = 'auto';
       containerElement.style.bottom = '16px';
+    } else {
+      dom.css({width: 'calc(100% - 154px)'});
     }
     this.coreService.slimscrollFunc(dom, ht, this.graph);
 
@@ -288,6 +290,7 @@ export class WorkflowGraphicalComponent {
         const outln = $('#outlineContainer');
         outln.css({width: $('.graph-container').width() + 'px'});
       }
+      this.workflowService.center(this.graph);
     });
 
     $('.sidebar-close', panel).click(() => {
@@ -301,6 +304,7 @@ export class WorkflowGraphicalComponent {
         const outln = $('#outlineContainer');
         outln.css({width: $('.graph-container').width() + 'px'});
       }
+      this.workflowService.center(this.graph);
     });
 
     if (window.innerWidth > 1024 && this.workflowFilters.leftTreePanelSizeVisible) {
