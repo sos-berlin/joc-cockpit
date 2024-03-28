@@ -21,7 +21,7 @@
     <add as="If">
       <If displayLabel="if" predicate="$returnCode > 0">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="75" height="75"/>
+          <mxGeometry as="geometry" width="72" height="72"/>
         </mxCell>
       </If>
     </add>
@@ -56,21 +56,21 @@
     <add as="Cycle" >
       <Cycle displayLabel="cycle">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="75" height="75"/>
+          <mxGeometry as="geometry" width="72" height="72"/>
         </mxCell>
       </Cycle>
     </add>
     <add as="Retry">
       <Retry displayLabel="retry" maxTries="10" retryDelays="60">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="75" height="75"/>
+          <mxGeometry as="geometry" width="72" height="72"/>
         </mxCell>
       </Retry>
     </add>
     <add as="Try">
       <Try displayLabel="try">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="75" height="75"/>
+          <mxGeometry as="geometry" width="72" height="72"/>
         </mxCell>
       </Try>
     </add>
