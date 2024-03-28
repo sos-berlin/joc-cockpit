@@ -1465,6 +1465,8 @@ export class JobComponent {
     } else if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
       this.selectedNode.job.executable.internalType = 'JITL';
     }
+    this.selectedNode.job.documentationName = '';
+    this.selectedNode.job.documentationName1 = '';
     this.reloadScript();
     this.saveToHistory();
   }
@@ -3230,7 +3232,7 @@ export class WorkflowComponent {
     recursive(scr[0]);
   }
 
-  selectSearchNode(value) {
+  selectSearchNode(value, skip = false) {
     if (this.editor && this.editor.graph) {
       const graph = this.editor.graph;
       const model = graph.getModel();
@@ -3241,18 +3243,38 @@ export class WorkflowComponent {
             let state = this.editor.graph.view.getState(cell);
             const dom = $('#graph');
             dom.animate({
-              scrollLeft: ((state.x - (state.width / 2))) - (dom.width() /2),
-              scrollTop: ((state.y - (state.height / 2)) - (dom.height() /2))
+              scrollLeft: ((state.x - (state.width / 2))) - (dom.width() / 2),
+              scrollTop: ((state.y - (state.height / 2)) - (dom.height() / 2))
             }, 200);
             graph.clearSelection();
             graph.setSelectionCell(cell);
             this.initEditorConf(this.editor, false, false, true);
-            this.searchNode = {text: '', isVisible: false};
-            $('#searchTree input').blur();
-            $('#workflowHeader').removeClass('hide-on-focus')
+            if (!skip) {
+              this.searchNode = {text: '', isVisible: false};
+              $('#searchTree input').blur();
+              $('#workflowHeader').removeClass('hide-on-focus');
+            }
             break;
           }
         }
+      }
+    }
+  }
+
+  prev(): void {
+    this.navToNextCell(false);
+  }
+
+  next(): void {
+    this.navToNextCell(true);
+  }
+
+  private navToNextCell(flag): void {
+    let cells = this.editor.graph.getSelectionCells();
+    if (cells && cells.length > 0) {
+      const obj = this.getObject(this.workflow.configuration, cells[0].getAttribute('uuid'), flag);
+      if (obj && obj.uuid) {
+        this.selectSearchNode(obj.uuid, true);
       }
     }
   }
@@ -10833,40 +10855,71 @@ export class WorkflowComponent {
     }
   }
 
-  private getObject(mainJson, copyId): any {
+  private getObject(mainJson, copyId, checkNextCell?): any {
     const self = this;
     let obj: any = {};
 
-    function recursion(json): void {
+    function recursion(json, parent, index): void {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
           if (json.instructions[x].uuid == copyId) {
-            obj = self.coreService.clone(json.instructions[x]);
+            if (checkNextCell != undefined) {
+              if (checkNextCell) {
+                if (json.instructions[x].instructions || json.instructions[x].TYPE === 'If' || json.instructions[x].TYPE === 'Fork') {
+                  if (json.instructions[x].instructions) {
+                    obj = json.instructions[x].instructions[0];
+                  } else if (json.instructions[x].TYPE === 'If') {
+                    obj = json.instructions[x].then.instructions[0];
+                  } else if (json.instructions[x].TYPE === 'Fork') {
+                    obj = json.instructions[x].branches[0]?.instructions[0];
+                  }
+                }
+
+                if (!obj || !obj.TYPE) {
+                  obj = json.instructions[x + 1];
+                  if (!obj || !obj.TYPE) {
+                    obj = parent.instructions[index + 1];
+                  }
+
+                }
+
+              } else {
+                obj = json.instructions[x - 1];
+                if (!obj) {
+                  obj = json;
+                  if (!obj || !obj.TYPE) {
+                    obj = parent.instructions[index - 1];
+                  }
+                }
+              }
+            } else {
+              obj = self.coreService.clone(json.instructions[x]);
+            }
           }
           if (json.instructions[x].instructions) {
-            recursion(json.instructions[x]);
+            recursion(json.instructions[x], json, x);
           }
           if (json.instructions[x].catch) {
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-              recursion(json.instructions[x].catch);
+              recursion(json.instructions[x].catch, json, x);
             }
           }
           if (json.instructions[x].then) {
-            recursion(json.instructions[x].then);
+            recursion(json.instructions[x].then, json, x);
           }
           if (json.instructions[x].else) {
-            recursion(json.instructions[x].else);
+            recursion(json.instructions[x].else, json, x);
           }
           if (json.instructions[x].branches) {
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
-              recursion(json.instructions[x].branches[i]);
+              recursion(json.instructions[x].branches[i], json, x);
             }
           }
         }
       }
     }
 
-    recursion(mainJson);
+    recursion(mainJson, mainJson, 0);
     return obj;
   }
 

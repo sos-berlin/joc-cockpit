@@ -9638,6 +9638,7 @@ cdk-virtual-scroll-viewport {
   background: var(--background-color);
   border: 1px solid var(--border-color);
   width: 20%;
+  min-width: 332px;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -9647,4 +9648,11 @@ cdk-virtual-scroll-viewport {
   border-radius: 50%;
   width: auto;
   padding: 6px 10px;
+}
+
+.prev-next-icon{
+  bottom: 1px;
+  padding-top: 4px;
+  padding-bottom: 1px;
+  margin: 0;
 }
