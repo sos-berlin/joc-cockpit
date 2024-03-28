@@ -156,6 +156,10 @@
         </div>
         <div id="outlineContainer"></div>
         <div id="graph"></div>
+        <div class="card p-a pos-abt text-18 prev-next-icon" [hidden]="!editor?.graph || !editor?.graph.getSelectionCell()">
+          <a (click)="prev()" class="text-primary-hover"><span nz-icon nzType="left-circle" nzTheme="outline"></span></a>
+          <a (click)="next()" class="text-primary-hover m-l-12"><span nz-icon nzType="right-circle" nzTheme="outline"></span></a>
+        </div>
         <div class="dropContainer" id="dropContainer2">
           <div class="dropContainer" translate>workflow.message.dropHereToRemoveInstruction</div>
         </div>
