@@ -28,7 +28,7 @@
     <add as="AddOrder">
       <AddOrder displayLabel="addOrder">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="72" height="72"/>
         </mxCell>
       </AddOrder>
     </add>
@@ -42,7 +42,7 @@
     <add as="ForkList">
       <ForkList displayLabel="forkList">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="70" height="70"/>
         </mxCell>
       </ForkList>
     </add>
