@@ -1465,8 +1465,7 @@ export class JobComponent {
     } else if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
       this.selectedNode.job.executable.internalType = 'JITL';
     }
-    this.selectedNode.job.documentationName = '';
-    this.selectedNode.job.documentationName1 = '';
+
     this.reloadScript();
     this.saveToHistory();
   }
@@ -3269,12 +3268,41 @@ export class WorkflowComponent {
     this.navToNextCell(true);
   }
 
-  private navToNextCell(flag): void {
+  private navToNextCell(flag: boolean): void {
     let cells = this.editor.graph.getSelectionCells();
+    const self = this;
     if (cells && cells.length > 0) {
-      const obj = this.getObject(this.workflow.configuration, cells[0].getAttribute('uuid'), flag);
-      if (obj && obj.uuid) {
-        this.selectSearchNode(obj.uuid, true);
+      switchToNextCell(cells[0], 0);
+    }
+
+    function switchToNextCell(cell, index) {
+      let nextCell;
+      if (flag) {
+        const edges = self.editor.graph.getOutgoingEdges(cell);
+        nextCell = edges[index].target;
+      } else {
+        const edges = self.editor.graph.getIncomingEdges(cell);
+        nextCell = edges[index].source;
+      }
+
+      if (nextCell && nextCell.value?.tagName !== 'Process') {
+        if (self.workflowService.checkClosingCell(nextCell.value.tagName)) {
+          if (nextCell.value.tagName === 'Join' || nextCell.value.tagName === 'EndIf') {
+            const _edges = self.editor.graph.getIncomingEdges(nextCell);
+            for (let i = 0; i < _edges.length; i++) {
+              if (_edges[i].source.id == cell.id) {
+                if (i !== _edges.length - 1) {
+                  nextCell = _edges[i].source.parent;
+                  index = i + 1;
+                }
+                break;
+              }
+            }
+          }
+          switchToNextCell(nextCell, index);
+        } else {
+          self.selectSearchNode(nextCell.getAttribute('uuid'), true);
+        }
       }
     }
   }
@@ -4162,7 +4190,6 @@ export class WorkflowComponent {
             graphEle.css({width: 'calc(100% - 154px)'});
             outln.css({height: ht, 'scroll-top': '0'});
           }
-
           graphEle.animate({
             scrollTop: 0
           }, 300);
@@ -6474,9 +6501,11 @@ export class WorkflowComponent {
             img.style.height = (18 * state.shape.scale) + 'px';
             state.view.graph.container.appendChild(img);
             this.images.push(img);
+            highlightDescendantVertices(state.cell);
           }
         }
 
+        let highlight = null;
         mxIconSet.prototype.destroy = function () {
           if (this.images != null) {
             for (let i = 0; i < this.images.length; i++) {
@@ -6484,9 +6513,65 @@ export class WorkflowComponent {
               img.parentNode.removeChild(img);
             }
           }
-
+          highlight?.remove();
           this.images = null;
         };
+
+        function checkAllChilds(model, cell, obj) {
+          const childCount = model.getChildCount(cell);
+          for (let i = 0; i < childCount; i++) {
+            const childCell = model.getChildAt(cell, i);
+            if (model.isVertex(childCell)) {
+              const state = graph.view.getState(childCell);
+              if (state?.x) {
+                if (obj.minX == -1) {
+                  obj.minX = state.x;
+                }
+                if (state.x < obj.minX) {
+                  obj.minX = state.x;
+                }
+                if ((state.x + state.width) > obj.maxX) {
+                  obj.maxX = state.x + state.width;
+                }
+              }
+              if (self.workflowService.isInstructionCollapsible(childCell.value.tagName)) {
+                checkAllChilds(model, childCell, obj);
+              }
+            }
+          }
+        }
+
+        function highlightDescendantVertices(parentCell) {
+          const model = graph.getModel();
+          let obj = {
+            minX: -1,
+            maxX: 0
+          };
+          checkAllChilds(model, parentCell, obj);
+
+          if (obj.minX > -1 && obj.maxX > 0) {
+            const targetId = self.nodeMap.get(parentCell.id);
+            if (targetId) {
+              const lastCell = graph.getModel().getCell(targetId);
+              const state = graph.view.getState(parentCell);
+              const state2 = graph.view.getState(lastCell);
+              if ((state2.x + state2.width) > obj.maxX) {
+                obj.maxX = state2.x + state2.width;
+              } else if (state2.x < obj.minX) {
+                obj.minX = state2.x;
+              }
+              highlight = document.createElement('div');
+              highlight.style.position = 'absolute';
+              highlight.style.zIndex = -1;
+              highlight.style.left = obj.minX - 10 + 'px';
+              highlight.style.top = (state.y - 10) + 'px';
+              highlight.style.width = (obj.maxX - obj.minX + 20) + 'px';
+              highlight.style.height = (state2.y + state2.height - state.y + 20) + 'px';
+              highlight.style.backgroundColor = 'rgba(0, 0, 0, 0.4)'; // Semi-transparent background
+              graph.container.appendChild(highlight);
+            }
+          }
+        }
 
         /**
          * Function: isCellEditable
@@ -7979,7 +8064,7 @@ export class WorkflowComponent {
       } else if (name === 'ForkList') {
         label1 = 'forkList';
         label2 = 'endForkList';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', parentCell.id), 0, 0, 68, 68, 'forkList');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', parentCell.id), 0, 0, 72, 72, 'forkList');
       }
 
       if (cell) {
@@ -8877,6 +8962,10 @@ export class WorkflowComponent {
             if (_job) {
               const job = self.coreService.clone(self.selectedNode.job);
               delete job.jobName;
+              if (job.documentationName == _job.documentationName && job.executable.TYPE != _job.executable.TYPE) {
+                job.documentationName = '';
+                job.documentationName1 = '';
+              }
               if (job.defaultArguments) {
                 self.coreService.convertArrayToObject(job, 'defaultArguments', true);
               }
@@ -9703,6 +9792,9 @@ export class WorkflowComponent {
       let endTag = 'End' + tagName;
       let closeTag = 'close' + tagName;
       let lastEndTag = tagName.substring(0, 1).toLowerCase() + tagName.substring(1, tagName.length) + 'End';
+      if (tagName == 'ForkList') {
+        return graph.insertVertex(parent, null, getCellNode(endTag, lastEndTag, id), 0, 0, 72, 72, closeTag);
+      }
       return graph.insertVertex(parent, null, getCellNode(endTag, lastEndTag, id), 0, 0, 68, 68, closeTag);
     }
 
@@ -9803,12 +9895,12 @@ export class WorkflowComponent {
           _node = doc.createElement('AddOrder');
           _node.setAttribute('displayLabel', 'addOrder');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'addOrder');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'addOrder');
         } else if (title.match('fork-list')) {
           _node = doc.createElement('ForkList');
           _node.setAttribute('displayLabel', 'forkList');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'forkList');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'forkList');
         } else if (title.match('fork')) {
           _node = doc.createElement('Fork');
           _node.setAttribute('displayLabel', 'fork');
@@ -10855,71 +10947,40 @@ export class WorkflowComponent {
     }
   }
 
-  private getObject(mainJson, copyId, checkNextCell?): any {
+  private getObject(mainJson, copyId): any {
     const self = this;
     let obj: any = {};
 
-    function recursion(json, parent, index): void {
+    function recursion(json): void {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
           if (json.instructions[x].uuid == copyId) {
-            if (checkNextCell != undefined) {
-              if (checkNextCell) {
-                if (json.instructions[x].instructions || json.instructions[x].TYPE === 'If' || json.instructions[x].TYPE === 'Fork') {
-                  if (json.instructions[x].instructions) {
-                    obj = json.instructions[x].instructions[0];
-                  } else if (json.instructions[x].TYPE === 'If') {
-                    obj = json.instructions[x].then.instructions[0];
-                  } else if (json.instructions[x].TYPE === 'Fork') {
-                    obj = json.instructions[x].branches[0]?.instructions[0];
-                  }
-                }
-
-                if (!obj || !obj.TYPE) {
-                  obj = json.instructions[x + 1];
-                  if (!obj || !obj.TYPE) {
-                    obj = parent.instructions[index + 1];
-                  }
-
-                }
-
-              } else {
-                obj = json.instructions[x - 1];
-                if (!obj) {
-                  obj = json;
-                  if (!obj || !obj.TYPE) {
-                    obj = parent.instructions[index - 1];
-                  }
-                }
-              }
-            } else {
-              obj = self.coreService.clone(json.instructions[x]);
-            }
+            obj = self.coreService.clone(json.instructions[x]);
           }
           if (json.instructions[x].instructions) {
-            recursion(json.instructions[x], json, x);
+            recursion(json.instructions[x]);
           }
           if (json.instructions[x].catch) {
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-              recursion(json.instructions[x].catch, json, x);
+              recursion(json.instructions[x].catch);
             }
           }
           if (json.instructions[x].then) {
-            recursion(json.instructions[x].then, json, x);
+            recursion(json.instructions[x].then);
           }
           if (json.instructions[x].else) {
-            recursion(json.instructions[x].else, json, x);
+            recursion(json.instructions[x].else);
           }
           if (json.instructions[x].branches) {
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
-              recursion(json.instructions[x].branches[i], json, x);
+              recursion(json.instructions[x].branches[i]);
             }
           }
         }
       }
     }
 
-    recursion(mainJson, mainJson, 0);
+    recursion(mainJson);
     return obj;
   }
 
