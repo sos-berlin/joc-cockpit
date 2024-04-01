@@ -65,7 +65,7 @@
             </li>
           </ul>
         </div>
-        <div #graph id="graph"></div>
+        <div #graphEle id="graph"></div>
         <!-- Creates a container for the outline -->
         <div #outlineContainer id="outlineContainer"></div>
       </div>
@@ -79,41 +79,45 @@
         </div>
         <div class="sidebar sidebar-property-panel bg-white" id="left-property-panel">
           <perfect-scrollbar class="tree-block">
-          <div class="m-l-xxs m-b-xs">
-            <a class="text-primary-hover" (click)="expandAllTree();">
-              <i class="fa fa-angle-double-down fa-lg"></i>
-            </a>
-            <a class="m-l-sm text-primary-hover" (click)="collapseAllTree();">
-              <i class="fa fa-angle-double-up fa-lg"></i>
-            </a>
-            <a (click)="objectTreeSearch()" class="tree-search tree-search1">
-              <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
-            </a>
-            <input (blur)="clearSearchInput()" (ngModelChange)="searchNodes($event)"
-                   [(ngModel)]="searchNode.text"
-                   [placeholder]="'workflow.placeholder.findNode' | translate"
-                   class="input-tree-search"
-                   id="workflowTreeSearch"
-                   nz-input
-            />
+            <div class="m-l-xxs m-b-xs">
+              <a class="text-primary-hover" (click)="expandAllTree();">
+                <i class="fa fa-angle-double-down fa-lg"></i>
+              </a>
+              <a class="m-l-sm text-primary-hover" (click)="collapseAllTree();">
+                <i class="fa fa-angle-double-up fa-lg"></i>
+              </a>
+              <a (click)="objectTreeSearch()" class="tree-search tree-search1">
+                <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
+              </a>
+              <input (blur)="clearSearchInput()" (ngModelChange)="searchNodes($event)"
+                     [(ngModel)]="searchNode.text"
+                     [placeholder]="'workflow.placeholder.findNode' | translate"
+                     class="input-tree-search"
+                     id="workflowTreeSearch"
+                     nz-input
+              />
 
-            <i [nzType]="searchNode.loading ? 'loading' : 'search'" class="graphical-tree-search-icon" nz-icon nzTheme="outline"></i>
-          </div>
-          <div class="fade-in">
-            <nz-tree
-              [nzShowExpand]="true"
-              [nzData]="filteredNodes"
-              [nzTreeTemplate]="nzTreeTemplate"
-            ></nz-tree>
-            <ng-template #nzTreeTemplate let-node>
-              <div class="node-wrapper" id="{{node.origin.key}}" [ngClass]="{'disable-link':node.origin.disabled}">
-                <div (click)="selectNode(node.origin.key)" class="node-content-wrapper">
-                  <span *ngIf="node.origin.name"> {{node.origin.name}} </span>
-                  <span class="_600">{{node.origin.title | translate}}</span>
+              <i [nzType]="searchNode.loading ? 'loading' : 'search'" class="graphical-tree-search-icon" nz-icon nzTheme="outline"></i>
+            </div>
+            <div class="fade-in">
+              <nz-tree
+                [nzShowExpand]="true"
+                [nzData]="filteredNodes"
+                [nzTreeTemplate]="nzTreeTemplate"
+              ></nz-tree>
+              <ng-template #nzTreeTemplate let-node>
+                <div class="node-wrapper" id="{{node.origin.key}}" [ngClass]="{'disable-link':node.origin.disabled}">
+                  <div (click)="selectNode(node.origin.key)" class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' : node.origin.key == selectedKey}">
+                    <span *ngIf="node.origin.name"> {{node.origin.name}} </span>
+                    <span class="_600">{{node.origin.title | translate}}</span>
+                  </div>
                 </div>
-              </div>
-            </ng-template>
-          </div>
+              </ng-template>
+            </div>
+            <div class="card p-a pos-abt text-18 prev-next-icon" style="margin-left: 255px; bottom: 8px" *ngIf="graph?.getSelectionCell()">
+              <a (click)="prev()" class="text-primary-hover"><span nz-icon nzType="left-circle" nzTheme="outline"></span></a>
+              <a (click)="next()" class="text-primary-hover m-l-12"><span nz-icon nzType="right-circle" nzTheme="outline"></span></a>
+            </div>
           </perfect-scrollbar>
         </div>
       </div>
