@@ -10,7 +10,7 @@ import {ActivatedRoute} from '@angular/router';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {isArray, sortBy} from 'underscore';
-import {Subject, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {WorkflowService} from '../../../services/workflow.service';
@@ -242,6 +242,7 @@ export class WorkflowGraphicalComponent {
   countArr = [];
   sideBar: any = {};
   isProcessing = false;
+  selectedKey = '';
   filteredNodes: any[] = [];
   searchNode = {
     loading: false,
@@ -254,7 +255,7 @@ export class WorkflowGraphicalComponent {
   colors = ['#90C7F5', '#C2b280', '#Aaf0d1', '#B38b6d', '#B2beb5', '#D4af37', '#8c92ac',
     '#FFCF8c', '#CDEB8B', '#FFC7C7', '#8B8BB4', '#Eedc82', '#B87333', '#97B0FF', '#D4af37', '#856088'];
 
-  @ViewChild('graph', {static: true}) graphContainer: ElementRef;
+  @ViewChild('graphEle', {static: true}) graphContainer: ElementRef;
   @ViewChild('outlineContainer', {static: true}) outlineContainer: ElementRef;
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
@@ -918,9 +919,12 @@ export class WorkflowGraphicalComponent {
           img.style.height = (18 * state.shape.scale) + 'px';
           state.view.graph.container.appendChild(img);
           this.images.push(img);
+          highlightDescendantVertices(state.cell);
         }
       }
     }
+
+    let highlight = null;
 
     mxIconSet.prototype.destroy = function () {
       if (this.images != null) {
@@ -929,12 +933,68 @@ export class WorkflowGraphicalComponent {
           img.parentNode.removeChild(img);
         }
       }
-
+      highlight?.remove();
       this.images = null;
       if (self.order) {
         self.order = null;
       }
     };
+
+    function checkAllChilds(model, cell, obj) {
+      const childCount = model.getChildCount(cell);
+      for (let i = 0; i < childCount; i++) {
+        const childCell = model.getChildAt(cell, i);
+        if (model.isVertex(childCell)) {
+          const state = graph.view.getState(childCell);
+          if (state?.x) {
+            if (obj.minX == -1) {
+              obj.minX = state.x;
+            }
+            if (state.x < obj.minX) {
+              obj.minX = state.x;
+            }
+            if ((state.x + state.width) > obj.maxX) {
+              obj.maxX = state.x + state.width;
+            }
+          }
+          if (self.workflowService.isInstructionCollapsible(childCell.value.tagName)) {
+            checkAllChilds(model, childCell, obj);
+          }
+        }
+      }
+    }
+
+    function highlightDescendantVertices(parentCell) {
+      const model = graph.getModel();
+      let obj = {
+        minX: -1,
+        maxX: 0
+      };
+      checkAllChilds(model, parentCell, obj);
+
+      if (obj.minX > -1 && obj.maxX > 0) {
+        const targetId = self.nodeMap.get(parentCell.id);
+        if (targetId) {
+          const lastCell = graph.getModel().getCell(targetId);
+          const state = graph.view.getState(parentCell);
+          const state2 = graph.view.getState(lastCell);
+          if ((state2.x + state2.width) > obj.maxX) {
+            obj.maxX = state2.x + state2.width;
+          } else if (state2.x < obj.minX) {
+            obj.minX = state2.x;
+          }
+          highlight = document.createElement('div');
+          highlight.style.position = 'absolute';
+          highlight.style.zIndex = -1;
+          highlight.style.left = obj.minX - 10 + 'px';
+          highlight.style.top = (state.y - 10) + 'px';
+          highlight.style.width = (obj.maxX - obj.minX + 20) + 'px';
+          highlight.style.height = (state2.y + state2.height - state.y + 20) + 'px';
+          highlight.style.backgroundColor = 'rgba(0, 0, 0, 0.4)'; // Semi-transparent background
+          graph.container.appendChild(highlight);
+        }
+      }
+    }
   }
 
   private updatePositions(mainJson, vertixMap): void {
@@ -1510,12 +1570,64 @@ export class WorkflowGraphicalComponent {
           }, 200);
           this.graph.clearSelection();
           this.graph.setSelectionCell(cell);
+          this.selectedKey = uuid;
           break;
         }
       }
     }
     this.filteredNodes = this.nodes
     this.searchNode.text = '';
+  }
+
+  prev(): void {
+    this.navToNextCell(false);
+  }
+
+  next(): void {
+    this.navToNextCell(true);
+  }
+
+  private navToNextCell(flag: boolean): void {
+    let cells = this.graph.getSelectionCells();
+    const self = this;
+    if (cells && cells.length > 0) {
+      switchToNextCell(cells[0], 0);
+    }
+
+    function switchToNextCell(cell, index) {
+      let nextCell;
+      if (flag) {
+        const edges = self.graph.getOutgoingEdges(cell);
+        if (edges[index]) {
+          nextCell = edges[index].target;
+        }
+      } else {
+        const edges = self.graph.getIncomingEdges(cell);
+        if (edges[index]) {
+          nextCell = edges[index].source;
+        }
+      }
+
+      if (nextCell && nextCell.value?.tagName !== 'Process') {
+        if (self.workflowService.checkClosingCell(nextCell.value.tagName) || nextCell.value.tagName === 'Catch') {
+          if (nextCell.value.tagName === 'Join' || nextCell.value.tagName === 'EndIf') {
+            const _edges = self.graph.getIncomingEdges(nextCell);
+            for (let i = 0; i < _edges.length; i++) {
+              if (_edges[i].source.id == cell.id) {
+                if (i !== _edges.length - 1) {
+                  nextCell = _edges[i].source.parent;
+                  index = i + 1;
+                }
+                break;
+              }
+            }
+          }
+          switchToNextCell(nextCell, index);
+        } else {
+          self.selectNode(nextCell.getAttribute('uuid'));
+        }
+      }
+    }
   }
 
   private updateWorkflow(isRemove = false): void {

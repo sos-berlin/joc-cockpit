@@ -11,6 +11,7 @@ declare const mxGraph: any;
 declare const mxImage: any;
 declare const mxConstants: any;
 declare const saveSvgAsPng: any;
+declare const mxOutline: any;
 declare const $: any;
 
 @Injectable()
@@ -370,6 +371,10 @@ export class WorkflowService {
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']);
     }
+    mxOutline.prototype.border = 8;
+    mxOutline.prototype.sizerSize = 10;
+    mxOutline.prototype.labelsVisible = true;
+    mxOutline.prototype.updateOnPan = true;
     this.theme = theme;
     WorkflowService.setStyleToSymbol('fork', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('join', colorCode, theme, graph);

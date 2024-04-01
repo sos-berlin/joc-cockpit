@@ -3286,7 +3286,7 @@ export class WorkflowComponent {
       }
 
       if (nextCell && nextCell.value?.tagName !== 'Process') {
-        if (self.workflowService.checkClosingCell(nextCell.value.tagName)) {
+        if (self.workflowService.checkClosingCell(nextCell.value.tagName) || nextCell.value.tagName === 'Catch') {
           if (nextCell.value.tagName === 'Join' || nextCell.value.tagName === 'EndIf') {
             const _edges = self.editor.graph.getIncomingEdges(nextCell);
             for (let i = 0; i < _edges.length; i++) {
@@ -3451,7 +3451,7 @@ export class WorkflowComponent {
             outln.innerHTML = '';
             mxOutline.prototype.minScale = 0.001;
             mxOutline.prototype.enabled = true;
-            new mxOutline(self.editor.graph, outln);
+            new mxOutline(editor.graph, outln);
             cb();
           }
         };
@@ -8962,7 +8962,7 @@ export class WorkflowComponent {
             if (_job) {
               const job = self.coreService.clone(self.selectedNode.job);
               delete job.jobName;
-              if (job.documentationName == _job.documentationName && job.executable.TYPE != _job.executable.TYPE) {
+              if (job.documentationName == _job.documentationName && job.executable?.TYPE != _job.executable?.TYPE) {
                 job.documentationName = '';
                 job.documentationName1 = '';
               }
