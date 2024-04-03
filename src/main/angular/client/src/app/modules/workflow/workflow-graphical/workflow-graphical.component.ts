@@ -728,6 +728,20 @@ export class WorkflowGraphicalComponent {
           this.currentIconSet.destroy();
           this.currentIconSet = null;
         }
+        if(highlight) {
+          highlight.remove();
+          highlight = null;
+          if (state?.cell?.parent) {
+            const _state = graph.view.getState(state.cell.parent);
+            if (_state && _state.shape && _state.shape.bounds.width > 72) {
+              _state.shape.bounds.x = _state.shape.bounds.x + (_state.shape.bounds.width - _state.shape.bounds.width / 1.3) / 2;
+              _state.shape.bounds.y = _state.shape.bounds.y + (_state.shape.bounds.height - _state.shape.bounds.height / 1.3) / 2;
+              _state.shape.bounds.width = _state.shape.bounds.width / 1.3;
+              _state.shape.bounds.height = _state.shape.bounds.height / 1.3;
+              _state.shape.reconfigure();
+            }
+          }
+        }
       }
     });
 
@@ -848,6 +862,7 @@ export class WorkflowGraphicalComponent {
       }
     });
 
+    let highlight = null;
     // Defines a new class for all icons
     function mxIconSet(state) {
       this.images = [];
@@ -924,8 +939,6 @@ export class WorkflowGraphicalComponent {
       }
     }
 
-    let highlight = null;
-
     mxIconSet.prototype.destroy = function () {
       if (this.images != null) {
         for (let i = 0; i < this.images.length; i++) {
@@ -933,7 +946,6 @@ export class WorkflowGraphicalComponent {
           img.parentNode.removeChild(img);
         }
       }
-      highlight?.remove();
       this.images = null;
       if (self.order) {
         self.order = null;
@@ -964,19 +976,19 @@ export class WorkflowGraphicalComponent {
       }
     }
 
-    function highlightDescendantVertices(parentCell) {
+    function highlightDescendantVertices(cell) {
       const model = graph.getModel();
       let obj = {
         minX: -1,
         maxX: 0
       };
-      checkAllChilds(model, parentCell, obj);
+      checkAllChilds(model, cell, obj);
 
       if (obj.minX > -1 && obj.maxX > 0) {
-        const targetId = self.nodeMap.get(parentCell.id);
+        const targetId = self.nodeMap.get(cell.id);
         if (targetId) {
           const lastCell = graph.getModel().getCell(targetId);
-          const state = graph.view.getState(parentCell);
+          const state = graph.view.getState(cell);
           const state2 = graph.view.getState(lastCell);
           if ((state2.x + state2.width) > obj.maxX) {
             obj.maxX = state2.x + state2.width;
@@ -992,6 +1004,17 @@ export class WorkflowGraphicalComponent {
           highlight.style.height = (state2.y + state2.height - state.y + 20) + 'px';
           highlight.style.backgroundColor = 'rgba(0, 0, 0, 0.4)'; // Semi-transparent background
           graph.container.appendChild(highlight);
+          if (cell.parent) {
+            const _state = graph.view.getState(cell.parent);
+
+            if (_state && _state.shape) {
+              _state.shape.bounds.x = _state.shape.bounds.x - (_state.shape.bounds.width * 1.3 - _state.shape.bounds.width) / 2;
+              _state.shape.bounds.y = _state.shape.bounds.y - (_state.shape.bounds.height * 1.3 - _state.shape.bounds.height) / 2;
+              _state.shape.bounds.width = _state.shape.bounds.width * 1.3;
+              _state.shape.bounds.height = _state.shape.bounds.height * 1.3;
+              _state.shape.reconfigure();
+            }
+          }
         }
       }
     }

@@ -420,40 +420,38 @@
                 <div class="row m-t-xs">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.orientation</div>
                   <div class="col-md-6">
-                    <app-select-input (modelChange)="changeMenuTheme()" [attributeName]="'orientation'" [classNames]="'w-xl'"
-                                      [isSearchable]="true"
+                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'orientation'" [classNames]="'w-xl'"
+                                      [isSearchable]="false"
                                       [listArray]="orientation" [object]="preferences" [optionLabel]="'name'"
                                       [optionValue]="'value'"></app-select-input>
                   </div>
                 </div>
+                <!--interRankCellSpacing
+                    The minimum distance between instructions on adjacent ranks. Default 40px
+                -->
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
                     profile.label.interRankCellSpacing
                   </div>
                   <div class="col-md-6">
-                    <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.interRankCellSpacing" [nzMin]="30"
-                                     [nzStep]="5"
-                                     class="w-xl"></nz-input-number>
+                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'interRankCellSpacing'" [classNames]="'w-xl'"
+                                      [isSearchable]="false"
+                                      [listArray]="spacing" [object]="preferences" [optionLabel]="'name'"
+                                      [optionValue]="'value'"></app-select-input>
                   </div>
                 </div>
+                <!--intraCellSpacing
+                    The minimum buffer between instructions on the same rank. Default 30px
+                -->
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
                     profile.label.intraCellSpacing
                   </div>
                   <div class="col-md-6">
-                    <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.intraCellSpacing" [nzMin]="10"
-                                     [nzStep]="5"
-                                     class="w-xl"></nz-input-number>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
-                    profile.label.interHierarchySpacing
-                  </div>
-                  <div class="col-md-6">
-                    <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.interHierarchySpacing" [nzMin]="30"
-                                     [nzStep]="5"
-                                     class="w-xl"></nz-input-number>
+                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'intraCellSpacing'" [classNames]="'w-xl'"
+                                      [isSearchable]="false"
+                                      [listArray]="spacing" [object]="preferences" [optionLabel]="'name'"
+                                      [optionValue]="'value'"></app-select-input>
                   </div>
                 </div>
                 <div class="row m-t">

@@ -33,9 +33,8 @@ export class WorkflowService {
    * Reformat the layout
    */
   static executeLayout(graph: any, prefrences): void {
-    mxHierarchicalLayout.prototype.interRankCellSpacing = prefrences.interRankCellSpacing;
-    mxHierarchicalLayout.prototype.intraCellSpacing = prefrences.intraCellSpacing;
-    mxHierarchicalLayout.prototype.interHierarchySpacing = prefrences.interHierarchySpacing;
+    mxHierarchicalLayout.prototype.interRankCellSpacing = parseInt(prefrences.interRankCellSpacing) * 0.4;
+    mxHierarchicalLayout.prototype.intraCellSpacing = parseInt(prefrences.intraCellSpacing) * 0.3;
     const layout = new mxHierarchicalLayout(graph, prefrences.orientation);
     layout.execute(graph.getDefaultParent());
   }
