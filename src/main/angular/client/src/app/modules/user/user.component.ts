@@ -843,6 +843,21 @@ export class UserComponent {
     {value: '50', name: '50'},
     {value: '100', name: '100'}];
 
+
+  orientation = [{value: 'north', name: 'profile.label.vertical'},
+    {value: 'west', name: 'profile.label.horizontal'}];
+
+  spacing = [{value: '50', name: '50%'},
+    {value: '75', name: '75%'},
+    {value: '100', name: '100%'},
+    {value: '125', name: '125%'},
+    {value: '150', name: '150%'},
+    {value: '175', name: '175%'},
+    {value: '200', name: '200%'},
+    {value: '225', name: '225%'},
+    {value: '250', name: '250%'}
+  ];
+
   dateTimeFormat = [
     {index: 1, value: 'DD.MM.YYYY HH:mm:ss', name: 'Default (DD.MM.YYYY HH:mm:ss)'},
     {disable: true, value: '', name: '-----------------------------------------'},

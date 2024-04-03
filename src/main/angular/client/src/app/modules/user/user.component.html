@@ -410,6 +410,59 @@
                     </nz-radio-group>
                   </div>
                 </div>
+                <div class="row m-t b-t p-t">
+                  <div class="col-md-12">
+                    <h6>
+                      <span translate>profile.label.customizeWorkflowLayout</span>
+                    </h6>
+                    </div>
+                </div>
+                <div class="row m-t-xs">
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.orientation</div>
+                  <div class="col-md-6">
+                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'orientation'" [classNames]="'w-xl'"
+                                      [isSearchable]="false"
+                                      [listArray]="orientation" [object]="preferences" [optionLabel]="'name'"
+                                      [optionValue]="'value'"></app-select-input>
+                  </div>
+                </div>
+                <!--interRankCellSpacing
+                    The minimum distance between instructions on adjacent ranks. Default 40px
+                -->
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
+                    profile.label.interRankCellSpacing
+                  </div>
+                  <div class="col-md-6">
+                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'interRankCellSpacing'" [classNames]="'w-xl'"
+                                      [isSearchable]="false"
+                                      [listArray]="spacing" [object]="preferences" [optionLabel]="'name'"
+                                      [optionValue]="'value'"></app-select-input>
+                  </div>
+                </div>
+                <!--intraCellSpacing
+                    The minimum buffer between instructions on the same rank. Default 30px
+                -->
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
+                    profile.label.intraCellSpacing
+                  </div>
+                  <div class="col-md-6">
+                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'intraCellSpacing'" [classNames]="'w-xl'"
+                                      [isSearchable]="false"
+                                      [listArray]="spacing" [object]="preferences" [optionLabel]="'name'"
+                                      [optionValue]="'value'"></app-select-input>
+                  </div>
+                </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark" translate>
+                    profile.label.edgeRounded
+                  </div>
+                  <div class="col-md-6">
+                    <label nz-checkbox [(ngModel)]="preferences.edgeRounded"
+                           (ngModelChange)="changeConfiguration()"></label>
+                  </div>
+                </div>
               </div>
             </nz-tab>
             <nz-tab *ngIf="permission.joc"

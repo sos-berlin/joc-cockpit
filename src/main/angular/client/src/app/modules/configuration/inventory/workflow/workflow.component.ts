@@ -1393,7 +1393,7 @@ export class JobComponent {
     }
     this.initAutoComplete(100);
     if (this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name) {
-      // this.getTemplateData();
+      this.getTemplateData();
     }
   }
 
@@ -4186,6 +4186,7 @@ export class WorkflowComponent {
               'scroll-left': '0'
             });
             graphEle.css({height: 'calc(100vh - ' + (top + 124) + 'px)'});
+            $('.prev-next-icon').css({bottom: '116px'});
           } else {
             graphEle.css({width: 'calc(100% - 154px)'});
             outln.css({height: ht, 'scroll-top': '0'});
@@ -6453,6 +6454,7 @@ export class WorkflowComponent {
           }
         }
 
+        let highlight = null;
         // Defines a new class for all icons
         function mxIconSet(state) {
           this.images = [];
@@ -6505,15 +6507,32 @@ export class WorkflowComponent {
           }
         }
 
-        let highlight = null;
-        mxIconSet.prototype.destroy = function () {
+        mxIconSet.prototype.destroy = function (cell) {
           if (this.images != null) {
             for (let i = 0; i < this.images.length; i++) {
               const img = this.images[i];
               img.parentNode.removeChild(img);
             }
           }
-          highlight?.remove();
+          if(highlight) {
+            highlight.remove();
+            highlight = null;
+            if (cell?.parent) {
+              setTimeout(() => {
+                const _state = graph.view.getState(cell.parent);
+                if (!highlight) {
+                  if (_state && _state.shape && _state.shape.bounds.width > 72) {
+                    _state.shape.bounds.x = _state.shape.bounds.x + (_state.shape.bounds.width - _state.shape.bounds.width / 1.3) / 2;
+                    _state.shape.bounds.y = _state.shape.bounds.y + (_state.shape.bounds.height - _state.shape.bounds.height / 1.3) / 2;
+                    _state.shape.bounds.width = _state.shape.bounds.width / 1.3;
+                    _state.shape.bounds.height = _state.shape.bounds.height / 1.3;
+                    _state.shape.reconfigure();
+                    
+                  }
+                }
+              }, 0);
+            }
+          }
           this.images = null;
         };
 
@@ -6523,15 +6542,29 @@ export class WorkflowComponent {
             const childCell = model.getChildAt(cell, i);
             if (model.isVertex(childCell)) {
               const state = graph.view.getState(childCell);
-              if (state?.x) {
-                if (obj.minX == -1) {
-                  obj.minX = state.x;
+              if (!(self.preferences.orientation == 'east' || self.preferences.orientation == 'west')) {
+                if (state?.x) {
+                  if (obj.minX == -1) {
+                    obj.minX = state.x;
+                  }
+                  if (state.x < obj.minX) {
+                    obj.minX = state.x;
+                  }
+                  if ((state.x + state.width) > obj.maxX) {
+                    obj.maxX = state.x + state.width;
+                  }
                 }
-                if (state.x < obj.minX) {
-                  obj.minX = state.x;
-                }
-                if ((state.x + state.width) > obj.maxX) {
-                  obj.maxX = state.x + state.width;
+              } else {
+                if (state?.y) {
+                  if (obj.minX == -1) {
+                    obj.minX = state.y;
+                  }
+                  if (state.y < obj.minX) {
+                    obj.minX = state.y;
+                  }
+                  if ((state.y + state.height) > obj.maxX) {
+                    obj.maxX = state.y + state.height;
+                  }
                 }
               }
               if (self.workflowService.isInstructionCollapsible(childCell.value.tagName)) {
@@ -6555,20 +6588,48 @@ export class WorkflowComponent {
               const lastCell = graph.getModel().getCell(targetId);
               const state = graph.view.getState(parentCell);
               const state2 = graph.view.getState(lastCell);
-              if ((state2.x + state2.width) > obj.maxX) {
-                obj.maxX = state2.x + state2.width;
-              } else if (state2.x < obj.minX) {
-                obj.minX = state2.x;
+              if (self.preferences.orientation == 'east' || self.preferences.orientation == 'west') {
+                if ((state2.y + state2.height) > obj.maxX) {
+                  obj.maxX = state2.y + state2.height;
+                } else if ((state2.y) < obj.minX) {
+                  obj.minX = state2.y;
+                }
+              } else {
+                if ((state2.x + state2.width) > obj.maxX) {
+                  obj.maxX = state2.x + state2.width;
+                } else if (state2.x < obj.minX) {
+                  obj.minX = state2.x;
+                }
               }
+
               highlight = document.createElement('div');
               highlight.style.position = 'absolute';
               highlight.style.zIndex = -1;
-              highlight.style.left = obj.minX - 10 + 'px';
-              highlight.style.top = (state.y - 10) + 'px';
-              highlight.style.width = (obj.maxX - obj.minX + 20) + 'px';
-              highlight.style.height = (state2.y + state2.height - state.y + 20) + 'px';
+              if (self.preferences.orientation == 'east' || self.preferences.orientation == 'west') {
+                highlight.style.top = obj.minX - 10 + 'px';
+                highlight.style.left = (state.x - 10) + 'px';
+                highlight.style.height = (obj.maxX - obj.minX + 20) + 'px';
+                highlight.style.width = (state2.x + state2.width - state.x + 20) + 'px';
+              } else {
+                highlight.style.left = obj.minX - 10 + 'px';
+                highlight.style.top = (state.y - 10) + 'px';
+                highlight.style.width = (obj.maxX - obj.minX + 20) + 'px';
+                highlight.style.height = (state2.y + state2.height - state.y + 20) + 'px';
+              }
               highlight.style.backgroundColor = 'rgba(0, 0, 0, 0.4)'; // Semi-transparent background
               graph.container.appendChild(highlight);
+
+              if (parentCell.parent) {
+                const _state = graph.view.getState(parentCell.parent);
+                if (_state && _state.shape && _state.shape.bounds.width < 73) {
+                  _state.shape.bounds.x = _state.shape.bounds.x - (_state.shape.bounds.width * 1.3 - _state.shape.bounds.width) / 2;
+                  _state.shape.bounds.y = _state.shape.bounds.y - (_state.shape.bounds.height * 1.3 - _state.shape.bounds.height) / 2;
+                  _state.shape.bounds.width = _state.shape.bounds.width * 1.3;
+                  _state.shape.bounds.height = _state.shape.bounds.height * 1.3;
+                  _state.shape.reconfigure();
+             
+                }
+              }
             }
           }
         }
@@ -6641,7 +6702,7 @@ export class WorkflowComponent {
             if (this.currentState != null && me.getState() == this.currentState) {
               return;
             }
-            let tmp = graph.view.getState(me.getCell());
+            let tmp = graph.view.getState(cell);
             // Ignores everything but vertices
             if (graph.isMouseDown) {
               tmp = null;
@@ -6660,7 +6721,7 @@ export class WorkflowComponent {
               }
             } else {
               if (this.currentIconSet != null) {
-                this.currentIconSet.destroy();
+                this.currentIconSet.destroy(cell);
                 this.currentIconSet = null;
               }
               if (tmp) {

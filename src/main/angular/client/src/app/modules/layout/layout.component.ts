@@ -781,13 +781,10 @@ export class LayoutComponent {
         data.orientation = 'north';
       }
       if (!data.interRankCellSpacing) {
-        data.interRankCellSpacing = 40;
+        data.interRankCellSpacing = 100;
       }
       if (!data.intraCellSpacing) {
-        data.intraCellSpacing = 30;
-      }
-      if (!data.interHierarchySpacing) {
-        data.interHierarchySpacing = 50;
+        data.intraCellSpacing = 100;
       }
       if (data.edgeRounded == undefined) {
         data.edgeRounded = true;
