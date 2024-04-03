@@ -819,7 +819,7 @@
     "label.invertProjection": "Umgekehrte Projektion",
     "label.periodFound": "Periode gefunden",
     "label.periodsFound": "Perioden gefunden",
-    "label.plannedAllAutomatically": "Planned All Automatically",
+    "label.plannedAllAutomatically": "Automatisch geplant",
     "button.late": "Verspätet",
     "button.setStartTime": "Startzeit ändern",
     "button.setParameter": "Variable ändern",
@@ -2828,11 +2828,11 @@
       "created": "Angelegt",
       "monthFrom": "Monat ab",
       "monthTo": "Monat bis",
-      "numOfReports": "No. of Reports",
+      "numOfReports": "Anzahl Berichte",
       "chooseTemplate": "Vorlage auswählen",
       "chooseFrequencies": "Häufigkeiten auswählen",
       "runReport": "Berichtslauf starten",
-      "reportRunning": "Report is running..."
+      "reportRunning": "Berichtslauf in Arbeit..."
     },
     "button" : {
       "runReport": "Berichtslauf starten",
