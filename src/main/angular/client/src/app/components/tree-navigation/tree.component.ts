@@ -13,7 +13,7 @@ declare const $: any;
   templateUrl: './tree.component.html'
 })
 export class TreeComponent {
-  preferences: any;
+
   @Input() tree;
   @Input() sideView;
   @Input() type: string;
@@ -25,6 +25,7 @@ export class TreeComponent {
   @Output() actionEvent = new EventEmitter<any>();
   @Output() selectObjectEvent = new EventEmitter<any>();
 
+  preferences: any;
   allObjects = [];
   searchNode = {
     loading: false,

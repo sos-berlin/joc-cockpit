@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>dailyPlan.label.setStartTime</span>
+    <span *ngIf="!isCopy" translate>dailyPlan.label.setStartTime</span>
+    <span *ngIf="isCopy" translate>dailyPlan.label.copyOrder</span>
     <span *ngIf="(order || plan) && !orders">:</span>
     <i *ngIf="order" class="text-muted p-l-xs text">{{order.orderId}}</i>
     <i *ngIf="plan" class="text-muted p-l-xs text">{{plan.key}}</i>

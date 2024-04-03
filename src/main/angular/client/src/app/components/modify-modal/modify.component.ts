@@ -578,6 +578,7 @@ export class ModifyStartTimeModalComponent {
   plan: any;
   preferences: any;
   isDailyPlan = false;
+  isCopy = false;
   submitted = false;
   dateFormat: any;
   dateType: any = {at: 'date', forceJobAdmission: false};
@@ -600,6 +601,7 @@ export class ModifyStartTimeModalComponent {
     this.plan = this.modalData.plan;
     this.preferences = this.modalData.preferences;
     this.isDailyPlan = this.modalData.isDailyPlan;
+    this.isCopy = this.modalData.isCopy;
     if (this.orders) {
       this.n1 = this.orders.size;
     }
@@ -812,7 +814,7 @@ export class ModifyStartTimeModalComponent {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
     this.submitted = true;
-    this.coreService.post('daily_plan/orders/modify', obj).subscribe({
+    this.coreService.post(this.isCopy? 'daily_plan/orders/copy' : 'daily_plan/orders/modify', obj).subscribe({
       next: (res) => {
         this.activeModal.close(res);
       }, error: () => this.submitted = false

@@ -747,7 +747,6 @@ export class DailyPlanComponent {
   weekStart = 1;
   dateFormat: string;
 
-
   object = {
     mapOfCheckedId: new Map(),
     checked: false,
@@ -1321,6 +1320,36 @@ export class DailyPlanComponent {
     }
   }
 
+  copySelectedOrder(): void {
+    const orderIds = [];
+    this.object.mapOfCheckedId.forEach((value) => {
+      orderIds.push(value.orderId);
+    });
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ModifyStartTimeModalComponent,
+      nzClassName: 'lg',
+      nzData: {
+        schedulerId: this.schedulerIds.selected,
+        orders: this.object.mapOfCheckedId,
+        isDailyPlan: true,
+        isCopy: true,
+        preferences: this.preferences
+      },
+      nzFooter: null,
+      nzAutofocus: undefined,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.resetCheckBox();
+        this.isProcessing = true;
+        this.resetAction(5000);
+      }
+    });
+
+  }
+
   submitSelectedOrder(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -1344,6 +1373,7 @@ export class DailyPlanComponent {
       }
     });
   }
+
 
   submitOrder(order, workflow): void {
     const modal = this.modal.create({
@@ -1941,6 +1971,33 @@ export class DailyPlanComponent {
     if (!this.dailyPlanFilters.filter.status) {
       this.dailyPlanFilters.filter.status = 'ALL';
     }
+  }
+
+  copyOrder(order, plan): void{
+    console.log(order)
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ModifyStartTimeModalComponent,
+      nzClassName: 'lg',
+      nzData: {
+        schedulerId: this.schedulerIds.selected,
+        order,
+        plan,
+        isDailyPlan: true,
+        isCopy: true,
+        preferences: this.preferences
+      },
+      nzFooter: null,
+      nzAutofocus: undefined,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.isLoaded = false;
+        this.loadOrderPlan();
+      }
+    });
   }
 
   modifyOrder(order, plan): void {
