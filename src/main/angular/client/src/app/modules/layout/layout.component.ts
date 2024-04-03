@@ -734,9 +734,8 @@ export class LayoutComponent {
     preferences.currentController = true;
     preferences.logTimezone = true;
     preferences.orientation = 'north';
-    preferences.interRankCellSpacing = 40;
-    preferences.intraCellSpacing = 30;
-    preferences.interHierarchySpacing = 50;
+    preferences.interRankCellSpacing = 100;
+    preferences.intraCellSpacing = 100;
     preferences.edgeRounded = true;
 
     if (sessionStorage['$SOS$FORCELOGING'] === 'true' || sessionStorage['$SOS$FORCELOGING'] === true) {
