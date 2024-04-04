@@ -2392,6 +2392,7 @@
     "button.showLog": "Show Log",
     "button.assignParameterizationFromSchedules": "Assign parameterization from Schedule",
     "button.assignFromSchedule": "Assign from Schedule",
+    "button.cloneOrder": "Clone Order",
     "placeholder.selectStartNode": "Select Start Position",
     "placeholder.selectEndNode": "Select End Position",
     "placeholder.selectBlockPosition": "Select Block Position",
@@ -2554,6 +2555,7 @@
       "label.downloadLog": "download log",
       "label.jocCockpit": "JOC Cockpit",
       "label.suspendResume": "suspend and resume",
+      "label.resumeFailed": "resume and failed",
       "label.controller": "Controller",
       "label.managePositions": "manage positions"
     },

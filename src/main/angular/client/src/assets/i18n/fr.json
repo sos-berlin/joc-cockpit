@@ -2392,6 +2392,7 @@
     "button.showLog": "Afficher le Journal",
     "button.assignParameterizationFromSchedules": "Paramétrage à partir d'une Planification",
     "button.assignFromSchedule": "Assigner à partir d'une Planification",
+    "button.cloneOrder": "Clone Order",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",
     "placeholder.selectBlockPosition": "Sélectionner la Position d Bloc",
@@ -2554,6 +2555,7 @@
       "label.downloadLog": "télécharger le journal",
       "label.jocCockpit": "JOC Cockpit",
       "label.suspendResume": "suspendre et reprendre",
+      "label.resumeFailed": "resume and failed",
       "label.controller": "Contrôleur",
       "label.managePositions": "gérer les positions"
     },

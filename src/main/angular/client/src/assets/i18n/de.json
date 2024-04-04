@@ -2392,6 +2392,7 @@
     "button.showLog": "Protokoll anzeigen",
     "button.assignParameterizationFromSchedules": "Parametrisierung aus Zeitplan",
     "button.assignFromSchedule": "Parametrisierung aus Zeitplan",
+    "button.cloneOrder": "Clone Order",
     "placeholder.selectStartNode": "Start-Position auswählen",
     "placeholder.selectEndNode": "End-Position auswählen",
     "placeholder.selectBlockPosition": "Block-Position angeben",
@@ -2554,6 +2555,7 @@
       "label.downloadLog": "Protokoll herunterladen",
       "label.jocCockpit": "JOC Cockpit",
       "label.suspendResume": "aussetzen und wiederaufnehmen",
+      "label.resumeFailed": "resume and failed",
       "label.controller": "Controller",
       "label.managePositions": "Positionen verwalten"
     },

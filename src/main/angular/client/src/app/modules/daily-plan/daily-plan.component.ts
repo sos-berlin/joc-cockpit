@@ -1974,7 +1974,6 @@ export class DailyPlanComponent {
   }
 
   copyOrder(order, plan): void{
-    console.log(order)
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
