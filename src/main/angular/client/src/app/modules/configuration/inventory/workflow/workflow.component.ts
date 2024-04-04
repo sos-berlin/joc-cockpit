@@ -1348,8 +1348,6 @@ export class JobComponent {
   copiedParamObjects: any = {};
   hasLicense: boolean;
   isTreeShow = false;
-  jobTemplateData: any
-  argumentDefaults = []
   subscription: Subscription;
 
   @ViewChild('codeMirror', {static: false}) cm: any;
@@ -1392,9 +1390,6 @@ export class JobComponent {
       this.updateVariableList();
     }
     this.initAutoComplete(100);
-    if (this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name) {
-      this.getTemplateData();
-    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -1541,26 +1536,7 @@ export class JobComponent {
     }
   }
 
-  getTemplateData(): void {
-    this.coreService.post('job_template', {
-      jobTemplatePath: this.selectedNode.job.jobTemplate.name
-    }).subscribe({
-      next: (res) => {
-        this.jobTemplateData = res.jobTemplate;
-        for (const key in res.jobTemplate.arguments) {
-          for (const i in this.selectedNode.job.executable?.arguments) {
-            if (key == this.selectedNode.job.executable?.arguments[i].name) {
-              this.selectedNode.job.executable.arguments[i].isRequired = res.jobTemplate.arguments[key].required;
-              break;
-            }
-          }
-          if (res.jobTemplate.arguments.hasOwnProperty(key)) {
-            this.argumentDefaults.push(key);
-          }
-        }
-      }
-    });
-  }
+
 
   focusChange(): void {
     this.obj.script = false;

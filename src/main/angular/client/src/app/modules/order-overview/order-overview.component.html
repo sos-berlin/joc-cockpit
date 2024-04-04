@@ -120,7 +120,7 @@
                     [disabled]="!object.isSuspendWithKill" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop"></i>&nbsp;
               <span class="hidden-sm-down" translate>order.button.suspendAndKillTask</span>
             </button>
-            <button (click)="resumeAllOrder()" *ngIf="permission.currentController.orders.suspendResume"
+            <button (click)="resumeAllOrder()" *ngIf="permission.currentController.orders.suspendResume || permission.currentController.orders.resumeFailed"
                     [disabled]="!object.isResume" class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.resume</span>
             </button>

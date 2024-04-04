@@ -37,7 +37,7 @@
     <span class="hidden-sm-down" translate>order.button.suspendAndKillTask</span>
   </button>
   <button (click)="resumeAllOrder()"
-          *ngIf="object.isResume && permission.currentController.orders.suspendResume"
+          *ngIf="object.isResume && (permission.currentController.orders.suspendResume || permission.currentController.orders.resumeFailed)"
           class="btn btn-grey btn-sm m-l-12"><i
     class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.resume</span>
   </button>

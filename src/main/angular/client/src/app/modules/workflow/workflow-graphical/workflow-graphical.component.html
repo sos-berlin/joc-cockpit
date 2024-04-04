@@ -155,7 +155,7 @@
               nz-menu-item>
             <a translate>order.button.deepSuspendAndKillTask</a>
           </li>
-          <li (click)="resumeOrder()" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')"
+          <li (click)="resumeOrder()" *ngIf="permission && permission.currentController && ((permission.currentController.orders.suspendResume && order.state._text === 'SUSPENDED') || (permission.currentController.orders.resumeFailed && order.state._text === 'FAILED'))"
               nz-menu-item>
             <a>{{'order.button.resume' | translate}} ..</a>
           </li>
