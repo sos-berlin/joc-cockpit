@@ -652,7 +652,7 @@
                             <i (click)="openEditor(argu)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
                                style="right: 13px;top:1px;"></i>
                           </div>
-                          <div *ngIf="!argu.isRequired" class="col-md-1 col-lg-1 p-l-0">
+                          <div class="col-md-1 col-lg-1 p-l-0">
                             <i
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name)"
                               class="fa fa-scissors m-t-sm"></i>
