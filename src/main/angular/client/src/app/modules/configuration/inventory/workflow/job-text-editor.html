@@ -627,11 +627,15 @@
                           <div [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}"
                                class="col-md-5 col-lg-5 m-b-sm p-r-0">
                             <label class="w-full">
-                              <input #ename="ngModel" [(ngModel)]="argu.name" (blur)="isStringValid(argu, ename, selectedNode.job.executable.arguments)" (ngModelChange)="onChange($event)"
+                              <input [hidden]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" #ename="ngModel" [(ngModel)]="argu.name" (blur)="isStringValid(argu, ename, selectedNode.job.executable.arguments)" (ngModelChange)="onChange($event)"
                                      [nzAutocomplete]="auto" class="form-control"
                                      identifierValidation
                                      name="name{{i}}"
                                      nz-input placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
+                              <nz-select *ngIf="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [(ngModel)]="argu.name" name="name{{i}}"
+                                         nzShowSearch [nzAllowClear]="false" (ngModelChange)="selectArgu($event, argu);">
+                                <nz-option  *ngFor="let list of filteredOptions" [nzLabel]="list.name" [nzValue]="list.name" [nzDisabled]="list.selected"></nz-option>
+                              </nz-select>
                             </label>
                             <nz-autocomplete #auto>
                               <nz-auto-option *ngFor="let list of filteredOptions"
@@ -642,29 +646,36 @@
                               <div *ngIf="ename.errors.invalidIdentifier" translate>common.message.invalid</div>
                             </div>
                           </div>
-                          <div class="col-md-6 col-lg-6 m-b-sm">
+                          <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((eVal.dirty || eVal.touched) && eVal.invalid)}">
                             <label class="w-full">
-                              <input (keydown)="onKeyPress($event, 'argument')" [(ngModel)]="argu.value" [required]="argu.name && argu.name.length > 0"
+                              <input #eVal="ngModel" (keydown)="onKeyPress($event, 'argument')" [(ngModel)]="argu.value" [required]="(argu.name && argu.name.length > 0 && !(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name)) || argu.isRequired"
                                      class="form-control" name="value{{i}}"
                                      placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
                                      type="text"/>
+                              <div *ngIf="eVal.invalid && eVal.errors && (eVal.dirty || eVal.touched)"
+                                   class="text-danger help-block">
+                                <div *ngIf="eVal.errors.invalidIdentifier" translate>common.message.invalid</div>
+                              </div>
                             </label>
                             <i (click)="openEditor(argu)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
                                style="right: 13px;top:1px;"></i>
                           </div>
-                          <div class="col-md-1 col-lg-1 p-l-0">
+                          <div *ngIf="!argu.isRequired" class="col-md-1 col-lg-1 p-l-0">
                             <i
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name)"
                               class="fa fa-scissors m-t-sm"></i>
                             <a
                               *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name))"><i
-                              (click)="removeArgu(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                              (click)="removeArgu(argu.name, 1)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                           </div>
                         </div>
                       </div>
                       <div class="form-group row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-12" *ngIf="!(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) || filteredOptions.length != selectedNode.job.executable.arguments.length">
                           <a (click)="addArgu();saveToHistory()" class="text-u-l" style="margin-left: 11px;" translate>order.button.addVariable</a>
+                        </div>
+                        <div class="col-sm-12" *ngIf="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name && filteredOptions.length != selectedNode.job.executable.arguments.length">
+                          <a (click)="addAllArgu();saveToHistory()" class="text-u-l" style="margin-left: 11px;" translate>workflow.button.addAllArguments</a>
                         </div>
                       </div>
                     </div>

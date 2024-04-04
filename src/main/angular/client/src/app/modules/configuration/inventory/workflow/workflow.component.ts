@@ -1390,6 +1390,9 @@ export class JobComponent {
       this.updateVariableList();
     }
     this.initAutoComplete(100);
+    if (this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name) {
+      this.getTemplateData();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -1536,7 +1539,48 @@ export class JobComponent {
     }
   }
 
-
+  getTemplateData(): void {
+    this.coreService.post('job_template', {
+      jobTemplatePath: this.selectedNode.job.jobTemplate.name
+    }).subscribe({
+      next: (res) => {
+        this.filteredOptions = [];
+        for (const key in res.jobTemplate.arguments) {
+          let flag = true;
+          for (const i in this.selectedNode.job.executable?.arguments) {
+            if (key == this.selectedNode.job.executable?.arguments[i].name) {
+              this.selectedNode.job.executable.arguments[i].isRequired = res.jobTemplate.arguments[key].required;
+              res.jobTemplate.arguments[key].selected = true;
+              flag = false;
+              break;
+            }
+          }
+          if(flag && res.jobTemplate.arguments[key].required){
+            res.jobTemplate.arguments[key].selected = true;
+            this.selectedNode.job.executable.arguments.push({
+              name: res.jobTemplate.arguments[key].name,
+              value: res.jobTemplate.arguments[key].value.value,
+              isRequired: res.jobTemplate.arguments[key].value.isRequired
+            });
+          }
+          if (res.jobTemplate.arguments[key].type === 'String') {
+            this.coreService.removeSlashToString(res.jobTemplate.arguments[key], 'default');
+          } else if (res.jobTemplate.arguments[key].type === 'Boolean') {
+            res.jobTemplate.arguments[key].default = (res.jobTemplate.arguments[key].default === true || res.jobTemplate.arguments[key].default === 'true');
+          }
+          this.filteredOptions.push({
+            name: key,
+            selected: res.jobTemplate.arguments[key].selected,
+            value: {
+              type: res.jobTemplate.arguments[key].type,
+              isRequired: res.jobTemplate.arguments[key].required,
+              value: res.jobTemplate.arguments[key].default
+            }
+          });
+        }
+      }
+    });
+  }
 
   focusChange(): void {
     this.obj.script = false;
@@ -2236,6 +2280,7 @@ export class JobComponent {
       name: '',
       value: ''
     };
+
     if (this.selectedNode.job.executable.arguments) {
       if (!this.coreService.isLastEntryEmpty(this.selectedNode.job.executable.arguments, 'name', '')) {
         this.selectedNode.job.executable.arguments.push(param);
@@ -2243,8 +2288,26 @@ export class JobComponent {
     }
   }
 
-  removeArgu(index): void {
+  addAllArgu(): void {
+    this.filteredOptions.forEach(item => {
+      const data = this.selectedNode.job.executable.arguments.find(argu => item.name == argu.name);
+      if (!data) {
+        item.selected = true;
+        this.selectedNode.job.executable.arguments.push({
+          name: item.name,
+          value: item.value.value,
+          isRequired: item.value.isRequired
+        });
+      }
+    })
+  }
+
+  removeArgu(name, index): void {
     this.selectedNode.job.executable.arguments.splice(index, 1);
+    if (this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name && name) {
+      const data = this.filteredOptions.find(item => item.name == name);
+      data.selected = false;
+    }
     this.saveToHistory();
   }
 
@@ -2296,6 +2359,13 @@ export class JobComponent {
 
   onChange(value: string): void {
     this.filteredOptions = [...this.filteredOptions.filter(option => option.name.toLowerCase().indexOf(value.toLowerCase()) === -1)];
+  }
+
+  selectArgu(name, argu): void {
+    const data = this.filteredOptions.find(item => item.name == name);
+    data.selected = true;
+    argu.value = data.value.value;
+    argu.isRequired = data.value.isRequired;
   }
 
   valueWith = (data: { name: string }) => data.name;
