@@ -973,6 +973,11 @@ export class OrderOverviewComponent {
       if (order.state) {
         if (order.state._text !== 'SUSPENDED' && order.state._text !== 'FAILED') {
           this.object.isResume = false;
+        } else {
+          if (!((order.state._text == 'SUSPENDED' && this.permission.currentController.orders.suspendResume)
+            || (order.state._text == 'FAILED' && this.permission.currentController.orders.resumeFailed))) {
+            this.object.isResume = false;
+          }
         }
         if ((order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED') || (order.positionString && order.positionString.match('/fork'))) {
           this.object.isTerminate = false;

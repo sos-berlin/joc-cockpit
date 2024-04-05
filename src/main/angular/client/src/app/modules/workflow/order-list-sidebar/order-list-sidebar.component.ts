@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   Input,
   OnChanges,
@@ -174,6 +173,11 @@ export class OrderListSidebarComponent implements OnChanges {
         if (item.state) {
           if (item.state._text !== 'SUSPENDED' && item.state._text !== 'FAILED') {
             this.object.isResume = false;
+          } else {
+            if (!((item.state._text == 'SUSPENDED' && this.permission.currentController.orders.suspendResume)
+              || (item.state._text == 'FAILED' && this.permission.currentController.orders.resumeFailed))) {
+              this.object.isResume = false;
+            }
           }
           if ((item.state._text !== 'FINISHED' && item.state._text !== 'CANCELLED') || (item.positionString && item.positionString.match('/fork'))) {
             this.object.isTerminate = false;

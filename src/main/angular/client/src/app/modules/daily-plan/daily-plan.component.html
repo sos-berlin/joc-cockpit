@@ -61,7 +61,6 @@
                 <a translate>{{'dailyPlan.button.setParameters' | translate}} ..</a>
               </li>
               <li (click)="copyOrder(value, null)" *ngIf="permission.currentController.orders.modify"
-                  [nzDisabled]="value.state && value.state._text === 'FINISHED'"
                   nz-menu-item>
                 <a translate>{{'common.button.copy' | translate}} ..</a>
               </li>
@@ -218,7 +217,6 @@
                 </a>
               </li>
               <li (click)="copyOrder(plan, null)" *ngIf="permission.currentController.orders.modify"
-                  [nzDisabled]="!plan.isModify"
                   nz-menu-item>
                 <a translate>{{'common.button.copy' | translate}} ..</a>
               </li>
@@ -459,9 +457,8 @@
               class="fa fa-edit"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span>
             </button>
-            <button (click)="copySelectedOrder()"
-                    *ngIf="permission.currentController && permission.currentController.orders.modify"
-                    [disabled]="!object.isModify" class="btn btn-grey btn-sm m-l-12"><i
+            <button (click)="copySelectedOrder()" *ngIf="permission.currentController && permission.currentController.orders.modify"
+                    class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-copy"></i>&nbsp;
               <span class="hidden-sm-down" translate>common.button.copy</span>
             </button>

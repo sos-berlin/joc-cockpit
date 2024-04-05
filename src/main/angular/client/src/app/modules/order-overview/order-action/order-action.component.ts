@@ -10,6 +10,7 @@ import {
 } from '../../../components/modify-modal/modify.component';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {NzMessageService} from "ng-zorro-antd/message";
+import {AddOrderModalComponent} from "../../workflow/workflow-action/workflow-action.component";
 
 @Component({
   selector: 'app-order-action',
@@ -88,6 +89,32 @@ export class OrderActionComponent {
     if (order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')) {
       this.coreService.showOrderLogWindow(order.orderId, this.schedulerId, order.workflowId.path, this.viewContainerRef);
     }
+  }
+
+  cloneOrder(order): void{
+    this.getRequirements(order, (workflow) => {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: AddOrderModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          preferences: this.preferences,
+          permission: this.permission,
+          schedulerId: this.schedulerId,
+          workflow,
+          order
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+
+        }
+      });
+    });
   }
 
   removeWhenTerminated(): void {
