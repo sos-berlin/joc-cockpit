@@ -57,8 +57,10 @@
           nz-menu-item>
         <a>{{'order.button.confirm' | translate}} ..</a>
       </li>
-      <li *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')"
-          nz-menu-divider></li>
+      <li nz-menu-divider></li>
+      <li *ngIf="permission.currentController.orders.create && order.state && (order.state._text == 'SCHEDULED' || order.state._text == 'PENDING')" (click)="cloneOrder(order)" nz-menu-item>
+        <a translate>order.button.cloneOrder</a>
+      </li>
       <li (click)="coreService.copyArguments(order, 'arguments', message)" nz-menu-item [nzDisabled]="!order.arguments">
         <a translate>common.button.copyArguments</a>
       </li>
