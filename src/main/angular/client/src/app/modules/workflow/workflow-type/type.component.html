@@ -89,6 +89,12 @@
     <li>
       <a *ngIf="instruction['TYPE'] === 'Fork' || instruction['TYPE'] === 'ForkList' || instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Try' || instruction['TYPE'] === 'Retry' || instruction['TYPE'] === 'Cycle' || instruction['TYPE'] === 'Lock' || instruction['TYPE'] === 'Options' || instruction['TYPE'] === 'StickySubagent' || instruction['TYPE'] === 'ConsumeNotices'"
          class="hover">
+        <ng-template #contentTemplate>
+          <div>
+            <b translate>workflow.label.maxTries</b> : {{instruction.maxTries}} <br>
+            <b translate>workflow.label.delay</b> : {{instruction.retryDelays}}
+          </div>
+        </ng-template>
         <div *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle'" class="btn-group dropdown"
              style="margin-left: -10px">
           <button [nzDropdownMenu]="menu" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
@@ -146,7 +152,8 @@
         </div>
         <i (click)="collapse(instruction)" [ngClass]="{'fa-minus' : (instruction.show)}" class="fa fa-plus pr-2"></i>
         <span class="_600">
-          <span *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle'">{{instruction['TYPE']}}</span>
+          <span *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle' && instruction['TYPE'] !== 'Retry'">{{instruction['TYPE']}}</span>
+          <span *ngIf="instruction['TYPE'] === 'Retry'" nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate" nzPopoverPlacement="right">{{instruction['TYPE']}}</span>
           <a (click)="showConfiguration(instruction);" *ngIf="instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Cycle'"
              class="cursor">{{instruction['TYPE']}}</a><span
           *ngIf="instruction['TYPE'] === 'Lock'">:</span>
