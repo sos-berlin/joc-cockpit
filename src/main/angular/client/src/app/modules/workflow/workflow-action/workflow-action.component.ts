@@ -139,6 +139,49 @@ export class AddOrderModalComponent {
     this.getPositions();
     this.updateVariableList();
     this.checkClipboardContent();
+    if (this.modalData.order) {
+      let _arguments: any = this.coreService.convertObjectToArray(this.modalData.order, 'arguments');
+      if (_arguments && _arguments.length > 0) {
+        _arguments.forEach(argu => {
+          for(let i in this.variableList){
+            if(argu.name == this.variableList[i].name){
+              if(isArray(argu.value)){
+                for(let j in argu.value) {
+                  Object.entries(argu.value[j]).map(([k1, v1]) => {
+                    for (let x in this.variableList[i].value.actualList) {
+                      if (k1 == this.variableList[i].value.actualList[x].name) {
+                        this.variableList[i].value.actualList[x].value = v1;
+                        break;
+                      }
+                    }
+                  });
+                }
+                this.arguments.push({
+                  name: argu.name,
+                  type: this.variableList[i].value.type,
+                  isRequired: true,
+                  actualList: [{list: this.variableList[i].value.actualList}],
+                  list: this.variableList[i].value.listParameters
+                });
+              } else {
+                this.arguments.push({
+                  name: argu.name,
+                  value: argu.value,
+                  type: this.variableList[i].value.type,
+                  isRequired: true,
+                  facet: this.variableList[i].value.facet,
+                  message: this.variableList[i].value.message,
+                  list: this.variableList[i].value.list
+                });
+              }
+              break;
+            }
+          }
+
+
+        })
+      }
+    }
     //this.isCollapsed = Array(this.forkListVariables.length).fill(false);
   }
 
@@ -263,8 +306,21 @@ export class AddOrderModalComponent {
     }).subscribe({
       next: (res) => {
         this.positions = new Map();
+        if (this.modalData.order) {
+          this.order.endPositions = [];
+          this.order.startPosition = this.modalData.order.positionString;
+          this.order.blockPosition = this.modalData.order.blockPosition;
+        }
         res.positions.forEach((item) => {
           this.positions.set(item.positionString, (item.position));
+          if (this.modalData.order && this.modalData.order.endPositions) {
+            for (let i in this.modalData.order.endPositions) {
+              if (JSON.stringify(this.modalData.order.endPositions[i]) == JSON.stringify(item.position)) {
+                this.order.endPositions.push(item.positionString);
+                break;
+              }
+            }
+          }
         });
 
         this.blockPositions = new Map();
@@ -273,6 +329,7 @@ export class AddOrderModalComponent {
           this.blockPositions.set(item.positionString, (item.position));
           this.blockPositionList.set(item.positionString, item.positions);
         });
+
       }, error: () => this.submitted = false
     });
   }
@@ -292,15 +349,18 @@ export class AddOrderModalComponent {
                 list.push(obj);
               });
             }
+
             if (!val.default && val.default !== false && val.default !== 0) {
-              this.arguments.push({
-                name: k,
-                type: val.type,
-                isRequired: true,
-                facet: val.facet,
-                message: val.message,
-                list: list
-              });
+              if(!this.modalData.order){
+                this.arguments.push({
+                  name: k,
+                  type: val.type,
+                  isRequired: true,
+                  facet: val.facet,
+                  message: val.message,
+                  list: list
+                });
+              }
             } else if (val.default) {
               if (val.type === 'String') {
                 this.coreService.removeSlashToString(val, 'default');
@@ -308,6 +368,7 @@ export class AddOrderModalComponent {
                 val.default = (val.default === 'true' || val.default === true);
               }
             }
+            val.list = list;
           }
         } else {
           this.isForkList = true;
@@ -334,13 +395,17 @@ export class AddOrderModalComponent {
                 return {name: k1, value: val1};
               });
             }
-            this.arguments.push({
-              name: k,
-              type: val.type,
-              isRequired: true,
-              actualList: [{list: actualList}],
-              list: val.listParameters
-            });
+            if(!this.modalData.order){
+              this.arguments.push({
+                name: k,
+                type: val.type,
+                isRequired: true,
+                actualList: [{list: actualList}],
+                list: val.listParameters
+              });
+            } else {
+              val.actualList = actualList;
+            }
           }
         }
         return {name: k, value: val};
@@ -391,7 +456,7 @@ export class AddOrderModalComponent {
   updateSelectItems(): void {
     for (let i = 0; i < this.variableList.length; i++) {
       this.variableList[i].isSelected = false;
-      if(this.variableList[i].actualList?.length){
+      if (this.variableList[i].actualList?.length) {
         this.variableList[i].isSelected = true;
       } else {
         for (let j = 0; j < this.arguments.length; j++) {
@@ -461,7 +526,7 @@ export class AddOrderModalComponent {
         order.arguments = {};
       }
       this.arguments.forEach((item) => {
-        if(item.type === 'List') {
+        if (item.type === 'List') {
           order.arguments[item.name] = [];
           if (item.actualList?.length > 0) {
             for (const i in item.actualList) {
@@ -520,7 +585,12 @@ export class AddOrderModalComponent {
   addVariableToList(data): void {
     const arr = [];
     data.list.forEach(item => {
-      arr.push({name: item.name, type: item.value.type, value: (item.value.value || item.value.default), isRequired: (item.isRequired || item.value.isRequired)});
+      arr.push({
+        name: item.name,
+        type: item.value.type,
+        value: (item.value.value || item.value.default),
+        isRequired: (item.isRequired || item.value.isRequired)
+      });
     });
     let flag = false;
     for (const i in data.actualList) {
