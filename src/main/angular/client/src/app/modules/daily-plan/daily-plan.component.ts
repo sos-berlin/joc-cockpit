@@ -754,8 +754,7 @@ export class DailyPlanComponent {
     isCancel: false,
     isModifyStartTime: false,
     isModify: false,
-    isPlanned: false,
-    isFinished: false
+    isPlanned: false
   };
 
   filterBtn: any = [
@@ -1814,19 +1813,13 @@ export class DailyPlanComponent {
     this.isAllSelected = true;
     if (this.dailyPlanFilters.filter.groupBy) {
       for (let i = 0; i < this.planOrders.length; i++) {
-        if (!this.planOrders[i].isFinished) {
-          this.planOrders[i].value.forEach(item => {
-            if (item.state._text !== 'FINISHED') {
-              this.object.mapOfCheckedId.set(item.orderId, item);
-            }
-          });
-        }
+        this.planOrders[i].value.forEach(item => {
+          this.object.mapOfCheckedId.set(item.orderId, item);
+        });
       }
     } else {
       this.planOrders.forEach(item => {
-        if (item.state._text !== 'FINISHED') {
-          this.object.mapOfCheckedId.set(item.orderId, item);
-        }
+        this.object.mapOfCheckedId.set(item.orderId, item);
       });
     }
     this.checkState(this.object, this.object.mapOfCheckedId);
@@ -1842,19 +1835,13 @@ export class DailyPlanComponent {
       if (this.dailyPlanFilters.filter.groupBy) {
         if (this.object.checked) {
           for (let i = 0; i < orders.length; i++) {
-            if (!orders[i].isFinished) {
-              let count = 0;
-              orders[i].value.forEach(item => {
-                if (item.state._text !== 'FINISHED') {
-                  this.object.mapOfCheckedId.set(item.orderId, item);
-                  ++count;
-                }
-              });
-              orders[i].checked = count === orders[i].value.length;
-              orders[i].indeterminate = count > 0 && !orders[i].checked;
-            } else {
-              flag = true;
-            }
+            let count = 0;
+            orders[i].value.forEach(item => {
+              this.object.mapOfCheckedId.set(item.orderId, item);
+              ++count;
+            });
+            orders[i].checked = count === orders[i].value.length;
+            orders[i].indeterminate = count > 0 && !orders[i].checked;
           }
         } else {
           for (let i = 0; i < orders.length; i++) {
@@ -1866,9 +1853,7 @@ export class DailyPlanComponent {
       } else {
         if (this.object.checked) {
           orders.forEach(item => {
-            if (item.state._text !== 'FINISHED') {
-              this.object.mapOfCheckedId.set(item.orderId, item);
-            }
+            this.object.mapOfCheckedId.set(item.orderId, item);
           });
         } else {
           this.object.mapOfCheckedId.clear();
@@ -1914,23 +1899,17 @@ export class DailyPlanComponent {
     this.object.mapOfCheckedId.clear();
     if (this.dailyPlanFilters.filter.groupBy) {
       for (let i = 0; i < orders.length; i++) {
-        if (!orders[i].isFinished) {
-          let count = 0;
-          orders[i].value.forEach(item => {
-            if (item.state._text !== 'FINISHED') {
-              this.object.mapOfCheckedId.set(item.orderId, item);
-              ++count;
-            }
-          });
-          orders[i].checked = count === orders[i].value.length;
-          orders[i].indeterminate = count > 0 && !orders[i].checked;
-        }
+        let count = 0;
+        orders[i].value.forEach(item => {
+          this.object.mapOfCheckedId.set(item.orderId, item);
+          ++count;
+        });
+        orders[i].checked = count === orders[i].value.length;
+        orders[i].indeterminate = count > 0 && !orders[i].checked;
       }
     } else {
       orders.forEach(item => {
-        if (item.state._text !== 'FINISHED') {
-          this.object.mapOfCheckedId.set(item.orderId, item);
-        }
+        this.object.mapOfCheckedId.set(item.orderId, item);
       });
     }
   }
@@ -2270,7 +2249,6 @@ export class DailyPlanComponent {
 
   private checkState(object, list): void {
     object.isPlanned = true;
-    object.isFinished = false;
     object.isCancel = false;
     object.isModify = true;
     object.isModifyStartTime = true;
@@ -2301,9 +2279,6 @@ export class DailyPlanComponent {
         object.isModify = false;
       }
     });
-    if (finishedCount === list.length || finishedCount === list.size) {
-      object.isFinished = true;
-    }
   }
 
   private checkPlan(plan): void {
@@ -2438,8 +2413,7 @@ export class DailyPlanComponent {
       isCancel: false,
       isModify: false,
       isModifyStartTime: false,
-      isPlanned: false,
-      isFinished: false
+      isPlanned: false
     };
     if (!flag) {
       this.isCalendarClick = false;
