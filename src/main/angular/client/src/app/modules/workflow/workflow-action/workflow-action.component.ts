@@ -134,25 +134,26 @@ export class AddOrderModalComponent {
     if (!this.workflow.configuration) {
       this.workflow.configuration = this.coreService.clone(this.workflow);
       this.workflowService.convertTryToRetry(this.workflow.configuration, null, {}, {count: 0});
-
     }
+
     this.getPositions();
     this.updateVariableList();
     this.checkClipboardContent();
     if (this.modalData.order) {
       this.order.at = 'date';
       if (this.modalData.order.scheduledFor && typeof this.modalData.order.scheduledFor == 'number') {
-        this.order.fromDate = this.coreService.convertTimeToLocalTZ(this.preferences, new Date(this.modalData.order.scheduledFor));
+        //this.order.fromDate = this.coreService.convertTimeToLocalTZ(this.preferences, new Date(this.modalData.order.scheduledFor));
         this.order.fromTime1 = this.coreService.convertTimeToLocalTZ(this.preferences, new Date(this.modalData.order.scheduledFor));
         this.order.fromTime = this.coreService.getDateByFormat(new Date(this.modalData.order.scheduledFor), null, 'HH:mm:ss');
+        this.order.fromDate = new Date(this.modalData.order.scheduledFor);
       }
       let _arguments: any = this.coreService.convertObjectToArray(this.modalData.order, 'arguments');
       if (_arguments && _arguments.length > 0) {
         _arguments.forEach(argu => {
-          for(let i in this.variableList){
-            if(argu.name == this.variableList[i].name){
-              if(isArray(argu.value)){
-                for(let j in argu.value) {
+          for (let i in this.variableList) {
+            if (argu.name == this.variableList[i].name) {
+              if (isArray(argu.value)) {
+                for (let j in argu.value) {
                   Object.entries(argu.value[j]).map(([k1, v1]) => {
                     for (let x in this.variableList[i].value.actualList) {
                       if (k1 == this.variableList[i].value.actualList[x].name) {

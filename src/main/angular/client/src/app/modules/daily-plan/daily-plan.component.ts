@@ -2286,7 +2286,7 @@ export class DailyPlanComponent {
       if (order.state._text !== 'PLANNED') {
         object.isPlanned = false;
       }
-      if (order.state._text === 'PLANNED') {
+      if (order.state._text === 'PLANNED' || order.state._text === 'FINISHED') {
         object.isCancel = true;
       }
       if (order.state._text === 'FINISHED') {
