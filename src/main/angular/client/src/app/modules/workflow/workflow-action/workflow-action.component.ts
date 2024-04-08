@@ -140,6 +140,12 @@ export class AddOrderModalComponent {
     this.updateVariableList();
     this.checkClipboardContent();
     if (this.modalData.order) {
+      this.order.at = 'date';
+      if (this.modalData.order.scheduledFor && typeof this.modalData.order.scheduledFor == 'number') {
+        this.order.fromDate = this.coreService.convertTimeToLocalTZ(this.preferences, new Date(this.modalData.order.scheduledFor));
+        this.order.fromTime1 = this.coreService.convertTimeToLocalTZ(this.preferences, new Date(this.modalData.order.scheduledFor));
+        this.order.fromTime = this.coreService.getDateByFormat(new Date(this.modalData.order.scheduledFor), null, 'HH:mm:ss');
+      }
       let _arguments: any = this.coreService.convertObjectToArray(this.modalData.order, 'arguments');
       if (_arguments && _arguments.length > 0) {
         _arguments.forEach(argu => {
@@ -182,11 +188,10 @@ export class AddOrderModalComponent {
         })
       }
     }
-    //this.isCollapsed = Array(this.forkListVariables.length).fill(false);
   }
 
   toggleCollapse(k: number): void {
-   
+
     if (this.preferences.listVariableCollapse) {
       if (this.allValuesAssigned(this.arguments[k])) {
         this.isCollapsed[k] = !this.isCollapsed[k];
@@ -308,7 +313,7 @@ export class AddOrderModalComponent {
         this.positions = new Map();
         if (this.modalData.order) {
           this.order.endPositions = [];
-          this.order.startPosition = this.modalData.order.positionString;
+         // this.order.startPosition = this.modalData.order.positionString;
           this.order.blockPosition = this.modalData.order.blockPosition;
         }
         res.positions.forEach((item) => {
