@@ -1879,12 +1879,20 @@ export class WorkflowComponent {
         orders: []
       };
     }
-    const request = {
+    const request: any = {
       compact: true,
       controllerId: this.schedulerIds.selected,
       workflowIds: workflowIds,
       states: state == 'COMPLETED' ? ["FINISHED", "CANCELLED"] : state === 'ALL' ? [] : [state]
     };
+    if (this.workflowFilters.filter.date !== 'ALL') {
+      request.dateTo = this.workflowFilters.filter.date;
+      if (this.workflowFilters.filter.date === '2d') {
+        request.dateFrom = '1d';
+      }
+      request.timeZone = this.preferences.zone;
+    }
+    request.compact = true;
     this.getOrdersOnState(request);
   }
 

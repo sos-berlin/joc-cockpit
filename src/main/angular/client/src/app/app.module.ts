@@ -1,6 +1,6 @@
 import {ErrorHandler, Injectable, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {en_US, NZ_DATE_LOCALE, NZ_I18N} from 'ng-zorro-antd/i18n';
+import {en_US, NZ_DATE_CONFIG, NZ_DATE_LOCALE, NZ_I18N} from 'ng-zorro-antd/i18n';
 import {registerLocaleData} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
@@ -78,7 +78,7 @@ export class MyErrorHandler implements ErrorHandler {
     {
       provide: NZ_I18N, useValue: en_US
     },
-    {provide: NZ_DATE_LOCALE, useValue: enUS}],
+    {provide: NZ_DATE_LOCALE, useValue: enUS},  { provide: NZ_DATE_CONFIG, useValue: { firstDayOfWeek: 1 } },],
   bootstrap: [AppComponent]
 })
 export class AppModule {
