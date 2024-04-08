@@ -606,7 +606,7 @@ export class ModifyStartTimeModalComponent {
       this.n1 = this.orders.size;
     }
     if (this.isCopy) {
-      if (this.order.plannedDate) {
+      if (this.order?.plannedDate) {
         this.order.fromTime1 = this.order.plannedDate;
         this.order.fromTime = this.coreService.getDateByFormat(this.order.plannedDate, null, 'HH:mm:ss');
         this.order.fromDate = this.order.plannedDate;
