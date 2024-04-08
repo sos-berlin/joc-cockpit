@@ -4,8 +4,10 @@ const moment = require("moment");
 const {promisify} = require('util');
 let logger = require('./logger');
 logger = new logger().getLogger();
+const readline = require('readline');
 const generate = require('./generator');
 const utils = require('./utils');
+const v8 = require('v8');
 
 const appendFileAsync = promisify(fs.appendFile);
 
@@ -212,18 +214,109 @@ async function writeJsonToFile(outputPath, jsonData, addComma = false) {
 
 async function processCsvFiles(csvFilePaths, outputJsonPath, templateData, options) {
     try {
-        const combinedJsonData = await combineCsvToJson(csvFilePaths, templateData, options);
-        if (templateData.execution === "DURATION") {
-            // Example comparator function to compare objects based on 'duration' property
-            const compareByDuration = (a, b) => b.duration - a.duration;
-            // Get top 10 entries based on duration
-            const top10Entries = await getTopEntries(combinedJsonData, options.hits, compareByDuration);
-            await writeJsonToFile(outputJsonPath, top10Entries);
-        } else {
-            await writeJsonToFile(outputJsonPath, combinedJsonData);
+        const writeStream = fs.createWriteStream(outputJsonPath, { flags: 'a' }); // Append mode
+        writeStream.write("[\n");
+
+        let processedFilesCount = 0;
+        const totalFilesCount = csvFilePaths.length;
+
+        for (const csvFilePath of csvFilePaths) {
+            processedFilesCount++;
+
+            console.log(`Processing file ${csvFilePath}...`);
+            const readStream = fs.createReadStream(path.join(options.inputDirectory, csvFilePath), { encoding: 'utf-8' });
+            const rl = readline.createInterface({
+                input: readStream,
+                crlfDelay: Infinity
+            });
+
+            let headers;
+            let isFirstLine = true;
+            let isFirstObjectInFile = true;
+            for await (const line of rl) {
+                if (isFirstLine) {
+                    headers = line.trim().split(';');
+                    isFirstLine = false;
+                } else {
+                    const values = line.trim().split(';');
+                    const obj = {};
+                    if (headers) {
+                        for (let j = 0; j < headers.length; j++) {
+                            obj[headers[j]] = values[j];
+                        }
+                        let flag = true;
+                        if (options.controllerId) {
+                            flag = obj.CONTROLLER_ID === options.controllerId;
+                        }
+                        if (templateData && flag) {
+                            if (templateData.status === "FAILED") {
+                                flag = obj.STATE === '2';
+                            } else if (templateData.status === "SUCCESS") {
+                                flag = obj.STATE === '1';
+                            }
+
+                            if (flag && templateData.orderState === 'CANCELLED') {
+                                flag = obj.ORDER_STATE === '7';
+                            }
+                            if (flag && templateData.criticality === 'HIGH') {
+                                flag = obj.CRITICALITY === '2';
+                            }
+                        }
+
+                        if (flag) {
+                            obj.duration = moment(obj.END_TIME).diff(obj.START_TIME) / 1000;
+                            delete obj.ID;
+                            delete obj.MODIFIED;
+                            delete obj.WORKFLOW_VERSION_ID;
+                            delete obj.POSITION;
+                            delete obj.AGENT_ID;
+                            delete obj.CREATED;
+                            delete obj.WORKFLOW_PATH;
+                            delete obj.CONTROLLER_ID;
+                            delete obj.ERROR;
+                            if (obj.JOB_NAME) {
+                                delete obj.ORDER_ID;
+                            }
+
+                            if (templateData.groupBy === 'START_TIME' && !templateData.execution) {
+                                if (!isFirstObjectInFile) {
+                                    writeStream.write(",\n");
+                                } else {
+                                    isFirstObjectInFile = false;
+                                }
+                                writeStream.write(JSON.stringify(obj));
+                            } else {
+                                if (!isFirstObjectInFile) {
+                                    writeStream.write(",\n");
+                                } else {
+                                    isFirstObjectInFile = false;
+                                }
+
+                                writeStream.write(JSON.stringify(obj));
+                            }
+                        }
+                    }
+                }
+            }
+
+            console.log(`Finished processing ${csvFilePath}.`);
+            // const heapStats = v8.getHeapStatistics();
+            // console.log(`Memory usage after processing ${csvFilePath}:`);
+            // console.log(`  - Total Heap Size: ${(heapStats.total_heap_size / (1024 * 1024)).toFixed(2)} MB`);
+            // console.log(`  - Used Heap Size: ${(heapStats.used_heap_size / (1024 * 1024)).toFixed(2)} MB`);
+            // console.log(`  - Heap Size Limit: ${(heapStats.heap_size_limit / (1024 * 1024)).toFixed(2)} MB`);
+            // Add a comma if there are more files to process
+            if (processedFilesCount < totalFilesCount) {
+                writeStream.write(",");
+            }
         }
+
+        writeStream.write("\n]");
+        writeStream.end();
     } catch (error) {
-        console.error(error.message);
+        console.error('Error processing CSV:', error.message);
+        logger.error('Error processing CSV:', error.message);
+        throw error;
     }
 }
 

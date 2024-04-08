@@ -6,7 +6,7 @@ const readline = require('readline');
 let logger = require('./logger');
 logger = new logger().getLogger();
 const utils = require("./utils");
-
+const v8 = require("v8");
 
 /**
  * Read JSON data from a file and process it.
@@ -37,21 +37,20 @@ async function readJSONData(directory, file, options, templateData) {
                 const groupedData = {};
                 rl.on('line', (line) => {
                     try {
-                        if (line) {
-                            line = line.replace(/,\s*$/, '');
-                            if(line) {
+                        if (line != '[' && line != ']') {
+                            line = line.replace('},', '}');
+                            if (line) {
                                 try {
                                     const data = JSON.parse(line);
 
-                                    if (typeof data == 'string') {
-                                        let _data = JSON.parse(data);
-                                        const startTime = _data.START_TIME;
-                                        // Group the data by category
-                                        if (!groupedData[startTime]) {
-                                            groupedData[startTime] = [];
-                                        }
-                                        groupedData[startTime].push(_data);
+
+                                    const startTime = data.START_TIME;
+                                    // Group the data by category
+                                    if (!groupedData[startTime]) {
+                                        groupedData[startTime] = [];
                                     }
+                                    groupedData[startTime].push(data);
+
                                 } catch (e) {
                                     console.log(e);
                                 }
@@ -103,6 +102,7 @@ async function readJSONData(directory, file, options, templateData) {
             if (data.match('}{')) {
                 data = data.replaceAll('}{', ',');
             }
+
             await writeReportData(options, data, directory, file, templateData, options.hits);
         }
     } catch (error) {
@@ -269,13 +269,15 @@ function dynamicData(templates, data, options) {
             };
         } else if (templates.data.groupBy === 'START_TIME' && templates.data.execution === "DURATION") {
             // Extract the required fields and return the modified data array
-            return data.map(({WORKFLOW_NAME, JOB_NAME, START_TIME, duration}) => ({
-                WORKFLOW_NAME,
-                JOB_NAME,
-                START_TIME,
-                duration: duration !== null ? duration : 0,
-                data: []
-            }));
+            return data.sort((a, b) => b.duration - a.duration) // Sort by count in descending order
+                // Slice to get only the specified hits
+                .slice(0, options.hits).map(({WORKFLOW_NAME, JOB_NAME, START_TIME, duration}) => ({
+                    WORKFLOW_NAME,
+                    JOB_NAME,
+                    START_TIME,
+                    duration: duration !== null ? duration : 0,
+                    data: []
+                }))
         } else {
             return Object.entries(data.reduce((groups, item) => {
                 let key = item[templates.data.groupBy];
@@ -323,9 +325,13 @@ async function writeReportData(options, data, directory, fileName, templateData,
         type: templateData.type,
         chartType: templateData.data.chartType
     };
-    data = '[' + data + ']';
-    jsonObject.data = dynamicData(templateData, JSON.parse(data), options);
 
+    const heapStats = v8.getHeapStatistics();
+    console.log(`  - Total Heap Size: ${(heapStats.total_heap_size / (1024 * 1024)).toFixed(2)} MB`);
+    console.log(`  - Used Heap Size: ${(heapStats.used_heap_size / (1024 * 1024)).toFixed(2)} MB`);
+    console.log(`  - Heap Size Limit: ${(heapStats.heap_size_limit / (1024 * 1024)).toFixed(2)} MB`);
+
+    jsonObject.data = dynamicData(templateData, JSON.parse(data), options);
     if (jsonObject.data) {
         let outputDir;
         if (options.outputDirectory) {
