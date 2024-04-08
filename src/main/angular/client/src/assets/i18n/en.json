@@ -2465,7 +2465,7 @@
     "label.orientation": "Orientation",
     "label.interRankCellSpacing": "Spacing between Instructions on adjacent layers",
     "label.intraCellSpacing": "Spacing between Instructions on the same layer",
-    "label.edgeRounded": "Round Edges of Connection",
+    "label.edgeRounded": "Round Edges for Connections",
     "label.horizontal": "Horizontal",
     "label.vertical": "Vertical",
     "button.resetPreferences": "Reset Profile Preferences",
@@ -2525,7 +2525,7 @@
       "label.downloadLog": "download log",
       "label.jocCockpit": "JOC Cockpit",
       "label.suspendResume": "suspend and resume",
-      "label.resumeFailed": "resume and failed",
+      "label.resumeFailed": "resume after failed",
       "label.controller": "Controller",
       "label.managePositions": "manage positions"
     },
