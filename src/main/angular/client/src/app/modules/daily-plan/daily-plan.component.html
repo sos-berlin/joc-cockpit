@@ -180,7 +180,7 @@
       </td>
       <td>
         <div class="btn-group dropdown">
-          <button (nzVisibleChange)="change($event)" [nzDisabled]="plan.isFinished || object.checked || object.indeterminate" [nzDropdownMenu]="export2"
+          <button (nzVisibleChange)="change($event)" [nzDisabled]="object.checked || object.indeterminate" [nzDropdownMenu]="export2"
                   class="btn-drop more-option-h"
                   nz-dropdown nzTrigger="click" type="button">
             <i class="fa fa-ellipsis-h"></i>
