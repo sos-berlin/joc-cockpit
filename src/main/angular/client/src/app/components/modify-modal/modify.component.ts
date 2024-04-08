@@ -605,6 +605,13 @@ export class ModifyStartTimeModalComponent {
     if (this.orders) {
       this.n1 = this.orders.size;
     }
+    if (this.isCopy) {
+      if (this.order.plannedDate) {
+        this.order.fromTime1 = this.order.plannedDate;
+        this.order.fromTime = this.coreService.getDateByFormat(this.order.plannedDate, null, 'HH:mm:ss');
+        this.order.fromDate = this.order.plannedDate;
+      }
+    }
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
