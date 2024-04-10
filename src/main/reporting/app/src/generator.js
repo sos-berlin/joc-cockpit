@@ -2,135 +2,45 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
 const _ = require('lodash');
-const readline = require('readline');
 let logger = require('./logger');
 logger = new logger().getLogger();
 const utils = require("./utils");
 const v8 = require("v8");
+const DB = require('./db');
+
 
 /**
- * Read JSON data from a file and process it.
- * @param {string} directory - Directory containing the file.
- * @param {string} file - Filename.
- * @param {Object} options - Additional options.
- * @param {Object} templateData - Template Data.
+ * Write report data based on template type.
+ * @param {object} options - Cmd parameters.
+ * @param {string} data - Data to write.
+ * @param {string} directory - directory.
+ * @param {string} fileName - Filename.
+ * @param {object} templateData - Template Data.
+ * @param {number} hits - Default 10.
  */
-async function readJSONData(directory, file, options, templateData) {
-    const filePath = path.join(directory, file);
-    console.log(`Read ${filePath} file and start data processing...`)
-    try {
-        if (templateData.data.groupBy === 'START_TIME' && !templateData.data.execution) {
-            return new Promise((resolve, reject) => {
-                // Create a readable stream to read the input file
-                const readStream = fs.createReadStream(filePath, {encoding: 'utf-8'});
-                // Create an interface to read the stream line by line
-                const rl = readline.createInterface({
-                    input: readStream,
-                    crlfDelay: Infinity // To recognize all instances of CR LF ('\r\n') as a single line break
-                });
-                const jsonObject = {
-                    title: templateData.title,
-                    type: templateData.type,
-                    chartType: templateData.data.chartType,
-                    data: []
-                };
-                const groupedData = {};
-                rl.on('line', (line) => {
-                    try {
-                        if (line != '[' && line != ']') {
-                            line = line.replace('},', '}');
-                            if (line) {
-                                try {
-                                    const data = JSON.parse(line);
-
-
-                                    const startTime = data.START_TIME;
-                                    // Group the data by category
-                                    if (!groupedData[startTime]) {
-                                        groupedData[startTime] = [];
-                                    }
-                                    groupedData[startTime].push(data);
-
-                                } catch (e) {
-                                    console.log(e);
-                                }
-                            }
-                        }
-                    } catch (e) {
-                        console.log(e);
-                    }
-                });
-
-                // Event listener for 'close' event, triggered when file reading is finished
-                readStream.on('close', async () => {
-                    console.log('Creation of report data is finished...');
-                    jsonObject.data = Object.entries(groupedData).map(([key, value]) => {
-                        return {
-                            period: key, count: value.length, data: value.map(item => {
-                                return {
-                                    WORKFLOW_NAME: item.WORKFLOW_NAME,
-                                    JOB_NAME: item.JOB_NAME
-                                }
-                            })
-                        }
-                    }).sort((a, b) => b.count - a.count) // Sort by count in descending order
-                        // Slice to get only the specified hits
-                        .slice(0, options.hits);
-                    // jsonObject.data = arr;
-                    if (jsonObject.data) {
-                        const runId = directory.match(/\d+/)[0];
-                        let outputDir;
-                        if (options.outputDirectory) {
-                            outputDir = path.join(options.outputDirectory, file);
-                        } else {
-                            outputDir = path.join('report/' + runId, file);
-                        }
-                        await utils.writeOutputFile(outputDir, jsonObject);
-                    }
-
-                    resolve();
-                });
-                // Event listener for 'error' event, triggered when an error occurs
-                readStream.on('error', (error) => {
-                    console.error('Error reading file:', error);
-                    logger.error('Error reading file:', error);
-                    reject(error); // Reject the promise with the error
-                });
-            });
-        } else {
-            let data = await utils.readJsonFile(filePath);
-            if (data.match('}{')) {
-                data = data.replaceAll('}{', ',');
-            }
-
-            await writeReportData(options, data, directory, file, templateData, options.hits);
-        }
-    } catch (error) {
-        console.error('Error while reading template data', error);
-        logger.error('Error while reading template data', error);
-    }
-}
-
-/**
- * Read data from a directory and process each file.
- * @param {string} directory - Directory containing the files.
- * @param {Object} options - Additional options.
- * @param {string} templateData - Template Data.
- */
-async function readDataDirectory(directory, options, templateData) {
-    const inputFiles = await utils.readInputDirectory(directory);
+async function writeReportData(options, data, directory, fileName, templateData, hits = 10) {
     const runId = directory.match(/\d+/)[0];
-    let outputDir;
-    if (options.outputDirectory) {
-        outputDir = options.outputDirectory;
-    } else {
-        outputDir = path.join('report', runId);
+    const jsonObject = {
+        title: templateData.title,
+        type: templateData.type,
+        chartType: templateData.data.chartType,
+        data: data
+    };
+
+    const heapStats = v8.getHeapStatistics();
+    console.log(`  - Total Available Size: ${(heapStats.total_available_size / (1024 * 1024)).toFixed(2)} MB`);
+    console.log(`  - Used Heap Size: ${(heapStats.used_heap_size / (1024 * 1024)).toFixed(2)} MB`);
+    console.log(`  - Heap Size Limit: ${(heapStats.heap_size_limit / (1024 * 1024)).toFixed(2)} MB`);
+
+    if (jsonObject.data) {
+        let outputDir;
+        if (options.outputDirectory) {
+            outputDir = path.join(options.outputDirectory, fileName);
+        } else {
+            outputDir = path.join('report/' + runId, fileName);
+        }
+        await utils.writeOutputFile(outputDir, jsonObject);
     }
-    await utils.checkAndCreateDirectory(outputDir);
-    for (const file of inputFiles) {
-        await readJSONData(directory, file, options, JSON.parse(templateData));
-    }
-    await utils.deleteDirectory('tmp/' + runId)
 }
 
 /**
@@ -267,80 +177,53 @@ function dynamicData(templates, data, options) {
                 }))
 
             };
-        } else if (templates.data.groupBy === 'START_TIME' && templates.data.execution === "DURATION") {
-            // Extract the required fields and return the modified data array
-            return data.sort((a, b) => b.duration - a.duration) // Sort by count in descending order
-                // Slice to get only the specified hits
-                .slice(0, options.hits).map(({WORKFLOW_NAME, JOB_NAME, START_TIME, duration}) => ({
-                    WORKFLOW_NAME,
-                    JOB_NAME,
-                    START_TIME,
-                    duration: duration !== null ? duration : 0,
-                    data: []
-                }))
-        } else {
-            return Object.entries(data.reduce((groups, item) => {
-                let key = item[templates.data.groupBy];
-                if (templates.data.groupBy === 'JOB_NAME') {
-                    key = item['WORKFLOW_NAME'] + '__' + item['JOB_NAME'];
-                }
-
-                if (!groups[key]) {
-                    groups[key] = {count: 0, data: []};
-                }
-                groups[key].count++;
-                groups[key].data.push(item);
-                return groups;
-            }, {}))
-                .sort((a, b) => b[1].count - a[1].count) // Sort by count in descending order
-                // Slice to get only the specified hits
-                .slice(0, options.hits)
-
-                // Map to transform the data format
-                .map(([key, value]) => {
-                    return {
-                        [templates.data.groupBy.toLowerCase()]: key,
-                        count: value.count,
-                        data: value.data.map(({START_TIME}) => START_TIME)
-                    };
-                });
         }
 
     }
 }
 
-/**
- * Write report data based on template type.
- * @param {object} options - Cmd parameters.
- * @param {string} data - Data to write.
- * @param {string} directory - directory.
- * @param {string} fileName - Filename.
- * @param {object} templateData - Template Data.
- * @param {number} hits - Default 10.
- */
-async function writeReportData(options, data, directory, fileName, templateData, hits = 10) {
-    const runId = directory.match(/\d+/)[0];
-    const jsonObject = {
-        title: templateData.title,
-        type: templateData.type,
-        chartType: templateData.data.chartType
-    };
-
-    const heapStats = v8.getHeapStatistics();
-    console.log(`  - Total Heap Size: ${(heapStats.total_heap_size / (1024 * 1024)).toFixed(2)} MB`);
-    console.log(`  - Used Heap Size: ${(heapStats.used_heap_size / (1024 * 1024)).toFixed(2)} MB`);
-    console.log(`  - Heap Size Limit: ${(heapStats.heap_size_limit / (1024 * 1024)).toFixed(2)} MB`);
-
-    jsonObject.data = dynamicData(templateData, JSON.parse(data), options);
-    if (jsonObject.data) {
-        let outputDir;
-        if (options.outputDirectory) {
-            outputDir = path.join(options.outputDirectory, fileName);
-        } else {
-            outputDir = path.join('report/' + runId, fileName);
-        }
-        await utils.writeOutputFile(outputDir, jsonObject);
+async function readDataFromDb(directory, options, templateData, files) {
+    if (typeof templateData === 'string') {
+        templateData = JSON.parse(templateData);
     }
+    const runId = directory.match(/\d+/)[0];
+    let outputDir;
+    if (options.outputDirectory) {
+        outputDir = options.outputDirectory;
+    } else {
+        outputDir = path.join('report', runId);
+    }
+    await utils.checkAndCreateDirectory(outputDir);
+    async function processFile(file) {
+        if (file !== 'files') {
+            const dbName = templateData.type === 'ORDER' ? 'orders' : 'jobs';
+            return new Promise((resolve, reject) => {
+                DB.getDataFromDb(templateData, dbName, options.hits || 10, file, async (err, data) => {
+                    if (err) {
+                        console.error('Error while reading template data', err);
+                        logger.error('Error while reading template data', err);
+                        reject(err);
+                    } else {
+                        await writeReportData(options, data, directory, file + '.json', templateData, options.hits || 10);
+                        resolve();
+                    }
+                });
+            });
+        }
+    }
+
+    async function processFiles(keys, index) {
+        if (index < keys.length) {
+            const fileKey = keys[index];
+            await processFile(fileKey);
+            await processFiles(keys, index + 1);
+        }
+    }
+
+    const fileKeys = Object.keys(files);
+    await processFiles(fileKeys, 0);
+    DB.closeConnection();
+    DB.deleteDb('tmp/' + runId +'.db');
 }
 
 /**
@@ -349,9 +232,10 @@ async function writeReportData(options, data, directory, fileName, templateData,
  * @param {string} directoryPath - Directory path containing input files.
  * @param {Object} options - Additional options.
  */
-async function generate(templateData, directoryPath, options) {
+async function generate(templateData, directoryPath, options, files) {
     try {
-        await readDataDirectory('tmp/' + directoryPath, options, templateData);
+       // await readDataDirectory('tmp/' + directoryPath, options, templateData);
+        await readDataFromDb('tmp/' + directoryPath, options, templateData, files);
     } catch (error) {
         logger.error(error);
     }

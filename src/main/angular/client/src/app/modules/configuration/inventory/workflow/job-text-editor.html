@@ -633,7 +633,7 @@
                                      name="name{{i}}"
                                      nz-input placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
                               <nz-select *ngIf="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [(ngModel)]="argu.name" name="name{{i}}"
-                                         nzShowSearch [nzAllowClear]="false" (ngModelChange)="selectArgu($event, argu);">
+                                         nzShowSearch [nzAllowClear]="false" (ngModelChange)="selectArgu($event, argu);" [nzDisabled]="argu.isRequired">
                                 <nz-option  *ngFor="let list of filteredOptions" [nzLabel]="list.name" [nzValue]="list.name" [nzDisabled]="list.selected"></nz-option>
                               </nz-select>
                             </label>
@@ -666,7 +666,7 @@
                               class="fa fa-scissors m-t-sm"></i>
                             <a
                               *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name))"><i
-                              (click)="removeArgu(argu.name, 1)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                              (click)="removeArgu(argu.name, i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                           </div>
                         </div>
                       </div>

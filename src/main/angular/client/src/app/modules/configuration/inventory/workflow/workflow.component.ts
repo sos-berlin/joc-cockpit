@@ -1559,8 +1559,8 @@ export class JobComponent {
             res.jobTemplate.arguments[key].selected = true;
             this.selectedNode.job.executable.arguments.push({
               name: res.jobTemplate.arguments[key].name,
-              value: res.jobTemplate.arguments[key].value.value,
-              isRequired: res.jobTemplate.arguments[key].value.isRequired
+              value: res.jobTemplate.arguments[key].value?.value,
+              isRequired: res.jobTemplate.arguments[key].value?.isRequired
             });
           }
           if (res.jobTemplate.arguments[key].type === 'String') {
@@ -1611,6 +1611,9 @@ export class JobComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.updateJobFromWizardJob(result);
+        if (this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name) {
+          this.getTemplateData();
+        }
       }
     });
   }
@@ -2306,7 +2309,9 @@ export class JobComponent {
     this.selectedNode.job.executable.arguments.splice(index, 1);
     if (this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name && name) {
       const data = this.filteredOptions.find(item => item.name == name);
-      data.selected = false;
+      if (data) {
+        data.selected = false;
+      }
     }
     this.saveToHistory();
   }
