@@ -1,51 +1,64 @@
 const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const path = require('path');
+let logger = require('./logger');
+logger = new logger().getLogger();
 const moment = require("moment/moment");
+
 let db;
 
+/**
+ * Create table in the database based on type
+ * @param {string} dbName - Name of the database
+ * @param {string} type - Type of table (ORDER or JOB)
+ */
 function createTable(dbName, type) {
     db = new sqlite3.Database(path.join('tmp', dbName) + '.db');
     try {
-        if (type === 'ORDER') {
-            db.run('CREATE TABLE ' + type.toLowerCase() + 's (id INTEGER PRIMARY KEY, ORDER_ID TEXT, WORKFLOW_NAME TEXT, START_TIME DATE, END_TIME DATE, PLANNED_TIME DATE, ORDER_STATE INTEGER, STATE INTEGER, duration INTEGER)');
-        } else {
-            db.run('CREATE TABLE ' + type.toLowerCase() + 's (id INTEGER PRIMARY KEY, WORKFLOW_NAME TEXT, JOB_NAME TEXT, AGENT_NAME TEXT, START_TIME DATE, END_TIME DATE, CRITICALITY INTEGER, STATE INTEGER, duration INTEGER)');
-
-        }
+        const tableName = type.toLowerCase() + 's';
+        const createTableQuery = type === 'ORDER' ?
+            'CREATE TABLE ' + tableName + ' (id INTEGER PRIMARY KEY, ORDER_ID TEXT, WORKFLOW_NAME TEXT, START_TIME DATE, END_TIME DATE, PLANNED_TIME DATE, ORDER_STATE INTEGER, STATE INTEGER, duration INTEGER)' :
+            'CREATE TABLE ' + tableName + ' (id INTEGER PRIMARY KEY, WORKFLOW_NAME TEXT, JOB_NAME TEXT, AGENT_NAME TEXT, START_TIME DATE, END_TIME DATE, CRITICALITY INTEGER, STATE INTEGER, duration INTEGER)';
+        db.run(createTableQuery);
     } catch (e) {
-        console.log(e, type)
+        console.error(e, type);
+        logger.error(e, type);
     }
 }
 
+/**
+ * Insert records into the database
+ * @param {Array} dataToInsert - Data to insert into the database
+ * @param {string} type - Type of table (ORDER or JOB)
+ */
 function insertRecord(dataToInsert, type) {
     db.serialize(() => {
-        // Start the transaction
         db.run('BEGIN TRANSACTION');
         let stmt;
+        const tableName = type.toLowerCase() + 's';
         if (type === 'ORDER') {
-            // Prepare the INSERT statement
-            stmt = db.prepare('INSERT INTO orders ( ORDER_ID, WORKFLOW_NAME, START_TIME, END_TIME, PLANNED_TIME, ORDER_STATE, STATE, duration) VALUES (?, ?,?, ?,?, ?,?, ?)');
+            stmt = db.prepare('INSERT INTO ' + tableName + ' (ORDER_ID, WORKFLOW_NAME, START_TIME, END_TIME, PLANNED_TIME, ORDER_STATE, STATE, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
         } else {
-            // Prepare the INSERT statement
-            stmt = db.prepare('INSERT INTO jobs ( WORKFLOW_NAME, JOB_NAME, AGENT_NAME, START_TIME, END_TIME, CRITICALITY, STATE, duration) VALUES (?, ?,?, ?,?, ?,?, ?)');
+            stmt = db.prepare('INSERT INTO ' + tableName + ' (WORKFLOW_NAME, JOB_NAME, AGENT_NAME, START_TIME, END_TIME, CRITICALITY, STATE, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
         }
-        // Insert data in batch
         dataToInsert.forEach(data => {
-            if (type === 'ORDER') {
-                stmt.run(data['ORDER_ID'], data['WORKFLOW_NAME'], data['START_TIME'], data['END_TIME'], data['PLANNED_TIME'], data['ORDER_STATE'], data['STATE'], data['duration']);
-            } else {
-                stmt.run(data['WORKFLOW_NAME'], data['JOB_NAME'], data['AGENT_NAME'], data['START_TIME'], data['END_TIME'], data['CRITICALITY'], data['STATE'], data['duration']);
-            }
+            const columns = type === 'ORDER' ?
+                ['ORDER_ID', 'WORKFLOW_NAME', 'START_TIME', 'END_TIME', 'PLANNED_TIME', 'ORDER_STATE', 'STATE', 'duration'] :
+                ['WORKFLOW_NAME', 'JOB_NAME', 'AGENT_NAME', 'START_TIME', 'END_TIME', 'CRITICALITY', 'STATE', 'duration'];
+            const values = columns.map(col => data[col]);
+            stmt.run(...values);
         });
-
-        // Finalize the statement
         stmt.finalize();
-        // Commit the transaction
         db.run('COMMIT');
     });
 }
 
+
+/**
+ * Process rows in batches
+ * @param {Array} rows - Rows to process
+ * @param {Object} template - Template data
+ */
 async function processRows(rows, template) {
     const batchSize = 1000; // Adjust the batch size as needed
 
@@ -93,7 +106,14 @@ async function processRows(rows, template) {
     }
 }
 
-
+/**
+ * Get data from database based on template
+ * @param {Object} template - Template data
+ * @param {string} tableName - Name of the table
+ * @param {number} limit - Limit of records to fetch
+ * @param {string} file - File name or query parameter
+ * @param {Function} callback - Callback function
+ */
 function getDataFromDb(template, tableName, limit, file, callback) {
     let query;
     if (tableName === 'orders') {
@@ -106,6 +126,7 @@ function getDataFromDb(template, tableName, limit, file, callback) {
     db.all(query, [], async (err, rows) => {
         if (err) {
             console.error(err.message);
+            logger.error(err.message);
             callback(err, null);
             return;
         }
@@ -123,11 +144,9 @@ function getDataFromDb(template, tableName, limit, file, callback) {
                     } else {
                         acc.push({
                             START_TIME: curr.START_TIME,
-                            END_TIME: curr.END_TIME,
                             WORKFLOW_NAME: curr.WORKFLOW_NAME,
                             JOB_NAME: curr.JOB_NAME,
-                            AGENT_NAME: curr.AGENT_NAME,
-                            duration: Math.abs((new Date(curr.START_TIME).getTime() - new Date(group[index - 1].END_TIME).getTime()) / 1000)
+                            duration: curr.duration
                         });
                     }
                     return acc;
@@ -154,23 +173,11 @@ function getDataFromDb(template, tableName, limit, file, callback) {
             const output = {
                 topLowParallelismPeriods: sortedPeriods.slice(0, limit).map(period => ({
                     period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
-                    data: period.map(({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, START_TIME, duration }) => ({
-                        WORKFLOW_NAME,
-                        JOB_NAME,
-                        AGENT_NAME,
-                        START_TIME,
-                        duration
-                    }))
+                    data: period
                 })),
                 topHighParallelismPeriods: sortedPeriods.slice(-limit).reverse().map(period => ({
                     period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
-                    data: period.map(({ WORKFLOW_NAME, JOB_NAME, AGENT_NAME, START_TIME, duration }) => ({
-                        WORKFLOW_NAME,
-                        JOB_NAME,
-                        AGENT_NAME,
-                        START_TIME,
-                        duration
-                    }))
+                    data: period
                 }))
             };
             callback(null, output);
@@ -182,6 +189,11 @@ function getDataFromDb(template, tableName, limit, file, callback) {
 
 }
 
+/**
+ * Get WHERE condition based on query parameter
+ * @param {string} likeStr - Query parameter
+ * @returns {string} WHERE condition
+ */
 function getWhereCondition(likeStr) {
     if (likeStr.match('_to_')) {
         let dates = likeStr.split('_to_');
@@ -236,6 +248,13 @@ function getWhereCondition(likeStr) {
     }
 }
 
+/**
+ * Get SQL query for JOB table
+ * @param {number} limit - Limit of records to fetch
+ * @param {string} likeStr - Query parameter
+ * @param {Object} templateData - Template data
+ * @returns {string} SQL query
+ */
 function getQueryForJob(limit, likeStr, templateData) {
     const conditionQuery = getWhereCondition(likeStr);
     if (templateData.groupBy === 'JOB_NAME') { // template 2 && 5
@@ -257,6 +276,13 @@ function getQueryForJob(limit, likeStr, templateData) {
     }
 }
 
+/**
+ * Get SQL query for ORDER table
+ * @param {number} limit - Limit of records to fetch
+ * @param {string} likeStr - Query parameter
+ * @param {Object} templateData - Template data
+ * @returns {string} SQL query
+ */
 function getQueryForOrder(limit, likeStr, templateData) {
     const conditionQuery = getWhereCondition(likeStr);
     if (templateData.orderState) { // template 6
@@ -274,39 +300,42 @@ function getQueryForOrder(limit, likeStr, templateData) {
     }
 }
 
-function closeConnection() {
-    // Close the database connection
-    db.close((err) => {
-        if (err) {
-            return console.error(err.message);
-        }
-        console.log('Database connection closed.');
-    });
-}
 
+/**
+ * Delete database file
+ * @param {string} databaseFile - Path to the database file
+ */
 function deleteDb(databaseFile) {
     // Check if the file exists
     fs.access(databaseFile, fs.constants.F_OK, (err) => {
         if (err) {
             console.error('Database file does not exist:', err);
+            logger.error('Database file does not exist:', err);
             return;
         }
-
-        // Delete the database file
-        fs.unlink(databaseFile, (err) => {
+        // Close the database connection first
+        db.close((err) => {
             if (err) {
-                console.error('Error deleting database file:', err);
+                console.error('Error closing database connection:', err);
                 return;
             }
-            console.log('Database file deleted successfully.');
+            console.log('Database connection closed.');
+
+            // Delete the database file after the connection is closed
+            fs.unlink(databaseFile, (err) => {
+                if (err) {
+                    console.error('Error deleting database file:', err);
+                    return;
+                }
+                console.log('Database file deleted successfully.');
+            });
         });
     });
 }
 
 module.exports = {
-    createTable: createTable,
-    insertRecord: insertRecord,
-    getDataFromDb: getDataFromDb,
-    deleteDb: deleteDb,
-    closeConnection: closeConnection
+    createTable,
+    insertRecord,
+    getDataFromDb,
+    deleteDb
 };

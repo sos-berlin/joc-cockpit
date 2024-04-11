@@ -222,7 +222,6 @@ async function readDataFromDb(directory, options, templateData, files) {
 
     const fileKeys = Object.keys(files);
     await processFiles(fileKeys, 0);
-    DB.closeConnection();
     DB.deleteDb('tmp/' + runId +'.db');
 }
 
