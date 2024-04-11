@@ -6,12 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node run-report",
-    "postinstall": "cyclonedx-npm --output-file ./reporting-sbom.json"
+    "preinstall": "npm uninstall sqlite3",
+    "postinstall": "npm i sqlite3 && cyclonedx-npm --output-file ./reporting-sbom.json"
   },
   "author": "SOS",
   "license": "MIT",
   "dependencies": {
-	"@cyclonedx/cyclonedx-npm": "^1.16.1",
+    "@cyclonedx/cyclonedx-npm": "^1.16.1",
     "commander": "^11.1.0",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",

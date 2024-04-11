@@ -1390,9 +1390,6 @@ export class JobComponent {
       this.updateVariableList();
     }
     this.initAutoComplete(100);
-    if (this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name) {
-      this.getTemplateData();
-    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -1944,6 +1941,9 @@ export class JobComponent {
     let list = this.getList(type);
 
     let itemsToCopy = list.filter(item => {
+      if(operation === 'CUT' && item.isRequired){
+        return false;
+      }
       switch (type) {
         case 'arguments':
           return this.object.setOfCheckedArgu.has(item.name);
@@ -2371,6 +2371,7 @@ export class JobComponent {
     data.selected = true;
     argu.value = data.value.value;
     argu.isRequired = data.value.isRequired;
+    this.saveToHistory();
   }
 
   valueWith = (data: { name: string }) => data.name;
@@ -2430,6 +2431,9 @@ export class JobComponent {
     }
     this.presentObj.obj = JSON.stringify(this.selectedNode.obj);
     this.presentObj.job = JSON.stringify(this.selectedNode.job);
+    if (this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name) {
+      this.getTemplateData();
+    }
   }
 
   private setJobProperties(): void {
@@ -5362,6 +5366,7 @@ export class WorkflowComponent {
   }
 
   private updateWorkflow(graph, jobMap): void {
+    this.selectedNode =  null;
     const scrollValue: any = {};
     const element = document.getElementById('graph');
 

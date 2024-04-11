@@ -584,6 +584,7 @@ export class JobTemplateComponent {
         this.job.configuration.executable.jobArguments = this.coreService.convertObjectToArray(this.job.configuration.executable, 'jobArguments');
         this.job.configuration.executable.jobArguments = this.job.configuration.executable.jobArguments.filter((argu) => {
           this.coreService.removeSlashToString(argu, 'value');
+          delete argu.default1;
           return argu.name && (argu.value || argu.value == false || argu.value == 0)
         });
       }
@@ -596,6 +597,7 @@ export class JobTemplateComponent {
         this.job.configuration.executable.env = this.coreService.convertObjectToArray(this.job.configuration.executable, 'env');
         this.job.configuration.executable.env = this.job.configuration.executable.env.filter((env) => {
           this.coreService.removeSlashToString(env, 'value');
+          delete env.default1;
           return env.name && (env.value || env.value == false || env.value == 0)
         });
       }
@@ -607,6 +609,7 @@ export class JobTemplateComponent {
       if (val.default) {
         if (val.type === 'String') {
           this.coreService.removeSlashToString(val, 'default');
+          delete val.default1;
         } else if (val.type === 'Boolean') {
           val.default = (val.default === true || val.default === 'true');
         }
