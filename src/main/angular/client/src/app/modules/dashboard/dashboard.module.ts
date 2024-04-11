@@ -3,7 +3,7 @@ import {GridsterModule} from 'angular-gridster2';
 import {NgChartsModule} from 'ng2-charts';
 import {DashboardRoutingModule} from './dashboard-routing.module';
 import {SharedModule} from '../shared/shared.module';
-import {DashboardComponent, AddWidgetModalComponent} from './dashboard.component';
+import {DashboardComponent, AddWidgetModalComponent, UpdateUrlModalComponent} from './dashboard.component';
 import {DailyPlanComponent} from './daily-plan/daily-plan.component';
 import {HistorySummaryComponent} from './history-summary/history-summary.component';
 import {OrderOverviewComponent} from './order-overview/order-overview.component';
@@ -29,6 +29,7 @@ import {APIServerStatusComponent} from './api-server-status/api-server-status.co
   declarations: [
     CommentModalComponent,
     AddWidgetModalComponent,
+    UpdateUrlModalComponent,
     DashboardComponent,
     InventoryStatisticsComponent,
     DailyPlanComponent,

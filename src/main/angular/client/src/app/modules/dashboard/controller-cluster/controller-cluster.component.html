@@ -118,6 +118,10 @@
             nz-menu-item>
           <a translate>dashboard.button.removeFromInventory</a>
         </li>
+        <li (click)="updateURL()" *ngIf="joc && joc.current && permission.joc && permission.joc.administration.settings.manage"
+            nz-menu-item>
+          <a translate>dashboard.button.updateURL</a>
+        </li>
         <li (click)="downloadJocLog()" *ngIf="joc && joc.current && permission.joc && permission.joc.getLog"
             nz-menu-item>
           <a translate>dashboard.button.downloadLog</a>

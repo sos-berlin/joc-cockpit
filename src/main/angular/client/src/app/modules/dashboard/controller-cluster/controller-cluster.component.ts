@@ -9,6 +9,7 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
+import {UpdateUrlModalComponent} from "../dashboard.component";
 
 declare const mxEditor: any;
 declare const mxUtils: any;
@@ -776,6 +777,20 @@ export class ControllerClusterComponent {
 
   removeFromInventory(): void {
     this.postCall('joc/cluster/delete_member', {memberId: this.joc.memberId});
+  }
+
+  updateURL(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: UpdateUrlModalComponent,
+      nzData: {
+        joc: this.joc
+      },
+      nzFooter: null,
+      nzAutofocus: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
   downloadJocLog(): void {

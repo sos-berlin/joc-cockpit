@@ -749,6 +749,7 @@
     "button.viewAllAgentsDetails": "エージェント詳細表示",
     "button.confirmNodeLoss": "ノードロストが確認されました",
     "button.removeRepository": "リポジトリーから削除",
+    "button.updateURL": "Update URL",
     "message.noWidgetFound": "追加できるウィジェットはありません",
     "message.agentStatus": "パイチャートウィジェットはエージェントのステータスを表示します",
     "message.agentClusterStatus": "パイチャートウィジェットはエージェントクラスターのステータスを表示します",

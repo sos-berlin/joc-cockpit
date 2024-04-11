@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <h4 class="modal-title" translate>dashboard.button.updateURL</h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a">
+    <div class="form-group row">
+      <label class="col-md-4 form-control-label"
+             translate>deploymentService.joc.label.jocInstanceId</label>
+      <div class="col-md-8">
+        <input type="text" class="form-control" readonly name="instanceId" [(ngModel)]="joc.instanceId"/>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-4 form-control-label"
+             translate>dashboard.label.url</label>
+      <div class="col-md-8">
+        <input type="url" class="form-control" name="url" [(ngModel)]="obj.url"
+               [appAutofocus]="true" autocomplete="off"/>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid" translate>
+      common.button.submit
+    </button>
+    <button type="button" class="btn btn-grey btn-sm"
+            (click)="activeModal.destroy()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>
+

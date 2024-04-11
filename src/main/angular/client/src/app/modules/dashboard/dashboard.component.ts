@@ -9,6 +9,36 @@ import {CoreService} from '../../services/core.service';
 declare const $: any;
 
 @Component({
+  selector: 'app-update-url-modal-content',
+  templateUrl: './update-url-dialog.html'
+})
+export class UpdateUrlModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  joc: any = {};
+  obj = {url:''};
+
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.joc = this.modalData.joc;
+    this.obj.url = this.modalData.joc.url;
+  }
+
+  onSubmit(): void {
+    this.coreService.post('joc/url', {
+      instanceId: this.joc.instanceId,
+      url: this.obj.url
+    }).subscribe({
+      next: () => {
+        this.activeModal.close('Done');
+      }
+    });
+  }
+
+}
+
+@Component({
   selector: 'app-widget-modal-content',
   templateUrl: './add-widget-dialog.html'
 })

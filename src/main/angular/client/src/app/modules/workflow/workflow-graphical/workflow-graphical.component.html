@@ -187,6 +187,20 @@
           </li>
         </ul>
         <ul *ngIf="stopInstruction" nz-menu>
+          <li (click)="skip(stopInstruction);"
+              *ngIf="permission.currentController && permission.currentController.orders.managePositions && !stopInstruction.predicate && (!stopInstruction.isSkip)"
+              nz-menu-item>
+            <a>
+              <span translate>workflow.button.skip</span>
+            </a>
+          </li>
+          <li (click)="unskip(stopInstruction);"
+              *ngIf="permission.currentController && permission.currentController.orders.managePositions && stopInstruction.isSkip"
+              nz-menu-item>
+            <a>
+              <span translate>workflow.button.unskip</span>
+            </a>
+          </li>
           <li (click)="stop(stopInstruction);"
               *ngIf="permission.currentController && permission.currentController.orders.managePositions && !stopInstruction.isStop"
               nz-menu-item>

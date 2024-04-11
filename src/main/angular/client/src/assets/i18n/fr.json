@@ -749,6 +749,7 @@
     "button.viewAllAgentsDetails": "Voir tous les détails de l'Agent",
     "button.confirmNodeLoss": "Confirmer la perte d'une Instance de Contrôleur",
     "button.removeRepository": "Supprimer de l'inventaire",
+    "button.updateURL": "Update URL",
     "message.noWidgetFound": "Aucun widget à ajouter",
     "message.agentStatus": "Le widget graphique circulaire identifie l'état actuel des Agents.",
     "message.agentClusterStatus": "Le widget graphique circulaire identifie l'état actuel des Clusters d'Agents.",

@@ -883,11 +883,13 @@ export class WorkflowGraphicalComponent {
             self.stopInstruction = null;
             let data: any;
             let isStop = false;
+            let isSkip = false;
             let position = state.cell.value.getAttribute('position');
             let _state = state.cell.value.getAttribute('state');
             if (_state) {
               _state = JSON.parse(_state);
               isStop = (_state && (_state._text === 'STOPPED' || _state._text === 'STOPPED_AND_SKIPPED'));
+              isSkip = (_state && (_state._text === 'SKIPPED' || _state._text === 'STOPPED_AND_SKIPPED'));
             }
             if (state.cell.value.tagName === 'Order') {
               data = state.cell.getAttribute('order');
@@ -896,14 +898,13 @@ export class WorkflowGraphicalComponent {
               const jobName = state.cell.value.getAttribute('jobName');
               const documentationName = state.cell.value.getAttribute('documentationName');
               const label = state.cell.value.getAttribute('label');
-              let isSkip = (_state && (_state._text === 'SKIPPED' || _state._text === 'STOPPED_AND_SKIPPED'));
               data = {jobName, documentationName, label, isSkip, isStop};
             } else if (state.cell.value.tagName === 'If') {
               const predicate = state.cell.value.getAttribute('predicate');
-              data = {predicate, isStop};
+              data = {predicate, isStop, isSkip};
             } else {
               const position = state.cell.value.getAttribute('position');
-              data = {position, isStop};
+              data = {position, isStop, isSkip};
             }
             data.path = state.cell.getAttribute('path');
             data.versionId = state.cell.getAttribute('versionId');
