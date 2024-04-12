@@ -3048,7 +3048,7 @@
     "label.iamOidcUserAttribute": "OIDC User Name Attribute",
     "label.iamOidcGroupClaims": "OIDC Group Claims",
     "label.iamOidcGroupRolesMap": "OIDC Group Roles Mapping",
-    "label.iamOidcAuthenticationCodeFlow": "Authentication Code Flow",
+    "label.iamOidcAuthenticationCodeFlow": "Authorization Code Flow",
     "label.iamOidcImplicitFlow": "Implicit Flow",
     "label.iamOidcClientCredentialsFlow": "Client Credentials Flow",
     "label.iamOidcFlowType": "Flow Type",

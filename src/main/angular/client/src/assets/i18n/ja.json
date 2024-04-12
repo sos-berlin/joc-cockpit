@@ -3048,7 +3048,7 @@
     "label.iamOidcUserAttribute": "OIDCユーザー属性",
     "label.iamOidcGroupClaims": "OIDCグループクレーム",
     "label.iamOidcGroupRolesMap": "OIDCグループロールマップ",
-    "label.iamOidcAuthenticationCodeFlow": "Authentication Code Flow",
+    "label.iamOidcAuthenticationCodeFlow": "Authorization Code Flow",
     "label.iamOidcImplicitFlow": "Implicit Flow",
     "label.iamOidcFlowType": "Flowタイプ",
     "label.iamOidcClientCredentialsFlow": "Client Credentials Flow",
