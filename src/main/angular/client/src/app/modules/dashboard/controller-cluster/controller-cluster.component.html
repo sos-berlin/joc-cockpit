@@ -118,7 +118,7 @@
             nz-menu-item>
           <a translate>dashboard.button.removeFromInventory</a>
         </li>
-        <li (click)="updateURL()" *ngIf="joc && joc.current && permission.joc && permission.joc.administration.settings.manage"
+        <li (click)="updateURL()" *ngIf="joc && permission.joc && permission.joc.administration.settings.manage"
             nz-menu-item>
           <a translate>dashboard.button.updateURL</a>
         </li>

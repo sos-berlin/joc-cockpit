@@ -3,6 +3,8 @@ import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
+import {UpdateUrlModalComponent} from "../dashboard.component";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
   selector: 'app-api-server-status',
@@ -15,9 +17,10 @@ export class APIServerStatusComponent {
   list: any = [];
   schedulerIds: any;
   isLoaded = false;
+  joc: any;
   subscription: Subscription;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService, public modal: NzModalService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -62,5 +65,19 @@ export class APIServerStatusComponent {
 
   removeInstance(id): void {
     this.coreService.post('joc/cluster/delete_member', {memberId: id}).subscribe()
+  }
+
+  updateURL(item): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: UpdateUrlModalComponent,
+      nzData: {
+        joc: item
+      },
+      nzFooter: null,
+      nzAutofocus: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 }
