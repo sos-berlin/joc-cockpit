@@ -2781,6 +2781,7 @@
       "label.endOfLife": "fin de vie",
       "label.expectingOrders": "Ordres en attente",
       "button.post": "Afficher une Annonce",
+      "button.postAll": "Post All Notices",
       "button.delete": "Supprimer l'Annonce",
       "button.deleteAll": "Supprimer toutes les Annonces",
       "placeholder.enterNoticeId": "Entrer L'ID Annonce"

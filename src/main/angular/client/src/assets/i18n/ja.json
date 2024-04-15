@@ -2781,6 +2781,7 @@
       "label.endOfLife": "通知期限終了",
       "label.expectingOrders": "Expectオーダー",
       "button.post": "PostNotice",
+      "button.postAll": "Post All Notices",
       "button.delete": "通知削除",
       "button.deleteAll": "全通知削除",
       "placeholder.enterNoticeId": "通知ID入力"

@@ -74,7 +74,7 @@ export class PostModalComponent {
     this.submitted = true;
     const obj: any = {
       controllerId: this.controllerId,
-      noticeBoardPath: this.board.path,
+      noticeBoardPaths: this.board,
       noticeId: this.postObj.noticeId,
       timeZone: this.postObj.timeZone,
       auditLog: {}
@@ -88,7 +88,7 @@ export class PostModalComponent {
     } else if (this.postObj.at === 'later') {
       obj.endOfLife = this.postObj.atTime;
     }
-    this.coreService.post('notice/post', obj).subscribe({
+    this.coreService.post('notices/post', obj).subscribe({
       next: (res) => {
         this.submitted = false;
         this.activeModal.close(res);
@@ -794,7 +794,14 @@ export class BoardComponent {
   }
 
   post(board: any, notice = null): void {
-    this.modal.create({
+    if(board == 'allBoards'){
+      board = this.data.map(board => board.path);
+    }else {
+      if (typeof board === 'object' && board !== null && board.path) {
+        board = [board.path];
+      }
+    }
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: PostModalComponent,
       nzClassName: 'lg',
@@ -808,6 +815,14 @@ export class BoardComponent {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        this.object.checked = false;
+        this.data.forEach((item) => {
+          item.checked = false;
+        });
+      }
     });
   }
 

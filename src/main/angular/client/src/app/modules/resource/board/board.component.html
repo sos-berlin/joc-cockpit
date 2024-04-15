@@ -8,6 +8,10 @@
           </div>
           <div class="inline">
             <button
+              (click)="post('allBoards')"
+              *ngIf="(object.checked) && permission.currentController.noticeBoards.post" class="btn btn-grey btn-sm m-l-12"><i
+              ></i>&nbsp; {{'resource.board.button.postAll' | translate}}</button>
+            <button
               (click)="deleteAllNotices()"
               *ngIf="(object.setOfCheckedId.size>0 || object.mapOfCheckedId.size>0) && permission.currentController.noticeBoards.delete" class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-trash"></i>&nbsp; {{'resource.board.button.deleteAll' | translate}}</button>
@@ -237,7 +241,7 @@
                     <tr [ngClass]="{'light-bg':board.show}">
                       <td *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
                           [nzShowCheckbox]="true"
-                          [nzChecked]="object.setOfCheckedId.has(board.path)" [nzDisabled]="board.numOfNotices === board.numOfExpectingOrders"
+                          [nzChecked]="object.checked"
                           ></td>
                       <td>
                         <div class="btn-group dropdown">

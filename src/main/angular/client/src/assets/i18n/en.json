@@ -2781,6 +2781,7 @@
       "label.endOfLife": "End of Life",
       "label.expectingOrders": "Expecting Orders",
       "button.post": "Post Notice",
+      "button.postAll": "Post All Notices",
       "button.delete": "Delete Notice",
       "button.deleteAll": "Delete All Notices",
       "placeholder.enterNoticeId": "Enter Notice ID"

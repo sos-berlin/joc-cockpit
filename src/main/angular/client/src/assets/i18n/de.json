@@ -2781,6 +2781,7 @@
       "label.endOfLife": "Verfallsfrist",
       "label.expectingOrders": "Wartende Aufträge",
       "button.post": "Notiz senden",
+      "button.postAll": "Post All Notices",
       "button.delete": "Notiz löschen",
       "button.deleteAll": "Delete All Notices",
       "placeholder.enterNoticeId": "Notizkennung angeben"
