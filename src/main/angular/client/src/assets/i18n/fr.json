@@ -2394,6 +2394,7 @@
     "button.assignParameterizationFromSchedules": "Paramétrage à partir d'une Planification",
     "button.assignFromSchedule": "Assigner à partir d'une Planification",
     "button.cloneOrder": "Clone Order",
+    "button.continue": "Continue",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",
     "placeholder.selectBlockPosition": "Sélectionner la Position d Bloc",
@@ -2930,7 +2931,8 @@
       "joc_reverse_proxy_url": "Si JOC Cockpit n'est pas accessible à partir de son URL d'origine mais uniquement à partir d'un service de reverse proxy, cette valeur indique l'URL à utiliser, par exemple pour les notifications par e-mail.",
       "allow_empty_arguments": "Par défaut, les arguments vides ne sont pas autorisés dans les Tâches et les Modèles de Tâches, car cela oblige les Tâches à faire la distinction entre les variables vides et les variables non définies. Les utilisateurs peuvent activer le comportement pour autoriser les arguments vides.",
       "allow_undeclared_variables": "Autoriser les variables non déclarées des Ordres. Cela signifie qu'un ordre peut contenir des variables dont le type de données ou l'utilisation obligatoire n'ont pas été vérifiés. Les tâches échoueront s'ils font référence à des variables non déclarées qui ne sont pas disponibles dans un ordre.",
-      "display_folders_in_views": "Affiche les dossiers des objets dans les vues. Si ce paramètre est défini sur 'false', seuls les noms des objets seront affichés. Dans JS7, les noms d'objets sont uniques."
+      "display_folders_in_views": "Affiche les dossiers des objets dans les vues. Si ce paramètre est défini sur 'false', seuls les noms des objets seront affichés. Dans JS7, les noms d'objets sont uniques.",
+      "node_command_line_options": "Node command line options"
     },
     "user": {
       "welcome_got_it": "Spécifie que la fenêtre d'accueil qui propose des valeurs par défaut et des exemples à télécharger ne doit plus être affichée.",

@@ -35,6 +35,10 @@ export class OrderActionComponent {
     this.isDropdownOpen.emit(value);
   }
 
+  continueOrder(){
+    this.restCall(false, 'Continue', this.order, 'continue');
+  }
+
   resumeOrder(): void {
     if (this.order.positionIsImplicitEnd) {
       this.restCall(false, 'Resume', this.order, 'resume');

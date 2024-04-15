@@ -363,7 +363,7 @@ export class TypeComponent {
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
-        type: 'Job',
+        type: job.TYPE,
         operation: operation,
         name: job.label
       };

@@ -2394,6 +2394,7 @@
     "button.assignParameterizationFromSchedules": "Parametrisierung aus Zeitplan",
     "button.assignFromSchedule": "Parametrisierung aus Zeitplan",
     "button.cloneOrder": "Clone Order",
+    "button.continue": "Continue",
     "placeholder.selectStartNode": "Start-Position auswählen",
     "placeholder.selectEndNode": "End-Position auswählen",
     "placeholder.selectBlockPosition": "Block-Position angeben",
@@ -2930,7 +2931,8 @@
       "joc_reverse_proxy_url": "Wenn JOC Cockpit nicht über die originäre URL, sondern nur über einen Reverse Proxy Dienst erreichbar ist, gibt dieser Wert die zu verwendende URL an, zum Beispiel bei E-Mail Benachrichtigungen.",
       "allow_empty_arguments": "Standardmäßig werden leere Argumente von Aufträgen und Auftragsvorlagen nicht zugelassen, da dies die Aufträge zwingt, zwischen leeren und nicht gesetzten Variablen zu unterscheiden. Benutzer können das Verhalten aktivieren, um leere Argumente zuzulassen.",
       "allow_undeclared_variables": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
-      "display_folders_in_views": "Zeigt Ordner von Objekten in Ansichten an. Wenn diese Einstellung auf 'false' gesetzt ist, werden nur die Objektnamen angezeigt. In JS7 sind die Objektnamen eindeutig."
+      "display_folders_in_views": "Zeigt Ordner von Objekten in Ansichten an. Wenn diese Einstellung auf 'false' gesetzt ist, werden nur die Objektnamen angezeigt. In JS7 sind die Objektnamen eindeutig.",
+      "node_command_line_options": "Node command line options"
     },
     "user": {
       "welcome_got_it": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht länger angezeigt werden soll.",

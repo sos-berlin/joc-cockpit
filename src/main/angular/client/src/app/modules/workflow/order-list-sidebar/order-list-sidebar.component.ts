@@ -51,6 +51,7 @@ export class OrderListSidebarComponent implements OnChanges {
     isSuspendWithKill: false,
     isResume: false,
     isPrompt: false,
+    isContinue: false,
     isTerminate: false
   };
 
@@ -166,10 +167,14 @@ export class OrderListSidebarComponent implements OnChanges {
     this.object.isSuspend = true;
     this.object.isSuspendWithKill = false;
     this.object.isResume = true;
+    this.object.isContinue = true;
     this.object.isTerminate = true;
     let count = 0;
     orders.forEach(item => {
       if (this.setOfCheckedId.has(item.orderId)) {
+        if (!item.isContinuable) {
+          this.object.isContinue = false;
+        }
         if (item.state) {
           if (item.state._text !== 'SUSPENDED' && item.state._text !== 'FAILED') {
             this.object.isResume = false;
@@ -362,6 +367,10 @@ export class OrderListSidebarComponent implements OnChanges {
     }
   }
 
+  continueAllOrder(): void{
+    this._bulkOperation('Continue', 'continue', false);
+  }
+
   cancelAllOrder(isKill = false): void {
     this._bulkOperation('Cancel', 'cancel', isKill);
   }
@@ -459,7 +468,6 @@ export class OrderListSidebarComponent implements OnChanges {
   }
 
   showLog(order): void {
-    //this.actionChild.showLog(order);
     this.coreService.showOrderLogWindow(order.orderId, this.schedulerId, order.workflowId.path, this.viewContainerRef);
   }
 

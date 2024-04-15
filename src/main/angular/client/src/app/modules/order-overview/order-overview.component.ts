@@ -235,6 +235,7 @@ export class OrderOverviewComponent {
     isSuspend: false,
     isSuspendWithKill: false,
     isResume: false,
+    isContinue: false,
     isPrompt: false,
   };
 
@@ -265,22 +266,26 @@ export class OrderOverviewComponent {
     {label: 'order.button.cancel', value: 'Cancel'},
     {label: 'order.button.cancelAndKillTask', value: 'cancelWithKill'},
     {label: 'order.button.suspend', value: 'Suspend'},
-    {label: 'order.button.suspendAndKillTask', value: 'SuspendKillTask'}
+    {label: 'order.button.suspendAndKillTask', value: 'SuspendKillTask'},
+    {label: 'order.button.continue', value: 'continue'}
   ]
   orderTreeStatusSuspended = [
     {label: 'order.button.cancel', value: 'Cancel'},
     {label: 'order.button.cancelAndKillTask', value: 'cancelWithKill'},
-    {label: 'order.button.resume', value: 'Resume'}
+    {label: 'order.button.resume', value: 'Resume'},
+    {label: 'order.button.continue', value: 'continue'}
   ]
   orderTreeStatusPrompting = [
     {label: 'order.button.cancel', value: 'Cancel'},
     {label: 'order.button.cancelAndKillTask', value: 'cancelWithKill'},
-    {label: 'order.button.confirm', value: 'confirm'}
+    {label: 'order.button.confirm', value: 'confirm'},
+    {label: 'order.button.continue', value: 'continue'}
   ];
   orderTreeStatusFailed = [
     {label: 'order.button.cancel', value: 'Cancel'},
     {label: 'order.button.cancelAndKillTask', value: 'cancelWithKill'},
-    {label: 'order.button.resume', value: 'resume'}
+    {label: 'order.button.resume', value: 'resume'},
+    {label: 'order.button.continue', value: 'continue'}
   ];
   orderTreeStatusCompleted = [
     {label: 'order.button.leaveWorkflow', value: 'Terminate'}
@@ -527,7 +532,7 @@ export class OrderOverviewComponent {
     obj.compact = true;
     if (this.orderFilters.filter.state === 'INPROGRESS' || this.orderFilters.filter.state === 'FAILED'
       || this.orderFilters.filter.state === 'RUNNING' || this.orderFilters.filter.state === 'COMPLETED') {
-      if(this.orderFilters.isRelative) {
+      if (this.orderFilters.isRelative) {
         if (this.orderFilters.filter.stateDateFrom) {
           if (/^([+-]?0|([+-]?[0-9]+[smhdwMy])+|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([,.]\\d{1,3})?)(Z|[+-]\\d{2}(:?\\d{2})?)?$/.test(this.orderFilters.filter.stateDateFrom)) {
             obj.stateDateFrom = this.orderFilters.filter.stateDateFrom;
@@ -907,12 +912,14 @@ export class OrderOverviewComponent {
     if (operation.match(/Terminate/)) {
       url = 'remove_when_terminated';
     }
-    if (this.orderFilters.filter.date !== 'ALL') {
-      obj.dateTo = this.orderFilters.filter.date;
-      if (this.orderFilters.filter.date === '2d') {
-        obj.dateFrom = '1d';
+    if (!operation.match(/continue/)) {
+      if (this.orderFilters.filter.date !== 'ALL') {
+        obj.dateTo = this.orderFilters.filter.date;
+        if (this.orderFilters.filter.date === '2d') {
+          obj.dateFrom = '1d';
+        }
+        obj.timeZone = this.preferences.zone;
       }
-      obj.timeZone = this.preferences.zone;
     }
     this.preformAction(operation, url, obj, () => {
       delete this.orderOverviewAction[type];
@@ -966,10 +973,14 @@ export class OrderOverviewComponent {
     this.object.isSuspend = true;
     this.object.isSuspendWithKill = false;
     this.object.isTerminate = true;
+    this.object.isContinue = true;
     this.object.isResume = true;
     let workflow = null;
     let count = 0;
     this.object.mapOfCheckedId.forEach(order => {
+      if (!order.isContinuable) {
+        this.object.isContinue = false;
+      }
       if (order.state) {
         if (order.state._text !== 'SUSPENDED' && order.state._text !== 'FAILED') {
           this.object.isResume = false;
@@ -1007,7 +1018,7 @@ export class OrderOverviewComponent {
         }
       }
     });
-    if(count == this.object.mapOfCheckedId.size){
+    if (count == this.object.mapOfCheckedId.size) {
       this.object.isPrompt = true;
     }
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
@@ -1137,6 +1148,10 @@ export class OrderOverviewComponent {
     }
   }
 
+  continueAllOrder(): void {
+    this._bulkOperation('Continue', 'continue', false);
+  }
+
   cancelAllOrder(isKill = false): void {
     this._bulkOperation('Cancel', 'cancel', isKill);
   }
@@ -1256,6 +1271,7 @@ export class OrderOverviewComponent {
       isCancelWithKill: false,
       isSuspend: false,
       isSuspendWithKill: false,
+      isContinue: false,
       isResume: false,
       isPrompt: false,
     };
@@ -1300,7 +1316,7 @@ export class OrderOverviewComponent {
     this.excelService.exportAsExcelFile(data, 'JS7-orders');
   }
 
-  switchToSpecificDate(): void{
+  switchToSpecificDate(): void {
     this.orderFilters.isRelative = false;
   }
 

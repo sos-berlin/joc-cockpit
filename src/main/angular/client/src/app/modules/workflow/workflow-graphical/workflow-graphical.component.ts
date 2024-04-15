@@ -517,6 +517,9 @@ export class WorkflowGraphicalComponent {
     });
   }
 
+  continueOrder(): void{
+    this.restCall(false, 'Continue', this.order, 'continue');
+  }
   resumeOrder(): void {
     if (this.order.positionIsImplicitEnd) {
       this.restCall(false, 'Resume', this.order, 'resume');
@@ -1798,15 +1801,15 @@ export class WorkflowGraphicalComponent {
     }
   }
 
-  /* --------- Job action menu operations ----------------*/
+  /* ---------  action menu operations ----------------*/
 
-  skipOperation(job, operation): void {
+  skipOperation(instruction, operation): void {
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
         type: 'Job',
         operation: operation,
-        name: job.label
+        name: instruction.label
       };
       const modal = this.modal.create({
         nzTitle: undefined,
@@ -1822,7 +1825,7 @@ export class WorkflowGraphicalComponent {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.isProcessing = true;
-          this.skipOrStop(job, operation, {
+          this.skipOrStop(instruction, operation, {
             comment: result.comment,
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
@@ -1831,7 +1834,7 @@ export class WorkflowGraphicalComponent {
       });
     } else {
       this.isProcessing = true;
-      this.skipOrStop(job, operation);
+      this.skipOrStop(instruction, operation);
     }
   }
 
@@ -1856,8 +1859,8 @@ export class WorkflowGraphicalComponent {
     });
   }
 
-  skip(job): void {
-    this.skipOperation(job, 'Skip');
+  skip(instruction): void {
+    this.skipOperation(instruction, 'Skip');
   }
 
   unskip(job): void {

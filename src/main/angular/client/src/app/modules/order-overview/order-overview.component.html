@@ -124,6 +124,10 @@
                     [disabled]="!object.isResume" class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.resume</span>
             </button>
+            <button (click)="continueAllOrder()" *ngIf="permission.currentController.orders.modify && object.isContinue"
+                     class="btn btn-grey btn-sm m-l-12"><i
+              class="fa fa-refresh p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.continue</span>
+            </button>
             <button (click)="confirmAllOrder()" *ngIf="permission.currentController.orders.modify && object.isPrompt"
                     class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa fa-check-circle-o p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.confirm</span>
@@ -198,6 +202,7 @@
                     <app-select-input [attributeName]="'pending'" [isAllowClear]="true"
                                       [placeholder]="'order.treeView.placeholder.selectTransaction'"
                                       [listArray]="orderTreeStatus" [name]="'pending'" [optionLabel]="'label'" [optionValue]="'value'"
+                                      [isSelectDisabled]="orderOverview.pending == 0"
                                       [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
@@ -216,6 +221,7 @@
                     <app-select-input [attributeName]="'scheduled'" [isAllowClear]="true"
                                       [placeholder]="'order.treeView.placeholder.selectTransaction'"
                                       [listArray]="orderTreeStatus" [name]="'scheduled'" [optionLabel]="'label'" [optionValue]="'value'"
+                                      [isSelectDisabled]="orderOverview.scheduled == 0"
                                       [object]="orderOverviewAction"></app-select-input>
 
                   </td>
@@ -235,6 +241,7 @@
                     <app-select-input [attributeName]="'inProgress'" [isAllowClear]="true"
                                       [placeholder]="'order.treeView.placeholder.selectTransaction'"
                                       [listArray]="orderTreeStatus" [name]="'inProgress'" [optionLabel]="'label'" [optionValue]="'value'"
+                                      [isSelectDisabled]="orderOverview.inProgress == 0"
                                       [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
@@ -289,7 +296,8 @@
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
                     <app-select-input  [attributeName]="'prompting'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                      [optionLabel]="'label'" [optionValue]="'value'" [listArray]="orderTreeStatusPrompting" [name]="'prompting'" [isSelectDisabled]="orderOverview.prompting == 0"
+                                      [optionLabel]="'label'" [optionValue]="'value'" [listArray]="orderTreeStatusPrompting" [name]="'prompting'"
+                                       [isSelectDisabled]="orderOverview.prompting == 0"
                                        [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
@@ -306,7 +314,8 @@
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
                     <app-select-input  [attributeName]="'waiting'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                       [listArray]="orderTreeStatus" [name]="'waiting'" [optionLabel]="'label'" [optionValue]="'value'" [isSelectDisabled]="orderOverview.waiting == 0"
+                                       [listArray]="orderTreeStatus" [name]="'waiting'" [optionLabel]="'label'" [optionValue]="'value'"
+                                       [isSelectDisabled]="orderOverview.waiting == 0"
                                        [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
@@ -323,7 +332,8 @@
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
                     <app-select-input  [attributeName]="'blocked'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                       [listArray]="orderTreeStatus" [name]="'blocked'" [optionLabel]="'label'" [optionValue]="'value'" [isSelectDisabled]="orderOverview.blocked == 0"
+                                       [listArray]="orderTreeStatus" [name]="'blocked'" [optionLabel]="'label'" [optionValue]="'value'"
+                                       [isSelectDisabled]="orderOverview.blocked == 0"
                                        [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
@@ -340,7 +350,8 @@
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
                     <app-select-input  [attributeName]="'failed'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                       [listArray]="orderTreeStatusFailed" [name]="'failed'" [optionLabel]="'label'" [optionValue]="'value'" [isSelectDisabled]="orderOverview.failed == 0"
+                                       [listArray]="orderTreeStatusFailed" [name]="'failed'" [optionLabel]="'label'" [optionValue]="'value'"
+                                       [isSelectDisabled]="orderOverview.failed == 0"
                                        [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>
@@ -357,7 +368,7 @@
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
                     <app-select-input  [attributeName]="'completed'" [isAllowClear]="true" [optionLabel]="'label'" [optionValue]="'value'" [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                       [name]="'completed'" [isSelectDisabled]="orderOverview.completed == 0" [listArray]="orderTreeStatusCompleted"
+                                       [name]="'completed'" [isSelectDisabled]="orderOverview.terminated == 0" [listArray]="orderTreeStatusCompleted"
                                        [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>

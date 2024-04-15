@@ -27,9 +27,8 @@ function readInputDirectory(directoryPath) {
  */
 function writeOutputFile(outputPath, data) {
     try {
-        const jsonData = JSON.stringify(data, null, 2);
         console.log(`Output file ${outputPath} written successfully.`);
-        return fs.appendFileSync(outputPath, jsonData );
+        return fs.appendFileSync(outputPath, JSON.stringify(data, null, 2) );
     } catch (error) {
         logger.error(`Error writing output file: ${error.message}`);
         throw error;

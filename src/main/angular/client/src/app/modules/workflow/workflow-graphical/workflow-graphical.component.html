@@ -159,6 +159,10 @@
               nz-menu-item>
             <a>{{'order.button.resume' | translate}} ..</a>
           </li>
+          <li (click)="continueOrder()" *ngIf="order.isContinuable && permission && permission.currentController && permission.currentController.orders.modify"
+              nz-menu-item>
+            <a>{{'order.button.continue' | translate}} </a>
+          </li>
           <li (click)="modifyOrder()" *ngIf="!order.positionIsImplicitEnd && permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')"
               nz-menu-item>
             <a>{{'dailyPlan.button.setStartTime' | translate}} ..</a>
@@ -188,14 +192,14 @@
         </ul>
         <ul *ngIf="stopInstruction" nz-menu>
           <li (click)="skip(stopInstruction);"
-              *ngIf="permission.currentController && permission.currentController.orders.managePositions && !stopInstruction.predicate && (!stopInstruction.isSkip)"
+              *ngIf="stopInstruction.label && permission.currentController && permission.currentController.orders.managePositions &&  !stopInstruction.isSkip"
               nz-menu-item>
             <a>
               <span translate>workflow.button.skip</span>
             </a>
           </li>
           <li (click)="unskip(stopInstruction);"
-              *ngIf="permission.currentController && permission.currentController.orders.managePositions && stopInstruction.isSkip"
+              *ngIf="stopInstruction.label &&  permission.currentController && permission.currentController.orders.managePositions && stopInstruction.isSkip"
               nz-menu-item>
             <a>
               <span translate>workflow.button.unskip</span>
@@ -218,7 +222,7 @@
         </ul>
         <ul *ngIf="job" nz-menu>
           <li (click)="skip(job);"
-              *ngIf="permission.currentController && permission.currentController.orders.managePositions && !job.predicate && (!job.isSkip)"
+              *ngIf="permission.currentController && permission.currentController.orders.managePositions && !job.isSkip"
               nz-menu-item>
             <a>
               <span translate>workflow.button.skip</span>

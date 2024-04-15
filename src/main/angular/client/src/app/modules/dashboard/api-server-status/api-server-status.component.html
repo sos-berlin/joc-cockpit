@@ -28,12 +28,12 @@
               </button>
               <nz-dropdown-menu #action="nzDropdownMenu">
                 <ul nz-menu>
-                  <li (click)="removeInstance(item.instanceId)" nz-menu-item>
-                    <a translate>dashboard.button.removeRepository</a>
-                  </li>
                   <li (click)="updateURL(item)"
                       nz-menu-item>
                     <a translate>dashboard.button.updateURL</a>
+                  </li>
+                  <li (click)="removeInstance(item.instanceId)" nz-menu-item>
+                    <a translate>dashboard.button.removeRepository</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>

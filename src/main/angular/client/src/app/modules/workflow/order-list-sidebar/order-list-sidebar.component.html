@@ -41,6 +41,10 @@
           class="btn btn-grey btn-sm m-l-12"><i
     class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.resume</span>
   </button>
+  <button (click)="continueAllOrder()" *ngIf="permission.currentController.orders.modify && object.isContinue"
+          class="btn btn-grey btn-sm m-l-12"><i
+    class="fa fa-refresh p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.continue</span>
+  </button>
   <button (click)="confirmAllOrder()" *ngIf="permission.currentController.orders.modify && object.isPrompt"
           class="btn btn-grey btn-sm m-l-12"><i
     class="fa fa fa-check-circle-o p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.confirm</span>
