@@ -558,6 +558,11 @@ export class TypeComponent {
         this.coreService.navToInventoryTab(event.target.getAttribute('data-id-x'), 'NOTICEBOARD');
       } else if (event.target.getAttribute('data-id-y')) {
         this.coreService.showBoard(event.target.getAttribute('data-id-y'));
+      } else if (event.target.getAttribute('data-id-m')) {
+        console.log(event.target.getAttribute('data-id-m'));
+      } else if (event.target.getAttribute('data-id-n')) {
+        console.log(event.target.getAttribute('data-id-n'));
+        event.target.checked = true;
       }
     }
   }

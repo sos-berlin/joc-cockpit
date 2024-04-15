@@ -1977,6 +1977,9 @@ export class CoreService {
 
         if (permission && permission.joc && permission.joc.inventory && permission.joc.inventory.view) {
           str += '<i data-id-x="' + item + '" class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>';
+          str += '<button class="btn-drop more-option-h" type="button">\n' +
+            '<i data-id-m="' + item + '" class="fa fa-ellipsis-h"></i></button>' +
+            '<span class="p-r-xs ant-checkbox"><input data-id-n="' + item + '" type="checkbox" class="ant-checkbox-input ng-pristine ng-valid ng-touched" ><span class="ant-checkbox-inner"></span></span>';
         }
         str += firstStr + '<a class="text-hover-primary" data-id-y="' + item + '" >' + item + '</a>'
         str += lastStr;

@@ -111,14 +111,14 @@
                 </a>
               </li>
               <li (click)="unskip(instruction);"
-                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
+                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
                   nz-menu-item>
                 <a>
                   <span translate>workflow.button.unskip</span>
                 </a>
               </li>
               <li (click)="stop(instruction);"
-                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
+                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
                   nz-menu-item>
                 <a>
                   <span translate>workflow.button.stop</span>

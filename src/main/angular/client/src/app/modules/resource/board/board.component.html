@@ -8,13 +8,15 @@
           </div>
           <div class="inline">
             <button
-              (click)="post('allBoards')"
-              *ngIf="(object.checked) && permission.currentController.noticeBoards.post" class="btn btn-grey btn-sm m-l-12"><i
-              ></i>&nbsp; {{'resource.board.button.postAll' | translate}}</button>
+              (click)="postAllNotices()"
+              *ngIf="object.setOfCheckedId.size>0 && permission.currentController && permission.currentController.noticeBoards.post" class="btn btn-grey btn-sm m-l-12"><i
+              class="fa fa-sticky-note-o"></i>&nbsp; {{'resource.board.button.postAll' | translate}}
+            </button>
             <button
               (click)="deleteAllNotices()"
-              *ngIf="(object.setOfCheckedId.size>0 || object.mapOfCheckedId.size>0) && permission.currentController.noticeBoards.delete" class="btn btn-grey btn-sm m-l-12"><i
-              class="fa fa-trash"></i>&nbsp; {{'resource.board.button.deleteAll' | translate}}</button>
+              *ngIf="object.isDelete && (object.setOfCheckedId.size>0 || object.mapOfCheckedId.size>0) && permission.currentController.noticeBoards.delete" class="btn btn-grey btn-sm m-l-12"><i
+              class="fa fa-trash"></i>&nbsp; {{'resource.board.button.deleteAll' | translate}}
+            </button>
             <div [ngClass]="{'hide': (object.setOfCheckedId.size>0 || object.mapOfCheckedId.size>0)}" class="inline">
               <div class="btn-group dropdown">
                 <button nz-dropdown [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12"
@@ -240,8 +242,8 @@
                   <ng-template ngFor [ngForOf]="ajaxTable.data" let-board>
                     <tr [ngClass]="{'light-bg':board.show}">
                       <td *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
-                          [nzShowCheckbox]="true"
-                          [nzChecked]="object.checked"
+                          [nzShowCheckbox]="true" (nzCheckedChange)="onItemChecked(board, null, $event)"
+                          [nzChecked]="object.setOfCheckedId.has(board.path)"
                           ></td>
                       <td>
                         <div class="btn-group dropdown">
