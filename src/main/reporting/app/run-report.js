@@ -37,7 +37,7 @@ function parseCommandLineArguments() {
 
     const options = commander.opts();
     // Define the command line options
-    const logDirectory = options.logDir ? path.resolve(options.logDir) : 'logs';
+    const logDirectory = options.logDir ? path.resolve(options.logDir) : '../logs';
     let custLogger = new CustomLogger(logDirectory);
     logger = custLogger.logger;
     // Ensure the log directory exists

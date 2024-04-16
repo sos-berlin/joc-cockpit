@@ -32,7 +32,7 @@ export class FrequencyReportComponent {
   dateTo: any[] = [];
   multiReports: any[] = [];
   addCardItems: any[] = [];
-  filterData: any[] = [];
+
   frequencies = [
     {name: 'WEEKLY'},
     {name: 'TWO_WEEKS'},
@@ -79,9 +79,9 @@ export class FrequencyReportComponent {
     }).subscribe({
       next: (res: any) => {
         this.isLoading = true;
-        this.multiReports = res.reports
-        this.filterData = res.reports
-        this.addCardItems = [...this.multiReports];
+        this.multiReports = res.reports;
+        this.addCardItems = [...this.multiReports]
+
         this.addCardItems.forEach((report) => {
           report.name = report.path.substring(report.path.lastIndexOf('/') + 1);
         });
@@ -533,28 +533,15 @@ export class FrequencyReportComponent {
     return this.addCardItems.every(item => !item.data || item.data.length === 0);
   }
 
-  filterBy(data?): void {
-    if (data?.name) {
-      this.filteredFrequency = data.name;
-      this.addCardItems = this.filterData.filter(item => item.frequency === data.name);
-      this.multiReports = [...this.addCardItems];
-      let arr = [];
-      this.multiReports.forEach(item => {
-        if(item.checked){
-          arr.push(item);
-        }
-      });
-      this.addCardItems= arr;
-
-      this.destroyElements()
-      setTimeout(() => {
-        this.generateDonutCharts();
-      }, 100)
-    } else {
-      this.filteredFrequency = '';
-      this.destroyElements()
-      this.loadData()
-    }
+  filterBy(data): void {
+    this.filteredFrequency = data.name;
+    this.addCardItems = this.multiReports.filter(item => {
+      return (item.frequency === data.name || !data.name) && item.checked;
+    });
+    this.destroyElements()
+    setTimeout(() => {
+      this.generateDonutCharts();
+    }, 100)
   }
 
   destroyElements(): void {
@@ -570,16 +557,7 @@ export class FrequencyReportComponent {
   }
 
   exportTheReport(): void {
-    this.createReport();
-    // this.modal.create({
-    //   nzTitle: undefined,
-    //   nzContent: ShareModalComponent,
-    //   nzFooter: null,
-    //   nzAutofocus: null,
-    //   nzData: {},
-    //   nzClosable: false,
-    //   nzMaskClosable: false
-    // });
+    this.createReport().then();
   }
 
   async createReport() {

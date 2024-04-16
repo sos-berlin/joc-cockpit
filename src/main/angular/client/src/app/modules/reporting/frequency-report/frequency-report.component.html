@@ -15,10 +15,10 @@
             <span>{{ filteredFrequency | translate}}</span>
           </span>
         </button>
-        <span *ngIf="filteredFrequency" (click)="filterBy({allFrequency: 'All'})" class="p-l-xs cur-point"> <i class="fa fa-times-circle-o fa-lg" aria-hidden="true"></i></span>
+        <span *ngIf="filteredFrequency" (click)="filterBy({})" class="p-l-xs cur-point"> <i class="fa fa-times-circle-o fa-lg" aria-hidden="true"></i></span>
 
         <nz-dropdown-menu #filteration="nzDropdownMenu">
-          <ul nz-menu>
+          <ul nz-menu >
             <ng-container *ngFor="let item of frequencies">
               <li nz-menu-item (click)="filterBy(item)">
                 <label>{{ item.name | translate }}</label>
@@ -34,7 +34,7 @@
         </button>
 
         <nz-dropdown-menu #addReports="nzDropdownMenu">
-          <ul nz-menu>
+          <ul nz-menu class="overflow-y" style="max-height: 300px">
             <ng-container *ngFor="let item of multiReports">
               <li nz-menu-item *ngIf="item.data.length">
                 <label nz-checkbox [(ngModel)]="item.checked" (ngModelChange)="onCardChange(item.id)">

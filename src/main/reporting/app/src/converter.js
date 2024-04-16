@@ -195,9 +195,9 @@ function getKeyBasedOnFrequency(year, month, frequencyInterval) {
  * @returns {string} End of the month in "YYYY-MM-DD" format.
  */
 function getEndOfMonth(inputDate) {
-    const inputDateObj = new Date(inputDate);
+    let inputDateObj = new Date(inputDate);
     // Get the last day of the month
-    const lastDay = new Date(inputDateObj.getFullYear(), inputDateObj.getMonth() + 1, 0);
+    let lastDay = new Date(inputDateObj.getFullYear(), inputDateObj.getMonth() + 1, 0);
     return `${lastDay.getFullYear()}-${(lastDay.getMonth() + 1).toString().padStart(2, '0')}-${lastDay.getDate().toString().padStart(2, '0')}`;
 }
 
@@ -222,15 +222,11 @@ function getAllDatesBetweenWeeks(startDate, endDate) {
         const currentWeekEnd = new Date(currentWeekStart);
         currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
 
-        let obj = {
+        // Add all dates within the week to the result
+        result.push({
             startDate: formatDate(currentWeekStart),
             endDate: formatDate(currentWeekEnd),
-            weekNum: getWeekNumber(currentWeekStart)
-        };
-
-        // Add all dates within the week to the result
-        result.push(obj);
-
+        });
         // Move to the next week
         currentDate.setDate(currentDate.getDate() + 7);
     }
@@ -253,17 +249,6 @@ function formatDate(date) {
     );
 }
 
-/**
- * Get the ISO week number for a given date.
- * @param {string} inputDate - Input date in "YYYY-MM-DD" format.
- * @returns {number} ISO week number.
- */
-function getWeekNumber(inputDate) {
-    const date = new Date(inputDate);
-    date.setDate(date.getDate() + 4 - (date.getDay() || 7)); // Set to Monday of the current week
-    const yearStart = new Date(date.getFullYear(), 0, 1);
-    return Math.ceil(((date - yearStart) / 86400000 + 1) / 7);
-}
 
 /**
  * Initialize processing based on options.
@@ -289,7 +274,7 @@ async function init(options) {
                 await utils.checkAndCreateDirectory('tmp');
 
                 if (options.frequencies) {
-                    for (const frequency of options.frequencies) {
+                    for (let frequency of options.frequencies) {
                         let frequencyType = '';
                         let interval = 0;
                         switch (frequency) {
@@ -314,7 +299,7 @@ async function init(options) {
                                 continue; // Skip the invalid frequency
                         }
                         console.log('Start report processing for frequency ', frequency)
-                        const files = await insertDataIntoDb(runId, inputFiles, frequencyType, interval,JSON.parse(templateData), options);
+                        let files = await insertDataIntoDb(runId, inputFiles, frequencyType, interval,JSON.parse(templateData), options);
                         await generate(templateData, runId, options, files);
                     }
                 }
