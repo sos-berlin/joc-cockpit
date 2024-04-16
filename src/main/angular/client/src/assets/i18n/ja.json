@@ -2749,6 +2749,7 @@
       "label.endOfLife": "通知期限終了",
       "label.expectingOrders": "Expectオーダー",
       "button.post": "PostNotice",
+      "button.postAll": "全てPostNotice",
       "button.delete": "通知削除",
       "button.deleteAll": "全通知削除",
       "placeholder.enterNoticeId": "通知ID入力"
@@ -2988,7 +2989,7 @@
     "label.iamOidcUserAttribute": "OIDCユーザー属性",
     "label.iamOidcGroupClaims": "OIDCグループクレーム",
     "label.iamOidcGroupRolesMap": "OIDCグループロールマップ",
-    "label.iamOidcAuthenticationCodeFlow": "Authentication Code Flow",
+    "label.iamOidcAuthenticationCodeFlow": "Authorization Code Flow",
     "label.iamOidcImplicitFlow": "Implicit Flow",
     "label.iamOidcFlowType": "Flowタイプ",
     "label.iamOidcClientCredentialsFlow": "Client Credentials Flow",

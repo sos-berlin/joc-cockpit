@@ -2,7 +2,6 @@ import {Component, inject, ViewChild} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
-import {differenceInCalendarDays} from 'date-fns';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -24,9 +23,9 @@ export class PostModalComponent {
   controllerId: string;
   preferences: any;
   board: any;
+
   notice: any;
 
-  viewDate = new Date();
   submitted = false;
   postObj: any = {};
   dateFormat: any;
@@ -62,23 +61,16 @@ export class PostModalComponent {
     }
   }
 
-  disabledDate = (current: Date): boolean => {
-    return differenceInCalendarDays(current, this.viewDate) < 0;
-  }
-
-  selectTime(time, isEditor = false): void {
-    this.coreService.selectTime(time, isEditor, this.postObj);
-  }
-
   onSubmit(): void {
     this.submitted = true;
     const obj: any = {
       controllerId: this.controllerId,
-      noticeBoardPath: this.board.path,
+      noticeBoardPaths: this.board ? [this.board.path] : this.modalData.paths,
       noticeId: this.postObj.noticeId,
       timeZone: this.postObj.timeZone,
       auditLog: {}
     };
+
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     if (this.postObj.at === 'date') {
       if (this.postObj.fromDate) {
@@ -88,7 +80,7 @@ export class PostModalComponent {
     } else if (this.postObj.at === 'later') {
       obj.endOfLife = this.postObj.atTime;
     }
-    this.coreService.post('notice/post', obj).subscribe({
+    this.coreService.post('notices/post', obj).subscribe({
       next: (res) => {
         this.submitted = false;
         this.activeModal.close(res);
@@ -273,6 +265,7 @@ export class BoardComponent {
   object = {
     setOfCheckedId: new Set(),
     mapOfCheckedId: new Set(),
+    isDelete: false,
     checked: false,
     indeterminate: false
   };
@@ -550,9 +543,8 @@ export class BoardComponent {
     const pathArr = [];
     const arr = data.path.split('/');
     this.boardsFilters.selectedkeys = [];
-    const len = arr.length - 1;
-    if (len > 1) {
-      for (let i = 0; i < len; i++) {
+    if ((arr.length - 1) > 1) {
+      for (let i = 0; i < (arr.length - 1); i++) {
         if (arr[i]) {
           if (i > 0 && pathArr[i - 1]) {
             pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
@@ -661,6 +653,7 @@ export class BoardComponent {
     this.object.setOfCheckedId.clear();
     this.object.indeterminate = false;
     this.object.checked = false;
+    this.object.isDelete = false;
     this.data.forEach((item) => {
       delete item.checked;
       delete item.indeterminate;
@@ -694,8 +687,9 @@ export class BoardComponent {
       boards.forEach(item => {
         if (value) {
           if (item.numOfNotices !== item.numOfExpectingOrders) {
-            this.object.setOfCheckedId.add(item.path);
+            this.object.isDelete = true;
           }
+          this.object.setOfCheckedId.add(item.path);
         }
         if (!board) {
           item.checked = value;
@@ -705,9 +699,11 @@ export class BoardComponent {
     }
     if (!value && !board) {
       this.object.setOfCheckedId.clear();
+      this.object.isDelete = false;
     } else if (board) {
       if (this.object.mapOfCheckedId.size == 0) {
         this.object.setOfCheckedId.clear();
+        this.object.isDelete = false;
       }
     }
     if (board) {
@@ -723,12 +719,14 @@ export class BoardComponent {
           this.object.mapOfCheckedId.add(notice.id + '__' + board.path);
         }
       } else {
+        board.checked = true;
         this.object.setOfCheckedId.add(board.path);
       }
     } else {
       if (notice) {
         this.object.mapOfCheckedId.delete(notice.id + '__' + board.path);
       } else {
+        board.checked = false;
         this.object.setOfCheckedId.delete(board.path);
       }
     }
@@ -748,7 +746,22 @@ export class BoardComponent {
       }
       this.checkParent(boards, checked);
     } else {
-      this.checkParent(boards, checked, true);
+      board.checked = checked;
+      if (board.numOfNotices !== board.numOfExpectingOrders) {
+        this.object.isDelete = true;
+      }
+      board.notices?.forEach(val => {
+        if (val.state && val.state._text !== 'EXPECTED') {
+          if (checked) {
+            this.object.mapOfCheckedId.add(val.id + '__' + board.path);
+          } else {
+            this.object.mapOfCheckedId.delete(val.id + '__' + board.path);
+          }
+        }
+      });
+    }
+    if (this.object.setOfCheckedId.size == 0) {
+      this.object.isDelete = false;
     }
     this.object.checked = this.object.setOfCheckedId.size === boards.length;
     this.object.indeterminate = this.object.setOfCheckedId.size > 0 && !this.object.checked;
@@ -759,8 +772,9 @@ export class BoardComponent {
       boards.forEach(item => {
         if (isChecked && (item.checked || item.indeterminate)) {
           if (item.numOfNotices !== item.numOfExpectingOrders) {
-            this.object.setOfCheckedId.add(item.path);
+            this.object.isDelete = true;
           }
+          this.object.setOfCheckedId.add(item.path);
         }
 
         let count = 0;
@@ -791,6 +805,24 @@ export class BoardComponent {
 
       });
     }
+  }
+
+  postAllNotices(): void {
+    const paths = Array.from(this.object.setOfCheckedId);
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: PostModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        paths,
+        controllerId: this.schedulerIds.selected,
+        preferences: this.preferences
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
   post(board: any, notice = null): void {

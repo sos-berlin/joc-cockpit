@@ -2749,6 +2749,7 @@
       "label.endOfLife": "End of Life",
       "label.expectingOrders": "Expecting Orders",
       "button.post": "Post Notice",
+      "button.postAll": "Post all Notices",
       "button.delete": "Delete Notice",
       "button.deleteAll": "Delete All Notices",
       "placeholder.enterNoticeId": "Enter Notice ID"
@@ -2988,7 +2989,7 @@
     "label.iamOidcUserAttribute": "OIDC User Name Attribute",
     "label.iamOidcGroupClaims": "OIDC Group Claims",
     "label.iamOidcGroupRolesMap": "OIDC Group Roles Mapping",
-    "label.iamOidcAuthenticationCodeFlow": "Authentication Code Flow",
+    "label.iamOidcAuthenticationCodeFlow": "Authorization Code Flow",
     "label.iamOidcImplicitFlow": "Implicit Flow",
     "label.iamOidcClientCredentialsFlow": "Client Credentials Flow",
     "label.iamOidcFlowType": "Flow Type",
