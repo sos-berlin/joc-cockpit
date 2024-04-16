@@ -436,7 +436,7 @@ export class WorkflowGraphicalComponent {
   fit(): void {
     if (this.graph) {
       this.graph.fit();
-      this.workflowService.center(this.graph);
+      this.graph.center(true, true, 0.5, 0.1);
     }
   }
 

@@ -3575,7 +3575,7 @@ export class WorkflowComponent {
     this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.fit();
-      this.workflowService.center(this.editor.graph);
+      this.editor.graph.center(true, true, 0.5, 0.1);
     }
   }
 
@@ -5287,6 +5287,7 @@ export class WorkflowComponent {
   }
 
   private updateWorkflow(graph, jobMap): void {
+    this.selectedNode =  null;
     const scrollValue: any = {};
     const element = document.getElementById('graph');
 
