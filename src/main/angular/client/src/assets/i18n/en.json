@@ -2781,7 +2781,7 @@
       "label.endOfLife": "End of Life",
       "label.expectingOrders": "Expecting Orders",
       "button.post": "Post Notice",
-      "button.postAll": "Post All Notices",
+      "button.postAll": "Post all Notices",
       "button.delete": "Delete Notice",
       "button.deleteAll": "Delete All Notices",
       "placeholder.enterNoticeId": "Enter Notice ID"
@@ -2933,7 +2933,7 @@
       "allow_empty_arguments": "By default empty arguments are not allowed from Jobs and Job Templates as this forces jobs to distinguish between empty and unset variables. Users can enable the behavior to allow empty arguments.",
       "allow_undeclared_variables": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available with an order.",
       "display_folders_in_views": "Displays folders of scheduling objects in views. If this setting is set to 'false' then object names only will be displayed. In JS7 object names are unique.",
-      "node_command_line_options": "Node command line options"
+      "node_command_line_options": "Node.js command line options can be specified. Consider that applicability of options depends on the version of Node.js in use."
     },
     "user": {
       "welcome_got_it": "Specifies that the welcome window that offers defaults and examples for download should no longer be displayed.",

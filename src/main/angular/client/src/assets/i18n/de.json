@@ -2393,8 +2393,8 @@
     "button.showLog": "Protokoll anzeigen",
     "button.assignParameterizationFromSchedules": "Parametrisierung aus Zeitplan",
     "button.assignFromSchedule": "Parametrisierung aus Zeitplan",
-    "button.cloneOrder": "Clone Order",
-    "button.continue": "Continue",
+    "button.cloneOrder": "Auftrag klonen",
+    "button.continue": "Fortsetzen",
     "placeholder.selectStartNode": "Start-Position auswählen",
     "placeholder.selectEndNode": "End-Position auswählen",
     "placeholder.selectBlockPosition": "Block-Position angeben",
@@ -2781,9 +2781,9 @@
       "label.endOfLife": "Verfallsfrist",
       "label.expectingOrders": "Wartende Aufträge",
       "button.post": "Notiz senden",
-      "button.postAll": "Post All Notices",
+      "button.postAll": "Alle Notizen senden",
       "button.delete": "Notiz löschen",
-      "button.deleteAll": "Delete All Notices",
+      "button.deleteAll": "Alle Notizen löschen",
       "placeholder.enterNoticeId": "Notizkennung angeben"
     },
     "calendar": {
@@ -2933,7 +2933,7 @@
       "allow_empty_arguments": "Standardmäßig werden leere Argumente von Aufträgen und Auftragsvorlagen nicht zugelassen, da dies die Aufträge zwingt, zwischen leeren und nicht gesetzten Variablen zu unterscheiden. Benutzer können das Verhalten aktivieren, um leere Argumente zuzulassen.",
       "allow_undeclared_variables": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
       "display_folders_in_views": "Zeigt Ordner von Objekten in Ansichten an. Wenn diese Einstellung auf 'false' gesetzt ist, werden nur die Objektnamen angezeigt. In JS7 sind die Objektnamen eindeutig.",
-      "node_command_line_options": "Node command line options"
+      "node_command_line_options": "Node.js Kommandozeilenoptionen können angegeben werden. Beachten Sie, dass die Anwendbarkeit der Optionen von der verwendeten Version von Node.js abhängt."
     },
     "user": {
       "welcome_got_it": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht länger angezeigt werden soll.",
