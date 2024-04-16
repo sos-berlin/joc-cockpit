@@ -749,7 +749,7 @@
     "button.viewAllAgentsDetails": "エージェント詳細表示",
     "button.confirmNodeLoss": "ノードロストが確認されました",
     "button.removeRepository": "リポジトリーから削除",
-    "button.updateURL": "Update URL",
+    "button.updateURL": "URL更新",
     "message.noWidgetFound": "追加できるウィジェットはありません",
     "message.agentStatus": "パイチャートウィジェットはエージェントのステータスを表示します",
     "message.agentClusterStatus": "パイチャートウィジェットはエージェントクラスターのステータスを表示します",
@@ -2394,7 +2394,7 @@
     "button.assignParameterizationFromSchedules": "スケジュールから変数設定",
     "button.assignFromSchedule": "スケジュールから割り当て",
     "button.cloneOrder": "オーダークローン",
-    "button.continue": "Continue",
+    "button.continue": "継続",
     "placeholder.selectStartNode": "開始ノード選択",
     "placeholder.selectEndNode": "終了ノード選択",
     "placeholder.selectBlockPosition": "ブロック位置選択",
@@ -2781,7 +2781,7 @@
       "label.endOfLife": "通知期限終了",
       "label.expectingOrders": "Expectオーダー",
       "button.post": "PostNotice",
-      "button.postAll": "Post All Notices",
+      "button.postAll": "全てPostNotice",
       "button.delete": "通知削除",
       "button.deleteAll": "全通知削除",
       "placeholder.enterNoticeId": "通知ID入力"
@@ -2933,7 +2933,7 @@
       "allow_empty_arguments": "空の変数を許可",
       "allow_undeclared_variables": "宣言されていない変数を許可",
       "display_folders_in_views": "フォルダーを表示",
-      "node_command_line_options": "Node command line options"
+      "node_command_line_options": "ノードコマンドラインオプション"
     },
     "user": {
       "welcome_got_it": "了解",
