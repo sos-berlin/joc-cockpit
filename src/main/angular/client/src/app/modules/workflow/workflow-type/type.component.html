@@ -1,3 +1,8 @@
+<div *ngIf="broadNames.length > 0" class="pos-abt post-btn" style="right: 16px;top:12px">
+  <button (click)="postAllNotices()" class="btn btn-grey btn-sm m-l-12"><i
+    class="fa fa-sticky-note-o"></i>&nbsp; {{'resource.board.button.postAll' | translate}}
+  </button>
+</div>
 <ng-template #itemTemplate let-order>
   <ng-template #contentTemplate>
     <div class="p-l-sm">
@@ -561,3 +566,11 @@
     </ng-container>
   </nz-drawer>
 </div>
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <ul nz-menu>
+    <li (click)="post()" *ngIf="permission && permission.currentController && permission.currentController.noticeBoards.post"
+        nz-menu-item>
+      <a translate>resource.board.button.post</a>
+    </li>
+  </ul>
+</nz-dropdown-menu>

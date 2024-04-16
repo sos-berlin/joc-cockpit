@@ -838,6 +838,7 @@ export class JobTemplateComponent {
           if (val.default) {
             if (val.type === 'String') {
               this.coreService.removeSlashToString(val, 'default');
+              delete val.default1;
             } else if (val.type === 'Boolean') {
               val.default = (val.default === true || val.default === 'true');
             }

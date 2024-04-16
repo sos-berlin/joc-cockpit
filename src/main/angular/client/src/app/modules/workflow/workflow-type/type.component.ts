@@ -4,14 +4,16 @@ import {
   HostListener,
   Input,
   Output,
-  SimpleChanges,
+  SimpleChanges, ViewChild,
   ViewContainerRef
 } from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
+import {NzContextMenuService, NzDropdownMenuComponent} from "ng-zorro-antd/dropdown";
 import {CoreService} from '../../../services/core.service';
 import {ScriptModalComponent} from '../script-modal/script-modal.component';
 import {DependentWorkflowComponent} from '../workflow-graphical/workflow-graphical.component';
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
+import {PostModalComponent} from "../../resource/board/board.component";
 
 @Component({
   selector: 'app-type',
@@ -39,12 +41,15 @@ export class TypeComponent {
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
   @Output() isProcessing: EventEmitter<boolean> = new EventEmitter();
   @Output() onClick: EventEmitter<any> = new EventEmitter();
+  @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   sideBar: any = {};
+  broadName = '';
+  broadNames = [];
   isFirst = false;
 
   constructor(public coreService: CoreService, private modal: NzModalService,
-              public viewContainerRef: ViewContainerRef
+              public viewContainerRef: ViewContainerRef, private nzContextMenuService: NzContextMenuService
   ) {
 
   }
@@ -551,6 +556,51 @@ export class TypeComponent {
     }
   }
 
+  post(paths?): void {
+    if (this.permission.currentController && this.permission.currentController.noticeBoards.post) {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: PostModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          board: paths ? undefined : {path: this.broadName},
+          paths,
+          controllerId: this.schedulerId,
+          preferences: this.preferences
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this.broadNames.forEach(name => {
+            const elements: any = document.querySelectorAll(`[data-id-n="${name}"]`);
+            elements.forEach(element => {
+              element.parentNode?.classList?.remove('ant-checkbox-checked');
+            })
+          });
+          this.broadNames = [];
+          this.hideElementsByClass();
+        }
+      });
+    }
+  }
+
+  private hideElementsByClass() {
+    // Get all elements with the class "to-hide"
+    const elements: any = document.querySelectorAll('.post-btn');
+
+    // Iterate over each element and hide it
+    elements.forEach(function (element) {
+      element.style.display = 'none';
+    });
+  }
+
+  postAllNotices(): void {
+    this.post(this.broadNames);
+  }
+
   @HostListener('window:click', ['$event'])
   onClicked(event): void {
     if (event) {
@@ -559,10 +609,38 @@ export class TypeComponent {
       } else if (event.target.getAttribute('data-id-y')) {
         this.coreService.showBoard(event.target.getAttribute('data-id-y'));
       } else if (event.target.getAttribute('data-id-m')) {
-        console.log(event.target.getAttribute('data-id-m'));
+        this.broadName = event.target.getAttribute('data-id-m');
+        try {
+          if (this.menu) {
+            setTimeout(() => {
+              this.nzContextMenuService.create(event, this.menu);
+            }, 0);
+          }
+        } catch (e) {
+        }
       } else if (event.target.getAttribute('data-id-n')) {
-        console.log(event.target.getAttribute('data-id-n'));
-        event.target.checked = true;
+        const id = event.target.getAttribute('data-id-n');
+        const elements: any = document.querySelectorAll(`[data-id-n="${id}"]`);
+        let isChecked = false;
+        elements.forEach(element => {
+          if(element.parentNode?.classList.contains('ant-checkbox-checked')){
+            isChecked = true;
+          }
+        });
+        if (isChecked) {
+          this.broadNames = this.broadNames.filter(item => item != id);
+          elements.forEach(element => {
+            element.parentNode?.classList?.remove('ant-checkbox-checked');
+          });
+
+        } else {
+          this.broadNames.push(id);
+          this.broadNames = [...new Set(this.broadNames)]
+          elements.forEach(element => {
+            element.parentNode?.classList?.add('ant-checkbox-checked');
+          });
+        }
+        console.log(this.broadNames)
       }
     }
   }

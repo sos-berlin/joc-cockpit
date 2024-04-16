@@ -65,7 +65,7 @@ export class PostModalComponent {
     this.submitted = true;
     const obj: any = {
       controllerId: this.controllerId,
-      noticeBoardPaths: this.board ? this.board.path : this.modalData.paths,
+      noticeBoardPaths: this.board ? [this.board.path] : this.modalData.paths,
       noticeId: this.postObj.noticeId,
       timeZone: this.postObj.timeZone,
       auditLog: {}
