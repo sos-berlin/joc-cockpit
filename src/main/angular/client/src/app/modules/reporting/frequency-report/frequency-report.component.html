@@ -1,8 +1,8 @@
 <div class="p-a p-t-0" id="content">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 position-sticky">
       <div class="text-center b-b m-t-11">
-          <h5 class="card-title">{{template }}</h5>
+          <h5 class="card-title">{{template.replace('${hits}', '')}}</h5>
       </div>
       <div class="m-t-35" style="float: right" [hidden]="filter.showReport">
         <button [nzDropdownMenu]="filteration" [nzPlacement]="'bottomRight'"
@@ -36,7 +36,7 @@
         <nz-dropdown-menu #addReports="nzDropdownMenu">
           <ul nz-menu class="overflow-y" style="max-height: 300px">
             <ng-container *ngFor="let item of multiReports">
-              <li nz-menu-item *ngIf="item.data.length">
+              <li nz-menu-item *ngIf="item.data">
                 <label nz-checkbox [(ngModel)]="item.checked" (ngModelChange)="onCardChange(item.id)">
                   {{ item.title + '-' + item.dateFrom }}
                 </label>
@@ -50,6 +50,8 @@
           <span translate>inventory.button.export</span>
         </button>
       </div>
+    </div>
+    <div class="col-md-12">
       <div [ngClass]="{'row m-t': !filter.showReport, 'box-body p-a-0 p-t': filter.showReport}">
         <div *ngIf="filter.showReport" class="">
           <span (click)="toggleReportView()" class="text-hover-primary cursor-pointer">
@@ -58,10 +60,11 @@
           </span>
         </div>
         <ng-container *ngFor="let item of addCardItems">
-          <div [hidden]="filter.showReport" *ngIf="item.data.length" class="col-lg-4 col-xl-3 m-b-sm">
+          <div [hidden]="filter.showReport" *ngIf="item.data" class="col-lg-4 col-xl-3 m-b-sm">
             <perfect-scrollbar class="card">
                 <div class="card-body">
                   <div class="right flex">
+                    <div *ngIf="item.data.length">
                       <a (click)="toggleReportView(item)" *ngIf="!item.showReport" class="text-hover-primary cur-point m-r-sm">
                         <span nz-icon nzType="bar-chart" nzTheme="outline" class="text-md"></span>
                       </a>
@@ -69,6 +72,7 @@
                         <span *ngIf="item.showTable" nz-icon nzType="pie-chart" nzTheme="outline" class="text-md"></span>
                         <span *ngIf="!item.showTable" nz-icon nzType="table" nzTheme="outline" class="text-md"></span>
                       </a>
+                    </div>
                       <a class="cur-point" (click)="removeCard(item.id)">
                         <span nz-icon nzType="close" nzTheme="outline" class="text-md"></span>
                       </a>
@@ -80,7 +84,10 @@
                   <div class="_600 text-md m-t-sm m-b-sm text-center pos-rel"><span
                     class="p-b-xs b-b"><i class="text-muted">{{ item.dateFrom }} - {{ item.dateTo }}</i></span>
                   </div>
-                  <div [hidden]="item.showTable">
+                  <div class="col-md-12 m-top-60 text-center" *ngIf="item.data.length == 0 && isLoading">
+                    <app-empty-data></app-empty-data>
+                  </div>
+                  <div *ngIf="item.data.length" [hidden]="item.showTable">
                     <div class="donut-chart-container m-t-md m-b-sm" [attr.id]="'donut-chart-container-' + item.id">
                     </div>
                   </div>
@@ -221,17 +228,12 @@
                   </div>
                 </div>
             </perfect-scrollbar>
-
           </div>
         </ng-container>
         <div [hidden]="!filter.showReport">
           <canvas id="bar-chart"></canvas>
         </div>
-        <div class="col-md-12 text-center" *ngIf="hasNoData() && isLoading">
-          <app-empty-data></app-empty-data>
-        </div>
       </div>
-
     </div>
   </div>
 </div>

@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const {promisify} = require('util');
 const moment = require('moment');
 const _ = require('lodash');
 let logger = require('./logger');
@@ -28,9 +29,9 @@ async function writeReportData(options, data, directory, fileName, templateData,
     };
 
     const heapStats = v8.getHeapStatistics();
-    console.log(`  - Total Available Size: ${(heapStats.total_available_size / (1024 * 1024)).toFixed(2)} MB`);
-    console.log(`  - Used Heap Size: ${(heapStats.used_heap_size / (1024 * 1024)).toFixed(2)} MB`);
-    console.log(`  - Heap Size Limit: ${(heapStats.heap_size_limit / (1024 * 1024)).toFixed(2)} MB`);
+    logger.debug(`  - Total Available Size: ${(heapStats.total_available_size / (1024 * 1024)).toFixed(2)} MB`);
+    logger.debug(`  - Used Heap Size: ${(heapStats.used_heap_size / (1024 * 1024)).toFixed(2)} MB`);
+    logger.debug(`  - Heap Size Limit: ${(heapStats.heap_size_limit / (1024 * 1024)).toFixed(2)} MB`);
 
     if (jsonObject.data) {
         let outputDir;
@@ -39,7 +40,12 @@ async function writeReportData(options, data, directory, fileName, templateData,
         } else {
             outputDir = path.join('report/' + runId, fileName);
         }
-        await utils.writeOutputFile(outputDir, jsonObject);
+        logger.debug(`Output file ${outputDir} written successfully.`);
+        try {
+            await utils.writeOutputFile(outputDir, jsonObject);
+        } catch (e) {
+            logger.error(`Error writing output file: ${e.message}`);
+        }
     }
 }
 
@@ -80,7 +86,7 @@ function dynamicData(templates, data, options) {
                 let maxParallelJobData = [];
 
                 agentData.reduce((currentJobs, job) => {
-                    const overlappingJobs = currentJobs.filter(j => (j.START_TIME.isBefore(job.START_TIME) && j.END_TIME.isAfter(job.START_TIME)) || (j.START_TIME.isSameOrBefore(job.START_TIME) && j.END_TIME.isSameOrAfter(job.END_TIME)));
+                    let overlappingJobs = currentJobs.filter(j => (j.START_TIME.isBefore(job.START_TIME) && j.END_TIME.isAfter(job.START_TIME)) || (j.START_TIME.isSameOrBefore(job.START_TIME) && j.END_TIME.isSameOrAfter(job.END_TIME)));
                     currentJobs.push(job);
                     if (overlappingJobs.length + 1 > maxParallelJobs) {
                         maxParallelJobs = overlappingJobs.length + 1;
@@ -105,9 +111,8 @@ function dynamicData(templates, data, options) {
 
             return _.orderBy(results, ['count'], ['desc']).slice(0, options.hits);
         } else if (templates.data.groupBy === 'START_TIME' && templates.data.execution === "PARALLELISM") {
-            //TODO
             const groupedData = Object.values(data.reduce((acc, curr) => {
-                const startTime = curr.START_TIME?.split(' ')[0];
+                let startTime = curr.START_TIME?.split(' ')[0];
                 acc[startTime] = acc[startTime] || [];
                 acc[startTime].push(curr);
                 return acc;
@@ -128,7 +133,7 @@ function dynamicData(templates, data, options) {
                 }, []);
             }).sort((a, b) => new Date(a.START_TIME) - new Date(b.START_TIME));
 
-            const periods = [];
+            let sortedPeriods = [];
             let currentPeriod = [];
 
             groupedData.forEach(job => {
@@ -136,12 +141,12 @@ function dynamicData(templates, data, options) {
                 if (!lastJob || new Date(lastJob.END_TIME).getTime() <= new Date(job.START_TIME).getTime()) {
                     currentPeriod.push(job);
                 } else {
-                    periods.push(currentPeriod);
+                    sortedPeriods.push(currentPeriod);
                     currentPeriod = [job];
                 }
             });
 
-            const sortedPeriods = periods.sort((a, b) => b.length - a.length);
+            sortedPeriods = sortedPeriods.sort((a, b) => b.length - a.length);
             return {
                 'topLowParallelismPeriods': sortedPeriods.slice(0, options.hits).map(period => ({
                     period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
@@ -186,43 +191,28 @@ async function readDataFromDb(directory, options, templateData, files) {
     if (typeof templateData === 'string') {
         templateData = JSON.parse(templateData);
     }
+
     const runId = directory.match(/\d+/)[0];
-    let outputDir;
-    if (options.outputDirectory) {
-        outputDir = options.outputDirectory;
-    } else {
-        outputDir = path.join('report', runId);
-    }
+    const outputDir = options.outputDirectory || path.join('report', runId);
+
     await utils.checkAndCreateDirectory(outputDir);
-    async function processFile(file) {
+
+    const dbName = templateData.type === 'ORDER' ? 'orders' : 'jobs';
+    const getDataFromDbAsync = promisify(DB.getDataFromDb.bind(DB));
+
+    for (const file of Object.keys(files)) {
         if (file !== 'files') {
-            const dbName = templateData.type === 'ORDER' ? 'orders' : 'jobs';
-            return new Promise((resolve, reject) => {
-                DB.getDataFromDb(templateData, dbName, options.hits || 10, file, async (err, data) => {
-                    if (err) {
-                        console.error('Error while reading template data', err);
-                        logger.error('Error while reading template data', err);
-                        reject(err);
-                    } else {
-                        await writeReportData(options, data, directory, file + '.json', templateData, options.hits || 10);
-                        resolve();
-                    }
-                });
-            });
+            try {
+                const data = await getDataFromDbAsync(logger, templateData, dbName, options.hits || 10, file);
+                await writeReportData(options, data, directory, `${file}.json`, templateData, options.hits || 10);
+            } catch (err) {
+                logger.error('Error while reading template data', err);
+                throw err; // Rethrow error to stop processing if an error occurs
+            }
         }
     }
 
-    async function processFiles(keys, index) {
-        if (index < keys.length) {
-            const fileKey = keys[index];
-            await processFile(fileKey);
-            await processFiles(keys, index + 1);
-        }
-    }
-
-    const fileKeys = Object.keys(files);
-    await processFiles(fileKeys, 0);
-    DB.deleteDb('tmp/' + runId +'.db');
+    await DB.deleteDb(`tmp/${runId}.db`, logger);
 }
 
 /**
@@ -230,10 +220,14 @@ async function readDataFromDb(directory, options, templateData, files) {
  * @param {string} templateData - Template data in JSON format.
  * @param {string} directoryPath - Directory path containing input files.
  * @param {Object} options - Additional options.
+ * @param {Object} files - Name of output files.
+ * @param {Object} _logger - Instance of logger
  */
-async function generate(templateData, directoryPath, options, files) {
+async function generate(templateData, directoryPath, options, files, _logger) {
+    if (!logger) {
+        logger = _logger;
+    }
     try {
-       // await readDataDirectory('tmp/' + directoryPath, options, templateData);
         await readDataFromDb('tmp/' + directoryPath, options, templateData, files);
     } catch (error) {
         logger.error(error);

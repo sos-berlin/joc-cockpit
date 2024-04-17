@@ -638,6 +638,8 @@
     "message.cannotCopyEmptyObject": "コピーしたオブジェクトは空です",
     "message.deleteTag": "本当にこのタグを削除しますか?",
     "message.deleteAllTag": "本当に選択した全てのタグを削除しますか?",
+    "message.deleteReport": "Are you sure you want to delete this Report?",
+    "message.deleteAllReport": "Are you sure you want to delete all Reports?",
     "--------POPUP WINDOW MESSAGES END------------": "確認ポップアップで使用",
     "tooltip.exportInXLS": "xlsx形式でエキスポート",
     "tooltip.expandDetails": "詳細表示",

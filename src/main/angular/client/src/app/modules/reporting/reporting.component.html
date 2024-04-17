@@ -41,7 +41,7 @@
             </button>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
-          <div *ngIf="index == 1" class="inline">
+          <div *ngIf="index == 1 && runIds.size === 0" class="inline">
             <div class="btn-group m-l-12 ">
               <button (click)="changeState('ALL')"
                       [ngClass]="{'btn-primary': filter.runHistory.filter.state=='ALL'}"
@@ -63,7 +63,7 @@
               </button>
             </div>
           </div>
-          <div *ngIf="index == 2" class="inline">
+          <div *ngIf="index == 2 && runIds.size === 0" class="inline">
             <div class="btn-group m-l-12 ">
               <button (click)="filterBy({state: 'All'})"
                       [ngClass]="{'btn-primary': filter.generateReport.filter.state=='All'}"
@@ -113,7 +113,10 @@
               </ul>
             </nz-dropdown-menu>
           </div>
-
+          <div *ngIf="(index == 2 && runIds.size > 0) || index == 1 && runIds.size > 0" class="inline">
+            <button (click)="deleteReports()" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash"></i>&nbsp; {{'common.button.delete' | translate}}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -144,7 +147,6 @@
             <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.reportRunHistory</span></span>
           </a>
         </li>
-
       </ul>
     </div>
     <div class="col-md-4 text-right">
@@ -187,10 +189,10 @@
       <app-manage-report (reportRun)="checkRunBtn($event)" [permission]="permission" [preferences]="preferences" [filters]="filter.manageList" [templates]="templates"></app-manage-report>
     </div>
     <div *ngIf="index == 1">
-      <app-running-history  [permission]="permission" [preferences]="preferences" [filters]="filter.runHistory" [templates]="templates"></app-running-history>
+      <app-running-history (bulkDelete)="bulkDelete($event)" [permission]="permission" [preferences]="preferences" [filters]="filter.runHistory" [templates]="templates"></app-running-history>
     </div>
     <div *ngIf="index == 2">
-      <app-generate-report  [permission]="permission" [preferences]="preferences" [filters]="filter.generateReport" [templates]="templates"></app-generate-report>
+      <app-generate-report (bulkDelete)="bulkDelete($event)" [permission]="permission" [preferences]="preferences" [filters]="filter.generateReport" [templates]="templates"></app-generate-report>
     </div>
   </div>
   <div *ngIf="!loading" class="spinner">

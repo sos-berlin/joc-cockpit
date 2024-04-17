@@ -638,6 +638,8 @@
     "message.cannotCopyEmptyObject": "L'objet copié est vide!",
     "message.deleteTag": "Êtes-vous sûr de vouloir supprimer le Mot-clé ?",
     "message.deleteAllTag": "Êtes-vous sûr de vouloir supprimer tous les Mots-clés ?",
+    "message.deleteReport": "Are you sure you want to delete this Report?",
+    "message.deleteAllReport": "Are you sure you want to delete all Reports?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exporter au format xlsx",
     "tooltip.expandDetails": "Développer les Détails",

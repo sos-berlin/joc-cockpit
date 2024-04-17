@@ -2,7 +2,6 @@ const path = require('path');
 const fs = require('fs');
 const commander = require('commander');
 const {isNumber} = require("lodash");
-const winston = require('winston');
 const init = require('./src/converter');
 const CustomLogger = require('./src/logger');
 
@@ -11,9 +10,9 @@ const ProcessingFrequencies = require('./src/config/frequencies');
 let logger;
 
 commander.on('--help', function () {
-    console.log('.....');
-    console.log('node run-report -t template.json -i inputDir -p "every 3 months, weekly" -o outputDir -c controllerID');
-    console.log('.....');
+    logger.debug('.....');
+    logger.debug('node run-report -t template.json -i inputDir -p "every 3 months, weekly" -o outputDir -c controllerID');
+    logger.debug('.....');
 });
 
 commander.option('--debug', 'Enable debug mode');
@@ -37,9 +36,10 @@ function parseCommandLineArguments() {
 
     const options = commander.opts();
     // Define the command line options
-    const logDirectory = options.logDir ? path.resolve(options.logDir) : '../logs';
-    let custLogger = new CustomLogger(logDirectory);
+    const logDirectory = options.logDir ? path.resolve(options.logDir) : './logs';
+    let custLogger = new CustomLogger(logDirectory, options.debug);
     logger = custLogger.logger;
+
     // Ensure the log directory exists
     fs.mkdirSync(logDirectory, {recursive: true});
     // If processingFrequencies is provided, split them into an array
@@ -74,17 +74,18 @@ function parseCommandLineArguments() {
 
 // Validate processing frequencies
 function validateProcessingFrequencies(options) {
+    let flag = true;
     if (options.frequencies) {
         options.frequencies.forEach(freq => {
             freq = freq.toLowerCase();
             if (!Object.values(ProcessingFrequencies).includes(freq)) {
-                console.error(`Invalid processing frequency: ${freq}. Please provide a valid value.`);
                 logger.error(`Invalid processing frequency: ${freq}. Please provide a valid value.`);
                 logger.error(`e.g., "weekly, every 2 weeks, monthly, every 3 months, every 6 months, yearly and every 3 years`);
-                process.exit(1);
+                flag = false;
             }
         });
     }
+    return flag;
 }
 
 /**
@@ -93,7 +94,7 @@ function validateProcessingFrequencies(options) {
  */
 function validateRequiredParameters(options) {
     if (!options.templateFilePath || !options.inputDirectory || !options.frequencies) {
-        console.error('Usage: node index.js -d <directory> -t <templatePath> -o <outputPath> -i <inputPath> -p <frequencies>');
+        logger.error('Usage: node index.js -d <directory> -t <templatePath> -o <outputPath> -i <inputPath> -p <frequencies>');
         if (!options.templateFilePath) {
             logger.error("error: required option '-t, --templateFilePath <jsonFile>' not specified")
         } else if (!options.inputDirectory) {
@@ -102,11 +103,13 @@ function validateRequiredParameters(options) {
             logger.error("error: required option '-p, --frequencies <frequencies>' not specified")
         }
         logger.error('Usage: node index.js -d <directory> -t <templatePath> -o <outputPath> -i <inputPath> -p <frequencies>');
-        process.exit(1);
+       return false;
     } else {
-        console.log('Validate: -d <directory> -t <templatePath> -o <outputPath> -i <inputPath> -p <frequencies>');
+        logger.debug('Validate: -d <directory> -t <templatePath> -o <outputPath> -i <inputPath> -p <frequencies>');
     }
+    return true;
 }
+
 
 /**
  * Check if user input is a valid date in 'yyyy-mm-dd' format.
@@ -138,21 +141,20 @@ function isValidDate(userInput) {
  * @param {Object} options - Command line options.
  */
 function validateNumAndDate(options) {
+    let flag = true;
     if (options.hits || options.monthFrom || options.monthTo) {
         if (options.hits && !isNumber(+options.hits)) {
-            console.error(`Invalid hits: ${options.hits}. Please provide a valid value.`);
             logger.error(`Invalid hits: ${options.hits}. Please provide a valid value.`);
-            process.exit(1);
+            flag = false;
         } else if (options.monthFrom && (typeof options.monthFrom != 'string' || !isValidDate(options.monthFrom))) {
-            console.error(`Invalid month from: ${options.monthFrom}. Please provide a valid value.`);
             logger.error(`Invalid month from: ${options.monthFrom}. Please provide a valid value.`);
-            process.exit(1);
+            flag = false;
         } else if (options.monthTo && (typeof options.monthTo != 'string' || !isValidDate(options.monthTo))) {
-            console.error(`Invalid month to: ${options.monthTo}. Please provide a valid value.`);
             logger.error(`Invalid month to: ${options.monthTo}. Please provide a valid value.`);
-            process.exit(1);
+            flag = false;
         }
     }
+    return flag;
 }
 
 /**
@@ -161,9 +163,8 @@ function validateNumAndDate(options) {
  */
 async function main(options) {
     try {
-        await init(options);
+        await init(options, logger);
     } catch (error) {
-        console.log.error(error.message);
         logger.error(error.message);
     }
 }
@@ -173,21 +174,11 @@ async function main(options) {
  */
 function run() {
     const options = parseCommandLineArguments();
-    if (options.debug) {
-        // Enable debug mode in Winston logger
-        logger.add(new winston.transports.Console({
-            format: winston.format.simple(),
-            level: 'debug' // Set log level to debug
-        }));
-
-        // Log a debug message using Winston logger
-        logger.debug('Debug mode enabled');
+    if (validateRequiredParameters(options) &&
+        validateProcessingFrequencies(options) &&
+        validateNumAndDate(options)) {
+        main(options).then();
     }
-
-    validateRequiredParameters(options);
-    validateProcessingFrequencies(options);
-    validateNumAndDate(options);
-    main(options).then();
 }
 
 module.exports = run;

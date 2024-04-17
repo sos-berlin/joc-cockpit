@@ -1,8 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const path = require('path');
-let logger = require('./logger');
-logger = new logger().getLogger();
 const moment = require("moment/moment");
 
 let db;
@@ -21,7 +19,6 @@ function createTable(dbName, type) {
             'CREATE TABLE ' + tableName + ' (id INTEGER PRIMARY KEY, WORKFLOW_NAME TEXT, JOB_NAME TEXT, AGENT_NAME TEXT, START_TIME DATE, END_TIME DATE, CRITICALITY INTEGER, STATE INTEGER, duration INTEGER)';
         db.run(createTableQuery);
     } catch (e) {
-        console.error(e, type);
         logger.error(e, type);
     }
 }
@@ -108,24 +105,24 @@ async function processRows(rows, template) {
 
 /**
  * Get data from database based on template
+ * @param {Object} logger - logger
  * @param {Object} template - Template data
  * @param {string} tableName - Name of the table
  * @param {number} limit - Limit of records to fetch
  * @param {string} file - File name or query parameter
  * @param {Function} callback - Callback function
  */
-function getDataFromDb(template, tableName, limit, file, callback) {
+function getDataFromDb(logger, template, tableName, limit, file, callback) {
     let query;
     if (tableName === 'orders') {
         query = getQueryForOrder(limit, file, template.data);
     } else {
         query = getQueryForJob(limit, file, template.data);
     }
-    console.log(`Read data from db wth sql query: `, query)
+    logger.debug(`Read data from db wth sql query: `, query)
 
     db.all(query, [], async (err, rows) => {
         if (err) {
-            console.error(err.message);
             logger.error(err.message);
             callback(err, null);
             return;
@@ -304,30 +301,30 @@ function getQueryForOrder(limit, likeStr, templateData) {
 /**
  * Delete database file
  * @param {string} databaseFile - Path to the database file
+ * @param {Object} logger - Instance of logger
  */
-function deleteDb(databaseFile) {
+function deleteDb(databaseFile, logger) {
     // Check if the file exists
     fs.access(databaseFile, fs.constants.F_OK, (err) => {
         if (err) {
-            console.error('Database file does not exist:', err);
             logger.error('Database file does not exist:', err);
             return;
         }
         // Close the database connection first
         db.close((err) => {
             if (err) {
-                console.error('Error closing database connection:', err);
+                logger.error('Error closing database connection:', err);
                 return;
             }
-            console.log('Database connection closed.');
+            logger.debug('Database connection closed.');
 
             // Delete the database file after the connection is closed
             fs.unlink(databaseFile, (err) => {
                 if (err) {
-                    console.error('Error deleting database file:', err);
+                    logger.error('Error deleting database file:', err);
                     return;
                 }
-                console.log('Database file deleted successfully.');
+                logger.debug('Database file deleted successfully.');
             });
         });
     });

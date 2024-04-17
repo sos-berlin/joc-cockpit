@@ -48,7 +48,6 @@ export class FrequencyReportComponent {
   /** Reporting */
   @ViewChild('content') content: ElementRef;
 
-
   constructor(private modal: NzModalService, private coreService: CoreService, private groupBy: GroupByPipe,
               private authService: AuthService, private elementRef: ElementRef) {
 
@@ -261,25 +260,27 @@ export class FrequencyReportComponent {
     const innerLabelPlugin = {
       id: 'innerLabel',
       afterDatasetDraw: (chart: any, args: any, pluginOptions: any) => {
-        const {ctx} = chart;
-        const meta = args.meta;
-        const xCoor = meta.data[0].x;
-        const yCoor = meta.data[0].y;
-        const perc = totalJobCount;
-        ctx.save();
-        ctx.textAlign = 'center';
+        if (args.meta.data.length) {
+          const {ctx} = chart;
+          const meta = args.meta;
+          const xCoor = meta.data[0].x;
+          const yCoor = meta.data[0].y;
+          const perc = totalJobCount;
+          ctx.save();
+          ctx.textAlign = 'center';
 
-        // Set text color based on theme
-        if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
-          ctx.fillStyle = 'white';
-        } else {
-          ctx.fillStyle = 'black';
+          // Set text color based on theme
+          if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
+            ctx.fillStyle = 'white';
+          } else {
+            ctx.fillStyle = 'black';
+          }
+
+          ctx.font = '16px sans-serif';
+          ctx.fillText(perc, xCoor, yCoor);
+          ctx.fillText(chartData.uniqueKeys?.key, xCoor, yCoor + 20);
+          ctx.restore();
         }
-
-        ctx.font = '16px sans-serif';
-        ctx.fillText(perc, xCoor, yCoor);
-        ctx.fillText(chartData.uniqueKeys?.key, xCoor, yCoor + 20);
-        ctx.restore();
       }
     };
 
@@ -529,10 +530,6 @@ export class FrequencyReportComponent {
     reports.showTable = !reports.showTable;
   }
 
-  hasNoData(): boolean {
-    return this.addCardItems.every(item => !item.data || item.data.length === 0);
-  }
-
   filterBy(data): void {
     this.filteredFrequency = data.name;
     this.addCardItems = this.multiReports.filter(item => {
@@ -573,7 +570,7 @@ export class FrequencyReportComponent {
     let scale = 1;
     if (this.addCardItems.length > 48) {
       scale = 3;
-    } else if (this.addCardItems.length > 24){
+    } else if (this.addCardItems.length > 24) {
       scale = 2;
     }
     // Create canvas from HTML content

@@ -3,7 +3,7 @@
       <nz-table
         #ajaxTable
         [nzBordered]="true"
-        [nzData]="data | orderBy: filters.filter.sortBy: filters.filter.reverse"
+        [nzData]="data"
         [nzLoading]="!isLoaded"
         [nzPageIndex]="filters.filter.currentPage"
         [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
@@ -14,6 +14,14 @@
       >
         <thead>
           <tr>
+            <th [(nzChecked)]="object.checked"
+                [nzIndeterminate]="object.indeterminate"
+                [nzShowCheckbox]="true"
+                (nzCheckedChange)="checkAll($event)"
+                class="chk"
+            ></th>
+            <th class="menu"><span
+              translate>common.label.action</span></th>
             <th (click)="sort('path')"><a><span class="p-r-xs" translate>common.label.name</span>
               <i *ngIf="filters.filter.sortBy == 'path' && !filters.filter.reverse"
                  class="fa fa-caret-up "></i>
@@ -82,6 +90,23 @@
         <tbody>
           <ng-template [ngForOf]="ajaxTable.data" let-item ngFor>
             <tr>
+              <td [nzChecked]="object.mapOfCheckedId.has(item.runId)" (nzCheckedChange)="onItemChecked(item, $event)"
+                  [nzShowCheckbox]="true"></td>
+              <td >
+                <div class="btn-group dropdown">
+                  <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                          nz-dropdown nzTrigger="click" type="button">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </button>
+                  <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                    <ul nz-menu>
+                      <li nz-menu-item (click)="deleteReport(item)">
+                        <a translate>common.button.delete</a>
+                      </li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+              </td>
               <td>
                 <span class="w-full">
                   <i (click)="coreService.navToInventoryTab(item.path, 'REPORT');"

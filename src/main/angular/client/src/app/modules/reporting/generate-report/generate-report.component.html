@@ -4,7 +4,7 @@
       <nz-table
         #ajaxTable
         [nzBordered]="true"
-        [nzData]="data | orderBy: filters.filter.sortBy: filters.filter.reverse"
+        [nzData]="data"
         [nzLoading]="!isLoaded"
         [nzPageIndex]="filters.filter.currentPage"
         [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
@@ -15,6 +15,12 @@
       >
         <thead>
         <tr>
+          <th [(nzChecked)]="object.checked"
+              [nzIndeterminate]="object.indeterminate"
+              [nzShowCheckbox]="true"
+              (nzCheckedChange)="checkAll($event)"
+              class="chk"
+          ></th>
           <th class="menu"><span
             translate>common.label.action</span></th>
           <th (click)="sort('path')"><a><span class="p-r-xs" translate>common.label.name</span>
@@ -65,6 +71,8 @@
         <ng-template [ngForOf]="ajaxTable.data" let-item
                      ngFor>
           <tr class="cursor" >
+            <td [nzChecked]="object.mapOfCheckedId.has(item.runId)" (nzCheckedChange)="onItemChecked(item, $event)"
+                [nzShowCheckbox]="true"></td>
             <td >
               <div class="btn-group dropdown">
                 <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
@@ -76,26 +84,29 @@
                     <li nz-menu-item (click)="onSelect(item)">
                       <a translate>reporting.button.showReport</a>
                     </li>
+                    <li nz-menu-item (click)="deleteReport(item)">
+                      <a translate>common.button.delete</a>
+                    </li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
             </td>
-            <td (click)="onSelect(item)">
+            <td >
               <span class="w-full">
                 <i (click)="coreService.navToInventoryTab(item.path, 'REPORT');"
                    *ngIf="permission.joc && permission.joc.inventory.view"
                    class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                <span [innerHtml]="item.path | highlight : filters.searchText"></span>
+                <span (click)="onSelect(item)" [innerHtml]="item.path | highlight : filters.searchText"></span>
                 <i *ngIf="item.title"> - </i>
                 <i [innerHtml]="item.title" class="text-muted"></i>
               </span>
             </td>
             <td (click)="onSelect(item)"><span [innerHtml]="item.controllerId | highlight : filters.searchText"></span></td>
-            <td><span [innerHtml]="item.template | highlight : filters.searchText"></span></td>
+            <td (click)="onSelect(item)"><span [innerHtml]="item.template | highlight : filters.searchText"></span></td>
             <td (click)="onSelect(item)"><span [innerHtml]="item.frequency | translate | highlight : filters.searchText"></span></td>
             <td (click)="onSelect(item)"><span [innerHtml]="item.dateFrom | highlight : filters.searchText"></span></td>
             <td (click)="onSelect(item)"><span [innerHtml]="item.dateTo | highlight : filters.searchText"></span></td>
-            <td><span [innerHtml]="item.created | stringToDate | highlight : filters.searchText"></span></td>
+            <td (click)="onSelect(item)"><span [innerHtml]="item.created | stringToDate | highlight : filters.searchText"></span></td>
           </tr>
         </ng-template>
         </tbody>
@@ -110,7 +121,7 @@
   </div>
 </div>
 
-<nz-drawer (nzOnClose)="closePanel()" [nzWidth]="'100% !important'" [nzVisible]="isVisible" nzPlacement="right">
+<nz-drawer (nzOnClose)="closePanel()" [nzWrapClassName]="'report-drawer'" [nzVisible]="isVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
     <div (click)="closePanel()" class="close-btn z-index-9999 m-l-xxs"></div>
     <app-frequency-report *ngIf="isVisible"  [templates]="templates" [report]="selectedReport"></app-frequency-report>

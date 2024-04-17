@@ -1,6 +1,4 @@
 const fs = require('fs');
-let logger = require('./logger');
-logger = new logger().getLogger();
 
 /**
  * Read files from a directory.
@@ -27,10 +25,8 @@ function readInputDirectory(directoryPath) {
  */
 function writeOutputFile(outputPath, data) {
     try {
-        console.log(`Output file ${outputPath} written successfully.`);
         return fs.appendFileSync(outputPath, JSON.stringify(data, null, 2) );
     } catch (error) {
-        logger.error(`Error writing output file: ${error.message}`);
         throw error;
     }
 }
@@ -44,7 +40,6 @@ async function readJsonFile(filePath) {
     try {
         return await fs.readFileSync(filePath, 'utf8');
     } catch (error) {
-        logger.error(`Error reading JSON file: ${error.message}`);
         throw error;
     }
 }
@@ -73,9 +68,7 @@ async function checkAndCreateDirectory(directoryPath) {
         try {
             await fs.mkdirSync(directoryPath, {recursive: true});
         } catch (e) {
-            console.error(e);
-            logger.error(e);
-            process.exit(1);
+            throw(e);
         }
         console.log(`Directory '${directoryPath}' created successfully.`);
     } else {

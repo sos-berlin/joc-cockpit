@@ -6,6 +6,8 @@ import {CoreService} from "../../services/core.service";
 import {GroupByPipe} from "../../pipes/core.pipe";
 import {AuthService} from "../../components/guard";
 import {SharingDataService} from "./sharing-data.service";
+import {CommentModalComponent} from "../../components/comment-modal/comment.component";
+import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.component";
 
 @Component({
   selector: 'app-run-modal-content',
@@ -133,6 +135,7 @@ export class ReportingComponent {
 
   index: number;
   filteredTemplate: string;
+  runIds = new Set();
 
   constructor(private modal: NzModalService, private coreService: CoreService, private groupBy: GroupByPipe,
               private authService: AuthService, private sharingDataService: SharingDataService) {
@@ -200,4 +203,63 @@ export class ReportingComponent {
     this.display = data.display;
   }
 
+  bulkDelete(data): void {
+    this.runIds = data;
+  }
+
+  deleteReports(): void {
+    const obj: any = {
+      reportIds: Array.from(this.runIds)
+    };
+
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Report',
+        operation: 'Delete',
+        name: ''
+      };
+
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzData: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {};
+          this.coreService.getAuditLogObj(result, obj.auditLog);
+          this._deleteReport(obj)
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzData: {
+          type: 'Delete',
+          title: 'deleteAllReport',
+          message: 'deleteAllReport',
+          objectName: undefined,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._deleteReport(obj);
+        }
+      });
+    }
+  }
+
+  private _deleteReport(request) {
+    this.coreService.post('reporting/reports/delete', request).subscribe();
+  }
 }

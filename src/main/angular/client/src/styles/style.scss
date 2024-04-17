@@ -9659,3 +9659,10 @@ cdk-virtual-scroll-viewport {
   padding-bottom: 1px;
   margin: 0;
 }
+
+.ant-drawer .report-drawer {
+  width: calc(100% - 48px) !important;
+  margin-right: 24px;
+  height: calc(100% - 42px) !important;
+  margin-top: 28px;
+}

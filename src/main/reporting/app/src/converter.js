@@ -43,7 +43,7 @@ async function insertDataIntoDb(runId, files, frequencyType, frequencyInterval, 
                 continue;
             }
         }
-        if(!data.files){
+        if (!data.files) {
             data.files = [];
         }
         data.files.push(file)
@@ -52,7 +52,7 @@ async function insertDataIntoDb(runId, files, frequencyType, frequencyInterval, 
             const userInputEnd = getEndOfMonth(userInputStart);
             const allDatesBetweenWeeks = getAllDatesBetweenWeeks(userInputStart, userInputEnd);
             if (allDatesBetweenWeeks.length > 0) {
-                allDatesBetweenWeeks.forEach((dates)=>{
+                allDatesBetweenWeeks.forEach((dates) => {
                     const key = dates.startDate + '_to_' + dates.endDate;
                     if (!data[key]) {
                         data[key] = [];
@@ -87,9 +87,9 @@ async function insertDataIntoDb(runId, files, frequencyType, frequencyInterval, 
         }
     }
 
-    if(data.files) {
+    if (data.files) {
         for (const csvFilePath of data.files) {
-            console.log(`Processing file ${csvFilePath}...`);
+            logger.debug(`Processing file ${csvFilePath}...`);
             const readStream = fs.createReadStream(path.join(options.inputDirectory, csvFilePath), {encoding: 'utf-8'});
             const rl = readline.createInterface({
                 input: readStream,
@@ -156,13 +156,13 @@ async function insertDataIntoDb(runId, files, frequencyType, frequencyInterval, 
                     }
                 }
             }
-            console.log('Total records found in file ' + csvFilePath, lines.length)
+            logger.debug('Total records found in file ' + csvFilePath, lines.length)
             if (lines.length > 0) {
                 DB.insertRecord(lines, templateData.type);
                 lines = [];
             }
         }
-        console.log('Total records inserted into db ' + lineCount)
+        logger.debug('Total records inserted into db ' + lineCount);
     }
     return data;
 }
@@ -253,21 +253,32 @@ function formatDate(date) {
 /**
  * Initialize processing based on options.
  * @param {Object} options - Command-line options.
+ * @param {Object} _logger - Instance of logger.
  */
-async function init(options) {
+async function init(options, _logger) {
+    if(!logger){
+        logger = _logger;
+    }
     try {
-        console.log('Reading ' + options.templateFilePath + ' template file.')
+
+        logger.debug('Reading ' + options.templateFilePath + ' template file.');
         utils.readJsonFile(options.templateFilePath)
             .then(async (templateData) => {
-
                 // Check the template and based on this read orders or jobs data directory
                 options['inputDirectory'] += JSON.parse(templateData).type === 'ORDER' ? '/orders' : '/jobs';
-                const inputFiles = await utils.readInputDirectory(options['inputDirectory']);
+                let inputFiles;
+                try {
+                    inputFiles = await utils.readInputDirectory(options['inputDirectory']);
+                } catch (e) {
+                    handleError('Error while reading data from ' + options['inputDirectory'], e);
+                    handleError('...Process exit', 1);
+                    return;
+                }
                 if (!inputFiles || inputFiles.length === 0) {
-                    logger.error('Data input directory is empty');
-                    process.exit(1);
+                    handleError('Data input directory is empty', '');
+                    return;
                 } else {
-                    console.log('Read ' + options['inputDirectory'] + ' directory and receive ' + inputFiles.length + ' files')
+                    logger.debug('Read ' + options['inputDirectory'] + ' directory and receive ' + inputFiles.length + ' files');
                 }
 
                 const runId = utils.generateUnique16BitString();
@@ -295,18 +306,18 @@ async function init(options) {
                                 frequencyType = 'YEAR';
                                 break;
                             default:
-                                console.error(`Invalid processing frequency: ${frequency}. Please provide a valid value (e.g., monthly, 3months, 6months, yearly).`);
+                                logger.error(`Invalid processing frequency: ${frequency}. Please provide a valid value (e.g., monthly, 3months, 6months, yearly).`);
                                 continue; // Skip the invalid frequency
                         }
-                        console.log('Start report processing for frequency ', frequency)
-                        let files = await insertDataIntoDb(runId, inputFiles, frequencyType, interval,JSON.parse(templateData), options);
-                        await generate(templateData, runId, options, files);
+                        logger.debug('Start report processing for frequency ', frequency);
+                        let files = await insertDataIntoDb(runId, inputFiles, frequencyType, interval, JSON.parse(templateData), options);
+                        await generate(templateData, runId, options, files, logger);
                     }
                 }
             })
             .catch(e => {
                 handleError('Error while reading template data from ' + options.templateFilePath, e);
-                handleError('...Process exit', new Error());
+                handleError('...Process exit', 1);
             });
     } catch (error) {
         handleError('', error);
@@ -319,8 +330,11 @@ async function init(options) {
  * @param {Error} error - Error object.
  */
 function handleError(message, error) {
-    console.error(message, error);
-    logger.error(message, error);
+    if (logger) {
+        logger.error(message, error);
+    } else {
+        console.error(message, error);
+    }
 }
 
 module.exports = init;
