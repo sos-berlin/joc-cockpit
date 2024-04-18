@@ -233,9 +233,8 @@ export class GenerateReportComponent {
   }
 
   onSelect(data): void {
-    console.log(data)
     this.isVisible = true;
-   // this.selectedReport = data;
+    this.selectedReport = data;
   }
 
   closePanel(): void {
