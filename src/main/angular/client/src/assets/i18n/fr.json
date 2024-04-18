@@ -2847,8 +2847,8 @@
       "runReport": "Exécuter le Rapport",
       "run": "Exécuter",
       "showReport": "Visualiser le Rapport",
-      "groupByName": "Group By Name",
-      "groupByTemplate": "Group By Template"
+      "groupByName": "Regrouper par Nom",
+      "groupByTemplate": "Regrouper par Modèle"
     },
     "placeholder": {
       "selectTemplate": "Sélectionner le Modèle",

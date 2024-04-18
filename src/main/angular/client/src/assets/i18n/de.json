@@ -2847,8 +2847,8 @@
       "runReport": "Berichtslauf starten",
       "run": "Starten",
       "showReport": "Bericht anzeigen",
-      "groupByName": "Group By Name",
-      "groupByTemplate": "Group By Template"
+      "groupByName": "Nach Namen gruppieren",
+      "groupByTemplate": "Nach Vorlage gruppieren"
     },
     "placeholder": {
       "selectTemplate": "Vorlage auswählen",
