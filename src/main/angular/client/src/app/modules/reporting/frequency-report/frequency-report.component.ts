@@ -64,6 +64,9 @@ export class FrequencyReportComponent {
       this.dateTo = this.report.map(item => item.dateTo);
     } else {
       this.selectedTemplates = [this.report.templateName];
+      this.dateFrom = this.report.dateFrom;
+      this.dateTo = this.report.dateTo;
+console.log(this.dateFrom,"::")
     }
 
     this.template = this.templates.find(template => template.templateName === this.report.templateName).title;
@@ -180,11 +183,11 @@ export class FrequencyReportComponent {
             key = "";
             break;
           case 'PERIODS_MOST_ORDER_EXECUTIONS':
-            label = `${item.period} - (${item.count})`;
+            label = `${item.WORKFLOW_NAME} - (${this.formatDuration(item.duration)})`;
             key = 'workflows'
             break;
           case 'PERIODS_MOST_JOB_EXECUTIONS':
-            label = `${item.period} - (${item.count})`;
+            label = `${item.period} - (${item.duration})`;
             key = 'jobs'
             break;
         }

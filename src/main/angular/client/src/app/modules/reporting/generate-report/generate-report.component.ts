@@ -30,6 +30,8 @@ export class GenerateReportComponent {
   searchableProperties = ['name', 'path', 'title', 'template', 'dateFrom', 'dateTo', 'frequency', 'created'];
   fromDate: any
   toDate: any
+  filteredData: any
+  groupByField: string = 'title';
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -112,6 +114,7 @@ export class GenerateReportComponent {
           }
         });
         this.data = this.orderPipe.transform(this.reports, this.filters.filter.sortBy, this.filters.reverse);
+        this.groupBy('title')
         this.searchInResult();
       }, error: () => this.isLoaded = true
     });
@@ -294,6 +297,50 @@ export class GenerateReportComponent {
   refreshCheckedStatus(): void {
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
     this.bulkDelete.emit(this.object.mapOfCheckedId);
+  }
+
+  toggleRowExpansion(item: any): void {
+    item.expanded = !item.expanded;
+  }
+
+
+  getFilteredData(item: any): any[] {
+    return this.data.filter((dataItem: any) => dataItem[this.groupByField] === item[this.groupByField]);
+  }
+
+
+  filterData(data: any[], groupBy: string): any[] {
+    const uniqueItems = new Map<string, any>();
+    const filteredData = [];
+
+    for (const item of data) {
+      const groupValue = item[groupBy];
+
+      if (!uniqueItems.has(groupValue)) {
+        uniqueItems.set(groupValue, item);
+        filteredData.push(item);
+      }
+    }
+
+    return filteredData;
+  }
+
+
+  groupBy(field: string) {
+    this.groupByField = field;
+    this.filteredData = this.filterData(this.data, field);
+  }
+
+  expandAllItems() {
+    this.data.forEach(item => {
+      item.expanded = true;
+    });
+  }
+
+  collapseAllItems() {
+    this.data.forEach(item => {
+      item.expanded = false;
+    });
   }
 }
 
