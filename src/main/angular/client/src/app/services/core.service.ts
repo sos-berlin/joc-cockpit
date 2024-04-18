@@ -298,6 +298,7 @@ export class CoreService {
         }
       },
       generateReport: {
+        groupBy: 'path',
         filter: {
           state: 'All',
           sortBy: 'created',

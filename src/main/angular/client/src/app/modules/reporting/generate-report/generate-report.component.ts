@@ -6,7 +6,7 @@ import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
-import {OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
+import {GroupByPipe, OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
 import {SharingDataService} from "../sharing-data.service";
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
@@ -30,14 +30,14 @@ export class GenerateReportComponent {
   searchableProperties = ['name', 'path', 'title', 'template', 'dateFrom', 'dateTo', 'frequency', 'created'];
   fromDate: any
   toDate: any
-  filteredData: any
-  groupByField: string = 'title';
+  filteredData: any = [];
+
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
 
   object = {
-    mapOfCheckedId: new Set(),
+    mapOfCheckedId: new Map(),
     checked: false,
     indeterminate: false
   };
@@ -45,7 +45,7 @@ export class GenerateReportComponent {
   @Output() bulkDelete: EventEmitter<any> = new EventEmitter();
   private pendingHTTPRequests$ = new Subject<void>();
 
-  constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private orderPipe: OrderPipe,
+  constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private orderPipe: OrderPipe, private groupBy: GroupByPipe,
               private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
@@ -65,7 +65,14 @@ export class GenerateReportComponent {
         this.getData()
       } else if (res.allTemplate) {
         this.templateName = [];
-        this.getData()
+        this.getData();
+      } else if (res.expandAll) {
+        this.expandAllItems();
+      } else if (res.collapseAll) {
+        this.collapseAllItems();
+      } else if (res.groupBy) {
+        this.filters.groupBy = res.groupBy;
+        this.groupByFunc();
       }
     });
   }
@@ -94,9 +101,18 @@ export class GenerateReportComponent {
 
 
   private getData(): void {
-    this.object.mapOfCheckedId = new Set();
-    this.object.checked = false;
-    this.refreshCheckedStatus();
+    this.reset();
+    this.bulkDelete.emit(this.object.mapOfCheckedId);
+    if(this.filteredData?.length > 0){
+      if(!this.filters.expandedKey){
+        this.filters.expandedKey = new Set();
+      }
+      this.filteredData.forEach(item => {
+        if (item.expanded) {
+          this.filters.expandedKey.add(item.key);
+        }
+      })
+    }
     this.coreService.post('reporting/reports/generated', {
       compact: true,
       templateNames: this.templateName,
@@ -113,8 +129,7 @@ export class GenerateReportComponent {
             report.template = report.template.replace('${hits}', report.hits || 10)
           }
         });
-        this.data = this.orderPipe.transform(this.reports, this.filters.filter.sortBy, this.filters.reverse);
-        this.groupBy('title')
+        this.data = [...this.reports];
         this.searchInResult();
       }, error: () => this.isLoaded = true
     });
@@ -123,7 +138,15 @@ export class GenerateReportComponent {
   sort(propertyName): void {
     this.filters.filter.reverse = !this.filters.filter.reverse;
     this.filters.filter.sortBy = propertyName;
-    this.data = this.orderPipe.transform(this.data, this.filters.filter.sortBy, this.filters.reverse);
+    if (this.filters.groupBy == 'path' && propertyName == 'path') {
+      this.filteredData = this.orderPipe.transform(this.filteredData, this.filters.filter.sortBy, this.filters.filter.reverse);
+    } else if (this.filters.groupBy == 'template' && propertyName == 'template') {
+      this.filteredData = this.orderPipe.transform(this.filteredData, this.filters.filter.sortBy, this.filters.filter.reverse);
+    } else {
+      this.filteredData.forEach(data => {
+        data.value = this.orderPipe.transform(data.value, this.filters.filter.sortBy, this.filters.filter.reverse);
+      })
+    }
     this.reset();
   }
 
@@ -135,6 +158,7 @@ export class GenerateReportComponent {
   searchInResult(): void {
     this.data = this.filters.searchText ? this.searchPipe.transform(this.reports, this.filters.searchText, this.searchableProperties) : this.reports;
     this.data = [...this.data];
+    this.groupByFunc();
     if (this.reports.length === 0) {
       this.filters.filter.currentPage = 1;
     }
@@ -142,7 +166,7 @@ export class GenerateReportComponent {
 
   reset(): void {
     this.object = {
-      mapOfCheckedId: new Set(),
+      mapOfCheckedId: new Map(),
       checked: false,
       indeterminate: false
     };
@@ -150,7 +174,7 @@ export class GenerateReportComponent {
 
   deleteReport(item?): void {
     const obj: any = {
-      reportIds: item ? [item.runId] : []
+      reportIds: item ? [item.id] : []
     };
     if (this.preferences.auditLog) {
       const comments = {
@@ -205,18 +229,13 @@ export class GenerateReportComponent {
   }
 
   private _deleteReport(request) {
-    this.coreService.post('reporting/reports/delete', request).subscribe({
-      next: () => {
-        setTimeout(() => {
-          this.getData();
-        }, 10)
-      }
-    });
+    this.coreService.post('reporting/reports/delete', request).subscribe();
   }
 
   onSelect(data): void {
+    console.log(data)
     this.isVisible = true;
-    this.selectedReport = data;
+   // this.selectedReport = data;
   }
 
   closePanel(): void {
@@ -263,82 +282,106 @@ export class GenerateReportComponent {
   }
 
   checkAll(value: boolean): void {
-    if (value && this.reports.length > 0) {
-      const reports = this.getCurrentData(this.data, this.filters.filter);
-      reports.forEach(item => {
-        this.object.mapOfCheckedId.add(item.runId);
-      });
+    const filteredData = this.getCurrentData(this.filteredData, this.filters.filter);
+    if (value && this.data.length > 0) {
+      for (let i = 0; i < filteredData.length; i++) {
+        filteredData[i].checked = true;
+        filteredData[i].indeterminate = false;
+        filteredData[i].value.forEach(item => {
+          this.object.mapOfCheckedId.set(item.id, item);
+        });
+      }
+
     } else {
+      for (let i = 0; i < filteredData.length; i++) {
+        filteredData[i].checked = false;
+        filteredData[i].indeterminate = false;
+      }
       this.object.mapOfCheckedId.clear();
+    }
+    this.object.indeterminate = false;
+    this.bulkDelete.emit(this.object.mapOfCheckedId);
+  }
+
+  checkAllChild(data, isChecked: boolean): void {
+    if (data.value) {
+      data.value.forEach(item => {
+        data.indeterminate = false;
+        if (isChecked) {
+          this.object.mapOfCheckedId.set(item.id, item);
+        } else {
+          this.object.mapOfCheckedId.delete(item.id);
+        }
+      })
     }
     this.refreshCheckedStatus();
   }
 
-  onItemChecked(report: any, checked: boolean): void {
-    if (!checked && this.object.mapOfCheckedId.size > (this.filters.filter.entryPerPage || this.preferences.entryPerPage)) {
-      const orders = this.getCurrentData(this.data, this.filters.filter);
-      if (orders.length < this.data.length) {
-        this.object.mapOfCheckedId.clear();
-        orders.forEach(item => {
-          this.object.mapOfCheckedId.add(item.runId);
-        });
-      }
-    }
+  onItemChecked(item, report: any, checked: boolean): void {
     if (checked) {
-      this.object.mapOfCheckedId.add(report.runId);
+      this.object.mapOfCheckedId.set(report.id, report);
     } else {
-      this.object.mapOfCheckedId.delete(report.runId);
+      this.object.mapOfCheckedId.delete(report.id);
     }
-
-    this.object.checked = this.object.mapOfCheckedId.size === this.getCurrentData(this.data, this.filters.filter).length;
+    let count = 0;
+    item.value.forEach(x => {
+      if (this.object.mapOfCheckedId.has(x.id)) {
+        ++count;
+      }
+    });
+    item.checked = count == item.value.length;
+    item.indeterminate = count > 0 && !item.checked;
     this.refreshCheckedStatus();
   }
 
   refreshCheckedStatus(): void {
+    const filteredData = this.getCurrentData(this.filteredData, this.filters.filter);
+    let count = 0;
+    for (let i = 0; i < filteredData.length; i++) {
+      if (filteredData[i].checked) {
+        ++count;
+      }
+    }
+    this.object.checked = count == filteredData.length;
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
     this.bulkDelete.emit(this.object.mapOfCheckedId);
   }
 
   toggleRowExpansion(item: any): void {
     item.expanded = !item.expanded;
-  }
-
-
-  getFilteredData(item: any): any[] {
-    return this.data.filter((dataItem: any) => dataItem[this.groupByField] === item[this.groupByField]);
-  }
-
-
-  filterData(data: any[], groupBy: string): any[] {
-    const uniqueItems = new Map<string, any>();
-    const filteredData = [];
-
-    for (const item of data) {
-      const groupValue = item[groupBy];
-
-      if (!uniqueItems.has(groupValue)) {
-        uniqueItems.set(groupValue, item);
-        filteredData.push(item);
-      }
+    if(!this.filters.expandedKey){
+      this.filters.expandedKey = new Set();
     }
-
-    return filteredData;
+    if (item.expanded) {
+      this.filters.expandedKey.add(item.key);
+    } else {
+      this.filters.expandedKey.delete(item.key);
+    }
   }
 
 
-  groupBy(field: string) {
-    this.groupByField = field;
-    this.filteredData = this.filterData(this.data, field);
+  groupByFunc() {
+    this.filteredData = this.groupBy.transform(this.data, this.filters.groupBy);
+    this.filteredData.forEach(item => {
+      item.path = item.value[0].path;
+      item.title = item.value[0].title;
+      item.template = item.value[0].template;
+      item.value = this.orderPipe.transform(item.value, this.filters.filter.sortBy, this.filters.filter.reverse);
+      if (this.filters.expandedKey?.has(item.key)) {
+        item.expanded = true;
+      }
+    })
+
   }
 
   expandAllItems() {
-    this.data.forEach(item => {
+    this.filteredData.forEach(item => {
       item.expanded = true;
     });
   }
 
   collapseAllItems() {
-    this.data.forEach(item => {
+    this.filteredData.forEach(item => {
       item.expanded = false;
     });
   }

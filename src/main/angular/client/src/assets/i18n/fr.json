@@ -2846,7 +2846,9 @@
     "button" : {
       "runReport": "Exécuter le Rapport",
       "run": "Exécuter",
-      "showReport": "Visualiser le Rapport"
+      "showReport": "Visualiser le Rapport",
+      "groupByName": "Group By Name",
+      "groupByTemplate": "Group By Template"
     },
     "placeholder": {
       "selectTemplate": "Sélectionner le Modèle",

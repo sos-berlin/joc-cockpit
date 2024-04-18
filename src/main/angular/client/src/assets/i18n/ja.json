@@ -2846,7 +2846,9 @@
     "button" : {
       "runReport": "レポート実行",
       "run": "実行",
-      "showReport": "レポート表示"
+      "showReport": "レポート表示",
+      "groupByName": "Group By Name",
+      "groupByTemplate": "Group By Template"
     },
     "placeholder": {
       "selectTemplate": "テンプレート選択",

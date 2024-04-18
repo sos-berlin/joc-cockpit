@@ -2846,7 +2846,9 @@
     "button" : {
       "runReport": "Berichtslauf starten",
       "run": "Starten",
-      "showReport": "Bericht anzeigen"
+      "showReport": "Bericht anzeigen",
+      "groupByName": "Group By Name",
+      "groupByTemplate": "Group By Template"
     },
     "placeholder": {
       "selectTemplate": "Vorlage auswählen",

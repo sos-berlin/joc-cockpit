@@ -2846,7 +2846,9 @@
     "button" : {
       "runReport": "Run Report",
       "run": "Run",
-      "showReport": "Show Report"
+      "showReport": "Show Report",
+      "groupByName": "Group By Name",
+      "groupByTemplate": "Group By Template"
     },
     "placeholder": {
       "selectTemplate": "Select Template",

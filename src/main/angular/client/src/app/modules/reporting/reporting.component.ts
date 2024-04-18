@@ -3,7 +3,6 @@ import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import html2canvas from 'html2canvas';
 import {jsPDF} from 'jspdf';
 import {CoreService} from "../../services/core.service";
-import {GroupByPipe} from "../../pipes/core.pipe";
 import {AuthService} from "../../components/guard";
 import {SharingDataService} from "./sharing-data.service";
 import {CommentModalComponent} from "../../components/comment-modal/comment.component";
@@ -137,7 +136,7 @@ export class ReportingComponent {
   filteredTemplate: string;
   runIds = new Set();
 
-  constructor(private modal: NzModalService, private coreService: CoreService, private groupBy: GroupByPipe,
+  constructor(private modal: NzModalService, private coreService: CoreService,
               private authService: AuthService, private sharingDataService: SharingDataService) {
   }
 
@@ -205,6 +204,20 @@ export class ReportingComponent {
 
   bulkDelete(data): void {
     this.runIds = data;
+  }
+
+  expandAll(): void {
+    console.log('<><>expandAll');
+    this.sharingDataService.announceFilter({expandAll: true});
+  }
+
+  collapseAll(): void {
+    this.sharingDataService.announceFilter({collapseAll: true});
+  }
+
+  groupByFun(param): void {
+    console.log('<><>param');
+    this.sharingDataService.announceFilter({groupBy: param});
   }
 
   deleteReports(): void {

@@ -8,8 +8,6 @@ import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
 import {SharingDataService} from "../sharing-data.service";
-import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
-import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 
 @Component({
   selector: 'app-running-history',
@@ -24,12 +22,6 @@ export class RunningHistoryComponent {
   isLoaded = false;
   reports = [];
   data = [];
-
-  object = {
-    mapOfCheckedId: new Set(),
-    checked: false,
-    indeterminate: false
-  };
 
   searchableProperties = ['name', 'path', 'title', 'template', 'state', '_text', 'monthFrom', 'monthTo', 'frequencies'];
 
@@ -84,9 +76,6 @@ export class RunningHistoryComponent {
 
 
   private getData(): void {
-    this.object.mapOfCheckedId = new Set();
-    this.object.checked = false;
-    this.refreshCheckedStatus();
     let obj: any = {compact: true};
     if (this.filters.filter.state !== 'ALL') {
       obj.states = [this.filters.filter.state];
@@ -102,7 +91,7 @@ export class RunningHistoryComponent {
             report.template = report.template.replace('${hits}', report.hits || 10)
           }
         });
-        this.data = this.orderPipe.transform(this.reports, this.filters.filter.sortBy, this.filters.reverse);
+        this.data = this.orderPipe.transform(this.reports, this.filters.filter.sortBy, this.filters.filter.reverse);
         this.searchInResult();
       }, error: () => this.isLoaded = true
     });
@@ -111,8 +100,7 @@ export class RunningHistoryComponent {
   sort(propertyName): void {
     this.filters.filter.reverse = !this.filters.filter.reverse;
     this.filters.filter.sortBy = propertyName;
-    this.data = this.orderPipe.transform(this.data, this.filters.filter.sortBy, this.filters.reverse);
-    this.reset();
+    this.data = this.orderPipe.transform(this.data, this.filters.filter.sortBy, this.filters.filter.reverse);
   }
 
   getCurrentData(list, filter): Array<any> {
@@ -128,116 +116,6 @@ export class RunningHistoryComponent {
     }
   }
 
-  reset(): void {
-    this.object = {
-      mapOfCheckedId: new Set(),
-      checked: false,
-      indeterminate: false
-    };
-  }
-
-  deleteReport(item?): void {
-    const obj: any = {
-      reportIds: item ? [item.runId] : []
-    };
-    if (this.preferences.auditLog) {
-      const comments = {
-        radio: 'predefined',
-        type: 'Report',
-        operation: 'Delete',
-        name: item ? item.path : ''
-      };
-      if (!item) {
-        this.object.mapOfCheckedId.forEach((id) => {
-          obj.reportIds.push(id);
-        });
-      }
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: CommentModalComponent,
-        nzData: {
-          comments,
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          obj.auditLog = {};
-          this.coreService.getAuditLogObj(result, obj.auditLog);
-          this._deleteReport(obj)
-        }
-      });
-    } else {
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: ConfirmModalComponent,
-        nzData: {
-          type: 'Delete',
-          title: item ? 'delete' : 'deleteAllReport',
-          message: item ? 'deleteReport' : 'deleteAllReport',
-          item,
-          objectName: item ? item.path : undefined,
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          this._deleteReport(obj);
-        }
-      });
-    }
-  }
-
-  private _deleteReport(request) {
-    this.coreService.post('reporting/reports/delete', request).subscribe({
-      next: () => {
-        setTimeout(() => {
-          this.getData();
-        }, 10)
-      }
-    });
-  }
-
-  checkAll(value: boolean): void {
-    if (value && this.reports.length > 0) {
-      const reports = this.getCurrentData(this.data, this.filters);
-      reports.forEach(item => {
-        this.object.mapOfCheckedId.add(item.runId);
-      });
-    } else {
-      this.object.mapOfCheckedId.clear();
-    }
-    this.refreshCheckedStatus();
-  }
-
-  onItemChecked(report: any, checked: boolean): void {
-    if (!checked && this.object.mapOfCheckedId.size > (this.filters.filter.entryPerPage || this.preferences.entryPerPage)) {
-      const orders = this.getCurrentData(this.data, this.filters);
-      if (orders.length < this.data.length) {
-        this.object.mapOfCheckedId.clear();
-        orders.forEach(item => {
-          this.object.mapOfCheckedId.add(item.runId);
-        });
-      }
-    }
-    if (checked) {
-      this.object.mapOfCheckedId.add(report.runId);
-    } else {
-      this.object.mapOfCheckedId.delete(report.runId);
-    }
-
-    this.object.checked = this.object.mapOfCheckedId.size === this.getCurrentData(this.data, this.filters).length;
-    this.refreshCheckedStatus();
-  }
-
-  refreshCheckedStatus(): void {
-    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
-    this.bulkDelete.emit(this.object.mapOfCheckedId);
-  }
 }
 
 
