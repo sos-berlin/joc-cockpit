@@ -64,7 +64,7 @@ async function processRows(rows, template) {
             if (template.data.groupBy === 'AGENT_NAME') {
                 let maxParallelJobs = 0;
                 let maxParallelJobData = [];
-                let _data = row.data.split('},').map(child => JSON.parse(child + (child.endsWith('}') ? '' : '}')));
+                let _data = JSON.parse(row.data);
                 await _data.reduce(async (currentJobsPromise, job) => {
                     const currentJobs = await currentJobsPromise;
                     const overlappingJobs = currentJobs.filter(j => {
@@ -92,7 +92,9 @@ async function processRows(rows, template) {
                 row.count = maxParallelJobs;
                 row.data = maxParallelJobData;
             } else {
-                row.data = row.data?.split('},').map(child => JSON.parse(child + (child.endsWith('}') ? '' : '}')).START_TIME);
+                if(row.data) {
+                    row.data = JSON.parse(row.data);
+                }
             }
         }
     }
@@ -167,7 +169,7 @@ function getDataFromDb(logger, template, tableName, limit, file, callback) {
             const sortedPeriods = periods.sort((a, b) => b.length - a.length);
 
             // Format output for top low parallelism periods and top high parallelism periods
-            const output = {
+            const output = [{
                 topLowParallelismPeriods: sortedPeriods.slice(0, limit).map(period => ({
                     period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
                     data: period
@@ -176,8 +178,17 @@ function getDataFromDb(logger, template, tableName, limit, file, callback) {
                     period: `${period[0].START_TIME} - ${period[period.length - 1].END_TIME}`,
                     data: period
                 }))
-            };
+            }];
             callback(null, output);
+        } else if (template.data.groupBy === 'START_TIME' && !template.data.execution) {
+            const parsedRows = rows.map(row => {
+                return {
+                    period: row.period,
+                    count: row.count,
+                    data: JSON.parse(row.data)
+                };
+            }).splice(0, limit);
+            callback(null, parsedRows);
         } else {
             await processRows(rows, template);
             callback(null, rows);
@@ -256,20 +267,20 @@ function getQueryForJob(limit, likeStr, templateData) {
     const conditionQuery = getWhereCondition(likeStr);
     if (templateData.groupBy === 'JOB_NAME') { // template 2 && 5
         return `SELECT WORKFLOW_NAME || '__' || JOB_NAME AS job_name, COUNT(*) AS count, 
-           GROUP_CONCAT(json_object('id', id, 'START_TIME', START_TIME)) AS data
+           '[' || GROUP_CONCAT(json_object('START_TIME', START_TIME)) || ']' AS data
            FROM jobs ${conditionQuery} GROUP BY WORKFLOW_NAME, JOB_NAME ORDER BY count desc limit ${limit};`;
     } else if (templateData.groupBy === 'START_TIME' && templateData.execution === "DURATION") { // template 8
         return `SELECT  WORKFLOW_NAME, JOB_NAME, START_TIME, duration FROM jobs ${conditionQuery} ORDER BY duration desc limit ${limit};`;
     } else if (templateData.groupBy === 'AGENT_NAME') { // template 3
         return `SELECT AGENT_NAME As agentName, 
-           GROUP_CONCAT(json_object('id', id, 'WORKFLOW_NAME', WORKFLOW_NAME, 'JOB_NAME', JOB_NAME, 'START_TIME', START_TIME, 'END_TIME', END_TIME, 'STATE', STATE, 'duration', duration)) AS data
+           '[' || GROUP_CONCAT(json_object('WORKFLOW_NAME', WORKFLOW_NAME, 'JOB_NAME', JOB_NAME, 'START_TIME', START_TIME, 'END_TIME', END_TIME, 'STATE', STATE, 'duration', duration)) || ']' AS data
            FROM jobs ${conditionQuery} GROUP BY AGENT_NAME ORDER BY AGENT_NAME desc limit ${limit};`;
     } else if (templateData.groupBy === 'START_TIME' && templateData.execution === "PARALLELISM") { // template 4
-        return `SELECT WORKFLOW_NAME, JOB_NAME, AGENT_NAME, START_TIME, END_TIME FROM jobs ${conditionQuery} ORDER BY START_TIME;`;
+        return `SELECT WORKFLOW_NAME, JOB_NAME, START_TIME, END_TIME FROM jobs ${conditionQuery} ORDER BY START_TIME;`;
     } else {
-        return `SELECT START_TIME As startTime, 
-            GROUP_CONCAT(json_object('id', id, 'WORKFLOW_NAME', WORKFLOW_NAME, 'JOB_NAME', JOB_NAME, 'START_TIME', START_TIME, 'END_TIME', END_TIME, 'STATE', STATE, 'duration', duration)) AS data
-            FROM jobs ${conditionQuery} GROUP BY START_TIME ORDER BY START_TIME desc limit ${limit};`;
+        return `SELECT START_TIME As period, COUNT(*) AS count,
+                        '[' || GROUP_CONCAT(json_object('workflow_name', WORKFLOW_NAME, 'job_name', JOB_NAME)) || ']' AS data
+            FROM jobs ${conditionQuery} GROUP BY START_TIME ORDER BY count desc limit ${limit};`;
     }
 }
 
@@ -284,16 +295,18 @@ function getQueryForOrder(limit, likeStr, templateData) {
     const conditionQuery = getWhereCondition(likeStr);
     if (templateData.orderState) { // template 6
         return `SELECT WORKFLOW_NAME AS workflow_name, COUNT(*) AS count, 
-           GROUP_CONCAT(json_object('id', id, 'WORKFLOW_NAME', WORKFLOW_NAME, 'START_TIME', START_TIME, 'END_TIME', END_TIME, 'ORDER_STATE', ORDER_STATE, 'STATE', STATE, 'duration', duration)) AS data
+           '[' || GROUP_CONCAT(json_object('WORKFLOW_NAME', WORKFLOW_NAME, 'START_TIME', START_TIME, 'END_TIME', END_TIME, 'ORDER_STATE', ORDER_STATE, 'STATE', STATE, 'duration', duration))|| ']' AS data
            FROM orders ${conditionQuery} GROUP BY  WORKFLOW_NAME ORDER BY count desc limit ${limit};`;
     } else if (templateData.execution) { // template 7
         return `SELECT WORKFLOW_NAME, START_TIME, duration FROM orders ${conditionQuery} ORDER BY duration desc limit ${limit};`;
     } else if (templateData.groupBy === 'START_TIME') { // template 9
-        return `SELECT * FROM orders ${conditionQuery} ORDER BY duration desc limit ${limit};`;
+        return `SELECT START_TIME AS period, COUNT(*) AS count, 
+            '[' || GROUP_CONCAT(json_object('workflow_name', WORKFLOW_NAME)) || ']' AS data
+            FROM orders ${conditionQuery} GROUP BY START_TIME ORDER BY count desc limit ${limit};`;
     } else { // template 1
         return `SELECT WORKFLOW_NAME AS workflow_name, COUNT(*) AS count, 
-           GROUP_CONCAT(json_object('id', id, 'WORKFLOW_NAME', WORKFLOW_NAME, 'START_TIME', START_TIME, 'END_TIME', END_TIME, 'ORDER_STATE', ORDER_STATE, 'STATE', STATE, 'duration', duration)) AS data
-           FROM orders ${conditionQuery} GROUP BY  WORKFLOW_NAME ORDER BY count desc limit ${limit};`;
+           '[' || GROUP_CONCAT(json_object('WORKFLOW_NAME', WORKFLOW_NAME, 'START_TIME', START_TIME, 'END_TIME', END_TIME, 'ORDER_STATE', ORDER_STATE, 'STATE', STATE, 'duration', duration)) || ']' AS data
+           FROM orders ${conditionQuery} GROUP BY WORKFLOW_NAME ORDER BY count desc limit ${limit};`;
     }
 }
 

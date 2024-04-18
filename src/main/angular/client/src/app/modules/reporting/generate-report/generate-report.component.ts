@@ -73,6 +73,7 @@ export class GenerateReportComponent {
       } else if (res.groupBy) {
         if (this.filters.groupBy !== res.groupBy) {
           this.filters.groupBy = res.groupBy;
+          this.reset();
           this.filters.expandedKey?.clear();
           this.groupByFunc();
         }

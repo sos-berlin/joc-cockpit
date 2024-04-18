@@ -3,7 +3,7 @@
       <nz-table
         #ajaxTable
         [nzBordered]="true"
-        [nzData]="data"
+        [nzData]="data | orderBy: filters.filter.sortBy: filters.filter.reverse"
         [nzLoading]="!isLoaded"
         [nzPageIndex]="filters.filter.currentPage"
         [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"

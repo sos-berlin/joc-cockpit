@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -6,7 +6,7 @@ import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
-import {OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
+import {SearchPipe} from '../../../pipes/core.pipe';
 import {SharingDataService} from "../sharing-data.service";
 
 @Component({
@@ -30,9 +30,8 @@ export class RunningHistoryComponent {
   subscription3: Subscription;
 
   private pendingHTTPRequests$ = new Subject<void>();
-  @Output() bulkDelete: EventEmitter<any> = new EventEmitter();
 
-  constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private orderPipe: OrderPipe,
+  constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
               private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
@@ -90,8 +89,7 @@ export class RunningHistoryComponent {
           if (report.template?.includes('${hits}')) {
             report.template = report.template.replace('${hits}', report.hits || 10)
           }
-        });
-        this.data = this.orderPipe.transform(this.reports, this.filters.filter.sortBy, this.filters.filter.reverse);
+        })
         this.searchInResult();
       }, error: () => this.isLoaded = true
     });
@@ -100,7 +98,6 @@ export class RunningHistoryComponent {
   sort(propertyName): void {
     this.filters.filter.reverse = !this.filters.filter.reverse;
     this.filters.filter.sortBy = propertyName;
-    this.data = this.orderPipe.transform(this.data, this.filters.filter.sortBy, this.filters.filter.reverse);
   }
 
   getCurrentData(list, filter): Array<any> {
