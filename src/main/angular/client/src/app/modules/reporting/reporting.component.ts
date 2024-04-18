@@ -222,7 +222,7 @@ export class ReportingComponent {
 
   deleteReports(): void {
     const obj: any = {
-      reportIds: Array.from(this.runIds)
+      reportIds: Array.from(this.runIds.keys())
     };
 
     if (this.preferences.auditLog) {

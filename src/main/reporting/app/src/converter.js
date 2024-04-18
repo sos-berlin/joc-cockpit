@@ -52,13 +52,17 @@ async function insertDataIntoDb(runId, files, frequencyType, frequencyInterval, 
             const userInputEnd = getEndOfMonth(userInputStart);
             const allDatesBetweenWeeks = getAllDatesBetweenWeeks(userInputStart, userInputEnd);
             if (allDatesBetweenWeeks.length > 0) {
-                allDatesBetweenWeeks.forEach((dates) => {
-                    const key = dates.startDate + '_to_' + dates.endDate;
+               
+                for (let i = 0; i < allDatesBetweenWeeks.length; i += frequencyInterval) {
+                    const startIndex = i;
+                    const _date = new Date(allDatesBetweenWeeks[startIndex].startDate);
+                    const endWeekDate = moment(_date.setDate((_date.getDate() + frequencyInterval * 7) - 1)).format('YYYY-MM-DD');
+                    const key = `${allDatesBetweenWeeks[startIndex].startDate}_to_${endWeekDate}`;
                     if (!data[key]) {
                         data[key] = [];
                     }
                     data[key].push(file);
-                })
+                }
             }
         } else if (frequencyType === 'MONTH') {
             const key = getKeyBasedOnFrequency(fileYear, fileMonth, frequencyInterval);

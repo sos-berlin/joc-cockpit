@@ -1,12 +1,10 @@
-import {Component, ElementRef, Input, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
-import {isArray} from "underscore";
 import html2canvas from 'html2canvas';
 import {jsPDF} from "jspdf";
 import {Chart} from "chart.js";
 import PerfectScrollbar from 'perfect-scrollbar';
 import {CoreService} from "../../../services/core.service";
-import {GroupByPipe} from "../../../pipes/core.pipe";
 import {AuthService} from "../../../components/guard";
 
 @Component({
@@ -15,8 +13,9 @@ import {AuthService} from "../../../components/guard";
   styleUrls: ['./frequency-report.component.scss']
 })
 export class FrequencyReportComponent {
-  @Input({required: true}) readonly report: any;
-  @Input({required: true}) templates: any;
+  @Input({required: true}) readonly templates: any;
+  @Input({required: true}) readonly selectedReport: any;
+  @Input({required: true}) readonly groupBy: string;
   schedulerIds: any = {};
   preferences: any = {};
   isLoading: boolean;
@@ -27,11 +26,11 @@ export class FrequencyReportComponent {
   filter: any = {};
   barChart: any;
   dataset: any = [];
-  selectedTemplates: string[] = [];
-  dateFrom: any[] = [];
-  dateTo: any[] = [];
+
   multiReports: any[] = [];
   addCardItems: any[] = [];
+
+  @Output() closePanel: EventEmitter<any> = new EventEmitter();
 
   frequencies = [
     {name: 'WEEKLY'},
@@ -48,7 +47,7 @@ export class FrequencyReportComponent {
   /** Reporting */
   @ViewChild('content') content: ElementRef;
 
-  constructor(private modal: NzModalService, private coreService: CoreService, private groupBy: GroupByPipe,
+  constructor(private modal: NzModalService, private coreService: CoreService,
               private authService: AuthService, private elementRef: ElementRef) {
 
   }
@@ -58,41 +57,48 @@ export class FrequencyReportComponent {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    if (isArray(this.report)) {
-      this.selectedTemplates = this.report.map(item => item.templateName);
-      this.dateFrom = this.report.map(item => item.dateFrom);
-      this.dateTo = this.report.map(item => item.dateTo);
-    } else {
-      this.selectedTemplates = [this.report.templateName];
-      this.dateFrom = this.report.dateFrom;
-      this.dateTo = this.report.dateTo;
-console.log(this.dateFrom,"::")
-    }
 
-    this.template = this.templates.find(template => template.templateName === this.report.templateName).title;
-    this.loadData();
+    let obj: any = {};
+    if(this.selectedReport.value){
+      if(this.groupBy == 'template'){
+        obj.templateNames = [this.selectedReport.value[0].templateName];
+      } else {
+        obj.reportPaths = [this.selectedReport.path];
+      }
+    } else {
+      obj.runIds = [this.selectedReport.runId];
+    }
+    this.loadData(obj);
   }
 
-  loadData(): void {
+  loadData(obj): void {
     this.isLoading = false;
-    this.coreService.post('reporting/reports/generated', {
-      compact: false,
-      templateNames: this.selectedTemplates
-    }).subscribe({
+    this.coreService.post('reporting/reports/generated', obj).subscribe({
       next: (res: any) => {
         this.isLoading = true;
         this.multiReports = res.reports;
+        this.multiReports.forEach(item => {
+          if(obj.runIds){
+            item.checked = item.id == this.selectedReport.id;
+          } else {
+            item.checked = true;
+          }
+            const template = this.templates.find(template => template.templateName == item.templateName);
+            if (template) item.template = template.title;
+            if (item.template?.includes('${hits}')) {
+              item.template = item.template.replace('${hits}', item.hits || 10)
+            }
+
+        });
         this.addCardItems = [...this.multiReports]
 
-        this.addCardItems.forEach((report) => {
+        this.addCardItems = this.addCardItems.filter((report) => {
           report.name = report.path.substring(report.path.lastIndexOf('/') + 1);
+          return report.checked;
         });
         if (res.reports.length > 0) {
           setTimeout(() => {
             this.generateDonutCharts()
-            this.multiReports.forEach(item => {
-              item.checked = true;
-            });
           }, 100)
         }
       }, error: () => this.isLoading = true
@@ -431,7 +437,7 @@ console.log(this.dateFrom,"::")
       labels: [],
       datasets: [
         {
-          label: this.report.template?.includes('workflows') ? 'Workflows' : this.report.template?.includes('parallel') ? 'Agents' : 'Jobs',
+          label: this.selectedReport.template?.includes('workflows') ? 'Workflows' : this.selectedReport.template?.includes('parallel') ? 'Agents' : 'Jobs',
           data: []
         }
       ]
@@ -512,7 +518,7 @@ console.log(this.dateFrom,"::")
             y: {
               title: {
                 display: true,
-                text: this.report.template?.includes('execution time') ? 'Execution Time in Seconds' : ((this.report.template?.includes('workflows') ? 'Workflow' : this.report.template?.includes('parallel') ? 'Agents' : 'Job') + ' Counts')
+                text: this.selectedReport.template?.includes('execution time') ? 'Execution Time in Seconds' : ((this.selectedReport.template?.includes('workflows') ? 'Workflow' : this.selectedReport.template?.includes('parallel') ? 'Agents' : 'Job') + ' Counts')
               },
               beginAtZero: true
             }

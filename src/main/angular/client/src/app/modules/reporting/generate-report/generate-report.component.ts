@@ -71,8 +71,11 @@ export class GenerateReportComponent {
       } else if (res.collapseAll) {
         this.collapseAllItems();
       } else if (res.groupBy) {
-        this.filters.groupBy = res.groupBy;
-        this.groupByFunc();
+        if (this.filters.groupBy !== res.groupBy) {
+          this.filters.groupBy = res.groupBy;
+          this.filters.expandedKey?.clear();
+          this.groupByFunc();
+        }
       }
     });
   }
@@ -103,8 +106,8 @@ export class GenerateReportComponent {
   private getData(): void {
     this.reset();
     this.bulkDelete.emit(this.object.mapOfCheckedId);
-    if(this.filteredData?.length > 0){
-      if(!this.filters.expandedKey){
+    if (this.filteredData?.length > 0) {
+      if (!this.filters.expandedKey) {
         this.filters.expandedKey = new Set();
       }
       this.filteredData.forEach(item => {
@@ -348,7 +351,7 @@ export class GenerateReportComponent {
 
   toggleRowExpansion(item: any): void {
     item.expanded = !item.expanded;
-    if(!this.filters.expandedKey){
+    if (!this.filters.expandedKey) {
       this.filters.expandedKey = new Set();
     }
     if (item.expanded) {
@@ -374,12 +377,17 @@ export class GenerateReportComponent {
   }
 
   expandAllItems() {
+    if (!this.filters.expandedKey) {
+      this.filters.expandedKey = new Set();
+    }
     this.filteredData.forEach(item => {
       item.expanded = true;
+      this.filters.expandedKey.add(item.key);
     });
   }
 
   collapseAllItems() {
+    this.filters.expandedKey.clear();
     this.filteredData.forEach(item => {
       item.expanded = false;
     });

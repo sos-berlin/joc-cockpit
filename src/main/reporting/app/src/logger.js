@@ -1,5 +1,4 @@
 const winston = require('winston');
-const debug = require('debug');
 const path = require('path');
 
 class CustomLogger {

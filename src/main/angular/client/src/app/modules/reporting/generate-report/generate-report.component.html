@@ -16,7 +16,7 @@
       >
         <thead>
         <tr>
-          <th [(nzChecked)]="object.checked"
+          <th *ngIf="permission.joc && permission.joc.reports.manage" [(nzChecked)]="object.checked"
               [nzIndeterminate]="object.indeterminate"
               [nzShowCheckbox]="true"
               (nzCheckedChange)="checkAll($event)"
@@ -40,32 +40,32 @@
             <i *ngIf="filters.filter.sortBy == 'template' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('controllerId')" nzWidth="100px"><a><span class="p-r-xs" translate>common.label.controllerId</span>
+          <th (click)="sort('controllerId')" ><a><span class="p-r-xs" translate>common.label.controllerId</span>
             <i *ngIf="filters.filter.sortBy == 'controllerId' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'controllerId' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('frequency')"><a><span class="p-r-xs"
+          <th (click)="sort('frequency')" nzWidth="150px"><a><span class="p-r-xs"
                                                    translate>reporting.label.frequency</span>
             <i *ngIf="filters.filter.sortBy == 'frequency' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'frequency' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('dateFrom')"><a><span class="p-r-xs" translate>reporting.label.dateFrom</span>
+          <th (click)="sort('dateFrom')" nzWidth="110px"><a><span class="p-r-xs" translate>reporting.label.dateFrom</span>
             <i *ngIf="filters.filter.sortBy == 'dateFrom' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'dateFrom' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('dateTo')"><a><span class="p-r-xs" translate>reporting.label.dateTo</span>
+          <th (click)="sort('dateTo')" nzWidth="110px"><a><span class="p-r-xs" translate>reporting.label.dateTo</span>
             <i *ngIf="filters.filter.sortBy == 'dateTo' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'dateTo' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('created')" ><a><span class="p-r-xs" translate>reporting.label.created</span>
+          <th (click)="sort('created')" nzWidth="150px"><a><span class="p-r-xs" translate>reporting.label.created</span>
             <i *ngIf="filters.filter.sortBy == 'created' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'created' && filters.filter.reverse"
@@ -78,7 +78,7 @@
         <ng-template [ngForOf]="ajaxTable.data" let-item
                      ngFor>
           <tr class="cursor" >
-            <td [nzIndeterminate]="item.indeterminate"
+            <td *ngIf="permission.joc && permission.joc.reports.manage" [nzIndeterminate]="item.indeterminate"
                 [nzChecked]="item.checked"
                 (nzCheckedChange)="checkAllChild(item, $event)"
                 [nzShowCheckbox]="true">
@@ -100,7 +100,7 @@
             </td>
             <td colspan="6">
               <span class="w-full" *ngIf="filters.groupBy !== 'template'">
-                <i class="fa fa-angle-right  cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expanded" (click)="toggleRowExpansion(item)"></i>
+                <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expanded" (click)="toggleRowExpansion(item)"></i>
                 <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expanded" (click)="toggleRowExpansion(item)"></i>
                 <i (click)="coreService.navToInventoryTab(item.path, 'REPORT');"
                    *ngIf="permission.joc && permission.joc.inventory.view"
@@ -118,7 +118,7 @@
           </tr>
           <ng-container *ngIf="item.expanded">
             <tr *ngFor="let child of item.value" class="cursor">
-              <td [nzChecked]="object.mapOfCheckedId.has(child.id)" (nzCheckedChange)="onItemChecked(item, child, $event)"
+              <td *ngIf="permission.joc && permission.joc.reports.manage" [nzChecked]="object.mapOfCheckedId.has(child.id)" (nzCheckedChange)="onItemChecked(item, child, $event)"
                   [nzShowCheckbox]="true"></td>
               <td >
                 <div class="btn-group dropdown">
@@ -131,23 +131,25 @@
                       <li nz-menu-item (click)="onSelect(child)">
                         <a translate>reporting.button.showReport</a>
                       </li>
-                      <li nz-menu-item (click)="deleteReport(child)">
+                      <li *ngIf="permission.joc && permission.joc.reports.manage" nz-menu-item (click)="deleteReport(child)">
                         <a translate>common.button.delete</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
                 </div>
               </td>
-              <td>
-                <span *ngIf="filters.groupBy == 'template'" class="w-full p-l-12">
-                <i (click)="coreService.navToInventoryTab(child.path, 'REPORT');"
-                   *ngIf="permission.joc && permission.joc.inventory.view"
-                   class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                <span (click)="onSelect(child)" [innerHtml]="child.path | highlight : filters.searchText"></span>
-                <i *ngIf="child.title"> - </i>
-                <i [innerHtml]="child.title" class="text-muted"></i>
-              </span>
-                <span *ngIf="filters.groupBy !== 'template'" class="p-l-12" [innerHtml]="child.template | highlight : filters.searchText"></span>
+              <td *ngIf="filters.groupBy == 'template'" >
+                <span class="w-full p-l-12">
+                  <i (click)="coreService.navToInventoryTab(child.path, 'REPORT');"
+                     *ngIf="permission.joc && permission.joc.inventory.view"
+                     class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <span (click)="onSelect(child)" [innerHtml]="child.path | highlight : filters.searchText"></span>
+                  <i *ngIf="child.title"> - </i>
+                  <i [innerHtml]="child.title" class="text-muted"></i>
+                </span>
+              </td>
+              <td (click)="onSelect(child)" *ngIf="filters.groupBy !== 'template'" >
+                <span class="p-l-12" [innerHtml]="child.template | highlight : filters.searchText"></span>
               </td>
               <td (click)="onSelect(child)"><span [innerHtml]="child.controllerId | highlight : filters.searchText"></span></td>
               <td (click)="onSelect(child)"><span
@@ -175,7 +177,7 @@
 
 <nz-drawer (nzOnClose)="closePanel()" [nzWrapClassName]="'report-drawer'" [nzVisible]="isVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
-    <div (click)="closePanel()" class="close-btn z-index-9999 m-l-xxs"></div>
-    <app-frequency-report *ngIf="isVisible"  [templates]="templates" [report]="selectedReport"></app-frequency-report>
+      <app-frequency-report *ngIf="isVisible" (closePanel)="closePanel()" [templates]="templates" [groupBy]="filters.groupBy"
+                            [selectedReport]="selectedReport"></app-frequency-report>
   </ng-container>
 </nz-drawer>
