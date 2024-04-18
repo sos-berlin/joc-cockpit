@@ -121,8 +121,8 @@
                                   </div>
                                 </div>
                                 <div class="flex-container">
-                                  <div class="flex-item" style="width: 100%;">{{ item.WORKFLOW_NAME }}</div>
-                                  <div class="flex-item" style="width: 100%;">{{ item.JOB_NAME ? item.JOB_NAME : '-' }}
+                                  <div class="flex-item" style="width: 100%;">{{ item.workflow_name }}</div>
+                                  <div class="flex-item" style="width: 100%;">{{ item.job_name ? item.job_name : '-' }}
                                   </div>
                                 </div>
                               </div>
@@ -225,29 +225,35 @@
                       </div>
                       <div class="job-execution" *ngIf="item.templateName === 'JOBS_HIGH_LOW_EXECUTION_PERIODS'">
                         <nz-collapse>
-                          <nz-collapse-panel *ngFor="let data of item.data"
-                                             [nzHeader]="data.agentName + ' - ' + ' (' + data.count + ')' "
-                                             [nzActive]="data.agentName.active">
+                          <nz-collapse-panel [nzHeader]="'Low Parallelism'">
                             <div>
-                              <div class="p-a-sm" style="padding-bottom: 4px !important;">
-                                <div *ngFor="let item of data.data; let i = index"
-                                     style="padding-bottom: 0px !important;">
-                                  <div *ngIf="i == 0" class="flex-container">
-                                    <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.workflow</span>
-                                    </div>
-                                    <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.job</span>
-                                    </div>
-                                    <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.startTime</span>
-                                    </div>
-                                    <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.duration</span>
-                                    </div>
-                                  </div>
-                                  <div class="flex-container">
-                                    <div class="flex-item" style="width: 25%;">{{item.WORKFLOW_NAME}}</div>
-                                    <div class="flex-item" style="width: 25%;">{{item.JOB_NAME}}</div>
-                                    <div class="flex-item" style="width: 25%;">{{item.START_TIME}}</div>
-                                    <div class="flex-item" style="width: 25%;">{{item.duration}}</div>
-                                  </div>
+                              <div class="flex-container" style="font-weight: bold;">
+                                <div class="flex-item" style="width: 25%;"><span translate>history.label.startTime</span></div>
+                                <div class="flex-item" style="width: 25%;"><span translate>history.label.workflow</span></div>
+                                <div class="flex-item" style="width: 25%;"><span translate>history.label.job</span></div>
+                              </div>
+                              <div *ngFor="let period of item.data[0]?.topLowParallelismPeriods">
+                                <div class="flex-container" *ngFor="let data of period.data">
+                                  <div class="flex-item" style="width: 25%;">{{ period.period }}</div>
+                                  <div class="flex-item" style="width: 25%;">{{ data.WORKFLOW_NAME }}</div>
+                                  <div class="flex-item" style="width: 25%;">{{ data.JOB_NAME }}</div>
+                                </div>
+                              </div>
+                            </div>
+                          </nz-collapse-panel>
+
+                          <nz-collapse-panel [nzHeader]="'High Parallelism'">
+                            <div>
+                              <div class="flex-container" style="font-weight: bold;">
+                                <div class="flex-item" style="width: 25%;"><span translate>history.label.startTime</span></div>
+                                <div class="flex-item" style="width: 25%;"><span translate>history.label.workflow</span></div>
+                                <div class="flex-item" style="width: 25%;"><span translate>history.label.job</span></div>
+                              </div>
+                              <div *ngFor="let period of item.data[0]?.topHighParallelismPeriods">
+                                <div class="flex-container" *ngFor="let data of period.data">
+                                  <div class="flex-item" style="width: 25%;">{{ period.period }}</div>
+                                  <div class="flex-item" style="width: 25%;">{{ data.WORKFLOW_NAME }}</div>
+                                  <div class="flex-item" style="width: 25%;">{{ data.JOB_NAME }}</div>
                                 </div>
                               </div>
                             </div>

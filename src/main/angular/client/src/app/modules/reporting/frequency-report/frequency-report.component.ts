@@ -153,51 +153,80 @@ export class FrequencyReportComponent {
           case 'WORKFLOWS_FREQUENTLY_FAILED':
             label = `${item.workflow_name} - (${item.count})`;
             key = "workflows";
+            chartData.labels.push(label);
             break;
           case 'JOBS_FREQUENTLY_FAILED':
             const formattedJobName = item.job_name.replace(/__/g, '/');
             label = `${formattedJobName} - (${item.count})`;
             key = 'jobs';
+            chartData.labels.push(label);
             break;
           case 'AGENTS_PARALLEL_JOB_EXECUTIONS':
             label = `${item.agentName} - (${item.count})`;
             key = 'jobs'
+            chartData.labels.push(label);
             break;
           case 'JOBS_HIGH_LOW_EXECUTION_PERIODS':
-            for (const i of item.data) {
-              if (i.topLowParallelismPeriods || i.topHighParallelismPeriods) {
-                label = i.topLowParallelismPeriods ? 'topLowParallelismPeriods' : 'topHighParallelismPeriods';
-                chartData.datasets[0].data.push(i.count);
-                chartData.labels.push(`${label} (${i.count})`);
-              }
+            let highParallelismCount = 0;
+            let lowParallelismCount = 0;
+
+            // Calculate counts for high parallelism periods
+            for (const period of item.topHighParallelismPeriods) {
+              highParallelismCount += period.data.length;
             }
+
+            for (const period of item.topLowParallelismPeriods) {
+              lowParallelismCount += period.data.length;
+            }
+
+            const datasetData = [];
+            const datasetLabels = [];
+
+            if (lowParallelismCount > 0) {
+              datasetLabels.push(`Low Parallelism (${lowParallelismCount})`);
+              datasetData.push(lowParallelismCount);
+            }
+
+            if (highParallelismCount > 0) {
+              datasetLabels.push(`High Parallelism (${highParallelismCount})`);
+              datasetData.push(highParallelismCount);
+            }
+            totalJobCount += highParallelismCount + lowParallelismCount
+            chartData.datasets[0].data = datasetData;
+            chartData.labels = datasetLabels;
+            key = 'jobs'
             break;
           case 'JOBS_EXECUTIONS_FREQUENCY':
             label = `${item.workflow_name} - (${item.count})`;
             key = 'workflows'
+            chartData.labels.push(label);
             break;
           case 'ORDERS_EXECUTIONS_FREQUENCY':
             label = `${item.workflow_name} - (${item.count})`;
             key = 'workflows'
+            chartData.labels.push(label);
             break;
           case 'WORKFLOWS_LONGEST_EXECUTION_TIMES':
             label = `${item.WORKFLOW_NAME} - (${this.formatDuration(item.duration)})`;
             key = "";
+            chartData.labels.push(label);
             break;
           case 'JOBS_LONGEST_EXECUTION_TIMES':
             label = `${item.WORKFLOW_NAME}/${item.JOB_NAME} - (${this.formatDuration(item.duration)})`;
             key = "";
+            chartData.labels.push(label);
             break;
           case 'PERIODS_MOST_ORDER_EXECUTIONS':
-            label = `${item.WORKFLOW_NAME} - (${this.formatDuration(item.duration)})`;
+            label = `${item.period} - (${(item.count)})`;
             key = 'workflows'
+            chartData.labels.push(label);
             break;
           case 'PERIODS_MOST_JOB_EXECUTIONS':
-            label = `${item.period} - (${item.duration})`;
+            label = `${item.period} - (${(item.count)})`;
             key = 'jobs'
+            chartData.labels.push(label);
             break;
         }
-        chartData.labels.push(label);
         chartData.uniqueKeys.key = key;
         chartData.datasets[0].borderColor.push('white');
         chartData.datasets[0].hoverBackgroundColor.push('#e0e0e2');
@@ -383,7 +412,9 @@ export class FrequencyReportComponent {
       aspectRatio: 2,
       plugins: {
         legend: {display: false},
+        datalabels: {display: false},
         tooltip: {
+          datalabels: false,
           callbacks: {
             label: (tooltipItem) => {
               const label = tooltipItem.label ?? '';
@@ -391,6 +422,7 @@ export class FrequencyReportComponent {
             }
           }
         }
+
       }
     };
 
