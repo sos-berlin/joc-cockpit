@@ -210,7 +210,7 @@
               </ng-template>
             </span>
           </span>
-          <span *ngIf="(instruction['TYPE'] === 'ConsumeNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"
+          <span *ngIf="(instruction['TYPE'] === 'ConsumeNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission, workflowObj.path) | safeHtml"
                 class="text-muted"></span>
         </span>
         <i *ngIf="instruction.state && instruction.state._text" class="p-l-xxs p-r-xs">-</i>
@@ -365,7 +365,7 @@
                  class="text-hover-primary">{{board}}</a>
             </span>
           </span>
-          <span *ngIf="(instruction['TYPE'] === 'ExpectNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"
+          <span *ngIf="(instruction['TYPE'] === 'ExpectNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission, workflowObj.path) | safeHtml"
                 class="text-muted"></span>
           <span *ngIf="instruction['TYPE'] === 'AddOrder'" class="text-muted">
             <i (click)="coreService.navToInventoryTab(instruction.workflowName, 'WORKFLOW');$event.stopPropagation();"

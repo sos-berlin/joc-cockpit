@@ -1955,7 +1955,7 @@ export class CoreService {
     }
   }
 
-  getHtml(exp: string, permission: any): string {
+  getHtml(exp: string, permission: any, name): string {
     const arr = exp.split(' ');
     let str = '';
     arr.forEach((item: string) => {
@@ -1980,7 +1980,7 @@ export class CoreService {
           if (permission.currentController && permission.currentController.noticeBoards?.post) {
             str += '<button class="btn-drop more-option-h" type="button">\n' +
               '<i data-id-m="' + item + '" class="fa fa-ellipsis-h"></i></button>' +
-              '<span class="ant-checkbox"><input data-id-n="' + item + '" type="checkbox" class="ant-checkbox-input" ><span class="ant-checkbox-inner"></span></span>';
+              '<span class="ant-checkbox" ><input data-id-a="chk_'+ name + '" data-id-n="' + item + '" type="checkbox" class="ant-checkbox-input" ><span class="ant-checkbox-inner"></span></span>';
           }
         }
         str += firstStr + '<a class="text-hover-primary m-l-xs" data-id-y="' + item + '" >' + item + '</a>'
