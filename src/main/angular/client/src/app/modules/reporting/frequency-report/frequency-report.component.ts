@@ -705,11 +705,12 @@ export class FrequencyReportComponent {
     // Get DOM elements
     const contentElement = this.elementRef.nativeElement.querySelector('#content');
     const height = contentElement.clientHeight;
+
     const initialMaxHeightContent = contentElement.style.maxHeight;
 
-    //Set maxHeight to inherit for capturing full content
+    // Set maxHeight to inherit for capturing full content
     contentElement.style.maxHeight = 'inherit';
-    let scale = 0.8;
+    let scale = 1;
     if (this.addCardItems.length > 48) {
       scale = 3;
     } else if (this.addCardItems.length > 24) {
@@ -717,7 +718,8 @@ export class FrequencyReportComponent {
     }
     // Create canvas from HTML content
     const canvas = await html2canvas(contentElement, {
-      scale: scale
+      scale: scale,
+      scrollY: -window.scrollY // Capture entire scrollable content
     });
 
     // Restore initial maxHeight values
@@ -727,10 +729,8 @@ export class FrequencyReportComponent {
     const pdf = new jsPDF();
     const pageWidth = 210; // Width of A4 page in mm
     const pageHeight = (height * pageWidth) / canvas.width; // Maintain aspect ratio
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 10, 10, pageWidth, pageHeight);
-    // Add title to the first page
-    pdf.setFontSize(18);
-    pdf.text(this.groupBy == 'template' ? this.selectedReport.template : this.selectedReport.path , 105, 20, { align: 'center' });
+    const imgHeight = (canvas.height * pageWidth) / canvas.width; // Adjusted height to match page height
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pageWidth, imgHeight);
     // Save PDF
     pdf.save('report.pdf');
     this.loading = false;
