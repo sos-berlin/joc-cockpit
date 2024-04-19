@@ -2396,7 +2396,7 @@
     "button.assignParameterizationFromSchedules": "Assign parameterization from Schedule",
     "button.assignFromSchedule": "Assign from Schedule",
     "button.cloneOrder": "Clone Order",
-    "button.continue": "Continue",
+    "button.continue": "Start running",
     "placeholder.selectStartNode": "Select Start Position",
     "placeholder.selectEndNode": "Select End Position",
     "placeholder.selectBlockPosition": "Select Block Position",
