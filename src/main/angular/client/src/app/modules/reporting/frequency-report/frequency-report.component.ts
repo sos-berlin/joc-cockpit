@@ -730,7 +730,9 @@ export class FrequencyReportComponent {
     const pageWidth = 210; // Width of A4 page in mm
     const pageHeight = (height * pageWidth) / canvas.width; // Maintain aspect ratio
     const imgHeight = (canvas.height * pageWidth) / canvas.width; // Adjusted height to match page height
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pageWidth, imgHeight);
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 10, pageWidth, imgHeight);
+    const textColor = '#CCCCCC';
+    pdf.setTextColor(textColor);    pdf.text(this.groupBy == 'template' ? this.selectedReport.template : this.selectedReport.path , 105, 8, { align: 'center' });
     // Save PDF
     pdf.save('report.pdf');
     this.loading = false;
