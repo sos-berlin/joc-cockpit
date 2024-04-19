@@ -603,7 +603,7 @@ export class TypeComponent {
 
   @HostListener('window:click', ['$event'])
   onClicked(event): void {
-    if (event) {
+    if (event && this.isFirst) {
       if (event.target.getAttribute('data-id-x')) {
         this.coreService.navToInventoryTab(event.target.getAttribute('data-id-x'), 'NOTICEBOARD');
       } else if (event.target.getAttribute('data-id-y')) {

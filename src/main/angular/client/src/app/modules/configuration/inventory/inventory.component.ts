@@ -1292,7 +1292,7 @@ export class ExportComponent {
         this.filter.controller = false;
         this.filter.deploy = false;
         if (this.origin.dailyPlan) {
-          this.objectTypes.push(InventoryObject.REPORT, InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
+          this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
         } else {
           this.objectTypes.push(this.origin.object.match('CALENDAR') ? (InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR) : this.origin.object);
         }
@@ -1313,7 +1313,7 @@ export class ExportComponent {
     if (this.objectTypes.length === 0) {
       this.objectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
         InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
-      this.objectTypes.push(InventoryObject.REPORT, InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
+      this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
     }
     this.exportObj.objectTypes = [...this.objectTypes];
     this.buildTree(this.path);
@@ -1361,7 +1361,7 @@ export class ExportComponent {
     if (this.exportObj.exportType !== 'folders') {
       deployObjectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
         InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
-      releaseObjectTypes.push(InventoryObject.REPORT, InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
+      releaseObjectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
     }
 
     const APIs = [];
@@ -3927,14 +3927,14 @@ export class InventoryComponent {
           path: data.path,
           key: (KEY + 'JobTemplates$')
         },
-        {
-          name: 'Reports',
-          title: 'Reports',
-          object: InventoryObject.REPORT,
-          children: [],
-          path: data.path,
-          key: (KEY + 'Reports$')
-        }
+        // {
+        //   name: 'Reports',
+        //   title: 'Reports',
+        //   object: InventoryObject.REPORT,
+        //   children: [],
+        //   path: data.path,
+        //   key: (KEY + 'Reports$')
+        // }
       ];
     }
     const obj: any = {
@@ -3988,8 +3988,8 @@ export class InventoryComponent {
             resObject = res.schedules;
           } else if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.INCLUDESCRIPT) {
             resObject = res.includeScripts;
-          } else if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.REPORT) {
-            resObject = res.reports;
+          // } else if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.REPORT) {
+          //   resObject = res.reports;
           } else if (dailyPlanObj.dailyPlanArr[i].object === 'CALENDAR') {
             resObject = res.calendars;
           } else if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.JOBTEMPLATE) {
@@ -4139,9 +4139,9 @@ export class InventoryComponent {
         return "LOCK";
       } else if (qualifier === 'i') {
         return "INCLUDESCRIPT";
-      } else if (qualifier === 'rp') {
-        return "REPORT";
-      } else if (qualifier === 's') {
+      // } else if (qualifier === 'rp') {
+      //   return "REPORT";
+       } else if (qualifier === 's') {
         return "SCHEDULE";
       } else if (qualifier === 'c') {
         return "CALENDAR";
@@ -4162,7 +4162,6 @@ export class InventoryComponent {
       'FILEORDERSOURCE',
       'JOBTEMPLATE',
       'INCLUDESCRIPT',
-      'REPORT',
       'WORKINGDAYSCALENDAR'
     ];
     return Object.keys(object).sort((a, b) => order.indexOf(a) - order.indexOf(b));

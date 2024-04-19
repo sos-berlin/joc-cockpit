@@ -271,7 +271,7 @@
                     <i *ngIf="node.origin.object == 'SCHEDULE'" class="icon-color" nz-icon nzTheme="outline"
                        nzType="schedule"></i>
                     <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13 text-shadow"></i>
-                    <i *ngIf="node.origin.object == 'REPORT'" class="fa fa-file-image-o w-13 text-shadow"></i>
+<!--                    <i *ngIf="node.origin.object == 'REPORT'" class="fa fa-file-image-o w-13 text-shadow"></i>-->
                     <i *ngIf="node.origin.object == 'LOCK'" class="icon-color" nz-icon nzTheme="outline"
                        nzType="lock"></i>
                     <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" class="icon-color" nz-icon
@@ -557,9 +557,9 @@
         <li (click)="newObject(node, 'JOBTEMPLATE')" *ngIf="!node.origin.controller" nz-menu-item>
           <a translate>inventory.button.newJobTemplate</a>
         </li>
-        <li (click)="newObject(node, 'REPORT')" *ngIf="!node.origin.controller" nz-menu-item>
-          <a translate>inventory.button.newReport</a>
-        </li>
+<!--        <li (click)="newObject(node, 'REPORT')" *ngIf="!node.origin.controller" nz-menu-item>-->
+<!--          <a translate>inventory.button.newReport</a>-->
+<!--        </li>-->
       </ul>
     </li>
     <li *ngIf="((!node.origin.object && !node.origin.type) || node.origin.object) && permission.joc.inventory.manage"
