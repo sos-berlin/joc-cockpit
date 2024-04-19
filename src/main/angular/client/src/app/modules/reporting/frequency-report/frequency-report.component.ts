@@ -177,12 +177,12 @@ export class FrequencyReportComponent {
             break;
           case 'JOBS_FREQUENTLY_FAILED':
             const formattedJobName = item.job_name.replace(/__/g, '/');
-            label = `${formattedJobName} $$ (${item.count})`;
+            label = `${formattedJobName} - (${item.count})`;
             key = 'Jobs execution';
             chartData.labels.push(label);
             break;
           case 'AGENTS_PARALLEL_JOB_EXECUTIONS':
-            label = `${item.agentName} $$ (${item.count})`;
+            label = `${item.agentName} - (${item.count})`;
             key = 'Jobs execution'
             chartData.labels.push(label);
             break;
@@ -217,32 +217,32 @@ export class FrequencyReportComponent {
             key = 'Jobs execution'
             break;
           case 'JOBS_EXECUTIONS_FREQUENCY':
-            label = `${item.workflow_name} $$ (${item.count})`;
+            label = `${item.workflow_name} - (${item.count})`;
             key = 'Workflows execution'
             chartData.labels.push(label);
             break;
           case 'ORDERS_EXECUTIONS_FREQUENCY':
-            label = `${item.workflow_name} $$ (${item.count})`;
+            label = `${item.workflow_name} - (${item.count})`;
             key = 'Workflows execution'
             chartData.labels.push(label);
             break;
           case 'WORKFLOWS_LONGEST_EXECUTION_TIMES':
-            label = `${item.WORKFLOW_NAME} $$ (${this.formatDuration(item.duration)})`;
+            label = `${item.WORKFLOW_NAME} - (${this.formatDuration(item.duration)})`;
             key = "";
             chartData.labels.push(label);
             break;
           case 'JOBS_LONGEST_EXECUTION_TIMES':
-            label = `${item.WORKFLOW_NAME}/${item.JOB_NAME} $$ (${this.formatDuration(item.duration)})`;
+            label = `${item.WORKFLOW_NAME}/${item.JOB_NAME} - (${this.formatDuration(item.duration)})`;
             key = "";
             chartData.labels.push(label);
             break;
           case 'PERIODS_MOST_ORDER_EXECUTIONS':
-            label = `${item.period} $$ (${(item.count)})`;
+            label = `${item.period} - (${(item.count)})`;
             key = 'Workflows execution'
             chartData.labels.push(label);
             break;
           case 'PERIODS_MOST_JOB_EXECUTIONS':
-            label = `${item.period} $$ (${(item.count)})`;
+            label = `${item.period} - (${(item.count)})`;
             key = 'Jobs execution'
             chartData.labels.push(label);
             break;
@@ -334,7 +334,7 @@ export class FrequencyReportComponent {
             ctx.fillStyle = 'black';
           }
 
-          ctx.font = '16px sans-serif';
+          ctx.font = '14px sans-serif';
           ctx.fillText(perc, xCoor, yCoor);
           ctx.fillText(chartData.uniqueKeys?.key, xCoor, yCoor + 20);
           ctx.restore();
@@ -437,10 +437,10 @@ export class FrequencyReportComponent {
         tooltip: {
           callbacks: {
             label: (tooltipItem) => {
-              return tooltipItem.label ? tooltipItem.label.split('$$')[0] : '';
+              return tooltipItem.label ? tooltipItem.label.split('-')[0] : '';
             },
             afterLabel: (tooltipItem) => {
-              return tooltipItem.label ? tooltipItem.label.split('$$')[1] : '';
+              return tooltipItem.label ? tooltipItem.label.split('-')[1] : '';
             }
           }
         }
@@ -458,7 +458,7 @@ export class FrequencyReportComponent {
 
   createLegendContainer(legendContainerId: string, container: HTMLElement) {
     const legendContainer = document.createElement('div');
-    legendContainer.style.height = '176px';
+    legendContainer.style.height = '166px';
     legendContainer.style.position = 'relative';
     legendContainer.style.marginTop = '10px';
     legendContainer.style.padding = '2px';
