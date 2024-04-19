@@ -263,10 +263,10 @@ export class FrequencyReportComponent {
 
   parseDuration(durationString): any {
     const parts = durationString.split(' ');
-    const days = parseInt(parts[0].replace('d', '')) || 0;
-    const hours = parseInt(parts[1].replace('h', '')) || 0;
-    const minutes = parseInt(parts[2].replace('m', '')) || 0;
-    const seconds = parseInt(parts[3].replace('s', '')) || 0;
+    const days = parseInt(parts[0]?.replace('d', '')) || 0;
+    const hours = parseInt(parts[1]?.replace('h', '')) || 0;
+    const minutes = parseInt(parts[2]?.replace('m', '')) || 0;
+    const seconds = parseInt(parts[3]?.replace('s', '')) || 0;
     return days * 24 * 60 * 60 + hours * 60 * 60 + minutes * 60 + seconds;
   }
 
@@ -469,7 +469,7 @@ export class FrequencyReportComponent {
       labels: [],
       datasets: [
         {
-          label: this.selectedReport.template?.includes('workflows') ? 'Workflows' : this.selectedReport.template?.includes('parallel') ? 'Agents' : 'Jobs',
+          label: this.selectedReport.template?.includes('workflows') ? 'Workflows' : this.selectedReport.template?.includes('most parallel') ? 'Agents' : 'Jobs',
           data: []
         }
       ]
@@ -498,7 +498,9 @@ export class FrequencyReportComponent {
         data.labels.push(report.data[i].order_id);
       } else if (report.data[i].period) {
         data.labels.push(report.data[i].period);
-      }
+      }else if (report.data[i].topHighParallelismPeriods && report.data[i].topLowParallelismPeriods) {
+      data.labels.push('topHighParallelismPeriods', 'topLowParallelismPeriods');
+    }
 
       this.dataset.push(obj);
       if (report.data[i].duration || report.data[i].WORKFLOW_NAME) {
@@ -512,8 +514,27 @@ export class FrequencyReportComponent {
         data.datasets[0].data.push(report.data[i].orderCount);
       } else if (report.data[i].jobCount || report.data[i].jobCount === 0) {
         data.datasets[0].data.push(report.data[i].jobCount);
-      }
+      } else if (report.data[i].topHighParallelismPeriods && report.data[i].topLowParallelismPeriods) {
+        let highParallelismCount = 0;
+        let lowParallelismCount = 0;
+
+        for (const period of report.data[i].topHighParallelismPeriods) {
+          highParallelismCount += period.data.length;
+        }
+
+        for (const period of report.data[i].topLowParallelismPeriods) {
+          lowParallelismCount += period.data.length;
+        }
+
+        if (lowParallelismCount > 0) {
+          data.datasets[0].data.push(lowParallelismCount);
+        }
+
+        if (highParallelismCount > 0) {
+          data.datasets[0].data.push(highParallelismCount);
+        }
     }
+  }
     let delayed;
     const self = this;
     if (this.barChart) {
@@ -550,7 +571,7 @@ export class FrequencyReportComponent {
             y: {
               title: {
                 display: true,
-                text: this.selectedReport.template?.includes('execution time') ? 'Execution Time in Seconds' : ((this.selectedReport.template?.includes('workflows') ? 'Workflow' : this.selectedReport.template?.includes('parallel') ? 'Agents' : 'Job') + ' Counts')
+                text: this.selectedReport.template?.includes('execution time') ? 'Execution Time in Seconds' : ((this.selectedReport.template?.includes('workflows') ? 'Workflow' : this.selectedReport.template?.includes('most parallel') ? 'Agents' : 'Job') + ' Counts')
               },
               beginAtZero: true
             }
