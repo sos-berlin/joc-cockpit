@@ -133,6 +133,7 @@ export class GenerateReportComponent {
             report.template = report.template.replace('${hits}', report.hits || 10)
           }
         });
+        this.reports = this.orderPipe.transform(this.reports, this.filters.filter.sortBy, this.filters.filter.reverse);
         this.data = [...this.reports];
         this.searchInResult();
       }, error: () => this.isLoaded = true
@@ -147,8 +148,15 @@ export class GenerateReportComponent {
     } else if (this.filters.groupBy == 'template' && propertyName == 'template') {
       this.filteredData = this.orderPipe.transform(this.filteredData, this.filters.filter.sortBy, this.filters.filter.reverse);
     } else {
-      this.filteredData.forEach(data => {
-        data.value = this.orderPipe.transform(data.value, this.filters.filter.sortBy, this.filters.filter.reverse);
+      this.data = this.orderPipe.transform(this.data, this.filters.filter.sortBy, this.filters.filter.reverse);
+      this.filteredData = this.groupBy.transform(this.data, this.filters.groupBy);
+      this.filteredData.forEach(item => {
+        item.path = item.value[0].path;
+        item.title = item.value[0].title;
+        item.template = item.value[0].template;
+        if (this.filters.expandedKey?.has(item.key)) {
+          item.expanded = true;
+        }
       })
     }
     this.reset();
@@ -369,7 +377,7 @@ export class GenerateReportComponent {
       item.path = item.value[0].path;
       item.title = item.value[0].title;
       item.template = item.value[0].template;
-      item.value = this.orderPipe.transform(item.value, this.filters.filter.sortBy, this.filters.filter.reverse);
+      //item.value = this.orderPipe.transform(item.value, this.filters.filter.sortBy, this.filters.filter.reverse);
       if (this.filters.expandedKey?.has(item.key)) {
         item.expanded = true;
       }
