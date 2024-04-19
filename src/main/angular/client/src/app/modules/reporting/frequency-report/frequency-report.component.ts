@@ -23,12 +23,16 @@ export class FrequencyReportComponent {
   isPathDisplay = true;
   dateFormat: string;
   clickData: any;
-  filter: any = {};
+  filter: any = {
+    sortBy: '',
+    reverse: true
+  };
   barChart: any;
   dataset: any = [];
 
   multiReports: any[] = [];
   addCardItems: any[] = [];
+  selectedFrequencies = [];
 
   @Output() closePanel: EventEmitter<any> = new EventEmitter();
 
@@ -59,13 +63,15 @@ export class FrequencyReportComponent {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
 
     let obj: any = {};
-    if(this.selectedReport.value){
-      if(this.groupBy == 'template'){
+    if (this.selectedReport.value) {
+      if (this.groupBy == 'template') {
         obj.templateNames = [this.selectedReport.value[0].templateName];
       } else {
         obj.reportPaths = [this.selectedReport.path];
       }
+      this.filter.checked = true;
     } else {
+      this.filter.indeterminate = true;
       obj.runIds = [this.selectedReport.runId];
     }
     this.loadData(obj);
@@ -78,22 +84,25 @@ export class FrequencyReportComponent {
         this.isLoading = true;
         this.multiReports = res.reports;
         this.multiReports.forEach(item => {
-          if(obj.runIds){
+          item.name = item.path.substring(item.path.lastIndexOf('/') + 1);
+          if (obj.runIds) {
             item.checked = item.id == this.selectedReport.id;
           } else {
             item.checked = true;
+            this.selectedFrequencies.push(item.frequency)
           }
-            const template = this.templates.find(template => template.templateName == item.templateName);
-            if (template) item.template = template.title;
-            if (item.template?.includes('${hits}')) {
-              item.template = item.template.replace('${hits}', item.hits || 10)
-            }
-
+          this.selectedFrequencies.push(item.frequency)
+          const template = this.templates.find(template => template.templateName == item.templateName);
+          if (template) item.template = template.title;
+          if (item.template?.includes('${hits}')) {
+            item.template = item.template.replace('${hits}', item.hits || 10)
+          }
         });
+        this.selectedFrequencies = [...new Set(this.selectedFrequencies)].sort();
+        this.sort('');
         this.addCardItems = [...this.multiReports]
 
         this.addCardItems = this.addCardItems.filter((report) => {
-          report.name = report.path.substring(report.path.lastIndexOf('/') + 1);
           return report.checked;
         });
         if (res.reports.length > 0) {
@@ -106,6 +115,15 @@ export class FrequencyReportComponent {
   }
 
   onCardChange(cardId: any) {
+    if (this.multiReports.every(item => !item.checked)) {
+      this.filter.checked = false;
+      this.filter.indeterminate = false;
+    } else if (this.multiReports.every(item => item.checked)) {
+      this.filter.checked = true;
+      this.filter.indeterminate = false;
+    } else {
+      this.filter.indeterminate = true;
+    }
     const index = this.multiReports.findIndex(report => report.id === cardId);
     if (index !== -1) {
       if (!this.multiReports[index].checked) {
@@ -126,6 +144,8 @@ export class FrequencyReportComponent {
   }
 
   removeCard(cardId: any): void {
+    this.filter.checked = false;
+    this.filter.indeterminate = true;
     const index = this.addCardItems.findIndex(report => report.id === cardId);
     if (index !== -1) {
       this.addCardItems.splice(index, 1);
@@ -152,18 +172,18 @@ export class FrequencyReportComponent {
         switch (report.templateName) {
           case 'WORKFLOWS_FREQUENTLY_FAILED':
             label = `${item.workflow_name} - (${item.count})`;
-            key = "workflows";
+            key = "Workflows execution";
             chartData.labels.push(label);
             break;
           case 'JOBS_FREQUENTLY_FAILED':
             const formattedJobName = item.job_name.replace(/__/g, '/');
-            label = `${formattedJobName} - (${item.count})`;
-            key = 'jobs';
+            label = `${formattedJobName} $$ (${item.count})`;
+            key = 'Jobs execution';
             chartData.labels.push(label);
             break;
           case 'AGENTS_PARALLEL_JOB_EXECUTIONS':
-            label = `${item.agentName} - (${item.count})`;
-            key = 'jobs'
+            label = `${item.agentName} $$ (${item.count})`;
+            key = 'Jobs execution'
             chartData.labels.push(label);
             break;
           case 'JOBS_HIGH_LOW_EXECUTION_PERIODS':
@@ -194,36 +214,36 @@ export class FrequencyReportComponent {
             totalJobCount += highParallelismCount + lowParallelismCount
             chartData.datasets[0].data = datasetData;
             chartData.labels = datasetLabels;
-            key = 'jobs'
+            key = 'Jobs execution'
             break;
           case 'JOBS_EXECUTIONS_FREQUENCY':
-            label = `${item.workflow_name} - (${item.count})`;
-            key = 'workflows'
+            label = `${item.workflow_name} $$ (${item.count})`;
+            key = 'Workflows execution'
             chartData.labels.push(label);
             break;
           case 'ORDERS_EXECUTIONS_FREQUENCY':
-            label = `${item.workflow_name} - (${item.count})`;
-            key = 'workflows'
+            label = `${item.workflow_name} $$ (${item.count})`;
+            key = 'Workflows execution'
             chartData.labels.push(label);
             break;
           case 'WORKFLOWS_LONGEST_EXECUTION_TIMES':
-            label = `${item.WORKFLOW_NAME} - (${this.formatDuration(item.duration)})`;
+            label = `${item.WORKFLOW_NAME} $$ (${this.formatDuration(item.duration)})`;
             key = "";
             chartData.labels.push(label);
             break;
           case 'JOBS_LONGEST_EXECUTION_TIMES':
-            label = `${item.WORKFLOW_NAME}/${item.JOB_NAME} - (${this.formatDuration(item.duration)})`;
+            label = `${item.WORKFLOW_NAME}/${item.JOB_NAME} $$ (${this.formatDuration(item.duration)})`;
             key = "";
             chartData.labels.push(label);
             break;
           case 'PERIODS_MOST_ORDER_EXECUTIONS':
-            label = `${item.period} - (${(item.count)})`;
-            key = 'workflows'
+            label = `${item.period} $$ (${(item.count)})`;
+            key = 'Workflows execution'
             chartData.labels.push(label);
             break;
           case 'PERIODS_MOST_JOB_EXECUTIONS':
-            label = `${item.period} - (${(item.count)})`;
-            key = 'jobs'
+            label = `${item.period} $$ (${(item.count)})`;
+            key = 'Jobs execution'
             chartData.labels.push(label);
             break;
         }
@@ -233,7 +253,7 @@ export class FrequencyReportComponent {
         chartData.datasets[0].hoverBorderColor.push('#e0e0e2');
       }
 
-      const formattedTotalJobCount = report.data[0]?.duration || report.data[0]?.duration === 0 ? this.formatDuration(totalJobCount) : totalJobCount;
+      const formattedTotalJobCount = report.data[0]?.duration || report.data[0]?.duration === 0 ? (chartData.labels.length + ' Jobs') : totalJobCount;
       this.createChart(chartData, formattedTotalJobCount, report.id);
     }
   }
@@ -274,18 +294,18 @@ export class FrequencyReportComponent {
     return {
       labels: [],
       datasets: [{
-        label: 'Job Counts',
+        label: 'Job Execution Counts',
         data: [],
         borderColor: [],
         borderWidth: 1,
         hoverBackgroundColor: [],
         hoverBorderColor: []
       }],
-      uniqueKeys: {key: 'jobs'}
+      uniqueKeys: {key: 'Jobs execution'}
     };
   }
 
-  createChart(chartData: any, totalJobCount: number, reportId: string): void {
+  createChart(chartData: any, totalJobCount: any, reportId: string): void {
     const canvas = document.createElement('canvas');
     canvas.classList.add('donut-chart');
     const containerId = `donut-chart-container-${reportId}`;
@@ -409,16 +429,18 @@ export class FrequencyReportComponent {
     const chartOptions = {
       cutout: 60,
       responsive: true,
-      aspectRatio: 2,
+      maintainAspectRatio: false, // Set to false to fix height
+      height: 180, // Specify the height of the chart
       plugins: {
         legend: {display: false},
         datalabels: {display: false},
         tooltip: {
-          datalabels: false,
           callbacks: {
             label: (tooltipItem) => {
-              const label = tooltipItem.label ?? '';
-              return `${label}`;
+              return tooltipItem.label ? tooltipItem.label.split('$$')[0] : '';
+            },
+            afterLabel: (tooltipItem) => {
+              return tooltipItem.label ? tooltipItem.label.split('$$')[1] : '';
             }
           }
         }
@@ -436,7 +458,7 @@ export class FrequencyReportComponent {
 
   createLegendContainer(legendContainerId: string, container: HTMLElement) {
     const legendContainer = document.createElement('div');
-    legendContainer.style.height = '140px';
+    legendContainer.style.height = '176px';
     legendContainer.style.position = 'relative';
     legendContainer.style.marginTop = '10px';
     legendContainer.style.padding = '2px';
@@ -445,8 +467,10 @@ export class FrequencyReportComponent {
     if (container) {
       container.appendChild(legendContainer);
     }
-    // Initialize Perfect Scrollbar
-    new PerfectScrollbar(legendContainer);
+    setTimeout(() => {
+      // Initialize Perfect Scrollbar
+      new PerfectScrollbar(legendContainer);
+    })
   }
 
   getOrCreateLegendList(chart, id): HTMLElement {
@@ -469,7 +493,7 @@ export class FrequencyReportComponent {
       labels: [],
       datasets: [
         {
-          label: this.selectedReport.template?.includes('workflows') ? 'Workflows' : this.selectedReport.template?.includes('most parallel') ? 'Agents' : 'Jobs',
+          label: this.selectedReport.template?.includes('workflows') ? 'Workflow Executions' : this.selectedReport.template?.includes('most parallel') ? 'Agents' : 'Job Executions',
           data: []
         }
       ]
@@ -547,6 +571,23 @@ export class FrequencyReportComponent {
         type: 'bar',
         data: data,
         options: {
+          plugins: {
+            datalabels: {display: false},
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  let label = context.dataset.label || '';
+                  if (label) {
+                    label += ': ';
+                  }
+                  if (context.parsed.y !== null) {
+                    label += self.formatDuration(context.parsed.y);
+                  }
+                  return label;
+                }
+              }
+            }
+          },
           maintainAspectRatio: false,
           onClick: function (event, elements) {
             if (elements.length > 0) {
@@ -571,7 +612,7 @@ export class FrequencyReportComponent {
             y: {
               title: {
                 display: true,
-                text: this.selectedReport.template?.includes('execution time') ? 'Execution Time in Seconds' : ((this.selectedReport.template?.includes('workflows') ? 'Workflow' : this.selectedReport.template?.includes('most parallel') ? 'Agents' : 'Job') + ' Counts')
+                text: this.selectedReport.template?.includes('execution time') ? 'Execution Time' : ((this.selectedReport.template?.includes('workflows') ? 'Workflow Execution' : this.selectedReport.template?.includes('most parallel') ? 'Agents' : 'Job Execution') + ' Counts')
               },
               beginAtZero: true
             }
@@ -590,6 +631,46 @@ export class FrequencyReportComponent {
 
   toggleCardView(reports: any) {
     reports.showTable = !reports.showTable;
+  }
+
+  updateAllChecked(): void {
+    this.filter.indeterminate = false;
+    if (this.filter.checked) {
+      this.multiReports = this.multiReports.map(item => ({
+        ...item,
+        checked: true
+      }));
+      this.addCardItems = [...this.multiReports];
+    } else {
+      this.addCardItems = [];
+      this.multiReports = this.multiReports.map(item => ({
+        ...item,
+        checked: false
+      }));
+    }
+  }
+
+  sort(type): void {
+    this.filter.reverse = !this.filter.reverse;
+    this.filter.sortBy = type;
+
+    // Custom comparison function for sorting by frequency and then by ID
+    function compare(a, b) {
+      // First, compare by frequency
+      if (a.frequency < b.frequency) {
+        return -1;
+      } else if (a.frequency > b.frequency) {
+        return 1;
+      } else {
+        // If frequencies are the same, compare by ID
+        return a.dateFrom - b.dateFrom;
+      }
+    }
+
+    this.addCardItems = this.addCardItems.sort(compare);
+    if(this.filter.reverse){
+      this.addCardItems = this.addCardItems.reverse();
+    }
   }
 
   filterBy(data): void {
@@ -624,12 +705,11 @@ export class FrequencyReportComponent {
     // Get DOM elements
     const contentElement = this.elementRef.nativeElement.querySelector('#content');
     const height = contentElement.clientHeight;
-
     const initialMaxHeightContent = contentElement.style.maxHeight;
 
     //Set maxHeight to inherit for capturing full content
     contentElement.style.maxHeight = 'inherit';
-    let scale = 1;
+    let scale = 0.8;
     if (this.addCardItems.length > 48) {
       scale = 3;
     } else if (this.addCardItems.length > 24) {
@@ -647,7 +727,10 @@ export class FrequencyReportComponent {
     const pdf = new jsPDF();
     const pageWidth = 210; // Width of A4 page in mm
     const pageHeight = (height * pageWidth) / canvas.width; // Maintain aspect ratio
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pageWidth, pageHeight);
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 10, 10, pageWidth, pageHeight);
+    // Add title to the first page
+    pdf.setFontSize(18);
+    pdf.text(this.groupBy == 'template' ? this.selectedReport.template : this.selectedReport.path , 105, 20, { align: 'center' });
     // Save PDF
     pdf.save('report.pdf');
     this.loading = false;

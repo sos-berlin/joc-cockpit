@@ -9666,3 +9666,9 @@ cdk-virtual-scroll-viewport {
   height: calc(100% - 42px) !important;
   margin-top: 28px;
 }
+
+.card {
+  .ps__rail-y {
+    opacity: 0.6;
+  }
+}
