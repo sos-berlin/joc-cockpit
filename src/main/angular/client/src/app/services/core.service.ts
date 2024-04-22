@@ -1956,6 +1956,9 @@ export class CoreService {
   }
 
   getHtml(exp: string, permission: any, name): string {
+    exp = exp.replace(/'(&&|\|\|)/g, "' $1");
+    exp = exp.replace(/"(&&|\|\|)/g, "' $1");
+
     const arr = exp.split(' ');
     let str = '';
     arr.forEach((item: string) => {
@@ -2185,6 +2188,12 @@ export class CoreService {
           flag: false
         };
         for (let i in nodes) {
+          if(parentNode){
+            if(nodes[i].title === parentNode.title && nodes[i].position === parentNode.position){
+              obj.flag = true;
+              continue;
+            }
+          }
           let _tempArr = item.position.split('/');
           _tempArr.splice(_tempArr.length - 1, 1);
           if ((lastPos && (lastPos.match('then') || lastPos.match('else')) && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question))) {
@@ -2205,6 +2214,7 @@ export class CoreService {
             }
           } else {
             if (nodes[i].position == item.position || (nodes[i].position.indexOf(':') > -1 && nodes[i].position.substring(0, nodes[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
+
               if (parentNode && parentNode.children) {
                 parentNode.children.push(data);
                 nodes.push(parentNode);
@@ -2244,6 +2254,11 @@ export class CoreService {
                         }
                         flag = true;
                         break;
+                      } else if(nodes[prop].position1 && data.title == 'Job' && nodes[prop].position1 == data.position.substring(0, data.position.lastIndexOf(':'))) {
+                        if (nodes[prop].children) {
+                          nodes[prop].children.push(data)
+                        }
+                        flag = true;
                       }
                     }
                     if (!flag) {
