@@ -92,7 +92,7 @@
 <div *ngFor="let instruction of configuration.instructions">
   <ul class="m-b-0">
     <li>
-      <a *ngIf="instruction['TYPE'] === 'Fork' || instruction['TYPE'] === 'ForkList' || instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Try' || instruction['TYPE'] === 'Retry' || instruction['TYPE'] === 'Cycle' || instruction['TYPE'] === 'Lock' || instruction['TYPE'] === 'Options' || instruction['TYPE'] === 'StickySubagent' || instruction['TYPE'] === 'ConsumeNotices'"
+      <a *ngIf="instruction['TYPE'] === 'Fork' || instruction['TYPE'] === 'ForkList' || instruction['TYPE'] === 'Retry' || instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Try' || instruction['TYPE'] === 'Cycle' || instruction['TYPE'] === 'Lock' || instruction['TYPE'] === 'Options' || instruction['TYPE'] === 'StickySubagent' || instruction['TYPE'] === 'ConsumeNotices'"
          class="hover">
         <ng-template #contentTemplate>
           <div>
@@ -108,6 +108,20 @@
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
+              <li (click)="skip(instruction);"
+                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
+                <a>
+                  <span translate>workflow.button.skip</span>
+                </a>
+              </li>
+              <li (click)="unskip(instruction);"
+                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
+                <a>
+                  <span translate>workflow.button.unskip</span>
+                </a>
+              </li>
               <li (click)="stop(instruction);"
                   *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
                   nz-menu-item>
@@ -133,6 +147,20 @@
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
+              <li (click)="skip(instruction);"
+                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
+                <a>
+                  <span translate>workflow.button.skip</span>
+                </a>
+              </li>
+              <li (click)="unskip(instruction);"
+                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
+                <a>
+                  <span translate>workflow.button.unskip</span>
+                </a>
+              </li>
               <li (click)="stop(instruction);"
                   *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
                   nz-menu-item>
@@ -157,7 +185,7 @@
         </div>
         <i (click)="collapse(instruction)" [ngClass]="{'fa-minus' : (instruction.show)}" class="fa fa-plus pr-2"></i>
         <span class="_600">
-          <span *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle' && instruction['TYPE'] !== 'Retry'">{{instruction['TYPE']}}</span>
+          <span *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle' && instruction['TYPE'] !== 'Retry'" [nz-tooltip]="(instruction['TYPE'] === 'ConsumeNotices') ? instruction.noticeBoardNames : ''">{{instruction['TYPE']}}</span>
           <span *ngIf="instruction['TYPE'] === 'Retry'" nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate" nzPopoverPlacement="right">{{instruction['TYPE']}}</span>
           <a (click)="showConfiguration(instruction);" *ngIf="instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Cycle'"
              class="cursor">{{instruction['TYPE']}}</a><span
@@ -182,7 +210,7 @@
               </ng-template>
             </span>
           </span>
-          <span *ngIf="(instruction['TYPE'] === 'ConsumeNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"
+          <span *ngIf="(instruction['TYPE'] === 'ConsumeNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission, workflowObj.path) | safeHtml"
                 class="text-muted"></span>
         </span>
         <i *ngIf="instruction.state && instruction.state._text" class="p-l-xxs p-r-xs">-</i>
@@ -217,14 +245,14 @@
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
               <li (click)="skip(instruction);"
-                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
+                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
                   nz-menu-item>
                 <a>
                   <span translate>workflow.button.skip</span>
                 </a>
               </li>
               <li (click)="unskip(instruction);"
-                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
+                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
                   nz-menu-item>
                 <a>
                   <span translate>workflow.button.unskip</span>
@@ -273,6 +301,20 @@
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
+              <li (click)="skip(instruction);"
+                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
+                <a>
+                  <span translate>workflow.button.skip</span>
+                </a>
+              </li>
+              <li (click)="unskip(instruction);"
+                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
+                  nz-menu-item>
+                <a>
+                  <span translate>workflow.button.unskip</span>
+                </a>
+              </li>
               <li (click)="stop(instruction);"
                   *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
                   nz-menu-item>
@@ -307,7 +349,7 @@
         </span>
         <span (click)="openWorkflowDependency(instruction);"
               *ngIf="instruction['TYPE'] !== 'Job'"
-              [ngClass]="{'cursor' : (instruction['TYPE'] === 'PostNotices' || instruction['TYPE'] === 'AddOrder')}" [nz-tooltip]="instruction.question || instruction.message">
+              [ngClass]="{'cursor' : (instruction['TYPE'] === 'PostNotices' || instruction['TYPE'] === 'AddOrder')}" [nz-tooltip]="(instruction['TYPE'] === 'ExpectNotices') ? instruction.noticeBoardNames : (instruction.question || instruction.message)" >
           {{instruction['TYPE'] | translate}}
           <span *ngIf="instruction.label" class="p-l-xs  _400">(</span>
            <i *ngIf="instruction.label" class="text-muted _400">{{instruction.label}}</i>
@@ -323,7 +365,7 @@
                  class="text-hover-primary">{{board}}</a>
             </span>
           </span>
-          <span *ngIf="(instruction['TYPE'] === 'ExpectNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"
+          <span *ngIf="(instruction['TYPE'] === 'ExpectNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission, workflowObj.path) | safeHtml"
                 class="text-muted"></span>
           <span *ngIf="instruction['TYPE'] === 'AddOrder'" class="text-muted">
             <i (click)="coreService.navToInventoryTab(instruction.workflowName, 'WORKFLOW');$event.stopPropagation();"

@@ -1894,39 +1894,42 @@ export class CoreService {
     }
   }
 
-  getHtml(exp: string, permission: any): string {
+  getHtml(exp: string, permission: any, name): string {
     const arr = exp.split(' ');
     let str = '';
     arr.forEach((item: string) => {
+      item = item.replace(/[{}[\]()]/g, '');
       item = item.trim();
-      let firstStr = '';
-      let lastStr = '';
-      if (item !== '&&' && item != '||') {
-        if (item.substring(0, 1) == ')' || item.substring(0, 1) == '(') {
-          firstStr = item.substring(0, 1);
-          item = item.substring(1, item.length - 1);
-        }
-        if (item.substring(0, 1) == '"' || item.substring(0, 1) == "'") {
-          if (item.substring(item.length - 1) == ')' || item.substring(item.length - 1) == '(') {
-            lastStr = item.substring(item.length - 1);
-            item = item.substring(0, item.length - 1);
+      if (item) {
+        let firstStr = '';
+        let lastStr = '';
+        if (item !== '&&' && item != '||') {
+          if (item.substring(0, 1) == ')' || item.substring(0, 1) == '(') {
+            firstStr = item.substring(0, 1);
+            item = item.substring(1, item.length - 1);
           }
-          let lastIndex = (item.substring(item.length - 1) == '"' || item.substring(item.length - 1) == "'") ? 1 : 0;
-          item = item.substring(1, item.length - lastIndex);
-        }
-
-        if (permission && permission.joc && permission.joc.inventory && permission.joc.inventory.view) {
-          str += '<i data-id-x="' + item + '" class="cursor fa fa-pencil text-hover-primary p-l-sm"></i>';
-          if (permission.currentController && permission.currentController.noticeBoards?.post) {
+          if (item.substring(0, 1) == '"' || item.substring(0, 1) == "'") {
+            if (item.substring(item.length - 1) == ')' || item.substring(item.length - 1) == '(') {
+              lastStr = item.substring(item.length - 1);
+              item = item.substring(0, item.length - 1);
+            }
+            let lastIndex = (item.substring(item.length - 1) == '"' || item.substring(item.length - 1) == "'") ? 1 : 0;
+            item = item.substring(1, item.length - lastIndex);
+          }
+          if (permission && permission.joc && permission.joc.inventory && permission.joc.inventory.view) {
+            str += '<i data-id-x="' + item + '" class="cursor fa fa-pencil text-hover-primary p-l-sm"></i>';
+          }
+          if (permission?.currentController && permission.currentController.noticeBoards?.post) {
             str += '<button class="btn-drop more-option-h" type="button">\n' +
               '<i data-id-m="' + item + '" class="fa fa-ellipsis-h"></i></button>' +
-              '<span class="ant-checkbox"><input data-id-n="' + item + '" type="checkbox" class="ant-checkbox-input" ><span class="ant-checkbox-inner"></span></span>';
+              '<span class="ant-checkbox" ><input data-id-a="chk_' + name + '" data-id-n="' + item + '" type="checkbox" class="ant-checkbox-input" ><span class="ant-checkbox-inner"></span></span>';
           }
+
+          str += firstStr + '<a class="text-hover-primary m-l-xs" data-id-y="' + item + '" >' + item + '</a>'
+          str += lastStr;
+        } else {
+          str += ' ' + item;
         }
-        str += firstStr + '<a class="text-hover-primary m-l-xs" data-id-y="' + item + '" >' + item + '</a>'
-        str += lastStr;
-      } else {
-        str += ' ' + item;
       }
     })
     return str;
@@ -2411,7 +2414,7 @@ export class CoreService {
       }
     }
 
-    function matchExactPosition(node: any, data: any): boolean{
+    function matchExactPosition(node: any, data: any): boolean {
       let flag = false;
       for (let i in node.children) {
         if (node.children[i].position == data.position) {
@@ -2431,6 +2434,7 @@ export class CoreService {
 
       return flag;
     }
+
     function checkAndUpdate(node: any, data: any) {
       let flag = false;
       for (let i in node.children) {
@@ -2457,7 +2461,7 @@ export class CoreService {
       if (!flag) {
         let check = false;
         for (let i in node.children) {
-          if(check){
+          if (check) {
             break;
           } else if (node.children[i].children?.length) {
             check = matchExactPosition(node.children[i], data);

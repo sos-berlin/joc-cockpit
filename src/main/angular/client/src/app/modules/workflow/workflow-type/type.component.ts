@@ -603,7 +603,7 @@ export class TypeComponent {
 
   @HostListener('window:click', ['$event'])
   onClicked(event): void {
-    if (event) {
+    if (event && this.isFirst) {
       if (event.target.getAttribute('data-id-x')) {
         this.coreService.navToInventoryTab(event.target.getAttribute('data-id-x'), 'NOTICEBOARD');
       } else if (event.target.getAttribute('data-id-y')) {
@@ -620,27 +620,28 @@ export class TypeComponent {
         }
       } else if (event.target.getAttribute('data-id-n')) {
         const id = event.target.getAttribute('data-id-n');
-        const elements: any = document.querySelectorAll(`[data-id-n="${id}"]`);
-        let isChecked = false;
-        elements.forEach(element => {
-          if(element.parentNode?.classList.contains('ant-checkbox-checked')){
-            isChecked = true;
-          }
-        });
-        if (isChecked) {
-          this.broadNames = this.broadNames.filter(item => item != id);
+        if(id && event.target.getAttribute('data-id-a') == `chk_${this.workflowObj.path}`) {
+          const elements: any = document.querySelectorAll(`[data-id-n="${id}"]`);
+          let isChecked = false;
           elements.forEach(element => {
-            element.parentNode?.classList?.remove('ant-checkbox-checked');
+            if (element.parentNode?.classList.contains('ant-checkbox-checked')) {
+              isChecked = true;
+            }
           });
+          if (isChecked) {
+            this.broadNames = this.broadNames.filter(item => item != id);
+            elements.forEach(element => {
+              element.parentNode?.classList?.remove('ant-checkbox-checked');
+            });
 
-        } else {
-          this.broadNames.push(id);
-          this.broadNames = [...new Set(this.broadNames)]
-          elements.forEach(element => {
-            element.parentNode?.classList?.add('ant-checkbox-checked');
-          });
+          } else {
+            this.broadNames.push(id);
+            this.broadNames = [...new Set(this.broadNames)]
+            elements.forEach(element => {
+              element.parentNode?.classList?.add('ant-checkbox-checked');
+            });
+          }
         }
-        console.log(this.broadNames)
       }
     }
   }
