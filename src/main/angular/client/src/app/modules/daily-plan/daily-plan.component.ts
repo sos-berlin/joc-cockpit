@@ -220,15 +220,15 @@ export class RemovePlanModalComponent {
       if (this.order.value) {
         if (this.order.value.length > 1) {
           this.order.value.forEach((value) => {
-            this.count = this.count + (value.cyclicOrder ? value.cyclicOrder.count : 1);
+            ++this.count;
           });
         } else {
-          this.count = (this.order.value[0].cyclicOrder ? this.order.value[0].cyclicOrder.count : 1);
+          this.count = 1;
         }
       }
     } else if (this.orders) {
       this.orders.forEach((order) => {
-        this.count = this.count + (order.cyclicOrder ? order.cyclicOrder.count : 1);
+        ++this.count;
       });
     }
   }
