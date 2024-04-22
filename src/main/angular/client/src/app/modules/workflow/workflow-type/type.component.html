@@ -185,7 +185,7 @@
         </div>
         <i (click)="collapse(instruction)" [ngClass]="{'fa-minus' : (instruction.show)}" class="fa fa-plus pr-2"></i>
         <span class="_600">
-          <span *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle' && instruction['TYPE'] !== 'Retry'">{{instruction['TYPE']}}</span>
+          <span *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle' && instruction['TYPE'] !== 'Retry'" [nz-tooltip]="(instruction['TYPE'] === 'ConsumeNotices') ? instruction.noticeBoardNames : ''">{{instruction['TYPE']}}</span>
           <span *ngIf="instruction['TYPE'] === 'Retry'" nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate" nzPopoverPlacement="right">{{instruction['TYPE']}}</span>
           <a (click)="showConfiguration(instruction);" *ngIf="instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Cycle'"
              class="cursor">{{instruction['TYPE']}}</a><span
@@ -349,7 +349,7 @@
         </span>
         <span (click)="openWorkflowDependency(instruction);"
               *ngIf="instruction['TYPE'] !== 'Job'"
-              [ngClass]="{'cursor' : (instruction['TYPE'] === 'PostNotices' || instruction['TYPE'] === 'AddOrder')}" [nz-tooltip]="instruction.question || instruction.message">
+              [ngClass]="{'cursor' : (instruction['TYPE'] === 'PostNotices' || instruction['TYPE'] === 'AddOrder')}" [nz-tooltip]="(instruction['TYPE'] === 'ExpectNotices') ? instruction.noticeBoardNames : (instruction.question || instruction.message)" >
           {{instruction['TYPE'] | translate}}
           <span *ngIf="instruction.label" class="p-l-xs  _400">(</span>
            <i *ngIf="instruction.label" class="text-muted _400">{{instruction.label}}</i>
