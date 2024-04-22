@@ -114,17 +114,20 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="isCluster && new">
-      <div class="col-sm-12 m-t" translate>PRIMARY_DIRECTOR</div>
+    <div *ngIf="isCluster && new" class="form-group row">
+      <div class="col-sm-12 m-t-xs" translate>PRIMARY_DIRECTOR</div>
     </div>
-    <div class="p-a b-a" *ngIf="isCluster && new">
+    <div *ngIf="isCluster && new" class="p-a b-a">
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.cluster.tooltip.subagentId' | translate" translate>agent.label.subagentId
+        <label [nz-tooltip]="'agent.cluster.tooltip.subagentId' | translate" class="col-sm-3 form-control-label"
+               translate>agent.label.subagentId
           <sup class="text-danger text-sm">*</sup>
         </label>
-        <div class="col-sm-8" [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}">
-          <input identifierValidation type="text" class="form-control" name="subagentId" #subagentId="ngModel"
-                 required [(ngModel)]="agent.subagentId" placeholder="{{'agent.placeholder.enterSubagentId' | translate}}">
+        <div [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}"
+             class="col-sm-8">
+          <input #subagentId="ngModel" [(ngModel)]="agent.subagentId" class="form-control" identifierValidation name="subagentId"
+                 placeholder="{{'agent.placeholder.enterSubagentId' | translate}}" required
+                 type="text">
           <div *ngIf="subagentId.invalid && (subagentId.dirty || subagentId.touched)"
                class="text-danger help-block">
             <div *ngIf="(subagentId.errors && subagentId.errors.required)">
@@ -135,19 +138,19 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.title' | translate" translate>common.label.title</label>
+        <label [nz-tooltip]="'agent.subagent.tooltip.title' | translate" class="col-sm-3 form-control-label" translate>common.label.title</label>
         <div class=" col-sm-8">
-          <input type="text" class="form-control" [(ngModel)]="agent.subtitle"
-                 [maxLength]="255" name="subtitle" placeholder="{{'common.placeholder.title' | translate}}">
+          <input [(ngModel)]="agent.subtitle" [maxLength]="255" class="form-control"
+                 name="subtitle" placeholder="{{'common.placeholder.title' | translate}}" type="text">
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.url' | translate" translate>agent.label.url
+        <label [nz-tooltip]="'agent.subagent.tooltip.url' | translate" class="col-sm-3 form-control-label" translate>agent.label.url
           <sup class="text-danger text-sm">*</sup>
         </label>
-        <div class="col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
-          <input type="url" class="form-control" name="url" #url="ngModel"
-                 required [(ngModel)]="agent.url" placeholder="http://host:port">
+        <div [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}" class="col-sm-8">
+          <input #url="ngModel" [(ngModel)]="agent.url" class="form-control" name="url"
+                 placeholder="http://host:port" required type="url">
           <div *ngIf="url.invalid && (url.dirty || url.touched)"
                class="text-danger help-block">
             <div *ngIf="(url.errors && url.errors.required)">
@@ -157,37 +160,82 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-3" [nz-tooltip]="'agent.cluster.tooltip.withGenerateSubagentCluster' | translate" translate>agent.label.withGenerateSubagentCluster</label>
+        <label [nz-tooltip]="'agent.cluster.tooltip.withGenerateSubagentCluster' | translate" class="col-sm-3"
+               translate>agent.label.withGenerateSubagentCluster</label>
         <div class="col-sm-6">
-          <label nz-checkbox [(ngModel)]="agent.withGenerateSubagentCluster"
-                 name="withGenerateSubagentCluster"></label>
+          <label [(ngModel)]="agent.withGenerateSubagentCluster" name="withGenerateSubagentCluster"
+                 nz-checkbox></label>
         </div>
       </div>
     </div>
-
-    <div class="row" *ngIf="!new && !isCluster">
-      <label class="col-sm-3" [nz-tooltip]="'agent.tooltip.hidden' | translate" translate>agent.label.hidden</label>
+    <div *ngIf="isCluster && new" class="form-group row">
+      <div class="col-sm-12 m-t-12" translate>SECONDARY_DIRECTOR</div>
+    </div>
+    <div *ngIf="isCluster && new" class="p-a b-a">
+      <div class="form-group row">
+        <label [nz-tooltip]="'agent.cluster.tooltip.subagentId' | translate" class="col-sm-3 form-control-label"
+               translate>agent.label.subagentId</label>
+        <div [ngClass]="{'has-error' : ((subagentId2.dirty || subagentId2.touched) && subagentId2.invalid)}"
+             class=" col-sm-8">
+          <input #subagentId2="ngModel" [(ngModel)]="agent.subagentId2" class="form-control" identifierValidation name="subagentId2"
+                 placeholder="{{'agent.placeholder.enterSubagentId' | translate}}" type="text">
+          <div *ngIf="subagentId2.invalid && (subagentId2.dirty || subagentId2.touched)"
+               class="text-danger help-block">
+            <div *ngIf="subagentId2.errors.invalidIdentifier" translate>common.message.invalid</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label [nz-tooltip]="'agent.subagent.tooltip.title' | translate" class="col-sm-3 form-control-label" translate>common.label.title</label>
+        <div class=" col-sm-8">
+          <input [(ngModel)]="agent.subtitle2" [maxLength]="255" class="form-control"
+                 name="subtitle2" placeholder="{{'common.placeholder.title' | translate}}" type="text">
+        </div>
+      </div>
+      <div class="row">
+        <label [nz-tooltip]="'agent.subagent.tooltip.url' | translate" class="col-sm-3 form-control-label" translate>agent.label.url
+          <sup *ngIf="agent.subagentId2 && agent.subagentId2.length > 0" class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : ((url2.dirty || url2.touched) && url2.invalid)}" class="col-sm-8">
+          <input #url2="ngModel" [(ngModel)]="agent.url2" [required]="(agent.subagentId2 && agent.subagentId2.length > 0) ? true : false" class="form-control"
+                 name="url2"
+                 placeholder="http://host:port" type="text">
+          <div *ngIf="url2.invalid && (url2.dirty || url2.touched)"
+               class="text-danger help-block">
+            <div *ngIf="(url2.errors && url2.errors.required)">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="!new && !isCluster" class="row">
+      <label [nz-tooltip]="'agent.tooltip.hidden' | translate" class="col-sm-3" translate>agent.label.hidden</label>
       <div class="col-sm-6">
-        <label nz-checkbox [(ngModel)]="agent.hidden" name="hidden"></label>
+        <label [(ngModel)]="agent.hidden" name="hidden" nz-checkbox></label>
       </div>
     </div>
     <ng-container *ngIf="isCluster && !new">
       <ng-container *ngFor="let item of agent.subagents; let i = index">
         <ng-container *ngIf="item.isDirector === 'PRIMARY_DIRECTOR'">
           <div class="form-group row">
-            <div class="col-sm-12 m-t">
+            <div class="col-sm-12 m-t-12">
               {{item.isDirector | translate}}
-               <a class="pos-abt r-12 t-n-xs text-hover-color"><i (click)="removeSubagent(agent.subagents, i);" class="fa fa-times text-18 m-t-sm text-muted"></i></a>
+              <a class="pos-abt r-12 t-n-xs text-hover-color"><i (click)="removeSubagent(agent.subagents, i);"
+                                                                 class="fa fa-times text-18 m-t-sm text-muted"></i></a>
             </div>
           </div>
           <div class="p-a b-a">
             <div class="form-group row">
-              <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.cluster.tooltip.subagentId' | translate" translate>agent.label.subagentId
-               <sup class="text-danger text-sm">*</sup>
+              <label [nz-tooltip]="'agent.cluster.tooltip.subagentId' | translate" class="col-sm-3 form-control-label"
+                     translate>agent.label.subagentId
+                <sup class="text-danger text-sm">*</sup>
               </label>
-              <div class=" col-sm-8" [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}">
-                <input identifierValidation required type="text" class="form-control" name="subagentId{{i}}" #subagentId="ngModel"
-                       [(ngModel)]="item.subagentId" placeholder="{{'agent.placeholder.enterSubagentId' | translate}}">
+              <div [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}"
+                   class=" col-sm-8">
+                <input #subagentId="ngModel" [(ngModel)]="item.subagentId" class="form-control" identifierValidation name="subagentId{{i}}"
+                       placeholder="{{'agent.placeholder.enterSubagentId' | translate}}"
+                       required type="text">
                 <div *ngIf="subagentId.invalid && (subagentId.dirty || subagentId.touched)"
                      class="text-danger help-block">
                   <div *ngIf="subagentId.errors.invalidIdentifier" translate>common.message.invalid</div>
@@ -195,19 +243,21 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.title' | translate" translate>common.label.title</label>
+              <label [nz-tooltip]="'agent.subagent.tooltip.title' | translate" class="col-sm-3 form-control-label"
+                     translate>common.label.title</label>
               <div class=" col-sm-8">
-                <input type="text" class="form-control" [(ngModel)]="item.title"
-                       [maxLength]="255" name="title{{i}}" placeholder="{{'common.placeholder.title' | translate}}">
+                <input [(ngModel)]="item.title" [maxLength]="255" class="form-control"
+                       name="title{{i}}" placeholder="{{'common.placeholder.title' | translate}}" type="text">
               </div>
             </div>
-            <div class="form-group row">
-              <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.url' | translate" translate>agent.label.url
-               <sup class="text-danger text-sm">*</sup>
+            <div class="row">
+              <label [nz-tooltip]="'agent.subagent.tooltip.url' | translate" class="col-sm-3 form-control-label"
+                     translate>agent.label.url
+                <sup class="text-danger text-sm">*</sup>
               </label>
-              <div class="col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
-                <input type="url" class="form-control" name="url{{i}}" #url="ngModel"
-                       required [(ngModel)]="item.url" placeholder="http://host:port">
+              <div [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}" class="col-sm-8">
+                <input #url="ngModel" [(ngModel)]="item.url" class="form-control" name="url{{i}}"
+                       placeholder="http://host:port" required type="url">
                 <div *ngIf="url.invalid && (url.dirty || url.touched)"
                      class="text-danger help-block">
                   <div *ngIf="(url.errors && url.errors.required)">
@@ -219,19 +269,49 @@
           </div>
         </ng-container>
       </ng-container>
-      <div class="m-t-sm row">
-<!--        <div class="col-md-12 m-b-sm" *ngIf="!isSecondary">
-          <a class="text-hover-primary" (click)="addSubagent(true)">
-            <i class="fa fa-plus p-r-xs"></i>
-            <span translate>agent.button.addSecondaryDirector</span>
-          </a>
+      <div class="form-group row">
+        <div class="col-sm-12 m-t-12" translate>SECONDARY_DIRECTOR</div>
+      </div>
+      <div class="p-a b-a">
+        <div class="form-group row">
+          <label [nz-tooltip]="'agent.cluster.tooltip.subagentId' | translate" class="col-sm-3 form-control-label"
+                 translate>agent.label.subagentId</label>
+          <div [ngClass]="{'has-error' : ((subagentIdSec.dirty || subagentIdSec.touched) && subagentIdSec.invalid)}"
+               class=" col-sm-8">
+            <input #subagentIdSec="ngModel" [(ngModel)]="secondaryDirector.subagentId" class="form-control" identifierValidation name="subagentIdSec"
+                   placeholder="{{'agent.placeholder.enterSubagentId' | translate}}"
+                   type="text">
+            <div *ngIf="subagentIdSec.invalid && (subagentIdSec.dirty || subagentIdSec.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="subagentIdSec.errors.invalidIdentifier" translate>common.message.invalid</div>
+            </div>
+          </div>
         </div>
-        <div class="col-md-12">
-          <a class="text-hover-primary" (click)="addSubagent()">
-            <i class="fa fa-plus p-r-xs"></i>
-            <span translate>agent.button.addSubagent</span>
-          </a>
-        </div>-->
+        <div class="form-group row">
+          <label [nz-tooltip]="'agent.subagent.tooltip.title' | translate" class="col-sm-3 form-control-label"
+                 translate>common.label.title</label>
+          <div class=" col-sm-8">
+            <input [(ngModel)]="secondaryDirector.title" [maxLength]="255" class="form-control"
+                   name="subtitle2" placeholder="{{'common.placeholder.title' | translate}}" type="text">
+          </div>
+        </div>
+        <div class="row">
+          <label [nz-tooltip]="'agent.subagent.tooltip.url' | translate" class="col-sm-3 form-control-label" translate>agent.label.url
+            <sup *ngIf="secondaryDirector.subagentId && secondaryDirector.subagentId.length > 0"
+                 class="text-danger text-sm">*</sup>
+          </label>
+          <div [ngClass]="{'has-error' : ((suburl.dirty || suburl.touched) && suburl.invalid)}" class="col-sm-8">
+            <input #suburl="ngModel" [(ngModel)]="secondaryDirector.url" [required]="(secondaryDirector.subagentId && secondaryDirector.subagentId.length > 0) ? true : false" class="form-control"
+                   name="suburl"
+                   placeholder="http://host:port" type="text">
+            <div *ngIf="suburl.invalid && (suburl.dirty || suburl.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="(suburl.errors && suburl.errors.required)">
+                <div translate>common.message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </ng-container>
   </div>
@@ -241,7 +321,7 @@
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
   </div>
