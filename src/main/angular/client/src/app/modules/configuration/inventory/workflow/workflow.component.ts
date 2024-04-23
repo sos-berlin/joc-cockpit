@@ -7044,9 +7044,11 @@ export class WorkflowComponent {
               if (sourceCell.attr('src') && sourceCell.attr('src').match(/paste/) && result == 'valid') {
                 if (cell.value.tagName === 'Connection') {
                   let state = graph.getView().getState(cell);
-                  this.currentHighlight = new mxCellHighlight(graph, 'green');
-                  this.currentHighlight.highlight(state);
-                  state.shape.redraw();
+                  if(state) {
+                    this.currentHighlight = new mxCellHighlight(graph, 'green');
+                    this.currentHighlight.highlight(state);
+                    state.shape.redraw();
+                  }
                 } else if (self.workflowService.checkClosingCell(cell.value.tagName) || cell.value.tagName === 'Process') {
                   return;
                 }
@@ -7063,9 +7065,11 @@ export class WorkflowComponent {
               if (result == 'valid') {
                 if (cell.value.tagName === 'Connection') {
                   let state = graph.getView().getState(cell);
-                  this.currentHighlight = new mxCellHighlight(graph, 'green');
-                  this.currentHighlight.highlight(state);
-                  state.shape.redraw();
+                  if(state) {
+                    this.currentHighlight = new mxCellHighlight(graph, 'green');
+                    this.currentHighlight.highlight(state);
+                    state.shape.redraw();
+                  }
                   dropTargetForPaste = cell;
                   graph.setSelectionCell(cell);
                   self.selectedNode = null;
@@ -10770,6 +10774,10 @@ export class WorkflowComponent {
      * Function: Rearrange a cell to a different position in the workflow
      */
     function rearrangeCell(obj): void {
+      let selectedImg = $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child');
+      if(selectedImg && selectedImg[0]){
+        $(selectedImg[0]).removeClass('mxToolbarModeSelected')
+      }
       const connection = obj.target;
       let droppedCells = obj.cells;
       if (droppedCells.length > 1 && connection.parent && (connection.parent.id == 1 || connection.parent.id == '1')) {
