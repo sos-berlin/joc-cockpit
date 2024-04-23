@@ -994,6 +994,7 @@ export class WorkflowComponent {
   }
 
   private getWorkflowList(obj): void {
+    this.broadNames.clear();
     if (obj.folders && obj.folders.length === 1) {
       this.currentPath = obj.folders[0].folder;
     }
