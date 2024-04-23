@@ -1,4 +1,4 @@
-<div *ngIf="broadNames.length > 0" class="pos-abt post-btn" style="right: 16px;top:12px">
+<div *ngIf="broadNames.length > 0 && !multiSelect" class="pos-abt post-btn" style="right: 16px;top:12px">
   <button (click)="postAllNotices()" class="btn btn-grey btn-sm m-l-12"><i
     class="fa fa-sticky-note-o"></i>&nbsp; {{'resource.board.button.postAll' | translate}}
   </button>

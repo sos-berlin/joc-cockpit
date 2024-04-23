@@ -14,7 +14,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}" class="inline m-b-xs">
+          <div [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0) || broadNames.size > 0}" class="inline m-b-xs">
             <div class="btn-group dropdown">
               <button (click)="openSelectbox()" [disabled]="savedFilter.selected"
                       [ngClass]="{ 'btn-primary' : workflowFilters.filter.agentNames?.length > 0}"
@@ -75,7 +75,7 @@
               </nz-dropdown-menu>
             </div>
           </div>
-          <div [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}" class="inline m-b-xs">
+          <div [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0) || broadNames.size > 0}" class="inline m-b-xs">
             <div class="btn-group dropdown">
               <button [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
                       nzTrigger="click" type="button">
@@ -170,6 +170,11 @@
             <button (click)="resumeAll()" [disabled]="!object.isResume" class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
                                                            translate>order.button.resume</span>
+            </button>
+          </div>
+          <div *ngIf="broadNames.size > 0" class="show-block">
+            <button (click)="postAllNotices()" class="btn btn-grey btn-sm m-l-12"><i
+              class="fa fa-sticky-note-o"></i>&nbsp; {{'resource.board.button.postAll' | translate}}
             </button>
           </div>
         </div>
