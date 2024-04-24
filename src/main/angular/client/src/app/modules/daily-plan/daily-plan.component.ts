@@ -754,7 +754,8 @@ export class DailyPlanComponent {
     isCancel: false,
     isModifyStartTime: false,
     isModify: false,
-    isPlanned: false
+    isPlanned: false,
+    isLetRun: false
   };
 
   filterBtn: any = [
@@ -1071,6 +1072,15 @@ export class DailyPlanComponent {
       this.searchInResult();
     }
   }
+
+  filterByOrders(type): void {
+    if (this.dailyPlanFilters.filter.filterBy !== type) {
+      this.dailyPlanFilters.filter.filterBy = type;
+      this.object.isLetRun = this.dailyPlanFilters.filter.filterBy === 'ONETIMEORDERS';
+      this.searchInResult();
+    }
+  }
+
 
   /* ------------- Projections----------------- **/
 
@@ -1864,6 +1874,7 @@ export class DailyPlanComponent {
     }
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
     this.checkState(this.object, this.object.mapOfCheckedId);
+    this.object.isLetRun = this.dailyPlanFilters.filter.filterBy === 'ONETIMEORDERS';
   }
 
   checkOrderTemplate(template): void {
@@ -2186,9 +2197,34 @@ export class DailyPlanComponent {
           }
         }
       }
+      if (this.dailyPlanFilters.filter.filterBy) {
+
+        if (this.dailyPlanFilters.filter.filterBy === 'CYCLICORDER') {
+          this.planOrders.forEach(group => {
+            group.value = group.value.filter(order => order.cyclicOrder);
+          });
+        } else if (this.dailyPlanFilters.filter.filterBy === 'ONETIMEORDERS') {
+          this.planOrders.forEach(group => {
+            group.value = group.value.filter(order => !order.cyclicOrder);
+          });
+        }
+
+        this.planOrders = this.planOrders.filter(group => group.value && group.value.length > 0);
+      }
+
+
       this.setStateToParentObject();
+    }else if (this.dailyPlanFilters.filter.filterBy) {
+      if (this.dailyPlanFilters.filter.filterBy === 'CYCLICORDER') {
+
+        this.planOrders = filterData.filter(order => order.cyclicOrder);
+
+      } else if (this.dailyPlanFilters.filter.filterBy === 'ONETIMEORDERS') {
+
+        this.planOrders = filterData.filter(order => !order.cyclicOrder);
+      }
     } else {
-      this.planOrders = filterData;
+        this.planOrders = filterData;
     }
     this.totalOrders = 0;
     this.totalFinishedOrders = 0;
@@ -2413,7 +2449,8 @@ export class DailyPlanComponent {
       isCancel: false,
       isModify: false,
       isModifyStartTime: false,
-      isPlanned: false
+      isPlanned: false,
+      isLetRun: false
     };
     if (!flag) {
       this.isCalendarClick = false;
@@ -3017,4 +3054,39 @@ export class DailyPlanComponent {
       this.loadOrderPlan();
     }
   }
+
+  continueOrder(orderId?) {
+    if (orderId) {
+      this.coreService.post('orders/continue', {
+        controllerId: this.schedulerIds.selected,
+        orderIds: [orderId]
+      }).subscribe({
+        next: (res: any) => {
+          this.resetCheckBox()
+        },
+        error: () => {
+        }
+      });
+    } else {
+      const orderIdsToContinue = this.planOrders
+        .filter(value => value.state._text === 'SUBMITTED' && !value.cyclicOrder)
+        .map(order => order.orderId);
+
+      if (orderIdsToContinue.length > 0) {
+        this.coreService.post('orders/continue', {
+          controllerId: this.schedulerIds.selected,
+          orderIds: orderIdsToContinue
+        }).subscribe({
+          next: (res: any) => {
+            this.resetCheckBox()
+          },
+          error: () => {
+          }
+        });
+      } else {
+        console.log('No orders to continue');
+      }
+    }
+  }
+
 }
