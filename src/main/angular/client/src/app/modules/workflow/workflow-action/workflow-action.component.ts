@@ -374,7 +374,9 @@ export class AddOrderModalComponent {
                 val.default = (val.default === 'true' || val.default === true);
               }
             }
-            val.list = list;
+            if (this.modalData.order) {
+              val.list = list;
+            }
           }
         } else {
           this.isForkList = true;
