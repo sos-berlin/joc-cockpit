@@ -4524,7 +4524,9 @@ export class WorkflowComponent {
           } else if (val.default) {
             delete val.listParameters;
             if (val.type === 'String') {
-              this.coreService.removeSlashToString(val, 'default');
+              if(val.default != "\"\""){
+                this.coreService.removeSlashToString(val, 'default');
+              }
             } else if (val.type === 'Boolean') {
               val.default = (val.default === true || val.default === 'true');
             }
@@ -5931,11 +5933,7 @@ export class WorkflowComponent {
                 json.instructions[x].instructions.push(obj);
               } else {
                 if (json.instructions[x].TYPE == 'If') {
-                  if (!json.instructions[x].then) {
-                    json.instructions[x].then = {
-                      instructions: [obj]
-                    }
-                  } else {
+
                     if (edge.getAttribute('displayLabel') === 'then') {
                       if (!json.instructions[x].then) {
                         json.instructions[x].then = {
@@ -5951,7 +5949,7 @@ export class WorkflowComponent {
                     } else if (edge.getAttribute('displayLabel') === 'endIf') {
                       json.instructions.push(obj);
                     }
-                  }
+
                 } else if (json.instructions[x].TYPE == 'Fork') {
                   if (!json.instructions[x].branches) {
                     json.instructions[x].branches = [];
