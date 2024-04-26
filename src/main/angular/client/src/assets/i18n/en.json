@@ -808,7 +808,7 @@
     "label.removeOrders": "Remove Orders",
     "label.submissionsDelete": "Delete Daily Plan",
     "label.cyclicOrder": "Cyclic Order",
-    "label.cyclicOrders": "Cyclic Order",
+    "label.cyclicOrders": "Cyclic Orders",
     "label.begin": "Begin",
     "label.end": "End",
     "label.submitOrderByWorkflow": "Submit Order for Workflow",
