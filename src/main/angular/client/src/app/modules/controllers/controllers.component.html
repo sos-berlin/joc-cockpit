@@ -45,6 +45,9 @@
               <button (click)="disableAll()" *ngIf="object.mapOfCheckedId2.size == 0" class="btn btn-grey btn-sm m-l-12"
                       translate>agent.button.disable
               </button>
+              <button (click)="enableAll()" *ngIf="object.mapOfCheckedId2.size == 0" class="btn btn-grey btn-sm m-l-12"
+                      translate>agent.button.enable
+              </button>
               <button (click)="hideAll()" *ngIf="object.mapOfCheckedId2.size == 0" class="btn btn-grey btn-sm m-l-12"
                       translate>agent.button.hide
               </button>
@@ -59,6 +62,8 @@
             <div *ngIf="object.mapOfCheckedId3.size>0 && (object.mapOfCheckedId.size == 0 && object.mapOfCheckedId2.size == 0)"
                  class="show-inline">
               <button (click)="disableAllSubAgent()" class="btn btn-grey btn-sm m-l-12" translate>agent.button.disable
+              </button>
+              <button (click)="enableAllSubAgent()" class="btn btn-grey btn-sm m-l-12" translate>agent.button.enable
               </button>
               <button (click)="resetAllSubagent()" class="btn btn-grey btn-sm m-l-12" translate>agent.button.reset
               </button>

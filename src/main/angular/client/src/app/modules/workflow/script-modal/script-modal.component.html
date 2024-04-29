@@ -25,7 +25,7 @@
           </div>
         </div>
         <div class="m-t-md" *ngIf="type === 'ExpectNotices'">
-           <span [innerHTML]="coreService.getHtml(noticeBoardNames, permission) | safeHtml"></span>
+           <span [innerHTML]="coreService.getHtml(noticeBoardNames, permission, workflowPath) | safeHtml"></span>
         </div>
       </div>
     </div>

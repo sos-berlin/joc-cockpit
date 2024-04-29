@@ -18,6 +18,7 @@ import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
 import {ExcelService} from '../../services/excel.service';
 import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
+import {PostModalComponent} from "../resource/board/board.component";
 
 
 declare const $: any;
@@ -546,11 +547,14 @@ export class WorkflowComponent {
   data = [];
   sideBar: any = {};
   reloadState = 'no';
+  broadNames = new Map();
 
   objectType = 'WORKFLOW';
+  clearCheckboxes = false;
   isPathDisplay = true;
   numOfAllOrders: any = {};
   listOfAgents: any = [];
+
   object = {
     mapOfCheckedId: new Map(),
     checked: false,
@@ -558,7 +562,6 @@ export class WorkflowComponent {
     isSuspend: false,
     isResume: false,
   };
-
 
   searchTag = {
     loading: false,
@@ -717,6 +720,40 @@ export class WorkflowComponent {
 
   scrollEnd(e): void {
     this.workflowFilters.scrollTop = $(e.target).scrollTop();
+  }
+
+  bulkUpdate(data): void {
+    this.broadNames.set(data.key, data.list);
+    if (data.list.length == 0) {
+      this.broadNames.delete(data.key);
+    }
+  }
+
+  postAllNotices(): void {
+    let paths = [];
+    this.broadNames.forEach(notice => {
+      paths = paths.concat(notice);
+    })
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: PostModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        paths: [...new Set(paths)],
+        controllerId: this.schedulerIds.selected,
+        preferences: this.preferences
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.clearCheckboxes = !this.clearCheckboxes;
+        this.broadNames.clear();
+      }
+    });
+
   }
 
   changedHandler(obj: any): void {
@@ -957,6 +994,7 @@ export class WorkflowComponent {
   }
 
   private getWorkflowList(obj): void {
+    this.broadNames.clear();
     if (obj.folders && obj.folders.length === 1) {
       this.currentPath = obj.folders[0].folder;
     }

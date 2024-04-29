@@ -111,7 +111,7 @@
               </ng-template>
             </span>
           </span>
-          <span *ngIf="(instruction.TYPE === 'ConsumeNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"
+          <span *ngIf="(instruction.TYPE === 'ConsumeNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission, configuration.path) | safeHtml"
                 class="text-muted"></span>
         </span>
 

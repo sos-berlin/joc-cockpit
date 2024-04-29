@@ -3575,7 +3575,7 @@ export class WorkflowComponent {
     this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.fit();
-      this.workflowService.center(this.editor.graph);
+      this.editor.graph.center(true, true, 0.5, 0.1);
     }
   }
 
@@ -4445,7 +4445,9 @@ export class WorkflowComponent {
           } else if (val.default) {
             delete val.listParameters;
             if (val.type === 'String') {
-              this.coreService.removeSlashToString(val, 'default');
+              if(val.default != "\"\""){
+                this.coreService.removeSlashToString(val, 'default');
+              }
             } else if (val.type === 'Boolean') {
               val.default = (val.default === true || val.default === 'true');
             }
@@ -5287,6 +5289,7 @@ export class WorkflowComponent {
   }
 
   private updateWorkflow(graph, jobMap): void {
+    this.selectedNode =  null;
     const scrollValue: any = {};
     const element = document.getElementById('graph');
 
@@ -5851,11 +5854,7 @@ export class WorkflowComponent {
                 json.instructions[x].instructions.push(obj);
               } else {
                 if (json.instructions[x].TYPE == 'If') {
-                  if (!json.instructions[x].then) {
-                    json.instructions[x].then = {
-                      instructions: [obj]
-                    }
-                  } else {
+
                     if (edge.getAttribute('displayLabel') === 'then') {
                       if (!json.instructions[x].then) {
                         json.instructions[x].then = {
@@ -5869,13 +5868,9 @@ export class WorkflowComponent {
                         };
                       }
                     } else if (edge.getAttribute('displayLabel') === 'endIf') {
-                      if (!json.instructions[x].else) {
-                        json.instructions[x].else = {
-                          instructions: [obj]
-                        };
-                      }
+                      json.instructions.push(obj);
                     }
-                  }
+
                 } else if (json.instructions[x].TYPE == 'Fork') {
                   if (!json.instructions[x].branches) {
                     json.instructions[x].branches = [];
@@ -6968,9 +6963,11 @@ export class WorkflowComponent {
               if (sourceCell.attr('src') && sourceCell.attr('src').match(/paste/) && result == 'valid') {
                 if (cell.value.tagName === 'Connection') {
                   let state = graph.getView().getState(cell);
-                  this.currentHighlight = new mxCellHighlight(graph, 'green');
-                  this.currentHighlight.highlight(state);
-                  state.shape.redraw();
+                  if(state) {
+                    this.currentHighlight = new mxCellHighlight(graph, 'green');
+                    this.currentHighlight.highlight(state);
+                    state.shape.redraw();
+                  }
                 } else if (self.workflowService.checkClosingCell(cell.value.tagName) || cell.value.tagName === 'Process') {
                   return;
                 }
@@ -6987,9 +6984,11 @@ export class WorkflowComponent {
               if (result == 'valid') {
                 if (cell.value.tagName === 'Connection') {
                   let state = graph.getView().getState(cell);
-                  this.currentHighlight = new mxCellHighlight(graph, 'green');
-                  this.currentHighlight.highlight(state);
-                  state.shape.redraw();
+                  if(state) {
+                    this.currentHighlight = new mxCellHighlight(graph, 'green');
+                    this.currentHighlight.highlight(state);
+                    state.shape.redraw();
+                  }
                   dropTargetForPaste = cell;
                   graph.setSelectionCell(cell);
                   self.selectedNode = null;
@@ -10694,6 +10693,10 @@ export class WorkflowComponent {
      * Function: Rearrange a cell to a different position in the workflow
      */
     function rearrangeCell(obj): void {
+      let selectedImg = $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child');
+      if(selectedImg && selectedImg[0]){
+        $(selectedImg[0]).removeClass('mxToolbarModeSelected')
+      }
       const connection = obj.target;
       let droppedCells = obj.cells;
       if (droppedCells.length > 1 && connection.parent && (connection.parent.id == 1 || connection.parent.id == '1')) {
