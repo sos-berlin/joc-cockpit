@@ -368,7 +368,7 @@ export class AddOrderModalComponent {
                 });
               }
             } else if (val.default) {
-              if (val.type === 'String') {
+              if (val.type === 'String' && val.default != "\"\"") {
                 this.coreService.removeSlashToString(val, 'default');
               } else if (val.type === 'Boolean') {
                 val.default = (val.default === 'true' || val.default === true);
