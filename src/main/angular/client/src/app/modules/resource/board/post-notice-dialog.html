@@ -1,7 +1,8 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>resource.board.button.post</span>
-    {{board.path}}
+    <span *ngIf="board" translate>resource.board.button.post</span>
+    <span *ngIf="!board" translate>resource.board.button.postAll</span>
+    {{board?.path}}
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>

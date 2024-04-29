@@ -210,10 +210,15 @@ export class StepGuideComponent {
 })
 export class InfoMenuComponent {
   @Input() isHeader: boolean = false;
-
-  constructor(private modal: NzModalService) {
+  versionData: any = {};
+  constructor(private modal: NzModalService, private coreService: CoreService) {
   }
 
+  ngOnInit(): void {
+      this.coreService.get('version.json').subscribe((data) => {
+        this.versionData = data;
+      });
+  }
   about(): any {
     this.modal.create({
       nzTitle: undefined,

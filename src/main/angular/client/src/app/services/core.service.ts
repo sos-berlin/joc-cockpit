@@ -219,6 +219,7 @@ export class CoreService {
     };
     this.tabs._daliyPlan.filter.status = 'ALL';
     this.tabs._daliyPlan.filter.groupBy = '';
+    this.tabs._daliyPlan.filter.filterBy = '';
     this.tabs._daliyPlan.filter.late = false;
     this.tabs._daliyPlan.filter.sortBy = 'plannedStartTime';
     this.tabs._daliyPlan.reverse = true;
@@ -1894,39 +1895,45 @@ export class CoreService {
     }
   }
 
-  getHtml(exp: string, permission: any): string {
+  getHtml(exp: string, permission: any, name): string {
+    exp = exp.replace(/'(&&|\|\|)/g, "' $1");
+    exp = exp.replace(/"(&&|\|\|)/g, "' $1");
+
     const arr = exp.split(' ');
     let str = '';
     arr.forEach((item: string) => {
+      item = item.replace(/[{}[\]()]/g, '');
       item = item.trim();
-      let firstStr = '';
-      let lastStr = '';
-      if (item !== '&&' && item != '||') {
-        if (item.substring(0, 1) == ')' || item.substring(0, 1) == '(') {
-          firstStr = item.substring(0, 1);
-          item = item.substring(1, item.length - 1);
-        }
-        if (item.substring(0, 1) == '"' || item.substring(0, 1) == "'") {
-          if (item.substring(item.length - 1) == ')' || item.substring(item.length - 1) == '(') {
-            lastStr = item.substring(item.length - 1);
-            item = item.substring(0, item.length - 1);
+      if (item) {
+        let firstStr = '';
+        let lastStr = '';
+        if (item !== '&&' && item != '||') {
+          if (item.substring(0, 1) == ')' || item.substring(0, 1) == '(') {
+            firstStr = item.substring(0, 1);
+            item = item.substring(1, item.length - 1);
           }
-          let lastIndex = (item.substring(item.length - 1) == '"' || item.substring(item.length - 1) == "'") ? 1 : 0;
-          item = item.substring(1, item.length - lastIndex);
-        }
-
-        if (permission && permission.joc && permission.joc.inventory && permission.joc.inventory.view) {
-          str += '<i data-id-x="' + item + '" class="cursor fa fa-pencil text-hover-primary p-l-sm"></i>';
-          if (permission.currentController && permission.currentController.noticeBoards?.post) {
+          if (item.substring(0, 1) == '"' || item.substring(0, 1) == "'") {
+            if (item.substring(item.length - 1) == ')' || item.substring(item.length - 1) == '(') {
+              lastStr = item.substring(item.length - 1);
+              item = item.substring(0, item.length - 1);
+            }
+            let lastIndex = (item.substring(item.length - 1) == '"' || item.substring(item.length - 1) == "'") ? 1 : 0;
+            item = item.substring(1, item.length - lastIndex);
+          }
+          if (permission && permission.joc && permission.joc.inventory && permission.joc.inventory.view) {
+            str += '<i data-id-x="' + item + '" class="cursor fa fa-pencil text-hover-primary p-l-sm"></i>';
+          }
+          if (permission?.currentController && permission.currentController.noticeBoards?.post) {
             str += '<button class="btn-drop more-option-h" type="button">\n' +
               '<i data-id-m="' + item + '" class="fa fa-ellipsis-h"></i></button>' +
-              '<span class="ant-checkbox"><input data-id-n="' + item + '" type="checkbox" class="ant-checkbox-input" ><span class="ant-checkbox-inner"></span></span>';
+              '<span class="ant-checkbox" ><input data-id-a="chk_' + name + '" data-id-n="' + item + '" type="checkbox" class="ant-checkbox-input" ><span class="ant-checkbox-inner"></span></span>';
           }
+
+          str += firstStr + '<a class="text-hover-primary m-l-xs" data-id-y="' + item + '" >' + item + '</a>'
+          str += lastStr;
+        } else {
+          str += ' ' + item;
         }
-        str += firstStr + '<a class="text-hover-primary m-l-xs" data-id-y="' + item + '" >' + item + '</a>'
-        str += lastStr;
-      } else {
-        str += ' ' + item;
       }
     })
     return str;
@@ -2121,6 +2128,12 @@ export class CoreService {
           flag: false
         };
         for (let i in nodes) {
+          if(parentNode){
+            if(nodes[i].title === parentNode.title && nodes[i].position === parentNode.position){
+              obj.flag = true;
+              continue;
+            }
+          }
           let _tempArr = item.position.split('/');
           _tempArr.splice(_tempArr.length - 1, 1);
           if ((lastPos && (lastPos.match('then') || lastPos.match('else')) && (item.job || item.expectNotices || item.postNotice || item.consumeNotices || item.moved || item.attached || item.cycle || item.question))) {
@@ -2141,6 +2154,7 @@ export class CoreService {
             }
           } else {
             if (nodes[i].position == item.position || (nodes[i].position.indexOf(':') > -1 && nodes[i].position.substring(0, nodes[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
+
               if (parentNode && parentNode.children) {
                 parentNode.children.push(data);
                 nodes.push(parentNode);
@@ -2180,6 +2194,11 @@ export class CoreService {
                         }
                         flag = true;
                         break;
+                      } else if(nodes[prop].position1 && data.title == 'Job' && nodes[prop].position1 == data.position.substring(0, data.position.lastIndexOf(':'))) {
+                        if (nodes[prop].children) {
+                          nodes[prop].children.push(data)
+                        }
+                        flag = true;
                       }
                     }
                     if (!flag) {
@@ -2411,7 +2430,7 @@ export class CoreService {
       }
     }
 
-    function matchExactPosition(node: any, data: any): boolean{
+    function matchExactPosition(node: any, data: any): boolean {
       let flag = false;
       for (let i in node.children) {
         if (node.children[i].position == data.position) {
@@ -2431,6 +2450,7 @@ export class CoreService {
 
       return flag;
     }
+
     function checkAndUpdate(node: any, data: any) {
       let flag = false;
       for (let i in node.children) {
@@ -2457,7 +2477,7 @@ export class CoreService {
       if (!flag) {
         let check = false;
         for (let i in node.children) {
-          if(check){
+          if (check) {
             break;
           } else if (node.children[i].children?.length) {
             check = matchExactPosition(node.children[i], data);

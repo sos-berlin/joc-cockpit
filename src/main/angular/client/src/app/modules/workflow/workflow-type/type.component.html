@@ -1,4 +1,4 @@
-<div *ngIf="broadNames.length > 0" class="pos-abt post-btn" style="right: 16px;top:12px">
+<div *ngIf="broadNames.length > 0 && !multiSelect" class="pos-abt post-btn" style="right: 16px;top:12px">
   <button (click)="postAllNotices()" class="btn btn-grey btn-sm m-l-12"><i
     class="fa fa-sticky-note-o"></i>&nbsp; {{'resource.board.button.postAll' | translate}}
   </button>
@@ -157,7 +157,7 @@
         </div>
         <i (click)="collapse(instruction)" [ngClass]="{'fa-minus' : (instruction.show)}" class="fa fa-plus pr-2"></i>
         <span class="_600">
-          <span *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle' && instruction['TYPE'] !== 'Retry'">{{instruction['TYPE']}}</span>
+          <span *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle' && instruction['TYPE'] !== 'Retry'" [nz-tooltip]="(instruction['TYPE'] === 'ConsumeNotices') ? instruction.noticeBoardNames : ''">{{instruction['TYPE']}}</span>
           <span *ngIf="instruction['TYPE'] === 'Retry'" nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate" nzPopoverPlacement="right">{{instruction['TYPE']}}</span>
           <a (click)="showConfiguration(instruction);" *ngIf="instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Cycle'"
              class="cursor">{{instruction['TYPE']}}</a><span
@@ -182,7 +182,7 @@
               </ng-template>
             </span>
           </span>
-          <span *ngIf="(instruction['TYPE'] === 'ConsumeNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"
+          <span *ngIf="(instruction['TYPE'] === 'ConsumeNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission, workflowObj.path) | safeHtml"
                 class="text-muted"></span>
         </span>
         <i *ngIf="instruction.state && instruction.state._text" class="p-l-xxs p-r-xs">-</i>
@@ -307,7 +307,7 @@
         </span>
         <span (click)="openWorkflowDependency(instruction);"
               *ngIf="instruction['TYPE'] !== 'Job'"
-              [ngClass]="{'cursor' : (instruction['TYPE'] === 'PostNotices' || instruction['TYPE'] === 'AddOrder')}" [nz-tooltip]="instruction.question || instruction.message">
+              [ngClass]="{'cursor' : (instruction['TYPE'] === 'PostNotices' || instruction['TYPE'] === 'AddOrder')}" [nz-tooltip]="(instruction['TYPE'] === 'ExpectNotices') ? instruction.noticeBoardNames : (instruction.question || instruction.message)" >
           {{instruction['TYPE'] | translate}}
           <span *ngIf="instruction.label" class="p-l-xs  _400">(</span>
            <i *ngIf="instruction.label" class="text-muted _400">{{instruction.label}}</i>
@@ -323,7 +323,7 @@
                  class="text-hover-primary">{{board}}</a>
             </span>
           </span>
-          <span *ngIf="(instruction['TYPE'] === 'ExpectNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission) | safeHtml"
+          <span *ngIf="(instruction['TYPE'] === 'ExpectNotices') && instruction.noticeBoardNames" [innerHTML]="coreService.getHtml(instruction.noticeBoardNames, permission, workflowObj.path) | safeHtml"
                 class="text-muted"></span>
           <span *ngIf="instruction['TYPE'] === 'AddOrder'" class="text-muted">
             <i (click)="coreService.navToInventoryTab(instruction.workflowName, 'WORKFLOW');$event.stopPropagation();"
