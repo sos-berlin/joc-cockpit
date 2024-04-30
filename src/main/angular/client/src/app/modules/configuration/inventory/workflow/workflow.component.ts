@@ -8801,11 +8801,18 @@ export class WorkflowComponent {
                     self.selectedNode.data.schedule.admissionTimeScheme.periods = self.workflowService.convertListToAdmissionTime(self.selectedNode.data.periodList);
                   }
                   if (!self.selectedNode.isEdit) {
-                    self.selectedNode.obj.schedule.schemes.push({
-                      repeat: self.workflowService.convertRepeatObject(self.selectedNode.repeatObject),
-                      admissionTimeScheme: self.selectedNode.data.schedule.admissionTimeScheme
+                    const admissionTimeSchemeExists = self.selectedNode.obj.schedule.schemes.some(scheme => {
+                      return JSON.stringify(scheme.admissionTimeScheme) === JSON.stringify(self.selectedNode.data.schedule.admissionTimeScheme);
                     });
-                  } else {
+
+                    if (!admissionTimeSchemeExists) {
+                      self.selectedNode.obj.schedule.schemes.push({
+                        repeat: self.workflowService.convertRepeatObject(self.selectedNode.repeatObject),
+                        admissionTimeScheme: self.selectedNode.data.schedule.admissionTimeScheme
+                      });
+                    }
+                  }
+                  else {
                     if (self.selectedNode.repeatObject.index || self.selectedNode.repeatObject.index === 0) {
                       self.selectedNode.obj.schedule.schemes[self.selectedNode.repeatObject.index].repeat = self.workflowService.convertRepeatObject(self.selectedNode.repeatObject);
                     }
