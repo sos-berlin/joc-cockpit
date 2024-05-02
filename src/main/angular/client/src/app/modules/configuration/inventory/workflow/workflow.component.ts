@@ -5851,26 +5851,35 @@ export class WorkflowComponent {
           for (let x = 0; x < json.instructions.length; x++) {
             if (json.instructions[x].id == nodeId) {
               if (json.instructions[x].instructions) {
-                json.instructions[x].instructions.push(obj);
+                if (!json.instructions[x].then) {
+                  json.instructions.push(obj);
+                }else{
+                  json.instructions[x].instructions.push(obj);
+                }
               } else {
                 if (json.instructions[x].TYPE == 'If') {
+                      if (edge.getAttribute('displayLabel') === 'then') {
+                        if (!json.instructions[x].then) {
+                          json.instructions[x].then = {
+                            instructions: [obj]
+                          };
+                        }
+                      } else if (edge.getAttribute('displayLabel') === 'else') {
+                        if (!json.instructions[x].else) {
+                          json.instructions[x].else = {
+                            instructions: [obj]
+                          };
+                        }
+                      } else if (edge.getAttribute('displayLabel') === 'endIf') {
+                        if (!json.instructions[x].else) {
+                          json.instructions[x].else = {
+                            instructions: [obj]
+                          };
+                        } else {
+                          json.instructions.push(obj);
 
-                    if (edge.getAttribute('displayLabel') === 'then') {
-                      if (!json.instructions[x].then) {
-                        json.instructions[x].then = {
-                          instructions: [obj]
-                        };
-                      }
-                    } else if (edge.getAttribute('displayLabel') === 'else') {
-                      if (!json.instructions[x].else) {
-                        json.instructions[x].else = {
-                          instructions: [obj]
-                        };
-                      }
-                    } else if (edge.getAttribute('displayLabel') === 'endIf') {
-                      json.instructions.push(obj);
+                        }
                     }
-
                 } else if (json.instructions[x].TYPE == 'Fork') {
                   if (!json.instructions[x].branches) {
                     json.instructions[x].branches = [];
@@ -11929,12 +11938,7 @@ export class WorkflowComponent {
           delete value.value.message;
         }
         if (!value.value.default && value.value.default !== false && value.value.default !== 0) {
-          if (value.value.default1) {
-            value.value.default = "\"\"";
-            delete value.value.default1
-          } else {
             delete value.value.default;
-          }
         }
         if (value.value.type === 'List') {
           delete value.value.final;
