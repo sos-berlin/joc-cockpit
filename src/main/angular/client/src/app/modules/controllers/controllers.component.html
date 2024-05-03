@@ -34,9 +34,11 @@
               </button>
             </ng-container>
 
+
             <div *ngIf="(object.mapOfCheckedId.size>0 || object.mapOfCheckedId2.size > 0) && object.mapOfCheckedId3.size === 0"
                  class="show-inline">
               <button (click)="deployAll()" class="btn btn-grey btn-sm m-l-12" translate>inventory.button.deploy
+
               </button>
               <button (click)="revokeAll()" class="btn btn-grey btn-sm m-l-12" translate>agent.button.revoke</button>
               <button (click)="createToken(null)" class="btn btn-grey btn-sm m-l-12" translate>

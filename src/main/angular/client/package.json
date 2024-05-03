@@ -1,6 +1,7 @@
 {
   "name": "joc-cockpit",
   "version": "2.7.1",
+
   "scripts": {
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install",
     "ng": "ng",

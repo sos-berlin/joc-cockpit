@@ -157,6 +157,11 @@ export class SettingComponent {
     }
   }
 
+  addEditToValue(val): void{
+    val.value.edit = true;
+    return;
+  }
+
   addValInArr(val): void {
     if (val.value.value.length === 0 || val.value.value[val.value.value.length - 1].name) {
       val.value.value.push({name: ''});
