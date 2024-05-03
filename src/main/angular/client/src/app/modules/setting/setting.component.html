@@ -88,7 +88,7 @@
                         <ng-container *ngSwitchCase="'TIMEZONE'">
                           <div class="col-sm-4 col-lg-3">
                             <nz-select [(ngModel)]="val.value.value" class="w-xxxl"
-                                       name="{{val.name}}{{i}}" (ngModelChange)="changeConfiguration(null, val, setting.name === 'joc')"
+                                       name="{{val.name}}{{i}}" (nzFocus)="addEditToValue(val)" (ngModelChange)="changeConfiguration(null, val, setting.name === 'joc')"
                                        nzShowSearch>
                               <nz-option *ngFor="let option of zones" [nzLabel]="option" [nzValue]="option"></nz-option>
                             </nz-select>
@@ -100,7 +100,7 @@
                         <ng-container *ngSwitchCase="'DURATION'">
                           <div [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}"
                                class="col-sm-4 col-lg-3">
-                            <input #timeout="ngModel" (blur)="changeConfiguration(timeout, val, setting.name === 'joc')" [(ngModel)]="val.value.value" autocomplete="off"
+                            <input #timeout="ngModel" (focus)="addEditToValue(val)" (blur)="changeConfiguration(timeout, val, setting.name === 'joc')" [(ngModel)]="val.value.value" autocomplete="off"
                                    class="form-control w-xxxl" name="{{val.name}}{{i}}" placeholder="{{'workflow.placeholder.duration' | translate}}"
                                    required
                                    type="text"
@@ -115,7 +115,7 @@
                                class="col-sm-4 col-lg-3">
                             <nz-select #wkday="ngModel" [(ngModel)]="val.value.value" class="w-xxxl"
                                        name="{{val.name}}{{i}}" nzMode="multiple"
-                                       required (ngModelChange)="changeConfiguration(wkday, val, setting.name === 'joc')" >
+                                       required (nzFocus)="addEditToValue(val)" (ngModelChange)="changeConfiguration(wkday, val, setting.name === 'joc')" >
                               <nz-option *ngFor="let option of daysOptions"
                                          [nzLabel]="'runtime.label.'+ option.label | translate"
                                          [nzValue]="option.value"></nz-option>
@@ -130,7 +130,7 @@
                                class="col-sm-4 col-lg-3">
                             <nz-select #list="ngModel" [(ngModel)]="val.value.value"
                                        class="w-xxxl" name="{{val.name}}{{i}}"
-                                       required (ngModelChange)="changeConfiguration(list, val, setting.name === 'joc')">
+                                       required (nzFocus)="addEditToValue(val)" (ngModelChange)="changeConfiguration(list, val, setting.name === 'joc')">
                               <nz-option *ngFor="let option of val.value.values"
                                          [nzLabel]="option" [nzValue]="option"></nz-option>
                             </nz-select>
@@ -142,7 +142,7 @@
                         <ng-container *ngSwitchCase="'TIME'">
                           <div [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
                                class="col-sm-4 col-lg-3">
-                            <input #startTime="ngModel" (blur)="changeConfiguration(startTime, val, setting.name === 'joc')" [(ngModel)]="val.value.value" [maxLength]="8"
+                            <input #startTime="ngModel" (focus)="addEditToValue(val)" (blur)="changeConfiguration(startTime, val, setting.name === 'joc')" [(ngModel)]="val.value.value" [maxLength]="8"
                                    autocomplete="off"
                                    class="form-control w-xxxl" name="{{val.name}}{{i}}" placeholder="HH:MM:SS" required
                                    timevalidator
@@ -155,7 +155,7 @@
                         <ng-container *ngSwitchCase="'POSITIVENUMBER'">
                           <div [ngClass]="{ 'has-error' : (((pnum.dirty || pnum.touched) && pnum.invalid))}"
                                class="col-sm-4 col-lg-3">
-                            <nz-input-number #pnum="ngModel" (nzBlur)="changeConfiguration(pnum, val, setting.name === 'joc')"
+                            <nz-input-number #pnum="ngModel" (nzFocus)="addEditToValue(val)" (nzBlur)="changeConfiguration(pnum, val, setting.name === 'joc')"
                                              [(ngModel)]="val.value.value"
                                              [nzMin]="1"
                                              [nzStep]="1" class="w-xxxl"
@@ -169,7 +169,7 @@
                         <ng-container *ngSwitchCase="'NONNEGATIVENUMBER'">
                           <div [ngClass]="{ 'has-error' : (((nonnegnum.dirty || nonnegnum.touched) && nonnegnum.invalid))}"
                                class="col-sm-4 col-lg-3">
-                            <nz-input-number #nonnegnum="ngModel" (nzBlur)="changeConfiguration(nonnegnum, val, setting.name === 'joc')"
+                            <nz-input-number #nonnegnum="ngModel" (nzFocus)="addEditToValue(val)" (nzBlur)="changeConfiguration(nonnegnum, val, setting.name === 'joc')"
                                              [(ngModel)]="val.value.value"
                                              [nzMin]="0"
                                              [nzStep]="1" class="w-xxxl"
@@ -183,7 +183,7 @@
                         <ng-container *ngSwitchCase="'POSITIVEINTEGER'">
                           <div [ngClass]="{ 'has-error' : (((positiveNum.dirty || positiveNum.touched) && positiveNum.invalid))}"
                                class="col-sm-4 col-lg-3">
-                            <input #positiveNum="ngModel" (blur)="changeConfiguration(positiveNum, val, setting.name === 'joc')" [(ngModel)]="val.value.value"
+                            <input #positiveNum="ngModel" (focus)="addEditToValue(val)" (blur)="changeConfiguration(positiveNum, val, setting.name === 'joc')" [(ngModel)]="val.value.value"
                                    autocomplete="off"
                                    class="form-control w-xxxl" name="{{val.name}}{{i}}" pattern="[1-9]+[0-9]*"
                                    placeholder="{{'settings.placeholder.enterPositiveInteger' | translate}}" required
@@ -196,7 +196,7 @@
                         <ng-container *ngSwitchCase="'NONNEGATIVEINTEGER'">
                           <div [ngClass]="{ 'has-error' : (((nonNegNum.dirty || nonNegNum.touched) && nonNegNum.invalid))}"
                                class="col-sm-4 col-lg-3">
-                            <input #nonNegNum="ngModel" (blur)="changeConfiguration(nonNegNum, val, setting.name === 'joc')" [(ngModel)]="val.value.value"
+                            <input #nonNegNum="ngModel" (focus)="addEditToValue(val)" (blur)="changeConfiguration(nonNegNum, val, setting.name === 'joc')" [(ngModel)]="val.value.value"
                                    autocomplete="off"
                                    class="form-control w-xxxl" name="{{val.name}}{{i}}" pattern="[0-9]+"
                                    placeholder="{{'settings.placeholder.enterNonNegativeInteger' | translate}}" required
@@ -210,7 +210,7 @@
                           <div [ngClass]="{ 'has-error' : (((booleanVal.dirty || booleanVal.touched) && booleanVal.invalid))}"
                                class="col-sm-4 col-lg-3">
                             <nz-select #booleanVal="ngModel" [(ngModel)]="val.value.value" [nzPlaceHolder]="'common.placeholder.selectValue' | translate" class="w-xxxl"
-                                       name="{{val.name}}{{i}}" (ngModelChange)="changeConfiguration(booleanVal, val, setting.name === 'joc')"
+                                       name="{{val.name}}{{i}}" (nzFocus)="addEditToValue(val)" (ngModelChange)="changeConfiguration(booleanVal, val, setting.name === 'joc')"
                                        nzAllowClear>
                               <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                               <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
@@ -224,7 +224,7 @@
                           <div class="col-sm-4 col-lg-3">
                             <div *ngFor="let item of val.value.value;let m = index" [ngClass]="{ 'has-error' : (((arr.dirty || arr.touched) && arr.invalid))}"
                                  class="m-b-n-8">
-                              <input #arr="ngModel" (blur)="changeConfiguration(arr, val, setting.name === 'joc')" (keydown)="checkSemicolon($event, val)" [(ngModel)]="item.name"
+                              <input #arr="ngModel" (focus)="addEditToValue(val)" (blur)="changeConfiguration(arr, val, setting.name === 'joc')" (keydown)="checkSemicolon($event, val)" [(ngModel)]="item.name"
                                      autocomplete="off"
                                      class="form-control w-xxxl" name="{{val.name}}{{i}}{{m + 1}}"
                                      placeholder="{{'common.placeholder.value' | translate}}{{m + 1}}" required
@@ -242,7 +242,7 @@
                         </ng-container>
                         <ng-container *ngSwitchCase="'PASSWORD'">
                           <div class="col-sm-4 col-lg-3">
-                            <input #pswd="ngModel" (blur)="changeConfiguration(pswd, val, setting.name === 'joc')"
+                            <input #pswd="ngModel" (focus)="addEditToValue(val)" (blur)="changeConfiguration(pswd, val, setting.name === 'joc')"
                                    [(ngModel)]="val.value.value"
                                    autocomplete="off"
                                    class="form-control w-xxxl" name="{{val.name}}{{i}}"
@@ -269,7 +269,7 @@
                         <ng-container *ngSwitchCase="'STRING'">
                           <div [ngClass]="{ 'has-error' : (((common.dirty || common.touched) && common.invalid))}"
                                class="col-sm-4 col-lg-3">
-                            <input #common="ngModel" (blur)="changeConfiguration(common, val, setting.name === 'joc')" [(ngModel)]="val.value.value" autocomplete="off"
+                            <input #common="ngModel" (focus)="addEditToValue(val)" (blur)="changeConfiguration(common, val, setting.name === 'joc')" [(ngModel)]="val.value.value" autocomplete="off"
                                    class="form-control w-xxxl"
                                    name="{{val.name}}{{i}}" required
                                    type="text">
