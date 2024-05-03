@@ -213,7 +213,7 @@ export class NodePositionComponent {
                 recursive(json.instructions[x].else, obj1);
               }
             } else if (json.instructions[x].TYPE === 'Cycle' || json.instructions[x].TYPE === 'Lock' ||
-              json.instructions[x].TYPE === 'Options' || json.instructions[x].TYPE === 'ForkList' || json.instructions[x].TYPE === 'ConsumeNotices') {
+              json.instructions[x].TYPE === 'Options' || json.instructions[x].TYPE === 'ForkList' || json.instructions[x].TYPE === 'ConsumeNotices' || json.instructions[x].TYPE === 'StickySubagent') {
               let _obj = {
                 title: json.instructions[x].TYPE,
                 disabled: !isEnable,
