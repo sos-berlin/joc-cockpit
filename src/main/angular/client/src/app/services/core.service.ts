@@ -1957,8 +1957,9 @@ export class CoreService {
   }
 
   getHtml(exp: string, permission: any, name): string {
-    exp = exp.replace(/'(&&|\|\|)/g, "' $1");
-    exp = exp.replace(/"(&&|\|\|)/g, "' $1");
+    exp = exp.replace(/('[^']*')\s*(&&|\|\|)\s*('[^']*')/g, "$1 $2 $3");
+    exp = exp.replace(/("[^"]*")\s*(&&|\|\|)\s*("[^"]*")/g, "$1 $2 $3");
+
 
     const arr = exp.split(' ');
     let str = '';
