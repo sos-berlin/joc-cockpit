@@ -628,7 +628,7 @@ export class AddOrderModalComponent {
           param.isTextField = true;
         }
         this.arguments.push(param);
-      }else if(this.arguments[this.arguments.length - 1]){
+      }else if(!this.coreService.isLastEntryEmpty(this.arguments, 'name', '') && this.arguments[this.arguments.length - 1]){
         this.arguments.push(param);
 
       }
