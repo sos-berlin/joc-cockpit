@@ -2274,11 +2274,21 @@ export class WorkflowService {
         p.text = this.getText(p.startTime, p.duration);
         let flag = true;
         if (periodList.length > 0) {
-          for (const i in periodList) {
-            if (periodList[i].day == day) {
-              flag = false;
-              periodList[i].periods.push(p);
-              break;
+          if (period.TYPE === 'DailyPeriod') {
+            for (const i in periodList) {
+              if (periodList[i].day === day && periodList[i].frequency === obj.frequency) {
+                flag = false;
+                periodList[i].periods.push(p);
+                break;
+              }
+            }
+          } else if (period.TYPE === 'WeekdayPeriod') {
+            for (const i in periodList) {
+              if (periodList[i].frequency === obj.frequency) {
+                flag = false;
+                periodList[i].periods.push(p);
+                break;
+              }
             }
           }
         }
