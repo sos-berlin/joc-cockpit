@@ -9301,6 +9301,10 @@ export class WorkflowComponent {
         } else if (cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'ConsumeNotices') {
           obj.noticeBoardNames = cell.getAttribute('noticeBoardNames');
           self.coreService.removeSlashToString(obj, 'noticeBoardNames');
+
+          // Ensure single space around && and ||
+          obj.noticeBoardNames = obj.noticeBoardNames.replace(/\s*(\|\||&&)\s*/g, ' $1 ');
+
           setTimeout(() => {
             self.isDisplay = true;
             self.ref.detectChanges();

@@ -1899,8 +1899,7 @@ export class CoreService {
     exp = exp.replace(/('[^']*')\s*(&&|\|\|)\s*('[^']*')/g, "$1 $2 $3");
     exp = exp.replace(/("[^"]*")\s*(&&|\|\|)\s*("[^"]*")/g, "$1 $2 $3");
 
-
-    const arr = exp.split(' ');
+    const arr = exp.match(/('[^']*'|"[^"]*"|\&\&|\|\||\S+)/g);
     let str = '';
     arr.forEach((item: string) => {
       item = item.replace(/[{}[\]()]/g, '');
