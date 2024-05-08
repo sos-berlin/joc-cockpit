@@ -840,7 +840,7 @@
     "button.generatePlan": "Tagesplan erzeugen",
     "button.createPlan": "Tagesplan erstellen",
     "button.deleteSubmissions": "Tagesplan löschen",
-    "button.submitOrder": "Auftrag übermitteln",Au
+    "button.submitOrder": "Auftrag übermitteln",
     "button.cancel": "Abbrechen",
     "button.deployOrderTemplate": "Zeitpläne freigeben",
     "button.groupByOrder": "Gruppieren nach Auftrag",
@@ -2564,7 +2564,8 @@
       "label.suspendResume": "aussetzen und wiederaufnehmen",
       "label.resumeFailed": "wiederaufnehmen nach Fehler",
       "label.controller": "Controller",
-      "label.managePositions": "Positionen verwalten"
+      "label.managePositions": "Positionen verwalten",
+      "label.confirm": "confirm"
     },
     "keyManagement": {
       "label.keysAndCertificates": "Schlüssel und Zertifikate",

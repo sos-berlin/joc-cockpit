@@ -4524,7 +4524,7 @@ export class WorkflowComponent {
           } else if (val.default) {
             delete val.listParameters;
             if (val.type === 'String') {
-              if(val.default != "\"\""){
+              if (val.default != "\"\"") {
                 this.coreService.removeSlashToString(val, 'default');
               }
             } else if (val.type === 'Boolean') {
@@ -5368,7 +5368,7 @@ export class WorkflowComponent {
   }
 
   private updateWorkflow(graph, jobMap): void {
-    this.selectedNode =  null;
+    this.selectedNode = null;
     const scrollValue: any = {};
     const element = document.getElementById('graph');
 
@@ -5932,54 +5932,47 @@ export class WorkflowComponent {
               if (json.instructions[x].instructions) {
                 if (!json.instructions[x].then) {
                   json.instructions.push(obj);
-                }else{
+                } else {
                   json.instructions[x].instructions.push(obj);
                 }
               } else {
                 if (json.instructions[x].TYPE == 'If') {
-                      if (edge.getAttribute('displayLabel') === 'then') {
-                        if (!json.instructions[x].then) {
-                          json.instructions[x].then = {
-                            instructions: [obj]
-                          };
-                        }
-                      } else if (edge.getAttribute('displayLabel') === 'else') {
-                        if (!json.instructions[x].else) {
-                          json.instructions[x].else = {
-                            instructions: [obj]
-                          };
-                        }
-                      } else if (edge.getAttribute('displayLabel') === 'endIf') {
-                        if (!json.instructions[x].else) {
-                          json.instructions[x].else = {
-                            instructions: [obj]
-                          };
-                        } else {
-                          json.instructions.push(obj);
-
-
-                        }
+                  if (edge.getAttribute('displayLabel') === 'then') {
+                    if (!json.instructions[x].then) {
+                      json.instructions[x].then = {
+                        instructions: [obj]
+                      };
                     }
-                } else if (json.instructions[x].TYPE == 'Fork') {
-                  if(!json.instructions[x].instructions){
-                    json.instructions[x].instructions = [obj];
-                    console.log('1')
-                  }
-                  json.instructions.push(obj);
-
-                } else{
-                   if (edge.getAttribute('displayLabel') === 'else') {
-                     console.log('2')
-
+                  } else if (edge.getAttribute('displayLabel') === 'else') {
                     if (!json.instructions[x].else) {
                       json.instructions[x].else = {
                         instructions: [obj]
                       };
                     }
-                  }else{
-                     json.instructions.push(obj);
-
-                   }
+                  } else if (edge.getAttribute('displayLabel') === 'endIf') {
+                    if (!json.instructions[x].else) {
+                      json.instructions[x].else = {
+                        instructions: [obj]
+                      };
+                    } else {
+                      json.instructions.push(obj);
+                    }
+                  }
+                } else if (json.instructions[x].TYPE == 'Fork') {
+                  if (!json.instructions[x].instructions) {
+                    json.instructions[x].instructions = [obj];
+                  }
+                  json.instructions.push(obj);
+                } else {
+                  if (edge.getAttribute('displayLabel') === 'else') {
+                    if (!json.instructions[x].else) {
+                      json.instructions[x].else = {
+                        instructions: [obj]
+                      };
+                    }
+                  } else {
+                    json.instructions.push(obj);
+                  }
                 }
               }
               isMatch = true;
@@ -6019,6 +6012,8 @@ export class WorkflowComponent {
       return isMatch;
     }
 
+    let lastCells = [];
+
     function checkRemainingNodes(node) {
       node.edges.forEach(edge => {
         if (edge.source && edge.source.id !== node.id) {
@@ -6035,11 +6030,28 @@ export class WorkflowComponent {
           const isMatch = traverseJSONObject(targetId, obj, edge);
           if (!isMatch && self.workflowService.checkClosingCell(edge.source.value.tagName) && targetId != edge.source.getAttribute('targetId')) {
             targetId = edge.source.getAttribute('targetId');
-            traverseJSONObject(targetId, obj, edge);
+            const isFound = traverseJSONObject(targetId, obj, edge);
+            if (!isFound) {
+              lastCells.push(node);
+            }
           }
         }
       });
     }
+
+    function recursivelyCheckAll(_cells) {
+      _cells.forEach((node) => {
+        if (!self.workflowService.checkClosingCell(node.value.tagName) && node.value.tagName !== 'Catch') {
+          checkRemainingNodes(node);
+        }
+      });
+      if (_cells.length) {
+        const _lastCells = [...lastCells];
+        lastCells = [];
+        recursivelyCheckAll(_lastCells);
+      }
+    }
+
 
     if (nodes.length > 0) {
       nodes.forEach((node) => {
@@ -6047,6 +6059,12 @@ export class WorkflowComponent {
           checkRemainingNodes(node);
         }
       });
+    }
+
+    if (lastCells.length > 0) {
+      const _lastCells = [...lastCells];
+      lastCells = [];
+      recursivelyCheckAll(_lastCells);
     }
 
     const jobs = Array.from(jobMap.keys());
@@ -6068,6 +6086,7 @@ export class WorkflowComponent {
       this.workflow.configuration = {};
     }
   }
+
 
   /**
    * Function: To convert Mxgraph xml to JSON (Web service response)
@@ -6521,6 +6540,7 @@ export class WorkflowComponent {
         }
 
         let highlight = null;
+
         // Defines a new class for all icons
         function mxIconSet(state) {
           this.images = [];
@@ -7058,7 +7078,7 @@ export class WorkflowComponent {
               if (sourceCell.attr('src') && sourceCell.attr('src').match(/paste/) && result == 'valid') {
                 if (cell.value.tagName === 'Connection') {
                   let state = graph.getView().getState(cell);
-                  if(state) {
+                  if (state) {
                     this.currentHighlight = new mxCellHighlight(graph, 'green');
                     this.currentHighlight.highlight(state);
                     state.shape.redraw();
@@ -7079,7 +7099,7 @@ export class WorkflowComponent {
               if (result == 'valid') {
                 if (cell.value.tagName === 'Connection') {
                   let state = graph.getView().getState(cell);
-                  if(state) {
+                  if (state) {
                     this.currentHighlight = new mxCellHighlight(graph, 'green');
                     this.currentHighlight.highlight(state);
                     state.shape.redraw();
@@ -7459,7 +7479,6 @@ export class WorkflowComponent {
             } else {
               movedTarget = drpTargt;
             }
-
             if (dragElement) {
               if (dragElement.match('paste')) {
                 if (self.copyId.length > 0 || (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.length > 0)) {
@@ -8827,8 +8846,7 @@ export class WorkflowComponent {
                         admissionTimeScheme: self.selectedNode.data.schedule.admissionTimeScheme
                       });
                     }
-                  }
-                  else {
+                  } else {
                     if (self.selectedNode.repeatObject.index || self.selectedNode.repeatObject.index === 0) {
                       self.selectedNode.obj.schedule.schemes[self.selectedNode.repeatObject.index].repeat = self.workflowService.convertRepeatObject(self.selectedNode.repeatObject);
                     }
@@ -9381,10 +9399,10 @@ export class WorkflowComponent {
         } else if (cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'ConsumeNotices') {
           obj.noticeBoardNames = cell.getAttribute('noticeBoardNames');
           self.coreService.removeSlashToString(obj, 'noticeBoardNames');
-
-          // Ensure single space around && and ||
-          obj.noticeBoardNames = obj.noticeBoardNames.replace(/\s*(\|\||&&)\s*/g, ' $1 ');
-
+          if(obj.noticeBoardNames) {
+            // Ensure single space around && and ||
+            obj.noticeBoardNames = obj.noticeBoardNames.replace(/\s*(\|\||&&)\s*/g, ' $1 ');
+          }
           setTimeout(() => {
             self.isDisplay = true;
             self.ref.detectChanges();
@@ -10800,7 +10818,7 @@ export class WorkflowComponent {
      */
     function rearrangeCell(obj): void {
       let selectedImg = $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child');
-      if(selectedImg && selectedImg[0]){
+      if (selectedImg && selectedImg[0]) {
         $(selectedImg[0]).removeClass('mxToolbarModeSelected')
       }
       const connection = obj.target;
@@ -12035,7 +12053,7 @@ export class WorkflowComponent {
           delete value.value.message;
         }
         if (!value.value.default && value.value.default !== false && value.value.default !== 0) {
-            delete value.value.default;
+          delete value.value.default;
         }
         if (value.value.type === 'List') {
           delete value.value.final;

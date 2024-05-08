@@ -92,7 +92,7 @@
 <div *ngFor="let instruction of configuration.instructions">
   <ul class="m-b-0">
     <li>
-      <a *ngIf="instruction['TYPE'] === 'Fork' || instruction['TYPE'] === 'ForkList' || instruction['TYPE'] === 'Retry' || instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Try' || instruction['TYPE'] === 'Cycle' || instruction['TYPE'] === 'Lock' || instruction['TYPE'] === 'Options' || instruction['TYPE'] === 'StickySubagent' || instruction['TYPE'] === 'ConsumeNotices'"
+      <a *ngIf="instruction['TYPE'] === 'Fork' || instruction['TYPE'] === 'ForkList' || instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Try' || instruction['TYPE'] === 'Retry' || instruction['TYPE'] === 'Cycle' || instruction['TYPE'] === 'Lock' || instruction['TYPE'] === 'Options' || instruction['TYPE'] === 'StickySubagent' || instruction['TYPE'] === 'ConsumeNotices'"
          class="hover">
         <ng-template #contentTemplate>
           <div>
@@ -108,20 +108,6 @@
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
-              <li (click)="skip(instruction);"
-                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
-                  nz-menu-item>
-                <a>
-                  <span translate>workflow.button.skip</span>
-                </a>
-              </li>
-              <li (click)="unskip(instruction);"
-                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
-                  nz-menu-item>
-                <a>
-                  <span translate>workflow.button.unskip</span>
-                </a>
-              </li>
               <li (click)="stop(instruction);"
                   *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
                   nz-menu-item>
@@ -147,20 +133,6 @@
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
-              <li (click)="skip(instruction);"
-                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
-                  nz-menu-item>
-                <a>
-                  <span translate>workflow.button.skip</span>
-                </a>
-              </li>
-              <li (click)="unskip(instruction);"
-                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
-                  nz-menu-item>
-                <a>
-                  <span translate>workflow.button.unskip</span>
-                </a>
-              </li>
               <li (click)="stop(instruction);"
                   *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
                   nz-menu-item>
@@ -245,14 +217,14 @@
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
               <li (click)="skip(instruction);"
-                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
+                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
                   nz-menu-item>
                 <a>
                   <span translate>workflow.button.skip</span>
                 </a>
               </li>
               <li (click)="unskip(instruction);"
-                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
+                  *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
                   nz-menu-item>
                 <a>
                   <span translate>workflow.button.unskip</span>
@@ -301,20 +273,6 @@
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
-              <li (click)="skip(instruction);"
-                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
-                  nz-menu-item>
-                <a>
-                  <span translate>workflow.button.skip</span>
-                </a>
-              </li>
-              <li (click)="unskip(instruction);"
-                  *ngIf="instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))"
-                  nz-menu-item>
-                <a>
-                  <span translate>workflow.button.unskip</span>
-                </a>
-              </li>
               <li (click)="stop(instruction);"
                   *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))"
                   nz-menu-item>

@@ -2564,7 +2564,8 @@
       "label.suspendResume": "一時停止と回復",
       "label.resumeFailed": "回復して失敗",
       "label.controller": "コントローラー",
-      "label.managePositions": "位置管理"
+      "label.managePositions": "位置管理",
+      "label.confirm": "confirm"
     },
     "keyManagement": {
       "label.keysAndCertificates": "鍵と証明書",

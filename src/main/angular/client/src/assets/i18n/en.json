@@ -2564,7 +2564,8 @@
       "label.suspendResume": "suspend and resume",
       "label.resumeFailed": "resume after failed",
       "label.controller": "Controller",
-      "label.managePositions": "manage positions"
+      "label.managePositions": "manage positions",
+      "label.confirm": "confirm"
     },
     "keyManagement": {
       "label.keysAndCertificates": "Keys and Certificates",
