@@ -2364,6 +2364,7 @@
     "button.assignParameterizationFromSchedules": "Assign parameterization from Schedule",
     "button.assignFromSchedule": "Assign from Schedule",
     "button.cloneOrder": "Clone Order",
+    "button.continue": "Let run",
     "placeholder.selectStartNode": "Select Start Position",
     "placeholder.selectEndNode": "Select End Position",
     "placeholder.selectBlockPosition": "Select Block Position",
@@ -2527,7 +2528,8 @@
       "label.suspendResume": "suspend and resume",
       "label.resumeFailed": "resume after failed",
       "label.controller": "Controller",
-      "label.managePositions": "manage positions"
+      "label.managePositions": "manage positions",
+      "label.confirm": "confirm"
     },
     "keyManagement": {
       "label.keysAndCertificates": "Keys and Certificates",
@@ -2749,7 +2751,7 @@
       "label.endOfLife": "End of Life",
       "label.expectingOrders": "Expecting Orders",
       "button.post": "Post Notice",
-      "button.postAll": "Post all Notices",
+      "button.postAll": "Post selected Notices",
       "button.delete": "Delete Notice",
       "button.deleteAll": "Delete All Notices",
       "placeholder.enterNoticeId": "Enter Notice ID"

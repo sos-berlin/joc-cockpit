@@ -174,6 +174,19 @@
 </div>
 <div class="row m-t">
   <div class="col-md-4 col-lg-3"><span class="text-dark"
+                                       translate>profile.permission.label.reports</span>
+  </div>
+  <div class="row col-md-8 col-lg-9">
+                  <span class="col-sm-3 text-black-lt"><i [ngClass]="{'fa-times text-black-lt': !permission.joc.reports.view}"
+                                                          class="fa fa-check text-success"></i>&nbsp; <span
+                    translate>profile.permission.label.view</span></span>
+    <span class="col-sm-3 text-black-lt"><i [ngClass]="{'fa-times text-black-lt': !permission.joc.reports.manage}"
+                                            class="fa fa-check text-success"></i>&nbsp; <span
+      translate>profile.permission.label.manage</span></span>
+  </div>
+</div>
+<div class="row m-t">
+  <div class="col-md-4 col-lg-3"><span class="text-dark"
                                        translate>profile.permission.label.settings</span>
   </div>
   <div class="row col-md-8 col-lg-9">
@@ -296,6 +309,9 @@
       [ngClass]="{'fa-times text-black-lt': !controllerPermission.orders.create}"
       class="fa fa-check text-success"></i>&nbsp; <span
       translate>profile.permission.label.create</span></span>
+    <span class="col-sm-3 text-black-lt"><i [ngClass]="{'fa-times text-black-lt': !controllerPermission.orders.cancel}"
+                                            class="fa fa-check text-success"></i>&nbsp; <span
+      translate>profile.permission.label.cancel</span></span>
     <span class="col-sm-3 text-black-lt"><i [ngClass]="{'fa-times text-black-lt': !controllerPermission.orders.modify}"
                                             class="fa fa-check text-success"></i>&nbsp; <span
       translate>profile.permission.label.modify</span></span>
@@ -305,11 +321,11 @@
     <span class="col-sm-3 text-black-lt"><i [ngClass]="{'fa-times text-black-lt': !controllerPermission.orders.resumeFailed}"
                                             class="fa fa-check text-success"></i>&nbsp; <span
       translate>profile.permission.label.resumeFailed</span></span>
-    <span class="col-sm-3 text-black-lt"><i [ngClass]="{'fa-times text-black-lt': !controllerPermission.orders.cancel}"
-                                            class="fa fa-check text-success"></i>&nbsp; <span
-      translate>profile.permission.label.cancel</span></span>
     <span class="col-sm-3 text-black-lt"><i [ngClass]="{'fa-times text-black-lt': !controllerPermission.orders.managePositions}"
                                             class="fa fa-check text-success"></i>&nbsp; <span
       translate>profile.permission.label.managePositions</span></span>
+    <span class="col-sm-3 text-black-lt"><i [ngClass]="{'fa-times text-black-lt': !controllerPermission.orders.confirm}"
+                                            class="fa fa-check text-success"></i>&nbsp; <span
+      translate>profile.permission.label.confirm</span></span>
   </div>
 </div>

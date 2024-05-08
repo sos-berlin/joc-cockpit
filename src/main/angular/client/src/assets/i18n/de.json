@@ -423,7 +423,7 @@
     "label.specificDate": "Bestimmtes Datum",
     "label.relativeDate": "Relatives Datum",
     "label.relativeTime": "Relativ zur Uhrzeit",
-    "label.relativeTimeFromCurrentTime": "Relativ zur Start Time",
+    "label.relativeTimeFromCurrentTime": "Relativ zur Startzeit",
     "label.processExecuted": "Prozess ausgeführt",
     "label.selectController": "Controller auswählen",
     "placeholder.setEndDate": "Endezeit setzen",
@@ -621,7 +621,7 @@
     "message.deleteAllDocument": "Sind Sie sicher, dass Sie alle Dokumentationen löschen wollen?",
     "message.deleteNotice": "Sind Sie sicher, dass Sie diese Notiz löschen wollen?",
     "message.deleteSelectedNotice": "Sind Sie sicher, dass Sie die ausgewählten Notizen löschen wollen?",
-    "message.resetAgentConfirmation": "Sie sind im Begriff, einen Agenten zu übernehmen, der ggf. nicht dem derzeitigen Controllur zugeordnet ist. Sind Sie sicher, dass Sie fortfahren wollen??",
+    "message.resetAgentConfirmation": "Sie sind im Begriff, einen Agenten zu übernehmen, der ggf. nicht dem derzeitigen Controllur zugeordnet ist. Sind Sie sicher, dass Sie fortfahren wollen?",
     "message.cannotCopyEmptyObject": "Kopiertes Objekt ist leer!",
     "message.deleteTag": "Sind Sie sicher, dass Sie dieses Schlagwort löschen wollen??",
     "message.deleteAllTag": "Sind Sie sicher, dass Sie alle ausgewählten Schlagwörter löschen wollen??",
@@ -2363,7 +2363,8 @@
     "button.showLog": "Protokoll anzeigen",
     "button.assignParameterizationFromSchedules": "Parametrisierung aus Zeitplan",
     "button.assignFromSchedule": "Parametrisierung aus Zeitplan",
-    "button.cloneOrder": "Clone Order",
+    "button.cloneOrder": "Auftrag klonen",
+    "button.continue": "Loslaufen lassen",
     "placeholder.selectStartNode": "Start-Position auswählen",
     "placeholder.selectEndNode": "End-Position auswählen",
     "placeholder.selectBlockPosition": "Block-Position angeben",
@@ -2527,7 +2528,8 @@
       "label.suspendResume": "aussetzen und wiederaufnehmen",
       "label.resumeFailed": "wiederaufnehmen nach Fehler",
       "label.controller": "Controller",
-      "label.managePositions": "Positionen verwalten"
+      "label.managePositions": "Positionen verwalten",
+      "label.confirm": "confirm"
     },
     "keyManagement": {
       "label.keysAndCertificates": "Schlüssel und Zertifikate",
@@ -2749,7 +2751,7 @@
       "label.endOfLife": "Verfallsfrist",
       "label.expectingOrders": "Wartende Aufträge",
       "button.post": "Notiz senden",
-      "button.postAll": "Alle Notizen senden",
+      "button.postAll": "Ausgewählte Notizen senden",
       "button.delete": "Notiz löschen",
       "button.deleteAll": "Alle Notizen löschen",
       "placeholder.enterNoticeId": "Notizkennung angeben"

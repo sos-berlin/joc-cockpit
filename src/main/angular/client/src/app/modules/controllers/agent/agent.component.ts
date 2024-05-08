@@ -211,13 +211,13 @@ export class AgentModalComponent {
   isCluster: boolean;
   controllerId: any;
   agent: any = {};
+  isSecondary = false;
   submitted = false;
   agentNameAliases: any = [];
   comments: any = {};
   preferences: any;
   display: any;
   required = false;
-  secondaryDirector: any = {};
   processLimitTry: string = 'unlimited';
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef) {
@@ -257,10 +257,10 @@ export class AgentModalComponent {
   }
 
   private checkSecondaryDirector(): void {
-    for (let i = 0; i < this.agent.subagents?.length; i++) {
+    this.isSecondary = false;
+    for (const i in this.agent.subagents) {
       if (this.agent.subagents[i].isDirector === 'SECONDARY_DIRECTOR') {
-        this.secondaryDirector = this.agent.subagents[i];
-        this.agent.subagents.slice(i, 1);
+        this.isSecondary = true;
         break;
       }
     }
@@ -276,13 +276,23 @@ export class AgentModalComponent {
     this.agentNameAliases.splice(index, 1);
   }
 
-  removeSubagent(list, index): void {
-    list.splice(index, 1);
-  }
-
   changeLimit(value): void {
     if (value == 'unlimited') {
       delete this.agent.processLimit;
+    }
+  }
+
+  removeSubagent(list, index): void {
+    list.splice(index, 1);
+    this.checkSecondaryDirector();
+  }
+
+  addSubagent(isSecordary = false): void {
+    if (isSecordary) {
+      this.isSecondary = isSecordary;
+    }
+    if (!this.coreService.isLastEntryEmpty(this.agent.subagents, 'subagentId', 'url')) {
+      this.agent.subagents.push({isDirector: isSecordary ? 'SECONDARY_DIRECTOR' : 'NO_DIRECTOR', subagentId: ''});
     }
   }
 
@@ -360,17 +370,6 @@ export class AgentModalComponent {
           flag = false;
           this.removeSubagents(obj2, () => {
             this.store(obj);
-          });
-        }
-        if (this.secondaryDirector?.subagentId && this.secondaryDirector?.url) {
-          _agent.subagents = _agent.subagents.filter((subagent) => {
-            return subagent.subagentId !== this.secondaryDirector.subagentId && subagent.url !== this.secondaryDirector?.url
-          });
-          _agent.subagents.push({
-            isDirector: 'SECONDARY_DIRECTOR',
-            subagentId: this.secondaryDirector.subagentId,
-            url: this.secondaryDirector.url,
-            title: this.secondaryDirector.title
           });
         }
       }
