@@ -5,6 +5,7 @@ import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from "../guard";
 import {ValueEditorComponent} from "../value-editor/value.component";
+import { ConfirmModalComponent } from '../comfirm-modal/confirm.component';
 
 @Component({
   selector: 'app-change-parameter',
@@ -582,6 +583,7 @@ export class ModifyStartTimeModalComponent {
   submitted = false;
   dateFormat: any;
   dateType: any = {at: 'date', forceJobAdmission: false};
+  stickToDailyPlanDate = false;
   zones = [];
   period: any = {};
   s1 = 0;
@@ -591,7 +593,7 @@ export class ModifyStartTimeModalComponent {
   required = false;
   comments: any = {};
 
-  constructor(private activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(private activeModal: NzModalRef, public coreService: CoreService, private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -761,9 +763,35 @@ export class ModifyStartTimeModalComponent {
   }
 
   onSubmit(): void {
+    if (this.stickToDailyPlanDate) {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzData: {
+          title: 'stickToDailyPlanDate',
+          message: 'stickToDailyPlanDate',
+          type: 'confirm',
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.submitForm();
+        }
+      });
+    } else {
+      this.submitForm();
+    }
+  }
+
+
+  submitForm(): void {
     let obj: any = {
       controllerId: this.schedulerId,
       forceJobAdmission: this.dateType.forceJobAdmission,
+      stickToDailyPlanDate: this.stickToDailyPlanDate,
       orderIds: []
     };
     if (this.plan) {
