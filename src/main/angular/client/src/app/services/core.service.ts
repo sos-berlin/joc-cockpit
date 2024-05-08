@@ -219,6 +219,7 @@ export class CoreService {
     };
     this.tabs._daliyPlan.filter.status = 'ALL';
     this.tabs._daliyPlan.filter.groupBy = '';
+    this.tabs._daliyPlan.filter.filterBy = '';
     this.tabs._daliyPlan.filter.late = false;
     this.tabs._daliyPlan.filter.sortBy = 'plannedStartTime';
     this.tabs._daliyPlan.reverse = true;
@@ -1895,10 +1896,10 @@ export class CoreService {
   }
 
   getHtml(exp: string, permission: any, name): string {
-    exp = exp.replace(/'(&&|\|\|)/g, "' $1");
-    exp = exp.replace(/"(&&|\|\|)/g, "' $1");
+    exp = exp.replace(/('[^']*')\s*(&&|\|\|)\s*('[^']*')/g, "$1 $2 $3");
+    exp = exp.replace(/("[^"]*")\s*(&&|\|\|)\s*("[^"]*")/g, "$1 $2 $3");
 
-    const arr = exp.split(' ');
+    const arr = exp.match(/('[^']*'|"[^"]*"|\&\&|\|\||\S+)/g);
     let str = '';
     arr.forEach((item: string) => {
       item = item.replace(/[{}[\]()]/g, '');
@@ -2153,6 +2154,7 @@ export class CoreService {
             }
           } else {
             if (nodes[i].position == item.position || (nodes[i].position.indexOf(':') > -1 && nodes[i].position.substring(0, nodes[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
+
               if (parentNode && parentNode.children) {
                 parentNode.children.push(data);
                 nodes.push(parentNode);

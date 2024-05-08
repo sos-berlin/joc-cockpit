@@ -21,7 +21,7 @@
     "@angular/platform-browser-dynamic": "^16.1.0",
     "@angular/router": "^16.1.0",
     "@ctrl/ngx-codemirror": "^7.0.0",
-    "@cyclonedx/cyclonedx-npm": "^1.12.1",
+    "@cyclonedx/cyclonedx-npm": "^1.10.0",
     "@juggle/resize-observer": "^3.4.0",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",

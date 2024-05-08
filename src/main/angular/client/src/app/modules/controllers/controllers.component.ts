@@ -545,6 +545,8 @@ export class ControllersComponent {
           nzAutofocus: null,
           nzData: {
             controllerInfo: res.controllers,
+            agents: res.agents,
+            clusterAgents: res.clusterAgents,
             modalRef: true
           },
           nzFooter: null,

@@ -124,7 +124,7 @@
                     [disabled]="!object.isResume" class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.resume</span>
             </button>
-            <button (click)="confirmAllOrder()" *ngIf="permission.currentController.orders.modify && object.isPrompt"
+            <button (click)="confirmAllOrder()" *ngIf="permission.currentController.orders.confirm && object.isPrompt"
                     class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa fa-check-circle-o p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.confirm</span>
             </button>
@@ -357,7 +357,7 @@
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
                     <app-select-input  [attributeName]="'completed'" [isAllowClear]="true" [optionLabel]="'label'" [optionValue]="'value'" [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                       [name]="'completed'" [isSelectDisabled]="orderOverview.terminated == 0" [listArray]="orderTreeStatusCompleted"
+                                       [name]="'completed'" [isSelectDisabled]="orderOverview.completed == 0" [listArray]="orderTreeStatusCompleted"
                                        [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>

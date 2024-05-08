@@ -590,7 +590,9 @@ export class TypeComponent {
     this.broadNames.forEach(name => {
       const elements: any = document.querySelectorAll(`[data-id-n="${name}"]`);
       elements.forEach(element => {
-        element.parentNode?.classList?.remove('ant-checkbox-checked');
+        if (element.getAttribute('data-id-a') == `chk_${this.workflowObj.path}`) {
+          element.parentNode?.classList?.remove('ant-checkbox-checked');
+        }
       })
     });
     this.broadNames = [];
@@ -623,21 +625,27 @@ export class TypeComponent {
           const elements: any = document.querySelectorAll(`[data-id-n="${id}"]`);
           let isChecked = false;
           elements.forEach(element => {
+            if (element.getAttribute('data-id-a') == `chk_${this.workflowObj.path}`) {
               if (element.parentNode?.classList.contains('ant-checkbox-checked')) {
                 isChecked = true;
               }
+            }
           });
           if (isChecked) {
             this.broadNames = this.broadNames.filter(item => item != id);
             elements.forEach(element => {
-              element.parentNode?.classList?.remove('ant-checkbox-checked');
+              if (element.getAttribute('data-id-a') == `chk_${this.workflowObj.path}`) {
+                element.parentNode?.classList?.remove('ant-checkbox-checked');
+              }
             });
 
           } else {
             this.broadNames.push(id);
             this.broadNames = [...new Set(this.broadNames)]
             elements.forEach(element => {
-              element.parentNode?.classList?.add('ant-checkbox-checked');
+              if (element.getAttribute('data-id-a') == `chk_${this.workflowObj.path}`) {
+                element.parentNode?.classList?.add('ant-checkbox-checked');
+              }
             });
           }
           this.bulkUpdate.emit({key: this.workflowObj.path, list: this.broadNames});

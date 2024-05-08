@@ -870,7 +870,7 @@
                                      class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
                                 </span>
                           </div>
-                          <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)"
+                          <app-type (bulkUpdate)="bulkUpdate($event)" [multiSelect]="true" [clearCheckboxes]="clearCheckboxes" (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)"
                                     (isProcessing)="processingHandler($event)"
                                     (onClick)="viewHistory($event)" (update)="updatePanelHeight()"
                                     [configuration]="workflow.configuration"

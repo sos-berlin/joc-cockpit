@@ -2364,6 +2364,7 @@
     "button.assignParameterizationFromSchedules": "スケジュールから変数設定",
     "button.assignFromSchedule": "スケジュールから割り当て",
     "button.cloneOrder": "オーダークローン",
+    "button.continue": "継続",
     "placeholder.selectStartNode": "開始ノード選択",
     "placeholder.selectEndNode": "終了ノード選択",
     "placeholder.selectBlockPosition": "ブロック位置選択",
@@ -2527,7 +2528,8 @@
       "label.suspendResume": "一時停止と回復",
       "label.resumeFailed": "回復して失敗",
       "label.controller": "コントローラー",
-      "label.managePositions": "位置管理"
+      "label.managePositions": "位置管理",
+      "label.confirm": "confirm"
     },
     "keyManagement": {
       "label.keysAndCertificates": "鍵と証明書",
