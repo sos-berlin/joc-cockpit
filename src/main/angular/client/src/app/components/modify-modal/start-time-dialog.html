@@ -59,6 +59,13 @@
               </nz-radio-group>
             </div>
           </div>
+          <div class="form-group row">
+            <label class="col-md-3 " translate>order.label.stickToDailyPlanDate</label>
+            <div class="col-md-8">
+              <label [(ngModel)]="stickToDailyPlanDate" name="stickToDailyPlanDate" nz-checkbox>
+              </label>
+            </div>
+          </div>
           <div *ngIf="dateType.at == 'later'" class="form-group row">
             <label class="col-md-3 form-control-label" translate>common.label.time
               <sup class="text-danger text-sm">*</sup>
