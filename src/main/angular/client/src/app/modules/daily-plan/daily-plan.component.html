@@ -34,10 +34,6 @@
           </button>
           <nz-dropdown-menu #export5="nzDropdownMenu" role="menu">
             <ul *ngIf="permission.currentController" nz-menu>
-              <li (click)="continueOrder(value.orderId)" *ngIf="permission && permission.currentController && permission.currentController.orders.modify && value.state._text === 'SUBMITTED' && !value.cyclicOrder"
-                  nz-menu-item>
-                <a>{{'dailyPlan.button.continueOrder' | translate}} ..</a>
-              </li>
               <li (click)="submitOrder(value, false)" *ngIf="permission.currentController && permission.currentController.orders.create"
                   [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'SUBMITTED')"
                   nz-menu-item>
@@ -476,12 +472,6 @@
               class="fa fa-trash"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.removeOrder</span>
             </button>
-            <button (click)="continueOrder()"
-                    *ngIf="permission && permission.currentController && permission.currentController.orders.modify"
-                    [disabled]="!object.isLetRun" class="btn btn-grey btn-sm m-l-12"><i
-              class="fa fa-refresh"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.continueOrder</span>
-            </button>
             <button (click)="cancelSelectedOrder()"
                     *ngIf="permission.currentController && permission.currentController.orders.cancel"
                     [disabled]="object.isCancel" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times"></i>&nbsp;
@@ -684,24 +674,6 @@
                                 class="btn btn-grey btn-sm hidden-btn-text">
                           <i class="icon icon-workflows-icon"></i>
                           <span translate>dailyPlan.button.groupByWorkflow</span>
-                        </button>
-                        <button (click)="filterByOrders('')"
-                                [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy===''}"
-                                class="btn btn-grey btn-sm hidden-btn-text m-l-12">
-                          <i class="icon icon-orders-icon"></i>
-                          <span translate>dailyPlan.label.all</span>
-                        </button>
-                        <button (click)="filterByOrders('ONETIMEORDERS')"
-                                [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy==='ONETIMEORDERS'}"
-                                class="btn btn-grey btn-sm hidden-btn-text">
-                          <i class="icon icon-calendar-icon"></i>
-                          <span translate>dailyPlan.label.oneTimeOrders</span>
-                        </button>
-                        <button (click)="filterByOrders('CYCLICORDER')"
-                                [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy==='CYCLICORDER'}"
-                                class="btn btn-grey btn-sm hidden-btn-text">
-                          <i class="icon icon-workflows-icon"></i>
-                          <span translate>dailyPlan.label.cyclicOrder</span>
                         </button>
                         <button (click)="showSearchPanel ? cancel() : advancedSearch()"
                                 class="btn btn-sm inline pull-right m-l btn-grey">
