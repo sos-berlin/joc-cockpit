@@ -2197,22 +2197,6 @@ export class DailyPlanComponent {
           }
         }
       }
-      if (this.dailyPlanFilters.filter.filterBy) {
-
-        if (this.dailyPlanFilters.filter.filterBy === 'CYCLICORDER') {
-          this.planOrders.forEach(group => {
-            group.value = group.value.filter(order => order.cyclicOrder);
-          });
-        } else if (this.dailyPlanFilters.filter.filterBy === 'ONETIMEORDERS') {
-          this.planOrders.forEach(group => {
-            group.value = group.value.filter(order => !order.cyclicOrder);
-          });
-        }
-
-        this.planOrders = this.planOrders.filter(group => group.value && group.value.length > 0);
-      }
-
-
       this.setStateToParentObject();
     }else if (this.dailyPlanFilters.filter.filterBy) {
       if (this.dailyPlanFilters.filter.filterBy === 'CYCLICORDER') {
