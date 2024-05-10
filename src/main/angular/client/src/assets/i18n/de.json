@@ -492,6 +492,7 @@
     "label.selectAllEntries": "Alle {{count}} Einträge auswählen",
     "label.clearSelection": "Auswahl zurücksetzen",
     "label.clipboard": "Zwischenablage",
+    "label.stickToDailyPlanDate": "Stick to Daily Plan date",
     "button.all": "Alle",
     "button.save": "Speichern",
     "button.apply": "Anwenden",
@@ -625,6 +626,7 @@
     "message.cannotCopyEmptyObject": "Kopiertes Objekt ist leer!",
     "message.deleteTag": "Sind Sie sicher, dass Sie dieses Schlagwort löschen wollen??",
     "message.deleteAllTag": "Sind Sie sicher, dass Sie alle ausgewählten Schlagwörter löschen wollen??",
+    "message.stickToDailyPlanDate": "Are you sure you want to submit the operation to have orders stick to their original Daily Plan date?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exportieren im .xlsx Format",
     "tooltip.expandDetails": "Details aufklappen",
@@ -2344,6 +2346,7 @@
     "label.cycleEndTime": "Zyklus Ende Zeit",
     "label.ignoreAdmissionTimes": "Zutrittszeiten der Jobs ignorieren",
     "label.blockPosition": "Block Position",
+    "label.stickToDailyPlanDate": "Stick to Daily Plan date",
     "button.allOrders": "Alle Aufträge",
     "button.cancel": "Abbrechen",
     "button.startNow": "Jetzt starten",
@@ -2527,7 +2530,8 @@
       "label.suspendResume": "aussetzen und wiederaufnehmen",
       "label.resumeFailed": "wiederaufnehmen nach Fehler",
       "label.controller": "Controller",
-      "label.managePositions": "Positionen verwalten"
+      "label.managePositions": "Positionen verwalten",
+      "label.confirm": "confirm"
     },
     "keyManagement": {
       "label.keysAndCertificates": "Schlüssel und Zertifikate",

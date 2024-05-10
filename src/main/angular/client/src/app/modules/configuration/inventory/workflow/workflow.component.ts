@@ -5939,6 +5939,8 @@ export class WorkflowComponent {
       return isMatch;
     }
 
+    let lastCells = [];
+
     function checkRemainingNodes(node) {
       node.edges.forEach(edge => {
         if (edge.source && edge.source.id !== node.id) {
@@ -5955,11 +5957,28 @@ export class WorkflowComponent {
           const isMatch = traverseJSONObject(targetId, obj, edge);
           if (!isMatch && self.workflowService.checkClosingCell(edge.source.value.tagName) && targetId != edge.source.getAttribute('targetId')) {
             targetId = edge.source.getAttribute('targetId');
-            traverseJSONObject(targetId, obj, edge);
+            const isFound = traverseJSONObject(targetId, obj, edge);
+            if (!isFound) {
+              lastCells.push(node);
+            }
           }
         }
       });
     }
+
+    function recursivelyCheckAll(_cells) {
+      _cells.forEach((node) => {
+        if (!self.workflowService.checkClosingCell(node.value.tagName) && node.value.tagName !== 'Catch') {
+          checkRemainingNodes(node);
+        }
+      });
+      if (_cells.length) {
+        const _lastCells = [...lastCells];
+        lastCells = [];
+        recursivelyCheckAll(_lastCells);
+      }
+    }
+
 
     if (nodes.length > 0) {
       nodes.forEach((node) => {
@@ -5967,6 +5986,12 @@ export class WorkflowComponent {
           checkRemainingNodes(node);
         }
       });
+    }
+
+    if (lastCells.length > 0) {
+      const _lastCells = [...lastCells];
+      lastCells = [];
+      recursivelyCheckAll(_lastCells);
     }
 
     const jobs = Array.from(jobMap.keys());
@@ -9301,10 +9326,10 @@ export class WorkflowComponent {
         } else if (cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'ConsumeNotices') {
           obj.noticeBoardNames = cell.getAttribute('noticeBoardNames');
           self.coreService.removeSlashToString(obj, 'noticeBoardNames');
-
-          // Ensure single space around && and ||
-          obj.noticeBoardNames = obj.noticeBoardNames.replace(/\s*(\|\||&&)\s*/g, ' $1 ');
-
+          if(obj.noticeBoardNames) {
+            // Ensure single space around && and ||
+            obj.noticeBoardNames = obj.noticeBoardNames.replace(/\s*(\|\||&&)\s*/g, ' $1 ');
+          }
           setTimeout(() => {
             self.isDisplay = true;
             self.ref.detectChanges();

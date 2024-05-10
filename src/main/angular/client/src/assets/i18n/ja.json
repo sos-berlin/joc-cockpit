@@ -492,6 +492,7 @@
     "label.selectAllEntries": "全{{count}}アイテムを選択",
     "label.clearSelection": "選択解除",
     "label.clipboard": "クリップボード",
+    "label.stickToDailyPlanDate": "Stick to Daily Plan date",
     "button.all": "全て",
     "button.save": "保存",
     "button.apply": "適用",
@@ -625,6 +626,7 @@
     "message.cannotCopyEmptyObject": "コピーしたオブジェクトは空です",
     "message.deleteTag": "本当にこのタグを削除しますか?",
     "message.deleteAllTag": "本当に選択した全てのタグを削除しますか?",
+    "message.stickToDailyPlanDate": "Are you sure you want to submit the operation to have orders stick to their original Daily Plan date?",
     "--------POPUP WINDOW MESSAGES END------------": "確認ポップアップで使用",
     "tooltip.exportInXLS": "xlsx形式でエキスポート",
     "tooltip.expandDetails": "詳細表示",
@@ -2344,6 +2346,7 @@
     "label.cycleEndTime": "サイクル終了時間",
     "label.ignoreAdmissionTimes": "許可時間を無視",
     "label.blockPosition": "ブロック位置",
+    "label.stickToDailyPlanDate": "Stick to Daily Plan date",
     "button.allOrders": "全オーダー",
     "button.cancel": "キャンセル",
     "button.startNow": "即時開始",
@@ -2527,7 +2530,8 @@
       "label.suspendResume": "一時停止と回復",
       "label.resumeFailed": "回復して失敗",
       "label.controller": "コントローラー",
-      "label.managePositions": "位置管理"
+      "label.managePositions": "位置管理",
+      "label.confirm": "confirm"
     },
     "keyManagement": {
       "label.keysAndCertificates": "鍵と証明書",
