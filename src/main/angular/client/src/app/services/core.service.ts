@@ -1681,7 +1681,7 @@ export class CoreService {
     return dates;
   }
 
-  removeSlashToString(data: any, type: string): void {
+  removeSlashToString(data: any, type: string, tagName?: string): void {
     if (data[type]) {
       if (isArray(data[type])) {
 
