@@ -8065,6 +8065,9 @@ tr.tr-border td:first-child {
   border-radius: 0;
   top: -1px;
 }
+.ant-checkbox {
+  display: inline-block;
+}
 
 .ant-checkbox + span {
   padding-right: 4px;

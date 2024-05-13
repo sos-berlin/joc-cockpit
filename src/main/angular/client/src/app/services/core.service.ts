@@ -1691,6 +1691,7 @@ export class CoreService {
         } else if (typeof data[type] == 'string') {
           const startChar = data[type].substring(0, 1);
           if (startChar !== '$') {
+
             const endChar = data[type].substring(data[type].length - 1);
             const mainStr = data[type].substring(1, data[type].length - 1);
             if ((startChar === '"' && endChar === '"')) {
@@ -1712,7 +1713,7 @@ export class CoreService {
             }
             try {
               data[type] = JSON.parse(data[type]);
-              if ((startChar === '"' && endChar === '"')) {
+              if ((startChar === '"' && endChar === '"') && tagName !== 'AddOrder' || undefined) {
                 data['default1'] = '""';
               }
             } catch (e) {

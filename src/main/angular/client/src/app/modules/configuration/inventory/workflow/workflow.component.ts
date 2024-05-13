@@ -9166,11 +9166,13 @@ export class WorkflowComponent {
               if (isArray(arg.value)) {
                 arg.value.forEach((item, index) => {
                   for (const prop in arg.value[index]) {
-                    self.coreService.removeSlashToString(arg.value[index], prop);
+                    self.coreService.removeSlashToString(arg.value[index], prop, 'AddOrder');
                   }
                 });
+              }else{
+                self.coreService.removeSlashToString(arg, 'value');
+
               }
-              self.coreService.removeSlashToString(arg, 'value');
             });
           }
           obj.arguments = argument;
