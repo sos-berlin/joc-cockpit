@@ -1773,7 +1773,7 @@ export class CoreService {
             }
             try {
               data[type] = JSON.parse(data[type]);
-              if ((startChar === '"' && endChar === '"')) {
+              if ((startChar === '"' && endChar === '"') && tagName !== 'AddOrder' || undefined) {
                 data['default1'] = '""';
               }
             } catch (e) {
