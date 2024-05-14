@@ -56,12 +56,12 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.history'}
       },
-      // {
-      //   path: 'reports',
-      //   loadChildren: () => import('./../reporting/reporting.module').then(m => m.ReportingModule),
-      //   canActivate: [AuthGuard],
-      //   data: {breadcrumb: 'breadcrumb.label.reports'}
-      // },
+      {
+        path: 'reports',
+        loadChildren: () => import('./../reporting/reporting.module').then(m => m.ReportingModule),
+        canActivate: [AuthGuard],
+        data: {breadcrumb: 'breadcrumb.label.reports'}
+      },
       {
         path: 'file_transfer',
         loadChildren: () => import('./../file-transfer/file-transfer.module').then(m => m.FileTransferModule),

@@ -234,16 +234,16 @@
             </span>
           </a>
         </li>
-<!--        <li *ngIf="((showViews && showViews.report != undefined) ? showViews.report : (permission.joc && permission.joc.reports.view))"-->
-<!--            class="nav-item">-->
-<!--          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/reports">-->
-<!--            <span class="nav-text">-->
-<!--              <i class="text-white pos-abt" nz-icon nzType="fund" nzTheme="outline"></i>-->
-<!--              <i class="text-white " nz-icon nzType="fund" nzTheme="outline"></i>-->
-<!--              <span class="ico text-white _600" translate>header.label.reports</span>-->
-<!--            </span>-->
-<!--          </a>-->
-<!--        </li>-->
+        <li *ngIf="((showViews && showViews.report != undefined) ? showViews.report : (permission.joc && permission.joc.reports.view))"
+            class="nav-item">
+          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/reports">
+            <span class="nav-text">
+              <i class="text-white pos-abt" nz-icon nzType="fund" nzTheme="outline"></i>
+              <i class="text-white " nz-icon nzType="fund" nzTheme="outline"></i>
+              <span class="ico text-white _600" translate>header.label.reports</span>
+            </span>
+          </a>
+        </li>
         <li *ngIf="((showViews && showViews.history != undefined) ? showViews.history : (permission.currentController && (permission.currentController.orders.view || permission.joc.fileTransfer.view || permission.currentController.deployments.view || permission.joc.dailyPlan.view)))"
             class="nav-item">
           <a [routerLinkActive]="['active']" class="nav-link" routerLink="/history">
