@@ -218,7 +218,8 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
         for (let i = 0; i < res.children.length; i++) {
           if (res.children[i].order) {
             res.children[i].order.show = true;
-            this.recursiveExpand(res.children[i].order, ++count);
+            const childCount = count + 1;
+            this.recursiveExpand(res.children[i].order, childCount);
           }
         }
         data.level = count;
