@@ -77,26 +77,40 @@ export class DurationValidator implements Validator {
       if (v == '') {
         return null;
       }
-      if (/^\s*(?:(?:1?\d|2[0-3])h\s*)?(?:[1-5]?\dm\s*)?(?:[1-5]?\ds)?\s*$/.test(v)) {
-        return null;
-      }
-      if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*-\s*([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/.test(v)) {
-        return null;
-      }
 
-      if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(v) || /^[0]+\s*$/i.test(v) ||
-        /^((1+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/.test(v)
-      ) {
+      // Regular expression to match the duration format
+      const durationRegex = /^((1+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/;
+
+      // Check if input matches the duration format
+      if (durationRegex.test(v)) {
+        // Extract hours, minutes, and seconds from the input
+        const matches = v.match(durationRegex);
+        const weeks = matches[2] ? parseInt(matches[2]) : 0;
+        const days = matches[4] ? parseInt(matches[4]) : 0;
+        const hours = matches[6] ? parseInt(matches[6]) : 0;
+        const minutes = matches[8] ? parseInt(matches[8]) : 0;
+        const seconds = matches[10] ? parseInt(matches[10]) : 0;
+
+        // Calculate the total duration in seconds
+        const totalSeconds = weeks * 7 * 24 * 3600 + days * 24 * 3600 + hours * 3600 + minutes * 60 + seconds;
+
+        // Check if the duration exceeds 24 hours (86400 seconds)
+        if (totalSeconds > 86400) {
+          return { invalidDuration: true, message: 'Duration cannot exceed 24 hours.' };
+        }
+
         return null;
       }
     } else {
       return null;
     }
+
     return {
       invalidDuration: true
     };
   }
 }
+
 
 @Directive({
   selector: '[appValidateOffset]',
