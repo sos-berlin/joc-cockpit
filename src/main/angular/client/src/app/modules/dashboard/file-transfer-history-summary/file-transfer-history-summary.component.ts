@@ -31,7 +31,7 @@ export class FileTransferHistorySummaryComponent {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (const j in args.eventSnapshots) {
         if (args.eventSnapshots[j]) {
-          if (args.eventSnapshots[j].eventType === 'FileTransfer') {
+          if (args.eventSnapshots[j].eventType === 'FILETRANSFER') {
             this.getSummary();
             break;
           }

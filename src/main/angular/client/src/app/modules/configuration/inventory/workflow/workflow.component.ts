@@ -6003,13 +6003,7 @@ export class WorkflowComponent {
                       };
                     }
                   } else if (edge.getAttribute('displayLabel') === 'endIf') {
-                    if (!json.instructions[x].else) {
-                      json.instructions[x].else = {
-                        instructions: [obj]
-                      };
-                    } else {
                       json.instructions.splice(x + 1, 0, obj);
-                    }
                   }
                 } else if (json.instructions[x].TYPE == 'Fork') {
                   if (json.instructions[x].branches && edge.getAttribute('displayLabel') === 'join') {
