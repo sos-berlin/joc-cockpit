@@ -214,6 +214,10 @@ export class ScheduleComponent {
         if (existingParameter && existingParameter.actualList && clipboardData.actualList) {
           existingParameter.actualList = clipboardData.actualList;
         }
+
+        if (existingParameter && existingParameter.actualMap && clipboardData.actualMap) {
+          existingParameter.actualMap = clipboardData.actualMap;
+        }
       }
     }
   }
@@ -283,29 +287,55 @@ export class ScheduleComponent {
           for (const i in obj.variableList) {
             let val = obj.variableList[i].value;
             if (isArray(val.listParameters)) {
-              let actualList = [];
-              val.listParameters.forEach((item) => {
-                const _obj: any = {
-                  name: item.name,
-                  type: item.value.type,
-                  value: item.value.default,
-                  isRequired: true
-                };
-                if (item.default || item.default == 0 || item.default == false) {
-                  _obj.isRequired = false;
-                }
-                item.isRequired = _obj.isRequired;
-                actualList.push(_obj);
-              });
+              if (val.type === 'List') {
+                let actualList = [];
+                val.listParameters.forEach((item) => {
+                  const _obj: any = {
+                    name: item.name,
+                    type: item.value.type,
+                    value: item.value.default,
+                    isRequired: true
+                  };
+                  if (item.default || item.default == 0 || item.default == false) {
+                    _obj.isRequired = false;
+                  }
+                  item.isRequired = _obj.isRequired;
+                  actualList.push(_obj);
+                });
 
-              obj.variableList[i].isSelected = true;
-              obj.variables.push({
-                name: obj.variableList[i].name,
-                type: val.type,
-                isRequired: true,
-                list: val.listParameters,
-                actualList: [actualList]
-              });
+                obj.variableList[i].isSelected = true;
+                obj.variables.push({
+                  name: obj.variableList[i].name,
+                  type: val.type,
+                  isRequired: true,
+                  list: val.listParameters,
+                  actualList: [actualList]
+                });
+              } else if (val.type === 'Map') {
+                let actualMap = [];
+                val.listParameters.forEach((item) => {
+                  const _obj: any = {
+                    name: item.name,
+                    type: item.value.type,
+                    value: item.value.default,
+                    isRequired: true
+                  };
+                  if (item.default || item.default == 0 || item.default == false) {
+                    _obj.isRequired = false;
+                  }
+                  item.isRequired = _obj.isRequired;
+                  actualMap.push(_obj);
+                });
+
+                obj.variableList[i].isSelected = true;
+                obj.variables.push({
+                  name: obj.variableList[i].name,
+                  type: val.type,
+                  isRequired: true,
+                  map: val.listParameters,
+                  actualMap: [actualMap]
+                });
+              }
 
             } else {
               if (!val.default && val.default !== false && val.default !== 0) {
@@ -524,6 +554,7 @@ export class ScheduleComponent {
     this.isForkListVariable = false;
     this.variableList = [];
     let forkListVariables = [];
+    let mapVariables = [];
     let variablesBeforeUpdate = {};
     for (const prop in this.schedule.configuration.orderParameterisations) {
       if (this.schedule.configuration.orderParameterisations[prop].variables && !isArray(this.schedule.configuration.orderParameterisations[prop].variables)) {
@@ -630,6 +661,79 @@ export class ScheduleComponent {
               }
             }
           }
+        } else if (val.type === 'Map') {
+          const actualMap = [];
+          if (val.listParameters) {
+            val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
+              const val1: any = v1;
+              const obj = {
+                name: k1,
+                type: val1.type,
+                value: val1.default,
+                isRequired: true
+              };
+              if (val1.default || val1.default == 0 || val1.default == false) {
+                obj.isRequired = false;
+              }
+              if (val1.value) {
+                this.coreService.checkDataType(val1);
+              }
+              val1.isRequired = obj.isRequired;
+              actualMap.push(obj);
+              return {name: k1, value: val1};
+            });
+
+            mapVariables.push({name: k, list: val.listParameters, actualMap: [actualMap]});
+            if (this.schedule.configuration.orderParameterisations.length === 0) {
+              this.schedule.configuration.orderParameterisations.push(
+                {
+                  orderName: '',
+                  variables: [{
+                    name: k,
+                    isExist: true,
+                    type: val.type,
+                    map: val.listParameters,
+                    actualMap: [actualMap]
+                  }],
+                  positions: {}
+                });
+            } else {
+              let isExist = false;
+              for (const prop in this.schedule.configuration.orderParameterisations) {
+                for (let i = 0; i < this.schedule.configuration.orderParameterisations[prop].variables.length; i++) {
+                  if (this.schedule.configuration.orderParameterisations[prop].variables[i].name === k) {
+                    this.schedule.configuration.orderParameterisations[prop].variables[i].isRequired = true;
+                    this.schedule.configuration.orderParameterisations[prop].variables[i].isExist = true;
+                    this.schedule.configuration.orderParameterisations[prop].variables[i].type = val.type;
+                    this.schedule.configuration.orderParameterisations[prop].variables[i].map = val.listParameters;
+                    this.schedule.configuration.orderParameterisations[prop].variables[i].actualMap = [actualMap];
+                    isExist = true;
+                    break;
+                  }
+                }
+
+                if (!isExist) {
+                  let obj: any = {
+                    name: k,
+                    type: val.type,
+                    isRequired: true,
+                    map: val.listParameters,
+                    isExist: true,
+                    actualMap: [actualMap]
+                  };
+                  if (val.map) {
+                    obj.map = [];
+                    val.map.forEach((item) => {
+                      let obj1 = {name: item}
+                      this.coreService.removeSlashToString(obj1, 'name');
+                      obj.map.push(obj1);
+                    });
+                  }
+                  this.schedule.configuration.orderParameterisations[prop].variables.push(obj);
+                }
+              }
+            }
+          }
         } else {
           if (this.schedule.configuration.orderParameterisations.length === 0) {
             if (!val.default && val.default !== false && val.default !== 0) {
@@ -724,8 +828,47 @@ export class ScheduleComponent {
       for (const prop in this.schedule.configuration.orderParameterisations) {
         if (this.schedule.configuration.orderParameterisations[prop].variables && this.schedule.configuration.orderParameterisations[prop].variables.length > 0) {
           this.schedule.configuration.orderParameterisations[prop].variables = this.schedule.configuration.orderParameterisations[prop].variables.filter(item => {
-            if (isArray(item.value)) {
+
+            if (isArray(item.value) && item.type == 'List') {
               this.setForkListVariables(item, forkListVariables);
+            } else if (item.type == 'Map') {
+              const notExistArr = [];
+              //this.setForkListVariables(item, mapVariables);
+              for (let x in mapVariables) {
+                if (mapVariables[x].name === item.name) {
+
+                  item.value = Object.entries(item.value).map(([k1, v1]) => {
+                    let type, isRequired = true;
+                    for (const prop in mapVariables[x].list) {
+                      if (mapVariables[x].list[prop].name === k1) {
+                        type = mapVariables[x].list[prop].value.type;
+                        isRequired = mapVariables[x].list[prop].value.isRequired;
+                        break;
+                      }
+                    }
+
+                    const obj = {name: k1, value: v1, type, isRequired};
+                    this.coreService.checkDataType(obj);
+                    return obj;
+                  });
+                  
+
+                  if (notExistArr.length > 0) {
+                    notExistArr.forEach(item => {
+                      const obj = {
+                        name: item.name,
+                        type: item.value.type,
+                        value: (item.value.value || item.value.default),
+                        isRequired: item.value.isRequired || item.isRequired
+                      };
+                      this.coreService.checkDataType(obj);
+                      item.value.push(obj);
+                    })
+                  }
+                  item.actualMap = [item.value];
+                  break;
+                }
+              }
             }
             return true;
           });
@@ -1069,6 +1212,17 @@ export class ScheduleComponent {
                 variables[item.name].push(listObj);
               }
             }
+          } else if (item.type === 'Map') {
+            variables[item.name] = [];
+            if (item.actualMap?.length > 0) {
+              for (const i in item.actualMap) {
+                const mapObj = {};
+                item.actualMap[i].forEach((data) => {
+                  mapObj[data.name] = data.value;
+                });
+                variables[item.name] = mapObj;
+              }
+            }
           } else {
             variables[item.name] = item.value;
 
@@ -1300,7 +1454,7 @@ export class ScheduleComponent {
         };
         if (isArray(variable.variables)) {
           variable.variables.forEach((item) => {
-            if (item.type === 'List') {
+            if (item.type === 'List' || item.type === 'Map') {
               data[index][item.name] = {isCollapse: item.isCollapse};
             }
           });
@@ -1477,7 +1631,7 @@ export class ScheduleComponent {
 
   expandAll(variables): void {
     variables.forEach((item) => {
-      if (item.type === 'List') {
+      if (item.type === 'List' || item.type === 'Map') {
         item.isCollapse = false;
       }
     });
@@ -1485,7 +1639,7 @@ export class ScheduleComponent {
 
   collapseAll(variables): void {
     variables.forEach((item) => {
-      if (item.type === 'List') {
+      if (item.type === 'List' || item.type === 'Map') {
         item.isCollapse = true;
       }
     });
@@ -1496,7 +1650,7 @@ export class ScheduleComponent {
       let data = this.coreService.scheduleExpandedProperties.get(key);
       this.schedule.configuration.orderParameterisations.forEach((variable, index) => {
         variable.variables.forEach((item) => {
-          if (item.type === 'List') {
+          if (item.type === 'List' || item.type === 'Map') {
             if (data[index.toString()] && data[index.toString()][item.name]?.isCollapse) {
               item.isCollapse = true;
             }
@@ -1509,15 +1663,21 @@ export class ScheduleComponent {
     } else {
       let len = 0;
       let len2 = 0;
+      let len3 = 0;
       this.schedule.configuration.orderParameterisations.forEach((variable) => {
         variable.variables.forEach((item) => {
           len += 1;
-          if (item.type === 'List') {
+          if (item.type === 'List' || item.type === 'Map') {
             if (this.schedule.configuration.orderParameterisations.length > 1) {
               item.isCollapse = true;
             } else {
-              len2 += item.list.length;
-              len2 = len2 + 1;
+              if (item.type === 'List') {
+                len2 += item.list.length;
+                len2 = len2 + 1;
+              } else if (item.type === 'Map') {
+                len3 += item.map.length;
+                len3 = len3 + 1;
+              }
             }
           }
         });
@@ -1534,7 +1694,7 @@ export class ScheduleComponent {
         if (height < ((len + len2) * 30) + 16) {
           this.schedule.configuration.orderParameterisations.forEach((variable) => {
             variable.variables.forEach((item) => {
-              if (item.type === 'List') {
+              if (item.type === 'List' || item.type === 'Map') {
                 item.isCollapse = true;
               }
             });

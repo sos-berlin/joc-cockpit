@@ -153,23 +153,46 @@ export class AddOrderModalComponent {
           for (let i in this.variableList) {
             if (argu.name == this.variableList[i].name) {
               if (isArray(argu.value)) {
-                for (let j in argu.value) {
-                  Object.entries(argu.value[j]).map(([k1, v1]) => {
-                    for (let x in this.variableList[i].value.actualList) {
-                      if (k1 == this.variableList[i].value.actualList[x].name) {
-                        this.variableList[i].value.actualList[x].value = v1;
-                        break;
+                if(argu.type === 'List'){
+                  for (let j in argu.value) {
+                    Object.entries(argu.value[j]).map(([k1, v1]) => {
+                      for (let x in this.variableList[i].value.actualList) {
+                        if (k1 == this.variableList[i].value.actualList[x].name) {
+                          this.variableList[i].value.actualList[x].value = v1;
+                          break;
+                        }
                       }
-                    }
+                    });
+                  }
+                }else if(argu.type === 'Map'){
+                  for (let j in argu.value) {
+                    Object.entries(argu.value[j]).map(([k1, v1]) => {
+                      for (let x in this.variableList[i].value.actualMap) {
+                        if (k1 == this.variableList[i].value.actualMap[x].name) {
+                          this.variableList[i].value.actualMap[x].value = v1;
+                          break;
+                        }
+                      }
+                    });
+                  }
+                }
+                if(this.variableList[i].value.type === 'List'){
+                  this.arguments.push({
+                    name: argu.name,
+                    type: this.variableList[i].value.type,
+                    isRequired: true,
+                    actualList: [{list: this.variableList[i].value.actualList}],
+                    list: this.variableList[i].value.listParameters
+                  });
+                }else if(this.variableList[i].value.type === 'Map'){
+                  this.arguments.push({
+                    name: argu.name,
+                    type: this.variableList[i].value.type,
+                    isRequired: true,
+                    actualMap: [{map: this.variableList[i].value.actualMap}],
+                    map: this.variableList[i].value.listParameters
                   });
                 }
-                this.arguments.push({
-                  name: argu.name,
-                  type: this.variableList[i].value.type,
-                  isRequired: true,
-                  actualList: [{list: this.variableList[i].value.actualList}],
-                  list: this.variableList[i].value.listParameters
-                });
               } else {
                 this.arguments.push({
                   name: argu.name,
@@ -178,7 +201,8 @@ export class AddOrderModalComponent {
                   isRequired: true,
                   facet: this.variableList[i].value.facet,
                   message: this.variableList[i].value.message,
-                  list: this.variableList[i].value.list
+                  list: this.variableList[i].value.list,
+                  map: this.variableList[i].value.map
                 });
               }
               break;
@@ -208,7 +232,7 @@ export class AddOrderModalComponent {
 
   collapseAll(): void {
     for (let k = 0; k < this.arguments.length; k++) {
-      if (this.arguments[k].type == 'List') {
+      if (this.arguments[k].type == 'List' || this.arguments[k].type == 'Map') {
         if (this.preferences.listVariableCollapse) {
           if (this.allValuesAssigned(this.arguments[k])) {
             this.isCollapsed[k] = true;
@@ -221,10 +245,20 @@ export class AddOrderModalComponent {
   }
 
   allValuesAssigned(listVariables): boolean {
-    for (let actualListArr of listVariables.actualList) {
-      for (let argument of actualListArr?.list) {
-        if (!argument.value) {
-          return false;
+    if(listVariables.type === 'List'){
+      for (let actualListArr of listVariables.actualList) {
+        for (let argument of actualListArr?.list) {
+          if (!argument.value) {
+            return false;
+          }
+        }
+      }
+    }else if(listVariables.type === 'Map'){
+      for (let actualMapArr of listVariables.actualMap) {
+        for (let argument of actualMapArr?.map) {
+          if (!argument.value) {
+            return false;
+          }
         }
       }
     }
@@ -344,7 +378,7 @@ export class AddOrderModalComponent {
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
-        if (val.type !== 'List') {
+        if (val.type !== 'List' && val.type !== 'Map') {
           if (!val.final) {
             let list;
             if (val.list) {
@@ -378,7 +412,7 @@ export class AddOrderModalComponent {
               val.list = list;
             }
           }
-        } else {
+        } else if(val.type === 'List') {
           this.isForkList = true;
           const actualList = [];
           if (val.listParameters) {
@@ -413,6 +447,43 @@ export class AddOrderModalComponent {
               });
             } else {
               val.actualList = actualList;
+            }
+          }
+        }else if(val.type === 'Map') {
+          // this.isForkList = true;
+          const actualMap = [];
+          if (val.listParameters) {
+            if (isArray(val.listParameters)) {
+              val.listParameters.forEach((item) => {
+                const obj = {name: item.name, type: item.value.type, value: item.value.default, isRequired: true};
+                if (item.value.default || item.value.default == 0 || item.value.default == false) {
+                  obj.isRequired = false;
+                }
+                item.isRequired = obj.isRequired;
+                actualMap.push(obj);
+              });
+            } else {
+              val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
+                const val1: any = v1;
+                const obj = {name: k1, type: val1.type, value: val1.default, isRequired: true};
+                if (val1.default || val1.default == 0 || val1.default == false) {
+                  obj.isRequired = false;
+                }
+                val1.isRequired = obj.isRequired;
+                actualMap.push(obj);
+                return {name: k1, value: val1};
+              });
+            }
+            if(!this.modalData.order){
+              this.arguments.push({
+                name: k,
+                type: val.type,
+                isRequired: true,
+                actualMap: [{map: actualMap}],
+                map: val.listParameters
+              });
+            } else {
+              val.actualMap = actualMap;
             }
           }
         }
@@ -543,6 +614,17 @@ export class AddOrderModalComponent {
                 listObj[data.name] = data.value;
               });
               order.arguments[item.name].push(listObj);
+            }
+          }
+        }else if(item.type === 'Map'){
+          order.arguments[item.name] = [];
+          if (item.actualMap?.length > 0) {
+            for (const i in item.actualMap) {
+              const mapObj = {};
+              item.actualMap[i].map.forEach((data) => {
+                mapObj[data.name] = data.value;
+              });
+              order.arguments[item.name] = { ...mapObj };
             }
           }
         }
@@ -793,7 +875,7 @@ export class AddOrderModalComponent {
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
-        if (val.type !== 'List') {
+        if (val.type !== 'List' && val.type !== 'Map') {
           if (!val.final) {
             let list;
             if (val.list) {
@@ -819,7 +901,7 @@ export class AddOrderModalComponent {
               }
             }
           }
-        } else {
+        } else if(val.type === 'List') {
 
           const actualList = [];
           if (val.listParameters) {
@@ -869,6 +951,61 @@ export class AddOrderModalComponent {
                   type: val.type,
                   actualList,
                   list: val.listParameters
+                });
+                break;
+              }
+            }
+          }
+        }else if(val.type === 'Map') {
+
+          const actualMap = [];
+          if (val.listParameters) {
+            if (!isArray(val.listParameters)) {
+              val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
+                const val1: any = v1;
+                return {name: k1, value: val1};
+              });
+            }
+
+            for (let x in orderParameterisations.variables) {
+              if (k === x) {
+                if (isArray(orderParameterisations.variables[x])) {
+                  orderParameterisations.variables[x].forEach((key) => {
+                    let arr = [];
+                    for (let y in val.listParameters) {
+                      if (key[val.listParameters[y].name] || key[val.listParameters[y].name] == false || key[val.listParameters[y].name] == 0) {
+                        arr.push({
+                          name: val.listParameters[y].name,
+                          type: val.listParameters[y].value.type,
+                          value: key[val.listParameters[y].name]
+                        });
+                      }
+                    }
+                    if (arr.length > 0) {
+                      actualMap.push({map: arr});
+                    }
+                  });
+                }
+              }
+            }
+            if (actualMap.length === 0) {
+              let arr = [];
+              val.listParameters.forEach((item) => {
+                arr.push({name: item.name, type: item.value.type});
+              });
+              if (arr.length > 0) {
+                actualMap.push({map: arr});
+              }
+            }
+
+            for (let x in orderParameterisations.variables) {
+              if (k == x) {
+                this.arguments.push({
+                  name: k,
+                  isRequired: true,
+                  type: val.type,
+                  actualMap,
+                  map: val.listParameters
                 });
                 break;
               }

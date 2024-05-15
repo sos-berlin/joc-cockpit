@@ -3010,7 +3010,7 @@ export class WorkflowComponent {
   objectType = InventoryObject.WORKFLOW;
   invalidMsg: string;
   inventoryConf: any;
-  allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'List'];
+  allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'List', 'Map'];
   variableDeclarations = {parameters: [], allowUndeclared: false};
   document = {name: ''};
   fullScreen = false;
@@ -3731,7 +3731,7 @@ export class WorkflowComponent {
       );
       if (existingParameter && existingParameter.value.listParameters && clipboardDataArray.value.listParameters) {
         existingParameter.value = clipboardDataArray.value;
-        if (clipboardDataArray.value && clipboardDataArray.value.type === 'List' && clipboardDataArray.value.listParameters) {
+        if (clipboardDataArray.value && clipboardDataArray.value.type === 'List' && clipboardDataArray.value.type === 'Map' && clipboardDataArray.value.listParameters) {
           existingParameter.value.listParameters = clipboardDataArray.value.listParameters;
         }
       }
@@ -4316,10 +4316,11 @@ export class WorkflowComponent {
   }
 
   changeDataType(type, variable): void {
-    if (type === 'List') {
+    if (type === 'List' || type === 'Map') {
       delete variable.value.default;
       delete variable.value.final;
       delete variable.value.list;
+      delete variable.value.map;
       variable.value.listParameters = [];
       this.addVariableToList(variable.value);
     } else {
@@ -4520,10 +4521,11 @@ export class WorkflowComponent {
         const temp = this.coreService.clone(this.orderPreparation.parameters);
         this.variableDeclarations.parameters = Object.entries(temp).map(([k, v]) => {
           const val: any = v;
-          if (val.type === 'List') {
+          if (val.type === 'List' || val.type === 'Map') {
             delete val.default;
             delete val.final;
             delete val.list;
+            delete val.map;
             if (val.listParameters) {
               val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
                 return {name: k1, value: v1};
@@ -4605,6 +4607,7 @@ export class WorkflowComponent {
   updateArgumentList(): void {
     this.selectedNode.obj.argumentList = [];
     this.selectedNode.obj.forkListArguments = [];
+    this.selectedNode.obj.mapArguments = [];
     if (this.selectedNode.obj.workflow.orderPreparation && this.selectedNode.obj.workflow.orderPreparation.parameters && !isEmpty(this.selectedNode.obj.workflow.orderPreparation.parameters)) {
       this.selectedNode.obj.argumentList = Object.entries(this.selectedNode.obj.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
@@ -4644,6 +4647,42 @@ export class WorkflowComponent {
               });
             }
             this.selectedNode.obj.forkListArguments.push({name: k, list: val.listParameters, actualList: [actualList]});
+          }
+        }else if (val.type === 'Map') {
+          const actualMap = [];
+          if (val.listParameters) {
+            if (isArray(val.listParameters)) {
+              val.listParameters.forEach((item) => {
+                const obj: any = {
+                  name: item.name,
+                  type: item.value.type,
+                  value: item.value.default,
+                  isRequired: true
+                };
+                if (item.default || item.default == 0 || item.default == false) {
+                  obj.isRequired = false;
+                }
+                item.isRequired = obj.isRequired;
+                actualMap.push(obj);
+              });
+            } else {
+              val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
+                const val1: any = v1;
+                const obj = {
+                  name: k1,
+                  type: val1.type,
+                  value: val1.default,
+                  isRequired: true
+                };
+                if (val1.default || val1.default == 0 || val1.default == false) {
+                  obj.isRequired = false;
+                }
+                val1.isRequired = obj.isRequired;
+                actualMap.push(obj);
+                return {name: k1, value: val1};
+              });
+            }
+            this.selectedNode.obj.mapArguments.push({name: k, map: val.listParameters, actualMap: [actualMap]});
           }
         } else {
           let isExist = false;
@@ -5382,7 +5421,7 @@ export class WorkflowComponent {
   }
 
   private updateWorkflow(graph, jobMap): void {
-    this.selectedNode = null;
+    this.selectedNode =  null;
     const scrollValue: any = {};
     const element = document.getElementById('graph');
 
@@ -5946,47 +5985,47 @@ export class WorkflowComponent {
               if (json.instructions[x].instructions) {
                 if (!json.instructions[x].then) {
                   json.instructions.push(obj);
-                } else {
+                }else{
                   json.instructions[x].instructions.push(obj);
                 }
               } else {
                 if (json.instructions[x].TYPE == 'If') {
-                  if (edge.getAttribute('displayLabel') === 'then') {
-                    if (!json.instructions[x].then) {
-                      json.instructions[x].then = {
-                        instructions: [obj]
-                      };
+                      if (edge.getAttribute('displayLabel') === 'then') {
+                        if (!json.instructions[x].then) {
+                          json.instructions[x].then = {
+                            instructions: [obj]
+                          };
+                        }
+                      } else if (edge.getAttribute('displayLabel') === 'else') {
+                        if (!json.instructions[x].else) {
+                          json.instructions[x].else = {
+                            instructions: [obj]
+                          };
+                        }
+                      } else if (edge.getAttribute('displayLabel') === 'endIf') {
+                        if (!json.instructions[x].else) {
+                          json.instructions[x].else = {
+                            instructions: [obj]
+                          };
+                        } else {
+                          json.instructions.push(obj);
+
+                        }
                     }
-                  } else if (edge.getAttribute('displayLabel') === 'else') {
-                    if (!json.instructions[x].else) {
-                      json.instructions[x].else = {
-                        instructions: [obj]
-                      };
-                    }
-                  } else if (edge.getAttribute('displayLabel') === 'endIf') {
-                    if (!json.instructions[x].else) {
-                      json.instructions[x].else = {
-                        instructions: [obj]
-                      };
-                    } else {
-                      json.instructions.push(obj);
-                    }
-                  }
                 } else if (json.instructions[x].TYPE == 'Fork') {
-                  if (!json.instructions[x].instructions) {
-                    json.instructions[x].instructions = [obj];
+                  if (!json.instructions[x].branches) {
+                    json.instructions[x].branches = [];
                   }
-                  json.instructions.push(obj);
+                  const result = edge.getAttribute('result');
+                  const branchObj = {
+                    id: edge.getAttribute('displayLabel'),
+                    result: result ? JSON.parse(result) : result,
+                    instructions: []
+                  };
+
+                  json.instructions[x].branches.push(branchObj);
                 } else {
-                  if (edge.getAttribute('displayLabel') === 'else') {
-                    if (!json.instructions[x].else) {
-                      json.instructions[x].else = {
-                        instructions: [obj]
-                      };
-                    }
-                  } else {
-                    json.instructions.push(obj);
-                  }
+                  json.instructions.push(obj);
                 }
               }
               isMatch = true;
@@ -8724,6 +8763,29 @@ export class WorkflowComponent {
                   });
                 }
               } else {
+                argu.arguments = {};
+              }
+              if (self.selectedNode.newObj.mapArguments) {
+                self.selectedNode.newObj.mapArguments.forEach((item) => {
+                  argu.arguments[item.name] = [];
+                  if (item.actualMap) {
+                    for (const i in item.actualMap) {
+                      const mapObj = {};
+                      item.actualMap[i].forEach((data) => {
+                        if (!data.value) {
+                        } else {
+                          self.coreService.addSlashToString(data, 'value');
+                          mapObj[data.name] = data.value;
+                        }
+                      });
+                      if (!isEmpty(mapObj)) {
+                        // argu.arguments[item.name].push({mapObj});
+                        argu.arguments[item.name] = { ...mapObj };
+                      }
+                    }
+                  }
+                });
+              }else {
                 argu.arguments = {};
               }
 
@@ -12062,16 +12124,16 @@ export class WorkflowComponent {
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
         delete value.value.invalid;
-        if (value.value.type === 'List' || value.value.type === 'Final') {
+        if (value.value.type === 'List' || value.value.type === 'Final' || value.value.type === 'Map') {
           delete value.value.default;
         } else if (value.value.type !== 'String') {
           delete value.value.facet;
           delete value.value.message;
         }
         if (!value.value.default && value.value.default !== false && value.value.default !== 0) {
-          delete value.value.default;
+            delete value.value.default;
         }
-        if (value.value.type === 'List') {
+        if (value.value.type === 'List' || value.value.type === 'Map') {
           delete value.value.final;
           value.value.listParameters = this.coreService.keyValuePair(value.value.listParameters);
         } else {

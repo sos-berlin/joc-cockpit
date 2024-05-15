@@ -120,6 +120,128 @@
   </div>
 
 </ng-template>
+<ng-template #mapVariableTemplate let-j="j" let-listVariables let-x="x">
+  <div>
+    <div class="row m-b-10">
+      <div class="col-sm-8 col-xl-6">
+        <span class="p-r-xs" translate>workflow.label.childrenMap</span>:
+        <label class="_600 p-l-xs">
+          {{listVariables.name}}
+          <i (click)="listVariables.isCollapse = !listVariables.isCollapse" class="cursor fa fa-lg p-l-sm"
+             [ngClass]="!listVariables.isCollapse ? 'fa-angle-up' : 'fa-angle-down' "></i>
+        </label>
+      </div>
+      <div class="text-right col-sm-3 col-xl-3">
+        <a class="cursor" (click)="copyIndlArguments(j, x)"
+           nz-tooltip="{{'common.button.copyArguments' | translate}}">
+          <i class="fa fa-copy"></i>
+        </a>
+        <a class="cursor p-l-12" (click)="handleIndlPaste(storedIndlArguments[0], j, x)" *ngIf="storedIndlArguments?.length > 0 && getStoredIndlArgumentsName() === listVariables?.name"
+           nz-tooltip="{{'common.button.paste' | translate}}">
+          <i class="fa fa-paste"></i>
+        </a>
+      </div>
+    </div>
+
+    <div *ngIf="!listVariables.isCollapse && listVariables.map" class="p-a-sm b-a m-b">
+      <div class="form-group row m-b-0 m-l-12">
+        <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
+        <div class="col-md-6 col-lg-8 col-xl-9 m-b-sm m-l-n-23" translate>common.label.value</div>
+      </div>
+      <div *ngFor="let actualMapArr of listVariables.actualMap; let i = index"
+           [ngClass]="{'b-b-dark m-b-sm': i !== listVariables.actualMap.length - 1}"
+           class="form-group row m-b-0 m-l-12">
+        <!-- <div (click)="addVariableToList(listVariables)"
+             *ngIf="listVariables.actualMap && (i === listVariables.actualMap.length - 1)"
+             class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 3px;cursor: pointer">
+          <i aria-hidden="true" class="fa fa-plus"></i>
+        </div> -->
+        <div *ngFor="let argument of actualMapArr; let k = index" class="col-md-12">
+          <div class="form-group row m-b-0">
+            <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" style="padding-right: 34px">
+              <input [(ngModel)]="argument.name" class="form-control" name="_name{{i}}{{j}}{{k}}{{x}}" readonly
+                     type="text">
+            </div>
+            <ng-container [ngSwitch]="argument.type">
+              <ng-container *ngSwitchCase="'Number'">
+                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                     class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                  <nz-input-number #value="ngModel" (nzBlur)="saveJSON()" [(ngModel)]="argument.value"
+                                   [nzMin]="0" [nzStep]="1" [required]="argument.isRequired" class="m-l-n-23 w-103"
+                                   name="_value{{i}}{{j}}{{k}}{{x}}"
+                                   nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                       class="text-danger help-block m-l-n-23">
+                    <div *ngIf="value.errors['required']">
+                      <div translate>common.message.requiredError</div>
+                    </div>
+                  </div>
+                  <div
+                    *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1"
+                    class="pos-abt r-t-n-28">
+                    <a><i (click)="removeVariableFromList(i, listVariables.actualMap)"
+                          class="fa fa-times m-t-sm text-muted"></i></a>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'Boolean'">
+                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                     class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                  <nz-select #value="ngModel" [(ngModel)]="argument.value"
+                             [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+                             [required]="argument.isRequired" class="m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
+                             nzAllowClear (ngModelChange)="checkVal()">
+                    <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                    <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                  </nz-select>
+                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                       class="text-danger help-block m-l-n-23">
+                    <div *ngIf="value.errors['required']">
+                      <div translate>common.message.requiredError</div>
+                    </div>
+                  </div>
+                  <div
+                    *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1"
+                    class="pos-abt r-t-n-28">
+                    <a><i (click)="removeVariableFromList(i, listVariables.actualMap)"
+                          class="fa fa-times m-t-sm text-muted"></i></a>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                     class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                  <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired"
+                         autocomplete="off" (blur)="saveJSON()"
+                         class="form-control m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
+                         placeholder="{{'common.placeholder.value' | translate}}"
+                         type="text">
+                  <i (click)="openEditor(argument, 'value')"
+                     [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                     nzTheme="outline" nzType="form"
+                     style="right: 13px;top:1px;"></i>
+                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                       class="text-danger help-block m-l-n-23">
+                    <div *ngIf="value.errors['required']">
+                      <div translate>common.message.requiredError</div>
+                    </div>
+                  </div>
+                  <div
+                    *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1"
+                    class="pos-abt r-t-n-28">
+                    <a><i (click)="removeVariableFromList(i, listVariables.actualMap)"
+                          class="fa fa-times m-t-sm text-muted"></i></a>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ng-template>
 <div class="row">
   <div *ngIf="data.type" class="col-md-12">
     <div class="box p-a p-r-md m-t-n-xs" >
@@ -345,7 +467,13 @@
                                     [ngTemplateOutlet]="listVariableTemplate"></ng-container>
                     </div>
                   </ng-container>
-                  <ng-container *ngIf="variable.type !== 'List'">
+                  <ng-container *ngIf="variable.type === 'Map'">
+                    <div class="col-sm-12">
+                      <ng-container [ngTemplateOutletContext]="{ $implicit: variable, x: i, j: j}"
+                                    [ngTemplateOutlet]="mapVariableTemplate"></ng-container>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="variable.type !== 'List' && variable.type !== 'Map'">
                     <div *ngIf="variable.isTextField" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
                          class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm">
                       <input #name="ngModel" [(ngModel)]="variable.name" autocomplete="off" class="form-control" name="name_{{i}}{{j}}"

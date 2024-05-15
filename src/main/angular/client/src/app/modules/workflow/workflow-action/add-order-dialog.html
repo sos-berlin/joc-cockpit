@@ -116,6 +116,124 @@
     </div>
 </ng-template>
 
+<ng-template #mapVariableTemplate let-listVariables let-k="k">
+  <div>
+    <!-- Toggle -->
+    <div class="m-b-sm cursor" (click)="toggleCollapse(k)">
+      <i nz-icon [nzType]="isCollapsed[k] ? 'right' : 'down'"
+         nzTheme="outline"></i>
+      {{'order.label.variableMap' | translate}}: <b>{{listVariables.name}}</b>
+    </div>
+
+    <!-- Conditional Content based on Toggle State -->
+    <div *ngIf="!isCollapsed[k]" class="p-a-sm b-a m-b">
+      <div class="form-group row m-b-0 m-l-12">
+        <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
+        <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
+      </div>
+      <div *ngFor="let actualMapArr of listVariables.actualMap; let i=index"
+           [ngClass]="{'b-b-dark m-b-sm': i !== listVariables.actualMap.length - 1}"
+           class="form-group row m-b-0 m-l-12">
+        <!-- <div (click)="addVariableToList(listVariables)"
+             *ngIf="listVariables.actualMap && (i === listVariables.actualMap.length - 1)"
+             class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 4px;cursor: pointer">
+          <i aria-hidden="true" class="fa fa-plus"></i>
+        </div> -->
+        <div *ngFor="let argument of actualMapArr.map; let j=index" class="col-md-12">
+          <div class="form-group row m-b-0">
+            <div class="col-sm-4 m-b-sm">
+              <input [(ngModel)]="argument.name" class="form-control" name="_name{{i}}{{j}}{{k}}" readonly
+                     type="text">
+            </div>
+            <ng-container [ngSwitch]="argument.type">
+              <ng-container *ngSwitchCase="'Number'">
+                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                     class="col-md-6 col-lg-6 m-b-sm">
+                  <nz-input-number #value="ngModel" [(ngModel)]="argument.value"
+                                   [nzMin]="0"
+                                   [nzStep]="1" [required]="argument.isRequired" name="_value{{i}}{{j}}{{k}}"
+                                   nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                       class="text-danger help-block">
+                    <div *ngIf="value.errors['required']">
+                      <div translate>common.message.requiredError</div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'Boolean'">
+                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                     class="col-md-6 col-lg-6 m-b-sm">
+                  <nz-select #value="ngModel" [(ngModel)]="argument.value"
+                             [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="argument.isRequired" name="_value{{i}}{{j}}{{k}}"
+                             nzAllowClear>
+                    <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                    <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                  </nz-select>
+                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                       class="text-danger help-block">
+                    <div *ngIf="value.errors['required']">
+                      <div translate>common.message.requiredError</div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                     class="col-md-6 col-lg-6 m-b-sm">
+                  <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired" autocomplete="off" class="form-control"
+                         name="_value{{i}}{{j}}{{k}}" placeholder="{{'common.placeholder.value' | translate}}"
+                         type="text">
+                  <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
+                     style="right: 13px;top:1px;" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
+                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                       class="text-danger help-block">
+                    <div *ngIf="value.errors['required']">
+                      <div translate>common.message.requiredError</div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+            <div *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && j === actualMapArr.length - 1"
+                 class="col-md-1 p-l-0">
+              <a><i (click)="removeVariableFromList(i, listVariables.actualMap)"
+                    class="fa fa-times m-t-sm text-muted"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group row">
+            <div class="col-sm-12">
+              <a (click)="assignParameterizationFromSchedules()" class="text-u-l" translate>order.button.assignFromSchedule</a>
+            </div>
+          </div>
+          <div *ngIf="schedules && schedules.length > 0" class="form-group row">
+            <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
+            <div class="col-sm-6">
+              <nz-select [(ngModel)]="actualMapArr.name" name="schedule{{i}}" nzAllowClear (ngModelChange)="selectVarFromSchedule($event, actualMapArr, listVariables, i)"
+                         nzShowSearch>
+                <nz-option *ngFor="let option of schedules | orderBy: 'name'" [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+          <div *ngIf="actualMapArr.orderParameterisations && actualMapArr.orderParameterisations.length > 1"
+               class="form-group row">
+            <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
+            <div class="col-sm-6">
+              <nz-select [(ngModel)]="actualMapArr.orderName" name="order{{i}}" nzAllowClear
+                         nzShowSearch (ngModelChange)="selectOrder($event, actualMapArr, listVariables, i)" >
+                <nz-option *ngFor="let option of actualMapArr.orderParameterisations" [nzLabel]="option.orderName || '-'"
+                           [nzValue]="option.orderName || '-'"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>workflow.label.addNewOrderTo</span> {{workflow.path}}
@@ -256,7 +374,7 @@
       <div >
         <div *ngFor="let argument of arguments; let i=index"  class="form-group row m-b-0 ">
 
-          <ng-container *ngIf="argument.type !== 'List'">
+          <ng-container *ngIf="argument.type !== 'List' && argument.type !== 'Map'">
             <div *ngIf="argument.isTextField" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
                  class="col-sm-4 m-b-sm">
               <input #name="ngModel" [(ngModel)]="argument.name" autocomplete="off" class="form-control" name="name_{{i}}"
@@ -361,6 +479,12 @@
             <div class="col-sm-12">
               <ng-container [ngTemplateOutletContext]="{ $implicit: argument, k: i}"
                             [ngTemplateOutlet]="listVariableTemplate"></ng-container>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="argument.type === 'Map'">
+            <div class="col-sm-12">
+              <ng-container [ngTemplateOutletContext]="{ $implicit: argument, k: i}"
+                            [ngTemplateOutlet]="mapVariableTemplate"></ng-container>
             </div>
           </ng-container>
         </div>
