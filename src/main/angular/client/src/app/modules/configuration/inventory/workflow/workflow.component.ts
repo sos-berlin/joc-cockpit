@@ -5866,7 +5866,7 @@ export class WorkflowComponent {
             if (json.instructions[x].id == nodeId) {
               if (json.instructions[x].instructions) {
                 if (!json.instructions[x].then) {
-                  json.instructions.push(obj);
+                  json.instructions.splice(x + 1, 0, obj);
                 } else {
                   json.instructions[x].instructions.push(obj);
                 }
@@ -5890,24 +5890,23 @@ export class WorkflowComponent {
                         instructions: [obj]
                       };
                     } else {
-                      json.instructions.push(obj);
+                      json.instructions.splice(x + 1, 0, obj);
                     }
                   }
                 } else if (json.instructions[x].TYPE == 'Fork') {
-                  if (!json.instructions[x].instructions) {
-                    json.instructions[x].instructions = [obj];
-                  }
-                  json.instructions.push(obj);
-                } else {
-                  if (edge.getAttribute('displayLabel') === 'else') {
-                    if (!json.instructions[x].else) {
-                      json.instructions[x].else = {
-                        instructions: [obj]
-                      };
-                    }
+                  if (json.instructions[x].branches && edge.getAttribute('displayLabel') === 'join') {
+                    const result = edge.getAttribute('result');
+                    const branchObj = {
+                      id: edge.getAttribute('displayLabel'),
+                      result: result ? JSON.parse(result) : result,
+                      instructions: [obj]
+                    };
+                    json.instructions[x].branches.push(branchObj);
                   } else {
-                    json.instructions.push(obj);
+                    json.instructions.splice(x + 1, 0, obj);
                   }
+                } else {
+                  json.instructions.splice(x + 1, 0, obj);
                 }
               }
               isMatch = true;
@@ -5963,30 +5962,20 @@ export class WorkflowComponent {
             delete obj.parentId;
           }
           const isMatch = traverseJSONObject(targetId, obj, edge);
-          if (!isMatch && self.workflowService.checkClosingCell(edge.source.value.tagName) && targetId != edge.source.getAttribute('targetId')) {
-            targetId = edge.source.getAttribute('targetId');
-            const isFound = traverseJSONObject(targetId, obj, edge);
-            if (!isFound) {
+          if (!isMatch) {
+            if (self.workflowService.checkClosingCell(edge.source.value.tagName) && targetId != edge.source.getAttribute('targetId')) {
+              targetId = edge.source.getAttribute('targetId');
+              const isFound = traverseJSONObject(targetId, obj, edge);
+              if (!isFound) {
+                lastCells.push(node);
+              }
+            } else {
               lastCells.push(node);
             }
           }
         }
       });
     }
-
-    function recursivelyCheckAll(_cells) {
-      _cells.forEach((node) => {
-        if (!self.workflowService.checkClosingCell(node.value.tagName) && node.value.tagName !== 'Catch') {
-          checkRemainingNodes(node);
-        }
-      });
-      if (_cells.length) {
-        const _lastCells = [...lastCells];
-        lastCells = [];
-        recursivelyCheckAll(_lastCells);
-      }
-    }
-
 
     if (nodes.length > 0) {
       nodes.forEach((node) => {
@@ -5997,9 +5986,9 @@ export class WorkflowComponent {
     }
 
     if (lastCells.length > 0) {
-      const _lastCells = [...lastCells];
-      lastCells = [];
-      recursivelyCheckAll(_lastCells);
+      lastCells.forEach((node) => {
+        checkRemainingNodes(node);
+      });
     }
 
     const jobs = Array.from(jobMap.keys());
@@ -9177,7 +9166,7 @@ export class WorkflowComponent {
                     self.coreService.removeSlashToString(arg.value[index], prop, 'AddOrder');
                   }
                 });
-              }else{
+              } else {
                 self.coreService.removeSlashToString(arg, 'value');
 
               }
@@ -9336,7 +9325,7 @@ export class WorkflowComponent {
         } else if (cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'ConsumeNotices') {
           obj.noticeBoardNames = cell.getAttribute('noticeBoardNames');
           self.coreService.removeSlashToString(obj, 'noticeBoardNames');
-          if(obj.noticeBoardNames) {
+          if (obj.noticeBoardNames) {
             // Ensure single space around && and ||
             obj.noticeBoardNames = obj.noticeBoardNames.replace(/\s*(\|\||&&)\s*/g, ' $1 ');
           }
