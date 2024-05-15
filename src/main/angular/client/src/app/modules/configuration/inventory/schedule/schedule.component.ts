@@ -833,7 +833,6 @@ export class ScheduleComponent {
               this.setForkListVariables(item, forkListVariables);
             } else if (item.type == 'Map') {
               const notExistArr = [];
-              //this.setForkListVariables(item, mapVariables);
               for (let x in mapVariables) {
                 if (mapVariables[x].name === item.name) {
 
@@ -851,15 +850,35 @@ export class ScheduleComponent {
                     this.coreService.checkDataType(obj);
                     return obj;
                   });
-                  
+                  for (const prop in mapVariables[x].list) {
 
+                    let flag = false;
+                    for (const j in item.value) {
+                      if (mapVariables[x].list[prop].name === item.value[j].name) {
+                        flag = true;
+                        break;
+                      }
+                    }
+                    if (!flag) {
+                      let isDuplicate = false;
+                      for (let y in notExistArr) {
+                        if (notExistArr[y].name == mapVariables[x].list[prop].name) {
+                          isDuplicate = true;
+                          break;
+                        }
+                      }
+                      if (!isDuplicate) {
+                        notExistArr.push(mapVariables[x].list[prop]);
+                      }
+                    }
+                  }
                   if (notExistArr.length > 0) {
-                    notExistArr.forEach(item => {
+                    notExistArr.forEach(val => {
                       const obj = {
-                        name: item.name,
-                        type: item.value.type,
-                        value: (item.value.value || item.value.default),
-                        isRequired: item.value.isRequired || item.isRequired
+                        name: val.name,
+                        type: val.value.type,
+                        value: (val.value.value || val.value.default),
+                        isRequired: val.value.isRequired || val.isRequired
                       };
                       this.coreService.checkDataType(obj);
                       item.value.push(obj);
