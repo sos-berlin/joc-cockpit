@@ -171,7 +171,7 @@
              && order.canLeave" nz-menu-item>
             <a translate>order.button.leaveWorkflow</a>
           </li>
-          <li (click)="confirmOrder()" *ngIf="!order.positionIsImplicitEnd && permission && permission.currentController && permission.currentController.orders.modify && order.state && (order.state._text === 'PROMPTING')"
+          <li (click)="confirmOrder()" *ngIf="!order.positionIsImplicitEnd && permission && permission.currentController && permission.currentController.orders.confirm && order.state && (order.state._text === 'PROMPTING')"
               nz-menu-item>
             <a>{{'order.button.confirm' | translate}} ..</a>
           </li>
