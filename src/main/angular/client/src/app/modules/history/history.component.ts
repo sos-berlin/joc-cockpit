@@ -3121,6 +3121,13 @@ export class HistoryComponent {
             this.init(true);
           }
           break;
+        }else if (args.eventSnapshots[j].eventType === 'FILETRANSFER') {
+          if (!isEmpty(this.submissionSearch)) {
+            this.search(this.submissionSearch, false);
+          } else {
+            this.init(true);
+          }
+          break;
         }
       }
     }
