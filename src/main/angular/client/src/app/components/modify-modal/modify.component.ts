@@ -791,7 +791,7 @@ export class ModifyStartTimeModalComponent {
     let obj: any = {
       controllerId: this.schedulerId,
       forceJobAdmission: this.dateType.forceJobAdmission,
-      stickToDailyPlanDate: this.stickToDailyPlanDate,
+      stickDailyPlanDate: this.stickToDailyPlanDate,
       orderIds: []
     };
     if (this.plan) {

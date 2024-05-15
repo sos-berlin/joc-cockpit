@@ -420,25 +420,8 @@ export class SingleFileTransferComponent {
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].objectType === 'OTHER') {
-          if (args.eventSnapshots[j].eventType === 'YADETransferStarted') {
-
-            break;
-          } else if (args.eventSnapshots[j].eventType == 'YADETransferUpdated') {
-            for (let x = 0; x < this.fileTransfers.length; x++) {
-              if (this.fileTransfers[x].id === args.eventSnapshots[j].path) {
-
-                break;
-              }
-            }
-          } else if (args.eventSnapshots[j].eventType === 'YADEFileStateChanged') {
-            for (let x = 0; x < this.fileTransfers.length; x++) {
-              if (this.fileTransfers[x].id === args.eventSnapshots[j].path && this.fileTransfers[x].show) {
-
-                break;
-              }
-            }
-          }
+        if (args.eventSnapshots[j].eventType === 'FILETRANSFER') {
+          this.getFileTransferById(this.transferId);
           break;
         }
       }
@@ -996,25 +979,8 @@ export class FileTransferComponent {
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].objectType === 'OTHER') {
-          if (args.eventSnapshots[j].eventType == 'YADETransferStarted') {
-            this.load();
-            break;
-          } else if (args.eventSnapshots[j].eventType == 'YADETransferUpdated') {
-            for (let x = 0; x < this.fileTransfers.length; x++) {
-              if (this.fileTransfers[x].id == args.eventSnapshots[j].path) {
-                this.getTransfer(this.fileTransfers[x]);
-                break;
-              }
-            }
-          } else if (args.eventSnapshots[j].eventType == 'YADEFileStateChanged') {
-            for (let x = 0; x < this.fileTransfers.length; x++) {
-              if (this.fileTransfers[x].id == args.eventSnapshots[j].path && this.fileTransfers[x].show) {
-                this.getFiles(this.fileTransfers[x]);
-                break;
-              }
-            }
-          }
+        if (args.eventSnapshots[j].objectType === 'FILETRANSFER') {
+          this.load();
           break;
         }
       }
