@@ -184,16 +184,22 @@ export class GenerateReportComponent {
     };
   }
 
-  deleteReport(item?): void {
+  deleteReport(item, isBulk = false): void {
     const obj: any = {
       reportIds: item ? [item.id] : []
     };
+    if (isBulk) {
+      obj.reportIds = [];
+      item.value.forEach(val => {
+        obj.reportIds.push(val.id);
+      })
+    }
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
         type: 'Report',
         operation: 'Delete',
-        name: item ? item.path : ''
+        name: item.path || item.template
       };
       if (!item) {
         this.object.mapOfCheckedId.forEach((id) => {
@@ -223,10 +229,9 @@ export class GenerateReportComponent {
         nzContent: ConfirmModalComponent,
         nzData: {
           type: 'Delete',
-          title: item ? 'delete' : 'deleteAllReport',
-          message: item ? 'deleteReport' : 'deleteAllReport',
-          item,
-          objectName: item ? item.path : undefined,
+          title: !isBulk ? 'delete' : 'deleteAllReport',
+          message: !isBulk ? 'deleteReport' : 'deleteAllReport',
+          objectName: item.path || item.template,
         },
         nzFooter: null,
         nzClosable: false,

@@ -735,8 +735,8 @@ export class LayoutComponent {
     preferences.currentController = true;
     preferences.logTimezone = true;
     preferences.orientation = 'north';
-    preferences.interRankCellSpacing = 100;
-    preferences.intraCellSpacing = 100;
+    preferences.interRankCellSpacing = '100';
+    preferences.intraCellSpacing = '100';
     preferences.edgeRounded = true;
 
     if (sessionStorage['$SOS$FORCELOGING'] === 'true' || sessionStorage['$SOS$FORCELOGING'] === true) {
@@ -781,10 +781,10 @@ export class LayoutComponent {
         data.orientation = 'north';
       }
       if (!data.interRankCellSpacing) {
-        data.interRankCellSpacing = 100;
+        data.interRankCellSpacing = '100';
       }
       if (!data.intraCellSpacing) {
-        data.intraCellSpacing = 100;
+        data.intraCellSpacing = '100';
       }
       if (data.edgeRounded == undefined) {
         data.edgeRounded = true;

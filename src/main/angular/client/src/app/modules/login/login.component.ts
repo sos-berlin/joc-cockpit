@@ -227,7 +227,9 @@ export class LoginComponent {
           this.oAuthService.clientSecret = res.iamOidcClientSecret;
           sessionStorage.setItem('clientSecret', res.iamOidcClientSecret);
         }
-        this.oAuthService.initLoginFlow();
+        if (res.iamOidcClientId || res.iamOidcClientSecret) {
+          this.oAuthService.initLoginFlow();
+        }
       }
     });
   }

@@ -368,7 +368,7 @@
                   <td><span class="fa fa-long-arrow-right"></span></td>
                   <td>
                     <app-select-input  [attributeName]="'completed'" [isAllowClear]="true" [optionLabel]="'label'" [optionValue]="'value'" [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                       [name]="'completed'" [isSelectDisabled]="orderOverview.completed == 0" [listArray]="orderTreeStatusCompleted"
+                                       [name]="'completed'" [isSelectDisabled]="orderOverview.terminated == 0" [listArray]="orderTreeStatusCompleted"
                                        [object]="orderOverviewAction"></app-select-input>
                   </td>
                   <td>

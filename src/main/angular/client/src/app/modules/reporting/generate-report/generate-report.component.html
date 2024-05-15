@@ -94,7 +94,7 @@
                     <li nz-menu-item (click)="onSelect(item)">
                       <a translate>reporting.button.showReport</a>
                     </li>
-                    <li *ngIf="permission.joc && permission.joc.reports.manage" nz-menu-item (click)="deleteReport(item)">
+                    <li *ngIf="permission.joc && permission.joc.reports.manage" nz-menu-item (click)="deleteReport(item, true)">
                       <a translate>common.button.delete</a>
                     </li>
                   </ul>

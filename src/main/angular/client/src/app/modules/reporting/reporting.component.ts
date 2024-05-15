@@ -207,7 +207,6 @@ export class ReportingComponent {
   }
 
   expandAll(): void {
-    console.log('<><>expandAll');
     this.sharingDataService.announceFilter({expandAll: true});
   }
 
@@ -216,7 +215,6 @@ export class ReportingComponent {
   }
 
   groupByFun(param): void {
-    console.log('<><>param');
     this.sharingDataService.announceFilter({groupBy: param});
   }
 
@@ -224,7 +222,6 @@ export class ReportingComponent {
     const obj: any = {
       reportIds: Array.from(this.runIds.keys())
     };
-
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',

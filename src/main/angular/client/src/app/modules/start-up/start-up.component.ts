@@ -17,9 +17,6 @@ export class StartUpModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   new: boolean;
   controllerInfo: any;
-
-  agents: any;
-  clusterAgents: any;
   submitted = false;
   controller: any = {};
   isPrimaryConnectionChecked = false;
@@ -28,7 +25,6 @@ export class StartUpModalComponent {
   required = false;
   display: any;
   comments: any = {};
-  agent: any = {};
   schedulerIds: any = {};
   error: any;
   controllerId = '';
@@ -39,17 +35,13 @@ export class StartUpModalComponent {
   }
 
   ngOnInit(): void {
-    if(this.modalData){
-      this.controllerInfo = this.modalData.controllerInfo;
-      this.new = this.modalData.new;
-      this.agents = this.modalData.agents;
-      this.clusterAgents = this.modalData.clusterAgents;
-    }
+    this.controllerInfo = this.modalData.controllerInfo;
+    this.new = this.modalData.new;
+
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
-    this.agent.asStandaloneAgent =  false;
     this.hasLicense = sessionStorage['hasLicense'] == 'true';
     this.controller = {
       url: '',
@@ -60,30 +52,6 @@ export class StartUpModalComponent {
       backupTitle: 'SECONDARY CONTROLLER',
     };
 
-    let isFound = false;
-    if (this.agents && this.agents.length > 0) {
-      for (let i = 0; i < this.agents.length; i++) {
-        if (this.agents[i].isClusterWatcher) {
-          this.agent = this.agents[i];
-          isFound = true;
-          break;
-        }
-      }
-    }
-    if(!isFound){
-      if(!this.new){
-        this.controller.clusterAs = 'JOC';
-      }
-      if (this.clusterAgents && this.clusterAgents.length > 0) {
-        for (let i = 0; i < this.clusterAgents.length; i++) {
-          if (this.clusterAgents[i].isClusterWatcher) {
-            this.agent = this.clusterAgents[i];
-            isFound = true;
-            break;
-          }
-        }
-      }
-    }
 
     if (this.controllerInfo) {
       const len = this.controllerInfo.length;
@@ -146,18 +114,6 @@ export class StartUpModalComponent {
         _obj.clusterUrl = this.controller.backupClusterUrl;
         _obj.title = this.controller.backupTitle;
         obj.controllers.push(_obj);
-      }
-      if (this.agent && this.agent.agentId) {
-        obj.clusterWatcher = this.agent;
-      }
-      if (this.agent && this.agent.asStandaloneAgent) {
-        obj.clusterWatcher.asStandaloneAgent= this.agent.asStandaloneAgent;
-      } else if (this.agent && this.agent.primaryDirectorId) {
-        obj.clusterWatcher.primaryDirectorId = this.agent.primaryDirectorId;
-      }
-
-      if(obj.clusterWatcher && this.controller.clusterAs == 'JOC'){
-        obj.clusterWatcher = undefined;
       }
     }
     if (this.display) {
