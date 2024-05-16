@@ -17,6 +17,7 @@ export class DataService implements OnDestroy {
   public reloadTree: BehaviorSubject<any> = new BehaviorSubject<any>({});
   public reloadWorkflowError: BehaviorSubject<any> = new BehaviorSubject<any>({});
   public reloadAuthentication: BehaviorSubject<any> = new BehaviorSubject<any>({});
+  public sidebarOrdersSource = new BehaviorSubject<any>({});
   private functionSource = new Subject<string>();
   private refreshWidgetSource = new Subject<any>();
 
@@ -26,6 +27,7 @@ export class DataService implements OnDestroy {
   refreshWidgetAnnounced$ = this.refreshWidgetSource.asObservable();
   switchSchedulerAnnounced$ = this.switchSchedulerSource.asObservable();
   functionAnnounced$ = this.functionSource.asObservable();
+  sidebarOrders$ = this.sidebarOrdersSource.asObservable();
 
   // Service message commands
   announceEvent(event: any): void {
@@ -59,6 +61,7 @@ export class DataService implements OnDestroy {
     this.isProfileReload.unsubscribe();
     this.isThemeReload.unsubscribe();
     this.resetProfileSetting.unsubscribe();
+    this.sidebarOrdersSource.unsubscribe();
   }
 }
 

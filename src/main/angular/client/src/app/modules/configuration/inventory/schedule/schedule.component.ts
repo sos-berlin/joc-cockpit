@@ -683,7 +683,7 @@ export class ScheduleComponent {
               return {name: k1, value: val1};
             });
 
-            mapVariables.push({name: k, list: val.listParameters, actualMap: [actualMap]});
+            mapVariables.push({name: k, map: val.listParameters, actualMap: [actualMap]});
             if (this.schedule.configuration.orderParameterisations.length === 0) {
               this.schedule.configuration.orderParameterisations.push(
                 {
@@ -838,10 +838,10 @@ export class ScheduleComponent {
 
                   item.value = Object.entries(item.value).map(([k1, v1]) => {
                     let type, isRequired = true;
-                    for (const prop in mapVariables[x].list) {
-                      if (mapVariables[x].list[prop].name === k1) {
-                        type = mapVariables[x].list[prop].value.type;
-                        isRequired = mapVariables[x].list[prop].value.isRequired;
+                    for (const prop in mapVariables[x].map) {
+                      if (mapVariables[x].map[prop].name === k1) {
+                        type = mapVariables[x].map[prop].value.type;
+                        isRequired = mapVariables[x].map[prop].value.isRequired;
                         break;
                       }
                     }
@@ -850,11 +850,11 @@ export class ScheduleComponent {
                     this.coreService.checkDataType(obj);
                     return obj;
                   });
-                  for (const prop in mapVariables[x].list) {
+                  for (const prop in mapVariables[x].map) {
 
                     let flag = false;
                     for (const j in item.value) {
-                      if (mapVariables[x].list[prop].name === item.value[j].name) {
+                      if (mapVariables[x].map[prop].name === item.value[j].name) {
                         flag = true;
                         break;
                       }
@@ -862,13 +862,13 @@ export class ScheduleComponent {
                     if (!flag) {
                       let isDuplicate = false;
                       for (let y in notExistArr) {
-                        if (notExistArr[y].name == mapVariables[x].list[prop].name) {
+                        if (notExistArr[y].name == mapVariables[x].map[prop].name) {
                           isDuplicate = true;
                           break;
                         }
                       }
                       if (!isDuplicate) {
-                        notExistArr.push(mapVariables[x].list[prop]);
+                        notExistArr.push(mapVariables[x].map[prop]);
                       }
                     }
                   }

@@ -4715,6 +4715,63 @@ export class WorkflowComponent {
         this.selectedNode.obj.arguments = this.selectedNode.obj.arguments.filter(item => {
           if (isArray(item.value)) {
             this.coreService.setForkListVariables(item, this.selectedNode.obj.forkListArguments);
+          }else if (typeof item.value === 'object'){
+            const notExistArr = [];
+            for (let x in this.selectedNode.obj.mapArguments) {
+              if (this.selectedNode.obj.mapArguments[x].name === item.name) {
+
+                item.value = Object.entries(item.value).map(([k1, v1]) => {
+                  let type, isRequired = true;
+                  for (const prop in this.selectedNode.obj.mapArguments[x].map) {
+                    if (this.selectedNode.obj.mapArguments[x].map[prop].name === k1) {
+                      type = this.selectedNode.obj.mapArguments[x].map[prop].value.type;
+                      isRequired = this.selectedNode.obj.mapArguments[x].map[prop].value.isRequired;
+                      break;
+                    }
+                  }
+                  const obj = {name: k1, value: v1, type, isRequired};
+                  this.coreService.removeSlashToString(obj, 'value');
+                  this.coreService.checkDataType(obj);
+                  return obj;
+                });
+                for (const prop in this.selectedNode.obj.mapArguments[x].map) {
+
+                  let flag = false;
+                  for (const j in item.value) {
+                    if (this.selectedNode.obj.mapArguments[x].map[prop].name === item.value[j].name) {
+                      flag = true;
+                      break;
+                    }
+                  }
+                  if (!flag) {
+                    let isDuplicate = false;
+                    for (let y in notExistArr) {
+                      if (notExistArr[y].name == this.selectedNode.obj.mapArguments[x].map[prop].name) {
+                        isDuplicate = true;
+                        break;
+                      }
+                    }
+                    if (!isDuplicate) {
+                      notExistArr.push(this.selectedNode.obj.mapArguments[x].map[prop]);
+                    }
+                  }
+                }
+                if (notExistArr.length > 0) {
+                  notExistArr.forEach(val => {
+                    const obj = {
+                      name: val.name,
+                      type: val.value.type,
+                      value: (val.value.value || val.value.default),
+                      isRequired: val.value.isRequired || val.isRequired
+                    };
+                    this.coreService.checkDataType(obj);
+                    item.value.push(obj);
+                  })
+                }
+                this.selectedNode.obj.mapArguments[x].actualMap = [item.value];
+                break;
+              }
+            }
           } else {
             if (item.isExist) {
               delete item.isExist;

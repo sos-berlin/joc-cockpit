@@ -50,11 +50,15 @@ export class TypeComponent {
   broadName = '';
   broadNames = [];
   isFirst = false;
+  isVisible: any;
+  subscription1: any = Subscription;
 
   constructor(public coreService: CoreService, private modal: NzModalService,
-              public viewContainerRef: ViewContainerRef, private nzContextMenuService: NzContextMenuService
+              public viewContainerRef: ViewContainerRef, private nzContextMenuService: NzContextMenuService,  private dataService: DataService
   ) {
-
+    this.subscription1 = dataService.sidebarOrders$.subscribe(res => {
+      this.isVisible = res
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -78,10 +82,15 @@ export class TypeComponent {
       }
     }
     if (changes['orders'] || changes['orderReload']) {
+        this.sideBar = this.isVisible;
+
       this.updateOrder();
     }
   }
 
+  ngOnDestroy(): void {
+    this.subscription1.unsubscribe();
+  }
   changedHandler(flag: boolean): void {
     this.isChanged.emit(flag);
     setTimeout(() => {
@@ -184,10 +193,15 @@ export class TypeComponent {
     const self = this;
     this.sideBar = {
       orders: [],
+      isVisible: false,
       data
     };
     if (data.orders) {
       this.sideBar.orders = data.orders || [];
+    }else{
+      this.sideBar.orders = data || [];
+      console.log(this.sideBar.orders,"else....")
+
     }
 
     function recursive(json) {
@@ -249,7 +263,10 @@ export class TypeComponent {
 
     recursive(data);
     this.isFirst = true;
-    this.sideBar.isVisible = true;
+    if(!this.isVisible.isVisible){
+      this.dataService.sidebarOrdersSource.next(this.sideBar);
+      this.sideBar.isVisible = true;
+    }
   }
 
   expandNode(node): void {
@@ -333,10 +350,20 @@ export class TypeComponent {
       }
       recursive(this.configuration);
     }
+    this.sideBar.orders = this.extractOrdersFromMap(mapObj);
     if (this.sideBar.isVisible) {
-      this.showOrders(this.sideBar.data);
+      this.showOrders(this.sideBar?.orders);
     }
   }
+
+  private extractOrdersFromMap(mapObj: Map<any, any>): any[] {
+    const orders = [];
+    mapObj.forEach((value) => {
+      orders.push(...value);
+    });
+    return orders;
+  }
+
 
   private checkOrders(instruction, mapObj): void {
     if (instruction.join && instruction.join.positionStrings) {

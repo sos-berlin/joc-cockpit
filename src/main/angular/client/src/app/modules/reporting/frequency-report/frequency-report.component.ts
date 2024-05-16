@@ -171,12 +171,12 @@ export class FrequencyReportComponent {
 
         switch (report.templateName) {
           case 'WORKFLOWS_FREQUENTLY_FAILED':
-            label = `${item.workflow_name} - (${item.count})`;
+            label = `${item.workflowName} - (${item.count})`;
             key = "Workflows execution";
             chartData.labels.push(label);
             break;
           case 'JOBS_FREQUENTLY_FAILED':
-            const formattedJobName = item.job_name.replace(/__/g, '/');
+            const formattedJobName = item.jobName.replace(/__/g, '/');
             label = `${formattedJobName} - (${item.count})`;
             key = 'Jobs execution';
             chartData.labels.push(label);
@@ -217,22 +217,22 @@ export class FrequencyReportComponent {
             key = 'Jobs execution'
             break;
           case 'JOBS_EXECUTIONS_FREQUENCY':
-            label = `${item.workflow_name} - (${item.count})`;
+            label = `${item.workflowName} - (${item.count})`;
             key = 'Workflows execution'
             chartData.labels.push(label);
             break;
           case 'ORDERS_EXECUTIONS_FREQUENCY':
-            label = `${item.workflow_name} - (${item.count})`;
+            label = `${item.workflowName} - (${item.count})`;
             key = 'Workflows execution'
             chartData.labels.push(label);
             break;
           case 'WORKFLOWS_LONGEST_EXECUTION_TIMES':
-            label = `${item.WORKFLOW_NAME} - (${this.formatDuration(item.duration)})`;
+            label = `${item.workflowName} - (${this.formatDuration(item.duration)})`;
             key = "";
             chartData.labels.push(label);
             break;
           case 'JOBS_LONGEST_EXECUTION_TIMES':
-            label = `${item.WORKFLOW_NAME}/${item.JOB_NAME} - (${this.formatDuration(item.duration)})`;
+            label = `${item.workflowName}/${item.jobName} - (${this.formatDuration(item.duration)})`;
             key = "";
             chartData.labels.push(label);
             break;
@@ -505,17 +505,17 @@ export class FrequencyReportComponent {
         data: report.data[i].data
       };
 
-      if (report.data[i].startTime || report.data[i].WORKFLOW_NAME) {
-        data.labels.push(report.data[i].startTime || report.data[i].WORKFLOW_NAME);
-      } else if (report.data[i].job_name && report.data[i].job_name.includes('__')) {
-        const arr = report.data[i].job_name.split('__');
+      if (report.data[i].startTime || report.data[i].workflowName) {
+        data.labels.push(report.data[i].startTime || report.data[i].workflowName);
+      } else if (report.data[i].jobName && report.data[i].jobName.includes('__')) {
+        const arr = report.data[i].jobName.split('__');
         obj.workflow = arr[0];
         obj.job = arr[1];
         data.labels.push(arr[1]);
-      } else if (report.data[i].workflow_name || report.data[i].WOKFLOW_NAME || report.data[i].workflow) {
-        data.labels.push(report.data[i].workflow_name || report.data[i].WOKFLOW_NAME || report.data[i].workflow);
-      } else if (report.data[i].job_name || report.data[i].JOB_NAME || report.data[i].job) {
-        data.labels.push(report.data[i].job_name || report.data[i].JOB_NAME || report.data[i].job);
+      } else if (report.data[i].workflowName || report.data[i].WOKFLOW_NAME || report.data[i].workflow) {
+        data.labels.push(report.data[i].workflowName || report.data[i].WOKFLOW_NAME || report.data[i].workflow);
+      } else if (report.data[i].jobName || report.data[i].jobName || report.data[i].job) {
+        data.labels.push(report.data[i].jobName || report.data[i].jobName || report.data[i].job);
       } else if (report.data[i].agentName || report.data[i].agent_name) {
         data.labels.push(report.data[i].agentName || report.data[i].agent_name);
       } else if (report.data[i].order_id) {
@@ -527,8 +527,8 @@ export class FrequencyReportComponent {
     }
 
       this.dataset.push(obj);
-      if (report.data[i].duration || report.data[i].WORKFLOW_NAME) {
-        let dur = report.data[i].duration || report.data[i].WORKFLOW_NAME;
+      if (report.data[i].duration || report.data[i].workflowName) {
+        let dur = report.data[i].duration || report.data[i].workflowName;
         data.datasets[0].data.push(dur);
       } else if (report.data[i].count || report.data[i].count == 0) {
         data.datasets[0].data.push(report.data[i].count);
