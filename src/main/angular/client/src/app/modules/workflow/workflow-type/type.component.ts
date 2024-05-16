@@ -14,6 +14,8 @@ import {ScriptModalComponent} from '../script-modal/script-modal.component';
 import {DependentWorkflowComponent} from '../workflow-graphical/workflow-graphical.component';
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 import {PostModalComponent} from "../../resource/board/board.component";
+import {DataService} from "../../../services/data.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-type',
@@ -201,6 +203,7 @@ export class TypeComponent {
     }else{
       this.sideBar.orders = data || [];
       console.log(this.sideBar.orders,"else....")
+
 
     }
 
