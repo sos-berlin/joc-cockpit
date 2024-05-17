@@ -516,8 +516,8 @@ export class FrequencyReportComponent {
         data.labels.push(report.data[i].workflowName || report.data[i].WOKFLOW_NAME || report.data[i].workflow);
       } else if (report.data[i].jobName || report.data[i].jobName || report.data[i].job) {
         data.labels.push(report.data[i].jobName || report.data[i].jobName || report.data[i].job);
-      } else if (report.data[i].agentName || report.data[i].agent_name) {
-        data.labels.push(report.data[i].agentName || report.data[i].agent_name);
+      } else if (report.data[i].agentName || report.data[i].agentName) {
+        data.labels.push(report.data[i].agentName || report.data[i].agentName);
       } else if (report.data[i].order_id) {
         data.labels.push(report.data[i].order_id);
       } else if (report.data[i].period) {

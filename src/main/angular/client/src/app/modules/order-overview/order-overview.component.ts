@@ -562,6 +562,9 @@ export class OrderOverviewComponent {
     if (!obj.stateDateTo) {
       delete obj['stateDateTo'];
     }
+    if (obj.states.includes("TERMINATED")) {
+      obj.states = ["FINISHED"];
+    }
     this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         res.orders = this.orderPipe.transform(res.orders, this.orderFilters.filter.sortBy, this.orderFilters.reverse);

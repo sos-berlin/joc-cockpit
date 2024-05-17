@@ -148,9 +148,9 @@
                                   </div>
                                 </div>
                                 <div class="flex-container">
-                                  <div class="flex-item" style="width: 100%;">{{ item.workflow_name }}</div>
+                                  <div class="flex-item" style="width: 100%;">{{ item.workflowName }}</div>
                                   <div class="flex-item"
-                                       style="width: 100%;">{{ item.job_name ? item.job_name : '-' }}
+                                       style="width: 100%;">{{ item.workflowName ? item.workflowName : '-' }}
                                   </div>
                                 </div>
                               </div>
@@ -164,8 +164,8 @@
 
                         <nz-collapse>
                           <nz-collapse-panel *ngFor="let data of item.data"
-                                             [nzHeader]="(data.job_name ? data.job_name.replace('__', '/') : data.workflow_name) + ' - ' + ' (' + data.count + ')' "
-                                             [nzActive]="(data.job_name ? data.job_name.active : data.workflow_name.active)">
+                                             [nzHeader]="(data.workflowName ? data.workflowName.replace('__', '/') : data.workflowName) + ' - ' + ' (' + data.count + ')' "
+                                             [nzActive]="(data.workflowName ? data.workflowName.active : data.workflowName.active)">
                             <div>
                               <div *ngFor="let item of data.data; let i = index"
                                    style="padding-bottom: 0px !important;">
@@ -185,8 +185,8 @@
                            *ngIf="item.templateName === 'WORKFLOWS_LONGEST_EXECUTION_TIMES' || item.templateName === 'JOBS_LONGEST_EXECUTION_TIMES'">
                         <nz-collapse>
                           <nz-collapse-panel *ngFor="let data of item.data"
-                                             [nzHeader]="(data.JOB_NAME ? data.WORKFLOW_NAME + '/' + data.JOB_NAME : data.WORKFLOW_NAME) + ' - ' + ' (' + formatDuration(data.duration) + ')' "
-                                             [nzActive]="(data.JOB_NAME ? data.JOB_NAME.active : data.WORKFLOW_NAME.active)">
+                                             [nzHeader]="(data.workflowName ? data.workflowName + '/' + data.workflowName : data.workflowName) + ' - ' + ' (' + formatDuration(data.duration) + ')' "
+                                             [nzActive]="(data.workflowName ? data.workflowName.active : data.workflowName.active)">
                             <div>
                               <div style="padding-bottom: 0 !important;">
                                 <div class="flex-container">
@@ -194,7 +194,7 @@
                                   </div>
                                 </div>
                                 <div class="flex-container">
-                                  <div class="flex-item" style="width: 100%;">{{data.START_TIME}}</div>
+                                  <div class="flex-item" style="width: 100%;">{{data.startTime}}</div>
                                 </div>
                               </div>
                             </div>
@@ -220,9 +220,9 @@
                                   </div>
                                 </div>
                                 <div class="flex-container">
-                                  <div class="flex-item" style="width: 25%;">{{item.WORKFLOW_NAME}}</div>
-                                  <div class="flex-item" style="width: 25%;">{{item.JOB_NAME}}</div>
-                                  <div class="flex-item" style="width: 25%;">{{item.START_TIME}}</div>
+                                  <div class="flex-item" style="width: 25%;">{{item.workflowName}}</div>
+                                  <div class="flex-item" style="width: 25%;">{{item.workflowName}}</div>
+                                  <div class="flex-item" style="width: 25%;">{{item.startTime}}</div>
                                   <div class="flex-item" style="width: 25%;">{{item.duration}}</div>
                                 </div>
                               </div>
@@ -234,8 +234,8 @@
                            *ngIf="item.templateName === 'JOBS_EXECUTIONS_FREQUENCY' || item.templateName === 'ORDERS_EXECUTIONS_FREQUENCY'">
                         <nz-collapse>
                           <nz-collapse-panel *ngFor="let data of item.data"
-                                             [nzHeader]="(data.job_name ? data.job_name.replace('__', '/') : data.workflow_name) + ' - ' + ' (' + data.count + ')' "
-                                             [nzActive]="(data.job_name ? data.job_name.active : data.workflow_name.active)">
+                                             [nzHeader]="(data.workflowName ? data.workflowName.replace('__', '/') : data.workflowName) + ' - ' + ' (' + data.count + ')' "
+                                             [nzActive]="(data.workflowName ? data.workflowName.active : data.workflowName.active)">
                             <div>
                               <div *ngFor="let item of data.data; let i = index" class="p-a-sm"
                                    style="padding-bottom: 4px !important;">
@@ -263,8 +263,8 @@
                               <div *ngFor="let period of item.data[0]?.topLowParallelismPeriods">
                                 <div class="flex-container" *ngFor="let data of period.data">
                                   <div class="flex-item" style="width: 50%;">{{ period.period }}</div>
-                                  <div class="flex-item" style="width: 25%;">{{ data.WORKFLOW_NAME }}</div>
-                                  <div class="flex-item" style="width: 25%;">{{ data.JOB_NAME }}</div>
+                                  <div class="flex-item" style="width: 25%;">{{ data.workflowName }}</div>
+                                  <div class="flex-item" style="width: 25%;">{{ data.workflowName }}</div>
                                 </div>
                               </div>
                             </div>
@@ -280,8 +280,8 @@
                               <div *ngFor="let period of item.data[0]?.topHighParallelismPeriods">
                                 <div class="flex-container" *ngFor="let data of period.data">
                                   <div class="flex-item" style="width: 50%;">{{ period.period }}</div>
-                                  <div class="flex-item" style="width: 25%;">{{ data.WORKFLOW_NAME }}</div>
-                                  <div class="flex-item" style="width: 25%;">{{ data.JOB_NAME }}</div>
+                                  <div class="flex-item" style="width: 25%;">{{ data.workflowName }}</div>
+                                  <div class="flex-item" style="width: 25%;">{{ data.workflowName }}</div>
                                 </div>
                               </div>
                             </div>
