@@ -5888,15 +5888,25 @@ export class WorkflowComponent {
                       json.instructions.splice(x + 1, 0, obj);
                   }
                 } else if (json.instructions[x].TYPE == 'Fork') {
+                  const result = edge.getAttribute('result');
                   if (json.instructions[x].branches && edge.getAttribute('displayLabel') === 'join') {
-                    const result = edge.getAttribute('result');
                     const branchObj = {
                       id: edge.getAttribute('displayLabel'),
                       result: result ? JSON.parse(result) : result,
                       instructions: [obj]
                     };
                     json.instructions[x].branches.push(branchObj);
-                  } else {
+                  }else if(edge.target.value.tagName === 'Join' || edge.source.value.tagName === 'Fork'){
+                    if (!json.instructions[x].branches) {
+                      json.instructions[x].branches = [];
+                    }
+                    const newBranch = {
+                      id: edge.getAttribute('displayLabel'),
+                      result: result ? JSON.parse(result) : result,
+                      instructions: [obj]
+                    };
+                    json.instructions[x].branches.push(newBranch);
+                  }else {
                     json.instructions.splice(x + 1, 0, obj);
                   }
                 } else {
