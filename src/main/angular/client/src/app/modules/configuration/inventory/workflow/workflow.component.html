@@ -1405,10 +1405,11 @@
             </div>
             <div id="declare-var" (cdkDropListDropped)="drop($event)" cdkDropList>
               <ng-container *ngFor="let variable of variableDeclarations.parameters; let i = index">
-                <div *ngIf="variable.value.type === 'List'" class="form-group row m-b-0 m-l-sm m-r-n-30">
-                  <div class="col-md-12 m-b-sm" *ngIf="variable.value.type === 'List'">
+                <div *ngIf="variable.value.type === 'List' || variable.value.type === 'Map'" class="form-group row m-b-0 m-l-sm m-r-n-30">
+                  <div class="col-md-12 m-b-sm" *ngIf="variable.value.type === 'List' || variable.value.type === 'Map'">
                     <label>
-                      <span class="p-r-xs" translate>workflow.label.children</span>:
+                      <span class="p-r-xs" *ngIf="variable.value.type === 'List'" translate>workflow.label.children</span>
+                      <span class="p-r-xs" *ngIf="variable.value.type === 'Map'" translate>workflow.label.childrenMap</span>:
                       {{variable.name}}
                       <i (click)="variable.isCollapse = !variable.isCollapse" class="cursor fa fa-lg p-l-sm"
                          [ngClass]="!variable.isCollapse ? 'fa-angle-up' : 'fa-angle-down' "></i>

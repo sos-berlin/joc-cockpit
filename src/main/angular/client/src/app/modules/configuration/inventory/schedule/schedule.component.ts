@@ -834,7 +834,7 @@ export class ScheduleComponent {
             } else if (item.type == 'Map') {
               const notExistArr = [];
               for (let x in mapVariables) {
-                if (mapVariables[x].name === item.name) {
+                if (item.value && mapVariables[x].name === item.name) {
 
                   item.value = Object.entries(item.value).map(([k1, v1]) => {
                     let type, isRequired = true;
