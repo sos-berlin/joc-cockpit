@@ -211,13 +211,13 @@ export class AgentModalComponent {
   isCluster: boolean;
   controllerId: any;
   agent: any = {};
-  isSecondary = false;
   submitted = false;
   agentNameAliases: any = [];
   comments: any = {};
   preferences: any;
   display: any;
   required = false;
+  secondaryDirector: any = {};
   processLimitTry: string = 'unlimited';
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef) {
@@ -257,10 +257,10 @@ export class AgentModalComponent {
   }
 
   private checkSecondaryDirector(): void {
-    this.isSecondary = false;
-    for (const i in this.agent.subagents) {
+    for (let i = 0; i < this.agent.subagents?.length; i++) {
       if (this.agent.subagents[i].isDirector === 'SECONDARY_DIRECTOR') {
-        this.isSecondary = true;
+        this.secondaryDirector = this.agent.subagents[i];
+        this.agent.subagents.slice(i, 1);
         break;
       }
     }
@@ -276,23 +276,13 @@ export class AgentModalComponent {
     this.agentNameAliases.splice(index, 1);
   }
 
+  removeSubagent(list, index): void {
+    list.splice(index, 1);
+  }
+
   changeLimit(value): void {
     if (value == 'unlimited') {
       delete this.agent.processLimit;
-    }
-  }
-
-  removeSubagent(list, index): void {
-    list.splice(index, 1);
-    this.checkSecondaryDirector();
-  }
-
-  addSubagent(isSecordary = false): void {
-    if (isSecordary) {
-      this.isSecondary = isSecordary;
-    }
-    if (!this.coreService.isLastEntryEmpty(this.agent.subagents, 'subagentId', 'url')) {
-      this.agent.subagents.push({isDirector: isSecordary ? 'SECONDARY_DIRECTOR' : 'NO_DIRECTOR', subagentId: ''});
     }
   }
 
@@ -370,6 +360,17 @@ export class AgentModalComponent {
           flag = false;
           this.removeSubagents(obj2, () => {
             this.store(obj);
+          });
+        }
+        if (this.secondaryDirector?.subagentId && this.secondaryDirector?.url) {
+          _agent.subagents = _agent.subagents.filter((subagent) => {
+            return subagent.subagentId !== this.secondaryDirector.subagentId && subagent.url !== this.secondaryDirector?.url
+          });
+          _agent.subagents.push({
+            isDirector: 'SECONDARY_DIRECTOR',
+            subagentId: this.secondaryDirector.subagentId,
+            url: this.secondaryDirector.url,
+            title: this.secondaryDirector.title
           });
         }
       }
@@ -510,7 +511,6 @@ export class AgentComponent {
       this.editor = null;
     }
     this.getClusters();
-    this.getClusterAgents();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -523,12 +523,13 @@ export class AgentComponent {
     this.isActionMenuVisible = value;
   }
 
-  private getClusters(): void {
+  private getClusters(cb?): void {
     this.coreService.post('agents/cluster', {
       controllerId: this.controllerId,
       agentIds: [this.agentId]
     }).subscribe({
       next: (data: any) => {
+        if(cb) cb();
         this.clusters = data.subagentClusters;
         if (this.selectedCluster.subagentClusterId) {
           let isFound = false;
@@ -540,7 +541,6 @@ export class AgentComponent {
             }
           }
           if (!isFound && this.selectedCluster.ordering !== undefined) {
-
             this.backToListView();
           }
         }
@@ -548,6 +548,7 @@ export class AgentComponent {
         this.clusters = this.orderPipe.transform(this.clusters, this.clusterFilter.filter.sortBy, this.clusterFilter.reverse);
         this.searchInResult();
       }, error: () => {
+        if(cb) cb();
         this.isLoading = false;
       }
     });
@@ -562,6 +563,7 @@ export class AgentComponent {
         data.agents.forEach((agent) => {
           this.clusterAgents = agent.subagents;
         });
+        this.updateList();
       }
     });
   }
@@ -852,39 +854,43 @@ export class AgentComponent {
 
   selectedClusterFn(cluster): void {
     if (this.permission.joc && this.permission.joc.administration.controllers.manage) {
+      this.getClusterAgents();
       this.reset();
-      this.selectedCluster = this.coreService.clone(cluster);
-      if (this.editor && this.editor.graph) {
-        this.updateCluster();
-        this.updateList();
-      } else {
-        this.createEditor(() => {
+      this.isLoading = true;
+      this.getClusters(() => {
+        this.selectedCluster = this.coreService.clone(cluster);
+        if (this.editor && this.editor.graph) {
           this.updateCluster();
           this.updateList();
-          let dom = $('#graph');
-          dom.css({opacity: 1});
+        } else {
+          this.createEditor(() => {
+            this.updateCluster();
+            this.updateList();
+            let dom = $('#graph');
+            dom.css({opacity: 1});
 
-          /**
-           * Changes the zoom on mouseWheel events
-           */
-          dom.bind('mousewheel DOMMouseScroll', (event) => {
-            if (this.editor) {
-              if (event.ctrlKey) {
-                event.preventDefault();
-                if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-                  this.editor.execute('zoomIn');
-                } else {
-                  this.editor.execute('zoomOut');
+            /**
+             * Changes the zoom on mouseWheel events
+             */
+            dom.bind('mousewheel DOMMouseScroll', (event) => {
+              if (this.editor) {
+                if (event.ctrlKey) {
+                  event.preventDefault();
+                  if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+                    this.editor.execute('zoomIn');
+                  } else {
+                    this.editor.execute('zoomOut');
+                  }
                 }
               }
-            }
+            });
+            AgentComponent.setHeight();
+            setTimeout(() => {
+              this.actual();
+            }, 0)
           });
-          AgentComponent.setHeight();
-          setTimeout(() => {
-            this.actual();
-          }, 0)
-        });
-      }
+        }
+      });
     }
   }
 
