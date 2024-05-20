@@ -623,15 +623,11 @@ export class AddOrderModalComponent {
       value: ''
     };
     if (this.arguments) {
-      if (!this.coreService.isLastEntryEmpty(this.arguments, 'name', '')) {
         if (isNew) {
           param.isTextField = true;
         }
         this.arguments.push(param);
-      }else if(!this.coreService.isLastEntryEmpty(this.arguments, 'name', '') && this.arguments[this.arguments.length - 1]){
-        this.arguments.push(param);
-
-      }
+     
     }
   }
 

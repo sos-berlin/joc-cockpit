@@ -5910,7 +5910,12 @@ export class WorkflowComponent {
                     json.instructions.splice(x + 1, 0, obj);
                   }
                 } else {
-                  json.instructions.splice(x + 1, 0, obj);
+                  if (!json.instructions[x].instructions) {
+                    json.instructions[x].instructions = [obj];
+                  }else{
+                    json.instructions.splice(x + 1, 0, obj);
+
+                  }
                 }
               }
               isMatch = true;
@@ -10928,8 +10933,9 @@ export class WorkflowComponent {
           }
         }
       }
-
-      self.updateXMLJSON(true);
+      setTimeout(()=>{
+        self.updateXMLJSON(true);
+      },1)
     }
 
     if (callFun) {
