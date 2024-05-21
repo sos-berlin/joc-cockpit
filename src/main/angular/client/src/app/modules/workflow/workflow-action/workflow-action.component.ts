@@ -110,7 +110,7 @@ export class AddOrderModalComponent {
     name: ''
   }
   isCollapsed: boolean[] = [];
-
+  displayModal = false;
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
               private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService) {
   }
@@ -191,6 +191,11 @@ export class AddOrderModalComponent {
     }
   }
 
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.displayModal = true;
+    }, 100);
+  }
   toggleCollapse(k: number): void {
 
     if (this.preferences.listVariableCollapse) {
@@ -623,11 +628,17 @@ export class AddOrderModalComponent {
       value: ''
     };
     if (this.arguments) {
+      const lastArgument = this.arguments[this.arguments.length - 1];
+
+      if (!this.coreService.isLastEntryEmpty(this.arguments, 'name', '') || !lastArgument) {
         if (isNew) {
           param.isTextField = true;
         }
         this.arguments.push(param);
-     
+      } else if (lastArgument && (lastArgument.type === 'List')) {
+
+        this.arguments.push(param);
+      }
     }
   }
 
