@@ -10537,27 +10537,52 @@ export class WorkflowComponent {
         }
       }
       if (dropTargetName === 'If') {
-        displayLabel = 'then';
+        let hasThen = false;
+        let hasElse = false;
+
         const edges = graph.getOutgoingEdges(_dropTarget);
         for (let i = 0; i < edges.length; i++) {
           if (edges[i].target) {
-            if (edges[i].target.value.tagName !== 'EndIf') {
-              displayLabel = 'else';
+            const targetValue = edges[i].target.value.tagName;
+            const edgeAttributes = edges[i].value.attributes;
+
+            if (targetValue !== 'EndIf') {
+              if (edgeAttributes && edgeAttributes.length > 0) {
+                const edgeLabel = edgeAttributes[0].value;
+                if (edgeLabel === 'then') {
+                  hasThen = true;
+                } else if (edgeLabel === 'else') {
+                  hasElse = true;
+                }
+              }
             } else {
               if (edges[i].target.edges) {
                 for (let j = 0; j < edges[i].target.edges.length; j++) {
-                  if (edges[i].target.edges[j].edge && edges[i].target.edges[j].value.attributes
-                    && edges[i].target.edges[j].value.attributes.length > 0 && (edges[i].target.edges[j].value.attributes[0]
-                      && edges[i].target.edges[j].value.attributes[0].value === 'else')) {
-                    displayLabel = 'then';
-                    break;
+                  const childEdge = edges[i].target.edges[j];
+                  const childAttributes = childEdge.value.attributes;
+
+                  if (childEdge.edge && childAttributes && childAttributes.length > 0) {
+                    const childEdgeLabel = childAttributes[0].value;
+                    if (childEdgeLabel === 'else') {
+                      hasElse = true;
+                    } else if (childEdgeLabel === 'then') {
+                      hasThen = true;
+                    }
                   }
                 }
               }
             }
           }
         }
-      } else if (dropTargetName === 'Retry') {
+
+        if (hasThen && !hasElse) {
+          displayLabel = 'else';
+        } else {
+          displayLabel = 'then';
+        }
+
+      }
+     else if (dropTargetName === 'Retry') {
         displayLabel = 'retry';
       } else if (dropTargetName === 'Cycle') {
         displayLabel = 'cycle';

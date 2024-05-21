@@ -234,6 +234,7 @@
   </div>
 </ng-template>
 
+<ng-container *ngIf="displayModal">
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>workflow.label.addNewOrderTo</span> {{workflow.path}}
@@ -532,3 +533,4 @@
   </div>
 </form>
 
+</ng-container>
