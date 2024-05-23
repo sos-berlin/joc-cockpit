@@ -83,7 +83,7 @@
           </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6 month-picker" [ngClass]="{'has-error': (monthFrom.dirty || monthFrom.touched) && monthFrom.invalid}">
             <input (blur)="saveJSON()" #monthFrom="ngModel" [(ngModel)]="report.configuration.monthFrom" [disabled]="isTrash || !permission.joc.inventory.manage"  class="form-control"
-                   name="monthFrom" placeholder="1(M|y) or YYYY-MM" appMonthValidate type="text">
+                   name="monthFrom" placeholder="1(Mm|Qq|Yy) or YYYY-MM" appMonthValidate type="text">
             <nz-date-picker [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzMode="month" [(ngModel)]="report.monthFrom" [nzPlaceHolder]="'YYYY-MM'"
                             name="monthFrom1" (ngModelChange)="changeDate('monthFrom', $event)"></nz-date-picker>
           </div>
@@ -95,7 +95,7 @@
           </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6 month-picker" [ngClass]="{'has-error': (monthTo.dirty || monthTo.touched) && monthTo.invalid}">
               <input (blur)="saveJSON()" #monthTo="ngModel" [(ngModel)]="report.configuration.monthTo" [disabled]="isTrash || !permission.joc.inventory.manage"  class="form-control"
-                     [name]="'monthTo'" placeholder="1(M|y) or YYYY-MM" appMonthValidate
+                     [name]="'monthTo'" placeholder="1(Mm|Qq|Yy) or YYYY-MM" appMonthValidate
                      type="text">
               <nz-date-picker [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzMode="month" [(ngModel)]="report.monthTo" [nzPlaceHolder]="'YYYY-MM'"
                               name="monthTo1" (ngModelChange)="changeDate('monthTo', $event)"></nz-date-picker>

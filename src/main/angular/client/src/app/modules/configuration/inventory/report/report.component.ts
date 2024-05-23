@@ -32,7 +32,7 @@ export class MonthValidator implements Validator {
       if (v == '') {
         return null;
       }
-      if (/^\s*(([1-9][0-9]*)\s*[mMyY]?|(\d{4})-(0[1-9]|1[0-2]))\s*$/.test(v)) {
+      if (/^\s*(([+-]*\d+\s*[MmQqYy]|\d{4}-(0[1-9]|1[0-2])))\s*$/.test(v)) {
         return null;
       }
     } else {

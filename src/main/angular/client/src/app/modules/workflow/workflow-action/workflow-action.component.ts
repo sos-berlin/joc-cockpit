@@ -725,6 +725,8 @@ export class AddOrderModalComponent {
   }
 
   addArguments(): void {
+    this.arguments = this.arguments.filter(arg => arg.name.trim() !== '');
+
     this.variableList.forEach(variable => {
       if (!variable.isSelected) {
         const param: any = {
@@ -732,7 +734,7 @@ export class AddOrderModalComponent {
           value: ''
         };
         this.arguments.push(param);
-        this.checkVariableType(param)
+        this.checkVariableType(param);
       }
     });
   }
