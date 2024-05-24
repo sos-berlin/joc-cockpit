@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, SimpleChanges, ViewChild} from '@angular/core';
 import {clone, isArray, isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -10,6 +10,7 @@ import {DataService} from '../../../../services/data.service';
 import {CalendarService} from '../../../../services/calendar.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {ValueEditorComponent} from "../../../../components/value-editor/value.component";
+import { WorkflowService } from 'src/app/services/workflow.service';
 
 @Component({
   selector: 'app-schedule',
@@ -50,10 +51,17 @@ export class ScheduleComponent {
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
+  tag: any;
+  tags = [];
+  allTags = [];
+  filteredOptions: string[] = [];
+  inputVisible = false;
+  inputValue = '';
+  @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
   constructor(public coreService: CoreService, private translate: TranslateService, private toasterService: ToastrService,
               private calendarService: CalendarService, private dataService: DataService,
-              private ref: ChangeDetectorRef, private modal: NzModalService) {
+              private ref: ChangeDetectorRef, private modal: NzModalService, private workflowService: WorkflowService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.schedule.actual) {
@@ -76,6 +84,7 @@ export class ScheduleComponent {
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.allowUndeclaredVariables = sessionStorage['allowUndeclaredVariables'] == 'true';
+    this.fetchTags();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -1297,7 +1306,8 @@ export class ScheduleComponent {
         orderName: item.orderName,
         variables: item.variables,
         positions: item.positions,
-        forceJobAdmission: item.forceJobAdmission
+        forceJobAdmission: item.forceJobAdmission,
+        tags: this.tags
       };
     });
 
@@ -1719,6 +1729,54 @@ export class ScheduleComponent {
             });
           });
         }
+      }
+    }
+  }
+
+  private fetchTags(): void {
+    this.coreService.post('tags', {}).subscribe((res) => {
+      this.allTags = res.tags;
+    });
+  }
+
+  onChange(value: string): void {
+    this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    this.filteredOptions = this.filteredOptions.filter((tag) => {
+      return this.tags.indexOf(tag) == -1;
+    })
+  }
+
+  handleClose(removedTag: {}): void {
+    this.tags = this.tags.filter(tag => tag !== removedTag);
+  }
+
+  sliceTagName(tag: string): string {
+    const isLongTag = tag.length > 20;
+    return isLongTag ? `${tag.slice(0, 20)}...` : tag;
+  }
+
+  showInput(): void {
+    this.inputVisible = true;
+    this.filteredOptions = this.allTags;
+    setTimeout(() => {
+      this.inputElement?.nativeElement.focus();
+    }, 10);
+  }
+
+  handleInputConfirm(): void {
+    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
+      this.tags = [...this.tags, this.inputValue];
+    }
+    this.inputValue = '';
+    this.inputVisible = false;
+    this.saveJSON();
+  }
+
+  checkValidInput(): void {
+    this.isUnique = true;
+    for (let i = 0; i < this.allTags.length; i++) {
+      if (this.tag.name === this.allTags[i] && this.tag.name === this.allTags[i]) {
+        this.isUnique = false;
       }
     }
   }

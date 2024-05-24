@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -111,6 +111,14 @@ export class AddOrderModalComponent {
   }
   isCollapsed: boolean[] = [];
   displayModal = false;
+  tag: any;
+  tags = [];
+  allTags = [];
+  filteredOptions: string[] = [];
+  inputVisible = false;
+  isUnique = true;
+  inputValue = '';
+  @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
               private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService) {
   }
@@ -135,7 +143,7 @@ export class AddOrderModalComponent {
       this.workflow.configuration = this.coreService.clone(this.workflow);
       this.workflowService.convertTryToRetry(this.workflow.configuration, null, {}, {count: 0});
     }
-
+    this.fetchTags();
     this.getPositions();
     this.updateVariableList();
     this.checkClipboardContent();
@@ -581,7 +589,8 @@ export class AddOrderModalComponent {
     const order: any = {
       workflowPath: this.workflow.path,
       orderName: this.order.orderId,
-      forceJobAdmission: this.order.forceJobAdmission
+      forceJobAdmission: this.order.forceJobAdmission,
+      tags: this.tags
     };
     if (this.order.at === 'now') {
       order.scheduledFor = 'now';
@@ -1052,6 +1061,53 @@ export class AddOrderModalComponent {
     }
   }
 
+  private fetchTags(): void {
+    this.coreService.post('tags', {}).subscribe((res) => {
+      this.allTags = res.tags;
+    });
+  }
+
+  onChange(value: string): void {
+    this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    this.filteredOptions = this.filteredOptions.filter((tag) => {
+      return this.tags.indexOf(tag) == -1;
+    })
+  }
+
+  handleClose(removedTag: {}): void {
+    this.tags = this.tags.filter(tag => tag !== removedTag);
+  }
+
+  sliceTagName(tag: string): string {
+    const isLongTag = tag.length > 20;
+    return isLongTag ? `${tag.slice(0, 20)}...` : tag;
+  }
+
+  showInput(): void {
+    this.inputVisible = true;
+    this.filteredOptions = this.allTags;
+    setTimeout(() => {
+      this.inputElement?.nativeElement.focus();
+    }, 10);
+  }
+
+  handleInputConfirm(): void {
+    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
+      this.tags = [...this.tags, this.inputValue];
+    }
+    this.inputValue = '';
+    this.inputVisible = false;
+  }
+
+  checkValidInput(): void {
+    this.isUnique = true;
+    for (let i = 0; i < this.allTags.length; i++) {
+      if (this.tag.name === this.allTags[i] &&
+        this.tag.name === this.allTags[i] && this.tag.name !== this.modalData.tag?.name) {
+        this.isUnique = false;
+      }
+    }
+  }
 }
 
 @Component({
