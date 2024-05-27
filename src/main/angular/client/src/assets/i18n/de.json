@@ -1782,7 +1782,7 @@
     "button.pull": "Herunterladen",
     "button.push": "Hochladen",
     "button.newDraft": "Neuer Entwurf",
-    "button.updateJobs": "Vorlagen auf Jobs anwenden",
+    "button.updateJobs": "Vorlage auf Jobs anwenden",
     "button.updateFromJobTemplate": "Jobs aktualisieren aus Vorlage",
     "button.updateFromJobTemplates": "Jobs aktualisieren aus Vorlagen",
     "button.makeJobTemplate": "Als Job-Vorlage",

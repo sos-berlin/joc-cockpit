@@ -1790,7 +1790,7 @@
     "button.pull": "Tirer",
     "button.push": "Pousser",
     "button.newDraft": "Nouveau Brouillon",
-    "button.updateJobs": "Appliquer les Modèles aux Tâches",
+    "button.updateJobs": "Appliquer le Modèle aux Tâches",
     "button.updateFromJobTemplate": "Mettre à jour les Tâches à partir du Modèle",
     "button.updateFromJobTemplates": "Mettre à jour les Tâches à partir des Modèles",
     "button.makeJobTemplate": "Comme Modèle de Tâche",

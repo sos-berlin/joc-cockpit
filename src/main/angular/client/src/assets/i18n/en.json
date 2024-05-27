@@ -1783,7 +1783,7 @@
     "button.pull": "Pull",
     "button.push": "Push",
     "button.newDraft": "New Draft",
-    "button.updateJobs": "Apply Templates to Jobs",
+    "button.updateJobs": "Apply Template to Jobs",
     "button.updateFromJobTemplate": "Update Jobs from Template",
     "button.updateFromJobTemplates": "Update Jobs from Templates",
     "button.makeJobTemplate": "Make Job Template",
