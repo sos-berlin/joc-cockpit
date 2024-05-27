@@ -974,61 +974,6 @@ export class AddOrderModalComponent {
               }
             }
           }
-        }else if(val.type === 'Map') {
-
-          const actualMap = [];
-          if (val.listParameters) {
-            if (!isArray(val.listParameters)) {
-              val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
-                const val1: any = v1;
-                return {name: k1, value: val1};
-              });
-            }
-
-            for (let x in orderParameterisations.variables) {
-              if (k === x) {
-                if (isArray(orderParameterisations.variables[x])) {
-                  orderParameterisations.variables[x].forEach((key) => {
-                    let arr = [];
-                    for (let y in val.listParameters) {
-                      if (key[val.listParameters[y].name] || key[val.listParameters[y].name] == false || key[val.listParameters[y].name] == 0) {
-                        arr.push({
-                          name: val.listParameters[y].name,
-                          type: val.listParameters[y].value.type,
-                          value: key[val.listParameters[y].name]
-                        });
-                      }
-                    }
-                    if (arr.length > 0) {
-                      actualMap.push({map: arr});
-                    }
-                  });
-                }
-              }
-            }
-            if (actualMap.length === 0) {
-              let arr = [];
-              val.listParameters.forEach((item) => {
-                arr.push({name: item.name, type: item.value.type});
-              });
-              if (arr.length > 0) {
-                actualMap.push({map: arr});
-              }
-            }
-
-            for (let x in orderParameterisations.variables) {
-              if (k == x) {
-                this.arguments.push({
-                  name: k,
-                  isRequired: true,
-                  type: val.type,
-                  actualMap,
-                  map: val.listParameters
-                });
-                break;
-              }
-            }
-          }
         }
         return {name: k, value: val};
       });
