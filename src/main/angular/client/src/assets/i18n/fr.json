@@ -1981,8 +1981,8 @@
         "hits": "Coups",
         "monthFrom": "Mois de",
         "monthTo": "Mois à",
-        "periodLength": "Period Length",
-        "periodStep": "Period Step"
+        "periodLength": "Durée de la période",
+        "periodStep": "Étape de la période"
       },
       "workflow": {
         "name": "Le nom d'un workflow est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin et aucune espace.",
@@ -2853,8 +2853,8 @@
       "chooseFrequencies": "Sélectionner les Fréquences",
       "runReport": "Exécuter le Rapport",
       "reportRunning": "Rapport en cours d'exécution...",
-      "periodLength": "Period Length",
-      "periodStep": "Period Step"
+      "periodLength": "Durée de la période",
+      "periodStep": "Étape de la période"
     },
     "button" : {
       "runReport": "Exécuter le Rapport",

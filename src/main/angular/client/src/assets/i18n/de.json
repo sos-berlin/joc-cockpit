@@ -1981,8 +1981,8 @@
         "hits": "Treffer",
         "monthFrom": "Monat ab",
         "monthTo": "Monat bis",
-        "periodLength": "Period Length",
-        "periodStep": "Period Step"
+        "periodLength": "Zeitraum Dauer",
+        "periodStep": "Zeitraum Schritt"
       },
       "workflow": {
         "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Bindestriche und Punkte sind nicht zugelassen.",
@@ -2853,8 +2853,8 @@
       "chooseFrequencies": "Häufigkeiten auswählen",
       "runReport": "Berichtslauf starten",
       "reportRunning": "Berichtslauf in Arbeit...",
-      "periodLength": "Period Length",
-      "periodStep": "Period Step"
+      "periodLength": "Zeitraum Dauer",
+      "periodStep": "Zeitraum Schritt"
     },
     "button" : {
       "runReport": "Berichtslauf starten",
@@ -2873,15 +2873,15 @@
       "reports": "Berichte"
     },
     "templates": {
-      "WORKFLOWS_FREQUENTLY_FAILED": "Top ${hits} ${sort} number of failed workflows",
-      "JOBS_FREQUENTLY_FAILED": "Top ${hits} ${sort} number of failed jobs",
-      "AGENTS_PARALLEL_JOB_EXECUTIONS": "Top ${hits} ${sort} agents with most parallel job execution",
-      "JOBS_EXECUTIONS_FREQUENCY": "Top ${hits} ${sort} high criticality failed jobs",
-      "ORDERS_EXECUTIONS_FREQUENCY": "Top ${hits} ${sort} number of failed workflows with cancelled orders",
-      "WORKFLOWS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} workflows with the longest execution time",
-      "JOBS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} jobs with the longest execution time",
-      "PERIODS_MOST_ORDER_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly workflows executed",
-      "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly jobs executed"
+      "WORKFLOWS_FREQUENTLY_FAILED": "Häufigste ${hits} Workflows mit ${sort} Anzahl fehlgeschlagener Ausführungen",
+      "JOBS_FREQUENTLY_FAILED": "Häufigste ${hits} Jobs mit ${sort} Anzahl fehlgeschlagener Ausführungen",
+      "AGENTS_PARALLEL_JOB_EXECUTIONS": "Häufigste ${hits} Agenten mit ${sort} Anzahl paralleler Job-Ausführungen",
+      "JOBS_EXECUTIONS_FREQUENCY": "Häufigste ${hits} hoch-kritische Jobs mit ${sort} Anzahl fehlgeschlagener Ausführungen",
+      "ORDERS_EXECUTIONS_FREQUENCY": "Häufigste ${hits} Workflows mit ${sort} Anzahl fehlgeschlagener Ausführungen für abgebrochene Aufträge",
+      "WORKFLOWS_LONGEST_EXECUTION_TIMES": "Häufigste ${hits} Workflows mit ${sort} Ausführungsdauer",
+      "JOBS_LONGEST_EXECUTION_TIMES": "Häufigste ${hits} Jobs mit ${sort} Ausführungsdauer",
+      "PERIODS_MOST_ORDER_EXECUTIONS": "Häufigste ${hits} Zeiträume mit ${sort} Anzahl Workflow-Ausführungen",
+      "PERIODS_MOST_JOB_EXECUTIONS": "Häufigste ${hits} Zeiträume mit ${sort} Anzahl Job-Ausführungen"
     }
   },
   "settings": {
