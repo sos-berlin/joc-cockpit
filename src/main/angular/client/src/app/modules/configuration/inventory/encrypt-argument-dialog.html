@@ -1,0 +1,70 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>Encrypt Value</span>
+  </h4>
+  <button (click)="cancel()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+
+<form>
+  <div class="modal-body p-a">
+    <div class="form-group row">
+      <div class="col-md-4 col-lg-4">
+        <label for="">{{modalData.variable.name}}</label>
+      </div>
+      <div class="col-md-4 col-lg-4" [ngSwitch]="modalData.variable.value.type" *ngIf="modalData.variable.value.type !== 'List' && modalData.variable.value.type !== 'Map'">
+        <nz-input-number *ngSwitchCase="'Number'" [(ngModel)]="modalData.variable.value.default"
+        [nzMin]="0"
+        [nzStep]="1" name="value{{i}}"
+        nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+        <nz-select *ngSwitchCase="'Boolean'"
+          [(ngModel)]="modalData.variable.value.default" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+          name="value{{i}}" nzAllowClear >
+          <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+          <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+        </nz-select>
+        <ng-container *ngSwitchDefault>
+          <input #value="ngModel" [(ngModel)]="modalData.variable.value.default"
+          [disabled]="modalData.variable.value.type === 'List' || modalData.variable.value.type === 'Map'" [facetValidation]="modalData.variable.value.facet"
+          autocomplete="off" class="form-control" name="value{{i}}"
+          placeholder="{{'common.placeholder.value' | translate}}" type="text">
+        </ng-container>
+      </div>
+      <div class="col-md-12 col-lg-12" *ngIf="modalData.variable.value.type === 'List' && modalData.variable.value.type === 'Map'">
+        <div class="form-group row" *ngFor="let variable of modalData.variable.value.listParameters">
+          <div class="col-md-4 col-lg-4">
+            <label for="">{{variable.name}}</label>
+          </div>
+          <!-- <div class="col-md-4 col-lg-4" [ngSwitch]="variable.value.type">
+            <nz-input-number *ngSwitchCase="'Number'" [(ngModel)]="variable.value.default"
+            [nzMin]="0"
+            [nzStep]="1" name="value{{i}}"
+            nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+            <nz-select *ngSwitchCase="'Boolean'"
+              [(ngModel)]="variable.value.default" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+              name="value{{i}}" nzAllowClear >
+              <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+              <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+            </nz-select>
+            <ng-container *ngSwitchDefault>
+              <input #value="ngModel" [(ngModel)]="variable.value.default" [facetValidation]="variable.value.facet"
+              autocomplete="off" class="form-control" name="value{{i}}"
+              placeholder="{{'common.placeholder.value' | translate}}" type="text">
+            </ng-container>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary btn-sm"
+            type="submit">
+      <!-- <i class="fa fa-spin fa-spinner p-r-xs"></i> -->
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
+      common.button.cancel
+    </button>
+  </div>
+</form>

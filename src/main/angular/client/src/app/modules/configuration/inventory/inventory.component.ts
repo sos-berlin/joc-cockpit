@@ -408,6 +408,7 @@ export class SingleDeployComponent {
   dailyPlanDate: any = {
     addOrdersDateFrom: 'now',
   };
+  affectedSchedule: any;
 
   dateObj: any = {};
 
@@ -431,6 +432,7 @@ export class SingleDeployComponent {
     const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.dateFormat = this.coreService.getDateFormat(preferences.dateFormat);
     this.init();
+    this.getReferences()
   }
 
   init(): void {
@@ -617,6 +619,20 @@ export class SingleDeployComponent {
     }
   }
 
+  private getReferences(): void {
+    const obj = {
+      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      objectType: this.data.objectType || this.data.type
+    };
+    this.coreService.post('inventory/workflow/references', obj).subscribe({
+      next: (res: any) => {
+        console.log(res,"res")
+        if(res.schedules){
+          this.affectedSchedule = res.schedules
+        }
+      }
+    });
+  }
 }
 
 @Component({
@@ -3182,6 +3198,22 @@ export class CreateFolderModalComponent {
   }
 }
 
+@Component({
+  selector: 'app-encrpyt-argument-template',
+  templateUrl: './encrypt-argument-dialog.html'
+})
+export class EncryptArgumentModalComponent {
+
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+
+  constructor(private activeModal: NzModalRef){
+
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+}
 @Component({
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
@@ -6396,3 +6428,5 @@ export class InventoryComponent {
     this.findObjectByPath(data.path);
   }
 }
+
+

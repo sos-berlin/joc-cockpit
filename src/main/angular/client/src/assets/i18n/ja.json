@@ -1980,7 +1980,9 @@
         "controllerId": "コントローラーID",
         "hits": "件数",
         "monthFrom": "開始月",
-        "monthTo": "終了月"
+        "monthTo": "終了月",
+        "periodLength": "Period Length",
+        "periodStep": "Period Step"
       },
       "workflow": {
         "name": "ワークフロー名は、インベントリー内で一意です。ほとんどのユニコード文字が使用可能で、ドットやハイフンも使用できますが、先頭または末尾のドットやハイフンは使用できません。",
@@ -2850,7 +2852,9 @@
       "chooseTemplate": "テンプレート選択",
       "chooseFrequencies": "周期選択",
       "runReport": "レポート実行",
-      "reportRunning": "レポート実行中..."
+      "reportRunning": "レポート実行中...",
+      "periodLength": "Period Length",
+      "periodStep": "Period Step"
     },
     "button" : {
       "runReport": "レポート実行",
@@ -2867,6 +2871,17 @@
       "reportRunHistory": "レポート実行履歴",
       "reportRuns": "実行レポート",
       "reports": "レポート"
+    },
+    "templates": {
+      "WORKFLOWS_FREQUENTLY_FAILED": "Top ${hits} ${sort} number of failed workflows",
+      "JOBS_FREQUENTLY_FAILED": "Top ${hits} ${sort} number of failed jobs",
+      "AGENTS_PARALLEL_JOB_EXECUTIONS": "Top ${hits} ${sort} agents with most parallel job execution",
+      "JOBS_EXECUTIONS_FREQUENCY": "Top ${hits} ${sort} high criticality failed jobs",
+      "ORDERS_EXECUTIONS_FREQUENCY": "Top ${hits} ${sort} number of failed workflows with cancelled orders",
+      "WORKFLOWS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} workflows with the longest execution time",
+      "JOBS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} jobs with the longest execution time",
+      "PERIODS_MOST_ORDER_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly workflows executed",
+      "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly jobs executed"
     }
   },
   "settings": {

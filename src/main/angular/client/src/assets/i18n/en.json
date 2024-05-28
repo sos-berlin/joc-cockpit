@@ -1980,7 +1980,9 @@
         "controllerId": "Controller ID",
         "hits": "Hits",
         "monthFrom": "Month From",
-        "monthTo": "Month To"
+        "monthTo": "Month To",
+        "periodLength": "Period Length",
+        "periodStep": "Period Step"
       },
       "workflow": {
         "name": "The name of a Workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -2850,7 +2852,9 @@
       "chooseTemplate": "Choose Template",
       "chooseFrequencies": "Choose Frequencies",
       "runReport": "Run Report",
-      "reportRunning": "Report running..."
+      "reportRunning": "Report running...",
+      "periodLength": "Period Length",
+      "periodStep": "Period Step"
     },
     "button" : {
       "runReport": "Run Report",
@@ -2867,6 +2871,17 @@
       "reportRunHistory": "Report Run History",
       "reportRuns": "Report Generation",
       "reports": "Reports"
+    },
+    "templates": {
+      "WORKFLOWS_FREQUENTLY_FAILED": "Top ${hits} ${sort} number of failed workflows",
+      "JOBS_FREQUENTLY_FAILED": "Top ${hits} ${sort} number of failed jobs",
+      "AGENTS_PARALLEL_JOB_EXECUTIONS": "Top ${hits} ${sort} agents with most parallel job execution",
+      "JOBS_EXECUTIONS_FREQUENCY": "Top ${hits} ${sort} high criticality failed jobs",
+      "ORDERS_EXECUTIONS_FREQUENCY": "Top ${hits} ${sort} number of failed workflows with cancelled orders",
+      "WORKFLOWS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} workflows with the longest execution time",
+      "JOBS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} jobs with the longest execution time",
+      "PERIODS_MOST_ORDER_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly workflows executed",
+      "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly jobs executed"
     }
   },
   "settings": {

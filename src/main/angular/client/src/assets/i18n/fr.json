@@ -1980,7 +1980,9 @@
         "controllerId": "ID Contrôleur",
         "hits": "Coups",
         "monthFrom": "Mois de",
-        "monthTo": "Mois à"
+        "monthTo": "Mois à",
+        "periodLength": "Period Length",
+        "periodStep": "Period Step"
       },
       "workflow": {
         "name": "Le nom d'un workflow est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin et aucune espace.",
@@ -2850,7 +2852,9 @@
       "chooseTemplate": "Sélectionner le Modèle de Rapport",
       "chooseFrequencies": "Sélectionner les Fréquences",
       "runReport": "Exécuter le Rapport",
-      "reportRunning": "Rapport en cours d'exécution..."
+      "reportRunning": "Rapport en cours d'exécution...",
+      "periodLength": "Period Length",
+      "periodStep": "Period Step"
     },
     "button" : {
       "runReport": "Exécuter le Rapport",
@@ -2867,6 +2871,17 @@
       "reportRunHistory": "Historique de l'Exécution des Rapports",
       "reportRuns": "Exécutions de Rapports",
       "reports": "Rapports"
+    },
+    "templates": {
+      "WORKFLOWS_FREQUENTLY_FAILED": "Top ${hits} ${sort} number of failed workflows",
+      "JOBS_FREQUENTLY_FAILED": "Top ${hits} ${sort} number of failed jobs",
+      "AGENTS_PARALLEL_JOB_EXECUTIONS": "Top ${hits} ${sort} agents with most parallel job execution",
+      "JOBS_EXECUTIONS_FREQUENCY": "Top ${hits} ${sort} high criticality failed jobs",
+      "ORDERS_EXECUTIONS_FREQUENCY": "Top ${hits} ${sort} number of failed workflows with cancelled orders",
+      "WORKFLOWS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} workflows with the longest execution time",
+      "JOBS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} jobs with the longest execution time",
+      "PERIODS_MOST_ORDER_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly workflows executed",
+      "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly jobs executed"
     }
   },
   "settings": {

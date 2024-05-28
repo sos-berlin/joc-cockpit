@@ -68,6 +68,10 @@
                nzType="folder"></i>
             <span class="p-l-sm">{{data.path}}</span>
           </div>
+          <div class="m-t-md">
+            <i nz-icon nzTheme="outline" nzType="apartment" class="p-r-xs"></i>
+            {{'inventory.label.workflows' | translate}}
+          </div>
           <div *ngFor="let child of deployablesObject" class="m-l-md node-wrapper" style="width: 90%">
             <div>
                 <span [ngClass]="{'fa-circle-o': !child.valid, 'fa-circle dark-blue' :child.deployed || child.released, 'opacity7': child.syncState && (child.syncState._text === 'SUSPENDED' || child.syncState._text === 'SUSPENDING')}"
@@ -130,6 +134,15 @@
             <i *ngIf="item.syncState._text === 'NOT_IN_SYNC'" class="icon3-reload-error font11 pos-rel t-1 p-l-xxs"></i>
           </span>
           <span class="p-l-sm">{{item.name }}</span>
+        </div>
+      </div>
+      <div *ngIf="affectedSchedule?.length > 0 " class="m-t-md">
+      <i nz-icon nzTheme="outline" nzType="schedule" class="p-r-xs"></i>
+        {{'inventory.label.orders' | translate}}
+      </div>
+      <div *ngFor="let item of affectedSchedule" class="p-l">
+        <div>
+          &nbsp;{{item.path}}
         </div>
       </div>
     </div>

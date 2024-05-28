@@ -31,7 +31,7 @@ import {CommentModalComponent} from '../../../../components/comment-modal/commen
 import {InventoryObject} from '../../../../models/enums';
 import {JobWizardComponent} from '../job-wizard/job-wizard.component';
 import {InventoryService} from '../inventory.service';
-import {CreateObjectModalComponent} from "../inventory.component";
+import {CreateObjectModalComponent, EncryptArgumentModalComponent} from "../inventory.component";
 import {UpdateJobTemplatesComponent} from "../job-template/job-template.component";
 import {CalendarService} from "../../../../services/calendar.service";
 import {FileUploaderComponent} from "../../../../components/file-uploader/file-uploader.component";
@@ -2939,7 +2939,14 @@ export class ExpressionComponent {
     doc.setCursor(cursor);
   }
 }
-
+@Component({
+  selector: 'app-change-impact-dialog',
+  templateUrl: './change-impact-dialog.html',
+})
+export class ChangeImpactDialogComponent {
+  constructor(public activeModal: NzModalRef) {
+  }
+}
 @Component({
   selector: 'app-workflow',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -3034,7 +3041,7 @@ export class WorkflowComponent {
   stickySubagentAgentAssignment = '';
   selectedCellId = '';
   sortingDirections: { [key: string]: 'asc' | 'desc' } = {};
-
+  impactShown = false;
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -4478,6 +4485,38 @@ export class WorkflowComponent {
         const name = result.path ? result.path.substring(result.path.lastIndexOf('/') + 1, result.path.length) : result.name;
         this.navToObj(name, result.type)
       }
+    });
+  }
+
+  onKeyDown(event: KeyboardEvent): void {
+    // if (this.data.deployed && !this.impactShown) {
+    //   event.preventDefault();
+    //   event.stopPropagation();
+    //   this.changeImpact();
+    // }
+  }
+
+  handleClick(event: MouseEvent): void {
+    // console.log(">>>")
+    // if (this.data.deployed && !this.impactShown) {
+    //   event.preventDefault();
+    //   event.stopPropagation();
+    //   this.changeImpact();
+    // }
+
+  }
+  changeImpact(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzClassName: 'lg',
+      nzContent: ChangeImpactDialogComponent,
+      nzData: {
+        preferences: this.preferences,
+      },
+      nzFooter: null,
+      nzAutofocus: null,
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -12519,4 +12558,27 @@ export class WorkflowComponent {
     }
   }
 
+  encrpytValue(variable){
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EncryptArgumentModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        // preferences: this.preferences,
+        // permission: this.permission,
+        // schedulerId: this.schedulerId,
+        variable
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        // this.isChanged.emit({flag: true, isOrderAdded: workflow});
+        // this.resetAction();
+      }
+    });
+  }
 }

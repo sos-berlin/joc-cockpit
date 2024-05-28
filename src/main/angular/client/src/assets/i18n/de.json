@@ -1980,7 +1980,9 @@
         "controllerId": "Controller ID",
         "hits": "Treffer",
         "monthFrom": "Monat ab",
-        "monthTo": "Monat bis"
+        "monthTo": "Monat bis",
+        "periodLength": "Period Length",
+        "periodStep": "Period Step"
       },
       "workflow": {
         "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Bindestriche und Punkte sind nicht zugelassen.",
@@ -2850,7 +2852,9 @@
       "chooseTemplate": "Vorlage auswählen",
       "chooseFrequencies": "Häufigkeiten auswählen",
       "runReport": "Berichtslauf starten",
-      "reportRunning": "Berichtslauf in Arbeit..."
+      "reportRunning": "Berichtslauf in Arbeit...",
+      "periodLength": "Period Length",
+      "periodStep": "Period Step"
     },
     "button" : {
       "runReport": "Berichtslauf starten",
@@ -2867,6 +2871,17 @@
       "reportRunHistory": "Historie Berichtsläufe",
       "reportRuns": "Berichtsgenerierung",
       "reports": "Berichte"
+    },
+    "templates": {
+      "WORKFLOWS_FREQUENTLY_FAILED": "Top ${hits} ${sort} number of failed workflows",
+      "JOBS_FREQUENTLY_FAILED": "Top ${hits} ${sort} number of failed jobs",
+      "AGENTS_PARALLEL_JOB_EXECUTIONS": "Top ${hits} ${sort} agents with most parallel job execution",
+      "JOBS_EXECUTIONS_FREQUENCY": "Top ${hits} ${sort} high criticality failed jobs",
+      "ORDERS_EXECUTIONS_FREQUENCY": "Top ${hits} ${sort} number of failed workflows with cancelled orders",
+      "WORKFLOWS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} workflows with the longest execution time",
+      "JOBS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} jobs with the longest execution time",
+      "PERIODS_MOST_ORDER_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly workflows executed",
+      "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly jobs executed"
     }
   },
   "settings": {

@@ -1434,7 +1434,7 @@
                     <i aria-hidden="true" class="fa fa-bars"></i>
                   </div>
                   <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
-                       class="col-md-4 col-lg-4 m-b-sm p-r-0">
+                       class="col-md-3 col-lg-3 m-b-sm p-r-0">
                     <input #name="ngModel" (blur)="checkDuplicateEntries(variable, i, variableDeclarations.parameters)" [(ngModel)]="variable.name" [readonly]="isTrash" autocomplete="off"
                            class="form-control" identifierValidation name="name{{i}}"
                            placeholder="{{'common.placeholder.name' | translate}}"
@@ -1504,8 +1504,9 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-1 col-lg-1">
-                    <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                  <div class="col-md-2 col-lg-2 d-flex flex-lg-row flex-md-column gap-5 justify-content-around">
+                    <a><i (click)="encrpytValue(variable)" class="text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                    <a><i (click)="removeVariable(i)" class="fa fa-times text-hover-color"></i></a>
                   </div>
                   <ng-container *ngIf="variable.value.type === 'List' || variable.value.type === 'Map'" class="b-b p-b-sm">
                     <div class="row col-md-12">
@@ -1537,8 +1538,8 @@
                           <i aria-hidden="true" class="fa fa-bars"></i>
                         </div>
                         <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
-                             class="col-md-4 col-lg-4 m-b-sm p-r-0">
-                          <input #name="ngModel" (blur)="checkDuplicateEntries(param, j, variable.value.listParameters)" [(ngModel)]="param.name" [readonly]="isTrash" autocomplete="off"
+                             class="col-md-3 col-lg-3 m-b-sm p-r-0">
+                          <input #name="ngModel" (keydown)="onKeyDown($event);"(blur)="checkDuplicateEntries(param, j, variable.value.listParameters)" [(ngModel)]="param.name" [readonly]="isTrash" autocomplete="off"
                                  class="form-control" identifierValidation name="name{{i}}{{j}}"
                                  placeholder="{{'common.placeholder.name' | translate}}"
                                  type="text">
@@ -1556,19 +1557,18 @@
                           </nz-select>
                         </div>
                         <div [ngSwitch]="param.value.type" class="col-md-4 col-lg-4 m-b-sm p-r-0">
-                          <nz-input-number (nzBlur)="updateOtherProperties('variable')" *ngSwitchCase="'Number'" [(ngModel)]="param.value.default" [nzDisabled]="isTrash"
+                          <nz-input-number (keydown)="onKeyDown($event)" (nzBlur)="updateOtherProperties('variable')" *ngSwitchCase="'Number'" [(ngModel)]="param.value.default" [nzDisabled]="isTrash"
                                            [nzMin]="0"
                                            [nzStep]="1" name="value{{i}}{{j}}"
                                            nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                          <nz-select *ngSwitchCase="'Boolean'"
-                                     [(ngModel)]="param.value.default" [nzDisabled]="isTrash" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                                     name="value{{i}}{{j}}" nzAllowClear  (ngModelChange)="updateOtherProperties('variable')">
+                          <nz-select *ngSwitchCase="'Boolean'" [(ngModel)]="param.value.default" [nzDisabled]="isTrash" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+                                     name="value{{i}}{{j}}" nzAllowClear  (ngModelChange)="updateOtherProperties('variable');handleClick($event)">
                             <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                             <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                           </nz-select>
                           <ng-container *ngSwitchDefault>
                             <input (blur)="updateOtherProperties('variable')"
-                                   (keydown)="onKeyPress($event)" [(ngModel)]="param.value.default"
+                                   (keydown)="onKeyPress($event);onKeyDown($event)" [(ngModel)]="param.value.default"
                                    autocomplete="off" class="form-control" name="value{{i}}{{j}}"
                                    placeholder="{{'common.placeholder.value' | translate}}" type="text">
                             <i (click)="openEditor(param.value)"
@@ -1577,7 +1577,7 @@
                           </ng-container>
                         </div>
                         <div *ngIf="variable.value.listParameters.length > 1" class="col-md-1 col-lg-1">
-                          <a><i (click)="removeVariableFromList(variable.value.listParameters, j)"
+                          <a><i  (click)="removeVariableFromList(variable.value.listParameters, j);handleClick($event)"
                                 class="fa fa-times m-t-sm text-hover-color"></i></a>
                         </div>
                       </div>
