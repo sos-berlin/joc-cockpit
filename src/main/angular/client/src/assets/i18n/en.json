@@ -58,6 +58,7 @@
   "PLANNED": "planned",
   "REMOVED": "removed",
   "RUNNING": "running",
+  "PROCESSING":"processing",
   "SETBACK": "setback",
   "SINGLE_AGENT": "standalone_agent",
   "SKIPPED": "skipped",
