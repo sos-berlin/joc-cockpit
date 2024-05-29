@@ -58,6 +58,7 @@
   "PLANNED": "予定",
   "REMOVED": "削除されました",
   "RUNNING": "実行中",
+  "PROCESSING":"processing",
   "SETBACK": "セットバック",
   "SINGLE_AGENT": "シングルエージェント",
   "SKIPPED": "スキップされました",
