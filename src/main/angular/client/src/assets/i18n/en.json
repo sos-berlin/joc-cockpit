@@ -1748,7 +1748,7 @@
     "label.renameTag": "Rename Tag",
     "label.tagName": "Tag Name",
     "label.testMail": "Test E-Mail",
-    "label.impactedSchedules": "Impacted Schedules",
+    "label.impactedSchedules": "Affected Schedules",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",
     "button.setVersion": "Set Version",
@@ -1880,7 +1880,7 @@
     "message.localChangesWillBeOverwritten": "All local changes will be overwritten by this action",
     "message.changeDeductInWorkflow": "Changes to Workflow variables detected, please adjust variables and release the Schedule",
     "message.noTagFound": "No tag found",
-    "message.impactedSchedules": "The schedules below have been put into draft mode and will require adjustments to be released.",
+    "message.impactedSchedules": "The following schedules have been switched to draft mode and will require adjustments to be released.",
     "tab": {
       "folders": "Folders",
       "trash": "Trash",
@@ -2865,8 +2865,8 @@
       "countTo": "Count To",
       "unit": "Unit",
       "sort": "Sort",
-      "sortHighest": "HIGHEST",
-      "sortLowest": "LOWEST"
+      "sortHighest": "Highest",
+      "sortLowest": "Lowest"
     },
     "button" : {
       "runReport": "Run Report",
