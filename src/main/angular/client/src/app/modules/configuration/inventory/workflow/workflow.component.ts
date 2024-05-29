@@ -2944,7 +2944,24 @@ export class ExpressionComponent {
   templateUrl: './change-impact-dialog.html',
 })
 export class ChangeImpactDialogComponent {
-  constructor(public activeModal: NzModalRef) {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  impactedSchedules: any
+  obj: any;
+
+  constructor(private coreService: CoreService,public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    this.obj = this.modalData.obj;
+    this.getReferences();
+  }
+
+  private getReferences(): void {
+    this.coreService.post('inventory/workflow/references', this.obj).subscribe({
+      next: (res: any) => {
+        this.impactedSchedules = res.schedules;
+      }
+    });
   }
 }
 @Component({
@@ -4301,6 +4318,7 @@ export class WorkflowComponent {
       }, 500);
     } else {
       this.dataService.reloadTree.next({deploy: this.workflow});
+      this.impactShown = false;
     }
   }
 
@@ -4489,29 +4507,36 @@ export class WorkflowComponent {
   }
 
   onKeyDown(event: KeyboardEvent): void {
-    // if (this.data.deployed && !this.impactShown) {
-    //   event.preventDefault();
-    //   event.stopPropagation();
-    //   this.changeImpact();
-    // }
+    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.changeImpact();
+    }
   }
 
-  handleClick(event: MouseEvent): void {
-    // console.log(">>>")
-    // if (this.data.deployed && !this.impactShown) {
-    //   event.preventDefault();
-    //   event.stopPropagation();
-    //   this.changeImpact();
-    // }
-
+  handleClick(event: any): void {
+    if (event instanceof MouseEvent) {
+    
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
+      this.changeImpact();
+    }
   }
+
   changeImpact(): void {
+    this.impactShown = true;
+    const obj: any = {
+      objectType: this.objectType,
+      path: this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name
+    };
     this.modal.create({
       nzTitle: undefined,
       nzClassName: 'lg',
       nzContent: ChangeImpactDialogComponent,
       nzData: {
-        preferences: this.preferences,
+        obj: obj
       },
       nzFooter: null,
       nzAutofocus: null,
@@ -4519,7 +4544,6 @@ export class WorkflowComponent {
       nzMaskClosable: false
     });
   }
-
   private initObjects(res): void {
     if (res.configuration.orderPreparation) {
       this.orderPreparation = this.coreService.clone(res.configuration.orderPreparation);
@@ -4950,15 +4974,19 @@ export class WorkflowComponent {
   }
 
   addVariable(): void {
-    const param = {
-      name: '',
-      value: {
-        type: 'String'
-      }
-    };
-    if (this.variableDeclarations.parameters) {
-      if (!this.coreService.isLastEntryEmpty(this.variableDeclarations.parameters, 'name', '')) {
-        this.variableDeclarations.parameters.push(param);
+    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
+      this.changeImpact();
+    } else {
+      const param = {
+        name: '',
+        value: {
+          type: 'String'
+        }
+      };
+      if (this.variableDeclarations.parameters) {
+        if (!this.coreService.isLastEntryEmpty(this.variableDeclarations.parameters, 'name', '')) {
+          this.variableDeclarations.parameters.push(param);
+        }
       }
     }
   }
@@ -5034,14 +5062,22 @@ export class WorkflowComponent {
   }
 
   removeVariable(index): void {
-    this.variableDeclarations.parameters.splice(index, 1);
-    this.updateOtherProperties('variable');
+    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
+      this.changeImpact();
+    } else {
+      this.variableDeclarations.parameters.splice(index, 1);
+      this.updateOtherProperties('variable');
+    }
   }
 
   removeVariableFromList(list, index, flag = true): void {
-    list.splice(index, 1);
-    if (flag) {
-      this.updateOtherProperties('variable');
+    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
+      this.changeImpact();
+    } else {
+      list.splice(index, 1);
+      if (flag) {
+        this.updateOtherProperties('variable');
+      }
     }
   }
 

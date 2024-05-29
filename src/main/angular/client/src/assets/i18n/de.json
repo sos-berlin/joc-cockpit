@@ -1748,6 +1748,7 @@
     "label.renameTag": "Schlagwort umbenennen",
     "label.tagName": "Schlagwort Name",
     "label.testMail": "E-Mail testen",
+    "label.impactedSchedules": "Impacted Schedules",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addOrderParameter": "Auftragsvorlage hinzufügen",
     "button.setVersion": "Version setzen",
@@ -1879,6 +1880,7 @@
     "message.localChangesWillBeOverwritten": "Alle lokalen Änderungen werden durch diese Operation überschrieben",
     "message.changeDeductInWorkflow": "Änderungen an Variablen des Arbeitsablaufs erkannt, bitte die Variablen anpassen und den Zeitplan freigeben.",
     "message.noTagFound": "Kein Schlagwort gefunden",
+    "message.impactedSchedules": "The schedules below have been put into draft mode and will require adjustments to be released.",
     "tab": {
       "folders": "Ordner",
       "trash": "Papierkorb",
@@ -2855,7 +2857,16 @@
       "runReport": "Berichtslauf starten",
       "reportRunning": "Berichtslauf in Arbeit...",
       "periodLength": "Zeitraum Dauer",
-      "periodStep": "Zeitraum Schritt"
+      "periodStep": "Zeitraum Schritt",
+      "interval": "Interval",
+      "relative": "Relative",
+      "absolute": "Absolute",
+      "countFrom": "Count From",
+      "countTo": "Count To",
+      "unit": "Unit",
+      "sort": "Sort",
+      "sortHighest": "HIGHEST",
+      "sortLowest": "LOWEST"
     },
     "button" : {
       "runReport": "Berichtslauf starten",

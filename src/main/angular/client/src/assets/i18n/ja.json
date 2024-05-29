@@ -1748,6 +1748,7 @@
     "label.renameTag": "タグ名変更",
     "label.tagName": "タグ名",
     "label.testMail": "テストメール",
+    "label.impactedSchedules": "Impacted Schedules",
     "button.modifyVariableSet": "変数設定変更",
     "button.addOrderParameter": "オーダー変数追加",
     "button.setVersion": "バージョン設定",
@@ -1879,6 +1880,7 @@
     "message.localChangesWillBeOverwritten": "この操作により、ローカルでの変更はすべて上書きされます",
     "message.changeDeductInWorkflow": "ワークフローの変数を変更し、変数を調整して再度スケジュールをリリースしてください",
     "message.noTagFound": "タグはありません",
+    "message.impactedSchedules": "The schedules below have been put into draft mode and will require adjustments to be released.",
     "tab": {
       "folders": "フォルダー",
       "trash": "ゴミ箱",
@@ -2855,7 +2857,16 @@
       "runReport": "レポート実行",
       "reportRunning": "レポート実行中...",
       "periodLength": "Period Length",
-      "periodStep": "Period Step"
+      "periodStep": "Period Step",
+      "interval": "Interval",
+      "relative": "Relative",
+      "absolute": "Absolute",
+      "countFrom": "Count From",
+      "countTo": "Count To",
+      "unit": "Unit",
+      "sort": "Sort",
+      "sortHighest": "HIGHEST",
+      "sortLowest": "LOWEST"
     },
     "button" : {
       "runReport": "レポート実行",

@@ -408,7 +408,7 @@ export class SingleDeployComponent {
   dailyPlanDate: any = {
     addOrdersDateFrom: 'now',
   };
-  affectedSchedule: any;
+  impactedSchedules: any;
 
   dateObj: any = {};
 
@@ -518,12 +518,15 @@ export class SingleDeployComponent {
     };
     if ((this.data.objectType == 'WORKFLOW' || this.releasable || this.isRemoved) && this.deployablesObject.length > 0) {
       if (!this.isRevoke) {
-        if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
-          obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-        } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
-          obj.addOrdersDateFrom = 'now';
+        if (this.impactedSchedules && this.impactedSchedules.length === 0) {
+          if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
+            obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+          } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
+            obj.addOrdersDateFrom = 'now';
+          }
         }
       }
+
     }
     if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
       if (this.object.store.draftConfigurations.length === 0) {
@@ -626,13 +629,17 @@ export class SingleDeployComponent {
     };
     this.coreService.post('inventory/workflow/references', obj).subscribe({
       next: (res: any) => {
-        console.log(res,"res")
-        if(res.schedules){
-          this.affectedSchedule = res.schedules
+        console.log(res, "res");
+        if (res.schedules) {
+          this.impactedSchedules = res.schedules.map((schedule: any) => ({
+            ...schedule,
+            selected: true
+          }));
         }
       }
     });
   }
+
 }
 
 @Component({
@@ -6148,7 +6155,7 @@ export class InventoryComponent {
         } else if (type === InventoryObject.LOCK) {
           configuration = {limit: 1, id: res.name};
         } else if (obj.type === InventoryObject.REPORT) {
-          configuration = {hits: 10};
+          configuration = {hits: 10, period: { length: 5, step: 5 }, sort: 'HIGHEST'};
         } else if (type === InventoryObject.FILEORDERSOURCE) {
           configuration = {delay: 2};
         } else if (type === InventoryObject.WORKINGDAYSCALENDAR || type === InventoryObject.NONWORKINGDAYSCALENDAR) {

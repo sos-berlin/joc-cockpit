@@ -10,49 +10,58 @@
 <form>
   <div class="modal-body p-a">
     <div class="form-group row">
-      <div class="col-md-4 col-lg-4">
-        <label for="">{{modalData.variable.name}}</label>
-      </div>
-      <div class="col-md-4 col-lg-4" [ngSwitch]="modalData.variable.value.type" *ngIf="modalData.variable.value.type !== 'List' && modalData.variable.value.type !== 'Map'">
-        <nz-input-number *ngSwitchCase="'Number'" [(ngModel)]="modalData.variable.value.default"
-        [nzMin]="0"
-        [nzStep]="1" name="value{{i}}"
-        nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-        <nz-select *ngSwitchCase="'Boolean'"
-          [(ngModel)]="modalData.variable.value.default" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-          name="value{{i}}" nzAllowClear >
-          <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-          <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-        </nz-select>
-        <ng-container *ngSwitchDefault>
-          <input #value="ngModel" [(ngModel)]="modalData.variable.value.default"
-          [disabled]="modalData.variable.value.type === 'List' || modalData.variable.value.type === 'Map'" [facetValidation]="modalData.variable.value.facet"
-          autocomplete="off" class="form-control" name="value{{i}}"
-          placeholder="{{'common.placeholder.value' | translate}}" type="text">
-        </ng-container>
-      </div>
-      <div class="col-md-12 col-lg-12" *ngIf="modalData.variable.value.type === 'List' && modalData.variable.value.type === 'Map'">
-        <div class="form-group row" *ngFor="let variable of modalData.variable.value.listParameters">
+      <div class="col-md-12 col-lg-12" *ngIf="modalData.variable.value.type !== 'List' && modalData.variable.value.type !== 'Map'">
+        <div class="form-group row">
           <div class="col-md-4 col-lg-4">
-            <label for="">{{variable.name}}</label>
+            <label for="">{{modalData.variable.name}}</label>
           </div>
-          <!-- <div class="col-md-4 col-lg-4" [ngSwitch]="variable.value.type">
-            <nz-input-number *ngSwitchCase="'Number'" [(ngModel)]="variable.value.default"
+          <div class="col-md-4 col-lg-4" [ngSwitch]="modalData.variable.value.type">
+            <nz-input-number *ngSwitchCase="'Number'" [(ngModel)]="modalData.variable.value.default"
             [nzMin]="0"
             [nzStep]="1" name="value{{i}}"
             nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
             <nz-select *ngSwitchCase="'Boolean'"
-              [(ngModel)]="variable.value.default" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+              [(ngModel)]="modalData.variable.value.default" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
               name="value{{i}}" nzAllowClear >
               <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
               <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
             </nz-select>
             <ng-container *ngSwitchDefault>
-              <input #value="ngModel" [(ngModel)]="variable.value.default" [facetValidation]="variable.value.facet"
+              <input #value="ngModel" [(ngModel)]="modalData.variable.value.default"
+              [disabled]="modalData.variable.value.type === 'List' || modalData.variable.value.type === 'Map'" [facetValidation]="modalData.variable.value.facet"
               autocomplete="off" class="form-control" name="value{{i}}"
               placeholder="{{'common.placeholder.value' | translate}}" type="text">
             </ng-container>
-          </div> -->
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 col-lg-12" *ngIf="modalData.variable.value.type === 'List' || modalData.variable.value.type === 'Map'">
+        <div class="form-group row">
+          <div class="col-md-4 col-lg-4">
+            <label for="">{{modalData.variable.name}}</label>
+          </div>
+        </div>
+        <div class="form-group row" *ngFor="let listPrameter of modalData.variable.value.listParameters">
+          <div class="col-md-4 col-lg-4">
+            <label for="">{{listPrameter.name}}</label>
+          </div>
+          <div class="col-md-4 col-lg-4" [ngSwitch]="listPrameter.value.type">
+            <nz-input-number *ngSwitchCase="'Number'" [(ngModel)]="listPrameter.value.default"
+            [nzMin]="0"
+            [nzStep]="1" name="value{{i}}"
+            nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+            <nz-select *ngSwitchCase="'Boolean'"
+              [(ngModel)]="listPrameter.value.default" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+              name="value{{i}}" nzAllowClear >
+              <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+              <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+            </nz-select>
+            <ng-container *ngSwitchDefault>
+              <input #value="ngModel" [(ngModel)]="listPrameter.value.default" [facetValidation]="listPrameter.value.facet"
+              autocomplete="off" class="form-control" name="value{{i}}"
+              placeholder="{{'common.placeholder.value' | translate}}" type="text">
+            </ng-container>
+          </div>
         </div>
       </div>
     </div>
