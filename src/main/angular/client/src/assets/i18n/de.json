@@ -59,7 +59,7 @@
   "PLANNED": "geplant",
   "REMOVED": "entfernt",
   "RUNNING": "ausführend",
-  "PROCESSING":"processing",
+  "PROCESSING":"verarbeitend",
   "SETBACK": "in Wiederholung",
   "SINGLE_AGENT": "standalone_agent",
   "SKIPPED": "übersprungen",
