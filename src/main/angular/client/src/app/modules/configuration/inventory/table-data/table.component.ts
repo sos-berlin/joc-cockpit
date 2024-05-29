@@ -115,7 +115,7 @@ export class TableComponent implements OnChanges, OnDestroy {
         } else if (obj.type === InventoryObject.LOCK) {
           configuration = {limit: 1, id: res.name};
         } else if (obj.type === InventoryObject.REPORT) {
-          configuration = {hits: 10};
+          configuration = {hits: 10, period: { length: 5, step: 5 }, sort: 'HIGHEST'};
         } else if (obj.type === InventoryObject.FILEORDERSOURCE) {
           configuration = {delay: 2};
         } else if (obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR') {

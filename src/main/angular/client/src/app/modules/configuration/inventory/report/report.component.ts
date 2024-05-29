@@ -93,6 +93,13 @@ export class ReportComponent implements OnChanges, OnDestroy {
   subscription2: Subscription;
   subscription3: Subscription;
 
+  isInterval: string = 'absolute';
+  units = [
+    {name: 'Year'},
+    {name: 'Month'},
+    {name: 'Quater'}
+  ]
+
 
   constructor(public coreService: CoreService, private translate: TranslateService, private dataService: DataService,
               private authService: AuthService, private ref: ChangeDetectorRef, private modal: NzModalService) {
@@ -389,6 +396,9 @@ export class ReportComponent implements OnChanges, OnDestroy {
       }
     }
     this.ref.detectChanges();
+  }
+
+  selectInterval(){
   }
 
 }

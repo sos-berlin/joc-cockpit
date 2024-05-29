@@ -68,7 +68,7 @@
                nzType="folder"></i>
             <span class="p-l-sm">{{data.path}}</span>
           </div>
-          <div class="m-t-md">
+          <div>
             <i nz-icon nzTheme="outline" nzType="apartment" class="p-r-xs"></i>
             {{'inventory.label.workflows' | translate}}
           </div>
@@ -136,13 +136,13 @@
           <span class="p-l-sm">{{item.name }}</span>
         </div>
       </div>
-      <div *ngIf="affectedSchedule?.length > 0 " class="m-t-md">
+      <div *ngIf="impactedSchedules?.length > 0 " class="m-t-md">
       <i nz-icon nzTheme="outline" nzType="schedule" class="p-r-xs"></i>
-        {{'inventory.label.orders' | translate}}
+        {{'inventory.label.impactedSchedules' | translate}}
       </div>
-      <div *ngFor="let item of affectedSchedule" class="p-l">
+      <div *ngFor="let item of impactedSchedules" class="p-l">
         <div>
-          &nbsp;{{item.path}}
+          &nbsp;<label nz-checkbox [(ngModel)]="item.selected" [ngModelOptions]="{standalone: true}" name="selectedSchedules">{{item.path}}</label>
         </div>
       </div>
     </div>
