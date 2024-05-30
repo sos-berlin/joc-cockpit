@@ -15,6 +15,7 @@ import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {ByteToSizePipe} from "../../pipes/core.pipe";
+import { isArray } from 'underscore';
 
 declare var $;
 
@@ -512,6 +513,15 @@ export class ImportKeyModalComponent {
   comments: any = {};
   key = {keyAlg: 'RSA'};
 
+  certAlias: string;
+  privateKeyPath: string;
+  jobResourceFolder: string;
+  isTreeShow: boolean;
+  objectType: any;
+  extraInfo: any = {};
+  isChange = false;
+  jobResourcesTree = [];
+
   constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService,
               public translate: TranslateService, public toasterService: ToastrService) {
   }
@@ -529,6 +539,8 @@ export class ImportKeyModalComponent {
 
     if (this.type === 'ca') {
       this.key.keyAlg = 'ECDSA';
+    }else if (this.type === 'encipherment') {
+      this.getJobResourceTree(this.jobResourceFolder)
     }
   }
 
@@ -614,7 +626,12 @@ export class ImportKeyModalComponent {
   }
 
   private upload(file: any) {
-    const URL = this.type === 'key' ? 'profile/key/import' : this.type === 'certificate' ? 'profile/key/ca/import' : 'profile/ca/import';
+    let URL: string;
+    if(this.type === 'encipherment') {
+      URL = 'encipherment/certificate/import';
+    } else {
+      URL = this.type === 'key' ? 'profile/key/import' : this.type === 'certificate' ? 'profile/key/ca/import' : 'profile/ca/import';
+    }
     const formData = new FormData();
     formData.append('file', file);
     if (this.comments.comment) {
@@ -646,6 +663,67 @@ export class ImportKeyModalComponent {
 
   cancel(): void {
     this.activeModal.close('');
+  }
+
+  private getJobResourceTree(jobResourceFolder): void {
+    if (this.jobResourcesTree.length === 0) {
+      this.coreService.post('tree', {
+        types: ['JOBRESOURCE'],
+        forInventory: true
+      }).subscribe((res) => {
+        this.jobResourcesTree = this.coreService.prepareTree(res, true);
+        this.matchJobResourceList(jobResourceFolder);
+      });
+    } else {
+      this.matchJobResourceList(jobResourceFolder);
+    }
+  }
+
+  private matchJobResourceList(jobResourceFolder): void {
+    if (jobResourceFolder) {
+      if (this.objectType === 'NOTIFICATION') {
+        if (typeof jobResourceFolder === 'string') {
+          let val = jobResourceFolder;
+          jobResourceFolder = [val];
+        } else if (!jobResourceFolder || !isArray(jobResourceFolder)) {
+          jobResourceFolder = [];
+        }
+      }
+      if (jobResourceFolder) {
+        if (typeof jobResourceFolder == 'string') {
+          this.checkJobResource(jobResourceFolder);
+        }
+      }
+    }
+  }
+
+  onChangeJobResource($event, jobResourceFolder): void {
+    this.isTreeShow = false;
+    jobResourceFolder = $event;
+    if (this.objectType === 'NOTIFICATION') {
+      this.extraInfo.released = false;
+    } else {
+      this.checkJobResource($event);
+      this.extraInfo.sync = false;
+      // this.autoValidate();
+    }
+    this.isChange = true;
+  }
+
+  onBlur(): void {
+    this.isTreeShow = false;
+  }
+
+  private checkJobResource(name): void {
+    this.extraInfo.isExist = false;
+    const obj: any = {
+      path: name,
+      objectType: 'JOBRESOURCE',
+    };
+    this.coreService.post('inventory/read/configuration', obj).subscribe((res: any) => {
+      this.extraInfo.isExist = true;
+      this.extraInfo.deployed = res.deployed;
+    });
   }
 }
 
@@ -784,6 +862,99 @@ export class RemoveKeyModalComponent {
     });
   }
 }
+
+@Component({
+  selector: 'app-encipherment-modal',
+  templateUrl: './add-encipherment-dialog.html'
+})
+export class AddEnciphermentModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  certificateObj: any = {};
+  submitted = false;
+
+  objectType: any;
+  isTreeShow: boolean;
+  extraInfo: any = {};
+  isChange = false;
+  jobResourcesTree = [];
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService){}
+
+  ngOnInit(): void {
+    this.getJobResourceTree(this.certificateObj)
+  }
+
+  private getJobResourceTree(certificateObj): void {
+    if (this.jobResourcesTree.length === 0) {
+      this.coreService.post('tree', {
+        types: ['JOBRESOURCE'],
+        forInventory: true
+      }).subscribe((res) => {
+        this.jobResourcesTree = this.coreService.prepareTree(res, true);
+        this.matchJobResourceList(certificateObj);
+      });
+    } else {
+      this.matchJobResourceList(certificateObj);
+    }
+  }
+
+  private matchJobResourceList(certificateObj): void {
+    if (certificateObj) {
+      if (this.objectType === 'NOTIFICATION') {
+        if (typeof certificateObj.jobResourceFolder === 'string') {
+          let val = certificateObj.jobResourceFolder;
+          certificateObj.jobResourceFolder = [val];
+        } else if (!certificateObj.jobResourceFolder || !isArray(certificateObj.jobResourceFolder)) {
+          certificateObj.jobResourceFolder = [];
+        }
+      }
+      if (certificateObj.jobResourceFolder) {
+        if (typeof certificateObj.jobResourceFolder == 'string') {
+          this.checkJobResource(certificateObj.jobResourceFolder);
+        }
+      }
+    }
+  }
+
+  onChangeJobResource($event, certificateObj): void {
+    this.isTreeShow = false;
+    certificateObj.jobResourceFolder = $event;
+    if (this.objectType === 'NOTIFICATION') {
+      this.extraInfo.released = false;
+    } else {
+      this.checkJobResource($event);
+      this.extraInfo.sync = false;
+      // this.autoValidate();
+    }
+    this.isChange = true;
+  }
+
+  onBlur(): void {
+    this.isTreeShow = false;
+  }
+
+  private checkJobResource(name): void {
+    this.extraInfo.isExist = false;
+    const obj: any = {
+      path: name,
+      objectType: 'JOBRESOURCE',
+    };
+    this.coreService.post('inventory/read/configuration', obj).subscribe((res: any) => {
+      this.extraInfo.isExist = true;
+      this.extraInfo.deployed = res.deployed;
+    });
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    this.coreService.post('encipherment/certificate/store', this.certificateObj).subscribe({
+      next: () => {
+        this.activeModal.close('Done');
+      }, error: () => this.submitted = false
+    });
+  }
+}
+
 
 @Component({
   selector: 'app-user',
@@ -959,6 +1130,8 @@ export class UserComponent {
   sharedList: any = [];
   type = 'AGENT';
 
+  enciphermentCertificate: any = [];
+
   constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService,
               private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
     this.subscription1 = dataService.resetProfileSetting.subscribe(res => {
@@ -1016,12 +1189,14 @@ export class UserComponent {
           this.getFavorite();
         }
       } else if ($event.index === 4) {
+        this.getEnciphermentCertificate();
+      } else if ($event.index === 5) {
         if (this.permission.joc.administration.certificates.view) {
           this.getGit();
         } else {
           this.getFavorite();
         }
-      } else if ($event.index === 5) {
+      } else if ($event.index === 6) {
         this.getFavorite();
       }
     }
@@ -1504,5 +1679,41 @@ export class UserComponent {
       }).subscribe();
     });
   }
+
+  /* ----------------------Encipherment Certificates--------------------- */
+
+  getEnciphermentCertificate(){
+    let certAliases = {
+      certAliases: []
+    };
+    this.coreService.post('encipherment/certificate', certAliases).subscribe({
+      next: (res: any) => {
+        this.enciphermentCertificate = res;
+      }, error: () => {
+        this.enciphermentCertificate = [];
+      }
+    });
+  }
+
+  addEnciphermentCertificate() {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: AddEnciphermentModalComponent,
+      nzClassName: 'lg',
+      nzData: {
+        // paste: true,
+      },
+      nzFooter: null,
+      nzAutofocus: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        // this.getGit();
+      }
+    });
+  }
+
 }
 

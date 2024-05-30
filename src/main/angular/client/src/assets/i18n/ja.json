@@ -2514,6 +2514,7 @@
     "label.edgeRounded": "ラウンドエッジ接続",
     "label.horizontal": "水平",
     "label.vertical": "垂直",
+    "label.enciphermentCertificates": "Encipherment Certificates",
     "button.resetPreferences": "プリファレンスリセット",
     "button.groupLimit": "グループリミット",
     "button.changePassword": "パスワード変更",
@@ -2645,6 +2646,14 @@
       "label.credentials": "資格情報",
       "message.deleteGitCredentials": "Git資格情報を削除すると資格情報リストから永久に削除されます",
       "message.noCredentialFound": "資格情報はありません"
+    },
+    "encipherment" : {
+      "label.addCertificate": "Add Certificate",
+      "label.certAlias": "Certificate Alias",
+      "label.certificate": "Certificate",
+      "label.privateKeyPath": "Private Key Path",
+      "label.jobResourceFolder": "Job Resource Folder",
+      "label.importCertificate": "Import Encipherment Certificate"
     }
   },
   "runtime": {
@@ -2861,8 +2870,7 @@
       "interval": "Interval",
       "relative": "Relative",
       "absolute": "Absolute",
-      "countFrom": "Count From",
-      "countTo": "Count To",
+      "count": "Count",
       "unit": "Unit",
       "sort": "Sort",
       "sortHighest": "HIGHEST",

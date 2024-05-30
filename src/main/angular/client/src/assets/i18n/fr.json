@@ -59,7 +59,7 @@
   "PLANNED": "planifié",
   "REMOVED": "supprimé",
   "RUNNING": "en cours d'exécution",
-  "PROCESSING":"processing",
+  "PROCESSING":"en cours de traitement",
   "SETBACK": "retour en arrière",
   "SINGLE_AGENT": "agent_autonome",
   "SKIPPED": "ignoré",
@@ -1748,7 +1748,7 @@
     "label.renameTag": "Renommer Mot-clé",
     "label.tagName": "Nom Mot-clé",
     "label.testMail": "Tester l'E-Mail",
-    "label.impactedSchedules": "Impacted Schedules",
+    "label.impactedSchedules": "Planifications concernéés",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addOrderParameter": "Ajouter un Modèle d'Ordre",
     "button.setVersion": "Définir la Version",
@@ -1880,7 +1880,7 @@
     "message.localChangesWillBeOverwritten": "Toutes les modifications locales seront écrasées par cette action",
     "message.changeDeductInWorkflow": "Modifications des variables du flux de travail détectées, veuillez ajuster les variables et libérer la Plannification.",
     "message.noTagFound": "Aucun mot-clé trouvé",
-    "message.impactedSchedules": "The schedules below have been put into draft mode and will require adjustments to be released.",
+    "message.impactedSchedules": "Les Planifications suivantes sont passéés en mode brouillon et nécessiteront des ajustements avant d'être publiés.",
     "tab": {
       "folders": "Dossiers",
       "trash": "Corbeille",
@@ -2514,6 +2514,7 @@
     "label.edgeRounded": "Bords arrondis des connexions",
     "label.horizontal": "Horizontal",
     "label.vertical": "Vertical",
+    "label.enciphermentCertificates": "Encipherment Certificates",
     "button.resetPreferences": "Réinitialiser les Préférences du Profil",
     "button.groupLimit": "Limite de groupe",
     "button.changePassword": "Changer le mot de passe",
@@ -2645,6 +2646,14 @@
       "label.credentials": "Identifiants",
       "message.deleteGitCredentials": "La suppression des identifiants Git entraîne leur suppression définitive de la liste des identifiants.",
       "message.noCredentialFound": "Pas d'identifiants présents"
+    },
+    "encipherment" : {
+      "label.addCertificate": "Add Certificate",
+      "label.certAlias": "Certificate Alias",
+      "label.certificate": "Certificate",
+      "label.privateKeyPath": "Private Key Path",
+      "label.jobResourceFolder": "Job Resource Folder",
+      "label.importCertificate": "Import Encipherment Certificate"
     }
   },
   "runtime": {
@@ -2858,15 +2867,14 @@
       "reportRunning": "Rapport en cours d'exécution...",
       "periodLength": "Durée de la période",
       "periodStep": "Étape de la période",
-      "interval": "Interval",
-      "relative": "Relative",
-      "absolute": "Absolute",
-      "countFrom": "Count From",
-      "countTo": "Count To",
-      "unit": "Unit",
-      "sort": "Sort",
-      "sortHighest": "HIGHEST",
-      "sortLowest": "LOWEST"
+      "interval": "Intervalle",
+      "relative": "Relatif",
+      "absolute": "Absolue",
+      "count": "Count",
+      "unit": "Unité",
+      "sort": "Tri",
+      "sortHighest": "le plus élevé",
+      "sortLowest": "le plus bas"
     },
     "button" : {
       "runReport": "Exécuter le Rapport",

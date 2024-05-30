@@ -17,7 +17,7 @@ import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
-
+import * as moment from 'moment';
 
 @Directive({
   selector: '[appMonthValidate]',
@@ -26,6 +26,30 @@ import {CommentModalComponent} from '../../../../components/comment-modal/commen
   ]
 })
 export class MonthValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      if (v == '') {
+        return null;
+      }
+      if (/^\d{4}-(0[1-9]|1[0-2])$/.test(v)) {
+        return null;
+      }
+
+    } else {
+      return null;
+    }
+    return {
+      invalidMonth: true
+    };
+  }
+}@Directive({
+  selector: '[appRelativeMonthValidate]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => RelativeMonthValidator), multi: true}
+  ]
+})
+export class RelativeMonthValidator implements Validator {
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
     if (v != null) {
@@ -94,12 +118,16 @@ export class ReportComponent implements OnChanges, OnDestroy {
   subscription3: Subscription;
 
   isInterval: string = 'absolute';
-  units = [
+  units: any = [
     {name: 'Year'},
     {name: 'Month'},
-    {name: 'Quater'}
-  ]
+    {name: 'Quarter'}
+  ];
+  from: number = null;
+  count: number = null;
 
+  monthFromForDisplay: string = '';
+  monthToForDisplay: string = '';
 
   constructor(public coreService: CoreService, private translate: TranslateService, private dataService: DataService,
               private authService: AuthService, private ref: ChangeDetectorRef, private modal: NzModalService) {
@@ -293,6 +321,10 @@ export class ReportComponent implements OnChanges, OnDestroy {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
+    if (this.isInterval === 'absolute') {
+      this.report.configuration.monthFrom = this.monthFromForDisplay
+      this.report.configuration.monthTo = this.monthToForDisplay
+    }
     const obj = this.coreService.clone(this.report.configuration);
 
     if (!isEqual(this.report.actual, JSON.stringify(obj))) {
@@ -367,14 +399,47 @@ export class ReportComponent implements OnChanges, OnDestroy {
       this.report.name = this.data.name;
 
       this.history.push(JSON.stringify(this.report.configuration));
+
       if (!res.valid) {
         this.validateJSON(res.configuration);
       } else {
         this.invalidMsg = '';
       }
+
+      this.updateDateFields(res.configuration.monthFrom, res.configuration.monthTo);
+
       this.ref.detectChanges();
     });
   }
+
+  private updateDateFields(monthFrom: string, monthTo: string): void {
+    const relativeDatePattern = /^[+-]?\d+[MmQqYy]$/;
+    if (relativeDatePattern.test(monthFrom) && relativeDatePattern.test(monthTo)) {
+      // Handle relative dates
+      this.isInterval = 'relative';
+      this.units.name = this.getUnitFromRelativeDate(monthFrom);
+      this.from = this.getValueFromRelativeDate(monthFrom);
+      this.count = this.getValueFromRelativeDate(monthFrom) - this.getValueFromRelativeDate(monthTo) + 1;
+    } else {
+      // Handle absolute dates
+      this.isInterval = 'absolute';
+      this.monthFromForDisplay = monthFrom;
+      this.monthToForDisplay = monthTo;
+    }
+  }
+
+  private getUnitFromRelativeDate(date: string): string {
+    const unit = date.slice(-1).toUpperCase(); // Extracts the unit (M, Q, Y) and converts to uppercase
+    if (unit === 'Y') return 'Year';
+    if (unit === 'M') return 'Month';
+    if (unit === 'Q') return 'Quarter';
+    return '';
+  }
+
+  private getValueFromRelativeDate(date: string): number {
+    return parseInt(date.slice(0, -1), 10); // Extracts the numeric part and converts to integer
+  }
+
 
   private validateJSON(json): void {
     const obj = clone(json);
@@ -398,7 +463,67 @@ export class ReportComponent implements OnChanges, OnDestroy {
     this.ref.detectChanges();
   }
 
-  selectInterval(){
+  convertRelativeToAbsolute(unit: string, from: number | null, count: number | null): { monthFrom: string, monthTo: string } {
+    let monthFrom: string;
+    let monthTo: string;
+
+    if (unit === 'Year') {
+      let yearFrom = from !== null ? `${from}y` : '1y';
+      let yearTo = from !== null && count !== null ? `${from - (count - 1)}y` : yearFrom;
+
+      monthFrom = yearFrom;
+      monthTo = yearTo;
+    } else if (unit === 'Month') {
+      let monthFromValue = from !== null ? `${from}m` : '1m';
+      let monthToValue = from !== null && count !== null ? `${from - (count - 1)}m` : monthFromValue;
+
+      monthFrom = monthFromValue;
+      monthTo = monthToValue;
+    } else if (unit === 'Quarter') {
+      let quarterFromValue = from !== null ? `${from}q` : '1q';
+      let quarterToValue = from !== null && count !== null ? `${from - (count - 1)}q` : quarterFromValue;
+
+      monthFrom = quarterFromValue;
+      monthTo = quarterToValue;
+    }
+
+    return { monthFrom, monthTo };
   }
+
+  saveRelativeInterval(): void {
+    const { units, from, count } = this;
+
+    if (units) {
+      const { monthFrom, monthTo } = this.convertRelativeToAbsolute(units.name, from, count);
+      this.report.configuration.monthFrom = monthFrom;
+      this.report.configuration.monthTo = monthTo;
+      this.saveJSON();
+    }
+  }
+
+  getTemplateTitle(templateName: string): string {
+    const template = this.templates.find(t => t.templateName === templateName);
+    if (template) {
+      let translatedTitle = '';
+      this.translate.get(template.title).subscribe((res: string) => {
+        translatedTitle = res;
+      });
+      return translatedTitle;
+    }
+    return '';
+  }
+
+  updateTitleIfEmpty(templateName: string): void {
+    const templateTitle = this.getTemplateTitle(templateName);
+    if (!this.report.configuration.title || this.report.configuration.title.trim() === '') {
+      this.report.configuration.title = templateTitle;
+    }
+  }
+
+  handleTemplateChange(templateName: string): void {
+    this.updateTitleIfEmpty(templateName);
+    this.saveJSON();
+  }
+
 
 }

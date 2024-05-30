@@ -41,7 +41,7 @@
             <label for="">{{modalData.variable.name}}</label>
           </div>
         </div>
-        <div class="form-group row" *ngFor="let listPrameter of modalData.variable.value.listParameters">
+        <div class="form-group row" *ngFor="let listPrameter of modalData.variable.value.listParameters; let i=index;">
           <div class="col-md-4 col-lg-4">
             <label for="">{{listPrameter.name}}</label>
           </div>

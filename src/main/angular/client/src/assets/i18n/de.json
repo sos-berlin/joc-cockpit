@@ -59,7 +59,7 @@
   "PLANNED": "geplant",
   "REMOVED": "entfernt",
   "RUNNING": "ausführend",
-  "PROCESSING":"processing",
+  "PROCESSING":"verarbeitend",
   "SETBACK": "in Wiederholung",
   "SINGLE_AGENT": "standalone_agent",
   "SKIPPED": "übersprungen",
@@ -1748,7 +1748,7 @@
     "label.renameTag": "Schlagwort umbenennen",
     "label.tagName": "Schlagwort Name",
     "label.testMail": "E-Mail testen",
-    "label.impactedSchedules": "Impacted Schedules",
+    "label.impactedSchedules": "Betroffene Zeitpläne",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addOrderParameter": "Auftragsvorlage hinzufügen",
     "button.setVersion": "Version setzen",
@@ -1880,7 +1880,7 @@
     "message.localChangesWillBeOverwritten": "Alle lokalen Änderungen werden durch diese Operation überschrieben",
     "message.changeDeductInWorkflow": "Änderungen an Variablen des Arbeitsablaufs erkannt, bitte die Variablen anpassen und den Zeitplan freigeben.",
     "message.noTagFound": "Kein Schlagwort gefunden",
-    "message.impactedSchedules": "The schedules below have been put into draft mode and will require adjustments to be released.",
+    "message.impactedSchedules": "Die folgenden Zeitpläne wurden in den Entwurfszustand versetzt und müssen angepasst und freigegeben werden.",
     "tab": {
       "folders": "Ordner",
       "trash": "Papierkorb",
@@ -2514,6 +2514,7 @@
     "label.edgeRounded": "Runde Kanten für Verbindungen",
     "label.horizontal": "Horizontal",
     "label.vertical": "Vertikal",
+    "label.enciphermentCertificates": "Encipherment Certificates",
     "button.resetPreferences": "Einstellungen des Profils zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
@@ -2645,6 +2646,14 @@
       "label.credentials": "Zugangsdaten",
       "message.deleteGitCredentials": "Wenn Git Zugangdaten entfernt werden, dann werden sie dauerhaft aus der Liste der Zugangsdaten gelöscht.",
       "message.noCredentialFound": "Keine Zugangsdaten verfügbar"
+    },
+    "encipherment" : {
+      "label.addCertificate": "Add Certificate",
+      "label.certAlias": "Certificate Alias",
+      "label.certificate": "Certificate",
+      "label.privateKeyPath": "Private Key Path",
+      "label.jobResourceFolder": "Job Resource Folder",
+      "label.importCertificate": "Import Encipherment Certificate"
     }
   },
   "runtime": {
@@ -2858,15 +2867,14 @@
       "reportRunning": "Berichtslauf in Arbeit...",
       "periodLength": "Zeitraum Dauer",
       "periodStep": "Zeitraum Schritt",
-      "interval": "Interval",
-      "relative": "Relative",
-      "absolute": "Absolute",
-      "countFrom": "Count From",
-      "countTo": "Count To",
-      "unit": "Unit",
-      "sort": "Sort",
-      "sortHighest": "HIGHEST",
-      "sortLowest": "LOWEST"
+      "interval": "Intervall",
+      "relative": "Relativ",
+      "absolute": "Absolut",
+      "count": "Count",
+      "unit": "Einheit",
+      "sort": "Sortierung",
+      "sortHighest": "höchsten",
+      "sortLowest": "geringsten"
     },
     "button" : {
       "runReport": "Berichtslauf starten",

@@ -1,9 +1,10 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="type !== 'certificate' && (securityLevel !== 'HIGH' || (securityLevel ==='HIGH' && type === 'ca'))"
+    <span *ngIf="type !== 'certificate' && type !== 'encipherment' && (securityLevel !== 'HIGH' || (securityLevel ==='HIGH' && type === 'ca'))"
           translate>profile.keyManagement.label.importPrivateKey</span>
-    <span *ngIf="type !== 'certificate' && securityLevel ==='HIGH' && type !== 'ca'" translate>profile.keyManagement.label.importPublicKey</span>
+    <span *ngIf="type !== 'certificate' && type !== 'encipherment' && securityLevel ==='HIGH' && type !== 'ca'" translate>profile.keyManagement.label.importPublicKey</span>
     <span *ngIf="type === 'certificate'" translate>profile.keyManagement.label.importCertificate</span>
+    <span *ngIf="type === 'encipherment'" translate>profile.encipherment.label.importCertificate</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -15,7 +16,7 @@
       <div [ngClass]="{'show': display}" class="col-md-12 hide">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
       </div>
-      <div *ngIf="type !== 'certificate'" class="col-md-12">
+      <div *ngIf="type !== 'certificate' && type !== 'encipherment'" class="col-md-12">
         <div class="form-group row">
           <div class="col-md-4 col-lg-3" translate>profile.keyManagement.label.keyAlgorithm</div>
           <div class="col-md-8 col-lg-9">
@@ -26,6 +27,55 @@
                 translate>profile.keyManagement.label.rsa</span></label>
               <label nz-radio nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
             </nz-radio-group>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div [ngClass]="{'has-error' : ((certAliasName.dirty || certAliasName.touched) && certAliasName.invalid)}"
+          class="form-group row">
+        <label class="col-sm-4 form-control-label" translate>profile.encipherment.label.certAlias
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6">
+          <input #certAliasName="ngModel" [(ngModel)]="certAlias" [appAutofocus]="true" autocomplete="off" class="form-control"
+                name="certAlias" required type="text"/>
+          <div *ngIf="certAliasName.invalid && (certAliasName.dirty || certAliasName.touched)" class="text-danger help-block">
+            <div *ngIf="certAliasName.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div [ngClass]="{'has-error' : ((privateKeyFilePath.dirty || privateKeyFilePath.touched) && privateKeyFilePath.invalid)}"
+          class="form-group row">
+        <label class="col-sm-4 form-control-label" translate>profile.encipherment.label.privateKeyPath
+        </label>
+        <div class="col-sm-6">
+          <input #privateKeyFilePath="ngModel" [(ngModel)]="privateKeyPath" autocomplete="off" class="form-control"
+                name="privateKeyPath" type="text"/>
+          <div *ngIf="privateKeyFilePath.invalid && (privateKeyFilePath.dirty || privateKeyFilePath.touched)" class="text-danger help-block">
+            <div *ngIf="privateKeyFilePath.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row" [ngClass]="{'has-error' : ((jobResourceFold.dirty || jobResourceFold.touched) && jobResourceFold.invalid)}">
+        <label class="col-sm-4 form-control-label" translate>profile.encipherment.label.jobResourceFolder
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6">
+          <input #jobResourceFold="ngModel" (click)="isTreeShow = true;" [(ngModel)]="jobResourceFolder" autocomplete="off" class="form-control"
+          name="jobResourceFolder" type="text">
+          <div *ngIf="isTreeShow" [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
+            <app-search-input (onBlur)="onBlur()" (onSelect)="onChangeJobResource($event, jobResourceFolder)" [isDisplay]="true"
+            [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'"></app-search-input>
+          </div>
+          <div *ngIf="jobResourceFold.invalid && (jobResourceFold.dirty || jobResourceFold.touched)" class="text-danger help-block">
+            <div *ngIf="jobResourceFold.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
           </div>
         </div>
       </div>
