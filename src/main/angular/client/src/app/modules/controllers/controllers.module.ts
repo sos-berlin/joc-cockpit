@@ -12,7 +12,8 @@ import {
   AddClusterModalComponent,
   AgentComponent,
   AgentModalComponent,
-  SubagentModalComponent
+  SubagentModalComponent,
+  AddCertificateModalComponent
 } from './agent/agent.component';
 import {SharedModule} from '../shared/shared.module';
 
@@ -36,7 +37,8 @@ const routes: Routes = [
     AgentModalComponent,
     CreateTokenModalComponent,
     AgentComponent,
-    ExportComponent
+    ExportComponent,
+    AddCertificateModalComponent
   ],
   imports: [
     RouterModule.forChild(routes),

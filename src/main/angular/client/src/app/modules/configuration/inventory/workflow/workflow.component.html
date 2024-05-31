@@ -1428,7 +1428,7 @@
                     </a>
                   </div>
                 </div>
-                <div *ngIf="!variable.isCollapse || variable.value.type !== 'List'" cdkDrag class="form-group row m-b-0 m-l-sm m-r-n-30">
+                <div *ngIf="!variable.isCollapse || (variable.value.type !== 'List' && variable.value.type !== 'Map')" cdkDrag class="form-group row m-b-0 m-l-sm m-r-n-30">
                   <div cdkDragHandle class="pos-abt"
                        style="margin-left: -9px;font-size: 18px;margin-top: 2px;cursor: move">
                     <i aria-hidden="true" class="fa fa-bars"></i>

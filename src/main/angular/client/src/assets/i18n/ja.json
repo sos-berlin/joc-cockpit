@@ -227,6 +227,7 @@
     "label.primary": "プライマリー",
     "label.secondary": "セカンダリー",
     "label.processLimit": "プロセス上限",
+    "label.addCertificateAlias": "Add Certificate Alias",
     "button.createToken": "ワンタイムトークン作成",
     "button.addAgent": "単独エージェント追加",
     "button.addSubagent": "サブエージェント追加",
@@ -251,6 +252,7 @@
     "button.exportAgentConfiguration": "エージェント設定エキスポート",
     "button.importAgentConfiguration": "エージェント設定インポート",
     "button.confirmNodeLoss": "ノードロスト確認",
+    "button.addEnciphermentCertificate": "Add Certificate",
     "message.dropHereToDetach": "ここにドロップしてサブエージェントを削除",
     "message.noClusterFound": "クラスターはありません",
     "message.clickHereToAdd": "クリックして追加",
@@ -2649,11 +2651,17 @@
     },
     "encipherment" : {
       "label.addCertificate": "Add Certificate",
+      "label.agentId": "Agent ID",
       "label.certAlias": "Certificate Alias",
       "label.certificate": "Certificate",
       "label.privateKeyPath": "Private Key Path",
       "label.jobResourceFolder": "Job Resource Folder",
-      "label.importCertificate": "Import Encipherment Certificate"
+      "label.importCertificate": "Import Encipherment Certificate",
+      "placeholder.agentId": "Agent Id",
+      "placeholder.certAlias": "Cetificate Alias Name",
+      "placeholder.certificate": "Paste Certificate here",
+      "placeholder.privateKeyPath": "Path to Certificate Private Key",
+      "placeholder.jobResourceFolder": "Select Job Resource Folder"
     }
   },
   "runtime": {

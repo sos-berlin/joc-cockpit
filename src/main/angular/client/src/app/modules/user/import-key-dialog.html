@@ -31,49 +31,49 @@
         </div>
       </div>
     </div>
-    <div>
-      <div [ngClass]="{'has-error' : ((certAliasName.dirty || certAliasName.touched) && certAliasName.invalid)}"
+    <div *ngIf="type === 'encipherment'">
+      <div [ngClass]="{'has-error' : ((certAlias.dirty || certAlias.touched) && certAlias.invalid)}"
           class="form-group row">
         <label class="col-sm-4 form-control-label" translate>profile.encipherment.label.certAlias
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
-          <input #certAliasName="ngModel" [(ngModel)]="certAlias" [appAutofocus]="true" autocomplete="off" class="form-control"
-                name="certAlias" required type="text"/>
-          <div *ngIf="certAliasName.invalid && (certAliasName.dirty || certAliasName.touched)" class="text-danger help-block">
-            <div *ngIf="certAliasName.errors.required">
+          <input #certAlias="ngModel" [(ngModel)]="certificateObj.certAlias" [appAutofocus]="true" autocomplete="off" class="form-control"
+                name="certAlias" required type="text"  placeholder="{{'profile.encipherment.placeholder.certAlias' | translate}}" (blur)="onFieldBlur()" />
+          <div *ngIf="certAlias.invalid && (certAlias.dirty || certAlias.touched)" class="text-danger help-block">
+            <div *ngIf="certAlias.errors.required">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
         </div>
       </div>
-      <div [ngClass]="{'has-error' : ((privateKeyFilePath.dirty || privateKeyFilePath.touched) && privateKeyFilePath.invalid)}"
+      <div [ngClass]="{'has-error' : ((privateKeyPath.dirty || privateKeyPath.touched) && privateKeyPath.invalid)}"
           class="form-group row">
         <label class="col-sm-4 form-control-label" translate>profile.encipherment.label.privateKeyPath
         </label>
         <div class="col-sm-6">
-          <input #privateKeyFilePath="ngModel" [(ngModel)]="privateKeyPath" autocomplete="off" class="form-control"
-                name="privateKeyPath" type="text"/>
-          <div *ngIf="privateKeyFilePath.invalid && (privateKeyFilePath.dirty || privateKeyFilePath.touched)" class="text-danger help-block">
-            <div *ngIf="privateKeyFilePath.errors.required">
+          <input #privateKeyPath="ngModel" [(ngModel)]="certificateObj.privateKeyPath" autocomplete="off" class="form-control"
+                name="privateKeyPath" type="text"  placeholder="{{'profile.encipherment.placeholder.privateKeyPath' | translate}}" (blur)="onFieldBlur()" />
+          <div *ngIf="privateKeyPath.invalid && (privateKeyPath.dirty || privateKeyPath.touched)" class="text-danger help-block">
+            <div *ngIf="privateKeyPath.errors.required">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
         </div>
       </div>
-      <div class="form-group row" [ngClass]="{'has-error' : ((jobResourceFold.dirty || jobResourceFold.touched) && jobResourceFold.invalid)}">
+      <div class="form-group row" [ngClass]="{'has-error' : ((jobResourceFolder.dirty || jobResourceFolder.touched) && jobResourceFolder.invalid)}">
         <label class="col-sm-4 form-control-label" translate>profile.encipherment.label.jobResourceFolder
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
-          <input #jobResourceFold="ngModel" (click)="isTreeShow = true;" [(ngModel)]="jobResourceFolder" autocomplete="off" class="form-control"
-          name="jobResourceFolder" type="text">
+          <input #jobResourceFolder="ngModel" (click)="isTreeShow = true;" [(ngModel)]="certificateObj.jobResourceFolder" autocomplete="off" class="form-control"
+          name="jobResourceFolder" type="text"  placeholder="{{'profile.encipherment.placeholder.jobResourceFolder' | translate}}">
           <div *ngIf="isTreeShow" [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
-            <app-search-input (onBlur)="onBlur()" (onSelect)="onChangeJobResource($event, jobResourceFolder)" [isDisplay]="true"
+            <app-search-input (onBlur)="onBlur();" (onSelect)="onChangeJobResource($event, certificateObj)" [isDisplay]="true"
             [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'"></app-search-input>
           </div>
-          <div *ngIf="jobResourceFold.invalid && (jobResourceFold.dirty || jobResourceFold.touched)" class="text-danger help-block">
-            <div *ngIf="jobResourceFold.errors.required">
+          <div *ngIf="jobResourceFolder.invalid && (jobResourceFolder.dirty || jobResourceFolder.touched)" class="text-danger help-block">
+            <div *ngIf="jobResourceFolder.errors.required">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -109,7 +109,7 @@
       </div>
     </nz-upload>
   </div>
-  <div *ngIf="fileList.length > 0" class="modal-footer">
+  <div *ngIf="fileList.length > 0 && !isEnciphermentForm" class="modal-footer">
     <button (click)="import()" [disabled]="submitted || uploading || (required && !comments.comment)"
             class="btn btn-primary btn-sm" type="submit">
       <i *ngIf="uploading" class="fa fa-spin fa-spinner p-r-xs"></i>

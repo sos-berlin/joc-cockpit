@@ -4516,7 +4516,7 @@ export class WorkflowComponent {
 
   handleClick(event: any): void {
     if (event instanceof MouseEvent) {
-    
+
       event.preventDefault();
       event.stopPropagation();
     }

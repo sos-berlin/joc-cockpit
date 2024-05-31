@@ -15,7 +15,7 @@
       </label>
       <div class="col-sm-6">
         <input #certAlias="ngModel" [(ngModel)]="certificateObj.certAlias" [appAutofocus]="true" autocomplete="off" class="form-control"
-               name="certAlias" required type="text"/>
+               name="certAlias" placeholder="{{'profile.encipherment.placeholder.certAlias' | translate}}" required type="text"/>
         <div *ngIf="certAlias.invalid && (certAlias.dirty || certAlias.touched)" class="text-danger help-block">
           <div *ngIf="certAlias.errors.required">
             <div translate>common.message.requiredError</div>
@@ -30,7 +30,7 @@
       </label>
       <div class="col-sm-6">
         <textarea #certificate="ngModel" [(ngModel)]="certificateObj.certificate" autocomplete="false" class="form-control"
-          name="certificate" placeholder="{{'profile.keyManagement.placeholder.pasteCertificate' | translate}}"
+          name="certificate" placeholder="{{'profile.encipherment.placeholder.certificate' | translate}}"
           required rows="10"></textarea>
         <div *ngIf="certificate.invalid && (certificate.dirty || certificate.touched)" class="text-danger help-block">
           <div *ngIf="certificate.errors.required">
@@ -45,7 +45,7 @@
       </label>
       <div class="col-sm-6">
         <input #privateKeyPath="ngModel" [(ngModel)]="certificateObj.privateKeyPath" autocomplete="off" class="form-control"
-               name="privateKeyPath" type="text"/>
+               name="privateKeyPath" placeholder="{{'profile.encipherment.placeholder.privateKeyPath' | translate}}" type="text"/>
         <div *ngIf="privateKeyPath.invalid && (privateKeyPath.dirty || privateKeyPath.touched)" class="text-danger help-block">
           <div *ngIf="privateKeyPath.errors.required">
             <div translate>common.message.requiredError</div>
@@ -59,7 +59,7 @@
       </label>
       <div class="col-sm-6">
         <input #jobResourceFolder="ngModel" (click)="isTreeShow = true;" [(ngModel)]="certificateObj.jobResourceFolder" autocomplete="off" class="form-control"
-        name="jobResourceFolder" type="text">
+        name="jobResourceFolder" type="text" placeholder="{{'profile.encipherment.placeholder.jobResourceFolder' | translate}}">
         <div *ngIf="isTreeShow" [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
           <app-search-input (onBlur)="onBlur()" (onSelect)="onChangeJobResource($event, certificateObj)" [isDisplay]="true"
           [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'"></app-search-input>
@@ -71,8 +71,6 @@
         </div>
       </div>
     </div>
-
-
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"

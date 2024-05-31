@@ -1,0 +1,52 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>agent.label.addCertificateAlias</span>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a">
+    <div [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}"
+         class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>profile.encipherment.label.agentId
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-6">
+        <input #agentId="ngModel" [(ngModel)]="certificateObj.agentId" autocomplete="off" class="form-control"
+              name="agentId" placeholder="{{'profile.encipherment.placeholder.certAlias' | translate}}" required type="text" readonly/>
+        <div *ngIf="agentId.invalid && (agentId.dirty || agentId.touched)" class="text-danger help-block">
+          <div *ngIf="certificate.errors.required">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div [ngClass]="{'has-error' : ((certAlias.dirty || certAlias.touched) && certAlias.invalid)}"
+         class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>profile.encipherment.label.certAlias
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-6">
+        <input #certAlias="ngModel" [(ngModel)]="certificateObj.certAlias" [appAutofocus]="true" autocomplete="off" class="form-control"
+               name="certAlias" placeholder="{{'profile.encipherment.placeholder.certAlias' | translate}}" required type="text"/>
+        <div *ngIf="certAlias.invalid && (certAlias.dirty || certAlias.touched)" class="text-danger help-block">
+          <div *ngIf="certAlias.errors.required">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
+            type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      <span translate>common.button.cancel</span>
+    </button>
+  </div>
+</form>

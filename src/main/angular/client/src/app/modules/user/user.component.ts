@@ -513,14 +513,13 @@ export class ImportKeyModalComponent {
   comments: any = {};
   key = {keyAlg: 'RSA'};
 
-  certAlias: string;
-  privateKeyPath: string;
-  jobResourceFolder: string;
+  certificateObj: any = {};
   isTreeShow: boolean;
   objectType: any;
   extraInfo: any = {};
   isChange = false;
   jobResourcesTree = [];
+  isEnciphermentForm: boolean = false;
 
   constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService,
               public translate: TranslateService, public toasterService: ToastrService) {
@@ -540,7 +539,7 @@ export class ImportKeyModalComponent {
     if (this.type === 'ca') {
       this.key.keyAlg = 'ECDSA';
     }else if (this.type === 'encipherment') {
-      this.getJobResourceTree(this.jobResourceFolder)
+      this.getJobResourceTree(this.certificateObj)
     }
   }
 
@@ -645,6 +644,10 @@ export class ImportKeyModalComponent {
     }
     if (this.type === 'key') {
       formData.append('importKeyFilter', JSON.stringify({keyAlgorithm: this.key.keyAlg}));
+    } else if (this.type === 'encipherment') {
+      formData.append('certAlias', this.certificateObj.certAlias);
+      formData.append('privateKeyPath', this.certificateObj.privateKeyPath);
+      formData.append('jobResourceFolder', this.certificateObj.jobResourceFolder);
     }
     this.uploading = true;
     const headers = new HttpHeaders().set('X-Access-Token', this.authService.accessTokenId);
@@ -665,46 +668,47 @@ export class ImportKeyModalComponent {
     this.activeModal.close('');
   }
 
-  private getJobResourceTree(jobResourceFolder): void {
+  private getJobResourceTree(certificateObj): void {
     if (this.jobResourcesTree.length === 0) {
       this.coreService.post('tree', {
         types: ['JOBRESOURCE'],
         forInventory: true
       }).subscribe((res) => {
         this.jobResourcesTree = this.coreService.prepareTree(res, true);
-        this.matchJobResourceList(jobResourceFolder);
+        this.matchJobResourceList(certificateObj);
       });
     } else {
-      this.matchJobResourceList(jobResourceFolder);
+      this.matchJobResourceList(certificateObj);
     }
   }
 
-  private matchJobResourceList(jobResourceFolder): void {
-    if (jobResourceFolder) {
+  private matchJobResourceList(certificateObj): void {
+    if (certificateObj) {
       if (this.objectType === 'NOTIFICATION') {
-        if (typeof jobResourceFolder === 'string') {
-          let val = jobResourceFolder;
-          jobResourceFolder = [val];
-        } else if (!jobResourceFolder || !isArray(jobResourceFolder)) {
-          jobResourceFolder = [];
+        if (typeof certificateObj.jobResourceFolder === 'string') {
+          let val = certificateObj.jobResourceFolder;
+          certificateObj.jobResourceFolder = [val];
+        } else if (!certificateObj.jobResourceFolder || !isArray(certificateObj.jobResourceFolder)) {
+          certificateObj.jobResourceFolder = [];
         }
       }
-      if (jobResourceFolder) {
-        if (typeof jobResourceFolder == 'string') {
-          this.checkJobResource(jobResourceFolder);
+      if (certificateObj.jobResourceFolder) {
+        if (typeof certificateObj.jobResourceFolder == 'string') {
+          this.checkJobResource(certificateObj.jobResourceFolder);
         }
       }
     }
   }
 
-  onChangeJobResource($event, jobResourceFolder): void {
+  onChangeJobResource($event, certificateObj): void {
     this.isTreeShow = false;
-    jobResourceFolder = $event;
+    certificateObj.jobResourceFolder = $event;
     if (this.objectType === 'NOTIFICATION') {
       this.extraInfo.released = false;
     } else {
       this.checkJobResource($event);
       this.extraInfo.sync = false;
+      this.onFieldBlur();
       // this.autoValidate();
     }
     this.isChange = true;
@@ -724,6 +728,14 @@ export class ImportKeyModalComponent {
       this.extraInfo.isExist = true;
       this.extraInfo.deployed = res.deployed;
     });
+  }
+
+  onFieldBlur(){
+    if(this.certificateObj.certAlias && this.certificateObj.jobResourceFolder){
+      this.isEnciphermentForm = false;
+    }else{
+      this.isEnciphermentForm = true;
+    }
   }
 }
 
@@ -1684,7 +1696,7 @@ export class UserComponent {
 
   getEnciphermentCertificate(){
     let certAliases = {
-      certAliases: []
+      certAliases: ["Test"]
     };
     this.coreService.post('encipherment/certificate', certAliases).subscribe({
       next: (res: any) => {

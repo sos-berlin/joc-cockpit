@@ -393,6 +393,36 @@ export class AgentModalComponent {
 }
 
 @Component({
+  selector: 'app-certificate-modal',
+  templateUrl: './add-certificate-dialog.html'
+})
+export class AddCertificateModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  certificateObj: any = {};
+  submitted = false;
+
+  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    if (this.modalData.agent) {
+      this.certificateObj.agentId = this.modalData.agent.agentId;
+    } else if (this.modalData.subagent) {
+      this.certificateObj.agentId = this.modalData.subagent.subagentId;
+    }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    this.coreService.post('encipherment/assignment/add', this.certificateObj).subscribe({
+      next: () => {
+        this.activeModal.close('Done');
+      }, error: () => this.submitted = false
+    });
+  }
+}
+
+@Component({
   selector: 'app-agent',
   templateUrl: './agent.component.html',
   styleUrls: ['./agent.component.scss']

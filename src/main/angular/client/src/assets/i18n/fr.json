@@ -227,6 +227,7 @@
     "label.primary": "Primaire",
     "label.secondary": "Secondaire",
     "label.processLimit": "Limite du processus",
+    "label.addCertificateAlias": "Add Certificate Alias",
     "button.createToken": "Créer un Jeton à usage unique",
     "button.addAgent": "Ajouter un Agent Autonome",
     "button.addSubagent": "Ajouter un Sous-agent",
@@ -251,6 +252,7 @@
     "button.exportAgentConfiguration": "Exporter la configuration des Agents",
     "button.importAgentConfiguration": "Importer la configuration Agents",
     "button.confirmNodeLoss": "Confirmer la perte d'une Instance d'Agent Directeur",
+    "button.addEnciphermentCertificate": "Add Certificate",
     "message.dropHereToDetach": "Cliquez ici pour supprimer le Sous-agent",
     "message.noClusterFound": "Aucun Cluster trouvé",
     "message.clickHereToAdd": "Cliquez ici pour ajouter",
@@ -2649,11 +2651,17 @@
     },
     "encipherment" : {
       "label.addCertificate": "Add Certificate",
+      "label.agentId": "Agent ID",
       "label.certAlias": "Certificate Alias",
       "label.certificate": "Certificate",
       "label.privateKeyPath": "Private Key Path",
       "label.jobResourceFolder": "Job Resource Folder",
-      "label.importCertificate": "Import Encipherment Certificate"
+      "label.importCertificate": "Import Encipherment Certificate",
+      "placeholder.agentId": "Agent Id",
+      "placeholder.certAlias": "Cetificate Alias Name",
+      "placeholder.certificate": "Paste Certificate here",
+      "placeholder.privateKeyPath": "Path to Certificate Private Key",
+      "placeholder.jobResourceFolder": "Select Job Resource Folder"
     }
   },
   "runtime": {

@@ -528,6 +528,10 @@ export class SingleDeployComponent {
       }
 
     }
+    if (this.impactedSchedules && this.impactedSchedules.length > 0) {
+      this.release();
+
+    }
     if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
       if (this.object.store.draftConfigurations.length === 0) {
         delete this.object.store.draftConfigurations;
@@ -570,6 +574,12 @@ export class SingleDeployComponent {
       obj.delete = [{objectType: this.data.objectType, path: PATH}];
     } else {
       obj.update = [{objectType: this.data.objectType, path: PATH}];
+    }
+    if (this.impactedSchedules.length > 0) {
+      obj.update = this.impactedSchedules.map(schedule => ({
+        objectType: 'SCHEDULE',
+        path: schedule.path
+      }));
     }
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 

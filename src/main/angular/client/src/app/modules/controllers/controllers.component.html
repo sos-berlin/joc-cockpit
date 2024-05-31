@@ -337,6 +337,9 @@
                                   <li (click)="createToken(controller, agent)" nz-menu-item>
                                     <a translate>agent.button.createToken</a>
                                   </li>
+                                  <li (click)="addCertificateToAgent(controller, agent)" nz-menu-item>
+                                    <a translate>agent.button.addEnciphermentCertificate</a>
+                                  </li>
                                   <li nz-menu-divider></li>
                                   <li (click)="disableEnableSubagent(agent, controller, false, true)" *ngIf="!agent.disabled"
                                       nz-menu-item>
@@ -666,6 +669,9 @@
                                         <ul nz-menu>
                                           <li (click)="editSubagent(sub, clusterAgent, controller)" nz-menu-item>
                                             <a translate>common.button.edit</a>
+                                          </li>
+                                          <li (click)="addCertificateToSubAgent(sub, clusterAgent, controller)" nz-menu-item>
+                                            <a translate>agent.button.addEnciphermentCertificate</a>
                                           </li>
                                           <li *ngIf="sub.isDirector == 'NO_DIRECTOR'" nz-menu-divider></li>
                                           <li (click)="disableEnableSubagent(sub, controller, false)" *ngIf="!sub.disabled"

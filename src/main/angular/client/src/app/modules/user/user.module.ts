@@ -8,7 +8,7 @@ import {
   FavoriteListComponent,
   EditFavoriteModalComponent,
   RemoveKeyModalComponent,
-  AddEnciphermentModalComponent,
+  AddEnciphermentModalComponent
 } from './user.component';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import {SharedModule} from '../shared/shared.module';
