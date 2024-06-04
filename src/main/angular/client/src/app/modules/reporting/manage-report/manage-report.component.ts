@@ -10,7 +10,7 @@ import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {TreeComponent} from "../../../components/tree-navigation/tree.component";
 import {SharingDataService} from "../sharing-data.service";
 import {RunModalComponent} from "../reporting.component";
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-manage-report',
   templateUrl: './manage-report.component.html'
@@ -53,7 +53,7 @@ export class ManageReportComponent {
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private orderPipe: OrderPipe,
-              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService) {
+              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService, private translate: TranslateService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -390,6 +390,14 @@ export class ManageReportComponent {
       this.loading = true;
       this.loadReports();
     }
+  }
+  getTranslatedText(item: any): string {
+    let translatedText = this.translate.instant('reporting.templates.' + item.templateName);
+    const translatedSort = this.translate.instant('reporting.label.' + item.sort);
+    translatedText = translatedText.replace('${hits}', item.hits.toString());
+    translatedText = translatedText.replace('${sort}', translatedSort);
+
+    return translatedText;
   }
 }
 

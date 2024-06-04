@@ -22,20 +22,34 @@ import * as moment from 'moment';
 @Directive({
   selector: '[appMonthValidate]',
   providers: [
-    {provide: NG_VALIDATORS, useExisting: forwardRef(() => MonthValidator), multi: true}
+    { provide: NG_VALIDATORS, useExisting: forwardRef(() => MonthValidator), multi: true }
   ]
 })
 export class MonthValidator implements Validator {
-  validate(c: AbstractControl): { [key: string]: any } {
-    let v = c.value;
-    if (v != null) {
-      if (v == '') {
-        return null;
-      }
-      if (/^\d{4}-(0[1-9]|1[0-2])$/.test(v)) {
-        return null;
-      }
+  @Input('appMonthValidate') monthFrom: string;
 
+  validate(c: AbstractControl): { [key: string]: any } | null {
+    const v = c.value;
+
+    if (v != null) {
+      if (v === '') {
+        return null;
+      }
+      const regex = /^\s*(([+-]*\d+\s*[MmQqYy]|\d{4}-(0[1-9]|1[0-2])))\s*$/;
+      if (regex.test(v)) {
+        if (this.monthFrom && regex.test(this.monthFrom)) {
+          const unitV = v.slice(-1).toUpperCase();
+          const unitMonthFrom = this.monthFrom.slice(-1).toUpperCase();
+          if (unitV !== unitMonthFrom) {
+            return { invalidMonth: true };
+          }
+          if (v < this.monthFrom) {
+            return { invalidMonth: true };
+          }
+          return null;
+        }
+        return null;
+      }
     } else {
       return null;
     }
@@ -125,9 +139,11 @@ export class ReportComponent implements OnChanges, OnDestroy {
   ];
   from: number = null;
   count: number = null;
-
-  monthFromForDisplay: string = '';
-  monthToForDisplay: string = '';
+  preset: any = [
+    {name: 'Last Year'},
+    {name: 'Last Month'},
+    {name: 'Last Quarter'}
+  ];
 
   constructor(public coreService: CoreService, private translate: TranslateService, private dataService: DataService,
               private authService: AuthService, private ref: ChangeDetectorRef, private modal: NzModalService) {
@@ -152,6 +168,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.preset.name = ''
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -321,10 +338,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
-    if (this.isInterval === 'absolute') {
-      this.report.configuration.monthFrom = this.monthFromForDisplay
-      this.report.configuration.monthTo = this.monthToForDisplay
-    }
+
     const obj = this.coreService.clone(this.report.configuration);
 
     if (!isEqual(this.report.actual, JSON.stringify(obj))) {
@@ -421,10 +435,9 @@ export class ReportComponent implements OnChanges, OnDestroy {
       this.from = this.getValueFromRelativeDate(monthFrom);
       this.count = this.getValueFromRelativeDate(monthFrom) - this.getValueFromRelativeDate(monthTo) + 1;
     } else {
-      // Handle absolute dates
       this.isInterval = 'absolute';
-      this.monthFromForDisplay = monthFrom;
-      this.monthToForDisplay = monthTo;
+      this.report.configuration.monthFrom = monthFrom
+      this.report.configuration.monthTo = monthTo
     }
   }
 
@@ -501,29 +514,86 @@ export class ReportComponent implements OnChanges, OnDestroy {
     }
   }
 
-  getTemplateTitle(templateName: string): string {
-    const template = this.templates.find(t => t.templateName === templateName);
-    if (template) {
-      let translatedTitle = '';
-      this.translate.get(template.title).subscribe((res: string) => {
-        translatedTitle = res;
-      });
-      return translatedTitle;
+  convertAbsoluteToRelative(monthFrom: string, monthTo: string): { unit: string, from: number | null, count: number | null } {
+    let unit: string;
+    let from: number | null = null;
+    let count: number | null = null;
+
+    const extractValueAndUnit = (value: string): { value: number, unit: string } => {
+      const match = value.match(/(\d+)([ymq])/);
+      return match ? { value: parseInt(match[1]), unit: match[2] } : { value: 0, unit: '' };
+    };
+
+    const fromDetails = extractValueAndUnit(monthFrom);
+    const toDetails = extractValueAndUnit(monthTo);
+
+    if (fromDetails.unit === 'y' && toDetails.unit === 'y') {
+      unit = 'Year';
+    } else if (fromDetails.unit === 'm' && toDetails.unit === 'm') {
+      unit = 'Month';
+    } else if (fromDetails.unit === 'q' && toDetails.unit === 'q') {
+      unit = 'Quarter';
     }
-    return '';
+
+    from = fromDetails.value;
+    count = fromDetails.value - toDetails.value + 1;
+
+    return { unit, from, count };
   }
 
-  updateTitleIfEmpty(templateName: string): void {
-    const templateTitle = this.getTemplateTitle(templateName);
-    if (!this.report.configuration.title || this.report.configuration.title.trim() === '') {
-      this.report.configuration.title = templateTitle;
+  saveAbsoluteInterval(): void {
+    const { monthFrom, monthTo } = this.report.configuration;
+
+    if (monthFrom && monthTo) {
+      const { unit, from, count } = this.convertAbsoluteToRelative(monthFrom, monthTo);
+      this.units.name = unit;
+      this.from = from;
+      this.count = count;
+      this.saveJSON();
     }
   }
 
-  handleTemplateChange(templateName: string): void {
-    this.updateTitleIfEmpty(templateName);
-    this.saveJSON();
+  onPresetChange(): void {
+    this.applyPreset(this.preset.name);
   }
 
+  applyPreset(preset: string): void {
+    switch (preset) {
+      case 'Last Year':
+        this.units.name = 'Year';
+        this.from = 1;
+        this.count = 1;
+        break;
+      case 'Last Month':
+        this.units.name = 'Month';
+        this.from = 1;
+        this.count = 1;
+        console.log(">>s")
+        break;
+      case 'Last Quarter':
+        this.units.name = 'Quarter';
+        this.from = 1;
+        this.count = 1;
+        break;
+      default:
+        this.units.name = '';
+        this.from = null;
+        this.count = null;
+        break;
+    }
+    // this.saveJSON();
+    this.saveRelativeInterval();
+  }
+
+  onIntervalChange(): void {
+    if (this.isInterval === 'preset') {
+      this.applyPreset(this.preset.name);
+    } else if (this.isInterval === 'relative') {
+      this.saveAbsoluteInterval()
+
+    } else if (this.isInterval === 'absolute') {
+      this.saveAbsoluteInterval();
+    }
+  }
 
 }

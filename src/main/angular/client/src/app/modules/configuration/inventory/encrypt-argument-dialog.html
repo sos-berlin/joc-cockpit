@@ -7,69 +7,74 @@
   </button>
 </div>
 
-<form>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
     <div class="form-group row">
-      <div class="col-md-12 col-lg-12" *ngIf="modalData.variable.value.type !== 'List' && modalData.variable.value.type !== 'Map'">
-        <div class="form-group row">
-          <div class="col-md-4 col-lg-4">
-            <label for="">{{modalData.variable.name}}</label>
-          </div>
-          <div class="col-md-4 col-lg-4" [ngSwitch]="modalData.variable.value.type">
-            <nz-input-number *ngSwitchCase="'Number'" [(ngModel)]="modalData.variable.value.default"
-            [nzMin]="0"
-            [nzStep]="1" name="value{{i}}"
-            nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-            <nz-select *ngSwitchCase="'Boolean'"
-              [(ngModel)]="modalData.variable.value.default" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-              name="value{{i}}" nzAllowClear >
-              <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-              <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-            </nz-select>
-            <ng-container *ngSwitchDefault>
-              <input #value="ngModel" [(ngModel)]="modalData.variable.value.default"
-              [disabled]="modalData.variable.value.type === 'List' || modalData.variable.value.type === 'Map'" [facetValidation]="modalData.variable.value.facet"
-              autocomplete="off" class="form-control" name="value{{i}}"
-              placeholder="{{'common.placeholder.value' | translate}}" type="text">
-            </ng-container>
-          </div>
-        </div>
+      <div class="col-md-6 col-lg-6">
+        <label class="form-control-label">{{currentVariable.name}}</label>
       </div>
-      <div class="col-md-12 col-lg-12" *ngIf="modalData.variable.value.type === 'List' || modalData.variable.value.type === 'Map'">
-        <div class="form-group row">
-          <div class="col-md-4 col-lg-4">
-            <label for="">{{modalData.variable.name}}</label>
-          </div>
-        </div>
-        <div class="form-group row" *ngFor="let listPrameter of modalData.variable.value.listParameters; let i=index;">
-          <div class="col-md-4 col-lg-4">
-            <label for="">{{listPrameter.name}}</label>
-          </div>
-          <div class="col-md-4 col-lg-4" [ngSwitch]="listPrameter.value.type">
-            <nz-input-number *ngSwitchCase="'Number'" [(ngModel)]="listPrameter.value.default"
-            [nzMin]="0"
-            [nzStep]="1" name="value{{i}}"
-            nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-            <nz-select *ngSwitchCase="'Boolean'"
-              [(ngModel)]="listPrameter.value.default" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-              name="value{{i}}" nzAllowClear >
-              <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-              <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-            </nz-select>
-            <ng-container *ngSwitchDefault>
-              <input #value="ngModel" [(ngModel)]="listPrameter.value.default" [facetValidation]="listPrameter.value.facet"
-              autocomplete="off" class="form-control" name="value{{i}}"
-              placeholder="{{'common.placeholder.value' | translate}}" type="text">
-            </ng-container>
-          </div>
-        </div>
+      <div class="col-md-6 col-lg-6" [ngSwitch]="currentVariable.value.type">
+        <nz-input-number *ngSwitchCase="'Number'" [(ngModel)]="currentVariable.value.default"
+        [nzMin]="0"
+        [nzStep]="1" name="value{{i}}"
+        nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+        <nz-select *ngSwitchCase="'Boolean'"
+          [(ngModel)]="currentVariable.value.default" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+          name="value{{i}}" nzAllowClear >
+          <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+          <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+        </nz-select>
+        <ng-container *ngSwitchDefault>
+          <input #value="ngModel" [(ngModel)]="currentVariable.value.default"
+          [disabled]="currentVariable.value.type === 'List' || currentVariable.value.type === 'Map'" [facetValidation]="currentVariable.value.facet"
+          autocomplete="off" class="form-control" name="value{{i}}"
+          placeholder="{{'common.placeholder.value' | translate}}" type="text">
+        </ng-container>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-6 col-lg-6">
+        <label class="form-control-label" translate>encipherment.label.certAlias</label>
+      </div>
+      <div class="col-md-6 col-lg-6">
+        <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [(ngModel)]="selectedCert" name="selectedCert">
+          <nz-option *ngFor="let certificate of certificateList" [nzLabel]="certificate.certAlias" [nzValue]="certificate.certAlias"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-6 col-lg-6">
+        <label class="form-control-label" translate>encipherment.label.certificate</label>
+      </div>
+      <div class="col-md-6 col-lg-6">
+        <textarea [(ngModel)]="certificate" autocomplete="false" class="form-control"
+          name="certificate" placeholder="{{'encipherment.placeholder.certificate' | translate}}"
+          required rows="10"></textarea>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="encryptedValue">
+      <div class="col-md-6 col-lg-6">
+        <label class="form-control-label" translate>encipherment.label.encrypt</label>
+      </div>
+      <div class="col-md-6 col-lg-6">
+        <textarea [(ngModel)]="encryptedValue" autocomplete="false" class="form-control"
+          name="encryptedValue" placeholder="{{'encipherment.placeholder.encrypt' | translate}}"
+          required rows="5"></textarea>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-6 col-lg-6"></div>
+      <div class="col-md-6 col-lg-6">
+        <button (click)="encrypt()" class="btn btn-primary btn-sm" translate type="button" [disabled]="!selectedCert && !certificate">
+          <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+          {{'encipherment.button.encrypt' | translate}}
+        </button>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary btn-sm"
-            type="submit">
-      <!-- <i class="fa fa-spin fa-spinner p-r-xs"></i> -->
+    <button class="btn btn-primary btn-sm" type="submit"  [disabled]="!encryptedValue">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">

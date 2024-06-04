@@ -1505,8 +1505,8 @@
                     </div>
                   </div>
                   <div class="col-md-2 col-lg-2 d-flex flex-lg-row flex-md-column gap-5 justify-content-around">
-                    <a><i (click)="encrpytValue(variable)" class="text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                    <a><i (click)="removeVariable(i)" class="fa fa-times text-hover-color"></i></a>
+                    <a *ngIf="variable.value.type !== 'List' && variable.value.type !== 'Map'"><i (click)="encrpytValue(variable, variable)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                    <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                   </div>
                   <ng-container *ngIf="variable.value.type === 'List' || variable.value.type === 'Map'" class="b-b p-b-sm">
                     <div class="row col-md-12">
@@ -1576,7 +1576,8 @@
                                nzTheme="outline" nzType="form" style="right: 1px;top:1px;"></i>
                           </ng-container>
                         </div>
-                        <div *ngIf="variable.value.listParameters.length > 1" class="col-md-1 col-lg-1">
+                        <div *ngIf="variable.value.listParameters.length > 1" class="col-md-2 col-lg-2 d-flex flex-lg-row flex-md-column gap-5 justify-content-around">
+                          <a><i (click)="encrpytValue(param, variable)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                           <a><i  (click)="removeVariableFromList(variable.value.listParameters, j);"
                                 class="fa fa-times m-t-sm text-hover-color"></i></a>
                         </div>

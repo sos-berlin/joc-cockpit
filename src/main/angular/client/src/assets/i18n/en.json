@@ -367,7 +367,8 @@
     "label.setting": "Settings",
     "label.permissions": "Permissions",
     "label.manageIdentityServices": "Manage Identity Services",
-    "label.clusterAgents": "Cluster Agents"
+    "label.clusterAgents": "Cluster Agents",
+    "label.manageEnciphermentKey": "Manage Encipherment Key"
   },
   "configuration": {
     "tab.inventory": "Inventory",
@@ -401,6 +402,25 @@
     "tooltip.urlForPrimary": "Connection of the Primary Controller to the Secondary Controller",
     "tooltip.primaryTitle": "Caption of the Primary Controller instance",
     "tooltip.backupTitle": "Caption of the Secondary Controller instance"
+  },
+  "encipherment": {
+    "label.addCertificate": "Add Encipherment Certificate",
+    "label.agentId": "Agent ID",
+    "label.certAlias": "Certificate Alias",
+    "label.certificate": "Certificate",
+    "label.privateKeyPath": "Private Key Path",
+    "label.jobResourceFolder": "Job Resource Folder",
+    "label.importCertificate": "Import Encipherment Certificate",
+    "label.encrypt": "Encrypted Value",
+    "placeholder.agentId": "Agent Id",
+    "placeholder.certAlias": "Cetificate Alias Name",
+    "placeholder.certificate": "Paste Certificate here",
+    "placeholder.privateKeyPath": "Path to Certificate Private Key",
+    "placeholder.jobResourceFolder": "Select Job Resource Folder",
+    "placeholder.encrypt": "Encrypted Value",
+    "button.encrypt": "Encrypt",
+    "button.addNewCertificate": "Add New Certificate",
+    "button.importCertificate": "Import Certificate"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -1472,7 +1492,8 @@
     "button.manageAccount": "Manage Identity Services",
     "button.manageControllersAndAgents": "Manage Controllers/Agents",
     "button.manageDeployment": "Manage Deployments",
-    "button.logOut": "Log Out"
+    "button.logOut": "Log Out",
+    "button.manageEnciphermentKey": "Manage Encipherment Key"
   },
   "history": {
     "label.all": "All",
@@ -2516,7 +2537,6 @@
     "label.edgeRounded": "Round Edges for Connections",
     "label.horizontal": "Horizontal",
     "label.vertical": "Vertical",
-    "label.enciphermentCertificates": "Encipherment Certificates",
     "button.resetPreferences": "Reset Profile Preferences",
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",
@@ -2648,20 +2668,6 @@
       "label.credentials": "Credentials",
       "message.deleteGitCredentials": "Deleting Git credentials will permanently remove them from the credentials list.",
       "message.noCredentialFound": "No credentials present"
-    },
-    "encipherment" : {
-      "label.addCertificate": "Add Certificate",
-      "label.agentId": "Agent ID",
-      "label.certAlias": "Certificate Alias",
-      "label.certificate": "Certificate",
-      "label.privateKeyPath": "Private Key Path",
-      "label.jobResourceFolder": "Job Resource Folder",
-      "label.importCertificate": "Import Encipherment Certificate",
-      "placeholder.agentId": "Agent Id",
-      "placeholder.certAlias": "Cetificate Alias Name",
-      "placeholder.certificate": "Paste Certificate here",
-      "placeholder.privateKeyPath": "Path to Certificate Private Key",
-      "placeholder.jobResourceFolder": "Select Job Resource Folder"
     }
   },
   "runtime": {
@@ -2881,8 +2887,9 @@
       "count": "Count",
       "unit": "Unit",
       "sort": "Sort",
-      "sortHighest": "Highest",
-      "sortLowest": "Lowest"
+      "HIGHEST": "Highest",
+      "LOWEST": "Lowest",
+      "preset": "Preset"
     },
     "button" : {
       "runReport": "Run Report",

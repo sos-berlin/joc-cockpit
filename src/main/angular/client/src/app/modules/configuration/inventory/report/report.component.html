@@ -71,7 +71,7 @@
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-select-input (modelChange)="saveJSON(); handleTemplateChange($event)" [isSearchable]="true"
+            <app-select-input (modelChange)="saveJSON();" [isSearchable]="true"
                               [placeholder]="'reporting.placeholder.selectTemplate' | translate"
                               [name]="'templateName'"
                               [object]="report.configuration" [attributeName]="'templateName'" [listArray]="templates"
@@ -81,12 +81,15 @@
         <div class="form-group row">
           <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.interval</label>
           <div class="col-md-8">
-            <nz-radio-group name="interval" [(ngModel)]="isInterval" >
+            <nz-radio-group name="interval" [(ngModel)]="isInterval" (ngModelChange)="onIntervalChange()">
               <label nz-radio nzValue="absolute"><span translate>reporting.label.absolute</span></label>
               <label nz-radio nzValue="relative"><span translate>reporting.label.relative</span></label>
+              <label nz-radio nzValue="preset"><span translate>reporting.label.preset</span></label>
             </nz-radio-group>
+
           </div>
         </div>
+
         <div class="form-group row" *ngIf="isInterval === 'absolute'">
           <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.monthFrom' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
@@ -95,12 +98,17 @@
           </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6 month-picker"
                [ngClass]="{'has-error': (monthFrom.dirty || monthFrom.touched) && monthFrom.invalid}">
-            <input (blur)="saveJSON()" #monthFrom="ngModel" [(ngModel)]="monthFromForDisplay"
+            <input (blur)="saveJSON()" #monthFrom="ngModel" [(ngModel)]="report.configuration.monthFrom"
                    [disabled]="isTrash || !permission.joc.inventory.manage" class="form-control"
-                   name="monthFrom" placeholder="YYYY-MM" appMonthValidate type="text">
+                   name="monthFrom" placeholder="YYYY-MM | Mm|Qq|Yy" appMonthValidate type="text">
             <nz-date-picker [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzMode="month"
-                            [(ngModel)]="report.monthFrom" [nzPlaceHolder]="'YYYY-MM'"
+                            [(ngModel)]="report.monthFrom" [nzPlaceHolder]="'YYYY-MM | Mm|Qq|Yy'"
                             name="monthFrom1" (ngModelChange)="changeDate('monthFrom', $event)"></nz-date-picker>
+            <div *ngIf="monthFrom.invalid && (monthFrom.dirty || monthFrom.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="monthFrom.errors?.required" translate>common.message.requiredError</div>
+              <div *ngIf="monthFrom.errors?.invalidMonth" translate>common.message.invalid</div>
+            </div>
           </div>
         </div>
         <div class="form-group row" *ngIf="isInterval === 'absolute'">
@@ -110,13 +118,18 @@
           </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6 month-picker"
                [ngClass]="{'has-error': (monthTo.dirty || monthTo.touched) && monthTo.invalid}">
-            <input (blur)="saveJSON()" #monthTo="ngModel" [(ngModel)]="monthToForDisplay"
+            <input (blur)="saveJSON()" #monthTo="ngModel" [(ngModel)]="report.configuration.monthTo"
                    [disabled]="isTrash || !permission.joc.inventory.manage" class="form-control"
-                   [name]="'monthTo'" placeholder="YYYY-MM" appMonthValidate
+                   [name]="'monthTo'" placeholder="YYYY-MM | Mm|Qq|Yy" [appMonthValidate]="report.configuration.monthFrom"
                    type="text">
             <nz-date-picker [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzMode="month"
-                            [(ngModel)]="report.monthTo" [nzPlaceHolder]="'YYYY-MM'"
+                            [(ngModel)]="report.monthTo" [nzPlaceHolder]="'YYYY-MM | Mm|Qq|Yy'"
                             name="monthTo1" (ngModelChange)="changeDate('monthTo', $event)"></nz-date-picker>
+            <div *ngIf="monthTo.invalid && (monthTo.dirty || monthTo.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="monthTo.errors?.required" translate>common.message.requiredError</div>
+              <div *ngIf="monthTo.errors?.invalidMonth" translate>common.message.invalid</div>
+            </div>
           </div>
         </div>
         <div class="form-group row" *ngIf="isInterval === 'relative'">
@@ -137,6 +150,14 @@
                              (nzBlur)="saveRelativeInterval()" appRelativeMonthValidate name="countFrom" ></nz-input-number>
           </div>
         </div>
+        <div class="form-group row" *ngIf="isInterval === 'preset'">
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.preset</label>
+          <div class="col-lg-9 col-xl-8 col-xxl-6">
+            <app-select-input [isSearchable]="false" [isMultiple]="false" [name]="'preset'"
+                              [object]="preset" [attributeName]="'name'" [listArray]="preset"
+                              (modelChange)="onPresetChange()"   [optionLabel]="'name'" [optionValue]="'name'"></app-select-input>
+          </div>
+        </div>
         <div class="form-group row" *ngIf="isInterval === 'relative'">
           <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.count
           </label>
@@ -149,8 +170,8 @@
           <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.sort</label>
           <div class="col-md-8">
             <nz-radio-group [(ngModel)]="report.configuration.sort" name="sort" (ngModelChange)="saveJSON()">
-              <label nz-radio nzValue="HIGHEST"><span translate>reporting.label.sortHighest</span></label>
-              <label nz-radio nzValue="LOWEST"><span translate>reporting.label.sortLowest</span></label>
+              <label nz-radio nzValue="HIGHEST"><span translate>reporting.label.HIGHEST</span></label>
+              <label nz-radio nzValue="LOWEST"><span translate>reporting.label.LOWEST</span></label>
             </nz-radio-group>
           </div>
         </div>

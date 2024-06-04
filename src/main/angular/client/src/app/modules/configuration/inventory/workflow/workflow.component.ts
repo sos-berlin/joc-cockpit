@@ -12594,17 +12594,14 @@ export class WorkflowComponent {
     }
   }
 
-  encrpytValue(variable){
+  encrpytValue(currentVariable, actualVariable){
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: EncryptArgumentModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
       nzData: {
-        // preferences: this.preferences,
-        // permission: this.permission,
-        // schedulerId: this.schedulerId,
-        variable
+        currentVariable,
       },
       nzFooter: null,
       nzClosable: false,
@@ -12612,6 +12609,24 @@ export class WorkflowComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
+        if(actualVariable.value.type !== 'List' && actualVariable.value.type !== 'Map'){
+          actualVariable.value = result.value;
+        }else{
+          actualVariable.value.listParameters.forEach(element => {
+            if(element.name === currentVariable.name){
+              element.value = result.value;
+            }
+          });
+        }
+
+        // this.variableDeclarations.parameters.forEach(element => {
+        //   if(actualVariable.name === element.name){
+        //     element.value = actualVariable.value;
+        //   }
+        // })
+        // this.orderPreparation.parameters = this.coreService.clone(this.variableDeclarations.parameters);
+        // this.updateOrderPreparation();
+        // this.storeData(this.workflow.configuration);
         // this.isChanged.emit({flag: true, isOrderAdded: workflow});
         // this.resetAction();
       }

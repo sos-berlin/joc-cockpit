@@ -519,7 +519,6 @@ export class ImportKeyModalComponent {
   extraInfo: any = {};
   isChange = false;
   jobResourcesTree = [];
-  isEnciphermentForm: boolean = false;
 
   constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService,
               public translate: TranslateService, public toasterService: ToastrService) {
@@ -538,8 +537,6 @@ export class ImportKeyModalComponent {
 
     if (this.type === 'ca') {
       this.key.keyAlg = 'ECDSA';
-    }else if (this.type === 'encipherment') {
-      this.getJobResourceTree(this.certificateObj)
     }
   }
 
@@ -626,11 +623,7 @@ export class ImportKeyModalComponent {
 
   private upload(file: any) {
     let URL: string;
-    if(this.type === 'encipherment') {
-      URL = 'encipherment/certificate/import';
-    } else {
-      URL = this.type === 'key' ? 'profile/key/import' : this.type === 'certificate' ? 'profile/key/ca/import' : 'profile/ca/import';
-    }
+    URL = this.type === 'key' ? 'profile/key/import' : this.type === 'certificate' ? 'profile/key/ca/import' : 'profile/ca/import';
     const formData = new FormData();
     formData.append('file', file);
     if (this.comments.comment) {
@@ -644,10 +637,6 @@ export class ImportKeyModalComponent {
     }
     if (this.type === 'key') {
       formData.append('importKeyFilter', JSON.stringify({keyAlgorithm: this.key.keyAlg}));
-    } else if (this.type === 'encipherment') {
-      formData.append('certAlias', this.certificateObj.certAlias);
-      formData.append('privateKeyPath', this.certificateObj.privateKeyPath);
-      formData.append('jobResourceFolder', this.certificateObj.jobResourceFolder);
     }
     this.uploading = true;
     const headers = new HttpHeaders().set('X-Access-Token', this.authService.accessTokenId);
@@ -666,76 +655,6 @@ export class ImportKeyModalComponent {
 
   cancel(): void {
     this.activeModal.close('');
-  }
-
-  private getJobResourceTree(certificateObj): void {
-    if (this.jobResourcesTree.length === 0) {
-      this.coreService.post('tree', {
-        types: ['JOBRESOURCE'],
-        forInventory: true
-      }).subscribe((res) => {
-        this.jobResourcesTree = this.coreService.prepareTree(res, true);
-        this.matchJobResourceList(certificateObj);
-      });
-    } else {
-      this.matchJobResourceList(certificateObj);
-    }
-  }
-
-  private matchJobResourceList(certificateObj): void {
-    if (certificateObj) {
-      if (this.objectType === 'NOTIFICATION') {
-        if (typeof certificateObj.jobResourceFolder === 'string') {
-          let val = certificateObj.jobResourceFolder;
-          certificateObj.jobResourceFolder = [val];
-        } else if (!certificateObj.jobResourceFolder || !isArray(certificateObj.jobResourceFolder)) {
-          certificateObj.jobResourceFolder = [];
-        }
-      }
-      if (certificateObj.jobResourceFolder) {
-        if (typeof certificateObj.jobResourceFolder == 'string') {
-          this.checkJobResource(certificateObj.jobResourceFolder);
-        }
-      }
-    }
-  }
-
-  onChangeJobResource($event, certificateObj): void {
-    this.isTreeShow = false;
-    certificateObj.jobResourceFolder = $event;
-    if (this.objectType === 'NOTIFICATION') {
-      this.extraInfo.released = false;
-    } else {
-      this.checkJobResource($event);
-      this.extraInfo.sync = false;
-      this.onFieldBlur();
-      // this.autoValidate();
-    }
-    this.isChange = true;
-  }
-
-  onBlur(): void {
-    this.isTreeShow = false;
-  }
-
-  private checkJobResource(name): void {
-    this.extraInfo.isExist = false;
-    const obj: any = {
-      path: name,
-      objectType: 'JOBRESOURCE',
-    };
-    this.coreService.post('inventory/read/configuration', obj).subscribe((res: any) => {
-      this.extraInfo.isExist = true;
-      this.extraInfo.deployed = res.deployed;
-    });
-  }
-
-  onFieldBlur(){
-    if(this.certificateObj.certAlias && this.certificateObj.jobResourceFolder){
-      this.isEnciphermentForm = false;
-    }else{
-      this.isEnciphermentForm = true;
-    }
   }
 }
 
@@ -874,99 +793,6 @@ export class RemoveKeyModalComponent {
     });
   }
 }
-
-@Component({
-  selector: 'app-encipherment-modal',
-  templateUrl: './add-encipherment-dialog.html'
-})
-export class AddEnciphermentModalComponent {
-  readonly modalData: any = inject(NZ_MODAL_DATA);
-  certificateObj: any = {};
-  submitted = false;
-
-  objectType: any;
-  isTreeShow: boolean;
-  extraInfo: any = {};
-  isChange = false;
-  jobResourcesTree = [];
-
-  constructor(public activeModal: NzModalRef, private coreService: CoreService){}
-
-  ngOnInit(): void {
-    this.getJobResourceTree(this.certificateObj)
-  }
-
-  private getJobResourceTree(certificateObj): void {
-    if (this.jobResourcesTree.length === 0) {
-      this.coreService.post('tree', {
-        types: ['JOBRESOURCE'],
-        forInventory: true
-      }).subscribe((res) => {
-        this.jobResourcesTree = this.coreService.prepareTree(res, true);
-        this.matchJobResourceList(certificateObj);
-      });
-    } else {
-      this.matchJobResourceList(certificateObj);
-    }
-  }
-
-  private matchJobResourceList(certificateObj): void {
-    if (certificateObj) {
-      if (this.objectType === 'NOTIFICATION') {
-        if (typeof certificateObj.jobResourceFolder === 'string') {
-          let val = certificateObj.jobResourceFolder;
-          certificateObj.jobResourceFolder = [val];
-        } else if (!certificateObj.jobResourceFolder || !isArray(certificateObj.jobResourceFolder)) {
-          certificateObj.jobResourceFolder = [];
-        }
-      }
-      if (certificateObj.jobResourceFolder) {
-        if (typeof certificateObj.jobResourceFolder == 'string') {
-          this.checkJobResource(certificateObj.jobResourceFolder);
-        }
-      }
-    }
-  }
-
-  onChangeJobResource($event, certificateObj): void {
-    this.isTreeShow = false;
-    certificateObj.jobResourceFolder = $event;
-    if (this.objectType === 'NOTIFICATION') {
-      this.extraInfo.released = false;
-    } else {
-      this.checkJobResource($event);
-      this.extraInfo.sync = false;
-      // this.autoValidate();
-    }
-    this.isChange = true;
-  }
-
-  onBlur(): void {
-    this.isTreeShow = false;
-  }
-
-  private checkJobResource(name): void {
-    this.extraInfo.isExist = false;
-    const obj: any = {
-      path: name,
-      objectType: 'JOBRESOURCE',
-    };
-    this.coreService.post('inventory/read/configuration', obj).subscribe((res: any) => {
-      this.extraInfo.isExist = true;
-      this.extraInfo.deployed = res.deployed;
-    });
-  }
-
-  onSubmit(): void {
-    this.submitted = true;
-    this.coreService.post('encipherment/certificate/store', this.certificateObj).subscribe({
-      next: () => {
-        this.activeModal.close('Done');
-      }, error: () => this.submitted = false
-    });
-  }
-}
-
 
 @Component({
   selector: 'app-user',
@@ -1142,8 +968,6 @@ export class UserComponent {
   sharedList: any = [];
   type = 'AGENT';
 
-  enciphermentCertificate: any = [];
-
   constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService,
               private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
     this.subscription1 = dataService.resetProfileSetting.subscribe(res => {
@@ -1201,14 +1025,12 @@ export class UserComponent {
           this.getFavorite();
         }
       } else if ($event.index === 4) {
-        this.getEnciphermentCertificate();
-      } else if ($event.index === 5) {
         if (this.permission.joc.administration.certificates.view) {
           this.getGit();
         } else {
           this.getFavorite();
         }
-      } else if ($event.index === 6) {
+      } else if ($event.index === 5) {
         this.getFavorite();
       }
     }
@@ -1689,41 +1511,6 @@ export class UserComponent {
         jwk: jwk,
         credentialId: this.authService.bufferToBase64Url(credential.rawId)
       }).subscribe();
-    });
-  }
-
-  /* ----------------------Encipherment Certificates--------------------- */
-
-  getEnciphermentCertificate(){
-    let certAliases = {
-      certAliases: ["Test"]
-    };
-    this.coreService.post('encipherment/certificate', certAliases).subscribe({
-      next: (res: any) => {
-        this.enciphermentCertificate = res;
-      }, error: () => {
-        this.enciphermentCertificate = [];
-      }
-    });
-  }
-
-  addEnciphermentCertificate() {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: AddEnciphermentModalComponent,
-      nzClassName: 'lg',
-      nzData: {
-        // paste: true,
-      },
-      nzFooter: null,
-      nzAutofocus: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        // this.getGit();
-      }
     });
   }
 

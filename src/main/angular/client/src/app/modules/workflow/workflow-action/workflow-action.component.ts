@@ -292,6 +292,7 @@ export class AddOrderModalComponent {
         let flag = true;
 
         if (this.variableList && this.variableList.length > 0) {
+
           this.variableList.forEach(variable => {
             if (variable.name === clipboardItem.name) {
               flag = false;
@@ -309,13 +310,23 @@ export class AddOrderModalComponent {
               if (isArray(clipboardItem.value)) {
                 clipboardItem.value.forEach((innerArray) => {
                   innerArray.forEach(item => {
-                    variable.actualList.forEach((actualList) => {
-                      actualList.list.forEach((argument) => {
-                        if (argument.name === item.name) {
-                          argument.value = item.value;
-                        }
+                    if (variable.actualList) {
+                      variable.actualList.forEach((actualList) => {
+                        actualList.list.forEach((argument) => {
+                          if (argument.name === item.name) {
+                            argument.value = item.value;
+                          }
+                        });
                       });
-                    });
+                    } else if (variable.actualMap) {
+                      variable.actualMap.forEach((actualMap) => {
+                        actualMap.map.forEach((argument) => {
+                          if (argument.name === item.name) {
+                            argument.value = item.value;
+                          }
+                        });
+                      });
+                    }
                   });
                 });
               } else {

@@ -118,7 +118,7 @@
                   <div class="m-b-sm">
                     <h5 class="card-title font14" *ngIf="groupBy == 'template' && isPathDisplay">{{ item.path }}</h5>
                     <h5 class="card-title font14" *ngIf="groupBy == 'template' && !isPathDisplay">{{ item.name }}</h5>
-                    <h5 class="card-title font14" *ngIf="groupBy !== 'template'">{{ item.template }}</h5>
+                    <h5 class="card-title font14" *ngIf="groupBy !== 'template'" [innerHTML]="getTranslatedText(item)"></h5>
                   </div>
                   <div class="_600 text-md m-t-sm m-b-sm text-center pos-rel"><span
                     class="p-b-xs b-b"><i class="text-muted">{{ item.dateFrom }} - {{ item.dateTo }}</i></span>

@@ -86,6 +86,12 @@ const routes: Routes = [
         data: {breadcrumb: 'breadcrumb.label.manageControllersAndAgents'}
       },
       {
+        path: 'encipherment',
+        loadChildren: () => import('./../encipherment/encipherment.module').then(m => m.EnciphermentModule),
+        canActivate: [AuthGuard],
+        data: {breadcrumb: 'breadcrumb.label.manageEnciphermentKey'}
+      },
+      {
         path: 'user',
         loadChildren: () => import('./../user/user.module').then(m => m.UserModule),
         canActivate: [AuthGuard],

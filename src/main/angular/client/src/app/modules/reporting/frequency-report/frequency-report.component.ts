@@ -6,7 +6,7 @@ import {Chart} from "chart.js";
 import PerfectScrollbar from 'perfect-scrollbar';
 import {CoreService} from "../../../services/core.service";
 import {AuthService} from "../../../components/guard";
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-frequency-report',
   templateUrl: './frequency-report.component.html',
@@ -52,7 +52,7 @@ export class FrequencyReportComponent {
   @ViewChild('content') content: ElementRef;
 
   constructor(private modal: NzModalService, private coreService: CoreService,
-              private authService: AuthService, private elementRef: ElementRef) {
+              private authService: AuthService, private elementRef: ElementRef, private translate: TranslateService) {
 
   }
 
@@ -172,18 +172,18 @@ export class FrequencyReportComponent {
         switch (report.templateName) {
           case 'WORKFLOWS_FREQUENTLY_FAILED':
             label = `${item.workflowName} - (${item.count})`;
-            key = "Workflows execution";
+            key = "Workflow executions";
             chartData.labels.push(label);
             break;
           case 'JOBS_FREQUENTLY_FAILED':
             const formattedJobName = item.jobName.replace(/__/g, '/');
             label = `${formattedJobName} - (${item.count})`;
-            key = 'Jobs execution';
+            key = 'Job executions';
             chartData.labels.push(label);
             break;
           case 'AGENTS_PARALLEL_JOB_EXECUTIONS':
             label = `${item.agentName} - (${item.count})`;
-            key = 'Jobs execution'
+            key = 'Job executions'
             chartData.labels.push(label);
             break;
           case 'JOBS_HIGH_LOW_EXECUTION_PERIODS':
@@ -214,16 +214,16 @@ export class FrequencyReportComponent {
             totalJobCount += highParallelismCount + lowParallelismCount
             chartData.datasets[0].data = datasetData;
             chartData.labels = datasetLabels;
-            key = 'Jobs execution'
+            key = 'Job executions'
             break;
           case 'JOBS_EXECUTIONS_FREQUENCY':
             label = `${item.workflowName} - (${item.count})`;
-            key = 'Workflows execution'
+            key = 'Workflow executions'
             chartData.labels.push(label);
             break;
           case 'ORDERS_EXECUTIONS_FREQUENCY':
             label = `${item.workflowName} - (${item.count})`;
-            key = 'Workflows execution'
+            key = 'Workflow executions'
             chartData.labels.push(label);
             break;
           case 'WORKFLOWS_LONGEST_EXECUTION_TIMES':
@@ -238,12 +238,12 @@ export class FrequencyReportComponent {
             break;
           case 'PERIODS_MOST_ORDER_EXECUTIONS':
             label = `${item.period} - (${(item.count)})`;
-            key = 'Workflows execution'
+            key = 'Workflow executions'
             chartData.labels.push(label);
             break;
           case 'PERIODS_MOST_JOB_EXECUTIONS':
             label = `${item.period} - (${(item.count)})`;
-            key = 'Jobs execution'
+            key = 'Job executions'
             chartData.labels.push(label);
             break;
         }
@@ -301,7 +301,7 @@ export class FrequencyReportComponent {
         hoverBackgroundColor: [],
         hoverBorderColor: []
       }],
-      uniqueKeys: {key: 'Jobs execution'}
+      uniqueKeys: {key: 'Job executions'}
     };
   }
 
@@ -737,4 +737,17 @@ export class FrequencyReportComponent {
     pdf.save('report.pdf');
     this.loading = false;
   }
+
+  getTranslatedText(item: any): string {
+    let translatedText = this.translate.instant('reporting.templates.' + item.templateName);
+
+    translatedText = translatedText.replace('${hits}', item.hits.toString());
+    if (item.sort) {
+      const translatedSort = this.translate.instant('reporting.label.' + item.sort);
+      translatedText = translatedText.replace('${sort}', translatedSort);
+    }
+
+    return translatedText;
+  }
+
 }

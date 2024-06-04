@@ -1,0 +1,28 @@
+<div class="white box-shadow sub-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right ">
+          <div class="pull-left">
+            <app-breadcrumbs></app-breadcrumbs>
+          </div>
+          <div *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="inline">
+            <ng-container *ngIf="isJOCActive">
+              <div class="btn-group"></div>
+              <button
+              (click)="importKey('encipherment')"
+              *ngIf="isJOCActive" class="btn btn-grey btn-sm m-l-12">
+                <i nz-icon nzTheme="outline" nzType="import"></i>&nbsp;
+                <span translate>encipherment.button.importCertificate</span>
+              </button>
+              <button
+              (click)="addEnciphermentCertificate()"
+              *ngIf="isJOCActive" class="btn btn-grey btn-sm m-l-12">
+                <i nz-icon nzType="plus" nzTheme="outline"></i>&nbsp;
+                <span translate>encipherment.button.addNewCertificate</span>
+              </button>
+            </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>

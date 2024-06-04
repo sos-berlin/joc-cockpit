@@ -367,7 +367,8 @@
     "label.setting": "設定",
     "label.permissions": "パーミッション",
     "label.manageIdentityServices": "IDサービス管理",
-    "label.clusterAgents": "クラスターエージェント"
+    "label.clusterAgents": "クラスターエージェント",
+    "label.manageEnciphermentKey": "Manage Encipherment Key"
   },
   "configuration": {
     "tab.inventory": "インベントリー",
@@ -401,6 +402,25 @@
     "tooltip.urlForPrimary": "プライマリーコントローラーがみるセカンダリーコントローラーURL",
     "tooltip.primaryTitle": "プライマリータイトル",
     "tooltip.backupTitle": "セカンダリータイトル"
+  },
+  "encipherment": {
+    "label.addCertificate": "Add Encipherment Certificate",
+    "label.agentId": "Agent ID",
+    "label.certAlias": "Certificate Alias",
+    "label.certificate": "Certificate",
+    "label.privateKeyPath": "Private Key Path",
+    "label.jobResourceFolder": "Job Resource Folder",
+    "label.importCertificate": "Import Encipherment Certificate",
+    "label.encrypt": "Encrypted Value",
+    "placeholder.agentId": "Agent Id",
+    "placeholder.certAlias": "Cetificate Alias Name",
+    "placeholder.certificate": "Paste Certificate here",
+    "placeholder.privateKeyPath": "Path to Certificate Private Key",
+    "placeholder.jobResourceFolder": "Select Job Resource Folder",
+    "placeholder.encrypt": "Encrypted Value",
+    "button.encrypt": "Encrypt",
+    "button.addNewCertificate": "Add New Certificate",
+    "button.importCertificate": "Import Certificate"
   },
   "--------COMMON LABEL AND BUTTONS------------": "複数ページで使用",
   "common": {
@@ -1472,7 +1492,8 @@
     "button.manageAccount": "アカウント管理",
     "button.manageControllersAndAgents": "コントローラー/エージェント管理",
     "button.manageDeployment": "デプロイ管理",
-    "button.logOut": "ログアウト"
+    "button.logOut": "ログアウト",
+    "button.manageEnciphermentKey": "Manage Encipherment Key"
   },
   "history": {
     "label.all": "全て",
@@ -2516,7 +2537,6 @@
     "label.edgeRounded": "ラウンドエッジ接続",
     "label.horizontal": "水平",
     "label.vertical": "垂直",
-    "label.enciphermentCertificates": "Encipherment Certificates",
     "button.resetPreferences": "プリファレンスリセット",
     "button.groupLimit": "グループリミット",
     "button.changePassword": "パスワード変更",
@@ -2648,20 +2668,6 @@
       "label.credentials": "資格情報",
       "message.deleteGitCredentials": "Git資格情報を削除すると資格情報リストから永久に削除されます",
       "message.noCredentialFound": "資格情報はありません"
-    },
-    "encipherment" : {
-      "label.addCertificate": "Add Certificate",
-      "label.agentId": "Agent ID",
-      "label.certAlias": "Certificate Alias",
-      "label.certificate": "Certificate",
-      "label.privateKeyPath": "Private Key Path",
-      "label.jobResourceFolder": "Job Resource Folder",
-      "label.importCertificate": "Import Encipherment Certificate",
-      "placeholder.agentId": "Agent Id",
-      "placeholder.certAlias": "Cetificate Alias Name",
-      "placeholder.certificate": "Paste Certificate here",
-      "placeholder.privateKeyPath": "Path to Certificate Private Key",
-      "placeholder.jobResourceFolder": "Select Job Resource Folder"
     }
   },
   "runtime": {
@@ -2881,8 +2887,9 @@
       "count": "Count",
       "unit": "Unit",
       "sort": "Sort",
-      "sortHighest": "HIGHEST",
-      "sortLowest": "LOWEST"
+      "HIGHEST": "HIGHEST",
+      "LOWEST": "LOWEST",
+      "preset": "Preset"
     },
     "button" : {
       "runReport": "レポート実行",

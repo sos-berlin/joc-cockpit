@@ -646,30 +646,6 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'profile.label.enciphermentCertificates' | translate">
-              <div class="m-l-12">
-                <div class="row m-t-xs p-b-xs">
-                  <div class="col-sm-12">
-                    <div class="m-t-xs">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px">
-                            <button (click)="addEnciphermentCertificate()" class="btn btn-sm btn-grey m-l-12">
-                              <i nz-icon nzTheme="outline" nzType="plus"></i>
-                            </button>
-                            <button (click)="importKey('encipherment')" class="btn btn-sm btn-grey m-l-12">
-                              <i nz-icon nzTheme="outline" nzType="upload"></i>
-                            </button>
-                          </div>
-                        </div>
-                        <div class="col-md-12">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </nz-tab>
             <nz-tab *ngIf="securityLevel !== 'LOW' && permission.joc && permission.joc.inventory.view"
                     [nzTitle]="'profile.label.gitManagement' | translate">
               <div class="m-l-12">

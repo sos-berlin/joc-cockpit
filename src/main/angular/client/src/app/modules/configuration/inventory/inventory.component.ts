@@ -3222,9 +3222,60 @@ export class CreateFolderModalComponent {
 export class EncryptArgumentModalComponent {
 
   readonly modalData: any = inject(NZ_MODAL_DATA);
+  submitted: boolean = false;
+  encryptSubmiited: boolean = false;
+  currentVariable: any;
+  certificateList: any = [];
+  selectedCert: string = '';
+  certificate: string = '';
+  encryptedValue: string = '';
 
-  constructor(private activeModal: NzModalRef){
+  constructor(private activeModal: NzModalRef, public coreService: CoreService){
 
+  }
+
+  ngOnInit(): void {
+    this.currentVariable = this.modalData.currentVariable;
+    this.getCertificates();
+  }
+
+  getCertificates(){
+    let certAliases = {
+      agentIds: [],
+      // certAliases: []
+    };
+    this.coreService.post('encipherment/assignment', certAliases).subscribe({
+      next: (res: any) => {
+        this.certificateList = res.mappings;
+      }, error: () => {
+      }
+    });
+  }
+
+  changeCertificate(){
+
+  }
+
+  encrypt(){
+    this.encryptSubmiited = true;
+    let submittedVal = {
+      toEncrypt: this.currentVariable.value.default,
+      certAlias: this.selectedCert,
+      certificate: this.certificate
+    };
+    this.coreService.post('encipherment/encrypt', submittedVal).subscribe({
+      next: (res: any) => {
+        this.encryptedValue = res.encryptedValue;
+        this.encryptSubmiited = false;
+      }, error: () => { this.encryptSubmiited = false;
+      }
+    });
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    this.currentVariable.value.default = this.encryptedValue;
+    this.activeModal.close(this.currentVariable);
   }
 
   cancel(): void {

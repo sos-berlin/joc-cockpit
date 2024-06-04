@@ -168,7 +168,10 @@
                       <span [innerHtml]="item.path1 | highlight : filters.searchText"></span>
                     </span>
                   </td>
-                  <td><span [innerHtml]="item.template | highlight : filters.searchText"></span></td>
+                  <td>
+                    <span [innerHTML]="getTranslatedText(item) | highlight: filters.searchText"></span>
+                  </td>
+
                   <td>
                     <div *ngFor="let frequency of item.frequencies"
                          [innerHtml]="frequency | translate | highlight : filters.searchText"></div>
