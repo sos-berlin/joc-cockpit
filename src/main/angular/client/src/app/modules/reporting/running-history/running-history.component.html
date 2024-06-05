@@ -93,7 +93,7 @@
                 </span>
               </td>
               <td><span [innerHtml]="item.controllerId | highlight : filters.searchText"></span></td>
-              <td><span [innerHtml]="item.template | highlight : filters.searchText"></span></td>
+              <td><span [innerHtml]="getTranslatedText(item)| highlight : filters.searchText"></span></td>
               <td>
                   <span *ngIf="item.state" [innerHtml]="item.state._text | translate" [ngClass]="coreService.getColor(item.state.severity,'bg')"
                         class="label"></span>

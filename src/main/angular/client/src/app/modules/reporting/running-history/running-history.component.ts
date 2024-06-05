@@ -8,6 +8,7 @@ import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {SearchPipe} from '../../../pipes/core.pipe';
 import {SharingDataService} from "../sharing-data.service";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-running-history',
@@ -32,7 +33,7 @@ export class RunningHistoryComponent {
   private pendingHTTPRequests$ = new Subject<void>();
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
-              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService) {
+              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService, private translate: TranslateService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -112,6 +113,13 @@ export class RunningHistoryComponent {
       this.filters.filter.currentPage = 1;
     }
   }
+  getTranslatedText(item: any): string {
+    let translatedText = this.translate.instant('reporting.templates.' + item.templateName);
+    if(item.sort && item.hits){
+      const translatedSort = this.translate.instant('reporting.label.' + item.sort);
+      translatedText = translatedText.replace('${hits}', item.hits.toString());
+      translatedText = translatedText.replace('${sort}', translatedSort);
+    }
 
 }
 
