@@ -121,6 +121,9 @@ export class RunningHistoryComponent {
       translatedText = translatedText.replace('${sort}', translatedSort);
     }
 
+
+    return translatedText;
+  }
 }
 
 
