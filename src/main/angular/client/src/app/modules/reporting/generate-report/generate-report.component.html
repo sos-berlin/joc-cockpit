@@ -115,7 +115,7 @@
               <span class="w-full" *ngIf="filters.groupBy == 'template'">
                 <i class="fa fa-angle-right  cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expanded" (click)="toggleRowExpansion(item)"></i>
                 <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expanded" (click)="toggleRowExpansion(item)"></i>
-                <span (click)="onSelect(item)" [innerHtml]="item.template | highlight : filters.searchText"></span>
+                <span (click)="onSelect(item)" [innerHtml]="getTranslatedText(item) | highlight : filters.searchText"></span>
               </span>
             </td>
           </tr>
@@ -152,7 +152,7 @@
                 </span>
               </td>
               <td (click)="onSelect(child)" *ngIf="filters.groupBy !== 'template'" >
-                <span class="p-l-12" [innerHtml]="child.template | highlight : filters.searchText"></span>
+                <span class="p-l-12" [innerHtml]="getTranslatedText(child) | highlight : filters.searchText"></span>
               </td>
               <td (click)="onSelect(child)"><span [innerHtml]="child.controllerId | highlight : filters.searchText"></span></td>
               <td (click)="onSelect(child)"><span

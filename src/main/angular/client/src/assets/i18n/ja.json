@@ -2598,7 +2598,9 @@
       "label.resumeFailed": "回復して失敗",
       "label.controller": "コントローラー",
       "label.managePositions": "位置管理",
-      "label.confirm": "confirm"
+      "label.confirm": "confirm",
+      "label.encipherment": "Encipherment",
+      "label.encrypt": "encrypt"
     },
     "keyManagement": {
       "label.keysAndCertificates": "鍵と証明書",

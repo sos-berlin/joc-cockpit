@@ -118,13 +118,6 @@
                   {{'header.button.manageControllersAndAgents' | translate}}
                 </a>
               </li>
-              <li *ngIf="permission && permission.joc && permission.joc.administration.controllers.view" [routerLinkActive]="['active']" nz-menu-item
-                  routerLink="/encipherment">
-                <a>
-                  <i class="wd-14 fa fa-shield"></i>
-                  {{'header.button.manageEnciphermentKey' | translate}}
-                </a>
-              </li>
               <li *ngIf="(showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && permission.joc.inventory.view)" [routerLinkActive]="['active']" nz-menu-item
                   routerLink="/deployment_service">
                 <a>
@@ -164,6 +157,13 @@
                 <a>
                   <i class="wd-14 fa fa-user"></i>
                   {{'header.button.profile' | translate}}
+                </a>
+              </li>
+              <li *ngIf="permission && permission.joc && permission.joc.encipherment.encrypt" [routerLinkActive]="['active']" nz-menu-item
+                  routerLink="/encipherment">
+                <a>
+                  <i class="wd-14 fa fa-shield"></i>
+                  {{'header.button.manageEnciphermentKey' | translate}}
                 </a>
               </li>
               <li nz-menu-item routerLink="/logging">

@@ -639,7 +639,6 @@ export class SingleDeployComponent {
     };
     this.coreService.post('inventory/workflow/references', obj).subscribe({
       next: (res: any) => {
-        console.log(res, "res");
         if (res.schedules) {
           this.impactedSchedules = res.schedules.map((schedule: any) => ({
             ...schedule,

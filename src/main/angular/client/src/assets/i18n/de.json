@@ -2598,7 +2598,9 @@
       "label.resumeFailed": "wiederaufnehmen nach Fehler",
       "label.controller": "Controller",
       "label.managePositions": "Positionen verwalten",
-      "label.confirm": "bestätigen"
+      "label.confirm": "bestätigen",
+      "label.encipherment": "Encipherment",
+      "label.encrypt": "encrypt"
     },
     "keyManagement": {
       "label.keysAndCertificates": "Schlüssel und Zertifikate",

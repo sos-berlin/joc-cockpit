@@ -2948,7 +2948,7 @@ export class ChangeImpactDialogComponent {
   impactedSchedules: any
   obj: any;
 
-  constructor(private coreService: CoreService,public activeModal: NzModalRef) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -2962,6 +2962,13 @@ export class ChangeImpactDialogComponent {
         this.impactedSchedules = res.schedules;
       }
     });
+  }
+  navToObj(path: string, type?): void {
+    if (type) {
+      this.activeModal.close({
+        name: path, type
+      });
+    }
   }
 }
 @Component({
@@ -3161,7 +3168,9 @@ export class WorkflowComponent {
       }
       if (this.reload) {
         this.selectedNode = null;
-        this.init();
+        if(!this.data.children){
+          this.init();
+        }
         this.reload = false;
         return;
       }
@@ -4542,6 +4551,11 @@ export class WorkflowComponent {
       nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        const name = result.name.substring(result.name.lastIndexOf('/') + 1);
+        this.navToObj(name, result.type)
+      }
     });
   }
   private initObjects(res): void {

@@ -94,9 +94,7 @@ export class FrequencyReportComponent {
           this.selectedFrequencies.push(item.frequency)
           const template = this.templates.find(template => template.templateName == item.templateName);
           if (template) item.template = template.title;
-          if (item.template?.includes('${hits}')) {
-            item.template = item.template.replace('${hits}', item.hits || 10)
-          }
+          item.template = item.template?.replace('${hits}', item.hits || 10).replace('${sort}', item.sort);
         });
         this.selectedFrequencies = [...new Set(this.selectedFrequencies)].sort();
         this.sort('');
@@ -228,12 +226,12 @@ export class FrequencyReportComponent {
             break;
           case 'WORKFLOWS_LONGEST_EXECUTION_TIMES':
             label = `${item.workflowName} - (${this.formatDuration(item.duration)})`;
-            key = "";
+            key = "Workflow executions";
             chartData.labels.push(label);
             break;
           case 'JOBS_LONGEST_EXECUTION_TIMES':
             label = `${item.workflowName}/${item.jobName} - (${this.formatDuration(item.duration)})`;
-            key = "";
+            key = "Job executions";
             chartData.labels.push(label);
             break;
           case 'PERIODS_MOST_ORDER_EXECUTIONS':
@@ -253,7 +251,7 @@ export class FrequencyReportComponent {
         chartData.datasets[0].hoverBorderColor.push('#e0e0e2');
       }
 
-      const formattedTotalJobCount = report.data[0]?.duration || report.data[0]?.duration === 0 ? (chartData.labels.length + ' Jobs') : totalJobCount;
+      const formattedTotalJobCount = report.data[0]?.duration || report.data[0]?.duration === 0 ? (chartData.labels.length) : totalJobCount;
       this.createChart(chartData, formattedTotalJobCount, report.id);
     }
   }
@@ -319,7 +317,7 @@ export class FrequencyReportComponent {
       id: 'innerLabel',
       afterDatasetDraw: (chart: any, args: any, pluginOptions: any) => {
         if (args.meta.data.length) {
-          const {ctx} = chart;
+          const { ctx } = chart;
           const meta = args.meta;
           const xCoor = meta.data[0].x;
           const yCoor = meta.data[0].y;
@@ -334,13 +332,30 @@ export class FrequencyReportComponent {
             ctx.fillStyle = 'black';
           }
 
-          ctx.font = '14px sans-serif';
-          ctx.fillText(perc, xCoor, yCoor);
-          ctx.fillText(chartData.uniqueKeys?.key, xCoor, yCoor + 20);
+          ctx.font = '20px sans-serif';
+
+          // Split the key text by space and calculate total height
+          const keyWords = chartData.uniqueKeys?.key.split(' ') || [];
+          const lineHeight = 15;
+          const gap = 10;
+          const totalHeight = (keyWords.length + 1) * lineHeight;
+          let currentY = yCoor - (totalHeight / 2) + lineHeight / 2;
+
+          ctx.fillText(perc, xCoor, currentY);
+          currentY += lineHeight + gap;
+
+          ctx.font = '13px sans-serif';
+
+          keyWords.forEach((word, index) => {
+            ctx.fillText(word, xCoor, currentY);
+            currentY += lineHeight;
+          });
+
           ctx.restore();
         }
       }
     };
+
 
     const legendContainerId = `htmlLegend-${reportId}`;
     this.createLegendContainer(legendContainerId, container);
@@ -370,7 +385,6 @@ export class FrequencyReportComponent {
             const {type} = chart.config;
             const dataIndex = item.index;
             let dataValue = chartData.datasets[0].data[dataIndex];
-
             if (type === 'doughnut') {
               if (chartData.uniqueKeys.key === "") {
                 let totalSeconds = this.parseDuration(totalJobCount);
@@ -527,8 +541,8 @@ export class FrequencyReportComponent {
     }
 
       this.dataset.push(obj);
-      if (report.data[i].duration || report.data[i].workflowName) {
-        let dur = report.data[i].duration || report.data[i].workflowName;
+      if (report.data[i].count || report.data[i].workflowName) {
+        let dur = report.data[i].count || report.data[i].duration || report.data[i].workflowName;
         data.datasets[0].data.push(dur);
       } else if (report.data[i].count || report.data[i].count == 0) {
         data.datasets[0].data.push(report.data[i].count);
@@ -581,7 +595,7 @@ export class FrequencyReportComponent {
                     label += ': ';
                   }
                   if (context.parsed.y !== null) {
-                    label += self.formatDuration(context.parsed.y);
+                    label += (context.parsed.y);
                   }
                   return label;
                 }
@@ -612,9 +626,15 @@ export class FrequencyReportComponent {
             y: {
               title: {
                 display: true,
-                text: this.selectedReport.template?.includes('execution time') ? 'Execution Time' : ((this.selectedReport.template?.includes('workflows') ? 'Workflow Execution' : this.selectedReport.template?.includes('most parallel') ? 'Agents' : 'Job Execution') + ' Counts')
+                text: this.selectedReport.template?.includes('execution time') ? 'Execution Time' : ((this.selectedReport.template?.includes('workflows') ? 'Workflow Executions' : this.selectedReport.template?.includes('most parallel') ? 'Agents' : 'Job Executions') + ' Count')
               },
-              beginAtZero: true
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1, // Ensure ticks increment by 1
+                callback: function (value) {
+                  return Number.isInteger(value) ? value : null; // Only show integer values
+                }
+              }
             }
           }
         }
@@ -739,10 +759,10 @@ export class FrequencyReportComponent {
   }
 
   getTranslatedText(item: any): string {
-    let translatedText = this.translate.instant('reporting.templates.' + item.templateName);
-
-    translatedText = translatedText.replace('${hits}', item.hits.toString());
-    if (item.sort) {
+    let templateKey = item.templateName ? item.templateName : item.template;
+    let translatedText = this.translate.instant('reporting.templates.' + templateKey);
+    if (item.sort && item.hits) {
+      translatedText = translatedText.replace('${hits}', item.hits.toString());
       const translatedSort = this.translate.instant('reporting.label.' + item.sort);
       translatedText = translatedText.replace('${sort}', translatedSort);
     }

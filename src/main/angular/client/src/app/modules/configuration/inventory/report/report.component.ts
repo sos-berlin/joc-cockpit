@@ -140,10 +140,13 @@ export class ReportComponent implements OnChanges, OnDestroy {
   from: number = null;
   count: number = null;
   preset: any = [
-    {name: 'Last Year'},
-    {name: 'Last Month'},
-    {name: 'Last Quarter'}
+    { name: 'Last Month' },
+    { name: 'This Quarter' },
+    { name: 'Last Quarter' },
+    { name: 'This Year' },
+    { name: 'Last Year' },
   ];
+
 
   constructor(public coreService: CoreService, private translate: TranslateService, private dataService: DataService,
               private authService: AuthService, private ref: ChangeDetectorRef, private modal: NzModalService) {
@@ -568,11 +571,21 @@ export class ReportComponent implements OnChanges, OnDestroy {
         this.units.name = 'Month';
         this.from = 1;
         this.count = 1;
-        console.log(">>s")
         break;
       case 'Last Quarter':
         this.units.name = 'Quarter';
         this.from = 1;
+        this.count = 1;
+        break;
+      case 'This Quarter':
+        const currentQuarter = Math.floor((moment().month() + 3) / 3);
+        this.units.name = 'Quarter';
+        this.from = currentQuarter;
+        this.count = 1;
+        break;
+      case 'This Year':
+        this.units.name = 'Year';
+        this.from = moment().year();
         this.count = 1;
         break;
       default:
@@ -581,9 +594,9 @@ export class ReportComponent implements OnChanges, OnDestroy {
         this.count = null;
         break;
     }
-    // this.saveJSON();
     this.saveRelativeInterval();
   }
+
 
   onIntervalChange(): void {
     if (this.isInterval === 'preset') {

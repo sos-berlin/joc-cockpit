@@ -10,7 +10,7 @@ import {GroupByPipe, OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
 import {SharingDataService} from "../sharing-data.service";
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-generate-report',
   templateUrl: './generate-report.component.html'
@@ -46,7 +46,7 @@ export class GenerateReportComponent {
   private pendingHTTPRequests$ = new Subject<void>();
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private orderPipe: OrderPipe, private groupBy: GroupByPipe,
-              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService) {
+              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService, private translate: TranslateService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -128,10 +128,8 @@ export class GenerateReportComponent {
         this.reports = res.reports;
         this.reports.forEach((report) => {
           const template = this.templates.find(template => template.templateName == report.templateName);
-          if (template) report.template = template.title;
-          if (report.template?.includes('${hits}')) {
-            report.template = report.template.replace('${hits}', report.hits || 10)
-          }
+          if (template) report.template = template.templateName;
+
         });
         this.reports = this.orderPipe.transform(this.reports, this.filters.filter.sortBy, this.filters.filter.reverse);
         this.data = [...this.reports];
@@ -405,6 +403,18 @@ export class GenerateReportComponent {
     this.filteredData.forEach(item => {
       item.expanded = false;
     });
+  }
+
+  getTranslatedText(item: any): string {
+    let translatedText = this.translate.instant('reporting.templates.' + item.template);
+    if(item.sort && item.hits){
+      const translatedSort = this.translate.instant('reporting.label.' + item.sort);
+      translatedText = translatedText.replace('${hits}', item.hits.toString());
+      translatedText = translatedText.replace('${sort}', translatedSort);
+    }
+
+
+    return translatedText;
   }
 }
 

@@ -237,10 +237,7 @@ export class ManageReportComponent {
           report.name = report.path.substring(report.path.lastIndexOf('/') + 1);
           report.path1 = report.path.substring(0, report.path.lastIndexOf('/')) || '/';
           const template = this.templates.find(template => template.templateName == report.templateName);
-          if (template) report.template = template.title;
-          if(report.template?.includes('${hits}')){
-            report.template = report.template.replace('${hits}', report.hits || 10)
-          }
+          if (template) report.template = template.templateName;
         });
         this.reset();
         this.searchInResult();

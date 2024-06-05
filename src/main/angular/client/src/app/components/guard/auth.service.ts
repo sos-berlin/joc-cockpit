@@ -66,7 +66,7 @@ export class AuthService {
   permissionCheck(url: any): boolean {
     const routePath = url === '/dashboard' ? 'Dashboard' : url === '/daily_plan' ? 'DailyPlan' : url.match(/workflow/) ? 'WorkFlow' : url === '/file_transfer' ? 'FileTransfer' :
       url === '/audit_log' ? 'AuditLog' : url.match('order') ? 'Order' : url.match('/resources') ? 'Resource' : url === '/history' ? 'History' :
-        url.match('/configuration') ? 'Configuration' : url.match('/users') ? 'ManageAccount' : '';
+        url.match('/configuration') ? 'Configuration' : url.match('/users') ? 'ManageAccount': url.match('/encipherment') ? 'Encipherment' : '';
     let showViews: any = {};
     if (window.sessionStorage['showViews']) {
       showViews = JSON.parse(window.sessionStorage['showViews']);
@@ -174,6 +174,11 @@ export class AuthService {
         break;
       case 'ManageAccount':
         if (permission.joc && permission.joc.administration.accounts.view) {
+          ifPermissionPassed = true;
+        }
+        break;
+      case 'Encipherment':
+        if (permission.joc && permission.joc.encipherment.encrypt) {
           ifPermissionPassed = true;
         }
         break;

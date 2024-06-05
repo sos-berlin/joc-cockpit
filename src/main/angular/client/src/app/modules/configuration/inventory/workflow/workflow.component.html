@@ -1576,9 +1576,9 @@
                                nzTheme="outline" nzType="form" style="right: 1px;top:1px;"></i>
                           </ng-container>
                         </div>
-                        <div *ngIf="variable.value.listParameters.length > 1" class="col-md-2 col-lg-2 d-flex flex-lg-row flex-md-column gap-5 justify-content-around">
+                        <div *ngIf="variable.value.listParameters.length > 0" class="col-md-2 col-lg-2 d-flex flex-lg-row flex-md-column gap-5 justify-content-around">
                           <a><i (click)="encrpytValue(param, variable)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                          <a><i  (click)="removeVariableFromList(variable.value.listParameters, j);"
+                          <a *ngIf="variable.value.listParameters.length > 1"><i  (click)="removeVariableFromList(variable.value.listParameters, j);"
                                 class="fa fa-times m-t-sm text-hover-color"></i></a>
                         </div>
                       </div>

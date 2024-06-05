@@ -130,7 +130,17 @@ export class ReportingComponent {
   loading = false;
   display = false;
 
-  templates = [];
+  templates = [
+    {templateName: "WORKFLOWS_FREQUENTLY_FAILED", title: "reporting.templates.WORKFLOWS_FREQUENTLY_FAILED"},
+    {templateName: "JOBS_FREQUENTLY_FAILED", title: "reporting.templates.JOBS_FREQUENTLY_FAILED"},
+    {templateName: "AGENTS_PARALLEL_JOB_EXECUTIONS", title: "reporting.templates.AGENTS_PARALLEL_JOB_EXECUTIONS"},
+    {templateName: "JOBS_EXECUTIONS_FREQUENCY", title: "reporting.templates.JOBS_EXECUTIONS_FREQUENCY"},
+    {templateName: "ORDERS_EXECUTIONS_FREQUENCY", title: "reporting.templates.ORDERS_EXECUTIONS_FREQUENCY"},
+    {templateName: "WORKFLOWS_LONGEST_EXECUTION_TIMES", title: "reporting.templates.WORKFLOWS_LONGEST_EXECUTION_TIMES"},
+    {templateName: "JOBS_LONGEST_EXECUTION_TIMES", title: "reporting.templates.JOBS_LONGEST_EXECUTION_TIMES"},
+    {templateName: "PERIODS_MOST_ORDER_EXECUTIONS", title: "reporting.templates.PERIODS_MOST_ORDER_EXECUTIONS"},
+    {templateName: "PERIODS_MOST_JOB_EXECUTIONS", title: "reporting.templates.PERIODS_MOST_JOB_EXECUTIONS"}
+  ];
 
   index: number;
   filteredTemplate: string;
@@ -153,7 +163,7 @@ export class ReportingComponent {
     this.coreService.post('reporting/templates', {}).subscribe({
       next: (res: any) => {
         this.loading = true;
-        this.templates = res.templates;
+
       }, error: () => this.loading = true
     });
   }

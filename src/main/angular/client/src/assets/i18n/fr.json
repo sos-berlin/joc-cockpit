@@ -2598,7 +2598,9 @@
       "label.resumeFailed": "reprendre après échec",
       "label.controller": "Contrôleur",
       "label.managePositions": "gérer les positions",
-      "label.confirm": "confirmer"
+      "label.confirm": "confirmer",
+      "label.encipherment": "Encipherment",
+      "label.encrypt": "encrypt"
     },
     "keyManagement": {
       "label.keysAndCertificates": "Clés et Certificats",

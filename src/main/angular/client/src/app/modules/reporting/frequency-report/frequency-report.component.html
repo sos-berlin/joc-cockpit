@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title w-full">
-    <span *ngIf="groupBy == 'template'" class="card-title">{{selectedReport.template}}</span>
+    <span *ngIf="groupBy == 'template'" class="card-title">{{getTranslatedText(selectedReport)}}</span>
     <span *ngIf="groupBy !== 'template'" class="card-title">{{selectedReport.path}}</span>
 
     <div class="inline pull-right text-center" *ngIf="!filter.showReport">
@@ -164,17 +164,18 @@
 
                         <nz-collapse>
                           <nz-collapse-panel *ngFor="let data of item.data"
-                                             [nzHeader]="(data.workflowName ? data.workflowName.replace('__', '/') : data.workflowName) + ' - ' + ' (' + data.count + ')' "
-                                             [nzActive]="(data.workflowName ? data.workflowName.active : data.workflowName.active)">
-                            <div>
+                                             [nzHeader]="data.workflowName + (data.jobName ? '/' + data.jobName : '') + ' - (' + data.count + ')'"
+                                             [nzActive]="data.workflowName ? data.workflowName.active : false">
+
+                          <div>
                               <div *ngFor="let item of data.data; let i = index"
                                    style="padding-bottom: 0px !important;">
                                 <div *ngIf="i == 0" class="flex-container">
                                   <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>runtime.label.period</span>
                                   </div>
                                 </div>
-                                <div class="flex-container">
-                                  <div class="flex-item" style="width: 100%;">{{item}}</div>
+                                <div class="flex-container" >
+                                  <div class="flex-item" style="width: 100%;">{{item.startTime | stringToDate}}</div>
                                 </div>
                               </div>
                             </div>
@@ -194,7 +195,7 @@
                                   </div>
                                 </div>
                                 <div class="flex-container">
-                                  <div class="flex-item" style="width: 100%;">{{data.startTime}}</div>
+                                  <div class="flex-item" style="width: 100%;">{{data.startTime | stringToDate}}</div>
                                 </div>
                               </div>
                             </div>
@@ -216,14 +217,11 @@
                                   </div>
                                   <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.startTime</span>
                                   </div>
-                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.duration</span>
-                                  </div>
                                 </div>
                                 <div class="flex-container">
                                   <div class="flex-item" style="width: 25%;">{{item.workflowName}}</div>
                                   <div class="flex-item" style="width: 25%;">{{item.workflowName}}</div>
-                                  <div class="flex-item" style="width: 25%;">{{item.startTime}}</div>
-                                  <div class="flex-item" style="width: 25%;">{{item.duration}}</div>
+                                  <div class="flex-item" style="width: 25%;">{{item.startTime | stringToDate}}</div>
                                 </div>
                               </div>
                             </div>
