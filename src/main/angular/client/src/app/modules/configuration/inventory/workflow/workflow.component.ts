@@ -3058,7 +3058,9 @@ export class WorkflowComponent {
       }
       if (this.reload) {
         this.selectedNode = null;
-        this.init();
+        if(!this.data.children){
+          this.init();
+        }
         this.reload = false;
         return;
       }
