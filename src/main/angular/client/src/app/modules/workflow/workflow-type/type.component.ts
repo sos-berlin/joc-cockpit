@@ -202,9 +202,6 @@ export class TypeComponent {
       this.sideBar.orders = data.orders || [];
     }else{
       this.sideBar.orders = data || [];
-      console.log(this.sideBar.orders,"else....")
-
-
     }
 
     function recursive(json) {

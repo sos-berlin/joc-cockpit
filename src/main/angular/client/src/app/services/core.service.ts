@@ -3147,17 +3147,28 @@ export class CoreService {
   copyArguments(data, type, message): void {
 
     let arr: any[];
-    if (!isArray(data[type])) {
-      arr = this.convertObjectToArray(data, type);
 
-      arr.forEach((item => {
+    if (!Array.isArray(data[type])) {
+      arr = this.convertObjectToArray1(data, type);
+
+      arr.forEach(item => {
         if (item.value && typeof item.value === 'object') {
-          item.value = [this.convertObjectToArray(item, 'value')];
+          if (Array.isArray(item.value)) {
+            item.value = item.value.map(subItem => {
+              if (typeof subItem === 'object' && !Array.isArray(subItem)) {
+                return this.convertObjectToArray1({ value: subItem }, 'value');
+              }
+              return subItem;
+            }).flat();
+          } else {
+            item.value = this.convertObjectToArray1({ value: item.value }, 'value');
+          }
         }
-      }))
+      });
     } else {
       arr = data[type];
     }
+
     if (arr.length > 0) {
       // Get existing data from sessionStorage (if any)
       let storedData = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];
@@ -3175,6 +3186,14 @@ export class CoreService {
       this.showCopyMessage(message);
     }
   }
+
+// Helper method to convert object to array
+  convertObjectToArray1(data, type): any[] {
+    return Object.keys(data[type]).map(key => {
+      return { name: key, value: data[type][key] };
+    });
+  }
+
 
   setForkListVariables(sour, target): void {
     for (let x in target) {

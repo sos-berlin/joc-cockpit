@@ -862,7 +862,6 @@ export class ControllersComponent {
   }
 
   enableAll(subagent = false): void {
-    console.log(subagent,"subagent")
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
@@ -887,8 +886,6 @@ export class ControllersComponent {
 
         if (result) {
           if (subagent) {
-            console.log(result,"result")
-
             this.object.mapOfCheckedId3.forEach((value, key) => {
               this.coreService.post('agents/inventory/cluster/subagents/enable', {
                 controllerId: value,
@@ -897,8 +894,6 @@ export class ControllersComponent {
               }).subscribe();
             })
           } else {
-            console.log(result,"result>>>")
-
             this.object.mapOfCheckedId.forEach((k, v) => {
               this.coreService.post('agents/inventory/enable', {
                 controllerId: k,
@@ -910,8 +905,6 @@ export class ControllersComponent {
         }
       });
     } else {
-      console.log(subagent,"result??")
-
       if (subagent) {
         this.object.mapOfCheckedId3.forEach((value, key) => {
           this.coreService.post('agents/inventory/cluster/subagents/enable', {

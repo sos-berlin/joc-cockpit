@@ -3717,15 +3717,20 @@ export class WorkflowComponent {
   }
 
   copyIndlArguments(index): void {
-    let storedData = sessionStorage.getItem('$SOS$copiedIndlDeclaredArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedIndlDeclaredArgument')) : [];
-    storedData = [JSON.stringify(this.variableDeclarations.parameters[index])];
+    let newData = JSON.stringify(this.variableDeclarations.parameters[index]);
+    let storedData = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];
+    storedData.push(newData);
     if (storedData.length > 20) {
       storedData.shift();
     }
-    sessionStorage.setItem('$SOS$copiedIndlDeclaredArgument', JSON.stringify(storedData));
+
+    // Save the updated list back to session storage
+    sessionStorage.setItem('$SOS$copiedArgument', JSON.stringify(storedData));
+    sessionStorage.setItem('$SOS$copiedIndlDeclaredArgument', JSON.stringify([newData]));
     this.coreService.showCopyMessage(this.message);
     this.fetchIndlClipboard();
   }
+
 
 
   handlePaste(data) {
@@ -6174,12 +6179,10 @@ export class WorkflowComponent {
                     json.instructions.splice(x + 1, 0, obj);
                   }
                 } else {
-                  if (!json.instructions[x].instructions) {
-                    json.instructions[x].instructions = [obj];
-                  }else{
+
                     json.instructions.splice(x + 1, 0, obj);
 
-                  }
+
                 }
               }
               isMatch = true;

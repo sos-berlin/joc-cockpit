@@ -199,12 +199,15 @@ export class ScheduleComponent {
   copyIndlArguments(index1, index2): void {
     let newData = JSON.stringify(this.schedule.configuration.orderParameterisations[index1].variables[index2]);
 
-    let storedData = sessionStorage.getItem('$SOS$copiedScheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedScheduledArgument')) : [];
-    storedData = [newData];
+    let storedData = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];
+    storedData.push(newData);
+    sessionStorage.setItem('$SOS$copiedArgument', JSON.stringify(storedData));
 
-    sessionStorage.setItem('$SOS$copiedIndlSheduledArgument', JSON.stringify(storedData));
+    sessionStorage.setItem('$SOS$copiedIndlSheduledArgument', JSON.stringify([newData]));
+
     this.fetchIndlClipboard();
   }
+
 
   handleIndlPaste(data: any, index1: number, index2: number): void {
 
