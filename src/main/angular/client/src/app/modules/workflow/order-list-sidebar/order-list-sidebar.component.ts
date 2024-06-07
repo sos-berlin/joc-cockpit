@@ -374,6 +374,7 @@ export class OrderListSidebarComponent implements OnChanges {
     this._bulkOperation('Continue', 'continue', false);
   }
 
+
   cancelAllOrder(isKill = false): void {
     this._bulkOperation('Cancel', 'cancel', isKill);
   }
