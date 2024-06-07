@@ -227,7 +227,7 @@
     "label.primary": "Primärer",
     "label.secondary": "Sekundärer",
     "label.processLimit": "Prozess Limit",
-    "label.addCertificateAlias": "Add Certificate Alias",
+    "label.addCertificateAlias": "Alias des Zertifikats hinzufügen",
     "button.createToken": "Einmaliges Token erstellen",
     "button.addAgent": "Autonomen Agenten hinzufügen",
     "button.addSubagent": "Subagenten hinzufügen",
@@ -252,7 +252,7 @@
     "button.exportAgentConfiguration": "Agenten Konfiguration exportieren",
     "button.importAgentConfiguration": "Agenten Konfiguration importieren",
     "button.confirmNodeLoss": "Verlust einer Director Agent Instanz bestätigen",
-    "button.addEnciphermentCertificate": "Add Certificate",
+    "button.addEnciphermentCertificate": "Zertifikat hinzufügen",
     "message.dropHereToDetach": "Hierher ziehen, um Subagenten zu entfernen",
     "message.noClusterFound": "Keinen Cluster gefunden",
     "message.clickHereToAdd": "Hier klicken zum Hinzufügen",
@@ -368,7 +368,7 @@
     "label.permissions": "Berechtigungen",
     "label.manageIdentityServices": "Identitätsdienste verwalten",
     "label.clusterAgents": "Cluster Agenten",
-    "label.manageEnciphermentKey": "Manage Encipherment Key"
+    "label.manageEnciphermentKey": "Chiffrierschlüssel verwalten"
   },
   "configuration": {
     "tab.inventory": "Inventar",
@@ -404,23 +404,23 @@
     "tooltip.backupTitle": "Beschriftung der Kopfzeile der Sekundären Controller Instanz in der ÜBERSICHT Ansicht"
   },
   "encipherment": {
-    "label.addCertificate": "Add Encipherment Certificate",
-    "label.agentId": "Agent ID",
-    "label.certAlias": "Certificate Alias",
-    "label.certificate": "Certificate",
-    "label.privateKeyPath": "Private Key Path",
-    "label.jobResourceFolder": "Job Resource Folder",
-    "label.importCertificate": "Import Encipherment Certificate",
-    "label.encrypt": "Encrypted Value",
-    "placeholder.agentId": "Agent Id",
-    "placeholder.certAlias": "Cetificate Alias Name",
-    "placeholder.certificate": "Paste Certificate here",
-    "placeholder.privateKeyPath": "Path to Certificate Private Key",
-    "placeholder.jobResourceFolder": "Select Job Resource Folder",
-    "placeholder.encrypt": "Encrypted Value",
-    "button.encrypt": "Encrypt",
-    "button.addNewCertificate": "Add New Certificate",
-    "button.importCertificate": "Import Certificate"
+    "label.addCertificate": "Zertifikat hinzufügen",
+    "label.agentId": "Agenten-Kennung",
+    "label.certAlias": "Alias des Zertifikats",
+    "label.certificate": "Zertifikat",
+    "label.privateKeyPath": "Pfad zum Privaten Scchlüssel",
+    "label.jobResourceFolder": "Ordner der Job-Ressource",
+    "label.importCertificate": "Zertifikat importieren",
+    "label.encrypt": "Verschlüsselter Wert",
+    "placeholder.agentId": "Agenten-Kennung",
+    "placeholder.certAlias": "Alias des Zertifikats",
+    "placeholder.certificate": "Zertifikat hier einfügen",
+    "placeholder.privateKeyPath": "Pfad zum Privaten Schlüssel des Zertifikats",
+    "placeholder.jobResourceFolder": "Ordner der Job-Ressource auswählen",
+    "placeholder.encrypt": "Verschlüsselter Wert",
+    "button.encrypt": "Verschlüsseln",
+    "button.addNewCertificate": "Zertifikat hinzufügen",
+    "button.importCertificate": "Zertifikat importieren"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -1493,7 +1493,7 @@
     "button.manageControllersAndAgents": "Controller/Agenten verwalten",
     "button.manageDeployment": "Ausrollen verwalten",
     "button.logOut": "Abmelden",
-    "button.manageEnciphermentKey": "Manage Encipherment Key"
+    "button.manageEnciphermentKey": "Chiffrierschlüssel verwalten"
   },
   "history": {
     "label.all": "Alle",
@@ -2599,8 +2599,8 @@
       "label.controller": "Controller",
       "label.managePositions": "Positionen verwalten",
       "label.confirm": "bestätigen",
-      "label.encipherment": "Encipherment",
-      "label.encrypt": "encrypt"
+      "label.encipherment": "Verschlüsselung",
+      "label.encrypt": "verschlüsseln"
     },
     "keyManagement": {
       "label.keysAndCertificates": "Schlüssel und Zertifikate",
@@ -2886,12 +2886,12 @@
       "interval": "Intervall",
       "relative": "Relativ",
       "absolute": "Absolut",
-      "count": "Count",
+      "count": "Anzahl",
       "unit": "Einheit",
       "sort": "Sortierung",
       "HIGHEST": "höchsten",
       "LOWEST": "geringsten",
-      "preset": "Preset"
+      "preset": "voreingestellt"
     },
     "button" : {
       "runReport": "Berichtslauf starten",
