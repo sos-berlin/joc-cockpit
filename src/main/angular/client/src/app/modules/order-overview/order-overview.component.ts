@@ -1071,8 +1071,14 @@ export class OrderOverviewComponent {
   }
 
   resumeAllOrder(): void {
+    const resumableOrders = new Map();
+    this.object.mapOfCheckedId.forEach((order) => {
+      if (order.isResumable) {
+        resumableOrders.set(order.orderId, order);
+      }
+    });
 
-    if (this.object.mapOfCheckedId.size == 1) {
+    if (resumableOrders.size === 1) {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ResumeOrderModalComponent,
@@ -1080,7 +1086,7 @@ export class OrderOverviewComponent {
         nzData: {
           preferences: this.preferences,
           schedulerId: this.schedulerIds.selected,
-          orders: this.object.mapOfCheckedId
+          orders: resumableOrders
         },
         nzFooter: null,
         nzClosable: false,
@@ -1098,7 +1104,7 @@ export class OrderOverviewComponent {
         controllerId: this.schedulerIds.selected,
         orderIds: []
       };
-      this.object.mapOfCheckedId.forEach((order) => {
+      resumableOrders.forEach((order) => {
         obj.orderIds.push(order.orderId);
       });
       if (this.preferences.auditLog) {
@@ -1160,17 +1166,41 @@ export class OrderOverviewComponent {
     } else {
       obj.orderIds = [];
     }
+
     this.object.mapOfCheckedId.forEach((order) => {
+      if (operation === 'Suspend' && !order.isSuspendible) {
+        return;
+      }
+      console.log(obj,"?????????");
+
       if (obj.orderIds) {
         obj.orderIds.push(order.orderId);
       } else {
-        obj.orders.push({workflowPath: order.workflowId.path, orderId: order.orderId, scheduledFor: 'now'});
+        obj.orders.push({
+          workflowPath: order.workflowId.path,
+          orderId: order.orderId,
+          scheduledFor: 'now'
+        });
       }
     });
+
     this.preformAction(operation, url, obj);
   }
 
   private preformAction(operation, url, obj, cb = null): void {
+    const filteredOrders = operation === 'Suspend' ? {
+      ...obj,
+      orderIds: obj.orderIds?.filter(orderId => {
+        const order = this.object.mapOfCheckedId.get(orderId);
+        return order && order.isSuspendible;
+      }),
+      orders: obj.orders?.filter(order => {
+        const orderInMap = this.object.mapOfCheckedId.get(order.orderId);
+        return orderInMap && orderInMap.isSuspendible;
+      })
+    } : obj;
+    console.log(filteredOrders,">>")
+
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
@@ -1184,7 +1214,7 @@ export class OrderOverviewComponent {
         nzClassName: 'lg',
         nzData: {
           comments,
-          obj,
+          obj: filteredOrders,
           url: 'orders/' + url
         },
         nzFooter: null,
@@ -1202,18 +1232,19 @@ export class OrderOverviewComponent {
         }
       });
     } else {
-      if (operation == 'Confirm') {
-        this.confirmOrder(obj, url, cb);
+      if (operation === 'Confirm') {
+        this.confirmOrder(filteredOrders, url, cb);
       } else {
         this.isProcessing = true;
-        this.coreService.post('orders/' + url, obj).subscribe({
+        this.coreService.post('orders/' + url, filteredOrders).subscribe({
           next: () => {
             if (cb) {
               cb();
             }
             this.resetCheckBox();
             this.resetAction(5000);
-          }, error: () => this.resetAction()
+          },
+          error: () => this.resetAction()
         });
       }
     }
