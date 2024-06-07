@@ -588,68 +588,132 @@
               <div class="row">
                 <div class="col-lg-2 col-sm-3 p-r-xs">
                   <div class="box m-b-0" style="height: calc(100% - {{pageView==='grid' ? '2px' : '20px'}});">
-                    <nz-tabset class="custom-tab p-t-sm p-l-sm p-r-sm" [nzAnimated]="false"  [nzType]="'line'">
-                      <nz-tab [nzTitle]="'inventory.tab.tagging' | translate"></nz-tab>
+                    <nz-tabset class="custom-tab p-t-sm p-l-sm p-r-sm" [nzAnimated]="false"  [nzType]="'line'" [(nzSelectedIndex)]="dailyPlanFilters.selectedIndex">
+                      <nz-tab (nzClick)="switchToTagging('workflowTags');dailyPlanFilters.selectedIndex = 0;" [nzTitle]="'inventory.tab.workflowTagging' | translate"></nz-tab>
+                      <nz-tab (nzClick)="switchToTagging('orderTags');dailyPlanFilters.selectedIndex = 1;" [nzTitle]="'inventory.tab.orderTagging' | translate"></nz-tab>
                     </nz-tabset>
-                    <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm daily-plan-tag" style="height: calc(100% - {{pageView==='grid' ? '0' : '20px'}});">
-                      <div class="fade-in">
-                        <div class="p-l-xs m-b-sm">
-                          <a (click)="selectTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
-                            <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
-                          </a>
-                          <a (click)="selectAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
-                            <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
-                          </a>
-                          <a (click)="removeAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
-                            <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
-                          </a>
-                          <a (click)="objectTreeSearch()" class="tree-search workflow-tree-search" style="right: 16px">
-                            <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
-                          </a>
-                          <div class="dailyTagSearch">
-                            <input (blur)="clearSearchInput()" (ngModelChange)="onSearchInput($event)"
-                                   [(ngModel)]="searchTag.text"
-                                   [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
-                                   class="input-tree-search"
-                                   id="dailyTagSearch"
-                                   nz-input
-                            />
+                    <div *ngIf="dailyPlanFilters.tagType === 'workflowTags'">
+                      <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm daily-plan-tag" style="height: calc(100% - {{pageView==='grid' ? '0' : '20px'}});">
+                        <div class="fade-in">
+                          <div class="p-l-xs m-b-sm">
+                            <a (click)="selectTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
+                              <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
+                            </a>
+                            <a (click)="selectAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
+                              <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
+                            </a>
+                            <a (click)="removeAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
+                              <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
+                            </a>
+                            <a (click)="objectTreeSearch()" class="tree-search workflow-tree-search" style="right: 16px">
+                              <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
+                            </a>
+                            <div class="dailyTagSearch">
+                              <input (blur)="clearSearchInput()" (ngModelChange)="onSearchInput($event)"
+                                     [(ngModel)]="searchTag.text"
+                                     [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
+                                     class="input-tree-search"
+                                     id="dailyTagSearch"
+                                     nz-input
+                              />
 
-                            <i [nzType]="searchTag.loading ? 'loading' : 'search'" class="tree-search-icon" nz-icon nzTheme="outline"></i>
-                            <nz-autocomplete #auto>
-                              <nz-auto-option (click)="selectTagOnSearch(tag)" *ngFor="let tag of searchTag.tags | orderBy: 'ordering'"
-                                              [nzValue]="tag.name" class="min-ht-opt">
-                                <div class="node-wrapper p-l-xs">
-                                  <div class="node-content-wrapper2"
-                                       nzTooltipPlacement="right">
-                                    <span class="icon-color text-xs" nz-icon nzType="tag" nzTheme="outline"></span>
-                                    <span class="p-l-sm">{{tag.name}}</span>
+                              <i [nzType]="searchTag.loading ? 'loading' : 'search'" class="tree-search-icon" nz-icon nzTheme="outline"></i>
+                              <nz-autocomplete #auto>
+                                <nz-auto-option (click)="selectTagOnSearch(tag)" *ngFor="let tag of searchTag.tags | orderBy: 'ordering'"
+                                                [nzValue]="tag.name" class="min-ht-opt">
+                                  <div class="node-wrapper p-l-xs">
+                                    <div class="node-content-wrapper2"
+                                         nzTooltipPlacement="right">
+                                      <span class="icon-color text-xs" nz-icon nzType="tag" nzTheme="outline"></span>
+                                      <span class="p-l-sm">{{tag.name}}</span>
+                                    </div>
                                   </div>
-                                </div>
-                              </nz-auto-option>
-                            </nz-autocomplete>
+                                </nz-auto-option>
+                              </nz-autocomplete>
+                            </div>
                           </div>
-                        </div>
-                        <div class="w-full" *ngFor="let tag of coreService.selectedTags | orderBy: 'ordering'">
-                          <div class="node-wrapper p-l-xxs p-b-xxs">
-                            <span class="w-14 m-l-xs m-r-12">
-                              <label nz-checkbox [nzChecked]="coreService.checkedTags.has(tag.name)"
-                                     (nzCheckedChange)="onTagChecked(tag.name, $event)"></label>
-                            </span>
-                            <div class="node-content-wrapper"
-                                 [ngClass]="{'node-content-wrapper-active': coreService.checkedTags.has(tag.name)}"
-                                 (click)="selectTag(tag.name)">
-                              <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
-                              <span class="p-l-xs">{{tag.name}}</span>
+                          <div class="w-full" *ngFor="let tag of coreService.selectedTags | orderBy: 'ordering'">
+                            <div class="node-wrapper p-l-xxs p-b-xxs">
+                              <span class="w-14 m-l-xs m-r-12">
+                                <label nz-checkbox [nzChecked]="coreService.checkedTags.has(tag.name)"
+                                       (nzCheckedChange)="onTagChecked(tag.name, $event)"></label>
+                              </span>
+                              <div class="node-content-wrapper"
+                                   [ngClass]="{'node-content-wrapper-active': coreService.checkedTags.has(tag.name)}"
+                                   (click)="selectTag(tag.name)">
+                                <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
+                                <span class="p-l-xs">{{tag.name}}</span>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div *ngIf="coreService.selectedTags && coreService.selectedTags.length === 0"
-                           class="m-top-50" style="margin-bottom: 60px">
-                        <app-empty-data></app-empty-data>
-                      </div>
-                    </perfect-scrollbar>
+                        <div *ngIf="coreService.selectedTags && coreService.selectedTags.length === 0"
+                             class="m-top-50" style="margin-bottom: 60px">
+                          <app-empty-data></app-empty-data>
+                        </div>
+                      </perfect-scrollbar>
+                    </div>
+                    <div *ngIf="dailyPlanFilters.tagType === 'orderTags'">
+                      <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm daily-plan-tag" style="height: calc(100% - {{pageView==='grid' ? '0' : '20px'}});">
+                        <div class="fade-in">
+                          <div class="p-l-xs m-b-sm">
+                            <a (click)="selectOrderTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
+                              <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
+                            </a>
+                            <a (click)="selectAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
+                              <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
+                            </a>
+                            <a (click)="removeAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
+                              <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
+                            </a>
+                            <a (click)="objectOrderTreeSearch()" class="tree-search workflow-tree-search" style="right: 16px">
+                              <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
+                            </a>
+                            <div class="dailyTagSearch">
+                              <input (blur)="clearOrderSearchInput()" (ngModelChange)="onOrderSearchInput($event)"
+                                     [(ngModel)]="searchOrderTag.text"
+                                     [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
+                                     class="input-tree-search"
+                                     id="dailyTagSearch"
+                                     nz-input
+                              />
+
+                              <i [nzType]="searchOrderTag.loading ? 'loading' : 'search'" class="tree-search-icon" nz-icon nzTheme="outline"></i>
+                              <nz-autocomplete #auto>
+                                <nz-auto-option (click)="selectOrderTagOnSearch(tag)" *ngFor="let tag of searchOrderTag.tags | orderBy: 'ordering'"
+                                                [nzValue]="tag.name" class="min-ht-opt">
+                                  <div class="node-wrapper p-l-xs">
+                                    <div class="node-content-wrapper2"
+                                         nzTooltipPlacement="right">
+                                      <span class="icon-color text-xs" nz-icon nzType="tag" nzTheme="outline"></span>
+                                      <span class="p-l-sm">{{tag.name}}</span>
+                                    </div>
+                                  </div>
+                                </nz-auto-option>
+                              </nz-autocomplete>
+                            </div>
+                          </div>
+                          <div class="w-full" *ngFor="let tag of coreService.selectedOrderTags | orderBy: 'ordering'">
+                            <div class="node-wrapper p-l-xxs p-b-xxs">
+                              <span class="w-14 m-l-xs m-r-12">
+                                <label nz-checkbox [nzChecked]="coreService.checkedOrderTags.has(tag.name)"
+                                       (nzCheckedChange)="onOrderTagChecked(tag.name, $event)"></label>
+                              </span>
+                              <div class="node-content-wrapper"
+                                   [ngClass]="{'node-content-wrapper-active': coreService.checkedOrderTags.has(tag.name)}"
+                                   (click)="selectOrderTag(tag.name)">
+                                <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
+                                <span class="p-l-xs">{{tag.name}}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div *ngIf="coreService.selectedOrderTags && coreService.selectedOrderTags.length === 0"
+                             class="m-top-50" style="margin-bottom: 60px">
+                          <app-empty-data></app-empty-data>
+                        </div>
+                      </perfect-scrollbar>
+                    </div>
                   </div>
                 </div>
                 <div class="col-lg-10 col-sm-9">

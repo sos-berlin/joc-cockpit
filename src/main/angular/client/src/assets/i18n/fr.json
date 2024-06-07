@@ -227,7 +227,7 @@
     "label.primary": "Primaire",
     "label.secondary": "Secondaire",
     "label.processLimit": "Limite du processus",
-    "label.addCertificateAlias": "Add Certificate Alias",
+    "label.addCertificateAlias": "Ajouter Alias de Certificat",
     "button.createToken": "Créer un Jeton à usage unique",
     "button.addAgent": "Ajouter un Agent Autonome",
     "button.addSubagent": "Ajouter un Sous-agent",
@@ -252,7 +252,7 @@
     "button.exportAgentConfiguration": "Exporter la configuration des Agents",
     "button.importAgentConfiguration": "Importer la configuration Agents",
     "button.confirmNodeLoss": "Confirmer la perte d'une Instance d'Agent Directeur",
-    "button.addEnciphermentCertificate": "Add Certificate",
+    "button.addEnciphermentCertificate": "Ajouter Certificat",
     "message.dropHereToDetach": "Cliquez ici pour supprimer le Sous-agent",
     "message.noClusterFound": "Aucun Cluster trouvé",
     "message.clickHereToAdd": "Cliquez ici pour ajouter",
@@ -368,7 +368,7 @@
     "label.permissions": "Permissions",
     "label.manageIdentityServices": "Gérer les Services d'Identité",
     "label.clusterAgents": "Agents Cluster",
-    "label.manageEnciphermentKey": "Manage Encipherment Key"
+    "label.manageEnciphermentKey": "Gérer les Clefs de Chiffrement"
   },
   "configuration": {
     "tab.inventory": "Inventaire",
@@ -404,23 +404,23 @@
     "tooltip.backupTitle": "Légende du Contrôleur Secondaire dans la vue TABLEAU DE BORD"
   },
   "encipherment": {
-    "label.addCertificate": "Add Encipherment Certificate",
-    "label.agentId": "Agent ID",
-    "label.certAlias": "Certificate Alias",
-    "label.certificate": "Certificate",
-    "label.privateKeyPath": "Private Key Path",
-    "label.jobResourceFolder": "Job Resource Folder",
-    "label.importCertificate": "Import Encipherment Certificate",
-    "label.encrypt": "Encrypted Value",
-    "placeholder.agentId": "Agent Id",
-    "placeholder.certAlias": "Cetificate Alias Name",
-    "placeholder.certificate": "Paste Certificate here",
-    "placeholder.privateKeyPath": "Path to Certificate Private Key",
-    "placeholder.jobResourceFolder": "Select Job Resource Folder",
-    "placeholder.encrypt": "Encrypted Value",
-    "button.encrypt": "Encrypt",
-    "button.addNewCertificate": "Add New Certificate",
-    "button.importCertificate": "Import Certificate"
+    "label.addCertificate": "Ajouter un Certificat de Chiffrement",
+    "label.agentId": "ID Agent",
+    "label.certAlias": "Alias de Certificat",
+    "label.certificate": "Certificat",
+    "label.privateKeyPath": "Chemin d'accès de la Clé Privée",
+    "label.jobResourceFolder": "Dossier de la Ressource de Tâches",
+    "label.importCertificate": "Importer Certificat de Chiffrement",
+    "label.encrypt": "Valeur chiffrée",
+    "placeholder.agentId": "ID Agent",
+    "placeholder.certAlias": "Alias de Certificat",
+    "placeholder.certificate": "Coller le Certificat ici",
+    "placeholder.privateKeyPath": "Chemin d'accès de la Clé Privée",
+    "placeholder.jobResourceFolder": "Sélectionner le dossier de la Ressource de Tâches",
+    "placeholder.encrypt": "Valeur chiffrée",
+    "button.encrypt": "Chiffrer",
+    "button.addNewCertificate": "Ajouter Certificat",
+    "button.importCertificate": "Importer Certificat"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -1493,7 +1493,7 @@
     "button.manageControllersAndAgents": "Gérer Contrôleurs/Agents",
     "button.manageDeployment": "Gérer le Deploiement",
     "button.logOut": "Se Déconnecter",
-    "button.manageEnciphermentKey": "Manage Encipherment Key"
+    "button.manageEnciphermentKey": "Gérer les Clefs de Chiffrement"
   },
   "history": {
     "label.all": "Tous",
@@ -1907,7 +1907,9 @@
     "tab": {
       "folders": "Dossiers",
       "trash": "Corbeille",
-      "tagging": "Mots-Clés"
+      "tagging": "Mots-Clés",
+      "workflowTagging": "Workflow Tags",
+      "orderTagging": "Order Tags"
     },
     "cronTab": {
       "label.convertCron": "Convertir crontab",
@@ -2599,8 +2601,8 @@
       "label.controller": "Contrôleur",
       "label.managePositions": "gérer les positions",
       "label.confirm": "confirmer",
-      "label.encipherment": "Encipherment",
-      "label.encrypt": "encrypt"
+      "label.encipherment": "Enchiffrement",
+      "label.encrypt": "enchiffrer"
     },
     "keyManagement": {
       "label.keysAndCertificates": "Clés et Certificats",
@@ -2886,12 +2888,12 @@
       "interval": "Intervalle",
       "relative": "Relatif",
       "absolute": "Absolue",
-      "count": "Count",
+      "count": "Nombre de",
       "unit": "Unité",
       "sort": "Tri",
       "HIGHEST": "le plus élevé",
       "LOWEST": "le plus bas",
-      "preset": "Preset"
+      "preset": "prédéfini"
     },
     "button" : {
       "runReport": "Exécuter le Rapport",

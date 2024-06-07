@@ -368,7 +368,7 @@
     "label.permissions": "Permissions",
     "label.manageIdentityServices": "Manage Identity Services",
     "label.clusterAgents": "Cluster Agents",
-    "label.manageEnciphermentKey": "Manage Encipherment Key"
+    "label.manageEnciphermentKey": "Manage Encipherment Keys"
   },
   "configuration": {
     "tab.inventory": "Inventory",
@@ -412,14 +412,14 @@
     "label.jobResourceFolder": "Job Resource Folder",
     "label.importCertificate": "Import Encipherment Certificate",
     "label.encrypt": "Encrypted Value",
-    "placeholder.agentId": "Agent Id",
+    "placeholder.agentId": "Agent ID",
     "placeholder.certAlias": "Cetificate Alias Name",
     "placeholder.certificate": "Paste Certificate here",
     "placeholder.privateKeyPath": "Path to Certificate Private Key",
     "placeholder.jobResourceFolder": "Select Job Resource Folder",
     "placeholder.encrypt": "Encrypted Value",
     "button.encrypt": "Encrypt",
-    "button.addNewCertificate": "Add New Certificate",
+    "button.addNewCertificate": "Add Certificate",
     "button.importCertificate": "Import Certificate"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
@@ -1493,7 +1493,7 @@
     "button.manageControllersAndAgents": "Manage Controllers/Agents",
     "button.manageDeployment": "Manage Deployments",
     "button.logOut": "Log Out",
-    "button.manageEnciphermentKey": "Manage Encipherment Key"
+    "button.manageEnciphermentKey": "Manage Encipherment Keys"
   },
   "history": {
     "label.all": "All",
@@ -1907,7 +1907,9 @@
     "tab": {
       "folders": "Folders",
       "trash": "Trash",
-      "tagging": "Tags"
+      "tagging": "Tags",
+      "workflowTagging": "Workflow Tags",
+      "orderTagging": "Order Tags"
     },
     "cronTab": {
       "label.convertCron": "Convert crontab",

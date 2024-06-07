@@ -292,24 +292,60 @@ export class OrderListSidebarComponent implements OnChanges {
   }
 
   resumeAllOrder(): void {
-    const map = new Map();
-    this.orders.forEach(item => {
-      if (this.setOfCheckedId.has(item.orderId)) {
-        map.set(item.orderId, item);
+  const map = new Map();
+  this.orders.forEach(item => {
+    if (this.setOfCheckedId.has(item.orderId) && item.isResumable) {
+      map.set(item.orderId, item);
+    }
+  });
+
+  if (map.size === 1) {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ResumeOrderModalComponent,
+      nzClassName: 'x-lg',
+      nzData: {
+        preferences: this.preferences,
+        schedulerId: this.schedulerId,
+        orders: map
+      },
+      nzFooter: null,
+      nzAutofocus: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.isProcessing = true;
+        this.resetAction(5000);
+        this.resetCheckBox();
       }
     });
-    if (map.size === 1) {
+  } else {
+    const obj: any = {
+      controllerId: this.schedulerId,
+      orderIds: []
+    };
+    map.forEach((order) => {
+      obj.orderIds.push(order.orderId);
+    });
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Order',
+        operation: 'Resume',
+        name: ''
+      };
       const modal = this.modal.create({
         nzTitle: undefined,
-        nzContent: ResumeOrderModalComponent,
-        nzClassName: 'x-lg',
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
         nzData: {
-          preferences: this.preferences,
-          schedulerId: this.schedulerId,
-          orders: map
+          comments,
+          obj,
+          url: 'orders/resume'
         },
         nzFooter: null,
-        nzAutofocus: null,
         nzClosable: false,
         nzMaskClosable: false
       });
@@ -321,51 +357,18 @@ export class OrderListSidebarComponent implements OnChanges {
         }
       });
     } else {
-      const obj: any = {
-        controllerId: this.schedulerId,
-        orderIds: []
-      };
-      map.forEach((order) => {
-        obj.orderIds.push(order.orderId);
+      this.isProcessing = true;
+      this.coreService.post('orders/resume', obj).subscribe({
+        next: () => {
+          this.resetCheckBox();
+          this.resetAction(5000);
+        },
+        error: () => this.resetAction()
       });
-      if (this.preferences.auditLog) {
-        let comments = {
-          radio: 'predefined',
-          type: 'Order',
-          operation: 'Resume',
-          name: ''
-        };
-        const modal = this.modal.create({
-          nzTitle: undefined,
-          nzContent: CommentModalComponent,
-          nzClassName: 'lg',
-          nzData: {
-            comments,
-            obj,
-            url: 'orders/resume'
-          },
-          nzFooter: null,
-          nzClosable: false,
-          nzMaskClosable: false
-        });
-        modal.afterClose.subscribe(result => {
-          if (result) {
-            this.isProcessing = true;
-            this.resetAction(5000);
-            this.resetCheckBox();
-          }
-        });
-      } else {
-        this.isProcessing = true;
-        this.coreService.post('orders/resume', obj).subscribe({
-          next: () => {
-            this.resetCheckBox();
-            this.resetAction(5000);
-          }, error: () => this.resetAction()
-        });
-      }
     }
   }
+}
+
 
   continueAllOrder(): void{
     this._bulkOperation('Continue', 'continue', false);

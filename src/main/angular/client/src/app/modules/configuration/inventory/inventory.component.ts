@@ -46,6 +46,9 @@ export class CreateTagModalComponent {
   filter: any = {
     tags: []
   };
+  orderFilter: any = {
+    tags: []
+  };
   object = {
     expanded: new Set(),
     deleteTags: new Set(),
@@ -54,10 +57,12 @@ export class CreateTagModalComponent {
   };
   tags = [];
   allTags = [];
+  allOrderTags = [];
   filteredOptions: string[] = [];
   inputVisible = false;
   isUnique = true;
   inputValue = '';
+  tagType: string;
 
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
@@ -66,11 +71,16 @@ export class CreateTagModalComponent {
   }
 
   ngOnInit(): void {
-    if (this.modalData.filters) {
+    if (this.modalData.filters && this.modalData.filters.tagType === 'workflowTags') {
       this.filters = this.modalData.filters;
       this.controllerId = this.modalData.controllerId;
       this.filter.tags = this.coreService.selectedTags;
       this.fetchAllWorkflowTags();
+    } else if (this.modalData.filters && this.modalData.filters.tagType === 'orderTags') {
+      this.filters = this.modalData.filters;
+      this.controllerId = this.modalData.controllerId;
+      this.orderFilter.tags = this.coreService.selectedOrderTags;
+      this.fetchAllOrderTags();
     } else {
       this.preferences = this.modalData.preferences;
       this.data = this.modalData.data;
@@ -192,9 +202,13 @@ export class CreateTagModalComponent {
 
   onSubmit(): void {
 
-    if (this.filters) {
+    if (this.filters  && this.filters.tagType === 'workflowTags') {
       this.coreService.selectedTags = this.filter.tags;
       this.coreService.removeDuplicates();
+      this.activeModal.close('DONE');
+    } else if (this.filters && this.filters.tagType === 'orderTags') {
+      this.coreService.selectedOrderTags = this.filter.orderTags;
+      this.coreService.removeOrderDuplicates();
       this.activeModal.close('DONE');
     } else {
       this.submitted = true;
@@ -243,6 +257,18 @@ export class CreateTagModalComponent {
         this.activeModal.close('DONE');
       }, error: () => {
         this.submitted = false;
+      }
+    });
+  }
+
+
+  private fetchAllOrderTags() {
+    this.coreService.post('orders/tag/search', {
+      search: '',
+      controllerId: this.controllerId
+    }).subscribe({
+      next: (res: any) => {
+        this.allOrderTags = res.results;
       }
     });
   }

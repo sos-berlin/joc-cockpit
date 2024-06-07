@@ -773,6 +773,14 @@ export class DailyPlanComponent {
   };
   private searchTerm = new Subject<string>();
 
+  searchOrderTag = {
+    loading: false,
+    token: '',
+    tags: [],
+    text: ''
+  }
+  private searchOrderTerm = new Subject<string>();
+
   subscription1: Subscription;
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
@@ -977,6 +985,9 @@ export class DailyPlanComponent {
       }
       if (this.coreService.checkedTags.size) {
         obj.tags = Array.from(this.coreService.checkedTags);
+      }
+      if (this.coreService.checkedOrderTags.size) {
+        obj.orderTags = Array.from(this.coreService.checkedOrderTags);
       }
       obj.limit = this.preferences.maxDailyPlanRecords;
       this.coreService.post('daily_plan/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
@@ -2458,6 +2469,9 @@ export class DailyPlanComponent {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.dailyPlanFilters = this.coreService.getDailyPlanTab();
+    if(!this.dailyPlanFilters.tagType){
+      this.dailyPlanFilters.tagType = 'workflowTags';
+    }
     this.savedFilter = JSON.parse(this.saveService.dailyPlanFilters) || {};
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
@@ -2472,11 +2486,30 @@ export class DailyPlanComponent {
     } else {
       this.reloadDailyPlan();
     }
+    if (this.dailyPlanFilters.tagType === 'workflowTags') {
+      this.calTop();
+      this.switchToTagging('workflowTags');
+
+      setTimeout(() => {
+        this.calTop();
+      }, 100);
+    } else if (this.dailyPlanFilters.tagType === 'orderTags') {
+      this.calTop();
+      this.switchToTagging('orderTags');
+
+      setTimeout(() => {
+        this.calTop();
+      }, 100);
+    }
     //200ms Delay in search
     this.searchTerm.pipe(debounceTime(200))
       .subscribe((searchValue: string) => {
         this.searchObjects(searchValue);
-      });
+    });
+    this.searchOrderTerm.pipe(debounceTime(200))
+    .subscribe((searchValue: string) => {
+      this.searchOrderObjects(searchValue);
+    });
   }
 
   private reloadDailyPlan(): void {
@@ -3071,6 +3104,162 @@ export class DailyPlanComponent {
         console.log('No orders to continue');
       }
     }
+  }
+
+  switchToTagging(flag): void {
+    this.dailyPlanFilters.tagType = flag;
+    // this.workflows = [];
+    // this.data = [];
+    const obj: any = {
+      controllerId: this.schedulerIds.selected
+    };
+    if (flag === 'orderTags') {
+      obj.orderTags = Array.from(this.coreService.checkedOrderTags);
+    } else {
+      obj.tags = Array.from(this.coreService.checkedTags);
+    }
+    if (obj.tags?.length > 0 || obj.folders?.length > 0 || obj.orderTags?.length > 0) {
+      // this.getWorkflowList(obj);
+    } else {
+      // this.workflows = [];
+      this.searchInResult();
+    }
+  }
+
+  private calTop(): void {
+    const dom = $('.scroll-y');
+    if (dom && dom.position()) {
+      let top = dom.position().top + 12;
+      top = top - $(window).scrollTop();
+      if (top < 70) {
+        top = 92;
+      }
+      if (top < 150 && top > 140) {
+        top = 150;
+      }
+
+      $('.sticky').css('top', top);
+    }
+  }
+
+  /***************** Order Tag Search ***********/
+
+  selectOrderTags(): void {
+    const temp = this.coreService.clone(this.coreService.selectedOrderTags);
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateTagModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        filters: this.dailyPlanFilters,
+        controllerId: this.schedulerIds.selected
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(res => {
+      if (res) {
+        this.coreService.selectedOrderTags.forEach(tag => {
+          let flag = true;
+          for (let i = 0; i < temp.length; i++) {
+            if (tag.name == temp[i].name) {
+              temp.splice(i, 1);
+              flag = false;
+              break;
+            }
+          }
+          if (flag) {
+            this.coreService.checkedOrderTags.add(tag.name);
+          }
+        });
+        this.loadOrderPlan();
+      }
+    });
+
+  }
+
+  selectAllOrderTags(): void {
+    this.coreService.post('orders/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe({
+      next: (res: any) => {
+        this.coreService.selectedOrderTags = res.results;
+        this.coreService.selectedOrderTags.forEach(tag => {
+          this.coreService.checkedOrderTags.add(tag.name)
+        });
+        this.loadOrderPlan();
+      }
+    });
+  }
+
+  removeAllOrderTags(): void {
+    this.coreService.selectedOrderTags = [];
+    this.coreService.checkedOrderTags.clear();
+    this.loadOrderPlan();
+  }
+
+  selectOrderTag(tag: string): void {
+    this.coreService.checkedOrderTags.clear();
+    this.coreService.checkedOrderTags.add(tag);
+    this.loadOrderPlan();
+  }
+
+  onOrderTagChecked(tag, checked: boolean): void {
+    if (checked) {
+      this.coreService.checkedOrderTags.add(tag);
+    } else {
+      this.coreService.checkedOrderTags.delete(tag);
+    }
+    this.loadOrderPlan();
+  }
+
+  private searchOrderObjects(value: string) {
+    if (value !== '') {
+      const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
+      if (searchValueWithoutSpecialChars.length >= 1) {
+        this.searchOrderTag.loading = true;
+        let request: any = {
+          search: value,
+          controllerId: this.schedulerIds.selected
+        };
+        if (this.searchOrderTag.token) {
+          request.token = this.searchOrderTag.token;
+        }
+        this.coreService.post('orders/tag/search', request).subscribe({
+          next: (res: any) => {
+            this.searchOrderTag.tags = res.results;
+            this.searchOrderTag.token = res.token;
+            this.searchOrderTag.loading = false;
+          }, error: () => this.searchTag.loading = true
+        });
+      }
+    } else {
+      this.searchTag.tags = [];
+    }
+  }
+
+  selectOrderTagOnSearch(tag): void {
+    this.coreService.selectedOrderTags.push(tag);
+    this.coreService.checkedOrderTags.add(tag.name);
+    this.coreService.removeOrderDuplicates();
+    this.loadOrderPlan();
+  }
+
+  objectOrderTreeSearch() {
+    $('#dailyTagSearch').focus();
+    $('.daily-plan-tag  a').addClass('hide-on-focus');
+  }
+
+  clearOrderSearchInput(): void {
+    this.searchOrderTag.tags = [];
+    this.searchOrderTag.text = '';
+    $('.daily-plan-tag  a').removeClass('hide-on-focus');
+  }
+
+  onOrderSearchInput(searchValue: string) {
+    this.searchOrderTerm.next(searchValue);
   }
 
 }

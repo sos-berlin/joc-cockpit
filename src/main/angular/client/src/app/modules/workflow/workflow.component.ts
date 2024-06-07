@@ -571,6 +571,14 @@ export class WorkflowComponent {
   };
   private searchTerm = new Subject<string>();
 
+  searchOrderTag = {
+    loading: false,
+    token: '',
+    tags: [],
+    text: ''
+  }
+  private searchOrderTerm = new Subject<string>();
+
   searchableProperties = ['name', 'path', 'versionDate', 'state', '_text'];
 
   filterState: any = [
@@ -631,7 +639,7 @@ export class WorkflowComponent {
 
     if (this.child) {
       this.workflowFilters.expandedKeys = this.child.defaultExpandedKeys;
-      if (!this.workflowFilters.isTag) {
+      if (this.workflowFilters.tagType === 'folders') {
         this.workflowFilters.selectedkeys = this.child.defaultSelectedKeys;
       }
     }
@@ -860,6 +868,9 @@ export class WorkflowComponent {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
+    if(!this.workflowFilters.tagType){
+      this.workflowFilters.tagType = 'folders';
+    }
     if (localStorage['views']) {
       this.pageView = JSON.parse(localStorage['views']).workflow;
     }
@@ -876,9 +887,16 @@ export class WorkflowComponent {
       this.savedFilter.selected = undefined;
       this.initTree();
     }
-    if (this.workflowFilters.isTag) {
+    if (this.workflowFilters.tagType === 'workflowTags') {
       this.calTop();
-      this.switchToTagging(true);
+      this.switchToTagging('workflowTags');
+
+      setTimeout(() => {
+        this.calTop();
+      }, 100);
+    } else if (this.workflowFilters.tagType === 'orderTags') {
+      this.calTop();
+      this.switchToTagging('orderTags');
 
       setTimeout(() => {
         this.calTop();
@@ -889,6 +907,10 @@ export class WorkflowComponent {
       .subscribe((searchValue: string) => {
         this.searchObjects(searchValue);
       });
+    this.searchOrderTerm.pipe(debounceTime(200))
+    .subscribe((searchValue: string) => {
+      this.searchOrderObjects(searchValue);
+    });
   }
 
   private calTop(): void {
@@ -925,7 +947,7 @@ export class WorkflowComponent {
           }
           this.isLoading = true;
           if (this.tree.length && !reload) {
-            if (!this.workflowFilters.isTag) {
+            if (this.workflowFilters.tagType === 'folders') {
               this.loadWorkflow();
             }
           }
@@ -1015,6 +1037,9 @@ export class WorkflowComponent {
       }
       if (this.selectedFiltered.tags && this.selectedFiltered.tags.length > 0) {
         obj.tags = this.selectedFiltered.tags;
+      }
+      if (this.selectedFiltered.orderTags && this.selectedFiltered.orderTags.length > 0) {
+        obj.orderTags = this.selectedFiltered.orderTags;
       }
     } else {
       if (this.workflowFilters.filter.agentNames && this.workflowFilters.filter.agentNames.length > 0) {
@@ -1227,8 +1252,8 @@ export class WorkflowComponent {
     this.workflowFilters.expandedKeys = pathArr;
     this.workflowFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
     this.workflowFilters.expandedObjects = [data.path];
-    if (this.workflowFilters.isTag) {
-      this.workflowFilters.isTag = false;
+    if (this.workflowFilters.tagType === 'workflowTags' || this.workflowFilters.tagType === 'orderTags') {
+      this.workflowFilters.tagType = 'folders';
       this.workflowFilters.selectedIndex = 0;
     }
     const obj = {
@@ -1362,8 +1387,10 @@ export class WorkflowComponent {
       paths = this.workflowFilters.selectedkeys;
     }
 
-    if (this.workflowFilters.isTag) {
+    if (this.workflowFilters.tagType === 'workflowTags') {
       obj.tags = Array.from(this.coreService.checkedTags);
+    } else if (this.workflowFilters.tagType === 'orderTags') {
+      obj.orderTags = Array.from(this.coreService.checkedOrderTags);
     } else {
       for (let x in paths) {
         obj.folders.push({folder: paths[x], recursive: false});
@@ -1371,9 +1398,13 @@ export class WorkflowComponent {
     }
     if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
       obj.regex = this.selectedFiltered.regex;
-      if (this.workflowFilters.isTag) {
+      if (this.workflowFilters.tagType === 'workflowTags') {
         if (this.selectedFiltered.tags) {
           obj.tags = this.selectedFiltered.tags;
+        }
+      } else if (this.workflowFilters.tagType === 'orderTags') {
+        if (this.selectedFiltered.orderTags) {
+          obj.orderTags = this.selectedFiltered.orderTags;
         }
       } else {
         if (this.selectedFiltered.paths && this.selectedFiltered.paths.length > 0) {
@@ -1408,18 +1439,20 @@ export class WorkflowComponent {
   }
 
   switchToTagging(flag): void {
-    this.workflowFilters.isTag = flag;
+    this.workflowFilters.tagType = flag;
     this.workflows = [];
     this.data = [];
     const obj: any = {
       controllerId: this.schedulerIds.selected
     };
-    if (flag) {
+    if (flag === 'workflowTags') {
       obj.tags = Array.from(this.coreService.checkedTags);
+    } else if (flag === 'orderTags') {
+      obj.orderTags = Array.from(this.coreService.checkedOrderTags);
     } else {
       obj.folders = [{folder: '/', recursive: true}];
     }
-    if (obj.tags?.length > 0 || obj.folders?.length > 0) {
+    if (obj.tags?.length > 0 || obj.folders?.length > 0 || obj.orderTags?.length > 0) {
       this.getWorkflowList(obj);
     } else {
       this.workflows = [];
@@ -2023,11 +2056,11 @@ export class WorkflowComponent {
               });
             }
           }
-        } else if (this.workflowFilters.isTag && args.eventSnapshots[j].eventType.match(/InventoryTaggingUpdated/)) {
-          if (this.workflowFilters.isTag) {
+        } else if (this.workflowFilters.tagType === 'workflowTags' && args.eventSnapshots[j].eventType.match(/InventoryTaggingUpdated/)) {
+          if (this.workflowFilters.tagType === 'workflowTags') {
             this.fetchWorkflowTags(args.eventSnapshots[j].path);
           }
-        } else if (this.workflowFilters.isTag && args.eventSnapshots[j].eventType.match(/InventoryTagDeleted/)) {
+        } else if (this.workflowFilters.tagType === 'workflowTags' && args.eventSnapshots[j].eventType.match(/InventoryTagDeleted/)) {
           for (let i = 0; i < this.coreService.selectedTags.length; i++) {
             if (this.coreService.selectedTags[i].name === args.eventSnapshots[j].path) {
               this.coreService.selectedTags.splice(i, 1);
@@ -2082,7 +2115,7 @@ export class WorkflowComponent {
 
   private refreshView(flag, reload, request, callOrderCount): void {
     if (!this.isDropdownOpen && this.object.mapOfCheckedId.size === 0) {
-      if (flag && !this.workflowFilters.isTag) {
+      if (flag && this.workflowFilters.tagType === 'folders') {
         this.initTree(reload);
       }
       if (request && request.length > 0) {
@@ -2417,4 +2450,161 @@ export class WorkflowComponent {
   onSearchInput(searchValue: string) {
     this.searchTerm.next(searchValue);
   }
+
+    /***************** Order Tag Search ***********/
+
+    private searchByOrderTags(obj): void {
+      if (obj.orderTags.length > 0) {
+        this.getWorkflowList(obj);
+      } else {
+        this.workflows = [];
+        this.hidePanel();
+        this.searchInResult();
+      }
+    }
+
+    selectOrderTags(): void {
+      const temp = this.coreService.clone(this.coreService.selectedOrderTags);
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: CreateTagModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          filters: this.workflowFilters,
+          controllerId: this.schedulerIds.selected
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(res => {
+        if (res) {
+          const obj: any = {
+            orderTags: [],
+            controllerId: this.schedulerIds.selected
+          };
+          this.coreService.selectedOrderTags.forEach(tag => {
+            let flag = true;
+            for (let i = 0; i < temp.length; i++) {
+              if (tag.name == temp[i].name) {
+                temp.splice(i, 1);
+                flag = false;
+                break;
+              }
+            }
+            if (flag) {
+              this.coreService.checkedOrderTags.add(tag.name);
+            }
+          });
+          obj.orderTags = Array.from(this.coreService.checkedOrderTags);
+          this.searchByOrderTags(obj);
+        }
+      });
+
+    }
+
+    selectAllOrderTags(): void {
+      this.coreService.post('orders/tag/search', {
+        search: '',
+        controllerId: this.schedulerIds.selected
+      }).subscribe({
+        next: (res: any) => {
+          this.coreService.selectedOrderTags = res.results;
+          const obj: any = {
+            orderTags: [],
+            controllerId: this.schedulerIds.selected
+          };
+          this.coreService.selectedOrderTags.forEach(tag => {
+            obj.orderTags.push(tag.name);
+            this.coreService.checkedOrderTags.add(tag.name);
+          });
+          this.searchByOrderTags(obj);
+        }
+      });
+    }
+
+    removeAllOrderTags(): void {
+      this.coreService.selectedOrderTags = [];
+      this.coreService.checkedOrderTags.clear();
+      const obj: any = {
+        orderTags: [],
+        controllerId: this.schedulerIds.selected
+      };
+      this.searchByOrderTags(obj);
+    }
+
+    selectOrderTag(tag: string): void {
+      this.coreService.checkedOrderTags.clear();
+      this.coreService.checkedOrderTags.add(tag);
+      const obj: any = {
+        orderTags: [tag],
+        controllerId: this.schedulerIds.selected
+      };
+      this.searchByOrderTags(obj);
+    }
+
+    onOrderTagChecked(tag, checked: boolean): void {
+      if (checked) {
+        this.coreService.checkedOrderTags.add(tag);
+      } else {
+        this.coreService.checkedOrderTags.delete(tag);
+      }
+
+      const obj: any = {
+        orderTags: Array.from(this.coreService.checkedOrderTags),
+        controllerId: this.schedulerIds.selected
+      };
+      this.searchByOrderTags(obj);
+    }
+
+    private searchOrderObjects(value: string) {
+      if (value !== '') {
+        const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
+        if (searchValueWithoutSpecialChars.length >= 1) {
+          this.searchOrderTag.loading = true;
+          let request: any = {
+            search: value,
+            controllerId: this.schedulerIds.selected
+          };
+          if (this.searchOrderTag.token) {
+            request.token = this.searchOrderTag.token;
+          }
+          this.coreService.post('orders/tag/search', request).subscribe({
+            next: (res: any) => {
+              this.searchOrderTag.tags = res.results;
+              this.searchOrderTag.token = res.token;
+              this.searchOrderTag.loading = false;
+            }, error: () => this.searchTag.loading = true
+          });
+        }
+      } else {
+        this.searchTag.tags = [];
+      }
+    }
+
+    selectOrderTagOnSearch(tag): void {
+      this.coreService.selectedOrderTags.push(tag);
+      this.coreService.checkedOrderTags.add(tag.name);
+      this.coreService.removeOrderDuplicates();
+      const obj: any = {
+        orderTags: Array.from(this.coreService.checkedOrderTags),
+        controllerId: this.schedulerIds.selected
+      };
+      this.searchByOrderTags(obj);
+    }
+
+    objectOrderTreeSearch() {
+      $('#objectTagSearch').focus();
+      $('.editor-tree  a').addClass('hide-on-focus');
+    }
+
+    clearOrderSearchInput(): void {
+      this.searchOrderTag.tags = [];
+      this.searchOrderTag.text = '';
+      $('.editor-tree  a').removeClass('hide-on-focus');
+    }
+
+    onOrderSearchInput(searchValue: string) {
+      this.searchOrderTerm.next(searchValue);
+    }
 }

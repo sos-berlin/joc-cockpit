@@ -20,7 +20,9 @@ declare const $: any;
 export class CoreService {
   tabs: any = {};
   selectedTags: any = [];
+  selectedOrderTags: any = [];
   checkedTags = new Set();
+  checkedOrderTags = new Set();
   dashboard: any = {};
   locales: any = [];
   expertMode: string | undefined | null;
@@ -96,7 +98,9 @@ export class CoreService {
 
   private init(): void {
     this.selectedTags = [];
+    this.selectedOrderTags = [];
     this.checkedTags = new Set();
+    this.checkedOrderTags = new Set();
     this.scheduleExpandedProperties = new Map();
     this.logViewDetails = {
       historyId: '',
@@ -464,6 +468,12 @@ export class CoreService {
 
   removeDuplicates() {
     this.selectedTags = this.selectedTags.filter((obj, index, self) =>
+      index === self.findIndex((o) => o.name === obj.name)
+    );
+  }
+
+  removeOrderDuplicates() {
+    this.selectedOrderTags = this.selectedOrderTags.filter((obj, index, self) =>
       index === self.findIndex((o) => o.name === obj.name)
     );
   }

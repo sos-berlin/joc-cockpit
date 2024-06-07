@@ -6,7 +6,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="inline">
+          <div *ngIf="permission && permission.joc && permission.joc.encipherment.encrypt" class="inline">
             <ng-container *ngIf="isJOCActive">
               <div class="btn-group"></div>
               <button

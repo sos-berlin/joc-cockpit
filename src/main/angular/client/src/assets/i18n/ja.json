@@ -1907,7 +1907,9 @@
     "tab": {
       "folders": "フォルダー",
       "trash": "ゴミ箱",
-      "tagging": "タグ"
+      "tagging": "タグ",
+      "workflowTagging": "Workflow Tags",
+      "orderTagging": "Order Tags"
     },
     "cronTab": {
       "label.convertCron": "crontab変換",

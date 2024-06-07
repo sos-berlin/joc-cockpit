@@ -10,7 +10,7 @@
   <div class="modal-body p-a">
     <div [ngClass]="{'has-error' : ((certAlias.dirty || certAlias.touched) && certAlias.invalid)}"
          class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>encipherment.label.certAlias
+      <label class="col-sm-6 form-control-label" translate>encipherment.label.certAlias
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -25,7 +25,7 @@
     </div>
     <div [ngClass]="{'has-error' : ((certificate.dirty || certificate.touched) && certificate.invalid)}"
          class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>encipherment.label.certificate
+      <label class="col-sm-6 form-control-label" translate>encipherment.label.certificate
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -41,7 +41,7 @@
     </div>
     <div [ngClass]="{'has-error' : ((privateKeyPath.dirty || privateKeyPath.touched) && privateKeyPath.invalid)}"
          class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>encipherment.label.privateKeyPath
+      <label class="col-sm-6 form-control-label" translate>encipherment.label.privateKeyPath
       </label>
       <div class="col-sm-6">
         <input #privateKeyPath="ngModel" [(ngModel)]="certificateObj.privateKeyPath" autocomplete="off" class="form-control"
@@ -53,17 +53,36 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" [ngClass]="{'has-error' : ((jobResourceFolder.dirty || jobResourceFolder.touched) && jobResourceFolder.invalid)}">
-      <label class="col-sm-4 form-control-label" translate>encipherment.label.jobResourceFolder
+    <div [ngClass]="{'has-error' : ((jobResourceFolder.dirty || jobResourceFolder.touched) && jobResourceFolder.invalid)}" class="form-group row">
+      <label class="col-sm-6 form-control-label" translate>encipherment.label.jobResourceFolder
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <input #jobResourceFolder="ngModel" (click)="isTreeShow = true;" [(ngModel)]="certificateObj.jobResourceFolder" autocomplete="off" class="form-control"
-        name="jobResourceFolder" type="text" placeholder="{{'encipherment.placeholder.jobResourceFolder' | translate}}">
-        <div *ngIf="isTreeShow" [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
-          <app-search-input (onBlur)="onBlur()" (onSelect)="onChangeJobResource($event, certificateObj)" [isDisplay]="true"
-          [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'"></app-search-input>
-        </div>
+        <nz-tree-select
+          #treeSelectCtrl
+          [(ngModel)]="certificateObj.jobResourceFolder"
+          [nzDisplayWith]="displayWith"
+          [nzDropdownStyle]="{ 'max-height': '300px' }"
+          [nzHideUnMatched]="true"
+          [nzMultiple]="false"
+          [nzNodes]="nodes"
+          [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
+          name="folder"
+          nzShowSearch
+          #jobResourceFolder="ngModel"
+        >
+          <ng-template #nzTreeTemplate let-node>
+            <div class="node-wrapper w-93">
+              <div [class.node-content-wrapper-active]="folderObj.paths && folderObj.paths.indexOf(node.origin.path) > -1"
+                   class="node-content-wrapper">
+                <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
+                {{node.origin.name}}
+                <span *ngIf="node.origin.notExist" class="m-l-sm label bg-danger"
+                      translate>user.label.folderNotExist</span>
+              </div>
+            </div>
+          </ng-template>
+        </nz-tree-select>
         <div *ngIf="jobResourceFolder.invalid && (jobResourceFolder.dirty || jobResourceFolder.touched)" class="text-danger help-block">
           <div *ngIf="jobResourceFolder.errors.required">
             <div translate>common.message.requiredError</div>

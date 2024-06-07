@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ViewChild, inject } from '@angular/core';
 import { AuthService } from 'src/app/components/guard';
 import { CoreService } from 'src/app/services/core.service';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -19,77 +19,31 @@ export class AddEnciphermentModalComponent {
   certificateObj: any = {};
   submitted = false;
 
-  objectType: any;
-  isTreeShow: boolean;
-  extraInfo: any = {};
-  isChange = false;
-  jobResourcesTree = [];
+  nodes = [];
+  folderObj: any = {paths: []};
+
+  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService){}
 
   ngOnInit(): void {
-    this.getJobResourceTree(this.certificateObj)
+    this.getJobResourceFolderTree();
   }
 
-  private getJobResourceTree(certificateObj): void {
-    if (this.jobResourcesTree.length === 0) {
-      this.coreService.post('tree', {
-        types: ['JOBRESOURCE'],
-        forInventory: true
-      }).subscribe((res) => {
-        this.jobResourcesTree = this.coreService.prepareTree(res, true);
-        this.matchJobResourceList(certificateObj);
-      });
-    } else {
-      this.matchJobResourceList(certificateObj);
-    }
-  }
-
-  private matchJobResourceList(certificateObj): void {
-    if (certificateObj) {
-      if (this.objectType === 'NOTIFICATION') {
-        if (typeof certificateObj.jobResourceFolder === 'string') {
-          let val = certificateObj.jobResourceFolder;
-          certificateObj.jobResourceFolder = [val];
-        } else if (!certificateObj.jobResourceFolder || !isArray(certificateObj.jobResourceFolder)) {
-          certificateObj.jobResourceFolder = [];
-        }
+  private getJobResourceFolderTree(): void {
+    this.coreService.post('tree', {
+      types: ['JOBRESOURCE'],
+      forInventory: true
+    }).subscribe(res => {
+      this.nodes = this.coreService.prepareTree(res, true);
+      if (this.nodes.length > 0) {
+        this.nodes[0].expanded = true;
       }
-      if (certificateObj.jobResourceFolder) {
-        if (typeof certificateObj.jobResourceFolder == 'string') {
-          this.checkJobResource(certificateObj.jobResourceFolder);
-        }
-      }
-    }
-  }
-
-  onChangeJobResource($event, certificateObj): void {
-    this.isTreeShow = false;
-    certificateObj.jobResourceFolder = $event;
-    if (this.objectType === 'NOTIFICATION') {
-      this.extraInfo.released = false;
-    } else {
-      this.checkJobResource($event);
-      this.extraInfo.sync = false;
-      // this.autoValidate();
-    }
-    this.isChange = true;
-  }
-
-  onBlur(): void {
-    this.isTreeShow = false;
-  }
-
-  private checkJobResource(name): void {
-    this.extraInfo.isExist = false;
-    const obj: any = {
-      path: name,
-      objectType: 'JOBRESOURCE',
-    };
-    this.coreService.post('inventory/read/configuration', obj).subscribe((res: any) => {
-      this.extraInfo.isExist = true;
-      this.extraInfo.deployed = res.deployed;
     });
+  }
+
+  displayWith(data): string {
+    return data.key;
   }
 
   onSubmit(): void {
@@ -123,12 +77,12 @@ export class ImportEnciphermentModalComponent {
   key = {keyAlg: 'RSA'};
 
   certificateObj: any = {};
-  isTreeShow: boolean;
-  objectType: any;
-  extraInfo: any = {};
-  isChange = false;
-  jobResourcesTree = [];
   isEnciphermentForm: boolean = false;
+
+  nodes = [];
+  folderObj: any = {paths: []};
+
+  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService,
               public translate: TranslateService, public toasterService: ToastrService) {
@@ -146,7 +100,7 @@ export class ImportEnciphermentModalComponent {
     }
 
     if (this.type === 'encipherment') {
-      this.getJobResourceTree(this.certificateObj)
+      this.getJobResourceFolderTree();
     }
   }
 
@@ -274,66 +228,20 @@ export class ImportEnciphermentModalComponent {
     this.activeModal.close('');
   }
 
-  private getJobResourceTree(certificateObj): void {
-    if (this.jobResourcesTree.length === 0) {
-      this.coreService.post('tree', {
-        types: ['JOBRESOURCE'],
-        forInventory: true
-      }).subscribe((res) => {
-        this.jobResourcesTree = this.coreService.prepareTree(res, true);
-        this.matchJobResourceList(certificateObj);
-      });
-    } else {
-      this.matchJobResourceList(certificateObj);
-    }
-  }
-
-  private matchJobResourceList(certificateObj): void {
-    if (certificateObj) {
-      if (this.objectType === 'NOTIFICATION') {
-        if (typeof certificateObj.jobResourceFolder === 'string') {
-          let val = certificateObj.jobResourceFolder;
-          certificateObj.jobResourceFolder = [val];
-        } else if (!certificateObj.jobResourceFolder || !isArray(certificateObj.jobResourceFolder)) {
-          certificateObj.jobResourceFolder = [];
-        }
+  private getJobResourceFolderTree(): void {
+    this.coreService.post('tree', {
+      types: ['JOBRESOURCE'],
+      forInventory: true
+    }).subscribe(res => {
+      this.nodes = this.coreService.prepareTree(res, true);
+      if (this.nodes.length > 0) {
+        this.nodes[0].expanded = true;
       }
-      if (certificateObj.jobResourceFolder) {
-        if (typeof certificateObj.jobResourceFolder == 'string') {
-          this.checkJobResource(certificateObj.jobResourceFolder);
-        }
-      }
-    }
-  }
-
-  onChangeJobResource($event, certificateObj): void {
-    this.isTreeShow = false;
-    certificateObj.jobResourceFolder = $event;
-    if (this.objectType === 'NOTIFICATION') {
-      this.extraInfo.released = false;
-    } else {
-      this.checkJobResource($event);
-      this.extraInfo.sync = false;
-      this.onFieldBlur();
-      // this.autoValidate();
-    }
-    this.isChange = true;
-  }
-
-  onBlur(): void {
-    this.isTreeShow = false;
-  }
-
-  private checkJobResource(name): void {
-    this.extraInfo.isExist = false;
-    const obj: any = {
-      path: name,
-      objectType: 'JOBRESOURCE',
-    };
-    this.coreService.post('inventory/read/configuration', obj).subscribe((res: any) => {
-      this.extraInfo.isExist = true;
-      this.extraInfo.deployed = res.deployed;
     });
+  }
+
+  displayWith(data): string {
+    return data.key;
   }
 
   onFieldBlur(){
