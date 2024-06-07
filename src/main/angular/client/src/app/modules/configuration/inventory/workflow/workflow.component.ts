@@ -5912,12 +5912,10 @@ export class WorkflowComponent {
                     json.instructions.splice(x + 1, 0, obj);
                   }
                 } else {
-                  if (!json.instructions[x].instructions) {
-                    json.instructions[x].instructions = [obj];
-                  }else{
+
                     json.instructions.splice(x + 1, 0, obj);
 
-                  }
+
                 }
               }
               isMatch = true;
