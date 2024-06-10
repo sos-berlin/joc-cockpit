@@ -2006,9 +2006,23 @@
         "template": "テンプレート",
         "frequencies": "周期",
         "controllerId": "コントローラーID",
+        "interval": {
+          "interval": " Interval",
+          "absolute": {
+            "monthFrom": "開始月",
+            "monthTo": "終了月"
+          },
+          "relative": {
+            "from": "From",
+            "unit": "Unit",
+            "count": "Count"
+          },
+          "preset": {
+            "preset": "Preset"
+          }
+        },
+        "sort": "Sort",
         "hits": "件数",
-        "monthFrom": "開始月",
-        "monthTo": "終了月",
         "periodLength": "Period Length",
         "periodStep": "Period Step"
       },

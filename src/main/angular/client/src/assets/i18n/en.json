@@ -2006,9 +2006,23 @@
         "template": "Template",
         "frequencies": "Frequencies",
         "controllerId": "Controller ID",
+        "interval": {
+          "interval": " Interval",
+          "absolute": {
+            "monthFrom": "Month From",
+            "monthTo": "Month To"
+          },
+          "relative": {
+            "from": "From",
+            "unit": "Unit",
+            "count": "Count"
+          },
+          "preset": {
+            "preset": "Preset"
+          }
+        },
+        "sort": "Sort",
         "hits": "Hits",
-        "monthFrom": "Month From",
-        "monthTo": "Month To",
         "periodLength": "Period Length",
         "periodStep": "Period Step"
       },
@@ -2881,7 +2895,7 @@
       "numOfReports": "No. of Reports",
       "chooseTemplate": "Choose Template",
       "chooseFrequencies": "Choose Frequencies",
-      "runReport": "Run Report",
+      "runReport": "Run Reports",
       "reportRunning": "Report running...",
       "periodLength": "Period Length",
       "periodStep": "Period Step",
@@ -2896,7 +2910,7 @@
       "preset": "Preset"
     },
     "button" : {
-      "runReport": "Run Report",
+      "runReport": "Run Reports",
       "run": "Run",
       "showReport": "Show Report",
       "groupByName": "Group By Name",

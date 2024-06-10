@@ -154,10 +154,12 @@ export class ScheduleComponent {
     let newData = JSON.stringify(this.schedule.configuration.orderParameterisations[index]);
     let storedData = sessionStorage.getItem('$SOS$copiedScheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedScheduledArgument')) : [];
     storedData = [newData];
+    sessionStorage.setItem('$SOS$copiedArgument', JSON.stringify(storedData));
     sessionStorage.setItem('$SOS$copiedScheduledArgument', JSON.stringify(storedData));
     this.fetchClipboard();
 
   }
+
 
   handlePaste(data: any, index: number): void {
     if (!data || data.type) {

@@ -33,7 +33,7 @@
                        class="col-md-6 col-lg-6 m-b-sm">
                     <nz-input-number #value="ngModel" [(ngModel)]="argument.value"
                                      [nzMin]="0"
-                                     [nzStep]="1" [required]="argument.isRequired" name="_value{{i}}{{j}}{{k}}"
+                                     [nzStep]="1" [required]="argument.isRequired || argument.value" (ngModelChange) ="argumentsEmpty()" name="_value{{i}}{{j}}{{k}}"
                                      nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                          class="text-danger help-block">
@@ -46,8 +46,8 @@
                 <ng-container *ngSwitchCase="'Boolean'">
                   <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                        class="col-md-6 col-lg-6 m-b-sm">
-                    <nz-select #value="ngModel" [(ngModel)]="argument.value"
-                               [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="argument.isRequired" name="_value{{i}}{{j}}{{k}}"
+                    <nz-select #value="ngModel" [(ngModel)]="argument.value" (ngModelChange) ="argumentsEmpty()"
+                               [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="argument.isRequired || argument.value" name="_value{{i}}{{j}}{{k}}"
                                nzAllowClear>
                       <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                       <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
@@ -63,7 +63,7 @@
                 <ng-container *ngSwitchDefault>
                   <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                        class="col-md-6 col-lg-6 m-b-sm">
-                    <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired" autocomplete="off" class="form-control"
+                    <input #value="ngModel" [(ngModel)]="argument.value" (ngModelChange) ="argumentsEmpty()"[required]="argument.isRequired || argument.value" autocomplete="off" class="form-control"
                            name="_value{{i}}{{j}}{{k}}" placeholder="{{'common.placeholder.value' | translate}}"
                            type="text">
                     <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
@@ -538,7 +538,7 @@
     </div>
   </div>
   <div class="modal-footer text-left">
-    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
+    <button [disabled]="!myForm.form.valid || areArgumentsEmpty() || submitted" class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}

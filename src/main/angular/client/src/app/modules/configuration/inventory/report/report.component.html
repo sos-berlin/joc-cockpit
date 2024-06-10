@@ -79,7 +79,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.interval</label>
+          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.interval' | translate) : ''"
+          [nzTooltipMouseEnterDelay]="0.5" class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.interval</label>
           <div class="col-md-8">
             <nz-radio-group name="interval" [(ngModel)]="isInterval" (ngModelChange)="onIntervalChange()">
               <label nz-radio nzValue="absolute"><span translate>reporting.label.absolute</span></label>
@@ -91,7 +92,7 @@
         </div>
 
         <div class="form-group row" *ngIf="isInterval === 'absolute'">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.monthFrom' | translate) : ''"
+          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.absolute.monthFrom' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.monthFrom
             <sup class="text-danger text-sm">*</sup>
@@ -112,7 +113,7 @@
           </div>
         </div>
         <div class="form-group row" *ngIf="isInterval === 'absolute'">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.monthTo' | translate) : ''"
+          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.absolute.monthTo' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5"
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.monthTo
           </label>
@@ -133,7 +134,8 @@
           </div>
         </div>
         <div class="form-group row" *ngIf="isInterval === 'relative'">
-          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.unit
+          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.unit' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5" class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.unit
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -143,7 +145,8 @@
           </div>
         </div>
         <div class="form-group row" *ngIf="isInterval === 'relative'">
-          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.from<sup class="text-danger text-sm">*</sup>
+          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.from' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5"  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.from<sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <nz-input-number [(ngModel)]="from" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
@@ -151,7 +154,8 @@
           </div>
         </div>
         <div class="form-group row" *ngIf="isInterval === 'preset'">
-          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.preset</label>
+          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.preset.preset' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5"  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.preset</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <app-select-input [isSearchable]="false" [isMultiple]="false" [name]="'preset'"
                               [object]="preset" [attributeName]="'name'" [listArray]="preset"
@@ -159,7 +163,8 @@
           </div>
         </div>
         <div class="form-group row" *ngIf="isInterval === 'relative'">
-          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.count
+          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.count' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5"  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.count
           </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <nz-input-number [(ngModel)]="count" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
@@ -167,7 +172,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.sort</label>
+          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.sort' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5"  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.sort</label>
           <div class="col-md-8">
             <nz-radio-group [(ngModel)]="report.configuration.sort" name="sort" (ngModelChange)="saveJSON()">
               <label nz-radio nzValue="HIGHEST"><span translate>reporting.label.HIGHEST</span></label>

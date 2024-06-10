@@ -40,12 +40,21 @@ export class MonthValidator implements Validator {
         if (this.monthFrom && regex.test(this.monthFrom)) {
           const unitV = v.slice(-1).toUpperCase();
           const unitMonthFrom = this.monthFrom.slice(-1).toUpperCase();
+
           if (unitV !== unitMonthFrom) {
             return { invalidMonth: true };
           }
-          if (v < this.monthFrom) {
+
+          if (this.isDate(v) && this.isDate(this.monthFrom)) {
+            const dateV = new Date(v);
+            const dateMonthFrom = new Date(this.monthFrom);
+            if (dateV < dateMonthFrom) {
+              return { invalidMonth: true };
+            }
+          } else if (parseFloat(v) < parseFloat(this.monthFrom)) {
             return { invalidMonth: true };
           }
+
           return null;
         }
         return null;
@@ -56,6 +65,10 @@ export class MonthValidator implements Validator {
     return {
       invalidMonth: true
     };
+  }
+
+  private isDate(value: string): boolean {
+    return /^\d{4}-(0[1-9]|1[0-2])$/.test(value);
   }
 }@Directive({
   selector: '[appRelativeMonthValidate]',

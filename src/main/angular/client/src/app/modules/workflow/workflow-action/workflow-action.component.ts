@@ -118,6 +118,8 @@ export class AddOrderModalComponent {
   inputVisible = false;
   isUnique = true;
   inputValue = '';
+  allowEmptyArguments: any;
+  argumentsValid: boolean = true;
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
               private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService) {
@@ -128,7 +130,7 @@ export class AddOrderModalComponent {
     this.permission = this.modalData.permission;
     this.preferences = this.modalData.preferences;
     this.workflow = this.modalData.workflow;
-
+    this.allowEmptyArguments = sessionStorage['allowEmptyArguments'] == 'true';
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
@@ -320,9 +322,46 @@ export class AddOrderModalComponent {
           } else {
             variable.value = clipboardItem.value;
           }
+        }else{
+          if (clipboardItem.variables && Array.isArray(clipboardItem.variables)) {
+            clipboardItem.variables.forEach(variable => {
+              this.updateArguments(variable);
+            });
+          }
         }
       });
     }
+  }
+  processVariableList(variableList, clipboardDataVariables) {
+    variableList.forEach(clipboardItem => {
+      if (clipboardDataVariables && clipboardDataVariables.length > 0) {
+        clipboardDataVariables.forEach(variable => {
+          if (variable.name === clipboardItem.name && variable.isSelected) {
+            if (Array.isArray(clipboardItem.value)) {
+              clipboardItem.value.forEach(innerArray => {
+                if (Array.isArray(innerArray)) {
+                  innerArray.forEach(item => {
+                    this.updateVariable(variable, item);
+                  });
+                } else if (typeof innerArray === 'object') {
+                  this.updateVariable(variable, innerArray);
+                }
+              });
+            } else if (typeof clipboardItem.value === 'object') {
+              if (clipboardItem.value.listParameters && Array.isArray(clipboardItem.value.listParameters)) {
+                clipboardItem.value.listParameters.forEach(item => {
+                  this.updateVariable(variable, item);
+                });
+              } else {
+                variable.value = clipboardItem.value;
+              }
+            } else {
+              variable.value = clipboardItem.value;
+            }
+          }
+        });
+      }
+    });
   }
 
   updateVariable(variable, item) {
@@ -697,6 +736,26 @@ export class AddOrderModalComponent {
       }, error: () => this.submitted = false
     });
   }
+
+
+  areArgumentsEmpty(): boolean {
+    if (!this.allowEmptyArguments) return false;
+console.log(this.arguments,"{Pa")
+    let anyListEmpty = this.arguments.some(arg =>
+      arg.type === 'List' &&
+      (!arg.actualList || arg.actualList.some(listItem => listItem.list.some(item => !item.value)))
+    );
+
+    let anyMapEmpty = this.arguments.some(arg =>
+      arg.type === 'Map' &&
+      (!arg.actualMap || arg.actualMap.some(mapItem => mapItem.map.some(item => !item.value)))
+    );
+
+    this.argumentsValid = !(anyListEmpty || anyMapEmpty);
+    console.log(this.argumentsValid, "lslls");
+    return anyListEmpty || anyMapEmpty;
+  }
+
 
   addVariableToList(data): void {
     const arr = [];

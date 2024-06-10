@@ -2006,9 +2006,23 @@
         "template": "Muster",
         "frequencies": "Haufigkeiten",
         "controllerId": "Controller ID",
+        "interval": {
+          "interval": " Interval",
+          "absolute": {
+            "monthFrom": "Monat ab",
+            "monthTo": "Monat bis"
+          },
+          "relative": {
+            "from": "From",
+            "unit": "Unit",
+            "count": "Count"
+          },
+          "preset": {
+            "preset": "Preset"
+          }
+        },
+        "sort": "Sort",
         "hits": "Treffer",
-        "monthFrom": "Monat ab",
-        "monthTo": "Monat bis",
         "periodLength": "Zeitraum Dauer",
         "periodStep": "Zeitraum Schritt"
       },
