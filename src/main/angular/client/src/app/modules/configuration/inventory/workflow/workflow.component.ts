@@ -3723,8 +3723,6 @@ export class WorkflowComponent {
     if (storedData.length > 20) {
       storedData.shift();
     }
-
-    // Save the updated list back to session storage
     sessionStorage.setItem('$SOS$copiedArgument', JSON.stringify(storedData));
     sessionStorage.setItem('$SOS$copiedIndlDeclaredArgument', JSON.stringify([newData]));
     this.coreService.showCopyMessage(this.message);
@@ -12461,7 +12459,34 @@ export class WorkflowComponent {
     if (!this.workflow.path) {
       return;
     }
-
+    if(newObj.orderPreparation.parameters){
+      Object.entries(newObj.orderPreparation.parameters).map(([k, v]) => {
+        const val: any = v;
+        if (val.type === 'List' || val.type === 'Map') {
+          if(val.listParameters){
+            const result = Object.entries(val.listParameters).map(([k1, v1]) => {
+              const val1: any = v1;
+              if (k1) {
+                const obj = {
+                  name: k1,
+                  value: {
+                    type: val1.type,
+                    default: val1.default
+                }
+                };
+                return obj;
+              } else {
+                return null; // Return null for empty keys
+              }
+            }).filter(item => item !== null); // Filter out the null values
+            val.listParameters = this.coreService.keyValuePair(result);
+          }
+          if(!Object.keys(val.listParameters).length){
+            delete newObj.orderPreparation.parameters[k]
+          }
+        }
+      })
+    }
     const request: any = {
       configuration: newObj,
       path: this.workflow.path,
