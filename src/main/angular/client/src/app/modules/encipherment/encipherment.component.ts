@@ -291,7 +291,7 @@ export class EnciphermentComponent {
 
   getEnciphermentCertificate(){
     let certAliases = {
-      certAliases: ["Test"]
+      certAliases: []
     };
     this.coreService.post('encipherment/certificate', certAliases).subscribe({
       next: (res: any) => {

@@ -190,10 +190,23 @@
           <div>
             <div class="editor-tree">
               <div class="pl-20" style="padding-right:20px">
+                
                 <nz-tabset class="custom-tab" [nzAnimated]="false" [(nzSelectedIndex)]="workflowFilters.selectedIndex" [nzType]="'line'">
-                  <nz-tab (nzClick)="switchToTagging('folders');workflowFilters.selectedIndex = 0" [nzTitle]="'inventory.tab.folders' | translate"></nz-tab>
-                  <nz-tab (nzClick)="switchToTagging('workflowTags');workflowFilters.selectedIndex = 1;" [nzTitle]="'inventory.tab.workflowTagging' | translate"></nz-tab>
-                  <nz-tab (nzClick)="switchToTagging('orderTags');workflowFilters.selectedIndex = 2;" [nzTitle]="'inventory.tab.orderTagging' | translate"></nz-tab>
+                  <nz-tab (nzClick)="switchToTagging('folders');workflowFilters.selectedIndex = 0" [nzTitle]="foldersTitle">
+                    <ng-template #foldersTitle>
+                      <span>{{ 'inventory.tab.folders' | translate }}</span>
+                    </ng-template>
+                  </nz-tab>
+                  <nz-tab (nzClick)="switchToTagging('workflowTags');workflowFilters.selectedIndex = 1;" [nzTitle]="workflowTagsTitle">
+                    <ng-template #workflowTagsTitle>
+                      <span [ngClass]="coreService.checkedTags.size > 0 ? 'custom-tab-btn-background' : ''">{{ 'inventory.tab.workflowTagging' | translate }}</span>
+                    </ng-template>
+                  </nz-tab>
+                  <nz-tab (nzClick)="switchToTagging('orderTags');workflowFilters.selectedIndex = 2;" [nzTitle]="orderTagsTitle">
+                    <ng-template #orderTagsTitle>
+                      <span [ngClass]="coreService.checkedOrderTags.size > 0 ? 'custom-tab-btn-background' : ''">{{ 'inventory.tab.orderTagging' | translate }}</span>
+                    </ng-template>
+                  </nz-tab>
                 </nz-tabset>
               </div>
 

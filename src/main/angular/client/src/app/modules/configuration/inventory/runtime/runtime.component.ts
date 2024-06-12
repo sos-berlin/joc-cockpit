@@ -6,6 +6,7 @@ import {CoreService} from '../../../../services/core.service';
 import {CalendarService} from '../../../../services/calendar.service';
 import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 import * as moment from "moment/moment";
+
 declare const Holidays;
 declare const $;
 
@@ -18,6 +19,7 @@ export class AddRestrictionComponent {
   schedulerId: any;
   preferences: any;
   data: any = {};
+
   Math = Math;
   selectedMonths: any = [];
   selectedMonthsU: any = [];
@@ -46,14 +48,13 @@ export class AddRestrictionComponent {
     {label: 'saturday', value: '6', checked: false},
     {label: 'sunday', value: '0', checked: false}
   ];
-
   countryListArr: any[] = [];
   holidayList: any[] = [];
   countryField: boolean = false;
   holidayDays: any = {checked: false};
   hd = new Holidays.default();
-  excludeFrequencyList: any = [];
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, public calendarService: CalendarService) {}
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, public calendarService: CalendarService) {
+  }
 
   ngOnInit(): void {
     this.schedulerId = this.modalData.schedulerId;
@@ -69,30 +70,19 @@ export class AddRestrictionComponent {
     this.tempItems = [];
     this.selectedMonths = [];
     this.selectedMonthsU = [];
-    this.calendar = this.coreService.clone(this.data.calendar);
-
     const countryList = this.hd.getCountries('en');
-    if (this.editor.frequencyType === 'INCLUDE' && this.calendar.configuration.includesFrequency.length > 0) {
-      this.frequencyList = this.calendar.configuration.includesFrequency;
-      if (this.calendar.configuration.excludesFrequency.length > 0) {
-        this.excludeFrequencyList = this.calendar.configuration.excludesFrequency;
-      }
-    } else if (this.editor.frequencyType === 'EXCLUDE' && this.calendar.configuration.excludesFrequency.length > 0) {
-      this.frequencyList = this.calendar.configuration.excludesFrequency;
+    this.calendar = this.coreService.clone(this.data.calendar);
+    if (!this.calendar.frequencyList) {
+      this.calendar.frequencyList = [];
     }
-
     for (const x in countryList) {
       if (countryList[x]) {
         this.countryListArr.push({code: x, name: countryList[x]});
       }
     }
     this._temp = this.data.updateFrequency;
+    console.log(this._temp,">>>temp")
     if (this._temp && !isEmpty(this._temp)) {
-      if (this._temp.tab === 'nationalHoliday') {
-        this.frequency.year = new Date(this._temp.nationalHoliday[0]).getFullYear();
-        this.holidayDays.checked = true;
-        this.countryField = true;
-      }
       this.editor.create = false;
       this.isRuntimeEdit = true;
       this.frequency = this.coreService.clone(this._temp);
@@ -207,8 +197,9 @@ export class AddRestrictionComponent {
       if (this.calendar.frequencyList[i].endOnS) {
         this.frequency.endOnS = new Date(this.calendar.frequencyList[i].endOnS);
       }
-    } else if (this.calendar.frequencyList[i].tab === 'nationalHoliday') {
-      this.frequency.nationalHoliday = this.coreService.clone(this.calendar.frequencyList[i].nationalHoliday);
+    }else if (this.calendar.frequencyList[i].tab === 'nationalHoliday') {
+      this.frequency.nationalHoliday = clone(this.calendar.frequencyList[i].nationalHoliday);
+      console.log(this._temp,"this.temp...")
       if (this._temp.nationalHoliday) {
         this._temp.nationalHoliday.forEach((date) => {
           this.holidayList.push({date});
@@ -287,8 +278,6 @@ export class AddRestrictionComponent {
           this.str = 'label.weekDays';
         } else if (this.frequency.tab == 'every') {
           this.str = 'label.every';
-        } else if (this.frequency.tab == 'nationalHoliday') {
-          this.str = 'label.nationalHoliday';
         }
       }
       if (this.frequency.tab == 'specificWeekDays') {
@@ -301,8 +290,6 @@ export class AddRestrictionComponent {
         }
       } else if (this.frequency.tab == 'every') {
         this.editor.isEnable = !!(this.frequency.interval && this.frequency.dateEntity);
-      } else if (this.frequency.tab == 'nationalHoliday') {
-        this.editor.isEnable = !!(this.frequency.nationalHoliday && this.frequency.nationalHoliday.length > 0);
       } else if (this.frequency.tab == 'weekDays') {
         this.editor.isEnable = this.frequency.days && this.frequency.days.length > 0;
       } else if (this.frequency.tab == 'specificDays') {
@@ -332,13 +319,6 @@ export class AddRestrictionComponent {
       this.editor.isEnable = this.frequency.days.length > 0;
       this.frequency.all = this.frequency.days.length == 7;
       this.frequency.days.sort();
-    }
-  }
-
-  onChangeHolidays(): void {
-    this.editor.isEnable = !!(this.frequency.nationalHoliday && this.frequency.nationalHoliday.length > 0);
-    if (this.holidayList && this.frequency.nationalHoliday) {
-      this.holidayDays.checked = this.holidayList.length == this.frequency.nationalHoliday.length;
     }
   }
 
@@ -401,6 +381,7 @@ export class AddRestrictionComponent {
   }
 
   addFrequency(): void {
+    this.countryField = false;
     this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
     this.setEditorEnable();
     let flag = false;
@@ -446,10 +427,18 @@ export class AddRestrictionComponent {
     if (flag) {
       return;
     }
+    let _dates = [], datesArr;
+    if (this.frequency.tab === 'nationalHoliday') {
+      datesArr = this.calendarService.groupByDates(this.frequency.nationalHoliday);
+      console.log(datesArr,"datesArr")
+      _dates = clone(datesArr);
+    }
+console.log(this.calendar.frequencyList,"this.calendar.frequencyList")
     if (this.calendar.frequencyList.length > 0) {
       let flag1 = false;
       for (let i = 0; i < this.calendar.frequencyList.length; i++) {
         if (this.frequency.tab == this.calendar.frequencyList[i].tab) {
+          console.log(this.frequency.tab,"this.frequency.tab")
           if (this.frequency.tab === 'weekDays') {
             if (this.frequency.months && this.frequency.months.length > 0) {
               if (this.frequency.months == this.calendar.frequencyList[i].months || isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
@@ -587,15 +576,34 @@ export class AddRestrictionComponent {
               flag1 = true;
               break;
             }
+          }else if (this.frequency.tab == 'nationalHoliday') {
+            console.log(this.calendar.frequencyList[i],"??:F>:")
+            flag1 = true;
+            datesArr.forEach((dates) => {
+              if (this.calendar.frequencyList[i].nationalHoliday && this.calendar.frequencyList[i].nationalHoliday.length > 0) {
+                if (new Date(this.calendar.frequencyList[i].nationalHoliday[0]).getFullYear() === new Date(dates[0]).getFullYear()) {
+                  console.log("____")
+                  dates.forEach((date) => {
+                    if (this.calendar.frequencyList[i].nationalHoliday.indexOf(date) == -1) {
+                      this.calendar.frequencyList[i].nationalHoliday.push(date);
+                    }
+                  });
+                  this.calendar.frequencyList[i].str = this.calendarService.freqToStr(this.calendar.frequencyList[i], this.dateFormat);
+                  for (let x = 0; x < _dates.length; x++) {
+                    if (isEqual(_dates[x], dates)) {
+                      _dates.splice(x, 1);
+                      break;
+                    }
+                  }
+                }
+              }
+            });
+
           }
         }
       }
 
       if (!flag1) {
-        if (this.frequency.tab != 'nationalHoliday') {
-          this.frequency.type = this.editor.frequencyType;
-          this.frequencyList.push(clone(this.frequency));
-        }
         if (this.frequency.tab === 'specificDays') {
           this.frequency.dates = [];
           for (let i = 0; i < this.tempItems.length; i++) {
@@ -615,31 +623,30 @@ export class AddRestrictionComponent {
           this.frequency.dates.push(this.coreService.getStringDate(this.tempItems[i].startDate));
         }
         this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
+      }else if (this.frequency.tab == 'nationalHoliday') {
+        for (let i = 0; i < datesArr.length; i++) {
+          const obj = clone(this.frequency);
+          obj.type = this.editor.frequencyType;
+          obj.nationalHoliday = datesArr[i];
+          obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
+          this.frequencyList.push(obj);
+        }
+      } else {
+        this.frequency.type = this.editor.frequencyType;
+        this.frequencyList.push(clone(this.frequency));
       }
-
       this.frequency.type = this.editor.frequencyType;
       this.calendar.frequencyList.push(this.coreService.clone(this.frequency));
-      this.frequency.nationalHoliday = [];
-      this.holidayDays.checked = false;
-      this.editor.isEnable = false;
     }
+    this.frequency.nationalHoliday = [];
+    this.holidayDays.checked = false;
+    this.editor.isEnable = false;
   }
 
   editFrequency(data): void {
     this._temp = this.coreService.clone(data);
     this.frequency = this.coreService.clone(data);
     this.isRuntimeEdit = true;
-    if (this.frequency.tab == 'nationalHoliday') {
-      this.frequency.year = new Date(data.nationalHoliday[0]).getFullYear();
-      this.holidayList = [];
-      this.countryField = true;
-      this.holidayDays.checked = true;
-      for (let i = 0; i < data.nationalHoliday.length; i++) {
-        this.holidayList.push({date: data.nationalHoliday[i]});
-      }
-    } else {
-      this.holidayDays.checked = false;
-    }
     if (this.frequency.tab === 'monthDays') {
       if (this.frequency.isUltimos === 'months') {
         this.selectedMonths = [];
@@ -666,12 +673,6 @@ export class AddRestrictionComponent {
     }
     if (data.tab === 'specificDays') {
       this.tempItems = [];
-    } else if (data.tab == 'nationalHoliday') {
-      this.frequency.nationalHoliday = [];
-      this.holidayDays.checked = false;
-      this.holidayList = [];
-      this.frequency.year = new Date().getFullYear();
-      this.countryField = false;
     }
     this.checkDays();
   }
@@ -707,10 +708,8 @@ export class AddRestrictionComponent {
     this.editor.isEnable = this.tempItems.length > 0;
     $('#calendar').data('calendar').setDataSource(this.tempItems);
   }
-
-  // National holiday methods
-
   loadHolidayList(): void {
+    console.log('loadHolidayList called');
     this.holidayDays.checked = false;
     this.holidayList = [];
     let holidays = [];
@@ -739,29 +738,39 @@ export class AddRestrictionComponent {
       }
     }
   }
-
   selectAllHolidays() {
+    console.log('selectAllHolidays called');
     if (this.holidayDays.checked) {
       this.frequency.nationalHoliday = this.holidayList.map(holiday => holiday.date);
     } else {
       this.frequency.nationalHoliday = [];
     }
+    console.log('National Holidays after select all:', this.frequency.nationalHoliday);
   }
 
   onItemChecked(date: string, checked: boolean) {
+    console.log('onItemChecked called with date:', date, 'and checked:', checked);
     if (checked) {
       this.frequency.nationalHoliday.push(date);
     } else {
       this.frequency.nationalHoliday = this.frequency.nationalHoliday.filter(d => d !== date);
     }
     this.onChangeHolidays();
+    console.log('National Holidays after item check:', this.frequency.nationalHoliday);
   }
 
+  onChangeHolidays(): void {
+    console.log('onChangeHolidays called');
+    this.editor.isEnable = !!(this.frequency.nationalHoliday && this.frequency.nationalHoliday.length > 0);
+    if (this.holidayList && this.frequency.nationalHoliday) {
+      this.holidayDays.checked = this.holidayList.length == this.frequency.nationalHoliday.length;
+    }
+    console.log('Holiday list:', this.holidayList);
+  }
   getDateFormat(date: string): string {
     return new Date(date).toLocaleDateString();
   }
 }
-
 
 @Component({
   selector: 'app-period',

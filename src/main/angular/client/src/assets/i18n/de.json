@@ -2003,28 +2003,28 @@
       "report": {
         "name": "Der Name eines Berichts ist im Inventar eindeutig. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Bindestriche und Punkte sind nicht zugelassen.",
         "title": "Der Titel eines Berichts kann beliebig angegeben werden.",
-        "template": "Muster",
-        "frequencies": "Haufigkeiten",
-        "controllerId": "Controller ID",
+        "template": "Determines the report to be executed.",
+        "frequencies": "The frequency determines the period with which the reporting period is subdivided.",
+        "controllerId": "The report can be limited to the data of one controller",
         "interval": {
-          "interval": " Interval",
+          "interval": "Defines how to define the reporting period. The Presets or relative settings will be transformed to according values for month_from and month_to and vice versa, if possible.",
           "absolute": {
-            "monthFrom": "Monat ab",
-            "monthTo": "Monat bis"
+            "monthFrom": "Determines the start of the reporting period. Absolute values in the form yyyy-mm or relative values, e.g. 1y, can be specified.",
+            "monthTo": "Determines the end of the reporting period. Absolute values in the form yyyy-mm or relative values, e.g. 2m, can be specified. If empty, the last month will be used."
           },
           "relative": {
-            "from": "From",
-            "unit": "Unit",
-            "count": "Count"
+            "from": "The start of the reporting period starts From*Unit from the time of generation in the past.\nExample: Unit=Month, From=12, Count=12 --> The last 12 months",
+            "unit": "Determines the unit by which the reporting period extends into the past from the time of generation.\nExample: Unit=Year, From=1, Count=1 --> LastYear",
+            "count": "The end of the reporting period is (From-Count+1)*Unit from the time of generation in the past. The month is calculated using the frequency. Yearly: 12, Quarter: the last month of the quarter...."
           },
           "preset": {
             "preset": "Preset"
           }
         },
-        "sort": "Sort",
-        "hits": "Treffer",
-        "periodLength": "Zeitraum Dauer",
-        "periodStep": "Zeitraum Schritt"
+        "sort": "Each report can provide the highest or lowest values found.",
+        "hits": "Determines the number of entries in the report",
+        "periodLength": "Determines the length of the period for the reports Top ${hits} periods with....",
+        "periodStep": "Determines the step size for the calculation of the next period. Example: Period_Length=5, Period_Step=2, 00:00-00:05, 02:00-00:07, 00:04-00:09 ...."
       },
       "workflow": {
         "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Bindestriche und Punkte sind nicht zugelassen.",

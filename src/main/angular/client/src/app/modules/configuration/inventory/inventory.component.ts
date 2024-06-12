@@ -587,34 +587,47 @@ export class SingleDeployComponent {
   }
 
   release(): void {
-    const PATH = this.data.path1 ? ((this.data.path1 + (this.data.path1 === '/' ? '' : '/') + this.data.name)) : ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name));
-    let obj: any = {
-      auditLog: {}
-    };
-    if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
-      obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-    } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
-      obj.addOrdersDateFrom = 'now';
-    }
-    if (this.data.deleted) {
-      obj.delete = [{objectType: this.data.objectType, path: PATH}];
-    } else {
-      obj.update = [{objectType: this.data.objectType, path: PATH}];
-    }
-    if (this.impactedSchedules.length > 0) {
-      obj.update = this.impactedSchedules.map(schedule => ({
+  const PATH = this.data.path1 ? ((this.data.path1 + (this.data.path1 === '/' ? '' : '/') + this.data.name)) : ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name));
+  let obj: any = {
+    auditLog: {}
+  };
+
+  if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
+    obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+  } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
+    obj.addOrdersDateFrom = 'now';
+  }
+
+  if (this.data.deleted) {
+    obj.delete = [{ objectType: this.data.objectType, path: PATH }];
+  } else {
+    obj.update = [{ objectType: this.data.objectType, path: PATH }];
+  }
+
+  if (this.impactedSchedules && this.impactedSchedules.length > 0) {
+    const selectedSchedules = this.impactedSchedules.filter(schedule => schedule.selected);
+    if (selectedSchedules.length > 0) {
+      obj.update = selectedSchedules.map(schedule => ({
         objectType: 'SCHEDULE',
         path: schedule.path
       }));
     }
-    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-
-    this.coreService.post('inventory/release', obj).subscribe({
-      next: () => {
-        this.activeModal.close();
-      }, error: () => this.submitted = false
-    });
+  } else {
+    if (this.impactedSchedules && this.impactedSchedules.length === 0) {
+      obj.update = [{ objectType: this.data.objectType, path: PATH }];
+    }
   }
+
+  this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+
+  this.coreService.post('inventory/release', obj).subscribe({
+    next: () => {
+      this.activeModal.close();
+    },
+    error: () => this.submitted = false
+  });
+}
+
 
   cancel(): void {
     this.activeModal.destroy();
