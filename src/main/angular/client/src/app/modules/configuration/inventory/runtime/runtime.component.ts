@@ -5,7 +5,9 @@ import {TreeModalComponent} from './tree-modal/tree.component';
 import {CoreService} from '../../../../services/core.service';
 import {CalendarService} from '../../../../services/calendar.service';
 import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
+import * as moment from "moment/moment";
 
+declare const Holidays;
 declare const $;
 
 @Component({
@@ -46,7 +48,11 @@ export class AddRestrictionComponent {
     {label: 'saturday', value: '6', checked: false},
     {label: 'sunday', value: '0', checked: false}
   ];
-
+  countryListArr: any[] = [];
+  holidayList: any[] = [];
+  countryField: boolean = false;
+  holidayDays: any = {checked: false};
+  hd = new Holidays.default();
   constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, public calendarService: CalendarService) {
   }
 
@@ -64,11 +70,16 @@ export class AddRestrictionComponent {
     this.tempItems = [];
     this.selectedMonths = [];
     this.selectedMonthsU = [];
+    const countryList = this.hd.getCountries('en');
     this.calendar = this.coreService.clone(this.data.calendar);
     if (!this.calendar.frequencyList) {
       this.calendar.frequencyList = [];
     }
-
+    for (const x in countryList) {
+      if (countryList[x]) {
+        this.countryListArr.push({code: x, name: countryList[x]});
+      }
+    }
     this._temp = this.data.updateFrequency;
     if (this._temp && !isEmpty(this._temp)) {
       this.editor.create = false;
@@ -87,6 +98,7 @@ export class AddRestrictionComponent {
       this.frequency.tab = 'weekDays';
       this.frequency.isUltimos = 'months';
       this.frequency.dateEntity = 'DAILY';
+      this.frequency.year = new Date().getFullYear();
       if (this.calendar.frequencyList && this.calendar.frequencyList.length > 0) {
         this.generateFrequencyObj();
       }
@@ -183,6 +195,14 @@ export class AddRestrictionComponent {
       }
       if (this.calendar.frequencyList[i].endOnS) {
         this.frequency.endOnS = new Date(this.calendar.frequencyList[i].endOnS);
+      }
+    }else if (this.calendar.frequencyList[i].tab === 'nationalHoliday') {
+      this.frequency.nationalHoliday = clone(this.calendar.frequencyList[i].nationalHoliday);
+    
+      if (this._temp.nationalHoliday) {
+        this._temp.nationalHoliday.forEach((date) => {
+          this.holidayList.push({date});
+        });
       }
     }
     if (this.calendar.frequencyList[i].tab === 'weekDays') {
@@ -360,6 +380,7 @@ export class AddRestrictionComponent {
   }
 
   addFrequency(): void {
+    this.countryField = false;
     this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
     this.setEditorEnable();
     let flag = false;
@@ -381,6 +402,7 @@ export class AddRestrictionComponent {
         }
       }
       this._temp = {};
+      this.holidayList = [];
       if (this.calendar.frequencyList && this.calendar.frequencyList.length > 0) {
         this.generateFrequencyObj();
       }
@@ -404,7 +426,11 @@ export class AddRestrictionComponent {
     if (flag) {
       return;
     }
-
+    let _dates = [], datesArr;
+    if (this.frequency.tab === 'nationalHoliday') {
+      datesArr = this.calendarService.groupByDates(this.frequency.nationalHoliday);
+      _dates = clone(datesArr);
+    }
     if (this.calendar.frequencyList.length > 0) {
       let flag1 = false;
       for (let i = 0; i < this.calendar.frequencyList.length; i++) {
@@ -546,6 +572,28 @@ export class AddRestrictionComponent {
               flag1 = true;
               break;
             }
+          }else if (this.frequency.tab == 'nationalHoliday') {
+            flag1 = true;
+            datesArr.forEach((dates) => {
+              if (this.calendar.frequencyList[i].nationalHoliday && this.calendar.frequencyList[i].nationalHoliday.length > 0) {
+                if (new Date(this.calendar.frequencyList[i].nationalHoliday[0]).getFullYear() === new Date(dates[0]).getFullYear()) {
+                 
+                  dates.forEach((date) => {
+                    if (this.calendar.frequencyList[i].nationalHoliday.indexOf(date) == -1) {
+                      this.calendar.frequencyList[i].nationalHoliday.push(date);
+                    }
+                  });
+                  this.calendar.frequencyList[i].str = this.calendarService.freqToStr(this.calendar.frequencyList[i], this.dateFormat);
+                  for (let x = 0; x < _dates.length; x++) {
+                    if (isEqual(_dates[x], dates)) {
+                      _dates.splice(x, 1);
+                      break;
+                    }
+                  }
+                }
+              }
+            });
+
           }
         }
       }
@@ -570,10 +618,23 @@ export class AddRestrictionComponent {
           this.frequency.dates.push(this.coreService.getStringDate(this.tempItems[i].startDate));
         }
         this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
+      }else if (this.frequency.tab == 'nationalHoliday') {
+        for (let i = 0; i < datesArr.length; i++) {
+          const obj = clone(this.frequency);
+          obj.type = this.editor.frequencyType;
+          obj.nationalHoliday = datesArr[i];
+          obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
+          this.frequencyList.push(obj);
+        }
+      } else {
+        this.frequency.type = this.editor.frequencyType;
+        this.frequencyList.push(clone(this.frequency));
       }
       this.frequency.type = this.editor.frequencyType;
       this.calendar.frequencyList.push(this.coreService.clone(this.frequency));
     }
+    this.frequency.nationalHoliday = [];
+    this.holidayDays.checked = false;
     this.editor.isEnable = false;
   }
 
@@ -642,7 +703,61 @@ export class AddRestrictionComponent {
     this.editor.isEnable = this.tempItems.length > 0;
     $('#calendar').data('calendar').setDataSource(this.tempItems);
   }
+  loadHolidayList(): void {
+    this.holidayDays.checked = false;
+    this.holidayList = [];
+    let holidays = [];
+    if (!this.frequency.nationalHoliday) {
+      this.frequency.nationalHoliday = [];
+    }
+    if (this.frequency.country && this.frequency.year) {
+      this.hd.init(this.frequency.country);
+      holidays = this.hd.getHolidays(this.frequency.year);
+      for (let m = 0; m < holidays.length; m++) {
+        if ((holidays[m].type === 'public' || holidays[m].type === 'bank') && holidays[m].date && holidays[m].name && holidays[m].date != 'null') {
+          if (holidays[m].date.length > 19) {
+            holidays[m].date = holidays[m].date.substring(0, 19);
+          }
+          holidays[m].date = moment(holidays[m].date).format('YYYY-MM-DD');
+          this.holidayList.push(holidays[m]);
+        }
+      }
+    }
+    if (this.frequencyList.length > 0) {
+      for (let i = 0; i < this.frequencyList.length; i++) {
+        if (this.frequencyList[i].tab == 'nationalHoliday' && this.frequencyList[i].nationalHoliday.length > 0 && new Date(this.frequencyList[i].nationalHoliday[0]).getFullYear() == this.frequency.year) {
+          this.frequency.nationalHoliday = this.coreService.clone(this.frequencyList[i].nationalHoliday);
+          break;
+        }
+      }
+    }
+  }
+  selectAllHolidays() {
+    if (this.holidayDays.checked) {
+      this.frequency.nationalHoliday = this.holidayList.map(holiday => holiday.date);
+    } else {
+      this.frequency.nationalHoliday = [];
+    }
+  }
 
+  onItemChecked(date: string, checked: boolean) {
+    if (checked) {
+      this.frequency.nationalHoliday.push(date);
+    } else {
+      this.frequency.nationalHoliday = this.frequency.nationalHoliday.filter(d => d !== date);
+    }
+    this.onChangeHolidays();
+  }
+
+  onChangeHolidays(): void {
+    this.editor.isEnable = !!(this.frequency.nationalHoliday && this.frequency.nationalHoliday.length > 0);
+    if (this.holidayList && this.frequency.nationalHoliday) {
+      this.holidayDays.checked = this.holidayList.length == this.frequency.nationalHoliday.length;
+    }
+  }
+  getDateFormat(date: string): string {
+    return new Date(date).toLocaleDateString();
+  }
 }
 
 @Component({
