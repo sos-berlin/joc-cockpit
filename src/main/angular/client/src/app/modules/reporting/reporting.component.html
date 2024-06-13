@@ -105,8 +105,8 @@
               <ul nz-menu>
                 <ng-container *ngFor="let item of templates">
                   <li nz-menu-item (click)="filterBy(item)">
-                    <label>
-                      {{ item.title }}
+                    <label translate>
+                      {{ 'reporting.templates.' +  item.templateName | translate }}
                     </label>
                   </li>
                 </ng-container>
@@ -192,7 +192,7 @@
         <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': filter.generateReport.groupBy==='path'}" (click)="groupByFun('path')">
           <span translate>reporting.button.groupByName</span>
         </button>
-        <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': filter.generateReport.groupBy==='template'}" (click)="groupByFun('template')">
+        <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': filter.generateReport.groupBy==='hits'}" (click)="groupByFun('hits')">
           <span translate>reporting.button.groupByTemplate</span>
         </button>
       </div>

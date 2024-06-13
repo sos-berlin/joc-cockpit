@@ -16,6 +16,7 @@ export class FrequencyReportComponent {
   @Input({required: true}) readonly templates: any;
   @Input({required: true}) readonly selectedReport: any;
   @Input({required: true}) readonly groupBy: string;
+  @Input() readonly groupType?: string;
   schedulerIds: any = {};
   preferences: any = {};
   isLoading: boolean;
@@ -74,43 +75,69 @@ export class FrequencyReportComponent {
       this.filter.indeterminate = true;
       obj.runIds = [this.selectedReport.runId];
     }
+
     this.loadData(obj);
   }
 
-  loadData(obj): void {
-    this.isLoading = false;
-    this.coreService.post('reporting/reports/generated', obj).subscribe({
-      next: (res: any) => {
-        this.isLoading = true;
-        this.multiReports = res.reports;
-        this.multiReports.forEach(item => {
-          item.name = item.path.substring(item.path.lastIndexOf('/') + 1);
-          if (obj.runIds) {
-            item.checked = item.id == this.selectedReport.id;
-          } else {
-            item.checked = true;
-            this.selectedFrequencies.push(item.frequency)
-          }
-          this.selectedFrequencies.push(item.frequency)
-          const template = this.templates.find(template => template.templateName == item.templateName);
-          if (template) item.template = template.title;
-          item.template = item.template?.replace('${hits}', item.hits || 10).replace('${sort}', item.sort);
-        });
-        this.selectedFrequencies = [...new Set(this.selectedFrequencies)].sort();
-        this.sort('');
-        this.addCardItems = [...this.multiReports]
+ loadData(obj): void {
+  this.isLoading = false;
+  this.coreService.post('reporting/reports/generated', obj).subscribe({
+    next: (res: any) => {
+      this.isLoading = true;
+      this.multiReports = res.reports;
 
-        this.addCardItems = this.addCardItems.filter((report) => {
-          return report.checked;
-        });
-        if (res.reports.length > 0) {
-          setTimeout(() => {
-            this.generateDonutCharts()
-          }, 100)
+      // Filter reports based on groupType
+      if (this.groupType) {
+        const filteredReports = [];
+        if (this.groupType === 'highest') {
+          this.selectedReport.highestGroup.forEach((report) => {
+            const matchedReport = this.multiReports.find(item => item.id === report.id);
+            if (matchedReport) {
+              filteredReports.push(matchedReport);
+            }
+          });
+        } else if (this.groupType === 'lowest') {
+          this.selectedReport.lowestGroup.forEach((report) => {
+            const matchedReport = this.multiReports.find(item => item.id === report.id);
+            if (matchedReport) {
+              filteredReports.push(matchedReport);
+            }
+          });
         }
-      }, error: () => this.isLoading = true
-    });
-  }
+        this.multiReports = filteredReports;
+      }
+
+      this.multiReports.forEach(item => {
+        item.name = item.path.substring(item.path.lastIndexOf('/') + 1);
+        if (obj.runIds) {
+          item.checked = item.id == this.selectedReport.id;
+        } else {
+          item.checked = true;
+          this.selectedFrequencies.push(item.frequency);
+        }
+        this.selectedFrequencies.push(item.frequency);
+        const template = this.templates.find(template => template.templateName == item.templateName);
+        if (template) item.template = template.title;
+        item.template = item.template?.replace('${hits}', item.hits || 10).replace('${sort}', item.sort);
+      });
+
+      this.selectedFrequencies = [...new Set(this.selectedFrequencies)].sort();
+      this.sort('');
+      this.addCardItems = [...this.multiReports];
+
+      this.addCardItems = this.addCardItems.filter((report) => {
+        return report.checked;
+      });
+
+      if (res.reports.length > 0) {
+        setTimeout(() => {
+          this.generateDonutCharts();
+        }, 100);
+      }
+    },
+    error: () => this.isLoading = true
+  });
+}
 
   onCardChange(cardId: any) {
     if (this.multiReports.every(item => !item.checked)) {

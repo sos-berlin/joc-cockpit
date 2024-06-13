@@ -126,7 +126,9 @@ export class ReportComponent implements OnChanges, OnDestroy {
     {templateName: "WORKFLOWS_LONGEST_EXECUTION_TIMES", title: "reporting.templates.WORKFLOWS_LONGEST_EXECUTION_TIMES"},
     {templateName: "JOBS_LONGEST_EXECUTION_TIMES", title: "reporting.templates.JOBS_LONGEST_EXECUTION_TIMES"},
     {templateName: "PERIODS_MOST_ORDER_EXECUTIONS", title: "reporting.templates.PERIODS_MOST_ORDER_EXECUTIONS"},
-    {templateName: "PERIODS_MOST_JOB_EXECUTIONS", title: "reporting.templates.PERIODS_MOST_JOB_EXECUTIONS"}
+    {templateName: "PERIODS_MOST_JOB_EXECUTIONS", title: "reporting.templates.PERIODS_MOST_JOB_EXECUTIONS"},
+    {templateName: "JOBS_SUCCESSFUL_EXECUTIONS", title: "Top ${hits} jobs with ${sort} number of successfull executions"},
+    {templateName: "WORKFLOWS_SUCCESSFUL_EXECUTIONS", title: "Top ${hits} workflows with ${sort} number of successfull executions"}
   ];
   schedulerIds: any;
   frequencies = [
@@ -498,19 +500,29 @@ export class ReportComponent implements OnChanges, OnDestroy {
 
     if (unit === 'Year') {
       let yearFrom = from !== null ? `${from}y` : '1y';
-      let yearTo = from !== null && count !== null ? `${from - (count - 1)}y` : yearFrom;
+      let yearTo = from !== null && count !== null && count > 1 ? `${from - (count - 1)}y` : yearFrom;
+
+      if (from === 0 && count === 1) {
+        yearFrom = '0y';
+        yearTo = '';
+      }
 
       monthFrom = yearFrom;
       monthTo = yearTo;
     } else if (unit === 'Month') {
       let monthFromValue = from !== null ? `${from}m` : '1m';
-      let monthToValue = from !== null && count !== null ? `${from - (count - 1)}m` : monthFromValue;
+      let monthToValue = from !== null && count !== null && count > 1 ? `${from - (count - 1)}m` : monthFromValue;
 
       monthFrom = monthFromValue;
       monthTo = monthToValue;
     } else if (unit === 'Quarter') {
       let quarterFromValue = from !== null ? `${from}q` : '1q';
-      let quarterToValue = from !== null && count !== null ? `${from - (count - 1)}q` : quarterFromValue;
+      let quarterToValue = from !== null && count !== null && count > 1 ? `${from - (count - 1)}q` : quarterFromValue;
+
+      if (from === 0 && count === 1) {
+        quarterFromValue = '0q';
+        quarterToValue = '';
+      }
 
       monthFrom = quarterFromValue;
       monthTo = quarterToValue;
@@ -518,6 +530,8 @@ export class ReportComponent implements OnChanges, OnDestroy {
 
     return { monthFrom, monthTo };
   }
+
+
 
   saveRelativeInterval(): void {
     const { units, from, count } = this;
@@ -591,14 +605,13 @@ export class ReportComponent implements OnChanges, OnDestroy {
         this.count = 1;
         break;
       case 'This Quarter':
-        const currentQuarter = Math.floor((moment().month() + 3) / 3);
         this.units.name = 'Quarter';
-        this.from = currentQuarter;
+        this.from = 0;
         this.count = 1;
         break;
       case 'This Year':
         this.units.name = 'Year';
-        this.from = moment().year();
+        this.from = 0;
         this.count = 1;
         break;
       default:
@@ -611,12 +624,13 @@ export class ReportComponent implements OnChanges, OnDestroy {
   }
 
 
+
+
   onIntervalChange(): void {
     if (this.isInterval === 'preset') {
       this.applyPreset(this.preset.name);
     } else if (this.isInterval === 'relative') {
-      this.saveAbsoluteInterval()
-
+      this.saveRelativeInterval();
     } else if (this.isInterval === 'absolute') {
       this.saveAbsoluteInterval();
     }

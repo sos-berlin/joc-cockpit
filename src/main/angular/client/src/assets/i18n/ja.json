@@ -445,6 +445,7 @@
     "label.duration": "実行時間",
     "label.sortBy": "表示順",
     "label.deleteAllDocument": "全てのドキュメントを削除",
+    "label.deleteAllReport": "Delete all Reports",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "label.dateRange": "期間",
     "label.to": "至",
@@ -2934,7 +2935,9 @@
       "WORKFLOWS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} workflows with the longest execution time",
       "JOBS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} jobs with the longest execution time",
       "PERIODS_MOST_ORDER_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly workflows executed",
-      "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly jobs executed"
+      "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly jobs executed",
+      "JOBS_SUCCESSFUL_EXECUTIONS": "Top ${hits} jobs with ${sort} number of successfull executions",
+      "WORKFLOWS_SUCCESSFUL_EXECUTIONS": "Top ${hits} workflows with ${sort} number of successfull executions"
     }
   },
   "settings": {

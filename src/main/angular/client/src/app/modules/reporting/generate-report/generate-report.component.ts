@@ -10,7 +10,8 @@ import {GroupByPipe, OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
 import {SharingDataService} from "../sharing-data.service";
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
-import { TranslateService } from '@ngx-translate/core';
+import {TranslateService} from '@ngx-translate/core';
+
 @Component({
   selector: 'app-generate-report',
   templateUrl: './generate-report.component.html'
@@ -31,7 +32,7 @@ export class GenerateReportComponent {
   fromDate: any
   toDate: any
   filteredData: any = [];
-
+  groupType: string = '';
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -103,7 +104,6 @@ export class GenerateReportComponent {
     }
   }
 
-
   private getData(): void {
     this.reset();
     this.bulkDelete.emit(this.object.mapOfCheckedId);
@@ -129,7 +129,6 @@ export class GenerateReportComponent {
         this.reports.forEach((report) => {
           const template = this.templates.find(template => template.templateName == report.templateName);
           if (template) report.template = template.templateName;
-
         });
         this.reports = this.orderPipe.transform(this.reports, this.filters.filter.sortBy, this.filters.filter.reverse);
         this.data = [...this.reports];
@@ -143,7 +142,7 @@ export class GenerateReportComponent {
     this.filters.filter.sortBy = propertyName;
     if (this.filters.groupBy == 'path' && propertyName == 'path') {
       this.filteredData = this.orderPipe.transform(this.filteredData, this.filters.filter.sortBy, this.filters.filter.reverse);
-    } else if (this.filters.groupBy == 'template' && propertyName == 'template') {
+    } else if (this.filters.groupBy == 'hits' && propertyName == 'hits') {
       this.filteredData = this.orderPipe.transform(this.filteredData, this.filters.filter.sortBy, this.filters.filter.reverse);
     } else {
       this.data = this.orderPipe.transform(this.data, this.filters.filter.sortBy, this.filters.filter.reverse);
@@ -247,9 +246,10 @@ export class GenerateReportComponent {
     this.coreService.post('reporting/reports/delete', request).subscribe();
   }
 
-  onSelect(data): void {
+  onSelect(data, groupType?: string): void {
     this.isVisible = true;
     this.selectedReport = data;
+    this.groupType = groupType; // Assign groupType
   }
 
   closePanel(): void {
@@ -326,6 +326,26 @@ export class GenerateReportComponent {
         } else {
           this.object.mapOfCheckedId.delete(item.id);
         }
+
+        // Check nested items
+        if (item.highestGroup) {
+          item.highestGroup.forEach(nestedItem => {
+            if (isChecked) {
+              this.object.mapOfCheckedId.set(nestedItem.id, nestedItem);
+            } else {
+              this.object.mapOfCheckedId.delete(nestedItem.id);
+            }
+          });
+        }
+        if (item.lowestGroup) {
+          item.lowestGroup.forEach(nestedItem => {
+            if (isChecked) {
+              this.object.mapOfCheckedId.set(nestedItem.id, nestedItem);
+            } else {
+              this.object.mapOfCheckedId.delete(nestedItem.id);
+            }
+          });
+        }
       })
     }
     this.refreshCheckedStatus();
@@ -345,6 +365,26 @@ export class GenerateReportComponent {
     });
     item.checked = count == item.value.length;
     item.indeterminate = count > 0 && !item.checked;
+
+    // Check nested items
+    if (item.highestGroup) {
+      item.highestGroup.forEach(nestedItem => {
+        if (checked) {
+          this.object.mapOfCheckedId.set(nestedItem.id, nestedItem);
+        } else {
+          this.object.mapOfCheckedId.delete(nestedItem.id);
+        }
+      });
+    }
+    if (item.lowestGroup) {
+      item.lowestGroup.forEach(nestedItem => {
+        if (checked) {
+          this.object.mapOfCheckedId.set(nestedItem.id, nestedItem);
+        } else {
+          this.object.mapOfCheckedId.delete(nestedItem.id);
+        }
+      });
+    }
     this.refreshCheckedStatus();
   }
 
@@ -373,20 +413,64 @@ export class GenerateReportComponent {
     }
   }
 
+  toggleHighest(item: any): void {
+    item.expandedHighest = !item.expandedHighest;
+  }
+
+  toggleLowest(item: any): void {
+    item.expandedLowest = !item.expandedLowest;
+  }
 
   groupByFunc() {
-    this.filteredData = this.groupBy.transform(this.data, this.filters.groupBy);
+    if (this.filters.groupBy === 'hits') {
+      this.filteredData = this.groupByHitsAndTemplate(this.data);
+    } else {
+      this.filteredData = this.groupBy.transform(this.data, this.filters.groupBy);
+    }
+
     this.filteredData.forEach(item => {
       item.path = item.value[0].path;
       item.title = item.value[0].title;
       item.template = item.value[0].template;
-      //item.value = this.orderPipe.transform(item.value, this.filters.filter.sortBy, this.filters.filter.reverse);
+
+      if (this.filters.groupBy !== 'hits') {
+        // Group by Highest and Lowest only if not grouping by hits
+        const highestGroup = item.value.filter(val => val.sort === 'HIGHEST');
+        const lowestGroup = item.value.filter(val => val.sort === 'LOWEST');
+
+        item.highestGroup = highestGroup;
+        item.lowestGroup = lowestGroup;
+      }
+
+      // Initialize expanded state
+      item.expandedHighest = false;
+      item.expandedLowest = false;
+
       if (this.filters.expandedKey?.has(item.key)) {
         item.expanded = true;
       }
-    })
-
+    });
   }
+
+  groupByHitsAndTemplate(data: any[]) {
+    const groupedData = data.reduce((acc, item) => {
+      const key = item.hits + '_' + item.template;
+      if (!acc[key]) {
+        acc[key] = {
+          key: key,
+          hits: item.hits,
+          template: item.template,
+          sort: item.sort,
+          value: []
+        };
+      }
+      acc[key].value.push(item);
+      return acc;
+    }, {});
+
+    return Object.values(groupedData);
+  }
+
 
   expandAllItems() {
     if (!this.filters.expandedKey) {
@@ -394,6 +478,8 @@ export class GenerateReportComponent {
     }
     this.filteredData.forEach(item => {
       item.expanded = true;
+      item.expandedHighest = true;
+      item.expandedLowest = true;
       this.filters.expandedKey.add(item.key);
     });
   }
@@ -402,6 +488,8 @@ export class GenerateReportComponent {
     this.filters.expandedKey.clear();
     this.filteredData.forEach(item => {
       item.expanded = false;
+      item.expandedHighest = false;
+      item.expandedLowest = false;
     });
   }
 
@@ -416,6 +504,8 @@ export class GenerateReportComponent {
 
     return translatedText;
   }
+
+  trackByFn(index, item) {
+    return item.id;
+  }
 }
-
-

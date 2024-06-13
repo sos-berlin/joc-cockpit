@@ -445,6 +445,7 @@
     "label.duration": "Duration",
     "label.sortBy": "Sort By",
     "label.deleteAllDocument": "Delete all Documentations",
+    "label.deleteAllReport": "Delete all Reports",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "label.dateRange": "Date Range",
     "label.to": "To",
@@ -2934,7 +2935,9 @@
       "WORKFLOWS_LONGEST_EXECUTION_TIMES": "Top ${hits} workflows with ${sort} need for execution time",
       "JOBS_LONGEST_EXECUTION_TIMES": "Top ${hits} jobs with ${sort} need for execution time",
       "PERIODS_MOST_ORDER_EXECUTIONS": "Top ${hits} periods with ${sort} number of workflow executions",
-      "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} periods with ${sort} number of job executions"
+      "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} periods with ${sort} number of job executions",
+      "JOBS_SUCCESSFUL_EXECUTIONS": "Top ${hits} jobs with ${sort} number of successfull executions",
+      "WORKFLOWS_SUCCESSFUL_EXECUTIONS": "Top ${hits} workflows with ${sort} number of successfull executions"
     }
   },
   "settings": {
