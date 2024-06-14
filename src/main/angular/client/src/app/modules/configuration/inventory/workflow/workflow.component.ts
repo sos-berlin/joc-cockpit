@@ -12080,24 +12080,54 @@ export class WorkflowComponent {
   }
 
   private extendJsonObj(data): any {
-    let newObj: any = {};
-    newObj = extend(newObj, data);
-    if (this.orderPreparation) {
-      newObj.orderPreparation = this.orderPreparation;
-    }
-    if (this.jobResourceNames) {
-      newObj.jobResourceNames = this.jobResourceNames;
-    }
-    if (this.title) {
-      newObj.title = this.title;
-    }
-    if (this.timeZone) {
-      newObj.timeZone = this.timeZone;
-    }
-    if (this.documentationName) {
-      newObj.documentationName = this.documentationName;
-    }
-    return newObj;
+  let newObj: any = {};
+  newObj = extend(newObj, data);
+
+  if (newObj.instructions) {
+    this.processInstructions(newObj.instructions);
+  }
+
+  if (this.orderPreparation) {
+    newObj.orderPreparation = this.orderPreparation;
+  }
+  if (this.jobResourceNames) {
+    newObj.jobResourceNames = this.jobResourceNames;
+  }
+  if (this.title) {
+    newObj.title = this.title;
+  }
+  if (this.timeZone) {
+    newObj.timeZone = this.timeZone;
+  }
+  if (this.documentationName) {
+    newObj.documentationName = this.documentationName;
+  }
+  return newObj;
+}
+
+  private processInstructions(instructions: any[]): void {
+    instructions.forEach(instruction => {
+      if (instruction.TYPE === 'ForkList' && instruction.workflow && Array.isArray(instruction.workflow.instructions)) {
+        this.processInstructions(instruction.workflow.instructions);
+      } else if (instruction.TYPE === 'Execute.Named' && instruction.defaultArguments) {
+        Object.keys(instruction.defaultArguments).forEach(key => {
+          const value = instruction.defaultArguments[key];
+          if (this.isExpression(value)) {
+            instruction.defaultArguments[key] = this.convertToExpression(value);
+          }
+        });
+      }
+    });
+  }
+  private isExpression(value: string): boolean {
+    const expressionRegex = /^[\d\s+\-*/().]+$/;
+    return expressionRegex.test(value.replace(/"/g, ''));
+  }
+
+  private convertToExpression(value: string): string {
+    let expression = value.replace(/^"(.*)"$/, '$1');
+    expression = expression.trim();
+    return expression;
   }
 
   private clearClipboard(): void {
