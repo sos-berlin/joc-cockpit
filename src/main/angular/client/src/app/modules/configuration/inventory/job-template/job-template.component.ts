@@ -22,6 +22,7 @@ import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {WorkflowService} from "../../../../services/workflow.service";
 import {InventoryObject} from '../../../../models/enums';
+import { EncryptArgumentModalComponent } from '../inventory.component';
 
 declare const $;
 
@@ -1426,5 +1427,29 @@ export class JobTemplateComponent {
       }
     }
     this.ref.detectChanges();
+  }
+
+  encrpytValue(argument, typeArg){
+    const selectedAgent  = '';
+    const argu = argument;
+    const type = typeArg;
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EncryptArgumentModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        argu,
+        selectedAgent,
+        type
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        // this.updateOnEncrypt.emit();
+      }
+    });
   }
 }

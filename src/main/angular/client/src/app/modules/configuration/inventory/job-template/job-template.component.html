@@ -352,10 +352,11 @@
                               <div *ngIf="value.errors['invalidFacet']" translate>common.message.invalid</div>
                             </div>
                           </ng-container>
-                          <div class="pos-abt r-t-n-6">
+                          <div class="pos-abt r-t-n-6 job-template-encrypt">
                             <i
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(parameter.name)"
                               class="fa fa-scissors"></i>
+                              <a *ngIf="parameter.value.type === 'String' && parameter.name"><i (click)="encrpytValue(parameter, 'jobTemplate')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                             <a
                               *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(parameter.name))"><i
                               (click)="removeParameter(i)" class="fa fa-times text-hover-color"></i></a>
@@ -533,10 +534,11 @@
                                  type="text">
                           <i (click)="openEditor(argument, 'value')" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
                              nzType="form"></i>
-                          <div class="pos-abt r-t-n-6">
+                          <div class="pos-abt r-t-n-6 job-template-encrypt">
                             <i
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'jobArguments' && object.setOfCheckedJobArgu.has(argument.name)"
                               class="fa fa-scissors"></i>
+                              <a *ngIf="argument.name"><i (click)="encrpytValue(argument, 'job')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                             <a
                               *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'jobArguments' && object.setOfCheckedJobArgu.has(argument.name))"><i
                               (click)="removeJobArgument(i)" class="fa fa-times text-hover-color"></i></a>

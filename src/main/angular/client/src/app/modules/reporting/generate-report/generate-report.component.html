@@ -134,17 +134,17 @@
                         <li nz-menu-item (click)="onSelect(item, 'highest')">
                           <a translate>reporting.button.showReport</a>
                         </li>
-                        <li *ngIf="permission.joc && permission.joc.reports.manage" nz-menu-item (click)="deleteReport(item, true)">
+                        <li *ngIf="permission.joc && permission.joc.reports.manage" nz-menu-item (click)="deleteReport(item, true, 'highest')">
                           <a translate>common.button.delete</a>
                         </li>
                       </ul>
                     </nz-dropdown-menu>
                   </div>
                 </td>
-                <td colspan="6" class="nested-row">
+                <td colspan="6" class="nested-row cursor">
                   <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expandedHighest" (click)="toggleHighest(item)"></i>
                   <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expandedHighest" (click)="toggleHighest(item)"></i>
-                  Highest
+                  <span class="cursor" (click)="onSelect(item, 'highest')"> {{ 'reporting.label.HIGHEST' | translate}}</span>
                 </td>
               </tr>
               <ng-container *ngIf="item.expandedHighest">
@@ -206,17 +206,18 @@
                         <li nz-menu-item (click)="onSelect(item, 'lowest')">
                           <a translate>reporting.button.showReport</a>
                         </li>
-                        <li *ngIf="permission.joc && permission.joc.reports.manage" nz-menu-item (click)="deleteReport(item, true)">
+                        <li *ngIf="permission.joc && permission.joc.reports.manage" nz-menu-item (click)="deleteReport(item, true, 'lowest')">
                           <a translate>common.button.delete</a>
                         </li>
                       </ul>
                     </nz-dropdown-menu>
                   </div>
                 </td>
-                <td colspan="6" class="nested-row">
+                <td colspan="6" class="nested-row cursor">
                   <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expandedLowest" (click)="toggleLowest(item)"></i>
                   <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expandedLowest" (click)="toggleLowest(item)"></i>
-                  Lowest
+                  <span class="cursor" (click)="onSelect(item, 'lowest')"> {{ 'reporting.label.LOWEST' | translate}}</span>
+
                 </td>
               </tr>
               <ng-container *ngIf="item.expandedLowest">

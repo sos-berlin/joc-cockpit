@@ -420,7 +420,8 @@
     "placeholder.encrypt": "Encrypted Value",
     "button.encrypt": "Encrypt",
     "button.addNewCertificate": "Add New Certificate",
-    "button.importCertificate": "Import Certificate"
+    "button.importCertificate": "Import Certificate",
+    "button.deleteCertificate": "Delete Certificate"
   },
   "--------COMMON LABEL AND BUTTONS------------": "複数ページで使用",
   "common": {
@@ -667,6 +668,7 @@
     "message.deleteReport": "本当にこのレポートを削除しますか?",
     "message.deleteAllReport": "本当に選択したすべてのレポートを削除しますか?",
     "message.stickToDailyPlanDate": "Are you sure you want to submit the operation to have orders stick to their original Daily Plan date?",
+    "message.deleteCertificate": "Are you sure you want to delete this certificate?",
     "--------POPUP WINDOW MESSAGES END------------": "確認ポップアップで使用",
     "tooltip.exportInXLS": "xlsx形式でエキスポート",
     "tooltip.expandDetails": "詳細表示",
@@ -2908,7 +2910,8 @@
       "sort": "Sort",
       "HIGHEST": "HIGHEST",
       "LOWEST": "LOWEST",
-      "preset": "Preset"
+      "preset": "Preset",
+      "manageCards": "Manage Cards"
     },
     "button" : {
       "runReport": "レポート実行",

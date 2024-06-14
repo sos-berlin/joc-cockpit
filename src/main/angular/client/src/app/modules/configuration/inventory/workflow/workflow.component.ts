@@ -1367,6 +1367,7 @@ export class JobComponent {
   @ViewChild('codeMirror', {static: false}) cm: any;
 
   @Output() updateFromJobTemplateFn: EventEmitter<any> = new EventEmitter();
+  @Output() updateOnEncrypt: EventEmitter<any> = new EventEmitter();
 
   constructor(public coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,
               private workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService) {
@@ -2605,6 +2606,30 @@ export class JobComponent {
   updateFromJobTemplate(): void {
     this.updateFromJobTemplateFn.emit(this.selectedNode)
   }
+
+  encrpytValue(argument){
+    const selectedAgent  = this.selectedNode.job.agentName;
+    const argu = argument;
+    const type = 'job';
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EncryptArgumentModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        argu,
+        selectedAgent,
+        type
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.updateOnEncrypt.emit();
+      }
+    });
+  }
 }
 
 @Component({
@@ -2962,16 +2987,51 @@ export class ChangeImpactDialogComponent {
         this.impactedSchedules = res.schedules;
       }
     });
+    setTimeout(() => {
+      this.draft()
+
+    }, 100)
   }
-  navToObj(path: string, type?): void {
-    if (type) {
-      this.activeModal.close({
-        name: path, type
+
+  draft(): void {
+    const schedules = this.impactedSchedules.map(schedule => schedule.path);
+
+    const sendRequest = (index: number) => {
+      if (index >= schedules.length) {
+        return;
+      }
+
+      this.coreService.post('inventory/read/configuration', {
+        path: schedules[index],
+        objectType: 'SCHEDULE'
+      }).subscribe({
+        next: (conf: any) => {
+          const request: any = {
+            configuration: conf.configuration,
+            path: schedules[index],
+            valid: 'false',
+            objectType: 'SCHEDULE'
+          };
+
+          this.coreService.post('inventory/store', request).subscribe({
+            next: (res: any) => {
+              sendRequest(index + 1);
+            },
+            error: (err: any) => {
+              sendRequest(index + 1);
+            }
+          });
+        },
+        error: (err: any) => {
+          sendRequest(index + 1);
+        }
       });
-    }
+    };
+
+    sendRequest(0);
   }
 }
-@Component({
+  @Component({
   selector: 'app-workflow',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './workflow.component.html',
@@ -4520,22 +4580,17 @@ export class WorkflowComponent {
 
   onKeyDown(event: KeyboardEvent): void {
     if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
-      event.preventDefault();
-      event.stopPropagation();
       this.changeImpact();
     }
   }
 
-  handleClick(event: any): void {
-    if (event instanceof MouseEvent) {
-
-      event.preventDefault();
-      event.stopPropagation();
-    }
+  handleClick(): void {
     if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
       this.changeImpact();
     }
   }
+
+
 
   changeImpact(): void {
     this.impactShown = true;
@@ -4991,9 +5046,6 @@ export class WorkflowComponent {
   }
 
   addVariable(): void {
-    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
-      this.changeImpact();
-    } else {
       const param = {
         name: '',
         value: {
@@ -5005,7 +5057,6 @@ export class WorkflowComponent {
           this.variableDeclarations.parameters.push(param);
         }
       }
-    }
   }
 
   checkDuplicateEntries(variable, index, list): void {
@@ -12666,14 +12717,22 @@ export class WorkflowComponent {
     }
   }
 
-  encrpytValue(currentVariable, actualVariable){
+updateOnEncrypt(){
+    this.getWorkflow(false);
+  }
+
+  encrpytValue(currentVariable, actualVariable, typeArg){
+    const selectedAgent  = '';
+    const argu = currentVariable;
+    const type = typeArg;
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: EncryptArgumentModalComponent,
-      nzClassName: 'lg',
       nzAutofocus: null,
       nzData: {
-        currentVariable,
+        argu,
+        selectedAgent,
+        type
       },
       nzFooter: null,
       nzClosable: false,
@@ -12681,15 +12740,15 @@ export class WorkflowComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        if(actualVariable.value.type !== 'List' && actualVariable.value.type !== 'Map'){
-          actualVariable.value = result.value;
-        }else{
-          actualVariable.value.listParameters.forEach(element => {
-            if(element.name === currentVariable.name){
-              element.value = result.value;
-            }
-          });
-        }
+        // if(actualVariable.value.type !== 'List' && actualVariable.value.type !== 'Map'){
+        //   actualVariable.value = result.value;
+        // }else{
+        //   actualVariable.value.listParameters.forEach(element => {
+        //     if(element.name === currentVariable.name){
+        //       element.value = result.value;
+        //     }
+        //   });
+        // }
 
         // this.variableDeclarations.parameters.forEach(element => {
         //   if(actualVariable.name === element.name){

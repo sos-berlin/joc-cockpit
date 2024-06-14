@@ -48,7 +48,7 @@
       </nz-dropdown-menu>
       <button [nzDropdownMenu]="addReports" [nzPlacement]="'bottomRight'"
               class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
-              type="button">Manage Cards
+              type="button" >reporting.label.manageCards
         <span class="text-primary"></span>
         <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
       </button>
@@ -66,7 +66,7 @@
           <ng-container *ngFor="let item of multiReports">
             <li nz-menu-item *ngIf="item.data">
               <label nz-checkbox [(ngModel)]="item.checked" (ngModelChange)="onCardChange(item.id)">
-                {{ item.title + '-' + item.dateFrom }}
+                {{ getTranslatedText(item) + '-' + item.dateFrom }}
               </label>
             </li>
           </ng-container>
@@ -160,6 +160,30 @@
                       </div>
                       <div class="job-execution"
                            *ngIf="item.templateName === 'WORKFLOWS_FREQUENTLY_FAILED' || item.templateName === 'JOBS_FREQUENTLY_FAILED'">
+
+
+                        <nz-collapse>
+                          <nz-collapse-panel *ngFor="let data of item.data"
+                                             [nzHeader]="data.workflowName + (data.jobName ? '/' + data.jobName : '') + ' - (' + data.count + ')'"
+                                             [nzActive]="data.workflowName ? data.workflowName.active : false">
+
+                          <div>
+                              <div *ngFor="let item of data.data; let i = index"
+                                   style="padding-bottom: 0px !important;">
+                                <div *ngIf="i == 0" class="flex-container">
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>runtime.label.period</span>
+                                  </div>
+                                </div>
+                                <div class="flex-container" >
+                                  <div class="flex-item" style="width: 100%;">{{item.startTime | stringToDate}}</div>
+                                </div>
+                              </div>
+                            </div>
+                          </nz-collapse-panel>
+                        </nz-collapse>
+                      </div>
+                      <div class="job-execution"
+                           *ngIf="item.templateName === 'WORKFLOWS_SUCCESSFUL_EXECUTIONS' || item.templateName === 'JOBS_SUCCESSFUL_EXECUTIONS'">
 
 
                         <nz-collapse>

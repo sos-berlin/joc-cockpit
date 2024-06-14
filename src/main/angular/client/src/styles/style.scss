@@ -9676,3 +9676,11 @@ cdk-virtual-scroll-viewport {
   color: var(--primary);
   font-weight: 500;
 }
+
+.job-template-encrypt{
+  display: flex;
+  justify-content: space-around;
+  align-items: baseline;
+  gap: 10px;
+  right: -50px;
+}

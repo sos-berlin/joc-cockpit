@@ -9,6 +9,9 @@ import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { ToastrService } from 'ngx-toastr';
 import { ByteToSizePipe } from 'src/app/pipes/core.pipe';
 import { HttpHeaders } from '@angular/common/http';
+import { ConfirmModalComponent } from 'src/app/components/comfirm-modal/confirm.component';
+
+declare const $: any;
 
 @Component({
   selector: 'app-encipherment-modal',
@@ -265,7 +268,13 @@ export class EnciphermentComponent {
   username = '';
   securityLevel: string;
   preferences: any = {};
-  enciphermentCertificate: any = [];
+
+  data: any = [];
+  isLoading = false;
+  enciphermentFilters: any = {
+    currentPage: 1,
+    entryPerPage: 25,
+  };
 
   constructor(private authService: AuthService, public coreService: CoreService,
     private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
@@ -290,14 +299,20 @@ export class EnciphermentComponent {
   /* ----------------------Encipherment Certificates--------------------- */
 
   getEnciphermentCertificate(){
-    let certAliases = {
+    let certAliasesObj = {
       certAliases: []
     };
-    this.coreService.post('encipherment/certificate', certAliases).subscribe({
+    this.coreService.post('encipherment/certificate', certAliasesObj).subscribe({
       next: (res: any) => {
-        this.enciphermentCertificate = res;
+        if (res.certificates && res.certificates.length === 0) {
+          this.enciphermentFilters.currentPage = 1;
+          this.enciphermentFilters.entryPerPage = 25;
+        }
+        this.isLoading = true;
+        this.data = res.certificates;
       }, error: () => {
-        this.enciphermentCertificate = [];
+        this.isLoading = true;
+        this.data = [];
       }
     });
   }
@@ -339,6 +354,51 @@ export class EnciphermentComponent {
       if (result) {
         this.getEnciphermentCertificate();
       }
+    });
+  }
+
+  getCurrentData(list, filter): Array<any> {
+    const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
+    return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
+  }
+
+  pageIndexChange($event: number): void {
+    this.enciphermentFilters.currentPage = $event;
+  }
+
+  pageSizeChange($event: number): void {
+    this.enciphermentFilters.entryPerPage = $event;
+  }
+
+  deleteCertificate(certAlias){
+    let certAliasesObj = {
+      certAlias: certAlias
+    };
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmModalComponent,
+      nzData: {
+        type: 'Delete',
+        title: 'delete',
+        message: 'deleteCertificate',
+        objectName: certAlias,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this._deleteCertificate(certAliasesObj);
+      }
+    });
+  }
+
+  private _deleteCertificate(certAliasesObj){
+     this.coreService.post('encipherment/certificate/delete', certAliasesObj).subscribe({
+      next: (res: any) => {
+        this.getEnciphermentCertificate();
+      }, error: () => {}
     });
   }
 

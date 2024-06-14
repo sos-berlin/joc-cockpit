@@ -201,7 +201,7 @@
                            [jobs]="jobs"
                            [orderPreparation]="orderPreparation" [preferences]="preferences"
                            [schedulerId]="schedulerId" [scriptTree]="scriptTree" [selectedNode]="selectedNode"
-                           [timeZone]="extraConfiguration.timeZone"></app-job-content>
+                           [timeZone]="extraConfiguration.timeZone" (updateOnEncrypt)="updateOnEncrypt()"></app-job-content>
         </div>
 
         <div class="box-body">
@@ -1444,7 +1444,7 @@
                     </div>
                   </div>
                   <div class="col-md-3 col-lg-3 m-b-sm p-r-0">
-                    <nz-select [(ngModel)]="variable.value.type" [nzDisabled]="isTrash" (click)="handleClick($event)"
+                    <nz-select [(ngModel)]="variable.value.type" [nzDisabled]="isTrash" (click)="handleClick()"
                                name="type{{i}}" (ngModelChange)="changeDataType($event, variable)">
                       <nz-option *ngFor="let dataType of allowedDatatype" [nzLabel]="dataType | translate"
                                  [nzValue]="dataType"></nz-option>
@@ -1456,7 +1456,7 @@
                                      [nzMin]="0"
                                      [nzStep]="1" name="value{{i}}"
                                      nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                    <nz-select *ngSwitchCase="'Boolean'" (click)="handleClick($event)"
+                    <nz-select *ngSwitchCase="'Boolean'" (click)="handleClick()"
                                [(ngModel)]="variable.value.default" [nzDisabled]="isTrash" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
                                name="value{{i}}" nzAllowClear  (ngModelChange)="updateOtherProperties('variable')">
                       <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
@@ -1472,16 +1472,16 @@
                              (keydown)="onKeyPress($event)" [(ngModel)]="variable.value.default" [disabled]="variable.value.type === 'List' || variable.value.type === 'Map'" [facetValidation]="variable.value.facet"
                              autocomplete="off" class="form-control" name="value{{i}}"
                              placeholder="{{'common.placeholder.value' | translate}}" type="text">
-                      <i (click)="addFacet(variable)"
+                      <i (click)="addFacet(variable); handleClick()"
                          *ngIf="variable.value.type === 'String'" [ngClass]="{'text-primary': variable.value.facet}"
                          [nz-tooltip]="'workflow.tooltip.facetEntryMode' | translate" class="pos-abt cursor text-primary-hover" nz-icon
                          nzTheme="outline" nzType="snippets" style="right: 36px;top:1px;"></i>
-                      <i (click)="addList(variable)"
+                      <i (click)="addList(variable);handleClick()"
                          *ngIf="variable.value.type === 'String'"
                          [ngClass]="{'text-primary': variable.value.list && variable.value.list.length > 0}"
                          [nz-tooltip]="'workflow.tooltip.listEntryMode' | translate" class="pos-abt cursor text-primary-hover" nz-icon
                          nzTheme="outline" nzType="unordered-list" style="right: 18px;top:1px;"></i>
-                      <i (click)="openEditor(variable.value)"
+                      <i (click)="openEditor(variable.value);handleClick()"
                          [hidden]="variable.value.type === 'List' || variable.value.type === 'Map'" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
                          nzTheme="outline" nzType="form" style="right: 1px;top:1px;"></i>
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
@@ -1505,7 +1505,7 @@
                     </div>
                   </div>
                   <div class="col-md-2 col-lg-2 d-flex flex-lg-row flex-md-column gap-5 justify-content-around">
-                    <a *ngIf="variable.value.type !== 'List' && variable.value.type !== 'Map'"><i (click)="encrpytValue(variable, variable)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                    <a *ngIf="variable.name && variable.value.type === 'String'"><i (click)="encrpytValue(variable, variable, 'jobTemplate')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                     <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                   </div>
                   <ng-container *ngIf="variable.value.type === 'List' || variable.value.type === 'Map'" class="b-b p-b-sm">
@@ -1549,8 +1549,8 @@
                           </div>
                         </div>
                         <div class="col-md-3 col-lg-3 m-b-sm p-r-0">
-                          <nz-select [(ngModel)]="param.value.type" [nzDisabled]="isTrash" (click)="handleClick($event)"
-                                     name="type{{i}}{{j}}" (ngModelChange)="updateOtherProperties('variable')" (click)="handleClick($event)">
+                          <nz-select [(ngModel)]="param.value.type" [nzDisabled]="isTrash" (click)="handleClick()"
+                                     name="type{{i}}{{j}}" (ngModelChange)="updateOtherProperties('variable')" (click)="handleClick()">
                             <nz-option [nzLabel]="'String' | translate" [nzValue]="'String'"></nz-option>
                             <nz-option [nzLabel]="'Number' | translate" [nzValue]="'Number'"></nz-option>
                             <nz-option [nzLabel]="'Boolean' | translate" [nzValue]="'Boolean'"></nz-option>
@@ -1561,7 +1561,7 @@
                                            [nzMin]="0"
                                            [nzStep]="1" name="value{{i}}{{j}}"
                                            nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                          <nz-select *ngSwitchCase="'Boolean'" (click)="handleClick($event)" [(ngModel)]="param.value.default" [nzDisabled]="isTrash" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+                          <nz-select *ngSwitchCase="'Boolean'" (click)="handleClick()" [(ngModel)]="param.value.default" [nzDisabled]="isTrash" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
                                      name="value{{i}}{{j}}" nzAllowClear  (ngModelChange)="updateOtherProperties('variable');">
                             <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                             <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
@@ -1577,7 +1577,7 @@
                           </ng-container>
                         </div>
                         <div *ngIf="variable.value.listParameters.length > 0" class="col-md-2 col-lg-2 d-flex flex-lg-row flex-md-column gap-5 justify-content-around">
-                          <a><i (click)="encrpytValue(param, variable)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                          <a *ngIf="param.name && param.value.type === 'String'"><i (click)="encrpytValue(param, variable, 'jobTemplate')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                           <a *ngIf="variable.value.listParameters.length > 1"><i  (click)="removeVariableFromList(variable.value.listParameters, j);"
                                 class="fa fa-times m-t-sm text-hover-color"></i></a>
                         </div>

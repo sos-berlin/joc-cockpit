@@ -29,8 +29,11 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <input #certAlias="ngModel" [(ngModel)]="certificateObj.certAlias" [appAutofocus]="true" autocomplete="off" class="form-control"
-               name="certAlias" placeholder="{{'encipherment.placeholder.certAlias' | translate}}" required type="text"/>
+        <nz-select #certAlias="ngModel" nzShowSearch nzAllowClear [nzPlaceHolder]="'encipherment.placeholder.certAlias' | translate" [(ngModel)]="certificateObj.certAlias" name="certAlias">
+          <nz-option *ngFor="let certificate of certificateList" [nzLabel]="certificate.certAlias" [nzValue]="certificate.certAlias"></nz-option>
+        </nz-select>
+        <!-- <input #certAlias="ngModel" [(ngModel)]="certificateObj.certAlias" [appAutofocus]="true" autocomplete="off" class="form-control"
+               name="certAlias" placeholder="{{'encipherment.placeholder.certAlias' | translate}}" required type="text"/> -->
         <div *ngIf="certAlias.invalid && (certAlias.dirty || certAlias.touched)" class="text-danger help-block">
           <div *ngIf="certAlias.errors.required">
             <div translate>common.message.requiredError</div>

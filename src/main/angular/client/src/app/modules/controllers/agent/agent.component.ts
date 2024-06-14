@@ -400,6 +400,7 @@ export class AddCertificateModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   certificateObj: any = {};
   submitted = false;
+  certificateList: any = [];
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef) {
   }
@@ -410,6 +411,20 @@ export class AddCertificateModalComponent {
     } else if (this.modalData.subagent) {
       this.certificateObj.agentId = this.modalData.subagent.subagentId;
     }
+    this.getEnciphermentCertificate();
+  }
+
+  getEnciphermentCertificate(){
+    let certAliasesObj = {
+      certAliases: []
+    };
+    this.coreService.post('encipherment/certificate', certAliasesObj).subscribe({
+      next: (res: any) => {
+        this.certificateList = res.certificates;
+      }, error: () => {
+        this.certificateList = [];
+      }
+    });
   }
 
   onSubmit(): void {

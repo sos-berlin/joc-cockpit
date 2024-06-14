@@ -2,27 +2,108 @@
   <div class="row">
     <div class="col-md-12">
       <div class="padding">
-        <div class="text-right ">
+        <div class="text-right">
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div *ngIf="permission && permission.joc && permission.joc.encipherment.encrypt" class="inline">
+          <div
+            *ngIf="
+              permission &&
+              permission.joc &&
+              permission.joc.encipherment.encrypt
+            "
+            class="inline"
+          >
             <ng-container *ngIf="isJOCActive">
               <div class="btn-group"></div>
               <button
-              (click)="importKey('encipherment')"
-              *ngIf="isJOCActive" class="btn btn-grey btn-sm m-l-12">
+                (click)="importKey('encipherment')"
+                *ngIf="isJOCActive"
+                class="btn btn-grey btn-sm m-l-12"
+              >
                 <i nz-icon nzTheme="outline" nzType="import"></i>&nbsp;
                 <span translate>encipherment.button.importCertificate</span>
               </button>
               <button
-              (click)="addEnciphermentCertificate()"
-              *ngIf="isJOCActive" class="btn btn-grey btn-sm m-l-12">
+                (click)="addEnciphermentCertificate()"
+                *ngIf="isJOCActive"
+                class="btn btn-grey btn-sm m-l-12"
+              >
                 <i nz-icon nzType="plus" nzTheme="outline"></i>&nbsp;
                 <span translate>encipherment.button.addNewCertificate</span>
               </button>
             </ng-container>
+          </div>
         </div>
       </div>
     </div>
   </div>
+</div>
+<div class="scroll-y max-ht">
+  <div class="padding p-b-0">
+    <div class="m-t-sm box p-a">
+      <div class="table-responsive" id="enciphermentTable">
+        <nz-table
+          #enciphermentTable
+          (nzPageIndexChange)="pageIndexChange($event)"
+          (nzPageSizeChange)="pageSizeChange($event)"
+          [nzBordered]="true"
+          [nzData]="data"
+          [nzLoading]="!isLoading"
+          [nzPageIndex]="enciphermentFilters.currentPage"
+          [nzPageSizeOptions]="[10, 25, 50, 100, +preferences.maxEntryPerPage]"
+          [nzPageSize]="enciphermentFilters.entryPerPage || preferences.entryPerPage || 25"
+          [nzShowPagination]="data.length > 0"
+          [nzShowSizeChanger]="true"
+          [nzSize]="'small'">
+          <thead>
+            <tr>
+              <th class="menu" rowspan="2">
+                <span translate>common.label.action</span>
+              </th>
+              <th rowspan="2"><span translate>encipherment.label.certAlias</span></th>
+              <th rowspan="2"><span translate>encipherment.label.certificate</span></th>
+              <th rowspan="2"><span translate>encipherment.label.privateKeyPath</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-template
+              [ngForOf]="enciphermentTable.data"
+              let-encipherment
+              ngFor>
+              <tr>
+                <td>
+                  <div class="btn-group dropdown">
+                    <button [nzDropdownMenu]="export3" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                            type="button">
+                      <i class="fa fa-ellipsis-h"></i>
+                    </button>
+                    <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
+                      <ul nz-menu>
+                        <li (click)="deleteCertificate(encipherment?.certAlias)" nz-menu-item>
+                          <a translate>encipherment.button.deleteCertificate</a>
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                </td>
+                <td>{{ encipherment?.certAlias }}</td>
+                <td>{{ encipherment?.certificate }}</td>
+                <td>{{ encipherment?.privateKeyPath }}</td>
+              </tr>
+            </ng-template>
+          </tbody>
+        </nz-table>
+        <div *ngIf="enciphermentTable.data.length > 0" class="w-half label-top">
+          <span translate>common.label.total</span> {{ data.length }}
+          <span *ngIf="enciphermentTable.data.length > 1" translate
+            >history.label.historiesFound</span
+          >
+          <span *ngIf="enciphermentTable.data.length === 1" translate
+            >history.label.historyFound</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -181,16 +181,26 @@ export class GenerateReportComponent {
     };
   }
 
-  deleteReport(item, isBulk = false): void {
+  deleteReport(item, isBulk = false, groupType?: string): void {
     const obj: any = {
       reportIds: item ? [item.id] : []
     };
+
     if (isBulk) {
       obj.reportIds = [];
       item.value.forEach(val => {
         obj.reportIds.push(val.id);
-      })
+      });
     }
+
+    if (groupType) {
+      if (groupType === 'highest') {
+        obj.reportIds = item.highestGroup.map(val => val.id);
+      } else if (groupType === 'lowest') {
+        obj.reportIds = item.lowestGroup.map(val => val.id);
+      }
+    }
+
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
@@ -217,7 +227,7 @@ export class GenerateReportComponent {
         if (result) {
           obj.auditLog = {};
           this.coreService.getAuditLogObj(result, obj.auditLog);
-          this._deleteReport(obj)
+          this._deleteReport(obj);
         }
       });
     } else {
@@ -241,6 +251,7 @@ export class GenerateReportComponent {
       });
     }
   }
+
 
   private _deleteReport(request) {
     this.coreService.post('reporting/reports/delete', request).subscribe();

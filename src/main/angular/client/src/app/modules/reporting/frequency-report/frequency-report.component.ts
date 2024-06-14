@@ -201,8 +201,8 @@ export class FrequencyReportComponent {
             chartData.labels.push(label);
             break;
           case 'JOBS_FREQUENTLY_FAILED':
-            const formattedJobName = item.jobName.replace(/__/g, '/');
-            label = `${formattedJobName} - (${item.count})`;
+            const formattedFailedJobName = item.jobName.replace(/__/g, '/');
+            label = `${formattedFailedJobName} - (${item.count})`;
             key = 'Job executions';
             chartData.labels.push(label);
             break;
@@ -215,7 +215,6 @@ export class FrequencyReportComponent {
             let highParallelismCount = 0;
             let lowParallelismCount = 0;
 
-            // Calculate counts for high parallelism periods
             for (const period of item.topHighParallelismPeriods) {
               highParallelismCount += period.data.length;
             }
@@ -271,6 +270,17 @@ export class FrequencyReportComponent {
             key = 'Job executions'
             chartData.labels.push(label);
             break;
+          case 'JOBS_SUCCESSFUL_EXECUTIONS':
+            const formattedSuccessJobName = item.jobName.replace(/__/g, '/');
+            label = `${formattedSuccessJobName} - (${item.count})`;
+            key = 'Job executions';
+            chartData.labels.push(label);
+            break;
+          case 'WORKFLOWS_SUCCESSFUL_EXECUTIONS':
+            label = `${item.workflowName} - (${item.count})`;
+            key = "Workflow executions";
+            chartData.labels.push(label);
+            break;
         }
         chartData.uniqueKeys.key = key;
         chartData.datasets[0].borderColor.push('white');
@@ -279,7 +289,7 @@ export class FrequencyReportComponent {
       }
 
       const formattedTotalJobCount = report.data[0]?.duration || report.data[0]?.duration === 0 ? (chartData.labels.length) : totalJobCount;
-      this.createChart(chartData, formattedTotalJobCount, report.id);
+      this.createChart(chartData, formattedTotalJobCount, report.id, report.templateName);
     }
   }
 
@@ -330,7 +340,7 @@ export class FrequencyReportComponent {
     };
   }
 
-  createChart(chartData: any, totalJobCount: any, reportId: string): void {
+  createChart(chartData: any, totalJobCount: any, reportId: string, templateName: string): void {
     const canvas = document.createElement('canvas');
     canvas.classList.add('donut-chart');
     const containerId = `donut-chart-container-${reportId}`;
@@ -361,7 +371,6 @@ export class FrequencyReportComponent {
 
           ctx.font = '20px sans-serif';
 
-          // Split the key text by space and calculate total height
           const keyWords = chartData.uniqueKeys?.key.split(' ') || [];
           const lineHeight = 15;
           const gap = 10;
@@ -383,7 +392,6 @@ export class FrequencyReportComponent {
       }
     };
 
-
     const legendContainerId = `htmlLegend-${reportId}`;
     this.createLegendContainer(legendContainerId, container);
 
@@ -397,7 +405,6 @@ export class FrequencyReportComponent {
           ul.firstChild.remove();
         }
 
-        // Reuse the built-in legendItems generator
         const items = chart.options.plugins.legend.labels.generateLabels(chart);
 
         items.forEach(item => {
@@ -409,29 +416,41 @@ export class FrequencyReportComponent {
           li.style.marginLeft = '10px';
 
           li.onclick = () => {
-            const {type} = chart.config;
+            const { type } = chart.config;
             const dataIndex = item.index;
             let dataValue = chartData.datasets[0].data[dataIndex];
+
+           
+
             if (type === 'doughnut') {
-              if (chartData.uniqueKeys.key === "") {
-                let totalSeconds = this.parseDuration(totalJobCount);
+              if (templateName === 'WORKFLOWS_LONGEST_EXECUTION_TIMES' || templateName === 'JOBS_LONGEST_EXECUTION_TIMES') {
                 chart.toggleDataVisibility(dataIndex);
-                if (dataValue === undefined) {
-                  dataValue = 0
-                }
                 if (chart._hiddenIndices[dataIndex]) {
-                  totalSeconds -= dataValue;
+                  totalJobCount -= chartData.datasets.length;
                 } else {
-                  totalSeconds += dataValue;
+                  totalJobCount += chartData.datasets.length;
                 }
-                totalJobCount = this.formatDuration(totalSeconds);
               } else {
-                const isVisible = chart._hiddenIndices[dataIndex];
-                chart.toggleDataVisibility(dataIndex);
-                if (!isVisible) {
-                  totalJobCount -= dataValue;
+                if (chartData.uniqueKeys.key === "") {
+                  let totalSeconds = this.parseDuration(totalJobCount);
+                  chart.toggleDataVisibility(dataIndex);
+                  if (dataValue === undefined) {
+                    dataValue = 0;
+                  }
+                  if (chart._hiddenIndices[dataIndex]) {
+                    totalSeconds -= dataValue;
+                  } else {
+                    totalSeconds += dataValue;
+                  }
+                  totalJobCount = this.formatDuration(totalSeconds);
                 } else {
-                  totalJobCount += dataValue;
+                  const isVisible = chart._hiddenIndices[dataIndex];
+                  chart.toggleDataVisibility(dataIndex);
+                  if (!isVisible) {
+                    totalJobCount -= dataValue;
+                  } else {
+                    totalJobCount += dataValue;
+                  }
                 }
               }
             } else {
@@ -439,7 +458,6 @@ export class FrequencyReportComponent {
             }
             chart.update();
           };
-
 
           const boxSpan = document.createElement('span');
           boxSpan.style.background = item.fillStyle;
@@ -473,8 +491,8 @@ export class FrequencyReportComponent {
       maintainAspectRatio: false, // Set to false to fix height
       height: 180, // Specify the height of the chart
       plugins: {
-        legend: {display: false},
-        datalabels: {display: false},
+        legend: { display: false },
+        datalabels: { display: false },
         tooltip: {
           callbacks: {
             label: (tooltipItem) => {
@@ -485,7 +503,6 @@ export class FrequencyReportComponent {
             }
           }
         }
-
       }
     };
 
@@ -496,6 +513,7 @@ export class FrequencyReportComponent {
       options: chartOptions
     });
   }
+
 
   createLegendContainer(legendContainerId: string, container: HTMLElement) {
     const legendContainer = document.createElement('div');
@@ -680,22 +698,26 @@ export class FrequencyReportComponent {
     reports.showTable = !reports.showTable;
   }
 
-  updateAllChecked(): void {
-    this.filter.indeterminate = false;
-    if (this.filter.checked) {
-      this.multiReports = this.multiReports.map(item => ({
-        ...item,
-        checked: true
-      }));
-      this.addCardItems = [...this.multiReports];
-    } else {
-      this.addCardItems = [];
-      this.multiReports = this.multiReports.map(item => ({
-        ...item,
-        checked: false
-      }));
-    }
+ updateAllChecked(): void {
+  this.filter.indeterminate = false;
+  if (this.filter.checked) {
+    this.multiReports = this.multiReports.map(item => ({
+      ...item,
+      checked: true
+    }));
+    this.addCardItems = [...this.multiReports];
+    setTimeout(() => {
+      this.generateDonutCharts(); // Generate charts for all items
+    }, 100);
+  } else {
+    this.addCardItems = [];
+    this.multiReports = this.multiReports.map(item => ({
+      ...item,
+      checked: false
+    }));
+    this.destroyElements();
   }
+}
 
   sort(type): void {
     this.filter.reverse = !this.filter.reverse;

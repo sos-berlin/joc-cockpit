@@ -646,7 +646,7 @@
                               <div *ngIf="ename.errors.invalidIdentifier" translate>common.message.invalid</div>
                             </div>
                           </div>
-                          <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((eVal.dirty || eVal.touched) && eVal.invalid)}">
+                          <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((eVal.dirty || eVal.touched) && eVal.invalid)}">
                             <label class="w-full">
                               <input #eVal="ngModel" (keydown)="onKeyPress($event, 'argument')" [(ngModel)]="argu.value" [required]="(argu.name && argu.name.length > 0 && !(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name)) || argu.isRequired"
                                      class="form-control" name="value{{i}}"
@@ -660,10 +660,11 @@
                             <i (click)="openEditor(argu)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
                                style="right: 13px;top:1px;"></i>
                           </div>
-                          <div *ngIf="!argu.isRequired" class="col-md-1 col-lg-1 p-l-0">
+                          <div *ngIf="!argu.isRequired" class="col-md-2 col-lg-2 p-l-0 d-flex justify-content-around">
                             <i
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name)"
                               class="fa fa-scissors m-t-sm"></i>
+                              <a *ngIf="argu.name"><i (click)="encrpytValue(argu)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                             <a
                               *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name))"><i
                               (click)="removeArgu(argu.name, i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
@@ -746,7 +747,7 @@
                               <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
                             </div>
                           </div>
-                          <div class="col-md-6 col-lg-6 m-b-sm">
+                          <div class="col-md-5 col-lg-5 m-b-sm">
                             <label class="w-full">
                               <input (blur)="checkString(argument, 'value')" (keydown)="onKeyPress($event, 'jobArgument')"
                                      [(ngModel)]="argument.value" [required]="argument.name && argument.name.length > 0" autocomplete="off"
@@ -758,10 +759,11 @@
                             <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline"
                                nzType="form" style="right: 13px;top:1px;"></i>
                           </div>
-                          <div class="col-md-1 col-lg-1 p-l-0">
+                          <div class="col-md-2 col-lg-2 p-l-0 d-flex justify-content-around">
                             <i
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'jobArguments' && object.setOfCheckedJobArgu.has(argument.name) && copiedParamObjects.operation === 'CUT'"
                               class="fa fa-scissors m-t-sm"></i>
+                              <a *ngIf="argument.name"><i (click)="encrpytValue(argument)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                             <a
                               *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'jobArguments' && object.setOfCheckedJobArgu.has(argument.name))"><i
                               (click)="removeJobArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>

@@ -3262,7 +3262,9 @@ export class EncryptArgumentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   submitted: boolean = false;
   encryptSubmiited: boolean = false;
-  currentVariable: any;
+  argu: any;
+  type:any;
+  selectedAgent: string;
   certificateList: any = [];
   selectedCert: string = '';
   certificate: string = '';
@@ -3273,7 +3275,9 @@ export class EncryptArgumentModalComponent {
   }
 
   ngOnInit(): void {
-    this.currentVariable = this.modalData.currentVariable;
+    this.type = this.modalData.type;
+    this.argu = this.modalData.argu;
+    this.selectedAgent = this.modalData.selectedAgent;
     this.getCertificates();
   }
 
@@ -3282,6 +3286,9 @@ export class EncryptArgumentModalComponent {
       agentIds: [],
       // certAliases: []
     };
+    if(this.selectedAgent){
+      certAliases.agentIds.push(this.selectedAgent);
+    }
     this.coreService.post('encipherment/assignment', certAliases).subscribe({
       next: (res: any) => {
         this.certificateList = res.mappings;
@@ -3290,17 +3297,31 @@ export class EncryptArgumentModalComponent {
     });
   }
 
-  changeCertificate(){
+  changeCertificate(event){
+    if(this.selectedCert === event){
+      this.certificate = '';
+    }
+  }
 
+  onFocusCertificate(){
+    this.selectedCert = '';
   }
 
   encrypt(){
     this.encryptSubmiited = true;
-    let submittedVal = {
-      toEncrypt: this.currentVariable.value.default,
-      certAlias: this.selectedCert,
-      certificate: this.certificate
-    };
+    let submittedVal: any = {};
+
+    if(this.type === 'job'){
+      submittedVal.toEncrypt = this.argu.value;
+    }else if(this.type === 'jobTemplate'){
+      submittedVal.toEncrypt = this.argu.value.default;
+    }
+    if(this.selectedCert){
+      submittedVal.certAlias = this.selectedCert;
+    }
+    if(this.certificate){
+      submittedVal.certificate = this.certificate
+    }
     this.coreService.post('encipherment/encrypt', submittedVal).subscribe({
       next: (res: any) => {
         this.encryptedValue = res.encryptedValue;
@@ -3312,8 +3333,12 @@ export class EncryptArgumentModalComponent {
 
   onSubmit() {
     this.submitted = true;
-    this.currentVariable.value.default = this.encryptedValue;
-    this.activeModal.close(this.currentVariable);
+    if(this.type === 'job'){
+      this.argu.value = this.encryptedValue;
+    }else if(this.type === 'jobTemplate'){
+      this.argu.value.default = this.encryptedValue;
+    }
+    this.activeModal.close(this.argu);
   }
 
   cancel(): void {
