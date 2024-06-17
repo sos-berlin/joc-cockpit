@@ -735,7 +735,9 @@ export class AddRestrictionComponent {
   selectAllHolidays() {
     if (this.holidayDays.checked) {
       this.frequency.nationalHoliday = this.holidayList.map(holiday => holiday.date);
+      this.editor.isEnable = true;
     } else {
+      this.editor.isEnable = false;
       this.frequency.nationalHoliday = [];
     }
   }
