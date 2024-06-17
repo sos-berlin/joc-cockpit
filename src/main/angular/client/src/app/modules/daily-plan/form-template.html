@@ -111,12 +111,23 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>inventory.label.tags</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>inventory.tab.workflowTagging</label>
       <div class=" col-sm-6">
-        <nz-select [(ngModel)]="filter.tags" name="tag" nzAllowClear nzMode="multiple"
+        <nz-select [(ngModel)]="filter.tags" name="workflowTag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
                    nzShowSearch>
           <nz-option *ngFor="let tag of tags" [nzLabel]="tag.name"
+                     [nzValue]="tag.name"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>inventory.tab.orderTagging</label>
+      <div class=" col-sm-6">
+        <nz-select [(ngModel)]="filter.orderTags" name="orderTag" nzAllowClear nzMode="multiple"
+                   nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
+                   nzShowSearch>
+          <nz-option *ngFor="let tag of orderTags" [nzLabel]="tag.name"
                      [nzValue]="tag.name"></nz-option>
         </nz-select>
       </div>

@@ -23,6 +23,7 @@ import {DataService} from '../../../../services/data.service';
 import {WorkflowService} from "../../../../services/workflow.service";
 import {InventoryObject} from '../../../../models/enums';
 import { EncryptArgumentModalComponent } from '../inventory.component';
+import { InventoryService } from '../inventory.service';
 
 declare const $;
 
@@ -391,7 +392,7 @@ export class JobTemplateComponent {
 
   constructor(public coreService: CoreService, private dataService: DataService, private router: Router, private translate: TranslateService,
               private modal: NzModalService, private ref: ChangeDetectorRef, private message: NzMessageService,
-              private workflowService: WorkflowService) {
+              private workflowService: WorkflowService, public inventoryService: InventoryService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.job.actual) {
@@ -1430,7 +1431,15 @@ export class JobTemplateComponent {
   }
 
   encrpytValue(argument, typeArg){
-    const selectedAgent  = '';
+    const agentList = this.inventoryService.agentList;
+    let selectedAgent  = [];
+    if(agentList.length > 0){
+      agentList.forEach(child => {
+        if(child.children.length > 0){
+            selectedAgent =  child.children;
+        }
+      })
+    }
     const argu = argument;
     const type = typeArg;
     const modal = this.modal.create({

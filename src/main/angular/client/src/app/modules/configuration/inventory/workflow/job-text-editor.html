@@ -539,7 +539,7 @@
                               <div *ngIf="ename.errors.invalidIdentifier" translate>common.message.invalid</div>
                             </div>
                           </div>
-                          <div class="col-md-6 col-lg-6 m-b-sm">
+                          <div class="col-md-5 col-lg-5 m-b-sm">
                             <nz-mention [nzNotFoundContent]="'common.message.noDataAvailable' | translate"
                                         [nzPrefix]="['$']"
                                         [nzSuggestions]="mentionValueList" [nzValueWith]="valueWith">
@@ -558,9 +558,10 @@
                               </ng-container>
                             </nz-mention>
                           </div>
-                          <div class="col-md-1 col-lg-1 p-l-0">
+                          <div class="col-md-2 col-lg-2 p-l-0 d-flex justify-content-around">
                             <i *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name)"
                               class="fa fa-scissors m-t-sm"></i>
+                            <a *ngIf="env.name"><i (click)="encrpytValue(env)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                             <a *ngIf="!(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) && !(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name))"><i
                               (click)="removeEnv(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                           </div>
@@ -664,7 +665,7 @@
                             <i
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name)"
                               class="fa fa-scissors m-t-sm"></i>
-                              <a *ngIf="argu.name"><i (click)="encrpytValue(argu)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                            <a *ngIf="argu.name"><i (click)="encrpytValue(argu)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                             <a
                               *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name))"><i
                               (click)="removeArgu(argu.name, i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
@@ -763,7 +764,7 @@
                             <i
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'jobArguments' && object.setOfCheckedJobArgu.has(argument.name) && copiedParamObjects.operation === 'CUT'"
                               class="fa fa-scissors m-t-sm"></i>
-                              <a *ngIf="argument.name"><i (click)="encrpytValue(argument)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                            <a *ngIf="argument.name"><i (click)="encrpytValue(argument)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                             <a
                               *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'jobArguments' && object.setOfCheckedJobArgu.has(argument.name))"><i
                               (click)="removeJobArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
@@ -1060,7 +1061,7 @@
                     <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
                   </div>
                 </div>
-                <div class="col-md-6 col-lg-6 m-b-sm">
+                <div class="col-md-5 col-lg-5 m-b-sm">
                   <nz-mention [nzNotFoundContent]="'common.message.noDataAvailable' | translate"
                               [nzPrefix]="['$']"
                               [nzSuggestions]="variableList" [nzValueWith]="valueWith">
@@ -1079,10 +1080,11 @@
                     </ng-container>
                   </nz-mention>
                 </div>
-                <div class="col-md-1 col-lg-1 p-l-0">
+                <div class="col-md-2 col-lg-2 p-l-0 d-flex justify-content-around">
                   <i
                     *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'nodeArguments' && object.setOfCheckedNodeArgu.has(argument.name)"
                     class="fa fa-scissors m-t-sm"></i>
+                  <a *ngIf="argument.name"><i (click)="encrpytValue(argument)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                   <a
                     *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'nodeArguments' && object.setOfCheckedNodeArgu.has(argument.name))"><i
                     (click)="removeArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>

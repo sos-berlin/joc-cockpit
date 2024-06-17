@@ -1370,7 +1370,7 @@ export class JobComponent {
   @Output() updateOnEncrypt: EventEmitter<any> = new EventEmitter();
 
   constructor(public coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,
-              private workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService) {
+              private workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService, public inventoryService: InventoryService) {
     this.subscription = dataService.reloadWorkflowError.subscribe(res => {
       if (res.error) {
         this.error = res.error;
@@ -2608,7 +2608,19 @@ export class JobComponent {
   }
 
   encrpytValue(argument){
-    const selectedAgent  = this.selectedNode.job.agentName;
+    const agentList = this.inventoryService.agentList;
+    let selectedAgent  = [];
+    if(agentList.length > 0){
+      agentList.forEach(child => {
+        if(child.children.length > 0){
+          child.children.forEach(agent => {
+            if(agent === this.selectedNode.job.agentName){
+              selectedAgent =  child.children;
+            }
+          })
+        }
+      })
+    }
     const argu = argument;
     const type = 'job';
     const modal = this.modal.create({
@@ -12722,7 +12734,15 @@ updateOnEncrypt(){
   }
 
   encrpytValue(currentVariable, actualVariable, typeArg){
-    const selectedAgent  = '';
+    const agentList = this.inventoryService.agentList;
+    let selectedAgent  = [];
+    if(agentList.length > 0){
+      agentList.forEach(child => {
+        if(child.children.length > 0){
+            selectedAgent =  child.children;
+        }
+      })
+    }
     const argu = currentVariable;
     const type = typeArg;
     const modal = this.modal.create({
@@ -12740,26 +12760,32 @@ updateOnEncrypt(){
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        // if(actualVariable.value.type !== 'List' && actualVariable.value.type !== 'Map'){
-        //   actualVariable.value = result.value;
-        // }else{
-        //   actualVariable.value.listParameters.forEach(element => {
-        //     if(element.name === currentVariable.name){
-        //       element.value = result.value;
-        //     }
-        //   });
-        // }
-
-        // this.variableDeclarations.parameters.forEach(element => {
-        //   if(actualVariable.name === element.name){
-        //     element.value = actualVariable.value;
-        //   }
-        // })
-        // this.orderPreparation.parameters = this.coreService.clone(this.variableDeclarations.parameters);
-        // this.updateOrderPreparation();
-        // this.storeData(this.workflow.configuration);
-        // this.isChanged.emit({flag: true, isOrderAdded: workflow});
-        // this.resetAction();
+        if(actualVariable.value.type !== 'List' && actualVariable.value.type !== 'Map'){
+          for (let val in this.orderPreparation.parameters) {
+            if(val === actualVariable.name) {
+              this.orderPreparation.parameters[val] = result.value;
+            }
+          }
+        }else{
+          actualVariable.value.listParameters.forEach(element => {
+            if(element.name === currentVariable.name){
+              for (let val in this.orderPreparation.parameters) {
+                if(val === actualVariable.name) {
+                  for (let param in this.orderPreparation.parameters[val].listParameters) {
+                    if(param === currentVariable.name){
+                      this.orderPreparation.parameters[val].listParameters[param] = result.value
+                    }
+                  }
+                }
+              }
+            }
+          });
+        }
+        this.workflow.configuration.orderPreparation = this.orderPreparation;
+        this.updateOrderPreparation();
+        const data = this.coreService.clone(this.workflow.configuration);
+        const valid = this.modifyJSON(data, true, false);
+        this.saveJSON(valid ? data : 'false');
       }
     });
   }

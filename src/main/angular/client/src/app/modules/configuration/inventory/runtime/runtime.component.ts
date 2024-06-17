@@ -81,7 +81,6 @@ export class AddRestrictionComponent {
       }
     }
     this._temp = this.data.updateFrequency;
-    console.log(this._temp,">>>temp")
     if (this._temp && !isEmpty(this._temp)) {
       this.editor.create = false;
       this.isRuntimeEdit = true;
@@ -199,7 +198,6 @@ export class AddRestrictionComponent {
       }
     }else if (this.calendar.frequencyList[i].tab === 'nationalHoliday') {
       this.frequency.nationalHoliday = clone(this.calendar.frequencyList[i].nationalHoliday);
-      console.log(this._temp,"this.temp...")
       if (this._temp.nationalHoliday) {
         this._temp.nationalHoliday.forEach((date) => {
           this.holidayList.push({date});
@@ -430,15 +428,12 @@ export class AddRestrictionComponent {
     let _dates = [], datesArr;
     if (this.frequency.tab === 'nationalHoliday') {
       datesArr = this.calendarService.groupByDates(this.frequency.nationalHoliday);
-      console.log(datesArr,"datesArr")
       _dates = clone(datesArr);
     }
-console.log(this.calendar.frequencyList,"this.calendar.frequencyList")
     if (this.calendar.frequencyList.length > 0) {
       let flag1 = false;
       for (let i = 0; i < this.calendar.frequencyList.length; i++) {
         if (this.frequency.tab == this.calendar.frequencyList[i].tab) {
-          console.log(this.frequency.tab,"this.frequency.tab")
           if (this.frequency.tab === 'weekDays') {
             if (this.frequency.months && this.frequency.months.length > 0) {
               if (this.frequency.months == this.calendar.frequencyList[i].months || isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
@@ -577,12 +572,10 @@ console.log(this.calendar.frequencyList,"this.calendar.frequencyList")
               break;
             }
           }else if (this.frequency.tab == 'nationalHoliday') {
-            console.log(this.calendar.frequencyList[i],"??:F>:")
             flag1 = true;
             datesArr.forEach((dates) => {
               if (this.calendar.frequencyList[i].nationalHoliday && this.calendar.frequencyList[i].nationalHoliday.length > 0) {
                 if (new Date(this.calendar.frequencyList[i].nationalHoliday[0]).getFullYear() === new Date(dates[0]).getFullYear()) {
-                  console.log("____")
                   dates.forEach((date) => {
                     if (this.calendar.frequencyList[i].nationalHoliday.indexOf(date) == -1) {
                       this.calendar.frequencyList[i].nationalHoliday.push(date);
@@ -709,7 +702,6 @@ console.log(this.calendar.frequencyList,"this.calendar.frequencyList")
     $('#calendar').data('calendar').setDataSource(this.tempItems);
   }
   loadHolidayList(): void {
-    console.log('loadHolidayList called');
     this.holidayDays.checked = false;
     this.holidayList = [];
     let holidays = [];
@@ -739,33 +731,29 @@ console.log(this.calendar.frequencyList,"this.calendar.frequencyList")
     }
   }
   selectAllHolidays() {
-    console.log('selectAllHolidays called');
     if (this.holidayDays.checked) {
       this.frequency.nationalHoliday = this.holidayList.map(holiday => holiday.date);
+      this.editor.isEnable = true;
     } else {
+      this.editor.isEnable = false;
       this.frequency.nationalHoliday = [];
     }
-    console.log('National Holidays after select all:', this.frequency.nationalHoliday);
   }
 
   onItemChecked(date: string, checked: boolean) {
-    console.log('onItemChecked called with date:', date, 'and checked:', checked);
     if (checked) {
       this.frequency.nationalHoliday.push(date);
     } else {
       this.frequency.nationalHoliday = this.frequency.nationalHoliday.filter(d => d !== date);
     }
     this.onChangeHolidays();
-    console.log('National Holidays after item check:', this.frequency.nationalHoliday);
   }
 
   onChangeHolidays(): void {
-    console.log('onChangeHolidays called');
     this.editor.isEnable = !!(this.frequency.nationalHoliday && this.frequency.nationalHoliday.length > 0);
     if (this.holidayList && this.frequency.nationalHoliday) {
       this.holidayDays.checked = this.holidayList.length == this.frequency.nationalHoliday.length;
     }
-    console.log('Holiday list:', this.holidayList);
   }
   getDateFormat(date: string): string {
     return new Date(date).toLocaleDateString();

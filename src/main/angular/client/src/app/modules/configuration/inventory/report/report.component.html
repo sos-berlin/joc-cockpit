@@ -109,6 +109,8 @@
                  class="text-danger help-block">
               <div *ngIf="monthFrom.errors?.required" translate>common.message.requiredError</div>
               <div *ngIf="monthFrom.errors?.invalidMonth" translate>common.message.invalid</div>
+              <div *ngIf="monthFrom.errors?.invalidMonthUnit" translate>common.message.invalidMonthUnit</div>
+              <div *ngIf="monthFrom.errors?.monthFromAfterMonthTo" translate>common.message.monthFromAfterMonthTo</div>
             </div>
           </div>
         </div>
@@ -130,9 +132,12 @@
                  class="text-danger help-block">
               <div *ngIf="monthTo.errors?.required" translate>common.message.requiredError</div>
               <div *ngIf="monthTo.errors?.invalidMonth" translate>common.message.invalid</div>
+              <div *ngIf="monthTo.errors?.invalidMonthUnit" translate>common.message.notValidInput</div>
+              <div *ngIf="monthTo.errors?.monthFromAfterMonthTo" translate>common.message.monthFromAfterMonthTo</div>
             </div>
           </div>
         </div>
+
         <div class="form-group row" *ngIf="isInterval === 'relative'">
           <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.unit' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.unit

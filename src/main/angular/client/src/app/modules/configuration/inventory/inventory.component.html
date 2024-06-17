@@ -147,7 +147,7 @@
           <div *ngIf="!isTrash">
             <nz-tabset class="custom-tab" [(nzSelectedIndex)]="inventoryConfig.selectedIndex" [nzAnimated]="false" [nzType]="'line'">
               <nz-tab (nzClick)="switchToTrash(false);inventoryConfig.selectedIndex = 0" [nzTitle]="'inventory.tab.folders' | translate"></nz-tab>
-              <nz-tab (nzClick)="switchToTagging()" [nzTitle]="'inventory.tab.tagging' | translate"></nz-tab>
+              <nz-tab (nzClick)="switchToTagging()" [nzTitle]="'inventory.tab.workflowTagging' | translate"></nz-tab>
             </nz-tabset>
           </div>
           <a *ngIf="!isTrash" class="text resize-cursor a-1 pos-abt r-28 z-index-99">

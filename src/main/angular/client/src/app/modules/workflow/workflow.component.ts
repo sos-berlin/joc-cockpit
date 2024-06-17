@@ -93,6 +93,7 @@ export class SearchComponent {
   isUnique = true;
   objectType = 'WORKFLOW';
   tags: any = [];
+  orderTags: any = []
   statusObj = {
     syncStatus: [],
     availabilityStatus: []
@@ -124,6 +125,7 @@ export class SearchComponent {
     }
     this.getFolderTree();
     this.fetchTags();
+    this.fetchOrderTags();
     this.filter.instructionStates = this.filter.instructionStates ? this.filter.instructionStates : [];
     this.filter.states = this.filter.states ? this.filter.states : [];
 
@@ -175,6 +177,15 @@ export class SearchComponent {
       controllerId: this.schedulerIds.selected
     }).subscribe((res) => {
       this.tags = res.results;
+    });
+  }
+
+  private fetchOrderTags(): void {
+    this.coreService.post('orders/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+      this.orderTags = res.results;
     });
   }
 
@@ -1058,7 +1069,7 @@ export class WorkflowComponent {
         };
         const request2 = {
           controllerId: this.schedulerIds.selected,
-          workflowIds: []
+          workflowIds: [],
         };
         let flag = true;
         let panelObj;
@@ -1608,7 +1619,9 @@ export class WorkflowComponent {
     if (this.searchFilter.tags && this.searchFilter.tags.length > 0) {
       obj.tags = this.searchFilter.tags;
     }
-
+    if (this.searchFilter.orderTags && this.searchFilter.orderTags.length > 0) {
+      obj.orderTags = this.searchFilter.orderTags;
+    }
     this.getWorkflowList(obj);
   }
 
@@ -2149,6 +2162,7 @@ export class WorkflowComponent {
     if (!obj.workflowIds || obj.workflowIds.length === 0 || (this.permission && !this.permission.currentController.orders.view)) {
       return;
     }
+    obj.orderTags = Array.from(this.coreService.checkedOrderTags) || [];
     if (this.workflowFilters.filter.date !== 'ALL') {
       obj.dateTo = this.workflowFilters.filter.date;
       if (this.workflowFilters.filter.date === '2d') {
@@ -2179,6 +2193,9 @@ export class WorkflowComponent {
     if (!obj.workflowIds || obj.workflowIds.length === 0 || (this.permission && !this.permission.currentController.orders.view)) {
       return;
     }
+
+    obj.orderTags = Array.from(this.coreService.checkedOrderTags) || [];
+
     if (this.workflowFilters.filter.date !== 'ALL') {
       obj.dateTo = this.workflowFilters.filter.date;
       if (this.workflowFilters.filter.date === '2d') {
@@ -2438,6 +2455,7 @@ export class WorkflowComponent {
 
   objectTreeSearch() {
     $('#objectTagSearch').focus();
+    $('#objectOrderTagSearch').focus();
     $('.editor-tree  a').addClass('hide-on-focus');
   }
 
@@ -2595,6 +2613,7 @@ export class WorkflowComponent {
 
     objectOrderTreeSearch() {
       $('#objectTagSearch').focus();
+      $('#objectOrderTagSearch').focus();
       $('.editor-tree  a').addClass('hide-on-focus');
     }
 

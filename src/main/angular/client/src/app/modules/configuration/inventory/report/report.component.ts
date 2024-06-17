@@ -31,28 +31,25 @@ export class MonthValidator implements Validator {
   validate(c: AbstractControl): { [key: string]: any } | null {
     const v = c.value;
 
-    if (v != null) {
-      if (v === '') {
-        return null;
-      }
+    if (v != null && v !== '') {
       const regex = /^\s*(([+-]*\d+\s*[MmQqYy]|\d{4}-(0[1-9]|1[0-2])))\s*$/;
       if (regex.test(v)) {
         if (this.monthFrom && regex.test(this.monthFrom)) {
-          const unitV = v.slice(-1).toUpperCase();
-          const unitMonthFrom = this.monthFrom.slice(-1).toUpperCase();
+          const unitV = this.extractUnit(v);
+          const unitMonthFrom = this.extractUnit(this.monthFrom);
 
           if (unitV !== unitMonthFrom) {
-            return { invalidMonth: true };
+            return { invalidMonthUnit: true };
           }
 
           if (this.isDate(v) && this.isDate(this.monthFrom)) {
-            const dateV = new Date(v);
-            const dateMonthFrom = new Date(this.monthFrom);
+            const dateV = new Date(v + "-01");
+            const dateMonthFrom = new Date(this.monthFrom + "-01");
             if (dateV < dateMonthFrom) {
-              return { invalidMonth: true };
+              return { monthFromAfterMonthTo: true };
             }
           } else if (parseFloat(v) < parseFloat(this.monthFrom)) {
-            return { invalidMonth: true };
+            return { monthFromAfterMonthTo: true };
           }
 
           return null;
@@ -62,15 +59,22 @@ export class MonthValidator implements Validator {
     } else {
       return null;
     }
-    return {
-      invalidMonth: true
-    };
+    return { invalidMonth: true };
   }
 
   private isDate(value: string): boolean {
     return /^\d{4}-(0[1-9]|1[0-2])$/.test(value);
   }
-}@Directive({
+
+  private extractUnit(value: string): string {
+    if (this.isDate(value)) {
+      return 'D';
+    }
+    return value.slice(-1).toUpperCase();
+  }
+}
+
+@Directive({
   selector: '[appRelativeMonthValidate]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => RelativeMonthValidator), multi: true}

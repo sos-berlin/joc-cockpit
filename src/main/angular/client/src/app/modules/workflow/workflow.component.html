@@ -190,7 +190,7 @@
           <div>
             <div class="editor-tree">
               <div class="pl-20" style="padding-right:20px">
-                
+
                 <nz-tabset class="custom-tab" [nzAnimated]="false" [(nzSelectedIndex)]="workflowFilters.selectedIndex" [nzType]="'line'">
                   <nz-tab (nzClick)="switchToTagging('folders');workflowFilters.selectedIndex = 0" [nzTitle]="foldersTitle">
                     <ng-template #foldersTitle>
@@ -286,7 +286,7 @@
                          [(ngModel)]="searchOrderTag.text"
                          [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
                          class="input-tree-search"
-                         id="objectTagSearch"
+                         id="objectOrderTagSearch"
                          nz-input
                   />
 

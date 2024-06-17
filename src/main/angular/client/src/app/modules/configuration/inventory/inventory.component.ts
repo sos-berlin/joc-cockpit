@@ -3264,7 +3264,7 @@ export class EncryptArgumentModalComponent {
   encryptSubmiited: boolean = false;
   argu: any;
   type:any;
-  selectedAgent: string;
+  selectedAgent = [];
   certificateList: any = [];
   selectedCert: string = '';
   certificate: string = '';
@@ -3286,8 +3286,8 @@ export class EncryptArgumentModalComponent {
       agentIds: [],
       // certAliases: []
     };
-    if(this.selectedAgent){
-      certAliases.agentIds.push(this.selectedAgent);
+    if(this.selectedAgent.length > 0){
+      certAliases.agentIds = this.selectedAgent;
     }
     this.coreService.post('encipherment/assignment', certAliases).subscribe({
       next: (res: any) => {

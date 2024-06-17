@@ -587,7 +587,7 @@
             <div id="rightPanel">
               <div class="row">
                 <div class="col-lg-2 col-sm-3 p-r-xs">
-                  <div class="box m-b-0" style="height: calc(100% - {{pageView==='grid' ? '2px' : '20px'}});">
+                  <div class="box m-b-0" [style.height]="pageView === 'grid' ? 'calc(100% - 2px)' : 'calc(100% - 20px)'">
                     <nz-tabset class="custom-tab p-t-sm p-l-sm p-r-sm" [nzAnimated]="false"  [nzType]="'line'" [(nzSelectedIndex)]="dailyPlanFilters.selectedIndex">
                       <nz-tab (nzClick)="switchToTagging('workflowTags');dailyPlanFilters.selectedIndex = 0;" [nzTitle]="workflowTagsTitle">
                         <ng-template #workflowTagsTitle>
@@ -601,8 +601,8 @@
                       </nz-tab>
                     </nz-tabset>
                     <div *ngIf="dailyPlanFilters.tagType === 'workflowTags'">
-                      <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm daily-plan-tag" style="height: calc(100% - {{pageView==='grid' ? '0' : '20px'}});">
-                        <div class="fade-in">
+                      <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm daily-plan-tag" [style.height]="pageView === 'grid' ? 'calc(100% - 0)' : 'calc(100% - 20px)'">
+                      <div class="fade-in">
                           <div class="p-l-xs m-b-sm">
                             <a (click)="selectTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
                               <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
@@ -662,8 +662,8 @@
                       </perfect-scrollbar>
                     </div>
                     <div *ngIf="dailyPlanFilters.tagType === 'orderTags'">
-                      <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm daily-plan-tag" style="height: calc(100% - {{pageView==='grid' ? '0' : '20px'}});">
-                        <div class="fade-in">
+                      <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm daily-plan-tag" [style.height]="pageView === 'grid' ? 'calc(100% - 0)' : 'calc(100% - 20px)'">
+                      <div class="fade-in">
                           <div class="p-l-xs m-b-sm">
                             <a (click)="selectOrderTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
                               <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
@@ -682,7 +682,7 @@
                                      [(ngModel)]="searchOrderTag.text"
                                      [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
                                      class="input-tree-search"
-                                     id="dailyTagSearch"
+                                     id="dailyOrderTagSearch"
                                      nz-input
                               />
 

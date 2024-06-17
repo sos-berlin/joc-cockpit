@@ -140,9 +140,10 @@ export class GenerateReportComponent {
   sort(propertyName): void {
     this.filters.filter.reverse = !this.filters.filter.reverse;
     this.filters.filter.sortBy = propertyName;
-    if (this.filters.groupBy == 'path' && propertyName == 'path') {
+
+    if (this.filters.groupBy === 'path' && propertyName === 'path') {
       this.filteredData = this.orderPipe.transform(this.filteredData, this.filters.filter.sortBy, this.filters.filter.reverse);
-    } else if (this.filters.groupBy == 'hits' && propertyName == 'hits') {
+    } else if (this.filters.groupBy === 'hits' && propertyName === 'hits') {
       this.filteredData = this.orderPipe.transform(this.filteredData, this.filters.filter.sortBy, this.filters.filter.reverse);
     } else {
       this.data = this.orderPipe.transform(this.data, this.filters.filter.sortBy, this.filters.filter.reverse);
@@ -151,10 +152,13 @@ export class GenerateReportComponent {
         item.path = item.value[0].path;
         item.title = item.value[0].title;
         item.template = item.value[0].template;
+        item.highestGroup = item.value.filter(val => val.sort === 'HIGHEST') || [];
+        item.lowestGroup = item.value.filter(val => val.sort === 'LOWEST') || [];
+
         if (this.filters.expandedKey?.has(item.key)) {
           item.expanded = true;
         }
-      })
+      });
     }
     this.reset();
   }

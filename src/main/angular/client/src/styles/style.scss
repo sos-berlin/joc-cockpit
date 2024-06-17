@@ -9299,7 +9299,7 @@ cdk-virtual-scroll-viewport {
   margin-top: -4px;
 }
 
-#objectTreeSearch, #objectTagSearch, #dailyTagSearch, #workflowTreeSearch {
+#objectTreeSearch, #objectTagSearch, #objectOrderTagSearch, #overViewOrderTagSearch, #overViewTagSearch, #dailyTagSearch, #dailyOrderTagSearch , #workflowTreeSearch {
   width: 10px;
   transition: all .5s ease-in-out;
   position: absolute;
@@ -9329,7 +9329,45 @@ cdk-virtual-scroll-viewport {
   }
 }
 
+#overViewTagSearch {
+  background: var(--bg-box);
+  margin-left: 0;
+  margin-top: -28px !important;
+
+  &:focus {
+    width: calc(100% - 26px);
+  }
+}
+
+#overViewOrderTagSearch {
+  background: var(--bg-box);
+  margin-left: 0;
+  margin-top: -28px !important;
+
+  &:focus {
+    width: calc(100% - 26px);
+  }
+}
+
+#objectOrderTagSearch {
+  margin-left: -2px;
+
+  &:focus {
+    width: calc(100% - 40px);
+  }
+}
+
 #dailyTagSearch {
+  background: var(--bg-box);
+  margin-left: 0;
+  margin-top: -28px !important;
+
+  &:focus {
+    width: calc(100% - 26px);
+  }
+}
+
+#dailyOrderTagSearch {
   background: var(--bg-box);
   margin-left: 0;
   margin-top: -28px !important;

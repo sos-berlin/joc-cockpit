@@ -563,6 +563,7 @@ export class SearchComponent {
   @Input() allFilter: any;
   @Input() permission: any;
   @Input() tags: any = [];
+  @Input() orderTags: any = [];
   @Input() isSearch: boolean;
 
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
@@ -596,6 +597,7 @@ export class SearchComponent {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getFolderTree();
     this.fetchTags();
+    this.fetchOrderTags();
   }
 
   getFolderTree(): void {
@@ -621,6 +623,15 @@ export class SearchComponent {
       controllerId: this.schedulerIds.selected
     }).subscribe((res) => {
       this.tags = res.results;
+    });
+  }
+
+  private fetchOrderTags(): void {
+    this.coreService.post('orders/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+      this.orderTags = res.results;
     });
   }
 
@@ -3021,6 +3032,7 @@ export class DailyPlanComponent {
 
   objectTreeSearch() {
     $('#dailyTagSearch').focus();
+    $('#dailyOrderTagSearch').focus();
     $('.daily-plan-tag  a').addClass('hide-on-focus');
   }
 
@@ -3108,8 +3120,6 @@ export class DailyPlanComponent {
 
   switchToTagging(flag): void {
     this.dailyPlanFilters.tagType = flag;
-    // this.workflows = [];
-    // this.data = [];
     const obj: any = {
       controllerId: this.schedulerIds.selected
     };
@@ -3249,6 +3259,7 @@ export class DailyPlanComponent {
 
   objectOrderTreeSearch() {
     $('#dailyTagSearch').focus();
+    $('#dailyOrderTagSearch').focus();
     $('.daily-plan-tag  a').addClass('hide-on-focus');
   }
 

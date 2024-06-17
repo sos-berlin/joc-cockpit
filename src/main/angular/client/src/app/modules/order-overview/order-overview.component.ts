@@ -29,6 +29,7 @@ import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {AbstractControl, NG_VALIDATORS, Validator} from "@angular/forms";
 import {OrderActionComponent} from "./order-action/order-action.component";
 import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.component";
+import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
 
 declare const $;
 
@@ -222,6 +223,10 @@ export class OrderOverviewComponent {
   reloadState = 'no';
   isProcessing = false;
   isDropdownOpen = false;
+  orderTags: string[] = [];
+  tags: string[] = [];
+  searchTag = { text: '', loading: false, tags: [], token: '' };
+  searchOrderTag = { text: '', loading: false, tags: [], token: '' }
   searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position'];
   object = {
     mapOfCheckedId: new Map(),
@@ -313,6 +318,8 @@ export class OrderOverviewComponent {
 
   ngOnInit(): void {
     this.init();
+    this.fetchTags();
+    this.fetchOrderTags();
   }
 
   ngOnDestroy(): void {
@@ -341,6 +348,9 @@ export class OrderOverviewComponent {
     if (this.authService.permission) {
       this.permission = JSON.parse(this.authService.permission) || {};
     }
+    if(!this.orderFilters.tagType){
+      this.orderFilters.tagType = 'workflowTags';
+    }
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
@@ -363,8 +373,38 @@ export class OrderOverviewComponent {
     } else {
       this.initTree();
     }
+    if (this.orderFilters.tagType === 'workflowTags') {
+      this.calTop();
+      this.switchToTagging('workflowTags');
+
+      setTimeout(() => {
+        this.calTop();
+      }, 100);
+    } else if (this.orderFilters.tagType === 'orderTags') {
+      this.calTop();
+      this.switchToTagging('orderTags');
+
+      setTimeout(() => {
+        this.calTop();
+      }, 100);
+    }
   }
 
+  private calTop(): void {
+    const dom = $('.scroll-y');
+    if (dom && dom.position()) {
+      let top = dom.position().top + 12;
+      top = top - $(window).scrollTop();
+      if (top < 70) {
+        top = 92;
+      }
+      if (top < 150 && top > 140) {
+        top = 150;
+      }
+
+      $('.sticky').css('top', top);
+    }
+  }
   private initTree(): void {
     this.loading = false;
     if (this.schedulerIds.selected) {
@@ -521,6 +561,8 @@ export class OrderOverviewComponent {
     const tempOrder = this.orders.filter((order) => {
       return order.show;
     });
+    obj.orderTags = Array.from(this.coreService.checkedOrderTags) || [];
+    obj.workflowTags  = Array.from(this.coreService.checkedTags) || [];
     if (this.orderFilters.filter.date !== 'ALL') {
       obj.dateTo = this.orderFilters.filter.date;
       if (this.orderFilters.filter.date === '2d') {
@@ -1170,8 +1212,6 @@ export class OrderOverviewComponent {
     this._bulkOperation('Confirm', 'confirm', false);
   }
 
-
-
   _bulkOperation(operation, url, isKill = false): void {
     const obj: any = {
       controllerId: this.schedulerIds.selected
@@ -1382,5 +1422,282 @@ export class OrderOverviewComponent {
       this.loading = false;
       this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
     }
+  }
+
+  private fetchTags(): void {
+    console.log(">>>")
+    this.coreService.post('workflows/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+      this.tags = res.results;
+    });
+  }
+
+  private fetchOrderTags(): void {
+    this.coreService.post('orders/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+      this.orderTags = res.results;
+    });
+  }
+
+  selectAllOrderTags(): void {
+    this.coreService.post('orders/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe({
+      next: (res: any) => {
+        this.coreService.selectedOrderTags = res.results;
+        this.coreService.selectedOrderTags.forEach(tag => {
+          this.coreService.checkedOrderTags.add(tag.name)
+        });
+        this.getOrders({
+          controllerId: this.schedulerIds.selected,
+          states: this.getState()
+        });
+      }
+    });
+  }
+
+  removeAllOrderTags(): void {
+    this.coreService.selectedOrderTags = [];
+    this.coreService.checkedOrderTags.clear();
+    this.getOrders({
+      controllerId: this.schedulerIds.selected,
+      states: this.getState()
+    });
+  }
+
+  selectOrderTag(tag: string): void {
+    this.coreService.checkedOrderTags.clear();
+    this.coreService.checkedOrderTags.add(tag);
+    this.getOrders({
+      controllerId: this.schedulerIds.selected,
+      states: this.getState()
+    });
+  }
+
+  selectAllTags(): void {
+    this.coreService.post('workflows/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe({
+      next: (res: any) => {
+        this.coreService.selectedTags = res.results;
+        this.coreService.selectedTags.forEach(tag => {
+          this.coreService.checkedTags.add(tag.name)
+        });
+        this.getOrders({
+          controllerId: this.schedulerIds.selected,
+          states: this.getState()
+        });
+      }
+    });
+  }
+
+  removeAllTags(): void {
+    this.coreService.selectedTags = [];
+    this.coreService.checkedTags.clear();
+    this.getOrders({
+      controllerId: this.schedulerIds.selected,
+      states: this.getState()
+    });
+  }
+  switchToTagging(flag): void {
+    console.log(flag,"flag")
+    this.orderFilters.tagType = flag;
+    const obj: any = {
+      controllerId: this.schedulerIds.selected,
+      states: this.getState()
+    };
+    if (flag === 'orderTags') {
+      obj.orderTags = Array.from(this.coreService.checkedOrderTags);
+    } else {
+      obj.workflowTags = Array.from(this.coreService.checkedTags);
+    }
+    this.getOrders(obj);
+  }
+
+  onTagChecked(tag: string, checked: boolean): void {
+    if (checked) {
+      this.coreService.checkedTags.add(tag);
+    } else {
+      this.coreService.checkedTags.delete(tag);
+    }
+    this.getOrders({ controllerId: this.schedulerIds.selected, states: this.getState() });
+  }
+
+  onOrderTagChecked(tag: string, checked: boolean): void {
+    if (checked) {
+      this.coreService.checkedOrderTags.add(tag);
+    } else {
+      this.coreService.checkedOrderTags.delete(tag);
+    }
+    this.getOrders({ controllerId: this.schedulerIds.selected, states: this.getState() });
+  }
+
+
+
+  selectTags(): void {
+    const temp = this.coreService.clone(this.coreService.selectedTags);
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateTagModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        filters: this.orderFilters,
+        controllerId: this.schedulerIds.selected
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(res => {
+      if (res) {
+        const obj: any = {
+          tags: [],
+          controllerId: this.schedulerIds.selected
+        };
+        this.coreService.selectedTags.forEach(tag => {
+          let flag = true;
+          for (let i = 0; i < temp.length; i++) {
+            if (tag.name == temp[i].name) {
+              temp.splice(i, 1);
+              flag = false;
+              break;
+            }
+          }
+          if (flag) {
+            this.coreService.checkedTags.add(tag.name);
+          }
+        });
+        obj.tags = Array.from(this.coreService.checkedTags);
+        this.searchByTags(obj);
+      }
+    });
+
+  }
+
+  private searchByTags(obj): void {
+    if (obj.tags.length > 0) {
+      this.getOrders(obj);
+    } else {
+      this.orders = [];
+      this.hidePanel();
+      this.searchInResult();
+    }
+  }
+  selectOrderTags(): void {
+    const temp = this.coreService.clone(this.coreService.selectedOrderTags);
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateTagModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        filters: this.orderFilters,
+        controllerId: this.schedulerIds.selected
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(res => {
+      if (res) {
+        const obj: any = {
+          orderTags: [],
+          controllerId: this.schedulerIds.selected
+        };
+        this.coreService.selectedOrderTags.forEach(tag => {
+          let flag = true;
+          for (let i = 0; i < temp.length; i++) {
+            if (tag.name == temp[i].name) {
+              temp.splice(i, 1);
+              flag = false;
+              break;
+            }
+          }
+          if (flag) {
+            this.coreService.checkedOrderTags.add(tag.name);
+          }
+        });
+        obj.orderTags = Array.from(this.coreService.checkedOrderTags);
+        this.searchByOrderTags(obj);
+      }
+    });
+
+  }
+  private searchByOrderTags(obj): void {
+    if (obj.orderTags.length > 0) {
+      this.getOrders(obj);
+    } else {
+      this.orders = [];
+      this.hidePanel();
+      this.searchInResult();
+    }
+  }
+
+  objectTreeSearch() {
+    $('#overViewTagSearch').focus();
+    $('#overViewOrderTagSearch').focus();
+    $('.order-overview-tag  a').addClass('hide-on-focus');
+  }
+
+  objectOrderTreeSearch() {
+    $('#overViewTagSearch').focus();
+    $('#overViewOrderTagSearch').focus();
+    $('.order-overview-tag  a').addClass('hide-on-focus');
+  }
+
+  clearSearchInput(): void {
+    this.searchTag.tags = [];
+    this.searchTag.text = '';
+    $('.order-overview-tag  a').removeClass('hide-on-focus');
+  }
+
+
+  clearOrderSearchInput(): void {
+    this.searchOrderTag.tags = [];
+    this.searchOrderTag.text = '';
+    $('.order-overview-tag  a').removeClass('hide-on-focus');
+  }
+
+
+  onSearchInput(value: string): void {
+    this.searchTag.loading = true;
+    this.coreService.post('workflows/tag/search', {
+      search: value,
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+      this.searchTag.tags = res.results;
+      this.searchTag.loading = false;
+    });
+  }
+
+  onOrderSearchInput(value: string): void {
+    this.searchOrderTag.loading = true;
+    this.coreService.post('orders/tag/search', {
+      search: value,
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+      this.searchOrderTag.tags = res.results;
+      this.searchOrderTag.loading = false;
+    });
+  }
+
+  selectTagOnSearch(tag: any): void {
+    this.selectTag(tag.name);
+    this.searchTag.text = '';
+  }
+
+  selectTag(tag: string): void {
+    this.coreService.checkedTags.clear();
+    this.coreService.checkedTags.add(tag);
+    this.loadOrder();
+  }
+  selectOrderTagOnSearch(tag: any): void {
+    this.selectOrderTag(tag.name);
+    this.searchOrderTag.text = '';
   }
 }

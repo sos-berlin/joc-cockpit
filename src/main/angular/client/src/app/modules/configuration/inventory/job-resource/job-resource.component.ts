@@ -19,7 +19,7 @@ import {ValueEditorComponent} from '../../../../components/value-editor/value.co
 import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
-import {NotificationComponent} from "../inventory.component";
+import {EncryptArgumentModalComponent, NotificationComponent} from "../inventory.component";
 
 @Component({
   selector: 'app-test-mail',
@@ -698,5 +698,37 @@ export class JobResourceComponent {
   navToYade(title): void {
     sessionStorage['tabName'] = title.split(':')[1];
     this.router.navigate(['/configuration/file_transfer']).then();
+  }
+
+  encrpytValue(argument){
+    const agentList = this.inventoryService.agentList;
+    let selectedAgent  = [];
+    if(agentList.length > 0){
+      agentList.forEach(child => {
+        if(child.children.length > 0){
+            selectedAgent =  child.children;
+        }
+      })
+    }
+    const argu = argument;
+    const type = 'job';
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EncryptArgumentModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        argu,
+        selectedAgent,
+        type
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.saveJSON();
+      }
+    });
   }
 }
