@@ -12124,17 +12124,6 @@ export class WorkflowComponent {
     return expressionRegex.test(value.replace(/"/g, ''));
   }
 
-
-  private convertToExpression(value: string): any {
-    let expression = value.replace(/^"(.*)"$/, '$1').trim();
-    if (this.isExpression(expression)) {
-      try {
-        return new Function(`return ${expression}`)();
-      } catch (e) {
-        return expression;
-      }
-    }
-
   private convertToExpression(value: string): string {
     let expression = value.replace(/^"(.*)"$/, '$1');
     expression = expression.trim();
