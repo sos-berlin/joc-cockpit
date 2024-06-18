@@ -18,10 +18,11 @@
     {{ 'inventory.label.impactedSchedules' | translate }}
   </div>
   <div *ngFor="let item of impactedSchedules" class="p-l">
-    <div>
+    <span [ngClass]="{'fa-circle-o': !item.valid, 'fa-circle dark-blue' :item.deployed || item.released, 'opacity7': item.syncState}"
+          class="fa fa-check-circle-o orange text-xs p-l-xs m-r-sm"
+          style="margin-top: 4px"></span>
       <i (click)="navToObj(item.path, 'SCHEDULE')" class="fa fa-pencil cursor"></i>
       &nbsp;{{ item.path }}
-    </div>
   </div>
 </div>
 <div class="modal-footer">

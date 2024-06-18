@@ -142,7 +142,11 @@
       </div>
       <div *ngFor="let item of impactedSchedules" class="p-l">
         <div>
-          &nbsp;<label nz-checkbox [(ngModel)]="item.selected" [ngModelOptions]="{standalone: true}" name="selectedSchedules">{{item.path}}</label>
+          &nbsp;<label nz-checkbox [(ngModel)]="item.selected" [ngModelOptions]="{standalone: true}" name="selectedSchedules">
+           <span [ngClass]="{'fa-circle-o': !item.valid, 'fa-circle dark-blue' :item.deployed || item.released, 'opacity7': item.syncState}"
+                 class="fa fa-check-circle-o orange text-xs p-l-xs"
+                 style="margin-top: 4px"></span>
+          {{item.path}}</label>
         </div>
       </div>
     </div>

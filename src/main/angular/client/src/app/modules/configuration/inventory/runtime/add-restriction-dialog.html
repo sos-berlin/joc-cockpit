@@ -255,7 +255,8 @@
           </div>
         </div>
       </div>
-      <div class="tab-pane animated fadeIn" id="tab6" [ngClass]="{'active': frequency.tab == 'nationalHoliday'}">
+      <div class="tab-pane animated fadeIn" id="tab6"
+           [ngClass]="{'active':frequency.tab == 'nationalHoliday'}">
         <div class="form-group row" *ngIf="countryField">
           <label class="col-sm-12">
             <span translate>runtime.label.updateNationalHoliday</span>&nbsp;{{frequency.year}}
@@ -264,25 +265,30 @@
         <div class="form-group row" *ngIf="!countryField">
           <label class="col-sm-3" translate>runtime.label.country</label>
           <div class="col-sm-6">
-            <app-select-input [attributeName]="'country'" [isSearchable]="true" [listArray]="countryListArr" [name]="'country'" [optionLabel]="'name'" [optionValue]="'code'" [object]="frequency" (modelChange)="loadHolidayList()"></app-select-input>
+            <app-select-input [attributeName]="'country'"  [isSearchable]="true"
+                              [listArray]="countryListArr" [name]="'country'" [optionLabel]="'name'" [optionValue]="'code'"
+                              [object]="frequency" (modelChange)="loadHolidayList()"></app-select-input>
           </div>
         </div>
         <div class="form-group row" *ngIf="!countryField">
           <label class="col-sm-3 form-control-label" translate>runtime.label.year</label>
           <div class="col-sm-6">
-            <nz-input-number [nzMin]="calendarTitle" [nzStep]="1" name="year" [(ngModel)]="frequency.year" (ngModelChange)="loadHolidayList()"></nz-input-number>
+            <nz-input-number [nzMin]="calendarTitle" [nzStep]="1" name="year"
+                             [(ngModel)]="frequency.year" (ngModelChange)="loadHolidayList()"></nz-input-number>
           </div>
         </div>
         <div class="row m-b-sm" *ngIf="holidayList.length">
           <label class="col-sm-3" translate>runtime.label.selectAll</label>
           <div class="col-sm-6">
-            <label nz-checkbox [(ngModel)]="holidayDays.checked" name="holiday" (ngModelChange)="selectAllHolidays()"></label>
+            <label nz-checkbox [(ngModel)]="holidayDays.checked" name="holiday"
+                   (ngModelChange)="selectAllHolidays()"></label>
           </div>
         </div>
         <div class="form-group row">
           <div class="col-sm-12">
             <div class="col-sm-6 p-l-0">
-              <div class="col-sm-12 p-l-0" *ngFor="let holiday of holidayList.slice(0, Math.floor(holidayList.length / 2)); let i = index">
+              <div class="col-sm-12 p-l-0"
+                   *ngFor="let holiday of holidayList.slice(0,Math.floor(holidayList.length/2));let i=index">
                 <label nz-checkbox [nzChecked]="frequency.nationalHoliday?.indexOf(holiday.date) > -1" (nzCheckedChange)="onItemChecked(holiday.date, $event)">
                   {{getDateFormat(holiday.date)}} <b *ngIf="holiday.name">-</b>
                   {{holiday.name}}
@@ -291,7 +297,8 @@
               </div>
             </div>
             <div class="col-sm-6 p-l-0">
-              <div class="col-sm-12 p-l-0" *ngFor="let holiday of holidayList.slice(Math.floor(holidayList.length / 2), holidayList.length); let i = index">
+              <div class="col-sm-12 p-l-0"
+                   *ngFor="let holiday of holidayList.slice(Math.floor(holidayList.length/2),holidayList.length);let i=index">
                 <label nz-checkbox [nzChecked]="frequency.nationalHoliday?.indexOf(holiday.date) > -1" (nzCheckedChange)="onItemChecked(holiday.date, $event)">
                   {{getDateFormat(holiday.date)}} <b *ngIf="holiday.name">-</b>
                   {{holiday.name}}
@@ -302,7 +309,6 @@
           </div>
         </div>
       </div>
-
     </div>
     <div class="row m-b-15">
       <div class="col-sm-12 max-ht-260">

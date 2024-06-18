@@ -362,7 +362,9 @@ export class ReportComponent implements OnChanges, OnDestroy {
     }
 
     const obj = this.coreService.clone(this.report.configuration);
-
+    if (obj.monthTo < obj.monthFrom) {
+      obj.monthTo = '';
+    }
     if (!isEqual(this.report.actual, JSON.stringify(obj))) {
       if (!flag) {
         if (this.history.length === 20) {

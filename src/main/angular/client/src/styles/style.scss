@@ -9711,8 +9711,7 @@ cdk-virtual-scroll-viewport {
   }
 }
 .custom-tab-btn-background {
-  color: var(--primary);
-  font-weight: 500;
+  color: var(--primary)
 }
 
 .job-template-encrypt{
@@ -9721,4 +9720,9 @@ cdk-virtual-scroll-viewport {
   align-items: baseline;
   gap: 10px;
   right: -50px;
+}
+
+.custom-tab .ant-tabs-nav .ant-tabs-tab{
+  padding-right: 6px !important;
+  margin-right: 0px !important;
 }

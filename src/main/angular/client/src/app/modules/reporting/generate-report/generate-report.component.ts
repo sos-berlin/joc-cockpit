@@ -138,6 +138,15 @@ export class GenerateReportComponent {
   }
 
   sort(propertyName): void {
+    const expandedStates = new Map<string, { expandedHighest: boolean, expandedLowest: boolean }>();
+
+    this.filteredData.forEach(item => {
+      expandedStates.set(item.key, {
+        expandedHighest: item.expandedHighest,
+        expandedLowest: item.expandedLowest
+      });
+    });
+
     this.filters.filter.reverse = !this.filters.filter.reverse;
     this.filters.filter.sortBy = propertyName;
 
@@ -152,9 +161,15 @@ export class GenerateReportComponent {
         item.path = item.value[0].path;
         item.title = item.value[0].title;
         item.template = item.value[0].template;
+        item.hits = item.value[0].hits;
+        item.sort = item.value[0].sort;
         item.highestGroup = item.value.filter(val => val.sort === 'HIGHEST') || [];
         item.lowestGroup = item.value.filter(val => val.sort === 'LOWEST') || [];
-
+        if (expandedStates.has(item.key)) {
+          const {expandedHighest, expandedLowest} = expandedStates.get(item.key);
+          item.expandedHighest = expandedHighest;
+          item.expandedLowest = expandedLowest;
+        }
         if (this.filters.expandedKey?.has(item.key)) {
           item.expanded = true;
         }

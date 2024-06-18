@@ -3021,7 +3021,8 @@
       "allow_empty_arguments": "Standardmäßig werden leere Argumente von Aufträgen und Auftragsvorlagen nicht zugelassen, da dies die Aufträge zwingt, zwischen leeren und nicht gesetzten Variablen zu unterscheiden. Benutzer können das Verhalten aktivieren, um leere Argumente zuzulassen.",
       "allow_undeclared_variables": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
       "display_folders_in_views": "Zeigt Ordner von Objekten in Ansichten an. Wenn diese Einstellung auf 'false' gesetzt ist, werden nur die Objektnamen angezeigt. In JS7 sind die Objektnamen eindeutig.",
-      "node_command_line_options": "Node.js Kommandozeilenoptionen können angegeben werden. Beachten Sie, dass die Anwendbarkeit der Optionen von der verwendeten Version von Node.js abhängt."
+      "node_command_line_options": "Node.js Kommandozeilenoptionen können angegeben werden. Beachten Sie, dass die Anwendbarkeit der Optionen von der verwendeten Version von Node.js abhängt.",
+      "num_of_tags_displayed_as_order_id": "num_of_tags_displayed_as_order_id"
     },
     "user": {
       "welcome_got_it": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht länger angezeigt werden soll.",
