@@ -351,6 +351,18 @@ export class CalendarService {
           }
         });
       }
+      if (calendar.includes.holidays && calendar.includes.holidays.length > 0) {
+        const arr = this.groupByDates(calendar.includes.holidays[0].dates);
+        for (let x = 0; x < arr.length; x++) {
+          obj = {
+            type: 'INCLUDE',
+            tab: 'nationalHoliday',
+            nationalHoliday: arr[x]
+          };
+          obj.str = this.freqToStr(obj, dateFormat);
+          calendar.frequencyList.push(obj);
+        }
+      }
       if (calendar.includes.ultimos && calendar.includes.ultimos.length > 0) {
         calendar.includes.ultimos.forEach((ultimos: any) => {
           if (ultimos.weeklyDays && ultimos.weeklyDays.length > 0) {
