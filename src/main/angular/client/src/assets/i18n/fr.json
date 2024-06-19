@@ -2912,7 +2912,7 @@
       "runReport": "Exécuter le Rapport",
       "reportRunning": "Rapport en cours d'exécution...",
       "periodLength": "Durée de la période",
-      "periodStep": "Étape de la période",
+      "periodStep": "Pas de progression",
       "interval": "Intervalle",
       "relative": "Relatif",
       "absolute": "Absolu",
