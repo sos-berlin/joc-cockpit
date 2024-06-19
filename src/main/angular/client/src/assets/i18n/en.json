@@ -620,7 +620,7 @@
     "message.noObjectFoundToDelete": "No object found",
     "message.uniqueError": "Name is already in use",
     "message.noDataMatched": "no data matched",
-    "message.monthFromAfterMonthTo": "Invalid Input: Month-From is after Month-To.",
+    "message.monthFromAfterMonthTo": "Invalid input: Month-from is later than Month-to.",
     "--------POPUP WINDOW MESSAGES BEGIN------------": "Used in popup for confirmation",
     "message.resetLayout": "Are you sure you want to reset the current Dashboard layout?",
     "message.resetProfilePreferences": "Are you sure you want to reset the Preferences in this Profile?",
@@ -2006,29 +2006,29 @@
       },
       "report": {
         "name": "The name of a Report is unique in the inventory. For the name of the Report most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-        "title": "The Title of the Report can be specified as desired.",
-        "template": "Determines the report to be executed.",
-        "frequencies": "The frequency determines the period with which the reporting period is subdivided.",
-        "controllerId": "The report can be limited to the data of one controller",
+        "title": "The Title of the Report can be specified.",
+        "template": "Specifies the Report template to be applied.",
+        "frequencies": "The frequency specifies the cycle that divides the reporting period, for example 5 minutes, 1 day etc.",
+        "controllerId": "The report can be limited to data of a specific Controller",
         "interval": {
-          "interval": "Defines how to define the reporting period. The Presets or relative settings will be transformed to according values for month_from and month_to and vice versa, if possible.",
+          "interval": "Specifies the reporting period. The presets and relative settings will be mapped to current values for month-from and month-to.",
           "absolute": {
-            "monthFrom": "Determines the start of the reporting period. Absolute values in the form yyyy-mm or relative values, e.g. 1y, can be specified.",
-            "monthTo": "Determines the end of the reporting period. Absolute values in the form yyyy-mm or relative values, e.g. 2m, can be specified. If empty, the last month will be used."
+            "monthFrom": "Specifies the start of the reporting period. Absolute values in the form yyyy-mm or relative values, for example 1y, can be specified.",
+            "monthTo": "Specifies the end of the reporting period. Absolute values in the form yyyy-mm or relative values, for example 2m, can be specified. If empty, then the previous month of the current date will be used."
           },
           "relative": {
-            "from": "The start of the reporting period starts From*Unit from the time of generation in the past.\nExample: Unit=Month, From=12, Count=12 --> The last 12 months",
-            "unit": "Determines the unit by which the reporting period extends into the past from the time of generation.\nExample: Unit=Year, From=1, Count=1 --> LastYear",
-            "count": "The end of the reporting period is (From-Count+1)*Unit from the time of generation in the past. The month is calculated using the frequency. Yearly: 12, Quarter: the last month of the quarter...."
+            "from": "Specifies the start of the reporting period that considers the unit in use.\nExample: Unit=Month, From=12, Count=12 --> last 12 months.",
+            "unit": "Specifies the unit by which the start time of the reporting period is calculated.\nExample: Unit=Year, From=1, Count=1 --> last year.",
+            "count": "The end of the reporting period is calculated as (From-Count+1)*Unit from the start of the reporting period. The related month is calculated from the frequency, yearly: 12, quarterly: last month of quarter etc."
           },
           "preset": {
             "preset": "Preset"
           }
         },
-        "sort": "Each report can provide the highest or lowest values found.",
-        "hits": "Determines the number of entries in the report",
-        "periodLength": "Determines the length of the period for the reports Top ${hits} periods with....",
-        "periodStep": "Determines the step size for the calculation of the next period. Example: Period_Length=5, Period_Step=2, 00:00-00:05, 02:00-00:07, 00:04-00:09 ...."
+        "sort": "A report can indicate the highest or lowest values found.",
+        "hits": "Specifies the number of entries in the report.",
+        "periodLength": "Specifies the duration of the period for the report's 'top ${hits} periods ...'",
+        "periodStep": "Specifies the step size for the calculation of the next period. Example: Period Length=5, Period Step=2, 00:00-00:05, 02:00-00:07, 00:04-00:09 ..."
       },
       "workflow": {
         "name": "The name of a Workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -2660,7 +2660,7 @@
       "label.deleteCertificate": "Delete Certificate",
       "message.noKeyFound": "No key is present",
       "message.noCAFound": "No CA is present",
-      "message.keyGeneratedSuccessfully": "Key generated successfully",
+      "message.keyGeneratedSuccessfully": "Key successfully generated",
       "message.invalidKeyFileSelected": "Invalid file selected",
       "placeholder.pastePrivateKey": "Paste Private Key here",
       "placeholder.pastePublicKey": "Paste Public Key here",
@@ -2905,7 +2905,7 @@
       "periodStep": "Period Step",
       "interval": "Interval",
       "relative": "Relative",
-      "absolute": "Report Period",
+      "absolute": "Absolute",
       "count": "Count",
       "unit": "Unit",
       "sort": "Sort",
@@ -2940,8 +2940,8 @@
       "JOBS_LONGEST_EXECUTION_TIMES": "Top ${hits} jobs with ${sort} need for execution time",
       "PERIODS_MOST_ORDER_EXECUTIONS": "Top ${hits} periods with ${sort} number of workflow executions",
       "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} periods with ${sort} number of job executions",
-      "JOBS_SUCCESSFUL_EXECUTIONS": "Top ${hits} jobs with ${sort} number of successfull executions",
-      "WORKFLOWS_SUCCESSFUL_EXECUTIONS": "Top ${hits} workflows with ${sort} number of successfull executions"
+      "JOBS_SUCCESSFUL_EXECUTIONS": "Top ${hits} jobs with ${sort} number of successful executions",
+      "WORKFLOWS_SUCCESSFUL_EXECUTIONS": "Top ${hits} workflows with ${sort} number of successful executions"
     }
   },
   "settings": {
@@ -3022,7 +3022,7 @@
       "allow_undeclared_variables": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available with an order.",
       "display_folders_in_views": "Displays folders of scheduling objects in views. If this setting is set to 'false' then object names only will be displayed. In JS7 object names are unique.",
       "node_command_line_options": "Node.js command line options can be specified. Consider that applicability of options depends on the version of Node.js in use.",
-      "num_of_tags_displayed_as_order_id": "num_of_tags_displayed_as_order_id"
+      "num_of_tags_displayed_as_order_id": "Specifies the number of tags displayed with each order. A value 0 will suppress display of tags."
     },
     "user": {
       "welcome_got_it": "Specifies that the welcome window that offers defaults and examples for download should no longer be displayed.",
