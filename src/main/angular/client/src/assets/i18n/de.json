@@ -408,7 +408,7 @@
     "label.agentId": "Agenten-Kennung",
     "label.certAlias": "Alias des Zertifikats",
     "label.certificate": "Zertifikat",
-    "label.certificates": "Certificates",
+    "label.certificates": "Zertifikate",
     "label.privateKeyPath": "Pfad zum Privaten Scchlüssel",
     "label.jobResourceFolder": "Ordner der Job-Ressource",
     "label.importCertificate": "Zertifikat importieren",
@@ -621,7 +621,7 @@
     "message.noObjectFoundToDelete": "Kein Objekt gefunden",
     "message.uniqueError": "Name wird bereits verwendet",
     "message.noDataMatched": "keine Treffer vorhanden",
-    "message.monthFromAfterMonthTo": "Ungültige Eingabe: Month-ab is später als Monat-bis.",
+    "message.monthFromAfterMonthTo": "Ungültige Eingabe: Monat-ab ist später als Monat-bis.",
     "--------POPUP WINDOW MESSAGES BEGIN------------": "Used in popup for confirmation",
     "message.resetLayout": "Sind Sie sicher, dass Sie die aktuelle Übersicht zurücksetzen möchten?",
     "message.resetProfilePreferences": "Sind Sie sicher, dass Sie die Einstellungen dieses Profils auf die Voreinstellung zurücksetzen wollen?",
@@ -671,7 +671,7 @@
     "message.deleteAllReport": "Sind Sie sicher, dass Sie alle ausgewählten Berichte löschen wollen?",
     "message.stickToDailyPlanDate": "Sind Sie sicher, dass Sie die Änderung der Startzeit ausführen wollen und Aufträge dem Tagesplan zugeordnet bleiben sollen?",
     "message.deleteCertificate": "Sind Sie sicher, dass Sie das Zertifikat löschen wollen?",
-    "message.removeCertificate": "Are you sure you want to remove this certificate alias?",
+    "message.removeCertificate": "Sind Sie sicher, dass Sie den Alias des Zertifikats löschen wollen?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exportieren im .xlsx Format",
     "tooltip.expandDetails": "Details aufklappen",
@@ -772,14 +772,14 @@
     "button.withApplicableFailover": "Mit Ausfallsicherung",
     "button.withOutSwitchover": "Ohne Umschalten",
     "button.downloadLog": "Protokoll herunterladen",
-    "button.restartCluster": "Cluster neu starten",
+    "button.restartCluster": "Dienste neu starten",
     "button.restartService": "Dienst neu starten",
     "button.dailyPlanService": "Tagesplandienst",
     "button.historyService": "Historiendienst",
     "button.cleanupService": "Bereinigungsdienst",
     "button.monitorService": "Überwachungsdienst",
     "button.restartServiceName": "Neustartdienst",
-    "button.proxyService": "Proxy Service",
+    "button.proxyService": "Proxy-Dienst",
     "button.removeFromInventory": "Aus dem Inventar entfernen",
     "button.viewAllAgentsDetails": "Details aller Agenten",
     "button.confirmNodeLoss": "Verlust einer Controller Instanz bestätigen",
@@ -2478,7 +2478,7 @@
     },
     "cycleState": {
       "label": {
-        "cycleState": "Zyklus Zustand",
+        "cycleState": "Status Zyklus",
         "end": "Ende",
         "since": "Seit",
         "next": "Nächster",
@@ -2487,9 +2487,9 @@
     },
     "retryState": {
       "label": {
-        "retryState": "Retry State",
-        "next": "Next",
-        "attempt": "Attempt"
+        "retryState": "Status Wiederholung",
+        "next": "Nächster",
+        "attempt": "Versuch"
       }
     }
   },
@@ -2915,14 +2915,14 @@
       "periodStep": "Zeitraum Schritt",
       "interval": "Intervall",
       "relative": "Relativ",
-      "absolute": "Report Period",
+      "absolute": "Absolut",
       "count": "Anzahl",
       "unit": "Einheit",
       "sort": "Sortierung",
       "HIGHEST": "höchsten",
       "LOWEST": "geringsten",
-      "highest": "Highest",
-      "lowest": "Lowest",
+      "highest": "höchsten",
+      "lowest": "geringsten",
       "preset": "voreingestellt",
       "manageCards": "Anzeige verwalten"
     },
