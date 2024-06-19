@@ -421,7 +421,7 @@
     "button.encrypt": "Verschlüsseln",
     "button.addNewCertificate": "Zertifikat hinzufügen",
     "button.importCertificate": "Zertifikat importieren",
-    "button.deleteCertificate": "Delete Certificate"
+    "button.deleteCertificate": "Zertifikat löschen"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -446,7 +446,7 @@
     "label.duration": "Dauer",
     "label.sortBy": "Sortiert nach",
     "label.deleteAllDocument": "Alle Dokumentationen löschen",
-    "label.deleteAllReport": "Delete all Reports",
+    "label.deleteAllReport": "Alle Berichte löschen",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "label.dateRange": "Datumsbereich",
     "label.to": "Bis",
@@ -620,7 +620,7 @@
     "message.noObjectFoundToDelete": "Kein Objekt gefunden",
     "message.uniqueError": "Name wird bereits verwendet",
     "message.noDataMatched": "keine Treffer vorhanden",
-    "message.monthFromAfterMonthTo": "Invalid Input: Month-From is after Month-To.",
+    "message.monthFromAfterMonthTo": "Ungültige Eingabe: Month-ab is später als Monat-bis.",
     "--------POPUP WINDOW MESSAGES BEGIN------------": "Used in popup for confirmation",
     "message.resetLayout": "Sind Sie sicher, dass Sie die aktuelle Übersicht zurücksetzen möchten?",
     "message.resetProfilePreferences": "Sind Sie sicher, dass Sie die Einstellungen dieses Profils auf die Voreinstellung zurücksetzen wollen?",
@@ -669,7 +669,7 @@
     "message.deleteReport": "Sind Sie sicher, dass Sie diesen Bericht löschen wollen?",
     "message.deleteAllReport": "Sind Sie sicher, dass Sie alle ausgewählten Berichte löschen wollen?",
     "message.stickToDailyPlanDate": "Sind Sie sicher, dass Sie die Änderung der Startzeit ausführen wollen und Aufträge dem Tagesplan zugeordnet bleiben sollen?",
-    "message.deleteCertificate": "Are you sure you want to delete this certificate?",
+    "message.deleteCertificate": "Sind Sie sicher, dass Sie das Zertifikat löschen wollen?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exportieren im .xlsx Format",
     "tooltip.expandDetails": "Details aufklappen",
@@ -2008,28 +2008,28 @@
       "report": {
         "name": "Der Name eines Berichts ist im Inventar eindeutig. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Bindestriche und Punkte sind nicht zugelassen.",
         "title": "Der Titel eines Berichts kann beliebig angegeben werden.",
-        "template": "Determines the report to be executed.",
-        "frequencies": "The frequency determines the period with which the reporting period is subdivided.",
-        "controllerId": "The report can be limited to the data of one controller",
+        "template": "Bestimmt das zu verwendende Berichtsmuster.",
+        "frequencies": "Die Häufigkeit gibt den Zyklus an, der den Berichtszeitraum unterteilt, z.B. 5 Minuten, 1 Tag usw.",
+        "controllerId": "Der Bericht kann für die Daten eines Controllers limitiert werden.",
         "interval": {
-          "interval": "Defines how to define the reporting period. The Presets or relative settings will be transformed to according values for month_from and month_to and vice versa, if possible.",
+          "interval": "Gibt den Berichtszeitraum an. Die Voreinstellungen und relativen Einstellungen werden auf die aktuellen Werte für Monat-von und Monat-bis abgebildet.",
           "absolute": {
-            "monthFrom": "Determines the start of the reporting period. Absolute values in the form yyyy-mm or relative values, e.g. 1y, can be specified.",
-            "monthTo": "Determines the end of the reporting period. Absolute values in the form yyyy-mm or relative values, e.g. 2m, can be specified. If empty, the last month will be used."
+            "monthFrom": "Bestimmt den Beginn des Berichtszeitraums. Es können absolute Werte in der Form yyyy-mm oder relative Werte, z.B. 1y, angegeben werden.",
+            "monthTo": "Gibt das Ende des Berichtszeitraums an. Es können absolute Werte in der Form yyyy-mm oder relative Werte, z.B. 2m, angegeben werden. Ist der Wert leer, wird der Vormonat des aktuellen Datums verwendet."
           },
           "relative": {
-            "from": "The start of the reporting period starts From*Unit from the time of generation in the past.\nExample: Unit=Month, From=12, Count=12 --> The last 12 months",
-            "unit": "Determines the unit by which the reporting period extends into the past from the time of generation.\nExample: Unit=Year, From=1, Count=1 --> LastYear",
-            "count": "The end of the reporting period is (From-Count+1)*Unit from the time of generation in the past. The month is calculated using the frequency. Yearly: 12, Quarter: the last month of the quarter...."
+            "from": "Gibt den Beginn des Berichtszeitraums an, der die verwendete Einheit berücksichtigt: Einheit=Monat, Von=12, Anzahl=12 --> letzte 12 Monate.",
+            "unit": "Gibt die Einheit an, nach der die Anfangszeit des Berichtszeitraums berechnet wird.\nBeispiel: Einheit=Jahr, Von=1, Anzahl=1 --> letztes Jahr.",
+            "count": "Das Ende des Berichtszeitraums wird berechnet als (Von-Anzahl+1)*Einheit ab dem Beginn des Berichtszeitraums. Der zugehörige Monat wird anhand der Häufigkeit berechnet, jährlich: 12, vierteljährlich: letzter Monat des Quartals usw."
           },
           "preset": {
-            "preset": "Preset"
+            "preset": "Voreinstellung"
           }
         },
-        "sort": "Each report can provide the highest or lowest values found.",
-        "hits": "Determines the number of entries in the report",
-        "periodLength": "Determines the length of the period for the reports Top ${hits} periods with....",
-        "periodStep": "Determines the step size for the calculation of the next period. Example: Period_Length=5, Period_Step=2, 00:00-00:05, 02:00-00:07, 00:04-00:09 ...."
+        "sort": "Ein Bericht kann die höchsten oder niedrigsten gefundenen Werte angeben.",
+        "hits": "Gibt die Anzahl der Einträge im Bericht an.",
+        "periodLength": "Gibt die Dauer des Zeitraums für die 'Top ${hits} periods ...' des Berichts an.",
+        "periodStep": "Gibt die Schrittweite für die Berechnung der nächsten Periode an. Beispiel: Periodenlänge=5, Schrittweite=2, 00:00-00:05, 02:00-00:07, 00:04-00:09 ..."
       },
       "workflow": {
         "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Bindestriche und Punkte sind nicht zugelassen.",
@@ -2906,14 +2906,14 @@
       "periodStep": "Zeitraum Schritt",
       "interval": "Intervall",
       "relative": "Relativ",
-      "absolute": "Report Period",
+      "absolute": "Absolut",
       "count": "Anzahl",
       "unit": "Einheit",
       "sort": "Sortierung",
       "HIGHEST": "höchsten",
       "LOWEST": "geringsten",
       "preset": "voreingestellt",
-      "manageCards": "Manage Cards"
+      "manageCards": "Anzeige verwalten"
     },
     "button" : {
       "runReport": "Berichtslauf starten",
@@ -2932,17 +2932,17 @@
       "reports": "Berichte"
     },
     "templates": {
-      "WORKFLOWS_FREQUENTLY_FAILED": "Häufigste ${hits} Workflows mit ${sort} Anzahl fehlgeschlagener Ausführungen",
+      "WORKFLOWS_FREQUENTLY_FAILED": "Häufigste ${hits} Arbeitsbläufe mit ${sort} Anzahl fehlgeschlagener Ausführungen",
       "JOBS_FREQUENTLY_FAILED": "Häufigste ${hits} Jobs mit ${sort} Anzahl fehlgeschlagener Ausführungen",
       "AGENTS_PARALLEL_JOB_EXECUTIONS": "Häufigste ${hits} Agenten mit ${sort} Anzahl paralleler Job-Ausführungen",
       "JOBS_EXECUTIONS_FREQUENCY": "Häufigste ${hits} hoch-kritische Jobs mit ${sort} Anzahl fehlgeschlagener Ausführungen",
-      "ORDERS_EXECUTIONS_FREQUENCY": "Häufigste ${hits} Workflows mit ${sort} Anzahl fehlgeschlagener Ausführungen für abgebrochene Aufträge",
-      "WORKFLOWS_LONGEST_EXECUTION_TIMES": "Häufigste ${hits} Workflows mit ${sort} Ausführungsdauer",
+      "ORDERS_EXECUTIONS_FREQUENCY": "Häufigste ${hits} Arbeitsbläufe mit ${sort} Anzahl fehlgeschlagener Ausführungen für abgebrochene Aufträge",
+      "WORKFLOWS_LONGEST_EXECUTION_TIMES": "Häufigste ${hits} Arbeitsbläufe mit ${sort} Ausführungsdauer",
       "JOBS_LONGEST_EXECUTION_TIMES": "Häufigste ${hits} Jobs mit ${sort} Ausführungsdauer",
-      "PERIODS_MOST_ORDER_EXECUTIONS": "Häufigste ${hits} Zeiträume mit ${sort} Anzahl Workflow-Ausführungen",
+      "PERIODS_MOST_ORDER_EXECUTIONS": "Häufigste ${hits} Zeiträume mit ${sort} Anzahl Arbeitsblauf-Ausführungen",
       "PERIODS_MOST_JOB_EXECUTIONS": "Häufigste ${hits} Zeiträume mit ${sort} Anzahl Job-Ausführungen",
-      "JOBS_SUCCESSFUL_EXECUTIONS": "Top ${hits} jobs with ${sort} number of successfull executions",
-      "WORKFLOWS_SUCCESSFUL_EXECUTIONS": "Top ${hits} workflows with ${sort} number of successfull executions"
+      "JOBS_SUCCESSFUL_EXECUTIONS": "Häufigste ${hits} Jobs mit ${sort} Anzahl erfolgreicher Job-Ausführungen",
+      "WORKFLOWS_SUCCESSFUL_EXECUTIONS": "Häufigste ${hits} Arbeitsbläufe mit ${sort} Anzahl erfolgreicher Ausführungen"
     }
   },
   "settings": {
@@ -3023,7 +3023,7 @@
       "allow_undeclared_variables": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
       "display_folders_in_views": "Zeigt Ordner von Objekten in Ansichten an. Wenn diese Einstellung auf 'false' gesetzt ist, werden nur die Objektnamen angezeigt. In JS7 sind die Objektnamen eindeutig.",
       "node_command_line_options": "Node.js Kommandozeilenoptionen können angegeben werden. Beachten Sie, dass die Anwendbarkeit der Optionen von der verwendeten Version von Node.js abhängt.",
-      "num_of_tags_displayed_as_order_id": "num_of_tags_displayed_as_order_id"
+      "num_of_tags_displayed_as_order_id": "Gibt die Anzahl Schlagwörter an, die mit jedem Auftrag angezeigt werden. Ein Wert 0 unterdrückt die Anzeige der Schlagwörter."
     },
     "user": {
       "welcome_got_it": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht länger angezeigt werden soll.",

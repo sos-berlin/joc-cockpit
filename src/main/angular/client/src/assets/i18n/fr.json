@@ -421,7 +421,7 @@
     "button.encrypt": "Chiffrer",
     "button.addNewCertificate": "Ajouter Certificat",
     "button.importCertificate": "Importer Certificat",
-    "button.deleteCertificate": "Delete Certificate"
+    "button.deleteCertificate": "Supprimer Certificat"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -446,7 +446,7 @@
     "label.duration": "Durée",
     "label.sortBy": "Trier par",
     "label.deleteAllDocument": "Supprimer toutes les Documentations",
-    "label.deleteAllReport": "Delete all Reports",
+    "label.deleteAllReport": "Supprimer tous les Rapports",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "label.dateRange": "Plage de dates",
     "label.to": "au",
@@ -620,7 +620,7 @@
     "message.noObjectFoundToDelete": "Aucun objet trouvé",
     "message.uniqueError": "Nom déjà utilisé",
     "message.noDataMatched": "Aucune donnée ne correspond",
-    "message.monthFromAfterMonthTo": "Invalid Input: Month-From is after Month-To.",
+    "message.monthFromAfterMonthTo": "Entrée invalide : Le mois de début est postérieur au mois de fin",
     "--------POPUP WINDOW MESSAGES BEGIN------------": "Used in popup for confirmation",
     "message.resetLayout": "Êtes-vous sûr de vouloir réinitialiser la disposition du Tableau de Bord ?",
     "message.resetProfilePreferences": "Êtes-vous sûr de vouloir réinitialiser les Préférences du Profil ?",
@@ -669,7 +669,7 @@
     "message.deleteReport": "Êtes-vous sûr de vouloir supprimer le Rapport ?",
     "message.deleteAllReport": "Êtes-vous sûr de vouloir supprimer les Rapports sélectionnés ?",
     "message.stickToDailyPlanDate": "Êtes-vous sûr de vouloir modifier l'heure de démarrage des ordres et maintenir l'adhérence au Plan Quotidien ?",
-    "message.deleteCertificate": "Are you sure you want to delete this certificate?",
+    "message.deleteCertificate": "Êtes-vous sûr de vouloir supprimer le certificat ?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exporter au format xlsx",
     "tooltip.expandDetails": "Développer les Détails",
@@ -2008,28 +2008,28 @@
       "report": {
         "name": "Le nom d'un rapport est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin et aucune espace.",
         "title": "Le Titre du rapport peut être spécifié à volonté.",
-        "template": "Determines the report to be executed.",
-        "frequencies": "The frequency determines the period with which the reporting period is subdivided.",
-        "controllerId": "The report can be limited to the data of one controller",
+        "template": "Spécifie le modèle de rapport à appliquer.",
+        "frequencies": "La fréquence spécifie le cycle qui divise la période de rapport, par exemple 5 minutes, 1 jour, etc.",
+        "controllerId": "Le rapport peut être limité aux données d'un seul Contrôleur.",
         "interval": {
-          "interval": "Defines how to define the reporting period. The Presets or relative settings will be transformed to according values for month_from and month_to and vice versa, if possible.",
+          "interval": "Spécifie la période de rapport. Les préréglages et les paramètres relatifs seront mis en correspondance avec les valeurs actuelles pour le mois de début et le mois de fin.",
           "absolute": {
-            "monthFrom": "Determines the start of the reporting period. Absolute values in the form yyyy-mm or relative values, e.g. 1y, can be specified.",
-            "monthTo": "Determines the end of the reporting period. Absolute values in the form yyyy-mm or relative values, e.g. 2m, can be specified. If empty, the last month will be used."
+            "monthFrom": "Spécifie le début de la période de rapport. Des valeurs absolues sous la forme yyyy-mm ou des valeurs relatives, par exemple 1y, peuvent être spécifiées.",
+            "monthTo": "Indique la fin de la période de rapport. Des valeurs absolues sous la forme yyyy-mm ou des valeurs relatives, par exemple 2m, peuvent être spécifiées. Si le champ est vide, c'est le mois précédent de la date actuelle qui sera utilisé."
           },
           "relative": {
-            "from": "The start of the reporting period starts From*Unit from the time of generation in the past.\nExample: Unit=Month, From=12, Count=12 --> The last 12 months",
-            "unit": "Determines the unit by which the reporting period extends into the past from the time of generation.\nExample: Unit=Year, From=1, Count=1 --> LastYear",
-            "count": "The end of the reporting period is (From-Count+1)*Unit from the time of generation in the past. The month is calculated using the frequency. Yearly: 12, Quarter: the last month of the quarter...."
+            "from": "Spécifie le début de la période de rapport qui prend en compte l'unité utilisée.\nExemple : Unit=Month, From=12, Count=12 --> 12 derniers mois.",
+            "unit": "Spécifie l'unité par laquelle la date de début de la période de rapport est calculée.\nExemple : Unit=Year, From=1, Count=1 --> l'année dernière.",
+            "count": "La fin de la période de rapport est calculée comme (De-Compte+1)*Unité à partir du début de la période de rapport. Le mois correspondant est calculé à partir de la fréquence, annuelle : 12, trimestriel : dernier mois du trimestre, etc."
           },
           "preset": {
-            "preset": "Preset"
+            "preset": "Préréglages"
           }
         },
-        "sort": "Each report can provide the highest or lowest values found.",
-        "hits": "Determines the number of entries in the report",
-        "periodLength": "Determines the length of the period for the reports Top ${hits} periods with....",
-        "periodStep": "Determines the step size for the calculation of the next period. Example: Period_Length=5, Period_Step=2, 00:00-00:05, 02:00-00:07, 00:04-00:09 ...."
+        "sort": "Un rapport peut indiquer les valeurs les plus élevées ou les plus basses trouvées.",
+        "hits": "Spécifie le nombre d'entrées dans le rapport.",
+        "periodLength": "Spécifie la durée de la période pour le rapport 'top ${hits} periods ...'",
+        "periodStep": "Spécifie la taille du pas pour le calcul de la période suivante. Exemple : Longueur de période=5, Pas de période=2, 00:00-00:05, 02:00-00:07, 00:04-00:09 ...."
       },
       "workflow": {
         "name": "Le nom d'un workflow est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin et aucune espace.",
@@ -2906,14 +2906,14 @@
       "periodStep": "Étape de la période",
       "interval": "Intervalle",
       "relative": "Relatif",
-      "absolute": "Report Period",
+      "absolute": "Absolu",
       "count": "Nombre de",
       "unit": "Unité",
       "sort": "Tri",
       "HIGHEST": "le plus élevé",
       "LOWEST": "le plus bas",
       "preset": "prédéfini",
-      "manageCards": "Manage Cards"
+      "manageCards": "Gérer l'affiche"
     },
     "button" : {
       "runReport": "Exécuter le Rapport",
@@ -2940,9 +2940,9 @@
       "WORKFLOWS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} workflows with the longest execution time",
       "JOBS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} jobs with the longest execution time",
       "PERIODS_MOST_ORDER_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly workflows executed",
-      "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly jobs executed",
-      "JOBS_SUCCESSFUL_EXECUTIONS": "Top ${hits} jobs with ${sort} number of successfull executions",
-      "WORKFLOWS_SUCCESSFUL_EXECUTIONS": "Top ${hits} workflows with ${sort} number of successfull executions"
+      "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} periods with ${sort} number of job executions",
+      "JOBS_SUCCESSFUL_EXECUTIONS": "Top ${hits} jobs with ${sort} number of successful executions",
+      "WORKFLOWS_SUCCESSFUL_EXECUTIONS": "Top ${hits} workflows with ${sort} number of successful executions"
     }
   },
   "settings": {
@@ -3023,7 +3023,7 @@
       "allow_undeclared_variables": "Autoriser les variables non déclarées des Ordres. Cela signifie qu'un ordre peut contenir des variables dont le type de données ou l'utilisation obligatoire n'ont pas été vérifiés. Les tâches échoueront s'ils font référence à des variables non déclarées qui ne sont pas disponibles dans un ordre.",
       "display_folders_in_views": "Affiche les dossiers des objets dans les vues. Si ce paramètre est défini sur 'false', seuls les noms des objets seront affichés. Dans JS7, les noms d'objets sont uniques.",
       "node_command_line_options": "Des options de ligne de commande Node.js peuvent être spécifiées. Notez que l'applicabilité des options dépend de la version de Node.js utilisée.",
-      "num_of_tags_displayed_as_order_id": "num_of_tags_displayed_as_order_id"
+      "num_of_tags_displayed_as_order_id": "Spécifie le nombre de Mots-clés affichées lors de chaque ordre. La valeur 0 supprime l'affichage des Mots-clés."
     },
     "user": {
       "welcome_got_it": "Spécifie que la fenêtre d'accueil qui propose des valeurs par défaut et des exemples à télécharger ne doit plus être affichée.",
