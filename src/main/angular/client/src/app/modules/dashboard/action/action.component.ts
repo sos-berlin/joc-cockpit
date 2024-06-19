@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {Component, inject, Input} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 
@@ -8,6 +8,7 @@ import {AuthService} from '../../../components/guard';
   templateUrl: './dialog.html',
 })
 export class CommentModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
   @Input() action;
   @Input() comments: any;
   @Input() obj: any;
@@ -21,6 +22,11 @@ export class CommentModalComponent {
   }
 
   ngOnInit(): void {
+    this.action = this.modalData.action;
+    this.comments = this.modalData.comments;
+    this.obj = this.modalData.obj;
+    this.performAction = this.modalData.performAction;
+    this.controllerID = this.modalData.controllerID;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
     }

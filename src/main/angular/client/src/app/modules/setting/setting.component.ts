@@ -170,6 +170,8 @@ export class SettingComponent {
 
   removeValInArr(val: any, index: number): void {
     val.value.value.splice(index, 1);
+    const tempSetting = this.coreService.clone(this.settings);
+    this.savePreferences(SettingComponent.generateStoreObject(tempSetting), true)
   }
 
   removeValue(val: any, isJoc: any): void {
