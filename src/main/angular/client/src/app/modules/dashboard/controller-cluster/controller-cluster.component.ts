@@ -771,6 +771,10 @@ export class ControllerClusterComponent {
     this.postCall('joc/cluster/restart', {type});
   }
 
+  proxyService(): void {
+    this.postCall('joc/proxies/restart', {});
+  }
+
   switchOver(): void {
     this.postCall('joc/cluster/switch_member', {memberId: this.joc.memberId});
   }

@@ -777,6 +777,7 @@
     "button.cleanupService": "Service d'Assainissement",
     "button.monitorService": "Service de Surveillance",
     "button.restartServiceName": "Redémarrer le Service",
+    "button.proxyService": "Proxy Service",
     "button.removeFromInventory": "supprimer de l'inventaire",
     "button.viewAllAgentsDetails": "Voir tous les détails de l'Agent",
     "button.confirmNodeLoss": "Confirmer la perte d'une Instance de Contrôleur",

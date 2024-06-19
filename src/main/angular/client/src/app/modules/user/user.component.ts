@@ -1324,6 +1324,11 @@ export class UserComponent {
   }
 
   deleteCertificate(type: string): void {
+    let comments = {
+      radio: 'predefined',
+      type: type,
+      operation: 'Delete'
+    };
     this.modal.create({
       nzTitle: undefined,
       nzContent: RemoveKeyModalComponent,
@@ -1331,6 +1336,7 @@ export class UserComponent {
       nzData: {
         display: this.preferences.auditLog,
         type,
+        comments
       },
       nzFooter: null,
       nzClosable: false,
