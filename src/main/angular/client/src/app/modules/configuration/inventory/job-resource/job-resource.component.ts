@@ -701,15 +701,7 @@ export class JobResourceComponent {
   }
 
   encrpytValue(argument){
-    const agentList = this.inventoryService.agentList;
     let selectedAgent  = [];
-    if(agentList.length > 0){
-      agentList.forEach(child => {
-        if(child.children.length > 0){
-            selectedAgent =  child.children;
-        }
-      })
-    }
     const argu = argument;
     const type = 'job';
     const modal = this.modal.create({

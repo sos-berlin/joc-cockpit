@@ -55,7 +55,7 @@ export class CoreService {
   };
 
   searchResults: any = {};
-
+  numOfTags: any;
   windowProperties: any = ',scrollbars=1,resizable=1,status=0,toolbar=0,menubar=0,location=0toolbar=0';
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router, private toasterService: ToastrService,
@@ -464,6 +464,7 @@ export class CoreService {
       }
     };
     this.tabs._deployment = {};
+    this.numOfTags = sessionStorage.getItem('numOfTagsDisplayedAsOrderId')
   }
 
   removeDuplicates() {
@@ -2997,6 +2998,7 @@ export class CoreService {
     sessionStorage['allowEmptyArguments'] = result.allowEmptyArguments;
     sessionStorage['allowUndeclaredVariables'] = result.allowUndeclaredVariables;
     sessionStorage['displayFoldersInViews'] = result.displayFoldersInViews;
+    sessionStorage['numOfTagsDisplayedAsOrderId'] = result.numOfTagsDisplayedAsOrderId;
     if (result.licenseValidFrom) {
       sessionStorage['licenseValidFrom'] = result.licenseValidFrom;
     }
@@ -3310,5 +3312,16 @@ export class CoreService {
   copyToClipboard(orderId, message) {
     this.clipboardService.copy(orderId);
     this.showCopyMessage(message);
+  }
+
+  getModifiedOrderId(order: any): string {
+    const match = order.orderId.match(/^(#\d{4}-\d{2}-\d{2}#(T|P|C|D|F))\d+-(.+?)(\|.+)?$/);
+    if (match && order.tags && order.tags.length > 0) {
+      const prefix = match[1];
+      const branch = match[4] || '';
+      const tagsString = order.tags.slice(0, this.numOfTags).join('-');
+      return `${prefix}${tagsString}${branch}`;
+    }
+    return order.orderId;
   }
 }

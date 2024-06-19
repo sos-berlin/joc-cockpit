@@ -301,6 +301,9 @@
                               <i *ngIf="controller.sortBy == 'token.validUntil' && controller.reverse"
                                  class="fa fa-caret-down "></i></a>
                           </th>
+                          <th nzWidth="100px">
+                            <a><span class="p-r-xs" translate>encipherment.label.certificates</span></a>
+                          </th>
                         </tr>
                         </thead>
                         <tbody (cdkDropListDropped)="agentsReordering($event, controller.filteredAgents)" cdkDropList>
@@ -410,6 +413,9 @@
                               </ng-template>
                             </div>
                             <span *ngIf="!agent.token">-</span>
+                          </td>
+                          <td (click)="showCertificateAliases(agent)">
+                            <a><i class="fa fa-list-alt"></i></a>
                           </td>
                         </tr>
                         </tbody>

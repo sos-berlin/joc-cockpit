@@ -707,6 +707,16 @@
                                 <span class="_600 p-l-sm" translate>order.cycleState.label.index</span>:
                                 {{order.cycleState.index}}
                               </div>
+                              <div *ngIf="order.retryState" class="m-a-sm m-t-0">
+                                <div class="_600 m-b-xs" translate>order.retryState.label.retryState</div>
+                                <span *ngIf="order.retryState.next">
+                              <span class="_600 p-l-sm" translate>order.retryState.label.next</span>:
+                                  {{ order.retryState.next | stringToDate }}
+                            </span>
+                                <br>
+                                <span class="_600 p-l-sm" translate>order.retryState.label.attempt</span>:
+                                {{ order.retryState.attempt }}
+                              </div>
                             </ng-template>
                             <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
                               <span translate>workflow.label.label </span>:
@@ -948,15 +958,26 @@
                                 <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
                                 <span *ngIf="order.cycleState.since">
                               <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
-                                  {{order.cycleState.since | stringToDate}}
+                                  {{ order.cycleState.since | stringToDate }}
                             </span>
                                 <span *ngIf="order.cycleState.next">
                               <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
-                                  {{order.cycleState.next | stringToDate}}
+                                  {{ order.cycleState.next | stringToDate }}
                             </span>
                                 <br>
                                 <span class="_600 p-l-sm" translate>order.cycleState.label.index</span>:
-                                {{order.cycleState.index}}
+                                {{ order.cycleState.index }}
+                              </div>
+
+                              <div *ngIf="order.retryState" class="m-a-sm m-t-0">
+                                <div class="_600 m-b-xs" translate>order.retryState.label.retryState</div>
+                                <span *ngIf="order.retryState.next">
+                              <span class="_600 p-l-sm" translate>order.retryState.label.next</span>:
+                                  {{ order.retryState.next | stringToDate }}
+                            </span>
+                                <br>
+                                <span class="_600 p-l-sm" translate>order.retryState.label.attempt</span>:
+                                {{ order.retryState.attempt }}
                               </div>
                             </ng-template>
                           </td>

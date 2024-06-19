@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>encipherment.label.certAlias</span>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<div class="modal-body p-a">
+  <div class="row pb-3 algin-item-center" *ngFor="let certificate of certificateList;">
+    <div class="col-md-8">{{certificate?.certAlias}}</div>
+    <div class="col-md-4 text-right">
+      <button (click)="deleteCertificateAlias(certificate?.certAlias)"class="btn btn-sm btn-grey m-l-12">
+        <i class="fa fa-trash"></i>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+    <span translate>common.button.close</span>
+  </button>
+</div>

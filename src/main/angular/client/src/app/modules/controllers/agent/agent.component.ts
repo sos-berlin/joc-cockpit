@@ -438,6 +438,70 @@ export class AddCertificateModalComponent {
 }
 
 @Component({
+  selector: 'app-certificate-modal',
+  templateUrl: './show-certificate-list-dialog.html'
+})
+export class ShowCertificateListModalComponent {
+
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  data: any;
+  certificateList: any
+
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService){}
+
+  ngOnInit(): void {
+    console.log(this.modalData)
+    this.data = this.modalData.agent;
+    this.getCertificates();
+  }
+
+  getCertificates(){
+    let certAliases = { agentIds: [] };
+    certAliases.agentIds.push(this.data.agentId);
+    this.coreService.post('encipherment/assignment', certAliases).subscribe({
+      next: (res: any) => {
+        console.log(res)
+        this.certificateList = res.mappings;
+      }, error: () => {
+      }
+    });
+  }
+
+  deleteCertificateAlias(certAlias){
+    let certAliasesObj = {
+      agentId: this.data.agentId,
+      certAlias: certAlias
+    };
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmModalComponent,
+      nzData: {
+        type: 'Remove',
+        title: 'remove',
+        message: 'removeCertificate',
+        objectName: certAlias,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this._deleteCertificateAlias(certAliasesObj);
+      }
+    });
+  }
+
+  private _deleteCertificateAlias(certAliasesObj){
+    this.coreService.post('encipherment/assignment/remove', certAliasesObj).subscribe({
+     next: (res: any) => {
+      this.getCertificates();
+     }, error: () => {}
+   });
+ }
+}
+
+@Component({
   selector: 'app-agent',
   templateUrl: './agent.component.html',
   styleUrls: ['./agent.component.scss']

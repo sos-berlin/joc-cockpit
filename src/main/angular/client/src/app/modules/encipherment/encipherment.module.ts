@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {SharedModule} from '../shared/shared.module';
-import { AddEnciphermentModalComponent, EnciphermentComponent, ImportEnciphermentModalComponent } from './encipherment.component';
+import { AddEnciphermentModalComponent, EnciphermentComponent, EnciphermentUpdateKeyComponent, ImportEnciphermentModalComponent } from './encipherment.component';
 
 const routes: Routes = [
   {
@@ -14,7 +14,8 @@ const routes: Routes = [
   declarations: [
     EnciphermentComponent,
     AddEnciphermentModalComponent,
-    ImportEnciphermentModalComponent
+    ImportEnciphermentModalComponent,
+    EnciphermentUpdateKeyComponent
   ],
   imports: [
     RouterModule.forChild(routes),

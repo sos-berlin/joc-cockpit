@@ -13,7 +13,8 @@ import {
   AgentComponent,
   AgentModalComponent,
   SubagentModalComponent,
-  AddCertificateModalComponent
+  AddCertificateModalComponent,
+  ShowCertificateListModalComponent
 } from './agent/agent.component';
 import {SharedModule} from '../shared/shared.module';
 
@@ -38,7 +39,8 @@ const routes: Routes = [
     CreateTokenModalComponent,
     AgentComponent,
     ExportComponent,
-    AddCertificateModalComponent
+    AddCertificateModalComponent,
+    ShowCertificateListModalComponent
   ],
   imports: [
     RouterModule.forChild(routes),

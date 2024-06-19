@@ -61,9 +61,9 @@
               <th class="menu" rowspan="2">
                 <span translate>common.label.action</span>
               </th>
-              <th rowspan="2"><span translate>encipherment.label.certAlias</span></th>
-              <th rowspan="2"><span translate>encipherment.label.certificate</span></th>
-              <th rowspan="2"><span translate>encipherment.label.privateKeyPath</span></th>
+              <th rowspan="2" nzWidth="50%"><span translate>encipherment.label.privateKeyPath</span></th>
+              <th rowspan="2" nzWidth="50%"><span translate>encipherment.label.certAlias</span></th>
+              <!-- <th rowspan="2"><span translate>encipherment.label.certificate</span></th> -->
             </tr>
           </thead>
           <tbody>
@@ -87,9 +87,18 @@
                     </nz-dropdown-menu>
                   </div>
                 </td>
-                <td>{{ encipherment?.certAlias }}</td>
-                <td>{{ encipherment?.certificate }}</td>
-                <td>{{ encipherment?.privateKeyPath }}</td>
+                <td>
+                  <div class="d-flex justify-content-between algin-item-center">
+                    <span *ngIf="encipherment?.privateKeyPath">{{ encipherment?.privateKeyPath }}</span>
+                    <span *ngIf="!encipherment?.privateKeyPath">-</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-between algin-item-center">
+                    <span>{{ encipherment?.certAlias }}</span>
+                    <span (click)="showCertificate(encipherment)"><i class="fa fa-television"></i></span>
+                  </div>
+                </td>
               </tr>
             </ng-template>
           </tbody>

@@ -1,0 +1,27 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>profile.keyManagement.label.showCertificate</span>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a">
+    <div class="form-group row">
+      <label class="col-sm-12 form-control-label" translate>encipherment.label.certificate
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-12">
+        <textarea #privateKey="ngModel" [(ngModel)]="data.certificate" [readOnly]="true" autocomplete="false"
+                  autofocus class="form-control"
+                  name="privateKey" placeholder="{{'encipherment.placeholder.certificate' | translate}}" required rows="10"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      <span translate>common.button.close</span>
+    </button>
+  </div>
+</form>

@@ -66,6 +66,16 @@
       <span class="_600 p-l-sm" translate>order.cycleState.label.index</span>:
       {{order.cycleState.index}}
     </div>
+    <div *ngIf="order.retryState" class="m-a-sm m-t-0">
+      <div class="_600 m-b-xs" translate>order.retryState.label.retryState</div>
+      <span *ngIf="order.retryState.next">
+                              <span class="_600 p-l-sm" translate>order.retryState.label.next</span>:
+        {{ order.retryState.next | stringToDate }}
+                            </span>
+      <br>
+      <span class="_600 p-l-sm" translate>order.retryState.label.attempt</span>:
+      {{ order.retryState.attempt }}
+    </div>
   </ng-template>
   <div class="d-inline-block m-r">
     <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)" [order]="order"
@@ -79,9 +89,9 @@
       <span *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"
             class="half-circle half-circle-right"></span>
       <a (click)="showLog(order)"
-         *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')" class="text-hover-primary p-l-xs p-r-sm">{{order.orderId}}</a>
+         *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')" class="text-hover-primary p-l-xs p-r-sm">{{coreService.getModifiedOrderId(order)}}</a>
       <span *ngIf="!order.state || (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING')"
-            class="p-l-xs p-r-sm">{{order.orderId}}</span>
+            class="p-l-xs p-r-sm">{{coreService.getModifiedOrderId(order)}}</span>
       <i *ngIf="order.cyclicOrder" aria-hidden="true" class="fa fa-repeat p-l-xs p-r-xs"></i>
       <i *ngIf="order.scheduledFor && !order.scheduledNever"
          class="text-sm text-muted">{{order.scheduledFor | stringToDate}}</i>

@@ -1229,8 +1229,6 @@ export class OrderOverviewComponent {
       if (operation === 'Suspend' && !order.isSuspendible) {
         return;
       }
-      console.log(obj,"?????????");
-
       if (obj.orderIds) {
         obj.orderIds.push(order.orderId);
       } else {
@@ -1425,7 +1423,6 @@ export class OrderOverviewComponent {
   }
 
   private fetchTags(): void {
-    console.log(">>>")
     this.coreService.post('workflows/tag/search', {
       search: '',
       controllerId: this.schedulerIds.selected
@@ -1506,7 +1503,6 @@ export class OrderOverviewComponent {
     });
   }
   switchToTagging(flag): void {
-    console.log(flag,"flag")
     this.orderFilters.tagType = flag;
     const obj: any = {
       controllerId: this.schedulerIds.selected,

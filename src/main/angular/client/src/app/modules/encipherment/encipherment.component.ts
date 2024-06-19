@@ -257,6 +257,24 @@ export class ImportEnciphermentModalComponent {
 }
 
 @Component({
+  selector: 'app-encipherment-update-modal',
+  templateUrl: './update-dialog.html',
+})
+export class EnciphermentUpdateKeyComponent {
+
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  data: any;
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService){}
+
+  ngOnInit(): void {
+    this.data = this.modalData.encipherment;
+  }
+
+  onSubmit(){}
+}
+
+@Component({
   selector: 'app-encipherment',
   templateUrl: './encipherment.component.html',
 })
@@ -399,6 +417,24 @@ export class EnciphermentComponent {
       next: (res: any) => {
         this.getEnciphermentCertificate();
       }, error: () => {}
+    });
+  }
+
+  showCertificate(encipherment): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EnciphermentUpdateKeyComponent,
+      nzClassName: 'lg',
+      nzData: {
+        encipherment
+      },
+      nzFooter: null,
+      nzAutofocus: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {}
     });
   }
 

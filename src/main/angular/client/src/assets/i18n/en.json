@@ -408,6 +408,7 @@
     "label.agentId": "Agent ID",
     "label.certAlias": "Certificate Alias",
     "label.certificate": "Certificate",
+    "label.certificates": "Certificates",
     "label.privateKeyPath": "Private Key Path",
     "label.jobResourceFolder": "Job Resource Folder",
     "label.importCertificate": "Import Encipherment Certificate",
@@ -670,6 +671,7 @@
     "message.deleteAllReport": "Are you sure you want to delete the selected Reports?",
     "message.stickToDailyPlanDate": "Are you sure you want to change start times of orders and keep their original Daily Plan assignment?",
     "message.deleteCertificate": "Are you sure you want to delete this certificate?",
+    "message.removeCertificate": "Are you sure you want to remove this certificate alias?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Export to .xlsx format",
     "tooltip.expandDetails": "Expand Details",
@@ -2482,6 +2484,13 @@
         "next": "Next",
         "index": "Index"
       }
+    },
+    "retryState": {
+      "label": {
+        "retryState": "Retry State",
+        "next": "Next",
+        "attempt": "Attempt"
+      }
     }
   },
   "profile": {
@@ -2906,12 +2915,14 @@
       "periodStep": "Period Step",
       "interval": "Interval",
       "relative": "Relative",
-      "absolute": "Absolute",
+      "absolute": "Report Period",
       "count": "Count",
       "unit": "Unit",
       "sort": "Sort",
-      "HIGHEST": "Highest",
-      "LOWEST": "Lowest",
+      "HIGHEST": "highest",
+      "LOWEST": "lowest",
+      "highest": "Highest",
+      "lowest": "Lowest",
       "preset": "Preset",
       "manageCards": "Manage Cards"
     },

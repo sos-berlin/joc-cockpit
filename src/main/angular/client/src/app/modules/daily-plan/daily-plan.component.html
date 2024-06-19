@@ -90,10 +90,10 @@
           <i (click)="addDetailsOfOrder(value)" *ngIf="value.show"
              aria-hidden="true" class="fa fa-caret-up cursor fa-lg p-r-xs"></i>
           <span *ngIf="value.state && (value.state._text !== 'FINISHED')"
-                [innerHtml]="value.orderId | highlight : dailyPlanFilters.searchText"></span>
+                [innerHtml]="coreService.getModifiedOrderId(value) | highlight : dailyPlanFilters.searchText"></span>
           <a (click)="navToOrderHistory(value)"
              *ngIf="value.state && (value.state._text === 'FINISHED')"
-             [innerHtml]="value.orderId | highlight : dailyPlanFilters.searchText" class="text-hover-primary">
+             [innerHtml]="coreService.getModifiedOrderId(value)| highlight : dailyPlanFilters.searchText" class="text-hover-primary">
           </a>
           <i *ngIf="value.cyclicOrder" [nzTooltipPlacement]="'left'" [nzTooltipTitle]="tooltipTemplate" aria-hidden="true"
              class="fa fa-repeat p-l-xs" nz-tooltip></i>

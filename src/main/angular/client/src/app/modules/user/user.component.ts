@@ -765,6 +765,7 @@ export class RemoveKeyModalComponent {
     this.comments = this.modalData.comments;
     if (this.comments)
       this.comments.radio = 'predefined';
+
   }
 
   onSubmit(): void {

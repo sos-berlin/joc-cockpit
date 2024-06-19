@@ -138,45 +138,67 @@ export class GenerateReportComponent {
   }
 
   sort(propertyName): void {
-    const expandedStates = new Map<string, { expandedHighest: boolean, expandedLowest: boolean }>();
+    const expandedStates = new Map<string, { expandedHighest: boolean, expandedLowest: boolean, expanded: boolean }>();
 
+    // Save the current expanded states of the groups
     this.filteredData.forEach(item => {
       expandedStates.set(item.key, {
         expandedHighest: item.expandedHighest,
-        expandedLowest: item.expandedLowest
+        expandedLowest: item.expandedLowest,
+        expanded: item.expanded
       });
     });
 
     this.filters.filter.reverse = !this.filters.filter.reverse;
     this.filters.filter.sortBy = propertyName;
 
-    if (this.filters.groupBy === 'path' && propertyName === 'path') {
-      this.filteredData = this.orderPipe.transform(this.filteredData, this.filters.filter.sortBy, this.filters.filter.reverse);
-    } else if (this.filters.groupBy === 'hits' && propertyName === 'hits') {
-      this.filteredData = this.orderPipe.transform(this.filteredData, this.filters.filter.sortBy, this.filters.filter.reverse);
-    } else {
-      this.data = this.orderPipe.transform(this.data, this.filters.filter.sortBy, this.filters.filter.reverse);
-      this.filteredData = this.groupBy.transform(this.data, this.filters.groupBy);
-      this.filteredData.forEach(item => {
-        item.path = item.value[0].path;
-        item.title = item.value[0].title;
-        item.template = item.value[0].template;
-        item.hits = item.value[0].hits;
-        item.sort = item.value[0].sort;
-        item.highestGroup = item.value.filter(val => val.sort === 'HIGHEST') || [];
-        item.lowestGroup = item.value.filter(val => val.sort === 'LOWEST') || [];
-        if (expandedStates.has(item.key)) {
-          const {expandedHighest, expandedLowest} = expandedStates.get(item.key);
-          item.expandedHighest = expandedHighest;
-          item.expandedLowest = expandedLowest;
-        }
-        if (this.filters.expandedKey?.has(item.key)) {
-          item.expanded = true;
-        }
-      });
-    }
+    this.data = this.orderPipe.transform(this.data, this.filters.filter.sortBy, this.filters.filter.reverse);
+
+    this.filteredData = this.manualGroupBy(this.data, this.filters.groupBy);
+
+    this.filteredData.forEach(item => {
+      item.path = item.value[0].path;
+      item.title = item.value[0].title;
+      item.template = item.value[0].template;
+      item.hits = item.value[0].hits;
+      item.sort = item.value[0].sort;
+
+      item.highestGroup = item.value.filter(val => val.sort === 'HIGHEST') || [];
+      item.lowestGroup = item.value.filter(val => val.sort === 'LOWEST') || [];
+
+      if (expandedStates.has(item.key)) {
+        const { expandedHighest, expandedLowest, expanded } = expandedStates.get(item.key);
+        item.expandedHighest = expandedHighest;
+        item.expandedLowest = expandedLowest;
+        item.expanded = expanded;
+      }
+    });
+
     this.reset();
   }
+
+  manualGroupBy(data: any[], groupBy: string): any[] {
+    const groupedData = data.reduce((acc, item) => {
+      const key = groupBy === 'hits' ? `${item.hits}_${item.template}` : item[groupBy];
+      if (!acc[key]) {
+        acc[key] = {
+          key: key,
+          path: item.path,
+          title: item.title,
+          template: item.template,
+          hits: item.hits,
+          sort: item.sort,
+          value: []
+        };
+      }
+      acc[key].value.push(item);
+      return acc;
+    }, {});
+
+    return Object.values(groupedData);
+  }
+
+
 
   getCurrentData(list, filter): Array<any> {
     const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;

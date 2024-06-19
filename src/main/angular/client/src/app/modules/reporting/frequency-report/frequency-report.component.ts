@@ -354,7 +354,7 @@ export class FrequencyReportComponent {
     const innerLabelPlugin = {
       id: 'innerLabel',
       afterDatasetDraw: (chart: any, args: any, pluginOptions: any) => {
-        if (args.meta.data.length) {
+        if (args.meta.data.length && templateName !== 'JOBS_LONGEST_EXECUTION_TIMES' && templateName !== 'WORKFLOWS_LONGEST_EXECUTION_TIMES') {
           const {ctx} = chart;
           const meta = args.meta;
           const xCoor = meta.data[0].x;
@@ -551,7 +551,7 @@ export class FrequencyReportComponent {
         labels: [],
         datasets: [
             {
-                label: this.selectedReport.template?.includes('workflows') ? 'Workflow Executions' : this.selectedReport.template?.includes('most parallel') ? 'Agents' : 'Job Executions',
+                label: this.selectedReport.template?.includes('ORDER_EXECUTIONS') ? 'Workflow Executions' : this.selectedReport.template?.includes('most parallel') ? 'Agents' : 'Job Executions',
                 data: []
             }
         ]
@@ -674,7 +674,7 @@ export class FrequencyReportComponent {
                     y: {
                         title: {
                             display: true,
-                            text: this.selectedReport.template?.includes('execution time') ? 'Execution Time' : ((this.selectedReport.template?.includes('workflows') ? 'Workflow Executions' : this.selectedReport.template?.includes('most parallel') ? 'Agents' : 'Job Executions') + ' Count')
+                            text: this.selectedReport.template?.includes('execution time') ? 'Execution Time' : ((this.selectedReport.template?.includes('ORDER_EXECUTIONS') ? 'Workflow Executions' : this.selectedReport.template?.includes('most parallel') ? 'Agents' : 'Job Executions') + ' Count')
                         },
                         beginAtZero: true,
                         ticks: {

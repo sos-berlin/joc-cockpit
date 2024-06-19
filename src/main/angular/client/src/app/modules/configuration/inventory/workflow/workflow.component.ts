@@ -2607,41 +2607,71 @@ export class JobComponent {
     this.updateFromJobTemplateFn.emit(this.selectedNode)
   }
 
-  encrpytValue(argument){
-    const agentList = this.inventoryService.agentList;
+  encrpytValue(argument, jobName){
     let selectedAgent  = [];
-    if(agentList.length > 0){
-      agentList.forEach(child => {
-        if(child.children.length > 0){
-          child.children.forEach(agent => {
-            if(agent === this.selectedNode.job.agentName){
-              selectedAgent =  child.children;
-            }
-          })
+    selectedAgent = this.getSelectedAgentIds(jobName);
+    setTimeout(() => {
+      const argu = argument;
+      const type = 'job';
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: EncryptArgumentModalComponent,
+        nzAutofocus: null,
+        nzData: {
+          argu,
+          selectedAgent,
+          type
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.updateOnEncrypt.emit();
         }
-      })
-    }
-    const argu = argument;
-    const type = 'job';
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: EncryptArgumentModalComponent,
-      nzAutofocus: null,
-      nzData: {
-        argu,
-        selectedAgent,
-        type
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.updateOnEncrypt.emit();
-      }
-    });
+      });
+    }, 1000);
   }
+
+  getSelectedAgentIds(jobName): any[] {
+    let selectedAgentIds = [];
+    let job = this.jobs.filter(job => job.name === jobName);
+    const agentName = job[0]?.value?.agentName;
+    const subagentClusterId = job[0]?.value?.subagentClusterId;
+    if (subagentClusterId) {
+      const agentController = {
+        controllerId: this.schedulerId
+      }
+      this.coreService.post('agents/cluster', agentController).subscribe({
+        next: (data: any) => {
+          const cluster = data.subagentClusters.filter( cluster => cluster.subagentClusterId === subagentClusterId);
+          if(cluster[0].subagentClusterId === subagentClusterId){
+            cluster[0].subagentIds.forEach(subagentId => {
+              selectedAgentIds.push(subagentId.subagentId);
+            })
+          }
+          return selectedAgentIds;
+        }
+      });
+    } else {
+      const agentController = {
+        controllerId: this.schedulerId
+      }
+      this.coreService.post('agents', agentController).subscribe({
+        next: (data: any) => {
+          const agent = data.agents.filter(agent => agent.agentName === agentName);
+          selectedAgentIds.push(agent[0].agentId);
+          return selectedAgentIds;
+        },
+        error: () => {
+          return selectedAgentIds = [];
+        }
+      });
+    }
+    return selectedAgentIds = [];
+  }
+
 }
 
 @Component({
@@ -12734,15 +12764,7 @@ updateOnEncrypt(){
   }
 
   encrpytValue(currentVariable, actualVariable, typeArg){
-    const agentList = this.inventoryService.agentList;
     let selectedAgent  = [];
-    if(agentList.length > 0){
-      agentList.forEach(child => {
-        if(child.children.length > 0){
-            selectedAgent =  child.children;
-        }
-      })
-    }
     const argu = currentVariable;
     const type = typeArg;
     const modal = this.modal.create({

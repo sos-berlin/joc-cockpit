@@ -104,7 +104,7 @@
                    class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
                 <i (click)="downloadLog(history);$event.stopPropagation()"
                    class="cursor fa fa-download text-hover-primary p-l-xs p-r-xs"></i>
-                <span [innerHtml]="history.orderId"></span>
+                <span [innerHtml]="coreService.getModifiedOrderId(history)"></span>
               </span>
             </td>
             <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">

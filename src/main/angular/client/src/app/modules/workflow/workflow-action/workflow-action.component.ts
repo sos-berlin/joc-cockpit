@@ -740,7 +740,6 @@ export class AddOrderModalComponent {
 
   areArgumentsEmpty(): boolean {
     if (!this.allowEmptyArguments) return false;
-console.log(this.arguments,"{Pa")
     let anyListEmpty = this.arguments.some(arg =>
       arg.type === 'List' &&
       (!arg.actualList || arg.actualList.some(listItem => listItem.list.some(item => !item.value)))
@@ -752,7 +751,6 @@ console.log(this.arguments,"{Pa")
     );
 
     this.argumentsValid = !(anyListEmpty || anyMapEmpty);
-    console.log(this.argumentsValid, "lslls");
     return anyListEmpty || anyMapEmpty;
   }
 

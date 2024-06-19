@@ -408,6 +408,7 @@
     "label.agentId": "ID Agent",
     "label.certAlias": "Alias de Certificat",
     "label.certificate": "Certificat",
+    "label.certificates": "Certificates",
     "label.privateKeyPath": "Chemin d'accès de la Clé Privée",
     "label.jobResourceFolder": "Dossier de la Ressource de Tâches",
     "label.importCertificate": "Importer Certificat de Chiffrement",
@@ -670,6 +671,7 @@
     "message.deleteAllReport": "Êtes-vous sûr de vouloir supprimer les Rapports sélectionnés ?",
     "message.stickToDailyPlanDate": "Êtes-vous sûr de vouloir modifier l'heure de démarrage des ordres et maintenir l'adhérence au Plan Quotidien ?",
     "message.deleteCertificate": "Êtes-vous sûr de vouloir supprimer le certificat ?",
+    "message.removeCertificate": "Are you sure you want to remove this certificate alias?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exporter au format xlsx",
     "tooltip.expandDetails": "Développer les Détails",
@@ -2482,6 +2484,13 @@
         "next": "Prochain",
         "index": "Indice"
       }
+    },
+    "retryState": {
+      "label": {
+        "retryState": "Retry State",
+        "next": "Next",
+        "attempt": "Attempt"
+      }
     }
   },
   "profile": {
@@ -2906,12 +2915,14 @@
       "periodStep": "Étape de la période",
       "interval": "Intervalle",
       "relative": "Relatif",
-      "absolute": "Absolu",
+      "absolute": "Report Period",
       "count": "Nombre de",
       "unit": "Unité",
       "sort": "Tri",
       "HIGHEST": "le plus élevé",
       "LOWEST": "le plus bas",
+      "highest": "Highest",
+      "lowest": "Lowest",
       "preset": "prédéfini",
       "manageCards": "Gérer l'affiche"
     },

@@ -10,7 +10,7 @@ import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.comp
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
-import {AddCertificateModalComponent, AgentModalComponent, SubagentModalComponent} from "./agent/agent.component";
+import {AddCertificateModalComponent, AgentModalComponent, ShowCertificateListModalComponent, SubagentModalComponent} from "./agent/agent.component";
 import {FileUploaderComponent} from "../../components/file-uploader/file-uploader.component";
 import {SearchPipe} from "../../pipes/core.pipe";
 
@@ -266,7 +266,6 @@ export class ControllersComponent {
     }
     this.hasLicense = sessionStorage['hasLicense'] == 'true';
     this.getTokens();
-    this.getCertificates();
   }
 
   ngOnDestroy(): void {
@@ -1837,19 +1836,6 @@ export class ControllersComponent {
     }
   }
 
-  getCertificates(){
-    let certAliases = {
-      agentIds: ["primaryAgent"],
-      // certAliases: []
-    };
-    this.coreService.post('encipherment/assignment', certAliases).subscribe({
-      next: (res: any) => {
-        // console.log(res)
-      }, error: () => {
-      }
-    });
-  }
-
   addCertificateToAgent(controller, agent = null): void {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -1875,6 +1861,24 @@ export class ControllersComponent {
       nzAutofocus: null,
       nzData: {
         subagent
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+      }
+    });
+  }
+
+  showCertificateAliases(agent): void{
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ShowCertificateListModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        agent
       },
       nzFooter: null,
       nzClosable: false,

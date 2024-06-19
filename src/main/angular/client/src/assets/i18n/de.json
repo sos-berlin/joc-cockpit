@@ -408,6 +408,7 @@
     "label.agentId": "Agenten-Kennung",
     "label.certAlias": "Alias des Zertifikats",
     "label.certificate": "Zertifikat",
+    "label.certificates": "Certificates",
     "label.privateKeyPath": "Pfad zum Privaten Scchlüssel",
     "label.jobResourceFolder": "Ordner der Job-Ressource",
     "label.importCertificate": "Zertifikat importieren",
@@ -670,6 +671,7 @@
     "message.deleteAllReport": "Sind Sie sicher, dass Sie alle ausgewählten Berichte löschen wollen?",
     "message.stickToDailyPlanDate": "Sind Sie sicher, dass Sie die Änderung der Startzeit ausführen wollen und Aufträge dem Tagesplan zugeordnet bleiben sollen?",
     "message.deleteCertificate": "Sind Sie sicher, dass Sie das Zertifikat löschen wollen?",
+    "message.removeCertificate": "Are you sure you want to remove this certificate alias?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exportieren im .xlsx Format",
     "tooltip.expandDetails": "Details aufklappen",
@@ -2482,6 +2484,13 @@
         "next": "Nächster",
         "index": "Index"
       }
+    },
+    "retryState": {
+      "label": {
+        "retryState": "Retry State",
+        "next": "Next",
+        "attempt": "Attempt"
+      }
     }
   },
   "profile": {
@@ -2906,12 +2915,14 @@
       "periodStep": "Zeitraum Schritt",
       "interval": "Intervall",
       "relative": "Relativ",
-      "absolute": "Absolut",
+      "absolute": "Report Period",
       "count": "Anzahl",
       "unit": "Einheit",
       "sort": "Sortierung",
       "HIGHEST": "höchsten",
       "LOWEST": "geringsten",
+      "highest": "Highest",
+      "lowest": "Lowest",
       "preset": "voreingestellt",
       "manageCards": "Anzeige verwalten"
     },
