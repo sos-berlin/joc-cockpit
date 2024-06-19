@@ -735,6 +735,7 @@
     "button.cleanupService": "クリーンアップサービス",
     "button.monitorService": "モニターサービス",
     "button.restartServiceName": "サービス再起動",
+    "button.proxyService": "Proxy Service",
     "button.removeFromInventory": " インベントリーから削除",
     "button.viewAllAgentsDetails": "エージェント詳細表示",
     "button.confirmNodeLoss": "ノードロストが確認されました",

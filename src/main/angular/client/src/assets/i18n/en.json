@@ -736,6 +736,7 @@
     "button.cleanupService": "Cleanup Service",
     "button.monitorService": "Monitor Service",
     "button.restartServiceName": "Restart Service",
+    "button.proxyService": "Proxy Service",
     "button.removeFromInventory": "Remove from Inventory",
     "button.viewAllAgentsDetails": "View all Agent details",
     "button.confirmNodeLoss": "Confirm loss of a Controller Instance",
