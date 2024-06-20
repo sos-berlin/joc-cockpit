@@ -2026,7 +2026,7 @@
             "count": "Das Ende des Berichtszeitraums wird berechnet als (Von-Anzahl+1)*Einheit ab dem Beginn des Berichtszeitraums. Der zugehörige Monat wird anhand der Häufigkeit berechnet, jährlich: 12, vierteljährlich: letzter Monat des Quartals usw."
           },
           "preset": {
-            "preset": "Voreinstellung"
+            "preset": "Für häufig verwendete Berichtszeiträume, z.B. für den letzten Monat, das letzte Jahr usw., sind Voreinstellungen mit Mustern verfügbar."
           }
         },
         "sort": "Ein Bericht kann die höchsten oder niedrigsten gefundenen Werte angeben.",
@@ -2905,7 +2905,7 @@
       "dateTo": "Datum bis",
       "hits": "Treffer",
       "created": "Angelegt",
-      "monthFrom": "Monat ab",
+      "monthFrom": "Monat von",
       "monthTo": "Monat bis",
       "numOfReports": "Anzahl Berichte",
       "chooseTemplate": "Vorlage auswählen",
@@ -2914,9 +2914,9 @@
       "reportRunning": "Berichtslauf in Arbeit...",
       "periodLength": "Zeitraum Dauer",
       "periodStep": "Schrittweite",
-      "interval": "Intervall",
-      "relative": "Relativ",
-      "absolute": "Absolut",
+      "interval": "Berichtszeitraum",
+      "relative": "berechnet",
+      "absolute": "von ... bis",
       "count": "Anzahl",
       "unit": "Einheit",
       "sort": "Sortierung",
@@ -2924,7 +2924,7 @@
       "LOWEST": "geringster",
       "highest": "höchster",
       "lowest": "geringster",
-      "preset": "voreingestellt",
+      "preset": "aus Muster",
       "manageCards": "Anzeige verwalten"
     },
     "button" : {
