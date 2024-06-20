@@ -301,9 +301,7 @@
                               <i *ngIf="controller.sortBy == 'token.validUntil' && controller.reverse"
                                  class="fa fa-caret-down "></i></a>
                           </th>
-                          <th nzWidth="100px">
-                            <a><span class="p-r-xs" translate>encipherment.label.certificates</span></a>
-                          </th>
+                          <th nzWidth="100px"><span class="p-r-xs" translate>encipherment.label.certificates</span></th>
                         </tr>
                         </thead>
                         <tbody (cdkDropListDropped)="agentsReordering($event, controller.filteredAgents)" cdkDropList>
@@ -414,7 +412,7 @@
                             </div>
                             <span *ngIf="!agent.token">-</span>
                           </td>
-                          <td (click)="showCertificateAliases(agent)">
+                          <td (click)="showCertificateAliases(agent, 'standalone')">
                             <a><i class="fa fa-list-alt"></i></a>
                           </td>
                         </tr>
@@ -652,6 +650,7 @@
                                   <th><span translate>dashboard.label.version</span></th>
                                   <th nzWidth="150px"><span translate>common.label.status</span></th>
                                   <th nzWidth="140px"><span translate>agent.label.disabled</span></th>
+                                  <th nzWidth="100px"><span class="p-r-xs" translate>encipherment.label.certificates</span></th>
                                 </tr>
                                 </thead>
                                 <tbody (cdkDropListDropped)="drop($event, clusterAgent)" cdkDropList>
@@ -725,6 +724,9 @@
                                   </td>
                                   <td
                                     (click)="editSubagent(sub, clusterAgent, controller)">{{(sub.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</td>
+                                  <td (click)="showCertificateAliases(clusterAgent, 'cluster')">
+                                    <a><i class="fa fa-list-alt"></i></a>
+                                  </td>
                                 </tr>
                                 </tbody>
                               </nz-table>

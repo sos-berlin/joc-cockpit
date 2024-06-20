@@ -422,7 +422,8 @@
     "button.encrypt": "Encrypt",
     "button.addNewCertificate": "Add New Certificate",
     "button.importCertificate": "Import Certificate",
-    "button.deleteCertificate": "Delete Certificate"
+    "button.deleteCertificate": "Delete Certificate",
+    "button.updateCertificate": "Update Certificate"
   },
   "--------COMMON LABEL AND BUTTONS------------": "複数ページで使用",
   "common": {
@@ -3600,6 +3601,7 @@
     "label.selectTags": "タグを選択",
     "label.selectAllTags": "全てのタグを選択",
     "label.removeAllTags": "全てのタグを削除",
+    "label.filtersOrdersAsWell": "Filters Orders as well",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",

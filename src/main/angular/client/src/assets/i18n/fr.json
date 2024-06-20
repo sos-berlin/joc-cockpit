@@ -422,7 +422,8 @@
     "button.encrypt": "Chiffrer",
     "button.addNewCertificate": "Ajouter Certificat",
     "button.importCertificate": "Importer Certificat",
-    "button.deleteCertificate": "Supprimer Certificat"
+    "button.deleteCertificate": "Supprimer Certificat",
+    "button.updateCertificate": "Update Certificate"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -3600,6 +3601,7 @@
     "label.selectTags": "Sélectionner les Mots-clés",
     "label.selectAllTags": "Sélectionner tous les Mots-clés",
     "label.removeAllTags": "Supprimer tous les Mots-clés",
+    "label.filtersOrdersAsWell": "Filters Orders as well",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",

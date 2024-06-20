@@ -565,7 +565,8 @@ export class WorkflowComponent {
   isPathDisplay = true;
   numOfAllOrders: any = {};
   listOfAgents: any = [];
-
+  showFilterCheckbox : any;
+  filtersOrdersAsWell: boolean = false;
   object = {
     mapOfCheckedId: new Map(),
     checked: false,
@@ -1052,6 +1053,7 @@ export class WorkflowComponent {
       if (this.selectedFiltered.orderTags && this.selectedFiltered.orderTags.length > 0) {
         obj.orderTags = this.selectedFiltered.orderTags;
       }
+
     } else {
       if (this.workflowFilters.filter.agentNames && this.workflowFilters.filter.agentNames.length > 0) {
         obj.agentNames = this.workflowFilters.filter.agentNames;
@@ -2539,6 +2541,7 @@ export class WorkflowComponent {
           this.searchByOrderTags(obj);
         }
       });
+      this.showFilterCheckbox = false;
     }
 
     removeAllOrderTags(): void {
@@ -2549,6 +2552,7 @@ export class WorkflowComponent {
         controllerId: this.schedulerIds.selected
       };
       this.searchByOrderTags(obj);
+      this.showFilterCheckbox = false;
     }
 
     selectOrderTag(tag: string): void {
@@ -2625,5 +2629,16 @@ export class WorkflowComponent {
 
     onOrderSearchInput(searchValue: string) {
       this.searchOrderTerm.next(searchValue);
+    }
+
+    toggleFilterCheckbox() {
+      this.coreService.selectedOrderTags = [];
+      this.coreService.checkedOrderTags.clear();
+      const obj: any = {
+        orderTags: [],
+        controllerId: this.schedulerIds.selected
+      };
+      this.searchByOrderTags(obj);
+      this.showFilterCheckbox = !this.showFilterCheckbox;
     }
 }

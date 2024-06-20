@@ -422,7 +422,8 @@
     "button.encrypt": "Verschlüsseln",
     "button.addNewCertificate": "Zertifikat hinzufügen",
     "button.importCertificate": "Zertifikat importieren",
-    "button.deleteCertificate": "Zertifikat löschen"
+    "button.deleteCertificate": "Zertifikat löschen",
+    "button.updateCertificate": "Update Certificate"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -3600,6 +3601,7 @@
     "label.selectAllTags": "Alle Schlagwörter auswählen",
     "label.removeAllTags": "Alle Schlagwörter entfernen",
     "label.childrenMap": "Map Variable",
+    "label.filtersOrdersAsWell": "Filters Orders as well",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",

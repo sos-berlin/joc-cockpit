@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ByteToSizePipe } from 'src/app/pipes/core.pipe';
 import { HttpHeaders } from '@angular/common/http';
 import { ConfirmModalComponent } from 'src/app/components/comfirm-modal/confirm.component';
+import { CommentModalComponent } from 'src/app/components/comment-modal/comment.component';
 
 declare const $: any;
 
@@ -19,17 +20,37 @@ declare const $: any;
 })
 export class AddEnciphermentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
+  display: any;
+  securityLevel: string;
   certificateObj: any = {};
   submitted = false;
+  comments: any = {};
+  required = false;
+  encipherment: any;
 
   nodes = [];
   folderObj: any = {paths: []};
 
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService){}
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService){}
 
   ngOnInit(): void {
+    this.display = this.modalData.display;
+    this.securityLevel = this.modalData.securityLevel;
+    this.comments.radio = 'predefined';
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+    this.encipherment = this.modalData.encipherment;
+    if(this.encipherment){
+      this.certificateObj.certAlias = this.encipherment.certAlias;
+      this.certificateObj.certificate = this.encipherment.certificate;
+      if(this.encipherment.privateKeyPath){
+        this.certificateObj.privateKeyPath = this.encipherment.privateKeyPath;
+      }
+    }
     this.getJobResourceFolderTree();
   }
 
@@ -49,8 +70,21 @@ export class AddEnciphermentModalComponent {
     return data.key;
   }
 
-  onSubmit(): void {
+  onSubmit() {
     this.submitted = true;
+    let auditLog: any = {};
+    if (this.comments.comment) {
+      auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      auditLog.ticketLink = this.comments.ticketLink;
+    }
+    if(auditLog.comment){
+      this.certificateObj.auditLog = auditLog;
+    }
     this.coreService.post('encipherment/certificate/store', this.certificateObj).subscribe({
       next: () => {
         this.activeModal.close('Done');
@@ -80,7 +114,6 @@ export class ImportEnciphermentModalComponent {
   key = {keyAlg: 'RSA'};
 
   certificateObj: any = {};
-  isEnciphermentForm: boolean = false;
 
   nodes = [];
   folderObj: any = {paths: []};
@@ -246,14 +279,6 @@ export class ImportEnciphermentModalComponent {
   displayWith(data): string {
     return data.key;
   }
-
-  onFieldBlur(){
-    if(this.certificateObj.certAlias && this.certificateObj.jobResourceFolder){
-      this.isEnciphermentForm = false;
-    }else{
-      this.isEnciphermentForm = true;
-    }
-  }
 }
 
 @Component({
@@ -340,7 +365,32 @@ export class EnciphermentComponent {
       nzTitle: undefined,
       nzContent: AddEnciphermentModalComponent,
       nzClassName: 'lg',
-      nzData: {},
+      nzData: {
+        securityLevel: this.securityLevel,
+        display: this.preferences.auditLog,
+      },
+      nzFooter: null,
+      nzAutofocus: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.getEnciphermentCertificate();
+      }
+    });
+  }
+
+  updateCertificate(encipherment) {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: AddEnciphermentModalComponent,
+      nzClassName: 'lg',
+      nzData: {
+        securityLevel: this.securityLevel,
+        display: this.preferences.auditLog,
+        encipherment: encipherment
+      },
       nzFooter: null,
       nzAutofocus: null,
       nzClosable: false,
@@ -389,27 +439,59 @@ export class EnciphermentComponent {
   }
 
   deleteCertificate(certAlias){
-    let certAliasesObj = {
+    let obj: any = {
       certAlias: certAlias
     };
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmModalComponent,
-      nzData: {
-        type: 'Delete',
-        title: 'delete',
-        message: 'deleteCertificate',
-        objectName: certAlias,
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this._deleteCertificate(certAliasesObj);
-      }
-    });
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Certificate',
+        operation: 'Delete',
+        name: certAlias
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          this._deleteCertificate(obj);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzData: {
+          type: 'Delete',
+          title: 'delete',
+          message: 'deleteCertificate',
+          objectName: certAlias,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._deleteCertificate(obj);
+        }
+      });
+    }
   }
 
   private _deleteCertificate(certAliasesObj){

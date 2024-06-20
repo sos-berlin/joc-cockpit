@@ -8,12 +8,17 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
+    <div class="row">
+      <div [ngClass]="{'show': display}" class="col-md-12 hide">
+        <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
+      </div>
+    </div>
     <div [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}"
          class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>encipherment.label.agentId
+      <label class="col-sm-3 form-control-label" translate>encipherment.label.agentId
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-sm-6">
+      <div class="col-sm-9">
         <input #agentId="ngModel" [(ngModel)]="certificateObj.agentId" autocomplete="off" class="form-control"
               name="agentId" placeholder="{{'encipherment.placeholder.certAlias' | translate}}" required type="text" readonly/>
         <div *ngIf="agentId.invalid && (agentId.dirty || agentId.touched)" class="text-danger help-block">
@@ -25,10 +30,10 @@
     </div>
     <div [ngClass]="{'has-error' : ((certAlias.dirty || certAlias.touched) && certAlias.invalid)}"
          class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>encipherment.label.certAlias
+      <label class="col-sm-3 form-control-label" translate>encipherment.label.certAlias
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-sm-6">
+      <div class="col-sm-9">
         <nz-select #certAlias="ngModel" nzShowSearch nzAllowClear [nzPlaceHolder]="'encipherment.placeholder.certAlias' | translate" [(ngModel)]="certificateObj.certAlias" name="certAlias">
           <nz-option *ngFor="let certificate of certificateList" [nzLabel]="certificate.certAlias" [nzValue]="certificate.certAlias"></nz-option>
         </nz-select>
@@ -43,7 +48,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
+    <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}

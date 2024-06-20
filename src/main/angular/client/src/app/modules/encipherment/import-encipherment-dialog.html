@@ -16,12 +16,12 @@
     <div *ngIf="type === 'encipherment'">
       <div [ngClass]="{'has-error' : ((certAlias.dirty || certAlias.touched) && certAlias.invalid)}"
           class="form-group row">
-        <label class="col-sm-6 form-control-label" translate>encipherment.label.certAlias
+        <label class="col-sm-3 form-control-label" translate>encipherment.label.certAlias
           <sup class="text-danger text-sm">*</sup>
         </label>
-        <div class="col-sm-6">
+        <div class="col-sm-9">
           <input #certAlias="ngModel" [(ngModel)]="certificateObj.certAlias" [appAutofocus]="true" autocomplete="off" class="form-control"
-                name="certAlias" required type="text"  placeholder="{{'encipherment.placeholder.certAlias' | translate}}" (blur)="onFieldBlur()" />
+                name="certAlias" required type="text"  placeholder="{{'encipherment.placeholder.certAlias' | translate}}" />
           <div *ngIf="certAlias.invalid && (certAlias.dirty || certAlias.touched)" class="text-danger help-block">
             <div *ngIf="certAlias.errors.required">
               <div translate>common.message.requiredError</div>
@@ -31,11 +31,11 @@
       </div>
       <div [ngClass]="{'has-error' : ((privateKeyPath.dirty || privateKeyPath.touched) && privateKeyPath.invalid)}"
           class="form-group row">
-        <label class="col-sm-6 form-control-label" translate>encipherment.label.privateKeyPath
+        <label class="col-sm-3 form-control-label" translate>encipherment.label.privateKeyPath
         </label>
-        <div class="col-sm-6">
+        <div class="col-sm-9">
           <input #privateKeyPath="ngModel" [(ngModel)]="certificateObj.privateKeyPath" autocomplete="off" class="form-control"
-                name="privateKeyPath" type="text"  placeholder="{{'encipherment.placeholder.privateKeyPath' | translate}}" (blur)="onFieldBlur()" />
+                name="privateKeyPath" type="text"  placeholder="{{'encipherment.placeholder.privateKeyPath' | translate}}" />
           <div *ngIf="privateKeyPath.invalid && (privateKeyPath.dirty || privateKeyPath.touched)" class="text-danger help-block">
             <div *ngIf="privateKeyPath.errors.required">
               <div translate>common.message.requiredError</div>
@@ -44,10 +44,10 @@
         </div>
       </div>
       <div class="form-group row" [ngClass]="{'has-error' : ((jobResourceFolder.dirty || jobResourceFolder.touched) && jobResourceFolder.invalid)}">
-        <label class="col-sm-6 form-control-label" translate>encipherment.label.jobResourceFolder
+        <label class="col-sm-3 form-control-label" translate>encipherment.label.jobResourceFolder
           <sup class="text-danger text-sm">*</sup>
         </label>
-        <div class="col-sm-6">
+        <div class="col-sm-9">
           <nz-tree-select
           #treeSelectCtrl
           [(ngModel)]="certificateObj.jobResourceFolder"
@@ -110,7 +110,7 @@
       </div>
     </nz-upload>
   </div>
-  <div *ngIf="fileList.length > 0 && !isEnciphermentForm" class="modal-footer">
+  <div *ngIf="fileList.length > 0 && certificateObj.jobResourceFolder && certificateObj.certAlias" class="modal-footer">
     <button (click)="import()" [disabled]="submitted || uploading || (required && !comments.comment)"
             class="btn btn-primary btn-sm" type="submit">
       <i *ngIf="uploading" class="fa fa-spin fa-spinner p-r-xs"></i>

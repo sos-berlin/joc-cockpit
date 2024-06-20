@@ -232,6 +232,7 @@ export class ControllersComponent {
   tokens: any = [];
   currentSecurityLevel: string;
   permission: any = {};
+  securityLevel: string;
   preferences: any = {};
   agentsFilters: any = {};
   loading = false;
@@ -261,6 +262,7 @@ export class ControllersComponent {
     this.isJOCActive = sessionStorage['$SOS$ISJOCACTIVE'] == 'YES';
     this.permission = JSON.parse(this.authService.permission) || {};
     this.agentsFilters = this.coreService.getControllerTab();
+    this.securityLevel = sessionStorage['securityLevel'];
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
@@ -1842,6 +1844,8 @@ export class ControllersComponent {
       nzContent: AddCertificateModalComponent,
       nzAutofocus: null,
       nzData: {
+        securityLevel: this.securityLevel,
+        display: this.preferences.auditLog,
         agent
       },
       nzFooter: null,
@@ -1860,6 +1864,8 @@ export class ControllersComponent {
       nzContent: AddCertificateModalComponent,
       nzAutofocus: null,
       nzData: {
+        securityLevel: this.securityLevel,
+        display: this.preferences.auditLog,
         subagent
       },
       nzFooter: null,
@@ -1872,13 +1878,14 @@ export class ControllersComponent {
     });
   }
 
-  showCertificateAliases(agent): void{
+  showCertificateAliases(agent, agentType): void{
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ShowCertificateListModalComponent,
       nzAutofocus: null,
       nzData: {
-        agent
+        agent,
+        agentType
       },
       nzFooter: null,
       nzClosable: false,

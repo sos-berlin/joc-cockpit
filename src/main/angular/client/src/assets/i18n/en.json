@@ -422,7 +422,8 @@
     "button.encrypt": "Encrypt",
     "button.addNewCertificate": "Add Certificate",
     "button.importCertificate": "Import Certificate",
-    "button.deleteCertificate": "Delete Certificate"
+    "button.deleteCertificate": "Delete Certificate",
+    "button.updateCertificate": "Update Certificate"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -3600,6 +3601,7 @@
     "label.selectAllTags": "Select all Tags",
     "label.removeAllTags": "Remove all Tags",
     "label.childrenMap": "Map Variable",
+    "label.filtersOrdersAsWell": "Filters Orders as well",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",

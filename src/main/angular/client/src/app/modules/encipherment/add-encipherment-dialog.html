@@ -8,12 +8,17 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
+    <div class="row">
+      <div [ngClass]="{'show': display}" class="col-md-12 hide">
+        <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
+      </div>
+    </div>
     <div [ngClass]="{'has-error' : ((certAlias.dirty || certAlias.touched) && certAlias.invalid)}"
          class="form-group row">
-      <label class="col-sm-6 form-control-label" translate>encipherment.label.certAlias
+      <label class="col-sm-3 form-control-label" translate>encipherment.label.certAlias
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-sm-6">
+      <div class="col-sm-9">
         <input #certAlias="ngModel" [(ngModel)]="certificateObj.certAlias" [appAutofocus]="true" autocomplete="off" class="form-control"
                name="certAlias" placeholder="{{'encipherment.placeholder.certAlias' | translate}}" required type="text"/>
         <div *ngIf="certAlias.invalid && (certAlias.dirty || certAlias.touched)" class="text-danger help-block">
@@ -25,10 +30,10 @@
     </div>
     <div [ngClass]="{'has-error' : ((certificate.dirty || certificate.touched) && certificate.invalid)}"
          class="form-group row">
-      <label class="col-sm-6 form-control-label" translate>encipherment.label.certificate
+      <label class="col-sm-3 form-control-label" translate>encipherment.label.certificate
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-sm-6">
+      <div class="col-sm-9">
         <textarea #certificate="ngModel" [(ngModel)]="certificateObj.certificate" autocomplete="false" class="form-control"
           name="certificate" placeholder="{{'encipherment.placeholder.certificate' | translate}}"
           required rows="10"></textarea>
@@ -41,9 +46,9 @@
     </div>
     <div [ngClass]="{'has-error' : ((privateKeyPath.dirty || privateKeyPath.touched) && privateKeyPath.invalid)}"
          class="form-group row">
-      <label class="col-sm-6 form-control-label" translate>encipherment.label.privateKeyPath
+      <label class="col-sm-3 form-control-label" translate>encipherment.label.privateKeyPath
       </label>
-      <div class="col-sm-6">
+      <div class="col-sm-9">
         <input #privateKeyPath="ngModel" [(ngModel)]="certificateObj.privateKeyPath" autocomplete="off" class="form-control"
                name="privateKeyPath" placeholder="{{'encipherment.placeholder.privateKeyPath' | translate}}" type="text"/>
         <div *ngIf="privateKeyPath.invalid && (privateKeyPath.dirty || privateKeyPath.touched)" class="text-danger help-block">
@@ -54,10 +59,10 @@
       </div>
     </div>
     <div [ngClass]="{'has-error' : ((jobResourceFolder.dirty || jobResourceFolder.touched) && jobResourceFolder.invalid)}" class="form-group row">
-      <label class="col-sm-6 form-control-label" translate>encipherment.label.jobResourceFolder
+      <label class="col-sm-3 form-control-label" translate>encipherment.label.jobResourceFolder
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-sm-6">
+      <div class="col-sm-9">
         <nz-tree-select
           #treeSelectCtrl
           [(ngModel)]="certificateObj.jobResourceFolder"
@@ -92,7 +97,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
+    <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}

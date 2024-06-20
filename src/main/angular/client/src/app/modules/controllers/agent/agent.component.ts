@@ -398,6 +398,10 @@ export class AgentModalComponent {
 })
 export class AddCertificateModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
+  securityLevel: string;
+  comments: any = {};
+  display: any;
+  required = false;
   certificateObj: any = {};
   submitted = false;
   certificateList: any = [];
@@ -406,6 +410,13 @@ export class AddCertificateModalComponent {
   }
 
   ngOnInit(): void {
+    this.display = this.modalData.display;
+    this.securityLevel = this.modalData.securityLevel;
+    this.comments.radio = 'predefined';
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.required = true;
+      this.display = true;
+    }
     if (this.modalData.agent) {
       this.certificateObj.agentId = this.modalData.agent.agentId;
     } else if (this.modalData.subagent) {
@@ -429,6 +440,19 @@ export class AddCertificateModalComponent {
 
   onSubmit(): void {
     this.submitted = true;
+    let auditLog: any = {};
+    if (this.comments.comment) {
+      auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      auditLog.ticketLink = this.comments.ticketLink;
+    }
+    if(auditLog.comment){
+      this.certificateObj.auditLog = auditLog;
+    }
     this.coreService.post('encipherment/assignment/add', this.certificateObj).subscribe({
       next: () => {
         this.activeModal.close('Done');
@@ -444,23 +468,33 @@ export class AddCertificateModalComponent {
 export class ShowCertificateListModalComponent {
 
   readonly modalData: any = inject(NZ_MODAL_DATA);
+  preferences: any = {};
   data: any;
+  agentType: string;
   certificateList: any
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService){}
 
   ngOnInit(): void {
-    console.log(this.modalData)
     this.data = this.modalData.agent;
+    this.agentType = this.modalData.agentType;
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
+    }
     this.getCertificates();
   }
 
   getCertificates(){
     let certAliases = { agentIds: [] };
-    certAliases.agentIds.push(this.data.agentId);
+    if(this.agentType === 'cluster'){
+      this.data.subagents.forEach(agent => {
+        certAliases.agentIds.push(agent.subagentId);
+      })
+    }else{
+      certAliases.agentIds.push(this.data.agentId);
+    }
     this.coreService.post('encipherment/assignment', certAliases).subscribe({
       next: (res: any) => {
-        console.log(res)
         this.certificateList = res.mappings;
       }, error: () => {
       }
@@ -468,28 +502,59 @@ export class ShowCertificateListModalComponent {
   }
 
   deleteCertificateAlias(certAlias){
-    let certAliasesObj = {
+    let obj: any = {
       agentId: this.data.agentId,
       certAlias: certAlias
     };
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmModalComponent,
-      nzData: {
-        type: 'Remove',
-        title: 'remove',
-        message: 'removeCertificate',
-        objectName: certAlias,
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this._deleteCertificateAlias(certAliasesObj);
-      }
-    });
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Certificate Alias',
+        operation: 'Delete',
+        name: certAlias
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._deleteCertificateAlias(obj);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzData: {
+          type: 'Remove',
+          title: 'remove',
+          message: 'removeCertificate',
+          objectName: certAlias,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          this._deleteCertificateAlias(obj);
+        }
+      });
+    }
   }
 
   private _deleteCertificateAlias(certAliasesObj){

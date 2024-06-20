@@ -994,12 +994,17 @@ export class DailyPlanComponent {
       if (this.dailyPlanFilters.filter.late) {
         obj.late = true;
       }
-      if (this.coreService.checkedTags.size) {
-        obj.tags = Array.from(this.coreService.checkedTags);
+      if(this.dailyPlanFilters.tagType === 'workflowTags'){
+        if (this.coreService.checkedTags.size) {
+          obj.workflowTags = Array.from(this.coreService.checkedTags);
+        }
+      }else if(this.dailyPlanFilters.tagType === 'orderTags'){
+        if (this.coreService.checkedOrderTags.size) {
+          obj.orderTags = Array.from(this.coreService.checkedOrderTags);
+        }
       }
-      if (this.coreService.checkedOrderTags.size) {
-        obj.orderTags = Array.from(this.coreService.checkedOrderTags);
-      }
+
+
       obj.limit = this.preferences.maxDailyPlanRecords;
       this.coreService.post('daily_plan/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
         next: (res: any) => {
@@ -1790,6 +1795,12 @@ export class DailyPlanComponent {
   applySearchFilter(obj, filter): void {
     if (filter.workflowPaths) {
       obj.workflowPaths = filter.workflowPaths;
+    }
+    if (filter.tags) {
+      obj.tags = filter.tags;
+    }
+    if (filter.orderTags) {
+      obj.orderTags = filter.orderTags;
     }
     if (filter.workflowFolders && filter.workflowFolders.length > 0) {
       obj.workflowFolders = [];
@@ -3129,9 +3140,7 @@ export class DailyPlanComponent {
       obj.tags = Array.from(this.coreService.checkedTags);
     }
     if (obj.tags?.length > 0 || obj.folders?.length > 0 || obj.orderTags?.length > 0) {
-      // this.getWorkflowList(obj);
     } else {
-      // this.workflows = [];
       this.searchInResult();
     }
   }

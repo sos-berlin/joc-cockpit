@@ -181,14 +181,20 @@
                               <div *ngFor="let item of data.data; let i = index"
                                    style="padding-bottom: 0px !important;">
                                 <div *ngIf="i == 0" class="flex-container">
-                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>runtime.label.period</span>
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.startTime</span>
+                                  </div>
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.endTime</span>
+                                  </div>
+                                  <div *ngIf="item.duration" class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.duration</span>
                                   </div>
                                 </div>
-                                <div class="flex-container" >
-                                  <div class="flex-item" style="width: 100%;">{{item.startTime | stringToDate}}</div>
+                                <div class="flex-container">
+                                  <div class="flex-item" style="width: 100%;">{{ item.startTime | stringToDate}}</div>
+                                  <div class="flex-item" style="width: 100%;">{{ item.endTime | stringToDate}}</div>
+                                  <div *ngIf="item.duration" class="flex-item" style="width: 100%;">{{ item.duration}}</div>
                                 </div>
                               </div>
-                            </div>
+                              </div>
                           </nz-collapse-panel>
                         </nz-collapse>
                       </div>
@@ -205,11 +211,17 @@
                               <div *ngFor="let item of data.data; let i = index"
                                    style="padding-bottom: 0px !important;">
                                 <div *ngIf="i == 0" class="flex-container">
-                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>runtime.label.period</span>
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.startTime</span>
+                                  </div>
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.endTime</span>
+                                  </div>
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.duration</span>
                                   </div>
                                 </div>
-                                <div class="flex-container" >
-                                  <div class="flex-item" style="width: 100%;">{{item.startTime | stringToDate}}</div>
+                                <div class="flex-container">
+                                  <div class="flex-item" style="width: 100%;">{{ item.startTime | stringToDate}}</div>
+                                  <div class="flex-item" style="width: 100%;">{{ item.endTime | stringToDate}}</div>
+                                  <div class="flex-item" style="width: 100%;">{{ item.duration}}</div>
                                 </div>
                               </div>
                             </div>
@@ -220,7 +232,7 @@
                            *ngIf="item.templateName === 'WORKFLOWS_LONGEST_EXECUTION_TIMES' || item.templateName === 'JOBS_LONGEST_EXECUTION_TIMES'">
                         <nz-collapse>
                           <nz-collapse-panel *ngFor="let data of item.data"
-                                             [nzHeader]="(data.workflowName ? data.workflowName + '/' + data.workflowName : data.workflowName) + ' - ' + ' (' + formatDuration(data.duration) + ')' "
+                                             [nzHeader]="data.workflowName + (data.jobName ? '/' + data.jobName : '') + ' - ' + ' (' + formatDuration(data.duration) + ')' "
                                              [nzActive]="(data.workflowName ? data.workflowName.active : data.workflowName.active)">
                             <div>
                               <div style="padding-bottom: 0 !important;">
@@ -245,20 +257,13 @@
                                              [nzHeader]="data.agentName + ' - ' + ' (' + data.count + ')' "
                                              [nzActive]="data.agentName.active">
                             <div>
-                              <div *ngFor="let item of data.data; let i = index"
-                                   style="padding-bottom: 0px !important;">
-                                <div *ngIf="i == 0" class="flex-container">
-                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.workflow</span>
-                                  </div>
-                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.job</span>
-                                  </div>
-                                  <div class="flex-item" style="width: 25%;font-weight: bold;"><span translate>history.label.startTime</span>
+                              <div style="padding-bottom: 0px !important;">
+                                <div class="flex-container">
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>agent.label.agentName</span>
                                   </div>
                                 </div>
                                 <div class="flex-container">
-                                  <div class="flex-item" style="width: 25%;">{{item.workflowName}}</div>
-                                  <div class="flex-item" style="width: 25%;">{{item.workflowName}}</div>
-                                  <div class="flex-item" style="width: 25%;">{{item.startTime | stringToDate}}</div>
+                                  <div class="flex-item" style="width: 100%;">{{data.agentName}}</div>
                                 </div>
                               </div>
                             </div>
@@ -269,17 +274,23 @@
                            *ngIf="item.templateName === 'JOBS_EXECUTIONS_FREQUENCY' || item.templateName === 'ORDERS_EXECUTIONS_FREQUENCY'">
                         <nz-collapse>
                           <nz-collapse-panel *ngFor="let data of item.data"
-                                             [nzHeader]="(data.workflowName ? data.workflowName.replace('__', '/') : data.workflowName) + ' - ' + ' (' + data.count + ')' "
+                                             [nzHeader]="(data.jobName ? data.workflowName + '/' + data.jobName : data.workflowName) + ' - ' + ' (' + data.count + ')' "
                                              [nzActive]="(data.workflowName ? data.workflowName.active : data.workflowName.active)">
                             <div>
                               <div *ngFor="let item of data.data; let i = index" class="p-a-sm"
                                    style="padding-bottom: 4px !important;">
                                 <div *ngIf="i == 0" class="flex-container">
-                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>runtime.label.period</span>
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.startTime</span>
+                                  </div>
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.endTime</span>
+                                  </div>
+                                  <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.duration</span>
                                   </div>
                                 </div>
                                 <div class="flex-container">
-                                  <div class="flex-item" style="width: 100%;">{{ item.period | stringToDate}}</div>
+                                  <div class="flex-item" style="width: 100%;">{{ item.startTime | stringToDate}}</div>
+                                  <div class="flex-item" style="width: 100%;">{{ item.endTime | stringToDate}}</div>
+                                  <div class="flex-item" style="width: 100%;">{{ item.duration}}</div>
                                 </div>
                               </div>
                             </div>

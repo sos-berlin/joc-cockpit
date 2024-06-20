@@ -199,12 +199,12 @@
                   </nz-tab>
                   <nz-tab class="ctm-pd" (nzClick)="switchToTagging('workflowTags');workflowFilters.selectedIndex = 1;" [nzTitle]="workflowTagsTitle">
                     <ng-template #workflowTagsTitle>
-                      <span [ngClass]="coreService.checkedTags.size > 0 ? 'custom-tab-btn-background' : ''">{{ 'inventory.tab.workflowTagging' | translate }}</span>
+                      <span>{{ 'inventory.tab.workflowTagging' | translate }}</span>
                     </ng-template>
                   </nz-tab>
                   <nz-tab class="ctm-pd" (nzClick)="switchToTagging('orderTags');workflowFilters.selectedIndex = 2;" [nzTitle]="orderTagsTitle">
                     <ng-template #orderTagsTitle>
-                      <span [ngClass]="coreService.checkedOrderTags.size > 0 ? 'custom-tab-btn-background' : ''">{{ 'inventory.tab.orderTagging' | translate }}</span>
+                      <span>{{ 'inventory.tab.orderTagging' | translate }}</span>
                     </ng-template>
                   </nz-tab>
                 </nz-tabset>
@@ -310,7 +310,6 @@
                 <a (click)="showSidebarPanel()" class="text resize-cursor a-2 pos-abt r-22 z-index-99">
                   <i class="fa fa-angle-double-right fa-lg"></i>
                 </a>
-
                 <perfect-scrollbar class="tree-block m-t-0" style="height: calc(100vh - 192px);">
                   <div *ngIf="workflowFilters.tagType === 'orderTags'" class="fade-in">
                     <div class="p-l-xxs m-b-12">
@@ -324,7 +323,13 @@
                       <a (click)="removeAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
                         <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
                       </a>
+                      <a (click)="toggleFilterCheckbox()" class="p-l-12" nz-tooltip="{{'workflow.label.filtersOrdersAsWell' | translate}}">
+                        <i class="font14" nz-icon nzType="filter" nzTheme="outline"></i>
+                      </a>
                     </div>
+                    <label *ngIf="showFilterCheckbox" nz-checkbox [(ngModel)]="workflowFilters.filtersOrdersAsWell" class="m-l-xs m-b-10">
+                      {{ 'workflow.label.filtersOrdersAsWell' | translate }}
+                    </label>
                     <div class="w-full" *ngFor="let tag of coreService.selectedOrderTags | orderBy: 'ordering'">
                         <div class="node-wrapper p-l-xs p-b-xxs">
                           <span class="w-14 m-r-12">
@@ -338,7 +343,7 @@
                         </div>
                     </div>
                   </div>
-                  <div *ngIf="workflowFilters.tagType === 'orderTags' && coreService.selectedOrderTags && coreService.selectedOrderTags.length === 0" class="m-top-50">
+                  <div *ngIf="workflowFilters.tagType === 'orderTags' && coreService.selectedOrderTags && coreService.selectedOrderTags.length === 0 && !showFilterCheckbox" class="m-top-50"  >
                     <app-empty-data></app-empty-data>
                   </div>
                 </perfect-scrollbar>

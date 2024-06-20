@@ -591,12 +591,12 @@
                     <nz-tabset class="custom-tab p-t-sm p-l-sm p-r-sm" [nzAnimated]="false"  [nzType]="'line'" [(nzSelectedIndex)]="dailyPlanFilters.selectedIndex">
                       <nz-tab (nzClick)="switchToTagging('workflowTags');dailyPlanFilters.selectedIndex = 0;" [nzTitle]="workflowTagsTitle">
                         <ng-template #workflowTagsTitle>
-                          <span [ngClass]="coreService.checkedTags.size > 0 ? 'custom-tab-btn-background' : ''">{{ 'inventory.tab.workflowTagging' | translate }}</span>
+                          <span>{{ 'inventory.tab.workflowTagging' | translate }}</span>
                         </ng-template>
                       </nz-tab>
                       <nz-tab (nzClick)="switchToTagging('orderTags');dailyPlanFilters.selectedIndex = 1;" [nzTitle]="orderTagsTitle">
                         <ng-template #orderTagsTitle>
-                          <span [ngClass]="coreService.checkedOrderTags.size > 0 ? 'custom-tab-btn-background' : ''">{{ 'inventory.tab.orderTagging' | translate }}</span>
+                          <span>{{ 'inventory.tab.orderTagging' | translate }}</span>
                         </ng-template>
                       </nz-tab>
                     </nz-tabset>
