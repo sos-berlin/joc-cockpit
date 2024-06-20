@@ -3601,7 +3601,7 @@
     "label.selectAllTags": "Select all Tags",
     "label.removeAllTags": "Remove all Tags",
     "label.childrenMap": "Map Variable",
-    "label.filtersOrdersAsWell": "Filters Orders as well",
+    "label.filtersOrdersAsWell": "Filter display of Orders",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",

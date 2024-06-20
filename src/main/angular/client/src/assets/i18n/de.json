@@ -423,7 +423,7 @@
     "button.addNewCertificate": "Zertifikat hinzufügen",
     "button.importCertificate": "Zertifikat importieren",
     "button.deleteCertificate": "Zertifikat löschen",
-    "button.updateCertificate": "Update Certificate"
+    "button.updateCertificate": "Zertifikat aktualisieren"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -3601,7 +3601,7 @@
     "label.selectAllTags": "Alle Schlagwörter auswählen",
     "label.removeAllTags": "Alle Schlagwörter entfernen",
     "label.childrenMap": "Map Variable",
-    "label.filtersOrdersAsWell": "Filters Orders as well",
+    "label.filtersOrdersAsWell": "Anzeige der Aufträge filtern",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
