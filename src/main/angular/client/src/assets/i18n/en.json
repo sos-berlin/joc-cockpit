@@ -2925,8 +2925,8 @@
       "LOWEST": "lowest",
       "highest": "highest",
       "lowest": "lowest",
-      "fromSample": "preset",
-      "preset": "Preset",
+      "fromSample": "from sample",
+      "preset": "preset",
       "manageCards": "Manage Cards",
       "templateType": "Template Type"
     },

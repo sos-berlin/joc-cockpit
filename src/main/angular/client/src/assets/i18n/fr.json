@@ -2925,8 +2925,8 @@
       "LOWEST": "le plus bas",
       "highest": "le plus élevé",
       "lowest": "le plus bas",
-      "fromSample": "preset",
-      "preset": "Preset",
+      "fromSample": "par modèle",
+      "preset": "preset",
       "manageCards": "Gérer l'affiche",
       "templateType": "Template Type"
     },

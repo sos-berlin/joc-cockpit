@@ -2026,8 +2026,8 @@
             "count": "The end of the reporting period is (From-Count+1)*Unit from the time of generation in the past. The month is calculated using the frequency. Yearly: 12, Quarter: the last month of the quarter...."
           },
           "preset": {
-            "fromSample": "Preset",
-            "preset": "Preset"
+            "fromSample": "from sample",
+            "preset": "preset"
           }
         },
         "sort": "Each report can provide the highest or lowest values found.",

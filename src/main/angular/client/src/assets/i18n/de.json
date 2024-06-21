@@ -2925,8 +2925,8 @@
       "LOWEST": "geringster",
       "highest": "höchster",
       "lowest": "geringster",
-      "fromSample": "preset",
-      "preset": "Preset",
+      "fromSample": "aus Muster",
+      "preset": "preset",
       "manageCards": "Anzeige verwalten",
       "templateType": "Template Type"
     },
