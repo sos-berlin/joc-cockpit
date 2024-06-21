@@ -105,34 +105,34 @@ export class LoginComponent {
           document.title = 'JS7: ' + res.title;
         }
 
-        if (res.customLogo && res.customLogo.name) {
-          let imgUrl = '../ext/images/' + res.customLogo.name;
-          const imgContainer = this.renderer.createElement('img');
-          // Set the id of the div
-          this.renderer.setProperty(imgContainer, 'src', imgUrl);
-          this.renderer.setProperty(imgContainer, 'style', 'height: ' + res.customLogo.height || '140px');
-          const elem: any = document.getElementsByClassName('login-box');
-          if (elem.length > 0) {
-            let logHt = (res.customLogo.height || '140px').replace(/^\D+/g, '');
-            setTimeout(() => {
-              let ht = (window.innerHeight - document.getElementById('center-block')?.clientHeight);
-              if (ht < parseInt(logHt)) {
-                elem[0].style.height = 'calc(100% + ' + (parseInt(logHt) + 64) + 'px)';
-              }
-            }, 200)
-          }
-
-          const dom = document.getElementById(res.customLogo.position && res.customLogo.position.match('top') ? 'logo-top' : 'logo-bottom');
-          if (dom) {
-            // Append the created div to the body element
-            this.renderer?.appendChild(dom, imgContainer);
-          }
+      if (res.customLogo && res.customLogo.name) {
+        let imgUrl = '../ext/images/' + res.customLogo.name;
+        const imgContainer = this.renderer.createElement('img');
+        this.renderer.setProperty(imgContainer, 'src', imgUrl);
+        this.renderer.setProperty(imgContainer, 'style', 'height: ' + res.customLogo.height || '140px');
+        const elem: any = document.getElementsByClassName('login-box');
+        if (elem.length > 0) {
+          let logHt = (res.customLogo.height || '140px').replace(/^\D+/g, '');
+          setTimeout(() => {
+            let ht = (window.innerHeight - document.getElementById('center-block')?.clientHeight);
+            if (ht < parseInt(logHt)) {
+              elem[0].style.height = 'calc(100% + ' + (parseInt(logHt) + 64) + 'px)';
+            }
+          }, 200)
         }
-      }, error: () => {
-        this.isLoading = false;
+        const position = res.customLogo.position ? res.customLogo.position.toLowerCase() : '';
+        const dom = document.getElementById(position === 'top' ? 'logo-top' : 'logo-bottom');
+        if (dom) {
+          this.renderer?.appendChild(dom, imgContainer);
+        }
       }
-    })
-  }
+    },
+    error: () => {
+      this.isLoading = false;
+    }
+  });
+}
+
 
   private loadProviders(): void {
     this.coreService.post('iam/identityproviders', {}).subscribe({

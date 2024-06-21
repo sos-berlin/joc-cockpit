@@ -471,7 +471,7 @@ export class ShowCertificateListModalComponent {
   preferences: any = {};
   data: any;
   agentType: string;
-  certificateList: any
+  certificateList: any = [];
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService){}
 
@@ -497,6 +497,7 @@ export class ShowCertificateListModalComponent {
       next: (res: any) => {
         this.certificateList = res.mappings;
       }, error: () => {
+        this.certificateList = [];
       }
     });
   }
@@ -527,6 +528,11 @@ export class ShowCertificateListModalComponent {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
           this._deleteCertificateAlias(obj);
         }
       });
@@ -546,11 +552,6 @@ export class ShowCertificateListModalComponent {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          obj.auditLog = {
-            comment: result.comment,
-            timeSpent: result.timeSpent,
-            ticketLink: result.ticketLink
-          };
           this._deleteCertificateAlias(obj);
         }
       });

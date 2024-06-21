@@ -2026,6 +2026,7 @@
             "count": "The end of the reporting period is calculated as (From-Count+1)*Unit from the start of the reporting period. The related month is calculated from the frequency, yearly: 12, quarterly: last month of quarter etc."
           },
           "preset": {
+            "fromSample": "Preset",
             "preset": "Preset"
           }
         },
@@ -2924,8 +2925,10 @@
       "LOWEST": "lowest",
       "highest": "highest",
       "lowest": "lowest",
-      "preset": "preset",
-      "manageCards": "Manage Cards"
+      "fromSample": "preset",
+      "preset": "Preset",
+      "manageCards": "Manage Cards",
+      "templateType": "Template Type"
     },
     "button" : {
       "runReport": "Run Reports",

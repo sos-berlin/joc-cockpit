@@ -2026,7 +2026,8 @@
             "count": "La fin de la période de rapport est calculée comme (De-Compte+1)*Unité à partir du début de la période de rapport. Le mois correspondant est calculé à partir de la fréquence, annuelle : 12, trimestriel : dernier mois du trimestre, etc."
           },
           "preset": {
-            "preset": "Préréglages"
+            "fromSample": "Preset",
+            "preset": "Preset"
           }
         },
         "sort": "Un rapport peut indiquer les valeurs les plus élevées ou les plus basses trouvées.",
@@ -2924,8 +2925,10 @@
       "LOWEST": "le plus bas",
       "highest": "le plus élevé",
       "lowest": "le plus bas",
-      "preset": "prédéfini",
-      "manageCards": "Gérer l'affiche"
+      "fromSample": "preset",
+      "preset": "Preset",
+      "manageCards": "Gérer l'affiche",
+      "templateType": "Template Type"
     },
     "button" : {
       "runReport": "Exécuter le Rapport",

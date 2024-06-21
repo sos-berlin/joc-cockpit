@@ -95,7 +95,7 @@ export class ResumeOrderModalComponent {
           this.constants = this.coreService.convertObjectToArray(res, 'constants');
           this.constants.forEach((item) => {
             if(item.value) {
-              if (!isArray(item.value)) {
+              if (!(typeof item.value === 'object')) {
                 this.coreService.removeSlashToString(item, 'value');
                 if(typeof item.value == 'string') {
                   const startChar = item.value.substring(0, 1);
@@ -105,15 +105,32 @@ export class ResumeOrderModalComponent {
                   }
                 }
               } else {
-                item.type = 'list';
-                item.value.forEach((val, index) => {
-                  item.value[index] = Object.entries(item.value[index]).map(([k1, v1]) => {
-                    return {name: k1, value: v1};
+                if(!Array.isArray(item.value)) {
+                  let v: any = [];
+                  Object.entries(item.value).map(([k1, v1]) => {
+                    v.push({k1: v1})
                   });
-                });
-                item.value.forEach((val) => {
-                  this.coreService.removeSlashToString(val, 'value');
-                });
+                  item.type = 'map';
+                  item.value = v;
+                  item.value.forEach((val, index) => {
+                    item.value[index] = Object.entries(item.value[index]).map(([k1, v1]) => {
+                      return {name: k1, value: v1};
+                    });
+                  });
+                  item.value.forEach((val) => {
+                    this.coreService.removeSlashToString(val, 'value');
+                  });
+                } else {
+                  item.type = 'list';
+                  item.value.forEach((val, index) => {
+                    item.value[index] = Object.entries(item.value[index]).map(([k1, v1]) => {
+                      return {name: k1, value: v1};
+                    });
+                  });
+                  item.value.forEach((val) => {
+                    this.coreService.removeSlashToString(val, 'value');
+                  });
+                }
               }
             }
           });

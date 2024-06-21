@@ -126,12 +126,12 @@
   <div class="row">
     <div class="col-md-8">
       <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-        <li class="nav-item">
+        <li *ngIf="permission.joc && permission.joc.reports.manage" class="nav-item">
           <a [ngClass]="{'active': index == 0}" (click)="index = 0" class="nav-link">
             <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.reportRuns</span></span>
           </a>
         </li>
-        <li class="nav-item dropdown-separator">
+        <li *ngIf="permission.joc && permission.joc.reports.manage" class="nav-item dropdown-separator">
           <span class="separator"></span>
         </li>
         <li class="nav-item">

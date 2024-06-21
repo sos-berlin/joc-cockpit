@@ -48,8 +48,12 @@ export class MonthValidator implements Validator {
             if (dateV < dateMonthFrom) {
               return { monthFromAfterMonthTo: true };
             }
-          } else if (parseFloat(v) < parseFloat(this.monthFrom)) {
-            return { monthFromAfterMonthTo: true };
+          } else {
+            const dateV = this.convertToAbsoluteDate(v);
+            const dateMonthFrom = this.convertToAbsoluteDate(this.monthFrom);
+            if (dateV < dateMonthFrom) {
+              return { monthFromAfterMonthTo: true };
+            }
           }
 
           return null;
@@ -71,6 +75,37 @@ export class MonthValidator implements Validator {
       return 'D';
     }
     return value.slice(-1).toUpperCase();
+  }
+
+  private convertToAbsoluteDate(value: string): Date {
+    const now = new Date();
+    let year = now.getFullYear();
+    let month = now.getMonth() + 1; // JavaScript months are 0-based
+
+    const number = parseInt(value.slice(0, -1), 10);
+    const unit = value.slice(-1).toUpperCase();
+
+    switch (unit) {
+      case 'Y':
+        year -= number;
+        break;
+      case 'Q':
+        month -= number * 3;
+        while (month <= 0) {
+          month += 12;
+          year -= 1;
+        }
+        break;
+      case 'M':
+        month -= number;
+        while (month <= 0) {
+          month += 12;
+          year -= 1;
+        }
+        break;
+    }
+
+    return new Date(year, month - 1, 1);
   }
 }
 
@@ -629,15 +664,20 @@ export class ReportComponent implements OnChanges, OnDestroy {
     this.saveRelativeInterval();
   }
 
-
-
-
   onIntervalChange(): void {
     if (this.isInterval === 'preset') {
       this.applyPreset(this.preset.name);
     } else if (this.isInterval === 'relative') {
+      const { monthFrom, monthTo } = this.report.configuration;
+      if (monthFrom && monthTo) {
+        const { unit, from, count } = this.convertAbsoluteToRelative(monthFrom, monthTo);
+        this.units.name = unit;
+        this.from = from;
+        this.count = count;
+      }
       this.saveRelativeInterval();
     } else if (this.isInterval === 'absolute') {
+
       this.saveAbsoluteInterval();
     }
   }
