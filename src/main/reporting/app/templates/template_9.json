@@ -1,9 +1,0 @@
-{
-  "title": "Top ${hits} periods during which mostly workflows executed",
-  "id": "9",
-  "type": "ORDER",
-  "data": {
-    "chartType": "BAR",
-    "groupBy": "START_TIME"
-  }
-}
