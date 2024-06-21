@@ -423,7 +423,7 @@
     "button.addNewCertificate": "Zertifikat hinzufügen",
     "button.importCertificate": "Zertifikat importieren",
     "button.deleteCertificate": "Zertifikat löschen",
-    "button.updateCertificate": "Update Certificate"
+    "button.updateCertificate": "Zertifikat aktualisieren"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -2026,8 +2026,8 @@
             "count": "Das Ende des Berichtszeitraums wird berechnet als (Von-Anzahl+1)*Einheit ab dem Beginn des Berichtszeitraums. Der zugehörige Monat wird anhand der Häufigkeit berechnet, jährlich: 12, vierteljährlich: letzter Monat des Quartals usw."
           },
           "preset": {
-            "fromSample": "Preset",
-            "preset": "Preset"
+            "preset": "Preset",
+            "fromSample": "Für häufig verwendete Berichtszeiträume, z.B. für den letzten Monat, das letzte Jahr usw., sind Voreinstellungen mit Mustern verfügbar."
           }
         },
         "sort": "Ein Bericht kann die höchsten oder niedrigsten gefundenen Werte angeben.",
@@ -2906,7 +2906,7 @@
       "dateTo": "Datum bis",
       "hits": "Treffer",
       "created": "Angelegt",
-      "monthFrom": "Monat ab",
+      "monthFrom": "Monat von",
       "monthTo": "Monat bis",
       "numOfReports": "Anzahl Berichte",
       "chooseTemplate": "Vorlage auswählen",
@@ -2915,9 +2915,9 @@
       "reportRunning": "Berichtslauf in Arbeit...",
       "periodLength": "Zeitraum Dauer",
       "periodStep": "Schrittweite",
-      "interval": "Intervall",
-      "relative": "Relativ",
-      "absolute": "Absolut",
+      "interval": "Berichtszeitraum",
+      "relative": "berechnet",
+      "absolute": "von ... bis",
       "count": "Anzahl",
       "unit": "Einheit",
       "sort": "Sortierung",
@@ -3604,7 +3604,7 @@
     "label.selectAllTags": "Alle Schlagwörter auswählen",
     "label.removeAllTags": "Alle Schlagwörter entfernen",
     "label.childrenMap": "Map Variable",
-    "label.filtersOrdersAsWell": "Filters Orders as well",
+    "label.filtersOrdersAsWell": "Anzeige der Aufträge filtern",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",

@@ -423,7 +423,7 @@
     "button.addNewCertificate": "Ajouter Certificat",
     "button.importCertificate": "Importer Certificat",
     "button.deleteCertificate": "Supprimer Certificat",
-    "button.updateCertificate": "Update Certificate"
+    "button.updateCertificate": "Actualisier Certificat"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -2026,8 +2026,8 @@
             "count": "La fin de la période de rapport est calculée comme (De-Compte+1)*Unité à partir du début de la période de rapport. Le mois correspondant est calculé à partir de la fréquence, annuelle : 12, trimestriel : dernier mois du trimestre, etc."
           },
           "preset": {
-            "fromSample": "Preset",
-            "preset": "Preset"
+            "preset": "Preset",
+            "fromSample": "Des échantillons sont disponibles pour les périodes de rapport fréquemment utilisées, par exemple pour le dernier mois, la dernière année, etc."
           }
         },
         "sort": "Un rapport peut indiquer les valeurs les plus élevées ou les plus basses trouvées.",
@@ -2915,10 +2915,10 @@
       "reportRunning": "Rapport en cours d'exécution...",
       "periodLength": "Durée de la période",
       "periodStep": "Pas de progression",
-      "interval": "Intervalle",
-      "relative": "Relatif",
-      "absolute": "Absolu",
-      "count": "Nombre de",
+      "interval": "Période de Rapport",
+      "relative": "calculé",
+      "absolute": "de ... à",
+      "count": "Nombre",
       "unit": "Unité",
       "sort": "Tri",
       "HIGHEST": "le plus élevé",
@@ -3604,7 +3604,7 @@
     "label.selectTags": "Sélectionner les Mots-clés",
     "label.selectAllTags": "Sélectionner tous les Mots-clés",
     "label.removeAllTags": "Supprimer tous les Mots-clés",
-    "label.filtersOrdersAsWell": "Filters Orders as well",
+    "label.filtersOrdersAsWell": "Filtrer l'affichage des Ordres",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
