@@ -2031,8 +2031,8 @@
         },
         "sort": "Un rapport peut indiquer les valeurs les plus élevées ou les plus basses trouvées.",
         "hits": "Spécifie le nombre d'entrées dans le rapport.",
-        "periodLength": "Spécifie la durée de la période pour le rapport 'top ${hits} periods ...'",
-        "periodStep": "Spécifie la taille du pas pour le calcul de la période suivante. Exemple : Longueur de période=5, Pas de période=2, 00:00-00:05, 02:00-00:07, 00:04-00:09 ...."
+        "periodLength": "Spécifie la durée des étapes pour les rapports 'top ${hits} periods ...'",
+        "periodStep": "Spécifie le chevauchement d'étapes entre deux étapes en minutes. Exemple : duréé d'étape=5, chevauchement=2, 00:00-00:05, 00:02-00:07, 00:04-00:09 ...."
       },
       "workflow": {
         "name": "Le nom d'un workflow est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin et aucune espace.",
@@ -2912,8 +2912,8 @@
       "chooseFrequencies": "Sélectionner les Fréquences",
       "runReport": "Exécuter le Rapport",
       "reportRunning": "Rapport en cours d'exécution...",
-      "periodLength": "Durée de la période",
-      "periodStep": "Pas de progression",
+      "periodLength": "Durée de l'étape",
+      "periodStep": "Chevauchement d'étape",
       "interval": "Période de Rapport",
       "relative": "calculé",
       "absolute": "de ... à",
