@@ -2032,7 +2032,7 @@
         },
         "sort": "A report can indicate the highest or lowest values found.",
         "hits": "Specifies the number of entries in the report.",
-        "periodLength": "Specifies the duration of the steps for the report's 'top ${hits} periods ...' in minutes",
+        "periodLength": "Specifies the duration of the steps for report's 'top ${hits} periods ...' in minutes",
         "periodStep": "Specifies the Step Overlap between two steps in minutes. Example: Step Duration=5 minutes, Step Overlap=2, 00:00-00:05, 00:02-00:07, 00:04-00:09 ..."
       },
       "workflow": {

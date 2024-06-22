@@ -2032,7 +2032,7 @@
         },
         "sort": "Un rapport peut indiquer les valeurs les plus élevées ou les plus basses trouvées.",
         "hits": "Spécifie le nombre d'entrées dans le rapport.",
-        "periodLength": "Spécifie la durée des étapes pour les rapports 'top ${hits} periods ...'",
+        "periodLength": "Spécifie la durée des étapes pour les rapports 'top ${hits} periods ...' en minutes.",
         "periodStep": "Spécifie le chevauchement d'étapes entre deux étapes en minutes. Exemple : duréé d'étape=5, chevauchement=2, 00:00-00:05, 00:02-00:07, 00:04-00:09 ...."
       },
       "workflow": {

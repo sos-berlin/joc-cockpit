@@ -2032,8 +2032,8 @@
         },
         "sort": "Ein Bericht kann die höchsten oder niedrigsten gefundenen Werte angeben.",
         "hits": "Gibt die Anzahl der Einträge im Bericht an.",
-        "periodLength": "Gibt die Dauer des Zeitraums für die 'Top ${hits} periods ...' des Berichts an.",
-        "periodStep": "Gibt die Schrittweite für die Berechnung der nächsten Periode an. Beispiel: Periodenlänge=5, Schrittweite=2, 00:00-00:05, 02:00-00:07, 00:04-00:09 ..."
+        "periodLength": "Gibt die Schrittdauer für die Berichte 'Top ${hits} periods ...' an.",
+        "periodStep": "Gibt die Überlappung der Schritte in Minuten an. Beispiel: Schrittdauer=5, Schrittüberlappung=2, 00:00-00:05, 00:02-00:07, 00:04-00:09 ..."
       },
       "workflow": {
         "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Bindestriche und Punkte sind nicht zugelassen.",
