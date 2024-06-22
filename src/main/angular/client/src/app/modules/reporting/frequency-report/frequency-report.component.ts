@@ -565,9 +565,9 @@ export class FrequencyReportComponent {
       case 'ORDERS_EXECUTIONS_FREQUENCY':
         return 'Workflow Executions';
       case 'WORKFLOWS_LONGEST_EXECUTION_TIMES':
-        return 'Workflow Executions';
+        return 'Workflow Execution Duration';
       case 'JOBS_LONGEST_EXECUTION_TIMES':
-        return 'Job Executions';
+        return 'Job Executions Duration';
       case 'PERIODS_MOST_ORDER_EXECUTIONS':
         return 'Workflow Executions';
       case 'PERIODS_MOST_JOB_EXECUTIONS':
@@ -598,7 +598,7 @@ export class FrequencyReportComponent {
       case 'ORDERS_EXECUTIONS_FREQUENCY':
         return 'Workflow Executions';
       case 'WORKFLOWS_LONGEST_EXECUTION_TIMES':
-        return 'Workflow Executions Duration';
+        return 'Workflow Execution Duration';
       case 'JOBS_LONGEST_EXECUTION_TIMES':
         return 'Job Executions Duration';
       case 'PERIODS_MOST_ORDER_EXECUTIONS':

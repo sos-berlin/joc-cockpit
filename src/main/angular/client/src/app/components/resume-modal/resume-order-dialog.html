@@ -27,14 +27,14 @@
         <div class="col-md-4 col-lg-7 m-b-sm" translate>common.label.value</div>
       </div>
       <div *ngFor="let argument of constants; let i=index" class="row">
-        <div [ngClass]="{'col-sm-10' : argument.type == 'list'}" class="col-sm-4 m-b-sm">
+        <div [ngClass]="{'col-sm-10' : argument.type == 'list' || argument.type == 'map'}" class="col-sm-4 m-b-sm">
           <input [(ngModel)]="argument.name" class="form-control" name="wname_{{i}}"
                  readonly type="text">
         </div>
-        <div *ngIf="argument.type != 'list'" class="col-md-6 col-lg-6 m-b-sm">
+        <div *ngIf="argument.type != 'list' && argument.type != 'map'" class="col-md-6 col-lg-6 m-b-sm">
           <input [(ngModel)]="argument.value" class="form-control" name="wvalue{{i}}" readonly type="text">
         </div>
-        <ng-container *ngIf="argument.type == 'list'" class="m-b-sm">
+        <ng-container *ngIf="argument.type == 'list' || argument.type == 'map'" class="m-b-sm">
           <div *ngFor="let val of argument.value; let j = index" [ngClass]="{'b-t p-t-sm': j > 0}" class="col-md-12">
             <div *ngFor="let item of val;let k = index" class="row">
               <div class="col-md-4 p-l-md m-b-sm">

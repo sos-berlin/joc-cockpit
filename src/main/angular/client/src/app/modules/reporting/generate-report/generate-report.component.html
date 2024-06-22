@@ -37,6 +37,12 @@
             <i *ngIf="filters.filter.sortBy == 'hits' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
+          <th *ngIf="filters.groupBy !== 'hits'" (click)="sort('template')"><a><span class="p-r-xs" translate>reporting.label.templateType</span>
+            <i *ngIf="filters.filter.sortBy == 'template' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'template' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
           <th (click)="sort('controllerId')"><a><span class="p-r-xs" translate>common.label.controllerId</span>
             <i *ngIf="filters.filter.sortBy == 'controllerId' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
@@ -96,7 +102,8 @@
                 </nz-dropdown-menu>
               </div>
             </td>
-            <td colspan="6">
+
+            <td colspan="6" *ngIf="filters.groupBy == 'hits'">
                 <span class="w-full" *ngIf="filters.groupBy !== 'hits'">
                   <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expanded" (click)="toggleRowExpansion(item)"></i>
                   <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expanded" (click)="toggleRowExpansion(item)"></i>
@@ -113,6 +120,24 @@
                   <span (click)="onSelect(item)" [innerHtml]="getTranslatedText(item) | highlight : filters.searchText"></span>
                 </span>
             </td>
+            <td *ngIf="filters.groupBy !== 'hits'">
+                <span class="w-full" *ngIf="filters.groupBy !== 'hits'">
+                  <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expanded" (click)="toggleRowExpansion(item)"></i>
+                  <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expanded" (click)="toggleRowExpansion(item)"></i>
+                  <i (click)="coreService.navToInventoryTab(item.path, 'REPORT');"
+                     *ngIf="permission.joc && permission.joc.inventory.view"
+                     class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <span (click)="onSelect(item)" [innerHtml]="item.path | highlight : filters.searchText"></span>
+                  <i *ngIf="item.title"> - </i>
+                  <i [innerHtml]="item.title" class="text-muted"></i>
+                </span>
+              <span class="w-full" *ngIf="filters.groupBy == 'hits'">
+                  <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expanded" (click)="toggleRowExpansion(item)"></i>
+                  <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expanded" (click)="toggleRowExpansion(item)"></i>
+                  <span (click)="onSelect(item)" [innerHtml]="getTranslatedText(item) | highlight : filters.searchText"></span>
+                </span>
+            </td>
+            <td [attr.colspan]="filters.groupby !== 'hits' ? '7' : '0'" *ngIf="filters.groupBy !== 'hits'" (click)="onSelect(item)"><span [innerHtml]="'reporting.templates.' + item.template | translate | highlight : filters.searchText"></span></td>
           </tr>
           <ng-container *ngIf="item.expanded">
             <ng-container *ngIf="filters.groupBy !== 'hits'; else temp">
@@ -141,7 +166,7 @@
                     </nz-dropdown-menu>
                   </div>
                 </td>
-                <td colspan="6" class="nested-row cursor">
+                <td  [attr.colspan]="filters.groupby === 'hits' ? '6' : '7'" class="nested-row cursor">
                   <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expandedHighest" (click)="toggleHighest(item)"></i>
                   <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expandedHighest" (click)="toggleHighest(item)"></i>
                   <span class="cursor" (click)="onSelect(item, 'highest')"> {{ 'reporting.label.HIGHEST' | translate}}</span>
@@ -182,6 +207,7 @@
                   <td (click)="onSelect(highestItem)" *ngIf="filters.groupBy !== 'hits'">
                     <span class="p-l-12" [innerHtml]="getTranslatedText(highestItem) | highlight : filters.searchText"></span>
                   </td>
+                  <td *ngIf="filters.groupBy !== 'hits'" (click)="onSelect(highestItem)"></td>
                   <td (click)="onSelect(highestItem)"><span [innerHtml]="highestItem.controllerId | highlight : filters.searchText"></span></td>
                   <td (click)="onSelect(highestItem)"><span [innerHtml]="highestItem.frequency | translate | highlight : filters.searchText"></span></td>
                   <td (click)="onSelect(highestItem)"><span [innerHtml]="highestItem.dateFrom | highlight : filters.searchText"></span></td>
@@ -213,7 +239,7 @@
                     </nz-dropdown-menu>
                   </div>
                 </td>
-                <td colspan="6" class="nested-row cursor">
+                <td [attr.colspan]="filters.groupby === 'hits' ? '6' : '7'" class="nested-row cursor">
                   <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expandedLowest" (click)="toggleLowest(item)"></i>
                   <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expandedLowest" (click)="toggleLowest(item)"></i>
                   <span class="cursor" (click)="onSelect(item, 'lowest')"> {{ 'reporting.label.LOWEST' | translate}}</span>
