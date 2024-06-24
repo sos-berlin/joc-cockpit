@@ -2,7 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Directive,
+  Directive, ElementRef,
   EventEmitter,
   forwardRef,
   HostListener,
@@ -3168,11 +3168,17 @@ export class WorkflowComponent {
   selectedCellId = '';
   sortingDirections: { [key: string]: 'asc' | 'desc' } = {};
   impactShown = false;
-
+  tag: any;
+  orderTags: any[] = [];
+  allTags = [];
+  filteredOptions: string[] = [];
+  inputVisible = false;
+  inputValue = '';
   subscription1: Subscription;
   subscription2: Subscription;
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
+  @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
   constructor(public coreService: CoreService, private translate: TranslateService, private modal: NzModalService, public inventoryService: InventoryService,
               private toasterService: ToastrService, public workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService,
@@ -4495,6 +4501,7 @@ export class WorkflowComponent {
         });
       }
     }
+    this.fetchTags()
   }
 
   private getWorkflowObject(): void {
@@ -12083,6 +12090,7 @@ export class WorkflowComponent {
               endPositions = arr;
             }
             json.instructions[x].workflowName = workflowName;
+            json.instructions[x].tags = self.tags;
             json.instructions[x].arguments = argu;
             json.instructions[x].remainWhenTerminated = remainWhenTerminated == true || remainWhenTerminated == 'true';
             json.instructions[x].startPosition = startPosition;
@@ -12811,4 +12819,42 @@ updateOnEncrypt(){
       }
     });
   }
+
+    private fetchTags(): void {
+      this.coreService.post('tags', {}).subscribe((res) => {
+        this.allTags = res.tags;
+      });
+    }
+
+    onChange(value: string): void {
+      this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+      this.filteredOptions = this.filteredOptions.filter((tag) => {
+        return this.orderTags.indexOf(tag) == -1;
+      })
+    }
+    handleClose(removedTag: {}): void {
+      this.orderTags = this.orderTags.filter(tag => tag !== removedTag);
+    }
+
+    sliceTagName(tag: string): string {
+      const isLongTag = tag.length > 20;
+      return isLongTag ? `${tag.slice(0, 20)}...` : tag;
+    }
+
+    showInput(): void {
+      this.inputVisible = true;
+      this.filteredOptions = this.allTags;
+      setTimeout(() => {
+        this.inputElement?.nativeElement.focus();
+      }, 10);
+    }
+
+    handleInputConfirm(): void {
+      if (this.inputValue && this.orderTags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
+        this.orderTags = [...this.orderTags, this.inputValue];
+      }
+      this.inputValue = '';
+      this.inputVisible = false;
+      this.saveJSON(true);
+    }
 }

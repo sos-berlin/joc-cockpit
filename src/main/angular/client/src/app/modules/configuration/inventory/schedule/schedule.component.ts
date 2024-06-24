@@ -1566,6 +1566,9 @@ export class ScheduleComponent {
 
       if (this.schedule.configuration.orderParameterisations) {
         this.schedule.configuration.orderParameterisations.forEach((item) => {
+          if(item?.tags){
+            this.tags = item.tags
+          }
           item.variables = this.coreService.convertObjectToArray(item, 'variables');
           if (!item.positions) {
             item.positions = {};

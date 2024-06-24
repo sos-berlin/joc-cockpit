@@ -1,12 +1,12 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, ElementRef,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
-  SimpleChanges
+  SimpleChanges, ViewChild
 } from '@angular/core';
 import {Subscription} from 'rxjs';
 import {isEmpty, isEqual} from 'underscore';
@@ -17,6 +17,7 @@ import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
+import {WorkflowService} from "../../../../services/workflow.service";
 
 @Component({
   selector: 'app-file-order',
@@ -47,13 +48,20 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   lastModified: any = '';
   isTreeShow = false;
   isStore = false;
+  tag: any;
+  tags = [];
+  allTags = [];
+  filteredOptions: string[] = [];
+  inputVisible = false;
+  inputValue = '';
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
 
+  @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
   constructor(public coreService: CoreService, private dataService: DataService, private translate: TranslateService,
-              public inventoryService: InventoryService, private ref: ChangeDetectorRef, private modal: NzModalService) {
+              public inventoryService: InventoryService, private ref: ChangeDetectorRef, private modal: NzModalService, private workflowService: WorkflowService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.fileOrder.actual) {
@@ -99,6 +107,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.zones = this.coreService.getTimeZoneList();
+    this.fetchTags();
   }
 
   ngOnDestroy(): void {
@@ -179,6 +188,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       this.fileOrder.path1 = this.data.path;
       this.fileOrder.name = this.data.name;
       this.fileOrder.actual = JSON.stringify(res.configuration);
+      this.tags = res.configuration.tags || [];
       if (!this.fileOrder.configuration.timeZone) {
         // Daily plan time zone
         let timeZone = sessionStorage.getItem('$SOS$DAILYPLANTIMEZONE');
@@ -434,12 +444,14 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       if (obj.directoryExpr) {
         this.coreService.addSlashToString(obj, 'directoryExpr');
       }
-
+      if(this.tags){
+        obj.tags = this.tags
+      }
       const request: any = {
         configuration: obj,
         valid: isValid,
         path: this.fileOrder.path,
-        objectType: this.objectType
+        objectType: this.objectType,
       };
 
       if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
@@ -478,5 +490,43 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
 
   onBlur(): void {
     this.isTreeShow = false;
+  }
+
+  private fetchTags(): void {
+    this.coreService.post('tags', {}).subscribe((res) => {
+      this.allTags = res.tags;
+    });
+  }
+
+  onChange(value: string): void {
+    this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    this.filteredOptions = this.filteredOptions.filter((tag) => {
+      return this.tags.indexOf(tag) == -1;
+    })
+  }
+  handleClose(removedTag: {}): void {
+    this.tags = this.tags.filter(tag => tag !== removedTag);
+  }
+
+  sliceTagName(tag: string): string {
+    const isLongTag = tag.length > 20;
+    return isLongTag ? `${tag.slice(0, 20)}...` : tag;
+  }
+
+  showInput(): void {
+    this.inputVisible = true;
+    this.filteredOptions = this.allTags;
+    setTimeout(() => {
+      this.inputElement?.nativeElement.focus();
+    }, 10);
+  }
+
+  handleInputConfirm(): void {
+    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
+      this.tags = [...this.tags, this.inputValue];
+    }
+    this.inputValue = '';
+    this.inputVisible = false;
+    this.saveJSON(true, true);
   }
 }

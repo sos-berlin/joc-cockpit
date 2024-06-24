@@ -204,7 +204,7 @@
                   </nz-tab>
                   <nz-tab class="ctm-pd" (nzClick)="switchToTagging('orderTags');workflowFilters.selectedIndex = 2;" [nzTitle]="orderTagsTitle">
                     <ng-template #orderTagsTitle>
-                      <span>{{ 'inventory.tab.orderTagging' | translate }}</span>
+                      <span [ngClass]="workflowFilters.filtersOrdersAsWell ? 'custom-tab-btn-background' : ''">{{ 'inventory.tab.orderTagging' | translate }}</span>
                     </ng-template>
                   </nz-tab>
                 </nz-tabset>
@@ -323,11 +323,8 @@
                       <a (click)="removeAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
                         <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
                       </a>
-                      <a (click)="toggleFilterCheckbox()" class="p-l-12" nz-tooltip="{{'workflow.label.filtersOrdersAsWell' | translate}}">
-                        <i class="font14" nz-icon nzType="filter" nzTheme="outline"></i>
-                      </a>
                     </div>
-                    <label *ngIf="showFilterCheckbox" nz-checkbox [(ngModel)]="workflowFilters.filtersOrdersAsWell" class="m-l-xs m-b-10">
+                    <label  nz-checkbox [(ngModel)]="workflowFilters.filtersOrdersAsWell" (change)="onToggleFiltersOrders($event)" class="m-l-xs m-b-15">
                       {{ 'workflow.label.filtersOrdersAsWell' | translate }}
                     </label>
                     <div class="w-full" *ngFor="let tag of coreService.selectedOrderTags | orderBy: 'ordering'">

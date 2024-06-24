@@ -1255,7 +1255,6 @@ export class OrderOverviewComponent {
         return orderInMap && orderInMap.isSuspendible;
       })
     } : obj;
-    console.log(filteredOrders,">>")
 
     if (this.preferences.auditLog) {
       const comments = {

@@ -565,7 +565,6 @@ export class WorkflowComponent {
   isPathDisplay = true;
   numOfAllOrders: any = {};
   listOfAgents: any = [];
-  showFilterCheckbox : any;
   filtersOrdersAsWell: boolean = false;
   object = {
     mapOfCheckedId: new Map(),
@@ -1984,6 +1983,9 @@ export class WorkflowComponent {
 
   private getOrdersOnState(obj) {
     obj.limit = this.preferences.maxOrderRecords;
+    if (this.workflowFilters.filtersOrdersAsWell) {
+      obj.orderTags = Array.from(this.coreService.checkedOrderTags) || [];
+    }
     this.coreService.post('orders', obj).subscribe((res: any) => {
       if (res) {
         this.sideBar.loading = false;
@@ -2160,11 +2162,23 @@ export class WorkflowComponent {
     }
   }
 
+  onToggleFiltersOrders(event: any) {
+    this.workflowFilters.filtersOrdersAsWell = event.target.checked;
+    const obj: any = {
+      orderTags: Array.from(this.coreService.checkedOrderTags),
+      controllerId: this.schedulerIds.selected
+    };
+    this.searchByOrderTags(obj);
+  }
+
   private getOrderCounts(obj): void {
     if (!obj.workflowIds || obj.workflowIds.length === 0 || (this.permission && !this.permission.currentController.orders.view)) {
       return;
     }
-    obj.orderTags = Array.from(this.coreService.checkedOrderTags) || [];
+    console.log(this.workflowFilters,">>>>>")
+    if (this.workflowFilters.filtersOrdersAsWell) {
+      obj.orderTags = Array.from(this.coreService.checkedOrderTags) || [];
+    }
     if (this.workflowFilters.filter.date !== 'ALL') {
       obj.dateTo = this.workflowFilters.filter.date;
       if (this.workflowFilters.filter.date === '2d') {
@@ -2195,9 +2209,9 @@ export class WorkflowComponent {
     if (!obj.workflowIds || obj.workflowIds.length === 0 || (this.permission && !this.permission.currentController.orders.view)) {
       return;
     }
-
-    obj.orderTags = Array.from(this.coreService.checkedOrderTags) || [];
-
+    if (this.workflowFilters.filtersOrdersAsWell) {
+      obj.orderTags = Array.from(this.coreService.checkedOrderTags) || [];
+    }
     if (this.workflowFilters.filter.date !== 'ALL') {
       obj.dateTo = this.workflowFilters.filter.date;
       if (this.workflowFilters.filter.date === '2d') {
@@ -2541,7 +2555,6 @@ export class WorkflowComponent {
           this.searchByOrderTags(obj);
         }
       });
-      this.showFilterCheckbox = false;
     }
 
     removeAllOrderTags(): void {
@@ -2552,7 +2565,6 @@ export class WorkflowComponent {
         controllerId: this.schedulerIds.selected
       };
       this.searchByOrderTags(obj);
-      this.showFilterCheckbox = false;
     }
 
     selectOrderTag(tag: string): void {
@@ -2631,14 +2643,4 @@ export class WorkflowComponent {
       this.searchOrderTerm.next(searchValue);
     }
 
-    toggleFilterCheckbox() {
-      this.coreService.selectedOrderTags = [];
-      this.coreService.checkedOrderTags.clear();
-      const obj: any = {
-        orderTags: [],
-        controllerId: this.schedulerIds.selected
-      };
-      this.searchByOrderTags(obj);
-      this.showFilterCheckbox = !this.showFilterCheckbox;
-    }
 }

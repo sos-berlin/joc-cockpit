@@ -920,6 +920,41 @@
                 </div>
               </div>
             </div>
+            <div class="form-group row">
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.tagName</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
+                  <nz-tag
+                    *ngFor="let tag of orderTags; let i = index"
+                    [nzMode]="'closeable'"
+                    (nzOnClose)="handleClose(tag)"
+                  >
+                    {{ sliceTagName(tag) }}
+                  </nz-tag>
+                  <nz-tag *ngIf="!inputVisible" class="editable-tag" nzNoAnimation (click)="showInput()">
+                    <span nz-icon nzType="plus"></span>
+                    {{'inventory.button.newTag' | translate}}
+                  </nz-tag>
+                  <div class="d-inline-block" *ngIf="inputVisible" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+                    <input
+                      #name="ngModel"
+                      #inputElement
+                      identifierValidation
+                      [nzAutocomplete]="auto"
+                      nz-input
+                      name="tag"
+                      type="text"
+                      [(ngModel)]="inputValue"
+                      (ngModelChange)="onChange($event)"
+                      style="width: 128px;"
+                      (blur)="handleInputConfirm()"
+                      (keydown.enter)="handleInputConfirm()"
+                    />
+                    <nz-autocomplete [nzDataSource]="filteredOptions" #auto></nz-autocomplete>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="form-group row" [hidden]="!blockPositions || blockPositions?.size == 0">
               <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.blockPosition' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5"

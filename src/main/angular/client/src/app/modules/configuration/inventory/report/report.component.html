@@ -102,9 +102,9 @@
             <input (blur)="saveJSON()" #monthFrom="ngModel" [(ngModel)]="report.configuration.monthFrom"
                    [disabled]="isTrash || !permission.joc.inventory.manage" class="form-control"
                    name="monthFrom" placeholder="YYYY-MM | Mm|Qq|Yy" appMonthValidate type="text">
-            <nz-date-picker [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzMode="month" id="monthFrom"
+            <nz-date-picker [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzMode="month"
                             [(ngModel)]="report.monthFrom" [nzPlaceHolder]="'YYYY-MM | Mm|Qq|Yy'"
-                            name="monthFrom" (ngModelChange)="changeDate('monthFrom', $event)"></nz-date-picker>
+                            name="monthFrom1" (ngModelChange)="changeDate('monthFrom', $event)"></nz-date-picker>
             <div *ngIf="monthFrom.invalid && (monthFrom.dirty || monthFrom.touched)"
                  class="text-danger help-block">
               <div *ngIf="monthFrom.errors?.required" translate>common.message.requiredError</div>
