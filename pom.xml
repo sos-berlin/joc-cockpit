@@ -47,21 +47,6 @@
                             </resources>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>copy-reporting-dir</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/reporting</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/reporting</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
             <!-- Call npm install to resolve the dependencies of the Angular 
@@ -83,23 +68,6 @@
                                 <argument>install</argument>
                             </arguments>
                             <workingDirectory>${basedir}/target/angular/client</workingDirectory>
-                            <target>
-                                <echo message="Npm install" />
-                            </target>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm install reporting</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <executable>npm</executable>
-                            <arguments>
-                                <argument>install</argument>
-                            </arguments>
-                            <workingDirectory>${basedir}/target/reporting/app</workingDirectory>
                             <target>
                                 <echo message="Npm install" />
                             </target>
@@ -177,16 +145,6 @@
                             <includes>
                                 <include>api-server/**</include>
                             </includes>
-                        </resource>
-                        <resource>
-                            <directory>target</directory>
-                            <filtering>false</filtering>
-                            <includes>
-                                <include>reporting/**</include>
-                            </includes>
-                            <excludes>
-                                <exclude>reporting/app/.gitignore</exclude>
-							</excludes>
                         </resource>                        
                     </webResources>
                 </configuration>
