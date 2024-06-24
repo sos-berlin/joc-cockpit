@@ -3007,7 +3007,9 @@ export class HistoryComponent {
 
   private exportToExcelSubmission(): any {
     let controllerId = '', dailyPlanDate = '', orderId = '', workflow = '', submission = '',
-      scheduledFor = '', status = '', warnMessages = '', errorMessages = '';
+      scheduledFor = '', status = '', warnMessages = '', errorMessages = '', totalCount = '', submissionCount = '';
+
+    // Fetch translations
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
     });
@@ -3035,13 +3037,19 @@ export class HistoryComponent {
     this.translate.get('history.label.errorMessages').subscribe(translatedValue => {
       errorMessages = translatedValue;
     });
+    this.translate.get('history.label.countTotal').subscribe(translatedValue => {
+      totalCount = translatedValue;
+    });
+    this.translate.get('history.label.countSubmitted').subscribe(translatedValue => {
+      submissionCount = translatedValue;
+    });
+
     let df = this.preferences.dateFormat;
     if (df.match('HH:mm')) {
       df = df.replace('HH:mm', '');
     } else if (df.match('hh:mm')) {
       df = df.replace('hh:mm', '');
     }
-
     if (df.match(':ss')) {
       df = df.replace(':ss', '');
     }
@@ -3052,43 +3060,57 @@ export class HistoryComponent {
       df = df.replace('|', '');
     }
     df = df.trim();
+
     const data = [];
     for (let i = 0; i < this.submissionHistorys.length; i++) {
       const obj: any = {};
       obj[dailyPlanDate] = this.coreService.getDateByFormat(this.submissionHistorys[i].dailyPlanDate, this.preferences.zone, df);
+      obj[totalCount] = this.submissionHistorys[i].countTotal;
+      obj[submissionCount] = this.submissionHistorys[i].countSubmitted;
       data.push(obj);
+
       for (let j = 0; j < this.submissionHistorys[i].controllers.length; j++) {
         if (!this.historyFilters.current) {
           const obj1: any = {};
           obj1[controllerId] = this.submissionHistorys[i].controllers[j].controllerId;
           data.push(obj1);
         }
-        for (let k = 0; k < this.submissionHistorys[i].controllers[j].submissions.length; k++) {
-          for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].warnMessages.length; m++) {
-            const obj1: any = {};
-            obj1[warnMessages] = this.submissionHistorys[i].controllers[j].submissions[k].warnMessages[m];
-            data.push(obj1);
-          }
-          for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].errorMessages.length; m++) {
-            const obj1: any = {};
-            obj1[errorMessages] = this.submissionHistorys[i].controllers[j].submissions[k].errorMessages[m];
-            data.push(obj1);
-          }
-          for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].orderIds.length; m++) {
-            const obj1: any = {};
-            obj1[orderId] = this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].orderId;
-            obj1[workflow] = this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].workflowPath;
-            obj1[scheduledFor] = this.coreService.stringToDate(this.preferences, this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].scheduledFor);
-            this.translate.get(this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].submitted ? 'submitted' : 'notSubmitted').subscribe(translatedValue => {
-              obj1[status] = translatedValue;
-            });
-            data.push(obj1);
-          }
+
+            for (let k = 0; k < this.submissionHistorys[i].controllers[j].submissions?.length; k++) {
+                const submissionObj: any = {};
+                submissionObj[submission] = this.coreService.getDateByFormat(this.submissionHistorys[i].controllers[j].submissions[k].submissionTime, this.preferences.zone, df);
+                submissionObj[submissionCount] = this.submissionHistorys[i].controllers[j].submissions[k].countSubmitted;
+                data.push(submissionObj);
+
+                for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].warnMessages?.length; m++) {
+                    const warnObj: any = {};
+                    warnObj[warnMessages] = this.submissionHistorys[i].controllers[j].submissions[k].warnMessages[m];
+                    data.push(warnObj);
+                }
+
+                for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].errorMessages?.length; m++) {
+                    const errorObj: any = {};
+                    errorObj[errorMessages] = this.submissionHistorys[i].controllers[j].submissions[k].errorMessages[m];
+                    data.push(errorObj);
+                }
+
+                for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].orderIds?.length; m++) {
+                    const orderObj: any = {};
+                    orderObj[orderId] = this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].orderId;
+                    orderObj[workflow] = this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].workflowPath;
+                    orderObj[scheduledFor] = this.coreService.stringToDate(this.preferences, this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].scheduledFor);
+                    this.translate.get(this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].submitted ? 'submitted' : 'notSubmitted').subscribe(translatedValue => {
+                        orderObj[status] = translatedValue;
+                        data.push(orderObj);
+                    });
+                }
+            }
         }
-      }
     }
     return data;
   }
+
+
 
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {

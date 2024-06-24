@@ -792,28 +792,29 @@ export class FrequencyReportComponent {
     }
   }
 
-  sort(type): void {
+  sort(type: string): void {
     this.filter.reverse = !this.filter.reverse;
     this.filter.sortBy = type;
 
-    // Custom comparison function for sorting by frequency and then by ID
-    function compare(a, b) {
-      // First, compare by frequency
-      if (a.frequency < b.frequency) {
-        return -1;
-      } else if (a.frequency > b.frequency) {
-        return 1;
-      } else {
-        // If frequencies are the same, compare by ID
-        return a.dateFrom - b.dateFrom;
+    const compare = (a: any, b: any): number => {
+      if (this.filter.sortBy === 'frequency') {
+        if (a.frequency < b.frequency) {
+          return -1;
+        } else if (a.frequency > b.frequency) {
+          return 1;
+        } else {
+          return a.dateFrom - b.dateFrom;
+        }
       }
-    }
+      return 0;
+    };
 
     this.addCardItems = this.addCardItems.sort(compare);
     if (this.filter.reverse) {
       this.addCardItems = this.addCardItems.reverse();
     }
   }
+
 
   filterBy(data): void {
     this.filteredFrequency = data.name;

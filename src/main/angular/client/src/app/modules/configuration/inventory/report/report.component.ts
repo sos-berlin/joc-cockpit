@@ -386,10 +386,15 @@ export class ReportComponent implements OnChanges, OnDestroy {
     }
   }
 
-  changeDate(type, data): void {
-    this.report.configuration[type] = this.coreService.getDateByFormat(data, null, 'YYYY-MM');
+  changeDate(type: string, data: any): void {
+    if (data) {
+      this.report.configuration[type] = this.coreService.getDateByFormat(data, null, 'YYYY-MM');
+    } else {
+      this.report.configuration[type] = null;
+    }
     this.saveJSON();
   }
+
 
   saveJSON(flag = false): void {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
