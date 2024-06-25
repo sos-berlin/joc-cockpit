@@ -3039,7 +3039,7 @@
       "display_folders_in_views": "Affiche les dossiers des objets dans les vues. Si ce paramètre est défini sur 'false', seuls les noms des objets seront affichés. Dans JS7, les noms d'objets sont uniques.",
       "node_command_line_options": "Des options de ligne de commande Node.js peuvent être spécifiées. Notez que l'applicabilité des options dépend de la version de Node.js utilisée.",
       "num_of_tags_displayed_as_order_id": "Spécifie le nombre de Mots-clés affichées lors de chaque ordre. La valeur 0 supprime l'affichage des Mots-clés.",
-      "report_java_options": "report java options"
+      "report_java_options": "Les rapports sont créés à partir d'une classe Java qui peut être configurée pour utiliser des options Java. Il est recommandé d'utiliser l'option -Xmx<nombre>m pour limiter l'utilisation de la mémoire."
     },
     "user": {
       "welcome_got_it": "Spécifie que la fenêtre d'accueil qui propose des valeurs par défaut et des exemples à télécharger ne doit plus être affichée.",
