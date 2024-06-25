@@ -56,7 +56,7 @@ export class AddEnciphermentModalComponent {
 
   private getJobResourceFolderTree(): void {
     this.coreService.post('tree', {
-      types: ['JOBRESOURCE'],
+      types: ['FOLDER'],
       forInventory: true
     }).subscribe(res => {
       this.nodes = this.coreService.prepareTree(res, true);
@@ -266,7 +266,7 @@ export class ImportEnciphermentModalComponent {
 
   private getJobResourceFolderTree(): void {
     this.coreService.post('tree', {
-      types: ['JOBRESOURCE'],
+      types: ['FOLDER'],
       forInventory: true
     }).subscribe(res => {
       this.nodes = this.coreService.prepareTree(res, true);

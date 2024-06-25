@@ -249,7 +249,6 @@
                     <div class="p-l-xxs m-b-12">
                       <a (click)="selectTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
                         <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
-
                       </a>
                       <a (click)="selectAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
                         <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
@@ -258,17 +257,20 @@
                         <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
                       </a>
                     </div>
+                    <label *ngIf="coreService.selectedTags && coreService.selectedTags.length > 0" nz-checkbox [(ngModel)]="allTagsSelected" (ngModelChange)="toggleSelectAllTags($event)" class="m-l-xs m-b-15">
+                      {{ 'profile.label.selectAll' | translate }}
+                    </label>
                     <div class="w-full" *ngFor="let tag of coreService.selectedTags | orderBy: 'ordering'">
-                        <div class="node-wrapper p-l-xs p-b-xxs">
-                          <span class="w-14 m-r-12">
-                            <label nz-checkbox [nzChecked]="coreService.checkedTags.has(tag.name)"
-                                   (nzCheckedChange)="onTagChecked(tag.name, $event)"></label>
-                          </span>
-                          <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active': coreService.checkedTags.has(tag.name)}" (click)="selectTag(tag.name)">
-                            <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
-                            <span class="p-l-xs">{{tag.name}}</span>
-                          </div>
+                      <div class="node-wrapper p-l-xs p-b-xxs">
+                        <span class="w-14 m-r-12">
+                          <label nz-checkbox [nzChecked]="coreService.checkedTags.has(tag.name)"
+                                 (nzCheckedChange)="onTagChecked(tag.name, $event)"></label>
+                        </span>
+                        <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active': coreService.checkedTags.has(tag.name)}" (click)="selectTag(tag.name)">
+                          <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
+                          <span class="p-l-xs">{{tag.name}}</span>
                         </div>
+                      </div>
                     </div>
                   </div>
                   <div *ngIf="workflowFilters.tagType === 'workflowTags' && coreService.selectedTags && coreService.selectedTags.length === 0" class="m-top-50">
@@ -277,6 +279,7 @@
                 </perfect-scrollbar>
                 <div class="rg-right"><span></span></div>
               </div>
+
               <div class="pl-20" *ngIf="workflowFilters.tagType === 'orderTags'">
                 <a (click)="objectOrderTreeSearch()" class="tree-search workflow-tree-search">
                   <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
@@ -310,12 +313,12 @@
                 <a (click)="showSidebarPanel()" class="text resize-cursor a-2 pos-abt r-22 z-index-99">
                   <i class="fa fa-angle-double-right fa-lg"></i>
                 </a>
+
                 <perfect-scrollbar class="tree-block m-t-0" style="height: calc(100vh - 192px);">
                   <div *ngIf="workflowFilters.tagType === 'orderTags'" class="fade-in">
                     <div class="p-l-xxs m-b-12">
                       <a (click)="selectOrderTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
                         <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
-
                       </a>
                       <a (click)="selectAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
                         <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
@@ -324,28 +327,32 @@
                         <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
                       </a>
                     </div>
-                    <label  nz-checkbox [(ngModel)]="workflowFilters.filtersOrdersAsWell" (change)="onToggleFiltersOrders($event)" class="m-l-xs m-b-15">
+                    <label *ngIf="coreService.selectedOrderTags && coreService.selectedOrderTags.length > 0" nz-checkbox [(ngModel)]="allOrderTagsSelected" (ngModelChange)="toggleSelectAllOrderTags($event)" class="m-l-xs m-b-15">
+                      {{ 'profile.label.selectAll' | translate }}
+                    </label>
+                    <label nz-checkbox [(ngModel)]="workflowFilters.filtersOrdersAsWell" (change)="onToggleFiltersOrders($event)" class="m-l-xs m-b-15">
                       {{ 'workflow.label.filtersOrdersAsWell' | translate }}
                     </label>
                     <div class="w-full" *ngFor="let tag of coreService.selectedOrderTags | orderBy: 'ordering'">
-                        <div class="node-wrapper p-l-xs p-b-xxs">
-                          <span class="w-14 m-r-12">
-                            <label nz-checkbox [nzChecked]="coreService.checkedOrderTags.has(tag.name)"
-                                   (nzCheckedChange)="onOrderTagChecked(tag.name, $event)"></label>
-                          </span>
-                          <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active': coreService.checkedOrderTags.has(tag.name)}" (click)="selectOrderTag(tag.name)">
-                            <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
-                            <span class="p-l-xs">{{tag.name}}</span>
-                          </div>
+                      <div class="node-wrapper p-l-xs p-b-xxs">
+                        <span class="w-14 m-r-12">
+                          <label nz-checkbox [nzChecked]="coreService.checkedOrderTags.has(tag.name)"
+                                 (nzCheckedChange)="onOrderTagChecked(tag.name, $event)"></label>
+                        </span>
+                        <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active': coreService.checkedOrderTags.has(tag.name)}" (click)="selectOrderTag(tag.name)">
+                          <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
+                          <span class="p-l-xs">{{tag.name}}</span>
                         </div>
+                      </div>
                     </div>
                   </div>
-                  <div *ngIf="workflowFilters.tagType === 'orderTags' && coreService.selectedOrderTags && coreService.selectedOrderTags.length === 0 && !showFilterCheckbox" class="m-top-50"  >
+                  <div *ngIf="workflowFilters.tagType === 'orderTags' && coreService.selectedOrderTags && coreService.selectedOrderTags.length === 0" class="m-top-50">
                     <app-empty-data></app-empty-data>
                   </div>
                 </perfect-scrollbar>
                 <div class="rg-right"><span></span></div>
               </div>
+
               <div *ngIf="workflowFilters.tagType === 'folders'" class="fade-in">
                 <app-tree-navigation (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)" [defaultExpandedKeys]="workflowFilters.expandedKeys"
                                      [defaultSelectedKeys]="workflowFilters.selectedkeys"

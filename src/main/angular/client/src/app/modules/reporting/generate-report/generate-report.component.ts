@@ -370,88 +370,130 @@ export class GenerateReportComponent {
   }
 
   checkAllChild(data, isChecked: boolean): void {
+    data.checked = isChecked;
+    data.indeterminate = false;
+
     if (data.value) {
       data.value.forEach(item => {
-        data.indeterminate = false;
+        item.checked = isChecked;
+        item.indeterminate = false;
         if (isChecked) {
           this.object.mapOfCheckedId.set(item.id, item);
         } else {
           this.object.mapOfCheckedId.delete(item.id);
         }
-
-        // Check nested items
-        if (item.highestGroup) {
-          item.highestGroup.forEach(nestedItem => {
-            if (isChecked) {
-              this.object.mapOfCheckedId.set(nestedItem.id, nestedItem);
-            } else {
-              this.object.mapOfCheckedId.delete(nestedItem.id);
-            }
-          });
-        }
-        if (item.lowestGroup) {
-          item.lowestGroup.forEach(nestedItem => {
-            if (isChecked) {
-              this.object.mapOfCheckedId.set(nestedItem.id, nestedItem);
-            } else {
-              this.object.mapOfCheckedId.delete(nestedItem.id);
-            }
-          });
-        }
-      })
+      });
     }
-    this.refreshCheckedStatus();
+
+    if (data.highestGroup) {
+      data.highestGroup.forEach(nestedItem => {
+        nestedItem.checked = isChecked;
+        if (isChecked) {
+          this.object.mapOfCheckedId.set(nestedItem.id, nestedItem);
+        } else {
+          this.object.mapOfCheckedId.delete(nestedItem.id);
+        }
+      });
+      this.updateGroupState(data, 'highest');
+    }
+
+    if (data.lowestGroup) {
+      data.lowestGroup.forEach(nestedItem => {
+        nestedItem.checked = isChecked;
+        if (isChecked) {
+          this.object.mapOfCheckedId.set(nestedItem.id, nestedItem);
+        } else {
+          this.object.mapOfCheckedId.delete(nestedItem.id);
+        }
+      });
+      this.updateGroupState(data, 'lowest');
+    }
+
+    this.updateParentState(data);
   }
+  updateGroupState(parent, group: 'highest' | 'lowest'): void {
+    let groupItems = group === 'highest' ? parent.highestGroup : parent.lowestGroup;
+    let checkedCount = groupItems.filter(item => item.checked).length;
 
-  onItemChecked(item, report: any, checked: boolean): void {
-    if (checked) {
-      this.object.mapOfCheckedId.set(report.id, report);
+    const totalGroupItems = groupItems.length;
+    const allChecked = checkedCount === totalGroupItems;
+    const someChecked = checkedCount > 0 && checkedCount < totalGroupItems;
+
+    if (group === 'highest') {
+      parent.highestGroupChecked = allChecked;
+      parent.highestGroupIndeterminate = someChecked;
     } else {
-      this.object.mapOfCheckedId.delete(report.id);
+      parent.lowestGroupChecked = allChecked;
+      parent.lowestGroupIndeterminate = someChecked;
     }
-    let count = 0;
-    item.value.forEach(x => {
-      if (this.object.mapOfCheckedId.has(x.id)) {
-        ++count;
+
+    this.updateParentState(parent);
+  }
+  onItemChecked(parent, item, isChecked: boolean, group: 'highest' | 'lowest'): void {
+    item.checked = isChecked;
+    if (isChecked) {
+      this.object.mapOfCheckedId.set(item.id, item);
+    } else {
+      this.object.mapOfCheckedId.delete(item.id);
+    }
+
+    let groupItems = group === 'highest' ? parent.highestGroup : parent.lowestGroup;
+    let checkedCount = 0;
+
+    groupItems.forEach(nestedItem => {
+      if (nestedItem.id === item.id) {
+        nestedItem.checked = isChecked;
+      }
+      if (nestedItem.checked) {
+        checkedCount++;
       }
     });
-    item.checked = count == item.value.length;
-    item.indeterminate = count > 0 && !item.checked;
 
-    // Check nested items
-    if (item.highestGroup) {
-      item.highestGroup.forEach(nestedItem => {
-        if (checked) {
-          this.object.mapOfCheckedId.set(nestedItem.id, nestedItem);
-        } else {
-          this.object.mapOfCheckedId.delete(nestedItem.id);
-        }
-      });
+    const totalGroupItems = groupItems.length;
+    const allChecked = checkedCount === totalGroupItems;
+    const someChecked = checkedCount > 0 && checkedCount < totalGroupItems;
+
+    if (group === 'highest') {
+      parent.highestGroupChecked = allChecked;
+      parent.highestGroupIndeterminate = someChecked;
+    } else {
+      parent.lowestGroupChecked = allChecked;
+      parent.lowestGroupIndeterminate = someChecked;
     }
-    if (item.lowestGroup) {
-      item.lowestGroup.forEach(nestedItem => {
-        if (checked) {
-          this.object.mapOfCheckedId.set(nestedItem.id, nestedItem);
-        } else {
-          this.object.mapOfCheckedId.delete(nestedItem.id);
-        }
-      });
-    }
+
+    this.updateParentState(parent);
+  }
+
+  updateParentState(parent): void {
+    const totalItems = parent.value.length;
+    const totalChecked = parent.value.filter(child => child.checked).length;
+
+    const highestChecked = parent.highestGroup ? parent.highestGroup.filter(nestedItem => nestedItem.checked).length : 0;
+    const lowestChecked = parent.lowestGroup ? parent.lowestGroup.filter(nestedItem => nestedItem.checked).length : 0;
+
+    const total = totalItems + highestChecked + lowestChecked;
+    const checked = totalChecked + highestChecked + lowestChecked;
+
+    parent.checked = checked === total;
+    parent.indeterminate = checked > 0 && checked < total;
+
     this.refreshCheckedStatus();
   }
 
   refreshCheckedStatus(): void {
     const filteredData = this.getCurrentData(this.filteredData, this.filters.filter);
-    let count = 0;
-    for (let i = 0; i < filteredData.length; i++) {
-      if (filteredData[i].checked) {
-        ++count;
+    let checkedCount = 0;
+    filteredData.forEach(data => {
+      if (data.checked) {
+        checkedCount++;
       }
-    }
-    this.object.checked = count == filteredData.length;
-    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
+    });
+
+    this.object.checked = checkedCount === filteredData.length;
+    this.object.indeterminate = checkedCount > 0 && checkedCount < filteredData.length;
     this.bulkDelete.emit(this.object.mapOfCheckedId);
   }
+
 
   toggleRowExpansion(item: any): void {
     item.expanded = !item.expanded;

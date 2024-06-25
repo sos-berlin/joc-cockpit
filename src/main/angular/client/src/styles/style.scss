@@ -9727,3 +9727,23 @@ cdk-virtual-scroll-viewport {
 .custom-tab-btn-background {
   color: var(--primary)
 }
+
+.tag-oval {
+  display: inline-block;
+  padding: 2px 8px;
+  margin: 0 2px;
+  border-radius: 12px;
+  background-color: var(--default-btn);
+  border-color: var(--default-btn);
+  color: #333;
+  font-size: 0.9em;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.tag-oval:hover {
+  color: var(--black);
+  background-color: var(--default-btn-hover);
+  border-color: var(--default-btn-hover);
+}
+

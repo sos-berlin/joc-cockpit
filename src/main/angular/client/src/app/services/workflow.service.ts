@@ -948,6 +948,9 @@ export class WorkflowService {
             if (json.instructions[x].arguments !== undefined) {
               _node.setAttribute('arguments', JSON.stringify(json.instructions[x].arguments));
             }
+            if (json.instructions[x].tags !== undefined) {
+              _node.setAttribute('tags', JSON.stringify(json.instructions[x].tags));
+            }
             if (json.instructions[x].workflowName !== undefined) {
               _node.setAttribute('workflowName', json.instructions[x].workflowName);
             }

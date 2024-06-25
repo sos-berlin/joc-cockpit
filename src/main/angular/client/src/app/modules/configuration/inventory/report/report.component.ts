@@ -38,10 +38,6 @@ export class MonthValidator implements Validator {
           const unitV = this.extractUnit(v);
           const unitMonthFrom = this.extractUnit(this.monthFrom);
 
-          if (unitV !== unitMonthFrom) {
-            return { invalidMonthUnit: true };
-          }
-
           if (this.isDate(v) && this.isDate(this.monthFrom)) {
             const dateV = new Date(v + "-01");
             const dateMonthFrom = new Date(this.monthFrom + "-01");
@@ -49,9 +45,9 @@ export class MonthValidator implements Validator {
               return { monthFromAfterMonthTo: true };
             }
           } else {
-            const dateV = this.convertToAbsoluteDate(v);
-            const dateMonthFrom = this.convertToAbsoluteDate(this.monthFrom);
-            if (dateV < dateMonthFrom) {
+            const absoluteDateV = this.convertToAbsoluteMonths(v);
+            const absoluteDateMonthFrom = this.convertToAbsoluteMonths(this.monthFrom);
+            if (absoluteDateV < absoluteDateMonthFrom) {
               return { monthFromAfterMonthTo: true };
             }
           }
@@ -77,35 +73,31 @@ export class MonthValidator implements Validator {
     return value.slice(-1).toUpperCase();
   }
 
-  private convertToAbsoluteDate(value: string): Date {
+  private convertToAbsoluteMonths(value: string): number {
     const now = new Date();
-    let year = now.getFullYear();
-    let month = now.getMonth() + 1; // JavaScript months are 0-based
+    let totalMonths = now.getFullYear() * 12 + now.getMonth() + 1; // Current year and month as total months
+
+    if (this.isDate(value)) {
+      const [year, month] = value.split('-').map(Number);
+      return year * 12 + (month - 1);
+    }
 
     const number = parseInt(value.slice(0, -1), 10);
     const unit = value.slice(-1).toUpperCase();
 
     switch (unit) {
       case 'Y':
-        year -= number;
+        totalMonths -= number * 12;
         break;
       case 'Q':
-        month -= number * 3;
-        while (month <= 0) {
-          month += 12;
-          year -= 1;
-        }
+        totalMonths -= number * 3;
         break;
       case 'M':
-        month -= number;
-        while (month <= 0) {
-          month += 12;
-          year -= 1;
-        }
+        totalMonths -= number;
         break;
     }
 
-    return new Date(year, month - 1, 1);
+    return totalMonths;
   }
 }
 
@@ -201,6 +193,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
     { name: 'Last Year' },
   ];
 
+  originalAbsoluteValues: { monthFrom: string, monthTo: string } = { monthFrom: '', monthTo: '' };
 
   constructor(public coreService: CoreService, private translate: TranslateService, private dataService: DataService,
               private authService: AuthService, private ref: ChangeDetectorRef, private modal: NzModalService) {
@@ -396,15 +389,51 @@ export class ReportComponent implements OnChanges, OnDestroy {
   }
 
 
+
   saveJSON(flag = false): void {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
 
     const obj = this.coreService.clone(this.report.configuration);
-    if (obj.monthTo < obj.monthFrom) {
+    const isAbsoluteDate = (value: string) => /^\d{4}-(0[1-9]|1[0-2])$/.test(value);
+
+    const convertToAbsoluteMonths = (value: string): number => {
+      if (!value) return Number.MAX_SAFE_INTEGER; // Return a high value if undefined or empty to handle comparison properly
+
+      if (isAbsoluteDate(value)) {
+        const [year, month] = value.split('-').map(Number);
+        return year * 12 + month;
+      }
+
+      const number = parseInt(value.slice(0, -1), 10);
+      const unit = value.slice(-1).toUpperCase();
+      const now = new Date();
+      let totalMonths = now.getFullYear() * 12 + now.getMonth() + 1;
+
+      switch (unit) {
+        case 'Y':
+          totalMonths -= number * 12;
+          break;
+        case 'Q':
+          totalMonths -= number * 3;
+          break;
+        case 'M':
+          totalMonths -= number;
+          break;
+        default:
+          return Number.MAX_SAFE_INTEGER; // Handle invalid units by returning a high value
+      }
+      return totalMonths;
+    };
+
+    const monthFromAbs = convertToAbsoluteMonths(obj.monthFrom);
+    const monthToAbs = convertToAbsoluteMonths(obj.monthTo);
+
+    if (monthToAbs < monthFromAbs) {
       obj.monthTo = '';
     }
+
     if (!isEqual(this.report.actual, JSON.stringify(obj))) {
       if (!flag) {
         if (this.history.length === 20) {
@@ -500,8 +529,29 @@ export class ReportComponent implements OnChanges, OnDestroy {
       this.count = this.getValueFromRelativeDate(monthFrom) - this.getValueFromRelativeDate(monthTo) + 1;
     } else {
       this.isInterval = 'absolute';
-      this.report.configuration.monthFrom = monthFrom
-      this.report.configuration.monthTo = monthTo
+      this.report.configuration.monthFrom = monthFrom;
+      this.report.configuration.monthTo = monthTo;
+      this.originalAbsoluteValues = { monthFrom, monthTo };
+    }
+    this.checkAndSetPreset(monthFrom, monthTo);
+  }
+
+  private checkAndSetPreset(monthFrom: string, monthTo: string): void {
+    const fromLower = monthFrom?.toLowerCase();
+    const toLower = monthTo ? monthTo?.toLowerCase() : '';
+
+    if (fromLower === '1y' && toLower === '1y') {
+      this.preset.name = 'Last Year';
+    } else if (fromLower === '1m' && toLower === '1m') {
+      this.preset.name = 'Last Month';
+    } else if (fromLower === '1q' && toLower === '1q') {
+      this.preset.name = 'Last Quarter';
+    } else if (fromLower === '0q' && (toLower === '0q' || toLower === '')) {
+      this.preset.name = 'This Quarter';
+    } else if (fromLower === '0y' && (toLower === '0y' || toLower === '')) {
+      this.preset.name = 'This Year';
+    } else {
+      this.preset.name = '';
     }
   }
 
@@ -516,7 +566,6 @@ export class ReportComponent implements OnChanges, OnDestroy {
   private getValueFromRelativeDate(date: string): number {
     return parseInt(date.slice(0, -1), 10); // Extracts the numeric part and converts to integer
   }
-
 
   private validateJSON(json): void {
     const obj = clone(json);
@@ -577,11 +626,12 @@ export class ReportComponent implements OnChanges, OnDestroy {
     return { monthFrom, monthTo };
   }
 
-
-
   saveRelativeInterval(): void {
     const { units, from, count } = this;
-
+    if (from !== null && count !== null) {
+      this.originalAbsoluteValues.monthFrom = '';
+      this.originalAbsoluteValues.monthTo = '';
+    }
     if (units) {
       const { monthFrom, monthTo } = this.convertRelativeToAbsolute(units.name, from, count);
       this.report.configuration.monthFrom = monthFrom;
@@ -590,12 +640,14 @@ export class ReportComponent implements OnChanges, OnDestroy {
     }
   }
 
+
   convertAbsoluteToRelative(monthFrom: string, monthTo: string): { unit: string, from: number | null, count: number | null } {
     let unit: string;
     let from: number | null = null;
     let count: number | null = null;
 
     const extractValueAndUnit = (value: string): { value: number, unit: string } => {
+      if (!value) return { value: 0, unit: '' }; // Ensure value is defined
       const match = value.match(/(\d+)([ymq])/);
       return match ? { value: parseInt(match[1]), unit: match[2] } : { value: 0, unit: '' };
     };
@@ -609,11 +661,12 @@ export class ReportComponent implements OnChanges, OnDestroy {
       unit = 'Month';
     } else if (fromDetails.unit === 'q' && toDetails.unit === 'q') {
       unit = 'Quarter';
+    } else {
+      return { unit: '', from: null, count: null };
     }
 
     from = fromDetails.value;
     count = fromDetails.value - toDetails.value + 1;
-
     return { unit, from, count };
   }
 
@@ -621,70 +674,100 @@ export class ReportComponent implements OnChanges, OnDestroy {
     const { monthFrom, monthTo } = this.report.configuration;
 
     if (monthFrom && monthTo) {
-      const { unit, from, count } = this.convertAbsoluteToRelative(monthFrom, monthTo);
-      this.units.name = unit;
-      this.from = from;
-      this.count = count;
-      this.saveJSON();
+        const { unit, from, count } = this.convertAbsoluteToRelative(monthFrom, monthTo);
+        if (!unit || from === null || count === null) {
+            this.units.name = '';
+            this.from = null;
+            this.count = null;
+            this.report.configuration.monthFrom = this.originalAbsoluteValues.monthFrom;
+            this.report.configuration.monthTo = this.originalAbsoluteValues.monthTo;
+        } else {
+            this.units.name = unit;
+            this.from = from;
+            this.count = count;
+        }
+        this.saveJSON();
     }
-  }
+}
+
 
   onPresetChange(): void {
     this.applyPreset(this.preset.name);
   }
 
   applyPreset(preset: string): void {
-    switch (preset) {
-      case 'Last Year':
-        this.units.name = 'Year';
-        this.from = 1;
-        this.count = 1;
-        break;
-      case 'Last Month':
-        this.units.name = 'Month';
-        this.from = 1;
-        this.count = 1;
-        break;
-      case 'Last Quarter':
-        this.units.name = 'Quarter';
-        this.from = 1;
-        this.count = 1;
-        break;
-      case 'This Quarter':
-        this.units.name = 'Quarter';
-        this.from = 0;
-        this.count = 1;
-        break;
-      case 'This Year':
-        this.units.name = 'Year';
-        this.from = 0;
-        this.count = 1;
-        break;
-      default:
-        this.units.name = '';
-        this.from = null;
-        this.count = null;
-        break;
-    }
-    this.saveRelativeInterval();
+  switch (preset) {
+    case 'Last Year':
+      this.units.name = 'Year';
+      this.from = 1;
+      this.count = 1;
+      break;
+    case 'Last Month':
+      this.units.name = 'Month';
+      this.from = 1;
+      this.count = 1;
+      break;
+    case 'Last Quarter':
+      this.units.name = 'Quarter';
+      this.from = 1;
+      this.count = 1;
+      break;
+    case 'This Quarter':
+      this.units.name = 'Quarter';
+      this.from = 0;
+      this.count = 1;
+      break;
+    case 'This Year':
+      this.units.name = 'Year';
+      this.from = 0;
+      this.count = 1;
+      break;
+    default:
+      this.units.name = '';
+      this.from = null;
+      this.count = null;
+      break;
   }
+  this.saveRelativeInterval();
+}
 
   onIntervalChange(): void {
     if (this.isInterval === 'preset') {
+      this.checkAndSetPreset(this.report.configuration.monthFrom, this.report.configuration.monthTo);
       this.applyPreset(this.preset.name);
     } else if (this.isInterval === 'relative') {
       const { monthFrom, monthTo } = this.report.configuration;
-      if (monthFrom && monthTo) {
-        const { unit, from, count } = this.convertAbsoluteToRelative(monthFrom, monthTo);
+      const { unit, from, count } = this.convertAbsoluteToRelative(monthFrom, monthTo);
+      const isThisQuarterOrYear = this.preset.name === 'This Quarter' || this.preset.name === 'This Year';
+
+      if (!unit || from === null || count === null) {
+        if (!isThisQuarterOrYear) {
+          // Store original absolute values only if conversion fails and it's not 'This Quarter'
+          this.originalAbsoluteValues.monthFrom = monthFrom;
+          this.originalAbsoluteValues.monthTo = monthTo;
+          this.units.name = '';
+          this.from = null;
+          this.count = null;
+        }
+      }else {
         this.units.name = unit;
         this.from = from;
         this.count = count;
+        this.originalAbsoluteValues = { monthFrom: '', monthTo: '' };
       }
+      this.checkAndSetPreset(this.report.configuration.monthFrom, this.report.configuration.monthTo);
+
       this.saveRelativeInterval();
     } else if (this.isInterval === 'absolute') {
-
+      // If the original values are empty, set them from the current configuration
+      if (this.originalAbsoluteValues.monthFrom && this.originalAbsoluteValues.monthTo) {
+        this.report.configuration.monthFrom = this.originalAbsoluteValues.monthFrom;
+        this.report.configuration.monthTo = this.originalAbsoluteValues.monthTo;
+      }
+      this.checkAndSetPreset(this.report.configuration.monthFrom, this.report.configuration.monthTo);
+      // this.saveJSON();
       this.saveAbsoluteInterval();
     }
-  }
 
+  }
 }

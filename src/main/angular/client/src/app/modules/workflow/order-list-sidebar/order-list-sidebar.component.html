@@ -148,9 +148,9 @@
                  class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
               <i (click)="order.show = false" *ngIf="order.show" class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
               <a (click)="showLog(order)"
-                 *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')" class="text-hover-primary">{{coreService.getModifiedOrderId(order)}}</a>
+                 *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')" class="text-hover-primary" [innerHTML]="coreService.getModifiedOrderId(order)"></a>
               <span
-                *ngIf="!order.state || (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING')">{{coreService.getModifiedOrderId(order)}}</span>
+                *ngIf="!order.state || (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING')" [innerHTML]="coreService.getModifiedOrderId(order)"></span>
               <span *ngIf="order.title">-</span>
               <i class="text-muted">{{order.title}}</i>
               <i *ngIf="order.cyclicOrder" [nzTooltipPlacement]="'left'" [nzTooltipTitle]="tooltipTemplate" aria-hidden="true"

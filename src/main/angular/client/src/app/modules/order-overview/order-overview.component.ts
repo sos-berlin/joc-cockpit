@@ -225,6 +225,8 @@ export class OrderOverviewComponent {
   isDropdownOpen = false;
   orderTags: string[] = [];
   tags: string[] = [];
+  allTagsSelected = true;
+  allOrderTagsSelected = true;
   searchTag = { text: '', loading: false, tags: [], token: '' };
   searchOrderTag = { text: '', loading: false, tags: [], token: '' }
   searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position'];
@@ -1521,6 +1523,7 @@ export class OrderOverviewComponent {
     } else {
       this.coreService.checkedTags.delete(tag);
     }
+    this.updateSelectAllTags()
     this.getOrders({ controllerId: this.schedulerIds.selected, states: this.getState() });
   }
 
@@ -1530,10 +1533,17 @@ export class OrderOverviewComponent {
     } else {
       this.coreService.checkedOrderTags.delete(tag);
     }
+    this.updateSelectAllOrderTags()
     this.getOrders({ controllerId: this.schedulerIds.selected, states: this.getState() });
   }
 
+  updateSelectAllTags(): void {
+    this.allTagsSelected = this.coreService.selectedTags.length === this.coreService.checkedTags.size;
+  }
 
+  updateSelectAllOrderTags(): void {
+    this.allOrderTagsSelected = this.coreService.selectedOrderTags.length === this.coreService.checkedOrderTags.size;
+  }
 
   selectTags(): void {
     const temp = this.coreService.clone(this.coreService.selectedTags);
@@ -1694,5 +1704,48 @@ export class OrderOverviewComponent {
   selectOrderTagOnSearch(tag: any): void {
     this.selectOrderTag(tag.name);
     this.searchOrderTag.text = '';
+  }
+
+  toggleSelectAllTags(selectAll: boolean): void {
+    this.allTagsSelected = selectAll;
+    if (selectAll) {
+      this.coreService.selectedTags.forEach(tag => {
+        this.coreService.checkedTags.add(tag.name);
+      });
+    } else {
+      this.coreService.checkedTags.clear();
+    }
+    this.updateWorkflowsAndOrdersByTags();
+  }
+
+
+  toggleSelectAllOrderTags(selectAll: boolean): void {
+    this.allOrderTagsSelected = selectAll;
+    if (selectAll) {
+      this.coreService.selectedOrderTags.forEach(tag => {
+        this.coreService.checkedOrderTags.add(tag.name);
+      });
+    } else {
+      this.coreService.checkedOrderTags.clear();
+    }
+    this.updateWorkflowsAndOrdersByOrderTags();
+  }
+
+  private updateWorkflowsAndOrdersByTags(): void {
+    const tags = Array.from(this.coreService.checkedTags);
+    const obj: any = {
+      tags,
+      controllerId: this.schedulerIds.selected
+    };
+    this.getOrders({ controllerId: this.schedulerIds.selected, states: this.getState() });
+  }
+
+  private updateWorkflowsAndOrdersByOrderTags(): void {
+    const orderTags = Array.from(this.coreService.checkedOrderTags);
+    const obj: any = {
+      orderTags,
+      controllerId: this.schedulerIds.selected
+    };
+    this.getOrders({ controllerId: this.schedulerIds.selected, states: this.getState() });
   }
 }

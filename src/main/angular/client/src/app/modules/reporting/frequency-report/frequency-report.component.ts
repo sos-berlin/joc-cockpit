@@ -264,12 +264,12 @@ export class FrequencyReportComponent {
             chartData.labels.push(label);
             break;
           case 'PERIODS_MOST_ORDER_EXECUTIONS':
-            label = `${item.period} - (${(item.count)})`;
+            label = `${this.stringToDate(item.period.split(' - ')[0])} - ${this.stringToDate(item.period.split(' - ')[1])} - (${(item.count)})`;
             key = 'Workflow executions'
             chartData.labels.push(label);
             break;
           case 'PERIODS_MOST_JOB_EXECUTIONS':
-            label = `${item.period} - (${(item.count)})`;
+            label = `${this.stringToDate(item.period.split(' - ')[0])} - ${this.stringToDate(item.period.split(' - ')[1])} - (${(item.count)})`;
             key = 'Job executions'
             chartData.labels.push(label);
             break;
@@ -296,6 +296,17 @@ export class FrequencyReportComponent {
     }
   }
 
+  private stringToDate(date: any): any {
+    if (sessionStorage['preferences']) {
+      const n = JSON.parse(sessionStorage['preferences']);
+      if (!n.zone) {
+        return '';
+      }
+      return this.coreService.getDateByFormat(date, n.zone, n.dateFormat);
+    } else {
+      return this.coreService.getDateByFormat(date, null, 'DD.MM.YYYY HH:mm:ss');
+    }
+  }
   formatDuration(durationInSeconds: number): any {
     const days = Math.floor(durationInSeconds / (60 * 60 * 24));
     const hours = Math.floor((durationInSeconds % (60 * 60 * 24)) / (60 * 60));
@@ -567,7 +578,7 @@ export class FrequencyReportComponent {
       case 'WORKFLOWS_LONGEST_EXECUTION_TIMES':
         return 'Workflow Execution Duration';
       case 'JOBS_LONGEST_EXECUTION_TIMES':
-        return 'Job Executions Duration';
+        return 'Job Execution Duration';
       case 'PERIODS_MOST_ORDER_EXECUTIONS':
         return 'Workflow Executions';
       case 'PERIODS_MOST_JOB_EXECUTIONS':
@@ -600,7 +611,7 @@ export class FrequencyReportComponent {
       case 'WORKFLOWS_LONGEST_EXECUTION_TIMES':
         return 'Workflow Execution Duration';
       case 'JOBS_LONGEST_EXECUTION_TIMES':
-        return 'Job Executions Duration';
+        return 'Job Execution Duration';
       case 'PERIODS_MOST_ORDER_EXECUTIONS':
         return 'Workflow Executions';
       case 'PERIODS_MOST_JOB_EXECUTIONS':
@@ -663,11 +674,11 @@ export class FrequencyReportComponent {
           data.datasets[0].data.push(report.data[i].duration);
           break;
         case 'PERIODS_MOST_ORDER_EXECUTIONS':
-          data.labels.push(report.data[i].period);
+          data.labels.push(`${this.stringToDate(report.data[i].period.split(' - ')[0])} - ${this.stringToDate(report.data[i].period.split(' - ')[1])}`);
           data.datasets[0].data.push(report.data[i].count);
           break;
         case 'PERIODS_MOST_JOB_EXECUTIONS':
-          data.labels.push(report.data[i].period);
+          data.labels.push(`${this.stringToDate(report.data[i].period.split(' - ')[0])} - ${this.stringToDate(report.data[i].period.split(' - ')[1])}`);
           data.datasets[0].data.push(report.data[i].count);
           break;
         case 'JOBS_SUCCESSFUL_EXECUTIONS':
@@ -797,16 +808,13 @@ export class FrequencyReportComponent {
     this.filter.sortBy = type;
 
     const compare = (a: any, b: any): number => {
-      if (this.filter.sortBy === 'frequency') {
-        if (a.frequency < b.frequency) {
-          return -1;
-        } else if (a.frequency > b.frequency) {
-          return 1;
-        } else {
-          return a.dateFrom - b.dateFrom;
-        }
+      if (a.frequency < b.frequency) {
+        return -1;
+      } else if (a.frequency > b.frequency) {
+        return 1;
+      } else {
+        return 0;
       }
-      return 0;
     };
 
     this.addCardItems = this.addCardItems.sort(compare);

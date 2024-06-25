@@ -29,7 +29,7 @@
             <i *ngIf="filters.filter.sortBy == 'path' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th *ngIf="filters.groupBy == 'hits'" (click)="sort('hits')"><a><span class="p-r-xs">
+          <th *ngIf="filters.groupBy == 'hits'"  (click)="sort('hits')"><a><span class="p-r-xs">
               {{'reporting.label.template' | translate}} / {{'common.label.name' | translate}}
             </span>
             <i *ngIf="filters.filter.sortBy == 'hits' && !filters.filter.reverse"
@@ -37,7 +37,7 @@
             <i *ngIf="filters.filter.sortBy == 'hits' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th *ngIf="filters.groupBy !== 'hits'" (click)="sort('template')"><a><span class="p-r-xs" translate>reporting.label.templateType</span>
+          <th *ngIf="filters.groupBy !== 'hits'"  nzWidth="450px" (click)="sort('template')"><a><span class="p-r-xs" translate>reporting.label.templateType</span>
             <i *ngIf="filters.filter.sortBy == 'template' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'template' && filters.filter.reverse"
@@ -144,7 +144,7 @@
               <!-- Nested rows for Highest and Lowest -->
               <tr *ngIf="item.highestGroup.length > 0">
                 <td *ngIf="permission.joc && permission.joc.reports.manage" [nzIndeterminate]="item.indeterminate"
-                    [nzChecked]="item.checked"
+                    [nzChecked]="item.highestGroupChecked"
                     (nzCheckedChange)="checkAllChild(item, $event)"
                     [nzShowCheckbox]="true">
                 </td>
@@ -174,7 +174,7 @@
               </tr>
               <ng-container *ngIf="item.expandedHighest">
                 <tr *ngFor="let highestItem of item.highestGroup; trackBy: trackByFn" class="cursor nested-row">
-                  <td *ngIf="permission.joc && permission.joc.reports.manage" [nzChecked]="object.mapOfCheckedId.has(highestItem.id)" (nzCheckedChange)="onItemChecked(item, highestItem, $event)"
+                  <td *ngIf="permission.joc && permission.joc.reports.manage" [nzChecked]="object.mapOfCheckedId.has(highestItem.id)" (nzCheckedChange)="onItemChecked(item, highestItem, $event, 'highest')"
                       [nzShowCheckbox]="true"></td>
                   <td>
                     <div class="btn-group dropdown">
@@ -217,7 +217,7 @@
               </ng-container>
               <tr *ngIf="item.lowestGroup.length > 0">
                 <td *ngIf="permission.joc && permission.joc.reports.manage" [nzIndeterminate]="item.indeterminate"
-                    [nzChecked]="item.checked"
+                    [nzChecked]="item.lowestGroupChecked"
                     (nzCheckedChange)="checkAllChild(item, $event)"
                     [nzShowCheckbox]="true">
                 </td>
@@ -248,7 +248,7 @@
               </tr>
               <ng-container *ngIf="item.expandedLowest">
                 <tr *ngFor="let lowestItem of item.lowestGroup; trackBy: trackByFn" class="cursor nested-row">
-                  <td *ngIf="permission.joc && permission.joc.reports.manage" [nzChecked]="object.mapOfCheckedId.has(lowestItem.id)" (nzCheckedChange)="onItemChecked(item, lowestItem, $event)"
+                  <td *ngIf="permission.joc && permission.joc.reports.manage" [nzChecked]="object.mapOfCheckedId.has(lowestItem.id)" (nzCheckedChange)="onItemChecked(item, lowestItem, $event, 'lowest')"
                       [nzShowCheckbox]="true"></td>
                   <td>
                     <div class="btn-group dropdown">

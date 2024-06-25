@@ -3038,7 +3038,8 @@
       "allow_undeclared_variables": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available with an order.",
       "display_folders_in_views": "Displays folders of scheduling objects in views. If this setting is set to 'false' then object names only will be displayed. In JS7 object names are unique.",
       "node_command_line_options": "Node.js command line options can be specified. Consider that applicability of options depends on the version of Node.js in use.",
-      "num_of_tags_displayed_as_order_id": "Specifies the number of tags displayed with each order. A value 0 will suppress display of tags."
+      "num_of_tags_displayed_as_order_id": "Specifies the number of tags displayed with each order. A value 0 will suppress display of tags.",
+      "report_java_options": "report java options"
     },
     "user": {
       "welcome_got_it": "Specifies that the welcome window that offers defaults and examples for download should no longer be displayed.",

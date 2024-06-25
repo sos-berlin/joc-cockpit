@@ -96,7 +96,7 @@
               <span class="text-primary"></span>
               <i *ngIf="!filteredTemplate" class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               <span class="text-primary">
-               <span>{{ filteredTemplate }}</span>
+               <span>{{ filteredTemplate | translate }}</span>
               </span>
             </button>
             <span *ngIf="filteredTemplate" (click)="filterBy({allTemplate: 'All'})" class="p-l-xs cur-point"> <i class="fa fa-times-circle-o fa-lg" aria-hidden="true"></i></span>

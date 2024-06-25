@@ -9096,6 +9096,10 @@ export class WorkflowComponent {
               obj.cell, 'forceJobAdmission', self.selectedNode.newObj.forceJobAdmission);
             graph.getModel().execute(edit8);
 
+            const edit9 = new mxCellAttributeChange(
+              obj.cell, 'tags', JSON.stringify(self.selectedNode.newObj.tags));
+            graph.getModel().execute(edit9);
+
           } else if (self.selectedNode.type === 'If') {
             const predicate = self.selectedNode.newObj.predicate;
             self.validatePredicate(predicate, null, false);
@@ -9569,7 +9573,14 @@ export class WorkflowComponent {
               }
             });
           }
+          let tags = cell.getAttribute('tags');
+          if (!tags) {
+            tags = [];
+          } else {
+            tags = JSON.parse(tags);
+          }
           obj.arguments = argument;
+          obj.tags = tags
           obj.argumentList = [];
           obj.workflowName = cell.getAttribute('workflowName');
           obj.startPosition = cell.getAttribute('startPosition');
@@ -12071,6 +12082,7 @@ export class WorkflowComponent {
             const remainWhenTerminated = clone(json.instructions[x].remainWhenTerminated);
             const forceJobAdmission = clone(json.instructions[x].forceJobAdmission);
             let endPositions = clone(json.instructions[x].endPositions);
+            let tags = clone(json.instructions[x].tags);
             delete json.instructions[x].workflowName;
             delete json.instructions[x].arguments;
             delete json.instructions[x].remainWhenTerminated;
@@ -12078,6 +12090,7 @@ export class WorkflowComponent {
             delete json.instructions[x].endPositions;
             delete json.instructions[x].blockPosition;
             delete json.instructions[x].forceJobAdmission;
+            delete json.instructions[x].tags;
             if (endPositions && endPositions.length > 0) {
               let arr = [];
               endPositions.forEach((item) => {
@@ -12089,14 +12102,17 @@ export class WorkflowComponent {
               });
               endPositions = arr;
             }
+            if(typeof tags === 'string'){
+              tags = JSON.parse(tags);
+            }
             json.instructions[x].workflowName = workflowName;
-            json.instructions[x].tags = self.tags;
             json.instructions[x].arguments = argu;
             json.instructions[x].remainWhenTerminated = remainWhenTerminated == true || remainWhenTerminated == 'true';
             json.instructions[x].startPosition = startPosition;
             json.instructions[x].endPositions = endPositions;
             json.instructions[x].blockPosition = blockPosition;
             json.instructions[x].forceJobAdmission = forceJobAdmission == true || forceJobAdmission == 'true';
+            json.instructions[x].tags = tags;
           } else if (json.instructions[x].TYPE === 'Lock') {
             json.instructions[x].lockedWorkflow = {
               instructions: json.instructions[x].instructions
@@ -12829,11 +12845,11 @@ updateOnEncrypt(){
     onChange(value: string): void {
       this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
       this.filteredOptions = this.filteredOptions.filter((tag) => {
-        return this.orderTags.indexOf(tag) == -1;
+        return this.selectedNode.obj.tags.indexOf(tag) == -1;
       })
     }
     handleClose(removedTag: {}): void {
-      this.orderTags = this.orderTags.filter(tag => tag !== removedTag);
+      this.selectedNode.obj.tags = this.selectedNode.obj.tags.filter(tag => tag !== removedTag);
     }
 
     sliceTagName(tag: string): string {
@@ -12851,10 +12867,9 @@ updateOnEncrypt(){
 
     handleInputConfirm(): void {
       if (this.inputValue && this.orderTags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
-        this.orderTags = [...this.orderTags, this.inputValue];
+        this.selectedNode.obj.tags = [...this.selectedNode.obj.tags, this.inputValue];
       }
       this.inputValue = '';
       this.inputVisible = false;
-      this.saveJSON(true);
     }
 }

@@ -3038,7 +3038,8 @@
       "allow_undeclared_variables": "宣言されていない変数を許可",
       "display_folders_in_views": "フォルダーを表示",
       "node_command_line_options": "ノードコマンドラインオプション",
-      "num_of_tags_displayed_as_order_id": "num_of_tags_displayed_as_order_id"
+      "num_of_tags_displayed_as_order_id": "num_of_tags_displayed_as_order_id",
+      "report_java_options": "report java options"
     },
     "user": {
       "welcome_got_it": "了解",

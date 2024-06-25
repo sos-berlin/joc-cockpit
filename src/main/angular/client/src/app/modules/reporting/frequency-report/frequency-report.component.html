@@ -191,7 +191,7 @@
                                 <div class="flex-container">
                                   <div class="flex-item" style="width: 100%;">{{ item.startTime | stringToDate}}</div>
                                   <div class="flex-item" style="width: 100%;">{{ item.endTime | stringToDate}}</div>
-                                  <div *ngIf="item.duration" class="flex-item" style="width: 100%;">{{ item.duration}}</div>
+                                  <div *ngIf="item.duration" class="flex-item" style="width: 100%;">{{formatDuration(data.duration)}}</div>
                                 </div>
                               </div>
                               </div>
@@ -221,7 +221,7 @@
                                 <div class="flex-container">
                                   <div class="flex-item" style="width: 100%;">{{ item.startTime | stringToDate}}</div>
                                   <div class="flex-item" style="width: 100%;">{{ item.endTime | stringToDate}}</div>
-                                  <div class="flex-item" style="width: 100%;">{{ item.duration}}</div>
+                                  <div class="flex-item" style="width: 100%;">{{ formatDuration(item.duration)}}</div>
                                 </div>
                               </div>
                             </div>
@@ -290,7 +290,7 @@
                                 <div class="flex-container">
                                   <div class="flex-item" style="width: 100%;">{{ item.startTime | stringToDate}}</div>
                                   <div class="flex-item" style="width: 100%;">{{ item.endTime | stringToDate}}</div>
-                                  <div class="flex-item" style="width: 100%;">{{ item.duration}}</div>
+                                  <div class="flex-item" style="width: 100%;">{{ formatDuration(item.duration)}}</div>
                                 </div>
                               </div>
                             </div>
