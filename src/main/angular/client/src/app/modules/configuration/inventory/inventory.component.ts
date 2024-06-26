@@ -3923,6 +3923,17 @@ export class InventoryComponent {
     }).subscribe()
   }
 
+  sortTags(order: string): void {
+    this.tags.sort((a, b) => {
+      if (order === 'asc') {
+        return a.name.localeCompare(b.name);
+      } else {
+        return b.name.localeCompare(a.name);
+      }
+    });
+  }
+
+
   selectTag(tag: any, isArray = false, cb?): void {
     if (this.preferences.expandOption === 'both' || isArray) {
       tag.isExpanded = !tag.isExpanded;

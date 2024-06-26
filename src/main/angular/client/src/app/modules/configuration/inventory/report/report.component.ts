@@ -627,6 +627,9 @@ export class ReportComponent implements OnChanges, OnDestroy {
   }
 
   saveRelativeInterval(): void {
+    if (this.count > this.from) {
+      this.count = this.from;
+    }
     const { units, from, count } = this;
     if (from !== null && count !== null) {
       this.originalAbsoluteValues.monthFrom = '';

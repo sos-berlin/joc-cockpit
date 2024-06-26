@@ -81,108 +81,123 @@ export class FrequencyReportComponent {
   }
 
   loadData(obj): void {
-    this.isLoading = false;
-    this.coreService.post('reporting/reports/generated', obj).subscribe({
-      next: (res: any) => {
-        this.isLoading = true;
-        this.multiReports = res.reports;
+  this.isLoading = false;
+  this.coreService.post('reporting/reports/generated', obj).subscribe({
+    next: (res: any) => {
+      this.isLoading = true;
+      this.multiReports = res.reports;
 
-        // Filter reports based on groupType
-        if (this.groupType) {
-          const filteredReports = [];
-          if (this.groupType === 'highest') {
-            this.selectedReport.highestGroup.forEach((report) => {
-              const matchedReport = this.multiReports.find(item => item.id === report.id);
-              if (matchedReport) {
-                filteredReports.push(matchedReport);
-              }
-            });
-          } else if (this.groupType === 'lowest') {
-            this.selectedReport.lowestGroup.forEach((report) => {
-              const matchedReport = this.multiReports.find(item => item.id === report.id);
-              if (matchedReport) {
-                filteredReports.push(matchedReport);
-              }
-            });
-          }
-          this.multiReports = filteredReports;
+      // Filter reports based on groupType
+      if (this.groupType) {
+        const filteredReports = [];
+        if (this.groupType === 'highest') {
+          this.selectedReport.highestGroup.forEach((report) => {
+            const matchedReport = this.multiReports.find(item => item.id === report.id);
+            if (matchedReport) {
+              filteredReports.push(matchedReport);
+            }
+          });
+        } else if (this.groupType === 'lowest') {
+          this.selectedReport.lowestGroup.forEach((report) => {
+            const matchedReport = this.multiReports.find(item => item.id === report.id);
+            if (matchedReport) {
+              filteredReports.push(matchedReport);
+            }
+          });
         }
+        this.multiReports = filteredReports;
+      }
 
-        this.multiReports.forEach(item => {
-          item.name = item.path.substring(item.path.lastIndexOf('/') + 1);
-          if (obj.runIds) {
-            item.checked = item.id == this.selectedReport.id;
-          } else {
-            item.checked = true;
-            this.selectedFrequencies.push(item.frequency);
-          }
+      // Initialize originalIndex property
+      this.multiReports.forEach((item, index) => {
+        item.originalIndex = index + 1;
+        item.name = item.path.substring(item.path.lastIndexOf('/') + 1);
+        if (obj.runIds) {
+          item.checked = item.id == this.selectedReport.id;
+        } else {
+          item.checked = true;
           this.selectedFrequencies.push(item.frequency);
-          const template = this.templates.find(template => template.templateName == item.templateName);
-          if (template) item.template = template.title;
-          item.template = item.template?.replace('${hits}', item.hits || 10).replace('${sort}', item.sort);
-        });
-
-        this.selectedFrequencies = [...new Set(this.selectedFrequencies)].sort();
-        this.sort('');
-        this.addCardItems = [...this.multiReports];
-
-        this.addCardItems = this.addCardItems.filter((report) => {
-          return report.checked;
-        });
-
-        if (res.reports.length > 0) {
-          setTimeout(() => {
-            this.generateDonutCharts();
-          }, 100);
         }
-      },
-      error: () => this.isLoading = true
-    });
-  }
+        this.selectedFrequencies.push(item.frequency);
+        const template = this.templates.find(template => template.templateName == item.templateName);
+        if (template) item.template = template.title;
+        item.template = item.template?.replace('${hits}', item.hits || 10).replace('${sort}', item.sort);
+      });
 
+      this.selectedFrequencies = [...new Set(this.selectedFrequencies)].sort();
+      this.sort('');
+      this.addCardItems = [...this.multiReports];
 
+      this.addCardItems = this.addCardItems.filter((report) => {
+        return report.checked;
+      });
 
-  onCardChange(cardId: any) {
-    if (this.multiReports.every(item => !item.checked)) {
-      this.filter.checked = false;
-      this.filter.indeterminate = false;
-    } else if (this.multiReports.every(item => item.checked)) {
-      this.filter.checked = true;
-      this.filter.indeterminate = false;
-    } else {
-      this.filter.indeterminate = true;
-    }
-    const index = this.multiReports.findIndex(report => report.id === cardId);
-    if (index !== -1) {
-      if (!this.multiReports[index].checked) {
-        const addCardIndex = this.addCardItems.findIndex(report => report.id === cardId);
-        if (addCardIndex !== -1) {
-          this.addCardItems.splice(addCardIndex, 1);
-        }
-      } else {
-        const existingIndex = this.addCardItems.findIndex(report => report.id === cardId);
-        if (existingIndex === -1) {
-          this.addCardItems.push(this.multiReports[index]);
-          setTimeout(() => {
-            this.generateDonutCharts(this.multiReports[index]);
-          }, 100)
-        }
+      if (res.reports.length > 0) {
+        setTimeout(() => {
+          this.generateDonutCharts();
+        }, 100);
       }
-    }
-  }
+    },
+    error: () => this.isLoading = true
+  });
+}
 
-  removeCard(cardId: any): void {
+
+
+
+onCardChange(cardId: any) {
+  if (this.multiReports.every(item => !item.checked)) {
     this.filter.checked = false;
+    this.filter.indeterminate = false;
+  } else if (this.multiReports.every(item => item.checked)) {
+    this.filter.checked = true;
+    this.filter.indeterminate = false;
+  } else {
     this.filter.indeterminate = true;
-    const index = this.addCardItems.findIndex(report => report.id === cardId);
-    if (index !== -1) {
-      this.addCardItems.splice(index, 1);
-      const multiIndex = this.multiReports.findIndex(report => report.id === cardId);
-      if (multiIndex !== -1) {
-        this.multiReports[multiIndex].checked = false;
+  }
+
+  const index = this.multiReports.findIndex(report => report.id === cardId);
+  if (index !== -1) {
+    if (!this.multiReports[index].checked) {
+      const addCardIndex = this.addCardItems.findIndex(report => report.id === cardId);
+      if (addCardIndex !== -1) {
+        this.addCardItems.splice(addCardIndex, 1);
+      }
+    } else {
+      const existingIndex = this.addCardItems.findIndex(report => report.id === cardId);
+      if (existingIndex === -1) {
+        // Insert the card back to its original position based on originalIndex
+        const originalIndex = this.multiReports[index].originalIndex - 1;
+        this.addCardItems.splice(originalIndex, 0, this.multiReports[index]);
+        setTimeout(() => {
+          this.generateDonutCharts(this.multiReports[index]);
+        }, 100)
       }
     }
+
+    this.sortAddCardItems();
   }
+}
+
+sortAddCardItems(): void {
+    this.addCardItems.sort((a, b) => a.originalIndex - b.originalIndex);
+  }
+
+
+removeCard(cardId: any): void {
+  this.filter.checked = false;
+  this.filter.indeterminate = true;
+  const index = this.addCardItems.findIndex(report => report.id === cardId);
+  if (index !== -1) {
+    this.addCardItems.splice(index, 1);
+    const multiIndex = this.multiReports.findIndex(report => report.id === cardId);
+    if (multiIndex !== -1) {
+      this.multiReports[multiIndex].checked = false;
+    }
+  }
+}
+
+
 
   generateDonutCharts(reportId?: any): void {
     const reportsToProcess = reportId ? [this.addCardItems.find(item => item.id === reportId?.id)] : this.addCardItems;
@@ -561,7 +576,6 @@ export class FrequencyReportComponent {
 
   getLabel(): any {
     const template = this.selectedReport.template;
-    console.log(template,"templatelable")
     switch (template) {
       case 'WORKFLOWS_FREQUENTLY_FAILED':
         return 'Failed Workflow Executions';
@@ -594,7 +608,6 @@ export class FrequencyReportComponent {
 
   getText(): string {
     const template = this.selectedReport.template;
-    console.log(template,"templatelable")
     switch (template) {
       case 'WORKFLOWS_FREQUENTLY_FAILED':
         return 'Failed Workflow Executions Count';

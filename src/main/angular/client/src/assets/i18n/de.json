@@ -405,6 +405,7 @@
   },
   "encipherment": {
     "label.addCertificate": "Zertifikat hinzufügen",
+    "label.updateCertificate": "Update Encipherment Certificate",
     "label.agentId": "Agenten-Kennung",
     "label.certAlias": "Alias des Zertifikats",
     "label.certificate": "Zertifikat",
@@ -2991,7 +2992,7 @@
       "max_pool_size": "Die maximale Größe des Verbindungspools gibt die Anzahl der verwendeten Datenbankverbindungen an. Für Umgebungen, in denen eine größere Anzahl von Einträgen aus den täglichen Job-Pprotokollen zu bereinigen ist, kann es von Vorteil sein, diesen Wert auf beispielsweise 10 zu erhöhen. Anwender müssen prüfen, ob ihr DBMS die Verwendung einer höheren Anzahl von Verbindungen zulässt.",
       "profile_age": "Benennt die maximale Anzahl von Tagen, die ein Profil nicht durch ein Anwenderkonto verwendet wurde, bevor es bereinigt wird.",
       "failed_login_history_age": "Gibt die maximale Anzahl von Tagen an, für die Einträge in der Historie der fehlgeschlagenen Anmeldungen aufbewahrt werden, bevor sie bereinigt werden.",
-      "reporting_age": "Reporting age"
+      "reporting_age": "Specifies the retention period of the Reports and Report Run History. Any report entries older than the value specified will be purged."
     },
     "dailyplan": {
       "time_zone": "Benennt die Zeitzone der Startzeit des Tagesplandienstes und der Periode des Tagesplans.",
@@ -3606,6 +3607,8 @@
     "label.removeAllTags": "Alle Schlagwörter entfernen",
     "label.childrenMap": "Map Variable",
     "label.filtersOrdersAsWell": "Anzeige der Aufträge filtern",
+    "label.ascending": "Ascending",
+    "label.descending": "Descending",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",

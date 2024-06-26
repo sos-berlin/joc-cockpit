@@ -80,11 +80,12 @@
                     </button>
                     <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
                       <ul nz-menu>
+                        <li (click)="updateCertificate(encipherment,'updateCertificate')" nz-menu-item>
+                          <a translate>encipherment.button.updateCertificate</a>
+                        </li>
+                        <li nz-menu-divider></li>
                         <li (click)="deleteCertificate(encipherment?.certAlias)" nz-menu-item>
                           <a translate>encipherment.button.deleteCertificate</a>
-                        </li>
-                        <li (click)="updateCertificate(encipherment)" nz-menu-item>
-                          <a translate>encipherment.button.updateCertificate</a>
                         </li>
                       </ul>
                     </nz-dropdown-menu>
@@ -92,8 +93,8 @@
                 </td>
                 <td>
                   <div class="d-flex justify-content-between algin-item-center">
-                    <span>{{ encipherment?.certAlias }}</span>
-                    <span (click)="showCertificate(encipherment)"><i class="fa fa-television"></i></span>
+                    <span (click)="updateCertificate(encipherment,'updateCertificate')" class="cursor">{{ encipherment?.certAlias }}</span>
+                    <span (click)="showCertificate(encipherment)" class="cursor"><i class="fa fa-television"></i></span>
                   </div>
                 </td>
                 <td>

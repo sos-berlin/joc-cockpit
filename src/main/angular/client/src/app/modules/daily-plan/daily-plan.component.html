@@ -624,7 +624,7 @@
                                      id="dailyTagSearch"
                                      nz-input
                               />
-                              <label *ngIf="coreService.selectedTags && coreService.selectedTags.length > 0" nz-checkbox [(ngModel)]="allTagsSelected" (ngModelChange)="toggleSelectAllTags($event)" class="m-l-xs m-b-15 m-t-sm1">
+                              <label *ngIf="coreService.selectedTags && coreService.selectedTags.length > 0" nz-checkbox [(ngModel)]="coreService.allTagsSelected" (ngModelChange)="toggleSelectAllTags($event)" class="m-l-xs m-b-15 m-t-sm1">
                                 {{ 'profile.label.selectAll' | translate }}
                               </label>
                               <i [nzType]="searchTag.loading ? 'loading' : 'search'" class="tree-search-icon" nz-icon nzTheme="outline"></i>
@@ -687,7 +687,7 @@
                                      id="dailyOrderTagSearch"
                                      nz-input
                               />
-                              <label *ngIf="coreService.selectedOrderTags && coreService.selectedOrderTags.length > 0" nz-checkbox [(ngModel)]="allOrderTagsSelected" (ngModelChange)="toggleSelectAllOrderTags($event)" class="m-l-xs m-b-15 m-t-sm1">
+                              <label *ngIf="coreService.selectedOrderTags && coreService.selectedOrderTags.length > 0" nz-checkbox [(ngModel)]="coreService.allOrderTagsSelected" (ngModelChange)="toggleSelectAllOrderTags($event)" class="m-l-xs m-b-15 m-t-sm1">
                                 {{ 'profile.label.selectAll' | translate }}
                               </label>
                               <i [nzType]="searchOrderTag.loading ? 'loading' : 'search'" class="tree-search-icon" nz-icon nzTheme="outline"></i>
@@ -777,7 +777,7 @@
                                 [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy==='CYCLICORDER'}"
                                 class="btn btn-grey btn-sm hidden-btn-text">
                           <i class="icon icon-workflows-icon"></i>
-                          <span translate>dailyPlan.label.cyclicOrder</span>
+                          <span translate>dailyPlan.label.cyclicOrders</span>
                         </button>
                         <button (click)="showSearchPanel ? cancel() : advancedSearch()"
                                 class="btn btn-sm inline pull-right m-l btn-grey">

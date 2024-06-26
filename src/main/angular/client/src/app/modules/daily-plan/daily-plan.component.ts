@@ -757,8 +757,6 @@ export class DailyPlanComponent {
   selectedMonth: any;
   weekStart = 1;
   dateFormat: string;
-  allTagsSelected = true;
-  allOrderTagsSelected = true;
   object = {
     mapOfCheckedId: new Map(),
     checked: false,
@@ -3066,6 +3064,7 @@ export class DailyPlanComponent {
     }).subscribe({
       next: (res: any) => {
         this.coreService.selectedTags = res.results;
+        this.coreService.allTagsSelected = true;
         this.coreService.selectedTags.forEach(tag => {
           this.coreService.checkedTags.add(tag.name)
         });
@@ -3207,6 +3206,7 @@ export class DailyPlanComponent {
     }).subscribe({
       next: (res: any) => {
         this.coreService.selectedOrderTags = res.results;
+        this.coreService.allOrderTagsSelected = true;
         this.coreService.selectedOrderTags.forEach(tag => {
           this.coreService.checkedOrderTags.add(tag.name)
         });
@@ -3238,11 +3238,11 @@ export class DailyPlanComponent {
   }
 
   updateSelectAllTags(): void {
-    this.allTagsSelected = this.coreService.selectedTags.length === this.coreService.checkedTags.size;
+    this.coreService.allTagsSelected = this.coreService.selectedTags.length === this.coreService.checkedTags.size;
   }
 
   updateSelectAllOrderTags(): void {
-    this.allOrderTagsSelected = this.coreService.selectedOrderTags.length === this.coreService.checkedOrderTags.size;
+    this.coreService.allOrderTagsSelected = this.coreService.selectedOrderTags.length === this.coreService.checkedOrderTags.size;
   }
   private searchOrderObjects(value: string) {
     if (value !== '') {
@@ -3293,7 +3293,7 @@ export class DailyPlanComponent {
   }
 
   toggleSelectAllTags(selectAll: boolean): void {
-    this.allTagsSelected = selectAll;
+    this.coreService.allTagsSelected = selectAll;
     if (selectAll) {
       this.coreService.selectedTags.forEach(tag => {
         this.coreService.checkedTags.add(tag.name);
@@ -3306,7 +3306,7 @@ export class DailyPlanComponent {
 
 
   toggleSelectAllOrderTags(selectAll: boolean): void {
-    this.allOrderTagsSelected = selectAll;
+    this.coreService.allOrderTagsSelected = selectAll;
     if (selectAll) {
       this.coreService.selectedOrderTags.forEach(tag => {
         this.coreService.checkedOrderTags.add(tag.name);

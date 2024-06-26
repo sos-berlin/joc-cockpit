@@ -28,7 +28,8 @@ export class CoreService {
   expertMode: string | undefined | null;
   reportStartRunning = false;
   scheduleExpandedProperties: any = new Map();
-
+  allTagsSelected = true;
+  allOrderTagsSelected = true;
   logViewDetails = {
     historyId: '',
     expandedAllLog: false,
@@ -464,7 +465,6 @@ export class CoreService {
       }
     };
     this.tabs._deployment = {};
-    this.numOfTags = sessionStorage.getItem('numOfTagsDisplayedAsOrderId')
   }
 
   removeDuplicates() {
@@ -3315,17 +3315,17 @@ export class CoreService {
   }
 
   getModifiedOrderId(order: any): string {
+    this.numOfTags = sessionStorage.getItem('numOfTagsDisplayedAsOrderId')
     const match = order.orderId.match(/^(#\d{4}-\d{2}-\d{2}#(T|P|C|D|F))(\d+)-(.+?)(\|.+)?$/);
     if (match && order.tags && order.tags.length > 0) {
       const prefix = match[1];
       const orderName = match[4] || '';
       const branch = match[5] || '';
       const tagsString = order.tags.slice(0, this.numOfTags).map(tag => `<span class="tag-oval">${tag}</span>`).join('');
-      return `${prefix}${orderName}${tagsString}${branch}`;
+      
+      return `${prefix}${orderName} ${tagsString}${branch}`;
     }
     return order.orderId;
   }
-
-
 
 }

@@ -117,7 +117,7 @@
             </td>
             <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
               <span *ngIf="history.orderState" [innerHtml]="(history.orderState._text === 'RUNNING'?'PROCESSING':history.orderState._text) | translate"
-                    [ngClass]="history.orderState.severity === 0?'bg-light-green':coreService.getColor(history.orderState.severity,'bg')"
+                    [ngClass]="history.orderState.severity === 0?'bg-light-green cl-b':coreService.getColor(history.orderState.severity,'bg')"
                     class="label"></span>
             </td>
             <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)" [innerHtml]="history.plannedTime | stringToDate"></td>

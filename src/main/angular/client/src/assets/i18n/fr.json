@@ -405,6 +405,7 @@
   },
   "encipherment": {
     "label.addCertificate": "Ajouter un Certificat de Chiffrement",
+    "label.updateCertificate": "Update Encipherment Certificate",
     "label.agentId": "ID Agent",
     "label.certAlias": "Alias de Certificat",
     "label.certificate": "Certificat",
@@ -2991,7 +2992,7 @@
       "max_pool_size": "La taille maximale du pool de connexions spécifie le nombre de connexions à la base de données utilisées. Pour les environnements ayant un grand nombre d'entrées de l'historique des tâches quotidiennes à purger, il peut être avantageux d'augmenter cette valeur, par exemple à 10. Les utilisateurs doivent vérifier que leur SGBD permet l'utilisation d'un plus grand nombre de connexions.",
       "profile_age": "Spécifie le nombre maximum de jours pendant lesquels un profil n'a pas été utilisé depuis la connexion par un compte utilisateur avant qu'il ne soit purgé.",
       "failed_login_history_age": "Spécifie le nombre maximum de jours pendant lesquels les entrées de l'historique des connexions échouées sont conservées avant d'être purgées.",
-      "reporting_age": "Reporting age"
+      "reporting_age": "Specifies the retention period of the Reports and Report Run History. Any report entries older than the value specified will be purged."
     },
     "dailyplan": {
       "time_zone": "Spécifie le fuseau horaire qui est appliqué à l'heure de démarrage du service du Plan Quotidien et à la période du Plan Quotidien.",
@@ -3606,6 +3607,8 @@
     "label.selectAllTags": "Sélectionner tous les Mots-clés",
     "label.removeAllTags": "Supprimer tous les Mots-clés",
     "label.filtersOrdersAsWell": "Filtrer l'affichage des Ordres",
+    "label.ascending": "Ascending",
+    "label.descending": "Descending",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",

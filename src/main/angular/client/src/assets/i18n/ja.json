@@ -405,6 +405,7 @@
   },
   "encipherment": {
     "label.addCertificate": "Add Encipherment Certificate",
+    "label.updateCertificate": "Update Encipherment Certificate",
     "label.agentId": "Agent ID",
     "label.certAlias": "Certificate Alias",
     "label.certificate": "Certificate",
@@ -2991,7 +2992,7 @@
       "max_pool_size": "最大プールサイズを指定します。",
       "profile_age": "プロファイル保存期間を指定します。",
       "failed_login_history_age": "ログイン失敗履歴保存期間を指定します。",
-      "reporting_age": "レポート保存期間を指定します。"
+      "reporting_age": "Specifies the retention period of the Reports and Report Run History. Any report entries older than the value specified will be purged."
     },
     "dailyplan": {
       "time_zone": "デイリープランサービスの開始時刻とデイリープランの期間に適用されるタイムゾーンを指定します。",
@@ -3606,6 +3607,8 @@
     "label.selectAllTags": "全てのタグを選択",
     "label.removeAllTags": "全てのタグを削除",
     "label.filtersOrdersAsWell": "Filters Orders as well",
+    "label.ascending": "Ascending",
+    "label.descending": "Descending",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",

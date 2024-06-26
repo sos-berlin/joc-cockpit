@@ -391,6 +391,10 @@
                   </div>
                 </div>
               </ng-template>
+              <div class="sort-icons m-l-xxs">
+                <i nz-icon nzType="down-square" nzTheme="outline" [nz-tooltip]="'workflow.label.ascending' | translate" aria-hidden="true" (click)="sortTags('asc')"></i>
+                <i nz-icon nzType="up-square" nzTheme="outline" [nz-tooltip]="'workflow.label.descending' | translate" aria-hidden="true" class="m-l-sm" (click)="sortTags('desc')"></i>
+              </div>
               <div (cdkDropListDropped)="drop($event)" cdkDropList class="role-list">
                 <div class="w-full role-box" *ngFor="let tag of tags" cdkDrag>
                   <div class="node-wrapper p-l-xxs p-b-xxs">

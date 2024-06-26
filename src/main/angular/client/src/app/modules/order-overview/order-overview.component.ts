@@ -225,8 +225,6 @@ export class OrderOverviewComponent {
   isDropdownOpen = false;
   orderTags: string[] = [];
   tags: string[] = [];
-  allTagsSelected = true;
-  allOrderTagsSelected = true;
   searchTag = { text: '', loading: false, tags: [], token: '' };
   searchOrderTag = { text: '', loading: false, tags: [], token: '' }
   searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position'];
@@ -1448,6 +1446,7 @@ export class OrderOverviewComponent {
     }).subscribe({
       next: (res: any) => {
         this.coreService.selectedOrderTags = res.results;
+        this.coreService.allOrderTagsSelected = true;
         this.coreService.selectedOrderTags.forEach(tag => {
           this.coreService.checkedOrderTags.add(tag.name)
         });
@@ -1484,6 +1483,7 @@ export class OrderOverviewComponent {
     }).subscribe({
       next: (res: any) => {
         this.coreService.selectedTags = res.results;
+        this.coreService.allTagsSelected = true;
         this.coreService.selectedTags.forEach(tag => {
           this.coreService.checkedTags.add(tag.name)
         });
@@ -1538,11 +1538,11 @@ export class OrderOverviewComponent {
   }
 
   updateSelectAllTags(): void {
-    this.allTagsSelected = this.coreService.selectedTags.length === this.coreService.checkedTags.size;
+    this.coreService.allTagsSelected = this.coreService.selectedTags.length === this.coreService.checkedTags.size;
   }
 
   updateSelectAllOrderTags(): void {
-    this.allOrderTagsSelected = this.coreService.selectedOrderTags.length === this.coreService.checkedOrderTags.size;
+    this.coreService.allOrderTagsSelected = this.coreService.selectedOrderTags.length === this.coreService.checkedOrderTags.size;
   }
 
   selectTags(): void {
@@ -1707,7 +1707,7 @@ export class OrderOverviewComponent {
   }
 
   toggleSelectAllTags(selectAll: boolean): void {
-    this.allTagsSelected = selectAll;
+    this.coreService.allTagsSelected = selectAll;
     if (selectAll) {
       this.coreService.selectedTags.forEach(tag => {
         this.coreService.checkedTags.add(tag.name);
@@ -1720,7 +1720,7 @@ export class OrderOverviewComponent {
 
 
   toggleSelectAllOrderTags(selectAll: boolean): void {
-    this.allOrderTagsSelected = selectAll;
+    this.coreService.allOrderTagsSelected = selectAll;
     if (selectAll) {
       this.coreService.selectedOrderTags.forEach(tag => {
         this.coreService.checkedOrderTags.add(tag.name);

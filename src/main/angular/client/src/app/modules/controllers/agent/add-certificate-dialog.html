@@ -22,7 +22,7 @@
         <input #agentId="ngModel" [(ngModel)]="certificateObj.agentId" autocomplete="off" class="form-control"
               name="agentId" placeholder="{{'encipherment.placeholder.certAlias' | translate}}" required type="text" readonly/>
         <div *ngIf="agentId.invalid && (agentId.dirty || agentId.touched)" class="text-danger help-block">
-          <div *ngIf="certificate.errors.required">
+          <div *ngIf="agentId.errors.required">
             <div translate>common.message.requiredError</div>
           </div>
         </div>

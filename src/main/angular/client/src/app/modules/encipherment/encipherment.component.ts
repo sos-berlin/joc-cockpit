@@ -27,6 +27,7 @@ export class AddEnciphermentModalComponent {
   comments: any = {};
   required = false;
   encipherment: any;
+  title: any;
 
   nodes = [];
   folderObj: any = {paths: []};
@@ -38,6 +39,7 @@ export class AddEnciphermentModalComponent {
   ngOnInit(): void {
     this.display = this.modalData.display;
     this.securityLevel = this.modalData.securityLevel;
+    this.title = this.modalData.title;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -366,6 +368,7 @@ export class EnciphermentComponent {
       nzContent: AddEnciphermentModalComponent,
       nzClassName: 'lg',
       nzData: {
+        title: 'addCertificate',
         securityLevel: this.securityLevel,
         display: this.preferences.auditLog,
       },
@@ -381,12 +384,13 @@ export class EnciphermentComponent {
     });
   }
 
-  updateCertificate(encipherment) {
+  updateCertificate(encipherment, title?) {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AddEnciphermentModalComponent,
       nzClassName: 'lg',
       nzData: {
+        title: title ? title : 'addCertificate',
         securityLevel: this.securityLevel,
         display: this.preferences.auditLog,
         encipherment: encipherment
