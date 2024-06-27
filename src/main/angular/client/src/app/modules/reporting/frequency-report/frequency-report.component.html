@@ -76,7 +76,7 @@
       <div class="col-md-12">
         <div [ngClass]="{'row m-t': !filter.showReport, 'box-body p-a-0 p-t': filter.showReport}">
           <ng-container *ngFor="let item of addCardItems; let i = index">
-            <div [hidden]="filter.showReport" *ngIf="item.data" class="col-xl-4 col-xxl-3 col-md-6 m-b-sm">
+            <div id="card-data" [hidden]="filter.showReport" *ngIf="item.data" class="col-xl-4 col-xxl-3 col-md-6 m-b-sm">
               <div class="card">
                 <div class="card-body">
                   <div class="right flex">

@@ -158,8 +158,8 @@ export class ReportComponent implements OnChanges, OnDestroy {
     {templateName: "JOBS_LONGEST_EXECUTION_TIMES", title: "reporting.templates.JOBS_LONGEST_EXECUTION_TIMES"},
     {templateName: "PERIODS_MOST_ORDER_EXECUTIONS", title: "reporting.templates.PERIODS_MOST_ORDER_EXECUTIONS"},
     {templateName: "PERIODS_MOST_JOB_EXECUTIONS", title: "reporting.templates.PERIODS_MOST_JOB_EXECUTIONS"},
-    {templateName: "JOBS_SUCCESSFUL_EXECUTIONS", title: "Top ${hits} jobs with ${sort} number of successfull executions"},
-    {templateName: "WORKFLOWS_SUCCESSFUL_EXECUTIONS", title: "Top ${hits} workflows with ${sort} number of successfull executions"}
+    {templateName: "JOBS_SUCCESSFUL_EXECUTIONS", title: "reporting.templates.JOBS_SUCCESSFUL_EXECUTIONS"},
+    {templateName: "WORKFLOWS_SUCCESSFUL_EXECUTIONS", title: "reporting.templates.WORKFLOWS_SUCCESSFUL_EXECUTIONS"}
   ];
   schedulerIds: any;
   frequencies = [

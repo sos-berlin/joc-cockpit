@@ -867,42 +867,49 @@ sort(type: string): void {
 
   async createReport() {
     this.loading = true;
-    // Get DOM elements
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
     const contentElement = this.elementRef.nativeElement.querySelector('#content');
-    const height = contentElement.clientHeight;
-
     const initialMaxHeightContent = contentElement.style.maxHeight;
-
-    // Set maxHeight to inherit for capturing full content
     contentElement.style.maxHeight = 'inherit';
+
     let scale = 1;
-    if (this.addCardItems.length > 48) {
-      scale = 3;
-    } else if (this.addCardItems.length > 24) {
-      scale = 2;
-    }
-    // Create canvas from HTML content
     const canvas = await html2canvas(contentElement, {
       scale: scale,
-      scrollY: -window.scrollY // Capture entire scrollable content
+      scrollY: -window.scrollY,
+      useCORS: true
     });
 
-    // Restore initial maxHeight values
     contentElement.style.maxHeight = initialMaxHeightContent;
 
-    // Create PDF
-    const pdf = new jsPDF();
-    const pageWidth = 210; // Width of A4 page in mm
-    const pageHeight = (height * pageWidth) / canvas.width; // Maintain aspect ratio
-    const imgHeight = (canvas.height * pageWidth) / canvas.width; // Adjusted height to match page height
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 10, pageWidth, imgHeight);
-    const textColor = '#CCCCCC';
+    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+
+
+    const pdf = new jsPDF({
+      orientation: 'p',
+      unit: 'px',
+      format: [imgWidth, imgHeight + 50]
+    });
+
+
+    const textColor = '#000000';
     pdf.setTextColor(textColor);
-    pdf.text(this.groupBy == 'template' ? this.selectedReport.template : this.selectedReport.path, 105, 8, {align: 'center'});
-    // Save PDF
+    pdf.text(this.groupBy == 'template' ? this.selectedReport.template : this.selectedReport.path, imgWidth / 2, 20, {align: 'center'});
+
+
+    pdf.addImage(imgData, 'JPEG', 0, 30, imgWidth, imgHeight);
+
+
     pdf.save('report.pdf');
     this.loading = false;
   }
+
+
+
+
 
   getTranslatedText(item: any): string {
     let templateKey = item.templateName ? item.templateName : item.template;

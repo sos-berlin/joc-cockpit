@@ -3920,6 +3920,7 @@ export class InventoryComponent {
       }
     });
     this.updateTagOrder();
+    this.coreService.setSortedTags(this.tags.map(tag => tag.name));
   }
 
   private updateTagOrder(): void {

@@ -58,6 +58,7 @@ export class CoreService {
   searchResults: any = {};
   numOfTags: any;
   windowProperties: any = ',scrollbars=1,resizable=1,status=0,toolbar=0,menubar=0,location=0toolbar=0';
+  private sortedTags: string[] = [];
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router, private toasterService: ToastrService,
               private clipboardService: ClipboardService, private translate: TranslateService, private popupService: PopupService) {
@@ -3330,4 +3331,11 @@ export class CoreService {
     return order.orderId;
   }
 
+  setSortedTags(tags: string[]): void {
+    this.sortedTags = tags;
+  }
+
+  getSortedTags(): string[] {
+    return this.sortedTags;
+  }
 }

@@ -83,7 +83,14 @@ export class GenerateReportComponent {
   }
 
   ngOnInit(): void {
+    this.applyFilters();
     this.getData();
+  }
+
+  private applyFilters(): void {
+    if (this.filters.filter.state) {
+      this.getDateRange({ state: this.filters.filter.state });
+    }
   }
 
   ngOnDestroy(): void {
@@ -312,22 +319,30 @@ export class GenerateReportComponent {
     const currentDate = new Date();
     let fromDate, toDate;
 
+    const getFirstDayOfMonth = (year, month) => {
+      return new Date(year, month, 1);
+    };
+
+    const getLastDayOfMonth = (year, month) => {
+      return new Date(year, month + 1, 0);
+    };
+
     switch (timePeriod.state) {
       case "All":
         fromDate = undefined;
         toDate = undefined;
         break;
       case "lastMonth":
-        fromDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-        toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+        fromDate = getFirstDayOfMonth(currentDate.getFullYear(), currentDate.getMonth() - 1);
+        toDate = getLastDayOfMonth(currentDate.getFullYear(), currentDate.getMonth() - 1);
         break;
       case "last3Months":
-        fromDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 3, 1);
-        toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+        fromDate = getFirstDayOfMonth(currentDate.getFullYear(), currentDate.getMonth() - 2);
+        toDate = getLastDayOfMonth(currentDate.getFullYear(), currentDate.getMonth() - 1);
         break;
       case "last6Months":
-        fromDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 6, 1);
-        toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+        fromDate = getFirstDayOfMonth(currentDate.getFullYear(), currentDate.getMonth() - 5);
+        toDate = getLastDayOfMonth(currentDate.getFullYear(), currentDate.getMonth() - 1);
         break;
       case "lastYear":
         fromDate = new Date(currentDate.getFullYear() - 1, 0, 1);
@@ -338,14 +353,16 @@ export class GenerateReportComponent {
         toDate = null;
         break;
     }
+
     if (fromDate != undefined && toDate != undefined) {
       this.fromDate = fromDate.toISOString().split('T')[0];
-      this.toDate = toDate.toISOString().split('T')[0]
+      this.toDate = toDate.toISOString().split('T')[0];
     } else {
       this.fromDate = fromDate;
       this.toDate = toDate;
     }
   }
+
 
   checkAll(value: boolean): void {
     const filteredData = this.getCurrentData(this.filteredData, this.filters.filter);

@@ -1715,6 +1715,10 @@ export class OrderOverviewComponent {
     } else {
       this.coreService.checkedTags.clear();
     }
+    const sortedTagNames = this.coreService.getSortedTags();
+    this.coreService.selectedTags.sort((a, b) => {
+      return sortedTagNames.indexOf(a.name) - sortedTagNames.indexOf(b.name);
+    });
     this.updateWorkflowsAndOrdersByTags();
   }
 
