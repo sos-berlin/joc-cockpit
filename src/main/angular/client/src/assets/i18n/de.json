@@ -252,7 +252,7 @@
     "button.exportAgentConfiguration": "Agenten Konfiguration exportieren",
     "button.importAgentConfiguration": "Agenten Konfiguration importieren",
     "button.confirmNodeLoss": "Verlust einer Director Agent Instanz bestätigen",
-    "button.addEnciphermentCertificate": "Zertifikat hinzufügen",
+    "button.addEnciphermentCertificate": "Verschlüsselungszertifikat hinzufügen",
     "message.dropHereToDetach": "Hierher ziehen, um Subagenten zu entfernen",
     "message.noClusterFound": "Keinen Cluster gefunden",
     "message.clickHereToAdd": "Hier klicken zum Hinzufügen",
@@ -368,7 +368,7 @@
     "label.permissions": "Berechtigungen",
     "label.manageIdentityServices": "Identitätsdienste verwalten",
     "label.clusterAgents": "Cluster Agenten",
-    "label.manageEnciphermentKey": "Chiffrierschlüssel verwalten"
+    "label.manageEnciphermentKey": "Verschlüsselungsschlüssel verwalten"
   },
   "configuration": {
     "tab.inventory": "Inventar",
@@ -404,8 +404,8 @@
     "tooltip.backupTitle": "Beschriftung der Kopfzeile der Sekundären Controller Instanz in der ÜBERSICHT Ansicht"
   },
   "encipherment": {
-    "label.addCertificate": "Zertifikat hinzufügen",
-    "label.updateCertificate": "Update Encipherment Certificate",
+    "label.addCertificate": "Verschlüsselungszertifikat hinzufügen",
+    "label.updateCertificate": "Verschlüsselungszertifikat aktualisieren",
     "label.agentId": "Agenten-Kennung",
     "label.certAlias": "Alias des Zertifikats",
     "label.certificate": "Zertifikat",
@@ -1502,7 +1502,7 @@
     "button.manageControllersAndAgents": "Controller/Agenten verwalten",
     "button.manageDeployment": "Ausrollen verwalten",
     "button.logOut": "Abmelden",
-    "button.manageEnciphermentKey": "Chiffrierschlüssel verwalten"
+    "button.manageEnciphermentKey": "Verschlüsselungsschlüssel verwalten"
   },
   "history": {
     "label.all": "Alle",
@@ -2992,7 +2992,7 @@
       "max_pool_size": "Die maximale Größe des Verbindungspools gibt die Anzahl der verwendeten Datenbankverbindungen an. Für Umgebungen, in denen eine größere Anzahl von Einträgen aus den täglichen Job-Pprotokollen zu bereinigen ist, kann es von Vorteil sein, diesen Wert auf beispielsweise 10 zu erhöhen. Anwender müssen prüfen, ob ihr DBMS die Verwendung einer höheren Anzahl von Verbindungen zulässt.",
       "profile_age": "Benennt die maximale Anzahl von Tagen, die ein Profil nicht durch ein Anwenderkonto verwendet wurde, bevor es bereinigt wird.",
       "failed_login_history_age": "Gibt die maximale Anzahl von Tagen an, für die Einträge in der Historie der fehlgeschlagenen Anmeldungen aufbewahrt werden, bevor sie bereinigt werden.",
-      "reporting_age": "Specifies the retention period of the Reports and Report Run History. Any report entries older than the value specified will be purged."
+      "reporting_age": "Legt den Aufbewahrungszeitraum für Berichte und die Berichtslaufhistorie fest. Alle Berichtseinträge, die älter als der angegebene Wert sind, werden gelöscht."
     },
     "dailyplan": {
       "time_zone": "Benennt die Zeitzone der Startzeit des Tagesplandienstes und der Periode des Tagesplans.",
@@ -3607,8 +3607,8 @@
     "label.removeAllTags": "Alle Schlagwörter entfernen",
     "label.childrenMap": "Map Variable",
     "label.filtersOrdersAsWell": "Anzeige der Aufträge filtern",
-    "label.ascending": "Ascending",
-    "label.descending": "Descending",
+    "label.ascending": "Aufsteigend",
+    "label.descending": "Absteigend",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",

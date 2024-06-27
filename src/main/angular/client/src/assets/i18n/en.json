@@ -252,7 +252,7 @@
     "button.exportAgentConfiguration": "Export Agent Configuration",
     "button.importAgentConfiguration": "Import Agent Configuration",
     "button.confirmNodeLoss": "Confirm loss of a Director Agent instance",
-    "button.addEnciphermentCertificate": "Add Certificate",
+    "button.addEnciphermentCertificate": "Add Encryption Certificate",
     "message.dropHereToDetach": "Drop here to remove Subagent",
     "message.noClusterFound": "No Cluster Found",
     "message.clickHereToAdd": "Click here to add",
@@ -368,7 +368,7 @@
     "label.permissions": "Permissions",
     "label.manageIdentityServices": "Manage Identity Services",
     "label.clusterAgents": "Cluster Agents",
-    "label.manageEnciphermentKey": "Manage Encipherment Keys"
+    "label.manageEnciphermentKey": "Manage Encryption Keys"
   },
   "configuration": {
     "tab.inventory": "Inventory",
@@ -404,15 +404,15 @@
     "tooltip.backupTitle": "Caption of the Secondary Controller instance"
   },
   "encipherment": {
-    "label.addCertificate": "Add Encipherment Certificate",
-    "label.updateCertificate": "Update Encipherment Certificate",
+    "label.addCertificate": "Add Encryption Certificate",
+    "label.updateCertificate": "Update Encryption Certificate",
     "label.agentId": "Agent ID",
     "label.certAlias": "Certificate Alias",
     "label.certificate": "Certificate",
     "label.certificates": "Certificates",
     "label.privateKeyPath": "Path to Private Key File",
     "label.jobResourceFolder": "Job Resource Folder",
-    "label.importCertificate": "Import Encipherment Certificate",
+    "label.importCertificate": "Import Encryption Certificate",
     "label.encrypt": "Encrypted Value",
     "placeholder.agentId": "Agent ID",
     "placeholder.certAlias": "Certificate Alias Name",
@@ -1502,7 +1502,7 @@
     "button.manageControllersAndAgents": "Manage Controllers/Agents",
     "button.manageDeployment": "Manage Deployments",
     "button.logOut": "Log Out",
-    "button.manageEnciphermentKey": "Manage Encipherment Keys"
+    "button.manageEnciphermentKey": "Manage Encryption Keys"
   },
   "history": {
     "label.all": "All",
@@ -2632,7 +2632,7 @@
       "label.controller": "Controller",
       "label.managePositions": "manage positions",
       "label.confirm": "confirm",
-      "label.encipherment": "Encipherment",
+      "label.encipherment": "Encryption",
       "label.encrypt": "encrypt"
     },
     "keyManagement": {

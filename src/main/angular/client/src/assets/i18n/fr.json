@@ -368,7 +368,7 @@
     "label.permissions": "Permissions",
     "label.manageIdentityServices": "Gérer les Services d'Identité",
     "label.clusterAgents": "Agents Cluster",
-    "label.manageEnciphermentKey": "Gérer les Clefs de Chiffrement"
+    "label.manageEnciphermentKey": "Gérer les Clefs de Cryptage"
   },
   "configuration": {
     "tab.inventory": "Inventaire",
@@ -404,23 +404,23 @@
     "tooltip.backupTitle": "Légende du Contrôleur Secondaire dans la vue TABLEAU DE BORD"
   },
   "encipherment": {
-    "label.addCertificate": "Ajouter un Certificat de Chiffrement",
-    "label.updateCertificate": "Update Encipherment Certificate",
+    "label.addCertificate": "Ajouter un Certificat de Cryptage",
+    "label.updateCertificate": "Actualisier le Certificat de Cryptage",
     "label.agentId": "ID Agent",
     "label.certAlias": "Alias de Certificat",
     "label.certificate": "Certificat",
     "label.certificates": "Certificats",
     "label.privateKeyPath": "Chemin d'accès de la Clé Privée",
     "label.jobResourceFolder": "Dossier de la Ressource de Tâches",
-    "label.importCertificate": "Importer Certificat de Chiffrement",
-    "label.encrypt": "Valeur chiffrée",
+    "label.importCertificate": "Importer Certificat de Cryptage",
+    "label.encrypt": "Valeur cryptée",
     "placeholder.agentId": "ID Agent",
     "placeholder.certAlias": "Alias de Certificat",
     "placeholder.certificate": "Coller le Certificat ici",
     "placeholder.privateKeyPath": "Chemin d'accès de la Clé Privée",
     "placeholder.jobResourceFolder": "Sélectionner le dossier de la Ressource de Tâches",
-    "placeholder.encrypt": "Valeur chiffrée",
-    "button.encrypt": "Chiffrer",
+    "placeholder.encrypt": "Valeur cryptée",
+    "button.encrypt": "Encrypter",
     "button.addNewCertificate": "Ajouter Certificat",
     "button.importCertificate": "Importer Certificat",
     "button.deleteCertificate": "Supprimer Certificat",
@@ -1502,7 +1502,7 @@
     "button.manageControllersAndAgents": "Gérer Contrôleurs/Agents",
     "button.manageDeployment": "Gérer le Deploiement",
     "button.logOut": "Se Déconnecter",
-    "button.manageEnciphermentKey": "Gérer les Clefs de Chiffrement"
+    "button.manageEnciphermentKey": "Gérer les Clefs de Cryptage"
   },
   "history": {
     "label.all": "Tous",
@@ -2632,8 +2632,8 @@
       "label.controller": "Contrôleur",
       "label.managePositions": "gérer les positions",
       "label.confirm": "confirmer",
-      "label.encipherment": "Enchiffrement",
-      "label.encrypt": "enchiffrer"
+      "label.encipherment": "Cryptage",
+      "label.encrypt": "encrypter"
     },
     "keyManagement": {
       "label.keysAndCertificates": "Clés et Certificats",
@@ -2992,7 +2992,7 @@
       "max_pool_size": "La taille maximale du pool de connexions spécifie le nombre de connexions à la base de données utilisées. Pour les environnements ayant un grand nombre d'entrées de l'historique des tâches quotidiennes à purger, il peut être avantageux d'augmenter cette valeur, par exemple à 10. Les utilisateurs doivent vérifier que leur SGBD permet l'utilisation d'un plus grand nombre de connexions.",
       "profile_age": "Spécifie le nombre maximum de jours pendant lesquels un profil n'a pas été utilisé depuis la connexion par un compte utilisateur avant qu'il ne soit purgé.",
       "failed_login_history_age": "Spécifie le nombre maximum de jours pendant lesquels les entrées de l'historique des connexions échouées sont conservées avant d'être purgées.",
-      "reporting_age": "Specifies the retention period of the Reports and Report Run History. Any report entries older than the value specified will be purged."
+      "reporting_age": "Spécifie la période de conservation des rapports et de l'historique d'exécution des rapports. Toutes les entrées de rapport antérieures à la valeur spécifiée seront supprimées."
     },
     "dailyplan": {
       "time_zone": "Spécifie le fuseau horaire qui est appliqué à l'heure de démarrage du service du Plan Quotidien et à la période du Plan Quotidien.",
@@ -3607,8 +3607,8 @@
     "label.selectAllTags": "Sélectionner tous les Mots-clés",
     "label.removeAllTags": "Supprimer tous les Mots-clés",
     "label.filtersOrdersAsWell": "Filtrer l'affichage des Ordres",
-    "label.ascending": "Ascending",
-    "label.descending": "Descending",
+    "label.ascending": "Ascendant",
+    "label.descending": "Descendant",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
