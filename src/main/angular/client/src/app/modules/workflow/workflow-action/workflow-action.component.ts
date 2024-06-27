@@ -9,6 +9,7 @@ import {AuthService} from '../../../components/guard';
 import {WorkflowService} from '../../../services/workflow.service';
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
+import { EncryptArgumentModalComponent } from '../../configuration/inventory/inventory.component';
 
 @Component({
   selector: 'app-show-dependency',
@@ -1176,6 +1177,30 @@ export class AddOrderModalComponent {
         this.isUnique = false;
       }
     }
+  }
+
+  encrpytValue(currentVariable, typeArg){
+    let selectedAgent  = [];
+    const argu = currentVariable;
+    const type = typeArg;
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EncryptArgumentModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        argu,
+        selectedAgent,
+        type
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        // this.saveJSON();
+      }
+    });
   }
 }
 

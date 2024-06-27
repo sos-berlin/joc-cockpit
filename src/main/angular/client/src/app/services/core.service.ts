@@ -1380,6 +1380,8 @@ export class CoreService {
   navToInventoryTab(path: string, type: string): void {
     const config = this.getConfigurationTab();
     config.inventory.isTrash = false;
+    config.inventory.isTag = false;
+    config.inventory.selectedIndex = 0;
     config.inventory.expand_to = [];
     config.inventory.selectedObj = {
       name: path.substring(path.lastIndexOf('/') + 1),
@@ -3322,7 +3324,7 @@ export class CoreService {
       const orderName = match[4] || '';
       const branch = match[5] || '';
       const tagsString = order.tags.slice(0, this.numOfTags).map(tag => `<span class="tag-oval">${tag}</span>`).join('');
-      
+
       return `${prefix}${orderName} ${tagsString}${branch}`;
     }
     return order.orderId;

@@ -104,10 +104,11 @@
                       <div translate>common.message.requiredError</div>
                     </div>
                   </div>
-                  <div
-                    *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1"
-                    class="pos-abt r-t-n-28">
-                    <a><i (click)="removeVariableFromList(i, listVariables.actualList)"
+                  <div class="pos-abt r-t-n-28 add-order-encrypt">
+                    <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encrpytValue(argument, 'job')" class="m-t-sm text-hover-color"
+                      nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                    <a *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1"
+                    ><i (click)="removeVariableFromList(i, listVariables.actualList)"
                           class="fa fa-times m-t-sm text-muted"></i></a>
                   </div>
                 </div>
@@ -226,10 +227,10 @@
                       <div translate>common.message.requiredError</div>
                     </div>
                   </div>
-                  <div
-                    *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1"
-                    class="pos-abt r-t-n-28">
-                    <a><i (click)="removeVariableFromList(i, listVariables.actualMap)"
+                  <div class="pos-abt r-t-n-28 add-order-encrypt">
+                    <a  *ngIf="argument.name && argument.type === 'String'"><i (click)="encrpytValue(argument, 'job')"
+                      class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                    <a *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1"><i (click)="removeVariableFromList(i, listVariables.actualMap)"
                           class="fa fa-times m-t-sm text-muted"></i></a>
                   </div>
                 </div>
@@ -585,8 +586,10 @@
                               <div *ngIf="value.errors['required']" translate>common.message.requiredError</div>
                               <div *ngIf="value.errors['invalidFacet']" translate>common.message.invalid</div>
                             </div>
-                            <div *ngIf="!variable.isRequired" class="pos-abt r-t-n-28">
-                              <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
+                            <div class="pos-abt r-t-n-28 job-template-encrypt">
+                              <a *ngIf="variable.name && variable.type === 'String'"><i (click)="encrpytValue(variable, 'job')"
+                                class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                              <a *ngIf="!variable.isRequired" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
                                 (click)="removeVariable(i, variableSet)" class="fa fa-trash m-t-sm text-hover-color"></i></a>
                             </div>
                           </div>

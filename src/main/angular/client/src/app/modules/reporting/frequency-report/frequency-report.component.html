@@ -4,26 +4,6 @@
     <span *ngIf="groupBy !== 'template'" class="card-title">{{selectedReport.path}}</span>
 
     <div class="inline pull-right text-center" *ngIf="!filter.showReport">
-      <div class="btn-group dropdown">
-        <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
-                nzTrigger="click">
-          <span translate>common.label.sortBy</span>
-          <span class="text-primary">
-            <span>
-              {{filter.sortBy | translate}}
-              <i *ngIf="!filter.reverse" class="fa fa-caret-up"></i>
-              <i *ngIf="filter.reverse" class="fa fa-caret-down"></i>
-            </span>
-          </span>
-        </button>
-        <nz-dropdown-menu #sortBy="nzDropdownMenu">
-          <ul nz-menu >
-            <li *ngFor="let item of selectedFrequencies" (click)="sort(item)" nz-menu-item>
-              <a translate>{{item}}</a>
-            </li>
-          </ul>
-        </nz-dropdown-menu>
-      </div>
       <button [nzDropdownMenu]="filteration" [nzPlacement]="'bottomRight'"
               class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
               type="button">monitor.button.filterBy
@@ -34,14 +14,14 @@
           <span>{{ filteredFrequency | translate}}</span>
         </span>
       </button>
-      <span *ngIf="filteredFrequency" (click)="filterBy({})" class="p-l-xs cur-point"> <i
+      <span *ngIf="filteredFrequency" (click)="filterBy()" class="p-l-xs cur-point"> <i
         class="fa fa-times-circle-o fa-lg" aria-hidden="true"></i></span>
 
       <nz-dropdown-menu #filteration="nzDropdownMenu">
         <ul nz-menu>
-          <ng-container *ngFor="let item of frequencies">
+          <ng-container *ngFor="let item of selectedFrequencies">
             <li nz-menu-item (click)="filterBy(item)">
-              <label>{{ item.name | translate }}</label>
+              <label>{{ item | translate }}</label>
             </li>
           </ng-container>
         </ul>
@@ -66,7 +46,7 @@
           <ng-container *ngFor="let item of multiReports; let i = index">
             <li nz-menu-item *ngIf="item.data">
               <label nz-checkbox [(ngModel)]="item.checked" (ngModelChange)="onCardChange(item.id)">
-                {{ '#' + (i + 1) + '-' + item.dateFrom  + ' to ' + item.dateTo }}
+                {{ '#' + (i + 1) + ': ' + item.dateFrom  + ' to ' + item.dateTo }}
               </label>
             </li>
           </ng-container>

@@ -11,6 +11,7 @@ import {CalendarService} from '../../../../services/calendar.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {ValueEditorComponent} from "../../../../components/value-editor/value.component";
 import { WorkflowService } from 'src/app/services/workflow.service';
+import { EncryptArgumentModalComponent } from '../inventory.component';
 
 @Component({
   selector: 'app-schedule',
@@ -1787,5 +1788,29 @@ export class ScheduleComponent {
         this.isUnique = false;
       }
     }
+  }
+
+  encrpytValue(currentVariable, typeArg){
+    let selectedAgent  = [];
+    const argu = currentVariable;
+    const type = typeArg;
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EncryptArgumentModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        argu,
+        selectedAgent,
+        type
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.saveJSON();
+      }
+    });
   }
 }

@@ -3261,7 +3261,6 @@ export class EncryptArgumentModalComponent {
 
   readonly modalData: any = inject(NZ_MODAL_DATA);
   submitted: boolean = false;
-  encryptSubmiited: boolean = false;
   argu: any;
   type:any;
   selectedAgent = [];
@@ -3307,8 +3306,11 @@ export class EncryptArgumentModalComponent {
     this.selectedCert = '';
   }
 
-  encrypt(){
-    this.encryptSubmiited = true;
+
+
+  onSubmit() {
+    this.submitted = true;
+
     let submittedVal: any = {};
 
     if(this.type === 'job'){
@@ -3325,20 +3327,15 @@ export class EncryptArgumentModalComponent {
     this.coreService.post('encipherment/encrypt', submittedVal).subscribe({
       next: (res: any) => {
         this.encryptedValue = res.encryptedValue;
-        this.encryptSubmiited = false;
-      }, error: () => { this.encryptSubmiited = false;
+        if(this.type === 'job'){
+          this.argu.value = this.encryptedValue;
+        }else if(this.type === 'jobTemplate'){
+          this.argu.value.default = this.encryptedValue;
+        }
+        this.activeModal.close(this.argu);
+      }, error: () => { this.submitted = false;
       }
     });
-  }
-
-  onSubmit() {
-    this.submitted = true;
-    if(this.type === 'job'){
-      this.argu.value = this.encryptedValue;
-    }else if(this.type === 'jobTemplate'){
-      this.argu.value.default = this.encryptedValue;
-    }
-    this.activeModal.close(this.argu);
   }
 
   cancel(): void {
@@ -3911,16 +3908,7 @@ export class InventoryComponent {
 
   drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.tags, event.previousIndex, event.currentIndex);
-    let comments = {};
-    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
-      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        comments = {comment: translatedValue};
-      });
-    }
-    this.coreService.post('tags/ordering', {
-      tags: this.tags.map(tag => tag.name),
-      auditLog: comments
-    }).subscribe()
+    this.updateTagOrder();
   }
 
   sortTags(order: string): void {
@@ -3931,6 +3919,20 @@ export class InventoryComponent {
         return b.name.localeCompare(a.name);
       }
     });
+    this.updateTagOrder();
+  }
+
+  private updateTagOrder(): void {
+    let comments = {};
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+        comments = { comment: translatedValue };
+      });
+    }
+    this.coreService.post('tags/ordering', {
+      tags: this.tags.map(tag => tag.name),
+      auditLog: comments
+    }).subscribe();
   }
 
 

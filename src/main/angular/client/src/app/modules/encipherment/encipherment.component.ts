@@ -54,7 +54,19 @@ export class AddEnciphermentModalComponent {
       }
     }
     this.getJobResourceFolderTree();
+    this.loadDeployableInfo();
   }
+
+  private loadDeployableInfo(): void {
+    this.coreService.post('inventory/deployable', {
+      path: this.certificateObj.certAlias,
+      objectType: "JOBRESOURCE",
+    }).subscribe(res => {
+      const folderPath = res.deployable.folder;
+      this.certificateObj.jobResourceFolder = folderPath;
+    });
+  }
+
 
   private getJobResourceFolderTree(): void {
     this.coreService.post('tree', {
@@ -84,7 +96,7 @@ export class AddEnciphermentModalComponent {
     if (this.comments.ticketLink) {
       auditLog.ticketLink = this.comments.ticketLink;
     }
-    if(auditLog.comment){
+    if (auditLog.comment) {
       this.certificateObj.auditLog = auditLog;
     }
     this.coreService.post('encipherment/certificate/store', this.certificateObj).subscribe({
@@ -171,7 +183,6 @@ export class ImportEnciphermentModalComponent {
     return false;
   };
 
-  // CALLBACKS
   onFileSelected(event: any): void {
     const self = this;
     for (let i = 0; i < event.length; i++) {
@@ -180,7 +191,6 @@ export class ImportEnciphermentModalComponent {
       reader.readAsText(item, 'UTF-8');
       reader.onload = onLoadFile;
       function onLoadFile(_event) {
-
         try {
           const data = _event.target.result;
           if (typeof data === 'string') {
@@ -225,7 +235,7 @@ export class ImportEnciphermentModalComponent {
 
   private upload(file: any) {
     let URL: string;
-    if(this.type === 'encipherment') {
+    if (this.type === 'encipherment') {
       URL = 'encipherment/certificate/import';
     }
     const formData = new FormData();
@@ -241,7 +251,7 @@ export class ImportEnciphermentModalComponent {
     }
     if (this.type === 'encipherment') {
       formData.append('certAlias', this.certificateObj.certAlias);
-      if(this.certificateObj.privateKeyPath){
+      if (this.certificateObj.privateKeyPath) {
         formData.append('privateKeyPath', this.certificateObj.privateKeyPath);
       }
       formData.append('jobResourceFolder', this.certificateObj.jobResourceFolder);
@@ -288,7 +298,6 @@ export class ImportEnciphermentModalComponent {
   templateUrl: './update-dialog.html',
 })
 export class EnciphermentUpdateKeyComponent {
-
   readonly modalData: any = inject(NZ_MODAL_DATA);
   data: any;
 
@@ -306,7 +315,6 @@ export class EnciphermentUpdateKeyComponent {
   templateUrl: './encipherment.component.html',
 })
 export class EnciphermentComponent {
-
   permission: any = {};
   isJOCActive = false;
 
@@ -340,8 +348,6 @@ export class EnciphermentComponent {
     }
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
   }
-
-  /* ----------------------Encipherment Certificates--------------------- */
 
   getEnciphermentCertificate(){
     let certAliasesObj = {
@@ -523,5 +529,4 @@ export class EnciphermentComponent {
       if (result) {}
     });
   }
-
 }

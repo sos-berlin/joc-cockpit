@@ -45,28 +45,9 @@
           required rows="10"></textarea>
       </div>
     </div>
-    <div class="form-group row" *ngIf="encryptedValue">
-      <div class="col-md-4 col-lg-4">
-        <label class="form-control-label" translate>encipherment.label.encrypt</label>
-      </div>
-      <div class="col-md-8 col-lg-8">
-        <textarea [(ngModel)]="encryptedValue" autocomplete="false" class="form-control"
-          name="encryptedValue" placeholder="{{'encipherment.placeholder.encrypt' | translate}}"
-          required rows="5"></textarea>
-      </div>
-    </div>
-    <div class="form-group row">
-      <div class="col-md-4 col-lg-4"></div>
-      <div class="col-md-8 col-lg-8">
-        <button (click)="encrypt()" class="btn btn-primary btn-sm" translate type="button" [disabled]="!selectedCert && !certificate">
-          <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-          {{'encipherment.button.encrypt' | translate}}
-        </button>
-      </div>
-    </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary btn-sm" type="submit"  [disabled]="!encryptedValue">
+    <button class="btn btn-primary btn-sm" type="submit" [disabled]="!selectedCert && !certificate">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

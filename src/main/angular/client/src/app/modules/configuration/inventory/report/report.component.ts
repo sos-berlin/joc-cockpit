@@ -745,7 +745,6 @@ export class ReportComponent implements OnChanges, OnDestroy {
 
       if (!unit || from === null || count === null) {
         if (!isThisQuarterOrYear) {
-          // Store original absolute values only if conversion fails and it's not 'This Quarter'
           this.originalAbsoluteValues.monthFrom = monthFrom;
           this.originalAbsoluteValues.monthTo = monthTo;
           this.units.name = '';
@@ -763,7 +762,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
       this.saveRelativeInterval();
     } else if (this.isInterval === 'absolute') {
       // If the original values are empty, set them from the current configuration
-      if (this.originalAbsoluteValues.monthFrom && this.originalAbsoluteValues.monthTo) {
+      if (this.originalAbsoluteValues.monthFrom || this.originalAbsoluteValues.monthTo) {
         this.report.configuration.monthFrom = this.originalAbsoluteValues.monthFrom;
         this.report.configuration.monthTo = this.originalAbsoluteValues.monthTo;
       }

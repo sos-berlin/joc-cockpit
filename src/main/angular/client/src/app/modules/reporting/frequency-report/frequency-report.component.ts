@@ -816,19 +816,19 @@ removeCard(cardId: any): void {
     }
   }
 
-  sort(type: string): void {
-    this.filter.reverse = !this.filter.reverse;
-    this.filter.sortBy = type;
+sort(type: string): void {
+  this.filter.reverse = !this.filter.reverse;
+  this.filter.sortBy = type;
 
-    const compare = (a: any, b: any): number => {
-      if (a.frequency < b.frequency) {
-        return -1;
-      } else if (a.frequency > b.frequency) {
-        return 1;
-      } else {
-        return 0;
-      }
-    };
+  const compare = (a: any, b: any): number => {
+    if (a[type] < b[type]) {
+      return this.filter.reverse ? 1 : -1;
+    } else if (a[type] > b[type]) {
+      return this.filter.reverse ? -1 : 1;
+    } else {
+      return 0;
+    }
+  };
 
     this.addCardItems = this.addCardItems.sort(compare);
     if (this.filter.reverse) {
@@ -837,10 +837,11 @@ removeCard(cardId: any): void {
   }
 
 
-  filterBy(data): void {
-    this.filteredFrequency = data.name;
+  filterBy(data?): void {
+
+    this.filteredFrequency = data;
     this.addCardItems = this.multiReports.filter(item => {
-      return (item.frequency === data.name || !data.name) && item.checked;
+      return (item.frequency === data || !data) && item.checked;
     });
     this.destroyElements()
     setTimeout(() => {
