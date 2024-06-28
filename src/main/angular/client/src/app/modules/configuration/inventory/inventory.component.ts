@@ -3254,94 +3254,252 @@ export class CreateFolderModalComponent {
 }
 
 @Component({
+  selector: 'app-show-agents-assigned',
+  templateUrl: './show-agents-dialog.html'
+})
+export class ShowAgentsModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+
+  selectedCert: any
+  constructor(private activeModal: NzModalRef, public coreService: CoreService) {}
+
+  ngOnInit(): void {
+    this.selectedCert = this.modalData.selectedCert;
+    this.getAssignedAgents();
+  }
+  getAssignedAgents() {
+    let certAliases = { certAliases: [this.selectedCert] };
+
+    this.coreService.post('/encipherment/assignment', certAliases).subscribe({
+      next: (res: any) => {
+        console.log(res,">>")
+      },
+      error: () => {},
+    });
+  }
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+
+  onSubmit(): void {
+
+  }
+}
+
+@Component({
   selector: 'app-encrpyt-argument-template',
   templateUrl: './encrypt-argument-dialog.html'
 })
 export class EncryptArgumentModalComponent {
-
   readonly modalData: any = inject(NZ_MODAL_DATA);
   submitted: boolean = false;
   argu: any;
-  type:any;
+  type: any;
   selectedAgent = [];
   certificateList: any = [];
   selectedCert: string = '';
   certificate: string = '';
   encryptedValue: string = '';
+  isBulkOperation: boolean = false;
 
-  constructor(private activeModal: NzModalRef, public coreService: CoreService){
-
-  }
+  constructor(private activeModal: NzModalRef, public coreService: CoreService, private modal: NzModalService) {}
 
   ngOnInit(): void {
     this.type = this.modalData.type;
     this.argu = this.modalData.argu;
     this.selectedAgent = this.modalData.selectedAgent;
+    this.isBulkOperation = this.modalData.isBulkOperation || false;
     this.getCertificates();
   }
 
-  getCertificates(){
+  getCertificates() {
     let certAliases = {
       agentIds: [],
-      // certAliases: []
     };
-    if(this.selectedAgent.length > 0){
+    if (this.selectedAgent.length > 0) {
       certAliases.agentIds = this.selectedAgent;
     }
     this.coreService.post('encipherment/assignment', certAliases).subscribe({
       next: (res: any) => {
         this.certificateList = res.mappings;
-      }, error: () => {
-      }
+      },
+      error: () => {},
     });
   }
 
-  changeCertificate(event){
-    if(this.selectedCert === event){
+  changeCertificate(event) {
+    if (this.selectedCert === event) {
       this.certificate = '';
     }
   }
 
-  onFocusCertificate(){
+  onFocusCertificate() {
     this.selectedCert = '';
   }
 
-
+  showAssignedAgents(selectedCert) {
+    console.log(">>",selectedCert)
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ShowAgentsModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        selectedCert
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+      }
+    });
+  }
 
   onSubmit() {
     this.submitted = true;
 
-    let submittedVal: any = {};
+    if (this.isBulkOperation) {
+      const filteredArgs = this.argu.filter((arg) => {
+        if (this.type === 'job') {
+          return arg.value && arg.value !== '';
+        } else if (this.type === 'jobTemplate') {
+          if (arg.value.type === 'List' || arg.value.type === 'Map') {
+            return arg.value.listParameters.some(param => param.value && param.value.default && param.value.default !== '');
+          }
+          return arg.value.default && arg.value.default !== '';
+        }
+        return false;
+      });
 
-    if(this.type === 'job'){
-      submittedVal.toEncrypt = this.argu.value;
-    }else if(this.type === 'jobTemplate'){
-      submittedVal.toEncrypt = this.argu.value.default;
+      if (filteredArgs.length === 0) {
+        this.activeModal.close(false); // Deny encryption if no valid values
+        return;
+      }
+
+      this.processBulkEncryption(filteredArgs);
+    } else {
+      let submittedVal: any = {};
+      if (this.type === 'job') {
+        submittedVal.toEncrypt = this.argu.value;
+      } else if (this.type === 'jobTemplate') {
+        submittedVal.toEncrypt = this.argu.value.default;
+      }
+
+      if (this.selectedCert) {
+        submittedVal.certAlias = this.selectedCert;
+      }
+      if (this.certificate) {
+        submittedVal.certificate = this.certificate;
+      }
+
+      this.coreService.post('encipherment/encrypt', submittedVal).subscribe({
+        next: (res: any) => {
+          this.encryptedValue = res.encryptedValue;
+          if (this.type === 'job') {
+            this.argu.value = this.encryptedValue;
+          } else if (this.type === 'jobTemplate') {
+            this.argu.value.default = this.encryptedValue;
+          }
+          this.activeModal.close(this.argu);
+        },
+        error: () => {
+          this.submitted = false;
+        },
+      });
     }
-    if(this.selectedCert){
+  }
+
+  processBulkEncryption(args: any[], index: number = 0) {
+    if (index >= args.length) {
+      this.activeModal.close(this.argu);
+      return;
+    }
+
+    let submittedVal: any = {};
+    if (this.type === 'job') {
+      submittedVal.toEncrypt = args[index].value;
+    } else if (this.type === 'jobTemplate') {
+      if (args[index].value.type === 'List' || args[index].value.type === 'Map') {
+        // Encrypt each list or map parameter separately
+        this.processListOrMapEncryption(args[index], () => {
+          this.processBulkEncryption(args, index + 1);
+        });
+        return;
+      } else {
+        submittedVal.toEncrypt = args[index].value.default;
+      }
+    }
+
+    if (this.selectedCert) {
       submittedVal.certAlias = this.selectedCert;
     }
-    if(this.certificate){
-      submittedVal.certificate = this.certificate
+    if (this.certificate) {
+      submittedVal.certificate = this.certificate;
     }
+
     this.coreService.post('encipherment/encrypt', submittedVal).subscribe({
       next: (res: any) => {
-        this.encryptedValue = res.encryptedValue;
-        if(this.type === 'job'){
-          this.argu.value = this.encryptedValue;
-        }else if(this.type === 'jobTemplate'){
-          this.argu.value.default = this.encryptedValue;
+        if (this.type === 'job') {
+          this.argu[index].value = res.encryptedValue;
+        } else if (this.type === 'jobTemplate') {
+          this.argu[index].value.default = res.encryptedValue;
         }
-        this.activeModal.close(this.argu);
-      }, error: () => { this.submitted = false;
-      }
+        this.processBulkEncryption(args, index + 1);
+      },
+      error: () => {
+        this.submitted = false;
+      },
     });
+  }
+
+  processListOrMapEncryption(arg: any, callback: Function) {
+    const listOrMapParameters = arg.value.listParameters;
+    const encryptedParams: any[] = [];
+
+    const encryptParameter = (paramIndex: number) => {
+      if (paramIndex >= listOrMapParameters.length) {
+        // Update the original argument with encrypted values
+        listOrMapParameters.forEach((param, index) => {
+          param.value.default = encryptedParams[index].encryptedValue;
+        });
+        callback();
+        return;
+      }
+
+      let submittedVal: any = { toEncrypt: listOrMapParameters[paramIndex].value.default };
+
+      if (this.selectedCert) {
+        submittedVal.certAlias = this.selectedCert;
+      }
+      if (this.certificate) {
+        submittedVal.certificate = this.certificate;
+      }
+
+      this.coreService.post('encipherment/encrypt', submittedVal).subscribe({
+        next: (res: any) => {
+          encryptedParams.push(res);
+          encryptParameter(paramIndex + 1);
+        },
+        error: () => {
+          this.submitted = false;
+        },
+      });
+    };
+
+    encryptParameter(0);
   }
 
   cancel(): void {
     this.activeModal.destroy();
   }
 }
+
+
+
+
+
+
 @Component({
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',

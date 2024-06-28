@@ -2607,7 +2607,7 @@ export class JobComponent {
     this.updateFromJobTemplateFn.emit(this.selectedNode)
   }
 
-  encrpytValue(argument, jobName){
+  encryptValue(argument, jobName){
     let selectedAgent  = [];
     selectedAgent = this.getSelectedAgentIds(jobName);
     setTimeout(() => {
@@ -2633,6 +2633,7 @@ export class JobComponent {
       });
     }, 1000);
   }
+
 
   getSelectedAgentIds(jobName): any[] {
     let selectedAgentIds = [];
@@ -12783,58 +12784,150 @@ export class WorkflowComponent {
     }
   }
 
-updateOnEncrypt(){
-    this.getWorkflow(false);
-  }
+  updateOnEncrypt(){
+      this.getWorkflow(false);
+    }
 
-  encrpytValue(currentVariable, actualVariable, typeArg){
-    let selectedAgent  = [];
-    const argu = currentVariable;
-    const type = typeArg;
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: EncryptArgumentModalComponent,
-      nzAutofocus: null,
-      nzData: {
-        argu,
-        selectedAgent,
-        type
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        if(actualVariable.value.type !== 'List' && actualVariable.value.type !== 'Map'){
-          for (let val in this.orderPreparation.parameters) {
-            if(val === actualVariable.name) {
-              this.orderPreparation.parameters[val] = result.value;
+    encryptValue(currentVariable, actualVariable, typeArg){
+    console.log(currentVariable, actualVariable, typeArg,":::")
+      let selectedAgent  = [];
+      const argu = currentVariable;
+      const type = typeArg;
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: EncryptArgumentModalComponent,
+        nzAutofocus: null,
+        nzData: {
+          argu,
+          selectedAgent,
+          type
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          if(actualVariable.value.type !== 'List' && actualVariable.value.type !== 'Map'){
+            for (let val in this.orderPreparation.parameters) {
+              if(val === actualVariable.name) {
+                this.orderPreparation.parameters[val] = result.value;
+              }
             }
+          }else{
+            actualVariable.value.listParameters.forEach(element => {
+              if(element.name === currentVariable.name){
+                for (let val in this.orderPreparation.parameters) {
+                  if(val === actualVariable.name) {
+                    for (let param in this.orderPreparation.parameters[val].listParameters) {
+                      if(param === currentVariable.name){
+                        this.orderPreparation.parameters[val].listParameters[param] = result.value
+                      }
+                    }
+                  }
+                }
+              }
+            });
           }
-        }else{
-          actualVariable.value.listParameters.forEach(element => {
-            if(element.name === currentVariable.name){
-              for (let val in this.orderPreparation.parameters) {
-                if(val === actualVariable.name) {
-                  for (let param in this.orderPreparation.parameters[val].listParameters) {
-                    if(param === currentVariable.name){
-                      this.orderPreparation.parameters[val].listParameters[param] = result.value
+          this.workflow.configuration.orderPreparation = this.orderPreparation;
+          this.updateOrderPreparation();
+          const data = this.coreService.clone(this.workflow.configuration);
+          const valid = this.modifyJSON(data, true, false);
+          this.saveJSON(valid ? data : 'false');
+        }
+      });
+    }
+
+
+    encryptAllArguments(): void {
+      const currentVariables = this.variableDeclarations.parameters;
+      const typeArg = 'jobTemplate';
+
+      let selectedAgent = [];
+
+      const variablesToEncrypt = currentVariables.filter(variable => {
+        if (variable.value) {
+          if (variable.value.type === 'List' || variable.value.type === 'Map') {
+            return variable.value.listParameters && variable.value.listParameters.some(param => param.value && param.value.default && param.value.default !== '');
+          }
+          return variable.value.default && variable.value.default !== '';
+        }
+        return false;
+      });
+
+      if (variablesToEncrypt.length === 0) {
+        return;
+      }
+
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: EncryptArgumentModalComponent,
+        nzAutofocus: null,
+        nzData: {
+          argu: variablesToEncrypt,
+          selectedAgent,
+          type: typeArg,
+          isBulkOperation: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          result.forEach((encryptedArg, index) => {
+            let currentVariable = variablesToEncrypt[index];
+            let actualVariable = this.findActualVariable(currentVariable.name);
+
+            if (encryptedArg && encryptedArg.value) {
+              if (actualVariable.value.type === 'List' || actualVariable.value.type === 'Map') {
+                for (let val in this.orderPreparation.parameters) {
+                  if (val === actualVariable.name) {
+                    if (Array.isArray(this.orderPreparation.parameters[val].listParameters)) {
+                      this.orderPreparation.parameters[val].listParameters.forEach((param, paramIndex) => {
+                        let encryptedParam = encryptedArg.value.listParameters.find(p => p.name === param.name);
+                        if (encryptedParam) {
+                          this.orderPreparation.parameters[val].listParameters[paramIndex].default = encryptedParam.value.default;
+                        }
+                      });
+                    }
+                  }
+                }
+              } else {
+                // Update non-List/Map parameters
+                for (let val in this.orderPreparation.parameters) {
+                  if (val === actualVariable.name) {
+                    if (this.orderPreparation.parameters[val]?.default !== undefined) {
+                      this.orderPreparation.parameters[val].default = encryptedArg.value.default;
+                    } else {
+                      this.orderPreparation.parameters[val] = { type: 'String', default: encryptedArg.value.default };
                     }
                   }
                 }
               }
             }
           });
+
+          this.workflow.configuration.orderPreparation = this.orderPreparation;
+          this.updateOrderPreparation();
+          const data = this.coreService.clone(this.workflow.configuration);
+          const valid = this.modifyJSON(data, true, false);
+          this.saveJSON(valid ? data : 'false');
         }
-        this.workflow.configuration.orderPreparation = this.orderPreparation;
-        this.updateOrderPreparation();
-        const data = this.coreService.clone(this.workflow.configuration);
-        const valid = this.modifyJSON(data, true, false);
-        this.saveJSON(valid ? data : 'false');
-      }
-    });
-  }
+      });
+    }
+
+    findActualVariable(name: string) {
+      return this.variableDeclarations.parameters.find(variable => variable.name === name);
+    }
+
+
+
+
+
+
+
 
     private fetchTags(): void {
       this.coreService.post('tags', {}).subscribe((res) => {

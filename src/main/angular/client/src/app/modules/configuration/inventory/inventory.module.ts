@@ -13,7 +13,7 @@ import {CalendarService} from '../../../services/calendar.service';
 import {
   CreateFolderModalComponent, CreateObjectModalComponent, CreateTagModalComponent, DeployComponent, ExportComponent,
   GitComponent, InventoryComponent, JsonEditorModalComponent, NewDraftComponent, NotificationComponent,
-  RepositoryComponent, ShowObjectsComponent, SingleDeployComponent, EncryptArgumentModalComponent
+  RepositoryComponent, ShowObjectsComponent, SingleDeployComponent, EncryptArgumentModalComponent, ShowAgentsModalComponent
 } from './inventory.component';
 import {TableComponent} from './table-data/table.component';
 import {
@@ -60,7 +60,7 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
   NotificationComponent, RepositoryComponent, GitComponent, ScriptEditorComponent, UpdateJobTemplatesComponent, CreateTagModalComponent,
   UpdateObjectComponent, FindAndReplaceComponent, ShowObjectsComponent, CycleInstructionComponent, UpdateJobComponent, PeriodComponent,
   ShowReferenceComponent, AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent, TestMailComponent,
-  RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, NewDraftComponent, NoticeBoardEditorComponent, ReportComponent, ChangeImpactDialogComponent, EncryptArgumentModalComponent];
+  RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, NewDraftComponent, NoticeBoardEditorComponent, ReportComponent, ChangeImpactDialogComponent, EncryptArgumentModalComponent,ShowAgentsModalComponent ];
 
 @NgModule({
   imports: [

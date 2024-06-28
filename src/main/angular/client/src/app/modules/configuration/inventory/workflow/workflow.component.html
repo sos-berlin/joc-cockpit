@@ -1412,6 +1412,12 @@
               <i (click)="expandCollapseVariable()" class="cursor fa fa-lg p-l-sm"
                  [ngClass]="isExpandVariable ? 'fa-angle-up' : 'fa-angle-down' "></i>
             </label>
+
+            <a *ngIf="variableDeclarations.parameters?.length > 0" class="anchor-with-icon pos-abt m-t-n-1" [ngStyle]="{'right': storedArguments?.length > 0 ? '112px' : '64px'}" style="font-size:14px"
+               nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" (click)="encryptAllArguments()">
+              <span nz-icon nzType="file-protect" nzTheme="outline"></span>
+            </a>
+
             <a *ngIf="variableDeclarations.parameters?.length > 0" (click)="copyArguments()" class="anchor-with-icon pos-abt m-t-n-1" [ngStyle]="{'right': storedArguments?.length > 0 ? '90px' : '42px'}"
                nz-tooltip="{{'common.button.copyArguments' | translate}}">
               <i class="fa fa-copy"></i>
@@ -1540,7 +1546,7 @@
                     </div>
                   </div>
                   <div class="col-md-2 col-lg-2 d-flex flex-lg-row flex-md-column gap-5 justify-content-around">
-                    <a *ngIf="variable.name && variable.value.type === 'String'"><i (click)="encrpytValue(variable, variable, 'jobTemplate')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                    <a *ngIf="variable.name && variable.value.type === 'String'"><i (click)="encryptValue(variable, variable, 'jobTemplate')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                     <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                   </div>
                   <ng-container *ngIf="variable.value.type === 'List' || variable.value.type === 'Map'" class="b-b p-b-sm">
@@ -1612,7 +1618,7 @@
                           </ng-container>
                         </div>
                         <div *ngIf="variable.value.listParameters.length > 0" class="col-md-2 col-lg-2 d-flex flex-lg-row flex-md-column gap-5 justify-content-around">
-                          <a *ngIf="param.name && param.value.type === 'String'"><i (click)="encrpytValue(param, variable, 'jobTemplate')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                          <a *ngIf="param.name && param.value.type === 'String'"><i (click)="encryptValue(param, variable, 'jobTemplate')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                           <a *ngIf="variable.value.listParameters.length > 1"><i  (click)="removeVariableFromList(variable.value.listParameters, j);"
                                 class="fa fa-times m-t-sm text-hover-color"></i></a>
                         </div>
