@@ -65,6 +65,7 @@ export class CreateTagModalComponent {
   tagType: string;
 
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
+  @ViewChild('tagSelect') tagSelect: ElementRef;
 
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private workflowService: WorkflowService) {
@@ -106,6 +107,12 @@ export class CreateTagModalComponent {
         this.display = true;
       }
     }
+  }
+
+  ngafterViewInit() {
+    setTimeout(() => {
+      this.tagSelect?.nativeElement.focus();
+    }, 10);
   }
 
   onChange(value: string): void {
@@ -3257,32 +3264,65 @@ export class CreateFolderModalComponent {
   selector: 'app-show-agents-assigned',
   templateUrl: './show-agents-dialog.html'
 })
-export class ShowAgentsModalComponent {
+export class ShowAgentsModalComponent  {
   readonly modalData: any = inject(NZ_MODAL_DATA);
 
-  selectedCert: any
+  selectedCert: any;
+  agents: Array<{ agentName: string, agentUrl: string }> = [];
+  schedulerId: any;
+  inventoryAgents: any = [];
+
   constructor(private activeModal: NzModalRef, public coreService: CoreService) {}
 
   ngOnInit(): void {
     this.selectedCert = this.modalData.selectedCert;
-    this.getAssignedAgents();
+    this.schedulerId = this.modalData.controllerId;
+    this.getAgentUrl();
   }
+
   getAssignedAgents() {
-    let certAliases = { certAliases: [this.selectedCert] };
+    const certAliases = { certAliases: [this.selectedCert] };
 
     this.coreService.post('/encipherment/assignment', certAliases).subscribe({
       next: (res: any) => {
-        console.log(res,">>")
+        const assignedAgents = res.mappings
+          .filter((mapping: any) => mapping.certAlias === this.selectedCert)
+          .map((mapping: any) => mapping.agentId)
+          .flat();
+
+        this.agents = assignedAgents.map((agentId: string) => {
+          const agentData = this.inventoryAgents.agents.find((agent: any) => agent.agentId === agentId);
+
+          return {
+            agentName: agentId,
+            agentUrl: agentData ? agentData.url : 'URL not found'
+          };
+        });
+
       },
-      error: () => {},
+      error: (err) => {
+      },
     });
   }
+
+  getAgentUrl() {
+    this.coreService.post('agents/inventory', {
+      controllerId: this.schedulerId
+    }).subscribe({
+      next: (data: any) => {
+        this.inventoryAgents = data;
+        this.getAssignedAgents();
+      },
+      error: (err) => {
+      }
+    });
+  }
+
   cancel(): void {
     this.activeModal.destroy();
   }
 
   onSubmit(): void {
-
   }
 }
 
@@ -3298,6 +3338,7 @@ export class EncryptArgumentModalComponent {
   selectedAgent = [];
   certificateList: any = [];
   selectedCert: string = '';
+  schedulerId: any;
   certificate: string = '';
   encryptedValue: string = '';
   isBulkOperation: boolean = false;
@@ -3308,6 +3349,7 @@ export class EncryptArgumentModalComponent {
     this.type = this.modalData.type;
     this.argu = this.modalData.argu;
     this.selectedAgent = this.modalData.selectedAgent;
+    this.schedulerId = this.modalData.controllerId;
     this.isBulkOperation = this.modalData.isBulkOperation || false;
     this.getCertificates();
   }
@@ -3338,12 +3380,12 @@ export class EncryptArgumentModalComponent {
   }
 
   showAssignedAgents(selectedCert) {
-    console.log(">>",selectedCert)
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ShowAgentsModalComponent,
       nzAutofocus: null,
       nzData: {
+        controllerId: this.schedulerId,
         selectedCert
       },
       nzFooter: null,

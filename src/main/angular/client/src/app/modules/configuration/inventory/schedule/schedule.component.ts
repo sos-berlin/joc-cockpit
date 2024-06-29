@@ -1801,7 +1801,8 @@ export class ScheduleComponent {
       nzData: {
         argu,
         selectedAgent,
-        type
+        type,
+        controllerId: this.schedulerId
       },
       nzFooter: null,
       nzClosable: false,

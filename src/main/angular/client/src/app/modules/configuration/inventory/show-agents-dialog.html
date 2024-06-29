@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span class="drag-text" translate>encipherment.label.assignedAgents</span>
+  </h4>
+  <button (click)="cancel()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+
+<div class="modal-body p-a">
+  <nz-table #agentsTable [nzData]="agents" [nzBordered]="true"
+            [nzFrontPagination]="false"
+            [nzShowPagination]="false"
+            [nzShowSizeChanger]="false" [nzSize]="'small'">
+
+    <thead>
+    <tr>
+      <th translate>agent.label.agentName</th>
+      <th translate>agent.label.url</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let agent of agentsTable.data">
+      <td>{{ agent.agentName }}</td>
+      <td><a [href]="agent.agentUrl" target="_blank">{{ agent.agentUrl }}</a></td>
+    </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<div class="modal-footer">
+  <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
+    common.button.close
+  </button>
+</div>

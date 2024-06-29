@@ -711,7 +711,8 @@ export class JobResourceComponent {
       nzData: {
         argu,
         selectedAgent,
-        type
+        type,
+        controllerId: this.schedulerId
       },
       nzFooter: null,
       nzClosable: false,

@@ -417,6 +417,8 @@
     "label.encryptValue": "Encrypt Value",
     "label.encryptAll": "Encrypt All",
     "label.optional": "Optional",
+    "label.showAssignedAgents": "Show Agents assigned the certificate alias",
+    "label.assignedAgents": "Agents assigned",
     "placeholder.agentId": "ID Agent",
     "placeholder.certAlias": "Alias de Certificat",
     "placeholder.certificate": "Coller le Certificat ici",

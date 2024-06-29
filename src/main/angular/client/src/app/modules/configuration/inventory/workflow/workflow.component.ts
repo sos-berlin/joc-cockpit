@@ -2620,7 +2620,8 @@ export class JobComponent {
         nzData: {
           argu,
           selectedAgent,
-          type
+          type,
+          controllerId: this.schedulerId
         },
         nzFooter: null,
         nzClosable: false,
@@ -12789,7 +12790,6 @@ export class WorkflowComponent {
     }
 
     encryptValue(currentVariable, actualVariable, typeArg){
-    console.log(currentVariable, actualVariable, typeArg,":::")
       let selectedAgent  = [];
       const argu = currentVariable;
       const type = typeArg;
@@ -12800,7 +12800,8 @@ export class WorkflowComponent {
         nzData: {
           argu,
           selectedAgent,
-          type
+          type,
+          controllerId: this.schedulerId
         },
         nzFooter: null,
         nzClosable: false,
@@ -12867,7 +12868,8 @@ export class WorkflowComponent {
           argu: variablesToEncrypt,
           selectedAgent,
           type: typeArg,
-          isBulkOperation: true
+          isBulkOperation: true,
+          controllerId: this.schedulerId
         },
         nzFooter: null,
         nzClosable: false,

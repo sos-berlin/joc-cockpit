@@ -67,9 +67,9 @@
         </div>
       </div>
       <div class="col-md-8" *ngIf="filters && filters.tagType === 'workflowTags'">
-        <nz-select [(ngModel)]="filter.tags" name="tag" nzAllowClear nzMode="multiple"
+        <nz-select #tagSelect [(ngModel)]="filter.tags" name="tag" nzAllowClear nzMode="multiple" [nzAutoFocus]="true"
                    nzPlaceHolder="{{ 'inventory.search.label.searchHeading' | translate }}"
-                   nzShowSearch [nzOpen]="true">
+                   nzShowSearch width="100%" >
           <nz-option *ngFor="let tag of allTags | orderBy: 'ordering'" [nzLabel]="tag.name" [nzValue]="tag"></nz-option>
         </nz-select>
 

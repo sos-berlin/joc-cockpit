@@ -1190,7 +1190,8 @@ export class AddOrderModalComponent {
       nzData: {
         argu,
         selectedAgent,
-        type
+        type,
+        controllerId: this.schedulerId
       },
       nzFooter: null,
       nzClosable: false,
