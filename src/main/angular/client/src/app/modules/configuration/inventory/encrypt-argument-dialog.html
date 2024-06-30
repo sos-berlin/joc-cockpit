@@ -26,11 +26,17 @@
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-md-12">
-        <hr>
+      <div class="col-md-4 col-lg-4">
+        <label class="form-control-label" translate></label>
+      </div>
+      <div class="col-md-8 col-lg-8">
+        <nz-radio-group [(ngModel)]="certificateMode" name="certificateMode">
+          <label nz-radio nzValue="alias"><span translate>encipherment.label.selectCertAlias</span></label>
+          <label nz-radio nzValue="paste"><span translate>encipherment.label.pasteCertificate</span></label>
+        </nz-radio-group>
       </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row" *ngIf="certificateMode === 'alias'">
       <div class="col-md-4 col-lg-4">
         <label class="form-control-label" translate>encipherment.label.certAlias</label>
       </div>
@@ -40,28 +46,17 @@
         </nz-select>
       </div>
     </div>
-
-    <div class="form-group row text-center">
-      <div class="col-md-12">
-        <span class="optional-text">
-          <i class="fa fa-arrows-v m-r-sm"></i> <span translate>encipherment.label.optional</span>
-        </span>
+    <div class="form-group row" *ngIf="certificateMode === 'alias'">
+      <div class="col-sm-12">
+        <a *ngIf="selectedCert" (click)="showAssignedAgents(selectedCert)" class="text-u-l" translate>encipherment.label.showAssignedAgents</a>
       </div>
     </div>
-
-    <div class="form-group row">
+    <div class="form-group row" *ngIf="certificateMode === 'paste'">
       <div class="col-md-4 col-lg-4">
         <label class="form-control-label" translate>encipherment.label.certificate</label>
       </div>
       <div class="col-md-8 col-lg-8">
-        <textarea [(ngModel)]="certificate" (keyup)="onFocusCertificate()" autocomplete="false" class="form-control"
-          name="certificate" placeholder="{{'encipherment.placeholder.certificate' | translate}}"
-          required rows="10"></textarea>
-      </div>
-    </div>
-    <div class="form-group row">
-      <div class="col-sm-12">
-        <a *ngIf="selectedCert" (click)="showAssignedAgents(selectedCert)" class="text-u-l" translate>encipherment.label.showAssignedAgents</a>
+        <textarea [(ngModel)]="certificate" (keyup)="onFocusCertificate()" autocomplete="false" class="form-control" name="certificate" placeholder="{{'encipherment.placeholder.certificate' | translate}}" required rows="10" style="font-family: monospace;"></textarea>
       </div>
     </div>
   </div>

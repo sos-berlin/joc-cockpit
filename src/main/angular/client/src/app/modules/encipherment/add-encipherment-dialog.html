@@ -35,7 +35,7 @@
       <div class="col-sm-9">
         <textarea #certificate="ngModel" [(ngModel)]="certificateObj.certificate" autocomplete="false" class="form-control"
           name="certificate" placeholder="{{'encipherment.placeholder.certificate' | translate}}"
-          required rows="10"></textarea>
+          required rows="10" style="font-family: monospace;"></textarea>
         <div *ngIf="certificate.invalid && (certificate.dirty || certificate.touched)" class="text-danger help-block">
           <div *ngIf="certificate.errors.required">
             <div translate>common.message.requiredError</div>

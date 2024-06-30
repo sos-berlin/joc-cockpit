@@ -105,7 +105,7 @@
                     </div>
                   </div>
                   <div class="pos-abt r-t-n-28 add-order-encrypt">
-                    <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encrpytValue(argument, 'job')" class="m-t-sm text-hover-color"
+                    <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
                       nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                     <a *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1"
                     ><i (click)="removeVariableFromList(i, listVariables.actualList)"
@@ -228,7 +228,7 @@
                     </div>
                   </div>
                   <div class="pos-abt r-t-n-28 add-order-encrypt">
-                    <a  *ngIf="argument.name && argument.type === 'String'"><i (click)="encrpytValue(argument, 'job')"
+                    <a  *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')"
                       class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                     <a *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1"><i (click)="removeVariableFromList(i, listVariables.actualMap)"
                           class="fa fa-times m-t-sm text-muted"></i></a>
@@ -587,7 +587,7 @@
                               <div *ngIf="value.errors['invalidFacet']" translate>common.message.invalid</div>
                             </div>
                             <div class="pos-abt r-t-n-28 job-template-encrypt">
-                              <a *ngIf="variable.name && variable.type === 'String'"><i (click)="encrpytValue(variable, 'job')"
+                              <a *ngIf="variable.name && variable.type === 'String'"><i (click)="encryptValue(variable, 'job')"
                                 class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                               <a *ngIf="!variable.isRequired" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
                                 (click)="removeVariable(i, variableSet)" class="fa fa-trash m-t-sm text-hover-color"></i></a>

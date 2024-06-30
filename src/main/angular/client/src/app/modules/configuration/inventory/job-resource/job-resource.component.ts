@@ -700,7 +700,7 @@ export class JobResourceComponent {
     this.router.navigate(['/configuration/file_transfer']).then();
   }
 
-  encrpytValue(argument){
+  encryptValue(argument){
     let selectedAgent  = [];
     const argu = argument;
     const type = 'job';
@@ -724,4 +724,72 @@ export class JobResourceComponent {
       }
     });
   }
+
+
+  encryptAllArguments(): void {
+    let selectedAgent  = [];
+    const selectedArgs = this.jobResource.configuration.arguments.filter(argu => this.object.setOfCheckedArgu.has(argu.name) && argu.value);
+    if (selectedArgs.length > 0) {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: EncryptArgumentModalComponent,
+        nzAutofocus: null,
+        nzData: {
+          argu: selectedArgs,
+          selectedAgent,
+          type: 'job',
+          isBulkOperation: true,
+          controllerId: this.schedulerId
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          result.forEach((encryptedArg, index) => {
+            const originalArgIndex = this.jobResource.configuration.arguments.findIndex(arg => arg.name === selectedArgs[index].name);
+            if (originalArgIndex !== -1) {
+              this.jobResource.configuration.arguments[originalArgIndex].value = encryptedArg.value;
+            }
+          });
+          this.saveJSON();
+        }
+      });
+    }
+  }
+
+  encryptAllEnvVariables(): void {
+    let selectedAgent = [];
+    const selectedEnvs = this.jobResource.configuration.env.filter(env => this.object.setOfCheckedEnv.has(env.name) && env.value);
+    if (selectedEnvs.length > 0) {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: EncryptArgumentModalComponent,
+        nzAutofocus: null,
+        nzData: {
+          argu: selectedEnvs,
+          selectedAgent,
+          type: 'job',
+          isBulkOperation: true,
+          controllerId: this.schedulerId
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          result.forEach((encryptedEnv, index) => {
+            const originalEnvIndex = this.jobResource.configuration.env.findIndex(env => env.name === selectedEnvs[index].name);
+            if (originalEnvIndex !== -1) {
+              this.jobResource.configuration.env[originalEnvIndex].value = encryptedEnv.value;
+            }
+          });
+          this.saveJSON();
+        }
+      });
+    }
+  }
+
 }

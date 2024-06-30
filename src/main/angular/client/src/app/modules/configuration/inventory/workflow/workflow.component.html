@@ -1413,11 +1413,6 @@
                  [ngClass]="isExpandVariable ? 'fa-angle-up' : 'fa-angle-down' "></i>
             </label>
 
-            <a *ngIf="variableDeclarations.parameters?.length > 0" class="anchor-with-icon pos-abt m-t-n-1" [ngStyle]="{'right': storedArguments?.length > 0 ? '112px' : '64px'}" style="font-size:14px"
-               nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" (click)="encryptAllArguments()">
-              <span nz-icon nzType="file-protect" nzTheme="outline"></span>
-            </a>
-
             <a *ngIf="variableDeclarations.parameters?.length > 0" (click)="copyArguments()" class="anchor-with-icon pos-abt m-t-n-1" [ngStyle]="{'right': storedArguments?.length > 0 ? '90px' : '42px'}"
                nz-tooltip="{{'common.button.copyArguments' | translate}}">
               <i class="fa fa-copy"></i>

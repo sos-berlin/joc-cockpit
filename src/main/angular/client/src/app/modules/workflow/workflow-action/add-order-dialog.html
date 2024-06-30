@@ -75,7 +75,7 @@
                       </div>
                     </div>
                     <div class="pos-abt r-t-n-28 add-order-encrypt">
-                      <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encrpytValue(argument, 'job')" class="m-t-sm text-hover-color"
+                      <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
                         nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                     </div>
                   </div>
@@ -197,7 +197,7 @@
                     </div>
                   </div>
                   <div class="pos-abt r-t-n-28 add-order-encrypt">
-                    <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encrpytValue(argument, 'job')" class="m-t-sm text-hover-color"
+                    <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
                       nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                   </div>
                 </div>
@@ -516,7 +516,7 @@
               </div>
             </div>
             <div class="col-sm-1 p-l-0 d-flex justify-content-around align-items-center">
-              <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encrpytValue(argument, 'job')" class="m-t-sm text-hover-color"
+              <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
                   nz-icon nzType="property-safety" nzTheme="outline"></i></a>
               <a *ngIf="!argument.isRequired"><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-muted"></i></a>
             </div>

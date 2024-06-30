@@ -1179,7 +1179,7 @@ export class AddOrderModalComponent {
     }
   }
 
-  encrpytValue(currentVariable, typeArg){
+  encryptValue(currentVariable, typeArg){
     let selectedAgent  = [];
     const argu = currentVariable;
     const type = typeArg;

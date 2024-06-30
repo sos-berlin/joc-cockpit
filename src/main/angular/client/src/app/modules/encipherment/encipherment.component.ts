@@ -52,19 +52,21 @@ export class AddEnciphermentModalComponent {
       if(this.encipherment.privateKeyPath){
         this.certificateObj.privateKeyPath = this.encipherment.privateKeyPath;
       }
+      this.loadDeployableInfo(); // Ensure it's called during initialization
     }
     this.getJobResourceFolderTree();
-    this.loadDeployableInfo();
   }
 
   private loadDeployableInfo(): void {
-    this.coreService.post('inventory/deployable', {
-      path: this.certificateObj.certAlias,
-      objectType: "JOBRESOURCE",
-    }).subscribe(res => {
-      const folderPath = res.deployable.folder;
-      this.certificateObj.jobResourceFolder = folderPath;
-    });
+    if (this.certificateObj.certAlias) {
+      this.coreService.post('inventory/deployable', {
+        path: this.certificateObj.certAlias,
+        objectType: "JOBRESOURCE",
+      }).subscribe(res => {
+        const folderPath = res.deployable.folder;
+        this.certificateObj.jobResourceFolder = folderPath;
+      });
+    }
   }
 
 
@@ -99,10 +101,12 @@ export class AddEnciphermentModalComponent {
     if (auditLog.comment) {
       this.certificateObj.auditLog = auditLog;
     }
+
     this.coreService.post('encipherment/certificate/store', this.certificateObj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, error: () => this.submitted = false
+      },
+      error: () => this.submitted = false
     });
   }
 }

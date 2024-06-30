@@ -1866,6 +1866,199 @@ export class JobComponent {
     }
   }
 
+  encryptAllEnvVariables(): void {
+    let selectedAgent = [];
+    const selectedEnvs = this.selectedNode.job.executable.env.filter(env =>
+      this.object.setOfCheckedEnv.has(env.name) && env.value // Ensure value is not empty
+    );
+    if (selectedEnvs.length > 0) {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: EncryptArgumentModalComponent,
+        nzAutofocus: null,
+        nzData: {
+          argu: selectedEnvs,
+          selectedAgent,
+          type: 'job',
+          isBulkOperation: true,
+          controllerId: this.schedulerId
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          result.forEach((encryptedEnv, index) => {
+            const originalEnvIndex = this.selectedNode.job.executable.env.findIndex(env => env.name === selectedEnvs[index].name);
+            if (originalEnvIndex !== -1) {
+              if (typeof this.selectedNode.job.executable.env[originalEnvIndex].value === 'object') {
+                this.selectedNode.job.executable.env[originalEnvIndex].value.default = encryptedEnv.value.default;
+              } else {
+                this.selectedNode.job.executable.env[originalEnvIndex].value = encryptedEnv.value;
+              }
+            }
+          });
+          this.updateVariableList();
+        }
+      });
+    }
+  }
+
+  encryptAllNodeArguments(): void {
+    let selectedAgent = [];
+    const selectedEnvs = this.selectedNode.obj.defaultArguments.filter(env =>
+      this.object.setOfCheckedNodeArgu.has(env.name) && env.value // Ensure value is not empty
+    );
+    if (selectedEnvs.length > 0) {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: EncryptArgumentModalComponent,
+        nzAutofocus: null,
+        nzData: {
+          argu: selectedEnvs,
+          selectedAgent,
+          type: 'job',
+          isBulkOperation: true,
+          controllerId: this.schedulerId
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          result.forEach((encryptedEnv, index) => {
+            const originalEnvIndex = this.selectedNode.obj.defaultArguments.findIndex(env => env.name === selectedEnvs[index].name);
+            if (originalEnvIndex !== -1) {
+              if (typeof this.selectedNode.obj.defaultArguments[originalEnvIndex].value === 'object') {
+                this.selectedNode.obj.defaultArguments[originalEnvIndex].value.default = encryptedEnv.value.default;
+              } else {
+                this.selectedNode.obj.defaultArguments[originalEnvIndex].value = encryptedEnv.value;
+              }
+            }
+          });
+          this.updateVariableList();
+        }
+      });
+    }
+  }
+
+  encryptAllDefaultArguments(): void {
+    let selectedAgent = [];
+    const selectedEnvs = this.selectedNode.job.defaultArguments.filter(env =>
+      this.object.setOfCheckedDefaultArgu.has(env.name) && env.value // Ensure value is not empty
+    );
+    if (selectedEnvs.length > 0) {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: EncryptArgumentModalComponent,
+        nzAutofocus: null,
+        nzData: {
+          argu: selectedEnvs,
+          selectedAgent,
+          type: 'job',
+          isBulkOperation: true,
+          controllerId: this.schedulerId
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          result.forEach((encryptedEnv, index) => {
+            const originalEnvIndex = this.selectedNode.obj.defaultArguments.findIndex(env => env.name === selectedEnvs[index].name);
+            if (originalEnvIndex !== -1) {
+              if (typeof this.selectedNode.obj.defaultArguments[originalEnvIndex].value === 'object') {
+                this.selectedNode.obj.defaultArguments[originalEnvIndex].value.default = encryptedEnv.value.default;
+              } else {
+                this.selectedNode.obj.defaultArguments[originalEnvIndex].value = encryptedEnv.value;
+              }
+            }
+          });
+          this.updateVariableList();
+        }
+      });
+    }
+  }
+
+  encryptAllArguments(): void {
+    let selectedAgent = [];
+    const selectedArgs = this.selectedNode.job.executable.arguments.filter(argu =>
+      this.object.setOfCheckedArgu.has(argu.name) &&
+      (argu.value && (typeof argu.value !== 'object' || argu.value.default))
+    );
+    if (selectedArgs.length > 0) {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: EncryptArgumentModalComponent,
+        nzAutofocus: null,
+        nzData: {
+          argu: selectedArgs,
+          selectedAgent,
+          type: 'job',
+          isBulkOperation: true,
+          controllerId: this.schedulerId
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          result.forEach((encryptedArg, index) => {
+            const originalArgIndex = this.selectedNode.job.executable.arguments.findIndex(arg => arg.name === selectedArgs[index].name);
+            if (originalArgIndex !== -1) {
+              if (typeof this.selectedNode.job.executable.arguments[originalArgIndex].value === 'object') {
+                this.selectedNode.job.executable.arguments[originalArgIndex].value.default = encryptedArg.value.default;
+              } else {
+                this.selectedNode.job.executable.arguments[originalArgIndex].value = encryptedArg.value;
+              }
+            }
+          });
+          this.updateVariableList();
+        }
+      });
+    }
+  }
+
+
+  encryptAllJobArguments(): void {
+    let selectedAgent = [];
+    const selectedEnvs = this.selectedNode.job.executable.jobArguments.filter(env =>
+      this.object.setOfCheckedJobArgu.has(env.name) && env.value // Ensure value is not empty
+    );
+    if (selectedEnvs.length > 0) {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: EncryptArgumentModalComponent,
+        nzAutofocus: null,
+        nzData: {
+          argu: selectedEnvs,
+          selectedAgent,
+          type: 'job',
+          isBulkOperation: true,
+          controllerId: this.schedulerId
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          result.forEach((encryptedEnv, index) => {
+            const originalEnvIndex = this.selectedNode.job.executable.jobArguments.findIndex(env => env.name === selectedEnvs[index].name);
+            if (originalEnvIndex !== -1) {
+              if (typeof this.selectedNode.job.executable.jobArguments[originalEnvIndex].value === 'object') {
+                this.selectedNode.job.executable.jobArguments[originalEnvIndex].value.default = encryptedEnv.value.default;
+              } else {
+                this.selectedNode.job.executable.jobArguments[originalEnvIndex].value = encryptedEnv.value;
+              }
+            }
+          });
+          this.updateVariableList();
+        }
+      });
+    }
+  }
+
   private reset(): void {
     this.object = {
       checked1: false,
@@ -12967,4 +13160,6 @@ export class WorkflowComponent {
       this.inputValue = '';
       this.inputVisible = false;
     }
+
+
 }

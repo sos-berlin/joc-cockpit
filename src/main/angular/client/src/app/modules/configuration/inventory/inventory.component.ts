@@ -3342,6 +3342,7 @@ export class EncryptArgumentModalComponent {
   certificate: string = '';
   encryptedValue: string = '';
   isBulkOperation: boolean = false;
+  certificateMode: 'alias' | 'paste' = 'alias'; // new property for the radio button selection
 
   constructor(private activeModal: NzModalRef, public coreService: CoreService, private modal: NzModalService) {}
 
@@ -3423,9 +3424,9 @@ export class EncryptArgumentModalComponent {
     } else {
       let submittedVal: any = {};
       if (this.type === 'job') {
-        submittedVal.toEncrypt = this.argu.value;
+        submittedVal.toEncrypt = typeof this.argu.value === 'object' ? this.argu.value.default : this.argu.value;
       } else if (this.type === 'jobTemplate') {
-        submittedVal.toEncrypt = this.argu.value.default;
+        submittedVal.toEncrypt = typeof this.argu.value.default === 'object' ? this.argu.value.default.default : this.argu.value.default;
       }
 
       if (this.selectedCert) {
@@ -3439,9 +3440,17 @@ export class EncryptArgumentModalComponent {
         next: (res: any) => {
           this.encryptedValue = res.encryptedValue;
           if (this.type === 'job') {
-            this.argu.value = this.encryptedValue;
+            if (typeof this.argu.value === 'object') {
+              this.argu.value.default = this.encryptedValue;
+            } else {
+              this.argu.value = this.encryptedValue;
+            }
           } else if (this.type === 'jobTemplate') {
-            this.argu.value.default = this.encryptedValue;
+            if (typeof this.argu.value.default === 'object') {
+              this.argu.value.default.default = this.encryptedValue;
+            } else {
+              this.argu.value.default = this.encryptedValue;
+            }
           }
           this.activeModal.close(this.argu);
         },
@@ -3452,6 +3461,8 @@ export class EncryptArgumentModalComponent {
     }
   }
 
+
+
   processBulkEncryption(args: any[], index: number = 0) {
     if (index >= args.length) {
       this.activeModal.close(this.argu);
@@ -3460,7 +3471,7 @@ export class EncryptArgumentModalComponent {
 
     let submittedVal: any = {};
     if (this.type === 'job') {
-      submittedVal.toEncrypt = args[index].value;
+      submittedVal.toEncrypt = typeof args[index].value === 'object' ? args[index].value.default : args[index].value;
     } else if (this.type === 'jobTemplate') {
       if (args[index].value.type === 'List' || args[index].value.type === 'Map') {
         // Encrypt each list or map parameter separately
@@ -3469,7 +3480,7 @@ export class EncryptArgumentModalComponent {
         });
         return;
       } else {
-        submittedVal.toEncrypt = args[index].value.default;
+        submittedVal.toEncrypt = typeof args[index].value.default === 'object' ? args[index].value.default.default : args[index].value.default;
       }
     }
 
@@ -3483,9 +3494,17 @@ export class EncryptArgumentModalComponent {
     this.coreService.post('encipherment/encrypt', submittedVal).subscribe({
       next: (res: any) => {
         if (this.type === 'job') {
-          this.argu[index].value = res.encryptedValue;
+          if (typeof this.argu[index].value === 'object') {
+            this.argu[index].value.default = res.encryptedValue;
+          } else {
+            this.argu[index].value = res.encryptedValue;
+          }
         } else if (this.type === 'jobTemplate') {
-          this.argu[index].value.default = res.encryptedValue;
+          if (typeof this.argu[index].value.default === 'object') {
+            this.argu[index].value.default.default = res.encryptedValue;
+          } else {
+            this.argu[index].value.default = res.encryptedValue;
+          }
         }
         this.processBulkEncryption(args, index + 1);
       },
@@ -3494,6 +3513,9 @@ export class EncryptArgumentModalComponent {
       },
     });
   }
+
+
+
 
   processListOrMapEncryption(arg: any, callback: Function) {
     const listOrMapParameters = arg.value.listParameters;

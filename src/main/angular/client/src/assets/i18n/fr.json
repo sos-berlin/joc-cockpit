@@ -419,6 +419,8 @@
     "label.optional": "Optional",
     "label.showAssignedAgents": "Show Agents assigned the certificate alias",
     "label.assignedAgents": "Agents assigned",
+    "label.selectCertAlias": "Select Certificate from Alias",
+    "label.pasteCertificate": "Paste Certificate",
     "placeholder.agentId": "ID Agent",
     "placeholder.certAlias": "Alias de Certificat",
     "placeholder.certificate": "Coller le Certificat ici",

@@ -87,7 +87,10 @@
             <nz-tabset>
               <nz-tab [nzTitle]="'workflow.label.arguments' | translate">
                 <div class="pos-abt r-t-12">
-                  <button (click)="cutParam('arguments')" [disabled]="object.setOfCheckedArgu.size === 0" class="btn btn-grey btn-sm"
+                  <button (click)="encryptAllArguments()" [disabled]="object.setOfCheckedArgu.size === 0" class="btn btn-grey btn-sm" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate type="button">
+                    <span nz-icon nzType="file-protect" nzTheme="outline"></span>
+                  </button>
+                  <button (click)="cutParam('arguments')" [disabled]="object.setOfCheckedArgu.size === 0" class="btn btn-grey btn-sm m-l-sm"
                           nz-tooltip="{{'common.button.cut' | translate}}" translate type="button">
                     <i class="fa fa-scissors"></i>
                   </button>
@@ -147,7 +150,7 @@
                             <i
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name)"
                               class="fa fa-scissors"></i>
-                            <a *ngIf="argu.name"><i (click)="encrpytValue(argu)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                            <a *ngIf="argu.name"><i (click)="encryptValue(argu)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                             <a
                               *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name))"><i
                               (click)="removeArgu(i)" class="fa fa-times text-hover-color"></i></a>
@@ -166,7 +169,10 @@
               </nz-tab>
               <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate">
                 <div class="pos-abt r-t-12">
-                  <button (click)="cutParam('env')" [disabled]="object.setOfCheckedEnv.size === 0" class="btn btn-grey btn-sm"
+                  <button (click)="encryptAllEnvVariables()" [disabled]="object.setOfCheckedEnv.size === 0" class="btn btn-grey btn-sm" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate type="button">
+                    <span nz-icon nzType="file-protect" nzTheme="outline"></span>
+                  </button>
+                  <button (click)="cutParam('env')" [disabled]="object.setOfCheckedEnv.size === 0" class="btn btn-grey btn-sm m-l-sm"
                           nz-tooltip="{{'common.button.cut' | translate}}" translate type="button">
                     <i class="fa fa-scissors"></i>
                   </button>
@@ -224,7 +230,7 @@
                             <i
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name)"
                               class="fa fa-scissors"></i>
-                            <a *ngIf="env.name"><i (click)="encrpytValue(env)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                            <a *ngIf="env.name"><i (click)="encryptValue(env)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                             <a
                               *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name))"><i
                               (click)="removeEnv(i)" class="fa fa-times text-hover-color"></i></a>
