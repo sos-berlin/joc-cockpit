@@ -396,43 +396,6 @@ export class ReportComponent implements OnChanges, OnDestroy {
     }
 
     const obj = this.coreService.clone(this.report.configuration);
-    const isAbsoluteDate = (value: string) => /^\d{4}-(0[1-9]|1[0-2])$/.test(value);
-
-    const convertToAbsoluteMonths = (value: string): number => {
-      if (!value) return Number.MAX_SAFE_INTEGER; // Return a high value if undefined or empty to handle comparison properly
-
-      if (isAbsoluteDate(value)) {
-        const [year, month] = value.split('-').map(Number);
-        return year * 12 + month;
-      }
-
-      const number = parseInt(value.slice(0, -1), 10);
-      const unit = value.slice(-1).toUpperCase();
-      const now = new Date();
-      let totalMonths = now.getFullYear() * 12 + now.getMonth() + 1;
-
-      switch (unit) {
-        case 'Y':
-          totalMonths -= number * 12;
-          break;
-        case 'Q':
-          totalMonths -= number * 3;
-          break;
-        case 'M':
-          totalMonths -= number;
-          break;
-        default:
-          return Number.MAX_SAFE_INTEGER; // Handle invalid units by returning a high value
-      }
-      return totalMonths;
-    };
-
-    const monthFromAbs = convertToAbsoluteMonths(obj.monthFrom);
-    const monthToAbs = convertToAbsoluteMonths(obj.monthTo);
-
-    if (monthToAbs < monthFromAbs) {
-      obj.monthTo = '';
-    }
 
     if (!isEqual(this.report.actual, JSON.stringify(obj))) {
       if (!flag) {

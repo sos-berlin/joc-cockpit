@@ -580,7 +580,6 @@ export class WorkflowComponent {
     tags: [],
     text: ''
   };
-  private searchTerm = new Subject<string>();
 
   searchOrderTag = {
     loading: false,
@@ -589,6 +588,7 @@ export class WorkflowComponent {
     text: ''
   }
   private searchOrderTerm = new Subject<string>();
+  private searchTerm = new Subject<string>();
 
   searchableProperties = ['name', 'path', 'versionDate', 'state', '_text'];
 

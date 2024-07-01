@@ -3283,7 +3283,7 @@ export class ShowAgentsModalComponent  {
   getAssignedAgents() {
     const certAliases = { certAliases: [this.selectedCert] };
 
-    this.coreService.post('/encipherment/assignment', certAliases).subscribe({
+    this.coreService.post('encipherment/assignment', certAliases).subscribe({
       next: (res: any) => {
         const assignedAgents = res.mappings
           .filter((mapping: any) => mapping.certAlias === this.selectedCert)

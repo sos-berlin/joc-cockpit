@@ -169,6 +169,7 @@ export class GenerateReportComponent {
       item.template = item.value[0].template;
       item.hits = item.value[0].hits;
       item.sort = item.value[0].sort;
+      item.name = item.value[0].name;
 
       item.highestGroup = item.value.filter(val => val.sort === 'HIGHEST') || [];
       item.lowestGroup = item.value.filter(val => val.sort === 'LOWEST') || [];
@@ -552,6 +553,9 @@ export class GenerateReportComponent {
       item.path = item.value[0].path;
       item.title = item.value[0].title;
       item.template = item.value[0].template;
+      item.hits = item.value[0].hits;
+      item.sort = item.value[0].sort;
+      item.name = item.value[0].name;
 
       if (this.filters.groupBy !== 'hits') {
         // Group by Highest and Lowest only if not grouping by hits

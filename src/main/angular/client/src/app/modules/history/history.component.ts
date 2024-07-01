@@ -5,7 +5,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {clone, extend, isEmpty} from 'underscore';
-import {takeUntil} from 'rxjs/operators';
+import {debounceTime, takeUntil} from 'rxjs/operators';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
@@ -17,6 +17,7 @@ import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 import {FileTransferService} from '../../services/file-transfer.service';
 import {InventoryForHistory} from '../../models/enums';
 import { CommentModalComponent } from 'src/app/components/comment-modal/comment.component';
+import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
 
 declare const $: any;
 
@@ -1087,6 +1088,8 @@ export class HistoryComponent {
   yadeHistoryFilterList: any;
   deploymentHistoryFilterList: any;
   submissionHistoryFilterList: any;
+  sideView: any = {};
+  showPanel: any;
 
   orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position'];
   taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position'];
@@ -1101,6 +1104,24 @@ export class HistoryComponent {
   subscription1: Subscription;
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
+  private searchOrderTerm = new Subject<string>();
+  private searchTerm = new Subject<string>();
+
+
+
+  searchTag = {
+    loading: false,
+    token: '',
+    tags: [],
+    text: ''
+  };
+
+  searchOrderTag = {
+    loading: false,
+    token: '',
+    tags: [],
+    text: ''
+  }
 
   filterBtn: any = [
     {date: 'ALL', text: 'all'},
@@ -1120,7 +1141,6 @@ export class HistoryComponent {
     {date: '7d', text: 'nextWeak'},
     {date: '30d', text: 'next30'}
   ];
-
   constructor(public viewContainerRef: ViewContainerRef, private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
               private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe, private orderPipe: OrderPipe,
               public message: NzMessageService, private router: Router, private translate: TranslateService, private excelService: ExcelService) {
@@ -1133,6 +1153,7 @@ export class HistoryComponent {
   }
 
   ngOnInit(): void {
+    this.sideView = this.coreService.getSideView()
     this.initConf();
   }
 
@@ -1141,6 +1162,7 @@ export class HistoryComponent {
     this.subscription2.unsubscribe();
     this.pendingHTTPRequests$.next();
     this.pendingHTTPRequests$.complete();
+    this.coreService.setSideView(this.sideView);
   }
 
   changeController(): void {
@@ -3498,7 +3520,25 @@ export class HistoryComponent {
         this.submissionHistory(obj, flag);
       }
     }
+    if(!this.historyFilters.tagType){
+      this.historyFilters.tagType = 'workflowTags';
+    }
+    if (this.historyFilters.tagType === 'workflowTags') {
+      this.switchToTagging('workflowTags');
+
+    } else if (this.historyFilters.tagType === 'orderTags') {
+      this.switchToTagging('orderTags');
+    }
+    this.searchTerm.pipe(debounceTime(200))
+      .subscribe((searchValue: string) => {
+        this.searchObjects(searchValue);
+      });
+    this.searchOrderTerm.pipe(debounceTime(200))
+      .subscribe((searchValue: string) => {
+        this.searchOrderObjects(searchValue);
+      });
   }
+
 
   /* --------------------------Customizations Begin-----------------------*/
 
@@ -4234,5 +4274,413 @@ export class HistoryComponent {
       this.isLoading = false;
       this.init(false);
     }
+  }
+
+  objectTreeSearch() {
+    $('#historyTagSearch').focus();
+    $('#historyOrderTagSearch').focus();
+    $('.editor-tree  a').addClass('hide-on-focus');
+  }
+
+  clearSearchInput(): void {
+    this.searchTag.tags = [];
+    this.searchTag.text = '';
+    $('.editor-tree  a').removeClass('hide-on-focus');
+  }
+
+  switchToTagging(flag): void {
+    this.historyFilters.tagType = flag;
+    // this.historys = [];
+    // this.data = [];
+    const obj: any = {
+      controllerId: this.schedulerIds.selected
+    };
+    if (flag === 'workflowTags') {
+      obj.tags = Array.from(this.coreService.checkedTags);
+    } else if (flag === 'orderTags') {
+      obj.orderTags = Array.from(this.coreService.checkedOrderTags);
+    } else {
+      obj.folders = [{folder: '/', recursive: true}];
+    }
+    if (obj.tags?.length > 0 || obj.folders?.length > 0 || obj.orderTags?.length > 0) {
+      // this.orderHistory(obj, true);
+    } else {
+      this.historys = [];
+      this.searchInResult();
+    }
+  }
+
+  selectTagOnSearch(tag): void {
+    this.coreService.selectedTags.push(tag);
+    this.coreService.checkedTags.add(tag.name);
+    this.coreService.removeDuplicates();
+    const obj: any = {
+      tags: Array.from(this.coreService.checkedTags),
+      controllerId: this.schedulerIds.selected
+    };
+    this.searchByTags(obj);
+  }
+
+  private searchByOrderTags(obj): void {
+    if (obj.orderTags.length > 0) {
+      this.orderHistory(obj,true);
+    } else {
+      this.historys = [];
+      this.hidePanel();
+      this.searchInResult();
+    }
+  }
+
+  selectOrderTags(): void {
+    const temp = this.coreService.clone(this.coreService.selectedOrderTags);
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateTagModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        filters: this.historyFilters,
+        controllerId: this.schedulerIds.selected
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(res => {
+      if (res) {
+        const obj: any = {
+          orderTags: [],
+          controllerId: this.schedulerIds.selected
+        };
+        this.coreService.selectedOrderTags.forEach(tag => {
+          let flag = true;
+          for (let i = 0; i < temp.length; i++) {
+            if (tag.name == temp[i].name) {
+              temp.splice(i, 1);
+              flag = false;
+              break;
+            }
+          }
+          if (flag) {
+            this.coreService.checkedOrderTags.add(tag.name);
+          }
+        });
+        obj.orderTags = Array.from(this.coreService.checkedOrderTags);
+        this.searchByOrderTags(obj);
+      }
+    });
+
+  }
+
+  selectAllOrderTags(): void {
+    this.coreService.post('orders/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe({
+      next: (res: any) => {
+        this.coreService.selectedOrderTags = res.results;
+        this.coreService.allOrderTagsSelected = true;
+        const obj: any = {
+          orderTags: [],
+          controllerId: this.schedulerIds.selected
+        };
+        this.coreService.selectedOrderTags.forEach(tag => {
+          obj.orderTags.push(tag.name);
+          this.coreService.checkedOrderTags.add(tag.name);
+        });
+        this.searchByOrderTags(obj);
+      }
+    });
+  }
+
+  removeAllOrderTags(): void {
+    this.coreService.selectedOrderTags = [];
+    this.coreService.checkedOrderTags.clear();
+    const obj: any = {
+      orderTags: [],
+      controllerId: this.schedulerIds.selected
+    };
+    this.searchByOrderTags(obj);
+  }
+
+  selectOrderTag(tag: string): void {
+    this.coreService.checkedOrderTags.clear();
+    this.coreService.checkedOrderTags.add(tag);
+    const obj: any = {
+      orderTags: [tag],
+      controllerId: this.schedulerIds.selected
+    };
+    this.searchByOrderTags(obj);
+  }
+
+  onOrderTagChecked(tag, checked: boolean): void {
+    if (checked) {
+      this.coreService.checkedOrderTags.add(tag);
+    } else {
+      this.coreService.checkedOrderTags.delete(tag);
+    }
+
+    this.updateSelectAllOrderTags();
+
+    const obj: any = {
+      orderTags: Array.from(this.coreService.checkedOrderTags),
+      controllerId: this.schedulerIds.selected
+    };
+    this.searchByOrderTags(obj);
+  }
+
+  updateSelectAllTags(): void {
+    this.coreService.allTagsSelected = this.coreService.selectedTags.length === this.coreService.checkedTags.size;
+  }
+
+  updateSelectAllOrderTags(): void {
+    this.coreService.allOrderTagsSelected = this.coreService.selectedOrderTags.length === this.coreService.checkedOrderTags.size;
+  }
+
+  private searchOrderObjects(value: string) {
+    if (value !== '') {
+      const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
+      if (searchValueWithoutSpecialChars.length >= 1) {
+        this.searchOrderTag.loading = true;
+        let request: any = {
+          search: value,
+          controllerId: this.schedulerIds.selected
+        };
+        if (this.searchOrderTag.token) {
+          request.token = this.searchOrderTag.token;
+        }
+        this.coreService.post('orders/tag/search', request).subscribe({
+          next: (res: any) => {
+            this.searchOrderTag.tags = res.results;
+            this.searchOrderTag.token = res.token;
+            this.searchOrderTag.loading = false;
+          }, error: () => this.searchOrderTag.loading = true
+        });
+      }
+    } else {
+      this.searchOrderTag.tags = [];
+    }
+  }
+
+  selectOrderTagOnSearch(tag): void {
+    this.coreService.selectedOrderTags.push(tag);
+    this.coreService.checkedOrderTags.add(tag.name);
+    this.coreService.removeOrderDuplicates();
+    const obj: any = {
+      orderTags: Array.from(this.coreService.checkedOrderTags),
+      controllerId: this.schedulerIds.selected
+    };
+    this.searchByOrderTags(obj);
+  }
+
+  objectOrderTreeSearch() {
+    $('#historyTagSearch').focus();
+    $('#historyOrderTagSearch').focus();
+    $('.editor-tree  a').addClass('hide-on-focus');
+  }
+
+  onTagChecked(tag, checked: boolean): void {
+    if (checked) {
+      this.coreService.checkedTags.add(tag);
+    } else {
+      this.coreService.checkedTags.delete(tag);
+    }
+
+    this.updateSelectAllTags();
+
+    const obj: any = {
+      tags: Array.from(this.coreService.checkedTags),
+      controllerId: this.schedulerIds.selected
+    };
+    this.searchByTags(obj);
+  }
+
+  clearOrderSearchInput(): void {
+    this.searchOrderTag.tags = [];
+    this.searchOrderTag.text = '';
+    $('.editor-tree  a').removeClass('hide-on-focus');
+  }
+
+  onOrderSearchInput(searchValue: string) {
+    this.searchOrderTerm.next(searchValue);
+  }
+
+  toggleSelectAllTags(selectAll: boolean): void {
+    this.coreService.allTagsSelected = selectAll;
+    if (selectAll) {
+      this.coreService.selectedTags.forEach(tag => {
+        this.coreService.checkedTags.add(tag.name);
+      });
+    } else {
+      this.coreService.checkedTags.clear();
+    }
+    const sortedTagNames = this.coreService.getSortedTags();
+    this.coreService.selectedTags.sort((a, b) => {
+      return sortedTagNames.indexOf(a.name) - sortedTagNames.indexOf(b.name);
+    });
+    this.updateWorkflowsAndOrdersByTags();
+  }
+
+
+  toggleSelectAllOrderTags(selectAll: boolean): void {
+    this.coreService.allOrderTagsSelected = selectAll;
+    if (selectAll) {
+      this.coreService.selectedOrderTags.forEach(tag => {
+        this.coreService.checkedOrderTags.add(tag.name);
+      });
+    } else {
+      this.coreService.checkedOrderTags.clear();
+    }
+    this.updateWorkflowsAndOrdersByOrderTags();
+  }
+
+  private updateWorkflowsAndOrdersByTags(): void {
+    const tags = Array.from(this.coreService.checkedTags);
+    const obj: any = {
+      tags,
+      controllerId: this.schedulerIds.selected
+    };
+    this.searchByTags(obj);
+  }
+
+  private searchObjects(value: string) {
+    if (value !== '') {
+      const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
+      if (searchValueWithoutSpecialChars.length >= 1) {
+        this.searchTag.loading = true;
+        let request: any = {
+          search: value,
+          controllerId: this.schedulerIds.selected
+        };
+        if (this.searchTag.token) {
+          request.token = this.searchTag.token;
+        }
+        this.coreService.post('workflows/tag/search', request).subscribe({
+          next: (res: any) => {
+            this.searchTag.tags = res.results;
+            this.searchTag.token = res.token;
+            this.searchTag.loading = false;
+          }, error: () => this.searchTag.loading = true
+        });
+      }
+    } else {
+      this.searchTag.tags = [];
+    }
+  }
+
+  private searchByTags(obj): void {
+    if (obj.tags.length > 0) {
+      this.orderHistory(obj,true)
+    } else {
+      this.historys = [];
+      this.hidePanel();
+      this.searchInResult();
+    }
+  }
+
+  hidePanel(): void {
+    this.showPanel = '';
+  }
+  private updateWorkflowsAndOrdersByOrderTags(): void {
+    const orderTags = Array.from(this.coreService.checkedOrderTags);
+    const obj: any = {
+      orderTags,
+      controllerId: this.schedulerIds.selected
+    };
+    this.searchByOrderTags(obj);
+  }
+
+  hideSidebarPanel(): void {
+    this.sideView.show = false;
+    this.coreService.hidePanel();
+  }
+
+  showSidebarPanel(): void {
+    this.sideView.show = true;
+    this.coreService.showLeftPanel();
+  }
+
+  onSearchInput(searchValue: string) {
+    this.searchTerm.next(searchValue);
+  }
+
+  selectTags(): void {
+    const temp = this.coreService.clone(this.coreService.selectedTags);
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateTagModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        filters: this.historyFilters,
+        controllerId: this.schedulerIds.selected
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(res => {
+      if (res) {
+        const obj: any = {
+          tags: [],
+          controllerId: this.schedulerIds.selected
+        };
+        this.coreService.selectedTags.forEach(tag => {
+          let flag = true;
+          for (let i = 0; i < temp.length; i++) {
+            if (tag.name == temp[i].name) {
+              temp.splice(i, 1);
+              flag = false;
+              break;
+            }
+          }
+          if (flag) {
+            this.coreService.checkedTags.add(tag.name);
+          }
+        });
+        obj.tags = Array.from(this.coreService.checkedTags);
+        this.searchByTags(obj);
+      }
+    });
+
+  }
+
+  selectAllTags(): void {
+    this.coreService.post('workflows/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe({
+      next: (res: any) => {
+        this.coreService.selectedTags = res.results;
+        this.coreService.allTagsSelected = true;
+        const obj: any = {
+          tags: [],
+          controllerId: this.schedulerIds.selected
+        };
+        this.coreService.selectedTags.forEach(tag => {
+          obj.tags.push(tag.name);
+          this.coreService.checkedTags.add(tag.name);
+        });
+        this.searchByTags(obj);
+      }
+    });
+  }
+
+  removeAllTags(): void {
+    this.coreService.selectedTags = [];
+    this.coreService.checkedTags.clear();
+    const obj: any = {
+      tags: [],
+      controllerId: this.schedulerIds.selected
+    };
+    this.searchByTags(obj);
+  }
+
+  selectTag(tag: string): void {
+    this.coreService.checkedTags.clear();
+    this.coreService.checkedTags.add(tag);
+    const obj: any = {
+      tags: [tag],
+      controllerId: this.schedulerIds.selected
+    };
+    this.searchByTags(obj);
   }
 }

@@ -2936,7 +2936,11 @@
       "fromSample": "par modèle",
       "preset": "preset",
       "manageCards": "Gérer l'affiche",
-      "templateType": "Template Type"
+      "templateType": "Template Type",
+      "lastMonth": "Last Month",
+      "last3Months": "Last 3 Months",
+      "last6Months": "Last 6 Month",
+      "lastYear": "Last Year"
     },
     "button" : {
       "runReport": "Exécuter le Rapport",

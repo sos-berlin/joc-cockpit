@@ -898,7 +898,7 @@ sort(type: string): void {
 
     const textColor = '#000000';
     pdf.setTextColor(textColor);
-    pdf.text(this.groupBy == 'template' ? this.selectedReport.template : this.selectedReport.path, pageWidth / 2, 60, { align: 'center' });
+    pdf.text(this.getTranslatedText(this.selectedReport), pageWidth / 2, 60, { align: 'center' });
 
     const capturePromises = Array.from(cards).map((card, index) => {
       return html2canvas(card as HTMLElement, {
@@ -941,7 +941,7 @@ sort(type: string): void {
       pdf.addImage(imgData, 'JPEG', xOffset, yOffset, pdfWidth, pdfHeight);
     });
 
-    pdf.save('report.pdf');
+    pdf.save('report_' + this.getTranslatedText(this.selectedReport) + '.pdf');
     this.loading = false;
     this.progress = 0;
     this.progressMessage = '';
