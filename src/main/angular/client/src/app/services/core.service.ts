@@ -48,6 +48,7 @@ export class CoreService {
     lock: {width: 270, show: true},
     board: {width: 270, show: true},
     report: {width: 270, show: true},
+    history: {width: 270, show: true},
     calendar: {width: 270, show: true},
     documentation: {width: 270, show: true},
     inventory: {width: 300, show: true},

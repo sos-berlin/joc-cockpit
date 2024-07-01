@@ -68,10 +68,6 @@
                nzType="folder"></i>
             <span class="p-l-sm">{{data.path}}</span>
           </div>
-          <div>
-            <i nz-icon nzTheme="outline" nzType="apartment" class="p-r-xs"></i>
-            {{'inventory.label.workflows' | translate}}
-          </div>
           <div *ngFor="let child of deployablesObject" class="m-l-md node-wrapper" style="width: 90%">
             <div>
                 <span [ngClass]="{'fa-circle-o': !child.valid, 'fa-circle dark-blue' :child.deployed || child.released, 'opacity7': child.syncState && (child.syncState._text === 'SUSPENDED' || child.syncState._text === 'SUSPENDING')}"

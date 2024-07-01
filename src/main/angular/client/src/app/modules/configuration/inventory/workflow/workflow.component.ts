@@ -3225,9 +3225,10 @@ export class ChangeImpactDialogComponent {
       }
     });
     setTimeout(() => {
-      this.draft()
-
-    }, 100)
+      if(this.impactedSchedules){
+        this.draft()
+      }
+    }, 300)
   }
 
   draft(): void {
@@ -4822,11 +4823,12 @@ export class WorkflowComponent {
     });
   }
 
-  onKeyDown(event: KeyboardEvent): void {
-    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
-      this.changeImpact();
+
+    onInput(inputValue: any): void {
+      if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules && inputValue !== null && inputValue !== undefined && inputValue !== '') {
+        this.changeImpact();
+      }
     }
-  }
 
   handleClick(): void {
     if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
@@ -5374,22 +5376,20 @@ export class WorkflowComponent {
   }
 
   removeVariable(index): void {
-    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
-      this.changeImpact();
-    } else {
       this.variableDeclarations.parameters.splice(index, 1);
       this.updateOtherProperties('variable');
+    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
+      this.changeImpact();
     }
   }
 
   removeVariableFromList(list, index, flag = true): void {
-    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
-      this.changeImpact();
-    } else {
       list.splice(index, 1);
       if (flag) {
         this.updateOtherProperties('variable');
       }
+    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
+      this.changeImpact();
     }
   }
 

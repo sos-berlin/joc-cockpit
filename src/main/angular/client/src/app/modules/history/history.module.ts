@@ -11,12 +11,14 @@ import {HistoryRoutingModule} from './history-routing.module';
 import {SharedModule} from '../shared/shared.module';
 import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
 import {FileTransferService} from '../../services/file-transfer.service';
+import {NzTabsModule} from "ng-zorro-antd/tabs";
 
 @NgModule({
-  imports: [
-    SharedModule,
-    HistoryRoutingModule
-  ],
+    imports: [
+        SharedModule,
+        HistoryRoutingModule,
+        NzTabsModule
+    ],
   providers: [FileTransferService],
   declarations: [
     HistoryComponent,

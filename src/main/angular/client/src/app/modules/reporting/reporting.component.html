@@ -72,21 +72,21 @@
                           <button (click)="filterBy({state: 'lastMonth'})"
                       [ngClass]="{'btn-primary': filter.generateReport.filter.state=='lastMonth'}"
                       class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                Last Month
+                            reporting.label.lastMonth
               </button>
               <button (click)="filterBy({state: 'last3Months'})"
                       [ngClass]="{'btn-primary': filter.generateReport.filter.state=='last3Months'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>Last 3 Months
+                      class="btn btn-grey btn-sm button-group-ellipsis" translate>reporting.label.last3Months
               </button>
               <button (click)="filterBy({state: 'last6Months'})"
                       [ngClass]="{'btn-primary': filter.generateReport.filter.state=='last6Months'}"
                       class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                Last 6 Months
+                reporting.label.last6Months
               </button>
               <button (click)="filterBy({state: 'lastYear'})"
                       [ngClass]="{'btn-primary': filter.generateReport.filter.state=='lastYear'}"
                       class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                Last year
+                reporting.label.lastYear
               </button>
             </div>
             <button [nzDropdownMenu]="filteration" [nzPlacement]="'bottomRight'"
