@@ -7,7 +7,6 @@ import PerfectScrollbar from 'perfect-scrollbar';
 import {CoreService} from "../../../services/core.service";
 import {AuthService} from "../../../components/guard";
 import {TranslateService} from '@ngx-translate/core';
-
 @Component({
   selector: 'app-frequency-report',
   templateUrl: './frequency-report.component.html',
@@ -22,6 +21,8 @@ export class FrequencyReportComponent {
   preferences: any = {};
   isLoading: boolean;
   loading: boolean;
+  progress: number = 0;
+  progressMessage: string = 'Initializing...';
   isPathDisplay = true;
   dateFormat: string;
   clickData: any;
@@ -867,45 +868,89 @@ sort(type: string): void {
 
   async createReport() {
     this.loading = true;
+    this.progress = 0;
+    this.progressMessage = 'Initializing...';
 
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     const contentElement = this.elementRef.nativeElement.querySelector('#content');
     const initialMaxHeightContent = contentElement.style.maxHeight;
+    const initialOverflow = contentElement.style.overflow;
+    const initialScrollTop = contentElement.scrollTop;
+
     contentElement.style.maxHeight = 'inherit';
+    contentElement.style.overflow = 'visible';
+    contentElement.scrollTop = 0;
 
-    let scale = 1;
-    const canvas = await html2canvas(contentElement, {
-      scale: scale,
-      scrollY: -window.scrollY,
-      useCORS: true
-    });
-
-    contentElement.style.maxHeight = initialMaxHeightContent;
-
-    const imgData = canvas.toDataURL('image/jpeg', 1.0);
-    const imgWidth = canvas.width;
-    const imgHeight = canvas.height;
-
+    const cards = contentElement.querySelectorAll('.card') as NodeListOf<HTMLElement>; // Adjust the selector as needed
+    const scale = 1;
+    const padding = 20;
 
     const pdf = new jsPDF({
       orientation: 'p',
       unit: 'px',
-      format: [imgWidth, imgHeight + 50]
+      format: 'a4'
     });
 
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const contentWidth = pageWidth - padding * 2;
 
     const textColor = '#000000';
     pdf.setTextColor(textColor);
-    pdf.text(this.groupBy == 'template' ? this.selectedReport.template : this.selectedReport.path, imgWidth / 2, 20, {align: 'center'});
+    pdf.text(this.groupBy == 'template' ? this.selectedReport.template : this.selectedReport.path, pageWidth / 2, 60, { align: 'center' });
 
+    const capturePromises = Array.from(cards).map((card, index) => {
+      return html2canvas(card as HTMLElement, {
+        scale: scale,
+        useCORS: true,
+        logging: false,
+        windowWidth: card.clientWidth,
+        windowHeight: card.clientHeight
+      }).then((canvas) => {
+        this.progress = Math.round(((index + 1) / cards.length) * 100);
+        this.progressMessage = `Processing card ${index + 1} of ${cards.length}`;
+        return canvas;
+      });
+    });
 
-    pdf.addImage(imgData, 'JPEG', 0, 30, imgWidth, imgHeight);
+    const canvases = await Promise.all(capturePromises);
 
+    canvases.forEach((canvas, i) => {
+      if (i > 0) {
+        pdf.addPage();
+      }
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.8);
+      const imgWidth = canvas.width / scale;
+      const imgHeight = canvas.height / scale;
+      const aspectRatio = imgWidth / imgHeight;
+
+      let pdfWidth, pdfHeight;
+      if (imgWidth > imgHeight) {
+        pdfWidth = contentWidth;
+        pdfHeight = contentWidth / aspectRatio;
+      } else {
+        pdfHeight = pageHeight - padding * 2;
+        pdfWidth = pdfHeight * aspectRatio;
+      }
+
+      const xOffset = (pageWidth - pdfWidth) / 2;
+      const yOffset = (pageHeight - pdfHeight) / 2 + (i === 0 ? 60 : 0);
+
+      pdf.addImage(imgData, 'JPEG', xOffset, yOffset, pdfWidth, pdfHeight);
+    });
 
     pdf.save('report.pdf');
     this.loading = false;
+    this.progress = 0;
+    this.progressMessage = '';
+
+    contentElement.style.maxHeight = initialMaxHeightContent;
+    contentElement.style.overflow = initialOverflow;
+    contentElement.scrollTop = initialScrollTop;
   }
+
 
 
 

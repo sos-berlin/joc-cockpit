@@ -70,11 +70,12 @@ import {SearchInputComponent} from "../../components/search-input/search-input.c
 import {SelectInputComponent} from "../../components/select-input/select-input.component";
 import {FileUploaderComponent} from '../../components/file-uploader/file-uploader.component';
 import {DateInputComponent} from "../../components/date-input/date-input.component";
+import {NzProgressModule} from "ng-zorro-antd/progress";
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzTagModule, NzSelectModule,
   NzInputModule, NzMessageModule, NzRadioModule, ChartsModule, NzTreeSelectModule,
-  NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule];
+  NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule, NzProgressModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
   ModifyStartTimeModalComponent];

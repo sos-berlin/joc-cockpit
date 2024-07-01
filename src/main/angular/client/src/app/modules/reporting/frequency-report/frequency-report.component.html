@@ -342,5 +342,10 @@
     <div class="cssload-inner cssload-two"></div>
     <div class="cssload-inner cssload-three"></div>
   </div>
+  <div *ngIf="loading" class="progress-bar-container spinner" style="top: calc(50% - 81px);">
+    <nz-progress [nzPercent]="progress" nzStatus="active"></nz-progress>
+    <div>{{progressMessage}}</div>
+  </div>
+
 </div>
 

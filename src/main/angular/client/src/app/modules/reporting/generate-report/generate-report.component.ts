@@ -327,6 +327,13 @@ export class GenerateReportComponent {
       return new Date(year, month + 1, 0);
     };
 
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
     switch (timePeriod.state) {
       case "All":
         fromDate = undefined;
@@ -337,11 +344,11 @@ export class GenerateReportComponent {
         toDate = getLastDayOfMonth(currentDate.getFullYear(), currentDate.getMonth() - 1);
         break;
       case "last3Months":
-        fromDate = getFirstDayOfMonth(currentDate.getFullYear(), currentDate.getMonth() - 2);
+        fromDate = getFirstDayOfMonth(currentDate.getFullYear(), currentDate.getMonth() - 3);
         toDate = getLastDayOfMonth(currentDate.getFullYear(), currentDate.getMonth() - 1);
         break;
       case "last6Months":
-        fromDate = getFirstDayOfMonth(currentDate.getFullYear(), currentDate.getMonth() - 5);
+        fromDate = getFirstDayOfMonth(currentDate.getFullYear(), currentDate.getMonth() - 6);
         toDate = getLastDayOfMonth(currentDate.getFullYear(), currentDate.getMonth() - 1);
         break;
       case "lastYear":
@@ -354,14 +361,16 @@ export class GenerateReportComponent {
         break;
     }
 
-    if (fromDate != undefined && toDate != undefined) {
-      this.fromDate = fromDate.toISOString().split('T')[0];
-      this.toDate = toDate.toISOString().split('T')[0];
+    if (fromDate !== undefined && toDate !== undefined) {
+      this.fromDate = formatDate(fromDate);
+      this.toDate = formatDate(toDate);
     } else {
       this.fromDate = fromDate;
       this.toDate = toDate;
     }
   }
+
+
 
 
   checkAll(value: boolean): void {
