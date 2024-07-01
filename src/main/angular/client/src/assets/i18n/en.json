@@ -2936,10 +2936,10 @@
       "fromSample": "from sample",
       "preset": "preset",
       "manageCards": "Manage Cards",
-      "templateType": "Template Type",
+      "templateType": "Report Template Type",
       "lastMonth": "Last Month",
       "last3Months": "Last 3 Months",
-      "last6Months": "Last 6 Month",
+      "last6Months": "Last 6 Months",
       "lastYear": "Last Year"
     },
     "button" : {

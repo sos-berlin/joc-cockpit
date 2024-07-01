@@ -2936,11 +2936,11 @@
       "fromSample": "aus Muster",
       "preset": "voreingestellt",
       "manageCards": "Anzeige verwalten",
-      "templateType": "Template Type",
-      "lastMonth": "Last Month",
-      "last3Months": "Last 3 Months",
-      "last6Months": "Last 6 Month",
-      "lastYear": "Last Year"
+      "templateType": "Typ der Berichtsvorlage",
+      "lastMonth": "Letzter Monat",
+      "last3Months": "Letzte 3 Monate",
+      "last6Months": "Letzte 6 Monate",
+      "lastYear": "Letztes Jahr"
     },
     "button" : {
       "runReport": "Berichtslauf starten",

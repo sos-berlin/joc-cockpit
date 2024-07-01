@@ -2936,11 +2936,11 @@
       "fromSample": "par modèle",
       "preset": "prédéfini",
       "manageCards": "Gérer l'affiche",
-      "templateType": "Type de Modèle",
-      "lastMonth": "Last Month",
-      "last3Months": "Last 3 Months",
-      "last6Months": "Last 6 Month",
-      "lastYear": "Last Year"
+      "templateType": "Type de Modèle de Rapport",
+      "lastMonth": "Dernier Moias",
+      "last3Months": "Dernier 3 Mois",
+      "last6Months": "Dernier 6 Mois",
+      "lastYear": "Dernier An"
       
     },
     "button" : {
