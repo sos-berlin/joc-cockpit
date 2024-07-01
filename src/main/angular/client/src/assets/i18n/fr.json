@@ -826,7 +826,7 @@
     "label.select": "Sélectionnez",
     "label.chooseTemplates": "Choisir les planification",
     "label.submissionHistory": "Historique du Plan Quotidien",
-    "label.overwrite": "Ecraser",
+    "label.overwrite": "Remplacer",
     "label.planeDate": "Date du Plan Quotidien",
     "label.created": "Créé",
     "label.submitWith": "Soumettre au Contrôleur",
