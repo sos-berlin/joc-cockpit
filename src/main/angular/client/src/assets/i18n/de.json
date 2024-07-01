@@ -2934,7 +2934,7 @@
       "highest": "höchster",
       "lowest": "geringster",
       "fromSample": "aus Muster",
-      "preset": "preset",
+      "preset": "voreingestellt",
       "manageCards": "Anzeige verwalten",
       "templateType": "Template Type"
     },
@@ -2958,7 +2958,7 @@
       "WORKFLOWS_FREQUENTLY_FAILED": "Häufigste ${hits} Arbeitsbläufe mit ${sort} Anzahl fehlgeschlagener Ausführungen",
       "JOBS_FREQUENTLY_FAILED": "Häufigste ${hits} Jobs mit ${sort} Anzahl fehlgeschlagener Ausführungen",
       "AGENTS_PARALLEL_JOB_EXECUTIONS": "Häufigste ${hits} Agenten mit ${sort} Anzahl paralleler Job-Ausführungen",
-      "JOBS_EXECUTIONS_FREQUENCY": "Häufigste ${hits} hoch-kritische Jobs mit ${sort} Anzahl fehlgeschlagener Ausführungen",
+      "JOBS_EXECUTIONS_FREQUENCY": "Häufigste ${hits} Jobs hoher Kritikalität mit ${sort} Anzahl fehlgeschlagener Ausführungen",
       "ORDERS_EXECUTIONS_FREQUENCY": "Häufigste ${hits} Arbeitsbläufe mit ${sort} Anzahl fehlgeschlagener Ausführungen für abgebrochene Aufträge",
       "WORKFLOWS_LONGEST_EXECUTION_TIMES": "Häufigste ${hits} Arbeitsbläufe mit ${sort} Ausführungsdauer",
       "JOBS_LONGEST_EXECUTION_TIMES": "Häufigste ${hits} Jobs mit ${sort} Ausführungsdauer",
