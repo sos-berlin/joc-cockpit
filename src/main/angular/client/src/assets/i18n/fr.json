@@ -420,7 +420,7 @@
     "label.showAssignedAgents": "Afficher l'utilisation du Certificat par les Agents",
     "label.assignedAgents": "Utilisation par Agents",
     "label.selectCertAlias": "Sélectionner Certificat",
-    "label.pasteCertificate": "Coller Certificat",    
+    "label.pasteCertificate": "Coller Certificat",
     "placeholder.agentId": "ID Agent",
     "placeholder.certAlias": "Alias de Certificat",
     "placeholder.certificate": "Coller le Certificat ici",

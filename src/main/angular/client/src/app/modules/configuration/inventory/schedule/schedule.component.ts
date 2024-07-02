@@ -1601,6 +1601,7 @@ export class ScheduleComponent {
   }
 
   changeWorkflow(data): void {
+    this.tags = [];
     if (this.schedule.configuration.workflowNames.length === 0) {
       this.schedule.configuration.orderParameterisations = [];
       this.variableList = [];

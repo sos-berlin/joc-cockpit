@@ -1266,6 +1266,14 @@ export class HistoryComponent {
         obj.historyStates.push(this.order.filter.historyStates);
       }
     }
+    if (this.historyFilters && !isEmpty(this.historyFilters)) {
+      if (this.historyFilters.tags && this.historyFilters.tags.length > 0) {
+        obj.tags = this.historyFilters.tags;
+      }
+      if (this.historyFilters.orderTags && this.historyFilters.orderTags.length > 0) {
+        obj.orderTags = this.historyFilters.orderTags;
+      }
+    }
     this.convertRequestBody(obj);
     this.coreService.post('orders/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
@@ -1366,6 +1374,14 @@ export class HistoryComponent {
       if (this.task.filter.historyStates && this.task.filter.historyStates != 'ALL' && this.task.filter.historyStates.length > 0) {
         obj.historyStates = [];
         obj.historyStates.push(this.task.filter.historyStates);
+      }
+    }
+    if (this.historyFilters && !isEmpty(this.historyFilters)) {
+      if (this.historyFilters.tags && this.historyFilters.tags.length > 0) {
+        obj.tags = this.historyFilters.tags;
+      }
+      if (this.historyFilters.orderTags && this.historyFilters.orderTags.length > 0) {
+        obj.orderTags = this.historyFilters.orderTags;
       }
     }
     this.convertRequestBody(obj);
@@ -4290,8 +4306,6 @@ export class HistoryComponent {
 
   switchToTagging(flag): void {
     this.historyFilters.tagType = flag;
-    this.historys = [];
-    this.data = [];
     const obj: any = {
       controllerId: this.schedulerIds.selected
     };
@@ -4303,9 +4317,7 @@ export class HistoryComponent {
       obj.folders = [{folder: '/', recursive: true}];
     }
     if (obj.tags?.length > 0 || obj.folders?.length > 0 || obj.orderTags?.length > 0) {
-      this.orderHistory(obj, true);
     } else {
-      this.historys = [];
       this.searchInResult();
     }
   }
@@ -4322,13 +4334,13 @@ export class HistoryComponent {
   }
 
   private searchByOrderTags(obj): void {
-    if (obj.orderTags.length > 0) {
+    if(this.historyFilters.type === 'ORDER'){
       this.orderHistory(obj,true);
-    } else {
-      this.historys = [];
-      this.hidePanel();
-      this.searchInResult();
+    }else if(this.historyFilters.type === 'TASK'){
+      this.taskHistory(obj, true);
     }
+    this.hidePanel();
+    this.searchInResult();
   }
 
   selectOrderTags(): void {
@@ -4380,13 +4392,15 @@ export class HistoryComponent {
         this.coreService.selectedOrderTags = res.results;
         this.coreService.allOrderTagsSelected = true;
         const obj: any = {
-          orderTags: [],
           controllerId: this.schedulerIds.selected
         };
-        this.coreService.selectedOrderTags.forEach(tag => {
-          obj.orderTags.push(tag.name);
-          this.coreService.checkedOrderTags.add(tag.name);
-        });
+        if(this.coreService.selectedOrderTags.length > 0){
+          obj.orderTags = [];
+          this.coreService.selectedOrderTags.forEach(tag => {
+            obj.orderTags.push(tag.name);
+            this.coreService.checkedOrderTags.add(tag.name);
+          });
+        }
         this.searchByOrderTags(obj);
       }
     });
@@ -4396,7 +4410,6 @@ export class HistoryComponent {
     this.coreService.selectedOrderTags = [];
     this.coreService.checkedOrderTags.clear();
     const obj: any = {
-      orderTags: [],
       controllerId: this.schedulerIds.selected
     };
     this.searchByOrderTags(obj);
@@ -4568,13 +4581,13 @@ export class HistoryComponent {
   }
 
   private searchByTags(obj): void {
-    if (obj.tags.length > 0) {
-      this.orderHistory(obj,true)
-    } else {
-      this.historys = [];
-      this.hidePanel();
-      this.searchInResult();
+    if(this.historyFilters.type === 'ORDER'){
+      this.orderHistory(obj,true);
+    }else if(this.historyFilters.type === 'TASK'){
+      this.taskHistory(obj, true);
     }
+    this.hidePanel();
+    this.searchInResult();
   }
 
   hidePanel(): void {
@@ -4652,13 +4665,15 @@ export class HistoryComponent {
         this.coreService.selectedTags = res.results;
         this.coreService.allTagsSelected = true;
         const obj: any = {
-          tags: [],
           controllerId: this.schedulerIds.selected
         };
-        this.coreService.selectedTags.forEach(tag => {
-          obj.tags.push(tag.name);
-          this.coreService.checkedTags.add(tag.name);
-        });
+        if(this.coreService.selectedTags.length > 0) {
+          obj.tags = [];
+          this.coreService.selectedTags.forEach(tag => {
+            obj.tags.push(tag.name);
+            this.coreService.checkedTags.add(tag.name);
+          });
+        }
         this.searchByTags(obj);
       }
     });
@@ -4668,7 +4683,6 @@ export class HistoryComponent {
     this.coreService.selectedTags = [];
     this.coreService.checkedTags.clear();
     const obj: any = {
-      tags: [],
       controllerId: this.schedulerIds.selected
     };
     this.searchByTags(obj);

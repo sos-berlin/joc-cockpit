@@ -11,6 +11,7 @@ import { ByteToSizePipe } from 'src/app/pipes/core.pipe';
 import { HttpHeaders } from '@angular/common/http';
 import { ConfirmModalComponent } from 'src/app/components/comfirm-modal/confirm.component';
 import { CommentModalComponent } from 'src/app/components/comment-modal/comment.component';
+import {ShowAgentsModalComponent} from "../configuration/inventory/inventory.component";
 
 declare const $: any;
 
@@ -28,15 +29,17 @@ export class AddEnciphermentModalComponent {
   required = false;
   encipherment: any;
   title: any;
+  schedulerIds: any;
 
   nodes = [];
   folderObj: any = {paths: []};
 
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService){}
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,private modal: NzModalService){}
 
   ngOnInit(): void {
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     this.display = this.modalData.display;
     this.securityLevel = this.modalData.securityLevel;
     this.title = this.modalData.title;
@@ -86,6 +89,24 @@ export class AddEnciphermentModalComponent {
     return data.key;
   }
 
+  showAssignedAgents(selectedCert) {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ShowAgentsModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        controllerId: this.schedulerIds.selected,
+        selectedCert
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+      }
+    });
+  }
   onSubmit() {
     this.submitted = true;
     let auditLog: any = {};

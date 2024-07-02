@@ -94,6 +94,11 @@
         </div>
       </div>
     </div>
+    <div class="form-group row">
+      <div class="col-sm-12">
+        <a *ngIf="certificateObj.certAlias" (click)="showAssignedAgents(certificateObj.certAlias)" class="text-u-l" translate>encipherment.label.showAssignedAgents</a>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"

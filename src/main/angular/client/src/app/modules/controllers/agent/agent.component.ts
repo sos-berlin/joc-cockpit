@@ -1115,9 +1115,7 @@ export class AgentComponent {
 
         this.selectedCluster.subagentIds.push(obj);
         this.updateCluster();
-       setTimeout(() => {
-         this.storeCluster(obj);
-       },50)
+        this.storeCluster(obj);
       }
     }
   }

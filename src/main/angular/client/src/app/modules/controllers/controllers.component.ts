@@ -565,30 +565,61 @@ export class ControllersComponent {
   }
 
   deleteController(matser): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmModalComponent,
-      nzAutofocus: null,
-      nzData: {
-        title: 'delete',
-        message: 'deleteController',
-        type: 'Delete',
-        objectName: matser
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.coreService.post('controller/cleanup', {controllerId: matser}).subscribe(() => {
-          setTimeout(() => {
-            if (!this.isLoaded) {
-              this.getSchedulerIds();
-            }
-          }, 250);
-        });
-      }
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Controller',
+        operation: 'Delete',
+        name: ''
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          console.log(result);
+          this._deleteController(matser, result);
+        }
+      });
+    }else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzAutofocus: null,
+        nzData: {
+          title: 'delete',
+          message: 'deleteController',
+          type: 'Delete',
+          objectName: matser
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._deleteController(matser);
+        }
+      });
+    }
+  }
+
+  private _deleteController(matser, auditLog = {}): void {
+    this.coreService.post('controller/cleanup', {controllerId: matser, auditLog}).subscribe(() => {
+      setTimeout(() => {
+        if (!this.isLoaded) {
+          this.getSchedulerIds();
+        }
+      }, 250);
     });
   }
 

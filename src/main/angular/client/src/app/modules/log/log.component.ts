@@ -765,6 +765,20 @@ export class LogComponent {
         if (dt[i].cycle.prepared.end) {
           col += ', end(' + dt[i].cycle.prepared.end + ')';
         }
+      }else if (dt[i].orderAdded) {
+        col += `, OrderAdded(id=${dt[i].orderAdded.orderId}, workflow=${dt[i].orderAdded.workflowPath}, arguments(`;
+        if (dt[i].orderAdded.arguments) {
+          let arr: any = Object.entries(dt[i].orderAdded.arguments).map(([k1, v1]) => {
+            if (v1 && typeof v1 == 'object') {
+              v1 = Object.entries(v1).map(([k1, v1]) => {
+                return {name: k1, value: v1};
+              });
+            }
+            return {name: k1, value: v1};
+          });
+          col = this.coreService.createLogOutputString(arr, col);
+        }
+        col += '))';
       }
 
       if (dt[i].logEvent === 'OrderProcessingStarted') {

@@ -23,6 +23,7 @@ import {InventoryObject} from '../../../models/enums';
 import {UpdateJobTemplatesComponent} from "./job-template/job-template.component";
 import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
 import {WorkflowService} from "../../../services/workflow.service";
+import { NzSelectComponent } from 'ng-zorro-antd/select';
 
 declare const $: any;
 
@@ -65,7 +66,7 @@ export class CreateTagModalComponent {
   tagType: string;
 
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
-  @ViewChild('tagSelect') tagSelect: ElementRef;
+  @ViewChild(NzSelectComponent) tagSelect;
 
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private workflowService: WorkflowService) {
@@ -109,10 +110,10 @@ export class CreateTagModalComponent {
     }
   }
 
-  ngafterViewInit() {
+  ngAfterViewInit() {
     setTimeout(() => {
-      this.tagSelect?.nativeElement.focus();
-    }, 10);
+      this.tagSelect?.focus();
+    }, 100);
   }
 
   onChange(value: string): void {

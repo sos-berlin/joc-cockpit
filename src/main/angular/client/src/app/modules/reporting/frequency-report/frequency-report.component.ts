@@ -897,7 +897,7 @@ sort(type: string): void {
     contentElement.scrollTop = 0;
 
     const cards = contentElement.querySelectorAll('.card') as NodeListOf<HTMLElement>; // Adjust the selector as needed
-    const scale = 1;
+    const scale = 2; // Increased scale for higher resolution
     const padding = 20;
 
     const pdf = new jsPDF({
@@ -919,8 +919,9 @@ sort(type: string): void {
         scale: scale,
         useCORS: true,
         logging: false,
-        windowWidth: card.clientWidth,
-        windowHeight: card.clientHeight
+        backgroundColor: null, // Ensure background color is preserved
+        scrollX: 0,
+        scrollY: 0
       }).then((canvas) => {
         this.progress = Math.round(((index + 1) / cards.length) * 100);
         this.progressMessage = `Processing card ${index + 1} of ${cards.length}`;
@@ -949,6 +950,17 @@ sort(type: string): void {
         pdfWidth = pdfHeight * aspectRatio;
       }
 
+    
+      if (pdfWidth > contentWidth) {
+        pdfWidth = contentWidth;
+        pdfHeight = pdfWidth / aspectRatio;
+      }
+
+      if (pdfHeight > (pageHeight - padding * 2)) {
+        pdfHeight = pageHeight - padding * 2;
+        pdfWidth = pdfHeight * aspectRatio;
+      }
+
       const xOffset = (pageWidth - pdfWidth) / 2;
       const yOffset = (pageHeight - pdfHeight) / 2 + (i === 0 ? 60 : 0);
 
@@ -964,6 +976,7 @@ sort(type: string): void {
     contentElement.style.overflow = initialOverflow;
     contentElement.scrollTop = initialScrollTop;
   }
+
 
 
 

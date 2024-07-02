@@ -123,7 +123,7 @@
 
                             <nz-collapse-panel [nzHeader]="headerTemplate" [nzActive]="data.period.active">
                             <div>
-                              <div *ngFor="let item of data.data; let i = index"
+                              <div class="table-color" *ngFor="let item of data.data; let i = index"
                                    style="padding-bottom: 0px !important;">
                                 <div *ngIf="i == 0" class="flex-container">
                                   <div class="flex-item" style="width: 100%;font-weight: bold;"><span
@@ -159,7 +159,7 @@
                                              [nzActive]="data.workflowName ? data.workflowName.active : false">
 
                           <div>
-                              <div *ngFor="let item of data.data; let i = index"
+                              <div class="table-color" *ngFor="let item of data.data; let i = index"
                                    style="padding-bottom: 0px !important;">
                                 <div *ngIf="i == 0" class="flex-container">
                                   <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.startTime</span>
@@ -189,7 +189,7 @@
                                              [nzActive]="data.workflowName ? data.workflowName.active : false">
 
                           <div>
-                              <div *ngFor="let item of data.data; let i = index"
+                              <div class="table-color" *ngFor="let item of data.data; let i = index"
                                    style="padding-bottom: 0px !important;">
                                 <div *ngIf="i == 0" class="flex-container">
                                   <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.startTime</span>
@@ -216,7 +216,7 @@
                                              [nzHeader]="data.workflowName + (data.jobName ? '/' + data.jobName : '') + ' - ' + ' (' + formatDuration(data.duration) + ')' "
                                              [nzActive]="(data.workflowName ? data.workflowName.active : data.workflowName.active)">
                             <div>
-                              <div style="padding-bottom: 0 !important;">
+                              <div class="table-color" style="padding-bottom: 0 !important;">
                                 <div class="flex-container">
                                   <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.startTime</span>
                                   </div>
@@ -242,7 +242,7 @@
                                              [nzHeader]="data.agentName + ' - ' + ' (' + data.count + ')' "
                                              [nzActive]="data.agentName.active">
                             <div>
-                              <div style="padding-bottom: 0px !important;">
+                              <div class="table-color" style="padding-bottom: 0px !important;">
                                 <div class="flex-container">
                                   <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>agent.label.agentName</span>
                                   </div>
@@ -262,7 +262,7 @@
                                              [nzHeader]="(data.jobName ? data.workflowName + '/' + data.jobName : data.workflowName) + ' - ' + ' (' + data.count + ')' "
                                              [nzActive]="(data.workflowName ? data.workflowName.active : data.workflowName.active)">
                             <div>
-                              <div *ngFor="let item of data.data; let i = index" class="p-a-sm"
+                              <div class="table-color" *ngFor="let item of data.data; let i = index" class="p-a-sm"
                                    style="padding-bottom: 4px !important;">
                                 <div *ngIf="i == 0" class="flex-container">
                                   <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.startTime</span>
@@ -285,7 +285,7 @@
                       <div class="job-execution" *ngIf="item.templateName === 'JOBS_HIGH_LOW_EXECUTION_PERIODS'">
                         <nz-collapse>
                           <nz-collapse-panel [nzHeader]="'Low Parallelism'">
-                            <div>
+                            <div class="table-color">
                               <div class="flex-container" style="font-weight: bold;">
                                 <div class="flex-item" style="width: 50%;"><span translate>history.label.startTime</span></div>
                                 <div class="flex-item" style="width: 25%;"><span translate>history.label.workflow</span></div>
@@ -302,7 +302,7 @@
                           </nz-collapse-panel>
 
                           <nz-collapse-panel [nzHeader]="'High Parallelism'">
-                            <div>
+                            <div class="table-color">
                               <div class="flex-container" style="font-weight: bold;">
                                 <div class="flex-item" style="width: 50%;"><span translate>history.label.startTime</span></div>
                                 <div class="flex-item" style="width: 25%;"><span translate>history.label.workflow</span></div>
@@ -322,7 +322,7 @@
                     </perfect-scrollbar>
                   </div>
                 </div>
-                <span style="position: absolute; bottom: 5px; left: 6px; font-size: medium" class="card-number"> #{{ item.originalIndex }}</span>
+                <span style="position: absolute; bottom: 3px; left: 3px; font-size: medium" class="card-number"> #{{ item.originalIndex }}</span>
               </div>
             </div>
           </ng-container>
