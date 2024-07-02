@@ -16,12 +16,13 @@ import {
   HighlightSearch,
   StringDatePipe,
   StringTimePipe,
+  PreferredDatePipe,
   TimeInStringFormatPipe, StringToLinkPipe, ByteToSizePipe
 } from '../../pipes/core.pipe';
 import {Shared3Module} from './shared3.module';
 
 const MODULES = [Shared3Module, PerfectScrollbarModule, NzEmptyModule, NzCheckboxModule, NzTreeModule, NzIconModule];
-const PIPES = [StringDatePipe, TimeInStringFormatPipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe, ByteToSizePipe, OrderPipe, HighlightSearch, StringToLinkPipe];
+const PIPES = [StringDatePipe,PreferredDatePipe, TimeInStringFormatPipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe, ByteToSizePipe, OrderPipe, HighlightSearch, StringToLinkPipe];
 const EXPORTS = [...PIPES, EmptyDataComponent, BreadcrumbsComponent, OrderActionComponent];
 
 @NgModule({
@@ -32,7 +33,7 @@ const EXPORTS = [...PIPES, EmptyDataComponent, BreadcrumbsComponent, OrderAction
   declarations: [
     ...EXPORTS
   ],
-  providers: [TimeInStringFormatPipe, StringDatePipe],
+  providers: [TimeInStringFormatPipe, StringDatePipe, PreferredDatePipe],
   exports: [...MODULES, ...EXPORTS]
 })
 export class Shared2Module {

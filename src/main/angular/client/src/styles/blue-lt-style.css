@@ -1264,6 +1264,14 @@ div.jsoneditor-value.jsoneditor-invalid {
   background-color: var(--background-color)
 }
 
+.table-view {
+  background-color: var(--background-color)!important;
+}
+
+.table-color {
+  background-color: var(--background-color)!important;
+}
+
 .tableCollapse{
   background-color: var(--background-color)
 }

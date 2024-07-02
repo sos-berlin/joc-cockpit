@@ -280,12 +280,12 @@ removeCard(cardId: any): void {
             chartData.labels.push(label);
             break;
           case 'PERIODS_MOST_ORDER_EXECUTIONS':
-            label = `${this.stringToDate(item.period.split(' - ')[0])} - ${this.stringToDate(item.period.split(' - ')[1])} - (${(item.count)})`;
+            label = `${this.preferredDate(item.period.split(' - ')[0])} - ${this.preferredDate(item.period.split(' - ')[1])} - (${(item.count)})`;
             key = 'Workflow executions'
             chartData.labels.push(label);
             break;
           case 'PERIODS_MOST_JOB_EXECUTIONS':
-            label = `${this.stringToDate(item.period.split(' - ')[0])} - ${this.stringToDate(item.period.split(' - ')[1])} - (${(item.count)})`;
+            label = `${this.preferredDate(item.period.split(' - ')[0])} - ${this.preferredDate(item.period.split(' - ')[1])} - (${(item.count)})`;
             key = 'Job executions'
             chartData.labels.push(label);
             break;
@@ -323,6 +323,20 @@ removeCard(cardId: any): void {
       return this.coreService.getDateByFormat(date, null, 'DD.MM.YYYY HH:mm:ss');
     }
   }
+
+  private preferredDate(date: any): any {
+    if (sessionStorage['preferences']) {
+      const n = JSON.parse(sessionStorage['preferences']);
+      if (!n.zone) {
+        return '';
+      }
+      return this.coreService.getPreferredDateByFormat(date, n.zone, n.dateFormat);
+    } else {
+      return this.coreService.getPreferredDateByFormat(date, null, 'DD.MM.YYYY HH:mm:ss');
+    }
+  }
+
+
   formatDuration(durationInSeconds: number): any {
     const days = Math.floor(durationInSeconds / (60 * 60 * 24));
     const hours = Math.floor((durationInSeconds % (60 * 60 * 24)) / (60 * 60));
@@ -688,11 +702,11 @@ removeCard(cardId: any): void {
           data.datasets[0].data.push(report.data[i].duration);
           break;
         case 'PERIODS_MOST_ORDER_EXECUTIONS':
-          data.labels.push(`${this.stringToDate(report.data[i].period.split(' - ')[0])} - ${this.stringToDate(report.data[i].period.split(' - ')[1])}`);
+          data.labels.push(`${this.preferredDate(report.data[i].period.split(' - ')[0])} - ${this.preferredDate(report.data[i].period.split(' - ')[1])}`);
           data.datasets[0].data.push(report.data[i].count);
           break;
         case 'PERIODS_MOST_JOB_EXECUTIONS':
-          data.labels.push(`${this.stringToDate(report.data[i].period.split(' - ')[0])} - ${this.stringToDate(report.data[i].period.split(' - ')[1])}`);
+          data.labels.push(`${this.preferredDate(report.data[i].period.split(' - ')[0])} - ${this.preferredDate(report.data[i].period.split(' - ')[1])}`);
           data.datasets[0].data.push(report.data[i].count);
           break;
         case 'JOBS_SUCCESSFUL_EXECUTIONS':
@@ -967,5 +981,6 @@ sort(type: string): void {
 
     return translatedText;
   }
+
 
 }

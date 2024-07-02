@@ -3,6 +3,35 @@ import * as moment from 'moment-timezone';
 import {DomSanitizer} from '@angular/platform-browser';
 
 @Pipe({
+  name: 'preferredDate'
+})
+export class PreferredDatePipe implements PipeTransform {
+  transform(date: string): string {
+    return convertToPreferredTimeZone(date);
+  }
+}
+
+function convertToPreferredTimeZone(date: string): string {
+  if (!date) {
+    return '-';
+  }
+
+  const preferences = sessionStorage.getItem('preferences');
+  if (preferences) {
+    const n = JSON.parse(preferences);
+    if (!n.zone) {
+      return '';
+    }
+    const inputFormat = 'YYYY-MM-DD HH:mm:ss';
+    const dateMoment = moment.utc(date, inputFormat);
+    const preferredDate = dateMoment.tz(n.zone);
+    return preferredDate.format(n.dateFormat);
+  } else {
+    return moment.utc(date).format('DD.MM.YYYY HH:mm:ss');
+  }
+}
+
+@Pipe({
   name: 'stringToDate'
 })
 export class StringDatePipe implements PipeTransform {

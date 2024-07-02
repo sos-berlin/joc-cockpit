@@ -117,10 +117,11 @@
                         <nz-collapse>
                           <ng-container *ngFor="let data of item.data">
                             <ng-template #headerTemplate>
-                              {{ data.period.split(' - ')[0] | stringToDate }} - {{ data.period.split(' - ')[1] | stringToDate }} ({{ data.count }})
+                              {{ data.period.split(' - ')[0] | preferredDate }} - {{ data.period.split(' - ')[1] | preferredDate }} ({{ data.count }})
                             </ng-template>
 
-                          <nz-collapse-panel [nzHeader]="headerTemplate" [nzActive]="data.period.active">
+
+                            <nz-collapse-panel [nzHeader]="headerTemplate" [nzActive]="data.period.active">
                             <div>
                               <div *ngFor="let item of data.data; let i = index"
                                    style="padding-bottom: 0px !important;">

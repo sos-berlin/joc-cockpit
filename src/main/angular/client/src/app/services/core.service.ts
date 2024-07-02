@@ -1570,6 +1570,18 @@ export class CoreService {
     return moment(date).format(format);
   }
 
+   getPreferredDateByFormat(date: any, timeZone: string | null, format: string): string {
+    if (!date) {
+      return '-';
+    }
+    const inputFormat = 'YYYY-MM-DD HH:mm:ss';
+    let dateMoment = moment.utc(date, inputFormat);
+    if (timeZone) {
+      dateMoment = dateMoment.tz(timeZone);
+    }
+    return dateMoment.format(format);
+  }
+
   getStringDate(date?): string {
     if (!date) {
       return moment().format('YYYY-MM-DD');

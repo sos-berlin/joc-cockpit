@@ -4290,8 +4290,8 @@ export class HistoryComponent {
 
   switchToTagging(flag): void {
     this.historyFilters.tagType = flag;
-    // this.historys = [];
-    // this.data = [];
+    this.historys = [];
+    this.data = [];
     const obj: any = {
       controllerId: this.schedulerIds.selected
     };
@@ -4303,7 +4303,7 @@ export class HistoryComponent {
       obj.folders = [{folder: '/', recursive: true}];
     }
     if (obj.tags?.length > 0 || obj.folders?.length > 0 || obj.orderTags?.length > 0) {
-      // this.orderHistory(obj, true);
+      this.orderHistory(obj, true);
     } else {
       this.historys = [];
       this.searchInResult();
