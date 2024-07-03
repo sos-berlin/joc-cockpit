@@ -1795,8 +1795,8 @@ export class DailyPlanComponent {
     if (filter.workflowPaths) {
       obj.workflowPaths = filter.workflowPaths;
     }
-    if (filter.tags) {
-      obj.tags = filter.tags;
+    if (filter.workflowTags) {
+      obj.workflowTags = filter.workflowTags;
     }
     if (filter.orderTags) {
       obj.orderTags = filter.orderTags;
@@ -3138,9 +3138,10 @@ export class DailyPlanComponent {
     if (flag === 'orderTags') {
       obj.orderTags = Array.from(this.coreService.checkedOrderTags);
     } else {
-      obj.tags = Array.from(this.coreService.checkedTags);
+      obj.workflowTags = Array.from(this.coreService.checkedTags);
     }
-    if (obj.tags?.length > 0 || obj.folders?.length > 0 || obj.orderTags?.length > 0) {
+    if (obj.workflowTags?.length > 0 || obj.orderTags?.length > 0) {
+      this.loadOrderPlan();
     } else {
       this.searchInResult();
     }
@@ -3322,9 +3323,9 @@ export class DailyPlanComponent {
   }
 
   private updateWorkflowsAndOrdersByTags(): void {
-    const tags = Array.from(this.coreService.checkedTags);
+    const workflowTags = Array.from(this.coreService.checkedTags);
     const obj: any = {
-      tags,
+      workflowTags,
       controllerId: this.schedulerIds.selected
     };
     this.loadOrderPlan();;

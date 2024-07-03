@@ -1164,40 +1164,46 @@ export class AgentComponent {
     const obj: any = {
       subagentClusters: []
     }
-    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
-      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        obj.auditLog = {comment: translatedValue};
-      });
-    }
 
-    for (let x in this.clusters) {
-      if (subagentId && this.selectedCluster.subagentClusterId === this.clusters[x].subagentClusterId) {
-        for (let i in this.clusters[x].subagentIds) {
-          if (this.clusters[x].subagentIds[i].subagentId === subagentId) {
-            this.clusters[x].subagentIds.splice(i, 1);
-            break;
-          }
-        }
-        for (let i in this.selectedCluster.subagentIds) {
-          if (this.selectedCluster.subagentIds[i].subagentId === subagentId) {
-            this.selectedCluster.subagentIds.splice(i, 1);
-            break;
-          }
-        }
-
-        obj.subagentClusters.push({
-          controllerId: this.clusters[x].controllerId,
-          title: this.clusters[x].title,
-          agentId: this.clusters[x].agentId,
-          subagentIds: this.clusters[x].subagentIds,
-          subagentClusterId: this.clusters[x].subagentClusterId,
+    setTimeout(() => {
+      if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+        this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+          obj.auditLog = {comment: translatedValue};
         });
-        break;
       }
-    }
-    this.updateList();
-    this.updateCluster();
-    this.store(obj);
+
+      for (let x in this.clusters) {
+        if (subagentId && this.selectedCluster.subagentClusterId === this.clusters[x].subagentClusterId) {
+          for (let i in this.clusters[x].subagentIds) {
+            if (this.clusters[x].subagentIds[i].subagentId === subagentId) {
+              this.clusters[x].subagentIds.splice(i, 1);
+              break;
+            }
+          }
+          for (let i in this.selectedCluster.subagentIds) {
+            if (this.selectedCluster.subagentIds[i].subagentId === subagentId) {
+              this.selectedCluster.subagentIds.splice(i, 1);
+              break;
+            }
+          }
+
+          obj.subagentClusters.push({
+            controllerId: this.clusters[x].controllerId,
+            title: this.clusters[x].title,
+            agentId: this.clusters[x].agentId,
+            subagentIds: this.clusters[x].subagentIds,
+            subagentClusterId: this.clusters[x].subagentClusterId,
+          });
+          break;
+        }
+      }
+      setTimeout(() => {
+        this.updateList();
+        this.updateCluster();
+        this.store(obj);
+      },50)
+    },100)
+
   }
 
   private store(obj): void {

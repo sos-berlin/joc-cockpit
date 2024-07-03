@@ -627,7 +627,7 @@
                             </label>
                             <div class="text-left block-ellipsis m-l-md">
                               <i class="p-r-xs" nz-icon nzTheme="outline" nzType="unordered-list"></i>
-                              <span [innerHtml]="order.orderId | highlight : orderFilters.searchText"
+                              <span [innerHtml]="coreService.getModifiedOrderId(order) | highlight : orderFilters.searchText"
                                     [nz-tooltip]="order.title"></span>
                             </div>
                             <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -863,7 +863,7 @@
                           <i (click)="hidePanelFuc(order)" *ngIf="order.show"
                              class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
                           <a (click)="showPanelFunc(order)" class="text-dark"> <span
-                            [innerHtml]="order.orderId | highlight : orderFilters.searchText"></span></a>
+                            [innerHtml]="coreService.getModifiedOrderId(order) | highlight : orderFilters.searchText"></span></a>
                           <span *ngIf="order.title">-</span>
                           <i class="text-muted">{{order.title}}</i>
                           <i *ngIf="order.cyclicOrder" [nzTooltipPlacement]="'left'" [nzTooltipTitle]="tooltipTemplate"
@@ -1058,7 +1058,7 @@
                                   <i (click)="history.show=!history.show;;$event.stopPropagation()"
                                      [ngClass]="history.show ? 'fa-caret-up' : 'fa-caret-down'"
                                      class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
-                                  <span>{{history.orderId}}</span>
+                                  <span [innerHtml]="coreService.getModifiedOrderId(history)"></span>
                                 </span>
                                   </td>
                                   <td>

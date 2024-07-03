@@ -1521,12 +1521,12 @@ export class OrderOverviewComponent {
         obj.orderTags = Array.from(this.coreService.checkedOrderTags);
       }
     } else {
-      if(Array.from(this.coreService.checkedOrderTags).length > 0){
+      if(Array.from(this.coreService.checkedTags).length > 0){
         obj.workflowTags = Array.from(this.coreService.checkedTags);
       }
     }
+    this.getOrders(obj);
     if (obj.workflowTags?.length > 0 || obj.orderTags?.length > 0) {
-      this.getOrders(obj);
     } else {
       this.searchInResult();
     }
@@ -1577,7 +1577,6 @@ export class OrderOverviewComponent {
     }).afterClose.subscribe(res => {
       if (res) {
         const obj: any = {
-          tags: [],
           controllerId: this.schedulerIds.selected
         };
         this.coreService.selectedTags.forEach(tag => {
@@ -1593,7 +1592,7 @@ export class OrderOverviewComponent {
             this.coreService.checkedTags.add(tag.name);
           }
         });
-        obj.tags = Array.from(this.coreService.checkedTags);
+        obj.workflowTags = Array.from(this.coreService.checkedTags);
         this.searchByTags(obj);
       }
     });
@@ -1601,13 +1600,9 @@ export class OrderOverviewComponent {
   }
 
   private searchByTags(obj): void {
-    if (obj.tags.length > 0) {
-      this.getOrders(obj);
-    } else {
-      this.orders = [];
-      this.hidePanel();
-      this.searchInResult();
-    }
+    this.getOrders(obj);
+    this.hidePanel();
+    this.searchInResult();
   }
   selectOrderTags(): void {
     const temp = this.coreService.clone(this.coreService.selectedOrderTags);
@@ -1626,7 +1621,6 @@ export class OrderOverviewComponent {
     }).afterClose.subscribe(res => {
       if (res) {
         const obj: any = {
-          orderTags: [],
           controllerId: this.schedulerIds.selected
         };
         this.coreService.selectedOrderTags.forEach(tag => {
@@ -1649,13 +1643,9 @@ export class OrderOverviewComponent {
 
   }
   private searchByOrderTags(obj): void {
-    if (obj.orderTags.length > 0) {
-      this.getOrders(obj);
-    } else {
-      this.orders = [];
-      this.hidePanel();
-      this.searchInResult();
-    }
+    this.getOrders(obj);
+    this.hidePanel();
+    this.searchInResult();
   }
 
   objectTreeSearch() {
@@ -1751,20 +1741,24 @@ export class OrderOverviewComponent {
   }
 
   private updateWorkflowsAndOrdersByTags(): void {
-    const tags = Array.from(this.coreService.checkedTags);
+    const workflowTags = Array.from(this.coreService.checkedTags);
     const obj: any = {
-      tags,
       controllerId: this.schedulerIds.selected
     };
+    if(workflowTags.length > 0){
+      obj.workflowTags = workflowTags;
+    }
     this.getOrders({ controllerId: this.schedulerIds.selected, states: this.getState() });
   }
 
   private updateWorkflowsAndOrdersByOrderTags(): void {
     const orderTags = Array.from(this.coreService.checkedOrderTags);
     const obj: any = {
-      orderTags,
       controllerId: this.schedulerIds.selected
     };
+    if(orderTags.length > 0){
+      obj.orderTags = orderTags;
+    }
     this.getOrders({ controllerId: this.schedulerIds.selected, states: this.getState() });
   }
 }

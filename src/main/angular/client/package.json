@@ -10,7 +10,7 @@
     "build": "ng build",
     "test": "ng test",
     "e2e": "ng e2e",
-    "postinstall": "cross-env NODE_OPTIONS=--max_old_space_size=6000 ng build --configuration=production --base-href=./ && node ./versioning.build.js && cyclonedx-npm --output-file ./dist/sbom.json"
+    "postinstall": "cross-env NODE_OPTIONS=--max_old_space_size=6000 ng build --configuration=production --base-href=./ && node ./versioning.build.js && cross-env NODE_ENV=production cyclonedx-npm --output-file ./dist/sbom.json"
   },
   "private": true,
   "dependencies": {

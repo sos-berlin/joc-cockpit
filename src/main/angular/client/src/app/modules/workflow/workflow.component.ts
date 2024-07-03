@@ -238,7 +238,7 @@ export class SearchComponent {
     const obj: any = {
       regex: result.regex,
       paths: result.paths,
-      tags: result.tags,
+      workflowTags: result.workflowTags,
       handleRecursively: result.handleRecursively,
       name: result.name,
       instructionStates: result.instructionStates,
@@ -1049,7 +1049,7 @@ export class WorkflowComponent {
         obj.agentNames = this.selectedFiltered.agentNames;
       }
       if (this.selectedFiltered.tags && this.selectedFiltered.tags.length > 0) {
-        obj.tags = this.selectedFiltered.tags;
+        obj.workflowTags = this.selectedFiltered.tags;
       }
       if (this.selectedFiltered.orderTags && this.selectedFiltered.orderTags.length > 0) {
         obj.orderTags = this.selectedFiltered.orderTags;
@@ -1460,13 +1460,13 @@ export class WorkflowComponent {
       controllerId: this.schedulerIds.selected
     };
     if (flag === 'workflowTags') {
-      obj.tags = Array.from(this.coreService.checkedTags);
+      obj.workflowTags = Array.from(this.coreService.checkedTags);
     } else if (flag === 'orderTags') {
       obj.orderTags = Array.from(this.coreService.checkedOrderTags);
     } else {
       obj.folders = [{folder: '/', recursive: true}];
     }
-    if (obj.tags?.length > 0 || obj.folders?.length > 0 || obj.orderTags?.length > 0) {
+    if (obj.workflowTags?.length > 0 || obj.folders?.length > 0 || obj.orderTags?.length > 0) {
       this.getWorkflowList(obj);
     } else {
       this.workflows = [];
@@ -1491,7 +1491,7 @@ export class WorkflowComponent {
     }).afterClose.subscribe(res => {
       if (res) {
         const obj: any = {
-          tags: [],
+          workflowTags: [],
           controllerId: this.schedulerIds.selected
         };
         this.coreService.selectedTags.forEach(tag => {
@@ -1507,7 +1507,7 @@ export class WorkflowComponent {
             this.coreService.checkedTags.add(tag.name);
           }
         });
-        obj.tags = Array.from(this.coreService.checkedTags);
+        obj.workflowTags = Array.from(this.coreService.checkedTags);
         this.searchByTags(obj);
       }
     });
@@ -1523,11 +1523,11 @@ export class WorkflowComponent {
         this.coreService.selectedTags = res.results;
         this.coreService.allTagsSelected = true;
         const obj: any = {
-          tags: [],
+          workflowTags: [],
           controllerId: this.schedulerIds.selected
         };
         this.coreService.selectedTags.forEach(tag => {
-          obj.tags.push(tag.name);
+          obj.workflowTags.push(tag.name);
           this.coreService.checkedTags.add(tag.name);
         });
         this.searchByTags(obj);
@@ -1539,7 +1539,7 @@ export class WorkflowComponent {
     this.coreService.selectedTags = [];
     this.coreService.checkedTags.clear();
     const obj: any = {
-      tags: [],
+      workflowTags: [],
       controllerId: this.schedulerIds.selected
     };
     this.searchByTags(obj);
@@ -1549,7 +1549,7 @@ export class WorkflowComponent {
     this.coreService.checkedTags.clear();
     this.coreService.checkedTags.add(tag);
     const obj: any = {
-      tags: [tag],
+      workflowTags: [tag],
       controllerId: this.schedulerIds.selected
     };
     this.searchByTags(obj);
@@ -1578,7 +1578,7 @@ export class WorkflowComponent {
   }
 
   private searchByTags(obj): void {
-    if (obj.tags.length > 0) {
+    if (obj.workflowTags.length > 0) {
       this.getWorkflowList(obj);
     } else {
       this.workflows = [];
@@ -1620,8 +1620,8 @@ export class WorkflowComponent {
     if (this.searchFilter.agentNames && this.searchFilter.agentNames.length > 0) {
       obj.agentNames = this.searchFilter.agentNames;
     }
-    if (this.searchFilter.tags && this.searchFilter.tags.length > 0) {
-      obj.tags = this.searchFilter.tags;
+    if (this.searchFilter.workflowTags && this.searchFilter.workflowTags.length > 0) {
+      obj.workflowTags = this.searchFilter.workflowTags;
     }
     if (this.searchFilter.orderTags && this.searchFilter.orderTags.length > 0) {
       obj.orderTags = this.searchFilter.orderTags;
@@ -2686,9 +2686,9 @@ export class WorkflowComponent {
   }
 
   private updateWorkflowsAndOrdersByTags(): void {
-    const tags = Array.from(this.coreService.checkedTags);
+    const workflowTags = Array.from(this.coreService.checkedTags);
     const obj: any = {
-      tags,
+      workflowTags,
       controllerId: this.schedulerIds.selected
     };
     this.searchByTags(obj);

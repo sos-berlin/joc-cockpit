@@ -688,7 +688,7 @@
     <div *ngIf="showSearchPanel && historyFilters.type !== 'ORDER' && historyFilters.type !== 'TASK'" class="row m-b">
       <div class="col-md-12">
         <div class="box p-a m-b-xs">
-         
+
           <div *ngIf="historyFilters.type === 'YADE'">
             <app-file-transfer-form-template (onCancel)="cancel()" (onSearch)="search($event)"
                                              [allFilter]="yadeHistoryFilterList"
@@ -1040,7 +1040,7 @@
                   <i (click)="downloadLog(history,history.controllerId);$event.stopPropagation()"
                      *ngIf="historyFilters.current"
                      class="cursor fa fa-download text-hover-primary p-r-xs"></i>
-                  <span [innerHtml]="history.orderId | highlight : order.searchText"></span>
+                  <span [innerHtml]="coreService.getModifiedOrderId(history) | highlight : order.searchText"></span>
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
@@ -1806,7 +1806,7 @@
                           </tr>
                           <tr
                             *ngFor="let order of child.orderIds | filter: submission.searchText: ['workflowPath', 'orderId'] | orderBy: 'scheduledFor': true">
-                            <td colspan="3"><span [innerHtml]="order.orderId | highlight: submission.searchText" [ngClass]="{'p-l-lg' : !historyFilters.current }"
+                            <td colspan="3"><span [innerHtml]="coreService.getModifiedOrderId(order) | highlight : submission.searchText" [ngClass]="{'p-l-lg' : !historyFilters.current }"
                                                   class="p-l-md"></span></td>
                             <td colspan="3">
                               <i (click)="navToWorkflowTab(order.workflowPath);$event.stopPropagation()"

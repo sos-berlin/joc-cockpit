@@ -146,6 +146,8 @@ export class OrderSearchComponent {
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
   folders = [];
+  tags: any = [];
+  orderTags: any = [];
   dateFormat: any;
   existingName: any;
   submitted = false;
@@ -165,6 +167,8 @@ export class OrderSearchComponent {
       this.existingName = this.coreService.clone(this.filter.name);
     }
     this.getFolderTree();
+    this.fetchTags();
+    this.fetchOrderTags();
     if (this.filter.historyStates && this.filter.historyStates.length > 0) {
       this.checkOptions = this.checkOptions.map(item => {
         return {
@@ -222,6 +226,24 @@ export class OrderSearchComponent {
   remove(path): void {
     this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
     this.filter.paths = [...this.filter.paths];
+  }
+
+  private fetchTags(): void {
+    this.coreService.post('workflows/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+      this.tags = res.results;
+    });
+  }
+
+  private fetchOrderTags(): void {
+    this.coreService.post('orders/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+      this.orderTags = res.results;
+    });
   }
 
   checkFilterName(): void {
@@ -346,6 +368,8 @@ export class TaskSearchComponent {
   existingName: any;
   submitted = false;
   isUnique = true;
+  tags: any = [];
+  orderTags: any = [];
   checkOptions = [
     {label: 'successful', value: 'SUCCESSFUL', checked: false},
     {label: 'failed', value: 'FAILED', checked: false},
@@ -366,6 +390,8 @@ export class TaskSearchComponent {
       this.existingName = this.coreService.clone(this.filter.name);
     }
     this.getFolderTree();
+    this.fetchTags();
+    this.fetchOrderTags();
     if (this.filter.historyStates && this.filter.historyStates.length > 0) {
       this.checkOptions = this.checkOptions.map(item => {
         return {
@@ -410,6 +436,24 @@ export class TaskSearchComponent {
           this.folders[0].expanded = true;
         }
       }
+    });
+  }
+
+  private fetchTags(): void {
+    this.coreService.post('workflows/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+      this.tags = res.results;
+    });
+  }
+
+  private fetchOrderTags(): void {
+    this.coreService.post('orders/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+      this.orderTags = res.results;
     });
   }
 
@@ -1270,7 +1314,7 @@ export class HistoryComponent {
     let orderTags = Array.from(this.coreService.checkedOrderTags) || [];
     if (workflowTags.length > 0 || orderTags.length > 0) {
       if (workflowTags.length > 0 && this.historyFilters.tagType === 'workflowTags') {
-        obj.tags = workflowTags;
+        obj.workflowTags = workflowTags;
       } else if (orderTags.length > 0 && this.historyFilters.tagType === 'orderTags') {
         obj.orderTags = orderTags;
       }
@@ -1381,7 +1425,7 @@ export class HistoryComponent {
     let orderTags = Array.from(this.coreService.checkedOrderTags) || [];
     if (workflowTags.length > 0 || orderTags.length > 0) {
       if (workflowTags.length > 0 && this.historyFilters.tagType === 'workflowTags') {
-        obj.tags = workflowTags;
+        obj.workflowTags = workflowTags;
       } else if (orderTags.length > 0 && this.historyFilters.tagType === 'orderTags') {
         obj.orderTags = orderTags;
       }
@@ -1796,6 +1840,12 @@ export class HistoryComponent {
       if (obj.workflowPath) {
         filter.workflowPath = obj.workflowPath;
       }
+      if(obj.workflowTags?.length > 0){
+        filter.workflowTags = obj.workflowTags;
+      }
+      if(obj.orderTags?.length > 0){
+        filter.orderTags = obj.orderTags;
+      }
       this.convertRequestBody(filter);
       if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
         filter.excludeWorkflows = this.savedIgnoreList.workflows;
@@ -1860,6 +1910,12 @@ export class HistoryComponent {
       }
       if (obj.workflowPath) {
         filter.workflowPath = obj.workflowPath;
+      }
+      if(obj.workflowTags?.length > 0){
+        filter.workflowTags = obj.workflowTags;
+      }
+      if(obj.orderTags?.length > 0){
+        filter.orderTags = obj.orderTags;
       }
       this.convertRequestBody(filter);
       if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
@@ -4312,7 +4368,7 @@ export class HistoryComponent {
       controllerId: this.schedulerIds.selected
     };
     if (flag === 'workflowTags') {
-      if(Array.from(this.coreService.checkedOrderTags).length > 0){
+      if(Array.from(this.coreService.checkedTags).length > 0){
         obj.workflowTags = Array.from(this.coreService.checkedTags);
       }
     } else if (flag === 'orderTags') {
@@ -4320,12 +4376,12 @@ export class HistoryComponent {
         obj.orderTags = Array.from(this.coreService.checkedOrderTags);
       }
     }
-    if (obj.tags?.length > 0 || obj.orderTags?.length > 0) {
-      if(this.historyFilters.type === 'ORDER'){
-        this.orderHistory(obj, true);
-      }else if(this.historyFilters.type === 'TASK'){
-        this.taskHistory(obj, true);
-      }
+    if(this.historyFilters.type === 'ORDER'){
+      this.orderHistory(obj, true);
+    }else if(this.historyFilters.type === 'TASK'){
+      this.taskHistory(obj, true);
+    }
+    if (obj.workflowTags?.length > 0 || obj.orderTags?.length > 0) {
     } else {
       this.searchInResult();
     }
@@ -4658,7 +4714,7 @@ export class HistoryComponent {
             this.coreService.checkedTags.add(tag.name);
           }
         });
-        obj.tags = Array.from(this.coreService.checkedTags);
+        obj.workflowTags = Array.from(this.coreService.checkedTags);
         this.searchByTags(obj);
       }
     });
@@ -4677,9 +4733,9 @@ export class HistoryComponent {
           controllerId: this.schedulerIds.selected
         };
         if(this.coreService.selectedTags.length > 0) {
-          obj.tags = [];
+          obj.workflowTags = [];
           this.coreService.selectedTags.forEach(tag => {
-            obj.tags.push(tag.name);
+            obj.workflowTags.push(tag.name);
             this.coreService.checkedTags.add(tag.name);
           });
         }
@@ -4701,7 +4757,7 @@ export class HistoryComponent {
     this.coreService.checkedTags.clear();
     this.coreService.checkedTags.add(tag);
     const obj: any = {
-      tags: [tag],
+      workflowTags: [tag],
       controllerId: this.schedulerIds.selected
     };
     this.searchByTags(obj);
