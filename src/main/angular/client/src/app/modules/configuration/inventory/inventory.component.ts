@@ -3265,20 +3265,22 @@ export class CreateFolderModalComponent {
   selector: 'app-show-agents-assigned',
   templateUrl: './show-agents-dialog.html'
 })
-export class ShowAgentsModalComponent  {
+
+export class ShowAgentsModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
 
   selectedCert: any;
   agents: Array<{ agentName: string, agentUrl: string }> = [];
   schedulerId: any;
   inventoryAgents: any = [];
+  inventoryClusterAgents: any = [];
 
   constructor(private activeModal: NzModalRef, public coreService: CoreService) {}
 
   ngOnInit(): void {
     this.selectedCert = this.modalData.selectedCert;
     this.schedulerId = this.modalData.controllerId;
-    this.getAgentUrl();
+    this.getAgentData();
   }
 
   getAssignedAgents() {
@@ -3292,29 +3294,64 @@ export class ShowAgentsModalComponent  {
           .flat();
 
         this.agents = assignedAgents.map((agentId: string) => {
-          const agentData = this.inventoryAgents.agents.find((agent: any) => agent.agentId === agentId);
+          let agentData = this.findAgentData(agentId);
 
           return {
-            agentName: agentId,
+            agentName: agentData ? agentData.agentName : agentId,
             agentUrl: agentData ? agentData.url : 'URL not found'
           };
         });
-
       },
       error: (err) => {
+        console.error('Error fetching assigned agents:', err);
       },
     });
   }
 
-  getAgentUrl() {
+  findAgentData(agentId: string): any {
+    let agentData = this.inventoryAgents.agents.find((agent: any) => agent.agentId === agentId);
+    if (agentData) {
+      return agentData;
+    }
+
+    for (let clusterAgent of this.inventoryClusterAgents.agents) {
+      if (clusterAgent.agentId === agentId) {
+        return clusterAgent;
+      }
+
+      const subAgentData = clusterAgent.subagents.find((subagent: any) => subagent.subagentId === agentId);
+      if (subAgentData) {
+        return { ...subAgentData, agentName: clusterAgent.agentName };
+      }
+    }
+
+    return null;
+  }
+
+  getAgentData() {
     this.coreService.post('agents/inventory', {
       controllerId: this.schedulerId
     }).subscribe({
       next: (data: any) => {
         this.inventoryAgents = data;
+        this.getAgentClusterData();
+      },
+      error: (err) => {
+        console.error('Error fetching inventory agents:', err);
+      }
+    });
+  }
+
+  getAgentClusterData() {
+    this.coreService.post('agents/inventory/cluster', {
+      controllerId: this.schedulerId
+    }).subscribe({
+      next: (data: any) => {
+        this.inventoryClusterAgents = data;
         this.getAssignedAgents();
       },
       error: (err) => {
+        console.error('Error fetching inventory cluster agents:', err);
       }
     });
   }
@@ -3324,8 +3361,10 @@ export class ShowAgentsModalComponent  {
   }
 
   onSubmit(): void {
+    // Implementation for the submit action
   }
 }
+
 
 @Component({
   selector: 'app-encrpyt-argument-template',

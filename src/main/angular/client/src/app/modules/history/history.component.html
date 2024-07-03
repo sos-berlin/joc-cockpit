@@ -685,21 +685,10 @@
         </div>
       </div>
     </div>
-    <div *ngIf="showSearchPanel" class="row m-b">
+    <div *ngIf="showSearchPanel && historyFilters.type !== 'ORDER' && historyFilters.type !== 'TASK'" class="row m-b">
       <div class="col-md-12">
         <div class="box p-a m-b-xs">
-          <div *ngIf="historyFilters.type === 'ORDER'">
-            <app-order-form-template (onCancel)="cancel()" (onSearch)="search($event)" [allFilter]="orderHistoryFilterList"
-                                     [filter]="orderSearch" [isSearch]="true"
-                                     [permission]="permission" [preferences]="preferences"
-                                     [schedulerIds]="schedulerIds"></app-order-form-template>
-          </div>
-          <div *ngIf="historyFilters.type === 'TASK'">
-            <app-task-form-template (onCancel)="cancel()" (onSearch)="search($event)" [allFilter]="jobHistoryFilterList"
-                                    [filter]="jobSearch" [isSearch]="true"
-                                    [permission]="permission" [preferences]="preferences"
-                                    [schedulerIds]="schedulerIds"></app-task-form-template>
-          </div>
+         
           <div *ngIf="historyFilters.type === 'YADE'">
             <app-file-transfer-form-template (onCancel)="cancel()" (onSearch)="search($event)"
                                              [allFilter]="yadeHistoryFilterList"
@@ -886,6 +875,24 @@
         </div>
         </div>
         <div id="rightPanel">
+          <div *ngIf="showSearchPanel && historyFilters.type !== 'YADE' && historyFilters.type !== 'DEPLOYMENT' && historyFilters.type !== 'SUBMISSION'" class="row m-b">
+            <div class="col-md-12">
+              <div class="box p-a m-b-xs">
+                <div *ngIf="historyFilters.type === 'ORDER'">
+                  <app-order-form-template (onCancel)="cancel()" (onSearch)="search($event)" [allFilter]="orderHistoryFilterList"
+                                           [filter]="orderSearch" [isSearch]="true"
+                                           [permission]="permission" [preferences]="preferences"
+                                           [schedulerIds]="schedulerIds"></app-order-form-template>
+                </div>
+                <div *ngIf="historyFilters.type === 'TASK'">
+                  <app-task-form-template (onCancel)="cancel()" (onSearch)="search($event)" [allFilter]="jobHistoryFilterList"
+                                          [filter]="jobSearch" [isSearch]="true"
+                                          [permission]="permission" [preferences]="preferences"
+                                          [schedulerIds]="schedulerIds"></app-task-form-template>
+                </div>
+              </div>
+            </div>
+          </div>
          <div *ngIf="historyFilters.type == 'ORDER'" class="box p-a">
       <div class="table-responsive " id="orderTable">
         <nz-table

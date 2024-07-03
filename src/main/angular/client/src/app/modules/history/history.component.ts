@@ -1266,12 +1266,13 @@ export class HistoryComponent {
         obj.historyStates.push(this.order.filter.historyStates);
       }
     }
-    if (this.historyFilters && !isEmpty(this.historyFilters)) {
-      if (this.historyFilters.tags && this.historyFilters.tags.length > 0) {
-        obj.tags = this.historyFilters.tags;
-      }
-      if (this.historyFilters.orderTags && this.historyFilters.orderTags.length > 0) {
-        obj.orderTags = this.historyFilters.orderTags;
+    let workflowTags  = Array.from(this.coreService.checkedTags) || [];
+    let orderTags = Array.from(this.coreService.checkedOrderTags) || [];
+    if (workflowTags.length > 0 || orderTags.length > 0) {
+      if (workflowTags.length > 0 && this.historyFilters.tagType === 'workflowTags') {
+        obj.tags = workflowTags;
+      } else if (orderTags.length > 0 && this.historyFilters.tagType === 'orderTags') {
+        obj.orderTags = orderTags;
       }
     }
     this.convertRequestBody(obj);
@@ -1376,12 +1377,13 @@ export class HistoryComponent {
         obj.historyStates.push(this.task.filter.historyStates);
       }
     }
-    if (this.historyFilters && !isEmpty(this.historyFilters)) {
-      if (this.historyFilters.tags && this.historyFilters.tags.length > 0) {
-        obj.tags = this.historyFilters.tags;
-      }
-      if (this.historyFilters.orderTags && this.historyFilters.orderTags.length > 0) {
-        obj.orderTags = this.historyFilters.orderTags;
+    let workflowTags  = Array.from(this.coreService.checkedTags) || [];
+    let orderTags = Array.from(this.coreService.checkedOrderTags) || [];
+    if (workflowTags.length > 0 || orderTags.length > 0) {
+      if (workflowTags.length > 0 && this.historyFilters.tagType === 'workflowTags') {
+        obj.tags = workflowTags;
+      } else if (orderTags.length > 0 && this.historyFilters.tagType === 'orderTags') {
+        obj.orderTags = orderTags;
       }
     }
     this.convertRequestBody(obj);
@@ -4310,13 +4312,20 @@ export class HistoryComponent {
       controllerId: this.schedulerIds.selected
     };
     if (flag === 'workflowTags') {
-      obj.tags = Array.from(this.coreService.checkedTags);
+      if(Array.from(this.coreService.checkedOrderTags).length > 0){
+        obj.workflowTags = Array.from(this.coreService.checkedTags);
+      }
     } else if (flag === 'orderTags') {
-      obj.orderTags = Array.from(this.coreService.checkedOrderTags);
-    } else {
-      obj.folders = [{folder: '/', recursive: true}];
+      if(Array.from(this.coreService.checkedOrderTags).length > 0){
+        obj.orderTags = Array.from(this.coreService.checkedOrderTags);
+      }
     }
-    if (obj.tags?.length > 0 || obj.folders?.length > 0 || obj.orderTags?.length > 0) {
+    if (obj.tags?.length > 0 || obj.orderTags?.length > 0) {
+      if(this.historyFilters.type === 'ORDER'){
+        this.orderHistory(obj, true);
+      }else if(this.historyFilters.type === 'TASK'){
+        this.taskHistory(obj, true);
+      }
     } else {
       this.searchInResult();
     }
@@ -4335,7 +4344,7 @@ export class HistoryComponent {
 
   private searchByOrderTags(obj): void {
     if(this.historyFilters.type === 'ORDER'){
-      this.orderHistory(obj,true);
+      this.orderHistory(obj, true);
     }else if(this.historyFilters.type === 'TASK'){
       this.taskHistory(obj, true);
     }
@@ -4582,7 +4591,7 @@ export class HistoryComponent {
 
   private searchByTags(obj): void {
     if(this.historyFilters.type === 'ORDER'){
-      this.orderHistory(obj,true);
+      this.orderHistory(obj, true);
     }else if(this.historyFilters.type === 'TASK'){
       this.taskHistory(obj, true);
     }

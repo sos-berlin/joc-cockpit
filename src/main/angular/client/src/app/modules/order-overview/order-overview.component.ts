@@ -11,7 +11,7 @@ import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {isArray} from 'underscore';
+import {isArray, isEmpty} from 'underscore';
 import {takeUntil} from 'rxjs/operators';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
@@ -561,8 +561,15 @@ export class OrderOverviewComponent {
     const tempOrder = this.orders.filter((order) => {
       return order.show;
     });
-    obj.orderTags = Array.from(this.coreService.checkedOrderTags) || [];
-    obj.workflowTags  = Array.from(this.coreService.checkedTags) || [];
+    let workflowTags  = Array.from(this.coreService.checkedTags) || [];
+    let orderTags = Array.from(this.coreService.checkedOrderTags) || [];
+    if (workflowTags.length > 0 || orderTags.length > 0) {
+      if (workflowTags.length > 0 && this.orderFilters.tagType === 'workflowTags') {
+        obj.workflowTags = workflowTags;
+      } else if (orderTags.length > 0 && this.orderFilters.tagType === 'orderTags') {
+        obj.orderTags = orderTags;
+      }
+    }
     if (this.orderFilters.filter.date !== 'ALL') {
       obj.dateTo = this.orderFilters.filter.date;
       if (this.orderFilters.filter.date === '2d') {
@@ -1510,11 +1517,19 @@ export class OrderOverviewComponent {
       states: this.getState()
     };
     if (flag === 'orderTags') {
-      obj.orderTags = Array.from(this.coreService.checkedOrderTags);
+      if(Array.from(this.coreService.checkedOrderTags).length > 0){
+        obj.orderTags = Array.from(this.coreService.checkedOrderTags);
+      }
     } else {
-      obj.workflowTags = Array.from(this.coreService.checkedTags);
+      if(Array.from(this.coreService.checkedOrderTags).length > 0){
+        obj.workflowTags = Array.from(this.coreService.checkedTags);
+      }
     }
-    this.getOrders(obj);
+    if (obj.workflowTags?.length > 0 || obj.orderTags?.length > 0) {
+      this.getOrders(obj);
+    } else {
+      this.searchInResult();
+    }
   }
 
   onTagChecked(tag: string, checked: boolean): void {
