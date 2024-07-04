@@ -246,7 +246,9 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>runtime.label.validTo</label>
+          <label class="col-sm-3 form-control-label" translate>runtime.label.validTo
+            <sup class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-sm-5">
             <app-date-input [object]="frequency" [attributeDate]="'endOn'"
                             [name]="'endOn'" [dateFormat]="dateFormat" [isAllowClear]="true"

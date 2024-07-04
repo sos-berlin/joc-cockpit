@@ -232,6 +232,13 @@
                     <i *ngIf="agentsFilters.filter.sortBy == 'processLimit' && agentsFilters.reverse"
                        class="fa fa-caret-down "></i></a>
                   </th>
+                  <th (click)="sort('disabled')">
+                    <a><span class="p-r-xs" translate>agent.label.disabled</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'disabled' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'disabled' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                  </th>
                   <th (click)="sort('runningTasks')"><a><span class="p-r-xs" translate>agent.label.runningTasks</span>
                     <i *ngIf="agentsFilters.filter.sortBy == 'runningTasks' && !agentsFilters.reverse"
                        class="fa fa-caret-up "></i>
@@ -312,6 +319,7 @@
                       {{cluster.version}}
                     </td>
                     <td>{{cluster.processLimit}}</td>
+                    <td>{{(cluster.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</td>
                     <td>{{cluster.runningTasks}}</td>
                   </tr>
                   <ng-container *ngIf="cluster.showSubagent">
