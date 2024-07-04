@@ -2008,7 +2008,7 @@
         "endNode": "The end position of a job can be before the specified instruction in the workflow. The job ends before the specified position.",
         "blockPosition": "Block Position",
         "ignoreAdmissionTimes": "The execution of jobs can be restricted by Admission Times of the jobs. This option ignores Admission Times and forces the start of jobs.",
-        "tagName": "Tag Name"
+        "tagName": "Any number of Tags can be added that will be assigned the orders created from the Schedule."
       },
       "script": {
         "name": "A Script Include is used to include recurring code snippets into a job script. The name of a Script Include is unique in the inventory. For the name of the Script Include most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
