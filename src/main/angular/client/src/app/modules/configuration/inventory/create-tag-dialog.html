@@ -122,8 +122,8 @@
             <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
             <span class="p-l-6 cur-point">
               <span [ngClass]="{'cut-row' : object.deleteTags.has(keyValuePair.key)}">{{keyValuePair.key}}</span>
-              <i *ngIf="!object.expanded.has(keyValuePair.key)" (click)="object.expanded.add(keyValuePair.key)" class="fa fa-angle-down fa-lg"></i>
-              <i *ngIf="object.expanded.has(keyValuePair.key)" (click)="object.expanded.delete(keyValuePair.key)" class="fa fa-angle-up fa-lg"></i>
+              <i *ngIf="!object.expanded.has(keyValuePair.key)" (click)="object.expanded.add(keyValuePair.key)" class="fa fa-angle-down fa-lg p-l-sm" style="font-weight: bold"></i>
+              <i *ngIf="object.expanded.has(keyValuePair.key)" (click)="object.expanded.delete(keyValuePair.key)" class="fa fa-angle-up fa-lg p-l-sm" style="font-weight: bold"></i>
               <i *ngIf="!object.deleteTags.has(keyValuePair.key)" (click)="object.deleteTags.add(keyValuePair.key)" class="fa fa-times fa-lg text-hover-color p-l-sm"></i>
               <i *ngIf="object.deleteTags.has(keyValuePair.key)" (click)="object.deleteTags.delete(keyValuePair.key)" class="fa fa-plus fa-lg text-hover-primary p-l-sm"></i>
             </span>

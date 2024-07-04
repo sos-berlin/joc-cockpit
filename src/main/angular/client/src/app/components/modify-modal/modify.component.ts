@@ -6,6 +6,7 @@ import {CoreService} from '../../services/core.service';
 import {AuthService} from "../guard";
 import {ValueEditorComponent} from "../value-editor/value.component";
 import { ConfirmModalComponent } from '../comfirm-modal/confirm.component';
+import { EncryptArgumentModalComponent } from 'src/app/modules/configuration/inventory/inventory.component';
 
 @Component({
   selector: 'app-change-parameter',
@@ -27,6 +28,7 @@ export class ChangeParameterModalComponent {
   variables: any = [];
   variableList = [];
   forkListVariables = [];
+  mapVariables = [];
   submitted = false;
   required = false;
   comments: any = {};
@@ -117,7 +119,7 @@ export class ChangeParameterModalComponent {
     if (this.orderPreparation && this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
-        if (val.type !== 'List') {
+        if (val.type !== 'List' && val.type !== 'Map' ) {
           let isExist = false;
           for (let i = 0; i < this.variables.length; i++) {
             if (this.variables[i].name === k) {
@@ -158,7 +160,7 @@ export class ChangeParameterModalComponent {
               }
             }
           }
-        } else if (!this.variable || (this.variable && isArray(this.variable.value))) {
+        } else if ((!this.variable || (this.variable && isArray(this.variable.value))) && val.type === 'List') {
           const actualList = [];
           if (val.listParameters) {
             if (isArray(val.listParameters)) {
@@ -201,11 +203,54 @@ export class ChangeParameterModalComponent {
               this.forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
             }
           }
+        } else if ((!this.variable || (this.variable && isArray(this.variable.value))) && val.type === 'Map') {
+          const actualMap = [];
+          if (val.listParameters) {
+            if (isArray(val.listParameters)) {
+              val.listParameters.forEach((item) => {
+                const obj: any = {
+                  name: item.name,
+                  type: item.value.type,
+                  value: item.value.default,
+                  isRequired: true
+                };
+                if (item.default || item.default == 0 || item.default == false) {
+                  obj.isRequired = false;
+                }
+                item.isRequired = obj.isRequired;
+                actualMap.push(obj);
+              });
+            } else {
+              val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
+                const val1: any = v1;
+                const obj = {
+                  name: k1,
+                  type: val1.type,
+                  value: val1.default,
+                  isRequired: true
+                };
+                if (val1.default || val1.default == 0 || val1.default == false) {
+                  obj.isRequired = false;
+                }
+                val1.isRequired = obj.isRequired;
+                actualMap.push(obj);
+                return {name: k1, value: val1};
+              });
+            }
+
+            if (this.variable && this.variable.name) {
+              if (this.variable.name == k) {
+                this.mapVariables.push({name: k, map: val.listParameters, actualMap: [actualMap]});
+              }
+            } else {
+              this.mapVariables.push({name: k, map: val.listParameters, actualMap: [actualMap]});
+            }
+          }
         }
         return {name: k, value: v};
       });
       this.variableList = this.variableList.filter((item) => {
-        if (item.value.type === 'List') {
+        if (item.value.type === 'List' || item.value.type === 'Map') {
           return false;
         }
         return !item.value.final;
@@ -214,6 +259,8 @@ export class ChangeParameterModalComponent {
       this.variables = this.variables.filter(item => {
         if (isArray(item.value)) {
           this.setForkListVariables(item, this.forkListVariables);
+          return false;
+        } else if (typeof item.value === 'object') {
           return false;
         } else {
           if (!item.type) {
@@ -517,6 +564,23 @@ export class ChangeParameterModalComponent {
         }
       });
     }
+    if (this.mapVariables && this.mapVariables.length > 0) {
+      if (!obj.variables) {
+        obj.variables = {};
+      }
+      this.mapVariables.forEach((item) => {
+        obj.variables[item.name] = [];
+        if (item.actualMap) {
+          for (const i in item.actualMap) {
+            const mapObj = {};
+            item.actualMap[i].forEach((data) => {
+              mapObj[data.name] = data.value;
+            });
+            obj.variables[item.name] = { ...mapObj };
+          }
+        }
+      });
+    }
     if (this.positionObj.blockPosition && this.blockPositions && this.blockPositions?.size) {
       if (this.blockPositions.has(this.positionObj.blockPosition)) {
         obj.blockPosition = (this.blockPositions.get(this.positionObj.blockPosition));
@@ -564,6 +628,31 @@ export class ChangeParameterModalComponent {
 
   cancel(): void {
     this.activeModal.destroy();
+  }
+
+  encryptValue(currentVariable, typeArg){
+    let selectedAgent  = [];
+    const argu = currentVariable;
+    const type = typeArg;
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EncryptArgumentModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        argu,
+        selectedAgent,
+        type,
+        controllerId: this.schedulerId
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        // this.saveJSON();
+      }
+    });
   }
 }
 
