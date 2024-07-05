@@ -1783,7 +1783,7 @@
     "label.tags": "Kennzeichnungen",
     "label.listOfTags": "Liste der Kennzeichnungen",
     "label.addTags": "Kennzeichnung hinzufügen",
-    "label.addTagsToWorkflow": "Kennzeichnung des Arbeitsabläufs verwalten",
+    "label.addTagsToWorkflow": "Kennzeichnung der Arbeitsabläufe verwalten",
     "label.renameTag": "Kennzeichnung umbenennen",
     "label.tagName": "Kennzeichnung",
     "label.testMail": "E-Mail testen",
