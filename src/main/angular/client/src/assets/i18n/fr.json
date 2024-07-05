@@ -1783,7 +1783,7 @@
     "label.tags": "Balises",
     "label.listOfTags": "Liste des Balises",
     "label.addTags": "Ajouter des Balises",
-    "label.addTagsToWorkflow": "Gérer les Balises du Workflow",
+    "label.addTagsToWorkflow": "Gérer les Balises des Workflows",
     "label.renameTag": "Renommer Balise",
     "label.tagName": "Nom Balise",
     "label.testMail": "Tester l'E-Mail",
