@@ -394,8 +394,9 @@
               <div class="sort-icons m-l-xxs">
                 <i nz-icon nzType="down-square" nzTheme="outline" [nz-tooltip]="'workflow.label.ascending' | translate" aria-hidden="true" class="cursor" (click)="sortTags('asc')"></i>
                 <i nz-icon nzType="up-square" nzTheme="outline" [nz-tooltip]="'workflow.label.descending' | translate" aria-hidden="true" class="m-l-sm cursor" (click)="sortTags('desc')"></i>
+                <a  (click)="addTags(node)" *ngIf="permission.joc.inventory.manage" class="text-u-l m-l-sm cursor" translate>inventory.button.manageTags</a>
               </div>
-              <div (cdkDropListDropped)="drop($event)" cdkDropList class="role-list">
+              <div (cdkDropListDropped)="drop($event)" cdkDropList class="role-list m-t-sm">
                 <div class="w-full role-box" *ngFor="let tag of tags" cdkDrag>
                   <div class="node-wrapper p-l-xxs p-b-xxs">
                     <div cdkDragHandle class="drag-handler pos-rel t-n-xxs m-l-xxs">

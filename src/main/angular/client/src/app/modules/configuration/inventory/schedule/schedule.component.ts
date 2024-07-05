@@ -12,6 +12,7 @@ import {CommentModalComponent} from '../../../../components/comment-modal/commen
 import {ValueEditorComponent} from "../../../../components/value-editor/value.component";
 import { WorkflowService } from 'src/app/services/workflow.service';
 import { EncryptArgumentModalComponent } from '../inventory.component';
+import { AuthService } from 'src/app/components/guard';
 
 @Component({
   selector: 'app-schedule',
@@ -58,10 +59,11 @@ export class ScheduleComponent {
   filteredOptions: string[] = [];
   inputVisible = false;
   inputValue = '';
+  schedulerIds: any = {};
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
   constructor(public coreService: CoreService, private translate: TranslateService, private toasterService: ToastrService,
-              private calendarService: CalendarService, private dataService: DataService,
+              private calendarService: CalendarService, private dataService: DataService, private authService: AuthService,
               private ref: ChangeDetectorRef, private modal: NzModalService, private workflowService: WorkflowService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -85,6 +87,7 @@ export class ScheduleComponent {
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.allowUndeclaredVariables = sessionStorage['allowUndeclaredVariables'] == 'true';
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.fetchTags();
   }
 
@@ -1744,8 +1747,13 @@ export class ScheduleComponent {
   }
 
   private fetchTags(): void {
-    this.coreService.post('tags', {}).subscribe((res) => {
-      this.allTags = res.tags;
+    this.coreService.post('orders/tag/search', {
+      search: '',
+      controllerId: this.schedulerIds.selected}).subscribe((res) => {
+      this.allTags = res.results;
+      this.allTags = this.allTags.map((item) => {
+        return item.name;
+      })
     });
   }
 

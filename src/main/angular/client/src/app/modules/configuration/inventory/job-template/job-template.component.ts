@@ -1430,7 +1430,7 @@ export class JobTemplateComponent {
     this.ref.detectChanges();
   }
 
-  encryptValue(argument, typeArg){
+  encryptValue(argument, typeArg, variableType){
     let selectedAgent  = [];
     const argu = argument;
     const type = typeArg;
@@ -1450,7 +1450,33 @@ export class JobTemplateComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        // this.updateOnEncrypt.emit();
+        if(variableType === 'arguments'){
+          const originalArgIndex = this.job.configuration.arguments.findIndex(arg => arg.name === argument.name);
+          if (typeof this.job.configuration.arguments[originalArgIndex].value === 'object') {
+            this.job.configuration.arguments[originalArgIndex].value.default = result.value.default;
+          } else {
+            this.job.configuration.arguments[originalArgIndex].value = result.value;
+          }
+        } else if(variableType === 'env'){
+          const originalEnvIndex = this.job.configuration.executable.env.findIndex(env => env.name === argument.name);
+          if (originalEnvIndex !== -1) {
+            if (typeof this.job.configuration.executable.env[originalEnvIndex].value === 'object') {
+              this.job.configuration.executable.env[originalEnvIndex].value.default = result.value.default;
+            } else {
+              this.job.configuration.executable.env[originalEnvIndex].value = result.value;
+            }
+          }
+        } else if(variableType === 'jobArguments'){
+          const originalEnvIndex = this.job.configuration.executable.jobArguments.findIndex(env => env.name === argument.name);
+          if (originalEnvIndex !== -1) {
+            if (typeof this.job.configuration.executable.jobArguments[originalEnvIndex].value === 'object') {
+              this.job.configuration.executable.jobArguments[originalEnvIndex].value.default = result.value.default;
+            } else {
+              this.job.configuration.executable.jobArguments[originalEnvIndex].value = result.value;
+            }
+          }
+        }
+        this.saveJSON();
       }
     });
   }

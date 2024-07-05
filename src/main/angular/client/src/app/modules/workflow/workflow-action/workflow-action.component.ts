@@ -740,7 +740,8 @@ export class AddOrderModalComponent {
 
 
   areArgumentsEmpty(): boolean {
-    if (!this.allowEmptyArguments) return false;
+    if (this.allowEmptyArguments) return false;
+
     let anyListEmpty = this.arguments.some(arg =>
       arg.type === 'List' &&
       (!arg.actualList || arg.actualList.some(listItem => listItem.list.some(item => !item.value)))
@@ -751,9 +752,14 @@ export class AddOrderModalComponent {
       (!arg.actualMap || arg.actualMap.some(mapItem => mapItem.map.some(item => !item.value)))
     );
 
-    this.argumentsValid = !(anyListEmpty || anyMapEmpty);
-    return anyListEmpty || anyMapEmpty;
+    let anyStringEmpty = this.arguments.some(arg =>
+      arg.type === 'String' && (!arg.value)
+    );
+
+    this.argumentsValid = !(anyListEmpty || anyMapEmpty || anyStringEmpty);
+    return anyListEmpty || anyMapEmpty || anyStringEmpty;
   }
+
 
 
   addVariableToList(data): void {
@@ -1132,8 +1138,13 @@ export class AddOrderModalComponent {
   }
 
   private fetchTags(): void {
-    this.coreService.post('tags', {}).subscribe((res) => {
-      this.allTags = res.tags;
+    this.coreService.post('orders/tag/search', {
+      search: '',
+      controllerId: this.schedulerId}).subscribe((res) => {
+      this.allTags = res.results;
+      this.allTags = this.allTags.map((item) => {
+        return item.name;
+      })
     });
   }
 

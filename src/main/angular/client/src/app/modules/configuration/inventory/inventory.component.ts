@@ -45,10 +45,8 @@ export class CreateTagModalComponent {
   controllerId: string;
   filters: any;
   filter: any = {
-    tags: []
-  };
-  orderFilter: any = {
-    tags: []
+    tags: [],
+    orderTags: []
   };
   object = {
     expanded: new Set(),
@@ -81,7 +79,7 @@ export class CreateTagModalComponent {
     } else if (this.modalData.filters && this.modalData.filters.tagType === 'orderTags') {
       this.filters = this.modalData.filters;
       this.controllerId = this.modalData.controllerId;
-      this.orderFilter.tags = this.coreService.selectedOrderTags;
+      this.filter.orderTags = this.coreService.selectedOrderTags;
       this.fetchAllOrderTags();
     } else {
       this.preferences = this.modalData.preferences;
@@ -136,17 +134,20 @@ export class CreateTagModalComponent {
   }
 
   private fetchUsedTags(): void {
-    this.coreService.post('tags/used', {
-      folders: [
-        {folder: this.data.path, recursive: this.object.isRecursive}
-      ]
-    }).subscribe({
+    const requestPayload: any = {};
+
+    if (this.data.path) {
+      requestPayload.folders = [{ folder: this.data.path, recursive: this.object.isRecursive }];
+    }
+
+    this.coreService.post('tags/used', requestPayload).subscribe({
       next: (res) => {
         delete res.deliveryDate;
         this.object.tagsObject = res;
       }
     });
   }
+
 
   expandAll(): void{
     for(let i in this.object.tagsObject){

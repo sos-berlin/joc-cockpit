@@ -808,7 +808,7 @@ export class WorkflowComponent {
     this.updateSelectAllTags();
 
     const obj: any = {
-      tags: Array.from(this.coreService.checkedTags),
+      workflowTags: Array.from(this.coreService.checkedTags),
       controllerId: this.schedulerIds.selected
     };
     this.searchByTags(obj);
@@ -1402,7 +1402,7 @@ export class WorkflowComponent {
     }
 
     if (this.workflowFilters.tagType === 'workflowTags') {
-      obj.tags = Array.from(this.coreService.checkedTags);
+      obj.workflowTags = Array.from(this.coreService.checkedTags);
     } else if (this.workflowFilters.tagType === 'orderTags') {
       obj.orderTags = Array.from(this.coreService.checkedOrderTags);
     } else {
@@ -1414,7 +1414,7 @@ export class WorkflowComponent {
       obj.regex = this.selectedFiltered.regex;
       if (this.workflowFilters.tagType === 'workflowTags') {
         if (this.selectedFiltered.tags) {
-          obj.tags = this.selectedFiltered.tags;
+          obj.workflowTags = this.selectedFiltered.tags;
         }
       } else if (this.workflowFilters.tagType === 'orderTags') {
         if (this.selectedFiltered.orderTags) {
