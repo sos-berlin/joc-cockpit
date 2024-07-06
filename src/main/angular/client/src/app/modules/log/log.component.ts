@@ -349,7 +349,7 @@ export class LogComponent {
           this.coreService.logViewDetails.expandedLogPanel.add('#ex_' + (i + 1));
           a.classList.remove('hide');
           a.classList.add('show');
-          if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
+          if (res?.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
             const obj = {
               controllerId: jobs.controllerId,
               taskId: res.headers.get('x-log-task-id') || jobs.taskId,
@@ -386,7 +386,7 @@ export class LogComponent {
       next: (res: any) => {
         if (res) {
           this.renderData(res.body, null);
-          if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
+          if (res?.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
             const obj = {
               controllerId: this.controllerId,
               taskId: res.headers.get('x-log-task-id') || jobs.taskId,
@@ -808,13 +808,15 @@ export class LogComponent {
   renderData(res: any, domId: string | null): void {
     this.loading = false;
     LogComponent.calculateHeight();
-    this.coreService.renderData(res, domId, this.object, {
-      isFatalLevel: this.isFatalLevel,
-      isWarnLevel: this.isWarnLevel,
-      isTraceLevel: this.isTraceLevel,
-      isStdErrLevel: this.isStdErrLevel,
-      isInfoLevel: this.isInfoLevel
-    });
+    if(res?.body){
+      this.coreService.renderData(res, domId, this.object, {
+        isFatalLevel: this.isFatalLevel,
+        isWarnLevel: this.isWarnLevel,
+        isTraceLevel: this.isTraceLevel,
+        isStdErrLevel: this.isStdErrLevel,
+        isInfoLevel: this.isInfoLevel
+      });
+    }
   }
 
   expandAll(): void {

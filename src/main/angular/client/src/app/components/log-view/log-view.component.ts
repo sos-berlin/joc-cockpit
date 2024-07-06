@@ -419,20 +419,18 @@ export class LogViewComponent {
       observe: 'response' as 'response'
     }).subscribe({
       next: (res: any) => {
-        if (res && res.body) {
+        if (res && res?.body) {
           this.renderData(res.body, null);
-          if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-            const obj = {
-              controllerId: this.controllerId,
-              taskId: res.headers.get('x-log-task-id') || jobs.taskId,
-              eventId: res.headers.get('x-log-event-id')
-            };
-            this.runningTaskLog(obj, '');
-          } else {
-            this.finished = true;
-          }
+        }
+        if (res?.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
+          const obj = {
+            controllerId: this.controllerId,
+            taskId: res.headers.get('x-log-task-id') || jobs.taskId,
+            eventId: res.headers.get('x-log-event-id')
+          };
+          this.runningTaskLog(obj, '');
         } else {
-          this.loading = false;
+          this.finished = true;
         }
         this.isLoading = false;
       }, error: (err) => {
@@ -861,13 +859,15 @@ export class LogViewComponent {
   renderData(res: any, domId: string | null): void {
     this.loading = false;
     this.calculateHeight();
-    this.coreService.renderData(res, domId, this.object, {
-      isFatalLevel: this.isFatalLevel,
-      isWarnLevel: this.isWarnLevel,
-      isTraceLevel: this.isTraceLevel,
-      isStdErrLevel: this.isStdErrLevel,
-      isInfoLevel: this.isInfoLevel
-    }, POPOUT_MODALS['windowInstance']);
+    if(res?.body){
+      this.coreService.renderData(res, domId, this.object, {
+        isFatalLevel: this.isFatalLevel,
+        isWarnLevel: this.isWarnLevel,
+        isTraceLevel: this.isTraceLevel,
+        isStdErrLevel: this.isStdErrLevel,
+        isInfoLevel: this.isInfoLevel
+      }, POPOUT_MODALS['windowInstance']);
+    }
   }
 
   private checkAndExpand(): void {

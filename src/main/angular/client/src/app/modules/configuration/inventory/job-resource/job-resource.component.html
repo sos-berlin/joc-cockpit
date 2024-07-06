@@ -150,7 +150,7 @@
                             <i
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name)"
                               class="fa fa-scissors"></i>
-                            <a *ngIf="argu.name"><i (click)="encryptValue(argu)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                            <a *ngIf="argu.name"><i (click)="encryptValue(argu, 'arguments')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                             <a
                               *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name))"><i
                               (click)="removeArgu(i)" class="fa fa-times text-hover-color"></i></a>
@@ -230,7 +230,7 @@
                             <i
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name)"
                               class="fa fa-scissors"></i>
-                            <a *ngIf="env.name"><i (click)="encryptValue(env)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                            <a *ngIf="env.name"><i (click)="encryptValue(env, 'env')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                             <a
                               *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name))"><i
                               (click)="removeEnv(i)" class="fa fa-times text-hover-color"></i></a>

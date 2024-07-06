@@ -1461,9 +1461,9 @@ export class JobTemplateComponent {
           const originalEnvIndex = this.job.configuration.executable.env.findIndex(env => env.name === argument.name);
           if (originalEnvIndex !== -1) {
             if (typeof this.job.configuration.executable.env[originalEnvIndex].value === 'object') {
-              this.job.configuration.executable.env[originalEnvIndex].value.default = result.value.default;
+              this.job.configuration.executable.env[originalEnvIndex].value.default = "'" + result.value.default + "'";
             } else {
-              this.job.configuration.executable.env[originalEnvIndex].value = result.value;
+              this.job.configuration.executable.env[originalEnvIndex].value = "'" + result.value + "'";
             }
           }
         } else if(variableType === 'jobArguments'){
@@ -1587,9 +1587,9 @@ export class JobTemplateComponent {
             const originalEnvIndex = this.job.configuration.executable.env.findIndex(env => env.name === selectedEnvs[index].name);
             if (originalEnvIndex !== -1) {
               if (typeof this.job.configuration.executable.env[originalEnvIndex].value === 'object') {
-                this.job.configuration.executable.env[originalEnvIndex].value.default = encryptedEnv.value.default;
+                this.job.configuration.executable.env[originalEnvIndex].value.default = "'" + encryptedEnv.value.default + "'";
               } else {
-                this.job.configuration.executable.env[originalEnvIndex].value = encryptedEnv.value;
+                this.job.configuration.executable.env[originalEnvIndex].value = "'" + encryptedEnv.value + "'";
               }
             }
           });

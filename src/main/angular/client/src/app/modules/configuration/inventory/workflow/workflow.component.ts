@@ -1367,7 +1367,6 @@ export class JobComponent {
   @ViewChild('codeMirror', {static: false}) cm: any;
 
   @Output() updateFromJobTemplateFn: EventEmitter<any> = new EventEmitter();
-  @Output() updateOnEncrypt: EventEmitter<any> = new EventEmitter();
 
   constructor(public coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,
               private workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService, public inventoryService: InventoryService) {
@@ -1892,9 +1891,9 @@ export class JobComponent {
             const originalEnvIndex = this.selectedNode.job.executable.env.findIndex(env => env.name === selectedEnvs[index].name);
             if (originalEnvIndex !== -1) {
               if (typeof this.selectedNode.job.executable.env[originalEnvIndex].value === 'object') {
-                this.selectedNode.job.executable.env[originalEnvIndex].value.default = encryptedEnv.value.default;
+                this.selectedNode.job.executable.env[originalEnvIndex].value.default = "'" + encryptedEnv.value.default + "'";
               } else {
-                this.selectedNode.job.executable.env[originalEnvIndex].value = encryptedEnv.value;
+                this.selectedNode.job.executable.env[originalEnvIndex].value = "'" + encryptedEnv.value + "'";
               }
             }
           });
@@ -2800,7 +2799,7 @@ export class JobComponent {
     this.updateFromJobTemplateFn.emit(this.selectedNode)
   }
 
-  encryptValue(argument, jobName){
+  encryptValue(argument, jobName, variableType){
     let selectedAgent  = [];
     selectedAgent = this.getSelectedAgentIds(jobName);
     setTimeout(() => {
@@ -2822,7 +2821,44 @@ export class JobComponent {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.updateOnEncrypt.emit();
+          if(variableType === 'arguments'){
+            const originalArgIndex = this.selectedNode.job.executable.arguments.findIndex(arg => arg.name === argument.name);
+            if (originalArgIndex !== -1) {
+              if (typeof this.selectedNode.job.executable.arguments[originalArgIndex].value === 'object') {
+                this.selectedNode.job.executable.arguments[originalArgIndex].value.default = result.value.default;
+              } else {
+                this.selectedNode.job.executable.arguments[originalArgIndex].value = result.value;
+              }
+            }
+          } else if(variableType === 'env'){
+            const originalEnvIndex = this.selectedNode.job.executable.env.findIndex(env => env.name === argument.name);
+            if (originalEnvIndex !== -1) {
+              if (typeof this.selectedNode.job.executable.env[originalEnvIndex].value === 'object') {
+                this.selectedNode.job.executable.env[originalEnvIndex].value.default = "'" + result.value.default + "'";
+              } else {
+                this.selectedNode.job.executable.env[originalEnvIndex].value = "'" + result.value + "'";
+              }
+            }
+          } else if(variableType === 'jobArguments'){
+            const originalEnvIndex = this.selectedNode.job.executable.jobArguments.findIndex(env => env.name === argument.name);
+            if (originalEnvIndex !== -1) {
+              if (typeof this.selectedNode.job.executable.jobArguments[originalEnvIndex].value === 'object') {
+                this.selectedNode.job.executable.jobArguments[originalEnvIndex].value.default = result.value.default;
+              } else {
+                this.selectedNode.job.executable.jobArguments[originalEnvIndex].value = result.value;
+              }
+            }
+          } else if(variableType === 'nodeArguments'){
+            const originalEnvIndex = this.selectedNode.obj.defaultArguments.findIndex(env => env.name === argument.name);
+            if (originalEnvIndex !== -1) {
+              if (typeof this.selectedNode.obj.defaultArguments[originalEnvIndex].value === 'object') {
+                this.selectedNode.obj.defaultArguments[originalEnvIndex].value.default = result.value.default;
+              } else {
+                this.selectedNode.obj.defaultArguments[originalEnvIndex].value = result.value;
+              }
+            }
+          }
+          this.updateVariableList();
         }
       });
     }, 1000);
@@ -12977,10 +13013,6 @@ export class WorkflowComponent {
       });
     }
   }
-
-  updateOnEncrypt(){
-      this.getWorkflow(false);
-    }
 
     encryptValue(currentVariable, actualVariable, typeArg){
       let selectedAgent  = [];

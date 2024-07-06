@@ -700,7 +700,7 @@ export class JobResourceComponent {
     this.router.navigate(['/configuration/file_transfer']).then();
   }
 
-  encryptValue(argument){
+  encryptValue(argument, variableType){
     let selectedAgent  = [];
     const argu = argument;
     const type = 'job';
@@ -720,6 +720,17 @@ export class JobResourceComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
+        if(variableType === 'arguments'){
+          const originalArgIndex = this.jobResource.configuration.arguments.findIndex(arg => arg.name === argument.name);
+            if (originalArgIndex !== -1) {
+              this.jobResource.configuration.arguments[originalArgIndex].value = result.value;
+            }
+        } else if(variableType === 'env'){
+          const originalEnvIndex = this.jobResource.configuration.env.findIndex(env => env.name === argument.name);
+            if (originalEnvIndex !== -1) {
+              this.jobResource.configuration.env[originalEnvIndex].value =  "'" + result.value + "'";
+            }
+        }
         this.saveJSON();
       }
     });
@@ -783,7 +794,7 @@ export class JobResourceComponent {
           result.forEach((encryptedEnv, index) => {
             const originalEnvIndex = this.jobResource.configuration.env.findIndex(env => env.name === selectedEnvs[index].name);
             if (originalEnvIndex !== -1) {
-              this.jobResource.configuration.env[originalEnvIndex].value = encryptedEnv.value;
+              this.jobResource.configuration.env[originalEnvIndex].value =  "'" + encryptedEnv.value + "'";
             }
           });
           this.saveJSON();
